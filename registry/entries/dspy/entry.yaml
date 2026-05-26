@@ -1,0 +1,56 @@
+schema_version: 1.0.0
+homepage_url: https://dspy.ai/
+repo_url: https://github.com/stanfordnlp/dspy
+package_urls:
+  - https://pypi.org/project/dspy-ai/
+licenses:
+  - MIT
+copyright_owner: Stanford NLP
+source_kind: official_docs
+protocols: []
+clients:
+  - Python
+install:
+  command: pip install dspy-ai
+  notes: >-
+    Use when prompt/program optimization should be driven by metrics and data rather than manual
+    prompt tweaking.
+  config_example: null
+permissions:
+  - network
+env_vars:
+  - OPENAI_API_KEY
+tags:
+  - evals
+  - optimization
+  - prompt-programming
+  - retrieval
+  - research
+use_cases:
+  - Optimize LLM pipelines against metrics
+  - Turn prompts into testable programs
+best_for:
+  - Teams with datasets and metrics for optimizing language-model behavior
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: high
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags: []
+recommended_when:
+  - Use when repeated prompt tuning should be replaced by evaluation-driven optimization.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-26'
+slug: dspy
+name: DSPy
+type: eval
+summary_llm: >-
+  DSPy is a framework for programming and optimizing language-model pipelines with declarative
+  modules, signatures, teleprompters, and evaluation-driven improvement.
+source_urls:
+  - https://dspy.ai/
+  - https://github.com/stanfordnlp/dspy

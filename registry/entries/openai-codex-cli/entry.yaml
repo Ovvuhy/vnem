@@ -1,0 +1,63 @@
+schema_version: 1.0.0
+homepage_url: https://github.com/openai/codex
+repo_url: https://github.com/openai/codex
+package_urls: []
+licenses:
+  - Apache-2.0
+copyright_owner: OpenAI
+source_kind: github
+protocols: []
+clients:
+  - Terminal
+  - GitHub
+  - OpenAI API
+install:
+  command: npm install -g @openai/codex
+  notes: >-
+    Use in repositories where shell and file changes can be reviewed; keep approvals on for
+    destructive commands.
+  config_example: null
+permissions:
+  - filesystem
+  - repository
+  - shell
+  - network
+env_vars:
+  - OPENAI_API_KEY
+tags:
+  - coding-agent
+  - terminal
+  - code-review
+  - automation
+use_cases:
+  - Let agents inspect and edit code repositories
+  - Run tests and commands during coding tasks
+best_for:
+  - Terminal-native coding work with reviewable diffs
+  - Repositories that need command execution under approval
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: high
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags:
+  - can-edit-files
+  - can-run-shell-commands
+recommended_when:
+  - >-
+    Use when a project needs a local coding agent that can inspect files, edit code, and verify
+    changes.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-26'
+slug: openai-codex-cli
+name: OpenAI Codex CLI
+type: coding-agent
+summary_llm: >-
+  OpenAI Codex CLI is an open-source terminal coding agent for reading repositories, editing files,
+  running commands, and producing reviewable changes with user-controlled execution.
+source_urls:
+  - https://github.com/openai/codex

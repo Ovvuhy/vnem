@@ -1,0 +1,57 @@
+schema_version: 1.0.0
+homepage_url: https://developers.openai.com/codex/guides/agents-md
+repo_url: null
+package_urls: []
+licenses:
+  - Apache-2.0
+copyright_owner: OpenAI
+source_kind: official_docs
+protocols: []
+clients:
+  - Codex
+  - Terminal
+  - GitHub
+install:
+  command: null
+  notes: >-
+    Review the upstream docs, permissions, pricing, environment variables, and transport before
+    installing.
+  config_example: null
+permissions: []
+env_vars: []
+tags:
+  - codex
+  - agents-md
+  - instructions
+  - coding-agent
+  - context-engineering
+use_cases:
+  - Give coding agents stable repository instructions
+  - Document commands, conventions, and safety boundaries for agent work
+best_for:
+  - Repositories where Codex or similar coding agents need durable project guidance
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: official
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags: []
+recommended_when:
+  - >-
+    Use when a coding agent repeatedly needs the same repo-specific commands, conventions, and
+    constraints.
+trust_tier: verified
+review_status: manual-reviewed
+last_checked: '2026-05-26'
+slug: codex-agents-md
+name: Codex AGENTS.md
+type: workflow
+summary_llm: >-
+  Codex AGENTS.md guidance describes how repository-local instructions can steer coding agents with
+  project conventions, commands, scope, and review expectations.
+source_urls:
+  - https://developers.openai.com/codex/guides/agents-md
+  - https://github.com/openai/codex

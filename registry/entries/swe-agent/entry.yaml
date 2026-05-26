@@ -1,0 +1,60 @@
+schema_version: 1.0.0
+homepage_url: https://swe-agent.com/latest/
+repo_url: https://github.com/SWE-agent/SWE-agent
+package_urls:
+  - https://pypi.org/project/sweagent/
+licenses:
+  - MIT
+copyright_owner: SWE-agent
+source_kind: github
+protocols: []
+clients:
+  - GitHub
+  - Terminal
+install:
+  command: pip install sweagent
+  notes: Use with isolated repositories and tests; verify generated patches before merging.
+  config_example: null
+permissions:
+  - filesystem
+  - repository
+  - shell
+  - network
+env_vars:
+  - OPENAI_API_KEY
+  - ANTHROPIC_API_KEY
+tags:
+  - coding-agent
+  - swe-bench
+  - github-issues
+  - research
+use_cases:
+  - Solve GitHub issues with an autonomous coding agent
+  - Benchmark repository repair workflows
+best_for:
+  - Research and controlled coding-agent evaluations
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: high
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags:
+  - can-edit-files
+  - can-run-shell-commands
+recommended_when:
+  - Use when SWE-bench style issue resolution and reproducible experiments matter.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-26'
+slug: swe-agent
+name: SWE-agent
+type: coding-agent
+summary_llm: >-
+  SWE-agent is an open-source coding agent system for solving GitHub issues in a controlled
+  agent-computer interface with repository editing and tests.
+source_urls:
+  - https://swe-agent.com/latest/
+  - https://github.com/SWE-agent/SWE-agent

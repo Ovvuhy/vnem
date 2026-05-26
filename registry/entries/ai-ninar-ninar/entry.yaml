@@ -1,0 +1,43 @@
+schema_version: 1.0.0
+slug: ai-ninar-ninar
+name: Ninar AI
+type: mcp-server
+summary_llm: >-
+  Ninar AI is an MCP server for agentic systems. Audit your brand's visibility across ChatGPT,
+  Gemini, Claude, Perplexity + 6 more engines.
+homepage_url: https://ninar.ai
+repo_url: https://github.com/Ninar-ctrl/Ninar.AI
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: Ninar-ctrl
+source_urls:
+  - https://registry.modelcontextprotocol.io/v0.1/servers/ai.ninar%2Fninar/versions/latest
+  - https://github.com/Ninar-ctrl/Ninar.AI
+  - https://ninar.ai
+source_kind: official_registry
+protocols:
+  - MCP
+clients:
+  - Claude Desktop
+  - Cursor
+  - Windsurf
+  - VS Code
+  - OpenAI Agents SDK
+install:
+  command: null
+  notes: >-
+    Install from the upstream source after reviewing its permissions, environment variables, and
+    transport configuration.
+  config_example: null
+permissions:
+  - network
+env_vars: []
+tags:
+  - mcp
+  - agent-tools
+use_cases:
+  - Extend agents with external tools
+trust_tier: promising
+review_status: bot-reviewed
+last_checked: '2026-05-25'

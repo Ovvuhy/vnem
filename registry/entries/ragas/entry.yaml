@@ -1,0 +1,55 @@
+schema_version: 1.0.0
+homepage_url: https://docs.ragas.io/
+repo_url: https://github.com/explodinggradients/ragas
+package_urls:
+  - https://pypi.org/project/ragas/
+licenses:
+  - Apache-2.0
+copyright_owner: Exploding Gradients
+source_kind: official_docs
+protocols: []
+clients:
+  - Python
+install:
+  command: pip install ragas
+  notes: Use for RAG-specific quality checks; review any production documents used in evaluation.
+  config_example: null
+permissions:
+  - network
+env_vars:
+  - OPENAI_API_KEY
+tags:
+  - evals
+  - rag
+  - retrieval
+  - quality
+  - metrics
+use_cases:
+  - Evaluate RAG retrieval and answers
+  - Generate and score testsets for LLM apps
+best_for:
+  - Knowledge assistants and retrieval-heavy agent systems
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: high
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags:
+  - can-send-test-data-to-model-providers
+recommended_when:
+  - Use when the agent depends on retrieval quality and grounded answers.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-26'
+slug: ragas
+name: Ragas
+type: eval
+summary_llm: >-
+  Ragas is an evaluation framework for RAG and LLM applications with metrics for retrieval,
+  generation quality, testset generation, and experiment workflows.
+source_urls:
+  - https://docs.ragas.io/
+  - https://github.com/explodinggradients/ragas

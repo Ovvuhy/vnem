@@ -1,0 +1,46 @@
+schema_version: 1.0.0
+slug: ai-clarid-hmda
+name: Clarid HMDA Validator
+type: mcp-server
+summary_llm: >-
+  Clarid HMDA Validator is an MCP server for agentic systems. Validate HMDA LAR files against CFPB
+  edit checks for community banks and credit unions.
+homepage_url: https://clarid.ai
+repo_url: null
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: clarid-ai
+source_urls:
+  - https://registry.modelcontextprotocol.io/v0.1/servers/ai.clarid%2Fhmda/versions/latest
+  - https://github.com/clarid-ai/compliance-checker
+  - https://clarid.ai
+source_kind: official_registry
+protocols:
+  - MCP
+clients:
+  - Claude Desktop
+  - Cursor
+  - Windsurf
+  - VS Code
+  - OpenAI Agents SDK
+install:
+  command: null
+  notes: >-
+    Install from the upstream source after reviewing its permissions, environment variables, and
+    transport configuration.
+  config_example: null
+permissions:
+  - network
+  - filesystem
+env_vars: []
+tags:
+  - mcp
+  - agent-tools
+  - filesystem
+use_cases:
+  - Extend agents with external tools
+  - Let agents work with scoped files
+trust_tier: promising
+review_status: bot-reviewed
+last_checked: '2026-05-25'

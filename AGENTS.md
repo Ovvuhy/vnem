@@ -1,0 +1,61 @@
+# AGENTS.md
+
+This file is for coding agents working on the vnem repository.
+
+## Project Purpose
+
+vnem is a read-only perception layer for coding agents. It provides a registry, generated search data, best-practice notes, and install-pack files that help agents recommend current tools and safer upgrade paths before changing user code.
+
+The project is index-first. Do not vendor third-party tools, copy upstream code, or paste long upstream documentation into the repo.
+
+## Repository Map
+
+- `registry/entries/{slug}/entry.yaml`: canonical entry data.
+- `registry/entries/{slug}/profile.md`: short original profile for humans and LLMs.
+- `schemas/entry.schema.json`: validation schema.
+- `scripts/`: validation, artifact generation, discovery, digest, and tests.
+- `public/api/index.json`: generated static API.
+- `public/install/*`: generated loose install-pack files.
+- `public/install.tgz`: generated install archive.
+- `.vnem/`: generated local dogfood pack.
+- `llms.txt` and `llms-full.txt`: generated LLM-readable indexes.
+- `HERMES.md`: recurring discovery and daily synthesis operating contract.
+
+The landing-page source is intentionally outside the public repo. Do not add `landing/` or `site/` unless the user explicitly changes that policy.
+
+## Editing Rules
+
+- Keep changes small and source-backed.
+- Preserve third-party copyrights, owners, licenses, and source URLs.
+- Use SPDX identifiers when known; use `NOASSERTION` when unknown.
+- Keep summaries and profiles original. Avoid copied README excerpts.
+- Treat `verified` as a strong claim. Use `promising`, `unreviewed`, or `watchlist` when unsure.
+- Generated files must be regenerated instead of hand-edited.
+- The install pack must remain read-only guidance/data only. No package installs, shell scripts, secret collection, daemons, or automatic code edits.
+
+## Validation
+
+Run these before proposing a repo change:
+
+```bash
+npm run validate
+npm run generate
+npm run test:install-pack
+```
+
+For broader changes, run:
+
+```bash
+npm test
+```
+
+Expected network limitation: `npm run discover:dry-run` may return a `discovery-unavailable` candidate in restricted environments. That is acceptable when the rest of the test passes.
+
+## Good Output Shape
+
+When reviewing or changing this repo, report:
+
+- what registry, script, or documentation surface changed
+- whether generated artifacts were refreshed
+- what validation ran
+- any remaining uncertainty around source trust, licenses, or network checks

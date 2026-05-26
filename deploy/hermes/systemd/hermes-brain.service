@@ -1,0 +1,13 @@
+[Unit]
+Description=Nous Hermes brain pass for vnem
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=hermes
+Group=hermes
+WorkingDirectory=/opt/vnem
+Environment=HERMES_HOME=/home/hermes/.hermes
+ExecStart=/opt/vnem/deploy/hermes/hermes-brain-run.sh
+Nice=5

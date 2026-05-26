@@ -1,0 +1,62 @@
+schema_version: 1.0.0
+homepage_url: https://github.com/microsoft/playwright-mcp
+repo_url: https://github.com/microsoft/playwright-mcp
+package_urls: []
+licenses:
+  - Apache-2.0
+copyright_owner: Microsoft
+source_kind: github
+protocols:
+  - MCP
+clients:
+  - Claude Desktop
+  - Claude Code
+  - Cursor
+  - VS Code
+  - OpenAI Agents SDK
+install:
+  command: npx @playwright/mcp@latest
+  notes: >-
+    Use for browser testing and inspection; isolate sessions and avoid exposing authenticated
+    production pages casually.
+  config_example: null
+permissions:
+  - browser
+  - network
+  - filesystem
+env_vars: []
+tags:
+  - mcp
+  - browser
+  - testing
+  - playwright
+  - frontend
+use_cases:
+  - Let agents inspect and test web UIs
+  - Automate browser flows through MCP
+best_for:
+  - Frontend QA, local app inspection, and browser-based debugging
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: official
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags:
+  - browser-access
+  - can-access-authenticated-pages
+recommended_when:
+  - Use when a coding agent needs real browser evidence instead of guessing from code.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-26'
+slug: playwright-mcp
+name: Playwright MCP
+type: mcp-server
+summary_llm: >-
+  Playwright MCP is Microsoft's browser automation MCP server for giving agents structured access to
+  pages, snapshots, actions, and web UI testing flows.
+source_urls:
+  - https://github.com/microsoft/playwright-mcp

@@ -1,0 +1,63 @@
+schema_version: 1.0.0
+homepage_url: https://github.com/supabase-community/supabase-mcp
+repo_url: https://github.com/supabase-community/supabase-mcp
+package_urls: []
+licenses:
+  - Apache-2.0
+copyright_owner: Supabase Community
+source_kind: github
+protocols:
+  - MCP
+clients:
+  - Claude Desktop
+  - Claude Code
+  - Cursor
+  - VS Code
+  - OpenAI Agents SDK
+install:
+  command: null
+  notes: >-
+    Use with least-privilege access tokens and separate development projects; production SQL access
+    is high risk.
+  config_example: null
+permissions:
+  - database
+  - network
+env_vars:
+  - SUPABASE_ACCESS_TOKEN
+tags:
+  - mcp
+  - database
+  - supabase
+  - sql
+  - backend
+use_cases:
+  - Let agents inspect Supabase projects
+  - Query or manage development databases through MCP
+best_for:
+  - Supabase-backed apps where schema and project context improve agent work
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: high
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags:
+  - database-access
+  - can-mutate-data
+  - requires-token
+recommended_when:
+  - Use when database scope can be limited and SQL changes are reviewed before execution.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-26'
+slug: supabase-mcp
+name: Supabase MCP
+type: mcp-server
+summary_llm: >-
+  Supabase MCP is a community Supabase MCP server for project, database, SQL, and platform
+  operations through MCP-compatible agent clients.
+source_urls:
+  - https://github.com/supabase-community/supabase-mcp

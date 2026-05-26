@@ -1,0 +1,57 @@
+schema_version: 1.0.0
+homepage_url: https://docs.llamaindex.ai/en/stable/use_cases/agents/
+repo_url: https://github.com/run-llama/llama_index
+package_urls:
+  - https://pypi.org/project/llama-index/
+licenses:
+  - MIT
+copyright_owner: LlamaIndex
+source_kind: official_docs
+protocols: []
+clients:
+  - Python
+  - TypeScript
+install:
+  command: pip install llama-index
+  notes: Use when agent behavior is grounded in retrieval, indexes, documents, and knowledge workflows.
+  config_example: null
+permissions:
+  - network
+  - database
+env_vars:
+  - OPENAI_API_KEY
+tags:
+  - agent-framework
+  - rag
+  - retrieval
+  - documents
+  - workflows
+use_cases:
+  - Build retrieval-grounded agents
+  - Connect agents to document and data indexes
+best_for:
+  - RAG-heavy assistants and knowledge workflows
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: official
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags:
+  - data-access
+recommended_when:
+  - Use when retrieval and document indexing are the center of the agent design.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-26'
+slug: llamaindex-agents
+name: LlamaIndex Agents
+type: agent-framework
+summary_llm: >-
+  LlamaIndex Agents provide tool-using and workflow-oriented agent patterns for retrieval-heavy
+  applications, knowledge systems, document search, and RAG pipelines.
+source_urls:
+  - https://docs.llamaindex.ai/en/stable/use_cases/agents/
+  - https://github.com/run-llama/llama_index

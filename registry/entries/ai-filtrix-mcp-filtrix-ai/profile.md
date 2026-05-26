@@ -1,0 +1,13 @@
+# Filtrix AI MCP
+
+Filtrix AI MCP is an MCP server for agentic systems. Filtrix MCP for image/video generation. Portal: https://agent.filtrix.ai/
+
+## When To Use
+
+Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned.
+
+## Review Notes
+
+Trust tier: promising. This entry was seeded from an official registry source and still needs maintainer review before it should be treated as verified.
+
+Primary source: https://registry.modelcontextprotocol.io/v0.1/servers/ai.filtrix.mcp%2Ffiltrix-ai/versions/latest

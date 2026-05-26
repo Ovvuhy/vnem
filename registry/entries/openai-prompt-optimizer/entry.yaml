@@ -1,0 +1,52 @@
+schema_version: 1.0.0
+homepage_url: https://developers.openai.com/api/docs/guides/prompt-optimizer
+repo_url: null
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: OpenAI
+source_kind: official_docs
+protocols: []
+clients: []
+install:
+  command: null
+  notes: >-
+    Review the upstream docs, permissions, pricing, environment variables, and transport before
+    installing.
+  config_example: null
+permissions: []
+env_vars: []
+tags:
+  - prompt-optimizer
+  - evals
+  - graders
+  - datasets
+  - prompt-engineering
+use_cases:
+  - Optimize prompts against examples and graders
+  - Create repeatable prompt improvement workflows
+best_for:
+  - Teams with examples or eval criteria that can measure prompt quality
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: official
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags:
+  - license-not-asserted
+recommended_when:
+  - Use when prompt improvement should be measured instead of judged by vibes.
+trust_tier: verified
+review_status: manual-reviewed
+last_checked: '2026-05-26'
+slug: openai-prompt-optimizer
+name: OpenAI Prompt Optimizer
+type: eval
+summary_llm: >-
+  OpenAI Prompt Optimizer is official guidance for improving prompts through datasets, graders,
+  annotations, and iterative prompt testing.
+source_urls:
+  - https://developers.openai.com/api/docs/guides/prompt-optimizer

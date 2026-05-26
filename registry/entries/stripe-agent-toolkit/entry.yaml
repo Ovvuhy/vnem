@@ -1,0 +1,64 @@
+schema_version: 1.0.0
+homepage_url: https://docs.stripe.com/agents
+repo_url: https://github.com/stripe/agent-toolkit
+package_urls: []
+licenses:
+  - MIT
+copyright_owner: Stripe
+source_kind: official_docs
+protocols:
+  - MCP
+clients:
+  - OpenAI Agents SDK
+  - Claude Desktop
+  - Claude Code
+  - Node.js
+  - Python
+install:
+  command: null
+  notes: >-
+    Use with test mode first, scoped keys, spending limits, receipts, and explicit user approval for
+    money movement.
+  config_example: null
+permissions:
+  - payments
+  - network
+env_vars:
+  - STRIPE_SECRET_KEY
+tags:
+  - payments
+  - mcp
+  - commerce
+  - stripe
+  - receipts
+use_cases:
+  - Let agents work with Stripe APIs
+  - Build commerce workflows with auditable agent actions
+best_for:
+  - Agent commerce flows where Stripe is the payment system of record
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: official
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags:
+  - payments
+  - requires-secret
+  - can-affect-money
+recommended_when:
+  - Use only when payment authorization, receipts, and test-mode verification are explicit.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-26'
+slug: stripe-agent-toolkit
+name: Stripe Agent Toolkit
+type: payments
+summary_llm: >-
+  Stripe Agent Toolkit provides agent-facing Stripe tools, including MCP support, so agents can
+  interact with Stripe APIs under explicit payment and commerce controls.
+source_urls:
+  - https://docs.stripe.com/agents
+  - https://github.com/stripe/agent-toolkit

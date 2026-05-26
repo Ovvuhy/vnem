@@ -1,0 +1,58 @@
+schema_version: 1.0.0
+homepage_url: https://learn.microsoft.com/en-us/semantic-kernel/overview/
+repo_url: https://github.com/microsoft/semantic-kernel
+package_urls:
+  - https://pypi.org/project/semantic-kernel/
+licenses:
+  - MIT
+copyright_owner: Microsoft
+source_kind: official_docs
+protocols: []
+clients:
+  - C#
+  - Python
+  - Java
+  - Azure
+install:
+  command: pip install semantic-kernel
+  notes: Use when enterprise application integration, Azure, or multi-language SDK support is important.
+  config_example: null
+permissions:
+  - network
+env_vars:
+  - OPENAI_API_KEY
+  - AZURE_OPENAI_API_KEY
+tags:
+  - agent-framework
+  - microsoft
+  - plugins
+  - enterprise
+  - azure
+use_cases:
+  - Embed agents into enterprise applications
+  - Use prompts and tools across multiple languages
+best_for:
+  - Teams building AI features inside existing Microsoft or .NET-oriented applications
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: official
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags: []
+recommended_when:
+  - Use when app integration matters more than standalone agent orchestration.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-26'
+slug: semantic-kernel
+name: Semantic Kernel
+type: agent-framework
+summary_llm: >-
+  Microsoft Semantic Kernel is an SDK for integrating AI services, prompts, tools, planners, and
+  agents into C#, Python, and Java applications.
+source_urls:
+  - https://learn.microsoft.com/en-us/semantic-kernel/overview/
+  - https://github.com/microsoft/semantic-kernel

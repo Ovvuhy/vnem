@@ -1,0 +1,43 @@
+schema_version: 1.0.0
+slug: ai-offerhopper-mcp-shopping-optimizer
+name: Offer Hopper Shopping Optimizer
+type: mcp-server
+summary_llm: >-
+  Offer Hopper Shopping Optimizer is an MCP server for agentic systems. German grocery deal parser
+  and multi-stop route optimizer (REWE, Aldi, DM, Rossmann, etc.).
+homepage_url: https://offerhopper.ai
+repo_url: null
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: ai.offerhopper.mcp
+source_urls:
+  - >-
+    https://registry.modelcontextprotocol.io/v0.1/servers/ai.offerhopper.mcp%2Fshopping-optimizer/versions/latest
+  - https://offerhopper.ai
+source_kind: official_registry
+protocols:
+  - MCP
+clients:
+  - Claude Desktop
+  - Cursor
+  - Windsurf
+  - VS Code
+  - OpenAI Agents SDK
+install:
+  command: null
+  notes: >-
+    Install from the upstream source after reviewing its permissions, environment variables, and
+    transport configuration.
+  config_example: null
+permissions:
+  - network
+env_vars: []
+tags:
+  - mcp
+  - agent-tools
+use_cases:
+  - Extend agents with external tools
+trust_tier: promising
+review_status: bot-reviewed
+last_checked: '2026-05-25'

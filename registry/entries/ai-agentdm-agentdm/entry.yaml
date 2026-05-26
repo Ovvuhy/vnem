@@ -1,0 +1,43 @@
+schema_version: 1.0.0
+slug: ai-agentdm-agentdm
+name: 'AgentDM: Agent to Agent Communication Platform'
+type: mcp-server
+summary_llm: >-
+  AgentDM: Agent to Agent Communication Platform is an MCP server for agentic systems. Agent
+  communication platform for agent to agent messaging via MCP. Messages, channels, skills.
+homepage_url: https://agentdm.ai
+repo_url: https://github.com/agentdmai/agentdm
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: agentdmai
+source_urls:
+  - https://registry.modelcontextprotocol.io/v0.1/servers/ai.agentdm%2Fagentdm/versions/latest
+  - https://github.com/agentdmai/agentdm
+  - https://agentdm.ai
+source_kind: official_registry
+protocols:
+  - MCP
+clients:
+  - Claude Desktop
+  - Cursor
+  - Windsurf
+  - VS Code
+  - OpenAI Agents SDK
+install:
+  command: null
+  notes: >-
+    Install from the upstream source after reviewing its permissions, environment variables, and
+    transport configuration.
+  config_example: null
+permissions:
+  - network
+env_vars: []
+tags:
+  - mcp
+  - agent-tools
+use_cases:
+  - Extend agents with external tools
+trust_tier: promising
+review_status: bot-reviewed
+last_checked: '2026-05-25'

@@ -1,0 +1,58 @@
+schema_version: 1.0.0
+homepage_url: https://docs.crewai.com/
+repo_url: https://github.com/crewAIInc/crewAI
+package_urls:
+  - https://pypi.org/project/crewai/
+licenses:
+  - MIT
+copyright_owner: CrewAI
+source_kind: official_docs
+protocols: []
+clients:
+  - Python
+  - CrewAI Enterprise
+install:
+  command: pip install crewai
+  notes: >-
+    Use for role/task/team abstractions; review tool permissions and avoid over-splitting simple
+    workflows into many agents.
+  config_example: null
+permissions:
+  - network
+env_vars:
+  - OPENAI_API_KEY
+  - ANTHROPIC_API_KEY
+tags:
+  - orchestration
+  - multi-agent
+  - roles
+  - tasks
+  - python
+use_cases:
+  - Model work as role-based agent teams
+  - Automate research and back-office workflows
+best_for:
+  - Clear task pipelines where agent roles and task ownership improve readability
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: official
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags: []
+recommended_when:
+  - Use when a crew/task mental model is clearer than a graph or raw SDK loop.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-26'
+slug: crewai
+name: CrewAI
+type: orchestration
+summary_llm: >-
+  CrewAI is a Python framework for creating role-based AI agent teams, tasks, crews, flows,
+  knowledge, tools, and multi-agent process automation.
+source_urls:
+  - https://docs.crewai.com/
+  - https://github.com/crewAIInc/crewAI

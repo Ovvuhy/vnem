@@ -1,0 +1,60 @@
+schema_version: 1.0.0
+homepage_url: https://docs.agentops.ai/
+repo_url: https://github.com/AgentOps-AI/agentops
+package_urls:
+  - https://pypi.org/project/agentops/
+licenses:
+  - MIT
+copyright_owner: AgentOps
+source_kind: official_docs
+protocols: []
+clients:
+  - Python
+  - CrewAI
+  - LangChain
+install:
+  command: pip install agentops
+  notes: >-
+    Use with trace redaction and retention controls; verify framework integrations match the app
+    stack.
+  config_example: null
+permissions:
+  - network
+env_vars:
+  - AGENTOPS_API_KEY
+tags:
+  - observability
+  - agentops
+  - tracing
+  - costs
+  - sessions
+use_cases:
+  - Monitor agent sessions and costs
+  - Debug tool calls and failures
+best_for:
+  - Agent-specific telemetry where session timelines and costs matter
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: high
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags:
+  - trace-data-retention
+  - hosted-service
+recommended_when:
+  - Use when agent operations need cost, event, and failure visibility.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-26'
+slug: agentops
+name: AgentOps
+type: observability
+summary_llm: >-
+  AgentOps is an observability platform for AI agents that records sessions, tool calls, costs,
+  errors, and analytics across agent frameworks.
+source_urls:
+  - https://docs.agentops.ai/
+  - https://github.com/AgentOps-AI/agentops

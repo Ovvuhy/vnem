@@ -1,0 +1,44 @@
+schema_version: 1.0.0
+slug: ai-donethat-donethat
+name: DoneThat
+type: mcp-server
+summary_llm: >-
+  DoneThat is an MCP server for agentic systems. Privacy-first work tracking with summaries,
+  reports, coaching, and AI-ready long-term memory.
+homepage_url: https://donethat.ai
+repo_url: null
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: ai.donethat
+source_urls:
+  - https://registry.modelcontextprotocol.io/v0.1/servers/ai.donethat%2Fdonethat/versions/latest
+  - https://donethat.ai
+source_kind: official_registry
+protocols:
+  - MCP
+clients:
+  - Claude Desktop
+  - Cursor
+  - Windsurf
+  - VS Code
+  - OpenAI Agents SDK
+install:
+  command: null
+  notes: >-
+    Install from the upstream source after reviewing its permissions, environment variables, and
+    transport configuration.
+  config_example: null
+permissions:
+  - network
+env_vars: []
+tags:
+  - mcp
+  - agent-tools
+  - memory
+use_cases:
+  - Extend agents with external tools
+  - Persist useful context between sessions
+trust_tier: promising
+review_status: bot-reviewed
+last_checked: '2026-05-25'

@@ -1,0 +1,10 @@
+[Unit]
+Description=Run Nous Hermes brain pass for vnem
+
+[Timer]
+OnCalendar=*-*-* 09:05:00
+Persistent=true
+RandomizedDelaySec=600
+
+[Install]
+WantedBy=timers.target

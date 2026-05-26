@@ -1,0 +1,40 @@
+schema_version: 1.0.0
+slug: ai-adeu-adeu
+name: ai.adeu/adeu
+type: mcp-server
+summary_llm: ai.adeu/adeu is an MCP server for agentic systems. Automated DOCX Redlining Engine
+homepage_url: https://github.com/dealfluence/adeu
+repo_url: https://github.com/dealfluence/adeu
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: dealfluence
+source_urls:
+  - https://registry.modelcontextprotocol.io/v0.1/servers/ai.adeu%2Fadeu/versions/latest
+  - https://github.com/dealfluence/adeu
+source_kind: official_registry
+protocols:
+  - MCP
+clients:
+  - Claude Desktop
+  - Cursor
+  - Windsurf
+  - VS Code
+  - OpenAI Agents SDK
+install:
+  command: null
+  notes: >-
+    Install from the upstream source after reviewing its permissions, environment variables, and
+    transport configuration.
+  config_example: null
+permissions:
+  - network
+env_vars: []
+tags:
+  - mcp
+  - agent-tools
+use_cases:
+  - Extend agents with external tools
+trust_tier: promising
+review_status: bot-reviewed
+last_checked: '2026-05-25'

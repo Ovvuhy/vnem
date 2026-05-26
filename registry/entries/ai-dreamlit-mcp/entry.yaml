@@ -1,0 +1,43 @@
+schema_version: 1.0.0
+slug: ai-dreamlit-mcp
+name: Dreamlit
+type: mcp-server
+summary_llm: >-
+  Dreamlit is an MCP server for agentic systems. Create, test, publish, and manage Dreamlit
+  notification workflows from AI clients.
+homepage_url: https://github.com/dreamlit-ai/dreamlit-mcp
+repo_url: https://github.com/dreamlit-ai/dreamlit-mcp
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: dreamlit-ai
+source_urls:
+  - https://registry.modelcontextprotocol.io/v0.1/servers/ai.dreamlit%2Fmcp/versions/latest
+  - https://github.com/dreamlit-ai/dreamlit-mcp
+source_kind: official_registry
+protocols:
+  - MCP
+clients:
+  - Claude Desktop
+  - Cursor
+  - Windsurf
+  - VS Code
+  - OpenAI Agents SDK
+install:
+  command: null
+  notes: >-
+    Install from the upstream source after reviewing its permissions, environment variables, and
+    transport configuration.
+  config_example: null
+permissions:
+  - network
+env_vars: []
+tags:
+  - mcp
+  - agent-tools
+  - testing
+use_cases:
+  - Extend agents with external tools
+trust_tier: promising
+review_status: bot-reviewed
+last_checked: '2026-05-25'

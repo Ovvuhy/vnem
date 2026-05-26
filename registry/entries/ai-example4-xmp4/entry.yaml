@@ -1,0 +1,44 @@
+schema_version: 1.0.0
+slug: ai-example4-xmp4
+name: xmp4 — Semantic code knowledge for your stack
+type: mcp-server
+summary_llm: >-
+  xmp4 — Semantic code knowledge for your stack is an MCP server for agentic systems. OSS libs in
+  your stack, really used: source, tests, callers. C#, Java, TS, Python, Rust, PHP+.
+homepage_url: https://example4.ai
+repo_url: https://github.com/0ics-srls/lsai-xmp4.public
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: 0ics-srls
+source_urls:
+  - https://registry.modelcontextprotocol.io/v0.1/servers/ai.example4%2Fxmp4/versions/latest
+  - https://github.com/0ics-srls/lsai-xmp4.public
+  - https://example4.ai
+source_kind: official_registry
+protocols:
+  - MCP
+clients:
+  - Claude Desktop
+  - Cursor
+  - Windsurf
+  - VS Code
+  - OpenAI Agents SDK
+install:
+  command: null
+  notes: >-
+    Install from the upstream source after reviewing its permissions, environment variables, and
+    transport configuration.
+  config_example: null
+permissions:
+  - network
+env_vars: []
+tags:
+  - mcp
+  - agent-tools
+  - testing
+use_cases:
+  - Extend agents with external tools
+trust_tier: promising
+review_status: bot-reviewed
+last_checked: '2026-05-25'

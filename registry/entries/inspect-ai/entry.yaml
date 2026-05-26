@@ -1,0 +1,55 @@
+schema_version: 1.0.0
+homepage_url: https://inspect.aisi.org.uk/
+repo_url: https://github.com/UKGovernmentBEIS/inspect_ai
+package_urls:
+  - https://pypi.org/project/inspect-ai/
+licenses:
+  - MIT
+copyright_owner: UK AI Safety Institute
+source_kind: official_docs
+protocols: []
+clients:
+  - Python
+install:
+  command: pip install inspect-ai
+  notes: Use for rigorous eval suites, logs, and scoring before changing agent behavior.
+  config_example: null
+permissions:
+  - network
+env_vars:
+  - OPENAI_API_KEY
+  - ANTHROPIC_API_KEY
+tags:
+  - evals
+  - safety
+  - benchmarks
+  - scoring
+  - logs
+use_cases:
+  - Evaluate LLM and agent behavior
+  - Create reproducible safety and capability tests
+best_for:
+  - Teams that need structured evals and audit logs
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: high
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags: []
+recommended_when:
+  - Use when agent changes need evidence from repeatable eval tasks.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-26'
+slug: inspect-ai
+name: Inspect AI
+type: eval
+summary_llm: >-
+  Inspect AI is an open-source framework from the UK AI Safety Institute for large language model
+  evaluations with tasks, solvers, scorers, and logs.
+source_urls:
+  - https://inspect.aisi.org.uk/
+  - https://github.com/UKGovernmentBEIS/inspect_ai

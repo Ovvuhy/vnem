@@ -1,0 +1,60 @@
+schema_version: 1.0.0
+homepage_url: https://docs.cursor.com/agent/overview
+repo_url: null
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: Cursor
+source_kind: official_docs
+protocols: []
+clients:
+  - Cursor
+  - VS Code-like editor
+install:
+  command: null
+  notes: >-
+    Install Cursor and configure project rules, model policy, and terminal approvals before broad
+    agent use.
+  config_example: null
+permissions:
+  - filesystem
+  - repository
+  - shell
+  - network
+env_vars: []
+tags:
+  - coding-agent
+  - editor
+  - rules
+  - codebase
+use_cases:
+  - Use an IDE-native agent for multi-file code edits
+  - Guide coding agents with project rules
+best_for:
+  - Developers who want agentic edits inside an editor workflow
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: official
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags:
+  - license-not-asserted
+  - can-edit-files
+  - can-run-shell-commands
+recommended_when:
+  - Use when project rules and editor context are central to the coding workflow.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-26'
+slug: cursor-agent
+name: Cursor Agent
+type: coding-agent
+summary_llm: >-
+  Cursor Agent is Cursor's editor-native coding agent for navigating codebases, applying multi-file
+  edits, using project rules, and running terminal-backed tasks.
+source_urls:
+  - https://docs.cursor.com/agent/overview
+  - https://docs.cursor.com/context/rules

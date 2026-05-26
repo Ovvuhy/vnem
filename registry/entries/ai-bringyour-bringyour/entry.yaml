@@ -1,0 +1,42 @@
+schema_version: 1.0.0
+slug: ai-bringyour-bringyour
+name: Bring Your AI
+type: mcp-server
+summary_llm: >-
+  Bring Your AI is an MCP server for agentic systems. No-data MCP handoff for local Claude Code to
+  Codex harness moves. $49 lifetime.
+homepage_url: https://bringyour.ai
+repo_url: null
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: ai.bringyour
+source_urls:
+  - https://registry.modelcontextprotocol.io/v0.1/servers/ai.bringyour%2Fbringyour/versions/latest
+  - https://bringyour.ai
+source_kind: official_registry
+protocols:
+  - MCP
+clients:
+  - Claude Desktop
+  - Cursor
+  - Windsurf
+  - VS Code
+  - OpenAI Agents SDK
+install:
+  command: null
+  notes: >-
+    Install from the upstream source after reviewing its permissions, environment variables, and
+    transport configuration.
+  config_example: null
+permissions:
+  - network
+env_vars: []
+tags:
+  - mcp
+  - agent-tools
+use_cases:
+  - Extend agents with external tools
+trust_tier: promising
+review_status: bot-reviewed
+last_checked: '2026-05-25'

@@ -1,0 +1,54 @@
+schema_version: 1.0.0
+homepage_url: https://www.anthropic.com/engineering/building-effective-agents
+repo_url: null
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: Anthropic
+source_kind: official_docs
+protocols: []
+clients: []
+install:
+  command: null
+  notes: >-
+    Review the upstream docs, permissions, pricing, environment variables, and transport before
+    installing.
+  config_example: null
+permissions: []
+env_vars: []
+tags:
+  - best-practices
+  - agents
+  - workflows
+  - tool-use
+  - planning
+use_cases:
+  - Choose between workflows and autonomous agents
+  - Design tool-using agent systems conservatively
+best_for:
+  - Agent architecture decisions before adding framework complexity
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: official
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags:
+  - license-not-asserted
+recommended_when:
+  - >-
+    Use before adding orchestration, swarms, or autonomy to decide whether the simpler pattern is
+    enough.
+trust_tier: verified
+review_status: manual-reviewed
+last_checked: '2026-05-26'
+slug: anthropic-building-effective-agents
+name: Anthropic Building Effective Agents
+type: workflow
+summary_llm: >-
+  Anthropic's Building Effective Agents guide distills practical patterns: start simple, compose
+  workflows before agents, and use agentic autonomy only when feedback loops justify it.
+source_urls:
+  - https://www.anthropic.com/engineering/building-effective-agents

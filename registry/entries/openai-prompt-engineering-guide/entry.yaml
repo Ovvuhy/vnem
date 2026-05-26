@@ -1,0 +1,53 @@
+schema_version: 1.0.0
+homepage_url: https://developers.openai.com/api/docs/guides/prompt-engineering
+repo_url: null
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: OpenAI
+source_kind: official_docs
+protocols: []
+clients: []
+install:
+  command: null
+  notes: >-
+    Review the upstream docs, permissions, pricing, environment variables, and transport before
+    installing.
+  config_example: null
+permissions: []
+env_vars: []
+tags:
+  - prompt-engineering
+  - instructions
+  - output-format
+  - examples
+  - evals
+use_cases:
+  - Improve rough prompts into precise instructions
+  - Design prompt output contracts and verification criteria
+best_for:
+  - Prompt rewrites where clarity, examples, constraints, and output shape determine quality
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: official
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags:
+  - license-not-asserted
+recommended_when:
+  - Use when a prompt is vague, underspecified, hard to evaluate, or missing an output contract.
+trust_tier: verified
+review_status: manual-reviewed
+last_checked: '2026-05-26'
+slug: openai-prompt-engineering-guide
+name: OpenAI Prompt Engineering Guide
+type: workflow
+summary_llm: >-
+  OpenAI's prompt engineering guide is an official source for improving instructions with clear
+  goals, context, examples, output formats, and iterative evaluation.
+source_urls:
+  - https://developers.openai.com/api/docs/guides/prompt-engineering
+  - https://openai.com/academy/prompting/

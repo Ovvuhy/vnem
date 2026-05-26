@@ -1,0 +1,57 @@
+schema_version: 1.0.0
+homepage_url: https://docs.langfuse.com/
+repo_url: https://github.com/langfuse/langfuse
+package_urls: []
+licenses:
+  - MIT
+copyright_owner: Langfuse
+source_kind: official_docs
+protocols: []
+clients:
+  - Python
+  - JavaScript
+  - OpenTelemetry
+install:
+  command: npm install langfuse
+  notes: Use with a trace retention and redaction plan; self-host where data policy requires it.
+  config_example: null
+permissions:
+  - network
+env_vars:
+  - LANGFUSE_PUBLIC_KEY
+  - LANGFUSE_SECRET_KEY
+tags:
+  - observability
+  - tracing
+  - evals
+  - prompts
+  - datasets
+use_cases:
+  - Trace and evaluate LLM applications
+  - Manage prompts and datasets
+best_for:
+  - Teams that want open-source tracing and prompt/eval operations
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: high
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags:
+  - trace-data-retention
+recommended_when:
+  - Use when prompt versions, traces, and eval datasets should live together.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-26'
+slug: langfuse
+name: Langfuse
+type: observability
+summary_llm: >-
+  Langfuse is an open-source LLM engineering platform for tracing, prompt management, evaluation,
+  metrics, datasets, and observability across agent systems.
+source_urls:
+  - https://docs.langfuse.com/
+  - https://github.com/langfuse/langfuse

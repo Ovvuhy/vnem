@@ -1,0 +1,44 @@
+schema_version: 1.0.0
+slug: ai-mcpanalytics-analytics
+name: ai.mcpanalytics/analytics
+type: mcp-server
+summary_llm: >-
+  ai.mcpanalytics/analytics is an MCP server for agentic systems. Analytics for business data:
+  upload CSV or connect GA4/GSC, run ML/stats, get HTML reports.
+homepage_url: https://github.com/embeddedlayers/mcp-analytics
+repo_url: https://github.com/embeddedlayers/mcp-analytics
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: embeddedlayers
+source_urls:
+  - >-
+    https://registry.modelcontextprotocol.io/v0.1/servers/ai.mcpanalytics%2Fanalytics/versions/latest
+  - https://github.com/embeddedlayers/mcp-analytics
+source_kind: official_registry
+protocols:
+  - MCP
+clients:
+  - Claude Desktop
+  - Cursor
+  - Windsurf
+  - VS Code
+  - OpenAI Agents SDK
+install:
+  command: null
+  notes: >-
+    Install from the upstream source after reviewing its permissions, environment variables, and
+    transport configuration.
+  config_example: null
+permissions:
+  - network
+env_vars: []
+tags:
+  - mcp
+  - agent-tools
+  - analytics
+use_cases:
+  - Extend agents with external tools
+trust_tier: promising
+review_status: bot-reviewed
+last_checked: '2026-05-25'

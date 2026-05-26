@@ -1,0 +1,45 @@
+schema_version: 1.0.0
+slug: ai-nocturnus-logic-server
+name: ai.nocturnus/logic-server
+type: mcp-server
+summary_llm: >-
+  ai.nocturnus/logic-server is an MCP server for agentic systems. Agent reasoning, memory, and
+  token-optimized context for AI applications.
+homepage_url: https://github.com/Auctalis/nocturnusai
+repo_url: https://github.com/Auctalis/nocturnusai
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: Auctalis
+source_urls:
+  - >-
+    https://registry.modelcontextprotocol.io/v0.1/servers/ai.nocturnus%2Flogic-server/versions/latest
+  - https://github.com/Auctalis/nocturnusai
+source_kind: official_registry
+protocols:
+  - MCP
+clients:
+  - Claude Desktop
+  - Cursor
+  - Windsurf
+  - VS Code
+  - OpenAI Agents SDK
+install:
+  command: null
+  notes: >-
+    Install from the upstream source after reviewing its permissions, environment variables, and
+    transport configuration.
+  config_example: null
+permissions:
+  - network
+env_vars: []
+tags:
+  - mcp
+  - agent-tools
+  - memory
+use_cases:
+  - Extend agents with external tools
+  - Persist useful context between sessions
+trust_tier: promising
+review_status: bot-reviewed
+last_checked: '2026-05-25'

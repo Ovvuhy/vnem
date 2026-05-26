@@ -1,0 +1,64 @@
+schema_version: 1.0.0
+homepage_url: https://docs.browserbase.com/integrations/mcp/introduction
+repo_url: https://github.com/browserbase/mcp-server-browserbase
+package_urls: []
+licenses:
+  - MIT
+copyright_owner: Browserbase
+source_kind: official_docs
+protocols:
+  - MCP
+clients:
+  - Claude Desktop
+  - Claude Code
+  - Cursor
+  - VS Code
+  - OpenAI Agents SDK
+install:
+  command: null
+  notes: >-
+    Use with session isolation, spending limits, and care around authenticated pages or personal
+    data.
+  config_example: null
+permissions:
+  - browser
+  - network
+env_vars:
+  - BROWSERBASE_API_KEY
+tags:
+  - mcp
+  - browser
+  - automation
+  - qa
+  - web
+use_cases:
+  - Run cloud browser automation for agents
+  - Let agents inspect websites and web apps
+best_for:
+  - Hosted browser workflows where local Playwright sessions are insufficient
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: official
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags:
+  - browser-access
+  - hosted-service
+  - can-access-authenticated-pages
+recommended_when:
+  - Use when browser automation needs cloud sessions, screenshots, or managed isolation.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-26'
+slug: browserbase-mcp
+name: Browserbase MCP
+type: mcp-server
+summary_llm: >-
+  Browserbase MCP gives agents cloud browser sessions for navigation, extraction, QA, and web
+  automation through MCP-compatible clients.
+source_urls:
+  - https://docs.browserbase.com/integrations/mcp/introduction
+  - https://github.com/browserbase/mcp-server-browserbase

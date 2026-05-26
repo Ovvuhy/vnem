@@ -1,0 +1,58 @@
+schema_version: 1.0.0
+homepage_url: https://github.com/upstash/context7
+repo_url: https://github.com/upstash/context7
+package_urls: []
+licenses:
+  - MIT
+copyright_owner: Upstash
+source_kind: github
+protocols:
+  - MCP
+clients:
+  - Claude Desktop
+  - Claude Code
+  - Cursor
+  - VS Code
+  - OpenAI Agents SDK
+install:
+  command: null
+  notes: >-
+    Use to reduce stale-library hallucinations; still verify examples against the installed package
+    version.
+  config_example: null
+permissions:
+  - network
+env_vars: []
+tags:
+  - mcp
+  - documentation
+  - context
+  - libraries
+  - coding-agent
+use_cases:
+  - Fetch current library documentation for agents
+  - Improve code generation against live docs
+best_for:
+  - Coding agents working with fast-moving frameworks and APIs
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: high
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags: []
+recommended_when:
+  - Use when an agent repeatedly needs current framework or library docs.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-26'
+slug: context7-mcp
+name: Context7 MCP
+type: mcp-server
+summary_llm: >-
+  Context7 MCP is an MCP server that gives agents up-to-date library documentation and code examples
+  so generated code can match current APIs.
+source_urls:
+  - https://github.com/upstash/context7

@@ -1,0 +1,52 @@
+schema_version: 1.0.0
+homepage_url: https://www.anthropic.com/engineering/built-multi-agent-research-system
+repo_url: null
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: Anthropic
+source_kind: official_docs
+protocols: []
+clients: []
+install:
+  command: null
+  notes: >-
+    Review the upstream docs, permissions, pricing, environment variables, and transport before
+    installing.
+  config_example: null
+permissions: []
+env_vars: []
+tags:
+  - multi-agent
+  - subagents
+  - research
+  - coordination
+  - parallel
+use_cases:
+  - Design parallel research agent systems
+  - Separate lead-agent synthesis from specialist exploration
+best_for:
+  - Broad research tasks where independent exploration can be parallelized
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: official
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags:
+  - license-not-asserted
+recommended_when:
+  - Use when deciding whether a task benefits from multiple agents instead of one stronger agent.
+trust_tier: verified
+review_status: manual-reviewed
+last_checked: '2026-05-26'
+slug: anthropic-multi-agent-research-system
+name: Anthropic Multi-Agent Research System
+type: orchestration
+summary_llm: >-
+  Anthropic's multi-agent research system writeup is a source-backed pattern for lead agents
+  coordinating specialist subagents on broad, parallel research tasks.
+source_urls:
+  - https://www.anthropic.com/engineering/built-multi-agent-research-system

@@ -1,0 +1,46 @@
+schema_version: 1.0.0
+slug: ai-haymon-database
+name: ai.haymon/database
+type: mcp-server
+summary_llm: >-
+  ai.haymon/database is an MCP server for agentic systems. Database MCP server for MySQL, MariaDB,
+  PostgreSQL & SQLite
+homepage_url: https://database.haymon.ai
+repo_url: https://github.com/haymon-ai/database
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: haymon-ai
+source_urls:
+  - https://registry.modelcontextprotocol.io/v0.1/servers/ai.haymon%2Fdatabase/versions/latest
+  - https://github.com/haymon-ai/database
+  - https://database.haymon.ai
+source_kind: official_registry
+protocols:
+  - MCP
+clients:
+  - Claude Desktop
+  - Cursor
+  - Windsurf
+  - VS Code
+  - OpenAI Agents SDK
+install:
+  command: null
+  notes: >-
+    Install from the upstream source after reviewing its permissions, environment variables, and
+    transport configuration.
+  config_example: null
+permissions:
+  - network
+  - database
+env_vars: []
+tags:
+  - mcp
+  - agent-tools
+  - database
+use_cases:
+  - Extend agents with external tools
+  - Connect agents to structured data
+trust_tier: promising
+review_status: bot-reviewed
+last_checked: '2026-05-25'

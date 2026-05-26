@@ -1,0 +1,55 @@
+schema_version: 1.0.0
+homepage_url: https://microsoft.github.io/autogen/stable/
+repo_url: https://github.com/microsoft/autogen
+package_urls:
+  - https://pypi.org/project/autogen-agentchat/
+licenses:
+  - MIT
+copyright_owner: Microsoft
+source_kind: official_docs
+protocols: []
+clients:
+  - Python
+  - .NET
+install:
+  command: pip install autogen-agentchat
+  notes: Use for multi-agent systems where event-driven architecture and agent conversations are core.
+  config_example: null
+permissions:
+  - network
+env_vars:
+  - OPENAI_API_KEY
+  - AZURE_OPENAI_API_KEY
+tags:
+  - agent-framework
+  - multi-agent
+  - event-driven
+  - microsoft
+use_cases:
+  - Build multi-agent conversations
+  - Prototype distributed agent applications
+best_for:
+  - Research and product teams exploring conversational multi-agent architectures
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: official
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags: []
+recommended_when:
+  - Use when agents need to communicate through structured conversations and events.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-26'
+slug: microsoft-autogen
+name: Microsoft AutoGen
+type: agent-framework
+summary_llm: >-
+  Microsoft AutoGen is an agent framework for building event-driven, distributed, and multi-agent
+  applications with AgentChat abstractions and extension points.
+source_urls:
+  - https://microsoft.github.io/autogen/stable/
+  - https://github.com/microsoft/autogen

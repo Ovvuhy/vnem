@@ -1,0 +1,255 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vnem.ai/schemas/entry.schema.json",
+  "title": "vnem Registry Entry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "slug",
+    "name",
+    "type",
+    "summary_llm",
+    "homepage_url",
+    "repo_url",
+    "package_urls",
+    "licenses",
+    "copyright_owner",
+    "source_urls",
+    "source_kind",
+    "protocols",
+    "clients",
+    "install",
+    "permissions",
+    "env_vars",
+    "tags",
+    "use_cases",
+    "trust_tier",
+    "review_status",
+    "last_checked"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{1,88}[a-z0-9]$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 160
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "mcp-server",
+        "agent-framework",
+        "coding-agent",
+        "skill",
+        "eval",
+        "security",
+        "memory",
+        "payments",
+        "identity",
+        "workflow",
+        "observability",
+        "orchestration",
+        "browser",
+        "data",
+        "runtime"
+      ]
+    },
+    "summary_llm": {
+      "type": "string",
+      "minLength": 24,
+      "maxLength": 420
+    },
+    "homepage_url": {
+      "type": ["string", "null"],
+      "format": "uri"
+    },
+    "repo_url": {
+      "type": ["string", "null"],
+      "format": "uri"
+    },
+    "package_urls": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uri"
+      },
+      "uniqueItems": true
+    },
+    "licenses": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 2
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "copyright_owner": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 160
+    },
+    "source_urls": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uri"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "source_kind": {
+      "type": "string",
+      "enum": [
+        "official_registry",
+        "official_docs",
+        "github",
+        "package_registry",
+        "community_submission",
+        "rss",
+        "manual_review"
+      ]
+    },
+    "protocols": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "clients": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "install": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["command", "notes", "config_example"],
+      "properties": {
+        "command": {
+          "type": ["string", "null"],
+          "maxLength": 500
+        },
+        "notes": {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 600
+        },
+        "config_example": {
+          "type": ["string", "null"],
+          "maxLength": 1200
+        }
+      }
+    },
+    "permissions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "env_vars": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Z0-9_]+$"
+      },
+      "uniqueItems": true
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "use_cases": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "best_for": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "not_for": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "alternatives": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "supersedes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "freshness": {
+      "type": "string",
+      "enum": ["current", "recent", "unknown", "stale", "deprecated"]
+    },
+    "source_confidence": {
+      "type": "string",
+      "enum": ["official", "high", "medium", "low", "unknown"]
+    },
+    "maintenance_signals": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "risk_flags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "recommended_when": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "trust_tier": {
+      "type": "string",
+      "enum": ["verified", "promising", "unreviewed", "watchlist", "deprecated"]
+    },
+    "review_status": {
+      "type": "string",
+      "enum": ["manual-reviewed", "bot-reviewed", "needs-review", "deprecated"]
+    },
+    "last_checked": {
+      "type": "string",
+      "format": "date"
+    }
+  }
+}

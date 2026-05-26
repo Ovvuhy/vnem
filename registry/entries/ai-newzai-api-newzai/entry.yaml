@@ -1,0 +1,45 @@
+schema_version: 1.0.0
+slug: ai-newzai-api-newzai
+name: NewzAI MCP Server
+type: mcp-server
+summary_llm: >-
+  NewzAI MCP Server is an MCP server for agentic systems. News MCP: real-time headlines & custom
+  news search across 7 regions. Free, just sign in with Google.
+homepage_url: https://github.com/Gauraviitkgp/news-mcp
+repo_url: https://github.com/Gauraviitkgp/news-mcp
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: Gauraviitkgp
+source_urls:
+  - https://registry.modelcontextprotocol.io/v0.1/servers/ai.newzai.api%2FNewzAI/versions/latest
+  - https://github.com/Gauraviitkgp/news-mcp
+source_kind: official_registry
+protocols:
+  - MCP
+clients:
+  - Claude Desktop
+  - Cursor
+  - Windsurf
+  - VS Code
+  - OpenAI Agents SDK
+install:
+  command: null
+  notes: >-
+    Install from the upstream source after reviewing its permissions, environment variables, and
+    transport configuration.
+  config_example: null
+permissions:
+  - network
+env_vars: []
+tags:
+  - mcp
+  - agent-tools
+  - search
+  - api
+use_cases:
+  - Extend agents with external tools
+  - Give agents searchable web or knowledge access
+trust_tier: promising
+review_status: bot-reviewed
+last_checked: '2026-05-25'

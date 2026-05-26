@@ -1,0 +1,42 @@
+schema_version: 1.0.0
+slug: ai-nefesh-human-state
+name: Nefesh — Real-Time Human State Awareness for AI
+type: mcp-server
+summary_llm: >-
+  Nefesh — Real-Time Human State Awareness for AI is an MCP server for agentic systems. Fuses
+  biometric signals into a stress score (0-100) for AI adaptation. MCP + A2A native.
+homepage_url: https://github.com/nefesh-ai/nefesh-mcp-server
+repo_url: https://github.com/nefesh-ai/nefesh-mcp-server
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: nefesh-ai
+source_urls:
+  - https://registry.modelcontextprotocol.io/v0.1/servers/ai.nefesh%2Fhuman-state/versions/latest
+  - https://github.com/nefesh-ai/nefesh-mcp-server
+source_kind: official_registry
+protocols:
+  - MCP
+clients:
+  - Claude Desktop
+  - Cursor
+  - Windsurf
+  - VS Code
+  - OpenAI Agents SDK
+install:
+  command: null
+  notes: >-
+    Install from the upstream source after reviewing its permissions, environment variables, and
+    transport configuration.
+  config_example: null
+permissions:
+  - network
+env_vars: []
+tags:
+  - mcp
+  - agent-tools
+use_cases:
+  - Extend agents with external tools
+trust_tier: promising
+review_status: bot-reviewed
+last_checked: '2026-05-25'

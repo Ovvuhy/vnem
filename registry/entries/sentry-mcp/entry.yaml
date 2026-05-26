@@ -1,0 +1,60 @@
+schema_version: 1.0.0
+homepage_url: https://docs.sentry.io/product/sentry-mcp/
+repo_url: https://github.com/getsentry/sentry-mcp
+package_urls: []
+licenses:
+  - MIT
+copyright_owner: Sentry
+source_kind: official_docs
+protocols:
+  - MCP
+clients:
+  - Claude Desktop
+  - Claude Code
+  - Cursor
+  - VS Code
+  - OpenAI Agents SDK
+install:
+  command: null
+  notes: Use with scoped Sentry auth and privacy review because traces and errors may include user data.
+  config_example: null
+permissions:
+  - network
+env_vars:
+  - SENTRY_AUTH_TOKEN
+tags:
+  - mcp
+  - observability
+  - errors
+  - debugging
+  - production
+use_cases:
+  - Let agents investigate production errors
+  - Connect bugfix work to Sentry evidence
+best_for:
+  - Debugging production issues with trace and error context
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: official
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags:
+  - requires-token
+  - may-expose-user-data
+recommended_when:
+  - Use when a coding agent needs error evidence before proposing a fix.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-26'
+slug: sentry-mcp
+name: Sentry MCP
+type: mcp-server
+summary_llm: >-
+  Sentry MCP gives agents access to Sentry errors, issues, traces, and debugging context so coding
+  agents can investigate production failures with source-backed evidence.
+source_urls:
+  - https://docs.sentry.io/product/sentry-mcp/
+  - https://github.com/getsentry/sentry-mcp

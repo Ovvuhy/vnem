@@ -1,0 +1,46 @@
+schema_version: 1.0.0
+slug: ai-autorfp-mcp
+name: AutoRFP.ai
+type: mcp-server
+summary_llm: >-
+  AutoRFP.ai is an MCP server for agentic systems. Search AutoRFP.ai projects, requirements, content
+  library, and tags for Q&A and analytics.
+homepage_url: https://autorfp.ai
+repo_url: https://github.com/AutoRFP/mcp
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: AutoRFP
+source_urls:
+  - https://registry.modelcontextprotocol.io/v0.1/servers/ai.autorfp%2Fmcp/versions/latest
+  - https://github.com/AutoRFP/mcp
+  - https://autorfp.ai
+source_kind: official_registry
+protocols:
+  - MCP
+clients:
+  - Claude Desktop
+  - Cursor
+  - Windsurf
+  - VS Code
+  - OpenAI Agents SDK
+install:
+  command: null
+  notes: >-
+    Install from the upstream source after reviewing its permissions, environment variables, and
+    transport configuration.
+  config_example: null
+permissions:
+  - network
+env_vars: []
+tags:
+  - mcp
+  - agent-tools
+  - search
+  - analytics
+use_cases:
+  - Extend agents with external tools
+  - Give agents searchable web or knowledge access
+trust_tier: promising
+review_status: bot-reviewed
+last_checked: '2026-05-25'

@@ -1,0 +1,67 @@
+schema_version: 1.0.0
+homepage_url: https://docs.anthropic.com/en/docs/claude-code/overview
+repo_url: null
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: Anthropic
+source_kind: official_docs
+protocols: []
+clients:
+  - Terminal
+  - GitHub
+  - MCP
+install:
+  command: npm install -g @anthropic-ai/claude-code
+  notes: >-
+    Review workspace trust, tool permissions, MCP servers, and CLAUDE.md memory behavior before
+    using on sensitive repositories.
+  config_example: null
+permissions:
+  - filesystem
+  - repository
+  - shell
+  - network
+env_vars:
+  - ANTHROPIC_API_KEY
+tags:
+  - coding-agent
+  - claude-code
+  - subagents
+  - memory
+  - mcp
+use_cases:
+  - Let agents inspect and edit code repositories
+  - Coordinate specialist subagents for coding tasks
+  - Persist project instructions in memory files
+best_for:
+  - Codebases that benefit from explicit project memory and specialist subagents
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: official
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags:
+  - license-not-asserted
+  - can-edit-files
+  - can-run-shell-commands
+recommended_when:
+  - >-
+    Use when Claude Code's memory files, MCP integration, and subagents map to the team's coding
+    workflow.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-26'
+slug: anthropic-claude-code
+name: Claude Code
+type: coding-agent
+summary_llm: >-
+  Claude Code is Anthropic's terminal coding agent for codebase understanding, file edits, command
+  execution, GitHub workflows, MCP tool use, memory files, and subagents.
+source_urls:
+  - https://docs.anthropic.com/en/docs/claude-code/overview
+  - https://docs.anthropic.com/en/docs/claude-code/memory
+  - https://docs.anthropic.com/en/docs/claude-code/sub-agents

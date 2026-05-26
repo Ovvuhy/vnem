@@ -1,0 +1,43 @@
+schema_version: 1.0.0
+slug: ai-meminal-meminal
+name: ai.meminal/meminal
+type: mcp-server
+summary_llm: >-
+  ai.meminal/meminal is an MCP server for agentic systems. Memory for deep conversational context
+  across any platform
+homepage_url: null
+repo_url: null
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: ai.meminal
+source_urls:
+  - https://registry.modelcontextprotocol.io/v0.1/servers/ai.meminal%2Fmeminal/versions/latest
+source_kind: official_registry
+protocols:
+  - MCP
+clients:
+  - Claude Desktop
+  - Cursor
+  - Windsurf
+  - VS Code
+  - OpenAI Agents SDK
+install:
+  command: null
+  notes: >-
+    Install from the upstream source after reviewing its permissions, environment variables, and
+    transport configuration.
+  config_example: null
+permissions:
+  - network
+env_vars: []
+tags:
+  - mcp
+  - agent-tools
+  - memory
+use_cases:
+  - Extend agents with external tools
+  - Persist useful context between sessions
+trust_tier: promising
+review_status: bot-reviewed
+last_checked: '2026-05-25'

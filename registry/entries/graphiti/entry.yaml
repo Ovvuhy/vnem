@@ -1,0 +1,58 @@
+schema_version: 1.0.0
+homepage_url: https://github.com/getzep/graphiti
+repo_url: https://github.com/getzep/graphiti
+package_urls:
+  - https://pypi.org/project/graphiti-core/
+licenses:
+  - Apache-2.0
+copyright_owner: Zep
+source_kind: github
+protocols: []
+clients:
+  - Python
+  - Neo4j
+install:
+  command: pip install graphiti-core
+  notes: >-
+    Use when agent memory needs explicit temporal graph structure; review database and retention
+    policy.
+  config_example: null
+permissions:
+  - network
+  - database
+env_vars:
+  - OPENAI_API_KEY
+tags:
+  - memory
+  - knowledge-graph
+  - temporal
+  - retrieval
+use_cases:
+  - Build temporal knowledge graphs
+  - Retrieve relationship-aware context for agents
+best_for:
+  - Agent memory that benefits from entities, relationships, and time-aware retrieval
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: high
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags:
+  - stores-user-memory
+  - database-access
+recommended_when:
+  - Use when vector search alone is not enough for agent memory.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-26'
+slug: graphiti
+name: Graphiti
+type: memory
+summary_llm: >-
+  Graphiti is an open-source framework for building temporal knowledge graphs that help agents
+  retrieve facts, events, and relationships over time.
+source_urls:
+  - https://github.com/getzep/graphiti

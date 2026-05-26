@@ -1,0 +1,60 @@
+schema_version: 1.0.0
+homepage_url: https://ai-sdk.dev/docs/agents/overview
+repo_url: https://github.com/vercel/ai
+package_urls: []
+licenses:
+  - Apache-2.0
+copyright_owner: Vercel
+source_kind: official_docs
+protocols: []
+clients:
+  - TypeScript
+  - React
+  - Next.js
+  - Svelte
+  - Vue
+install:
+  command: npm install ai
+  notes: >-
+    Use for product UIs and web apps that need streaming responses, tool calls, and structured
+    outputs.
+  config_example: null
+permissions:
+  - network
+env_vars:
+  - OPENAI_API_KEY
+  - ANTHROPIC_API_KEY
+tags:
+  - runtime
+  - typescript
+  - streaming
+  - tool-calling
+  - web-apps
+use_cases:
+  - Build streaming AI application interfaces
+  - Use tools and structured outputs in web apps
+best_for:
+  - Next.js and frontend-heavy AI products
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: official
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags: []
+recommended_when:
+  - Use when the agent surface is a web application rather than a backend-only worker.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-26'
+slug: vercel-ai-sdk
+name: Vercel AI SDK
+type: runtime
+summary_llm: >-
+  Vercel AI SDK is a TypeScript toolkit for model calls, streaming UI, tool calling, structured
+  output, and agent-style application workflows.
+source_urls:
+  - https://ai-sdk.dev/docs/agents/overview
+  - https://github.com/vercel/ai

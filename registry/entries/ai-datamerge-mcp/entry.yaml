@@ -1,0 +1,41 @@
+schema_version: 1.0.0
+slug: ai-datamerge-mcp
+name: DataMerge MCP
+type: mcp-server
+summary_llm: >-
+  DataMerge MCP is an MCP server for agentic systems. B2B data enrichment for 375M+ companies: legal
+  entities, corporate hierarchies, and contacts.
+homepage_url: null
+repo_url: null
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: ai.datamerge
+source_urls:
+  - https://registry.modelcontextprotocol.io/v0.1/servers/ai.datamerge%2Fmcp/versions/latest
+source_kind: official_registry
+protocols:
+  - MCP
+clients:
+  - Claude Desktop
+  - Cursor
+  - Windsurf
+  - VS Code
+  - OpenAI Agents SDK
+install:
+  command: null
+  notes: >-
+    Install from the upstream source after reviewing its permissions, environment variables, and
+    transport configuration.
+  config_example: null
+permissions:
+  - network
+env_vars: []
+tags:
+  - mcp
+  - agent-tools
+use_cases:
+  - Extend agents with external tools
+trust_tier: promising
+review_status: bot-reviewed
+last_checked: '2026-05-25'

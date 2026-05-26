@@ -1,0 +1,47 @@
+schema_version: 1.0.0
+slug: ai-kolens-kolens-mcp
+name: KOLens
+type: mcp-server
+summary_llm: >-
+  KOLens is an MCP server for agentic systems. TikTok KOL intelligence with a public MCP remote for
+  search, profiles, lists, and alerts.
+homepage_url: https://github.com/mira-gift-hq/KOLAgent
+repo_url: https://github.com/mira-gift-hq/KOLAgent
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: mira-gift-hq
+source_urls:
+  - https://registry.modelcontextprotocol.io/v0.1/servers/ai.kolens%2Fkolens-mcp/versions/latest
+  - https://github.com/mira-gift-hq/KOLAgent
+source_kind: official_registry
+protocols:
+  - MCP
+clients:
+  - Claude Desktop
+  - Cursor
+  - Windsurf
+  - VS Code
+  - OpenAI Agents SDK
+install:
+  command: null
+  notes: >-
+    Install from the upstream source after reviewing its permissions, environment variables, and
+    transport configuration.
+  config_example: null
+permissions:
+  - network
+  - filesystem
+env_vars: []
+tags:
+  - mcp
+  - agent-tools
+  - search
+  - filesystem
+use_cases:
+  - Extend agents with external tools
+  - Give agents searchable web or knowledge access
+  - Let agents work with scoped files
+trust_tier: promising
+review_status: bot-reviewed
+last_checked: '2026-05-25'

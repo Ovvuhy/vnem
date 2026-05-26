@@ -1,0 +1,42 @@
+schema_version: 1.0.0
+slug: ai-byteray-byteray-mcp
+name: ByteRay AI
+type: mcp-server
+summary_llm: >-
+  ByteRay AI is an MCP server for agentic systems. Hunt zero-days by talking to binaries. 40+ tools.
+  Hosted, OAuth + SSO, invite: hi@byteray.ai
+homepage_url: https://byteray.ai
+repo_url: null
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: ai.byteray
+source_urls:
+  - https://registry.modelcontextprotocol.io/v0.1/servers/ai.byteray%2Fbyteray-mcp/versions/latest
+  - https://byteray.ai
+source_kind: official_registry
+protocols:
+  - MCP
+clients:
+  - Claude Desktop
+  - Cursor
+  - Windsurf
+  - VS Code
+  - OpenAI Agents SDK
+install:
+  command: null
+  notes: >-
+    Install from the upstream source after reviewing its permissions, environment variables, and
+    transport configuration.
+  config_example: null
+permissions:
+  - network
+env_vars: []
+tags:
+  - mcp
+  - agent-tools
+use_cases:
+  - Extend agents with external tools
+trust_tier: promising
+review_status: bot-reviewed
+last_checked: '2026-05-25'

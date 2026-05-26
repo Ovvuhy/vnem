@@ -1,0 +1,31 @@
+{
+  "name": "vnem",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "A read-only intelligence pack and LLM-readable index for agentic tools, MCP servers, skills, evals, and workflows.",
+  "scripts": {
+    "seed": "node scripts/seed-registry.mjs --limit 150",
+    "curate": "node scripts/upsert-curated-knowledge.mjs",
+    "validate": "node scripts/validate-registry.mjs",
+    "generate": "node scripts/generate-artifacts.mjs",
+    "check:links": "node scripts/check-links.mjs",
+    "test:install-pack": "node scripts/test-install-pack.mjs",
+    "digest": "node scripts/generate-digest.mjs",
+    "discover": "node scripts/discover.mjs --apply",
+    "discover:dry-run": "node scripts/discover.mjs --dry-run",
+    "hermes:hourly": "node scripts/hermes-agent.mjs --mode hourly",
+    "hermes:daily": "node scripts/hermes-agent.mjs --mode daily",
+    "hermes:dry-run": "node scripts/hermes-agent.mjs --mode hourly --dry-run",
+    "build": "npm run validate && npm run generate",
+    "test": "npm run validate && npm run generate && npm run test:install-pack && npm run discover:dry-run && npm run digest"
+  },
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
+    "js-yaml": "^4.1.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

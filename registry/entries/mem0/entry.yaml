@@ -1,0 +1,57 @@
+schema_version: 1.0.0
+homepage_url: https://docs.mem0.ai/
+repo_url: https://github.com/mem0ai/mem0
+package_urls:
+  - https://pypi.org/project/mem0ai/
+licenses:
+  - Apache-2.0
+copyright_owner: Mem0
+source_kind: official_docs
+protocols: []
+clients:
+  - Python
+  - TypeScript
+install:
+  command: pip install mem0ai
+  notes: Use with explicit memory retention policy, user controls, and secret filtering.
+  config_example: null
+permissions:
+  - network
+  - database
+env_vars:
+  - OPENAI_API_KEY
+tags:
+  - memory
+  - long-term-memory
+  - personalization
+  - agents
+use_cases:
+  - Persist user preferences and facts
+  - Give agents searchable long-term memory
+best_for:
+  - Assistants that need personalization over repeated sessions
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: high
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags:
+  - stores-user-memory
+  - data-retention-risk
+recommended_when:
+  - Use when memory improves repeated work and users can inspect or delete stored memories.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-26'
+slug: mem0
+name: Mem0
+type: memory
+summary_llm: >-
+  Mem0 is an agent memory layer for extracting, storing, searching, and updating long-term user or
+  application memory across AI assistants and agent workflows.
+source_urls:
+  - https://docs.mem0.ai/
+  - https://github.com/mem0ai/mem0

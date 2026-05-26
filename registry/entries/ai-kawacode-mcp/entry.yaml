@@ -1,0 +1,45 @@
+schema_version: 1.0.0
+slug: ai-kawacode-mcp
+name: Kawa Code
+type: mcp-server
+summary_llm: >-
+  Kawa Code is an MCP server for agentic systems. Team-aware memory: intent, decisions, real-time
+  conflicts for AI coding assistants.
+homepage_url: https://kawacode.ai
+repo_url: https://github.com/codeawareness/kawa.mcp
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: codeawareness
+source_urls:
+  - https://registry.modelcontextprotocol.io/v0.1/servers/ai.kawacode%2Fmcp/versions/latest
+  - https://github.com/codeawareness/kawa.mcp
+  - https://kawacode.ai
+source_kind: official_registry
+protocols:
+  - MCP
+clients:
+  - Claude Desktop
+  - Cursor
+  - Windsurf
+  - VS Code
+  - OpenAI Agents SDK
+install:
+  command: null
+  notes: >-
+    Install from the upstream source after reviewing its permissions, environment variables, and
+    transport configuration.
+  config_example: null
+permissions:
+  - network
+env_vars: []
+tags:
+  - mcp
+  - agent-tools
+  - memory
+use_cases:
+  - Extend agents with external tools
+  - Persist useful context between sessions
+trust_tier: promising
+review_status: bot-reviewed
+last_checked: '2026-05-25'

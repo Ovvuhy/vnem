@@ -1,0 +1,64 @@
+schema_version: 1.0.0
+homepage_url: https://docs.all-hands.dev/
+repo_url: https://github.com/All-Hands-AI/OpenHands
+package_urls: []
+licenses:
+  - MIT
+copyright_owner: All Hands AI
+source_kind: github
+protocols: []
+clients:
+  - Web UI
+  - GitHub
+  - Terminal
+install:
+  command: null
+  notes: >-
+    Deploy in a sandboxed environment and review browser, shell, repository, and secret handling
+    before using on private work.
+  config_example: null
+permissions:
+  - filesystem
+  - repository
+  - shell
+  - browser
+  - network
+env_vars:
+  - OPENAI_API_KEY
+  - ANTHROPIC_API_KEY
+tags:
+  - coding-agent
+  - software-engineering
+  - browser
+  - terminal
+use_cases:
+  - Run autonomous software engineering tasks
+  - Debug issues with terminal and browser context
+best_for:
+  - Sandboxed SWE-agent style tasks that need a full environment
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: high
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags:
+  - can-edit-files
+  - can-run-shell-commands
+  - browser-access
+recommended_when:
+  - Use when tasks need an interactive development environment rather than only patch generation.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-26'
+slug: openhands
+name: OpenHands
+type: coding-agent
+summary_llm: >-
+  OpenHands is an open-source software engineering agent platform for code editing, terminal use,
+  browsing, issue work, and reproducible development environments.
+source_urls:
+  - https://docs.all-hands.dev/
+  - https://github.com/All-Hands-AI/OpenHands

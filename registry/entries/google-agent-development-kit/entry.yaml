@@ -1,0 +1,59 @@
+schema_version: 1.0.0
+homepage_url: https://google.github.io/adk-docs/
+repo_url: https://github.com/google/adk-python
+package_urls:
+  - https://pypi.org/project/google-adk/
+licenses:
+  - Apache-2.0
+copyright_owner: Google
+source_kind: official_docs
+protocols: []
+clients:
+  - Python
+  - Google Cloud
+  - Vertex AI
+install:
+  command: pip install google-adk
+  notes: >-
+    Use when Google Cloud, Gemini, Vertex AI deployment, or ADK-compatible tooling is part of the
+    stack.
+  config_example: null
+permissions:
+  - network
+env_vars:
+  - GOOGLE_API_KEY
+  - GOOGLE_APPLICATION_CREDENTIALS
+tags:
+  - agent-framework
+  - google
+  - multi-agent
+  - deployment
+  - gemini
+use_cases:
+  - Build and deploy Gemini-oriented agents
+  - Use tools, callbacks, and multi-agent patterns
+best_for:
+  - Google Cloud and Gemini-native agent applications
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: official
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags: []
+recommended_when:
+  - Use when deployment and evaluation should stay close to Google's agent ecosystem.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-26'
+slug: google-agent-development-kit
+name: Google Agent Development Kit
+type: agent-framework
+summary_llm: >-
+  Google Agent Development Kit is an open-source framework for building, evaluating, and deploying
+  agents with tools, callbacks, memory, and multi-agent patterns.
+source_urls:
+  - https://google.github.io/adk-docs/
+  - https://github.com/google/adk-python

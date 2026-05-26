@@ -1,0 +1,56 @@
+schema_version: 1.0.0
+homepage_url: https://www.promptfoo.dev/docs/intro/
+repo_url: https://github.com/promptfoo/promptfoo
+package_urls: []
+licenses:
+  - MIT
+copyright_owner: promptfoo
+source_kind: official_docs
+protocols: []
+clients:
+  - CLI
+  - CI
+install:
+  command: npm install -g promptfoo
+  notes: Use in CI for prompt/model regressions and red-team checks; keep secrets out of fixtures.
+  config_example: null
+permissions:
+  - network
+env_vars:
+  - OPENAI_API_KEY
+  - ANTHROPIC_API_KEY
+tags:
+  - evals
+  - red-team
+  - ci
+  - prompts
+  - agents
+use_cases:
+  - Regression-test prompts and agents
+  - Run LLM red-team checks
+best_for:
+  - CI-friendly evals and prompt regression suites
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: high
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags:
+  - can-send-test-data-to-model-providers
+recommended_when:
+  - Use when prompt and agent changes need fast pass/fail checks in CI.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-26'
+slug: promptfoo
+name: promptfoo
+type: eval
+summary_llm: >-
+  promptfoo is an open-source tool for testing prompts, models, RAG systems, agents, and red-team
+  scenarios with assertions and repeatable eval suites.
+source_urls:
+  - https://www.promptfoo.dev/docs/intro/
+  - https://github.com/promptfoo/promptfoo

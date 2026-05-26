@@ -1,0 +1,54 @@
+schema_version: 1.0.0
+homepage_url: https://developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/
+repo_url: https://github.com/a2aproject/A2A
+package_urls: []
+licenses:
+  - Apache-2.0
+copyright_owner: Google
+source_kind: official_docs
+protocols:
+  - A2A
+clients:
+  - Agent runtimes
+install:
+  command: null
+  notes: >-
+    Review the upstream docs, permissions, pricing, environment variables, and transport before
+    installing.
+  config_example: null
+permissions:
+  - network
+env_vars: []
+tags:
+  - agent-protocol
+  - interoperability
+  - multi-agent
+  - handoffs
+use_cases:
+  - Connect agents across runtimes
+  - Design interop between vendor agent systems
+best_for:
+  - Architectures where agents from different systems need to exchange tasks or state
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: official
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags: []
+recommended_when:
+  - Use when multi-agent interoperability matters beyond one framework or vendor.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-26'
+slug: google-agent2agent-protocol
+name: Agent2Agent Protocol
+type: workflow
+summary_llm: >-
+  Agent2Agent Protocol is a Google-backed open protocol for agent interoperability, enabling agents
+  and agent runtimes to communicate across vendors and systems.
+source_urls:
+  - https://developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/
+  - https://github.com/a2aproject/A2A

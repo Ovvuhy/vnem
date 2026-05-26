@@ -1,0 +1,17 @@
+node_modules/
+site/dist/
+site/
+landing/
+landing-dist/
+.agentic-commons/
+.astro/
+.playwright-cli/
+output/
+.DS_Store
+*.log
+Nunito.zip
+.env
+.env.*
+!.env.example
+.hermes/
+discovery/candidates/link-report.json

@@ -1,0 +1,43 @@
+schema_version: 1.0.0
+slug: ai-deepledger-mcp
+name: DeepLedger — AI Bookkeeper for QuickBooks
+type: mcp-server
+summary_llm: >-
+  DeepLedger — AI Bookkeeper for QuickBooks is an MCP server for agentic systems. AI bookkeeping for
+  QuickBooks Online — 28 tools for transactions, reports, and bank feeds
+homepage_url: https://deepledger.ai
+repo_url: https://github.com/naga-deepledger/deepledger-mcp
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: naga-deepledger
+source_urls:
+  - https://registry.modelcontextprotocol.io/v0.1/servers/ai.deepledger%2Fmcp/versions/latest
+  - https://github.com/naga-deepledger/deepledger-mcp
+  - https://deepledger.ai
+source_kind: official_registry
+protocols:
+  - MCP
+clients:
+  - Claude Desktop
+  - Cursor
+  - Windsurf
+  - VS Code
+  - OpenAI Agents SDK
+install:
+  command: null
+  notes: >-
+    Install from the upstream source after reviewing its permissions, environment variables, and
+    transport configuration.
+  config_example: null
+permissions:
+  - network
+env_vars: []
+tags:
+  - mcp
+  - agent-tools
+use_cases:
+  - Extend agents with external tools
+trust_tier: promising
+review_status: bot-reviewed
+last_checked: '2026-05-25'

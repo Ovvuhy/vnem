@@ -1,0 +1,57 @@
+schema_version: 1.0.0
+homepage_url: https://docs.arize.com/phoenix
+repo_url: https://github.com/Arize-ai/phoenix
+package_urls:
+  - https://pypi.org/project/arize-phoenix/
+licenses:
+  - Elastic-2.0
+copyright_owner: Arize AI
+source_kind: official_docs
+protocols: []
+clients:
+  - Python
+  - OpenTelemetry
+install:
+  command: pip install arize-phoenix
+  notes: >-
+    Use self-hosted or hosted with trace-retention review; avoid logging secrets or sensitive
+    documents.
+  config_example: null
+permissions:
+  - network
+env_vars: []
+tags:
+  - observability
+  - tracing
+  - evals
+  - opentelemetry
+  - llmops
+use_cases:
+  - Trace and evaluate LLM applications
+  - Debug RAG and agent runs
+best_for:
+  - Teams that want open observability with OpenTelemetry-friendly traces
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: high
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags:
+  - trace-data-retention
+recommended_when:
+  - Use when debugging agent behavior requires traces, datasets, and eval feedback.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-26'
+slug: arize-phoenix
+name: Arize Phoenix
+type: observability
+summary_llm: >-
+  Arize Phoenix is an open-source AI observability and evaluation platform for tracing, debugging,
+  and evaluating LLM and agent applications.
+source_urls:
+  - https://docs.arize.com/phoenix
+  - https://github.com/Arize-ai/phoenix

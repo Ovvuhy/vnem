@@ -1,0 +1,61 @@
+schema_version: 1.0.0
+homepage_url: https://docs.langchain.com/oss/python/langgraph/overview
+repo_url: https://github.com/langchain-ai/langgraph
+package_urls:
+  - https://pypi.org/project/langgraph/
+licenses:
+  - MIT
+copyright_owner: LangChain
+source_kind: official_docs
+protocols: []
+clients:
+  - Python
+  - JavaScript
+  - LangSmith
+install:
+  command: pip install langgraph
+  notes: >-
+    Use when graph state, checkpoints, interrupts, and long-running workflows justify orchestration
+    overhead.
+  config_example: null
+permissions:
+  - network
+env_vars:
+  - OPENAI_API_KEY
+  - ANTHROPIC_API_KEY
+  - LANGSMITH_API_KEY
+tags:
+  - orchestration
+  - multi-agent
+  - durable-execution
+  - human-in-the-loop
+  - state
+use_cases:
+  - Build stateful multi-step agents
+  - Checkpoint and resume long-running workflows
+  - Add human approval gates
+best_for:
+  - Production agents that need explicit state machines, checkpoints, and human review
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: official
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags: []
+recommended_when:
+  - Use when agent behavior should be represented as a graph instead of hidden prompt flow.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-26'
+slug: langgraph
+name: LangGraph
+type: orchestration
+summary_llm: >-
+  LangGraph is a graph-based orchestration framework for stateful agents, durable execution,
+  human-in-the-loop workflows, persistence, and multi-agent patterns.
+source_urls:
+  - https://docs.langchain.com/oss/python/langgraph/overview
+  - https://github.com/langchain-ai/langgraph

@@ -1,0 +1,45 @@
+schema_version: 1.0.0
+slug: ai-borealhost-mcp
+name: BorealHost
+type: mcp-server
+summary_llm: >-
+  BorealHost is an MCP server for agentic systems. Agent-native web hosting — deploy sites, manage
+  DNS, register domains, scale infrastructure
+homepage_url: https://borealhost.ai
+repo_url: https://github.com/alainsvrd/borealhost-mcp
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: alainsvrd
+source_urls:
+  - https://registry.modelcontextprotocol.io/v0.1/servers/ai.borealhost%2Fmcp/versions/latest
+  - https://github.com/alainsvrd/borealhost-mcp
+  - https://borealhost.ai
+source_kind: official_registry
+protocols:
+  - MCP
+clients:
+  - Claude Desktop
+  - Cursor
+  - Windsurf
+  - VS Code
+  - OpenAI Agents SDK
+install:
+  command: null
+  notes: >-
+    Install from the upstream source after reviewing its permissions, environment variables, and
+    transport configuration.
+  config_example: null
+permissions:
+  - network
+env_vars: []
+tags:
+  - mcp
+  - agent-tools
+  - deployment
+use_cases:
+  - Extend agents with external tools
+  - Help agents ship and operate software
+trust_tier: promising
+review_status: bot-reviewed
+last_checked: '2026-05-25'

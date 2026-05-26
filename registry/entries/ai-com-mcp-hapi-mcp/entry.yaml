@@ -1,0 +1,44 @@
+schema_version: 1.0.0
+slug: ai-com-mcp-hapi-mcp
+name: HAPI MCP Server
+type: mcp-server
+summary_llm: >-
+  HAPI MCP Server is an MCP server for agentic systems. HAPI MCP server: Dynamically exposes OpenAPI
+  REST APIs as MCP tools for AI assistants
+homepage_url: https://docs.mcp.com.ai/components/hapi-server/hapi-cli
+repo_url: https://github.com/larebelion/hapimcp
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: larebelion
+source_urls:
+  - https://registry.modelcontextprotocol.io/v0.1/servers/ai.com.mcp%2Fhapi-mcp/versions/latest
+  - https://github.com/larebelion/hapimcp
+  - https://docs.mcp.com.ai/components/hapi-server/hapi-cli
+source_kind: official_registry
+protocols:
+  - MCP
+clients:
+  - Claude Desktop
+  - Cursor
+  - Windsurf
+  - VS Code
+  - OpenAI Agents SDK
+install:
+  command: null
+  notes: >-
+    Install from the upstream source after reviewing its permissions, environment variables, and
+    transport configuration.
+  config_example: null
+permissions:
+  - network
+env_vars: []
+tags:
+  - mcp
+  - agent-tools
+  - api
+use_cases:
+  - Extend agents with external tools
+trust_tier: promising
+review_status: bot-reviewed
+last_checked: '2026-05-25'

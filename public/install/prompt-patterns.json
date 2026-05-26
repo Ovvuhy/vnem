@@ -1,0 +1,189 @@
+{
+  "generated_at": "2026-05-26T19:05:29.740Z",
+  "schema_version": "1.0.0",
+  "safety": {
+    "mode": "read-only-prompt-patterns",
+    "executes_code": false,
+    "installs_packages": false,
+    "starts_daemons": false,
+    "requires_secrets": false
+  },
+  "trigger_phrases": [
+    "use vnem to enhance this prompt",
+    "use vnem prompt enhancer",
+    "vnem prompt forge",
+    "make this prompt stronger with vnem"
+  ],
+  "automatic_activation": {
+    "enabled": true,
+    "apply_when": [
+      "The user asks to write, improve, rewrite, harden, optimize, or critique a prompt.",
+      "The user asks for a system prompt, developer prompt, agent prompt, Codex prompt, Claude prompt, GPT prompt, instruction set, or prompt template.",
+      "The user pastes a prompt draft and asks whether it is good, powerful, clear, safe, complete, or ready to use.",
+      "The user asks for prompt engineering help, even without saying vnem explicitly."
+    ],
+    "do_not_apply_when": [
+      "The user is asking the agent to perform the task directly rather than create or improve a prompt.",
+      "The user asks for a normal code change, research answer, review, summary, or explanation without requesting a prompt artifact.",
+      "The user explicitly says not to rewrite, optimize, enhance, or expand the prompt."
+    ],
+    "response_rule": "When auto-activated, produce the enhanced prompt artifact directly and include a compact version. Do not ask for missing inputs unless the missing input would materially change the prompt."
+  },
+  "default_output_contract": [
+    "Enhanced prompt",
+    "Compact prompt",
+    "What changed",
+    "Missing inputs, if any"
+  ],
+  "patterns": [
+    {
+      "id": "prompt-enhancement",
+      "title": "General Prompt Enhancement",
+      "intents": [
+        "use vnem to enhance this prompt",
+        "improve prompt",
+        "make this prompt stronger"
+      ],
+      "summary": "Rewrite a rough prompt into a precise, operational prompt while preserving the user's goal.",
+      "output_modes": [
+        "enhanced_prompt",
+        "compact_prompt",
+        "rationale",
+        "missing_inputs"
+      ],
+      "template": "You are helping me improve a prompt.\n\nGoal:\n<state the user's actual desired outcome>\n\nContext:\n<include relevant audience, environment, source material, and constraints>\n\nTask:\n<specific action the model or agent should take>\n\nRequirements:\n- Preserve the original intent.\n- Ask only for missing information that would materially change the answer.\n- Use clear sections, explicit constraints, and an output contract.\n- Include verification criteria when the task has factual, coding, design, or operational risk.\n\nOutput Format:\n<define exact sections, schema, table, bullets, code blocks, or artifact>\n\nQuality Bar:\n<what a great answer must satisfy>"
+    },
+    {
+      "id": "codex-implementation",
+      "title": "Codex Implementation Prompt",
+      "intents": [
+        "codex prompt",
+        "implement feature",
+        "coding task"
+      ],
+      "summary": "Prompt a coding agent to inspect the repo, make scoped edits, verify them, and report changed files.",
+      "output_modes": [
+        "agent_prompt"
+      ],
+      "template": "You are working in this repository as a coding agent.\n\nObjective:\n<feature, bug fix, or refactor>\n\nScope:\n- Files/modules likely involved: <paths or unknown>\n- Do not change: <public API, unrelated files, formatting, dependencies, etc.>\n\nWorkflow:\n1. Inspect the current implementation before editing.\n2. Make the smallest cohesive change that satisfies the objective.\n3. Add or update tests only where risk justifies it.\n4. Run verification: <commands>.\n5. Report changed files, verification results, and residual risk.\n\nConstraints:\n- Do not run destructive commands.\n- Ask before installing packages, changing secrets, deploying, or touching production data.\n- Preserve user changes already present in the worktree."
+    },
+    {
+      "id": "code-review",
+      "title": "Code Review Prompt",
+      "intents": [
+        "review",
+        "pr review",
+        "find bugs"
+      ],
+      "summary": "Prompt for a bug-first code review with file and line references.",
+      "output_modes": [
+        "findings"
+      ],
+      "template": "Review the changes as a senior engineer.\n\nPriorities:\n1. Behavioral bugs and regressions.\n2. Security, data-loss, or permission risks.\n3. Missing tests for changed behavior.\n4. Maintainability issues only when they can cause real defects.\n\nOutput:\n- Findings first, ordered by severity.\n- Include file and line references.\n- If no issues are found, say that clearly and mention residual test risk."
+    },
+    {
+      "id": "bug-debug",
+      "title": "Debugging Prompt",
+      "intents": [
+        "debug",
+        "failing test",
+        "error"
+      ],
+      "summary": "Prompt an agent to reproduce, localize, fix, and verify a bug without speculative rewrites.",
+      "output_modes": [
+        "agent_prompt"
+      ],
+      "template": "Debug this issue methodically.\n\nSymptom:\n<error message, failing test, screenshot, or observed behavior>\n\nExpected behavior:\n<what should happen>\n\nWorkflow:\n1. Reproduce or inspect the failure evidence.\n2. Identify the smallest plausible cause.\n3. Patch only the relevant code.\n4. Run the narrow verification first, then broader checks if needed.\n5. Explain the root cause and why the fix covers it."
+    },
+    {
+      "id": "research",
+      "title": "Research Prompt",
+      "intents": [
+        "research",
+        "compare tools",
+        "best options"
+      ],
+      "summary": "Prompt for source-backed research with freshness, tradeoffs, and recommendation criteria.",
+      "output_modes": [
+        "brief",
+        "comparison",
+        "recommendation"
+      ],
+      "template": "Research this question using current, primary sources where possible.\n\nQuestion:\n<research question>\n\nDecision Criteria:\n- Fit for the stated use case.\n- Freshness and maintenance.\n- License, security, data, and operational risk.\n- Integration effort and reversibility.\n\nOutput:\n- Short answer.\n- Comparison of top options.\n- Recommendation with caveats.\n- Links to sources used."
+    },
+    {
+      "id": "subagent-delegation",
+      "title": "Subagent Delegation Prompt",
+      "intents": [
+        "subagents",
+        "multi agent",
+        "parallel work"
+      ],
+      "summary": "Prompt a coordinator to split independent work across specialists and keep integration centralized.",
+      "output_modes": [
+        "delegation_plan"
+      ],
+      "template": "Decide whether this task benefits from subagents.\n\nTask:\n<task>\n\nRules:\n- Delegate only independent sidecar work.\n- Keep the immediate critical-path task local to the coordinator.\n- Give each subagent a bounded role, owned files or outputs, and definition of done.\n- The coordinator must synthesize results and resolve conflicts.\n\nOutput:\n- Use or do not use subagents, with reason.\n- Subagent assignments if useful.\n- Integration and verification plan."
+    },
+    {
+      "id": "ui-build",
+      "title": "Frontend Build Prompt",
+      "intents": [
+        "build ui",
+        "make app",
+        "landing page",
+        "prototype"
+      ],
+      "summary": "Prompt for a complete frontend experience with visual verification and responsive constraints.",
+      "output_modes": [
+        "agent_prompt"
+      ],
+      "template": "Build the actual usable frontend experience, not a marketing placeholder.\n\nProduct/User:\n<who uses this and why>\n\nCore Workflow:\n<primary user flow>\n\nDesign Constraints:\n- Match existing design system if present.\n- Use domain-appropriate density, typography, color, and motion.\n- Ensure all text fits on mobile and desktop.\n- Verify with browser screenshots after implementation.\n\nOutput:\n- Implemented UI.\n- Local URL or file path.\n- Verification notes."
+    },
+    {
+      "id": "eval-design",
+      "title": "Eval Design Prompt",
+      "intents": [
+        "eval",
+        "grader",
+        "quality check",
+        "test prompt"
+      ],
+      "summary": "Prompt for a small, measurable eval harness before optimizing prompts or agents.",
+      "output_modes": [
+        "eval_plan",
+        "grader_spec"
+      ],
+      "template": "Design an evaluation for this prompt or agent workflow.\n\nBehavior to measure:\n<desired behavior>\n\nFailure modes:\n<known or suspected failures>\n\nEval Plan:\n- Dataset examples, including edge cases.\n- Grader criteria with pass/fail thresholds.\n- Human review fields for ambiguous outputs.\n- Regression workflow after prompt changes."
+    },
+    {
+      "id": "mcp-selection",
+      "title": "MCP Selection Prompt",
+      "intents": [
+        "choose mcp",
+        "best mcp",
+        "tool connector"
+      ],
+      "summary": "Prompt for choosing MCP servers by provenance, permissions, risk, and workflow fit.",
+      "output_modes": [
+        "recommendation"
+      ],
+      "template": "Recommend MCP servers or tools for this workflow.\n\nWorkflow:\n<what the agent needs to do>\n\nConstraints:\n- Prefer official or vendor-maintained sources for sensitive systems.\n- Call out permissions: filesystem, browser, database, repository, payments, secrets.\n- Do not recommend installation before review.\n\nOutput:\n- Current stack.\n- Best options.\n- Risk flags.\n- Ask before changing."
+    },
+    {
+      "id": "memory-policy",
+      "title": "Memory Policy Prompt",
+      "intents": [
+        "memory",
+        "claude memory",
+        "agents.md",
+        "context engineering"
+      ],
+      "summary": "Prompt for deciding what belongs in durable project memory versus temporary task context.",
+      "output_modes": [
+        "memory_policy"
+      ],
+      "template": "Design a memory/context policy for this project.\n\nPersistent memory should include:\n- Stable project conventions.\n- Common commands.\n- Architecture notes that rarely change.\n- Safety and permission boundaries.\n\nPersistent memory should not include:\n- Secrets or credentials.\n- Temporary task state.\n- Unverified assumptions.\n- Sensitive user data unless explicitly approved.\n\nOutput:\n- What to store.\n- Where to store it.\n- What to avoid.\n- Review cadence."
+    }
+  ]
+}

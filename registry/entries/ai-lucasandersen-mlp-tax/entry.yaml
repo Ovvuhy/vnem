@@ -1,0 +1,42 @@
+schema_version: 1.0.0
+slug: ai-lucasandersen-mlp-tax
+name: MLP Tax Computation Engine
+type: mcp-server
+summary_llm: >-
+  MLP Tax Computation Engine is an MCP server for agentic systems. Deterministic MLP tax engine with
+  IRS citations. 6 tools: basis, §751, estate, projections.
+homepage_url: https://github.com/luc253/lucasandersen-ai
+repo_url: https://github.com/luc253/lucasandersen-ai
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: luc253
+source_urls:
+  - https://registry.modelcontextprotocol.io/v0.1/servers/ai.lucasandersen%2Fmlp-tax/versions/latest
+  - https://github.com/luc253/lucasandersen-ai
+source_kind: official_registry
+protocols:
+  - MCP
+clients:
+  - Claude Desktop
+  - Cursor
+  - Windsurf
+  - VS Code
+  - OpenAI Agents SDK
+install:
+  command: null
+  notes: >-
+    Install from the upstream source after reviewing its permissions, environment variables, and
+    transport configuration.
+  config_example: null
+permissions:
+  - network
+env_vars: []
+tags:
+  - mcp
+  - agent-tools
+use_cases:
+  - Extend agents with external tools
+trust_tier: promising
+review_status: bot-reviewed
+last_checked: '2026-05-25'

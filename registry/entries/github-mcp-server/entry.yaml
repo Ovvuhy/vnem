@@ -1,0 +1,60 @@
+schema_version: 1.0.0
+homepage_url: https://github.com/github/github-mcp-server
+repo_url: https://github.com/github/github-mcp-server
+package_urls: []
+licenses:
+  - MIT
+copyright_owner: GitHub
+source_kind: github
+protocols:
+  - MCP
+clients:
+  - Claude Desktop
+  - Claude Code
+  - Cursor
+  - VS Code
+  - OpenAI Agents SDK
+install:
+  command: null
+  notes: Use with least-privilege GitHub tokens, scoped repositories, and branch protections.
+  config_example: null
+permissions:
+  - repository
+  - network
+env_vars:
+  - GITHUB_TOKEN
+tags:
+  - mcp
+  - github
+  - repository
+  - pull-requests
+  - issues
+use_cases:
+  - Let agents inspect GitHub repositories
+  - Automate issues and pull request workflows
+best_for:
+  - Repository workflows where GitHub is the system of record
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: official
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags:
+  - mutates-repositories
+  - requires-token
+recommended_when:
+  - Use when an agent needs GitHub context or PR workflows and token scope can be constrained.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-26'
+slug: github-mcp-server
+name: GitHub MCP Server
+type: mcp-server
+summary_llm: >-
+  GitHub MCP Server is GitHub's official MCP server for repository, issue, pull request, search,
+  workflow, and code operations through agent clients.
+source_urls:
+  - https://github.com/github/github-mcp-server

@@ -1,0 +1,42 @@
+schema_version: 1.0.0
+slug: ai-imboard-dossier
+name: ai.imboard/dossier
+type: mcp-server
+summary_llm: >-
+  ai.imboard/dossier is an MCP server for agentic systems. MCP server for dossier automation
+  standard - enables LLMs to discover, verify, and execute dossiers
+homepage_url: https://github.com/imboard-ai/ai-dossier
+repo_url: https://github.com/imboard-ai/ai-dossier
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: imboard-ai
+source_urls:
+  - https://registry.modelcontextprotocol.io/v0.1/servers/ai.imboard%2Fdossier/versions/latest
+  - https://github.com/imboard-ai/ai-dossier
+source_kind: official_registry
+protocols:
+  - MCP
+clients:
+  - Claude Desktop
+  - Cursor
+  - Windsurf
+  - VS Code
+  - OpenAI Agents SDK
+install:
+  command: null
+  notes: >-
+    Install from the upstream source after reviewing its permissions, environment variables, and
+    transport configuration.
+  config_example: null
+permissions:
+  - network
+env_vars: []
+tags:
+  - mcp
+  - agent-tools
+use_cases:
+  - Extend agents with external tools
+trust_tier: promising
+review_status: bot-reviewed
+last_checked: '2026-05-25'

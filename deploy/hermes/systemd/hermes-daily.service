@@ -1,0 +1,13 @@
+[Unit]
+Description=Hermes daily agent and LLM ecosystem synthesis
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=hermes
+Group=hermes
+WorkingDirectory=/opt/vnem
+EnvironmentFile=/etc/hermes/hermes.env
+ExecStart=/usr/bin/env npm run hermes:daily
+Nice=5

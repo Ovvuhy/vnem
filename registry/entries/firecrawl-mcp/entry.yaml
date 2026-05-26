@@ -1,0 +1,61 @@
+schema_version: 1.0.0
+homepage_url: https://docs.firecrawl.dev/mcp-server
+repo_url: https://github.com/mendableai/firecrawl-mcp-server
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: Firecrawl
+source_kind: official_docs
+protocols:
+  - MCP
+clients:
+  - Claude Desktop
+  - Claude Code
+  - Cursor
+  - VS Code
+  - OpenAI Agents SDK
+install:
+  command: null
+  notes: Use for permitted crawling only; review robots, terms, rate limits, and data retention.
+  config_example: null
+permissions:
+  - network
+env_vars:
+  - FIRECRAWL_API_KEY
+tags:
+  - mcp
+  - web-crawling
+  - scraping
+  - research
+  - ingestion
+use_cases:
+  - Let agents crawl and extract web content
+  - Build source-backed research and data ingestion workflows
+best_for:
+  - Research agents that need structured web extraction
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: official
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags:
+  - license-not-asserted
+  - hosted-service
+  - web-crawling-risk
+recommended_when:
+  - Use when web extraction is permitted and citations or raw sources remain available.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-26'
+slug: firecrawl-mcp
+name: Firecrawl MCP
+type: mcp-server
+summary_llm: >-
+  Firecrawl MCP lets agents crawl, scrape, search, and extract web content through Firecrawl's web
+  data APIs for research and ingestion workflows.
+source_urls:
+  - https://docs.firecrawl.dev/mcp-server
+  - https://github.com/mendableai/firecrawl-mcp-server

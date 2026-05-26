@@ -1,0 +1,41 @@
+schema_version: 1.0.0
+slug: ac-inference-sh-mcp
+name: inference.sh
+type: mcp-server
+summary_llm: >-
+  inference.sh is an MCP server for agentic systems. Run 150+ AI apps — image, video, audio, LLMs,
+  3D and more. Browse, execute, stream results.
+homepage_url: null
+repo_url: null
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: ac.inference.sh
+source_urls:
+  - https://registry.modelcontextprotocol.io/v0.1/servers/ac.inference.sh%2Fmcp/versions/latest
+source_kind: official_registry
+protocols:
+  - MCP
+clients:
+  - Claude Desktop
+  - Cursor
+  - Windsurf
+  - VS Code
+  - OpenAI Agents SDK
+install:
+  command: null
+  notes: >-
+    Install from the upstream source after reviewing its permissions, environment variables, and
+    transport configuration.
+  config_example: null
+permissions:
+  - network
+env_vars: []
+tags:
+  - mcp
+  - agent-tools
+use_cases:
+  - Extend agents with external tools
+trust_tier: promising
+review_status: bot-reviewed
+last_checked: '2026-05-25'

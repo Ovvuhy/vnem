@@ -1,0 +1,59 @@
+schema_version: 1.0.0
+homepage_url: https://docs.continue.dev/
+repo_url: https://github.com/continuedev/continue
+package_urls: []
+licenses:
+  - Apache-2.0
+copyright_owner: Continue
+source_kind: github
+protocols: []
+clients:
+  - VS Code
+  - JetBrains
+install:
+  command: null
+  notes: >-
+    Install the editor extension and configure model providers, context providers, and rules
+    intentionally.
+  config_example: null
+permissions:
+  - filesystem
+  - repository
+  - network
+env_vars:
+  - OPENAI_API_KEY
+  - ANTHROPIC_API_KEY
+tags:
+  - coding-agent
+  - editor
+  - context
+  - team-rules
+use_cases:
+  - Customize AI coding assistance for teams
+  - Use explicit context providers for code work
+best_for:
+  - Teams that want configurable editor AI instead of a single hosted assistant
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: high
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags:
+  - can-edit-files
+recommended_when:
+  - Use when model choice, local context configuration, and editor integration are important.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-26'
+slug: continue-dev
+name: Continue
+type: coding-agent
+summary_llm: >-
+  Continue is an open-source AI code assistant and agent platform for VS Code and JetBrains with
+  configurable models, context providers, and team rules.
+source_urls:
+  - https://docs.continue.dev/
+  - https://github.com/continuedev/continue

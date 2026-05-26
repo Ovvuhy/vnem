@@ -1,0 +1,62 @@
+schema_version: 1.0.0
+homepage_url: https://docs.github.com/en/copilot/concepts/about-copilot-coding-agent
+repo_url: null
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: GitHub
+source_kind: official_docs
+protocols: []
+clients:
+  - GitHub
+  - Pull Requests
+  - Issues
+install:
+  command: null
+  notes: >-
+    Enable through GitHub Copilot settings and repository policies; review permissions, branch
+    protection, and PR checks.
+  config_example: null
+permissions:
+  - repository
+  - network
+env_vars:
+  - GITHUB_TOKEN
+tags:
+  - coding-agent
+  - github
+  - pull-requests
+  - cloud-agent
+use_cases:
+  - Assign repository issues to an agent
+  - Open pull requests from automated coding work
+best_for:
+  - GitHub-native teams that want issue-to-PR workflows with existing branch protections
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: official
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags:
+  - license-not-asserted
+  - mutates-repositories
+  - hosted-service
+recommended_when:
+  - >-
+    Use when the repository already relies on GitHub Issues, protected branches, and PR review
+    workflows.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-26'
+slug: github-copilot-coding-agent
+name: GitHub Copilot Coding Agent
+type: coding-agent
+summary_llm: >-
+  GitHub Copilot Coding Agent is a cloud coding agent that can be assigned GitHub issues, work in a
+  secure environment, and open pull requests for review.
+source_urls:
+  - https://docs.github.com/en/copilot/concepts/about-copilot-coding-agent
+  - https://docs.github.com/en/copilot/using-github-copilot/coding-agent

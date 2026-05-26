@@ -1,0 +1,10 @@
+[Unit]
+Description=Run Hermes daily deep watch
+
+[Timer]
+OnCalendar=*-*-* 08:30:00
+Persistent=true
+RandomizedDelaySec=600
+
+[Install]
+WantedBy=timers.target

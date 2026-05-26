@@ -1,0 +1,45 @@
+schema_version: 1.0.0
+slug: ai-alpic-mcp-alpic-mcp
+name: Alpic
+type: mcp-server
+summary_llm: >-
+  Alpic is an MCP server for agentic systems. Manage your projects, debug deployment, and check
+  analytics for any MCP server you host with Alpic
+homepage_url: https://alpic.ai
+repo_url: null
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: ai.alpic.mcp
+source_urls:
+  - https://registry.modelcontextprotocol.io/v0.1/servers/ai.alpic.mcp%2Falpic-mcp/versions/latest
+  - https://alpic.ai
+source_kind: official_registry
+protocols:
+  - MCP
+clients:
+  - Claude Desktop
+  - Cursor
+  - Windsurf
+  - VS Code
+  - OpenAI Agents SDK
+install:
+  command: null
+  notes: >-
+    Install from the upstream source after reviewing its permissions, environment variables, and
+    transport configuration.
+  config_example: null
+permissions:
+  - network
+env_vars: []
+tags:
+  - mcp
+  - agent-tools
+  - deployment
+  - analytics
+use_cases:
+  - Extend agents with external tools
+  - Help agents ship and operate software
+trust_tier: promising
+review_status: bot-reviewed
+last_checked: '2026-05-25'

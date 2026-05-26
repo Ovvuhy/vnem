@@ -1,0 +1,58 @@
+schema_version: 1.0.0
+homepage_url: https://openai.github.io/openai-agents-python/
+repo_url: https://github.com/openai/openai-agents-python
+package_urls:
+  - https://pypi.org/project/openai-agents/
+licenses:
+  - MIT
+copyright_owner: OpenAI
+source_kind: official_docs
+protocols: []
+clients:
+  - Python
+  - OpenAI API
+install:
+  command: pip install openai-agents
+  notes: >-
+    Use for Python agent apps that need tools, handoffs, guardrails, and traces; configure API keys
+    and data retention.
+  config_example: null
+permissions:
+  - network
+env_vars:
+  - OPENAI_API_KEY
+tags:
+  - agent-framework
+  - handoffs
+  - guardrails
+  - tracing
+  - python
+use_cases:
+  - Build tool-using agents
+  - Coordinate agent handoffs
+  - Trace and guardrail agent runs
+best_for:
+  - OpenAI-native Python agent applications with handoffs and tracing
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: official
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags: []
+recommended_when:
+  - Use when the team wants a compact official SDK instead of a larger graph runtime.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-26'
+slug: openai-agents-sdk
+name: OpenAI Agents SDK
+type: agent-framework
+summary_llm: >-
+  OpenAI Agents SDK is a lightweight framework for agent loops, tools, handoffs, guardrails,
+  tracing, and multi-agent workflows built around OpenAI models.
+source_urls:
+  - https://openai.github.io/openai-agents-python/
+  - https://github.com/openai/openai-agents-python

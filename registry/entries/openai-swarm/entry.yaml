@@ -1,0 +1,59 @@
+schema_version: 1.0.0
+homepage_url: https://github.com/openai/swarm
+repo_url: https://github.com/openai/swarm
+package_urls:
+  - https://pypi.org/project/swarm/
+licenses:
+  - MIT
+copyright_owner: OpenAI
+source_kind: github
+protocols: []
+clients:
+  - Python
+  - OpenAI API
+install:
+  command: null
+  notes: >-
+    Do not choose for new production work; use Agents SDK or another maintained orchestration
+    framework instead.
+  config_example: null
+permissions:
+  - network
+env_vars:
+  - OPENAI_API_KEY
+tags:
+  - orchestration
+  - multi-agent
+  - handoffs
+  - deprecated
+  - education
+use_cases:
+  - Understand lightweight handoff patterns
+  - Compare older swarm patterns to maintained SDKs
+best_for:
+  - Historical research into simple multi-agent handoff designs
+not_for:
+  - New production applications or maintained agent infrastructure.
+alternatives: []
+supersedes: []
+freshness: deprecated
+source_confidence: official
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags:
+  - educational-only
+  - superseded
+recommended_when:
+  - Use as reference material only; prefer OpenAI Agents SDK for active projects.
+trust_tier: deprecated
+review_status: deprecated
+last_checked: '2026-05-26'
+slug: openai-swarm
+name: OpenAI Swarm
+type: orchestration
+summary_llm: >-
+  OpenAI Swarm is an educational multi-agent orchestration experiment for routines and handoffs;
+  treat it as historical context now that Agents SDK exists.
+source_urls:
+  - https://github.com/openai/swarm
+  - https://openai.github.io/openai-agents-python/

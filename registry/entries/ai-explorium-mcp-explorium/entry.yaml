@@ -1,0 +1,43 @@
+schema_version: 1.0.0
+slug: ai-explorium-mcp-explorium
+name: ai.explorium/mcp-explorium
+type: mcp-server
+summary_llm: >-
+  ai.explorium/mcp-explorium is an MCP server for agentic systems. Access live company and contact
+  data from Explorium's AgentSource B2B platform.
+homepage_url: https://github.com/explorium-ai/mcp-explorium
+repo_url: https://github.com/explorium-ai/mcp-explorium
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: explorium-ai
+source_urls:
+  - >-
+    https://registry.modelcontextprotocol.io/v0.1/servers/ai.explorium%2Fmcp-explorium/versions/latest
+  - https://github.com/explorium-ai/mcp-explorium
+source_kind: official_registry
+protocols:
+  - MCP
+clients:
+  - Claude Desktop
+  - Cursor
+  - Windsurf
+  - VS Code
+  - OpenAI Agents SDK
+install:
+  command: null
+  notes: >-
+    Install from the upstream source after reviewing its permissions, environment variables, and
+    transport configuration.
+  config_example: null
+permissions:
+  - network
+env_vars: []
+tags:
+  - mcp
+  - agent-tools
+use_cases:
+  - Extend agents with external tools
+trust_tier: promising
+review_status: bot-reviewed
+last_checked: '2026-05-25'

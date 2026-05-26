@@ -1,0 +1,42 @@
+schema_version: 1.0.0
+slug: ai-31st-mcp
+name: 31st.ai — AI Accountant for QuickBooks
+type: mcp-server
+summary_llm: >-
+  31st.ai — AI Accountant for QuickBooks is an MCP server for agentic systems. AI Accountant for
+  Quickbooks- recording, reconcile, month-end close
+homepage_url: https://31st.ai
+repo_url: null
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: ai.31st
+source_urls:
+  - https://registry.modelcontextprotocol.io/v0.1/servers/ai.31st%2Fmcp/versions/latest
+  - https://31st.ai
+source_kind: official_registry
+protocols:
+  - MCP
+clients:
+  - Claude Desktop
+  - Cursor
+  - Windsurf
+  - VS Code
+  - OpenAI Agents SDK
+install:
+  command: null
+  notes: >-
+    Install from the upstream source after reviewing its permissions, environment variables, and
+    transport configuration.
+  config_example: null
+permissions:
+  - network
+env_vars: []
+tags:
+  - mcp
+  - agent-tools
+use_cases:
+  - Extend agents with external tools
+trust_tier: promising
+review_status: bot-reviewed
+last_checked: '2026-05-25'

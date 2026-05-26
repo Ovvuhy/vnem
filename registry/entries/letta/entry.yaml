@@ -1,0 +1,61 @@
+schema_version: 1.0.0
+homepage_url: https://docs.letta.com/
+repo_url: https://github.com/letta-ai/letta
+package_urls:
+  - https://pypi.org/project/letta/
+licenses:
+  - Apache-2.0
+copyright_owner: Letta
+source_kind: official_docs
+protocols: []
+clients:
+  - Python
+  - Letta Server
+install:
+  command: pip install letta
+  notes: >-
+    Use when explicit agent state and memory are central; audit storage, user data, and tool
+    permissions.
+  config_example: null
+permissions:
+  - network
+  - database
+env_vars:
+  - OPENAI_API_KEY
+  - ANTHROPIC_API_KEY
+tags:
+  - memory
+  - stateful-agents
+  - memgpt
+  - server
+  - tools
+use_cases:
+  - Build stateful agents with explicit memory
+  - Serve agents through a persistent API
+best_for:
+  - Long-lived agents that need inspectable memory state
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: high
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags:
+  - stores-user-memory
+  - data-retention-risk
+recommended_when:
+  - Use when memory should be first-class and inspectable rather than hidden in prompts.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-26'
+slug: letta
+name: Letta
+type: memory
+summary_llm: >-
+  Letta is an open-source framework for stateful agents with memory, tools, archival storage, and
+  server APIs descended from the MemGPT research line.
+source_urls:
+  - https://docs.letta.com/
+  - https://github.com/letta-ai/letta

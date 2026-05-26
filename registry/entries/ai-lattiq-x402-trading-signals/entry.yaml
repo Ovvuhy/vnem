@@ -1,0 +1,45 @@
+schema_version: 1.0.0
+slug: ai-lattiq-x402-trading-signals
+name: Lattiq x402 Trading Signals
+type: mcp-server
+summary_llm: >-
+  Lattiq x402 Trading Signals is an MCP server for agentic systems. Regime-aware ES1/NQ futures
+  trading signals. HMM + 15 quant strategies. x402 USDC micropayments.
+homepage_url: https://github.com/PoopsDavis/lattiq-mcp
+repo_url: https://github.com/PoopsDavis/lattiq-mcp
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: PoopsDavis
+source_urls:
+  - >-
+    https://registry.modelcontextprotocol.io/v0.1/servers/ai.lattiq%2Fx402-trading-signals/versions/latest
+  - https://github.com/PoopsDavis/lattiq-mcp
+source_kind: official_registry
+protocols:
+  - MCP
+clients:
+  - Claude Desktop
+  - Cursor
+  - Windsurf
+  - VS Code
+  - OpenAI Agents SDK
+install:
+  command: null
+  notes: >-
+    Install from the upstream source after reviewing its permissions, environment variables, and
+    transport configuration.
+  config_example: null
+permissions:
+  - network
+  - payments
+env_vars: []
+tags:
+  - mcp
+  - agent-tools
+  - payments
+use_cases:
+  - Extend agents with external tools
+trust_tier: promising
+review_status: bot-reviewed
+last_checked: '2026-05-25'

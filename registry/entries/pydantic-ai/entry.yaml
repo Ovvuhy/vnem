@@ -1,0 +1,58 @@
+schema_version: 1.0.0
+homepage_url: https://ai.pydantic.dev/
+repo_url: https://github.com/pydantic/pydantic-ai
+package_urls:
+  - https://pypi.org/project/pydantic-ai/
+licenses:
+  - MIT
+copyright_owner: Pydantic
+source_kind: official_docs
+protocols: []
+clients:
+  - Python
+  - Pydantic
+install:
+  command: pip install pydantic-ai
+  notes: >-
+    Use where type safety, structured data, and testability matter more than complex orchestration
+    primitives.
+  config_example: null
+permissions:
+  - network
+env_vars:
+  - OPENAI_API_KEY
+  - ANTHROPIC_API_KEY
+tags:
+  - agent-framework
+  - typed
+  - structured-output
+  - python
+  - testing
+use_cases:
+  - Build type-safe agents
+  - Return validated structured outputs
+best_for:
+  - Python apps already using Pydantic and typed service boundaries
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: official
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags: []
+recommended_when:
+  - Use when agent outputs should be validated like normal application data.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-26'
+slug: pydantic-ai
+name: Pydantic AI
+type: agent-framework
+summary_llm: >-
+  Pydantic AI is a Python agent framework that emphasizes typed dependencies, structured outputs,
+  model-agnostic providers, tools, and testable agent logic.
+source_urls:
+  - https://ai.pydantic.dev/
+  - https://github.com/pydantic/pydantic-ai

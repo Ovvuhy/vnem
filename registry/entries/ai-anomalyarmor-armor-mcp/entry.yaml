@@ -1,0 +1,44 @@
+schema_version: 1.0.0
+slug: ai-anomalyarmor-armor-mcp
+name: AnomalyArmor
+type: mcp-server
+summary_llm: >-
+  AnomalyArmor is an MCP server for agentic systems. Data observability tools for engineering teams:
+  alerts, freshness, schema drift, lineage, quality.
+homepage_url: https://www.anomalyarmor.ai
+repo_url: https://github.com/anomalyarmor/agents
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: anomalyarmor
+source_urls:
+  - >-
+    https://registry.modelcontextprotocol.io/v0.1/servers/ai.anomalyarmor%2Farmor-mcp/versions/latest
+  - https://github.com/anomalyarmor/agents
+  - https://www.anomalyarmor.ai
+source_kind: official_registry
+protocols:
+  - MCP
+clients:
+  - Claude Desktop
+  - Cursor
+  - Windsurf
+  - VS Code
+  - OpenAI Agents SDK
+install:
+  command: null
+  notes: >-
+    Install from the upstream source after reviewing its permissions, environment variables, and
+    transport configuration.
+  config_example: null
+permissions:
+  - network
+env_vars: []
+tags:
+  - mcp
+  - agent-tools
+use_cases:
+  - Extend agents with external tools
+trust_tier: promising
+review_status: bot-reviewed
+last_checked: '2026-05-25'

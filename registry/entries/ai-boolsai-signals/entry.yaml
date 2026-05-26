@@ -1,0 +1,44 @@
+schema_version: 1.0.0
+slug: ai-boolsai-signals
+name: Boolsai Signals
+type: mcp-server
+summary_llm: >-
+  Boolsai Signals is an MCP server for agentic systems. Quant-research MCP — tradeable signals from
+  public-company website stack changes. 7 tools.
+homepage_url: https://github.com/Boolsai-ai/mcp
+repo_url: null
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: Boolsai-ai
+source_urls:
+  - https://registry.modelcontextprotocol.io/v0.1/servers/ai.boolsai%2Fsignals/versions/latest
+  - https://github.com/Boolsai-ai/mcp
+source_kind: official_registry
+protocols:
+  - MCP
+clients:
+  - Claude Desktop
+  - Cursor
+  - Windsurf
+  - VS Code
+  - OpenAI Agents SDK
+install:
+  command: null
+  notes: >-
+    Install from the upstream source after reviewing its permissions, environment variables, and
+    transport configuration.
+  config_example: null
+permissions:
+  - network
+env_vars: []
+tags:
+  - mcp
+  - agent-tools
+  - search
+use_cases:
+  - Extend agents with external tools
+  - Give agents searchable web or knowledge access
+trust_tier: promising
+review_status: bot-reviewed
+last_checked: '2026-05-25'

@@ -1,0 +1,45 @@
+schema_version: 1.0.0
+slug: ai-helixar-mcp
+name: Helixar Security
+type: mcp-server
+summary_llm: >-
+  Helixar Security is an MCP server for agentic systems. Security tools for AI agents: scan MCP
+  servers, validate HDP delegation chains, audit releases.
+homepage_url: https://helixar.ai/connect
+repo_url: https://github.com/Helixar-AI/helixar-mcp
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: Helixar-AI
+source_urls:
+  - https://registry.modelcontextprotocol.io/v0.1/servers/ai.helixar%2Fmcp/versions/latest
+  - https://github.com/Helixar-AI/helixar-mcp
+  - https://helixar.ai/connect
+source_kind: official_registry
+protocols:
+  - MCP
+clients:
+  - Claude Desktop
+  - Cursor
+  - Windsurf
+  - VS Code
+  - OpenAI Agents SDK
+install:
+  command: null
+  notes: >-
+    Install from the upstream source after reviewing its permissions, environment variables, and
+    transport configuration.
+  config_example: null
+permissions:
+  - network
+env_vars: []
+tags:
+  - mcp
+  - agent-tools
+  - security
+use_cases:
+  - Extend agents with external tools
+  - Improve agent security review and guardrails
+trust_tier: promising
+review_status: bot-reviewed
+last_checked: '2026-05-25'

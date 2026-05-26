@@ -1,0 +1,58 @@
+schema_version: 1.0.0
+homepage_url: https://docs.smith.langchain.com/
+repo_url: null
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: LangChain
+source_kind: official_docs
+protocols: []
+clients:
+  - Python
+  - JavaScript
+  - LangGraph
+  - LangChain
+install:
+  command: null
+  notes: Use with explicit trace retention policy; scrub secrets and sensitive prompts before storage.
+  config_example: null
+permissions:
+  - network
+env_vars:
+  - LANGSMITH_API_KEY
+tags:
+  - observability
+  - tracing
+  - evals
+  - monitoring
+  - datasets
+use_cases:
+  - Trace agent runs
+  - Evaluate and monitor LLM application behavior
+best_for:
+  - LangChain and LangGraph teams needing hosted traces and evals
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: official
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags:
+  - license-not-asserted
+  - hosted-service
+  - trace-data-retention
+recommended_when:
+  - Use when observability should be tightly integrated with LangChain or LangGraph.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-26'
+slug: langsmith
+name: LangSmith
+type: observability
+summary_llm: >-
+  LangSmith is LangChain's observability, tracing, evaluation, dataset, and monitoring platform for
+  debugging and improving LLM and agent applications.
+source_urls:
+  - https://docs.smith.langchain.com/

@@ -1,0 +1,60 @@
+schema_version: 1.0.0
+homepage_url: https://aider.chat/docs/
+repo_url: https://github.com/Aider-AI/aider
+package_urls:
+  - https://pypi.org/project/aider-chat/
+licenses:
+  - Apache-2.0
+copyright_owner: Aider-AI
+source_kind: github
+protocols: []
+clients:
+  - Terminal
+  - Git
+install:
+  command: pip install aider-chat
+  notes: >-
+    Use in Git repositories so diffs remain reviewable; configure model API keys and keep shell
+    actions explicit.
+  config_example: null
+permissions:
+  - filesystem
+  - repository
+  - network
+env_vars:
+  - OPENAI_API_KEY
+  - ANTHROPIC_API_KEY
+tags:
+  - coding-agent
+  - pair-programming
+  - terminal
+  - git
+use_cases:
+  - Pair program from the terminal
+  - Apply reviewable edits to Git repositories
+best_for:
+  - Small-to-medium coding tasks where Git diffs and local control matter
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: high
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags:
+  - can-edit-files
+recommended_when:
+  - Use when a lightweight terminal pair programmer is enough and Git history is the review surface.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-26'
+slug: aider
+name: Aider
+type: coding-agent
+summary_llm: >-
+  Aider is an open-source AI pair-programming tool that edits local files, works with Git, maps
+  repositories, and supports many language models from the terminal.
+source_urls:
+  - https://aider.chat/docs/
+  - https://github.com/Aider-AI/aider

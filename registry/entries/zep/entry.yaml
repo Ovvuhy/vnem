@@ -1,0 +1,60 @@
+schema_version: 1.0.0
+homepage_url: https://www.getzep.com/
+repo_url: https://github.com/getzep/zep
+package_urls:
+  - https://pypi.org/project/zep-python/
+licenses:
+  - NOASSERTION
+copyright_owner: Zep
+source_kind: official_docs
+protocols: []
+clients:
+  - Python
+  - TypeScript
+  - Hosted API
+install:
+  command: pip install zep-python
+  notes: Use with careful data-retention and privacy review because it stores long-lived agent memory.
+  config_example: null
+permissions:
+  - network
+  - database
+env_vars:
+  - ZEP_API_KEY
+tags:
+  - memory
+  - knowledge-graph
+  - temporal
+  - agents
+  - retrieval
+use_cases:
+  - Retrieve long-term user and session memory
+  - Build temporal knowledge graphs for agents
+best_for:
+  - Hosted memory systems that need graph-shaped context
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: high
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags:
+  - license-not-asserted
+  - stores-user-memory
+  - hosted-service
+recommended_when:
+  - Use when temporal graph memory is worth the operational and privacy overhead.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-26'
+slug: zep
+name: Zep
+type: memory
+summary_llm: >-
+  Zep is a memory platform for AI agents that builds temporal knowledge graphs and retrieves
+  relevant user, session, and business context for agent applications.
+source_urls:
+  - https://www.getzep.com/
+  - https://github.com/getzep/zep

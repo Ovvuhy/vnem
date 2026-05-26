@@ -1,0 +1,61 @@
+schema_version: 1.0.0
+homepage_url: https://docs.anthropic.com/en/docs/claude-code/sub-agents
+repo_url: null
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: Anthropic
+source_kind: official_docs
+protocols: []
+clients:
+  - Claude Code
+install:
+  command: null
+  notes: >-
+    Review the upstream docs, permissions, pricing, environment variables, and transport before
+    installing.
+  config_example: null
+permissions:
+  - filesystem
+  - repository
+  - shell
+  - network
+env_vars: []
+tags:
+  - subagents
+  - claude-code
+  - delegation
+  - specialists
+  - tool-permissions
+use_cases:
+  - Delegate focused coding or research work
+  - Give specialist agents narrow tool permissions
+best_for:
+  - >-
+    Repeated specialist tasks like test writing, migration review, docs cleanup, and codebase
+    exploration
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: official
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags:
+  - license-not-asserted
+  - can-edit-files
+  - can-run-shell-commands
+recommended_when:
+  - Use when a recurring specialist role can be given clear instructions and a bounded tool set.
+trust_tier: verified
+review_status: manual-reviewed
+last_checked: '2026-05-26'
+slug: claude-code-subagents
+name: Claude Code Subagents
+type: workflow
+summary_llm: >-
+  Claude Code subagents are specialized agent definitions with focused prompts, tool permissions,
+  and separate context windows for delegated coding and research tasks.
+source_urls:
+  - https://docs.anthropic.com/en/docs/claude-code/sub-agents

@@ -1,0 +1,43 @@
+schema_version: 1.0.0
+slug: ai-cirra-salesforce-mcp
+name: Cirra AI Salesforce Admin MCP Server
+type: mcp-server
+summary_llm: >-
+  Cirra AI Salesforce Admin MCP Server is an MCP server for agentic systems. Comprehensive
+  Salesforce administration and data management capabilities
+homepage_url: https://github.com/cirra-ai/mcp-server
+repo_url: https://github.com/cirra-ai/mcp-server
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: cirra-ai
+source_urls:
+  - https://registry.modelcontextprotocol.io/v0.1/servers/ai.cirra%2Fsalesforce-mcp/versions/latest
+  - https://github.com/cirra-ai/mcp-server
+source_kind: official_registry
+protocols:
+  - MCP
+clients:
+  - Claude Desktop
+  - Cursor
+  - Windsurf
+  - VS Code
+  - OpenAI Agents SDK
+install:
+  command: null
+  notes: >-
+    Install from the upstream source after reviewing its permissions, environment variables, and
+    transport configuration.
+  config_example: null
+permissions:
+  - network
+env_vars: []
+tags:
+  - mcp
+  - agent-tools
+  - crm
+use_cases:
+  - Extend agents with external tools
+trust_tier: promising
+review_status: bot-reviewed
+last_checked: '2026-05-25'

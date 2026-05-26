@@ -1,0 +1,43 @@
+schema_version: 1.0.0
+slug: ai-delega-aws-pricing-calculator
+name: delega.ai for AWS Pricing Calculator
+type: mcp-server
+summary_llm: >-
+  delega.ai for AWS Pricing Calculator is an MCP server for agentic systems. Create AWS cost
+  estimates and shareable AWS Pricing Calculator URLs.
+homepage_url: https://calculator.delega.ai/start/client
+repo_url: null
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: ai.delega
+source_urls:
+  - >-
+    https://registry.modelcontextprotocol.io/v0.1/servers/ai.delega%2Faws-pricing-calculator/versions/latest
+  - https://calculator.delega.ai/start/client
+source_kind: official_registry
+protocols:
+  - MCP
+clients:
+  - Claude Desktop
+  - Cursor
+  - Windsurf
+  - VS Code
+  - OpenAI Agents SDK
+install:
+  command: null
+  notes: >-
+    Install from the upstream source after reviewing its permissions, environment variables, and
+    transport configuration.
+  config_example: null
+permissions:
+  - network
+env_vars: []
+tags:
+  - mcp
+  - agent-tools
+use_cases:
+  - Extend agents with external tools
+trust_tier: promising
+review_status: bot-reviewed
+last_checked: '2026-05-25'

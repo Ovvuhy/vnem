@@ -1,0 +1,55 @@
+schema_version: 1.0.0
+homepage_url: https://docs.anthropic.com/en/docs/claude-code/memory
+repo_url: null
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: Anthropic
+source_kind: official_docs
+protocols: []
+clients:
+  - Claude Code
+install:
+  command: null
+  notes: >-
+    Review the upstream docs, permissions, pricing, environment variables, and transport before
+    installing.
+  config_example: null
+permissions:
+  - filesystem
+env_vars: []
+tags:
+  - memory
+  - claude-code
+  - instructions
+  - context-engineering
+  - claude-md
+use_cases:
+  - Persist stable project instructions
+  - Share agent guidance across coding sessions
+best_for:
+  - Project-local context that should be versioned and reviewed with code
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: official
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags:
+  - license-not-asserted
+  - memory-can-leak-sensitive-context
+recommended_when:
+  - Use when coding agents repeatedly need the same project conventions, commands, and safety rules.
+trust_tier: verified
+review_status: manual-reviewed
+last_checked: '2026-05-26'
+slug: claude-code-memory
+name: Claude Code Memory
+type: memory
+summary_llm: >-
+  Claude Code memory uses CLAUDE.md files and imports to persist project, user, and enterprise
+  instructions that agents can load into future coding sessions.
+source_urls:
+  - https://docs.anthropic.com/en/docs/claude-code/memory

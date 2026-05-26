@@ -1,0 +1,58 @@
+schema_version: 1.0.0
+homepage_url: https://mastra.ai/docs
+repo_url: https://github.com/mastra-ai/mastra
+package_urls: []
+licenses:
+  - Apache-2.0
+copyright_owner: Mastra
+source_kind: official_docs
+protocols: []
+clients:
+  - TypeScript
+  - Node.js
+install:
+  command: npm install @mastra/core
+  notes: >-
+    Use when agent code should live in a TypeScript application with workflows, memory, MCP, and
+    eval hooks.
+  config_example: null
+permissions:
+  - network
+env_vars:
+  - OPENAI_API_KEY
+  - ANTHROPIC_API_KEY
+tags:
+  - agent-framework
+  - typescript
+  - workflows
+  - memory
+  - mcp
+  - evals
+use_cases:
+  - Build TypeScript agent applications
+  - Combine workflows, memory, and MCP tools
+best_for:
+  - JavaScript and TypeScript teams building production agent apps
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: official
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags: []
+recommended_when:
+  - Use when Node-native agent infrastructure is preferred over Python frameworks.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-26'
+slug: mastra
+name: Mastra
+type: agent-framework
+summary_llm: >-
+  Mastra is a TypeScript agent framework for agents, workflows, RAG, memory, MCP integration, evals,
+  and deployment in JavaScript applications.
+source_urls:
+  - https://mastra.ai/docs
+  - https://github.com/mastra-ai/mastra

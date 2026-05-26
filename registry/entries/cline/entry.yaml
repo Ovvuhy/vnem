@@ -1,0 +1,64 @@
+schema_version: 1.0.0
+homepage_url: https://docs.cline.bot/introduction/overview
+repo_url: https://github.com/cline/cline
+package_urls: []
+licenses:
+  - Apache-2.0
+copyright_owner: Cline
+source_kind: github
+protocols: []
+clients:
+  - VS Code
+  - MCP
+install:
+  command: null
+  notes: >-
+    Install from the VS Code Marketplace and review terminal/browser/MCP approvals before enabling
+    broad access.
+  config_example: null
+permissions:
+  - filesystem
+  - repository
+  - shell
+  - browser
+  - network
+env_vars:
+  - OPENAI_API_KEY
+  - ANTHROPIC_API_KEY
+tags:
+  - coding-agent
+  - vscode
+  - mcp
+  - browser
+  - terminal
+use_cases:
+  - Use an editor agent with terminal and browser control
+  - Connect VS Code workflows to MCP tools
+best_for:
+  - Developer-supervised code edits inside VS Code
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: high
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags:
+  - can-edit-files
+  - can-run-shell-commands
+  - browser-access
+recommended_when:
+  - Use when VS Code, explicit approvals, and MCP extension points fit the project workflow.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-26'
+slug: cline
+name: Cline
+type: coding-agent
+summary_llm: >-
+  Cline is an open-source VS Code coding agent that can read files, edit code, use the terminal and
+  browser, and request approval for risky actions.
+source_urls:
+  - https://docs.cline.bot/introduction/overview
+  - https://github.com/cline/cline

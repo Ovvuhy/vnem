@@ -1,0 +1,40 @@
+name: Discovery
+
+on:
+  schedule:
+    - cron: "17 8 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm install
+      - run: npm run generate
+      - run: npm run discover
+      - run: npm run generate
+      - run: npm run digest
+      - uses: peter-evans/create-pull-request@v6
+        with:
+          branch: automation/discovery-candidates
+          title: "Discovery: official agent tooling candidates"
+          commit-message: "Add discovery candidates"
+          body: |
+            Automated discovery run.
+
+            This PR contains candidate metadata only. Maintainers must review source links, license posture, and trust tier before promoting anything into `registry/entries`.
+          labels: discovery, needs-review
+      - name: Create daily signal digest issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue create --title "vnem signals $(date -u +%F)" --body-file discovery/daily-digest.md
