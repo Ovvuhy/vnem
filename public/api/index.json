@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-26T19:05:29.740Z",
+  "generated_at": "2026-05-26T21:02:24.985Z",
   "schema_version": "1.0.0",
   "entry_count": 199,
   "install_command": "curl -fsSL https://raw.githubusercontent.com/naellisim/vnem/main/public/install.tgz | tar -xz",
