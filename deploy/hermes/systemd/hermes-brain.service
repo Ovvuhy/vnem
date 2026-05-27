@@ -9,5 +9,6 @@ User=hermes
 Group=hermes
 WorkingDirectory=/opt/vnem
 Environment=HERMES_HOME=/home/hermes/.hermes
-ExecStart=/opt/vnem/deploy/hermes/hermes-brain-run.sh
+ExecStart=/usr/bin/env bash /opt/vnem/deploy/hermes/hermes-brain-run.sh
 Nice=5
+TimeoutStartSec=1200

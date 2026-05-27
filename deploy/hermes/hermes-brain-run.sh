@@ -29,10 +29,14 @@ fi
 
 repo_dir="${VNEM_REPO_DIR:-/opt/vnem}"
 cd "$repo_dir"
+start_branch="$(git branch --show-current 2>/dev/null || true)"
 
 mkdir -p "$HERMES_HOME/logs"
 
-prompt="$(cat <<'PROMPT'
+if [ -n "${HERMES_BRAIN_PROMPT:-}" ]; then
+  prompt="$HERMES_BRAIN_PROMPT"
+else
+  prompt="$(cat <<'PROMPT'
 You are Hermes, the living maintainer brain for vnem.
 
 Work only inside the current repository. Start by reading HERMES.md, README.md, discovery/README.md, the newest discovery/candidates/hermes*.json reports, and discovery/daily-digest.md if present.
@@ -50,6 +54,7 @@ Allowed actions:
 - Run npm run generate and npm run test:install-pack only when registry entries changed.
 - Use git status and git diff to summarize changes.
 - If push credentials are available, create a branch named hermes/brain-YYYYMMDD-HHMM, commit only your relevant changes, push it, and open a draft PR if tooling/API credentials make that possible.
+- Leave the VPS worktree on the branch you found at startup. If you create or checkout another branch, return to the original branch before exiting.
 
 Safety rules:
 - Do not execute discovered repositories.
@@ -68,11 +73,13 @@ Output a concise final report with:
 - what still needs maintainer attention
 PROMPT
 )"
+fi
 
+skills="${HERMES_BRAIN_SKILLS:-codebase-inspection,github-repo-management,github-pr-workflow}"
 args=(
   /home/hermes/.local/bin/hermes
   --provider "$provider"
-  --skills codebase-inspection,github-repo-management,github-pr-workflow
+  --skills "$skills"
   -z "$prompt"
 )
 
@@ -80,4 +87,16 @@ if [ -n "${HERMES_BRAIN_MODEL:-}" ]; then
   args+=(--model "$HERMES_BRAIN_MODEL")
 fi
 
+set +e
 "${args[@]}" 2>&1 | tee -a "$HERMES_HOME/logs/vnem-brain.log"
+status=${PIPESTATUS[0]}
+set -e
+
+if [ "${HERMES_BRAIN_RESTORE_BRANCH:-1}" = "1" ] && [ -n "$start_branch" ]; then
+  current_branch="$(git branch --show-current 2>/dev/null || true)"
+  if [ -n "$current_branch" ] && [ "$current_branch" != "$start_branch" ]; then
+    git checkout "$start_branch" || echo "Warning: could not restore startup branch $start_branch"
+  fi
+fi
+
+exit "$status"
