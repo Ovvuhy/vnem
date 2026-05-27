@@ -824,24 +824,29 @@ body.vanta-ready .hero-vanta {
 }
 
 .kickstart-link {
-  color: #0b0b0d;
-  border-color: rgba(136, 255, 90, 0.38);
-  background: linear-gradient(135deg, #88ff5a 0%, #e9ff48 100%);
+  border-color: rgba(82, 255, 161, 0.4);
+  background: rgba(82, 255, 161, 0.1);
 }
 
 .kickstart-link:hover {
-  color: #0b0b0d;
-  border-color: rgba(233, 255, 72, 0.76);
-  background: linear-gradient(135deg, #9cff6e 0%, #f4ff63 100%);
-  box-shadow: 0 0 20px rgba(136, 255, 90, 0.22);
+  border-color: rgba(82, 255, 161, 0.72);
+  background: rgba(82, 255, 161, 0.16);
+  box-shadow: 0 0 20px rgba(82, 255, 161, 0.18);
 }
 
-.kickstart-link .kickstart-a {
-  fill: currentColor;
+.kickstart-link .kickstart-mark {
+  width: 21px;
+  height: 21px;
+  border-radius: 4px;
+  overflow: hidden;
 }
 
-.kickstart-link .kickstart-bolt {
-  fill: #ffffff;
+.kickstart-link .kickstart-bg {
+  fill: #52ffa1;
+}
+
+.kickstart-link .kickstart-shape {
+  fill: #0b0b0d;
 }
 
 .social-link svg {
