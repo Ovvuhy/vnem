@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="vnem gives coding agents a read-only knowledge pack of current tools, MCPs, best practices, risks, and upgrade paths before they touch your repo." />
+    <meta name="theme-color" content="#0d0d0d" />
+    <meta property="og:title" content="vnem" />
+    <meta property="og:description" content="A read-only knowledge pack of current tools, MCPs, best practices, risks, and upgrade paths for coding agents." />
+    <meta property="og:image" content="assets/banner.jpg" />
+    <title>vnem</title>
+    <link rel="icon" href="assets/logo.png" />
+    <link rel="stylesheet" href="styles.css?v=vnem-public" />
+  </head>
+  <body>
+    <canvas id="particles" aria-hidden="true"></canvas>
+    <div class="noise" aria-hidden="true"></div>
+    <div class="custom-cursor" id="customCursor" aria-hidden="true">
+      <span class="cursor-mark"></span>
+    </div>
+
+    <header class="site-header" aria-label="vnem">
+      <a class="brand" href="#top">
+        <img src="assets/logo.png" alt="" />
+        <span>vnem</span>
+      </a>
+      <nav class="header-nav" aria-label="Primary">
+        <a href="#install">install</a>
+        <a href="#mcp">mcp</a>
+        <a href="blog/">blog</a>
+      </nav>
+      <button class="header-action" id="copyCommandHeader" type="button" aria-label="Copy vnem curl command">
+        <span>copy curl</span>
+      </button>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-label="vnem">
+        <div class="hero-vanta" id="vantaTrunk" aria-hidden="true"></div>
+        <div class="hero-image" aria-hidden="true"></div>
+        <div class="hero-scrim" aria-hidden="true"></div>
+
+        <div class="hero-center">
+          <img class="hero-logo" src="assets/logo.png" alt="" />
+          <p class="product-mark">vnem</p>
+          <h1>Perception layer for agents.</h1>
+          <p class="lead">Install a read-only knowledge pack into any repo so coding agents check current tools, MCPs, risks, and upgrade paths before they touch code.</p>
+
+          <div class="command-shell" id="install-command" aria-label="vnem curl command">
+            <div class="command-row">
+              <span class="command-prompt" aria-hidden="true">$</span>
+              <pre><code id="commandText">curl -fsSL https://vnem.pages.dev/i | tar -xz</code></pre>
+              <button id="copyCommand" type="button" aria-label="Copy vnem curl command">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M8 7.5a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-7a2 2 0 0 1-2-2v-9Z" />
+                  <path d="M5 15.5a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2" />
+                </svg>
+                <span>Copy</span>
+              </button>
+            </div>
+          </div>
+
+          <p class="outcome-line">Creates <code>AGENTS.md</code> and <code>.vnem/</code>. The agent gets instructions immediately.</p>
+        </div>
+      </section>
+
+      <section class="plain-section install-section" id="install" aria-label="Install vnem">
+        <div class="section-inner">
+          <p class="section-kicker">install</p>
+          <div class="install-grid">
+            <div>
+              <h2>Clean folder: one curl.</h2>
+              <p>The public archive now includes everything the agent needs: a root <code>AGENTS.md</code> pointer plus the full read-only <code>.vnem/</code> pack.</p>
+            </div>
+            <div class="steps-list" aria-label="Clean folder install steps">
+              <div>
+                <span>01</span>
+                <p>Open the project folder you want agents to work in.</p>
+              </div>
+              <div>
+                <span>02</span>
+                <pre><code>curl -fsSL https://vnem.pages.dev/i | tar -xz</code></pre>
+              </div>
+              <div>
+                <span>03</span>
+                <p>Start your coding agent there. It should read <code>AGENTS.md</code> and automatically use vnem.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="install-grid secondary-install">
+            <div>
+              <h2>Existing repo: managed install.</h2>
+              <p>If the repo already has an <code>AGENTS.md</code>, use the local installer so vnem adds a managed block instead of replacing the file.</p>
+            </div>
+            <pre class="code-block"><code>git clone https://github.com/naellisim/vnem.git
+cd vnem
+npm install
+npm run install:project -- /path/to/project
+npm run doctor -- /path/to/project</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <section class="plain-section" aria-label="What vnem gives agents">
+        <div class="section-inner">
+          <p class="section-kicker">what the agent gets</p>
+          <div class="capability-list">
+            <article>
+              <h2>Current agent tooling</h2>
+              <p>Searchable guidance for MCP servers, skills, agent frameworks, evals, memory layers, search tools, identity, payments, and workflow patterns.</p>
+            </article>
+            <article>
+              <h2>Repo-aware review protocol</h2>
+              <p>The agent inspects manifests and configs first, then separates stale or risky choices from better current options.</p>
+            </article>
+            <article>
+              <h2>Real MCP server</h2>
+              <p>Use vnem as a local stdio MCP for search, recommendations, entry lookup, comparison, and best-practice routing.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="plain-section mcp-section" id="mcp" aria-label="Use vnem as MCP">
+        <div class="section-inner install-grid">
+          <div>
+            <p class="section-kicker">mcp</p>
+            <h2>Use vnem as a read-only tool server.</h2>
+            <p>For MCP clients, point the server at a local vnem checkout. The server reads generated vnem artifacts and never installs packages, edits code, calls upstream services, or collects secrets.</p>
+          </div>
+          <pre class="code-block"><code>{
+  "mcpServers": {
+    "vnem": {
+      "command": "node",
+      "args": ["/path/to/vnem/scripts/vnem-mcp-server.mjs"]
+    }
+  }
+}</code></pre>
+        </div>
+      </section>
+
+      <section class="plain-section files-section" aria-label="Inside the pack">
+        <div class="section-inner file-grid">
+          <div>
+            <p class="section-kicker">inside the pack</p>
+            <h2>Six local files. Better agent judgment.</h2>
+          </div>
+          <ul class="file-list">
+            <li><code>AGENTS.md</code><span>root pointer that tells agents to read vnem automatically</span></li>
+            <li><code>.vnem/AGENTS.md</code><span>how the agent should read and report</span></li>
+            <li><code>.vnem/search-index.json</code><span>tools, MCPs, scores, freshness, risk flags</span></li>
+            <li><code>.vnem/best-practices.md</code><span>current stack guidance by project area</span></li>
+            <li><code>.vnem/prompt-engineering.md</code><span>prompt enhancement protocol</span></li>
+            <li><code>.vnem/prompt-patterns.json</code><span>machine-readable task patterns</span></li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="plain-section blog-teaser" aria-label="Latest update">
+        <div class="section-inner install-grid">
+          <div>
+            <p class="section-kicker">blog</p>
+            <h2>New: MCP, Skill, and one-command repo install.</h2>
+          </div>
+          <div class="teaser-copy">
+            <p>vnem now ships a real read-only MCP server, a Codex skill, a clean-folder curl install, and a broader registry for agentic coding, memory, search, and browser-game stacks.</p>
+            <a class="text-link" href="blog/">Read the update</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer" aria-label="Contact">
+      <div class="footer-inner">
+        <span>contact</span>
+        <div class="footer-links">
+          <a class="social-link" href="https://x.com/vnem_ai" rel="noreferrer" aria-label="X: vnem_ai">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M13.9 10.5 21.3 2h-1.8l-6.4 7.3L8 2H2.1l7.8 11.2L2.1 22h1.8l6.8-7.7 5.4 7.7H22l-8.1-11.5Zm-2.4 2.7-.8-1.1L4.4 3.3h2.7l5 7.1.8 1.1 6.6 9.3h-2.7l-5.3-7.6Z" />
+            </svg>
+          </a>
+          <a class="social-link" href="https://t.me/Ovvuhy" rel="noreferrer" aria-label="Telegram: Ovvuhy">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M21.7 4.4 18.4 20c-.2 1-.8 1.2-1.6.8l-4.7-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.4-4.9 8.9-8c.4-.3-.1-.5-.6-.2L6.4 13.8 1.7 12.3c-1-.3-1-1 .2-1.5L20.2 3.7c.9-.3 1.7.2 1.5.7Z" />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@0.5.24/dist/vanta.trunk.min.js"></script>
+    <script src="script.js?v=vnem-public"></script>
+  </body>
+</html>

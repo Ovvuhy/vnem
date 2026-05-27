@@ -20,8 +20,9 @@ The project is index-first. Do not vendor third-party tools, copy upstream code,
 - `.vnem/`: generated local dogfood pack.
 - `llms.txt` and `llms-full.txt`: generated LLM-readable indexes.
 - `HERMES.md`: recurring discovery and daily synthesis operating contract.
+- `landing/`: static landing page and blog bundle for the public website.
 
-The landing-page source is intentionally outside the public repo. Do not add `landing/` or `site/` unless the user explicitly changes that policy.
+The user explicitly changed the prior landing-page policy on 2026-05-27. `landing/` is now allowed in this repo. Do not add a separate `site/` unless the user asks.
 
 ## Editing Rules
 
@@ -31,7 +32,7 @@ The landing-page source is intentionally outside the public repo. Do not add `la
 - Keep summaries and profiles original. Avoid copied README excerpts.
 - Treat `verified` as a strong claim. Use `promising`, `unreviewed`, or `watchlist` when unsure.
 - Generated files must be regenerated instead of hand-edited.
-- The install pack must remain read-only guidance/data only. No package installs, shell scripts, secret collection, daemons, or automatic code edits.
+- The install pack must remain read-only guidance/data only. The public curl archive may write `AGENTS.md` plus `.vnem/` guidance files for clean-folder installs, but it must not install packages, include shell scripts, collect secrets, start daemons, or edit application code.
 
 ## Validation
 
