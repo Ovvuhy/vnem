@@ -67,12 +67,16 @@ export async function readEntries() {
       profile,
       entryPath,
       profilePath,
-      relativeEntryPath: path.relative(ROOT, entryPath),
-      relativeProfilePath: path.relative(ROOT, profilePath)
+      relativeEntryPath: toPortablePath(path.relative(ROOT, entryPath)),
+      relativeProfilePath: toPortablePath(path.relative(ROOT, profilePath))
     });
   }
 
   return entries.sort((a, b) => a.entry.slug.localeCompare(b.entry.slug));
+}
+
+export function toPortablePath(filePath) {
+  return filePath.split(path.sep).join("/");
 }
 
 export function uniqueSorted(values) {

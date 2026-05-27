@@ -37,6 +37,15 @@ const intentAliases = {
   memory: ["memory", "context", "persistence", "knowledge", "state"],
   evals: ["eval", "testing", "benchmark", "verification", "quality", "score"],
   "agent news": ["news", "signals", "release", "trend", "freshness", "registry"],
+  "source radar": ["research layer", "source intake", "official docs", "docs index", "mcp registry", "llms.txt", "freshness", "provenance"],
+  "research layer": ["source radar", "source intake", "current docs", "official docs", "mcp registry", "benchmark evidence", "evidence"],
+  "source intake": ["source radar", "research layer", "upstream source", "source trust", "source provenance", "source license", "source permissions", "source risk review"],
+  "benchmark evidence": ["evals", "inspect ai", "promptfoo", "ragas", "quality evidence", "performance data", "regression test", "pilot task"],
+  "pre execution gateway": ["zero trust gateway", "agent gateway", "tool firewall", "command risk", "alignment barrier", "path confinement", "secret redaction"],
+  "zero trust gateway": ["pre execution gateway", "tool pinning", "schema hashing", "mcp rug pull", "tool poisoning", "read only hint", "destructive hint"],
+  "tool pinning": ["schema hash", "tool schema", "mcp rug pull", "tool poisoning", "tools/list_changed", "tool annotations", "tool metadata"],
+  "package firewall": ["dependency firewall", "package risk", "typosquatting", "dependency install", "npm package", "cargo package", "package metadata"],
+  "ast indexer": ["tree-sitter", "code graph", "codebase graph", "structural index", "symbol graph", "imports", "call graph", "soft delete"],
   "backend api": ["backend", "api", "database", "server", "runtime", "deployment"],
   security: ["security", "trust", "identity", "compliance", "guardrails", "audit"],
   "coding agents": ["coding-agent", "codebase", "repository", "diff", "terminal", "tests", "pull request"],
@@ -62,6 +71,10 @@ const intentAliases = {
   "prompt enhancer": ["prompt", "rewrite", "improve prompt", "prompt forge", "prompt pattern", "output contract"],
   "codex prompt": ["codex", "coding-agent", "agents.md", "scope", "verification", "diff", "tests"],
   "prompt optimizer": ["prompt", "optimizer", "dataset", "grader", "annotation", "eval", "iteration"],
+  "codex vs claude": ["codex", "claude code", "coding-agent", "repository", "approvals", "memory", "subagents"],
+  "gemini agent": ["gemini", "google adk", "agent-framework", "vertex ai", "deployment", "evaluation"],
+  "ai model selection": ["model", "provider", "agent", "eval", "cost", "latency", "workflow"],
+  "agent upgrade": ["upgrade", "capability", "workflow", "mcp", "eval", "memory", "observability"],
   "code simplification": ["refactor", "minimalism", "code quality", "dead code", "duplication", "complexity", "tests", "ast-grep", "knip", "jscpd"],
   "code compaction": ["simplify code", "reduce code", "minimal code", "dead code", "duplication", "behavior preserving", "refactor"],
   "minimal code": ["minimalism", "simple design", "small API", "refactor", "remove duplication", "delete dead code", "feature preservation"],
@@ -124,6 +137,84 @@ const intentRoutes = {
     compare_options: ["read-only guidance only", "small direct MCP set", "gateway-controlled MCP workspace", "IDE agent plus terminal agent"],
     choose_by: ["repository risk", "tool permissions", "agent client", "audit needs", "how often context changes"],
     report: ["vnem intents searched", "top matches", "choice", "why", "remaining uncertainty"]
+  },
+  "source radar": {
+    read_first: ["source:mcp-core-and-registry", "source:coding-agent-clients", "source:documentation-ingestion", "practice:research-source-intake", "practice:agent-tooling"],
+    compare_options: ["official docs", "canonical GitHub repositories", "official registries", "vendor MCP docs", "evaluation frameworks", "llms.txt indexes"],
+    choose_by: ["source confidence", "freshness", "license clarity", "permission risk", "agent-client relevance", "verification path"],
+    report: ["source category", "why it matters", "trust and risk", "intake path", "refresh cadence"]
+  },
+  "research layer": {
+    read_first: ["source:mcp-core-and-registry", "source:coding-agent-clients", "source:evaluation-and-observability", "practice:research-source-intake", "practice:evals"],
+    compare_options: ["static registry entry", "best-practice note", "prompt pattern", "watched source", "benchmark fixture"],
+    choose_by: ["whether agents need it before editing", "source trust", "context saved", "maintenance effort", "risk flags"],
+    report: ["sources consulted", "decision", "data to add", "verification evidence"]
+  },
+  "source intake": {
+    read_first: ["source:mcp-core-and-registry", "source:documentation-ingestion", "practice:research-source-intake", "practice:security"],
+    compare_options: ["add watched source only", "add registry entry", "add best-practice note", "add prompt pattern", "defer as out of scope"],
+    choose_by: ["official provenance", "license posture", "permissions", "risk flags", "whether a real agent workflow improves"],
+    report: ["candidate", "trust tier", "risk flags", "artifact to update", "verification"]
+  },
+  "benchmark evidence": {
+    read_first: ["source:evaluation-and-observability", "practice:evals", "practice:research-source-intake"],
+    compare_options: ["small repo pilot", "prompt regression suite", "tool-call trace review", "before/after recommendation diff", "manual maintainer review"],
+    choose_by: ["measurable behavior", "repeatability", "cost", "failure-mode coverage", "fit to vnem's read-only model"],
+    report: ["metric", "dataset or fixture", "baseline", "expected improvement", "review gate"]
+  },
+  "pre execution gateway": {
+    read_first: ["practice:zero-trust-agent-gateway", "source:agentic-gateway-security", "practice:mcp-server-selection", "practice:security"],
+    compare_options: ["read-only vnem guidance", "advisory gateway design", "client-side approval policy", "separate runtime proxy", "language/runtime rewrite"],
+    choose_by: ["blast radius", "deterministic controls", "client compatibility", "secret handling", "path confinement", "verification coverage"],
+    report: ["safe subset", "blocked risky scope", "phased design", "required tests", "approval gates"]
+  },
+  "zero trust gateway": {
+    read_first: ["practice:zero-trust-agent-gateway", "source:agentic-gateway-security", "practice:mcp-server-selection", "practice:security"],
+    compare_options: ["tool annotations as hints", "schema hash pinning", "workspace path policy", "redacted audit logging", "package firewall advisory", "runtime sandbox"],
+    choose_by: ["enforceability", "trusted boundary", "false-positive cost", "rollback path", "whether the install pack remains read-only"],
+    report: ["trust boundary", "control type", "what is deterministic", "what needs human approval"]
+  },
+  "tool pinning": {
+    read_first: ["practice:zero-trust-agent-gateway", "source:agentic-gateway-security", "practice:mcp-server-selection"],
+    compare_options: ["schema hash pinning", "tool allowlist", "server/version pin", "list_changed invalidation", "manual approval on schema drift"],
+    choose_by: ["source trust", "schema stability", "client support", "failure mode", "auditability"],
+    report: ["server", "tool", "known hash", "drift behavior", "review action"]
+  },
+  "package firewall": {
+    read_first: ["practice:zero-trust-agent-gateway", "source:agentic-gateway-security", "practice:code-review", "practice:security"],
+    compare_options: ["manifest diff review", "package metadata check", "typosquat heuristic", "maintainer/license check", "lockfile-only policy"],
+    choose_by: ["ecosystem", "registry metadata quality", "install side effects", "maintainer trust", "verification path"],
+    report: ["package", "risk signal", "recommended gate", "false-positive handling"]
+  },
+  "ast indexer": {
+    read_first: ["practice:zero-trust-agent-gateway", "source:agentic-gateway-security", "practice:code-simplification", "practice:evals"],
+    compare_options: ["plain lexical search", "AST-aware search", "disposable read-only graph", "durable code graph service"],
+    choose_by: ["repo size", "language support", "index freshness", "write risk", "incremental update correctness"],
+    report: ["index scope", "read-only guarantee", "verification", "deferred runtime scope"]
+  },
+  "codex vs claude": {
+    read_first: ["practice:ide-agent-selection", "practice:model-and-provider-selection", "practice:agent-tooling", "practice:evals"],
+    compare_options: ["Codex", "Claude Code", "Gemini/Google ADK", "Copilot-style agents", "Cursor/Cline-style tools", "framework-based agents"],
+    choose_by: ["repo workflow fit", "approval boundaries", "shell and filesystem model", "memory and instruction model", "MCP/tool support", "verification and cost"],
+    report: ["vnem intents searched", "top matches", "best fit", "pilot task"]
+  },
+  "gemini agent": {
+    read_first: ["practice:ide-agent-selection", "practice:model-and-provider-selection", "practice:agent-tooling", "practice:evals"],
+    compare_options: ["Gemini/Google ADK", "Codex", "Claude Code", "hosted agent runtimes", "model API tool-calling"],
+    choose_by: ["Google ecosystem fit", "agent framework needs", "deployment path", "tooling and evaluation support", "privacy and cost"],
+    report: ["vnem intents searched", "top matches", "choice", "why"]
+  },
+  "ai model selection": {
+    read_first: ["practice:model-and-provider-selection", "practice:ide-agent-selection", "practice:evals", "practice:observability-and-tracing"],
+    compare_options: ["coding agent", "model API", "agent framework", "MCP-enabled workflow", "existing project tool"],
+    choose_by: ["task shape", "quality evidence", "latency", "cost", "privacy", "operational fit", "reversibility"],
+    report: ["vnem intents searched", "top matches", "recommendation", "verification plan"]
+  },
+  "agent upgrade": {
+    read_first: ["practice:ide-agent-selection", "practice:model-and-provider-selection", "practice:context-engineering", "practice:evals"],
+    compare_options: ["better instructions", "prompt pattern", "MCP/tool addition", "memory policy", "eval fixture", "agent/provider switch"],
+    choose_by: ["highest concrete capability gap", "permission risk", "verification path", "rollback path", "maintenance cost"],
+    report: ["vnem intents searched", "top matches", "upgrade path", "risk and verification"]
   },
   "browser game": {
     read_first: ["practice:browser-games", "practice:frontend", "practice:evals"],
@@ -585,6 +676,29 @@ const bestPracticeSections = [
     ]
   },
   {
+    id: "research-source-intake",
+    title: "Research Source Intake",
+    score: 14,
+    summary: "Treat vnem as a source router, not a document dump: capture official, current, machine-readable sources that help agents make better decisions before editing.",
+    keywords: ["source radar", "research layer", "source intake", "current docs", "official docs", "mcp registry", "llms.txt", "benchmark evidence", "provenance", "freshness"],
+    sources: [
+      "https://modelcontextprotocol.io/docs/getting-started/intro",
+      "https://github.com/modelcontextprotocol/registry",
+      "https://llmstxt.org/",
+      "https://developers.openai.com/codex/guides/agents-md",
+      "https://code.claude.com/docs/en/mcp",
+      "https://inspect.aisi.org.uk/"
+    ],
+    practices: [
+      "Start source intake from the agent decision it improves: tool choice, MCP adoption, model/provider selection, prompt upgrade, eval design, UI verification, or risk review.",
+      "Prefer official docs, canonical repositories, maintained registries, llms.txt indexes, vendor MCP docs, and eval frameworks with repeatable fixtures.",
+      "Keep vnem metadata original and compact; preserve source URLs instead of copying long upstream docs into the install pack.",
+      "Record trust tier, source confidence, freshness, permissions, license posture, risk flags, and whether the source can mutate external systems.",
+      "Separate discovery from promotion: Hermes can suggest candidates, but maintainers should review before raising trust or recommending installs.",
+      "Tie important claims to a small benchmark, smoke test, link check, or before/after agent recommendation diff."
+    ]
+  },
+  {
     id: "mcp-server-selection",
     title: "MCP Server Selection",
     summary: "MCP servers should be selected like dependencies: source-backed, least-privilege, pinned where possible, and tested against the actual client workflow.",
@@ -600,6 +714,29 @@ const bestPracticeSections = [
       "Install one server per concrete workflow, then verify the client can call only the intended tools.",
       "Mark servers that can browse, mutate repositories, query databases, spend money, or access production data.",
       "Prefer official or vendor-maintained servers for high-risk resources, and put community servers behind review."
+    ]
+  },
+  {
+    id: "zero-trust-agent-gateway",
+    title: "Zero-Trust Agent Gateway Readiness",
+    score: 14,
+    summary: "Move toward gateway behavior in phases: advisory guidance first, deterministic checks second, runtime enforcement only after threat modeling and adversarial tests.",
+    keywords: ["pre execution gateway", "zero trust gateway", "tool pinning", "schema hashing", "mcp rug pull", "tool poisoning", "package firewall", "ast indexer", "path confinement", "secret redaction", "command risk"],
+    sources: [
+      "https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/",
+      "https://modelcontextprotocol.io/specification/2025-06-18/schema",
+      "https://ts.sdk.modelcontextprotocol.io/variables/types.ToolAnnotationsSchema.html",
+      "https://docs.github.com/en/code-security/secret-scanning/introduction/about-secret-scanning",
+      "https://docs.npmjs.com/about-registry-signatures"
+    ],
+    practices: [
+      "Do not convert the read-only vnem install pack into a daemon, shell proxy, package installer, or runtime command interceptor.",
+      "Treat tool metadata and MCP annotations as risk signals only; trusted clients still need deterministic controls for filesystem, network, secrets, and external side effects.",
+      "Pin tool schemas by hashing canonical schema JSON and require review when a trusted server's tool schema changes unexpectedly.",
+      "Redact secrets before logging by combining known token patterns, connection-string patterns, private-key markers, and high-entropy argument detection.",
+      "Enforce workspace path policy with resolved absolute paths and prefix checks before any future mutating gateway action.",
+      "Review dependency additions as manifest diffs before installation; use package metadata and provenance signals as advisory checks with human override.",
+      "Keep AST indexing read-only at first: extract symbols, imports, and calls into a disposable local graph before writing durable index state."
     ]
   },
   {
@@ -649,6 +786,24 @@ const bestPracticeSections = [
       "Preserve the user's intent first; improve structure, specificity, and testability without changing the goal.",
       "Add missing success criteria, inputs, constraints, non-goals, output format, and verification steps.",
       "For coding-agent prompts, include repository scope, files or modules, allowed commands, verification command, and what must not change."
+    ]
+  },
+  {
+    id: "model-and-provider-selection",
+    title: "Model And Provider Selection",
+    score: 15,
+    summary: "Choose Codex, Claude Code, Gemini/ADK, framework agents, or model APIs by workflow fit, permissions, eval evidence, and operational cost rather than brand preference.",
+    keywords: ["ai model selection", "codex vs claude", "gemini agent", "provider", "model", "agent upgrade", "adk"],
+    sources: [
+      "https://developers.openai.com/codex/guides/agents-md",
+      "https://openai.github.io/openai-agents-python/",
+      "https://code.claude.com/docs/en/overview",
+      "https://adk.dev/"
+    ],
+    practices: [
+      "Start from the task shape: repo editing, hosted agent runtime, multi-agent workflow, model app, browser-game build, or tool-calling backend.",
+      "Compare approval boundaries, shell/filesystem access, memory model, MCP/tool support, tracing, evals, deployment path, cost, privacy, and reversibility.",
+      "Run a small benchmark or pilot task before standardizing on a new agent/provider workflow."
     ]
   }
 ];
@@ -781,7 +936,7 @@ const taskRubrics = [
     summary:
       "Choose MCP servers, skills, agents, gateways, and prompt tooling as permissioned capabilities with provenance, least privilege, and reviewable setup.",
     modes: ["decision", "plan", "review"],
-    intents: ["agent", "mcp", "mcp servers", "mcp gateway", "one mcp", "tool routing", "coding agents", "codex config", "agent workspace"],
+    intents: ["agent", "mcp", "mcp servers", "mcp gateway", "one mcp", "tool routing", "coding agents", "codex config", "agent workspace", "source radar", "source intake", "ai model selection", "agent upgrade", "codex vs claude", "zero trust gateway"],
     read_first: ["practice:agent-tooling", "practice:mcp-server-selection", "practice:mcp-gateway-tool-routing", "practice:security"],
     quality_bar: [
       "tool choice is tied to one concrete workflow",
@@ -817,8 +972,8 @@ const taskRubrics = [
     summary:
       "Treat security, auth, secrets, payments, production data, deployments, browsers, and databases as high-risk surfaces requiring explicit boundaries and evidence.",
     modes: ["build", "review", "debug", "decision"],
-    intents: ["security", "auth", "secrets", "payments", "wallet", "database", "deployment", "production", "browser", "permissions"],
-    read_first: ["practice:security", "practice:human-approval-and-durability", "practice:evals"],
+    intents: ["security", "auth", "secrets", "payments", "wallet", "database", "deployment", "production", "browser", "permissions", "pre execution gateway", "zero trust gateway", "tool pinning", "package firewall", "ast indexer"],
+    read_first: ["practice:security", "practice:zero-trust-agent-gateway", "practice:human-approval-and-durability", "practice:evals"],
     quality_bar: [
       "sensitive resources and mutation paths are named",
       "least privilege and rollback are considered before action",
@@ -864,6 +1019,239 @@ const taskRubrics = [
     approval_gates: ["adding heavy engines or binary assets", "using paid asset services", "fetching remote media", "introducing audio/autoplay behavior"],
     verification: ["serve locally", "confirm nonblank rendering", "simulate or manually perform core input", "check state transition and restart", "inspect mobile viewport"],
     output_contract: ["chosen rendering/game stack", "core interaction built", "browser verification evidence", "known device/performance risk"]
+  }
+];
+
+const sourceRadar = [
+  {
+    id: "mcp-core-and-registry",
+    title: "MCP Core Docs And Official Registry",
+    category: "protocol-registry",
+    priority: "critical",
+    summary: "Track MCP protocol docs, specification changes, and the official MCP registry before adding or recommending MCP servers.",
+    use_when: [
+      "An agent is choosing, comparing, or installing MCP servers.",
+      "A registry entry depends on MCP transport, tools, resources, prompts, elicitation, or auth behavior.",
+      "Hermes or maintainers need a source of truth for new MCP server discovery."
+    ],
+    monitor: [
+      "Protocol docs and llms.txt index",
+      "Official registry API and repository updates",
+      "Server metadata, package sources, licenses, and published versions"
+    ],
+    risk_checks: [
+      "Registry preview or API stability notes",
+      "Server provenance and package ownership",
+      "Tool permissions, network access, secrets, and write capability"
+    ],
+    source_urls: [
+      "https://modelcontextprotocol.io/docs/getting-started/intro",
+      "https://modelcontextprotocol.io/llms.txt",
+      "https://github.com/modelcontextprotocol/registry",
+      "https://registry.modelcontextprotocol.io/v0.1/servers"
+    ]
+  },
+  {
+    id: "coding-agent-clients",
+    title: "Coding Agent Client Docs",
+    category: "agent-client",
+    priority: "critical",
+    summary: "Track how major coding agents load instructions, MCP tools, memory, subagents, approvals, and project context.",
+    use_when: [
+      "vnem needs to support Codex, Claude Code, OpenCode, Gemini/ADK, or similar coding agents.",
+      "A recommendation depends on how the agent reads AGENTS.md, CLAUDE.md, MCP resources, prompts, or memory.",
+      "The install pack or MCP server should be easier to use across multiple agent clients."
+    ],
+    monitor: [
+      "Instruction-file behavior",
+      "MCP configuration and transport support",
+      "Memory, subagent, approval, and tool-search behavior",
+      "Windows, terminal, IDE, and browser support"
+    ],
+    risk_checks: [
+      "Client-specific config drift",
+      "Features that require account login, OAuth, or paid plans",
+      "Actions that bypass repo review, approvals, or least privilege"
+    ],
+    source_urls: [
+      "https://developers.openai.com/codex/guides/agents-md",
+      "https://code.claude.com/docs/en/overview",
+      "https://code.claude.com/docs/en/mcp",
+      "https://code.claude.com/docs/en/memory",
+      "https://code.claude.com/docs/en/sub-agents",
+      "https://opencode.ai/docs/",
+      "https://adk.dev/"
+    ]
+  },
+  {
+    id: "documentation-ingestion",
+    title: "Documentation Ingestion Sources",
+    category: "current-docs",
+    priority: "high",
+    summary: "Prefer LLM-oriented documentation indexes and source-backed doc retrieval so agents stop wasting context on broad web searches.",
+    use_when: [
+      "A coding agent needs current library, framework, SDK, or MCP documentation.",
+      "vnem should point to a source rather than copying long upstream docs into the registry.",
+      "A source has an llms.txt index, canonical docs, or a docs-specific MCP."
+    ],
+    monitor: [
+      "llms.txt and llms-full.txt availability",
+      "Canonical documentation URLs",
+      "Docs MCP servers and CLI doc retrievers"
+    ],
+    risk_checks: [
+      "Stale generated docs",
+      "Unclear docs provenance",
+      "Copied upstream content that exceeds fair-use or license boundaries"
+    ],
+    source_urls: [
+      "https://llmstxt.org/",
+      "https://github.com/upstash/context7",
+      "https://docs.firecrawl.dev/mcp-server"
+    ]
+  },
+  {
+    id: "browser-and-ui-verification",
+    title: "Browser And UI Verification Sources",
+    category: "verification-tooling",
+    priority: "high",
+    summary: "Track browser automation and hosted browser MCPs that let agents verify rendered apps instead of guessing from code.",
+    use_when: [
+      "An agent is building UI, debugging a browser app, validating accessibility snapshots, or checking frontend regressions.",
+      "vnem needs to recommend a browser MCP or verification workflow.",
+      "A product claim depends on visible UI behavior rather than static code."
+    ],
+    monitor: [
+      "Playwright MCP capabilities",
+      "Browserbase MCP capabilities",
+      "Client support for browser MCPs, screenshots, accessibility snapshots, and hosted sessions"
+    ],
+    risk_checks: [
+      "Browser/network access",
+      "Credential exposure through pages",
+      "Stateful sessions and paid browser infrastructure"
+    ],
+    source_urls: [
+      "https://github.com/microsoft/playwright-mcp",
+      "https://docs.browserbase.com/integrations/mcp/introduction"
+    ]
+  },
+  {
+    id: "platform-and-data-connectors",
+    title: "Platform And Data Connector Sources",
+    category: "sensitive-connectors",
+    priority: "high",
+    summary: "Track official or vendor-maintained MCPs for repositories, databases, monitoring, payments, and web extraction with explicit permission review.",
+    use_when: [
+      "An agent needs GitHub, Supabase, Sentry, Stripe, Firecrawl, or another external service.",
+      "A registry entry can read production-like data, write issues, query databases, spend money, or browse the web.",
+      "vnem needs to recommend least-privilege, read-only, or sandbox-first setup."
+    ],
+    monitor: [
+      "Official MCP repositories and docs",
+      "Available tool groups, scopes, and read-only modes",
+      "OAuth, PAT, API key, and sandbox guidance"
+    ],
+    risk_checks: [
+      "Repository write access",
+      "Database writes or production data",
+      "Payment or billing side effects",
+      "Monitoring data sensitivity",
+      "Prompt injection through fetched external content"
+    ],
+    source_urls: [
+      "https://github.com/github/github-mcp-server",
+      "https://supabase.com/docs/guides/ai-tools/mcp",
+      "https://mcp.sentry.dev/",
+      "https://docs.stripe.com/agents",
+      "https://docs.firecrawl.dev/mcp-server"
+    ]
+  },
+  {
+    id: "evaluation-and-observability",
+    title: "Evaluation And Observability Sources",
+    category: "quality-evidence",
+    priority: "high",
+    summary: "Track eval and tracing systems so vnem can prove whether an agent workflow actually improves output quality, speed, and safety.",
+    use_when: [
+      "A claim says vnem improves recommendations, engineering velocity, prompt quality, or tool choice.",
+      "A prompt, MCP, agent, or model switch needs a before/after benchmark.",
+      "Maintainers need traces or eval logs to explain why an agent made a decision."
+    ],
+    monitor: [
+      "Small repeatable eval frameworks",
+      "Prompt and agent regression suites",
+      "Trace, cost, latency, and tool-call observability"
+    ],
+    risk_checks: [
+      "Benchmarks that do not match real repo tasks",
+      "Scores without reproducible fixtures",
+      "Telemetry or traces containing secrets or private code"
+    ],
+    source_urls: [
+      "https://inspect.aisi.org.uk/",
+      "https://www.promptfoo.dev/docs/intro/",
+      "https://docs.ragas.io/",
+      "https://docs.langfuse.com/",
+      "https://docs.arize.com/phoenix"
+    ]
+  },
+  {
+    id: "secure-mcp-distribution",
+    title: "Secure MCP Distribution Sources",
+    category: "distribution",
+    priority: "medium",
+    summary: "Track curated MCP catalogs and containerized distribution models for safer team adoption of third-party MCP servers.",
+    use_when: [
+      "A team wants approved MCP catalogs instead of ad hoc server installs.",
+      "A server has dependency, runtime, or package provenance concerns.",
+      "vnem needs to distinguish local, remote, containerized, and organization-approved MCP deployment paths."
+    ],
+    monitor: [
+      "Catalog provenance and SBOM metadata",
+      "Container signing and update cadence",
+      "Team profiles, custom catalogs, and allowed-server policies"
+    ],
+    risk_checks: [
+      "Catalog beta or preview status",
+      "Container trust and host access",
+      "Remote OAuth and external service permissions"
+    ],
+    source_urls: [
+      "https://docs.docker.com/ai/mcp-catalog-and-toolkit/catalog/",
+      "https://docs.docker.com/ai/mcp-catalog-and-toolkit/toolkit/"
+    ]
+  },
+  {
+    id: "agentic-gateway-security",
+    title: "Agentic Gateway Security Sources",
+    category: "security-architecture",
+    priority: "high",
+    summary: "Track security sources for tool annotations, schema drift, secret handling, workspace confinement, package risk, and agent runtime approval design.",
+    use_when: [
+      "A proposal asks vnem to act as a pre-execution gateway, command proxy, package firewall, schema pinning layer, or AST indexer.",
+      "An agent wants to classify tool calls as read-only, mutating, destructive, open-world, or approval-required.",
+      "Maintainers need to distinguish metadata hints from enforceable security controls."
+    ],
+    monitor: [
+      "MCP tool annotation semantics and list-changed behavior",
+      "Client approval and sandbox behavior",
+      "Package registry provenance and dependency-risk guidance",
+      "Secret detection and redaction rules"
+    ],
+    risk_checks: [
+      "Untrusted tool metadata must not be treated as enforcement.",
+      "Runtime command interception needs a threat model before implementation.",
+      "Path confinement and redaction claims require adversarial tests.",
+      "Package firewall decisions can break valid developer workflows and need override paths."
+    ],
+    source_urls: [
+      "https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/",
+      "https://modelcontextprotocol.io/specification/2025-06-18/schema",
+      "https://ts.sdk.modelcontextprotocol.io/variables/types.ToolAnnotationsSchema.html",
+      "https://docs.github.com/en/code-security/secret-scanning/introduction/about-secret-scanning",
+      "https://docs.npmjs.com/about-registry-signatures"
+    ]
   }
 ];
 
@@ -1123,6 +1511,63 @@ const promptPatterns = [
       "- Best options.",
       "- Risk flags.",
       "- Ask before changing."
+    ].join("\n")
+  },
+  {
+    id: "source-intake",
+    title: "Source Intake Prompt",
+    intents: ["source radar", "source intake", "research layer", "benchmark evidence"],
+    summary: "Prompt an agent to decide whether an upstream source belongs in vnem without copying long docs or promoting unreviewed claims.",
+    output_modes: ["source_review", "intake_plan"],
+    template: [
+      "Review this source for possible vnem intake.",
+      "",
+      "Source:",
+      "<URL, repository, docs page, registry feed, benchmark, or MCP server>",
+      "",
+      "Decision criteria:",
+      "- What agent decision does this source improve?",
+      "- Is it official, canonical, vendor-maintained, or high-signal?",
+      "- What license, permissions, install, data, or mutation risks are visible?",
+      "- Is there a lightweight verification path such as link check, smoke test, fixture, or before/after recommendation diff?",
+      "",
+      "Rules:",
+      "- Preserve source URLs and write original summaries.",
+      "- Do not copy long upstream documentation into vnem.",
+      "- Do not promote trust beyond the evidence.",
+      "",
+      "Output:",
+      "- Source candidate.",
+      "- Why it matters.",
+      "- Trust and risk.",
+      "- Smallest artifact to update.",
+      "- Verification needed."
+    ].join("\n")
+  },
+  {
+    id: "zero-trust-gateway-roadmap",
+    title: "Zero-Trust Gateway Roadmap Prompt",
+    intents: ["pre execution gateway", "zero trust gateway", "tool pinning", "package firewall", "ast indexer"],
+    summary: "Prompt for turning an ambitious agent-runtime security idea into phased read-only guidance, advisory checks, and deferred runtime scope.",
+    output_modes: ["phased_plan", "risk_register", "verification_gates"],
+    template: [
+      "Review this agentic security proposal for vnem.",
+      "",
+      "Proposal:",
+      "<gateway, tool pinning, package firewall, command policy, secret redaction, or AST index idea>",
+      "",
+      "Rules:",
+      "- Keep the current vnem install pack read-only.",
+      "- Separate guidance, advisory analysis, deterministic checks, and runtime enforcement.",
+      "- Treat MCP tool annotations as risk hints, not security guarantees.",
+      "- Require explicit approval before any tool install, config mutation, daemon, secret use, or external service call.",
+      "",
+      "Output:",
+      "- Safe subset to add now.",
+      "- Risky or blocked scope.",
+      "- Phased implementation.",
+      "- Required tests before enforcement.",
+      "- Source anchors and unresolved assumptions."
     ].join("\n")
   },
   {
@@ -1506,6 +1951,33 @@ function buildSearchDocuments(entries) {
     keywords: unique(textTokens([section.title, section.summary, ...section.keywords, ...section.practices].join(" "))).slice(0, 120)
   }));
 
+  const sourceRadarDocs = sourceRadar.map((source) => ({
+    id: `source:${source.id}`,
+    kind: "source-radar",
+    title: source.title,
+    summary: source.summary,
+    url_path: "/install/source-radar.json",
+    trust_tier: "verified",
+    type: "source-radar",
+    score: source.priority === "critical" ? 17 : source.priority === "high" ? 14 : 10,
+    tags: unique([source.category, source.priority, ...(source.use_when ?? [])]),
+    use_cases: source.use_when,
+    best_for: source.monitor,
+    risk_flags: source.risk_checks,
+    source_urls: unique([installFileUrl("source-radar.json"), ...(source.source_urls ?? [])]),
+    keywords: unique(textTokens([
+      source.id,
+      source.title,
+      source.category,
+      source.priority,
+      source.summary,
+      ...(source.use_when ?? []),
+      ...(source.monitor ?? []),
+      ...(source.risk_checks ?? []),
+      ...(source.source_urls ?? [])
+    ].join(" "))).slice(0, 140)
+  }));
+
   const rubricDocs = taskRubrics.map((rubric) => ({
     id: `task-rubric:${rubric.id}`,
     kind: "task-rubric",
@@ -1560,7 +2032,7 @@ function buildSearchDocuments(entries) {
     }
   ];
 
-  return [...operatingDocs, ...rubricDocs, ...promptDocs, ...practiceDocs, ...entryDocs].sort((a, b) => b.score - a.score || a.title.localeCompare(b.title));
+  return [...operatingDocs, ...sourceRadarDocs, ...rubricDocs, ...promptDocs, ...practiceDocs, ...entryDocs].sort((a, b) => b.score - a.score || a.title.localeCompare(b.title));
 }
 
 function buildInvertedIndex(documents) {
@@ -1641,6 +2113,7 @@ function operatingProtocolMarkdown() {
     "",
     "- Use `.vnem/task-rubrics.json` to choose the broad quality bar for the task.",
     "- Use `.vnem/search-index.json` to route intents and retrieve source-backed entries.",
+    "- Use `.vnem/source-radar.json` when the task depends on current docs, upstream registries, benchmark evidence, or agent-client behavior.",
     "- Use `.vnem/best-practices.md` after routing, not as a wall of generic context.",
     "- Use `.vnem/agent-workspace.md` only for autonomous developer environment choices such as MCP gateways, memory files, agent clients, or mode systems.",
     ""
@@ -1661,6 +2134,46 @@ function taskRubricsJson() {
     purpose:
       "Broad task rubrics for producing compact agent task contracts across common coding-agent workflows without maintaining narrow playbooks.",
     rubrics: taskRubrics
+  };
+}
+
+function sourceRadarJson() {
+  return {
+    generated_at: generatedAt,
+    schema_version: "1.0.0",
+    safety: {
+      mode: "read-only-source-radar",
+      executes_code: false,
+      installs_packages: false,
+      starts_daemons: false,
+      requires_secrets: false,
+      calls_upstream_services: false
+    },
+    intake_policy: {
+      purpose: "Help agents and maintainers decide which upstream sources vnem should consult, watch, or summarize before recommending tools or stack changes.",
+      prefer: [
+        "official documentation",
+        "canonical repositories",
+        "official registries and package metadata",
+        "vendor-maintained MCP servers",
+        "llms.txt or machine-readable documentation indexes",
+        "repeatable eval and observability sources"
+      ],
+      avoid: [
+        "copying long upstream docs into vnem",
+        "promoting unreviewed sources to verified",
+        "recommending install or configuration before permission and risk review",
+        "claims about performance without a reproducible benchmark or pilot task"
+      ],
+      promotion_gate: [
+        "source URL and owner recorded",
+        "license posture reviewed",
+        "permissions and risk flags recorded",
+        "freshness or maintenance signal checked",
+        "verification path documented"
+      ]
+    },
+    sources: sourceRadar
   };
 }
 
@@ -1812,6 +2325,7 @@ function agentsMarkdown() {
     "- `.vnem/operating-protocol.md`: universal loop for sensing the repo, routing context, choosing small capabilities, constraining risk, verifying, and reporting evidence.",
     "- `.vnem/task-rubrics.json`: broad task rubrics used to shape the quality bar, approval gates, verification checklist, and final report.",
     "- `.vnem/search-index.json`: compact local search index for tools, skills, MCP servers, and best-practice notes.",
+    "- `.vnem/source-radar.json`: source intake map for official docs, registries, MCP sources, evals, and verification sources.",
     "- `.vnem/best-practices.md`: current guidance by project area.",
     "- `.vnem/agent-workspace.md`: autonomous developer environment guide covering MCP gateways, memory files, agent modes, and Codex/VNEM setup.",
     "- `.vnem/prompt-engineering.md`: prompt enhancement protocol and Codex-oriented prompt guidance.",
@@ -1832,10 +2346,11 @@ function agentsMarkdown() {
     "3. Read `.vnem/search-index.json` and expand those intents with `intent_aliases`.",
     "4. Select the matching broad rubric from `.vnem/task-rubrics.json` and use its quality bar, approval gates, verification checklist, and output contract.",
     "5. Check `intent_routes` for the closest matching task. Read the listed `read_first` documents before choosing a stack.",
-    "6. Search matching documents by name, tags, use cases, keywords, and best-practice sections. Read `.vnem/best-practices.md` only for matching sections.",
-    "7. Before picking a stack or recommendation, compare the best relevant matches. Prefer higher `score`, stronger `source_confidence`, fresher `freshness`, clearer licenses, fewer `risk_flags`, and the smallest sufficient capability.",
-    "8. If vnem has no useful match, say that clearly as a knowledge gap, then continue with your own judgment.",
-    "9. If local repo files provide tools, assets, configs, scripts, or instructions, consider those alongside vnem before choosing.",
+    "6. If the task depends on current docs, upstream registries, benchmark claims, MCP discovery, or agent-client behavior, read `.vnem/source-radar.json` before broad web search.",
+    "7. Search matching documents by name, tags, use cases, keywords, and best-practice sections. Read `.vnem/best-practices.md` only for matching sections.",
+    "8. Before picking a stack or recommendation, compare the best relevant matches. Prefer higher `score`, stronger `source_confidence`, fresher `freshness`, clearer licenses, fewer `risk_flags`, and the smallest sufficient capability.",
+    "9. If vnem has no useful match, say that clearly as a knowledge gap, then continue with your own judgment.",
+    "10. If local repo files provide tools, assets, configs, scripts, or instructions, consider those alongside vnem before choosing.",
     "",
     "For nontrivial tasks, follow a compact task contract: `mode`, `intent`, `rubric`, `read first`, `smallest sufficient capability`, `approval gates`, `verification`, and `final report`.",
     "",
@@ -1899,6 +2414,8 @@ function agentWorkspaceMarkdown() {
     "",
     "Add gateways, memory banks, browser sessions, database access, and repository mutation tools only after the team can name the approval path and rollback plan.",
     "",
+    "Use `.vnem/source-radar.json` when workspace choices depend on current agent-client docs, MCP registry behavior, browser verification tooling, sensitive connectors, or benchmark/eval sources.",
+    "",
     "## MCP Gateway And Tool Routing",
     "",
     "Use a gateway when a direct MCP setup becomes hard to govern: too many tool schemas, repeated credential setup, missing audit logs, or different roles needing different tool catalogs.",
@@ -1912,6 +2429,12 @@ function agentWorkspaceMarkdown() {
     "- Is the team ready to operate the gateway, or is a smaller direct MCP list safer?",
     "",
     "Use the registry entries for Lunar MCPX, Microsoft MCP Gateway, official GitHub MCP Server, Supabase MCP, Qdrant MCP, OpenTabs, and Crawl4AI RAG as catalog guidance before changing runtime config.",
+    "",
+    "## Zero-Trust Gateway Readiness",
+    "",
+    "Keep gateway-security ideas advisory until they have a threat model and tests. Tool annotations, schema hashes, path policy, secret redaction, package review, and AST indexing are useful controls, but the read-only vnem pack should not become a shell proxy, package installer, daemon, or enforcement runtime.",
+    "",
+    "For phased runtime-security planning, read the source-radar `agentic-gateway-security` entry and the root `SECURITY-ROADMAP.md` in this repository when available.",
     "",
     "## Persistent Memory And Context Files",
     "",
@@ -1962,6 +2485,7 @@ function rootAgentsMarkdown() {
     "This repo has a read-only vnem knowledge pack in `.vnem/`.",
     "",
     "Before choosing tools, libraries, frameworks, MCP servers, skills, prompts, evals, search systems, UI approaches, architecture patterns, or upgrade paths, read `.vnem/AGENTS.md`, follow `.vnem/operating-protocol.md`, use `.vnem/search-index.json`, and consult `.vnem/agent-workspace.md` only for autonomous developer environment decisions.",
+    "For current docs, MCP discovery, benchmark evidence, or upstream source decisions, also use `.vnem/source-radar.json` before broad web search.",
     "",
     "Use vnem automatically. The user should not need to say `use vnem`. Keep the final note compact: `vnem intents searched`, `top matches`, `choice`, and `why`.",
     "",
@@ -1991,6 +2515,8 @@ function searchIndexJson(entries) {
     intent_routes: intentRoutes,
     operating_protocol: operatingProtocol,
     task_rubrics: taskRubrics,
+    source_radar: sourceRadar,
+    source_radar_url: installFileUrl("source-radar.json"),
     decision_protocol: {
       auto_use: true,
       user_trigger_required: false,
@@ -2005,7 +2531,7 @@ function searchIndexJson(entries) {
         "verification",
         "final_report"
       ],
-      read_first_for_build_tasks: ["operating protocol", "matching task rubric", "matching intent_routes", "matching best-practice documents", "high-signal registry entries", "prompt patterns only when a prompt artifact is requested"],
+      read_first_for_build_tasks: ["operating protocol", "matching task rubric", "matching intent_routes", "matching best-practice documents", "matching source-radar entries when upstream currency matters", "high-signal registry entries", "prompt patterns only when a prompt artifact is requested"],
       evidence_note: ["vnem intents searched", "top matches", "chosen rubric", "choice", "why", "verification evidence", "residual uncertainty"]
     },
     rank_weights: {
@@ -2054,6 +2580,8 @@ const index = {
   intent_routes: intentRoutes,
   operating_protocol: operatingProtocol,
   task_rubrics: taskRubrics,
+  source_radar: searchIndex.source_radar,
+  source_radar_url: searchIndex.source_radar_url,
   decision_protocol: searchIndex.decision_protocol,
   entries
 };
@@ -2077,7 +2605,7 @@ const llmsTxt = [
   "",
   `Safe install command: ${installCommand}`,
   "",
-  "Installed files: .vnem/AGENTS.md, .vnem/operating-protocol.md, .vnem/task-rubrics.json, .vnem/search-index.json, .vnem/best-practices.md, .vnem/agent-workspace.md, .vnem/prompt-engineering.md, .vnem/prompt-patterns.json",
+  "Installed files: .vnem/AGENTS.md, .vnem/operating-protocol.md, .vnem/task-rubrics.json, .vnem/search-index.json, .vnem/source-radar.json, .vnem/best-practices.md, .vnem/agent-workspace.md, .vnem/prompt-engineering.md, .vnem/prompt-patterns.json",
   "Canonical API: /api/index.json",
   "Agent instructions: /install/AGENTS.md",
   "Full index: /llms-full.txt",
@@ -2128,6 +2656,7 @@ const llmsFull = [
 const bestPractices = bestPracticesMarkdown();
 const operatingProtocolMarkdownData = operatingProtocolMarkdown();
 const taskRubricData = taskRubricsJson();
+const sourceRadarData = sourceRadarJson();
 const promptPatternData = promptPatternsJson();
 const promptEngineering = promptEngineeringMarkdown(promptPatternData);
 const agentWorkspace = agentWorkspaceMarkdown();
@@ -2139,6 +2668,7 @@ const archive = installArchive({
   [`${installFolder}/operating-protocol.md`]: `${operatingProtocolMarkdownData}\n`,
   [`${installFolder}/task-rubrics.json`]: jsonText(taskRubricData),
   [`${installFolder}/search-index.json`]: jsonText(searchIndex),
+  [`${installFolder}/source-radar.json`]: jsonText(sourceRadarData),
   [`${installFolder}/best-practices.md`]: `${bestPractices}\n`,
   [`${installFolder}/agent-workspace.md`]: `${agentWorkspace}\n`,
   [`${installFolder}/prompt-engineering.md`]: `${promptEngineering}\n`,
@@ -2150,6 +2680,8 @@ await writeJson(path.join(ROOT, "public", "install", "search-index.json"), searc
 await writeJson(path.join(ROOT, installFolder, "search-index.json"), searchIndex);
 await writeJson(path.join(ROOT, "public", "install", "task-rubrics.json"), taskRubricData);
 await writeJson(path.join(ROOT, installFolder, "task-rubrics.json"), taskRubricData);
+await writeJson(path.join(ROOT, "public", "install", "source-radar.json"), sourceRadarData);
+await writeJson(path.join(ROOT, installFolder, "source-radar.json"), sourceRadarData);
 await writeJson(path.join(ROOT, "public", "install", "prompt-patterns.json"), promptPatternData);
 await writeJson(path.join(ROOT, installFolder, "prompt-patterns.json"), promptPatternData);
 await writeBytes(path.join(ROOT, "public", installArchiveName), archive);

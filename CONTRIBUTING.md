@@ -8,6 +8,21 @@ vnem accepts source-backed entries for tools that make agents, LLMs, or agent bu
 - Corrections to license, owner, source, install, permission, or risk metadata.
 - Better recommendation fields: `best_for`, `not_for`, `alternatives`, `freshness`, `risk_flags`, and `recommended_when`.
 - Discovery improvements that open reviewable PRs instead of merging directly.
+- Product or documentation improvements that make vnem easier to understand without weakening the read-only safety model.
+
+## Branch And Safety Workflow
+
+Work on a branch. Do not push directly to `main`.
+
+Before opening a PR:
+
+- keep the change scoped to one purpose
+- do not delete registry entries, generated files, or brand assets unless the PR explains why
+- regenerate artifacts instead of hand-editing generated outputs
+- run the relevant validation commands
+- explain any source, license, trust-tier, or permission uncertainty in the PR
+
+Use small PRs when changing product copy, registry data, discovery automation, or install-pack behavior. A change is worse if it makes vnem prettier but less safe, less clear, or harder to verify.
 
 ## Entry Requirements
 

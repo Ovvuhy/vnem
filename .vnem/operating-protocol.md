@@ -1,6 +1,6 @@
 # vnem Operating Protocol
 
-Generated: 2026-05-27T16:15:49.891Z
+Generated: 2026-05-27T16:40:31.588Z
 
 A universal read-only operating protocol for coding agents: sense the repo, route task context, choose the smallest sufficient capability, constrain risk, verify with evidence, and report residual uncertainty.
 
@@ -57,6 +57,7 @@ For nontrivial tasks, produce or internally follow a compact task contract:
 
 - Use `.vnem/task-rubrics.json` to choose the broad quality bar for the task.
 - Use `.vnem/search-index.json` to route intents and retrieve source-backed entries.
+- Use `.vnem/source-radar.json` when the task depends on current docs, upstream registries, benchmark evidence, or agent-client behavior.
 - Use `.vnem/best-practices.md` after routing, not as a wall of generic context.
 - Use `.vnem/agent-workspace.md` only for autonomous developer environment choices such as MCP gateways, memory files, agent clients, or mode systems.
 

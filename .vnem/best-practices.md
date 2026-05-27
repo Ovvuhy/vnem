@@ -1,6 +1,6 @@
 # vnem Best Practices
 
-Generated: 2026-05-27T16:15:49.891Z
+Generated: 2026-05-27T16:40:31.588Z
 
 Use this as a compact, current guidance layer for coding agents. Prefer these notes when choosing whether to add, replace, or avoid a tool.
 
@@ -250,6 +250,21 @@ Sources: https://docs.anthropic.com/en/docs/claude-code/memory, https://docs.ant
 
 Search aliases: context engineering, claude memory, memory, instructions, agents.md, claude.md, retrieval, skills, knowledge pack
 
+## Research Source Intake
+
+Treat vnem as a source router, not a document dump: capture official, current, machine-readable sources that help agents make better decisions before editing.
+
+- Start source intake from the agent decision it improves: tool choice, MCP adoption, model/provider selection, prompt upgrade, eval design, UI verification, or risk review.
+- Prefer official docs, canonical repositories, maintained registries, llms.txt indexes, vendor MCP docs, and eval frameworks with repeatable fixtures.
+- Keep vnem metadata original and compact; preserve source URLs instead of copying long upstream docs into the install pack.
+- Record trust tier, source confidence, freshness, permissions, license posture, risk flags, and whether the source can mutate external systems.
+- Separate discovery from promotion: Hermes can suggest candidates, but maintainers should review before raising trust or recommending installs.
+- Tie important claims to a small benchmark, smoke test, link check, or before/after agent recommendation diff.
+
+Sources: https://modelcontextprotocol.io/docs/getting-started/intro, https://github.com/modelcontextprotocol/registry, https://llmstxt.org/, https://developers.openai.com/codex/guides/agents-md, https://code.claude.com/docs/en/mcp, https://inspect.aisi.org.uk/
+
+Search aliases: source radar, research layer, source intake, current docs, official docs, mcp registry, llms.txt, benchmark evidence, provenance, freshness
+
 ## MCP Server Selection
 
 MCP servers should be selected like dependencies: source-backed, least-privilege, pinned where possible, and tested against the actual client workflow.
@@ -261,6 +276,22 @@ MCP servers should be selected like dependencies: source-backed, least-privilege
 Sources: https://modelcontextprotocol.io/docs/getting-started/intro, https://github.com/microsoft/playwright-mcp, https://github.com/upstash/context7, https://github.com/supabase-community/supabase-mcp, https://docs.browserbase.com/integrations/mcp/introduction
 
 Search aliases: mcp servers, model context protocol, tools, resources, prompts, context7, playwright, browserbase, supabase, sentry
+
+## Zero-Trust Agent Gateway Readiness
+
+Move toward gateway behavior in phases: advisory guidance first, deterministic checks second, runtime enforcement only after threat modeling and adversarial tests.
+
+- Do not convert the read-only vnem install pack into a daemon, shell proxy, package installer, or runtime command interceptor.
+- Treat tool metadata and MCP annotations as risk signals only; trusted clients still need deterministic controls for filesystem, network, secrets, and external side effects.
+- Pin tool schemas by hashing canonical schema JSON and require review when a trusted server's tool schema changes unexpectedly.
+- Redact secrets before logging by combining known token patterns, connection-string patterns, private-key markers, and high-entropy argument detection.
+- Enforce workspace path policy with resolved absolute paths and prefix checks before any future mutating gateway action.
+- Review dependency additions as manifest diffs before installation; use package metadata and provenance signals as advisory checks with human override.
+- Keep AST indexing read-only at first: extract symbols, imports, and calls into a disposable local graph before writing durable index state.
+
+Sources: https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/, https://modelcontextprotocol.io/specification/2025-06-18/schema, https://ts.sdk.modelcontextprotocol.io/variables/types.ToolAnnotationsSchema.html, https://docs.github.com/en/code-security/secret-scanning/introduction/about-secret-scanning, https://docs.npmjs.com/about-registry-signatures
+
+Search aliases: pre execution gateway, zero trust gateway, tool pinning, schema hashing, mcp rug pull, tool poisoning, package firewall, ast indexer, path confinement, secret redaction, command risk
 
 ## Observability And Tracing
 
@@ -297,4 +328,16 @@ Upgrade rough prompts into operational instructions with intent, context, constr
 Sources: https://developers.openai.com/api/docs/guides/prompt-engineering, https://developers.openai.com/api/docs/guides/prompt-optimizer, https://developers.openai.com/codex/guides/agents-md
 
 Search aliases: prompt engineering, prompt enhancer, codex prompt, prompt optimizer, instructions, output format, examples, rubric
+
+## Model And Provider Selection
+
+Choose Codex, Claude Code, Gemini/ADK, framework agents, or model APIs by workflow fit, permissions, eval evidence, and operational cost rather than brand preference.
+
+- Start from the task shape: repo editing, hosted agent runtime, multi-agent workflow, model app, browser-game build, or tool-calling backend.
+- Compare approval boundaries, shell/filesystem access, memory model, MCP/tool support, tracing, evals, deployment path, cost, privacy, and reversibility.
+- Run a small benchmark or pilot task before standardizing on a new agent/provider workflow.
+
+Sources: https://developers.openai.com/codex/guides/agents-md, https://openai.github.io/openai-agents-python/, https://code.claude.com/docs/en/overview, https://adk.dev/
+
+Search aliases: ai model selection, codex vs claude, gemini agent, provider, model, agent upgrade, adk
 

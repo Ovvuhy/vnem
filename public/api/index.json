@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-27T16:15:49.891Z",
+  "generated_at": "2026-05-27T16:40:31.588Z",
   "schema_version": "1.0.0",
   "package_version": "1.0.1",
   "release_version": "1.0.1",
@@ -722,6 +722,91 @@
       "freshness",
       "registry"
     ],
+    "source radar": [
+      "research layer",
+      "source intake",
+      "official docs",
+      "docs index",
+      "mcp registry",
+      "llms.txt",
+      "freshness",
+      "provenance"
+    ],
+    "research layer": [
+      "source radar",
+      "source intake",
+      "current docs",
+      "official docs",
+      "mcp registry",
+      "benchmark evidence",
+      "evidence"
+    ],
+    "source intake": [
+      "source radar",
+      "research layer",
+      "upstream source",
+      "source trust",
+      "source provenance",
+      "source license",
+      "source permissions",
+      "source risk review"
+    ],
+    "benchmark evidence": [
+      "evals",
+      "inspect ai",
+      "promptfoo",
+      "ragas",
+      "quality evidence",
+      "performance data",
+      "regression test",
+      "pilot task"
+    ],
+    "pre execution gateway": [
+      "zero trust gateway",
+      "agent gateway",
+      "tool firewall",
+      "command risk",
+      "alignment barrier",
+      "path confinement",
+      "secret redaction"
+    ],
+    "zero trust gateway": [
+      "pre execution gateway",
+      "tool pinning",
+      "schema hashing",
+      "mcp rug pull",
+      "tool poisoning",
+      "read only hint",
+      "destructive hint"
+    ],
+    "tool pinning": [
+      "schema hash",
+      "tool schema",
+      "mcp rug pull",
+      "tool poisoning",
+      "tools/list_changed",
+      "tool annotations",
+      "tool metadata"
+    ],
+    "package firewall": [
+      "dependency firewall",
+      "package risk",
+      "typosquatting",
+      "dependency install",
+      "npm package",
+      "cargo package",
+      "package metadata"
+    ],
+    "ast indexer": [
+      "tree-sitter",
+      "code graph",
+      "codebase graph",
+      "structural index",
+      "symbol graph",
+      "imports",
+      "call graph",
+      "soft delete"
+    ],
     "backend api": [
       "backend",
       "api",
@@ -928,6 +1013,41 @@
       "annotation",
       "eval",
       "iteration"
+    ],
+    "codex vs claude": [
+      "codex",
+      "claude code",
+      "coding-agent",
+      "repository",
+      "approvals",
+      "memory",
+      "subagents"
+    ],
+    "gemini agent": [
+      "gemini",
+      "google adk",
+      "agent-framework",
+      "vertex ai",
+      "deployment",
+      "evaluation"
+    ],
+    "ai model selection": [
+      "model",
+      "provider",
+      "agent",
+      "eval",
+      "cost",
+      "latency",
+      "workflow"
+    ],
+    "agent upgrade": [
+      "upgrade",
+      "capability",
+      "workflow",
+      "mcp",
+      "eval",
+      "memory",
+      "observability"
     ],
     "code simplification": [
       "refactor",
@@ -1222,6 +1342,383 @@
         "choice",
         "why",
         "remaining uncertainty"
+      ]
+    },
+    "source radar": {
+      "read_first": [
+        "source:mcp-core-and-registry",
+        "source:coding-agent-clients",
+        "source:documentation-ingestion",
+        "practice:research-source-intake",
+        "practice:agent-tooling"
+      ],
+      "compare_options": [
+        "official docs",
+        "canonical GitHub repositories",
+        "official registries",
+        "vendor MCP docs",
+        "evaluation frameworks",
+        "llms.txt indexes"
+      ],
+      "choose_by": [
+        "source confidence",
+        "freshness",
+        "license clarity",
+        "permission risk",
+        "agent-client relevance",
+        "verification path"
+      ],
+      "report": [
+        "source category",
+        "why it matters",
+        "trust and risk",
+        "intake path",
+        "refresh cadence"
+      ]
+    },
+    "research layer": {
+      "read_first": [
+        "source:mcp-core-and-registry",
+        "source:coding-agent-clients",
+        "source:evaluation-and-observability",
+        "practice:research-source-intake",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "static registry entry",
+        "best-practice note",
+        "prompt pattern",
+        "watched source",
+        "benchmark fixture"
+      ],
+      "choose_by": [
+        "whether agents need it before editing",
+        "source trust",
+        "context saved",
+        "maintenance effort",
+        "risk flags"
+      ],
+      "report": [
+        "sources consulted",
+        "decision",
+        "data to add",
+        "verification evidence"
+      ]
+    },
+    "source intake": {
+      "read_first": [
+        "source:mcp-core-and-registry",
+        "source:documentation-ingestion",
+        "practice:research-source-intake",
+        "practice:security"
+      ],
+      "compare_options": [
+        "add watched source only",
+        "add registry entry",
+        "add best-practice note",
+        "add prompt pattern",
+        "defer as out of scope"
+      ],
+      "choose_by": [
+        "official provenance",
+        "license posture",
+        "permissions",
+        "risk flags",
+        "whether a real agent workflow improves"
+      ],
+      "report": [
+        "candidate",
+        "trust tier",
+        "risk flags",
+        "artifact to update",
+        "verification"
+      ]
+    },
+    "benchmark evidence": {
+      "read_first": [
+        "source:evaluation-and-observability",
+        "practice:evals",
+        "practice:research-source-intake"
+      ],
+      "compare_options": [
+        "small repo pilot",
+        "prompt regression suite",
+        "tool-call trace review",
+        "before/after recommendation diff",
+        "manual maintainer review"
+      ],
+      "choose_by": [
+        "measurable behavior",
+        "repeatability",
+        "cost",
+        "failure-mode coverage",
+        "fit to vnem's read-only model"
+      ],
+      "report": [
+        "metric",
+        "dataset or fixture",
+        "baseline",
+        "expected improvement",
+        "review gate"
+      ]
+    },
+    "pre execution gateway": {
+      "read_first": [
+        "practice:zero-trust-agent-gateway",
+        "source:agentic-gateway-security",
+        "practice:mcp-server-selection",
+        "practice:security"
+      ],
+      "compare_options": [
+        "read-only vnem guidance",
+        "advisory gateway design",
+        "client-side approval policy",
+        "separate runtime proxy",
+        "language/runtime rewrite"
+      ],
+      "choose_by": [
+        "blast radius",
+        "deterministic controls",
+        "client compatibility",
+        "secret handling",
+        "path confinement",
+        "verification coverage"
+      ],
+      "report": [
+        "safe subset",
+        "blocked risky scope",
+        "phased design",
+        "required tests",
+        "approval gates"
+      ]
+    },
+    "zero trust gateway": {
+      "read_first": [
+        "practice:zero-trust-agent-gateway",
+        "source:agentic-gateway-security",
+        "practice:mcp-server-selection",
+        "practice:security"
+      ],
+      "compare_options": [
+        "tool annotations as hints",
+        "schema hash pinning",
+        "workspace path policy",
+        "redacted audit logging",
+        "package firewall advisory",
+        "runtime sandbox"
+      ],
+      "choose_by": [
+        "enforceability",
+        "trusted boundary",
+        "false-positive cost",
+        "rollback path",
+        "whether the install pack remains read-only"
+      ],
+      "report": [
+        "trust boundary",
+        "control type",
+        "what is deterministic",
+        "what needs human approval"
+      ]
+    },
+    "tool pinning": {
+      "read_first": [
+        "practice:zero-trust-agent-gateway",
+        "source:agentic-gateway-security",
+        "practice:mcp-server-selection"
+      ],
+      "compare_options": [
+        "schema hash pinning",
+        "tool allowlist",
+        "server/version pin",
+        "list_changed invalidation",
+        "manual approval on schema drift"
+      ],
+      "choose_by": [
+        "source trust",
+        "schema stability",
+        "client support",
+        "failure mode",
+        "auditability"
+      ],
+      "report": [
+        "server",
+        "tool",
+        "known hash",
+        "drift behavior",
+        "review action"
+      ]
+    },
+    "package firewall": {
+      "read_first": [
+        "practice:zero-trust-agent-gateway",
+        "source:agentic-gateway-security",
+        "practice:code-review",
+        "practice:security"
+      ],
+      "compare_options": [
+        "manifest diff review",
+        "package metadata check",
+        "typosquat heuristic",
+        "maintainer/license check",
+        "lockfile-only policy"
+      ],
+      "choose_by": [
+        "ecosystem",
+        "registry metadata quality",
+        "install side effects",
+        "maintainer trust",
+        "verification path"
+      ],
+      "report": [
+        "package",
+        "risk signal",
+        "recommended gate",
+        "false-positive handling"
+      ]
+    },
+    "ast indexer": {
+      "read_first": [
+        "practice:zero-trust-agent-gateway",
+        "source:agentic-gateway-security",
+        "practice:code-simplification",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "plain lexical search",
+        "AST-aware search",
+        "disposable read-only graph",
+        "durable code graph service"
+      ],
+      "choose_by": [
+        "repo size",
+        "language support",
+        "index freshness",
+        "write risk",
+        "incremental update correctness"
+      ],
+      "report": [
+        "index scope",
+        "read-only guarantee",
+        "verification",
+        "deferred runtime scope"
+      ]
+    },
+    "codex vs claude": {
+      "read_first": [
+        "practice:ide-agent-selection",
+        "practice:model-and-provider-selection",
+        "practice:agent-tooling",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "Codex",
+        "Claude Code",
+        "Gemini/Google ADK",
+        "Copilot-style agents",
+        "Cursor/Cline-style tools",
+        "framework-based agents"
+      ],
+      "choose_by": [
+        "repo workflow fit",
+        "approval boundaries",
+        "shell and filesystem model",
+        "memory and instruction model",
+        "MCP/tool support",
+        "verification and cost"
+      ],
+      "report": [
+        "vnem intents searched",
+        "top matches",
+        "best fit",
+        "pilot task"
+      ]
+    },
+    "gemini agent": {
+      "read_first": [
+        "practice:ide-agent-selection",
+        "practice:model-and-provider-selection",
+        "practice:agent-tooling",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "Gemini/Google ADK",
+        "Codex",
+        "Claude Code",
+        "hosted agent runtimes",
+        "model API tool-calling"
+      ],
+      "choose_by": [
+        "Google ecosystem fit",
+        "agent framework needs",
+        "deployment path",
+        "tooling and evaluation support",
+        "privacy and cost"
+      ],
+      "report": [
+        "vnem intents searched",
+        "top matches",
+        "choice",
+        "why"
+      ]
+    },
+    "ai model selection": {
+      "read_first": [
+        "practice:model-and-provider-selection",
+        "practice:ide-agent-selection",
+        "practice:evals",
+        "practice:observability-and-tracing"
+      ],
+      "compare_options": [
+        "coding agent",
+        "model API",
+        "agent framework",
+        "MCP-enabled workflow",
+        "existing project tool"
+      ],
+      "choose_by": [
+        "task shape",
+        "quality evidence",
+        "latency",
+        "cost",
+        "privacy",
+        "operational fit",
+        "reversibility"
+      ],
+      "report": [
+        "vnem intents searched",
+        "top matches",
+        "recommendation",
+        "verification plan"
+      ]
+    },
+    "agent upgrade": {
+      "read_first": [
+        "practice:ide-agent-selection",
+        "practice:model-and-provider-selection",
+        "practice:context-engineering",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "better instructions",
+        "prompt pattern",
+        "MCP/tool addition",
+        "memory policy",
+        "eval fixture",
+        "agent/provider switch"
+      ],
+      "choose_by": [
+        "highest concrete capability gap",
+        "permission risk",
+        "verification path",
+        "rollback path",
+        "maintenance cost"
+      ],
+      "report": [
+        "vnem intents searched",
+        "top matches",
+        "upgrade path",
+        "risk and verification"
       ]
     },
     "browser game": {
@@ -1951,7 +2448,13 @@
         "tool routing",
         "coding agents",
         "codex config",
-        "agent workspace"
+        "agent workspace",
+        "source radar",
+        "source intake",
+        "ai model selection",
+        "agent upgrade",
+        "codex vs claude",
+        "zero trust gateway"
       ],
       "read_first": [
         "practice:agent-tooling",
@@ -2053,10 +2556,16 @@
         "deployment",
         "production",
         "browser",
-        "permissions"
+        "permissions",
+        "pre execution gateway",
+        "zero trust gateway",
+        "tool pinning",
+        "package firewall",
+        "ast indexer"
       ],
       "read_first": [
         "practice:security",
+        "practice:zero-trust-agent-gateway",
         "practice:human-approval-and-durability",
         "practice:evals"
       ],
@@ -2183,6 +2692,239 @@
       ]
     }
   ],
+  "source_radar": [
+    {
+      "id": "mcp-core-and-registry",
+      "title": "MCP Core Docs And Official Registry",
+      "category": "protocol-registry",
+      "priority": "critical",
+      "summary": "Track MCP protocol docs, specification changes, and the official MCP registry before adding or recommending MCP servers.",
+      "use_when": [
+        "An agent is choosing, comparing, or installing MCP servers.",
+        "A registry entry depends on MCP transport, tools, resources, prompts, elicitation, or auth behavior.",
+        "Hermes or maintainers need a source of truth for new MCP server discovery."
+      ],
+      "monitor": [
+        "Protocol docs and llms.txt index",
+        "Official registry API and repository updates",
+        "Server metadata, package sources, licenses, and published versions"
+      ],
+      "risk_checks": [
+        "Registry preview or API stability notes",
+        "Server provenance and package ownership",
+        "Tool permissions, network access, secrets, and write capability"
+      ],
+      "source_urls": [
+        "https://modelcontextprotocol.io/docs/getting-started/intro",
+        "https://modelcontextprotocol.io/llms.txt",
+        "https://github.com/modelcontextprotocol/registry",
+        "https://registry.modelcontextprotocol.io/v0.1/servers"
+      ]
+    },
+    {
+      "id": "coding-agent-clients",
+      "title": "Coding Agent Client Docs",
+      "category": "agent-client",
+      "priority": "critical",
+      "summary": "Track how major coding agents load instructions, MCP tools, memory, subagents, approvals, and project context.",
+      "use_when": [
+        "vnem needs to support Codex, Claude Code, OpenCode, Gemini/ADK, or similar coding agents.",
+        "A recommendation depends on how the agent reads AGENTS.md, CLAUDE.md, MCP resources, prompts, or memory.",
+        "The install pack or MCP server should be easier to use across multiple agent clients."
+      ],
+      "monitor": [
+        "Instruction-file behavior",
+        "MCP configuration and transport support",
+        "Memory, subagent, approval, and tool-search behavior",
+        "Windows, terminal, IDE, and browser support"
+      ],
+      "risk_checks": [
+        "Client-specific config drift",
+        "Features that require account login, OAuth, or paid plans",
+        "Actions that bypass repo review, approvals, or least privilege"
+      ],
+      "source_urls": [
+        "https://developers.openai.com/codex/guides/agents-md",
+        "https://code.claude.com/docs/en/overview",
+        "https://code.claude.com/docs/en/mcp",
+        "https://code.claude.com/docs/en/memory",
+        "https://code.claude.com/docs/en/sub-agents",
+        "https://opencode.ai/docs/",
+        "https://adk.dev/"
+      ]
+    },
+    {
+      "id": "documentation-ingestion",
+      "title": "Documentation Ingestion Sources",
+      "category": "current-docs",
+      "priority": "high",
+      "summary": "Prefer LLM-oriented documentation indexes and source-backed doc retrieval so agents stop wasting context on broad web searches.",
+      "use_when": [
+        "A coding agent needs current library, framework, SDK, or MCP documentation.",
+        "vnem should point to a source rather than copying long upstream docs into the registry.",
+        "A source has an llms.txt index, canonical docs, or a docs-specific MCP."
+      ],
+      "monitor": [
+        "llms.txt and llms-full.txt availability",
+        "Canonical documentation URLs",
+        "Docs MCP servers and CLI doc retrievers"
+      ],
+      "risk_checks": [
+        "Stale generated docs",
+        "Unclear docs provenance",
+        "Copied upstream content that exceeds fair-use or license boundaries"
+      ],
+      "source_urls": [
+        "https://llmstxt.org/",
+        "https://github.com/upstash/context7",
+        "https://docs.firecrawl.dev/mcp-server"
+      ]
+    },
+    {
+      "id": "browser-and-ui-verification",
+      "title": "Browser And UI Verification Sources",
+      "category": "verification-tooling",
+      "priority": "high",
+      "summary": "Track browser automation and hosted browser MCPs that let agents verify rendered apps instead of guessing from code.",
+      "use_when": [
+        "An agent is building UI, debugging a browser app, validating accessibility snapshots, or checking frontend regressions.",
+        "vnem needs to recommend a browser MCP or verification workflow.",
+        "A product claim depends on visible UI behavior rather than static code."
+      ],
+      "monitor": [
+        "Playwright MCP capabilities",
+        "Browserbase MCP capabilities",
+        "Client support for browser MCPs, screenshots, accessibility snapshots, and hosted sessions"
+      ],
+      "risk_checks": [
+        "Browser/network access",
+        "Credential exposure through pages",
+        "Stateful sessions and paid browser infrastructure"
+      ],
+      "source_urls": [
+        "https://github.com/microsoft/playwright-mcp",
+        "https://docs.browserbase.com/integrations/mcp/introduction"
+      ]
+    },
+    {
+      "id": "platform-and-data-connectors",
+      "title": "Platform And Data Connector Sources",
+      "category": "sensitive-connectors",
+      "priority": "high",
+      "summary": "Track official or vendor-maintained MCPs for repositories, databases, monitoring, payments, and web extraction with explicit permission review.",
+      "use_when": [
+        "An agent needs GitHub, Supabase, Sentry, Stripe, Firecrawl, or another external service.",
+        "A registry entry can read production-like data, write issues, query databases, spend money, or browse the web.",
+        "vnem needs to recommend least-privilege, read-only, or sandbox-first setup."
+      ],
+      "monitor": [
+        "Official MCP repositories and docs",
+        "Available tool groups, scopes, and read-only modes",
+        "OAuth, PAT, API key, and sandbox guidance"
+      ],
+      "risk_checks": [
+        "Repository write access",
+        "Database writes or production data",
+        "Payment or billing side effects",
+        "Monitoring data sensitivity",
+        "Prompt injection through fetched external content"
+      ],
+      "source_urls": [
+        "https://github.com/github/github-mcp-server",
+        "https://supabase.com/docs/guides/ai-tools/mcp",
+        "https://mcp.sentry.dev/",
+        "https://docs.stripe.com/agents",
+        "https://docs.firecrawl.dev/mcp-server"
+      ]
+    },
+    {
+      "id": "evaluation-and-observability",
+      "title": "Evaluation And Observability Sources",
+      "category": "quality-evidence",
+      "priority": "high",
+      "summary": "Track eval and tracing systems so vnem can prove whether an agent workflow actually improves output quality, speed, and safety.",
+      "use_when": [
+        "A claim says vnem improves recommendations, engineering velocity, prompt quality, or tool choice.",
+        "A prompt, MCP, agent, or model switch needs a before/after benchmark.",
+        "Maintainers need traces or eval logs to explain why an agent made a decision."
+      ],
+      "monitor": [
+        "Small repeatable eval frameworks",
+        "Prompt and agent regression suites",
+        "Trace, cost, latency, and tool-call observability"
+      ],
+      "risk_checks": [
+        "Benchmarks that do not match real repo tasks",
+        "Scores without reproducible fixtures",
+        "Telemetry or traces containing secrets or private code"
+      ],
+      "source_urls": [
+        "https://inspect.aisi.org.uk/",
+        "https://www.promptfoo.dev/docs/intro/",
+        "https://docs.ragas.io/",
+        "https://docs.langfuse.com/",
+        "https://docs.arize.com/phoenix"
+      ]
+    },
+    {
+      "id": "secure-mcp-distribution",
+      "title": "Secure MCP Distribution Sources",
+      "category": "distribution",
+      "priority": "medium",
+      "summary": "Track curated MCP catalogs and containerized distribution models for safer team adoption of third-party MCP servers.",
+      "use_when": [
+        "A team wants approved MCP catalogs instead of ad hoc server installs.",
+        "A server has dependency, runtime, or package provenance concerns.",
+        "vnem needs to distinguish local, remote, containerized, and organization-approved MCP deployment paths."
+      ],
+      "monitor": [
+        "Catalog provenance and SBOM metadata",
+        "Container signing and update cadence",
+        "Team profiles, custom catalogs, and allowed-server policies"
+      ],
+      "risk_checks": [
+        "Catalog beta or preview status",
+        "Container trust and host access",
+        "Remote OAuth and external service permissions"
+      ],
+      "source_urls": [
+        "https://docs.docker.com/ai/mcp-catalog-and-toolkit/catalog/",
+        "https://docs.docker.com/ai/mcp-catalog-and-toolkit/toolkit/"
+      ]
+    },
+    {
+      "id": "agentic-gateway-security",
+      "title": "Agentic Gateway Security Sources",
+      "category": "security-architecture",
+      "priority": "high",
+      "summary": "Track security sources for tool annotations, schema drift, secret handling, workspace confinement, package risk, and agent runtime approval design.",
+      "use_when": [
+        "A proposal asks vnem to act as a pre-execution gateway, command proxy, package firewall, schema pinning layer, or AST indexer.",
+        "An agent wants to classify tool calls as read-only, mutating, destructive, open-world, or approval-required.",
+        "Maintainers need to distinguish metadata hints from enforceable security controls."
+      ],
+      "monitor": [
+        "MCP tool annotation semantics and list-changed behavior",
+        "Client approval and sandbox behavior",
+        "Package registry provenance and dependency-risk guidance",
+        "Secret detection and redaction rules"
+      ],
+      "risk_checks": [
+        "Untrusted tool metadata must not be treated as enforcement.",
+        "Runtime command interception needs a threat model before implementation.",
+        "Path confinement and redaction claims require adversarial tests.",
+        "Package firewall decisions can break valid developer workflows and need override paths."
+      ],
+      "source_urls": [
+        "https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/",
+        "https://modelcontextprotocol.io/specification/2025-06-18/schema",
+        "https://ts.sdk.modelcontextprotocol.io/variables/types.ToolAnnotationsSchema.html",
+        "https://docs.github.com/en/code-security/secret-scanning/introduction/about-secret-scanning",
+        "https://docs.npmjs.com/about-registry-signatures"
+      ]
+    }
+  ],
+  "source_radar_url": "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/source-radar.json",
   "decision_protocol": {
     "auto_use": true,
     "user_trigger_required": false,
@@ -2210,6 +2952,7 @@
       "matching task rubric",
       "matching intent_routes",
       "matching best-practice documents",
+      "matching source-radar entries when upstream currency matters",
       "high-signal registry entries",
       "prompt patterns only when a prompt artifact is requested"
     ],

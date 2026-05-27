@@ -14,6 +14,8 @@ Start with a small, readable setup: Codex or another coding agent, repository-lo
 
 Add gateways, memory banks, browser sessions, database access, and repository mutation tools only after the team can name the approval path and rollback plan.
 
+Use `.vnem/source-radar.json` when workspace choices depend on current agent-client docs, MCP registry behavior, browser verification tooling, sensitive connectors, or benchmark/eval sources.
+
 ## MCP Gateway And Tool Routing
 
 Use a gateway when a direct MCP setup becomes hard to govern: too many tool schemas, repeated credential setup, missing audit logs, or different roles needing different tool catalogs.
@@ -27,6 +29,12 @@ Evaluate gateways by these questions:
 - Is the team ready to operate the gateway, or is a smaller direct MCP list safer?
 
 Use the registry entries for Lunar MCPX, Microsoft MCP Gateway, official GitHub MCP Server, Supabase MCP, Qdrant MCP, OpenTabs, and Crawl4AI RAG as catalog guidance before changing runtime config.
+
+## Zero-Trust Gateway Readiness
+
+Keep gateway-security ideas advisory until they have a threat model and tests. Tool annotations, schema hashes, path policy, secret redaction, package review, and AST indexing are useful controls, but the read-only vnem pack should not become a shell proxy, package installer, daemon, or enforcement runtime.
+
+For phased runtime-security planning, read the source-radar `agentic-gateway-security` entry and the root `SECURITY-ROADMAP.md` in this repository when available.
 
 ## Persistent Memory And Context Files
 

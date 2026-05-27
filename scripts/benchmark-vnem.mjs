@@ -45,6 +45,20 @@ const cases = [
     readFirst: ["practice:mcp-server-selection", "practice:agent-tooling"]
   },
   {
+    name: "source intake decision",
+    task: "Decide whether official MCP registry docs belong in vnem's source radar before adding entries.",
+    mode: "decision",
+    rubrics: ["agent_tooling"],
+    readFirst: ["source:mcp-core-and-registry", "practice:research-source-intake"]
+  },
+  {
+    name: "zero trust gateway plan",
+    task: "Plan a zero-trust gateway policy for MCP tool schema pinning without adding a daemon.",
+    mode: "plan",
+    rubrics: ["agent_tooling", "security_sensitive"],
+    readFirst: ["practice:zero-trust-agent-gateway", "source:agentic-gateway-security"]
+  },
+  {
     name: "memory policy",
     task: "Design a memory/context policy for this project that avoids storing secrets.",
     mode: "plan",

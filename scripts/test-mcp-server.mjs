@@ -42,7 +42,8 @@ try {
     "vnem_recommend",
     "vnem_get_entry",
     "vnem_compare",
-    "vnem_best_practices"
+    "vnem_best_practices",
+    "vnem_sources"
   ]) {
     assert.equal(toolNames.has(name), true, `expected MCP tool ${name}`);
   }
@@ -92,10 +93,24 @@ try {
   assert.equal(entry.isError, undefined);
   assert.equal(entry.structuredContent?.slug, "model-context-protocol");
 
+  const sources = await client.callTool({
+    name: "vnem_sources",
+    arguments: {
+      intent: "source radar for MCP registry and coding agents",
+      limit: 3
+    }
+  });
+  assert.equal(sources.isError, undefined);
+  assert.ok(sources.structuredContent?.sources?.length > 0, "expected vnem_sources results");
+
   const resources = await client.listResources();
   assert.ok(
     resources.resources.some((resource) => resource.uri === "vnem://install/search-index"),
     "expected search-index resource"
+  );
+  assert.ok(
+    resources.resources.some((resource) => resource.uri === "vnem://install/source-radar"),
+    "expected source-radar resource"
   );
   assert.ok(
     resources.resources.some((resource) => resource.uri === "vnem://install/operating-protocol"),
@@ -119,6 +134,11 @@ try {
     uri: "vnem://install/task-rubrics"
   });
   assert.ok(taskRubrics.contents[0]?.text?.includes("frontend_ui"));
+
+  const sourceRadar = await client.readResource({
+    uri: "vnem://install/source-radar"
+  });
+  assert.ok(sourceRadar.contents[0]?.text?.includes("mcp-core-and-registry"));
 
   const agentWorkspace = await client.readResource({
     uri: "vnem://install/agent-workspace"

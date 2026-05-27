@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-27T16:15:49.891Z",
+  "generated_at": "2026-05-27T16:40:31.588Z",
   "schema_version": "1.0.0",
   "safety": {
     "mode": "read-only-task-rubrics",
@@ -167,7 +167,13 @@
         "tool routing",
         "coding agents",
         "codex config",
-        "agent workspace"
+        "agent workspace",
+        "source radar",
+        "source intake",
+        "ai model selection",
+        "agent upgrade",
+        "codex vs claude",
+        "zero trust gateway"
       ],
       "read_first": [
         "practice:agent-tooling",
@@ -269,10 +275,16 @@
         "deployment",
         "production",
         "browser",
-        "permissions"
+        "permissions",
+        "pre execution gateway",
+        "zero trust gateway",
+        "tool pinning",
+        "package firewall",
+        "ast indexer"
       ],
       "read_first": [
         "practice:security",
+        "practice:zero-trust-agent-gateway",
         "practice:human-approval-and-durability",
         "practice:evals"
       ],

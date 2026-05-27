@@ -1,6 +1,6 @@
 # vnem Prompt Engineering
 
-Generated: 2026-05-27T16:15:49.891Z
+Generated: 2026-05-27T16:40:31.588Z
 
 Use this when the user asks to improve, rewrite, harden, or operationalize a prompt. The main trigger phrase is `use vnem to enhance this prompt`.
 
@@ -334,6 +334,67 @@ Output:
 - Best options.
 - Risk flags.
 - Ask before changing.
+```
+
+### Source Intake Prompt
+
+Prompt an agent to decide whether an upstream source belongs in vnem without copying long docs or promoting unreviewed claims.
+
+Intents: source radar, source intake, research layer, benchmark evidence
+
+Template:
+
+```text
+Review this source for possible vnem intake.
+
+Source:
+<URL, repository, docs page, registry feed, benchmark, or MCP server>
+
+Decision criteria:
+- What agent decision does this source improve?
+- Is it official, canonical, vendor-maintained, or high-signal?
+- What license, permissions, install, data, or mutation risks are visible?
+- Is there a lightweight verification path such as link check, smoke test, fixture, or before/after recommendation diff?
+
+Rules:
+- Preserve source URLs and write original summaries.
+- Do not copy long upstream documentation into vnem.
+- Do not promote trust beyond the evidence.
+
+Output:
+- Source candidate.
+- Why it matters.
+- Trust and risk.
+- Smallest artifact to update.
+- Verification needed.
+```
+
+### Zero-Trust Gateway Roadmap Prompt
+
+Prompt for turning an ambitious agent-runtime security idea into phased read-only guidance, advisory checks, and deferred runtime scope.
+
+Intents: pre execution gateway, zero trust gateway, tool pinning, package firewall, ast indexer
+
+Template:
+
+```text
+Review this agentic security proposal for vnem.
+
+Proposal:
+<gateway, tool pinning, package firewall, command policy, secret redaction, or AST index idea>
+
+Rules:
+- Keep the current vnem install pack read-only.
+- Separate guidance, advisory analysis, deterministic checks, and runtime enforcement.
+- Treat MCP tool annotations as risk hints, not security guarantees.
+- Require explicit approval before any tool install, config mutation, daemon, secret use, or external service call.
+
+Output:
+- Safe subset to add now.
+- Risky or blocked scope.
+- Phased implementation.
+- Required tests before enforcement.
+- Source anchors and unresolved assumptions.
 ```
 
 ### Memory Policy Prompt

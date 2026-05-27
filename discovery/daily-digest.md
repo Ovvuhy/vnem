@@ -1,6 +1,6 @@
 # vnem Daily Signals
 
-Generated: 2026-05-27T16:15:51.305Z
+Generated: 2026-05-27T16:40:34.858Z
 
 This digest is designed for maintainers. It summarizes source-backed candidates and stable best-practice signals; it does not auto-promote entries into the registry.
 
@@ -16,8 +16,8 @@ This digest is designed for maintainers. It summarizes source-backed candidates 
 - Persistent Memory And Context Files: Put stable project facts in versioned instruction files, keep volatile task state separate, and review memory for secrets, stale assumptions, and repeated failed approaches.
 - Codex/VNEM Setup: For Codex-based workspaces, keep vnem read-only, load `AGENTS.md` instructions, expose MCP resources deliberately, and use generated guidance before installing tools.
 - IDE Agent Selection: Choose coding agents by editor fit, approval model, model routing, MCP support, maintenance status, and the repo's need for autonomous multi-file changes.
-- Agent Tooling: Treat MCP servers, skills, prompts, and tools as versioned capabilities with provenance, permission notes, and review status.
-- Backend And APIs: Use boring, observable APIs with typed boundaries, explicit auth, and generated clients when agents need reliable integration points.
+- Model And Provider Selection: Choose Codex, Claude Code, Gemini/ADK, framework agents, or model APIs by workflow fit, permissions, eval evidence, and operational cost rather than brand preference.
+- Research Source Intake: Treat vnem as a source router, not a document dump: capture official, current, machine-readable sources that help agents make better decisions before editing.
 
 ## Watchlist / Risk Flags
 

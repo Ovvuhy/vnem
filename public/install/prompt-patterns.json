@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-27T16:15:49.891Z",
+  "generated_at": "2026-05-27T16:40:31.588Z",
   "schema_version": "1.0.0",
   "safety": {
     "mode": "read-only-prompt-patterns",
@@ -186,6 +186,40 @@
         "recommendation"
       ],
       "template": "Recommend MCP servers or tools for this workflow.\n\nWorkflow:\n<what the agent needs to do>\n\nConstraints:\n- Prefer official or vendor-maintained sources for sensitive systems.\n- Call out permissions: filesystem, browser, database, repository, payments, secrets.\n- Do not recommend installation before review.\n\nOutput:\n- Current stack.\n- Best options.\n- Risk flags.\n- Ask before changing."
+    },
+    {
+      "id": "source-intake",
+      "title": "Source Intake Prompt",
+      "intents": [
+        "source radar",
+        "source intake",
+        "research layer",
+        "benchmark evidence"
+      ],
+      "summary": "Prompt an agent to decide whether an upstream source belongs in vnem without copying long docs or promoting unreviewed claims.",
+      "output_modes": [
+        "source_review",
+        "intake_plan"
+      ],
+      "template": "Review this source for possible vnem intake.\n\nSource:\n<URL, repository, docs page, registry feed, benchmark, or MCP server>\n\nDecision criteria:\n- What agent decision does this source improve?\n- Is it official, canonical, vendor-maintained, or high-signal?\n- What license, permissions, install, data, or mutation risks are visible?\n- Is there a lightweight verification path such as link check, smoke test, fixture, or before/after recommendation diff?\n\nRules:\n- Preserve source URLs and write original summaries.\n- Do not copy long upstream documentation into vnem.\n- Do not promote trust beyond the evidence.\n\nOutput:\n- Source candidate.\n- Why it matters.\n- Trust and risk.\n- Smallest artifact to update.\n- Verification needed."
+    },
+    {
+      "id": "zero-trust-gateway-roadmap",
+      "title": "Zero-Trust Gateway Roadmap Prompt",
+      "intents": [
+        "pre execution gateway",
+        "zero trust gateway",
+        "tool pinning",
+        "package firewall",
+        "ast indexer"
+      ],
+      "summary": "Prompt for turning an ambitious agent-runtime security idea into phased read-only guidance, advisory checks, and deferred runtime scope.",
+      "output_modes": [
+        "phased_plan",
+        "risk_register",
+        "verification_gates"
+      ],
+      "template": "Review this agentic security proposal for vnem.\n\nProposal:\n<gateway, tool pinning, package firewall, command policy, secret redaction, or AST index idea>\n\nRules:\n- Keep the current vnem install pack read-only.\n- Separate guidance, advisory analysis, deterministic checks, and runtime enforcement.\n- Treat MCP tool annotations as risk hints, not security guarantees.\n- Require explicit approval before any tool install, config mutation, daemon, secret use, or external service call.\n\nOutput:\n- Safe subset to add now.\n- Risky or blocked scope.\n- Phased implementation.\n- Required tests before enforcement.\n- Source anchors and unresolved assumptions."
     },
     {
       "id": "memory-policy",

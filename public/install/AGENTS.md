@@ -15,6 +15,7 @@ You are reading a read-only vnem knowledge pack installed in this repository.
 - `.vnem/operating-protocol.md`: universal loop for sensing the repo, routing context, choosing small capabilities, constraining risk, verifying, and reporting evidence.
 - `.vnem/task-rubrics.json`: broad task rubrics used to shape the quality bar, approval gates, verification checklist, and final report.
 - `.vnem/search-index.json`: compact local search index for tools, skills, MCP servers, and best-practice notes.
+- `.vnem/source-radar.json`: source intake map for official docs, registries, MCP sources, evals, and verification sources.
 - `.vnem/best-practices.md`: current guidance by project area.
 - `.vnem/agent-workspace.md`: autonomous developer environment guide covering MCP gateways, memory files, agent modes, and Codex/VNEM setup.
 - `.vnem/prompt-engineering.md`: prompt enhancement protocol and Codex-oriented prompt guidance.
@@ -35,10 +36,11 @@ Do not turn every reply into a long vnem report. For normal implementation work,
 3. Read `.vnem/search-index.json` and expand those intents with `intent_aliases`.
 4. Select the matching broad rubric from `.vnem/task-rubrics.json` and use its quality bar, approval gates, verification checklist, and output contract.
 5. Check `intent_routes` for the closest matching task. Read the listed `read_first` documents before choosing a stack.
-6. Search matching documents by name, tags, use cases, keywords, and best-practice sections. Read `.vnem/best-practices.md` only for matching sections.
-7. Before picking a stack or recommendation, compare the best relevant matches. Prefer higher `score`, stronger `source_confidence`, fresher `freshness`, clearer licenses, fewer `risk_flags`, and the smallest sufficient capability.
-8. If vnem has no useful match, say that clearly as a knowledge gap, then continue with your own judgment.
-9. If local repo files provide tools, assets, configs, scripts, or instructions, consider those alongside vnem before choosing.
+6. If the task depends on current docs, upstream registries, benchmark claims, MCP discovery, or agent-client behavior, read `.vnem/source-radar.json` before broad web search.
+7. Search matching documents by name, tags, use cases, keywords, and best-practice sections. Read `.vnem/best-practices.md` only for matching sections.
+8. Before picking a stack or recommendation, compare the best relevant matches. Prefer higher `score`, stronger `source_confidence`, fresher `freshness`, clearer licenses, fewer `risk_flags`, and the smallest sufficient capability.
+9. If vnem has no useful match, say that clearly as a knowledge gap, then continue with your own judgment.
+10. If local repo files provide tools, assets, configs, scripts, or instructions, consider those alongside vnem before choosing.
 
 For nontrivial tasks, follow a compact task contract: `mode`, `intent`, `rubric`, `read first`, `smallest sufficient capability`, `approval gates`, `verification`, and `final report`.
 
