@@ -46,7 +46,8 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages functions build landing/functions --project-directory landing --outfile landing/_worker.js --output-routes-path landing/_routes.json
+          command: pages functions build landing/functions --project-directory landing --outdir landing-functions --output-routes-path landing/_routes.json
+      - run: cp landing-functions/index.js landing/_worker.js
 
       - uses: cloudflare/wrangler-action@v3
         with:

@@ -6,6 +6,7 @@ landing/dashboard/
 landing/_routes.json
 landing/_worker.js
 landing/index.js
+landing-functions/
 .agentic-commons/
 .astro/
 .playwright-cli/
