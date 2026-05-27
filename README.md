@@ -181,6 +181,12 @@ npm run digest
 
 Discovery automation and Hermes may propose candidates, but maintainers approve what reaches `main`.
 
+## Token
+
+CA: `M2DvKKrQiKu8Ux9pz3cKgdudmLqUUQLVbB9Vy9zEASY`
+
+EasyA Kickstart: https://kickstart.easya.io/token/M2DvKKrQiKu8Ux9pz3cKgdudmLqUUQLVbB9Vy9zEASY
+
 ## License
 
 Code and scripts are MIT licensed. Original registry metadata and profiles are CC0-1.0. Third-party names, trademarks, copyrights, packages, and licenses remain with their respective owners and are preserved through each entry's provenance fields.
