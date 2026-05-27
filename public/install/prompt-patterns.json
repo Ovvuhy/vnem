@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-27T12:44:33.005Z",
+  "generated_at": "2026-05-27T13:20:53.494Z",
   "schema_version": "1.0.0",
   "safety": {
     "mode": "read-only-prompt-patterns",
@@ -255,6 +255,26 @@
         "verification_plan"
       ],
       "template": "Improve this AI agent workflow without weakening safety or maintainability.\n\nCurrent workflow:\n<how the agent is used today>\n\nGoal:\n<what better means: speed, quality, autonomy, accuracy, UI quality, research depth, game-building quality, etc.>\n\nRequirements:\n- Inspect existing instructions, tools, MCP config, scripts, CI, and verification paths first.\n- Prefer durable context, narrow tools, source-backed recommendations, and small evals before adding automation.\n- Keep destructive commands, package installs, secrets, deploys, and production writes behind approval.\n- Propose changes in reviewable steps with rollback notes.\n\nOutput:\n- Highest-impact improvements.\n- What to change first.\n- Risks and approvals needed.\n- Verification plan."
+    },
+    {
+      "id": "zero-trust-gateway-roadmap",
+      "title": "Zero-Trust Gateway Roadmap Prompt",
+      "intents": [
+        "pre execution gateway",
+        "zero trust gateway",
+        "tool pinning",
+        "package firewall",
+        "ast indexer",
+        "secure agent gateway"
+      ],
+      "summary": "Prompt for converting an ambitious agent-security proposal into a phased, non-destructive Vnem roadmap.",
+      "output_modes": [
+        "prompt_review",
+        "phased_plan",
+        "risk_register",
+        "test_plan"
+      ],
+      "template": "Review this proposed Vnem gateway/security roadmap before implementation.\n\nProposal:\n<paste the requested gateway, tool pinning, AST indexer, package firewall, or runtime-security proposal>\n\nCurrent Vnem Constraints:\n- Vnem's install pack is read-only guidance and search data.\n- Do not add daemons, shell interception, package installs, or automatic code mutation to the install pack.\n- Runtime enforcement must be a separate reviewed surface with a threat model.\n\nReview Criteria:\n- Which parts are safe as guidance, generated metadata, or MCP read-only tools?\n- Which parts require a separate runtime, secrets handling, filesystem writes, network calls, or package registry access?\n- What can be verified deterministically without an LLM?\n- What needs human approval or an explicit threat model before implementation?\n- What tests prove path containment, redaction, schema drift handling, dependency review, and malicious-write blocking?\n\nOutput:\n- Architectural objection, if any.\n- Safe subset to implement now.\n- Deferred/runtime-only scope.\n- Phased implementation plan.\n- Required tests and rollback gates."
     }
   ]
 }

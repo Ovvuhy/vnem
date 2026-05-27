@@ -1,6 +1,6 @@
 # vnem Best Practices
 
-Generated: 2026-05-27T12:44:33.005Z
+Generated: 2026-05-27T13:20:53.494Z
 
 Use this as a compact, current guidance layer for coding agents. Prefer these notes when choosing whether to add, replace, or avoid a tool.
 
@@ -220,6 +220,22 @@ MCP servers should be selected like dependencies: source-backed, least-privilege
 Sources: https://modelcontextprotocol.io/docs/getting-started/intro, https://github.com/microsoft/playwright-mcp, https://github.com/upstash/context7, https://github.com/supabase-community/supabase-mcp, https://docs.browserbase.com/integrations/mcp/introduction
 
 Search aliases: mcp servers, model context protocol, tools, resources, prompts, context7, playwright, browserbase, supabase, sentry
+
+## Zero-Trust Agent Gateway Readiness
+
+Move toward gateway behavior in phases: advisory guidance first, deterministic checks second, runtime enforcement only after threat modeling and adversarial tests.
+
+- Do not convert the read-only Vnem install pack into a daemon, shell proxy, package installer, or runtime command interceptor.
+- Treat tool metadata and MCP annotations as risk signals only; trusted clients still need deterministic controls for filesystem, network, secrets, and external side effects.
+- Pin tool schemas by hashing canonical schema JSON and require review when a trusted server's tool schema changes unexpectedly.
+- Redact secrets before logging by combining known token patterns, connection-string patterns, private-key markers, and high-entropy argument detection.
+- Enforce workspace path policy with resolved absolute paths and prefix checks before any future mutating gateway action.
+- Review dependency additions as manifest diffs before installation; use package metadata and provenance signals as advisory checks with human override.
+- Keep AST indexing read-only at first: extract symbols, imports, and calls into a disposable local graph before writing durable index state.
+
+Sources: https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/, https://modelcontextprotocol.io/specification/2025-06-18/schema, https://ts.sdk.modelcontextprotocol.io/variables/types.ToolAnnotationsSchema.html, https://docs.github.com/en/code-security/secret-scanning/introduction/about-secret-scanning, https://docs.npmjs.com/about-registry-signatures
+
+Search aliases: pre execution gateway, zero trust gateway, tool pinning, schema hashing, mcp rug pull, tool poisoning, package firewall, ast indexer, path confinement, secret redaction, command risk
 
 ## Observability And Tracing
 

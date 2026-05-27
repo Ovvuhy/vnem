@@ -1,6 +1,6 @@
 # vnem Daily Signals
 
-Generated: 2026-05-27T12:44:38.414Z
+Generated: 2026-05-27T13:20:59.541Z
 
 This digest is designed for maintainers. It summarizes source-backed candidates and stable best-practice signals; it does not auto-promote entries into the registry.
 
@@ -14,10 +14,10 @@ This digest is designed for maintainers. It summarizes source-backed candidates 
 - Browser Games And Interactive Canvas: For browser-native games, choose the lightest proven stack that can deliver real playability: responsive rendering, input, rules, state transitions, visible feedback, accessible UI, and browser-verified behavior.
 - Model And Provider Selection: Choose Codex, Claude Code, Gemini/ADK, framework agents, or model APIs by workflow fit, permissions, eval evidence, and operational cost rather than brand preference.
 - Research Source Intake: Treat Vnem as a source router, not a document dump: capture official, current, machine-readable sources that help agents make better decisions before editing.
+- Zero-Trust Agent Gateway Readiness: Move toward gateway behavior in phases: advisory guidance first, deterministic checks second, runtime enforcement only after threat modeling and adversarial tests.
 - Agent Tooling: Treat MCP servers, skills, prompts, and tools as versioned capabilities with provenance, permission notes, and review status.
 - Backend And APIs: Use boring, observable APIs with typed boundaries, explicit auth, and generated clients when agents need reliable integration points.
 - Code Review And Upgrade Audits: Project-review agents should inspect manifests, framework configs, dependency age, security posture, and available drop-in improvements before proposing code changes.
-- Coding Agents: Give repository-editing agents tight scope, strong local context, explicit approval boundaries, and fast verification loops before trusting broader autonomy.
 
 ## Watchlist / Risk Flags
 

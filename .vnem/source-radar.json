@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-27T12:44:33.005Z",
+  "generated_at": "2026-05-27T13:20:53.494Z",
   "schema_version": "1.0.0",
   "safety": {
     "mode": "read-only-source-radar",
@@ -231,6 +231,37 @@
       "source_urls": [
         "https://docs.docker.com/ai/mcp-catalog-and-toolkit/catalog/",
         "https://docs.docker.com/ai/mcp-catalog-and-toolkit/toolkit/"
+      ]
+    },
+    {
+      "id": "agentic-gateway-security",
+      "title": "Agentic Gateway Security Sources",
+      "category": "security-architecture",
+      "priority": "high",
+      "summary": "Track security sources for tool annotations, schema drift, secret handling, workspace confinement, package risk, and agent runtime approval design.",
+      "use_when": [
+        "A proposal asks Vnem to act as a pre-execution gateway, command proxy, package firewall, schema pinning layer, or AST indexer.",
+        "An agent wants to classify tool calls as read-only, mutating, destructive, open-world, or approval-required.",
+        "Maintainers need to distinguish metadata hints from enforceable security controls."
+      ],
+      "monitor": [
+        "MCP tool annotation semantics and list-changed behavior",
+        "Client approval and sandbox behavior",
+        "Package registry provenance and dependency-risk guidance",
+        "Secret detection and redaction rules"
+      ],
+      "risk_checks": [
+        "Untrusted tool metadata must not be treated as enforcement.",
+        "Runtime command interception needs a threat model before implementation.",
+        "Path confinement and redaction claims require adversarial tests.",
+        "Package firewall decisions can break valid developer workflows and need override paths."
+      ],
+      "source_urls": [
+        "https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/",
+        "https://modelcontextprotocol.io/specification/2025-06-18/schema",
+        "https://ts.sdk.modelcontextprotocol.io/variables/types.ToolAnnotationsSchema.html",
+        "https://docs.github.com/en/code-security/secret-scanning/introduction/about-secret-scanning",
+        "https://docs.npmjs.com/about-registry-signatures"
       ]
     }
   ]

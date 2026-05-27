@@ -42,6 +42,7 @@ The public landing page should explain those surfaces. This repository should ke
 - Conservative trust tiers, freshness notes, permission metadata, and risk flags.
 - Decision rubrics and playbooks for comparing Codex, Claude Code, Gemini/ADK, MCP servers, model providers, and agent workflows.
 - Source radar metadata for official docs, MCP registries, high-signal MCP sources, evals, observability tools, and client-specific instruction models.
+- Zero-trust gateway readiness guidance that turns runtime-security ideas into phased, testable, non-destructive plans.
 - Prompt patterns and review protocols that improve agent behavior.
 - Discovery automation that opens reviewable proposals instead of silently changing trusted data.
 - Public-site copy that makes installation, safety, and value obvious.
@@ -84,6 +85,7 @@ Potential paid surfaces:
 - scheduled repo audits that produce PR-ready recommendations
 - hosted discovery with changelog and risk monitoring
 - organization policy checks for MCP servers, permissions, and secrets
+- optional runtime gateway pilot with path containment, schema drift review, redacted audit logs, and package-addition review
 - visual reports for maintainers and non-technical stakeholders
 
 The open install pack should remain safe and useful. Paid features should add convenience, private data support, monitoring, collaboration, or hosted review workflows.

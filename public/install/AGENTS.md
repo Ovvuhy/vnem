@@ -104,6 +104,20 @@ Use this when deciding whether an upstream doc, MCP server, registry, benchmark,
 
 Output sections: `Source candidate`, `Why it matters`, `Trust and risk`, `Intake path`, `Verification`
 
+### Zero-Trust Gateway Review
+
+Use this when a proposal asks Vnem to intercept tools, pin schemas, redact secrets, block risky commands, index code, or add a package firewall.
+
+1. Reject all-at-once runtime rewrites unless the current repo already has that runtime boundary and tests.
+2. Classify each proposal as guidance, advisory analysis, deterministic enforcement, or external runtime enforcement.
+3. Keep the install pack read-only: do not add daemons, shell proxies, package installs, or automatic mutation to `.vnem/`.
+4. Treat MCP tool annotations as useful risk hints, not security guarantees; untrusted servers can mislabel behavior.
+5. Prefer deterministic checks first: path prefix policy, schema hash drift detection, secret redaction, manifest diff review, and explicit approval gates.
+6. Require adversarial tests before any enforcement claim: traversal blocks, redaction, schema drift, mismatched write intent, malicious test hooks, and package-addition review.
+7. If a runtime gateway is still justified, build it as a separate reviewed surface with a threat model, small pilot, rollback path, and compatibility matrix.
+
+Output sections: `Prompt review`, `Safe subset`, `Risky or blocked scope`, `Phased implementation`, `Verification gates`
+
 ### Prompt Upgrade
 
 Use this when a rough prompt should become an operational instruction for an AI agent or model.

@@ -1,6 +1,6 @@
 # vnem Prompt Engineering
 
-Generated: 2026-05-27T12:44:33.005Z
+Generated: 2026-05-27T13:20:53.494Z
 
 Use this when the user asks to improve, rewrite, harden, or operationalize a prompt. The main trigger phrase is `use vnem to enhance this prompt`.
 
@@ -456,6 +456,40 @@ Output:
 - What to change first.
 - Risks and approvals needed.
 - Verification plan.
+```
+
+### Zero-Trust Gateway Roadmap Prompt
+
+Prompt for converting an ambitious agent-security proposal into a phased, non-destructive Vnem roadmap.
+
+Intents: pre execution gateway, zero trust gateway, tool pinning, package firewall, ast indexer, secure agent gateway
+
+Template:
+
+```text
+Review this proposed Vnem gateway/security roadmap before implementation.
+
+Proposal:
+<paste the requested gateway, tool pinning, AST indexer, package firewall, or runtime-security proposal>
+
+Current Vnem Constraints:
+- Vnem's install pack is read-only guidance and search data.
+- Do not add daemons, shell interception, package installs, or automatic code mutation to the install pack.
+- Runtime enforcement must be a separate reviewed surface with a threat model.
+
+Review Criteria:
+- Which parts are safe as guidance, generated metadata, or MCP read-only tools?
+- Which parts require a separate runtime, secrets handling, filesystem writes, network calls, or package registry access?
+- What can be verified deterministically without an LLM?
+- What needs human approval or an explicit threat model before implementation?
+- What tests prove path containment, redaction, schema drift handling, dependency review, and malicious-write blocking?
+
+Output:
+- Architectural objection, if any.
+- Safe subset to implement now.
+- Deferred/runtime-only scope.
+- Phased implementation plan.
+- Required tests and rollback gates.
 ```
 
 ## Source Anchors

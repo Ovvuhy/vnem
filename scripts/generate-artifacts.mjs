@@ -36,6 +36,11 @@ const intentAliases = {
   "research layer": ["source radar", "source intake", "current docs", "official docs", "mcp registry", "benchmark evidence", "evidence"],
   "source intake": ["source radar", "research layer", "upstream source", "source trust", "provenance", "license", "permissions", "risk review"],
   "benchmark evidence": ["evals", "inspect ai", "promptfoo", "ragas", "quality evidence", "performance data", "regression test", "pilot task"],
+  "pre execution gateway": ["zero trust gateway", "agent gateway", "tool firewall", "command risk", "alignment barrier", "path confinement", "secret redaction"],
+  "zero trust gateway": ["pre execution gateway", "tool pinning", "schema hashing", "mcp rug pull", "tool poisoning", "read only hint", "destructive hint"],
+  "tool pinning": ["schema hash", "tool schema", "mcp rug pull", "tool poisoning", "tools/list_changed", "tool annotations", "tool metadata"],
+  "package firewall": ["dependency firewall", "package risk", "typosquatting", "dependency install", "npm package", "cargo package", "package metadata"],
+  "ast indexer": ["tree-sitter", "code graph", "codebase graph", "structural index", "symbol graph", "imports", "call graph", "soft delete"],
   "backend api": ["backend", "api", "database", "server", "runtime", "deployment"],
   security: ["security", "trust", "identity", "compliance", "guardrails", "audit"],
   "coding agents": ["coding-agent", "codebase", "repository", "diff", "terminal", "tests", "pull request"],
@@ -190,6 +195,36 @@ const intentRoutes = {
     choose_by: ["measurable behavior", "repeatability", "cost", "failure-mode coverage", "fit to Vnem's read-only model"],
     report: ["metric", "dataset or fixture", "baseline", "expected improvement", "review gate"]
   },
+  "pre execution gateway": {
+    read_first: ["playbook:zero-trust-gateway-review", "practice:zero-trust-agent-gateway", "source:agentic-gateway-security", "practice:mcp-server-selection"],
+    compare_options: ["read-only Vnem guidance", "advisory gateway design", "client-side approval policy", "separate runtime proxy", "language/runtime rewrite"],
+    choose_by: ["blast radius", "deterministic controls", "client compatibility", "secret handling", "path confinement", "verification coverage"],
+    report: ["safe subset", "blocked risky scope", "phased design", "required tests", "approval gates"]
+  },
+  "zero trust gateway": {
+    read_first: ["playbook:zero-trust-gateway-review", "practice:zero-trust-agent-gateway", "source:agentic-gateway-security"],
+    compare_options: ["tool annotations as hints", "schema hash pinning", "workspace path policy", "redacted audit logging", "package firewall advisory", "runtime sandbox"],
+    choose_by: ["enforceability", "trusted boundary", "false-positive cost", "rollback path", "whether the install pack remains read-only"],
+    report: ["trust boundary", "control type", "what is deterministic", "what needs human approval"]
+  },
+  "tool pinning": {
+    read_first: ["playbook:zero-trust-gateway-review", "practice:zero-trust-agent-gateway", "source:agentic-gateway-security"],
+    compare_options: ["schema hash pinning", "tool allowlist", "server/version pin", "list_changed invalidation", "manual approval on schema drift"],
+    choose_by: ["source trust", "schema stability", "client support", "failure mode", "auditability"],
+    report: ["server", "tool", "known hash", "drift behavior", "review action"]
+  },
+  "package firewall": {
+    read_first: ["playbook:zero-trust-gateway-review", "practice:zero-trust-agent-gateway", "practice:code-review"],
+    compare_options: ["manifest diff review", "package metadata check", "typosquat heuristic", "maintainer/license check", "lockfile-only policy"],
+    choose_by: ["ecosystem", "registry metadata quality", "install side effects", "maintainer trust", "verification path"],
+    report: ["package", "risk signal", "allowed or blocked", "manual review needed"]
+  },
+  "ast indexer": {
+    read_first: ["playbook:zero-trust-gateway-review", "practice:zero-trust-agent-gateway", "practice:code-simplification"],
+    compare_options: ["read-only symbol extraction", "tree-sitter prototype", "language-specific parser", "existing repo search", "external code graph"],
+    choose_by: ["language coverage", "index correctness", "incremental update safety", "soft deletion handling", "whether it changes project files"],
+    report: ["languages", "nodes and edges", "incremental strategy", "consistency guard"]
+  },
   "code simplification": {
     read_first: ["practice:code-simplification", "practice:code-review", "practice:evals"],
     compare_options: ["behavior-preserving refactor", "dead-code audit", "duplicate-code audit", "AST-aware codemods", "repo-native lint and format rules"],
@@ -308,6 +343,22 @@ const decisionPlaybooks = [
       "Require a verification path before promoting trust: link check, local MCP smoke test, install review, or before/after agent benchmark."
     ],
     output_sections: ["Source candidate", "Why it matters", "Trust and risk", "Intake path", "Verification"]
+  },
+  {
+    id: "zero-trust-gateway-review",
+    title: "Zero-Trust Gateway Review",
+    intents: ["pre execution gateway", "zero trust gateway", "tool pinning", "package firewall", "ast indexer", "agent gateway"],
+    summary: "Use this when a proposal asks Vnem to intercept tools, pin schemas, redact secrets, block risky commands, index code, or add a package firewall.",
+    workflow: [
+      "Reject all-at-once runtime rewrites unless the current repo already has that runtime boundary and tests.",
+      "Classify each proposal as guidance, advisory analysis, deterministic enforcement, or external runtime enforcement.",
+      "Keep the install pack read-only: do not add daemons, shell proxies, package installs, or automatic mutation to `.vnem/`.",
+      "Treat MCP tool annotations as useful risk hints, not security guarantees; untrusted servers can mislabel behavior.",
+      "Prefer deterministic checks first: path prefix policy, schema hash drift detection, secret redaction, manifest diff review, and explicit approval gates.",
+      "Require adversarial tests before any enforcement claim: traversal blocks, redaction, schema drift, mismatched write intent, malicious test hooks, and package-addition review.",
+      "If a runtime gateway is still justified, build it as a separate reviewed surface with a threat model, small pilot, rollback path, and compatibility matrix."
+    ],
+    output_sections: ["Prompt review", "Safe subset", "Risky or blocked scope", "Phased implementation", "Verification gates"]
   },
   {
     id: "prompt-upgrade",
@@ -523,6 +574,37 @@ const sourceRadar = [
     source_urls: [
       "https://docs.docker.com/ai/mcp-catalog-and-toolkit/catalog/",
       "https://docs.docker.com/ai/mcp-catalog-and-toolkit/toolkit/"
+    ]
+  },
+  {
+    id: "agentic-gateway-security",
+    title: "Agentic Gateway Security Sources",
+    category: "security-architecture",
+    priority: "high",
+    summary: "Track security sources for tool annotations, schema drift, secret handling, workspace confinement, package risk, and agent runtime approval design.",
+    use_when: [
+      "A proposal asks Vnem to act as a pre-execution gateway, command proxy, package firewall, schema pinning layer, or AST indexer.",
+      "An agent wants to classify tool calls as read-only, mutating, destructive, open-world, or approval-required.",
+      "Maintainers need to distinguish metadata hints from enforceable security controls."
+    ],
+    monitor: [
+      "MCP tool annotation semantics and list-changed behavior",
+      "Client approval and sandbox behavior",
+      "Package registry provenance and dependency-risk guidance",
+      "Secret detection and redaction rules"
+    ],
+    risk_checks: [
+      "Untrusted tool metadata must not be treated as enforcement.",
+      "Runtime command interception needs a threat model before implementation.",
+      "Path confinement and redaction claims require adversarial tests.",
+      "Package firewall decisions can break valid developer workflows and need override paths."
+    ],
+    source_urls: [
+      "https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/",
+      "https://modelcontextprotocol.io/specification/2025-06-18/schema",
+      "https://ts.sdk.modelcontextprotocol.io/variables/types.ToolAnnotationsSchema.html",
+      "https://docs.github.com/en/code-security/secret-scanning/introduction/about-secret-scanning",
+      "https://docs.npmjs.com/about-registry-signatures"
     ]
   }
 ];
@@ -831,6 +913,29 @@ const bestPracticeSections = [
       "Install one server per concrete workflow, then verify the client can call only the intended tools.",
       "Mark servers that can browse, mutate repositories, query databases, spend money, or access production data.",
       "Prefer official or vendor-maintained servers for high-risk resources, and put community servers behind review."
+    ]
+  },
+  {
+    id: "zero-trust-agent-gateway",
+    title: "Zero-Trust Agent Gateway Readiness",
+    score: 14,
+    summary: "Move toward gateway behavior in phases: advisory guidance first, deterministic checks second, runtime enforcement only after threat modeling and adversarial tests.",
+    keywords: ["pre execution gateway", "zero trust gateway", "tool pinning", "schema hashing", "mcp rug pull", "tool poisoning", "package firewall", "ast indexer", "path confinement", "secret redaction", "command risk"],
+    sources: [
+      "https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/",
+      "https://modelcontextprotocol.io/specification/2025-06-18/schema",
+      "https://ts.sdk.modelcontextprotocol.io/variables/types.ToolAnnotationsSchema.html",
+      "https://docs.github.com/en/code-security/secret-scanning/introduction/about-secret-scanning",
+      "https://docs.npmjs.com/about-registry-signatures"
+    ],
+    practices: [
+      "Do not convert the read-only Vnem install pack into a daemon, shell proxy, package installer, or runtime command interceptor.",
+      "Treat tool metadata and MCP annotations as risk signals only; trusted clients still need deterministic controls for filesystem, network, secrets, and external side effects.",
+      "Pin tool schemas by hashing canonical schema JSON and require review when a trusted server's tool schema changes unexpectedly.",
+      "Redact secrets before logging by combining known token patterns, connection-string patterns, private-key markers, and high-entropy argument detection.",
+      "Enforce workspace path policy with resolved absolute paths and prefix checks before any future mutating gateway action.",
+      "Review dependency additions as manifest diffs before installation; use package metadata and provenance signals as advisory checks with human override.",
+      "Keep AST indexing read-only at first: extract symbols, imports, and calls into a disposable local graph before writing durable index state."
     ]
   },
   {
@@ -1272,6 +1377,38 @@ const promptPatterns = [
       "- What to change first.",
       "- Risks and approvals needed.",
       "- Verification plan."
+    ].join("\n")
+  },
+  {
+    id: "zero-trust-gateway-roadmap",
+    title: "Zero-Trust Gateway Roadmap Prompt",
+    intents: ["pre execution gateway", "zero trust gateway", "tool pinning", "package firewall", "ast indexer", "secure agent gateway"],
+    summary: "Prompt for converting an ambitious agent-security proposal into a phased, non-destructive Vnem roadmap.",
+    output_modes: ["prompt_review", "phased_plan", "risk_register", "test_plan"],
+    template: [
+      "Review this proposed Vnem gateway/security roadmap before implementation.",
+      "",
+      "Proposal:",
+      "<paste the requested gateway, tool pinning, AST indexer, package firewall, or runtime-security proposal>",
+      "",
+      "Current Vnem Constraints:",
+      "- Vnem's install pack is read-only guidance and search data.",
+      "- Do not add daemons, shell interception, package installs, or automatic code mutation to the install pack.",
+      "- Runtime enforcement must be a separate reviewed surface with a threat model.",
+      "",
+      "Review Criteria:",
+      "- Which parts are safe as guidance, generated metadata, or MCP read-only tools?",
+      "- Which parts require a separate runtime, secrets handling, filesystem writes, network calls, or package registry access?",
+      "- What can be verified deterministically without an LLM?",
+      "- What needs human approval or an explicit threat model before implementation?",
+      "- What tests prove path containment, redaction, schema drift handling, dependency review, and malicious-write blocking?",
+      "",
+      "Output:",
+      "- Architectural objection, if any.",
+      "- Safe subset to implement now.",
+      "- Deferred/runtime-only scope.",
+      "- Phased implementation plan.",
+      "- Required tests and rollback gates."
     ].join("\n")
   }
 ];

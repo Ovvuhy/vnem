@@ -26,6 +26,7 @@ vnem is meant to improve the judgment of coding agents, not replace maintainer r
 - **Safer adoption:** each entry tracks source links, licenses, permissions, risk flags, trust tier, and install notes.
 - **Stronger AI selection:** the install pack includes a decision rubric and playbooks for comparing Codex, Claude Code, Gemini/ADK, MCP tools, and agent workflows by fit, risk, verification, cost, and reversibility.
 - **Shared research layer:** source radar maps official docs, registries, MCP sources, evals, and verification sources so agents know where to research before burning context from scratch.
+- **Gateway-ready security guidance:** Vnem now routes pre-execution gateway, tool pinning, package firewall, and AST-indexer ideas into a phased zero-trust review instead of a risky runtime rewrite.
 - **Clearer prompts:** the install pack includes prompt-engineering guidance and reusable prompt patterns for Codex-style implementation, review, debugging, research, eval, and MCP-selection tasks.
 - **Faster repo audits:** agents inspect the project first, then separate stale or risky choices from realistic drop-in improvements.
 
@@ -150,6 +151,7 @@ The pack is guidance and search data. It does not run the tools it recommends.
 | `public/install.tgz` | Tiny archive used by the one-line install command. |
 | `.vnem/` | Generated local pack for dogfooding this repo. |
 | `landing/` | Static public landing page and blog bundle for the website. |
+| `SECURITY-ROADMAP.md` | Review of the zero-trust gateway proposal and phased implementation path. |
 | `llms.txt` | Compact LLM entrypoint. |
 | `llms-full.txt` | Full generated registry context for LLMs. |
 | `HERMES.md` | Operating contract for recurring agentic discovery and daily ecosystem checks. |

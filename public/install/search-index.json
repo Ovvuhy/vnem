@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-27T12:44:33.005Z",
+  "generated_at": "2026-05-27T13:20:53.494Z",
   "schema_version": "1.0.0",
   "install_folder": ".vnem",
   "safety": {
@@ -240,6 +240,52 @@
       "performance data",
       "regression test",
       "pilot task"
+    ],
+    "pre execution gateway": [
+      "zero trust gateway",
+      "agent gateway",
+      "tool firewall",
+      "command risk",
+      "alignment barrier",
+      "path confinement",
+      "secret redaction"
+    ],
+    "zero trust gateway": [
+      "pre execution gateway",
+      "tool pinning",
+      "schema hashing",
+      "mcp rug pull",
+      "tool poisoning",
+      "read only hint",
+      "destructive hint"
+    ],
+    "tool pinning": [
+      "schema hash",
+      "tool schema",
+      "mcp rug pull",
+      "tool poisoning",
+      "tools/list_changed",
+      "tool annotations",
+      "tool metadata"
+    ],
+    "package firewall": [
+      "dependency firewall",
+      "package risk",
+      "typosquatting",
+      "dependency install",
+      "npm package",
+      "cargo package",
+      "package metadata"
+    ],
+    "ast indexer": [
+      "tree-sitter",
+      "code graph",
+      "codebase graph",
+      "structural index",
+      "symbol graph",
+      "imports",
+      "call graph",
+      "soft delete"
     ],
     "backend api": [
       "backend",
@@ -1042,6 +1088,146 @@
         "review gate"
       ]
     },
+    "pre execution gateway": {
+      "read_first": [
+        "playbook:zero-trust-gateway-review",
+        "practice:zero-trust-agent-gateway",
+        "source:agentic-gateway-security",
+        "practice:mcp-server-selection"
+      ],
+      "compare_options": [
+        "read-only Vnem guidance",
+        "advisory gateway design",
+        "client-side approval policy",
+        "separate runtime proxy",
+        "language/runtime rewrite"
+      ],
+      "choose_by": [
+        "blast radius",
+        "deterministic controls",
+        "client compatibility",
+        "secret handling",
+        "path confinement",
+        "verification coverage"
+      ],
+      "report": [
+        "safe subset",
+        "blocked risky scope",
+        "phased design",
+        "required tests",
+        "approval gates"
+      ]
+    },
+    "zero trust gateway": {
+      "read_first": [
+        "playbook:zero-trust-gateway-review",
+        "practice:zero-trust-agent-gateway",
+        "source:agentic-gateway-security"
+      ],
+      "compare_options": [
+        "tool annotations as hints",
+        "schema hash pinning",
+        "workspace path policy",
+        "redacted audit logging",
+        "package firewall advisory",
+        "runtime sandbox"
+      ],
+      "choose_by": [
+        "enforceability",
+        "trusted boundary",
+        "false-positive cost",
+        "rollback path",
+        "whether the install pack remains read-only"
+      ],
+      "report": [
+        "trust boundary",
+        "control type",
+        "what is deterministic",
+        "what needs human approval"
+      ]
+    },
+    "tool pinning": {
+      "read_first": [
+        "playbook:zero-trust-gateway-review",
+        "practice:zero-trust-agent-gateway",
+        "source:agentic-gateway-security"
+      ],
+      "compare_options": [
+        "schema hash pinning",
+        "tool allowlist",
+        "server/version pin",
+        "list_changed invalidation",
+        "manual approval on schema drift"
+      ],
+      "choose_by": [
+        "source trust",
+        "schema stability",
+        "client support",
+        "failure mode",
+        "auditability"
+      ],
+      "report": [
+        "server",
+        "tool",
+        "known hash",
+        "drift behavior",
+        "review action"
+      ]
+    },
+    "package firewall": {
+      "read_first": [
+        "playbook:zero-trust-gateway-review",
+        "practice:zero-trust-agent-gateway",
+        "practice:code-review"
+      ],
+      "compare_options": [
+        "manifest diff review",
+        "package metadata check",
+        "typosquat heuristic",
+        "maintainer/license check",
+        "lockfile-only policy"
+      ],
+      "choose_by": [
+        "ecosystem",
+        "registry metadata quality",
+        "install side effects",
+        "maintainer trust",
+        "verification path"
+      ],
+      "report": [
+        "package",
+        "risk signal",
+        "allowed or blocked",
+        "manual review needed"
+      ]
+    },
+    "ast indexer": {
+      "read_first": [
+        "playbook:zero-trust-gateway-review",
+        "practice:zero-trust-agent-gateway",
+        "practice:code-simplification"
+      ],
+      "compare_options": [
+        "read-only symbol extraction",
+        "tree-sitter prototype",
+        "language-specific parser",
+        "existing repo search",
+        "external code graph"
+      ],
+      "choose_by": [
+        "language coverage",
+        "index correctness",
+        "incremental update safety",
+        "soft deletion handling",
+        "whether it changes project files"
+      ],
+      "report": [
+        "languages",
+        "nodes and edges",
+        "incremental strategy",
+        "consistency guard"
+      ]
+    },
     "code simplification": {
       "read_first": [
         "practice:code-simplification",
@@ -1240,6 +1426,35 @@
         "Trust and risk",
         "Intake path",
         "Verification"
+      ]
+    },
+    {
+      "id": "zero-trust-gateway-review",
+      "title": "Zero-Trust Gateway Review",
+      "intents": [
+        "pre execution gateway",
+        "zero trust gateway",
+        "tool pinning",
+        "package firewall",
+        "ast indexer",
+        "agent gateway"
+      ],
+      "summary": "Use this when a proposal asks Vnem to intercept tools, pin schemas, redact secrets, block risky commands, index code, or add a package firewall.",
+      "workflow": [
+        "Reject all-at-once runtime rewrites unless the current repo already has that runtime boundary and tests.",
+        "Classify each proposal as guidance, advisory analysis, deterministic enforcement, or external runtime enforcement.",
+        "Keep the install pack read-only: do not add daemons, shell proxies, package installs, or automatic mutation to `.vnem/`.",
+        "Treat MCP tool annotations as useful risk hints, not security guarantees; untrusted servers can mislabel behavior.",
+        "Prefer deterministic checks first: path prefix policy, schema hash drift detection, secret redaction, manifest diff review, and explicit approval gates.",
+        "Require adversarial tests before any enforcement claim: traversal blocks, redaction, schema drift, mismatched write intent, malicious test hooks, and package-addition review.",
+        "If a runtime gateway is still justified, build it as a separate reviewed surface with a threat model, small pilot, rollback path, and compatibility matrix."
+      ],
+      "output_sections": [
+        "Prompt review",
+        "Safe subset",
+        "Risky or blocked scope",
+        "Phased implementation",
+        "Verification gates"
       ]
     },
     {
@@ -1466,6 +1681,37 @@
       "source_urls": [
         "https://docs.docker.com/ai/mcp-catalog-and-toolkit/catalog/",
         "https://docs.docker.com/ai/mcp-catalog-and-toolkit/toolkit/"
+      ]
+    },
+    {
+      "id": "agentic-gateway-security",
+      "title": "Agentic Gateway Security Sources",
+      "category": "security-architecture",
+      "priority": "high",
+      "summary": "Track security sources for tool annotations, schema drift, secret handling, workspace confinement, package risk, and agent runtime approval design.",
+      "use_when": [
+        "A proposal asks Vnem to act as a pre-execution gateway, command proxy, package firewall, schema pinning layer, or AST indexer.",
+        "An agent wants to classify tool calls as read-only, mutating, destructive, open-world, or approval-required.",
+        "Maintainers need to distinguish metadata hints from enforceable security controls."
+      ],
+      "monitor": [
+        "MCP tool annotation semantics and list-changed behavior",
+        "Client approval and sandbox behavior",
+        "Package registry provenance and dependency-risk guidance",
+        "Secret detection and redaction rules"
+      ],
+      "risk_checks": [
+        "Untrusted tool metadata must not be treated as enforcement.",
+        "Runtime command interception needs a threat model before implementation.",
+        "Path confinement and redaction claims require adversarial tests.",
+        "Package firewall decisions can break valid developer workflows and need override paths."
+      ],
+      "source_urls": [
+        "https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/",
+        "https://modelcontextprotocol.io/specification/2025-06-18/schema",
+        "https://ts.sdk.modelcontextprotocol.io/variables/types.ToolAnnotationsSchema.html",
+        "https://docs.github.com/en/code-security/secret-scanning/introduction/about-secret-scanning",
+        "https://docs.npmjs.com/about-registry-signatures"
       ]
     }
   ],
@@ -2499,6 +2745,162 @@
       ]
     },
     {
+      "id": "playbook:zero-trust-gateway-review",
+      "kind": "decision-playbook",
+      "title": "Zero-Trust Gateway Review",
+      "summary": "Use this when a proposal asks Vnem to intercept tools, pin schemas, redact secrets, block risky commands, index code, or add a package firewall.",
+      "url_path": "/install/AGENTS.md",
+      "trust_tier": "verified",
+      "type": "decision-playbook",
+      "score": 15,
+      "tags": [
+        "pre execution gateway",
+        "zero trust gateway",
+        "tool pinning",
+        "package firewall",
+        "ast indexer",
+        "agent gateway"
+      ],
+      "use_cases": [
+        "Reject all-at-once runtime rewrites unless the current repo already has that runtime boundary and tests.",
+        "Classify each proposal as guidance, advisory analysis, deterministic enforcement, or external runtime enforcement.",
+        "Keep the install pack read-only: do not add daemons, shell proxies, package installs, or automatic mutation to `.vnem/`.",
+        "Treat MCP tool annotations as useful risk hints, not security guarantees; untrusted servers can mislabel behavior.",
+        "Prefer deterministic checks first: path prefix policy, schema hash drift detection, secret redaction, manifest diff review, and explicit approval gates.",
+        "Require adversarial tests before any enforcement claim: traversal blocks, redaction, schema drift, mismatched write intent, malicious test hooks, and package-addition review.",
+        "If a runtime gateway is still justified, build it as a separate reviewed surface with a threat model, small pilot, rollback path, and compatibility matrix."
+      ],
+      "best_for": [
+        "Use this when a proposal asks Vnem to intercept tools, pin schemas, redact secrets, block risky commands, index code, or add a package firewall."
+      ],
+      "risk_flags": [],
+      "source_urls": [
+        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/AGENTS.md"
+      ],
+      "keywords": [
+        "zero-trust",
+        "gateway",
+        "proposal",
+        "asks",
+        "vnem",
+        "to",
+        "intercept",
+        "tools",
+        "pin",
+        "schemas",
+        "redact",
+        "secrets",
+        "block",
+        "risky",
+        "commands",
+        "index",
+        "or",
+        "add",
+        "package",
+        "firewall.",
+        "pre",
+        "execution",
+        "zero",
+        "trust",
+        "tool",
+        "pinning",
+        "firewall",
+        "ast",
+        "indexer",
+        "agent",
+        "reject",
+        "all-at-once",
+        "runtime",
+        "rewrites",
+        "unless",
+        "current",
+        "repo",
+        "already",
+        "boundary",
+        "tests.",
+        "classify",
+        "each",
+        "as",
+        "guidance",
+        "advisory",
+        "analysis",
+        "deterministic",
+        "enforcement",
+        "external",
+        "enforcement.",
+        "keep",
+        "install",
+        "pack",
+        "read-only",
+        "do",
+        "not",
+        "daemons",
+        "shell",
+        "proxies",
+        "installs",
+        "automatic",
+        "mutation",
+        ".vnem/",
+        "mcp",
+        "annotations",
+        "useful",
+        "risk",
+        "hints",
+        "security",
+        "guarantees",
+        "untrusted",
+        "servers",
+        "mislabel",
+        "behavior.",
+        "prefer",
+        "checks",
+        "first",
+        "path",
+        "prefix",
+        "policy",
+        "schema",
+        "hash",
+        "drift",
+        "detection",
+        "secret",
+        "redaction",
+        "manifest",
+        "diff",
+        "explicit",
+        "approval",
+        "gates.",
+        "require",
+        "adversarial",
+        "tests",
+        "any",
+        "claim",
+        "traversal",
+        "blocks",
+        "mismatched",
+        "write",
+        "intent",
+        "malicious",
+        "test",
+        "hooks",
+        "package-addition",
+        "review.",
+        "if",
+        "is",
+        "still",
+        "justified",
+        "build",
+        "it",
+        "separate",
+        "surface",
+        "threat",
+        "model",
+        "small",
+        "pilot",
+        "rollback",
+        "compatibility"
+      ]
+    },
+    {
       "id": "practice:research-source-intake",
       "kind": "best-practice",
       "title": "Research Source Intake",
@@ -2648,6 +3050,178 @@
         "before/after",
         "recommendation",
         "diff."
+      ]
+    },
+    {
+      "id": "practice:zero-trust-agent-gateway",
+      "kind": "best-practice",
+      "title": "Zero-Trust Agent Gateway Readiness",
+      "summary": "Move toward gateway behavior in phases: advisory guidance first, deterministic checks second, runtime enforcement only after threat modeling and adversarial tests.",
+      "url_path": "/install/best-practices.md",
+      "trust_tier": "verified",
+      "type": "best-practice",
+      "score": 14,
+      "tags": [
+        "pre execution gateway",
+        "zero trust gateway",
+        "tool pinning",
+        "schema hashing",
+        "mcp rug pull",
+        "tool poisoning",
+        "package firewall",
+        "ast indexer",
+        "path confinement",
+        "secret redaction",
+        "command risk"
+      ],
+      "use_cases": [
+        "Do not convert the read-only Vnem install pack into a daemon, shell proxy, package installer, or runtime command interceptor.",
+        "Treat tool metadata and MCP annotations as risk signals only; trusted clients still need deterministic controls for filesystem, network, secrets, and external side effects.",
+        "Pin tool schemas by hashing canonical schema JSON and require review when a trusted server's tool schema changes unexpectedly.",
+        "Redact secrets before logging by combining known token patterns, connection-string patterns, private-key markers, and high-entropy argument detection.",
+        "Enforce workspace path policy with resolved absolute paths and prefix checks before any future mutating gateway action.",
+        "Review dependency additions as manifest diffs before installation; use package metadata and provenance signals as advisory checks with human override.",
+        "Keep AST indexing read-only at first: extract symbols, imports, and calls into a disposable local graph before writing durable index state."
+      ],
+      "best_for": [
+        "Do not convert the read-only Vnem install pack into a daemon, shell proxy, package installer, or runtime command interceptor.",
+        "Treat tool metadata and MCP annotations as risk signals only; trusted clients still need deterministic controls for filesystem, network, secrets, and external side effects.",
+        "Pin tool schemas by hashing canonical schema JSON and require review when a trusted server's tool schema changes unexpectedly.",
+        "Redact secrets before logging by combining known token patterns, connection-string patterns, private-key markers, and high-entropy argument detection.",
+        "Enforce workspace path policy with resolved absolute paths and prefix checks before any future mutating gateway action.",
+        "Review dependency additions as manifest diffs before installation; use package metadata and provenance signals as advisory checks with human override.",
+        "Keep AST indexing read-only at first: extract symbols, imports, and calls into a disposable local graph before writing durable index state."
+      ],
+      "risk_flags": [],
+      "source_urls": [
+        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/best-practices.md",
+        "https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/",
+        "https://modelcontextprotocol.io/specification/2025-06-18/schema",
+        "https://ts.sdk.modelcontextprotocol.io/variables/types.ToolAnnotationsSchema.html",
+        "https://docs.github.com/en/code-security/secret-scanning/introduction/about-secret-scanning",
+        "https://docs.npmjs.com/about-registry-signatures"
+      ],
+      "keywords": [
+        "zero-trust",
+        "agent",
+        "gateway",
+        "readiness",
+        "move",
+        "toward",
+        "behavior",
+        "in",
+        "phases",
+        "advisory",
+        "guidance",
+        "first",
+        "deterministic",
+        "checks",
+        "second",
+        "runtime",
+        "enforcement",
+        "only",
+        "after",
+        "threat",
+        "modeling",
+        "adversarial",
+        "tests.",
+        "pre",
+        "execution",
+        "zero",
+        "trust",
+        "tool",
+        "pinning",
+        "schema",
+        "hashing",
+        "mcp",
+        "rug",
+        "pull",
+        "poisoning",
+        "package",
+        "firewall",
+        "ast",
+        "indexer",
+        "path",
+        "confinement",
+        "secret",
+        "redaction",
+        "command",
+        "risk",
+        "do",
+        "not",
+        "convert",
+        "read-only",
+        "vnem",
+        "install",
+        "pack",
+        "daemon",
+        "shell",
+        "proxy",
+        "installer",
+        "or",
+        "interceptor.",
+        "metadata",
+        "annotations",
+        "as",
+        "signals",
+        "trusted",
+        "clients",
+        "still",
+        "need",
+        "controls",
+        "filesystem",
+        "network",
+        "secrets",
+        "external",
+        "side",
+        "effects.",
+        "pin",
+        "schemas",
+        "by",
+        "canonical",
+        "json",
+        "require",
+        "server",
+        "changes",
+        "unexpectedly.",
+        "redact",
+        "logging",
+        "combining",
+        "known",
+        "token",
+        "patterns",
+        "connection-string",
+        "private-key",
+        "markers",
+        "high-entropy",
+        "argument",
+        "detection.",
+        "enforce",
+        "workspace",
+        "policy",
+        "resolved",
+        "absolute",
+        "paths",
+        "prefix",
+        "any",
+        "future",
+        "mutating",
+        "action.",
+        "dependency",
+        "additions",
+        "manifest",
+        "diffs",
+        "installation",
+        "provenance",
+        "human",
+        "override.",
+        "keep",
+        "indexing",
+        "at",
+        "extract",
+        "symbols",
+        "imports",
+        "calls"
       ]
     },
     {
@@ -3177,6 +3751,146 @@
         "verifies",
         "install",
         "behavior."
+      ]
+    },
+    {
+      "id": "source:agentic-gateway-security",
+      "kind": "source-radar",
+      "title": "Agentic Gateway Security Sources",
+      "summary": "Track security sources for tool annotations, schema drift, secret handling, workspace confinement, package risk, and agent runtime approval design.",
+      "url_path": "/install/source-radar.json",
+      "trust_tier": "verified",
+      "type": "source-radar",
+      "score": 12,
+      "tags": [
+        "security-architecture",
+        "high",
+        "A proposal asks Vnem to act as a pre-execution gateway, command proxy, package firewall, schema pinning layer, or AST indexer.",
+        "An agent wants to classify tool calls as read-only, mutating, destructive, open-world, or approval-required.",
+        "Maintainers need to distinguish metadata hints from enforceable security controls.",
+        "MCP tool annotation semantics and list-changed behavior",
+        "Client approval and sandbox behavior",
+        "Package registry provenance and dependency-risk guidance",
+        "Secret detection and redaction rules"
+      ],
+      "use_cases": [
+        "A proposal asks Vnem to act as a pre-execution gateway, command proxy, package firewall, schema pinning layer, or AST indexer.",
+        "An agent wants to classify tool calls as read-only, mutating, destructive, open-world, or approval-required.",
+        "Maintainers need to distinguish metadata hints from enforceable security controls."
+      ],
+      "best_for": [
+        "MCP tool annotation semantics and list-changed behavior",
+        "Client approval and sandbox behavior",
+        "Package registry provenance and dependency-risk guidance",
+        "Secret detection and redaction rules"
+      ],
+      "risk_flags": [
+        "Untrusted tool metadata must not be treated as enforcement.",
+        "Runtime command interception needs a threat model before implementation.",
+        "Path confinement and redaction claims require adversarial tests.",
+        "Package firewall decisions can break valid developer workflows and need override paths."
+      ],
+      "source_urls": [
+        "https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/",
+        "https://modelcontextprotocol.io/specification/2025-06-18/schema",
+        "https://ts.sdk.modelcontextprotocol.io/variables/types.ToolAnnotationsSchema.html",
+        "https://docs.github.com/en/code-security/secret-scanning/introduction/about-secret-scanning",
+        "https://docs.npmjs.com/about-registry-signatures"
+      ],
+      "keywords": [
+        "agentic-gateway-security",
+        "agentic",
+        "gateway",
+        "security",
+        "security-architecture",
+        "high",
+        "track",
+        "tool",
+        "annotations",
+        "schema",
+        "drift",
+        "secret",
+        "handling",
+        "workspace",
+        "confinement",
+        "package",
+        "risk",
+        "agent",
+        "runtime",
+        "approval",
+        "design.",
+        "proposal",
+        "asks",
+        "vnem",
+        "to",
+        "act",
+        "as",
+        "pre-execution",
+        "command",
+        "proxy",
+        "firewall",
+        "pinning",
+        "layer",
+        "or",
+        "ast",
+        "indexer.",
+        "an",
+        "wants",
+        "classify",
+        "calls",
+        "read-only",
+        "mutating",
+        "destructive",
+        "open-world",
+        "approval-required.",
+        "maintainers",
+        "need",
+        "distinguish",
+        "metadata",
+        "hints",
+        "enforceable",
+        "controls.",
+        "mcp",
+        "annotation",
+        "semantics",
+        "list-changed",
+        "behavior",
+        "client",
+        "sandbox",
+        "provenance",
+        "dependency-risk",
+        "guidance",
+        "detection",
+        "redaction",
+        "rules",
+        "untrusted",
+        "must",
+        "not",
+        "be",
+        "treated",
+        "enforcement.",
+        "interception",
+        "threat",
+        "model",
+        "implementation.",
+        "path",
+        "claims",
+        "require",
+        "adversarial",
+        "tests.",
+        "decisions",
+        "break",
+        "valid",
+        "developer",
+        "workflows",
+        "override",
+        "paths.",
+        "https",
+        "//blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/",
+        "//modelcontextprotocol.io/specification/2025-06-18/schema",
+        "//ts.sdk.modelcontextprotocol.io/variables/types.toolannotationsschema.html",
+        "//docs.github.com/en/code-security/secret-scanning/introduction/about-secret-scanning",
+        "//docs.npmjs.com/about-registry-signatures"
       ]
     },
     {
@@ -23505,6 +24219,157 @@
       ]
     },
     {
+      "id": "prompt-pattern:zero-trust-gateway-roadmap",
+      "kind": "prompt-pattern",
+      "title": "Zero-Trust Gateway Roadmap Prompt",
+      "summary": "Prompt for converting an ambitious agent-security proposal into a phased, non-destructive Vnem roadmap.",
+      "url_path": "/install/prompt-engineering.md",
+      "trust_tier": "verified",
+      "type": "prompt-pattern",
+      "score": 10,
+      "tags": [
+        "pre execution gateway",
+        "zero trust gateway",
+        "tool pinning",
+        "package firewall",
+        "ast indexer",
+        "secure agent gateway"
+      ],
+      "use_cases": [
+        "pre execution gateway",
+        "zero trust gateway",
+        "tool pinning",
+        "package firewall",
+        "ast indexer",
+        "secure agent gateway"
+      ],
+      "best_for": [
+        "Prompt for converting an ambitious agent-security proposal into a phased, non-destructive Vnem roadmap."
+      ],
+      "risk_flags": [],
+      "source_urls": [
+        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/prompt-engineering.md",
+        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/prompt-patterns.json"
+      ],
+      "keywords": [
+        "zero-trust",
+        "gateway",
+        "roadmap",
+        "prompt",
+        "converting",
+        "an",
+        "ambitious",
+        "agent-security",
+        "proposal",
+        "phased",
+        "non-destructive",
+        "vnem",
+        "roadmap.",
+        "pre",
+        "execution",
+        "zero",
+        "trust",
+        "tool",
+        "pinning",
+        "package",
+        "firewall",
+        "ast",
+        "indexer",
+        "secure",
+        "agent",
+        "plan",
+        "risk",
+        "register",
+        "test",
+        "proposed",
+        "gateway/security",
+        "implementation.",
+        "paste",
+        "requested",
+        "or",
+        "runtime-security",
+        "current",
+        "constraints",
+        "install",
+        "pack",
+        "is",
+        "read-only",
+        "guidance",
+        "search",
+        "data.",
+        "do",
+        "not",
+        "add",
+        "daemons",
+        "shell",
+        "interception",
+        "installs",
+        "automatic",
+        "mutation",
+        "to",
+        "pack.",
+        "runtime",
+        "enforcement",
+        "must",
+        "be",
+        "separate",
+        "surface",
+        "threat",
+        "model.",
+        "criteria",
+        "which",
+        "parts",
+        "safe",
+        "as",
+        "generated",
+        "metadata",
+        "mcp",
+        "tools",
+        "require",
+        "secrets",
+        "handling",
+        "filesystem",
+        "writes",
+        "network",
+        "calls",
+        "access",
+        "what",
+        "verified",
+        "deterministically",
+        "without",
+        "llm",
+        "human",
+        "approval",
+        "explicit",
+        "model",
+        "implementation",
+        "tests",
+        "prove",
+        "path",
+        "containment",
+        "redaction",
+        "schema",
+        "drift",
+        "dependency",
+        "malicious-write",
+        "blocking",
+        "output",
+        "architectural",
+        "objection",
+        "if",
+        "any.",
+        "subset",
+        "implement",
+        "now.",
+        "deferred/runtime-only",
+        "scope.",
+        "plan.",
+        "required",
+        "rollback",
+        "gates."
+      ]
+    },
+    {
       "id": "entry:agentops",
       "kind": "registry-entry",
       "title": "AgentOps",
@@ -29354,6 +30219,9 @@
     ".net-oriented": [
       "entry:semantic-kernel"
     ],
+    ".vnem/": [
+      "playbook:zero-trust-gateway-review"
+    ],
     ".vnem/search-index.json": [
       "entry:vnem-mcp"
     ],
@@ -29430,6 +30298,9 @@
     ],
     "//baselight.ai": [
       "entry:ai-baselight-baselight"
+    ],
+    "//blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/": [
+      "source:agentic-gateway-security"
     ],
     "//borealhost.ai": [
       "entry:ai-borealhost-mcp"
@@ -29586,6 +30457,9 @@
       "source:platform-and-data-connectors",
       "entry:firecrawl-mcp"
     ],
+    "//docs.github.com/en/code-security/secret-scanning/introduction/about-secret-scanning": [
+      "source:agentic-gateway-security"
+    ],
     "//docs.github.com/en/copilot/concepts/about-copilot-coding-agent": [
       "entry:github-copilot-coding-agent"
     ],
@@ -29613,6 +30487,9 @@
     ],
     "//docs.mem0.ai/": [
       "entry:mem0"
+    ],
+    "//docs.npmjs.com/about-registry-signatures": [
+      "source:agentic-gateway-security"
     ],
     "//docs.phaser.io/": [
       "entry:phaser"
@@ -30169,6 +31046,9 @@
     "//modelcontextprotocol.io/llms.txt": [
       "source:mcp-core-and-registry"
     ],
+    "//modelcontextprotocol.io/specification/2025-06-18/schema": [
+      "source:agentic-gateway-security"
+    ],
     "//moxt.ai": [
       "entry:ai-moxt-mcp-workspace"
     ],
@@ -30720,6 +31600,9 @@
     ],
     "//threejs.org/docs/index": [
       "entry:three-js"
+    ],
+    "//ts.sdk.modelcontextprotocol.io/variables/types.toolannotationsschema.html": [
+      "source:agentic-gateway-security"
     ],
     "//tv.djwizard.ai": [
       "entry:ai-djwizard-tvwizard"
@@ -31326,6 +32209,9 @@
     "about.": [
       "practice:data"
     ],
+    "absolute": [
+      "practice:zero-trust-agent-gateway"
+    ],
     "abstraction": [
       "practice:code-simplification"
     ],
@@ -31384,6 +32270,7 @@
       "entry:ai-nothumansearch-search",
       "entry:sentry-mcp",
       "prompt-pattern:source-intake",
+      "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:playwright-mcp",
       "source:secure-mcp-distribution",
       "entry:supabase-mcp"
@@ -31447,12 +32334,16 @@
       "entry:clude"
     ],
     "act": [
+      "source:agentic-gateway-security",
       "entry:ai-complyhat-compliance",
       "entry:ai-modulos-demo-booking"
     ],
     "action": [
       "entry:ai-cosmonote-notes",
       "prompt-pattern:prompt-enhancement"
+    ],
+    "action.": [
+      "practice:zero-trust-agent-gateway"
     ],
     "actions": [
       "practice:browser-games",
@@ -31505,12 +32396,14 @@
     "add": [
       "practice:browser-games",
       "playbook:prompt-upgrade",
+      "playbook:zero-trust-gateway-review",
       "entry:langgraph",
       "practice:prompt-engineering",
       "prompt-pattern:code-simplification",
       "prompt-pattern:codex-implementation",
       "entry:matter-js",
       "prompt-pattern:source-intake",
+      "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:phaser",
       "entry:pixijs",
       "entry:rapier-js",
@@ -31522,6 +32415,9 @@
       "source:mcp-core-and-registry",
       "entry:anthropic-building-effective-agents",
       "prompt-pattern:agent-upgrade-plan"
+    ],
+    "additions": [
+      "practice:zero-trust-agent-gateway"
     ],
     "addon": [
       "entry:ai-ankimcp-anki-mcp-server-addon"
@@ -31557,6 +32453,15 @@
       "entry:ai-adweave-meta-ads-mcp",
       "entry:ai-adramp-google-ads"
     ],
+    "adversarial": [
+      "playbook:zero-trust-gateway-review",
+      "practice:zero-trust-agent-gateway",
+      "source:agentic-gateway-security"
+    ],
+    "advisory": [
+      "playbook:zero-trust-gateway-review",
+      "practice:zero-trust-agent-gateway"
+    ],
     "adweave": [
       "entry:ai-adweave-meta-ads-mcp"
     ],
@@ -31570,6 +32475,7 @@
       "entry:ai-buywhere-buywhere-mcp"
     ],
     "after": [
+      "practice:zero-trust-agent-gateway",
       "practice:observability-and-tracing",
       "prompt-pattern:eval-design",
       "prompt-pattern:ui-build",
@@ -31602,12 +32508,15 @@
       "playbook:project-stack-review",
       "playbook:prompt-upgrade",
       "playbook:source-intake-review",
+      "playbook:zero-trust-gateway-review",
       "practice:research-source-intake",
+      "practice:zero-trust-agent-gateway",
       "source:coding-agent-clients",
       "source:mcp-core-and-registry",
       "entry:model-context-protocol",
       "practice:agent-tooling",
       "entry:google-agent2agent-protocol",
+      "source:agentic-gateway-security",
       "source:browser-and-ui-verification",
       "entry:codex-agents-md",
       "practice:coding-agents",
@@ -31666,6 +32575,7 @@
       "prompt-pattern:source-intake",
       "prompt-pattern:subagent-delegation",
       "entry:ai-mino-web-agent",
+      "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:agentops",
       "entry:babylon-js",
       "entry:claude-code-memory",
@@ -31733,6 +32643,9 @@
     ],
     "agent-protocol": [
       "entry:google-agent2agent-protocol"
+    ],
+    "agent-security": [
+      "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "agent-specific": [
       "entry:agentops"
@@ -31913,6 +32826,7 @@
       "entry:ai-agentdm-agentdm"
     ],
     "agentic": [
+      "source:agentic-gateway-security",
       "entry:ai-abmeter-abmeter",
       "entry:ac-tandem-docs-mcp",
       "entry:agency-lona-trading",
@@ -32065,6 +32979,9 @@
       "entry:ai-com-mcp-linkedin",
       "entry:ai-moxt-mcp-workspace",
       "entry:cursor-agent"
+    ],
+    "agentic-gateway-security": [
+      "source:agentic-gateway-security"
     ],
     "agentops": [
       "practice:observability-and-tracing",
@@ -33017,6 +33934,9 @@
       "prompt-pattern:code-simplification",
       "prompt-pattern:ui-build"
     ],
+    "all-at-once": [
+      "playbook:zero-trust-gateway-review"
+    ],
     "allowed": [
       "playbook:prompt-upgrade",
       "practice:prompt-engineering"
@@ -33033,6 +33953,7 @@
     ],
     "already": [
       "playbook:mcp-adoption-review",
+      "playbook:zero-trust-gateway-review",
       "entry:pydantic-ai",
       "prompt-pattern:codex-implementation",
       "entry:ugrep",
@@ -33044,6 +33965,9 @@
     "ambiguous": [
       "prompt-pattern:eval-design"
     ],
+    "ambitious": [
+      "prompt-pattern:zero-trust-gateway-roadmap"
+    ],
     "america": [
       "entry:ai-bezal-local-commerce"
     ],
@@ -33054,6 +33978,7 @@
       "playbook:source-intake-review",
       "source:mcp-core-and-registry",
       "entry:model-context-protocol",
+      "source:agentic-gateway-security",
       "source:browser-and-ui-verification",
       "source:documentation-ingestion",
       "source:evaluation-and-observability",
@@ -33220,6 +34145,7 @@
       "entry:ragas",
       "prompt-pattern:source-intake",
       "entry:ai-mino-web-agent",
+      "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:agentops",
       "entry:ai-artidrop-artidrop",
       "entry:aider",
@@ -33247,6 +34173,7 @@
       "entry:openai-swarm"
     ],
     "analysis": [
+      "playbook:zero-trust-gateway-review",
       "practice:code-review",
       "entry:agency-lona-trading",
       "entry:ai-complyme-mcp-mcp",
@@ -33293,7 +34220,13 @@
     "ankimcp": [
       "entry:ai-ankimcp-anki-mcp-server-addon"
     ],
+    "annotation": [
+      "source:agentic-gateway-security"
+    ],
     "annotations": [
+      "playbook:zero-trust-gateway-review",
+      "practice:zero-trust-agent-gateway",
+      "source:agentic-gateway-security",
       "entry:openai-prompt-optimizer"
     ],
     "anomalyarmor": [
@@ -33350,6 +34283,8 @@
       "entry:ai-childanxiety-library"
     ],
     "any": [
+      "playbook:zero-trust-gateway-review",
+      "practice:zero-trust-agent-gateway",
       "entry:ai-cueapi-mcp",
       "entry:ai-klavis-strata",
       "entry:ai-getperspective-mcp",
@@ -33360,6 +34295,9 @@
       "entry:ai-alpic-mcp-alpic-mcp",
       "entry:ai-boolsai-scan",
       "entry:ai-moxt-mcp-workspace"
+    ],
+    "any.": [
+      "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "anzenna": [
       "entry:ai-anzenna-anzenna"
@@ -33509,13 +34447,19 @@
       "playbook:coding-agent-selection",
       "practice:model-and-provider-selection",
       "playbook:prompt-upgrade",
+      "playbook:zero-trust-gateway-review",
       "source:coding-agent-clients",
+      "source:agentic-gateway-security",
       "practice:coding-agents",
       "practice:human-approval-and-durability",
       "entry:langgraph",
       "prompt-pattern:provider-selection",
+      "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:openai-codex-cli",
       "entry:cline"
+    ],
+    "approval-required.": [
+      "source:agentic-gateway-security"
     ],
     "approval.": [
       "playbook:mcp-adoption-review",
@@ -33550,6 +34494,9 @@
     "arcade": [
       "entry:matter-js"
     ],
+    "architectural": [
+      "prompt-pattern:zero-trust-gateway-roadmap"
+    ],
     "architecture": [
       "entry:anthropic-building-effective-agents",
       "prompt-pattern:memory-policy",
@@ -33582,6 +34529,9 @@
     "areas": [
       "prompt-pattern:code-simplification"
     ],
+    "argument": [
+      "practice:zero-trust-agent-gateway"
+    ],
     "arize": [
       "entry:arize-phoenix"
     ],
@@ -33608,9 +34558,12 @@
       "practice:code-simplification",
       "practice:browser-games",
       "playbook:source-intake-review",
+      "playbook:zero-trust-gateway-review",
       "practice:research-source-intake",
+      "practice:zero-trust-agent-gateway",
       "practice:agent-tooling",
       "entry:google-agent2agent-protocol",
+      "source:agentic-gateway-security",
       "practice:context-engineering",
       "entry:crewai",
       "practice:deployment",
@@ -33781,6 +34734,7 @@
       "entry:ragas",
       "entry:sentry-mcp",
       "entry:ai-mino-web-agent",
+      "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:agentops",
       "entry:ai-artidrop-artidrop",
       "entry:aider",
@@ -33838,7 +34792,9 @@
       "entry:codebase-memory-mcp"
     ],
     "asks": [
-      "practice:code-simplification"
+      "practice:code-simplification",
+      "playbook:zero-trust-gateway-review",
+      "source:agentic-gateway-security"
     ],
     "assertions": [
       "entry:promptfoo"
@@ -33893,6 +34849,10 @@
       "prompt-pattern:memory-policy"
     ],
     "ast": [
+      "playbook:zero-trust-gateway-review",
+      "practice:zero-trust-agent-gateway",
+      "source:agentic-gateway-security",
+      "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:ripgrep",
       "entry:ast-grep"
     ],
@@ -33915,6 +34875,7 @@
       "practice:frontend"
     ],
     "at": [
+      "practice:zero-trust-agent-gateway",
       "entry:ai-klavis-strata"
     ],
     "atars": [
@@ -34002,6 +34963,10 @@
       "practice:agent-tooling",
       "entry:ai-adeu-adeu",
       "entry:github-copilot-coding-agent"
+    ],
+    "automatic": [
+      "playbook:zero-trust-gateway-review",
+      "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "automatically": [
       "entry:jscpd"
@@ -34146,6 +35111,7 @@
       "practice:browser-games",
       "source:coding-agent-clients",
       "entry:model-context-protocol",
+      "source:agentic-gateway-security",
       "entry:langgraph",
       "practice:mcp-server-selection",
       "practice:observability-and-tracing",
@@ -34154,6 +35120,7 @@
       "entry:dspy",
       "entry:openai-prompt-optimizer",
       "entry:matter-js",
+      "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:babylon-js",
       "entry:claude-code-memory",
       "entry:github-mcp-server",
@@ -34406,8 +35373,10 @@
       "practice:code-simplification",
       "practice:browser-games",
       "playbook:mcp-adoption-review",
+      "practice:zero-trust-agent-gateway",
       "source:coding-agent-clients",
       "entry:model-context-protocol",
+      "source:agentic-gateway-security",
       "source:browser-and-ui-verification",
       "entry:codex-agents-md",
       "entry:langgraph",
@@ -34583,6 +35552,7 @@
     ],
     "behavior.": [
       "practice:browser-games",
+      "playbook:zero-trust-gateway-review",
       "source:mcp-core-and-registry",
       "entry:google-agent2agent-protocol",
       "entry:crewai",
@@ -34917,10 +35887,17 @@
     "blobs": [
       "practice:context-engineering"
     ],
+    "block": [
+      "playbook:zero-trust-gateway-review"
+    ],
     "blocker": [
       "practice:subagents-and-multi-agent"
     ],
+    "blocking": [
+      "prompt-pattern:zero-trust-gateway-roadmap"
+    ],
     "blocks": [
+      "playbook:zero-trust-gateway-review",
       "prompt-pattern:prompt-enhancement",
       "entry:jscpd"
     ],
@@ -35134,6 +36111,9 @@
     "boundaries.": [
       "prompt-pattern:memory-policy"
     ],
+    "boundary": [
+      "playbook:zero-trust-gateway-review"
+    ],
     "bounded": [
       "prompt-pattern:subagent-delegation",
       "entry:claude-code-subagents"
@@ -35154,6 +36134,9 @@
     ],
     "brands": [
       "entry:ai-boolsai-directory"
+    ],
+    "break": [
+      "source:agentic-gateway-security"
     ],
     "brief": [
       "prompt-pattern:research"
@@ -35293,6 +36276,7 @@
       "practice:browser-games",
       "playbook:coding-agent-selection",
       "practice:model-and-provider-selection",
+      "playbook:zero-trust-gateway-review",
       "entry:google-agent-development-kit",
       "entry:langgraph",
       "entry:mastra",
@@ -35383,6 +36367,7 @@
     "by": [
       "practice:code-simplification",
       "practice:model-and-provider-selection",
+      "practice:zero-trust-agent-gateway",
       "entry:model-context-protocol",
       "practice:frontend",
       "practice:search",
@@ -35456,9 +36441,12 @@
       "entry:vercel-ai-sdk"
     ],
     "calls": [
+      "practice:zero-trust-agent-gateway",
+      "source:agentic-gateway-security",
       "practice:backend",
       "practice:observability-and-tracing",
       "entry:vercel-ai-sdk",
+      "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:agentops"
     ],
     "cameras": [
@@ -35725,6 +36713,7 @@
     "canonical": [
       "playbook:source-intake-review",
       "practice:research-source-intake",
+      "practice:zero-trust-agent-gateway",
       "entry:model-context-protocol",
       "entry:google-agent2agent-protocol",
       "entry:codex-agents-md",
@@ -36003,6 +36992,7 @@
     ],
     "changes": [
       "playbook:prompt-upgrade",
+      "practice:zero-trust-agent-gateway",
       "source:mcp-core-and-registry",
       "entry:inspect-ai",
       "prompt-pattern:agent-upgrade-plan",
@@ -36093,6 +37083,8 @@
     ],
     "checks": [
       "practice:code-simplification",
+      "playbook:zero-trust-gateway-review",
+      "practice:zero-trust-agent-gateway",
       "practice:evals",
       "prompt-pattern:code-simplification",
       "prompt-pattern:bug-debug",
@@ -36175,11 +37167,13 @@
       "entry:ai-boolsai-directory"
     ],
     "claim": [
+      "playbook:zero-trust-gateway-review",
       "source:browser-and-ui-verification",
       "source:evaluation-and-observability"
     ],
     "claims": [
       "practice:research-source-intake",
+      "source:agentic-gateway-security",
       "entry:codebase-memory-mcp",
       "entry:covenant-research"
     ],
@@ -36194,7 +37188,9 @@
       "entry:ai-dragoneye-mcp"
     ],
     "classify": [
-      "playbook:source-intake-review"
+      "playbook:source-intake-review",
+      "playbook:zero-trust-gateway-review",
+      "source:agentic-gateway-security"
     ],
     "claude": [
       "playbook:coding-agent-selection",
@@ -36437,6 +37433,7 @@
       "playbook:mcp-adoption-review",
       "playbook:source-intake-review",
       "source:coding-agent-clients",
+      "source:agentic-gateway-security",
       "source:browser-and-ui-verification",
       "practice:mcp-server-selection"
     ],
@@ -36449,6 +37446,7 @@
       "entry:ai-moxt-mcp-workspace"
     ],
     "clients": [
+      "practice:zero-trust-agent-gateway",
       "entry:model-context-protocol",
       "practice:backend"
     ],
@@ -36666,8 +37664,13 @@
     "combine": [
       "entry:mastra"
     ],
+    "combining": [
+      "practice:zero-trust-agent-gateway"
+    ],
     "command": [
       "playbook:prompt-upgrade",
+      "practice:zero-trust-agent-gateway",
+      "source:agentic-gateway-security",
       "practice:prompt-engineering",
       "entry:openai-codex-cli",
       "entry:anthropic-claude-code"
@@ -36683,6 +37686,7 @@
     ],
     "commands": [
       "playbook:prompt-upgrade",
+      "playbook:zero-trust-gateway-review",
       "entry:codex-agents-md",
       "practice:prompt-engineering",
       "prompt-pattern:agent-upgrade-plan",
@@ -36928,6 +37932,7 @@
       "entry:rapier-js"
     ],
     "compatibility": [
+      "playbook:zero-trust-gateway-review",
       "entry:rapier-js"
     ],
     "compeller": [
@@ -37035,6 +38040,10 @@
     "configure": [
       "playbook:mcp-adoption-review"
     ],
+    "confinement": [
+      "practice:zero-trust-agent-gateway",
+      "source:agentic-gateway-security"
+    ],
     "confirmed": [
       "playbook:prompt-upgrade"
     ],
@@ -37060,6 +38069,9 @@
     ],
     "connecting": [
       "entry:model-context-protocol"
+    ],
+    "connection-string": [
+      "practice:zero-trust-agent-gateway"
     ],
     "connections": [
       "entry:model-context-protocol"
@@ -37095,7 +38107,8 @@
       "prompt-pattern:ui-build",
       "prompt-pattern:prompt-enhancement",
       "entry:matter-js",
-      "prompt-pattern:mcp-selection"
+      "prompt-pattern:mcp-selection",
+      "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "constraints.": [
       "entry:codex-agents-md",
@@ -37125,6 +38138,9 @@
     ],
     "containing": [
       "source:evaluation-and-observability"
+    ],
+    "containment": [
+      "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "content": [
       "source:documentation-ingestion",
@@ -37229,10 +38245,12 @@
     "controls": [
       "practice:browser-games",
       "playbook:coding-agent-selection",
+      "practice:zero-trust-agent-gateway",
       "entry:covenant-research",
       "entry:kaimo"
     ],
     "controls.": [
+      "source:agentic-gateway-security",
       "entry:stripe-agent-toolkit"
     ],
     "conventions": [
@@ -37260,6 +38278,12 @@
     ],
     "conversion": [
       "entry:ai-bankee-inferventis-mcp"
+    ],
+    "convert": [
+      "practice:zero-trust-agent-gateway"
+    ],
+    "converting": [
+      "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "cookiy": [
       "entry:ai-cookiy-cookiy"
@@ -37412,7 +38436,8 @@
       "prompt-pattern:prompt-enhancement",
       "prompt-pattern:provider-selection",
       "prompt-pattern:research",
-      "prompt-pattern:source-intake"
+      "prompt-pattern:source-intake",
+      "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "criteria.": [
       "practice:prompt-engineering",
@@ -37502,6 +38527,7 @@
       "practice:code-simplification",
       "playbook:project-stack-review",
       "playbook:prompt-upgrade",
+      "playbook:zero-trust-gateway-review",
       "practice:research-source-intake",
       "entry:model-context-protocol",
       "entry:google-agent2agent-protocol",
@@ -37684,6 +38710,7 @@
       "prompt-pattern:research",
       "entry:sentry-mcp",
       "entry:ai-mino-web-agent",
+      "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:agentops",
       "entry:ai-artidrop-artidrop",
       "entry:aider",
@@ -37926,6 +38953,13 @@
     "customize": [
       "entry:continue-dev"
     ],
+    "daemon": [
+      "practice:zero-trust-agent-gateway"
+    ],
+    "daemons": [
+      "playbook:zero-trust-gateway-review",
+      "prompt-pattern:zero-trust-gateway-roadmap"
+    ],
     "data": [
       "practice:code-simplification",
       "entry:model-context-protocol",
@@ -38148,7 +39182,8 @@
     "data.": [
       "practice:mcp-server-selection",
       "entry:pydantic-ai",
-      "prompt-pattern:codex-implementation"
+      "prompt-pattern:codex-implementation",
+      "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "database": [
       "practice:backend",
@@ -38260,6 +39295,7 @@
     "decisions": [
       "playbook:prompt-upgrade",
       "practice:research-source-intake",
+      "source:agentic-gateway-security",
       "entry:anthropic-building-effective-agents",
       "entry:ai-kawacode-mcp"
     ],
@@ -38284,6 +39320,9 @@
     ],
     "defects.": [
       "prompt-pattern:code-review"
+    ],
+    "deferred/runtime-only": [
+      "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "define": [
       "prompt-pattern:prompt-enhancement",
@@ -38357,11 +39396,16 @@
       "entry:knip"
     ],
     "dependency": [
+      "practice:zero-trust-agent-gateway",
       "practice:code-review",
+      "prompt-pattern:zero-trust-gateway-roadmap",
       "source:secure-mcp-distribution"
     ],
     "dependency-analysis": [
       "entry:knip"
+    ],
+    "dependency-risk": [
+      "source:agentic-gateway-security"
     ],
     "depends": [
       "source:coding-agent-clients",
@@ -38432,6 +39476,7 @@
       "prompt-pattern:memory-policy"
     ],
     "design.": [
+      "source:agentic-gateway-security",
       "entry:llamaindex-agents"
     ],
     "designs": [
@@ -38612,6 +39657,7 @@
       "entry:ai-chinamarketing-intelligence"
     ],
     "destructive": [
+      "source:agentic-gateway-security",
       "practice:coding-agents",
       "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:codex-implementation"
@@ -38625,7 +39671,12 @@
     ],
     "detection": [
       "practice:code-simplification",
+      "playbook:zero-trust-gateway-review",
+      "source:agentic-gateway-security",
       "entry:ai-dragoneye-mcp"
+    ],
+    "detection.": [
+      "practice:zero-trust-agent-gateway"
     ],
     "detector": [
       "entry:jscpd"
@@ -38637,9 +39688,17 @@
       "practice:browser-games"
     ],
     "deterministic": [
+      "playbook:zero-trust-gateway-review",
+      "practice:zero-trust-agent-gateway",
       "entry:ai-lucasandersen-mlp-tax",
       "entry:ai-geodesiclabs-governance-platform",
       "entry:rapier-js"
+    ],
+    "deterministically": [
+      "prompt-pattern:zero-trust-gateway-roadmap"
+    ],
+    "developer": [
+      "source:agentic-gateway-security"
     ],
     "developer-supervised": [
       "entry:cline"
@@ -38670,6 +39729,9 @@
     "diagrams.": [
       "entry:ai-auteng-mcp"
     ],
+    "diff": [
+      "playbook:zero-trust-gateway-review"
+    ],
     "diff.": [
       "practice:research-source-intake"
     ],
@@ -38677,6 +39739,7 @@
       "entry:google-agent2agent-protocol"
     ],
     "diffs": [
+      "practice:zero-trust-agent-gateway",
       "practice:coding-agents",
       "entry:aider",
       "entry:openai-codex-cli"
@@ -38894,6 +39957,7 @@
       "entry:rapier-js"
     ],
     "distinguish": [
+      "source:agentic-gateway-security",
       "source:secure-mcp-distribution"
     ],
     "distributed": [
@@ -38911,13 +39975,16 @@
     "do": [
       "playbook:mcp-adoption-review",
       "playbook:source-intake-review",
+      "playbook:zero-trust-gateway-review",
+      "practice:zero-trust-agent-gateway",
       "source:evaluation-and-observability",
       "practice:security",
       "practice:subagents-and-multi-agent",
       "prompt-pattern:code-simplification",
       "prompt-pattern:codex-implementation",
       "prompt-pattern:mcp-selection",
-      "prompt-pattern:subagent-delegation"
+      "prompt-pattern:subagent-delegation",
+      "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "doc": [
       "playbook:source-intake-review",
@@ -39078,8 +40145,11 @@
       "entry:ai-dreamlit-mcp"
     ],
     "drift": [
+      "playbook:zero-trust-gateway-review",
       "source:coding-agent-clients",
-      "entry:ai-anomalyarmor-armor-mcp"
+      "source:agentic-gateway-security",
+      "entry:ai-anomalyarmor-armor-mcp",
+      "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "drillr": [
       "entry:ai-drillr-drillr"
@@ -39138,6 +40208,7 @@
       "entry:ai-agenticshelf-mcp"
     ],
     "each": [
+      "playbook:zero-trust-gateway-review",
       "prompt-pattern:subagent-delegation"
     ],
     "early": [
@@ -39230,6 +40301,7 @@
       "entry:ai-ludo-game-assets"
     ],
     "effects.": [
+      "practice:zero-trust-agent-gateway",
       "practice:human-approval-and-durability"
     ],
     "effort": [
@@ -39261,6 +40333,21 @@
     "endpoints": [
       "entry:ai-auxen-auxen",
       "entry:ai-com-mcp-openai-tools"
+    ],
+    "enforce": [
+      "practice:zero-trust-agent-gateway"
+    ],
+    "enforceable": [
+      "source:agentic-gateway-security"
+    ],
+    "enforcement": [
+      "playbook:zero-trust-gateway-review",
+      "practice:zero-trust-agent-gateway",
+      "prompt-pattern:zero-trust-gateway-roadmap"
+    ],
+    "enforcement.": [
+      "playbook:zero-trust-gateway-review",
+      "source:agentic-gateway-security"
     ],
     "engine": [
       "practice:browser-games",
@@ -39596,8 +40683,11 @@
       "practice:payments"
     ],
     "execution": [
+      "playbook:zero-trust-gateway-review",
+      "practice:zero-trust-agent-gateway",
       "practice:human-approval-and-durability",
       "entry:langgraph",
+      "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:openai-codex-cli",
       "entry:anthropic-claude-code",
       "entry:swarms"
@@ -39655,6 +40745,7 @@
     ],
     "explicit": [
       "playbook:mcp-adoption-review",
+      "playbook:zero-trust-gateway-review",
       "practice:backend",
       "practice:coding-agents",
       "practice:human-approval-and-durability",
@@ -39664,6 +40755,7 @@
       "practice:search",
       "practice:security",
       "prompt-pattern:prompt-enhancement",
+      "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:continue-dev",
       "entry:letta",
       "entry:stripe-agent-toolkit",
@@ -39879,7 +40971,9 @@
     ],
     "external": [
       "playbook:project-stack-review",
+      "playbook:zero-trust-gateway-review",
       "practice:research-source-intake",
+      "practice:zero-trust-agent-gateway",
       "entry:model-context-protocol",
       "practice:human-approval-and-durability",
       "source:platform-and-data-connectors",
@@ -40036,6 +41130,7 @@
       "source:secure-mcp-distribution"
     ],
     "extract": [
+      "practice:zero-trust-agent-gateway",
       "entry:ai-filegraph-document-processing",
       "entry:firecrawl-mcp"
     ],
@@ -40359,6 +41454,7 @@
     ],
     "filesystem": [
       "playbook:coding-agent-selection",
+      "practice:zero-trust-agent-gateway",
       "entry:vnem-mcp",
       "entry:ai-filegraph-document-processing",
       "entry:ai-mcpcap-mcpcap",
@@ -40366,6 +41462,7 @@
       "entry:ai-kolens-kolens-mcp",
       "entry:ai-law-lawyer-search",
       "prompt-pattern:mcp-selection",
+      "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:ai-artidrop-artidrop",
       "entry:aider",
       "entry:ai-clarid-hmda",
@@ -40440,10 +41537,21 @@
     "firecrawl-mcp": [
       "entry:firecrawl-mcp"
     ],
+    "firewall": [
+      "playbook:zero-trust-gateway-review",
+      "practice:zero-trust-agent-gateway",
+      "source:agentic-gateway-security",
+      "prompt-pattern:zero-trust-gateway-roadmap"
+    ],
+    "firewall.": [
+      "playbook:zero-trust-gateway-review"
+    ],
     "first": [
       "practice:code-simplification",
       "practice:browser-games",
       "playbook:mcp-adoption-review",
+      "playbook:zero-trust-gateway-review",
+      "practice:zero-trust-agent-gateway",
       "practice:prompt-engineering",
       "prompt-pattern:code-review",
       "prompt-pattern:code-simplification",
@@ -40667,6 +41775,7 @@
       "entry:ai-nefesh-human-state"
     ],
     "future": [
+      "practice:zero-trust-agent-gateway",
       "entry:claude-code-memory"
     ],
     "futures": [
@@ -40748,6 +41857,19 @@
       "entry:langgraph",
       "prompt-pattern:agent-upgrade-plan"
     ],
+    "gates.": [
+      "playbook:zero-trust-gateway-review",
+      "prompt-pattern:zero-trust-gateway-roadmap"
+    ],
+    "gateway": [
+      "playbook:zero-trust-gateway-review",
+      "practice:zero-trust-agent-gateway",
+      "source:agentic-gateway-security",
+      "prompt-pattern:zero-trust-gateway-roadmap"
+    ],
+    "gateway/security": [
+      "prompt-pattern:zero-trust-gateway-roadmap"
+    ],
     "gavelin": [
       "entry:ai-gavelin-mcp"
     ],
@@ -40790,7 +41912,8 @@
       "source:documentation-ingestion",
       "practice:frontend",
       "entry:context7-mcp",
-      "entry:vnem-mcp"
+      "entry:vnem-mcp",
+      "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "generation": [
       "entry:context7-mcp",
@@ -41055,6 +42178,9 @@
     "guarantee.": [
       "entry:kaplay"
     ],
+    "guarantees": [
+      "playbook:zero-trust-gateway-review"
+    ],
     "guardrail": [
       "entry:openai-agents-sdk"
     ],
@@ -41072,10 +42198,14 @@
       "entry:babylon-js"
     ],
     "guidance": [
+      "playbook:zero-trust-gateway-review",
+      "practice:zero-trust-agent-gateway",
+      "source:agentic-gateway-security",
       "entry:codex-agents-md",
       "source:platform-and-data-connectors",
       "entry:openai-prompt-optimizer",
       "entry:vnem-mcp",
+      "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:claude-code-memory"
     ],
     "guide": [
@@ -41093,6 +42223,7 @@
     "handling": [
       "entry:model-context-protocol",
       "entry:google-agent2agent-protocol",
+      "source:agentic-gateway-security",
       "entry:codex-agents-md",
       "entry:crewai",
       "entry:google-agent-development-kit",
@@ -41116,6 +42247,7 @@
       "entry:promptfoo",
       "entry:ragas",
       "entry:sentry-mcp",
+      "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:agentops",
       "entry:aider",
       "entry:claude-code-memory",
@@ -41332,6 +42464,12 @@
       "entry:ai-bringyour-bringyour",
       "prompt-pattern:eval-design"
     ],
+    "hash": [
+      "playbook:zero-trust-gateway-review"
+    ],
+    "hashing": [
+      "practice:zero-trust-agent-gateway"
+    ],
     "hdp": [
       "entry:ai-helixar-mcp"
     ],
@@ -41393,6 +42531,7 @@
       "entry:ai-datamerge-mcp"
     ],
     "high": [
+      "source:agentic-gateway-security",
       "source:browser-and-ui-verification",
       "source:documentation-ingestion",
       "source:evaluation-and-observability",
@@ -41425,6 +42564,9 @@
       "entry:clude",
       "entry:codebase-memory-mcp"
     ],
+    "high-entropy": [
+      "practice:zero-trust-agent-gateway"
+    ],
     "high-performance": [
       "entry:ugrep"
     ],
@@ -41440,6 +42582,10 @@
     ],
     "highest-impact": [
       "prompt-pattern:agent-upgrade-plan"
+    ],
+    "hints": [
+      "playbook:zero-trust-gateway-review",
+      "source:agentic-gateway-security"
     ],
     "historical": [
       "entry:openai-swarm"
@@ -41463,6 +42609,7 @@
       "entry:ugrep"
     ],
     "hooks": [
+      "playbook:zero-trust-gateway-review",
       "practice:observability-and-tracing"
     ],
     "hopper": [
@@ -41536,6 +42683,7 @@
       "source:mcp-core-and-registry",
       "entry:model-context-protocol",
       "entry:google-agent2agent-protocol",
+      "source:agentic-gateway-security",
       "source:browser-and-ui-verification",
       "entry:codex-agents-md",
       "entry:crewai",
@@ -41760,11 +42908,13 @@
       "entry:openai-swarm"
     ],
     "human": [
+      "practice:zero-trust-agent-gateway",
       "practice:human-approval-and-durability",
       "entry:langgraph",
       "entry:ai-nefesh-human-state",
       "prompt-pattern:eval-design",
-      "entry:ai-nothumansearch-search"
+      "entry:ai-nothumansearch-search",
+      "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "human-in-the-loop": [
       "entry:langgraph"
@@ -41818,10 +42968,12 @@
       "practice:human-approval-and-durability"
     ],
     "if": [
+      "playbook:zero-trust-gateway-review",
       "prompt-pattern:code-review",
       "prompt-pattern:bug-debug",
       "prompt-pattern:ui-build",
-      "prompt-pattern:subagent-delegation"
+      "prompt-pattern:subagent-delegation",
+      "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "image": [
       "entry:ac-inference-sh-mcp"
@@ -41840,15 +42992,19 @@
       "prompt-pattern:subagent-delegation"
     ],
     "implement": [
-      "prompt-pattern:codex-implementation"
+      "prompt-pattern:codex-implementation",
+      "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "implementation": [
       "practice:frontend",
       "prompt-pattern:code-simplification",
-      "prompt-pattern:codex-implementation"
+      "prompt-pattern:codex-implementation",
+      "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "implementation.": [
-      "prompt-pattern:ui-build"
+      "source:agentic-gateway-security",
+      "prompt-pattern:ui-build",
+      "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "implementations": [
       "entry:jscpd"
@@ -41864,6 +43020,7 @@
       "entry:continue-dev"
     ],
     "imports": [
+      "practice:zero-trust-agent-gateway",
       "entry:claude-code-memory"
     ],
     "imposing": [
@@ -41911,6 +43068,7 @@
     ],
     "in": [
       "playbook:source-intake-review",
+      "practice:zero-trust-agent-gateway",
       "practice:context-engineering",
       "practice:deployment",
       "practice:human-approval-and-durability",
@@ -42110,6 +43268,7 @@
       "entry:covenant-research"
     ],
     "index": [
+      "playbook:zero-trust-gateway-review",
       "source:mcp-core-and-registry",
       "source:documentation-ingestion",
       "practice:search",
@@ -42122,6 +43281,14 @@
     "indexed": [
       "entry:ai-boolsai-directory"
     ],
+    "indexer": [
+      "playbook:zero-trust-gateway-review",
+      "practice:zero-trust-agent-gateway",
+      "prompt-pattern:zero-trust-gateway-roadmap"
+    ],
+    "indexer.": [
+      "source:agentic-gateway-security"
+    ],
     "indexes": [
       "practice:research-source-intake",
       "source:documentation-ingestion",
@@ -42132,6 +43299,7 @@
       "playbook:source-intake-review"
     ],
     "indexing": [
+      "practice:zero-trust-agent-gateway",
       "entry:llamaindex-agents",
       "entry:codebase-memory-mcp"
     ],
@@ -42239,7 +43407,9 @@
       "playbook:mcp-adoption-review",
       "playbook:project-stack-review",
       "playbook:source-intake-review",
+      "playbook:zero-trust-gateway-review",
       "practice:research-source-intake",
+      "practice:zero-trust-agent-gateway",
       "source:coding-agent-clients",
       "entry:model-context-protocol",
       "practice:agent-tooling",
@@ -42417,6 +43587,7 @@
       "entry:ragas",
       "entry:sentry-mcp",
       "entry:ai-mino-web-agent",
+      "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:agentops",
       "entry:ai-artidrop-artidrop",
       "entry:aider",
@@ -42465,7 +43636,11 @@
       "entry:openai-swarm"
     ],
     "installation": [
+      "practice:zero-trust-agent-gateway",
       "prompt-pattern:mcp-selection"
+    ],
+    "installer": [
+      "practice:zero-trust-agent-gateway"
     ],
     "installing": [
       "playbook:mcp-adoption-review",
@@ -42475,8 +43650,10 @@
       "prompt-pattern:codex-implementation"
     ],
     "installs": [
+      "playbook:zero-trust-gateway-review",
       "practice:coding-agents",
-      "prompt-pattern:agent-upgrade-plan"
+      "prompt-pattern:agent-upgrade-plan",
+      "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "installs.": [
       "practice:research-source-intake",
@@ -42578,6 +43755,7 @@
       "practice:mcp-server-selection"
     ],
     "intent": [
+      "playbook:zero-trust-gateway-review",
       "practice:prompt-engineering",
       "practice:search",
       "entry:ai-kawacode-mcp"
@@ -42604,6 +43782,16 @@
       "entry:three-js",
       "entry:ugrep",
       "entry:openhands"
+    ],
+    "intercept": [
+      "playbook:zero-trust-gateway-review"
+    ],
+    "interception": [
+      "source:agentic-gateway-security",
+      "prompt-pattern:zero-trust-gateway-roadmap"
+    ],
+    "interceptor.": [
+      "practice:zero-trust-agent-gateway"
     ],
     "interest": [
       "entry:ai-bankee-inferventis-mcp"
@@ -42659,6 +43847,7 @@
     "is": [
       "practice:code-simplification",
       "practice:browser-games",
+      "playbook:zero-trust-gateway-review",
       "source:mcp-core-and-registry",
       "entry:model-context-protocol",
       "entry:google-agent2agent-protocol",
@@ -42834,6 +44023,7 @@
       "entry:ragas",
       "prompt-pattern:source-intake",
       "entry:ai-mino-web-agent",
+      "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:agentops",
       "entry:ai-artidrop-artidrop",
       "entry:aider",
@@ -42907,6 +44097,7 @@
     "it": [
       "practice:browser-games",
       "playbook:source-intake-review",
+      "playbook:zero-trust-gateway-review",
       "practice:research-source-intake",
       "practice:deployment",
       "entry:ai-exa-exa",
@@ -42963,6 +44154,9 @@
       "entry:jscpd",
       "entry:knip"
     ],
+    "json": [
+      "practice:zero-trust-agent-gateway"
+    ],
     "json-ld.": [
       "entry:ai-boolsai-scan"
     ],
@@ -42977,6 +44171,9 @@
       "entry:ai-newzai-api-newzai",
       "entry:ai-newzai-api-news-mcp",
       "entry:babylon-js"
+    ],
+    "justified": [
+      "playbook:zero-trust-gateway-review"
     ],
     "justified.": [
       "practice:search"
@@ -43004,7 +44201,9 @@
     "keep": [
       "practice:code-simplification",
       "practice:browser-games",
+      "playbook:zero-trust-gateway-review",
       "practice:research-source-intake",
+      "practice:zero-trust-agent-gateway",
       "practice:backend",
       "practice:coding-agents",
       "practice:context-engineering",
@@ -43122,6 +44321,7 @@
       "entry:codebase-memory-mcp"
     ],
     "known": [
+      "practice:zero-trust-agent-gateway",
       "practice:deployment",
       "prompt-pattern:eval-design"
     ],
@@ -43368,6 +44568,7 @@
     "layer": [
       "playbook:source-intake-review",
       "practice:research-source-intake",
+      "source:agentic-gateway-security",
       "entry:ai-agentrapay-agentra",
       "entry:ai-namewhisper-ens-tools",
       "prompt-pattern:source-intake",
@@ -43726,6 +44927,9 @@
     "linting": [
       "entry:ast-grep"
     ],
+    "list-changed": [
+      "source:agentic-gateway-security"
+    ],
     "listed": [
       "entry:ai-abmeter-abmeter",
       "entry:ac-tandem-docs-mcp",
@@ -43909,6 +45113,7 @@
       "entry:langfuse",
       "entry:promptfoo",
       "entry:ragas",
+      "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:langsmith"
     ],
     "llm-oriented": [
@@ -43979,6 +45184,9 @@
     ],
     "log": [
       "practice:backend"
+    ],
+    "logging": [
+      "practice:zero-trust-agent-gateway"
     ],
     "logic": [
       "practice:browser-games"
@@ -44294,6 +45502,7 @@
     "maintainers": [
       "practice:research-source-intake",
       "source:mcp-core-and-registry",
+      "source:agentic-gateway-security",
       "source:evaluation-and-observability",
       "entry:covenant-research",
       "entry:kaimo"
@@ -44321,6 +45530,12 @@
     ],
     "making": [
       "entry:ripgrep"
+    ],
+    "malicious": [
+      "playbook:zero-trust-gateway-review"
+    ],
+    "malicious-write": [
+      "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "manage": [
       "entry:ai-borealhost-mcp",
@@ -44350,6 +45565,10 @@
     ],
     "manager.": [
       "entry:ai-meetsquad-squad"
+    ],
+    "manifest": [
+      "playbook:zero-trust-gateway-review",
+      "practice:zero-trust-agent-gateway"
     ],
     "manifests": [
       "playbook:project-stack-review",
@@ -44456,6 +45675,9 @@
       "entry:ai-auteng-mcp",
       "entry:ai-artidrop-artidrop"
     ],
+    "markers": [
+      "practice:zero-trust-agent-gateway"
+    ],
     "market": [
       "entry:agency-lona-trading",
       "entry:ai-aarna-atars-mcp"
@@ -44553,11 +45775,14 @@
       "playbook:mcp-adoption-review",
       "playbook:project-stack-review",
       "playbook:source-intake-review",
+      "playbook:zero-trust-gateway-review",
       "practice:research-source-intake",
+      "practice:zero-trust-agent-gateway",
       "source:coding-agent-clients",
       "source:mcp-core-and-registry",
       "entry:model-context-protocol",
       "practice:agent-tooling",
+      "source:agentic-gateway-security",
       "source:browser-and-ui-verification",
       "source:documentation-ingestion",
       "source:evaluation-and-observability",
@@ -44717,6 +45942,7 @@
       "entry:sentry-mcp",
       "prompt-pattern:source-intake",
       "entry:ai-mino-web-agent",
+      "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:ai-artidrop-artidrop",
       "entry:ai-clarid-hmda",
       "entry:firecrawl-mcp",
@@ -45042,8 +46268,11 @@
     "metadata": [
       "playbook:source-intake-review",
       "practice:research-source-intake",
+      "practice:zero-trust-agent-gateway",
       "source:mcp-core-and-registry",
+      "source:agentic-gateway-security",
       "entry:matter-js",
+      "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:babylon-js",
       "entry:excalibur-js",
       "entry:kaplay",
@@ -45097,6 +46326,12 @@
     "minute.": [
       "entry:ai-auxen-auxen"
     ],
+    "mislabel": [
+      "playbook:zero-trust-gateway-review"
+    ],
+    "mismatched": [
+      "playbook:zero-trust-gateway-review"
+    ],
     "miss": [
       "entry:ast-grep"
     ],
@@ -45128,7 +46363,9 @@
       "practice:browser-games",
       "playbook:coding-agent-selection",
       "practice:model-and-provider-selection",
+      "playbook:zero-trust-gateway-review",
       "entry:model-context-protocol",
+      "source:agentic-gateway-security",
       "entry:crewai",
       "source:evaluation-and-observability",
       "practice:mcp-server-selection",
@@ -45138,6 +46375,7 @@
       "entry:inspect-ai",
       "prompt-pattern:prompt-enhancement",
       "prompt-pattern:provider-selection",
+      "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:continue-dev"
     ],
     "model-agnostic": [
@@ -45154,10 +46392,14 @@
       "entry:vnem-mcp"
     ],
     "model.": [
-      "playbook:prompt-upgrade"
+      "playbook:prompt-upgrade",
+      "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "model/provider": [
       "practice:research-source-intake"
+    ],
+    "modeling": [
+      "practice:zero-trust-agent-gateway"
     ],
     "models": [
       "entry:ai-ludo-game-assets",
@@ -45228,6 +46470,9 @@
     "motion.": [
       "prompt-pattern:ui-build"
     ],
+    "move": [
+      "practice:zero-trust-agent-gateway"
+    ],
     "moves.": [
       "entry:ai-bringyour-bringyour"
     ],
@@ -45284,9 +46529,11 @@
     ],
     "must": [
       "playbook:mcp-adoption-review",
+      "source:agentic-gateway-security",
       "practice:prompt-engineering",
       "prompt-pattern:prompt-enhancement",
-      "prompt-pattern:subagent-delegation"
+      "prompt-pattern:subagent-delegation",
+      "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "mutate": [
       "playbook:project-stack-review",
@@ -45298,8 +46545,14 @@
       "entry:github-mcp-server",
       "entry:github-copilot-coding-agent"
     ],
+    "mutating": [
+      "practice:zero-trust-agent-gateway",
+      "source:agentic-gateway-security"
+    ],
     "mutation": [
-      "entry:vnem-mcp"
+      "playbook:zero-trust-gateway-review",
+      "entry:vnem-mcp",
+      "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "myriade": [
       "entry:ai-myriade-myriade"
@@ -45355,9 +46608,11 @@
     "need": [
       "practice:browser-games",
       "playbook:mcp-adoption-review",
+      "practice:zero-trust-agent-gateway",
       "source:mcp-core-and-registry",
       "entry:model-context-protocol",
       "entry:google-agent2agent-protocol",
+      "source:agentic-gateway-security",
       "practice:backend",
       "entry:codex-agents-md",
       "practice:deployment",
@@ -45418,6 +46673,7 @@
     ],
     "network": [
       "playbook:mcp-adoption-review",
+      "practice:zero-trust-agent-gateway",
       "source:mcp-core-and-registry",
       "entry:google-agent2agent-protocol",
       "practice:code-review",
@@ -45586,6 +46842,7 @@
       "entry:sentry-mcp",
       "prompt-pattern:source-intake",
       "entry:ai-mino-web-agent",
+      "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:agentops",
       "entry:ai-artidrop-artidrop",
       "entry:aider",
@@ -45774,6 +47031,9 @@
     "nomd": [
       "entry:ai-autonomad-computeback"
     ],
+    "non-destructive": [
+      "prompt-pattern:zero-trust-gateway-roadmap"
+    ],
     "non-goals": [
       "playbook:prompt-upgrade",
       "practice:prompt-engineering",
@@ -45799,7 +47059,10 @@
       "playbook:coding-agent-selection",
       "playbook:mcp-adoption-review",
       "playbook:source-intake-review",
+      "playbook:zero-trust-gateway-review",
       "practice:research-source-intake",
+      "practice:zero-trust-agent-gateway",
+      "source:agentic-gateway-security",
       "source:evaluation-and-observability",
       "practice:human-approval-and-durability",
       "practice:prompt-engineering",
@@ -45813,6 +47076,7 @@
       "prompt-pattern:memory-policy",
       "entry:ai-nothumansearch-search",
       "prompt-pattern:subagent-delegation",
+      "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:babylon-js",
       "entry:kaplay",
       "entry:graphiti"
@@ -45853,6 +47117,9 @@
     "now": [
       "entry:openai-swarm"
     ],
+    "now.": [
+      "prompt-pattern:zero-trust-gateway-roadmap"
+    ],
     "npm": [
       "entry:matter-js",
       "entry:babylon-js",
@@ -45882,6 +47149,9 @@
     ],
     "object": [
       "entry:ai-dragoneye-mcp"
+    ],
+    "objection": [
+      "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "objective": [
       "prompt-pattern:codex-implementation",
@@ -46013,6 +47283,7 @@
       "practice:browser-games",
       "playbook:mcp-adoption-review",
       "playbook:prompt-upgrade",
+      "practice:zero-trust-agent-gateway",
       "practice:data",
       "practice:evals",
       "practice:mcp-server-selection",
@@ -46054,6 +47325,9 @@
       "entry:swe-agent",
       "entry:cline",
       "entry:openhands"
+    ],
+    "open-world": [
+      "source:agentic-gateway-security"
     ],
     "openai": [
       "entry:model-context-protocol",
@@ -46411,11 +47685,14 @@
       "playbook:project-stack-review",
       "playbook:prompt-upgrade",
       "playbook:source-intake-review",
+      "playbook:zero-trust-gateway-review",
       "practice:research-source-intake",
+      "practice:zero-trust-agent-gateway",
       "source:coding-agent-clients",
       "source:mcp-core-and-registry",
       "entry:model-context-protocol",
       "entry:google-agent2agent-protocol",
+      "source:agentic-gateway-security",
       "source:browser-and-ui-verification",
       "practice:code-review",
       "entry:codex-agents-md",
@@ -46611,6 +47888,7 @@
       "prompt-pattern:source-intake",
       "prompt-pattern:subagent-delegation",
       "entry:ai-mino-web-agent",
+      "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:agentops",
       "entry:ai-artidrop-artidrop",
       "entry:aider",
@@ -46729,6 +48007,7 @@
       "prompt-pattern:research",
       "prompt-pattern:source-intake",
       "prompt-pattern:subagent-delegation",
+      "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:ugrep"
     ],
     "output-format": [
@@ -46769,6 +48048,12 @@
     "overmatch": [
       "entry:ast-grep"
     ],
+    "override": [
+      "source:agentic-gateway-security"
+    ],
+    "override.": [
+      "practice:zero-trust-agent-gateway"
+    ],
     "overviews": [
       "entry:ai-nudg3-brand-intelligence"
     ],
@@ -46787,18 +48072,26 @@
       "practice:deployment"
     ],
     "pack": [
+      "playbook:zero-trust-gateway-review",
+      "practice:zero-trust-agent-gateway",
       "source:coding-agent-clients",
-      "practice:context-engineering"
+      "practice:context-engineering",
+      "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "pack.": [
-      "practice:research-source-intake"
+      "practice:research-source-intake",
+      "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "package": [
+      "playbook:zero-trust-gateway-review",
+      "practice:zero-trust-agent-gateway",
       "source:mcp-core-and-registry",
+      "source:agentic-gateway-security",
       "practice:code-review",
       "practice:coding-agents",
       "prompt-pattern:agent-upgrade-plan",
       "entry:matter-js",
+      "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:babylon-js",
       "entry:excalibur-js",
       "entry:kaplay",
@@ -46813,6 +48106,9 @@
       "entry:jscpd",
       "entry:knip",
       "entry:clude"
+    ],
+    "package-addition": [
+      "playbook:zero-trust-gateway-review"
     ],
     "package.": [
       "practice:evals"
@@ -46871,10 +48167,16 @@
     "partner.": [
       "entry:ai-agenttrust-mcp-server"
     ],
+    "parts": [
+      "prompt-pattern:zero-trust-gateway-roadmap"
+    ],
     "pass/fail": [
       "practice:evals",
       "prompt-pattern:eval-design",
       "entry:promptfoo"
+    ],
+    "paste": [
+      "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "pasting": [
       "practice:context-engineering"
@@ -46889,7 +48191,11 @@
     "path": [
       "practice:model-and-provider-selection",
       "playbook:source-intake-review",
-      "prompt-pattern:source-intake"
+      "playbook:zero-trust-gateway-review",
+      "practice:zero-trust-agent-gateway",
+      "source:agentic-gateway-security",
+      "prompt-pattern:source-intake",
+      "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "path.": [
       "playbook:mcp-adoption-review",
@@ -46899,6 +48205,7 @@
       "prompt-pattern:source-intake"
     ],
     "paths": [
+      "practice:zero-trust-agent-gateway",
       "practice:deployment",
       "practice:observability-and-tracing",
       "prompt-pattern:agent-upgrade-plan",
@@ -46908,6 +48215,7 @@
       "entry:codebase-memory-mcp"
     ],
     "paths.": [
+      "source:agentic-gateway-security",
       "entry:vnem-mcp",
       "entry:pixijs",
       "entry:playcanvas-engine",
@@ -46921,6 +48229,7 @@
     ],
     "patterns": [
       "playbook:project-stack-review",
+      "practice:zero-trust-agent-gateway",
       "practice:frontend",
       "entry:google-agent-development-kit",
       "entry:anthropic-building-effective-agents",
@@ -47257,6 +48566,9 @@
     "petstore": [
       "entry:ai-com-mcp-petstore"
     ],
+    "phased": [
+      "prompt-pattern:zero-trust-gateway-roadmap"
+    ],
     "phaser": [
       "practice:browser-games",
       "entry:matter-js",
@@ -47265,6 +48577,9 @@
       "entry:phaser",
       "entry:pixijs",
       "entry:three-js"
+    ],
+    "phases": [
+      "practice:zero-trust-agent-gateway"
     ],
     "phobias": [
       "entry:ai-childanxiety-library"
@@ -47312,10 +48627,21 @@
     "pilot": [
       "playbook:coding-agent-selection",
       "practice:model-and-provider-selection",
+      "playbook:zero-trust-gateway-review",
       "prompt-pattern:provider-selection"
+    ],
+    "pin": [
+      "playbook:zero-trust-gateway-review",
+      "practice:zero-trust-agent-gateway"
     ],
     "pinned": [
       "practice:mcp-server-selection"
+    ],
+    "pinning": [
+      "playbook:zero-trust-gateway-review",
+      "practice:zero-trust-agent-gateway",
+      "source:agentic-gateway-security",
+      "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "pipeline": [
       "prompt-pattern:provider-selection"
@@ -47355,12 +48681,14 @@
       "prompt-pattern:eval-design",
       "prompt-pattern:provider-selection",
       "prompt-pattern:source-intake",
-      "prompt-pattern:subagent-delegation"
+      "prompt-pattern:subagent-delegation",
+      "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "plan.": [
       "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:source-intake",
-      "prompt-pattern:subagent-delegation"
+      "prompt-pattern:subagent-delegation",
+      "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "planners": [
       "entry:semantic-kernel"
@@ -47458,11 +48786,16 @@
       "practice:backend",
       "entry:microsoft-autogen"
     ],
+    "poisoning": [
+      "practice:zero-trust-agent-gateway"
+    ],
     "policies": [
       "practice:payments",
       "source:secure-mcp-distribution"
     ],
     "policy": [
+      "playbook:zero-trust-gateway-review",
+      "practice:zero-trust-agent-gateway",
       "prompt-pattern:memory-policy"
     ],
     "polished": [
@@ -47532,8 +48865,16 @@
     "practices": [
       "practice:code-review"
     ],
+    "pre": [
+      "playbook:zero-trust-gateway-review",
+      "practice:zero-trust-agent-gateway",
+      "prompt-pattern:zero-trust-gateway-roadmap"
+    ],
     "pre-1.0-api": [
       "entry:excalibur-js"
+    ],
+    "pre-execution": [
+      "source:agentic-gateway-security"
     ],
     "precise": [
       "entry:openai-prompt-engineering-guide",
@@ -47547,6 +48888,7 @@
       "playbook:mcp-adoption-review",
       "playbook:project-stack-review",
       "playbook:source-intake-review",
+      "playbook:zero-trust-gateway-review",
       "practice:research-source-intake",
       "entry:model-context-protocol",
       "practice:agent-tooling",
@@ -47582,6 +48924,10 @@
     ],
     "preferred": [
       "entry:mastra"
+    ],
+    "prefix": [
+      "playbook:zero-trust-gateway-review",
+      "practice:zero-trust-agent-gateway"
     ],
     "preliminary": [
       "entry:covenant-research"
@@ -47705,6 +49051,9 @@
       "source:evaluation-and-observability",
       "entry:ai-auxen-auxen",
       "entry:ai-constellationfinance-constellation-finance-mcp"
+    ],
+    "private-key": [
+      "practice:zero-trust-agent-gateway"
     ],
     "privilege": [
       "source:coding-agent-clients"
@@ -48067,7 +49416,8 @@
       "entry:promptfoo",
       "prompt-pattern:research",
       "prompt-pattern:source-intake",
-      "prompt-pattern:subagent-delegation"
+      "prompt-pattern:subagent-delegation",
+      "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "prompt-engineering": [
       "entry:openai-prompt-engineering-guide",
@@ -48118,10 +49468,16 @@
     "proof": [
       "practice:payments"
     ],
+    "proposal": [
+      "playbook:zero-trust-gateway-review",
+      "source:agentic-gateway-security",
+      "prompt-pattern:zero-trust-gateway-roadmap"
+    ],
     "propose": [
       "prompt-pattern:agent-upgrade-plan"
     ],
     "proposed": [
+      "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:covenant-research"
     ],
     "proposing": [
@@ -48178,7 +49534,8 @@
     "prove": [
       "practice:evals",
       "source:evaluation-and-observability",
-      "prompt-pattern:source-intake"
+      "prompt-pattern:source-intake",
+      "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "proven": [
       "practice:code-simplification",
@@ -48189,9 +49546,11 @@
     "provenance": [
       "playbook:source-intake-review",
       "practice:research-source-intake",
+      "practice:zero-trust-agent-gateway",
       "source:mcp-core-and-registry",
       "entry:model-context-protocol",
       "practice:agent-tooling",
+      "source:agentic-gateway-security",
       "source:documentation-ingestion",
       "practice:payments",
       "prompt-pattern:mcp-selection",
@@ -48223,6 +49582,13 @@
     ],
     "provisioning": [
       "entry:ai-com-mcp-contabo"
+    ],
+    "proxies": [
+      "playbook:zero-trust-gateway-review"
+    ],
+    "proxy": [
+      "practice:zero-trust-agent-gateway",
+      "source:agentic-gateway-security"
     ],
     "prs": [
       "practice:agent-tooling"
@@ -48272,6 +49638,7 @@
       "entry:ai-auteng-mcp"
     ],
     "pull": [
+      "practice:zero-trust-agent-gateway",
       "practice:coding-agents",
       "entry:github-mcp-server",
       "entry:github-copilot-coding-agent"
@@ -48468,16 +49835,21 @@
     ],
     "read-only": [
       "playbook:mcp-adoption-review",
+      "playbook:zero-trust-gateway-review",
+      "practice:zero-trust-agent-gateway",
       "practice:agent-tooling",
+      "source:agentic-gateway-security",
       "practice:data",
       "source:platform-and-data-connectors",
       "entry:vnem-mcp",
-      "entry:ai-fincontext-fincontext"
+      "entry:ai-fincontext-fincontext",
+      "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "readability": [
       "entry:crewai"
     ],
     "readiness": [
+      "practice:zero-trust-agent-gateway",
       "entry:ai-obaron-aeo"
     ],
     "reading": [
@@ -48616,8 +49988,16 @@
     "red-team": [
       "entry:promptfoo"
     ],
+    "redact": [
+      "playbook:zero-trust-gateway-review",
+      "practice:zero-trust-agent-gateway"
+    ],
     "redaction": [
-      "entry:ai-haymon-dbmcp"
+      "playbook:zero-trust-gateway-review",
+      "practice:zero-trust-agent-gateway",
+      "source:agentic-gateway-security",
+      "entry:ai-haymon-dbmcp",
+      "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "redesign": [
       "prompt-pattern:code-simplification"
@@ -48683,7 +50063,8 @@
     "register": [
       "entry:ai-borealhost-mcp",
       "prompt-pattern:agent-upgrade-plan",
-      "entry:ai-namewhisper-ens-tools"
+      "entry:ai-namewhisper-ens-tools",
+      "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "registries": [
       "practice:research-source-intake"
@@ -48707,6 +50088,9 @@
     "regressions.": [
       "source:browser-and-ui-verification",
       "prompt-pattern:code-review"
+    ],
+    "reject": [
+      "playbook:zero-trust-gateway-review"
     ],
     "relationship-aware": [
       "entry:graphiti"
@@ -48838,6 +50222,7 @@
       "practice:model-and-provider-selection",
       "playbook:project-stack-review",
       "playbook:prompt-upgrade",
+      "playbook:zero-trust-gateway-review",
       "source:coding-agent-clients",
       "practice:coding-agents",
       "source:evaluation-and-observability",
@@ -49107,6 +50492,9 @@
     "requestanimationframe": [
       "practice:browser-games"
     ],
+    "requested": [
+      "prompt-pattern:zero-trust-gateway-roadmap"
+    ],
     "requests": [
       "practice:coding-agents",
       "entry:github-copilot-coding-agent"
@@ -49115,15 +50503,20 @@
       "playbook:coding-agent-selection",
       "playbook:prompt-upgrade",
       "playbook:source-intake-review",
+      "playbook:zero-trust-gateway-review",
+      "practice:zero-trust-agent-gateway",
       "source:coding-agent-clients",
+      "source:agentic-gateway-security",
       "practice:coding-agents",
       "practice:human-approval-and-durability",
       "practice:payments",
+      "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:excalibur-js",
       "entry:covenant-research"
     ],
     "required": [
-      "playbook:project-stack-review"
+      "playbook:project-stack-review",
+      "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "required.": [
       "entry:model-context-protocol",
@@ -49200,6 +50593,9 @@
     ],
     "resolve": [
       "prompt-pattern:subagent-delegation"
+    ],
+    "resolved": [
+      "practice:zero-trust-agent-gateway"
     ],
     "resources": [
       "source:coding-agent-clients",
@@ -49323,6 +50719,7 @@
       "prompt-pattern:research"
     ],
     "review.": [
+      "playbook:zero-trust-gateway-review",
       "practice:research-source-intake",
       "practice:mcp-server-selection",
       "source:platform-and-data-connectors",
@@ -49576,6 +50973,7 @@
       "entry:ast-grep"
     ],
     "rewrites": [
+      "playbook:zero-trust-gateway-review",
       "entry:openai-prompt-engineering-guide"
     ],
     "rewrites.": [
@@ -49611,14 +51009,18 @@
     "risk": [
       "playbook:project-stack-review",
       "playbook:source-intake-review",
+      "playbook:zero-trust-gateway-review",
       "practice:research-source-intake",
+      "practice:zero-trust-agent-gateway",
+      "source:agentic-gateway-security",
       "practice:search",
       "entry:vnem-mcp",
       "prompt-pattern:agent-upgrade-plan",
       "entry:ai-complyme-mcp-mcp",
       "prompt-pattern:code-simplification",
       "prompt-pattern:codex-implementation",
-      "prompt-pattern:mcp-selection"
+      "prompt-pattern:mcp-selection",
+      "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "risk.": [
       "entry:model-context-protocol",
@@ -49688,6 +51090,7 @@
     ],
     "risky": [
       "playbook:project-stack-review",
+      "playbook:zero-trust-gateway-review",
       "practice:code-review",
       "practice:human-approval-and-durability",
       "prompt-pattern:code-simplification",
@@ -49700,7 +51103,11 @@
       "entry:ai-modulos-demo-booking"
     ],
     "roadmap": [
+      "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:excalibur-js"
+    ],
+    "roadmap.": [
+      "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "roadmaps": [
       "entry:ai-meetsquad-squad"
@@ -49724,9 +51131,11 @@
       "entry:crewai"
     ],
     "rollback": [
+      "playbook:zero-trust-gateway-review",
       "practice:deployment",
       "practice:human-approval-and-durability",
-      "prompt-pattern:agent-upgrade-plan"
+      "prompt-pattern:agent-upgrade-plan",
+      "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "root": [
       "entry:vnem-mcp",
@@ -49766,11 +51175,15 @@
       "playbook:project-stack-review",
       "practice:prompt-engineering"
     ],
+    "rug": [
+      "practice:zero-trust-agent-gateway"
+    ],
     "rule": [
       "entry:covenant-research"
     ],
     "rules": [
       "practice:browser-games",
+      "source:agentic-gateway-security",
       "entry:matter-js",
       "prompt-pattern:subagent-delegation",
       "entry:pixijs",
@@ -49813,9 +51226,13 @@
     "runtime": [
       "playbook:coding-agent-selection",
       "practice:model-and-provider-selection",
+      "playbook:zero-trust-gateway-review",
+      "practice:zero-trust-agent-gateway",
+      "source:agentic-gateway-security",
       "practice:backend",
       "entry:vercel-ai-sdk",
       "entry:matter-js",
+      "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:babylon-js",
       "entry:excalibur-js",
       "entry:kaplay",
@@ -49830,6 +51247,9 @@
       "entry:ast-grep",
       "entry:jscpd",
       "entry:knip"
+    ],
+    "runtime-security": [
+      "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "runtime.": [
       "entry:openai-agents-sdk"
@@ -49847,7 +51267,8 @@
     ],
     "safe": [
       "playbook:project-stack-review",
-      "prompt-pattern:source-intake"
+      "prompt-pattern:source-intake",
+      "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "safer": [
       "playbook:mcp-adoption-review",
@@ -49883,6 +51304,7 @@
       "entry:ai-limitguard-api-trust-intelligence"
     ],
     "sandbox": [
+      "source:agentic-gateway-security",
       "source:platform-and-data-connectors",
       "entry:ai-aliengiraffe-spotdb"
     ],
@@ -49951,9 +51373,17 @@
       "entry:ai-djwizard-tvwizard"
     ],
     "schema": [
+      "playbook:zero-trust-gateway-review",
+      "practice:zero-trust-agent-gateway",
+      "source:agentic-gateway-security",
       "entry:ai-anomalyarmor-armor-mcp",
       "prompt-pattern:prompt-enhancement",
+      "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:supabase-mcp"
+    ],
+    "schemas": [
+      "playbook:zero-trust-gateway-review",
+      "practice:zero-trust-agent-gateway"
     ],
     "scheme": [
       "entry:kaplay"
@@ -49972,6 +51402,9 @@
       "prompt-pattern:codex-implementation",
       "entry:github-mcp-server",
       "entry:supabase-mcp"
+    ],
+    "scope.": [
+      "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "scoped": [
       "entry:ai-filegraph-document-processing",
@@ -50244,6 +51677,7 @@
       "entry:ai-newzai-api-news-mcp",
       "entry:ai-nordax-mcp",
       "entry:ai-nothumansearch-search",
+      "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:firecrawl-mcp",
       "entry:github-mcp-server",
       "entry:ripgrep",
@@ -50292,15 +51726,23 @@
     "sec": [
       "entry:ai-drillr-drillr"
     ],
+    "second": [
+      "practice:zero-trust-agent-gateway"
+    ],
     "seconds.": [
       "entry:ai-obaron-aeo"
     ],
     "secret": [
+      "playbook:zero-trust-gateway-review",
+      "practice:zero-trust-agent-gateway",
+      "source:agentic-gateway-security",
       "entry:langfuse",
       "entry:stripe-agent-toolkit"
     ],
     "secrets": [
       "playbook:project-stack-review",
+      "playbook:zero-trust-gateway-review",
+      "practice:zero-trust-agent-gateway",
       "source:mcp-core-and-registry",
       "practice:code-review",
       "practice:coding-agents",
@@ -50310,7 +51752,8 @@
       "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:codex-implementation",
       "prompt-pattern:memory-policy",
-      "prompt-pattern:source-intake"
+      "prompt-pattern:source-intake",
+      "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "secrets.": [
       "practice:security",
@@ -50321,6 +51764,7 @@
       "prompt-pattern:prompt-enhancement"
     ],
     "secure": [
+      "prompt-pattern:zero-trust-gateway-roadmap",
       "source:secure-mcp-distribution",
       "entry:github-copilot-coding-agent"
     ],
@@ -50331,6 +51775,8 @@
       "entry:ai-gossiper-shopify-admin-mcp"
     ],
     "security": [
+      "playbook:zero-trust-gateway-review",
+      "source:agentic-gateway-security",
       "practice:code-review",
       "practice:security",
       "entry:ai-aliengiraffe-spotdb",
@@ -50338,6 +51784,9 @@
       "prompt-pattern:code-review",
       "prompt-pattern:research",
       "entry:covenant-research"
+    ],
+    "security-architecture": [
+      "source:agentic-gateway-security"
     ],
     "see": [
       "entry:ai-klavis-strata"
@@ -50373,6 +51822,9 @@
     ],
     "semantic/reranking": [
       "practice:search"
+    ],
+    "semantics": [
+      "source:agentic-gateway-security"
     ],
     "semgrep": [
       "entry:ast-grep"
@@ -50464,10 +51916,12 @@
       "practice:browser-games",
       "playbook:project-stack-review",
       "playbook:prompt-upgrade",
+      "playbook:zero-trust-gateway-review",
       "practice:research-source-intake",
       "practice:code-review",
       "practice:payments",
       "entry:anthropic-multi-agent-research-system",
+      "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:claude-code-subagents"
     ],
     "separately": [
@@ -50482,6 +51936,7 @@
     "server": [
       "playbook:mcp-adoption-review",
       "playbook:source-intake-review",
+      "practice:zero-trust-agent-gateway",
       "source:coding-agent-clients",
       "source:mcp-core-and-registry",
       "practice:backend",
@@ -50655,6 +52110,7 @@
     ],
     "servers": [
       "playbook:mcp-adoption-review",
+      "playbook:zero-trust-gateway-review",
       "entry:model-context-protocol",
       "practice:agent-tooling",
       "source:documentation-ingestion",
@@ -50750,7 +52206,10 @@
     ],
     "shell": [
       "playbook:coding-agent-selection",
+      "playbook:zero-trust-gateway-review",
+      "practice:zero-trust-agent-gateway",
       "practice:coding-agents",
+      "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:claude-code-subagents",
       "entry:openai-codex-cli",
       "entry:swe-agent",
@@ -50814,6 +52273,7 @@
       "entry:clude"
     ],
     "side": [
+      "practice:zero-trust-agent-gateway",
       "practice:human-approval-and-durability",
       "source:platform-and-data-connectors"
     ],
@@ -50831,6 +52291,7 @@
       "playbook:source-intake-review"
     ],
     "signals": [
+      "practice:zero-trust-agent-gateway",
       "entry:ai-drillr-drillr",
       "entry:ai-nefesh-human-state",
       "entry:ai-buyersense-buyersense",
@@ -50960,6 +52421,7 @@
       "playbook:coding-agent-selection",
       "practice:model-and-provider-selection",
       "playbook:source-intake-review",
+      "playbook:zero-trust-gateway-review",
       "practice:research-source-intake",
       "practice:coding-agents",
       "practice:evals",
@@ -51265,6 +52727,8 @@
       "practice:prompt-engineering"
     ],
     "still": [
+      "playbook:zero-trust-gateway-review",
+      "practice:zero-trust-agent-gateway",
       "prompt-pattern:code-simplification",
       "entry:excalibur-js"
     ],
@@ -51414,6 +52878,9 @@
     "submissions": [
       "entry:kaimo"
     ],
+    "subset": [
+      "prompt-pattern:zero-trust-gateway-roadmap"
+    ],
     "success": [
       "practice:evals",
       "practice:prompt-engineering"
@@ -51486,9 +52953,11 @@
       "entry:pixijs"
     ],
     "surface": [
+      "playbook:zero-trust-gateway-review",
       "practice:deployment",
       "entry:vercel-ai-sdk",
       "entry:ai-meetsquad-squad",
+      "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:excalibur-js"
     ],
     "surface.": [
@@ -51537,6 +53006,7 @@
       "entry:ai-jeda-jeda-ai"
     ],
     "symbols": [
+      "practice:zero-trust-agent-gateway",
       "entry:codebase-memory-mcp"
     ],
     "symptom": [
@@ -51905,6 +53375,7 @@
     ],
     "test": [
       "playbook:source-intake-review",
+      "playbook:zero-trust-gateway-review",
       "practice:research-source-intake",
       "practice:evals",
       "entry:ai-dreamlit-mcp",
@@ -51913,6 +53384,7 @@
       "prompt-pattern:bug-debug",
       "prompt-pattern:eval-design",
       "entry:matter-js",
+      "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:playwright-mcp",
       "entry:claude-code-subagents"
     ],
@@ -51951,6 +53423,7 @@
     ],
     "tests": [
       "practice:code-simplification",
+      "playbook:zero-trust-gateway-review",
       "practice:coding-agents",
       "practice:evals",
       "entry:inspect-ai",
@@ -51958,10 +53431,14 @@
       "prompt-pattern:code-review",
       "prompt-pattern:code-simplification",
       "prompt-pattern:codex-implementation",
+      "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:jscpd",
       "entry:openai-codex-cli"
     ],
     "tests.": [
+      "playbook:zero-trust-gateway-review",
+      "practice:zero-trust-agent-gateway",
+      "source:agentic-gateway-security",
       "entry:swe-agent"
     ],
     "testset": [
@@ -52023,6 +53500,12 @@
     ],
     "thousand": [
       "entry:ai-mino-web-agent"
+    ],
+    "threat": [
+      "playbook:zero-trust-gateway-review",
+      "practice:zero-trust-agent-gateway",
+      "source:agentic-gateway-security",
+      "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "three": [
       "entry:ai-openarx-openarx"
@@ -52109,10 +53592,12 @@
     "to": [
       "playbook:project-stack-review",
       "playbook:source-intake-review",
+      "playbook:zero-trust-gateway-review",
       "practice:research-source-intake",
       "source:coding-agent-clients",
       "entry:model-context-protocol",
       "entry:google-agent2agent-protocol",
+      "source:agentic-gateway-security",
       "source:browser-and-ui-verification",
       "practice:coding-agents",
       "practice:data",
@@ -52153,6 +53638,7 @@
       "entry:sentry-mcp",
       "prompt-pattern:source-intake",
       "prompt-pattern:subagent-delegation",
+      "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:aider",
       "entry:claude-code-memory",
       "entry:ai-com-mcp-linkedin",
@@ -52177,6 +53663,7 @@
       "entry:langfuse"
     ],
     "token": [
+      "practice:zero-trust-agent-gateway",
       "entry:sentry-mcp",
       "entry:github-mcp-server",
       "entry:github-copilot-coding-agent",
@@ -52194,10 +53681,13 @@
     ],
     "tool": [
       "playbook:mcp-adoption-review",
+      "playbook:zero-trust-gateway-review",
       "practice:research-source-intake",
+      "practice:zero-trust-agent-gateway",
       "source:mcp-core-and-registry",
       "entry:model-context-protocol",
       "practice:agent-tooling",
+      "source:agentic-gateway-security",
       "practice:backend",
       "source:evaluation-and-observability",
       "practice:observability-and-tracing",
@@ -52209,6 +53699,7 @@
       "prompt-pattern:mcp-selection",
       "prompt-pattern:provider-selection",
       "entry:promptfoo",
+      "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:agentops",
       "entry:aider",
       "entry:ripgrep",
@@ -52258,6 +53749,7 @@
       "playbook:coding-agent-selection",
       "playbook:mcp-adoption-review",
       "playbook:project-stack-review",
+      "playbook:zero-trust-gateway-review",
       "source:coding-agent-clients",
       "source:mcp-core-and-registry",
       "entry:model-context-protocol",
@@ -52423,6 +53915,7 @@
       "entry:ai-com-mcp-petstore",
       "prompt-pattern:research",
       "entry:ai-mino-web-agent",
+      "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:ai-artidrop-artidrop",
       "entry:ai-clarid-hmda",
       "entry:ai-com-mcp-linkedin",
@@ -52454,6 +53947,9 @@
     ],
     "touching": [
       "prompt-pattern:codex-implementation"
+    ],
+    "toward": [
+      "practice:zero-trust-agent-gateway"
     ],
     "trace": [
       "source:evaluation-and-observability",
@@ -52493,6 +53989,7 @@
     "track": [
       "source:coding-agent-clients",
       "source:mcp-core-and-registry",
+      "source:agentic-gateway-security",
       "source:browser-and-ui-verification",
       "source:evaluation-and-observability",
       "practice:observability-and-tracing",
@@ -52556,6 +54053,12 @@
     "travel": [
       "entry:ai-autonomad-travel"
     ],
+    "traversal": [
+      "playbook:zero-trust-gateway-review"
+    ],
+    "treated": [
+      "source:agentic-gateway-security"
+    ],
     "treatment": [
       "entry:ai-childadhd-library"
     ],
@@ -52568,7 +54071,9 @@
     ],
     "trust": [
       "playbook:source-intake-review",
+      "playbook:zero-trust-gateway-review",
       "practice:research-source-intake",
+      "practice:zero-trust-agent-gateway",
       "practice:search",
       "practice:security",
       "entry:ai-agenttrust-mcp-server",
@@ -52577,7 +54082,11 @@
       "entry:ai-agentrapay-agentra",
       "entry:ai-nordax-mcp",
       "prompt-pattern:source-intake",
+      "prompt-pattern:zero-trust-gateway-roadmap",
       "source:secure-mcp-distribution"
+    ],
+    "trusted": [
+      "practice:zero-trust-agent-gateway"
     ],
     "trusting": [
       "practice:coding-agents"
@@ -52711,6 +54220,9 @@
     "understanding": [
       "entry:anthropic-claude-code"
     ],
+    "unexpectedly.": [
+      "practice:zero-trust-agent-gateway"
+    ],
     "unions.": [
       "entry:ai-clarid-hmda"
     ],
@@ -52722,6 +54234,7 @@
     ],
     "unless": [
       "practice:code-simplification",
+      "playbook:zero-trust-gateway-review",
       "prompt-pattern:code-simplification",
       "prompt-pattern:memory-policy"
     ],
@@ -52956,6 +54469,10 @@
       "entry:kaimo",
       "entry:openai-swarm"
     ],
+    "untrusted": [
+      "playbook:zero-trust-gateway-review",
+      "source:agentic-gateway-security"
+    ],
     "unused": [
       "practice:code-simplification",
       "prompt-pattern:code-simplification",
@@ -53037,6 +54554,7 @@
       "prompt-pattern:research"
     ],
     "useful": [
+      "playbook:zero-trust-gateway-review",
       "entry:ai-nocturnus-logic-server",
       "entry:ai-kawacode-mcp",
       "entry:ai-meminal-meminal",
@@ -53116,6 +54634,9 @@
     ],
     "vague": [
       "entry:openai-prompt-engineering-guide"
+    ],
+    "valid": [
+      "source:agentic-gateway-security"
     ],
     "validate": [
       "entry:ai-helixar-mcp",
@@ -53235,6 +54756,7 @@
       "entry:vnem-mcp",
       "entry:ai-agenticterminal-directory",
       "entry:ai-law-lawyer-search",
+      "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:claude-code-memory",
       "entry:claude-code-subagents"
     ],
@@ -53549,8 +55071,11 @@
     ],
     "vnem": [
       "playbook:source-intake-review",
+      "playbook:zero-trust-gateway-review",
       "practice:research-source-intake",
+      "practice:zero-trust-agent-gateway",
       "source:coding-agent-clients",
+      "source:agentic-gateway-security",
       "source:browser-and-ui-verification",
       "source:documentation-ingestion",
       "source:evaluation-and-observability",
@@ -53558,6 +55083,7 @@
       "entry:vnem-mcp",
       "prompt-pattern:prompt-enhancement",
       "prompt-pattern:source-intake",
+      "prompt-pattern:zero-trust-gateway-roadmap",
       "source:secure-mcp-distribution"
     ],
     "vnem-mcp": [
@@ -53773,6 +55299,7 @@
       "entry:github-copilot-coding-agent"
     ],
     "wants": [
+      "source:agentic-gateway-security",
       "entry:openai-agents-sdk",
       "source:secure-mcp-distribution"
     ],
@@ -53945,7 +55472,8 @@
       "prompt-pattern:mcp-selection",
       "prompt-pattern:memory-policy",
       "prompt-pattern:provider-selection",
-      "prompt-pattern:source-intake"
+      "prompt-pattern:source-intake",
+      "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "where": [
       "entry:google-agent2agent-protocol",
@@ -53988,7 +55516,8 @@
       "prompt-pattern:subagent-delegation"
     ],
     "which": [
-      "prompt-pattern:source-intake"
+      "prompt-pattern:source-intake",
+      "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "while": [
       "prompt-pattern:code-simplification",
@@ -54185,6 +55714,7 @@
       "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:bug-debug",
       "entry:matter-js",
+      "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:excalibur-js",
       "entry:kaplay",
       "entry:pixijs",
@@ -54278,6 +55808,7 @@
       "practice:code-simplification",
       "entry:model-context-protocol",
       "entry:google-agent2agent-protocol",
+      "source:agentic-gateway-security",
       "entry:codex-agents-md",
       "entry:crewai",
       "entry:google-agent-development-kit",
@@ -54517,6 +56048,8 @@
       "prompt-pattern:code-simplification"
     ],
     "workspace": [
+      "practice:zero-trust-agent-gateway",
+      "source:agentic-gateway-security",
       "entry:ai-moxt-mcp-workspace",
       "entry:swarms"
     ],
@@ -54547,6 +56080,7 @@
     ],
     "write": [
       "playbook:source-intake-review",
+      "playbook:zero-trust-gateway-review",
       "source:mcp-core-and-registry",
       "source:platform-and-data-connectors",
       "prompt-pattern:source-intake"
@@ -54562,7 +56096,8 @@
       "practice:context-engineering",
       "practice:human-approval-and-durability",
       "source:platform-and-data-connectors",
-      "prompt-pattern:agent-upgrade-plan"
+      "prompt-pattern:agent-upgrade-plan",
+      "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "writes-agent-config": [
       "entry:codebase-memory-mcp"
@@ -54615,11 +56150,21 @@
       "entry:zep",
       "entry:clude"
     ],
+    "zero": [
+      "playbook:zero-trust-gateway-review",
+      "practice:zero-trust-agent-gateway",
+      "prompt-pattern:zero-trust-gateway-roadmap"
+    ],
     "zero-days": [
       "entry:ai-byteray-byteray-mcp"
     ],
     "zero-shot": [
       "entry:ai-dragoneye-mcp"
+    ],
+    "zero-trust": [
+      "playbook:zero-trust-gateway-review",
+      "practice:zero-trust-agent-gateway",
+      "prompt-pattern:zero-trust-gateway-roadmap"
     ]
   }
 }
