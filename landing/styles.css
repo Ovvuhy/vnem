@@ -613,10 +613,8 @@ body.vanta-ready .hero-vanta {
   z-index: 4;
   min-height: 100svh;
   padding: 124px 24px 92px;
-  background:
-    radial-gradient(circle at 78% 8%, rgba(255, 155, 130, 0.1), transparent 28rem),
-    linear-gradient(180deg, rgba(14, 14, 17, 0.98), rgba(11, 11, 13, 1) 28rem),
-    #0b0b0d;
+  background-color: #0b0b0d;
+  background-image: url("data:image/svg+xml,%3Csvg width='72' height='72' viewBox='0 0 72 72' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 .5H72M.5 0V72' fill='none' stroke='%23f5eee8' stroke-opacity='.045'/%3E%3C/svg%3E");
 }
 
 .blog-hero {
