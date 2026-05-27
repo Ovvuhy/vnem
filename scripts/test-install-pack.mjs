@@ -198,6 +198,13 @@ assert(searchIndex.safety?.installs_packages === false, "search-index must decla
 assert(searchIndex.documents?.length > 0, "search-index must include documents.");
 assert(localSearchIndex.documents?.length === searchIndex.documents.length, "local .vnem search index must match the hosted install pack.");
 
+for (const entry of apiIndex.entries ?? []) {
+  assert(!entry.entry_path?.includes("\\"), `${entry.slug} entry_path must use portable forward slashes.`);
+  assert(!entry.profile_path?.includes("\\"), `${entry.slug} profile_path must use portable forward slashes.`);
+  assert(entry.entry_path?.startsWith("registry/entries/"), `${entry.slug} entry_path must point at registry/entries.`);
+  assert(entry.profile_path?.startsWith("registry/entries/"), `${entry.slug} profile_path must point at registry/entries.`);
+}
+
 for (const query of ["better ui", "faster search", "agent payments", "code review", "memory", "evals", "prompt engineering", "codex prompt"]) {
   const results = search(searchIndex, query);
   assert(results.length > 0, `search-index must return at least one result for "${query}".`);

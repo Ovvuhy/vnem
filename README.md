@@ -16,6 +16,24 @@ vnem is a small, LLM-readable knowledge pack and registry for agentic tools: MCP
 
 It helps a coding agent answer: _what should I use, what is stale, what is risky, and what is the current better option?_ before it edits a repo.
 
+Live overview: [vnem.pages.dev](https://vnem.pages.dev)
+
+## What Vnem Improves
+
+vnem is meant to improve the judgment of coding agents, not replace maintainer review.
+
+- **Better recommendations:** agents compare current MCP servers, coding agents, frameworks, evals, memory systems, and workflows before proposing a stack change.
+- **Safer adoption:** each entry tracks source links, licenses, permissions, risk flags, trust tier, and install notes.
+- **Clearer prompts:** the install pack includes prompt-engineering guidance and reusable prompt patterns for Codex-style implementation, review, debugging, research, eval, and MCP-selection tasks.
+- **Faster repo audits:** agents inspect the project first, then separate stale or risky choices from realistic drop-in improvements.
+
+## How It Works
+
+1. Install the read-only pack into a project.
+2. Ask a coding agent to read `.vnem/AGENTS.md`.
+3. The agent uses `.vnem/search-index.json`, `.vnem/best-practices.md`, and `.vnem/prompt-*` files while reviewing the repo.
+4. The agent recommends options and asks before changing code, installing packages, using secrets, or touching external systems.
+
 ## Install The Pack
 
 From any project root:
@@ -67,6 +85,8 @@ The pack is guidance and search data. It does not run the tools it recommends.
 | `HERMES.md` | Operating contract for recurring agentic discovery and daily ecosystem checks. |
 
 The marketing site source is intentionally not part of this repository. This repo is the open registry, generation system, and install pack.
+
+For product direction, public-site clarity, and future commercial boundaries, see [`PRODUCT.md`](PRODUCT.md).
 
 ## For LLMs
 
