@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-27T10:21:10.026Z",
+  "generated_at": "2026-05-27T16:15:49.891Z",
   "schema_version": "1.0.0",
   "safety": {
     "mode": "read-only-prompt-patterns",
@@ -201,6 +201,53 @@
         "memory_policy"
       ],
       "template": "Design a memory/context policy for this project.\n\nPersistent memory should include:\n- Stable project conventions.\n- Common commands.\n- Architecture notes that rarely change.\n- Safety and permission boundaries.\n\nPersistent memory should not include:\n- Secrets or credentials.\n- Temporary task state.\n- Unverified assumptions.\n- Sensitive user data unless explicitly approved.\n\nOutput:\n- What to store.\n- Where to store it.\n- What to avoid.\n- Review cadence."
+    },
+    {
+      "id": "agent-workspace-architecture",
+      "title": "Agent Workspace Architecture Prompt",
+      "intents": [
+        "agent workspace",
+        "autonomous developer environment",
+        "coding agents",
+        "codex config"
+      ],
+      "summary": "Prompt for designing a read-only-first autonomous developer workspace with agent choice, MCP routing, memory, and verification boundaries.",
+      "output_modes": [
+        "architecture_plan",
+        "risk_register"
+      ],
+      "template": "Design an autonomous developer workspace for this repository.\n\nGoal:\n<what the agent environment should help builders do>\n\nConstraints:\n- Keep the first version read-only unless a maintainer approves mutations.\n- Separate knowledge/catalog guidance from runtime daemons or gateway implementations.\n- Identify secrets, database, browser, repository, filesystem, and deployment risks.\n\nEvaluate:\n- Coding agent client and approval model.\n- MCP servers and whether a gateway is justified.\n- Persistent memory files and update cadence.\n- Verification commands and rollback path.\n\nOutput:\n- Recommended architecture.\n- Minimal first setup.\n- Deferred capabilities.\n- Risks and required approvals."
+    },
+    {
+      "id": "mcp-gateway-evaluation",
+      "title": "MCP Gateway Evaluation Prompt",
+      "intents": [
+        "mcp gateway",
+        "one mcp",
+        "tool routing",
+        "mcp servers"
+      ],
+      "summary": "Prompt for deciding whether an MCP gateway is needed and which routing, policy, and observability requirements matter.",
+      "output_modes": [
+        "gateway_recommendation"
+      ],
+      "template": "Evaluate MCP gateway options for this agent workspace.\n\nCurrent tools:\n<MCP servers, clients, credentials, and high-risk operations>\n\nDecision criteria:\n- Does the agent see too many tools or schemas?\n- Are credentials, policies, logs, or rate limits hard to manage directly?\n- Which tools need role-scoped or task-scoped exposure?\n- Can the team operate a gateway safely?\n\nOutput:\n- Gateway needed or not needed.\n- Options to compare.\n- Least-privilege routing plan.\n- Risks, unknowns, and next verification steps."
+    },
+    {
+      "id": "memory-bank-initialization",
+      "title": "Memory Bank Initialization Prompt",
+      "intents": [
+        "memory bank",
+        "agent modes",
+        "roo code",
+        "cline",
+        "claude md"
+      ],
+      "summary": "Prompt for creating durable agent memory without storing secrets or stale task state.",
+      "output_modes": [
+        "memory_bank_plan"
+      ],
+      "template": "Initialize persistent agent memory for this project.\n\nInputs:\n- Repository purpose and architecture.\n- Stable commands and verification steps.\n- Current task state, blockers, and decisions.\n\nRules:\n- Store durable project facts separately from temporary session notes.\n- Include a decision log for major choices and rejected approaches.\n- Do not store secrets, credentials, private data, or unsourced claims.\n- Define when memory should be reviewed or reset.\n\nOutput:\n- Proposed files.\n- Contents for each file.\n- Update protocol.\n- Risks and maintenance notes."
     }
   ]
 }

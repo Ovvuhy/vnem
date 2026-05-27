@@ -9,31 +9,42 @@ source_kind: github
 protocols:
   - MCP
 clients:
+  - VS Code
   - Claude Desktop
   - Claude Code
   - Cursor
-  - VS Code
+  - Windsurf
   - OpenAI Agents SDK
+  - Codex
 install:
   command: null
-  notes: Use with least-privilege GitHub tokens, scoped repositories, and branch protections.
+  notes: >-
+    Review the upstream docs, permissions, pricing, environment variables, and transport before
+    installing.
   config_example: null
 permissions:
   - repository
   - network
 env_vars:
   - GITHUB_TOKEN
+  - GITHUB_PERSONAL_ACCESS_TOKEN
+  - GITHUB_TOOLSETS
+  - GITHUB_DYNAMIC_TOOLSETS
 tags:
   - mcp
   - github
   - repository
   - pull-requests
   - issues
+  - actions
+  - toolsets
+  - read-only-mode
 use_cases:
-  - Let agents inspect GitHub repositories
-  - Automate issues and pull request workflows
+  - Let agents inspect GitHub repositories and code
+  - Automate issues, pull requests, and workflow triage
+  - Limit visible GitHub tools with explicit toolsets
 best_for:
-  - Repository workflows where GitHub is the system of record
+  - GitHub-native repository workflows with scoped tokens and branch protections
 not_for:
   - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
 alternatives: []
@@ -45,16 +56,19 @@ maintenance_signals:
 risk_flags:
   - mutates-repositories
   - requires-token
+  - high-tool-count
 recommended_when:
   - Use when an agent needs GitHub context or PR workflows and token scope can be constrained.
+  - Prefer read-only mode or narrow toolsets until mutation is explicitly approved.
 trust_tier: promising
 review_status: manual-reviewed
-last_checked: '2026-05-26'
+last_checked: '2026-05-27'
 slug: github-mcp-server
 name: GitHub MCP Server
 type: mcp-server
 summary_llm: >-
-  GitHub MCP Server is GitHub's official MCP server for repository, issue, pull request, search,
-  workflow, and code operations through agent clients.
+  GitHub MCP Server is GitHub's official MCP server for repository, code search, issue, pull
+  request, workflow, security, and collaboration operations, with toolset controls and read-only
+  mode available.
 source_urls:
   - https://github.com/github/github-mcp-server

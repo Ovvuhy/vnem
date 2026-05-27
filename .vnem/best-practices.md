@@ -1,8 +1,64 @@
 # vnem Best Practices
 
-Generated: 2026-05-27T10:21:10.026Z
+Generated: 2026-05-27T16:15:49.891Z
 
 Use this as a compact, current guidance layer for coding agents. Prefer these notes when choosing whether to add, replace, or avoid a tool.
+
+## MCP Gateway And Tool Routing
+
+Use MCP gateways as a policy, discovery, routing, and observability layer only when the agent would otherwise see too many tools or credentials directly.
+
+- Start with a small direct MCP server set; add a gateway when tool discovery, authentication, policy, logging, or routing becomes hard to govern.
+- Expose tools by role and task intent instead of broadcasting every server schema to the model.
+- Keep high-risk tools behind explicit policy: repositories, browsers, databases, payments, filesystem writes, deployments, and production data.
+- Centralize audit logs, credential propagation, and rate limits at the gateway when multiple agents or teams share tool access.
+- Treat gateway catalog recommendations as architecture guidance; do not ship gateway daemons, secrets, or runnable configs from a read-only knowledge pack.
+
+Sources: https://modelcontextprotocol.io/docs/getting-started/intro, https://modelcontextprotocol.io/specification/2025-11-25/basic/security_best_practices, https://docs.lunar.dev/mcpx/architecture, https://github.com/microsoft/mcp-gateway
+
+Search aliases: mcp gateway, one mcp, tool routing, discovery control, least privilege, policy, lunar mcpx, microsoft mcp gateway, catalog
+
+## Persistent Memory And Context Files
+
+Put stable project facts in versioned instruction files, keep volatile task state separate, and review memory for secrets, stale assumptions, and repeated failed approaches.
+
+- Use `AGENTS.md` for Codex-facing repository instructions: commands, conventions, scope, and safety boundaries.
+- Use `CLAUDE.md` for Claude Code memory when that client is active, and separate shared project instructions from local machine overrides.
+- Add a memory bank only when the team will maintain it; stale active context is worse than a short instruction file.
+- Record architectural decisions and abandoned approaches so agents do not repeat known dead ends.
+- Never store secrets, credentials, private customer data, or unverified claims in durable agent memory.
+
+Sources: https://developers.openai.com/codex/guides/agents-md, https://docs.anthropic.com/en/docs/claude-code/memory, https://github.com/Bhartendu-Kumar/rules_template
+
+Search aliases: memory bank, persistent memory, context files, agents.md, claude.md, decision log, active context, roo code, cline
+
+## IDE Agent Selection
+
+Choose coding agents by editor fit, approval model, model routing, MCP support, maintenance status, and the repo's need for autonomous multi-file changes.
+
+- Use source-backed product capabilities rather than unsourced benchmark claims when comparing agents.
+- Prefer strong human approval flows for agents that can edit files, run shell commands, or mutate repositories.
+- Use BYOM or OpenRouter-style routing only when the client supports it and the task can tolerate model variability.
+- Treat archived or community-maintained forks as watchlist options until maintenance and security posture are clear.
+- Evaluate agents on one real repository workflow: plan quality, file selection, diffs, verification behavior, and recovery from failed tests.
+
+Sources: https://docs.cursor.com/agent/overview, https://docs.cline.bot/introduction/overview, https://docs.anthropic.com/en/docs/claude-code/overview, https://developers.openai.com/codex
+
+Search aliases: ide agent, coding agents, roo code, cline, cursor agent, claude code, codex, byom, agent modes
+
+## Codex/VNEM Setup
+
+For Codex-based workspaces, keep vnem read-only, load `AGENTS.md` instructions, expose MCP resources deliberately, and use generated guidance before installing tools.
+
+- Keep `AGENTS.md` concise and repository-specific: commands, conventions, verification, and approval boundaries.
+- Read `.vnem/agent-workspace.md` before designing a new autonomous developer environment.
+- Expose vnem through MCP as read-only resources and tools; use it for recommendation context, not for installation or mutation.
+- Prefer generated prompt patterns for recurring architecture, gateway, memory, and implementation prompts.
+- Ask before adding MCP servers, editing client config, installing packages, using secrets, or starting daemons.
+
+Sources: https://developers.openai.com/codex/guides/agents-md, https://platform.openai.com/docs/docs-mcp, https://github.com/openai/codex
+
+Search aliases: codex config, codex, vnem, agents.md, mcp resources, agent workspace, prompt patterns, read-only knowledge pack
 
 ## Frontend And UI
 

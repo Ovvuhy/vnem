@@ -43,7 +43,7 @@ recommended_when:
     enough.
 trust_tier: verified
 review_status: manual-reviewed
-last_checked: '2026-05-26'
+last_checked: '2026-05-27'
 slug: anthropic-building-effective-agents
 name: Anthropic Building Effective Agents
 type: workflow

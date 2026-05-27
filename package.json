@@ -1,6 +1,6 @@
 {
   "name": "vnem",
-  "version": "0.1.0",
+  "version": "1.0.1",
   "private": true,
   "type": "module",
   "description": "A read-only intelligence pack and LLM-readable index for agentic tools, MCP servers, skills, evals, and workflows.",
@@ -15,6 +15,7 @@
     "generate": "node scripts/generate-artifacts.mjs",
     "check:links": "node scripts/check-links.mjs",
     "test:install-pack": "node scripts/test-install-pack.mjs",
+    "benchmark:vnem": "node scripts/benchmark-vnem.mjs",
     "digest": "node scripts/generate-digest.mjs",
     "discover": "node scripts/discover.mjs --apply",
     "discover:dry-run": "node scripts/discover.mjs --dry-run",

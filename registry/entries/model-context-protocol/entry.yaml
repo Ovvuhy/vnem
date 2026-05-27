@@ -1,6 +1,6 @@
 schema_version: 1.0.0
 homepage_url: https://modelcontextprotocol.io/docs/getting-started/intro
-repo_url: https://github.com/modelcontextprotocol
+repo_url: https://github.com/modelcontextprotocol/modelcontextprotocol
 package_urls: []
 licenses:
   - MIT
@@ -8,12 +8,14 @@ copyright_owner: Model Context Protocol
 source_kind: official_docs
 protocols:
   - MCP
+  - JSON-RPC 2.0
 clients:
   - Claude Desktop
   - Claude Code
   - Cursor
   - VS Code
   - OpenAI Agents SDK
+  - Codex
 install:
   command: null
   notes: >-
@@ -25,15 +27,18 @@ env_vars: []
 tags:
   - mcp
   - protocol
+  - json-rpc
   - tools
   - resources
   - prompts
+  - security
   - context
 use_cases:
   - Standardize agent access to tools and context
   - Compare MCP servers by permissions and provenance
+  - Design safer trust boundaries for agent tool use
 best_for:
-  - Teams that need portable tool connections across agent clients
+  - Teams that need portable, reviewable tool connections across agent clients
 not_for:
   - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
 alternatives: []
@@ -42,18 +47,23 @@ freshness: current
 source_confidence: official
 maintenance_signals:
   - Curated from official docs or canonical source repositories
-risk_flags: []
+risk_flags:
+  - requires-server-review
+  - tool-permissions-are-server-defined
 recommended_when:
   - Use when agent tools should be discoverable, permissioned, and reusable across clients.
+  - Review server permissions and transport trust boundaries before connecting high-risk systems.
 trust_tier: verified
 review_status: manual-reviewed
-last_checked: '2026-05-26'
+last_checked: '2026-05-27'
 slug: model-context-protocol
 name: Model Context Protocol
 type: workflow
 summary_llm: >-
-  Model Context Protocol is an open protocol for connecting AI applications to external tools,
-  resources, prompts, and contextual data through standardized servers.
+  Model Context Protocol is an open protocol and schema for connecting AI applications to external
+  tools, resources, prompts, and contextual data through standardized MCP servers.
 source_urls:
   - https://modelcontextprotocol.io/docs/getting-started/intro
-  - https://github.com/modelcontextprotocol
+  - https://modelcontextprotocol.io/specification/2025-11-25
+  - https://modelcontextprotocol.io/specification/2025-11-25/basic/security_best_practices
+  - https://github.com/modelcontextprotocol/modelcontextprotocol

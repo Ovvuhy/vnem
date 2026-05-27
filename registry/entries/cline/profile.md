@@ -1,6 +1,6 @@
 # Cline
 
-Cline is an open-source VS Code coding agent that can read files, edit code, use the terminal and browser, and request approval for risky actions.
+Cline is an open-source VS Code coding agent that can read and edit files, use terminal and browser capabilities, connect to MCP tools, and request approval for sensitive actions.
 
 ## Best For
 
@@ -8,11 +8,11 @@ Cline is an open-source VS Code coding agent that can read files, edit code, use
 
 ## Recommended When
 
-- Use when VS Code, explicit approvals, and MCP extension points fit the project workflow.
+- Use when VS Code, explicit approvals, model flexibility, and MCP extension points fit the project workflow.
 
 ## Review Notes
 
-Trust tier: promising. Review status: manual-reviewed. Permissions: filesystem, repository, shell, browser, network. Risk flags: can-edit-files, can-run-shell-commands, browser-access.
+Trust tier: promising. Review status: manual-reviewed. Permissions: filesystem, repository, shell, browser, network. Risk flags: can-edit-files, can-run-shell-commands, browser-access, model-provider-costs.
 
 Sources:
 - https://docs.cline.bot/introduction/overview

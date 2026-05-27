@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
@@ -8,11 +9,12 @@ import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js"
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(scriptDir, "..");
 const serverPath = path.join(scriptDir, "vnem-mcp-server.mjs");
+const packageJson = JSON.parse(await readFile(path.join(rootDir, "package.json"), "utf8"));
 
 const client = new Client(
   {
     name: "vnem-mcp-smoke-test",
-    version: "0.1.0"
+    version: packageJson.version
   },
   {
     capabilities: {}
@@ -58,7 +60,7 @@ try {
   const recommendation = await client.callTool({
     name: "vnem_recommend",
     arguments: {
-      task: "make agentic coding more efficient with MCPs, memory, and faster grep",
+      task: "Choose MCP tooling for GitHub pull request triage with least-privilege permissions.",
       limit: 4
     }
   });
@@ -66,6 +68,19 @@ try {
   assert.ok(
     recommendation.structuredContent?.registry_entries?.length > 0,
     "expected vnem_recommend registry entries"
+  );
+  assert.equal(recommendation.structuredContent?.task_contract?.mode, "decision");
+  assert.ok(
+    recommendation.structuredContent?.task_contract?.rubric?.some((rubric) => rubric.id === "agent_tooling"),
+    "expected vnem_recommend task contract with agent_tooling rubric"
+  );
+  assert.ok(
+    recommendation.structuredContent?.task_contract?.approval_gates?.length > 0,
+    "expected vnem_recommend approval gates"
+  );
+  assert.ok(
+    recommendation.structuredContent?.task_contract?.verification?.length > 0,
+    "expected vnem_recommend verification checklist"
   );
 
   const entry = await client.callTool({
@@ -82,6 +97,34 @@ try {
     resources.resources.some((resource) => resource.uri === "vnem://install/search-index"),
     "expected search-index resource"
   );
+  assert.ok(
+    resources.resources.some((resource) => resource.uri === "vnem://install/operating-protocol"),
+    "expected operating protocol resource"
+  );
+  assert.ok(
+    resources.resources.some((resource) => resource.uri === "vnem://install/task-rubrics"),
+    "expected task rubrics resource"
+  );
+  assert.ok(
+    resources.resources.some((resource) => resource.uri === "vnem://install/agent-workspace"),
+    "expected agent workspace resource"
+  );
+
+  const operatingProtocol = await client.readResource({
+    uri: "vnem://install/operating-protocol"
+  });
+  assert.ok(operatingProtocol.contents[0]?.text?.includes("Universal Loop"));
+
+  const taskRubrics = await client.readResource({
+    uri: "vnem://install/task-rubrics"
+  });
+  assert.ok(taskRubrics.contents[0]?.text?.includes("frontend_ui"));
+
+  const agentWorkspace = await client.readResource({
+    uri: "vnem://install/agent-workspace"
+  });
+  assert.ok(agentWorkspace.contents[0]?.text?.includes("Agent Workspace"));
+  assert.ok(agentWorkspace.contents[0]?.text?.includes("MCP Gateway And Tool Routing"));
 
   const entryResource = await client.readResource({
     uri: "vnem://entries/model-context-protocol"

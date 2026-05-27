@@ -1,0 +1,70 @@
+schema_version: 1.0.0
+homepage_url: https://github.com/qdrant/mcp-server-qdrant
+repo_url: https://github.com/qdrant/mcp-server-qdrant
+package_urls: []
+licenses:
+  - Apache-2.0
+copyright_owner: Qdrant
+source_kind: github
+protocols:
+  - MCP
+  - stdio
+  - SSE
+  - Streamable HTTP
+clients:
+  - Claude Desktop
+  - Claude Code
+  - MCP clients
+install:
+  command: null
+  notes: >-
+    Review the upstream docs, permissions, pricing, environment variables, and transport before
+    installing.
+  config_example: null
+permissions:
+  - database
+  - network
+env_vars:
+  - QDRANT_URL
+  - QDRANT_API_KEY
+  - QDRANT_LOCAL_PATH
+  - COLLECTION_NAME
+  - EMBEDDING_MODEL
+tags:
+  - mcp
+  - qdrant
+  - vector-database
+  - memory
+  - semantic-search
+  - retrieval
+use_cases:
+  - Give agents semantic memory backed by Qdrant
+  - Store and retrieve project notes or embeddings through MCP
+  - Connect local or hosted Qdrant collections to agent workflows
+best_for:
+  - Teams already using Qdrant or needing a small MCP memory layer
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: official
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags:
+  - database-access
+  - memory-can-leak-sensitive-context
+  - embedding-model-dependency
+recommended_when:
+  - Use when stored memories are reviewed, scoped, and safe to persist in a vector database.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-27'
+slug: qdrant-mcp-server
+name: Qdrant MCP Server
+type: mcp-server
+summary_llm: >-
+  Qdrant MCP Server is Qdrant's official MCP implementation for storing and retrieving semantic
+  memory in Qdrant collections through store and find tools.
+source_urls:
+  - https://github.com/qdrant/mcp-server-qdrant

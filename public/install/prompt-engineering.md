@@ -1,6 +1,6 @@
 # vnem Prompt Engineering
 
-Generated: 2026-05-27T10:21:10.026Z
+Generated: 2026-05-27T16:15:49.891Z
 
 Use this when the user asks to improve, rewrite, harden, or operationalize a prompt. The main trigger phrase is `use vnem to enhance this prompt`.
 
@@ -364,6 +364,94 @@ Output:
 - Where to store it.
 - What to avoid.
 - Review cadence.
+```
+
+### Agent Workspace Architecture Prompt
+
+Prompt for designing a read-only-first autonomous developer workspace with agent choice, MCP routing, memory, and verification boundaries.
+
+Intents: agent workspace, autonomous developer environment, coding agents, codex config
+
+Template:
+
+```text
+Design an autonomous developer workspace for this repository.
+
+Goal:
+<what the agent environment should help builders do>
+
+Constraints:
+- Keep the first version read-only unless a maintainer approves mutations.
+- Separate knowledge/catalog guidance from runtime daemons or gateway implementations.
+- Identify secrets, database, browser, repository, filesystem, and deployment risks.
+
+Evaluate:
+- Coding agent client and approval model.
+- MCP servers and whether a gateway is justified.
+- Persistent memory files and update cadence.
+- Verification commands and rollback path.
+
+Output:
+- Recommended architecture.
+- Minimal first setup.
+- Deferred capabilities.
+- Risks and required approvals.
+```
+
+### MCP Gateway Evaluation Prompt
+
+Prompt for deciding whether an MCP gateway is needed and which routing, policy, and observability requirements matter.
+
+Intents: mcp gateway, one mcp, tool routing, mcp servers
+
+Template:
+
+```text
+Evaluate MCP gateway options for this agent workspace.
+
+Current tools:
+<MCP servers, clients, credentials, and high-risk operations>
+
+Decision criteria:
+- Does the agent see too many tools or schemas?
+- Are credentials, policies, logs, or rate limits hard to manage directly?
+- Which tools need role-scoped or task-scoped exposure?
+- Can the team operate a gateway safely?
+
+Output:
+- Gateway needed or not needed.
+- Options to compare.
+- Least-privilege routing plan.
+- Risks, unknowns, and next verification steps.
+```
+
+### Memory Bank Initialization Prompt
+
+Prompt for creating durable agent memory without storing secrets or stale task state.
+
+Intents: memory bank, agent modes, roo code, cline, claude md
+
+Template:
+
+```text
+Initialize persistent agent memory for this project.
+
+Inputs:
+- Repository purpose and architecture.
+- Stable commands and verification steps.
+- Current task state, blockers, and decisions.
+
+Rules:
+- Store durable project facts separately from temporary session notes.
+- Include a decision log for major choices and rejected approaches.
+- Do not store secrets, credentials, private data, or unsourced claims.
+- Define when memory should be reviewed or reset.
+
+Output:
+- Proposed files.
+- Contents for each file.
+- Update protocol.
+- Risks and maintenance notes.
 ```
 
 ## Source Anchors

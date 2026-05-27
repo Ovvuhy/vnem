@@ -13,8 +13,8 @@ clients:
 install:
   command: null
   notes: >-
-    Install Cursor and configure project rules, model policy, and terminal approvals before broad
-    agent use.
+    Review the upstream docs, permissions, pricing, environment variables, and transport before
+    installing.
   config_example: null
 permissions:
   - filesystem
@@ -27,11 +27,14 @@ tags:
   - editor
   - rules
   - codebase
+  - terminal
+  - agent
 use_cases:
   - Use an IDE-native agent for multi-file code edits
   - Guide coding agents with project rules
+  - Run terminal-backed coding tasks with editor context
 best_for:
-  - Developers who want agentic edits inside an editor workflow
+  - Developers who want agentic edits inside Cursor's editor workflow
 not_for:
   - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
 alternatives: []
@@ -44,17 +47,20 @@ risk_flags:
   - license-not-asserted
   - can-edit-files
   - can-run-shell-commands
+  - hosted-service
 recommended_when:
-  - Use when project rules and editor context are central to the coding workflow.
+  - Use when Cursor project rules and editor context are central to the coding workflow.
 trust_tier: promising
 review_status: manual-reviewed
-last_checked: '2026-05-26'
+last_checked: '2026-05-27'
 slug: cursor-agent
 name: Cursor Agent
 type: coding-agent
 summary_llm: >-
   Cursor Agent is Cursor's editor-native coding agent for navigating codebases, applying multi-file
-  edits, using project rules, and running terminal-backed tasks.
+  edits, using project rules, running terminal-backed tasks, and working inside Cursor's IDE
+  context.
 source_urls:
   - https://docs.cursor.com/agent/overview
   - https://docs.cursor.com/context/rules
+  - https://docs.cursor.com/en/agent/terminal

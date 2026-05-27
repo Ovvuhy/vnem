@@ -1,0 +1,61 @@
+schema_version: 1.0.0
+homepage_url: https://github.com/jtgsystems/Custom-Modes-Roo-Code
+repo_url: https://github.com/jtgsystems/Custom-Modes-Roo-Code
+package_urls: []
+licenses:
+  - MIT
+copyright_owner: JTG Systems
+source_kind: github
+protocols: []
+clients:
+  - Roo Code
+install:
+  command: null
+  notes: >-
+    Review the upstream docs, permissions, pricing, environment variables, and transport before
+    installing.
+  config_example: null
+permissions:
+  - filesystem
+  - shell
+  - browser
+  - network
+env_vars: []
+tags:
+  - roo-code
+  - custom-modes
+  - agent-modes
+  - specialists
+  - schemas
+  - permissions
+use_cases:
+  - Review examples of specialized Roo Code modes
+  - Prototype role-specific agent prompts and permission groups
+  - Build a mode catalog for architecture, coding, security, and domain tasks
+best_for:
+  - Teams experimenting with specialist mode design and willing to audit each mode before use
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: medium
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags:
+  - community-maintained
+  - can-grant-broad-tool-access
+  - mode-audit-required
+recommended_when:
+  - Use as an inspiration catalog; import only reviewed modes with scoped permissions.
+trust_tier: unreviewed
+review_status: manual-reviewed
+last_checked: '2026-05-27'
+slug: custom-modes-roo-code
+name: Custom Modes Roo Code
+type: skill
+summary_llm: >-
+  Custom Modes Roo Code is a community collection of Roo Code custom-mode and agent configurations
+  with schemas, categorized agents, and supporting scripts for specialized mode-based workflows.
+source_urls:
+  - https://github.com/jtgsystems/Custom-Modes-Roo-Code

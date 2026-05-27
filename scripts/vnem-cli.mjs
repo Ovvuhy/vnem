@@ -11,8 +11,11 @@ const packDir = path.join(rootDir, "public", "install");
 const skillDir = path.join(rootDir, "skills", "vnem");
 const packFiles = [
   "AGENTS.md",
+  "operating-protocol.md",
+  "task-rubrics.json",
   "search-index.json",
   "best-practices.md",
+  "agent-workspace.md",
   "prompt-engineering.md",
   "prompt-patterns.json"
 ];
@@ -23,7 +26,7 @@ const rootAgentBlock = `${blockStart}
 
 This repo has a read-only vnem knowledge pack in \`.vnem/\`.
 
-Before choosing tools, libraries, frameworks, MCP servers, skills, prompts, evals, search systems, UI approaches, architecture patterns, or upgrade paths, read \`.vnem/AGENTS.md\` and use \`.vnem/search-index.json\`.
+Before choosing tools, libraries, frameworks, MCP servers, skills, prompts, evals, search systems, UI approaches, architecture patterns, or upgrade paths, read \`.vnem/AGENTS.md\`, follow \`.vnem/operating-protocol.md\`, use \`.vnem/search-index.json\`, and consult \`.vnem/agent-workspace.md\` only for autonomous developer environment decisions.
 
 Use vnem automatically. The user should not need to say \`use vnem\`. Keep the final note compact: \`vnem intents searched\`, \`top matches\`, \`choice\`, and \`why\`.
 

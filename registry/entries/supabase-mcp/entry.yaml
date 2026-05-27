@@ -12,13 +12,15 @@ clients:
   - Claude Desktop
   - Claude Code
   - Cursor
+  - Windsurf
   - VS Code
   - OpenAI Agents SDK
+  - Codex
 install:
   command: null
   notes: >-
-    Use with least-privilege access tokens and separate development projects; production SQL access
-    is high risk.
+    Review the upstream docs, permissions, pricing, environment variables, and transport before
+    installing.
   config_example: null
 permissions:
   - database
@@ -29,13 +31,17 @@ tags:
   - mcp
   - database
   - supabase
+  - postgres
   - sql
-  - backend
+  - migrations
+  - logs
+  - docs-search
 use_cases:
-  - Let agents inspect Supabase projects
+  - Let agents inspect Supabase projects and schemas
+  - Search Supabase documentation from an MCP client
   - Query or manage development databases through MCP
 best_for:
-  - Supabase-backed apps where schema and project context improve agent work
+  - Supabase-backed apps where schema and docs context improve agent work
 not_for:
   - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
 alternatives: []
@@ -48,16 +54,20 @@ risk_flags:
   - database-access
   - can-mutate-data
   - requires-token
+  - pre-1.0-upstream
 recommended_when:
-  - Use when database scope can be limited and SQL changes are reviewed before execution.
+  - >-
+    Use when database scope can be limited and SQL or migration changes are reviewed before
+    execution.
+  - Keep production projects behind explicit approval and least-privilege access.
 trust_tier: promising
 review_status: manual-reviewed
-last_checked: '2026-05-26'
+last_checked: '2026-05-27'
 slug: supabase-mcp
 name: Supabase MCP
 type: mcp-server
 summary_llm: >-
-  Supabase MCP is a community Supabase MCP server for project, database, SQL, and platform
-  operations through MCP-compatible agent clients.
+  Supabase MCP connects MCP clients to Supabase projects for docs search, project context, database
+  schema inspection, SQL execution, migrations, logs, advisors, functions, and platform operations.
 source_urls:
   - https://github.com/supabase-community/supabase-mcp

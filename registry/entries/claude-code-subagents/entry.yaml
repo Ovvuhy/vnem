@@ -50,7 +50,7 @@ recommended_when:
   - Use when a recurring specialist role can be given clear instructions and a bounded tool set.
 trust_tier: verified
 review_status: manual-reviewed
-last_checked: '2026-05-26'
+last_checked: '2026-05-27'
 slug: claude-code-subagents
 name: Claude Code Subagents
 type: workflow

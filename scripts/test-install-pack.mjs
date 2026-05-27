@@ -87,8 +87,11 @@ function safeInstallCommand(command) {
 
   const expectedFiles = new Set([
     "AGENTS.md",
+    "operating-protocol.md",
+    "task-rubrics.json",
     "search-index.json",
     "best-practices.md",
+    "agent-workspace.md",
     "prompt-engineering.md",
     "prompt-patterns.json"
   ]);
@@ -140,26 +143,46 @@ function search(index, query) {
   const aliasTerms = index.intent_aliases?.[query] ?? [];
   const terms = [...new Set([...tokenize(query), ...aliasTerms.flatMap(tokenize)])];
   const ids = new Set();
+  const routeList = index.intent_routes?.[query]?.read_first ?? [];
+  const routeIds = new Set(routeList);
+  const routeRank = new Map(routeList.map((id, index) => [id, Math.max(50 - index * 10, 20)]));
+  const normalizedQuery = tokenize(query).join(" ");
 
   for (const term of terms) {
     for (const id of index.inverted_index?.[term] ?? []) {
       ids.add(id);
     }
   }
+  for (const id of routeIds) {
+    ids.add(id);
+  }
 
   return index.documents
     .filter((document) => ids.has(document.id))
-    .sort((a, b) => b.score - a.score || a.title.localeCompare(b.title));
+    .map((document) => {
+      const keywords = new Set(document.keywords ?? []);
+      const matchedTerms = terms.filter((term) => keywords.has(term)).length;
+      const titleTokens = tokenize(document.title).join(" ");
+      const rank_score = document.score + matchedTerms * 10 +
+        (routeRank.get(document.id) ?? 0) +
+        (normalizedQuery && titleTokens.includes(normalizedQuery) ? 20 : 0);
+      return { ...document, rank_score };
+    })
+    .sort((a, b) => b.rank_score - a.rank_score || a.title.localeCompare(b.title));
 }
 
 const installDir = path.join(ROOT, "public", "install");
 const localPackDir = path.join(ROOT, ".vnem");
 const agents = await readFile(path.join(installDir, "AGENTS.md"), "utf8");
+const operatingProtocol = await readFile(path.join(installDir, "operating-protocol.md"), "utf8");
+const taskRubrics = await readJson(path.join(installDir, "task-rubrics.json"));
 const bestPractices = await readFile(path.join(installDir, "best-practices.md"), "utf8");
+const agentWorkspace = await readFile(path.join(installDir, "agent-workspace.md"), "utf8");
 const promptEngineering = await readFile(path.join(installDir, "prompt-engineering.md"), "utf8");
 const promptPatterns = await readJson(path.join(installDir, "prompt-patterns.json"));
 const searchIndex = await readJson(path.join(installDir, "search-index.json"));
 const localSearchIndex = await readJson(path.join(localPackDir, "search-index.json"));
+const localTaskRubrics = await readJson(path.join(localPackDir, "task-rubrics.json"));
 const localPromptPatterns = await readJson(path.join(localPackDir, "prompt-patterns.json"));
 const apiIndex = await readJson(path.join(ROOT, "public", "api", "index.json"));
 const installArchive = await readFile(path.join(ROOT, "public", "install.tgz"));
@@ -178,19 +201,41 @@ assert(
   JSON.stringify(tarNames(installArchive)) === JSON.stringify([
     "AGENTS.md",
     ".vnem/AGENTS.md",
+    ".vnem/operating-protocol.md",
+    ".vnem/task-rubrics.json",
     ".vnem/search-index.json",
     ".vnem/best-practices.md",
+    ".vnem/agent-workspace.md",
     ".vnem/prompt-engineering.md",
     ".vnem/prompt-patterns.json"
   ]),
-  "install archive must extract root AGENTS.md plus the five read-only pack files."
+  "install archive must extract root AGENTS.md plus the eight read-only pack files."
 );
+assert(agents.includes("operating-protocol.md"), "AGENTS.md must tell agents to read the operating protocol.");
+assert(agents.includes("task-rubrics.json"), "AGENTS.md must tell agents to use task rubrics.");
+assert(agents.includes("compact task contract"), "AGENTS.md must define compact task contracts.");
+assert(operatingProtocol.includes("Sense"), "operating-protocol.md must include the Sense step.");
+assert(operatingProtocol.includes("Route"), "operating-protocol.md must include the Route step.");
+assert(operatingProtocol.includes("Choose"), "operating-protocol.md must include the Choose step.");
+assert(operatingProtocol.includes("Constrain"), "operating-protocol.md must include the Constrain step.");
+assert(operatingProtocol.includes("Verify"), "operating-protocol.md must include the Verify step.");
+assert(operatingProtocol.includes("Task Contract"), "operating-protocol.md must describe task contracts.");
+assert(taskRubrics.safety?.mode === "read-only-task-rubrics", "task-rubrics safety mode must be read-only-task-rubrics.");
+for (const rubricId of ["frontend_ui", "backend_api", "refactor", "agent_tooling", "data_memory", "security_sensitive", "docs_prompt", "interactive_canvas"]) {
+  assert(taskRubrics.rubrics?.some((rubric) => rubric.id === rubricId), `task-rubrics must include ${rubricId}.`);
+}
 assert(bestPractices.includes("Frontend And UI"), "best-practices.md must include frontend guidance.");
 assert(bestPractices.includes("Browser Games And Interactive Canvas"), "best-practices.md must include browser game guidance.");
 assert(bestPractices.includes("Excalibur"), "browser game guidance must include Excalibur as a TypeScript-first 2D option.");
 assert(bestPractices.includes("real browser"), "browser game guidance must require real-browser verification.");
 assert(bestPractices.includes("Code Simplification And Minimal Refactors"), "best-practices.md must include code simplification guidance.");
 assert(bestPractices.includes("Payments And Commerce"), "best-practices.md must include payments guidance.");
+assert(bestPractices.includes("MCP Gateway And Tool Routing"), "best-practices.md must include MCP gateway guidance.");
+assert(bestPractices.includes("Persistent Memory And Context Files"), "best-practices.md must include persistent memory guidance.");
+assert(bestPractices.includes("Codex/VNEM Setup"), "best-practices.md must include Codex/VNEM guidance.");
+assert(agentWorkspace.includes("MCP Gateway And Tool Routing"), "agent-workspace.md must include gateway guidance.");
+assert(agentWorkspace.includes("Persistent Memory And Context Files"), "agent-workspace.md must include memory guidance.");
+assert(agentWorkspace.includes("Codex/VNEM Setup"), "agent-workspace.md must include Codex guidance.");
 assert(agents.includes("Prompt Enhancement Protocol"), "AGENTS.md must include the prompt enhancement protocol.");
 assert(agents.includes("Auto-activate the same protocol"), "AGENTS.md must include prompt auto-activation instructions.");
 assert(agents.includes("use vnem to enhance this prompt"), "AGENTS.md must include the vnem prompt trigger phrase.");
@@ -202,17 +247,37 @@ assert(promptPatterns.automatic_activation?.enabled === true, "prompt-patterns m
 assert(promptPatterns.patterns?.some((pattern) => pattern.id === "codex-implementation"), "prompt-patterns must include a Codex implementation pattern.");
 assert(promptPatterns.patterns?.some((pattern) => pattern.id === "code-simplification"), "prompt-patterns must include a code simplification pattern.");
 assert(localPromptPatterns.patterns?.length === promptPatterns.patterns.length, "local .vnem prompt patterns must match the hosted install pack.");
+assert(localTaskRubrics.rubrics?.length === taskRubrics.rubrics.length, "local .vnem task rubrics must match the hosted install pack.");
 assert(searchIndex.safety?.mode === "read-only-files", "search-index safety mode must be read-only-files.");
 assert(searchIndex.safety?.executes_code === false, "search-index must declare that it does not execute code.");
 assert(searchIndex.safety?.installs_packages === false, "search-index must declare that it does not install packages.");
+assert(searchIndex.package_version === "1.0.1", "search-index must expose package_version 1.0.1.");
+assert(searchIndex.release_version === "1.0.1", "search-index must expose release_version 1.0.1.");
+assert(apiIndex.package_version === "1.0.1", "public API must expose package_version 1.0.1.");
+assert(apiIndex.release_version === "1.0.1", "public API must expose release_version 1.0.1.");
+assert(localSearchIndex.release_version === searchIndex.release_version, "local .vnem search index must match release_version.");
 assert(searchIndex.decision_protocol?.auto_use === true, "search-index must tell agents to auto-use vnem.");
 assert(searchIndex.decision_protocol?.user_trigger_required === false, "search-index must not require a special vnem trigger.");
+assert(Array.isArray(searchIndex.operating_protocol?.loop), "search-index must expose the operating protocol.");
+assert(searchIndex.task_rubrics?.some((rubric) => rubric.id === "frontend_ui"), "search-index must expose task rubrics.");
+assert(searchIndex.decision_protocol?.task_contract_fields?.includes("verification"), "decision protocol must expose task contract fields.");
 assert(searchIndex.intent_routes?.["browser game"]?.read_first?.includes("practice:browser-games"), "search-index must route browser game tasks to browser game guidance.");
 assert(searchIndex.intent_routes?.["web game"]?.read_first?.includes("practice:browser-games"), "search-index must route web game tasks to browser game guidance.");
 assert(searchIndex.intent_routes?.["game accessibility"]?.read_first?.includes("practice:browser-games"), "search-index must route game accessibility tasks to browser game guidance.");
 assert(searchIndex.intent_routes?.["game physics"]?.read_first?.includes("practice:browser-games"), "search-index must route game physics tasks to browser game guidance.");
 assert(searchIndex.intent_routes?.["code simplification"]?.read_first?.includes("practice:code-simplification"), "search-index must route code simplification tasks to code simplification guidance.");
+assert(searchIndex.intent_routes?.["mcp gateway"]?.read_first?.includes("practice:mcp-gateway-tool-routing"), "search-index must route MCP gateway tasks to gateway guidance.");
+assert(searchIndex.intent_routes?.["one mcp"]?.read_first?.includes("practice:mcp-gateway-tool-routing"), "search-index must route one MCP tasks to gateway guidance.");
+assert(searchIndex.intent_routes?.["tool routing"]?.read_first?.includes("practice:mcp-gateway-tool-routing"), "search-index must route tool routing tasks to gateway guidance.");
+assert(searchIndex.intent_routes?.["memory bank"]?.read_first?.includes("practice:persistent-memory-context-files"), "search-index must route memory bank tasks to memory guidance.");
+assert(searchIndex.intent_routes?.["roo code"]?.read_first?.includes("practice:ide-agent-selection"), "search-index must route Roo Code tasks to IDE agent guidance.");
+assert(searchIndex.intent_routes?.["agent modes"]?.read_first?.includes("practice:ide-agent-selection"), "search-index must route agent mode tasks to IDE agent guidance.");
+assert(searchIndex.intent_routes?.["codex config"]?.read_first?.includes("practice:codex-vnem-setup"), "search-index must route Codex config tasks to Codex/VNEM guidance.");
+assert(searchIndex.intent_routes?.["claude md"]?.read_first?.includes("practice:persistent-memory-context-files"), "search-index must route CLAUDE.md tasks to memory guidance.");
+assert(searchIndex.intent_routes?.["agent workspace"]?.read_first?.includes("practice:codex-vnem-setup"), "search-index must route agent workspace tasks to Codex/VNEM guidance.");
 assert(apiIndex.decision_protocol?.auto_use === true, "public API must expose the decision protocol.");
+assert(apiIndex.operating_protocol?.id === "vnem-operating-loop", "public API must expose the operating protocol.");
+assert(apiIndex.task_rubrics?.some((rubric) => rubric.id === "agent_tooling"), "public API must expose task rubrics.");
 assert(apiIndex.intent_routes?.["browser game"]?.read_first?.includes("practice:browser-games"), "public API must expose intent routes.");
 assert(apiIndex.intent_routes?.["web game"]?.read_first?.includes("practice:browser-games"), "public API must expose web game routes.");
 assert(apiIndex.intent_routes?.["code simplification"]?.read_first?.includes("practice:code-simplification"), "public API must expose code simplification routes.");
@@ -222,15 +287,24 @@ for (const entryId of ["entry:phaser", "entry:pixijs", "entry:three-js", "entry:
 }
 assert(localSearchIndex.documents?.length === searchIndex.documents.length, "local .vnem search index must match the hosted install pack.");
 
-for (const query of ["better ui", "browser game", "web game", "html5 game", "canvas game", "2d game", "3d game", "game engine", "game ui", "game accessibility", "game physics", "game testing", "canvas performance", "faster search", "agent payments", "code review", "code simplification", "code compaction", "minimal code", "professional code", "refactor", "dead code", "memory", "evals", "prompt engineering", "codex prompt"]) {
+for (const query of ["better ui", "browser game", "web game", "html5 game", "canvas game", "2d game", "3d game", "game engine", "game ui", "game accessibility", "game physics", "game testing", "canvas performance", "faster search", "agent payments", "code review", "code simplification", "code compaction", "minimal code", "professional code", "refactor", "dead code", "memory", "evals", "prompt engineering", "codex prompt", "mcp gateway", "one mcp", "tool routing", "memory bank", "roo code", "agent modes", "codex config", "claude md", "agent workspace"]) {
   const results = search(searchIndex, query);
   assert(results.length > 0, `search-index must return at least one result for "${query}".`);
-  assert(results[0].score >= results.at(-1).score, `search results for "${query}" must be rank sorted.`);
+  assert(results[0].rank_score >= results.at(-1).rank_score, `search results for "${query}" must be rank sorted.`);
   if (["browser game", "web game", "html5 game", "canvas game", "2d game", "3d game", "game engine", "game ui", "game accessibility", "game physics", "game testing", "canvas performance"].includes(query)) {
     assert(results[0].id === "practice:browser-games", `search results for "${query}" should lead with browser game guidance.`);
   }
   if (["code simplification", "code compaction", "minimal code", "professional code", "refactor", "dead code"].includes(query)) {
     assert(results[0].id === "practice:code-simplification", `search results for "${query}" should lead with code simplification guidance.`);
+  }
+  if (["mcp gateway", "one mcp", "tool routing"].includes(query)) {
+    assert(results[0].id === "practice:mcp-gateway-tool-routing", `search results for "${query}" should lead with MCP gateway guidance.`);
+  }
+  if (["memory bank", "claude md"].includes(query)) {
+    assert(results[0].id === "practice:persistent-memory-context-files", `search results for "${query}" should lead with persistent memory guidance.`);
+  }
+  if (["agent workspace", "codex config"].includes(query)) {
+    assert(["practice:codex-vnem-setup", "practice:mcp-gateway-tool-routing"].includes(results[0].id), `search results for "${query}" should lead with agent workspace or Codex guidance.`);
   }
 }
 

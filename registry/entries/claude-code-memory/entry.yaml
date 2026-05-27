@@ -27,6 +27,7 @@ tags:
 use_cases:
   - Persist stable project instructions
   - Share agent guidance across coding sessions
+  - Separate durable project context from temporary task notes
 best_for:
   - Project-local context that should be versioned and reviewed with code
 not_for:
@@ -40,16 +41,18 @@ maintenance_signals:
 risk_flags:
   - license-not-asserted
   - memory-can-leak-sensitive-context
+  - stale-memory-risk
 recommended_when:
   - Use when coding agents repeatedly need the same project conventions, commands, and safety rules.
 trust_tier: verified
 review_status: manual-reviewed
-last_checked: '2026-05-26'
+last_checked: '2026-05-27'
 slug: claude-code-memory
 name: Claude Code Memory
 type: memory
 summary_llm: >-
-  Claude Code memory uses CLAUDE.md files and imports to persist project, user, and enterprise
-  instructions that agents can load into future coding sessions.
+  Claude Code memory uses CLAUDE.md files and related project, user, and enterprise memory surfaces
+  to persist stable instructions that future coding sessions can load.
 source_urls:
   - https://docs.anthropic.com/en/docs/claude-code/memory
+  - https://code.claude.com/docs/en/features-overview

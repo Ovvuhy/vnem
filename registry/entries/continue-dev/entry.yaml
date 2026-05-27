@@ -47,7 +47,7 @@ recommended_when:
   - Use when model choice, local context configuration, and editor integration are important.
 trust_tier: promising
 review_status: manual-reviewed
-last_checked: '2026-05-26'
+last_checked: '2026-05-27'
 slug: continue-dev
 name: Continue
 type: coding-agent

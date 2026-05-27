@@ -1265,6 +1265,468 @@ const entries = [
   })
 ];
 
+const release101Entries = [
+  common({
+    slug: "model-context-protocol",
+    name: "Model Context Protocol",
+    type: "workflow",
+    summary_llm: "Model Context Protocol is an open protocol and schema for connecting AI applications to external tools, resources, prompts, and contextual data through standardized MCP servers.",
+    homepage_url: "https://modelcontextprotocol.io/docs/getting-started/intro",
+    repo_url: "https://github.com/modelcontextprotocol/modelcontextprotocol",
+    licenses: ["MIT"],
+    copyright_owner: "Model Context Protocol",
+    source_urls: [
+      "https://modelcontextprotocol.io/docs/getting-started/intro",
+      "https://modelcontextprotocol.io/specification/2025-11-25",
+      "https://modelcontextprotocol.io/specification/2025-11-25/basic/security_best_practices",
+      "https://github.com/modelcontextprotocol/modelcontextprotocol"
+    ],
+    source_kind: "official_docs",
+    source_confidence: "official",
+    protocols: ["MCP", "JSON-RPC 2.0"],
+    clients: ["Claude Desktop", "Claude Code", "Cursor", "VS Code", "OpenAI Agents SDK", "Codex"],
+    permissions: [],
+    tags: ["mcp", "protocol", "json-rpc", "tools", "resources", "prompts", "security", "context"],
+    use_cases: [
+      "Standardize agent access to tools and context",
+      "Compare MCP servers by permissions and provenance",
+      "Design safer trust boundaries for agent tool use"
+    ],
+    best_for: ["Teams that need portable, reviewable tool connections across agent clients"],
+    risk_flags: ["requires-server-review", "tool-permissions-are-server-defined"],
+    recommended_when: [
+      "Use when agent tools should be discoverable, permissioned, and reusable across clients.",
+      "Review server permissions and transport trust boundaries before connecting high-risk systems."
+    ],
+    trust_tier: "verified"
+  }),
+  common({
+    slug: "github-mcp-server",
+    name: "GitHub MCP Server",
+    type: "mcp-server",
+    summary_llm: "GitHub MCP Server is GitHub's official MCP server for repository, code search, issue, pull request, workflow, security, and collaboration operations, with toolset controls and read-only mode available.",
+    homepage_url: "https://github.com/github/github-mcp-server",
+    repo_url: "https://github.com/github/github-mcp-server",
+    licenses: ["MIT"],
+    copyright_owner: "GitHub",
+    source_urls: ["https://github.com/github/github-mcp-server"],
+    source_kind: "github",
+    source_confidence: "official",
+    protocols: ["MCP"],
+    clients: ["VS Code", "Claude Desktop", "Claude Code", "Cursor", "Windsurf", "OpenAI Agents SDK", "Codex"],
+    permissions: ["repository", "network"],
+    env_vars: ["GITHUB_TOKEN", "GITHUB_PERSONAL_ACCESS_TOKEN", "GITHUB_TOOLSETS", "GITHUB_DYNAMIC_TOOLSETS"],
+    tags: ["mcp", "github", "repository", "pull-requests", "issues", "actions", "toolsets", "read-only-mode"],
+    use_cases: [
+      "Let agents inspect GitHub repositories and code",
+      "Automate issues, pull requests, and workflow triage",
+      "Limit visible GitHub tools with explicit toolsets"
+    ],
+    best_for: ["GitHub-native repository workflows with scoped tokens and branch protections"],
+    risk_flags: ["mutates-repositories", "requires-token", "high-tool-count"],
+    recommended_when: [
+      "Use when an agent needs GitHub context or PR workflows and token scope can be constrained.",
+      "Prefer read-only mode or narrow toolsets until mutation is explicitly approved."
+    ],
+    trust_tier: "promising"
+  }),
+  common({
+    slug: "supabase-mcp",
+    name: "Supabase MCP",
+    type: "mcp-server",
+    summary_llm: "Supabase MCP connects MCP clients to Supabase projects for docs search, project context, database schema inspection, SQL execution, migrations, logs, advisors, functions, and platform operations.",
+    homepage_url: "https://github.com/supabase-community/supabase-mcp",
+    repo_url: "https://github.com/supabase-community/supabase-mcp",
+    licenses: ["Apache-2.0"],
+    copyright_owner: "Supabase Community",
+    source_urls: ["https://github.com/supabase-community/supabase-mcp"],
+    source_kind: "github",
+    source_confidence: "high",
+    protocols: ["MCP"],
+    clients: ["Claude Desktop", "Claude Code", "Cursor", "Windsurf", "VS Code", "OpenAI Agents SDK", "Codex"],
+    permissions: ["database", "network"],
+    env_vars: ["SUPABASE_ACCESS_TOKEN"],
+    tags: ["mcp", "database", "supabase", "postgres", "sql", "migrations", "logs", "docs-search"],
+    use_cases: [
+      "Let agents inspect Supabase projects and schemas",
+      "Search Supabase documentation from an MCP client",
+      "Query or manage development databases through MCP"
+    ],
+    best_for: ["Supabase-backed apps where schema and docs context improve agent work"],
+    risk_flags: ["database-access", "can-mutate-data", "requires-token", "pre-1.0-upstream"],
+    recommended_when: [
+      "Use when database scope can be limited and SQL or migration changes are reviewed before execution.",
+      "Keep production projects behind explicit approval and least-privilege access."
+    ],
+    trust_tier: "promising"
+  }),
+  common({
+    slug: "cline",
+    name: "Cline",
+    type: "coding-agent",
+    summary_llm: "Cline is an open-source VS Code coding agent that can read and edit files, use terminal and browser capabilities, connect to MCP tools, and request approval for sensitive actions.",
+    homepage_url: "https://docs.cline.bot/introduction/overview",
+    repo_url: "https://github.com/cline/cline",
+    licenses: ["Apache-2.0"],
+    copyright_owner: "Cline",
+    source_urls: [
+      "https://docs.cline.bot/introduction/overview",
+      "https://github.com/cline/cline"
+    ],
+    source_kind: "github",
+    source_confidence: "high",
+    clients: ["VS Code", "MCP", "OpenRouter", "Anthropic", "OpenAI", "Ollama"],
+    permissions: ["filesystem", "repository", "shell", "browser", "network"],
+    env_vars: ["OPENAI_API_KEY", "ANTHROPIC_API_KEY", "OPENROUTER_API_KEY"],
+    tags: ["coding-agent", "vscode", "mcp", "browser", "terminal", "byom", "approvals"],
+    use_cases: [
+      "Use an editor agent with terminal and browser control",
+      "Connect VS Code workflows to MCP tools",
+      "Run model-flexible coding tasks with explicit approvals"
+    ],
+    best_for: ["Developer-supervised code edits inside VS Code"],
+    risk_flags: ["can-edit-files", "can-run-shell-commands", "browser-access", "model-provider-costs"],
+    recommended_when: ["Use when VS Code, explicit approvals, model flexibility, and MCP extension points fit the project workflow."],
+    trust_tier: "promising"
+  }),
+  common({
+    slug: "cursor-agent",
+    name: "Cursor Agent",
+    type: "coding-agent",
+    summary_llm: "Cursor Agent is Cursor's editor-native coding agent for navigating codebases, applying multi-file edits, using project rules, running terminal-backed tasks, and working inside Cursor's IDE context.",
+    homepage_url: "https://docs.cursor.com/agent/overview",
+    licenses: ["NOASSERTION"],
+    copyright_owner: "Cursor",
+    source_urls: [
+      "https://docs.cursor.com/agent/overview",
+      "https://docs.cursor.com/context/rules",
+      "https://docs.cursor.com/en/agent/terminal"
+    ],
+    source_kind: "official_docs",
+    source_confidence: "official",
+    clients: ["Cursor", "VS Code-like editor"],
+    permissions: ["filesystem", "repository", "shell", "network"],
+    tags: ["coding-agent", "editor", "rules", "codebase", "terminal", "agent"],
+    use_cases: [
+      "Use an IDE-native agent for multi-file code edits",
+      "Guide coding agents with project rules",
+      "Run terminal-backed coding tasks with editor context"
+    ],
+    best_for: ["Developers who want agentic edits inside Cursor's editor workflow"],
+    risk_flags: ["license-not-asserted", "can-edit-files", "can-run-shell-commands", "hosted-service"],
+    recommended_when: ["Use when Cursor project rules and editor context are central to the coding workflow."],
+    trust_tier: "promising"
+  }),
+  common({
+    slug: "anthropic-claude-code",
+    name: "Claude Code",
+    type: "coding-agent",
+    summary_llm: "Claude Code is Anthropic's terminal coding agent for codebase understanding, file edits, command execution, GitHub workflows, MCP tool use, memory files, hooks, skills, and custom subagents.",
+    homepage_url: "https://docs.anthropic.com/en/docs/claude-code/overview",
+    licenses: ["NOASSERTION"],
+    copyright_owner: "Anthropic",
+    source_urls: [
+      "https://docs.anthropic.com/en/docs/claude-code/overview",
+      "https://docs.anthropic.com/en/docs/claude-code/memory",
+      "https://code.claude.com/docs/en/sub-agents",
+      "https://code.claude.com/docs/en/features-overview"
+    ],
+    source_kind: "official_docs",
+    source_confidence: "official",
+    clients: ["Terminal", "GitHub", "MCP"],
+    permissions: ["filesystem", "repository", "shell", "network"],
+    env_vars: ["ANTHROPIC_API_KEY"],
+    tags: ["coding-agent", "claude-code", "subagents", "memory", "mcp", "hooks", "skills"],
+    use_cases: [
+      "Let agents inspect and edit code repositories",
+      "Coordinate specialist subagents for coding tasks",
+      "Persist project instructions in memory files",
+      "Scope MCP access to specific agents"
+    ],
+    best_for: ["Codebases that benefit from explicit project memory, terminal workflows, and specialist subagents"],
+    risk_flags: ["license-not-asserted", "can-edit-files", "can-run-shell-commands", "mcp-tool-risk"],
+    recommended_when: ["Use when Claude Code's memory files, MCP integration, hooks, skills, and subagents map to the team's coding workflow."],
+    trust_tier: "promising"
+  }),
+  common({
+    slug: "claude-code-memory",
+    name: "Claude Code Memory",
+    type: "memory",
+    summary_llm: "Claude Code memory uses CLAUDE.md files and related project, user, and enterprise memory surfaces to persist stable instructions that future coding sessions can load.",
+    homepage_url: "https://docs.anthropic.com/en/docs/claude-code/memory",
+    licenses: ["NOASSERTION"],
+    copyright_owner: "Anthropic",
+    source_urls: [
+      "https://docs.anthropic.com/en/docs/claude-code/memory",
+      "https://code.claude.com/docs/en/features-overview"
+    ],
+    source_kind: "official_docs",
+    source_confidence: "official",
+    clients: ["Claude Code"],
+    permissions: ["filesystem"],
+    tags: ["memory", "claude-code", "instructions", "context-engineering", "claude-md"],
+    use_cases: [
+      "Persist stable project instructions",
+      "Share agent guidance across coding sessions",
+      "Separate durable project context from temporary task notes"
+    ],
+    best_for: ["Project-local context that should be versioned and reviewed with code"],
+    risk_flags: ["license-not-asserted", "memory-can-leak-sensitive-context", "stale-memory-risk"],
+    recommended_when: ["Use when coding agents repeatedly need the same project conventions, commands, and safety rules."],
+    trust_tier: "verified"
+  }),
+  common({
+    slug: "lunar-mcpx",
+    name: "Lunar MCPX",
+    type: "orchestration",
+    summary_llm: "Lunar MCPX is an MCP gateway that sits between MCP clients and backend MCP servers, providing a single endpoint, aggregated tool catalog, dynamic routing, access rules, authentication, and audit-oriented enterprise controls.",
+    homepage_url: "https://docs.lunar.dev/mcpx/architecture",
+    repo_url: "https://github.com/TheLunarCompany/lunar",
+    licenses: ["MIT"],
+    copyright_owner: "The Lunar Company",
+    source_urls: [
+      "https://docs.lunar.dev/mcpx/architecture",
+      "https://docs.lunar.dev/mcpx/features/",
+      "https://github.com/TheLunarCompany/lunar"
+    ],
+    source_kind: "official_docs",
+    source_confidence: "high",
+    protocols: ["MCP"],
+    clients: ["MCP clients", "Claude Desktop", "Claude Code", "Cursor", "VS Code"],
+    permissions: ["network"],
+    tags: ["mcp", "gateway", "mcpx", "tool-routing", "access-control", "authentication", "observability", "catalog"],
+    use_cases: [
+      "Put multiple MCP servers behind a single endpoint",
+      "Constrain tool discovery by agent or workflow",
+      "Centralize authentication, routing, and audit controls"
+    ],
+    best_for: ["Teams that have outgrown direct per-client MCP server configuration"],
+    risk_flags: ["gateway-operational-risk", "centralizes-tool-access", "requires-policy-review"],
+    recommended_when: ["Use when direct MCP configuration creates too much tool-schema, auth, or audit complexity."],
+    trust_tier: "promising"
+  }),
+  common({
+    slug: "microsoft-mcp-gateway",
+    name: "Microsoft MCP Gateway",
+    type: "orchestration",
+    summary_llm: "Microsoft MCP Gateway is a reverse proxy and management layer for MCP servers focused on scalable, session-aware, stateful routing and lifecycle management in Kubernetes and Azure-oriented environments.",
+    homepage_url: "https://github.com/microsoft/mcp-gateway",
+    repo_url: "https://github.com/microsoft/mcp-gateway",
+    licenses: ["MIT"],
+    copyright_owner: "Microsoft",
+    source_urls: ["https://github.com/microsoft/mcp-gateway"],
+    source_kind: "github",
+    source_confidence: "official",
+    protocols: ["MCP"],
+    clients: ["MCP clients", "VS Code", "Azure"],
+    permissions: ["network", "cloud"],
+    env_vars: ["AZURE_CLIENT_ID", "AZURE_TENANT_ID"],
+    tags: ["mcp", "gateway", "kubernetes", "azure", "routing", "session-aware", "reverse-proxy"],
+    use_cases: [
+      "Route MCP traffic through a managed gateway layer",
+      "Operate MCP servers in Kubernetes-oriented environments",
+      "Centralize session-aware MCP server lifecycle management"
+    ],
+    best_for: ["Teams already operating Azure or Kubernetes infrastructure for agent tooling"],
+    risk_flags: ["cloud-configuration-risk", "requires-identity-setup", "gateway-operational-risk"],
+    recommended_when: ["Use when MCP routing must be governed in a cloud-native environment with explicit identity and lifecycle controls."],
+    trust_tier: "promising"
+  }),
+  common({
+    slug: "opentabs",
+    name: "OpenTabs",
+    type: "mcp-server",
+    summary_llm: "OpenTabs is a local Chrome extension and MCP server that lets agents call web-app internal APIs through the user's authenticated browser session, with plugin gating, audit logs, and multiple connection modes.",
+    homepage_url: "https://opentabs.dev/",
+    repo_url: "https://github.com/opentabs-dev/opentabs",
+    licenses: ["MIT"],
+    copyright_owner: "OpenTabs",
+    source_urls: [
+      "https://opentabs.dev/",
+      "https://opentabs.dev/docs/install",
+      "https://github.com/opentabs-dev/opentabs"
+    ],
+    source_kind: "official_docs",
+    source_confidence: "high",
+    protocols: ["MCP", "Streamable HTTP"],
+    clients: ["Claude Code", "Cursor", "Windsurf", "OpenCode", "MCP clients"],
+    permissions: ["browser", "network"],
+    env_vars: ["OPENTABS_SECRET"],
+    tags: ["mcp", "browser", "chrome-extension", "authenticated-session", "web-apps", "gateway-mode", "plugins"],
+    use_cases: [
+      "Let agents interact with web apps through an existing browser session",
+      "Expose internal web-app APIs as MCP tools",
+      "Reduce OAuth/API-key setup for tools already open in the user's browser"
+    ],
+    best_for: ["Local-first workflows where browser-session access is acceptable and plugins can be reviewed"],
+    risk_flags: ["authenticated-browser-session", "can-act-as-user", "plugin-review-required", "high-tool-count"],
+    recommended_when: ["Use only after reviewing plugins and deciding which authenticated sessions an agent may touch."],
+    trust_tier: "promising"
+  }),
+  common({
+    slug: "mcp-crawl4ai-rag",
+    name: "Crawl4AI RAG MCP Server",
+    type: "mcp-server",
+    summary_llm: "Crawl4AI RAG MCP Server combines web crawling, content chunking, Supabase vector storage, semantic retrieval, optional code-example search, reranking, and optional knowledge-graph features for agent documentation lookup.",
+    homepage_url: "https://github.com/coleam00/mcp-crawl4ai-rag",
+    repo_url: "https://github.com/coleam00/mcp-crawl4ai-rag",
+    licenses: ["MIT"],
+    copyright_owner: "coleam00",
+    source_urls: ["https://github.com/coleam00/mcp-crawl4ai-rag"],
+    source_kind: "github",
+    source_confidence: "medium",
+    protocols: ["MCP", "SSE"],
+    clients: ["Claude Desktop", "Claude Code", "Windsurf", "MCP clients"],
+    permissions: ["network", "database"],
+    env_vars: ["OPENAI_API_KEY", "SUPABASE_URL", "SUPABASE_SERVICE_KEY", "NEO4J_URI", "NEO4J_USER", "NEO4J_PASSWORD"],
+    tags: ["mcp", "rag", "crawl4ai", "web-crawling", "supabase", "vector-search", "documentation", "knowledge-graph"],
+    use_cases: [
+      "Crawl documentation and retrieve relevant chunks for coding agents",
+      "Create a project-specific RAG store for external docs",
+      "Search code examples extracted from crawled documentation"
+    ],
+    best_for: ["Experimental documentation RAG workflows where network, database, and embedding costs are acceptable"],
+    risk_flags: ["community-maintained", "requires-secrets", "external-crawling", "database-access", "can-ingest-third-party-content"],
+    recommended_when: ["Use as a reviewed RAG experiment, not as default runtime infrastructure for sensitive repos."],
+    trust_tier: "unreviewed"
+  }),
+  common({
+    slug: "qdrant-mcp-server",
+    name: "Qdrant MCP Server",
+    type: "mcp-server",
+    summary_llm: "Qdrant MCP Server is Qdrant's official MCP implementation for storing and retrieving semantic memory in Qdrant collections through store and find tools.",
+    homepage_url: "https://github.com/qdrant/mcp-server-qdrant",
+    repo_url: "https://github.com/qdrant/mcp-server-qdrant",
+    licenses: ["Apache-2.0"],
+    copyright_owner: "Qdrant",
+    source_urls: ["https://github.com/qdrant/mcp-server-qdrant"],
+    source_kind: "github",
+    source_confidence: "official",
+    protocols: ["MCP", "stdio", "SSE", "Streamable HTTP"],
+    clients: ["Claude Desktop", "Claude Code", "MCP clients"],
+    permissions: ["database", "network"],
+    env_vars: ["QDRANT_URL", "QDRANT_API_KEY", "QDRANT_LOCAL_PATH", "COLLECTION_NAME", "EMBEDDING_MODEL"],
+    tags: ["mcp", "qdrant", "vector-database", "memory", "semantic-search", "retrieval"],
+    use_cases: [
+      "Give agents semantic memory backed by Qdrant",
+      "Store and retrieve project notes or embeddings through MCP",
+      "Connect local or hosted Qdrant collections to agent workflows"
+    ],
+    best_for: ["Teams already using Qdrant or needing a small MCP memory layer"],
+    risk_flags: ["database-access", "memory-can-leak-sensitive-context", "embedding-model-dependency"],
+    recommended_when: ["Use when stored memories are reviewed, scoped, and safe to persist in a vector database."],
+    trust_tier: "promising"
+  }),
+  common({
+    slug: "mcp-server-mysql",
+    name: "MCP Server MySQL",
+    type: "mcp-server",
+    summary_llm: "MCP Server MySQL provides MCP access to MySQL schemas and queries with read-only defaults, explicit write-operation gates, remote mode, rate limits, query complexity controls, and connection pooling.",
+    homepage_url: "https://github.com/benborla/mcp-server-mysql",
+    repo_url: "https://github.com/benborla/mcp-server-mysql",
+    licenses: ["MIT"],
+    copyright_owner: "Ben Borla",
+    source_urls: ["https://github.com/benborla/mcp-server-mysql"],
+    source_kind: "github",
+    source_confidence: "medium",
+    protocols: ["MCP", "Streamable HTTP"],
+    clients: ["Claude Desktop", "Claude Code", "MCP clients"],
+    permissions: ["database", "network"],
+    env_vars: ["MYSQL_HOST", "MYSQL_PORT", "MYSQL_USER", "MYSQL_PASS", "MYSQL_DB", "MYSQL_CONNECTION_STRING", "REMOTE_SECRET_KEY"],
+    tags: ["mcp", "mysql", "database", "schema", "sql", "read-only", "remote-mcp"],
+    use_cases: [
+      "Let agents inspect MySQL schemas",
+      "Run read-only MySQL queries through MCP",
+      "Expose carefully gated database access to coding assistants"
+    ],
+    best_for: ["Development databases where read-only schema and query access can speed backend work"],
+    risk_flags: ["database-access", "requires-secrets", "write-gates-available", "community-maintained"],
+    recommended_when: ["Use only with read-only defaults, development data, and explicit approval before enabling writes."],
+    trust_tier: "unreviewed"
+  }),
+  common({
+    slug: "roo-code",
+    name: "Roo Code",
+    type: "coding-agent",
+    summary_llm: "Roo Code is a VS Code-family coding agent that supports Code, Architect, Ask, Debug, and Custom Modes, MCP servers, checkpoints, codebase indexing, and model/provider configuration.",
+    homepage_url: "https://github.com/RooCodeInc/Roo-Code",
+    repo_url: "https://github.com/RooCodeInc/Roo-Code",
+    licenses: ["Apache-2.0"],
+    copyright_owner: "Roo Code, Inc",
+    source_urls: [
+      "https://github.com/RooCodeInc/Roo-Code",
+      "https://roocodeinc.github.io/Roo-Code/basic-usage/using-modes/"
+    ],
+    source_kind: "github",
+    source_confidence: "high",
+    clients: ["VS Code", "Cursor", "MCP", "OpenRouter", "Anthropic", "OpenAI"],
+    permissions: ["filesystem", "repository", "shell", "browser", "network"],
+    env_vars: ["OPENROUTER_API_KEY", "OPENAI_API_KEY", "ANTHROPIC_API_KEY"],
+    tags: ["coding-agent", "roo-code", "vscode", "custom-modes", "mcp", "checkpoints", "byom"],
+    use_cases: [
+      "Use role-based modes for planning, coding, asking, and debugging",
+      "Connect a VS Code-family coding agent to MCP servers",
+      "Experiment with custom mode prompts and permissions"
+    ],
+    best_for: ["Teams that need explicit mode separation and model/provider flexibility inside VS Code-like editors"],
+    risk_flags: ["can-edit-files", "can-run-shell-commands", "browser-access", "community-handoff"],
+    recommended_when: ["Use after confirming the current maintenance path and reviewing mode permissions for the project."],
+    trust_tier: "promising"
+  }),
+  common({
+    slug: "rules-template-memory-bank",
+    name: "Rules Template Memory Bank",
+    type: "memory",
+    summary_llm: "Rules Template is a community rule and memory-bank template for Cursor, Cline, Roo Code, and Windsurf that organizes agent instructions, workflow phases, and persistent project context.",
+    homepage_url: "https://github.com/Bhartendu-Kumar/rules_template",
+    repo_url: "https://github.com/Bhartendu-Kumar/rules_template",
+    licenses: ["NOASSERTION"],
+    copyright_owner: "Bhartendu Kumar",
+    source_urls: ["https://github.com/Bhartendu-Kumar/rules_template"],
+    source_kind: "github",
+    source_confidence: "medium",
+    clients: ["Cursor", "Cline", "Roo Code", "Windsurf"],
+    permissions: ["filesystem"],
+    tags: ["memory-bank", "rules", "cline", "roo-code", "cursor", "windsurf", "context-engineering"],
+    use_cases: [
+      "Bootstrap a persistent memory bank for coding agents",
+      "Share rule files across multiple IDE agents",
+      "Separate planning, implementation, and documentation instructions"
+    ],
+    best_for: ["Teams willing to maintain agent memory files and review rule changes like code"],
+    risk_flags: ["license-not-asserted", "community-maintained", "stale-memory-risk", "can-overconstrain-agents"],
+    recommended_when: ["Use as a pattern source, then copy only the minimal ideas that match the repository's workflow."],
+    trust_tier: "unreviewed"
+  }),
+  common({
+    slug: "custom-modes-roo-code",
+    name: "Custom Modes Roo Code",
+    type: "skill",
+    summary_llm: "Custom Modes Roo Code is a community collection of Roo Code custom-mode and agent configurations with schemas, categorized agents, and supporting scripts for specialized mode-based workflows.",
+    homepage_url: "https://github.com/jtgsystems/Custom-Modes-Roo-Code",
+    repo_url: "https://github.com/jtgsystems/Custom-Modes-Roo-Code",
+    licenses: ["MIT"],
+    copyright_owner: "JTG Systems",
+    source_urls: ["https://github.com/jtgsystems/Custom-Modes-Roo-Code"],
+    source_kind: "github",
+    source_confidence: "medium",
+    clients: ["Roo Code"],
+    permissions: ["filesystem", "shell", "browser", "network"],
+    tags: ["roo-code", "custom-modes", "agent-modes", "specialists", "schemas", "permissions"],
+    use_cases: [
+      "Review examples of specialized Roo Code modes",
+      "Prototype role-specific agent prompts and permission groups",
+      "Build a mode catalog for architecture, coding, security, and domain tasks"
+    ],
+    best_for: ["Teams experimenting with specialist mode design and willing to audit each mode before use"],
+    risk_flags: ["community-maintained", "can-grant-broad-tool-access", "mode-audit-required"],
+    recommended_when: ["Use as an inspiration catalog; import only reviewed modes with scoped permissions."],
+    trust_tier: "unreviewed"
+  })
+];
+
+entries.push(...release101Entries);
+
 function profileFor(entry) {
   const bestFor = entry.best_for.slice(0, 3).map((item) => `- ${item}`).join("\n");
   const recommendations = entry.recommended_when.slice(0, 3).map((item) => `- ${item}`).join("\n");

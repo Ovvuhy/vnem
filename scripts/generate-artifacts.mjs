@@ -1,9 +1,14 @@
 import path from "node:path";
+import { readFile } from "node:fs/promises";
 import { gzipSync } from "node:zlib";
 import { ROOT, publicEntry, readEntries, uniqueSorted, writeBytes, writeJson, writeText } from "./lib/registry.mjs";
 
 const generatedAt = new Date().toISOString();
 const generatedDate = generatedAt.slice(0, 10);
+const packageJson = JSON.parse(await readFile(path.join(ROOT, "package.json"), "utf8"));
+const packageVersion = packageJson.version;
+const releaseVersion = packageVersion;
+const releaseDate = generatedDate;
 const installFolder = ".vnem";
 const installArchiveName = "install.tgz";
 const defaultInstallBaseUrl = "https://raw.githubusercontent.com/naellisim/vnem/main/public";
@@ -40,6 +45,16 @@ const intentAliases = {
   swarms: ["swarm", "multi-agent", "handoffs", "parallel", "orchestration"],
   "context engineering": ["context", "memory", "instructions", "retrieval", "agents.md", "claude.md", "state"],
   "claude memory": ["claude code", "memory", "claude.md", "imports", "project instructions"],
+  "claude md": ["claude.md", "claude code", "memory", "project instructions", "context engineering"],
+  "agents md": ["agents.md", "codex", "repository instructions", "context engineering", "coding-agent"],
+  "codex config": ["codex", "agents.md", "mcp", "config.toml", "repository instructions", "context engineering"],
+  "agent workspace": ["autonomous developer environment", "mcp gateway", "tool routing", "memory bank", "agents.md", "claude.md", "roo code", "cline"],
+  "mcp gateway": ["mcp", "gateway", "tool routing", "discovery control", "policy", "least privilege", "lunar mcpx", "microsoft mcp gateway"],
+  "one mcp": ["mcp gateway", "tool routing", "gateway", "aggregation", "policy", "catalog"],
+  "tool routing": ["mcp gateway", "routing", "tool discovery", "tool exposure", "permissions", "policy"],
+  "memory bank": ["memory", "context", "persistent memory", "decision log", "active context", "roo code", "cline"],
+  "roo code": ["roo code", "custom modes", "agent modes", "cline", "mcp", "memory bank"],
+  "agent modes": ["custom modes", "roo code", "cline", "architect mode", "code mode", "debug mode", "permissions"],
   "mcp servers": ["mcp", "model context protocol", "tools", "resources", "prompts", "permissions"],
   observability: ["tracing", "observability", "telemetry", "spans", "evals", "runs"],
   "human in the loop": ["approval", "review", "checkpoint", "rollback", "interrupt", "durable execution"],
@@ -56,6 +71,60 @@ const intentAliases = {
 };
 
 const intentRoutes = {
+  "mcp gateway": {
+    read_first: ["practice:mcp-gateway-tool-routing", "practice:mcp-server-selection", "practice:security"],
+    compare_options: ["No gateway with a small MCP set", "Lunar MCPX", "Microsoft MCP Gateway", "Managed control plane"],
+    choose_by: ["tool count", "auth and audit requirements", "deployment environment", "least-privilege policy", "session/routing needs"],
+    report: ["vnem intents searched", "top matches", "choice", "why", "permission risks"]
+  },
+  "one mcp": {
+    read_first: ["practice:mcp-gateway-tool-routing", "practice:mcp-server-selection", "practice:security"],
+    compare_options: ["curated small server list", "gateway aggregation", "role-scoped catalogs"],
+    choose_by: ["context budget", "tool discovery size", "user approval flow", "secret handling", "rollback path"],
+    report: ["vnem intents searched", "top matches", "choice", "why", "permission risks"]
+  },
+  "tool routing": {
+    read_first: ["practice:mcp-gateway-tool-routing", "practice:security"],
+    compare_options: ["static client config", "role-scoped gateway routing", "task-scoped tool catalogs"],
+    choose_by: ["agent role", "task intent", "permissions", "auditability", "blast radius"],
+    report: ["vnem intents searched", "top matches", "choice", "why"]
+  },
+  "memory bank": {
+    read_first: ["practice:persistent-memory-context-files", "practice:context-engineering", "practice:codex-vnem-setup"],
+    compare_options: ["AGENTS.md", "CLAUDE.md", "repo-local memory bank", "tool-specific rules and modes"],
+    choose_by: ["agent client", "team maintenance capacity", "secret risk", "context volatility", "need for decision history"],
+    report: ["vnem intents searched", "top matches", "choice", "why"]
+  },
+  "roo code": {
+    read_first: ["practice:ide-agent-selection", "practice:persistent-memory-context-files", "practice:mcp-gateway-tool-routing"],
+    compare_options: ["Roo Code", "Cline", "Cursor Agent", "Claude Code", "Codex"],
+    choose_by: ["editor fit", "custom mode needs", "BYOM needs", "approval model", "upstream maintenance status"],
+    report: ["vnem intents searched", "top matches", "choice", "why", "source uncertainty"]
+  },
+  "agent modes": {
+    read_first: ["practice:ide-agent-selection", "practice:persistent-memory-context-files", "practice:security"],
+    compare_options: ["single generalist agent", "planning/code/debug modes", "specialist subagents", "gateway-scoped roles"],
+    choose_by: ["tool permissions", "task phase", "context budget", "reviewability", "risk of over-broad tools"],
+    report: ["vnem intents searched", "top matches", "choice", "why"]
+  },
+  "codex config": {
+    read_first: ["practice:codex-vnem-setup", "practice:persistent-memory-context-files", "practice:mcp-gateway-tool-routing"],
+    compare_options: ["AGENTS.md", "Codex MCP config", "vnem read-only MCP", "project-local prompt patterns"],
+    choose_by: ["repository scope", "needed tools", "verification commands", "approval boundary", "secrets policy"],
+    report: ["vnem intents searched", "top matches", "choice", "why"]
+  },
+  "claude md": {
+    read_first: ["practice:persistent-memory-context-files", "practice:ide-agent-selection", "practice:context-engineering"],
+    compare_options: ["CLAUDE.md", "AGENTS.md", "tool-specific memory bank", "local untracked overrides"],
+    choose_by: ["agent client", "shared versus local instructions", "secrets policy", "maintenance cadence"],
+    report: ["vnem intents searched", "top matches", "choice", "why"]
+  },
+  "agent workspace": {
+    read_first: ["practice:codex-vnem-setup", "practice:mcp-gateway-tool-routing", "practice:persistent-memory-context-files", "practice:ide-agent-selection"],
+    compare_options: ["read-only guidance only", "small direct MCP set", "gateway-controlled MCP workspace", "IDE agent plus terminal agent"],
+    choose_by: ["repository risk", "tool permissions", "agent client", "audit needs", "how often context changes"],
+    report: ["vnem intents searched", "top matches", "choice", "why", "remaining uncertainty"]
+  },
   "browser game": {
     read_first: ["practice:browser-games", "practice:frontend", "practice:evals"],
     compare_options: ["Canvas with Vite or a tiny static server", "Phaser", "PixiJS", "Excalibur", "KAPLAY", "Three.js", "Babylon.js", "PlayCanvas"],
@@ -145,10 +214,112 @@ const intentRoutes = {
     compare_options: ["delete unreachable code", "collapse duplication", "extract only proven shared concepts", "replace custom code with existing local helpers", "defer dependency changes until justified"],
     choose_by: ["feature preservation evidence", "test coverage", "runtime behavior", "readability after change", "diff size"],
     report: ["vnem intents searched", "top matches", "choice", "why"]
+  },
+  "minimal code": {
+    read_first: ["practice:code-simplification", "practice:code-review", "practice:evals"],
+    compare_options: ["delete proven waste", "reuse existing helpers", "collapse duplication", "defer abstractions"],
+    choose_by: ["behavior preservation", "public API stability", "test evidence", "reviewability"],
+    report: ["vnem intents searched", "top matches", "choice", "why"]
+  },
+  "professional code": {
+    read_first: ["practice:code-simplification", "practice:code-review", "practice:evals"],
+    compare_options: ["small behavior-preserving refactor", "dependency audit", "dead-code cleanup", "repo-native conventions"],
+    choose_by: ["maintainability", "behavior evidence", "team conventions", "test coverage"],
+    report: ["vnem intents searched", "top matches", "choice", "why"]
+  },
+  refactor: {
+    read_first: ["practice:code-simplification", "practice:code-review", "practice:evals"],
+    compare_options: ["small manual refactor", "AST-aware codemod", "dead-code audit", "duplicate-code cleanup"],
+    choose_by: ["blast radius", "test coverage", "public API stability", "call-site count"],
+    report: ["vnem intents searched", "top matches", "choice", "why"]
+  },
+  "dead code": {
+    read_first: ["practice:code-simplification", "practice:code-review", "practice:evals"],
+    compare_options: ["lexical search", "unused export checks", "dependency checks", "duplicate-code checks"],
+    choose_by: ["static evidence", "runtime reachability", "test coverage", "delete safety"],
+    report: ["vnem intents searched", "top matches", "choice", "why"]
   }
 };
 
 const bestPracticeSections = [
+  {
+    id: "mcp-gateway-tool-routing",
+    title: "MCP Gateway And Tool Routing",
+    score: 20,
+    summary: "Use MCP gateways as a policy, discovery, routing, and observability layer only when the agent would otherwise see too many tools or credentials directly.",
+    keywords: ["mcp gateway", "one mcp", "tool routing", "discovery control", "least privilege", "policy", "lunar mcpx", "microsoft mcp gateway", "catalog"],
+    sources: [
+      "https://modelcontextprotocol.io/docs/getting-started/intro",
+      "https://modelcontextprotocol.io/specification/2025-11-25/basic/security_best_practices",
+      "https://docs.lunar.dev/mcpx/architecture",
+      "https://github.com/microsoft/mcp-gateway"
+    ],
+    practices: [
+      "Start with a small direct MCP server set; add a gateway when tool discovery, authentication, policy, logging, or routing becomes hard to govern.",
+      "Expose tools by role and task intent instead of broadcasting every server schema to the model.",
+      "Keep high-risk tools behind explicit policy: repositories, browsers, databases, payments, filesystem writes, deployments, and production data.",
+      "Centralize audit logs, credential propagation, and rate limits at the gateway when multiple agents or teams share tool access.",
+      "Treat gateway catalog recommendations as architecture guidance; do not ship gateway daemons, secrets, or runnable configs from a read-only knowledge pack."
+    ]
+  },
+  {
+    id: "persistent-memory-context-files",
+    title: "Persistent Memory And Context Files",
+    score: 16,
+    summary: "Put stable project facts in versioned instruction files, keep volatile task state separate, and review memory for secrets, stale assumptions, and repeated failed approaches.",
+    keywords: ["memory bank", "persistent memory", "context files", "agents.md", "claude.md", "decision log", "active context", "roo code", "cline"],
+    sources: [
+      "https://developers.openai.com/codex/guides/agents-md",
+      "https://docs.anthropic.com/en/docs/claude-code/memory",
+      "https://github.com/Bhartendu-Kumar/rules_template"
+    ],
+    practices: [
+      "Use `AGENTS.md` for Codex-facing repository instructions: commands, conventions, scope, and safety boundaries.",
+      "Use `CLAUDE.md` for Claude Code memory when that client is active, and separate shared project instructions from local machine overrides.",
+      "Add a memory bank only when the team will maintain it; stale active context is worse than a short instruction file.",
+      "Record architectural decisions and abandoned approaches so agents do not repeat known dead ends.",
+      "Never store secrets, credentials, private customer data, or unverified claims in durable agent memory."
+    ]
+  },
+  {
+    id: "ide-agent-selection",
+    title: "IDE Agent Selection",
+    score: 15,
+    summary: "Choose coding agents by editor fit, approval model, model routing, MCP support, maintenance status, and the repo's need for autonomous multi-file changes.",
+    keywords: ["ide agent", "coding agents", "roo code", "cline", "cursor agent", "claude code", "codex", "byom", "agent modes"],
+    sources: [
+      "https://docs.cursor.com/agent/overview",
+      "https://docs.cline.bot/introduction/overview",
+      "https://docs.anthropic.com/en/docs/claude-code/overview",
+      "https://developers.openai.com/codex"
+    ],
+    practices: [
+      "Use source-backed product capabilities rather than unsourced benchmark claims when comparing agents.",
+      "Prefer strong human approval flows for agents that can edit files, run shell commands, or mutate repositories.",
+      "Use BYOM or OpenRouter-style routing only when the client supports it and the task can tolerate model variability.",
+      "Treat archived or community-maintained forks as watchlist options until maintenance and security posture are clear.",
+      "Evaluate agents on one real repository workflow: plan quality, file selection, diffs, verification behavior, and recovery from failed tests."
+    ]
+  },
+  {
+    id: "codex-vnem-setup",
+    title: "Codex/VNEM Setup",
+    score: 15,
+    summary: "For Codex-based workspaces, keep vnem read-only, load `AGENTS.md` instructions, expose MCP resources deliberately, and use generated guidance before installing tools.",
+    keywords: ["codex config", "codex", "vnem", "agents.md", "mcp resources", "agent workspace", "prompt patterns", "read-only knowledge pack"],
+    sources: [
+      "https://developers.openai.com/codex/guides/agents-md",
+      "https://platform.openai.com/docs/docs-mcp",
+      "https://github.com/openai/codex"
+    ],
+    practices: [
+      "Keep `AGENTS.md` concise and repository-specific: commands, conventions, verification, and approval boundaries.",
+      "Read `.vnem/agent-workspace.md` before designing a new autonomous developer environment.",
+      "Expose vnem through MCP as read-only resources and tools; use it for recommendation context, not for installation or mutation.",
+      "Prefer generated prompt patterns for recurring architecture, gateway, memory, and implementation prompts.",
+      "Ask before adding MCP servers, editing client config, installing packages, using secrets, or starting daemons."
+    ]
+  },
   {
     id: "frontend",
     title: "Frontend And UI",
@@ -482,6 +653,220 @@ const bestPracticeSections = [
   }
 ];
 
+const operatingProtocol = {
+  id: "vnem-operating-loop",
+  title: "vnem Operating Loop",
+  summary:
+    "A universal read-only operating protocol for coding agents: sense the repo, route task context, choose the smallest sufficient capability, constrain risk, verify with evidence, and report residual uncertainty.",
+  loop: [
+    {
+      step: "Sense",
+      instruction:
+        "Inspect the repository, existing instructions, manifests, scripts, tests, current stack, and risk surface before recommending tools or changing code."
+    },
+    {
+      step: "Route",
+      instruction:
+        "Classify the task mode and intent, expand aliases from the search index, and read only the matching rubric, route, best-practice notes, and high-signal entries."
+    },
+    {
+      step: "Choose",
+      instruction:
+        "Prefer existing project patterns and the smallest sufficient source-backed tool or framework; compare trust tier, source confidence, freshness, license clarity, permissions, and reversibility."
+    },
+    {
+      step: "Constrain",
+      instruction:
+        "State scope, non-goals, approval gates, and risky operations before mutation; keep installs, secrets, browsers, databases, deployments, payments, and production writes behind explicit approval."
+    },
+    {
+      step: "Build/Review/Debug",
+      instruction:
+        "Use the task mode to work in small coherent steps: implement, review, debug, plan, or produce a prompt artifact without drifting into unrelated refactors."
+    },
+    {
+      step: "Verify",
+      instruction:
+        "Run the strongest reasonable local checks; use tests, fixtures, type checks, screenshots, browser interaction, or structured evidence depending on the task."
+    },
+    {
+      step: "Report",
+      instruction:
+        "Summarize changed or recommended surfaces, vnem intent and matches, verification evidence, approval needs, source-trust uncertainty, and residual risk."
+    }
+  ],
+  default_contract: {
+    modes: ["build", "review", "plan", "debug", "prompt", "decision"],
+    approval_gates: [
+      "installing packages or changing dependency managers",
+      "editing agent, MCP, CI, deployment, database, browser, wallet, payment, or secret configuration",
+      "using credentials, secrets, paid APIs, production data, or external services",
+      "starting daemons, deploying, purchasing, or performing irreversible writes"
+    ],
+    verification: [
+      "inspect local project instructions and manifests",
+      "run the narrowest relevant check first",
+      "run broader tests or builds when blast radius justifies it",
+      "for UI or canvas work, verify in a real browser with desktop and mobile evidence",
+      "report checks that could not run and why"
+    ],
+    report: [
+      "vnem intents searched",
+      "top matches and chosen rubric",
+      "choice and why",
+      "verification evidence",
+      "approval gates and residual uncertainty"
+    ]
+  }
+};
+
+const taskRubrics = [
+  {
+    id: "frontend_ui",
+    title: "Frontend UI",
+    summary:
+      "Build usable, accessible, responsive interfaces that match the product workflow and existing design system before adding decorative complexity.",
+    modes: ["build", "review"],
+    intents: ["better ui", "frontend", "ui", "design", "react", "tailwind", "dashboard", "landing page", "prototype"],
+    read_first: ["practice:frontend", "practice:evals"],
+    quality_bar: [
+      "primary user workflow is usable on the first screen",
+      "layout is responsive and text fits on mobile and desktop",
+      "accessibility basics are present: labels, contrast, focus states, and usable target sizes",
+      "visual verification is performed for meaningful UI changes"
+    ],
+    approval_gates: ["adding UI frameworks or design-system dependencies", "calling paid design or image services"],
+    verification: ["run project UI checks if present", "open the local page/app", "capture or inspect desktop and mobile states"],
+    output_contract: ["changed UI surface", "stack/library choice", "visual verification evidence", "known responsive or accessibility risk"]
+  },
+  {
+    id: "backend_api",
+    title: "Backend API",
+    summary:
+      "Keep APIs boring, typed, observable, and narrow enough that agents can verify behavior without guessing about auth or data side effects.",
+    modes: ["build", "debug", "review"],
+    intents: ["backend api", "backend", "api", "server", "database", "auth", "postgres", "runtime"],
+    read_first: ["practice:backend", "practice:security", "practice:evals"],
+    quality_bar: [
+      "request and response boundaries are typed or validated",
+      "auth, permissions, and data mutation paths are explicit",
+      "errors are structured enough for callers and agents to diagnose",
+      "tests or fixtures cover changed behavior"
+    ],
+    approval_gates: ["database writes or migrations", "auth policy changes", "production data access", "new network services"],
+    verification: ["run focused API tests or fixtures", "run type/lint checks when present", "verify error paths for changed behavior"],
+    output_contract: ["API surface changed", "data/auth risk", "verification evidence", "migration or rollout notes if any"]
+  },
+  {
+    id: "refactor",
+    title: "Refactor And Simplification",
+    summary:
+      "Preserve behavior first, then delete proven waste, collapse duplication, simplify control flow, and reuse local abstractions before adding new ones.",
+    modes: ["build", "review"],
+    intents: ["code simplification", "code compaction", "minimal code", "professional code", "refactor", "dead code", "duplication"],
+    read_first: ["practice:code-simplification", "practice:code-review", "practice:evals"],
+    quality_bar: [
+      "public APIs, data formats, and user-visible behavior remain stable unless explicitly requested",
+      "deletions are backed by search, tests, or static evidence",
+      "diff is small enough to review",
+      "focused and broad checks are run according to blast radius"
+    ],
+    approval_gates: ["changing public APIs or data formats", "large rewrites", "dependency replacement", "deleting code without reachability evidence"],
+    verification: ["inspect call sites and tests", "run focused tests first", "run broader project checks after shared behavior changes"],
+    output_contract: ["behavior preserved", "what was simplified", "evidence for deletion/refactor", "verification results"]
+  },
+  {
+    id: "agent_tooling",
+    title: "Agent Tooling",
+    summary:
+      "Choose MCP servers, skills, agents, gateways, and prompt tooling as permissioned capabilities with provenance, least privilege, and reviewable setup.",
+    modes: ["decision", "plan", "review"],
+    intents: ["agent", "mcp", "mcp servers", "mcp gateway", "one mcp", "tool routing", "coding agents", "codex config", "agent workspace"],
+    read_first: ["practice:agent-tooling", "practice:mcp-server-selection", "practice:mcp-gateway-tool-routing", "practice:security"],
+    quality_bar: [
+      "tool choice is tied to one concrete workflow",
+      "permissions and environment variables are called out",
+      "official or high-confidence sources are preferred for sensitive resources",
+      "gateway or memory complexity is justified by governance needs"
+    ],
+    approval_gates: ["installing MCP servers", "editing client config", "using secrets", "starting daemons", "giving agents write access"],
+    verification: ["compare source trust and permissions", "verify the client can expose only intended tools", "record unknown install/runtime risk"],
+    output_contract: ["recommended capability", "why it is needed", "permission risks", "approval and verification path"]
+  },
+  {
+    id: "data_memory",
+    title: "Data And Memory",
+    summary:
+      "Keep durable agent memory short, factual, reviewed, and separate from volatile task state or sensitive data.",
+    modes: ["plan", "review", "decision"],
+    intents: ["memory", "memory bank", "context engineering", "claude memory", "claude md", "agents md", "data", "persistence"],
+    read_first: ["practice:persistent-memory-context-files", "practice:context-engineering", "practice:data", "practice:security"],
+    quality_bar: [
+      "stable project facts are separated from temporary task notes",
+      "decision history is recorded only when it prevents repeated mistakes",
+      "secrets and private data stay out of durable memory",
+      "memory review or reset cadence is explicit"
+    ],
+    approval_gates: ["writing durable memory files", "storing sensitive data", "connecting memory services", "using cross-project memory"],
+    verification: ["inspect existing instruction files", "check for secret leakage", "confirm owner and update cadence"],
+    output_contract: ["what to store", "where to store it", "what to avoid", "review cadence"]
+  },
+  {
+    id: "security_sensitive",
+    title: "Security Sensitive Work",
+    summary:
+      "Treat security, auth, secrets, payments, production data, deployments, browsers, and databases as high-risk surfaces requiring explicit boundaries and evidence.",
+    modes: ["build", "review", "debug", "decision"],
+    intents: ["security", "auth", "secrets", "payments", "wallet", "database", "deployment", "production", "browser", "permissions"],
+    read_first: ["practice:security", "practice:human-approval-and-durability", "practice:evals"],
+    quality_bar: [
+      "sensitive resources and mutation paths are named",
+      "least privilege and rollback are considered before action",
+      "external side effects are approval-gated",
+      "logs or reports avoid exposing secrets"
+    ],
+    approval_gates: ["using secrets", "touching production data", "deploying", "making purchases", "changing auth or permission policy"],
+    verification: ["run local checks without secrets where possible", "verify rollback or recovery path", "report untested risk plainly"],
+    output_contract: ["risk surface", "approval required", "verification evidence", "remaining uncertainty"]
+  },
+  {
+    id: "docs_prompt",
+    title: "Docs And Prompts",
+    summary:
+      "Turn rough instructions, docs, and prompts into operational artifacts with goal, context, constraints, output contract, and verification criteria.",
+    modes: ["prompt", "plan", "review"],
+    intents: ["prompt engineering", "prompt enhancer", "codex prompt", "prompt optimizer", "docs", "documentation", "instructions"],
+    read_first: ["practice:prompt-engineering", "prompt-pattern:prompt-enhancement", "prompt-pattern:codex-implementation"],
+    quality_bar: [
+      "original intent is preserved",
+      "missing inputs that materially change the outcome are named",
+      "output format and non-goals are explicit",
+      "verification criteria are included for objective or risky tasks"
+    ],
+    approval_gates: ["turning guidance into executable config", "adding external tools", "embedding secrets or private data in prompts"],
+    verification: ["check prompt against desired output contract", "include a compact version when useful", "state missing inputs"],
+    output_contract: ["enhanced artifact", "compact version if requested", "what changed", "missing inputs"]
+  },
+  {
+    id: "interactive_canvas",
+    title: "Interactive Canvas And Games",
+    summary:
+      "Deliver real playability or interaction: responsive rendering, input mapping, state transitions, visual feedback, restart/error states, and real-browser verification.",
+    modes: ["build", "debug", "review"],
+    intents: ["browser game", "web game", "html5 game", "canvas game", "2d game", "3d game", "game physics", "game ui", "canvas performance"],
+    read_first: ["practice:browser-games", "practice:frontend", "practice:evals"],
+    quality_bar: [
+      "the experience is playable or interactive, not only visually present",
+      "input works across relevant desktop and mobile controls",
+      "start, win/loss, pause/restart, and error states are explicit where relevant",
+      "canvas or animation output is verified in a real browser"
+    ],
+    approval_gates: ["adding heavy engines or binary assets", "using paid asset services", "fetching remote media", "introducing audio/autoplay behavior"],
+    verification: ["serve locally", "confirm nonblank rendering", "simulate or manually perform core input", "check state transition and restart", "inspect mobile viewport"],
+    output_contract: ["chosen rendering/game stack", "core interaction built", "browser verification evidence", "known device/performance risk"]
+  }
+];
+
 const promptPatterns = [
   {
     id: "prompt-enhancement",
@@ -767,6 +1152,88 @@ const promptPatterns = [
       "- What to avoid.",
       "- Review cadence."
     ].join("\n")
+  },
+  {
+    id: "agent-workspace-architecture",
+    title: "Agent Workspace Architecture Prompt",
+    intents: ["agent workspace", "autonomous developer environment", "coding agents", "codex config"],
+    summary: "Prompt for designing a read-only-first autonomous developer workspace with agent choice, MCP routing, memory, and verification boundaries.",
+    output_modes: ["architecture_plan", "risk_register"],
+    template: [
+      "Design an autonomous developer workspace for this repository.",
+      "",
+      "Goal:",
+      "<what the agent environment should help builders do>",
+      "",
+      "Constraints:",
+      "- Keep the first version read-only unless a maintainer approves mutations.",
+      "- Separate knowledge/catalog guidance from runtime daemons or gateway implementations.",
+      "- Identify secrets, database, browser, repository, filesystem, and deployment risks.",
+      "",
+      "Evaluate:",
+      "- Coding agent client and approval model.",
+      "- MCP servers and whether a gateway is justified.",
+      "- Persistent memory files and update cadence.",
+      "- Verification commands and rollback path.",
+      "",
+      "Output:",
+      "- Recommended architecture.",
+      "- Minimal first setup.",
+      "- Deferred capabilities.",
+      "- Risks and required approvals."
+    ].join("\n")
+  },
+  {
+    id: "mcp-gateway-evaluation",
+    title: "MCP Gateway Evaluation Prompt",
+    intents: ["mcp gateway", "one mcp", "tool routing", "mcp servers"],
+    summary: "Prompt for deciding whether an MCP gateway is needed and which routing, policy, and observability requirements matter.",
+    output_modes: ["gateway_recommendation"],
+    template: [
+      "Evaluate MCP gateway options for this agent workspace.",
+      "",
+      "Current tools:",
+      "<MCP servers, clients, credentials, and high-risk operations>",
+      "",
+      "Decision criteria:",
+      "- Does the agent see too many tools or schemas?",
+      "- Are credentials, policies, logs, or rate limits hard to manage directly?",
+      "- Which tools need role-scoped or task-scoped exposure?",
+      "- Can the team operate a gateway safely?",
+      "",
+      "Output:",
+      "- Gateway needed or not needed.",
+      "- Options to compare.",
+      "- Least-privilege routing plan.",
+      "- Risks, unknowns, and next verification steps."
+    ].join("\n")
+  },
+  {
+    id: "memory-bank-initialization",
+    title: "Memory Bank Initialization Prompt",
+    intents: ["memory bank", "agent modes", "roo code", "cline", "claude md"],
+    summary: "Prompt for creating durable agent memory without storing secrets or stale task state.",
+    output_modes: ["memory_bank_plan"],
+    template: [
+      "Initialize persistent agent memory for this project.",
+      "",
+      "Inputs:",
+      "- Repository purpose and architecture.",
+      "- Stable commands and verification steps.",
+      "- Current task state, blockers, and decisions.",
+      "",
+      "Rules:",
+      "- Store durable project facts separately from temporary session notes.",
+      "- Include a decision log for major choices and rejected approaches.",
+      "- Do not store secrets, credentials, private data, or unsourced claims.",
+      "- Define when memory should be reviewed or reset.",
+      "",
+      "Output:",
+      "- Proposed files.",
+      "- Contents for each file.",
+      "- Update protocol.",
+      "- Risks and maintenance notes."
+    ].join("\n")
   }
 ];
 
@@ -1039,7 +1506,61 @@ function buildSearchDocuments(entries) {
     keywords: unique(textTokens([section.title, section.summary, ...section.keywords, ...section.practices].join(" "))).slice(0, 120)
   }));
 
-  return [...promptDocs, ...practiceDocs, ...entryDocs].sort((a, b) => b.score - a.score || a.title.localeCompare(b.title));
+  const rubricDocs = taskRubrics.map((rubric) => ({
+    id: `task-rubric:${rubric.id}`,
+    kind: "task-rubric",
+    title: rubric.title,
+    summary: rubric.summary,
+    url_path: "/install/task-rubrics.json",
+    trust_tier: "verified",
+    type: "task-rubric",
+    score: 14,
+    tags: rubric.intents,
+    use_cases: rubric.quality_bar,
+    best_for: rubric.output_contract,
+    risk_flags: [],
+    source_urls: [installFileUrl("task-rubrics.json")],
+    keywords: unique(textTokens([
+      rubric.id,
+      rubric.title,
+      rubric.summary,
+      ...rubric.modes,
+      ...rubric.intents,
+      ...rubric.quality_bar,
+      ...rubric.approval_gates,
+      ...rubric.verification,
+      ...rubric.output_contract
+    ].join(" "))).slice(0, 120)
+  }));
+
+  const operatingDocs = [
+    {
+      id: `operating-protocol:${operatingProtocol.id}`,
+      kind: "operating-protocol",
+      title: operatingProtocol.title,
+      summary: operatingProtocol.summary,
+      url_path: "/install/operating-protocol.md",
+      trust_tier: "verified",
+      type: "operating-protocol",
+      score: 15,
+      tags: ["operating protocol", "agent contract", "task contract", "verification", "approval", "context routing"],
+      use_cases: operatingProtocol.loop.map((item) => item.instruction),
+      best_for: operatingProtocol.default_contract.report,
+      risk_flags: [],
+      source_urls: [installFileUrl("operating-protocol.md")],
+      keywords: unique(textTokens([
+        operatingProtocol.title,
+        operatingProtocol.summary,
+        ...operatingProtocol.loop.flatMap((item) => [item.step, item.instruction]),
+        ...operatingProtocol.default_contract.modes,
+        ...operatingProtocol.default_contract.approval_gates,
+        ...operatingProtocol.default_contract.verification,
+        ...operatingProtocol.default_contract.report
+      ].join(" "))).slice(0, 120)
+    }
+  ];
+
+  return [...operatingDocs, ...rubricDocs, ...promptDocs, ...practiceDocs, ...entryDocs].sort((a, b) => b.score - a.score || a.title.localeCompare(b.title));
 }
 
 function buildInvertedIndex(documents) {
@@ -1074,6 +1595,73 @@ function bestPracticesMarkdown() {
       ""
     ])
   ].join("\n");
+}
+
+function operatingProtocolMarkdown() {
+  return [
+    "# vnem Operating Protocol",
+    "",
+    `Generated: ${generatedAt}`,
+    "",
+    operatingProtocol.summary,
+    "",
+    "## Safety Boundary",
+    "",
+    "- This file is read-only guidance.",
+    "- Do not treat it as a script, runtime config, gateway definition, memory daemon, or install recipe.",
+    "- Use it to shape a compact task contract before choosing tools or changing code.",
+    "",
+    "## Universal Loop",
+    "",
+    ...operatingProtocol.loop.flatMap((item, index) => [
+      `${index + 1}. **${item.step}**`,
+      `   ${item.instruction}`
+    ]),
+    "",
+    "## Task Contract",
+    "",
+    "For nontrivial tasks, produce or internally follow a compact task contract:",
+    "",
+    "- Mode: build, review, plan, debug, prompt, or decision.",
+    "- Intent and route: matching intent alias, route, rubric, and read-first documents.",
+    "- Smallest sufficient capability: existing project pattern first, then source-backed tool only if justified.",
+    "- Approval gates: actions that need explicit user consent before mutation or external side effects.",
+    "- Verification: the strongest reasonable local evidence for this task class.",
+    "- Final report: vnem intent, top matches, choice, evidence, uncertainty, and residual risk.",
+    "",
+    "## Default Approval Gates",
+    "",
+    ...operatingProtocol.default_contract.approval_gates.map((item) => `- ${item}`),
+    "",
+    "## Default Verification",
+    "",
+    ...operatingProtocol.default_contract.verification.map((item) => `- ${item}`),
+    "",
+    "## Relationship To Other vnem Files",
+    "",
+    "- Use `.vnem/task-rubrics.json` to choose the broad quality bar for the task.",
+    "- Use `.vnem/search-index.json` to route intents and retrieve source-backed entries.",
+    "- Use `.vnem/best-practices.md` after routing, not as a wall of generic context.",
+    "- Use `.vnem/agent-workspace.md` only for autonomous developer environment choices such as MCP gateways, memory files, agent clients, or mode systems.",
+    ""
+  ].join("\n");
+}
+
+function taskRubricsJson() {
+  return {
+    generated_at: generatedAt,
+    schema_version: "1.0.0",
+    safety: {
+      mode: "read-only-task-rubrics",
+      executes_code: false,
+      installs_packages: false,
+      starts_daemons: false,
+      requires_secrets: false
+    },
+    purpose:
+      "Broad task rubrics for producing compact agent task contracts across common coding-agent workflows without maintaining narrow playbooks.",
+    rubrics: taskRubrics
+  };
 }
 
 function promptPatternsJson() {
@@ -1221,8 +1809,11 @@ function agentsMarkdown() {
     "",
     "## Files To Read",
     "",
+    "- `.vnem/operating-protocol.md`: universal loop for sensing the repo, routing context, choosing small capabilities, constraining risk, verifying, and reporting evidence.",
+    "- `.vnem/task-rubrics.json`: broad task rubrics used to shape the quality bar, approval gates, verification checklist, and final report.",
     "- `.vnem/search-index.json`: compact local search index for tools, skills, MCP servers, and best-practice notes.",
     "- `.vnem/best-practices.md`: current guidance by project area.",
+    "- `.vnem/agent-workspace.md`: autonomous developer environment guide covering MCP gateways, memory files, agent modes, and Codex/VNEM setup.",
     "- `.vnem/prompt-engineering.md`: prompt enhancement protocol and Codex-oriented prompt guidance.",
     "- `.vnem/prompt-patterns.json`: machine-readable prompt patterns for common agent tasks.",
     "",
@@ -1236,13 +1827,17 @@ function agentsMarkdown() {
     "",
     "## Decision Search Protocol",
     "",
-    "1. Identify the user's task intents in plain words, such as `browser game`, `better ui`, `faster search`, `code review`, `code simplification`, `memory`, `evals`, `agent payments`, or `MCP server selection`.",
-    "2. Read `.vnem/search-index.json` and expand those intents with `intent_aliases`.",
-    "3. Check `intent_routes` for the closest matching task. Read the listed `read_first` documents before choosing a stack.",
-    "4. Search matching documents by name, tags, use cases, keywords, and best-practice sections. Read `.vnem/best-practices.md` for any matching section.",
-    "5. Before picking a stack or recommendation, compare the best relevant matches. Prefer higher `score`, stronger `source_confidence`, fresher `freshness`, clearer licenses, and fewer `risk_flags`.",
-    "6. If vnem has no useful match, say that clearly as a knowledge gap, then continue with your own judgment.",
-    "7. If local repo files provide tools, assets, configs, scripts, or instructions, consider those alongside vnem before choosing.",
+    "1. Read `.vnem/operating-protocol.md` and classify the task mode: `build`, `review`, `plan`, `debug`, `prompt`, or `decision`.",
+    "2. Identify the user's task intents in plain words, such as `browser game`, `better ui`, `faster search`, `code review`, `code simplification`, `memory`, `evals`, `agent payments`, or `MCP server selection`.",
+    "3. Read `.vnem/search-index.json` and expand those intents with `intent_aliases`.",
+    "4. Select the matching broad rubric from `.vnem/task-rubrics.json` and use its quality bar, approval gates, verification checklist, and output contract.",
+    "5. Check `intent_routes` for the closest matching task. Read the listed `read_first` documents before choosing a stack.",
+    "6. Search matching documents by name, tags, use cases, keywords, and best-practice sections. Read `.vnem/best-practices.md` only for matching sections.",
+    "7. Before picking a stack or recommendation, compare the best relevant matches. Prefer higher `score`, stronger `source_confidence`, fresher `freshness`, clearer licenses, fewer `risk_flags`, and the smallest sufficient capability.",
+    "8. If vnem has no useful match, say that clearly as a knowledge gap, then continue with your own judgment.",
+    "9. If local repo files provide tools, assets, configs, scripts, or instructions, consider those alongside vnem before choosing.",
+    "",
+    "For nontrivial tasks, follow a compact task contract: `mode`, `intent`, `rubric`, `read first`, `smallest sufficient capability`, `approval gates`, `verification`, and `final report`.",
     "",
     "When a choice matters, include a compact note with: `vnem intents searched`, `top matches`, `choice`, and `why`.",
     "",
@@ -1286,6 +1881,77 @@ function agentsMarkdown() {
   ].join("\n");
 }
 
+function agentWorkspaceMarkdown() {
+  return [
+    "# Agent Workspace",
+    "",
+    "Generated read-only guidance for designing an autonomous developer environment with vnem.",
+    "",
+    "## Safety Boundary",
+    "",
+    "- This file is guidance only.",
+    "- Do not treat it as a gateway config, daemon script, credential template, or install recipe.",
+    "- Ask before adding MCP servers, editing agent config, using secrets, starting services, or giving an agent write access.",
+    "",
+    "## Recommended Default",
+    "",
+    "Start with a small, readable setup: Codex or another coding agent, repository-local instructions, the vnem read-only pack, and only the MCP servers required for the current workflow.",
+    "",
+    "Add gateways, memory banks, browser sessions, database access, and repository mutation tools only after the team can name the approval path and rollback plan.",
+    "",
+    "## MCP Gateway And Tool Routing",
+    "",
+    "Use a gateway when a direct MCP setup becomes hard to govern: too many tool schemas, repeated credential setup, missing audit logs, or different roles needing different tool catalogs.",
+    "",
+    "Evaluate gateways by these questions:",
+    "",
+    "- Which tools must be visible to this agent role right now?",
+    "- Which tools can mutate repositories, databases, browsers, deployments, payments, or files?",
+    "- Where are credentials stored and how are they scoped?",
+    "- Can the gateway log requests, enforce rate limits, and narrow discovery responses?",
+    "- Is the team ready to operate the gateway, or is a smaller direct MCP list safer?",
+    "",
+    "Use the registry entries for Lunar MCPX, Microsoft MCP Gateway, official GitHub MCP Server, Supabase MCP, Qdrant MCP, OpenTabs, and Crawl4AI RAG as catalog guidance before changing runtime config.",
+    "",
+    "## Persistent Memory And Context Files",
+    "",
+    "Keep durable memory short, factual, and reviewed.",
+    "",
+    "- Codex: use `AGENTS.md` for repository purpose, commands, conventions, verification, and approval boundaries.",
+    "- Claude Code: use `CLAUDE.md` for Claude-specific project memory and keep local machine overrides out of shared files.",
+    "- Roo/Cline-style workflows: use mode rules or a memory bank only when maintainers will keep active context and decision logs current.",
+    "- Store architectural decisions and rejected approaches when repeating the same mistake would be costly.",
+    "- Keep secrets, credentials, private customer data, and unverified research out of memory files.",
+    "",
+    "## IDE Agent Selection",
+    "",
+    "Choose agents by fit rather than hype. Compare editor workflow, approval model, model routing, MCP support, maintenance status, terminal behavior, and how well the agent verifies changes in this repository.",
+    "",
+    "Use Cursor Agent when editor-native multi-file work and Cursor rules are the main workflow. Use Cline or similar VS Code agents when explicit approvals and model flexibility matter. Treat Roo Code and community mode libraries as watchlist inputs when upstream maintenance is unclear. Use Claude Code or Codex when terminal-native repo work, command verification, and explicit project memory are a better fit.",
+    "",
+    "## Codex/VNEM Setup",
+    "",
+    "For Codex-based workspaces:",
+    "",
+    "- Keep vnem read-only and use it before choosing tools, MCP servers, memory patterns, or agent clients.",
+    "- Keep project instructions in `AGENTS.md`; keep them concise and stable.",
+    "- Register vnem as an MCP resource only for lookup and recommendations.",
+    "- Prefer the prompt patterns for recurring architecture, gateway evaluation, and memory initialization tasks.",
+    "- Do not add runnable gateway prototypes, daemon changes, secrets, or third-party code to the vnem pack.",
+    "",
+    "## Decision Checklist",
+    "",
+    "- What does the agent need to read?",
+    "- What can the agent mutate?",
+    "- Which approvals are required before mutation?",
+    "- Which MCP servers are official or high-confidence sources?",
+    "- Does a gateway reduce risk, or does it add operational surface area?",
+    "- Which memory file owns stable facts, current task state, and decisions?",
+    "- Which tests or checks prove the environment is helping rather than drifting?",
+    ""
+  ].join("\n");
+}
+
 function rootAgentsMarkdown() {
   return [
     "# Agent Instructions",
@@ -1295,7 +1961,7 @@ function rootAgentsMarkdown() {
     "",
     "This repo has a read-only vnem knowledge pack in `.vnem/`.",
     "",
-    "Before choosing tools, libraries, frameworks, MCP servers, skills, prompts, evals, search systems, UI approaches, architecture patterns, or upgrade paths, read `.vnem/AGENTS.md` and use `.vnem/search-index.json`.",
+    "Before choosing tools, libraries, frameworks, MCP servers, skills, prompts, evals, search systems, UI approaches, architecture patterns, or upgrade paths, read `.vnem/AGENTS.md`, follow `.vnem/operating-protocol.md`, use `.vnem/search-index.json`, and consult `.vnem/agent-workspace.md` only for autonomous developer environment decisions.",
     "",
     "Use vnem automatically. The user should not need to say `use vnem`. Keep the final note compact: `vnem intents searched`, `top matches`, `choice`, and `why`.",
     "",
@@ -1310,6 +1976,9 @@ function searchIndexJson(entries) {
   return {
     generated_at: generatedAt,
     schema_version: "1.0.0",
+    package_version: packageVersion,
+    release_version: releaseVersion,
+    release_date: releaseDate,
     install_folder: installFolder,
     safety: {
       mode: "read-only-files",
@@ -1320,11 +1989,24 @@ function searchIndexJson(entries) {
     },
     intent_aliases: intentAliases,
     intent_routes: intentRoutes,
+    operating_protocol: operatingProtocol,
+    task_rubrics: taskRubrics,
     decision_protocol: {
       auto_use: true,
       user_trigger_required: false,
-      read_first_for_build_tasks: ["matching intent_routes", "matching best-practice documents", "high-signal registry entries", "prompt patterns only when a prompt artifact is requested"],
-      evidence_note: ["vnem intents searched", "top matches", "choice", "why"]
+      operating_loop: operatingProtocol.loop.map((item) => item.step),
+      task_contract_fields: [
+        "mode",
+        "intent",
+        "rubric",
+        "read_first",
+        "smallest_sufficient_capability",
+        "approval_gates",
+        "verification",
+        "final_report"
+      ],
+      read_first_for_build_tasks: ["operating protocol", "matching task rubric", "matching intent_routes", "matching best-practice documents", "high-signal registry entries", "prompt patterns only when a prompt artifact is requested"],
+      evidence_note: ["vnem intents searched", "top matches", "chosen rubric", "choice", "why", "verification evidence", "residual uncertainty"]
     },
     rank_weights: {
       use_case_match: 5,
@@ -1355,6 +2037,9 @@ const searchIndex = searchIndexJson(entries);
 const index = {
   generated_at: generatedAt,
   schema_version: "1.0.0",
+  package_version: packageVersion,
+  release_version: releaseVersion,
+  release_date: releaseDate,
   entry_count: entries.length,
   install_command: installCommand,
   install_archive: `/${installArchiveName}`,
@@ -1367,6 +2052,8 @@ const index = {
   use_cases: useCases,
   intent_aliases: intentAliases,
   intent_routes: intentRoutes,
+  operating_protocol: operatingProtocol,
+  task_rubrics: taskRubrics,
   decision_protocol: searchIndex.decision_protocol,
   entries
 };
@@ -1390,7 +2077,7 @@ const llmsTxt = [
   "",
   `Safe install command: ${installCommand}`,
   "",
-  "Installed files: .vnem/AGENTS.md, .vnem/search-index.json, .vnem/best-practices.md, .vnem/prompt-engineering.md, .vnem/prompt-patterns.json",
+  "Installed files: .vnem/AGENTS.md, .vnem/operating-protocol.md, .vnem/task-rubrics.json, .vnem/search-index.json, .vnem/best-practices.md, .vnem/agent-workspace.md, .vnem/prompt-engineering.md, .vnem/prompt-patterns.json",
   "Canonical API: /api/index.json",
   "Agent instructions: /install/AGENTS.md",
   "Full index: /llms-full.txt",
@@ -1439,15 +2126,21 @@ const llmsFull = [
 ].join("\n");
 
 const bestPractices = bestPracticesMarkdown();
+const operatingProtocolMarkdownData = operatingProtocolMarkdown();
+const taskRubricData = taskRubricsJson();
 const promptPatternData = promptPatternsJson();
 const promptEngineering = promptEngineeringMarkdown(promptPatternData);
+const agentWorkspace = agentWorkspaceMarkdown();
 const agentInstructions = agentsMarkdown();
 const rootAgentInstructions = rootAgentsMarkdown();
 const archive = installArchive({
   "AGENTS.md": `${rootAgentInstructions}\n`,
   [`${installFolder}/AGENTS.md`]: `${agentInstructions}\n`,
+  [`${installFolder}/operating-protocol.md`]: `${operatingProtocolMarkdownData}\n`,
+  [`${installFolder}/task-rubrics.json`]: jsonText(taskRubricData),
   [`${installFolder}/search-index.json`]: jsonText(searchIndex),
   [`${installFolder}/best-practices.md`]: `${bestPractices}\n`,
+  [`${installFolder}/agent-workspace.md`]: `${agentWorkspace}\n`,
   [`${installFolder}/prompt-engineering.md`]: `${promptEngineering}\n`,
   [`${installFolder}/prompt-patterns.json`]: jsonText(promptPatternData)
 });
@@ -1455,13 +2148,19 @@ const archive = installArchive({
 await writeJson(path.join(ROOT, "public", "api", "index.json"), index);
 await writeJson(path.join(ROOT, "public", "install", "search-index.json"), searchIndex);
 await writeJson(path.join(ROOT, installFolder, "search-index.json"), searchIndex);
+await writeJson(path.join(ROOT, "public", "install", "task-rubrics.json"), taskRubricData);
+await writeJson(path.join(ROOT, installFolder, "task-rubrics.json"), taskRubricData);
 await writeJson(path.join(ROOT, "public", "install", "prompt-patterns.json"), promptPatternData);
 await writeJson(path.join(ROOT, installFolder, "prompt-patterns.json"), promptPatternData);
 await writeBytes(path.join(ROOT, "public", installArchiveName), archive);
 await writeText(path.join(ROOT, "public", "install", "AGENTS.md"), `${agentInstructions}\n`);
 await writeText(path.join(ROOT, installFolder, "AGENTS.md"), `${agentInstructions}\n`);
+await writeText(path.join(ROOT, "public", "install", "operating-protocol.md"), `${operatingProtocolMarkdownData}\n`);
+await writeText(path.join(ROOT, installFolder, "operating-protocol.md"), `${operatingProtocolMarkdownData}\n`);
 await writeText(path.join(ROOT, "public", "install", "best-practices.md"), `${bestPractices}\n`);
 await writeText(path.join(ROOT, installFolder, "best-practices.md"), `${bestPractices}\n`);
+await writeText(path.join(ROOT, "public", "install", "agent-workspace.md"), `${agentWorkspace}\n`);
+await writeText(path.join(ROOT, installFolder, "agent-workspace.md"), `${agentWorkspace}\n`);
 await writeText(path.join(ROOT, "public", "install", "prompt-engineering.md"), `${promptEngineering}\n`);
 await writeText(path.join(ROOT, installFolder, "prompt-engineering.md"), `${promptEngineering}\n`);
 await writeText(path.join(ROOT, "llms.txt"), `${llmsTxt}\n`);

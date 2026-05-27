@@ -1,0 +1,63 @@
+schema_version: 1.0.0
+homepage_url: https://github.com/Bhartendu-Kumar/rules_template
+repo_url: https://github.com/Bhartendu-Kumar/rules_template
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: Bhartendu Kumar
+source_kind: github
+protocols: []
+clients:
+  - Cursor
+  - Cline
+  - Roo Code
+  - Windsurf
+install:
+  command: null
+  notes: >-
+    Review the upstream docs, permissions, pricing, environment variables, and transport before
+    installing.
+  config_example: null
+permissions:
+  - filesystem
+env_vars: []
+tags:
+  - memory-bank
+  - rules
+  - cline
+  - roo-code
+  - cursor
+  - windsurf
+  - context-engineering
+use_cases:
+  - Bootstrap a persistent memory bank for coding agents
+  - Share rule files across multiple IDE agents
+  - Separate planning, implementation, and documentation instructions
+best_for:
+  - Teams willing to maintain agent memory files and review rule changes like code
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: medium
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags:
+  - license-not-asserted
+  - community-maintained
+  - stale-memory-risk
+  - can-overconstrain-agents
+recommended_when:
+  - Use as a pattern source, then copy only the minimal ideas that match the repository's workflow.
+trust_tier: unreviewed
+review_status: manual-reviewed
+last_checked: '2026-05-27'
+slug: rules-template-memory-bank
+name: Rules Template Memory Bank
+type: memory
+summary_llm: >-
+  Rules Template is a community rule and memory-bank template for Cursor, Cline, Roo Code, and
+  Windsurf that organizes agent instructions, workflow phases, and persistent project context.
+source_urls:
+  - https://github.com/Bhartendu-Kumar/rules_template

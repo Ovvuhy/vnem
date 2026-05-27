@@ -32,10 +32,11 @@ In a clean project folder, this extracts:
 - `.vnem/AGENTS.md`
 - `.vnem/search-index.json`
 - `.vnem/best-practices.md`
+- `.vnem/agent-workspace.md`
 - `.vnem/prompt-engineering.md`
 - `.vnem/prompt-patterns.json`
 
-`AGENTS.md` points coding agents to `.vnem/AGENTS.md`, the full agent entrypoint. Once an agent has read it, the user should not need special `use vnem` prompts: vnem auto-activates for build, review, optimization, research, benchmark, and stack/tool decision tasks.
+`AGENTS.md` points coding agents to `.vnem/AGENTS.md`, the full agent entrypoint, plus `.vnem/agent-workspace.md` for autonomous developer environment guidance. Once an agent has read it, the user should not need special `use vnem` prompts: vnem auto-activates for build, review, optimization, research, benchmark, and stack/tool decision tasks.
 
 For existing repos with their own `AGENTS.md`, prefer the CLI installer below because it updates a managed vnem block instead of replacing the whole file.
 

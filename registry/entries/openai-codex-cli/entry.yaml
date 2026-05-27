@@ -52,7 +52,7 @@ recommended_when:
     changes.
 trust_tier: promising
 review_status: manual-reviewed
-last_checked: '2026-05-26'
+last_checked: '2026-05-27'
 slug: openai-codex-cli
 name: OpenAI Codex CLI
 type: coding-agent

@@ -41,7 +41,7 @@ recommended_when:
   - Use when prompt improvement should be measured instead of judged by vibes.
 trust_tier: verified
 review_status: manual-reviewed
-last_checked: '2026-05-26'
+last_checked: '2026-05-27'
 slug: openai-prompt-optimizer
 name: OpenAI Prompt Optimizer
 type: eval

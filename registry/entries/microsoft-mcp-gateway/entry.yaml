@@ -1,0 +1,68 @@
+schema_version: 1.0.0
+homepage_url: https://github.com/microsoft/mcp-gateway
+repo_url: https://github.com/microsoft/mcp-gateway
+package_urls: []
+licenses:
+  - MIT
+copyright_owner: Microsoft
+source_kind: github
+protocols:
+  - MCP
+clients:
+  - MCP clients
+  - VS Code
+  - Azure
+install:
+  command: null
+  notes: >-
+    Review the upstream docs, permissions, pricing, environment variables, and transport before
+    installing.
+  config_example: null
+permissions:
+  - network
+  - cloud
+env_vars:
+  - AZURE_CLIENT_ID
+  - AZURE_TENANT_ID
+tags:
+  - mcp
+  - gateway
+  - kubernetes
+  - azure
+  - routing
+  - session-aware
+  - reverse-proxy
+use_cases:
+  - Route MCP traffic through a managed gateway layer
+  - Operate MCP servers in Kubernetes-oriented environments
+  - Centralize session-aware MCP server lifecycle management
+best_for:
+  - Teams already operating Azure or Kubernetes infrastructure for agent tooling
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: official
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags:
+  - cloud-configuration-risk
+  - requires-identity-setup
+  - gateway-operational-risk
+recommended_when:
+  - >-
+    Use when MCP routing must be governed in a cloud-native environment with explicit identity and
+    lifecycle controls.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-27'
+slug: microsoft-mcp-gateway
+name: Microsoft MCP Gateway
+type: orchestration
+summary_llm: >-
+  Microsoft MCP Gateway is a reverse proxy and management layer for MCP servers focused on scalable,
+  session-aware, stateful routing and lifecycle management in Kubernetes and Azure-oriented
+  environments.
+source_urls:
+  - https://github.com/microsoft/mcp-gateway

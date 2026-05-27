@@ -1,6 +1,6 @@
 # vnem Daily Signals
 
-Generated: 2026-05-27T08:21:22.907Z
+Generated: 2026-05-27T16:15:51.305Z
 
 This digest is designed for maintainers. It summarizes source-backed candidates and stable best-practice signals; it does not auto-promote entries into the registry.
 
@@ -10,14 +10,14 @@ This digest is designed for maintainers. It summarizes source-backed candidates 
 
 ## Best-practice Signals
 
+- MCP Gateway And Tool Routing: Use MCP gateways as a policy, discovery, routing, and observability layer only when the agent would otherwise see too many tools or credentials directly.
 - Code Simplification And Minimal Refactors: Simplify code by preserving behavior first, deleting proven waste, reducing duplication, and using the project's existing abstractions before introducing new ones.
 - Browser Games And Interactive Canvas: For browser-native games, choose the lightest proven stack that can deliver real playability: responsive rendering, input, rules, state transitions, visible feedback, accessible UI, and browser-verified behavior.
+- Persistent Memory And Context Files: Put stable project facts in versioned instruction files, keep volatile task state separate, and review memory for secrets, stale assumptions, and repeated failed approaches.
+- Codex/VNEM Setup: For Codex-based workspaces, keep vnem read-only, load `AGENTS.md` instructions, expose MCP resources deliberately, and use generated guidance before installing tools.
+- IDE Agent Selection: Choose coding agents by editor fit, approval model, model routing, MCP support, maintenance status, and the repo's need for autonomous multi-file changes.
 - Agent Tooling: Treat MCP servers, skills, prompts, and tools as versioned capabilities with provenance, permission notes, and review status.
 - Backend And APIs: Use boring, observable APIs with typed boundaries, explicit auth, and generated clients when agents need reliable integration points.
-- Code Review And Upgrade Audits: Project-review agents should inspect manifests, framework configs, dependency age, security posture, and available drop-in improvements before proposing code changes.
-- Coding Agents: Give repository-editing agents tight scope, strong local context, explicit approval boundaries, and fast verification loops before trusting broader autonomy.
-- Context Engineering: Treat instructions, memory files, retrieval, and artifacts as the agent's working environment; prune noise and make durable context explicit.
-- Data And Memory: Use memory and data connectors only when they improve repeated work, and keep scopes narrow enough for users to reason about.
 
 ## Watchlist / Risk Flags
 
@@ -47,4 +47,4 @@ This digest is designed for maintainers. It summarizes source-backed candidates 
 - Review the discovery PR before merging.
 - Promote candidates only after checking source links, license posture, permissions, and install docs.
 - Keep X, Reddit, and social ingestion disabled unless official credentials and terms-compliant access are configured.
-- If the local pack changed, verify `AGENTS.md`, `search-index.json`, and `best-practices.md` still describe read-only behavior.
+- If the local pack changed, verify `AGENTS.md`, `search-index.json`, `best-practices.md`, and `agent-workspace.md` still describe read-only behavior.

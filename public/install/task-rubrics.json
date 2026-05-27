@@ -1,0 +1,402 @@
+{
+  "generated_at": "2026-05-27T16:15:49.891Z",
+  "schema_version": "1.0.0",
+  "safety": {
+    "mode": "read-only-task-rubrics",
+    "executes_code": false,
+    "installs_packages": false,
+    "starts_daemons": false,
+    "requires_secrets": false
+  },
+  "purpose": "Broad task rubrics for producing compact agent task contracts across common coding-agent workflows without maintaining narrow playbooks.",
+  "rubrics": [
+    {
+      "id": "frontend_ui",
+      "title": "Frontend UI",
+      "summary": "Build usable, accessible, responsive interfaces that match the product workflow and existing design system before adding decorative complexity.",
+      "modes": [
+        "build",
+        "review"
+      ],
+      "intents": [
+        "better ui",
+        "frontend",
+        "ui",
+        "design",
+        "react",
+        "tailwind",
+        "dashboard",
+        "landing page",
+        "prototype"
+      ],
+      "read_first": [
+        "practice:frontend",
+        "practice:evals"
+      ],
+      "quality_bar": [
+        "primary user workflow is usable on the first screen",
+        "layout is responsive and text fits on mobile and desktop",
+        "accessibility basics are present: labels, contrast, focus states, and usable target sizes",
+        "visual verification is performed for meaningful UI changes"
+      ],
+      "approval_gates": [
+        "adding UI frameworks or design-system dependencies",
+        "calling paid design or image services"
+      ],
+      "verification": [
+        "run project UI checks if present",
+        "open the local page/app",
+        "capture or inspect desktop and mobile states"
+      ],
+      "output_contract": [
+        "changed UI surface",
+        "stack/library choice",
+        "visual verification evidence",
+        "known responsive or accessibility risk"
+      ]
+    },
+    {
+      "id": "backend_api",
+      "title": "Backend API",
+      "summary": "Keep APIs boring, typed, observable, and narrow enough that agents can verify behavior without guessing about auth or data side effects.",
+      "modes": [
+        "build",
+        "debug",
+        "review"
+      ],
+      "intents": [
+        "backend api",
+        "backend",
+        "api",
+        "server",
+        "database",
+        "auth",
+        "postgres",
+        "runtime"
+      ],
+      "read_first": [
+        "practice:backend",
+        "practice:security",
+        "practice:evals"
+      ],
+      "quality_bar": [
+        "request and response boundaries are typed or validated",
+        "auth, permissions, and data mutation paths are explicit",
+        "errors are structured enough for callers and agents to diagnose",
+        "tests or fixtures cover changed behavior"
+      ],
+      "approval_gates": [
+        "database writes or migrations",
+        "auth policy changes",
+        "production data access",
+        "new network services"
+      ],
+      "verification": [
+        "run focused API tests or fixtures",
+        "run type/lint checks when present",
+        "verify error paths for changed behavior"
+      ],
+      "output_contract": [
+        "API surface changed",
+        "data/auth risk",
+        "verification evidence",
+        "migration or rollout notes if any"
+      ]
+    },
+    {
+      "id": "refactor",
+      "title": "Refactor And Simplification",
+      "summary": "Preserve behavior first, then delete proven waste, collapse duplication, simplify control flow, and reuse local abstractions before adding new ones.",
+      "modes": [
+        "build",
+        "review"
+      ],
+      "intents": [
+        "code simplification",
+        "code compaction",
+        "minimal code",
+        "professional code",
+        "refactor",
+        "dead code",
+        "duplication"
+      ],
+      "read_first": [
+        "practice:code-simplification",
+        "practice:code-review",
+        "practice:evals"
+      ],
+      "quality_bar": [
+        "public APIs, data formats, and user-visible behavior remain stable unless explicitly requested",
+        "deletions are backed by search, tests, or static evidence",
+        "diff is small enough to review",
+        "focused and broad checks are run according to blast radius"
+      ],
+      "approval_gates": [
+        "changing public APIs or data formats",
+        "large rewrites",
+        "dependency replacement",
+        "deleting code without reachability evidence"
+      ],
+      "verification": [
+        "inspect call sites and tests",
+        "run focused tests first",
+        "run broader project checks after shared behavior changes"
+      ],
+      "output_contract": [
+        "behavior preserved",
+        "what was simplified",
+        "evidence for deletion/refactor",
+        "verification results"
+      ]
+    },
+    {
+      "id": "agent_tooling",
+      "title": "Agent Tooling",
+      "summary": "Choose MCP servers, skills, agents, gateways, and prompt tooling as permissioned capabilities with provenance, least privilege, and reviewable setup.",
+      "modes": [
+        "decision",
+        "plan",
+        "review"
+      ],
+      "intents": [
+        "agent",
+        "mcp",
+        "mcp servers",
+        "mcp gateway",
+        "one mcp",
+        "tool routing",
+        "coding agents",
+        "codex config",
+        "agent workspace"
+      ],
+      "read_first": [
+        "practice:agent-tooling",
+        "practice:mcp-server-selection",
+        "practice:mcp-gateway-tool-routing",
+        "practice:security"
+      ],
+      "quality_bar": [
+        "tool choice is tied to one concrete workflow",
+        "permissions and environment variables are called out",
+        "official or high-confidence sources are preferred for sensitive resources",
+        "gateway or memory complexity is justified by governance needs"
+      ],
+      "approval_gates": [
+        "installing MCP servers",
+        "editing client config",
+        "using secrets",
+        "starting daemons",
+        "giving agents write access"
+      ],
+      "verification": [
+        "compare source trust and permissions",
+        "verify the client can expose only intended tools",
+        "record unknown install/runtime risk"
+      ],
+      "output_contract": [
+        "recommended capability",
+        "why it is needed",
+        "permission risks",
+        "approval and verification path"
+      ]
+    },
+    {
+      "id": "data_memory",
+      "title": "Data And Memory",
+      "summary": "Keep durable agent memory short, factual, reviewed, and separate from volatile task state or sensitive data.",
+      "modes": [
+        "plan",
+        "review",
+        "decision"
+      ],
+      "intents": [
+        "memory",
+        "memory bank",
+        "context engineering",
+        "claude memory",
+        "claude md",
+        "agents md",
+        "data",
+        "persistence"
+      ],
+      "read_first": [
+        "practice:persistent-memory-context-files",
+        "practice:context-engineering",
+        "practice:data",
+        "practice:security"
+      ],
+      "quality_bar": [
+        "stable project facts are separated from temporary task notes",
+        "decision history is recorded only when it prevents repeated mistakes",
+        "secrets and private data stay out of durable memory",
+        "memory review or reset cadence is explicit"
+      ],
+      "approval_gates": [
+        "writing durable memory files",
+        "storing sensitive data",
+        "connecting memory services",
+        "using cross-project memory"
+      ],
+      "verification": [
+        "inspect existing instruction files",
+        "check for secret leakage",
+        "confirm owner and update cadence"
+      ],
+      "output_contract": [
+        "what to store",
+        "where to store it",
+        "what to avoid",
+        "review cadence"
+      ]
+    },
+    {
+      "id": "security_sensitive",
+      "title": "Security Sensitive Work",
+      "summary": "Treat security, auth, secrets, payments, production data, deployments, browsers, and databases as high-risk surfaces requiring explicit boundaries and evidence.",
+      "modes": [
+        "build",
+        "review",
+        "debug",
+        "decision"
+      ],
+      "intents": [
+        "security",
+        "auth",
+        "secrets",
+        "payments",
+        "wallet",
+        "database",
+        "deployment",
+        "production",
+        "browser",
+        "permissions"
+      ],
+      "read_first": [
+        "practice:security",
+        "practice:human-approval-and-durability",
+        "practice:evals"
+      ],
+      "quality_bar": [
+        "sensitive resources and mutation paths are named",
+        "least privilege and rollback are considered before action",
+        "external side effects are approval-gated",
+        "logs or reports avoid exposing secrets"
+      ],
+      "approval_gates": [
+        "using secrets",
+        "touching production data",
+        "deploying",
+        "making purchases",
+        "changing auth or permission policy"
+      ],
+      "verification": [
+        "run local checks without secrets where possible",
+        "verify rollback or recovery path",
+        "report untested risk plainly"
+      ],
+      "output_contract": [
+        "risk surface",
+        "approval required",
+        "verification evidence",
+        "remaining uncertainty"
+      ]
+    },
+    {
+      "id": "docs_prompt",
+      "title": "Docs And Prompts",
+      "summary": "Turn rough instructions, docs, and prompts into operational artifacts with goal, context, constraints, output contract, and verification criteria.",
+      "modes": [
+        "prompt",
+        "plan",
+        "review"
+      ],
+      "intents": [
+        "prompt engineering",
+        "prompt enhancer",
+        "codex prompt",
+        "prompt optimizer",
+        "docs",
+        "documentation",
+        "instructions"
+      ],
+      "read_first": [
+        "practice:prompt-engineering",
+        "prompt-pattern:prompt-enhancement",
+        "prompt-pattern:codex-implementation"
+      ],
+      "quality_bar": [
+        "original intent is preserved",
+        "missing inputs that materially change the outcome are named",
+        "output format and non-goals are explicit",
+        "verification criteria are included for objective or risky tasks"
+      ],
+      "approval_gates": [
+        "turning guidance into executable config",
+        "adding external tools",
+        "embedding secrets or private data in prompts"
+      ],
+      "verification": [
+        "check prompt against desired output contract",
+        "include a compact version when useful",
+        "state missing inputs"
+      ],
+      "output_contract": [
+        "enhanced artifact",
+        "compact version if requested",
+        "what changed",
+        "missing inputs"
+      ]
+    },
+    {
+      "id": "interactive_canvas",
+      "title": "Interactive Canvas And Games",
+      "summary": "Deliver real playability or interaction: responsive rendering, input mapping, state transitions, visual feedback, restart/error states, and real-browser verification.",
+      "modes": [
+        "build",
+        "debug",
+        "review"
+      ],
+      "intents": [
+        "browser game",
+        "web game",
+        "html5 game",
+        "canvas game",
+        "2d game",
+        "3d game",
+        "game physics",
+        "game ui",
+        "canvas performance"
+      ],
+      "read_first": [
+        "practice:browser-games",
+        "practice:frontend",
+        "practice:evals"
+      ],
+      "quality_bar": [
+        "the experience is playable or interactive, not only visually present",
+        "input works across relevant desktop and mobile controls",
+        "start, win/loss, pause/restart, and error states are explicit where relevant",
+        "canvas or animation output is verified in a real browser"
+      ],
+      "approval_gates": [
+        "adding heavy engines or binary assets",
+        "using paid asset services",
+        "fetching remote media",
+        "introducing audio/autoplay behavior"
+      ],
+      "verification": [
+        "serve locally",
+        "confirm nonblank rendering",
+        "simulate or manually perform core input",
+        "check state transition and restart",
+        "inspect mobile viewport"
+      ],
+      "output_contract": [
+        "chosen rendering/game stack",
+        "core interaction built",
+        "browser verification evidence",
+        "known device/performance risk"
+      ]
+    }
+  ]
+}

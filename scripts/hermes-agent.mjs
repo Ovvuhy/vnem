@@ -567,7 +567,7 @@ async function writeHermesDigest(report) {
     "- Review Hermes candidate reports before merging.",
     "- Promote candidates only after checking source links, license posture, permissions, and install docs.",
     "- Keep social ingestion disabled unless official credentials and terms-compliant access are configured.",
-    "- If generated pack files changed, verify `AGENTS.md`, `search-index.json`, and `best-practices.md` still describe read-only behavior.",
+    "- If generated pack files changed, verify `AGENTS.md`, `search-index.json`, `best-practices.md`, and `agent-workspace.md` still describe read-only behavior.",
     ""
   ];
 

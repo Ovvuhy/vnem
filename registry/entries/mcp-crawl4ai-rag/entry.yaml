@@ -1,0 +1,77 @@
+schema_version: 1.0.0
+homepage_url: https://github.com/coleam00/mcp-crawl4ai-rag
+repo_url: https://github.com/coleam00/mcp-crawl4ai-rag
+package_urls: []
+licenses:
+  - MIT
+copyright_owner: coleam00
+source_kind: github
+protocols:
+  - MCP
+  - SSE
+clients:
+  - Claude Desktop
+  - Claude Code
+  - Windsurf
+  - MCP clients
+install:
+  command: null
+  notes: >-
+    Review the upstream docs, permissions, pricing, environment variables, and transport before
+    installing.
+  config_example: null
+permissions:
+  - network
+  - database
+env_vars:
+  - OPENAI_API_KEY
+  - SUPABASE_URL
+  - SUPABASE_SERVICE_KEY
+  - NEO4J_URI
+  - NEO4J_USER
+  - NEO4J_PASSWORD
+tags:
+  - mcp
+  - rag
+  - crawl4ai
+  - web-crawling
+  - supabase
+  - vector-search
+  - documentation
+  - knowledge-graph
+use_cases:
+  - Crawl documentation and retrieve relevant chunks for coding agents
+  - Create a project-specific RAG store for external docs
+  - Search code examples extracted from crawled documentation
+best_for:
+  - >-
+    Experimental documentation RAG workflows where network, database, and embedding costs are
+    acceptable
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: medium
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags:
+  - community-maintained
+  - requires-secrets
+  - external-crawling
+  - database-access
+  - can-ingest-third-party-content
+recommended_when:
+  - Use as a reviewed RAG experiment, not as default runtime infrastructure for sensitive repos.
+trust_tier: unreviewed
+review_status: manual-reviewed
+last_checked: '2026-05-27'
+slug: mcp-crawl4ai-rag
+name: Crawl4AI RAG MCP Server
+type: mcp-server
+summary_llm: >-
+  Crawl4AI RAG MCP Server combines web crawling, content chunking, Supabase vector storage, semantic
+  retrieval, optional code-example search, reranking, and optional knowledge-graph features for
+  agent documentation lookup.
+source_urls:
+  - https://github.com/coleam00/mcp-crawl4ai-rag

@@ -41,7 +41,7 @@ recommended_when:
   - Use when a prompt is vague, underspecified, hard to evaluate, or missing an output contract.
 trust_tier: verified
 review_status: manual-reviewed
-last_checked: '2026-05-26'
+last_checked: '2026-05-27'
 slug: openai-prompt-engineering-guide
 name: OpenAI Prompt Engineering Guide
 type: workflow

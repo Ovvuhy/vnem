@@ -145,10 +145,12 @@ function registerTools(mcpServer) {
       const registryEntries = matches.filter((match) => match.kind === "registry-entry").slice(0, limit);
       const practices = relevantPracticeDocs(task, intent, 6);
       const route = intent?.route || null;
+      const taskContract = buildTaskContract(task, intent, route, practices, registryEntries);
       const recommendation = {
         task,
         intent,
         route,
+        task_contract: taskContract,
         registry_entries: registryEntries,
         read_first: practices,
         decision_protocol: searchIndex.decision_protocol || null,
@@ -263,11 +265,38 @@ function registerResources(mcpServer) {
   );
   registerFileResource(
     mcpServer,
+    "vnem-operating-protocol",
+    "vnem://install/operating-protocol",
+    firstExisting(["public/install/operating-protocol.md", ".vnem/operating-protocol.md"]),
+    "vnem Operating Protocol",
+    "Generated universal operating loop for producing compact coding-agent task contracts.",
+    "text/markdown"
+  );
+  registerFileResource(
+    mcpServer,
+    "vnem-task-rubrics",
+    "vnem://install/task-rubrics",
+    firstExisting(["public/install/task-rubrics.json", ".vnem/task-rubrics.json"]),
+    "vnem Task Rubrics",
+    "Generated broad task rubrics for agent quality bars, approval gates, verification, and reporting.",
+    "application/json"
+  );
+  registerFileResource(
+    mcpServer,
     "vnem-best-practices",
     "vnem://install/best-practices",
     firstExisting(["public/install/best-practices.md", ".vnem/best-practices.md"]),
     "vnem Best Practices",
     "Generated best-practice notes for agents.",
+    "text/markdown"
+  );
+  registerFileResource(
+    mcpServer,
+    "vnem-agent-workspace",
+    "vnem://install/agent-workspace",
+    firstExisting(["public/install/agent-workspace.md", ".vnem/agent-workspace.md"]),
+    "vnem Agent Workspace",
+    "Generated guidance for autonomous developer environments, MCP gateways, memory files, and agent modes.",
     "text/markdown"
   );
   registerFileResource(
@@ -464,6 +493,104 @@ function relevantPracticeDocs(query, intent, limit) {
   return merged.slice(0, limit);
 }
 
+function buildTaskContract(task, intent, route, readFirst, registryEntries) {
+  const mode = inferTaskMode(task);
+  const rubrics = selectTaskRubrics(task, intent, mode);
+  const rubricIds = new Set(rubrics.flatMap((rubric) => rubric.read_first || []));
+  const readFirstIds = uniqueStrings([
+    ...rubrics.map((rubric) => `task-rubric:${rubric.id}`),
+    ...(route?.read_first || []),
+    ...readFirst.map((doc) => doc.id).filter(Boolean),
+    ...registryEntries.slice(0, 3).map((entry) => entry.id).filter(Boolean)
+  ]);
+  const approvalGates = uniqueStrings([
+    ...(searchIndex.operating_protocol?.default_contract?.approval_gates || []),
+    ...rubrics.flatMap((rubric) => rubric.approval_gates || [])
+  ]);
+  const verification = uniqueStrings([
+    ...(searchIndex.operating_protocol?.default_contract?.verification || []),
+    ...rubrics.flatMap((rubric) => rubric.verification || [])
+  ]);
+  const finalReport = uniqueStrings([
+    ...(searchIndex.operating_protocol?.default_contract?.report || []),
+    ...rubrics.flatMap((rubric) => rubric.output_contract || [])
+  ]);
+
+  return compactObject({
+    mode,
+    intent: intent?.name || null,
+    rubric: rubrics.map((rubric) => ({
+      id: rubric.id,
+      title: rubric.title,
+      summary: rubric.summary,
+      quality_bar: rubric.quality_bar || []
+    })),
+    route: route
+      ? {
+          read_first: route.read_first || [],
+          compare_options: route.compare_options || [],
+          choose_by: route.choose_by || []
+        }
+      : null,
+    read_first: readFirstIds,
+    smallest_sufficient_capability: route?.compare_options?.length
+      ? `Prefer existing project patterns first; if a new capability is needed, compare: ${route.compare_options.join("; ")}.`
+      : "Prefer existing project patterns first; add the smallest source-backed tool only when local code cannot satisfy the task cleanly.",
+    choose_by: uniqueStrings([...(route?.choose_by || []), ...rubrics.flatMap((rubric) => rubric.quality_bar || [])]),
+    approval_gates: approvalGates,
+    verification,
+    final_report: finalReport,
+    safety:
+      "vnem is read-only guidance. Do not install tools, mutate config, use secrets, call external services, or start daemons because of this recommendation without explicit user approval.",
+    matched_rubric_read_first: [...rubricIds]
+  });
+}
+
+function inferTaskMode(task) {
+  const text = normalize(task);
+  if (/\b(prompt|rewrite|improve|harden|template|instructions?)\b/.test(text)) return "prompt";
+  if (/\b(debug|fix failing|failing test|error|stack trace|regression|diagnose|root cause)\b/.test(text)) return "debug";
+  if (/\b(review|audit|assess|inspect|critique|find bugs|pr review)\b/.test(text)) return "review";
+  if (/\b(plan|design|architect|architecture|proposal|strategy|policy)\b/.test(text)) return "plan";
+  if (/\b(choose|select|compare|recommend|evaluate|which|best|decide)\b/.test(text)) return "decision";
+  return "build";
+}
+
+function selectTaskRubrics(task, intent, mode) {
+  const rubrics = Array.isArray(searchIndex.task_rubrics) ? searchIndex.task_rubrics : [];
+  const queryTerms = new Set(tokenize([task, intent?.name, ...(intent?.aliases || [])].join(" ")));
+  const routeIds = new Set(intent?.route?.read_first || []);
+  const scored = rubrics
+    .map((rubric) => {
+      const haystack = [
+        rubric.id,
+        rubric.title,
+        rubric.summary,
+        ...(rubric.intents || []),
+        ...(rubric.modes || []),
+        ...(rubric.read_first || []),
+        ...(rubric.quality_bar || [])
+      ].map(normalize);
+      let score = rubric.modes?.includes(mode) ? 6 : 0;
+      for (const term of queryTerms) {
+        if (haystack.some((item) => item.includes(term))) score += 2;
+      }
+      for (const id of rubric.read_first || []) {
+        if (routeIds.has(id)) score += 5;
+      }
+      return { rubric, score };
+    })
+    .filter(({ score }) => score > 0)
+    .sort((a, b) => b.score - a.score || a.rubric.id.localeCompare(b.rubric.id));
+
+  if (scored.length) {
+    return scored.slice(0, 2).map(({ rubric }) => rubric);
+  }
+
+  const fallback = rubrics.find((rubric) => rubric.id === "agent_tooling") || rubrics[0];
+  return fallback ? [fallback] : [];
+}
+
 function scoreDocument(document, terms, queryText, intent) {
   const title = normalize(document.title);
   const summary = normalize(document.summary);
@@ -494,8 +621,9 @@ function scoreDocument(document, terms, queryText, intent) {
 
   if (intent) {
     const relatedTerms = tokenize([intent.name, ...(intent.aliases || [])].join(" "));
-    if (intent.route?.read_first?.includes(document.id)) {
-      score += 40;
+    const routeIndex = intent.route?.read_first?.indexOf(document.id) ?? -1;
+    if (routeIndex >= 0) {
+      score += Math.max(50 - routeIndex * 10, 20);
     }
     for (const term of relatedTerms) {
       if (tags.some((tag) => tag.includes(term))) score += 3;
@@ -638,6 +766,12 @@ function formatRecommendation(recommendation) {
   if (recommendation.route?.choose_by?.length) {
     lines.push(`Choose by: ${recommendation.route.choose_by.join("; ")}`);
   }
+  if (recommendation.task_contract) {
+    lines.push(`Mode: ${recommendation.task_contract.mode}`);
+    if (recommendation.task_contract.rubric?.length) {
+      lines.push(`Rubric: ${recommendation.task_contract.rubric.map((rubric) => rubric.id).join(", ")}`);
+    }
+  }
 
   lines.push("", "Top registry matches:");
   if (recommendation.registry_entries.length) {
@@ -655,6 +789,17 @@ function formatRecommendation(recommendation) {
     }
   } else {
     lines.push("- No matching best-practice notes found.");
+  }
+
+  if (recommendation.task_contract) {
+    lines.push("", "Task contract:");
+    lines.push(`- Smallest sufficient capability: ${recommendation.task_contract.smallest_sufficient_capability}`);
+    if (recommendation.task_contract.approval_gates?.length) {
+      lines.push(`- Approval gates: ${recommendation.task_contract.approval_gates.slice(0, 5).join("; ")}`);
+    }
+    if (recommendation.task_contract.verification?.length) {
+      lines.push(`- Verification: ${recommendation.task_contract.verification.slice(0, 5).join("; ")}`);
+    }
   }
 
   lines.push("", `Safety: ${recommendation.safety}`);
@@ -779,6 +924,10 @@ function compactObject(object) {
       return true;
     })
   );
+}
+
+function uniqueStrings(values) {
+  return [...new Set(values.filter(Boolean).map((value) => String(value)))];
 }
 
 function variableValue(value) {

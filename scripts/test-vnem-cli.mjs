@@ -18,8 +18,11 @@ runCli(["install", projectDir]);
 
 for (const fileName of [
   "AGENTS.md",
+  "operating-protocol.md",
+  "task-rubrics.json",
   "search-index.json",
   "best-practices.md",
+  "agent-workspace.md",
   "prompt-engineering.md",
   "prompt-patterns.json"
 ]) {
