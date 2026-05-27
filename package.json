@@ -4,6 +4,10 @@
   "private": true,
   "type": "module",
   "description": "A read-only intelligence pack and LLM-readable index for agentic tools, MCP servers, skills, evals, and workflows.",
+  "bin": {
+    "vnem": "scripts/vnem-cli.mjs",
+    "vnem-mcp": "scripts/vnem-mcp-server.mjs"
+  },
   "scripts": {
     "seed": "node scripts/seed-registry.mjs --limit 150",
     "curate": "node scripts/upsert-curated-knowledge.mjs",
@@ -17,13 +21,21 @@
     "hermes:hourly": "node scripts/hermes-agent.mjs --mode hourly",
     "hermes:daily": "node scripts/hermes-agent.mjs --mode daily",
     "hermes:dry-run": "node scripts/hermes-agent.mjs --mode hourly --dry-run",
+    "vnem": "node scripts/vnem-cli.mjs",
+    "install:project": "node scripts/vnem-cli.mjs install",
+    "doctor": "node scripts/vnem-cli.mjs doctor",
+    "mcp": "node scripts/vnem-mcp-server.mjs",
+    "test:cli": "node scripts/test-vnem-cli.mjs",
+    "test:mcp": "node scripts/test-mcp-server.mjs",
     "build": "npm run validate && npm run generate",
-    "test": "npm run validate && npm run generate && npm run test:install-pack && npm run discover:dry-run && npm run digest"
+    "test": "npm run validate && npm run generate && npm run test:install-pack && npm run test:cli && npm run test:mcp && npm run discover:dry-run && npm run digest"
   },
   "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
-    "js-yaml": "^4.1.0"
+    "js-yaml": "^4.1.0",
+    "zod": "^4.4.3"
   },
   "engines": {
     "node": ">=20"

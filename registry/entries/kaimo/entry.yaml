@@ -1,0 +1,61 @@
+schema_version: 1.0.0
+slug: kaimo
+name: Kaimo
+type: payments
+summary_llm: >-
+  Kaimo is a very early agent-commerce signal positioning one product URL plus buyer details as a
+  purchase flow using fiat or x402, with a public GitHub landing repository but minimal product
+  documentation so far.
+homepage_url: https://github.com/kaimo-no
+repo_url: https://github.com/kaimo-no/kaimo-no.github.io
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: kaimo-no
+source_urls:
+  - https://github.com/kaimo-no
+  - https://github.com/kaimo-no/kaimo-no.github.io
+source_kind: github
+protocols:
+  - x402
+clients: []
+install:
+  command: null
+  notes: >-
+    Watch only until public docs, license terms, checkout controls, payment limits, and audit trails
+    are available.
+  config_example: null
+permissions:
+  - network
+  - payments
+env_vars: []
+tags:
+  - payments
+  - x402
+  - agent-commerce
+  - checkout
+  - watchlist
+use_cases:
+  - Track agent-commerce and x402 checkout patterns
+  - Watch emerging payment flows for AI buyers
+best_for:
+  - Maintainers watching early agent-commerce infrastructure from community submissions
+not_for:
+  - Recommendations to production agents before docs, limits, receipts, and license terms are clear.
+alternatives:
+  - stripe-agent-toolkit
+supersedes: []
+freshness: current
+source_confidence: low
+maintenance_signals:
+  - GitHub organization profile and landing repository were checked.
+risk_flags:
+  - license-not-asserted
+  - payment-permission-risk
+  - early-stage
+  - docs-not-yet-public
+recommended_when:
+  - Watch for agent-commerce and x402 workflows after product documentation and safety controls appear.
+trust_tier: watchlist
+review_status: needs-review
+last_checked: '2026-05-27'

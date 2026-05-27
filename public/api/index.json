@@ -1,14 +1,15 @@
 {
-  "generated_at": "2026-05-26T21:02:24.985Z",
+  "generated_at": "2026-05-27T08:01:28.142Z",
   "schema_version": "1.0.0",
-  "entry_count": 199,
+  "entry_count": 219,
   "install_command": "curl -fsSL https://raw.githubusercontent.com/naellisim/vnem/main/public/install.tgz | tar -xz",
   "install_archive": "/install.tgz",
   "install_archive_url": "https://raw.githubusercontent.com/naellisim/vnem/main/public/install.tgz",
   "trust_tiers": [
     "deprecated",
     "promising",
-    "verified"
+    "verified",
+    "watchlist"
   ],
   "types": [
     "agent-framework",
@@ -20,28 +21,35 @@
     "orchestration",
     "payments",
     "runtime",
+    "security",
     "workflow"
   ],
   "protocols": [
     "A2A",
-    "MCP"
+    "MCP",
+    "x402"
   ],
   "clients": [
     ".NET",
     "Agent runtimes",
+    "Aider",
     "Azure",
+    "Browser",
     "C#",
     "CI",
+    "Claude",
     "Claude Code",
     "Claude Desktop",
     "CLI",
     "Codex",
+    "Codex CLI",
     "CrewAI",
     "CrewAI Enterprise",
     "Cursor",
     "Git",
     "GitHub",
     "Google Cloud",
+    "GPT",
     "Hosted API",
     "Issues",
     "Java",
@@ -73,6 +81,7 @@
     "Windsurf"
   ],
   "tags": [
+    "agent-commerce",
     "agent-framework",
     "agent-protocol",
     "agent-tools",
@@ -81,20 +90,33 @@
     "agents-md",
     "analytics",
     "api",
+    "archives",
+    "ast",
     "automation",
+    "autonomous-agents",
     "azure",
     "backend",
     "benchmarks",
     "best-practices",
     "browser",
+    "browser-game",
+    "canvas",
+    "checkout",
     "ci",
     "claude-code",
     "claude-md",
     "cloud-agent",
+    "code-intelligence",
+    "code-quality",
     "code-review",
+    "code-simplification",
     "codebase",
+    "codemod",
     "codex",
     "coding-agent",
+    "coding-agents",
+    "cognitive-architecture",
+    "collision",
     "commerce",
     "context",
     "context-engineering",
@@ -103,13 +125,16 @@
     "crm",
     "database",
     "datasets",
+    "dead-code",
     "debugging",
     "delegation",
+    "dependency-analysis",
     "deployment",
     "deprecated",
     "docs",
     "documentation",
     "documents",
+    "duplicate-code",
     "durable-execution",
     "editor",
     "education",
@@ -120,19 +145,27 @@
     "examples",
     "filesystem",
     "frontend",
+    "fuzzy-search",
+    "game-engine",
+    "game-library",
     "gemini",
     "git",
     "github",
     "github-issues",
     "google",
+    "governance",
     "graders",
+    "graphics",
+    "grep",
     "guardrails",
     "handoffs",
+    "html5-game",
     "human-in-the-loop",
     "ingestion",
     "instructions",
     "interoperability",
     "issues",
+    "javascript",
     "knowledge-graph",
     "libraries",
     "llmops",
@@ -154,29 +187,38 @@
     "parallel",
     "payments",
     "personalization",
+    "physics",
     "planning",
     "playwright",
     "plugins",
     "production",
     "prompt-engineering",
     "prompt-optimizer",
+    "prompt-patterns",
     "prompt-programming",
     "prompts",
     "protocol",
+    "prototype",
     "pull-requests",
     "python",
     "qa",
     "quality",
     "rag",
+    "read-only",
     "receipts",
     "red-team",
+    "regex",
+    "registry",
+    "renderer",
     "repository",
     "research",
     "resources",
     "retrieval",
+    "rigid-body",
     "roles",
     "rules",
     "runtime",
+    "rust",
     "safety",
     "scoring",
     "scraping",
@@ -184,13 +226,16 @@
     "security",
     "server",
     "sessions",
+    "simulation",
     "software-engineering",
     "specialists",
     "sql",
     "state",
     "stateful-agents",
+    "static-analysis",
     "streaming",
     "stripe",
+    "structural-search",
     "structured-output",
     "subagents",
     "supabase",
@@ -200,51 +245,82 @@
     "temporal",
     "terminal",
     "testing",
+    "three-dimensional",
     "tool-calling",
     "tool-permissions",
     "tool-use",
     "tools",
     "tracing",
+    "tree-sitter",
+    "tui",
+    "two-dimensional",
     "typed",
     "typescript",
+    "vnem",
     "vscode",
+    "wasm",
+    "watchlist",
     "web",
     "web-apps",
     "web-crawling",
-    "workflows"
+    "webgl",
+    "webgpu",
+    "webxr",
+    "workflows",
+    "x402"
   ],
   "use_cases": [
+    "Add 2D or 3D physics to browser games",
+    "Add 2D rigid-body physics to browser games",
+    "Add 3D visuals to web applications",
+    "Add a renderer without adopting a full game engine",
     "Add human approval gates",
+    "Add lightweight custom lint rules",
+    "Add MCP memory recall and storage tools",
     "Apply reviewable edits to Git repositories",
     "Assign repository issues to an agent",
     "Automate browser flows through MCP",
     "Automate issues and pull request workflows",
     "Automate research and back-office workflows",
     "Benchmark repository repair workflows",
+    "Build 3D browser games",
     "Build and deploy Gemini-oriented agents",
+    "Build browser-first 3D games",
     "Build commerce workflows with auditable agent actions",
+    "Build interactive sprite-heavy scenes",
+    "Build interactive WebGL or WebGPU experiences",
     "Build multi-agent conversations",
+    "Build multi-agent workflows",
+    "Build physics-based prototypes without adopting a full game engine",
     "Build retrieval-grounded agents",
+    "Build small playful web games with concise code",
     "Build source-backed research and data ingestion workflows",
     "Build stateful agents with explicit memory",
     "Build stateful multi-step agents",
     "Build streaming AI application interfaces",
+    "Build structured 2D browser games",
     "Build temporal knowledge graphs",
     "Build temporal knowledge graphs for agents",
     "Build tool-using agents",
     "Build type-safe agents",
     "Build TypeScript agent applications",
+    "Build TypeScript-first 2D browser games",
     "Checkpoint and resume long-running workflows",
     "Choose between workflows and autonomous agents",
+    "Choose deterministic or compatibility physics packages when needed",
     "Combine workflows, memory, and MCP tools",
+    "Compare governed and vanilla agent benchmark runs",
+    "Compare hosted, local, and self-hosted memory modes",
     "Compare MCP servers by permissions and provenance",
     "Compare older swarm patterns to maintained SDKs",
+    "Compare registry entries with trust and permission notes",
     "Connect agents across runtimes",
     "Connect agents to document and data indexes",
     "Connect agents to structured data",
     "Connect bugfix work to Sentry evidence",
     "Connect VS Code workflows to MCP tools",
     "Coordinate agent handoffs",
+    "Coordinate sequential, concurrent, graph, and hierarchical agent teams",
     "Coordinate specialist subagents for coding tasks",
     "Create repeatable prompt improvement workflows",
     "Create reproducible safety and capability tests",
@@ -257,6 +333,8 @@
     "Design parallel research agent systems",
     "Design prompt output contracts and verification criteria",
     "Design tool-using agent systems conservatively",
+    "Detect duplicated source blocks",
+    "Detect unused or missing dependencies",
     "Document commands, conventions, and safety boundaries for agent work",
     "Embed agents into enterprise applications",
     "Evaluate and monitor LLM application behavior",
@@ -264,10 +342,16 @@
     "Evaluate RAG retrieval and answers",
     "Extend agents with external tools",
     "Fetch current library documentation for agents",
+    "Find syntax patterns across codebases",
+    "Find unused files and exports",
     "Generate and score testsets for LLM apps",
+    "Generate clone reports for refactoring",
+    "Give agents portable long-term memory",
     "Give agents searchable long-term memory",
     "Give agents searchable web or knowledge access",
+    "Give agents structural code search",
     "Give coding agents stable repository instructions",
+    "Give coding agents vnem search and recommendation tools",
     "Give specialist agents narrow tool permissions",
     "Guide coding agents with project rules",
     "Help agents ship and operate software",
@@ -284,6 +368,7 @@
     "Let agents work with scoped files",
     "Let agents work with Stripe APIs",
     "Manage prompts and datasets",
+    "Manage scenes, sprites, assets, input, cameras, and audio",
     "Model work as role-based agent teams",
     "Monitor agent sessions and costs",
     "Open pull requests from automated coding work",
@@ -294,32 +379,62 @@
     "Persist stable project instructions",
     "Persist useful context between sessions",
     "Persist user preferences and facts",
+    "Produce structured search output",
+    "Prototype 2D browser games quickly",
     "Prototype distributed agent applications",
+    "Prototype swarm-style task routing",
+    "Query current MCP, skill, memory, eval, prompt, and coding-agent guidance",
     "Query or manage development databases through MCP",
+    "Reduce repeated grep and file-reading loops",
+    "Reduce token-heavy file exploration loops",
     "Regression-test prompts and agents",
+    "Render custom 3D browser scenes",
+    "Render interactive 3D apps and visualizations",
+    "Render rich 2D browser graphics",
+    "Respect gitignore while finding text patterns",
     "Retrieve long-term user and session memory",
     "Retrieve relationship-aware context for agents",
     "Return validated structured outputs",
+    "Review agent safety rule sets",
+    "Rewrite code with AST captures",
     "Run autonomous software engineering tasks",
+    "Run Boolean or fuzzy local search",
     "Run cloud browser automation for agents",
     "Run LLM red-team checks",
     "Run tests and commands during coding tasks",
+    "Search archives and compressed files",
+    "Search codebases quickly",
     "Separate lead-agent synthesis from specialist exploration",
     "Serve agents through a persistent API",
     "Share agent guidance across coding sessions",
+    "Ship HTML5 games across desktop and mobile browsers",
+    "Simulate collisions, constraints, and forces",
     "Solve GitHub issues with an autonomous coding agent",
     "Standardize agent access to tools and context",
+    "Study governance layers for autonomous agents",
+    "Support evidence-backed code deletion",
+    "Target WebGL with WebGPU support paths",
+    "Teach or prototype structured 2D game architecture",
+    "Teach simple game objects, collisions, and input",
     "Trace agent runs",
     "Trace and evaluate LLM applications",
     "Trace and guardrail agent runs",
+    "Trace call paths and affected symbols",
+    "Track agent-commerce and x402 checkout patterns",
+    "Track copy-paste debt in CI",
     "Turn prompts into testable programs",
     "Understand lightweight handoff patterns",
+    "Use actors, scenes, input, collision, and assets",
     "Use an editor agent with terminal and browser control",
     "Use an IDE-native agent for multi-file code edits",
+    "Use engine-level scene, material, asset, GUI, XR, and physics features",
     "Use explicit context providers for code work",
     "Use prompts and tools across multiple languages",
     "Use tools and structured outputs in web apps",
-    "Use tools, callbacks, and multi-agent patterns"
+    "Use tools, callbacks, and multi-agent patterns",
+    "Use WASM-backed rigid-body simulation",
+    "Use WebGL2, WebGPU, WebXR, input, audio, assets, and animation in one engine",
+    "Watch emerging payment flows for AI buyers"
   ],
   "intent_aliases": {
     "better ui": [
@@ -330,6 +445,142 @@
       "visual",
       "accessibility",
       "prototype"
+    ],
+    "browser game": [
+      "web game",
+      "html5 game",
+      "game",
+      "canvas",
+      "animation",
+      "vite",
+      "phaser",
+      "pixi",
+      "three.js",
+      "input",
+      "collision",
+      "game ui",
+      "game testing"
+    ],
+    "web game": [
+      "browser game",
+      "html5 game",
+      "canvas",
+      "webgl",
+      "webgpu",
+      "vite",
+      "phaser",
+      "pixi",
+      "three.js",
+      "playcanvas",
+      "game testing"
+    ],
+    "html5 game": [
+      "browser game",
+      "web game",
+      "canvas",
+      "webgl",
+      "2d game",
+      "phaser",
+      "excalibur",
+      "kaplay",
+      "input"
+    ],
+    "canvas game": [
+      "browser game",
+      "web game",
+      "canvas",
+      "2d",
+      "game loop",
+      "animation",
+      "collision",
+      "particles",
+      "requestanimationframe"
+    ],
+    "2d game": [
+      "browser game",
+      "canvas game",
+      "phaser",
+      "pixi",
+      "excalibur",
+      "kaplay",
+      "matter.js",
+      "rapier",
+      "sprites"
+    ],
+    "3d game": [
+      "browser game",
+      "webgl",
+      "webgpu",
+      "three.js",
+      "babylon.js",
+      "playcanvas",
+      "webxr",
+      "3d assets"
+    ],
+    "game engine": [
+      "game",
+      "phaser",
+      "pixi",
+      "three.js",
+      "babylon.js",
+      "playcanvas",
+      "excalibur",
+      "kaplay",
+      "matter.js",
+      "rapier",
+      "engine",
+      "physics",
+      "renderer"
+    ],
+    "game ui": [
+      "game hud",
+      "menus",
+      "contrast",
+      "readability",
+      "touch targets",
+      "feedback",
+      "onboarding",
+      "pause",
+      "restart"
+    ],
+    "game accessibility": [
+      "contrast",
+      "input remapping",
+      "keyboard",
+      "gamepad",
+      "touch",
+      "captions",
+      "reduced motion",
+      "photosensitivity",
+      "wcag"
+    ],
+    "game physics": [
+      "matter.js",
+      "rapier",
+      "fixed timestep",
+      "collision",
+      "rigid body",
+      "determinism",
+      "simulation"
+    ],
+    "game testing": [
+      "playwright",
+      "browser testing",
+      "canvas pixel check",
+      "input simulation",
+      "state transitions",
+      "restart",
+      "runtime verification"
+    ],
+    "canvas performance": [
+      "canvas",
+      "requestanimationframe",
+      "offscreen canvas",
+      "render loop",
+      "batch drawing",
+      "pre-render",
+      "webgl",
+      "webgpu"
     ],
     "faster search": [
       "search",
@@ -500,6 +751,484 @@
       "annotation",
       "eval",
       "iteration"
+    ],
+    "code simplification": [
+      "refactor",
+      "minimalism",
+      "code quality",
+      "dead code",
+      "duplication",
+      "complexity",
+      "tests",
+      "ast-grep",
+      "knip",
+      "jscpd"
+    ],
+    "code compaction": [
+      "simplify code",
+      "reduce code",
+      "minimal code",
+      "dead code",
+      "duplication",
+      "behavior preserving",
+      "refactor"
+    ],
+    "minimal code": [
+      "minimalism",
+      "simple design",
+      "small API",
+      "refactor",
+      "remove duplication",
+      "delete dead code",
+      "feature preservation"
+    ],
+    "professional code": [
+      "code quality",
+      "maintainability",
+      "clarity",
+      "refactor",
+      "tests",
+      "lint",
+      "style guide",
+      "review"
+    ],
+    "refactor": [
+      "behavior preserving",
+      "small steps",
+      "tests",
+      "code review",
+      "simplify code",
+      "ast-grep",
+      "codemod"
+    ],
+    "dead code": [
+      "unused exports",
+      "unused files",
+      "unused dependencies",
+      "knip",
+      "dependency audit",
+      "delete code"
+    ]
+  },
+  "intent_routes": {
+    "browser game": {
+      "read_first": [
+        "practice:browser-games",
+        "practice:frontend",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "Canvas with Vite or a tiny static server",
+        "Phaser",
+        "PixiJS",
+        "Excalibur",
+        "KAPLAY",
+        "Three.js",
+        "Babylon.js",
+        "PlayCanvas"
+      ],
+      "choose_by": [
+        "2D or 3D gameplay",
+        "asset loading and physics needs",
+        "dependency budget",
+        "input model",
+        "accessibility needs",
+        "real-browser verification path"
+      ],
+      "report": [
+        "vnem intents searched",
+        "top matches",
+        "choice",
+        "why"
+      ]
+    },
+    "web game": {
+      "read_first": [
+        "practice:browser-games",
+        "practice:frontend",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "Canvas with Vite for compact custom 2D",
+        "Phaser for full 2D game framework needs",
+        "PixiJS for rendering-heavy 2D",
+        "Three.js/Babylon.js/PlayCanvas for true 3D"
+      ],
+      "choose_by": [
+        "playability requirements",
+        "rendering dimension",
+        "engine structure needed",
+        "browser support",
+        "verification evidence"
+      ],
+      "report": [
+        "vnem intents searched",
+        "top matches",
+        "choice",
+        "why"
+      ]
+    },
+    "html5 game": {
+      "read_first": [
+        "practice:browser-games",
+        "practice:frontend",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "Canvas",
+        "Phaser",
+        "PixiJS",
+        "Excalibur",
+        "KAPLAY"
+      ],
+      "choose_by": [
+        "custom game feel",
+        "scene and asset needs",
+        "TypeScript preference",
+        "prototype speed",
+        "mobile/touch behavior"
+      ],
+      "report": [
+        "vnem intents searched",
+        "top matches",
+        "choice",
+        "why"
+      ]
+    },
+    "canvas game": {
+      "read_first": [
+        "practice:browser-games",
+        "practice:frontend",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "Canvas with Vite or a tiny static server",
+        "Phaser",
+        "PixiJS",
+        "Excalibur",
+        "KAPLAY"
+      ],
+      "choose_by": [
+        "custom game feel",
+        "rendering complexity",
+        "input model",
+        "collision needs",
+        "dependency budget",
+        "canvas performance risk"
+      ],
+      "report": [
+        "vnem intents searched",
+        "top matches",
+        "choice",
+        "why"
+      ]
+    },
+    "2d game": {
+      "read_first": [
+        "practice:browser-games",
+        "practice:frontend",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "Canvas for tiny bespoke games",
+        "Phaser for scenes/sprites/audio/cameras",
+        "PixiJS for renderer-first interaction",
+        "Excalibur for TypeScript-first 2D",
+        "KAPLAY for fast prototypes"
+      ],
+      "choose_by": [
+        "scene complexity",
+        "sprite/asset pipeline",
+        "physics needs",
+        "typing preference",
+        "prototype speed",
+        "polish budget"
+      ],
+      "report": [
+        "vnem intents searched",
+        "top matches",
+        "choice",
+        "why"
+      ]
+    },
+    "3d game": {
+      "read_first": [
+        "practice:browser-games",
+        "practice:frontend",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "Three.js for custom 3D scenes",
+        "Babylon.js for full 3D engine features",
+        "PlayCanvas for browser-first 3D engine/editor workflows"
+      ],
+      "choose_by": [
+        "3D scene complexity",
+        "asset pipeline",
+        "physics/XR needs",
+        "WebGL/WebGPU support",
+        "performance tooling"
+      ],
+      "report": [
+        "vnem intents searched",
+        "top matches",
+        "choice",
+        "why"
+      ]
+    },
+    "game engine": {
+      "read_first": [
+        "practice:browser-games",
+        "practice:frontend",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "Phaser for full 2D game framework needs",
+        "PixiJS for fast 2D rendering",
+        "Excalibur for TypeScript-first 2D",
+        "KAPLAY for quick playful 2D",
+        "Three.js for custom 3D",
+        "Babylon.js or PlayCanvas for full 3D engine workflows",
+        "Canvas for compact custom 2D MVPs"
+      ],
+      "choose_by": [
+        "engine features needed",
+        "visual direction",
+        "physics/audio/asset pipeline",
+        "bundle size",
+        "maintenance risk",
+        "runtime verification path"
+      ],
+      "report": [
+        "vnem intents searched",
+        "top matches",
+        "choice",
+        "why"
+      ]
+    },
+    "game ui": {
+      "read_first": [
+        "practice:browser-games",
+        "practice:frontend",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "in-canvas HUD",
+        "DOM overlay UI",
+        "engine UI primitives",
+        "existing app design system"
+      ],
+      "choose_by": [
+        "readability",
+        "input method",
+        "responsive scaling",
+        "contrast",
+        "feedback clarity",
+        "localization risk"
+      ],
+      "report": [
+        "vnem intents searched",
+        "top matches",
+        "choice",
+        "why"
+      ]
+    },
+    "game accessibility": {
+      "read_first": [
+        "practice:browser-games",
+        "practice:frontend",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "keyboard/touch/gamepad parity",
+        "remappable controls",
+        "high-contrast HUD",
+        "reduced motion",
+        "captions or visual audio cues"
+      ],
+      "choose_by": [
+        "gameplay-critical information",
+        "required inputs",
+        "motion intensity",
+        "audio dependence",
+        "target devices"
+      ],
+      "report": [
+        "vnem intents searched",
+        "top matches",
+        "choice",
+        "why"
+      ]
+    },
+    "game physics": {
+      "read_first": [
+        "practice:browser-games",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "simple custom collision",
+        "Matter.js for approachable 2D rigid bodies",
+        "Rapier for higher-performance 2D/3D physics"
+      ],
+      "choose_by": [
+        "collision complexity",
+        "determinism needs",
+        "WASM bundling tolerance",
+        "engine integration",
+        "fixed-step simulation requirements"
+      ],
+      "report": [
+        "vnem intents searched",
+        "top matches",
+        "choice",
+        "why"
+      ]
+    },
+    "game testing": {
+      "read_first": [
+        "practice:browser-games",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "unit tests for pure rules",
+        "browser automation for input flows",
+        "canvas pixel checks for nonblank rendering",
+        "manual smoke playthrough"
+      ],
+      "choose_by": [
+        "game state complexity",
+        "visual regressions",
+        "input coverage",
+        "restart and terminal states",
+        "CI browser availability"
+      ],
+      "report": [
+        "vnem intents searched",
+        "top matches",
+        "choice",
+        "why"
+      ]
+    },
+    "canvas performance": {
+      "read_first": [
+        "practice:browser-games",
+        "practice:frontend"
+      ],
+      "compare_options": [
+        "plain Canvas 2D",
+        "batched Canvas drawing",
+        "OffscreenCanvas for heavy repeated work",
+        "PixiJS/WebGL for many sprites",
+        "Three.js/Babylon/PlayCanvas for 3D"
+      ],
+      "choose_by": [
+        "number of moving objects",
+        "text/render cost",
+        "worker support",
+        "GPU needs",
+        "device targets"
+      ],
+      "report": [
+        "vnem intents searched",
+        "top matches",
+        "choice",
+        "why"
+      ]
+    },
+    "better ui": {
+      "read_first": [
+        "practice:frontend",
+        "practice:context-engineering",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "existing project design system",
+        "mature UI primitives",
+        "custom CSS only when scope is tiny"
+      ],
+      "choose_by": [
+        "workflow fit",
+        "accessibility",
+        "responsive verification",
+        "dependency budget"
+      ],
+      "report": [
+        "vnem intents searched",
+        "top matches",
+        "choice",
+        "why"
+      ]
+    },
+    "code simplification": {
+      "read_first": [
+        "practice:code-simplification",
+        "practice:code-review",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "behavior-preserving refactor",
+        "dead-code audit",
+        "duplicate-code audit",
+        "AST-aware codemods",
+        "repo-native lint and format rules"
+      ],
+      "choose_by": [
+        "language and framework",
+        "test coverage",
+        "public API stability",
+        "blast radius",
+        "reviewability",
+        "tool permission risk"
+      ],
+      "report": [
+        "vnem intents searched",
+        "top matches",
+        "choice",
+        "why"
+      ]
+    },
+    "code compaction": {
+      "read_first": [
+        "practice:code-simplification",
+        "practice:code-review",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "delete unreachable code",
+        "collapse duplication",
+        "extract only proven shared concepts",
+        "replace custom code with existing local helpers",
+        "defer dependency changes until justified"
+      ],
+      "choose_by": [
+        "feature preservation evidence",
+        "test coverage",
+        "runtime behavior",
+        "readability after change",
+        "diff size"
+      ],
+      "report": [
+        "vnem intents searched",
+        "top matches",
+        "choice",
+        "why"
+      ]
+    }
+  },
+  "decision_protocol": {
+    "auto_use": true,
+    "user_trigger_required": false,
+    "read_first_for_build_tasks": [
+      "matching intent_routes",
+      "matching best-practice documents",
+      "high-signal registry entries",
+      "prompt patterns only when a prompt artifact is requested"
+    ],
+    "evidence_note": [
+      "vnem intents searched",
+      "top matches",
+      "choice",
+      "why"
     ]
   },
   "entries": [
@@ -1077,7 +1806,7 @@
         "https://mastra.ai/docs",
         "https://github.com/mastra-ai/mastra"
       ],
-      "profile_excerpt": "Mastra is a TypeScript agent framework for agents, workflows, RAG, memory, MCP integration, evals, and deployment in JavaScript applications. ## Best For - JavaScript and TypeScript teams building production agent apps ## Recommended When - Use when Node-native agent infrastructure is preferred over Python frameworks. ",
+      "profile_excerpt": "Mastra is a TypeScript agent framework for agents, workflows, RAG, memory, MCP integration, evals, and deployment in JavaScript applications. ## Best For - JavaScript and TypeScript teams building production agent apps ## Recommended When - Use when Node-native agent infrastructure is preferred over Python frameworks.",
       "entry_path": "registry/entries/mastra/entry.yaml",
       "profile_path": "registry/entries/mastra/profile.md",
       "url_path": "/entries/mastra/",
@@ -1877,7 +2606,7 @@
       "trust_tier": "promising",
       "review_status": "bot-reviewed",
       "last_checked": "2026-05-25",
-      "profile_excerpt": "AgentDM: Agent to Agent Communication Platform is an MCP server for agentic systems. Agent communication platform for agent to agent messaging via MCP. Messages, channels, skills. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ",
+      "profile_excerpt": "AgentDM: Agent to Agent Communication Platform is an MCP server for agentic systems. Agent communication platform for agent to agent messaging via MCP. Messages, channels, skills. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned.",
       "entry_path": "registry/entries/ai-agentdm-agentdm/entry.yaml",
       "profile_path": "registry/entries/ai-agentdm-agentdm/profile.md",
       "url_path": "/entries/ai-agentdm-agentdm/",
@@ -2115,7 +2844,7 @@
       "trust_tier": "promising",
       "review_status": "bot-reviewed",
       "last_checked": "2026-05-25",
-      "profile_excerpt": "AgentTrust — Identity & Trust for A2A Agents is an MCP server for agentic systems. Identity, trust, and A2A orchestration for autonomous AI agents. Official A2A partner. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review ",
+      "profile_excerpt": "AgentTrust — Identity & Trust for A2A Agents is an MCP server for agentic systems. Identity, trust, and A2A orchestration for autonomous AI agents. Official A2A partner. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review",
       "entry_path": "registry/entries/ai-agenttrust-mcp-server/entry.yaml",
       "profile_path": "registry/entries/ai-agenttrust-mcp-server/profile.md",
       "url_path": "/entries/ai-agenttrust-mcp-server/",
@@ -2271,7 +3000,7 @@
       "trust_tier": "promising",
       "review_status": "bot-reviewed",
       "last_checked": "2026-05-25",
-      "profile_excerpt": "ai.aliengiraffe/spotdb is an MCP server for agentic systems. Ephemeral data sandbox for AI workflows with guardrails and security ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising. This entry ",
+      "profile_excerpt": "ai.aliengiraffe/spotdb is an MCP server for agentic systems. Ephemeral data sandbox for AI workflows with guardrails and security ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising. This entry",
       "entry_path": "registry/entries/ai-aliengiraffe-spotdb/entry.yaml",
       "profile_path": "registry/entries/ai-aliengiraffe-spotdb/profile.md",
       "url_path": "/entries/ai-aliengiraffe-spotdb/",
@@ -2974,7 +3703,7 @@
       "trust_tier": "promising",
       "review_status": "bot-reviewed",
       "last_checked": "2026-05-25",
-      "profile_excerpt": "ai.klavis/strata is an MCP server for agentic systems. MCP server for progressive tool usage at any scale (see https://klavis.ai) ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising. This entry ",
+      "profile_excerpt": "ai.klavis/strata is an MCP server for agentic systems. MCP server for progressive tool usage at any scale (see https://klavis.ai) ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising. This entry",
       "entry_path": "registry/entries/ai-klavis-strata/entry.yaml",
       "profile_path": "registry/entries/ai-klavis-strata/profile.md",
       "url_path": "/entries/ai-klavis-strata/",
@@ -3288,7 +4017,7 @@
       "trust_tier": "promising",
       "review_status": "bot-reviewed",
       "last_checked": "2026-05-25",
-      "profile_excerpt": "ai.nullary/nullary is an MCP server for agentic systems. Negative results intelligence for drug discovery — query measured failures via MCP. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising. ",
+      "profile_excerpt": "ai.nullary/nullary is an MCP server for agentic systems. Negative results intelligence for drug discovery — query measured failures via MCP. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising.",
       "entry_path": "registry/entries/ai-nullary-nullary/entry.yaml",
       "profile_path": "registry/entries/ai-nullary-nullary/profile.md",
       "url_path": "/entries/ai-nullary-nullary/",
@@ -3991,7 +4720,7 @@
       "trust_tier": "promising",
       "review_status": "bot-reviewed",
       "last_checked": "2026-05-25",
-      "profile_excerpt": "BorealHost is an MCP server for agentic systems. Agent-native web hosting — deploy sites, manage DNS, register domains, scale infrastructure ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising. ",
+      "profile_excerpt": "BorealHost is an MCP server for agentic systems. Agent-native web hosting — deploy sites, manage DNS, register domains, scale infrastructure ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising.",
       "entry_path": "registry/entries/ai-borealhost-mcp/entry.yaml",
       "profile_path": "registry/entries/ai-borealhost-mcp/profile.md",
       "url_path": "/entries/ai-borealhost-mcp/",
@@ -4548,7 +5277,7 @@
       "trust_tier": "promising",
       "review_status": "bot-reviewed",
       "last_checked": "2026-05-25",
-      "profile_excerpt": "Contabo (VPS) MCP Server is an MCP server for agentic systems. Contabo API (v1.0.0) as MCP tools for cloud provisioning, and management. Powered by HAPI MCP server ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes ",
+      "profile_excerpt": "Contabo (VPS) MCP Server is an MCP server for agentic systems. Contabo API (v1.0.0) as MCP tools for cloud provisioning, and management. Powered by HAPI MCP server ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes",
       "entry_path": "registry/entries/ai-com-mcp-contabo/entry.yaml",
       "profile_path": "registry/entries/ai-com-mcp-contabo/profile.md",
       "url_path": "/entries/ai-com-mcp-contabo/",
@@ -4870,7 +5599,7 @@
       "trust_tier": "promising",
       "review_status": "bot-reviewed",
       "last_checked": "2026-05-25",
-      "profile_excerpt": "DeepLedger — AI Bookkeeper for QuickBooks is an MCP server for agentic systems. AI bookkeeping for QuickBooks Online — 28 tools for transactions, reports, and bank feeds ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review ",
+      "profile_excerpt": "DeepLedger — AI Bookkeeper for QuickBooks is an MCP server for agentic systems. AI bookkeeping for QuickBooks Online — 28 tools for transactions, reports, and bank feeds ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review",
       "entry_path": "registry/entries/ai-deepledger-mcp/entry.yaml",
       "profile_path": "registry/entries/ai-deepledger-mcp/profile.md",
       "url_path": "/entries/ai-deepledger-mcp/",
@@ -4948,7 +5677,7 @@
       "trust_tier": "promising",
       "review_status": "bot-reviewed",
       "last_checked": "2026-05-25",
-      "profile_excerpt": "Dreamlit is an MCP server for agentic systems. Create, test, publish, and manage Dreamlit notification workflows from AI clients. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising. This entry ",
+      "profile_excerpt": "Dreamlit is an MCP server for agentic systems. Create, test, publish, and manage Dreamlit notification workflows from AI clients. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising. This entry",
       "entry_path": "registry/entries/ai-dreamlit-mcp/entry.yaml",
       "profile_path": "registry/entries/ai-dreamlit-mcp/profile.md",
       "url_path": "/entries/ai-dreamlit-mcp/",
@@ -6142,7 +6871,7 @@
       "trust_tier": "promising",
       "review_status": "bot-reviewed",
       "last_checked": "2026-05-25",
-      "profile_excerpt": "MailJunky is an MCP server for agentic systems. Send emails, track events, and manage contacts with MailJunky. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising. This entry was seeded from an ",
+      "profile_excerpt": "MailJunky is an MCP server for agentic systems. Send emails, track events, and manage contacts with MailJunky. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising. This entry was seeded from an",
       "entry_path": "registry/entries/ai-mailjunky-mcp/entry.yaml",
       "profile_path": "registry/entries/ai-mailjunky-mcp/profile.md",
       "url_path": "/entries/ai-mailjunky-mcp/",
@@ -6771,7 +7500,7 @@
       "trust_tier": "promising",
       "review_status": "bot-reviewed",
       "last_checked": "2026-05-25",
-      "profile_excerpt": "Obris is an MCP server for agentic systems. Stop re-explaining yourself to AI. Save knowledge once, use it in every conversation. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising. This entry ",
+      "profile_excerpt": "Obris is an MCP server for agentic systems. Stop re-explaining yourself to AI. Save knowledge once, use it in every conversation. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising. This entry",
       "entry_path": "registry/entries/ai-obris-mcp/entry.yaml",
       "profile_path": "registry/entries/ai-obris-mcp/profile.md",
       "url_path": "/entries/ai-obris-mcp/",
@@ -6946,7 +7675,7 @@
       "source_urls": [
         "https://developers.openai.com/api/docs/guides/prompt-optimizer"
       ],
-      "profile_excerpt": "OpenAI Prompt Optimizer is official guidance for improving prompts through datasets, graders, annotations, and iterative prompt testing. ## Best For - Teams with examples or eval criteria that can measure prompt quality ## Recommended When - Use when prompt improvement should be measured instead of judged by vibes. ## ",
+      "profile_excerpt": "OpenAI Prompt Optimizer is official guidance for improving prompts through datasets, graders, annotations, and iterative prompt testing. ## Best For - Teams with examples or eval criteria that can measure prompt quality ## Recommended When - Use when prompt improvement should be measured instead of judged by vibes. ##",
       "entry_path": "registry/entries/openai-prompt-optimizer/entry.yaml",
       "profile_path": "registry/entries/openai-prompt-optimizer/profile.md",
       "url_path": "/entries/openai-prompt-optimizer/",
@@ -7260,6 +7989,105 @@
         "Use when a project needs extend agents with external tools and the upstream source has been reviewed.",
         "Treat as promising until a maintainer verifies install and behavior."
       ],
+      "recommendation_score": 11
+    },
+    {
+      "schema_version": "1.0.0",
+      "slug": "vnem-mcp",
+      "name": "vnem MCP",
+      "type": "mcp-server",
+      "summary_llm": "vnem MCP is the local read-only MCP server for the vnem registry, exposing generated search data, best-practice notes, prompt patterns, and registry entries to coding agents before they choose tools or upgrade paths.",
+      "homepage_url": "https://github.com/naellisim/vnem",
+      "repo_url": "https://github.com/naellisim/vnem",
+      "package_urls": [],
+      "licenses": [
+        "MIT",
+        "CC0-1.0"
+      ],
+      "copyright_owner": "vnem contributors",
+      "source_urls": [
+        "https://github.com/naellisim/vnem",
+        "https://github.com/modelcontextprotocol/typescript-sdk"
+      ],
+      "source_kind": "github",
+      "protocols": [
+        "MCP"
+      ],
+      "clients": [
+        "Codex",
+        "Claude Desktop",
+        "Claude Code",
+        "Cursor",
+        "VS Code",
+        "OpenAI Agents SDK"
+      ],
+      "install": {
+        "command": "node scripts/vnem-mcp-server.mjs",
+        "notes": "Run from a local vnem checkout after npm dependencies are installed, or through `npm run mcp`. The server reads generated vnem artifacts and communicates over stdio.",
+        "config_example": "{\"mcpServers\":{\"vnem\":{\"command\":\"node\",\"args\":[\"/path/to/vnem/scripts/vnem-mcp-server.mjs\"]}}}"
+      },
+      "permissions": [
+        "filesystem"
+      ],
+      "env_vars": [
+        "VNEM_ROOT"
+      ],
+      "tags": [
+        "vnem",
+        "mcp",
+        "registry",
+        "agent-tools",
+        "best-practices",
+        "prompt-patterns",
+        "read-only"
+      ],
+      "use_cases": [
+        "Give coding agents vnem search and recommendation tools",
+        "Query current MCP, skill, memory, eval, prompt, and coding-agent guidance",
+        "Compare registry entries with trust and permission notes"
+      ],
+      "best_for": [
+        "Repositories that want local, source-backed tool recommendations without granting mutation permissions",
+        "Agents that should consult vnem before choosing MCP servers, memory layers, skills, or search tools",
+        "Give coding agents vnem search and recommendation tools",
+        "Query current MCP, skill, memory, eval, prompt, and coding-agent guidance",
+        "Compare registry entries with trust and permission notes",
+        "vnem workflows",
+        "mcp workflows",
+        "registry workflows"
+      ],
+      "not_for": [
+        "Running third-party tools directly or installing dependencies in the target project."
+      ],
+      "alternatives": [
+        "model-context-protocol",
+        "codex-agents-md"
+      ],
+      "supersedes": [],
+      "freshness": "current",
+      "source_confidence": "official",
+      "maintenance_signals": [
+        "Implemented in this repository with an SDK-backed smoke test.",
+        "Uses generated vnem artifacts instead of vendoring third-party content.",
+        "Canonical repository URL recorded"
+      ],
+      "risk_flags": [
+        "reads-local-files",
+        "sensitive-permissions"
+      ],
+      "recommended_when": [
+        "Use when a coding agent should query vnem through MCP instead of manually reading `.vnem/search-index.json`.",
+        "Use when recommendations need trust tiers, install notes, permissions, risk flags, and source URLs.",
+        "Use when a project needs give coding agents vnem search and recommendation tools and the upstream source has been reviewed.",
+        "Prefer this when verified install and behavior notes are required."
+      ],
+      "trust_tier": "verified",
+      "review_status": "manual-reviewed",
+      "last_checked": "2026-05-27",
+      "profile_excerpt": "vnem MCP is the local read-only MCP server for the vnem registry. It exposes vnem search, recommendation, comparison, entry lookup, and best-practice guidance to agent clients over stdio. ## Best For - Coding agents that should consult vnem before choosing MCP servers, skills, memory layers, prompt patterns, evals, sea",
+      "entry_path": "registry/entries/vnem-mcp/entry.yaml",
+      "profile_path": "registry/entries/vnem-mcp/profile.md",
+      "url_path": "/entries/vnem-mcp/",
       "recommendation_score": 11
     },
     {
@@ -7624,7 +8452,7 @@
       "trust_tier": "promising",
       "review_status": "bot-reviewed",
       "last_checked": "2026-05-25",
-      "profile_excerpt": "Agentic Terminal Directory is an MCP server for agentic systems. Verified merchants accepting agentic payments on Lightning/L402/BOLT12/USDT — search, verify, pay. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes ",
+      "profile_excerpt": "Agentic Terminal Directory is an MCP server for agentic systems. Verified merchants accepting agentic payments on Lightning/L402/BOLT12/USDT — search, verify, pay. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes",
       "entry_path": "registry/entries/ai-agenticterminal-directory/entry.yaml",
       "profile_path": "registry/entries/ai-agenticterminal-directory/profile.md",
       "url_path": "/entries/ai-agenticterminal-directory/",
@@ -8400,7 +9228,7 @@
       "trust_tier": "promising",
       "review_status": "bot-reviewed",
       "last_checked": "2026-05-25",
-      "profile_excerpt": "ai.childanxiety/library is an MCP server for agentic systems. Clinician-reviewed library on anxiety, OCD, and phobias in children ages 5–12. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising. ",
+      "profile_excerpt": "ai.childanxiety/library is an MCP server for agentic systems. Clinician-reviewed library on anxiety, OCD, and phobias in children ages 5–12. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising.",
       "entry_path": "registry/entries/ai-childanxiety-library/entry.yaml",
       "profile_path": "registry/entries/ai-childanxiety-library/profile.md",
       "url_path": "/entries/ai-childanxiety-library/",
@@ -9025,7 +9853,7 @@
       "trust_tier": "promising",
       "review_status": "bot-reviewed",
       "last_checked": "2026-05-25",
-      "profile_excerpt": "ai.geodesiclabs/governance-platform is an MCP server for agentic systems. Deterministic AI governance platform. Validates agent outputs, discovers patterns, solves math. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review ",
+      "profile_excerpt": "ai.geodesiclabs/governance-platform is an MCP server for agentic systems. Deterministic AI governance platform. Validates agent outputs, discovers patterns, solves math. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review",
       "entry_path": "registry/entries/ai-geodesiclabs-governance-platform/entry.yaml",
       "profile_path": "registry/entries/ai-geodesiclabs-governance-platform/profile.md",
       "url_path": "/entries/ai-geodesiclabs-governance-platform/",
@@ -9102,7 +9930,7 @@
       "trust_tier": "promising",
       "review_status": "bot-reviewed",
       "last_checked": "2026-05-25",
-      "profile_excerpt": "ai.gomarble/mcp-api is an MCP server for agentic systems. GoMarble MCP API Server ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising. This entry was seeded from an official registry source and ",
+      "profile_excerpt": "ai.gomarble/mcp-api is an MCP server for agentic systems. GoMarble MCP API Server ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising. This entry was seeded from an official registry source and",
       "entry_path": "registry/entries/ai-gomarble-mcp-api/entry.yaml",
       "profile_path": "registry/entries/ai-gomarble-mcp-api/profile.md",
       "url_path": "/entries/ai-gomarble-mcp-api/",
@@ -9820,7 +10648,7 @@
       "trust_tier": "promising",
       "review_status": "bot-reviewed",
       "last_checked": "2026-05-25",
-      "profile_excerpt": "ai.myriade/myriade is an MCP server for agentic systems. Explore and query your data warehouse through Myriade's AI data analyst agent. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising. This ",
+      "profile_excerpt": "ai.myriade/myriade is an MCP server for agentic systems. Explore and query your data warehouse through Myriade's AI data analyst agent. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising. This",
       "entry_path": "registry/entries/ai-myriade-myriade/entry.yaml",
       "profile_path": "registry/entries/ai-myriade-myriade/profile.md",
       "url_path": "/entries/ai-myriade-myriade/",
@@ -10617,7 +11445,7 @@
       "trust_tier": "promising",
       "review_status": "bot-reviewed",
       "last_checked": "2026-05-25",
-      "profile_excerpt": "Bezal — Local Business Intelligence for AI Agents is an MCP server for agentic systems. Search 7,000+ local service businesses across America by category, location, or keyword. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## ",
+      "profile_excerpt": "Bezal — Local Business Intelligence for AI Agents is an MCP server for agentic systems. Search 7,000+ local service businesses across America by category, location, or keyword. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ##",
       "entry_path": "registry/entries/ai-bezal-local-commerce/entry.yaml",
       "profile_path": "registry/entries/ai-bezal-local-commerce/profile.md",
       "url_path": "/entries/ai-bezal-local-commerce/",
@@ -11788,7 +12616,7 @@
       "trust_tier": "promising",
       "review_status": "bot-reviewed",
       "last_checked": "2026-05-25",
-      "profile_excerpt": "DoneThat is an MCP server for agentic systems. Privacy-first work tracking with summaries, reports, coaching, and AI-ready long-term memory. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising. ",
+      "profile_excerpt": "DoneThat is an MCP server for agentic systems. Privacy-first work tracking with summaries, reports, coaching, and AI-ready long-term memory. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising.",
       "entry_path": "registry/entries/ai-donethat-donethat/entry.yaml",
       "profile_path": "registry/entries/ai-donethat-donethat/profile.md",
       "url_path": "/entries/ai-donethat-donethat/",
@@ -12748,7 +13576,7 @@
       "trust_tier": "promising",
       "review_status": "bot-reviewed",
       "last_checked": "2026-05-25",
-      "profile_excerpt": "Lenny Rachitsky Podcast Transcripts MCP Server is an MCP server for agentic systems. MCP server for structured access to Lenny Rachitsky podcast transcripts. For content creators. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ",
+      "profile_excerpt": "Lenny Rachitsky Podcast Transcripts MCP Server is an MCP server for agentic systems. MCP server for structured access to Lenny Rachitsky podcast transcripts. For content creators. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned.",
       "entry_path": "registry/entries/ai-com-mcp-lenny-rachitsky-podcast/entry.yaml",
       "profile_path": "registry/entries/ai-com-mcp-lenny-rachitsky-podcast/profile.md",
       "url_path": "/entries/ai-com-mcp-lenny-rachitsky-podcast/",
@@ -12863,6 +13691,98 @@
       "entry_path": "registry/entries/llamaindex-agents/entry.yaml",
       "profile_path": "registry/entries/llamaindex-agents/profile.md",
       "url_path": "/entries/llamaindex-agents/",
+      "recommendation_score": 10
+    },
+    {
+      "schema_version": "1.0.0",
+      "slug": "matter-js",
+      "name": "Matter.js",
+      "type": "runtime",
+      "summary_llm": "Matter.js is a JavaScript 2D rigid-body physics engine for browser games and simulations, useful when simple collision checks are not enough but a full physics stack should stay approachable.",
+      "homepage_url": "https://brm.io/matter-js/",
+      "repo_url": "https://github.com/liabru/matter-js",
+      "package_urls": [
+        "https://www.npmjs.com/package/matter-js"
+      ],
+      "licenses": [
+        "MIT"
+      ],
+      "copyright_owner": "Liam Brummitt and contributors",
+      "source_urls": [
+        "https://brm.io/matter-js/",
+        "https://github.com/liabru/matter-js",
+        "https://www.npmjs.com/package/matter-js"
+      ],
+      "source_kind": "official_docs",
+      "protocols": [],
+      "clients": [
+        "Browser",
+        "JavaScript",
+        "TypeScript"
+      ],
+      "install": {
+        "command": "npm install matter-js",
+        "notes": "Use when a 2D browser game needs rigid-body physics; keep fixed-step simulation and gameplay determinism requirements explicit.",
+        "config_example": null
+      },
+      "permissions": [
+        "browser"
+      ],
+      "env_vars": [],
+      "tags": [
+        "runtime",
+        "physics",
+        "two-dimensional",
+        "browser-game",
+        "collision",
+        "rigid-body",
+        "simulation"
+      ],
+      "use_cases": [
+        "Add 2D rigid-body physics to browser games",
+        "Simulate collisions, constraints, and forces",
+        "Build physics-based prototypes without adopting a full game engine"
+      ],
+      "best_for": [
+        "2D browser games that need approachable rigid-body physics",
+        "Add 2D rigid-body physics to browser games",
+        "Simulate collisions, constraints, and forces",
+        "Build physics-based prototypes without adopting a full game engine",
+        "runtime workflows",
+        "physics workflows",
+        "two-dimensional workflows",
+        "browser-game workflows"
+      ],
+      "not_for": [
+        "Simple arcade collision where custom overlap checks would be smaller and easier to verify."
+      ],
+      "alternatives": [
+        "rapier-js",
+        "phaser"
+      ],
+      "supersedes": [],
+      "freshness": "current",
+      "source_confidence": "official",
+      "maintenance_signals": [
+        "Official site, GitHub repository, and npm package metadata were checked.",
+        "Canonical repository URL recorded"
+      ],
+      "risk_flags": [
+        "physics-simulation",
+        "sensitive-permissions"
+      ],
+      "recommended_when": [
+        "Use when game rules need 2D rigid-body behavior and the agent can test collision outcomes in browser gameplay.",
+        "Use when a project needs add 2d rigid-body physics to browser games and the upstream source has been reviewed.",
+        "Treat as promising until a maintainer verifies install and behavior."
+      ],
+      "trust_tier": "promising",
+      "review_status": "manual-reviewed",
+      "last_checked": "2026-05-27",
+      "profile_excerpt": "Matter.js is a JavaScript 2D rigid-body physics engine for browser games and simulations. It is useful when custom overlap checks are not enough, but the game does not need a heavier physics or 3D stack. ## Best For - 2D browser games that need approachable rigid-body physics ## Recommended When - Use when game rules n",
+      "entry_path": "registry/entries/matter-js/entry.yaml",
+      "profile_path": "registry/entries/matter-js/profile.md",
+      "url_path": "/entries/matter-js/",
       "recommendation_score": 10
     },
     {
@@ -13146,7 +14066,7 @@
       "trust_tier": "promising",
       "review_status": "bot-reviewed",
       "last_checked": "2026-05-25",
-      "profile_excerpt": "Name Whisper — ENS Intelligence Layer is an MCP server for agentic systems. 34 MCP tools to search, register, manage, value, and trade ENS names. AI-powered intelligence layer. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## ",
+      "profile_excerpt": "Name Whisper — ENS Intelligence Layer is an MCP server for agentic systems. 34 MCP tools to search, register, manage, value, and trade ENS names. AI-powered intelligence layer. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ##",
       "entry_path": "registry/entries/ai-namewhisper-ens-tools/entry.yaml",
       "profile_path": "registry/entries/ai-namewhisper-ens-tools/profile.md",
       "url_path": "/entries/ai-namewhisper-ens-tools/",
@@ -13900,7 +14820,7 @@
         "https://docs.ragas.io/",
         "https://github.com/explodinggradients/ragas"
       ],
-      "profile_excerpt": "Ragas is an evaluation framework for RAG and LLM applications with metrics for retrieval, generation quality, testset generation, and experiment workflows. ## Best For - Knowledge assistants and retrieval-heavy agent systems ## Recommended When - Use when the agent depends on retrieval quality and grounded answers. ## ",
+      "profile_excerpt": "Ragas is an evaluation framework for RAG and LLM applications with metrics for retrieval, generation quality, testset generation, and experiment workflows. ## Best For - Knowledge assistants and retrieval-heavy agent systems ## Recommended When - Use when the agent depends on retrieval quality and grounded answers. ##",
       "entry_path": "registry/entries/ragas/entry.yaml",
       "profile_path": "registry/entries/ragas/profile.md",
       "url_path": "/entries/ragas/",
@@ -14207,7 +15127,7 @@
       "trust_tier": "promising",
       "review_status": "bot-reviewed",
       "last_checked": "2026-05-25",
-      "profile_excerpt": "ai.artidrop/artidrop is an MCP server for agentic systems. Publish HTML, Markdown, and multi-file sites as shareable URLs instantly via MCP. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising. ",
+      "profile_excerpt": "ai.artidrop/artidrop is an MCP server for agentic systems. Publish HTML, Markdown, and multi-file sites as shareable URLs instantly via MCP. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising.",
       "entry_path": "registry/entries/ai-artidrop-artidrop/entry.yaml",
       "profile_path": "registry/entries/ai-artidrop-artidrop/profile.md",
       "url_path": "/entries/ai-artidrop-artidrop/",
@@ -14326,6 +15246,107 @@
       "entry_path": "registry/entries/aider/entry.yaml",
       "profile_path": "registry/entries/aider/profile.md",
       "url_path": "/entries/aider/",
+      "recommendation_score": 9
+    },
+    {
+      "schema_version": "1.0.0",
+      "slug": "babylon-js",
+      "name": "Babylon.js",
+      "type": "runtime",
+      "summary_llm": "Babylon.js is a full-featured browser 3D engine for WebGL/WebGPU games and interactive applications, with engine-level support for scenes, materials, assets, GUI, XR, and physics.",
+      "homepage_url": "https://www.babylonjs.com",
+      "repo_url": "https://github.com/BabylonJS/Babylon.js",
+      "package_urls": [
+        "https://www.npmjs.com/package/@babylonjs/core"
+      ],
+      "licenses": [
+        "Apache-2.0"
+      ],
+      "copyright_owner": "Babylon.js contributors",
+      "source_urls": [
+        "https://www.babylonjs.com",
+        "https://doc.babylonjs.com/",
+        "https://doc.babylonjs.com/setup/support/webGPU",
+        "https://github.com/BabylonJS/Babylon.js",
+        "https://www.npmjs.com/package/@babylonjs/core"
+      ],
+      "source_kind": "official_docs",
+      "protocols": [],
+      "clients": [
+        "Browser",
+        "JavaScript",
+        "TypeScript"
+      ],
+      "install": {
+        "command": "npm install @babylonjs/core",
+        "notes": "Use for substantial 3D browser games or experiences where engine features matter more than a minimal renderer.",
+        "config_example": null
+      },
+      "permissions": [
+        "browser",
+        "canvas",
+        "webgl",
+        "webgpu",
+        "audio"
+      ],
+      "env_vars": [],
+      "tags": [
+        "runtime",
+        "game-engine",
+        "three-dimensional",
+        "webgl",
+        "webgpu",
+        "webxr",
+        "browser-game",
+        "typescript"
+      ],
+      "use_cases": [
+        "Build 3D browser games",
+        "Use engine-level scene, material, asset, GUI, XR, and physics features",
+        "Target WebGL with WebGPU support paths"
+      ],
+      "best_for": [
+        "3D browser games that benefit from a full engine instead of a focused renderer",
+        "Build 3D browser games",
+        "Use engine-level scene, material, asset, GUI, XR, and physics features",
+        "Target WebGL with WebGPU support paths",
+        "runtime workflows",
+        "game-engine workflows",
+        "three-dimensional workflows",
+        "webgl workflows"
+      ],
+      "not_for": [
+        "Lightweight 2D browser games or tiny 3D scenes where Three.js would be simpler."
+      ],
+      "alternatives": [
+        "three-js",
+        "playcanvas-engine"
+      ],
+      "supersedes": [],
+      "freshness": "current",
+      "source_confidence": "official",
+      "maintenance_signals": [
+        "Official docs, GitHub repository, and npm package metadata were checked.",
+        "WebGPU support is documented as part of the engine direction.",
+        "Canonical repository URL recorded"
+      ],
+      "risk_flags": [
+        "browser-runtime",
+        "gpu-rendering",
+        "sensitive-permissions"
+      ],
+      "recommended_when": [
+        "Use when an agent needs a full 3D web engine with browser verification, not just a graphics library.",
+        "Use when a project needs build 3d browser games and the upstream source has been reviewed.",
+        "Treat as promising until a maintainer verifies install and behavior."
+      ],
+      "trust_tier": "promising",
+      "review_status": "manual-reviewed",
+      "last_checked": "2026-05-27",
+      "profile_excerpt": "Babylon.js is a full-featured 3D browser engine for WebGL/WebGPU games and interactive applications. It is heavier than a focused renderer, but gives agents engine-level primitives for scenes, materials, assets, GUI, XR, and physics-oriented workflows. ## Best For - 3D browser games that benefit from a full engine inst",
+      "entry_path": "registry/entries/babylon-js/entry.yaml",
+      "profile_path": "registry/entries/babylon-js/profile.md",
+      "url_path": "/entries/babylon-js/",
       "recommendation_score": 9
     },
     {
@@ -14581,6 +15602,104 @@
     },
     {
       "schema_version": "1.0.0",
+      "slug": "excalibur-js",
+      "name": "Excalibur.js",
+      "type": "runtime",
+      "summary_llm": "Excalibur.js is a TypeScript-first 2D HTML5 canvas game engine for browser games, offering actors, scenes, collision, input, assets, and game-loop structure.",
+      "homepage_url": "https://excaliburjs.com/",
+      "repo_url": "https://github.com/excaliburjs/Excalibur",
+      "package_urls": [
+        "https://www.npmjs.com/package/excalibur"
+      ],
+      "licenses": [
+        "BSD-2-Clause"
+      ],
+      "copyright_owner": "Erik Onarheim",
+      "source_urls": [
+        "https://excaliburjs.com/",
+        "https://excaliburjs.com/docs",
+        "https://github.com/excaliburjs/Excalibur",
+        "https://www.npmjs.com/package/excalibur"
+      ],
+      "source_kind": "official_docs",
+      "protocols": [],
+      "clients": [
+        "Browser",
+        "TypeScript",
+        "JavaScript"
+      ],
+      "install": {
+        "command": "npm install excalibur",
+        "notes": "Use for TypeScript-first 2D browser games; review 0.x API stability before large production commitments.",
+        "config_example": null
+      },
+      "permissions": [
+        "browser",
+        "canvas",
+        "audio"
+      ],
+      "env_vars": [],
+      "tags": [
+        "runtime",
+        "game-engine",
+        "browser-game",
+        "canvas",
+        "two-dimensional",
+        "typescript",
+        "html5-game"
+      ],
+      "use_cases": [
+        "Build TypeScript-first 2D browser games",
+        "Use actors, scenes, input, collision, and assets",
+        "Teach or prototype structured 2D game architecture"
+      ],
+      "best_for": [
+        "TypeScript-oriented 2D games that need engine structure without moving into 3D",
+        "Build TypeScript-first 2D browser games",
+        "Use actors, scenes, input, collision, and assets",
+        "Teach or prototype structured 2D game architecture",
+        "runtime workflows",
+        "game-engine workflows",
+        "browser-game workflows",
+        "canvas workflows"
+      ],
+      "not_for": [
+        "Projects that require a long-stable 1.x API surface without reviewing current roadmap risk."
+      ],
+      "alternatives": [
+        "phaser",
+        "kaplay",
+        "pixijs"
+      ],
+      "supersedes": [],
+      "freshness": "current",
+      "source_confidence": "official",
+      "maintenance_signals": [
+        "Official docs, GitHub repository, and npm package metadata were checked.",
+        "Project README notes the engine is still in 0.x, so API changes remain possible.",
+        "Canonical repository URL recorded"
+      ],
+      "risk_flags": [
+        "browser-runtime",
+        "pre-1.0-api",
+        "sensitive-permissions"
+      ],
+      "recommended_when": [
+        "Use when a 2D browser game should stay TypeScript-first and benefit from actors, scenes, collision, and asset structure.",
+        "Use when a project needs build typescript-first 2d browser games and the upstream source has been reviewed.",
+        "Treat as promising until a maintainer verifies install and behavior."
+      ],
+      "trust_tier": "promising",
+      "review_status": "manual-reviewed",
+      "last_checked": "2026-05-27",
+      "profile_excerpt": "Excalibur.js is a TypeScript-first 2D HTML5 canvas game engine. It is a good fit when an agent needs actors, scenes, collision, input, assets, and a structured loop while staying in a browser-native TypeScript workflow. ## Best For - TypeScript-oriented 2D games that need engine structure without moving into 3D ## Reco",
+      "entry_path": "registry/entries/excalibur-js/entry.yaml",
+      "profile_path": "registry/entries/excalibur-js/profile.md",
+      "url_path": "/entries/excalibur-js/",
+      "recommendation_score": 9
+    },
+    {
+      "schema_version": "1.0.0",
       "homepage_url": "https://docs.firecrawl.dev/mcp-server",
       "repo_url": "https://github.com/mendableai/firecrawl-mcp-server",
       "package_urls": [],
@@ -14663,7 +15782,7 @@
         "https://docs.firecrawl.dev/mcp-server",
         "https://github.com/mendableai/firecrawl-mcp-server"
       ],
-      "profile_excerpt": "Firecrawl MCP lets agents crawl, scrape, search, and extract web content through Firecrawl's web data APIs for research and ingestion workflows. ## Best For - Research agents that need structured web extraction ## Recommended When - Use when web extraction is permitted and citations or raw sources remain available. ## ",
+      "profile_excerpt": "Firecrawl MCP lets agents crawl, scrape, search, and extract web content through Firecrawl's web data APIs for research and ingestion workflows. ## Best For - Research agents that need structured web extraction ## Recommended When - Use when web extraction is permitted and citations or raw sources remain available. ##",
       "entry_path": "registry/entries/firecrawl-mcp/entry.yaml",
       "profile_path": "registry/entries/firecrawl-mcp/profile.md",
       "url_path": "/entries/firecrawl-mcp/",
@@ -14753,10 +15872,107 @@
       "source_urls": [
         "https://github.com/github/github-mcp-server"
       ],
-      "profile_excerpt": "GitHub MCP Server is GitHub's official MCP server for repository, issue, pull request, search, workflow, and code operations through agent clients. ## Best For - Repository workflows where GitHub is the system of record ## Recommended When - Use when an agent needs GitHub context or PR workflows and token scope can be ",
+      "profile_excerpt": "GitHub MCP Server is GitHub's official MCP server for repository, issue, pull request, search, workflow, and code operations through agent clients. ## Best For - Repository workflows where GitHub is the system of record ## Recommended When - Use when an agent needs GitHub context or PR workflows and token scope can be",
       "entry_path": "registry/entries/github-mcp-server/entry.yaml",
       "profile_path": "registry/entries/github-mcp-server/profile.md",
       "url_path": "/entries/github-mcp-server/",
+      "recommendation_score": 9
+    },
+    {
+      "schema_version": "1.0.0",
+      "slug": "kaplay",
+      "name": "KAPLAY",
+      "type": "runtime",
+      "summary_llm": "KAPLAY is a JavaScript and TypeScript 2D game library for fast browser-game prototyping, using component-style game objects, simple physics helpers, input, sprites, and web examples.",
+      "homepage_url": "https://kaplayjs.com/",
+      "repo_url": "https://github.com/kaplayjs/kaplay",
+      "package_urls": [
+        "https://www.npmjs.com/package/kaplay"
+      ],
+      "licenses": [
+        "MIT"
+      ],
+      "copyright_owner": "KAPLAY Team",
+      "source_urls": [
+        "https://kaplayjs.com/",
+        "https://github.com/kaplayjs/kaplay",
+        "https://www.npmjs.com/package/kaplay"
+      ],
+      "source_kind": "official_docs",
+      "protocols": [],
+      "clients": [
+        "Browser",
+        "JavaScript",
+        "TypeScript"
+      ],
+      "install": {
+        "command": "npm install kaplay",
+        "notes": "Use for quick 2D prototypes and playful examples; choose Phaser or Excalibur when larger game architecture is the main concern.",
+        "config_example": null
+      },
+      "permissions": [
+        "browser",
+        "canvas",
+        "audio"
+      ],
+      "env_vars": [],
+      "tags": [
+        "runtime",
+        "game-library",
+        "browser-game",
+        "canvas",
+        "two-dimensional",
+        "prototype",
+        "typescript"
+      ],
+      "use_cases": [
+        "Prototype 2D browser games quickly",
+        "Teach simple game objects, collisions, and input",
+        "Build small playful web games with concise code"
+      ],
+      "best_for": [
+        "Fast 2D browser-game prototypes where concise game code matters most",
+        "Prototype 2D browser games quickly",
+        "Teach simple game objects, collisions, and input",
+        "Build small playful web games with concise code",
+        "runtime workflows",
+        "game-library workflows",
+        "browser-game workflows",
+        "canvas workflows"
+      ],
+      "not_for": [
+        "Larger games that need a more formal scene, asset, and tooling architecture."
+      ],
+      "alternatives": [
+        "phaser",
+        "excalibur-js",
+        "pixijs"
+      ],
+      "supersedes": [],
+      "freshness": "current",
+      "source_confidence": "official",
+      "maintenance_signals": [
+        "Official website, GitHub repository, and npm package metadata were checked.",
+        "Large version number reflects project-specific release scheme, not a maturity guarantee.",
+        "Canonical repository URL recorded"
+      ],
+      "risk_flags": [
+        "browser-runtime",
+        "prototype-oriented",
+        "sensitive-permissions"
+      ],
+      "recommended_when": [
+        "Use when an agent should make a small 2D browser game feel playable quickly without a heavy engine.",
+        "Use when a project needs prototype 2d browser games quickly and the upstream source has been reviewed.",
+        "Treat as promising until a maintainer verifies install and behavior."
+      ],
+      "trust_tier": "promising",
+      "review_status": "manual-reviewed",
+      "last_checked": "2026-05-27",
+      "profile_excerpt": "KAPLAY is a JavaScript and TypeScript 2D game library for fast browser-game prototyping. It is most useful when an agent needs a small playable game quickly, with simple game objects, collisions, input, sprites, and concise examples. ## Best For - Fast 2D browser-game prototypes where concise game code matters most ##",
+      "entry_path": "registry/entries/kaplay/entry.yaml",
+      "profile_path": "registry/entries/kaplay/profile.md",
+      "url_path": "/entries/kaplay/",
       "recommendation_score": 9
     },
     {
@@ -14930,6 +16146,310 @@
     },
     {
       "schema_version": "1.0.0",
+      "slug": "phaser",
+      "name": "Phaser",
+      "type": "runtime",
+      "summary_llm": "Phaser is an open-source HTML5 game framework for building browser 2D games with scenes, sprites, asset loading, input, cameras, animation, audio, and Canvas/WebGL rendering.",
+      "homepage_url": "https://phaser.io",
+      "repo_url": "https://github.com/phaserjs/phaser",
+      "package_urls": [
+        "https://www.npmjs.com/package/phaser"
+      ],
+      "licenses": [
+        "MIT"
+      ],
+      "copyright_owner": "Richard Davey, Phaser Studio Inc.",
+      "source_urls": [
+        "https://phaser.io",
+        "https://docs.phaser.io/",
+        "https://github.com/phaserjs/phaser",
+        "https://www.npmjs.com/package/phaser"
+      ],
+      "source_kind": "official_docs",
+      "protocols": [],
+      "clients": [
+        "Browser",
+        "JavaScript",
+        "TypeScript"
+      ],
+      "install": {
+        "command": "npm install phaser",
+        "notes": "Use for full 2D browser games when an engine should own scenes, assets, sprites, input, cameras, audio, and game-loop structure.",
+        "config_example": null
+      },
+      "permissions": [
+        "browser",
+        "canvas",
+        "webgl",
+        "audio"
+      ],
+      "env_vars": [],
+      "tags": [
+        "runtime",
+        "game-engine",
+        "browser-game",
+        "html5-game",
+        "canvas",
+        "webgl",
+        "two-dimensional",
+        "typescript"
+      ],
+      "use_cases": [
+        "Build structured 2D browser games",
+        "Manage scenes, sprites, assets, input, cameras, and audio",
+        "Ship HTML5 games across desktop and mobile browsers"
+      ],
+      "best_for": [
+        "2D games that need a mature game framework instead of custom Canvas code",
+        "Build structured 2D browser games",
+        "Manage scenes, sprites, assets, input, cameras, and audio",
+        "Ship HTML5 games across desktop and mobile browsers",
+        "runtime workflows",
+        "game-engine workflows",
+        "browser-game workflows",
+        "html5-game workflows"
+      ],
+      "not_for": [
+        "Tiny one-screen Canvas experiments where an engine would add more structure than value.",
+        "True 3D games where Three.js, Babylon.js, or PlayCanvas is a better fit."
+      ],
+      "alternatives": [
+        "pixijs",
+        "excalibur-js",
+        "kaplay",
+        "three-js"
+      ],
+      "supersedes": [],
+      "freshness": "current",
+      "source_confidence": "official",
+      "maintenance_signals": [
+        "Official docs, GitHub repository, and npm package metadata were checked.",
+        "Commercially maintained by Phaser Studio Inc. with open-source community support.",
+        "Canonical repository URL recorded"
+      ],
+      "risk_flags": [
+        "browser-runtime",
+        "canvas-webgl-rendering",
+        "sensitive-permissions"
+      ],
+      "recommended_when": [
+        "Use when a browser game needs scenes, sprites, asset loading, collisions, cameras, audio, and a tested 2D engine.",
+        "Use when a project needs build structured 2d browser games and the upstream source has been reviewed.",
+        "Treat as promising until a maintainer verifies install and behavior."
+      ],
+      "trust_tier": "promising",
+      "review_status": "manual-reviewed",
+      "last_checked": "2026-05-27",
+      "profile_excerpt": "Phaser is an open-source HTML5 framework for browser-based 2D games. It is a good default when an agent needs more than a raw Canvas loop: scenes, sprites, asset loading, input, cameras, animation, audio, and Canvas/WebGL rendering. ## Best For - 2D games that need a mature game framework instead of custom Canvas code",
+      "entry_path": "registry/entries/phaser/entry.yaml",
+      "profile_path": "registry/entries/phaser/profile.md",
+      "url_path": "/entries/phaser/",
+      "recommendation_score": 9
+    },
+    {
+      "schema_version": "1.0.0",
+      "slug": "pixijs",
+      "name": "PixiJS",
+      "type": "runtime",
+      "summary_llm": "PixiJS is a lightweight 2D rendering library for rich browser graphics and interactive scenes, using WebGL and WebGPU without imposing a full game-engine architecture.",
+      "homepage_url": "https://pixijs.com/",
+      "repo_url": "https://github.com/pixijs/pixijs",
+      "package_urls": [
+        "https://www.npmjs.com/package/pixi.js"
+      ],
+      "licenses": [
+        "MIT"
+      ],
+      "copyright_owner": "Mathew Groves, Chad Engler",
+      "source_urls": [
+        "https://pixijs.com/",
+        "https://pixijs.com/8.x/guides",
+        "https://github.com/pixijs/pixijs",
+        "https://www.npmjs.com/package/pixi.js"
+      ],
+      "source_kind": "official_docs",
+      "protocols": [],
+      "clients": [
+        "Browser",
+        "JavaScript",
+        "TypeScript"
+      ],
+      "install": {
+        "command": "npm install pixi.js",
+        "notes": "Use when the main need is fast 2D rendering and interaction; add your own game-state, rules, and scene architecture.",
+        "config_example": null
+      },
+      "permissions": [
+        "browser",
+        "canvas",
+        "webgl",
+        "webgpu"
+      ],
+      "env_vars": [],
+      "tags": [
+        "runtime",
+        "renderer",
+        "browser-game",
+        "canvas",
+        "webgl",
+        "webgpu",
+        "two-dimensional",
+        "graphics"
+      ],
+      "use_cases": [
+        "Render rich 2D browser graphics",
+        "Build interactive sprite-heavy scenes",
+        "Add a renderer without adopting a full game engine"
+      ],
+      "best_for": [
+        "2D experiences where rendering performance matters more than engine-level game structure",
+        "Render rich 2D browser graphics",
+        "Build interactive sprite-heavy scenes",
+        "Add a renderer without adopting a full game engine",
+        "runtime workflows",
+        "renderer workflows",
+        "browser-game workflows",
+        "canvas workflows"
+      ],
+      "not_for": [
+        "Games that need a complete batteries-included framework for scenes, physics, cameras, and audio."
+      ],
+      "alternatives": [
+        "phaser",
+        "excalibur-js",
+        "kaplay",
+        "three-js"
+      ],
+      "supersedes": [],
+      "freshness": "current",
+      "source_confidence": "official",
+      "maintenance_signals": [
+        "Official docs, GitHub repository, and npm package metadata were checked.",
+        "Current major release supports modern WebGL/WebGPU rendering paths.",
+        "Canonical repository URL recorded"
+      ],
+      "risk_flags": [
+        "browser-runtime",
+        "gpu-rendering",
+        "sensitive-permissions"
+      ],
+      "recommended_when": [
+        "Use when an agent needs a fast browser 2D renderer while keeping game rules and architecture custom.",
+        "Use when a project needs render rich 2d browser graphics and the upstream source has been reviewed.",
+        "Treat as promising until a maintainer verifies install and behavior."
+      ],
+      "trust_tier": "promising",
+      "review_status": "manual-reviewed",
+      "last_checked": "2026-05-27",
+      "profile_excerpt": "PixiJS is a lightweight 2D rendering library for rich browser graphics and interactive scenes. It is best treated as a renderer rather than a complete game framework: useful when the game needs fast sprites, filters, textures, and interaction, but the agent should keep rules and state architecture explicit. ## Best For",
+      "entry_path": "registry/entries/pixijs/entry.yaml",
+      "profile_path": "registry/entries/pixijs/profile.md",
+      "url_path": "/entries/pixijs/",
+      "recommendation_score": 9
+    },
+    {
+      "schema_version": "1.0.0",
+      "slug": "playcanvas-engine",
+      "name": "PlayCanvas Engine",
+      "type": "runtime",
+      "summary_llm": "PlayCanvas Engine is an open-source browser 3D game engine built on WebGL2 and WebGPU, with APIs for rendering, assets, input, animation, audio, physics integration, and WebXR.",
+      "homepage_url": "https://playcanvas.com",
+      "repo_url": "https://github.com/playcanvas/engine",
+      "package_urls": [
+        "https://www.npmjs.com/package/playcanvas"
+      ],
+      "licenses": [
+        "MIT"
+      ],
+      "copyright_owner": "PlayCanvas Ltd.",
+      "source_urls": [
+        "https://playcanvas.com",
+        "https://developer.playcanvas.com/user-manual/engine/",
+        "https://github.com/playcanvas/engine",
+        "https://www.npmjs.com/package/playcanvas"
+      ],
+      "source_kind": "official_docs",
+      "protocols": [],
+      "clients": [
+        "Browser",
+        "JavaScript",
+        "TypeScript"
+      ],
+      "install": {
+        "command": "npm install playcanvas",
+        "notes": "Use for browser-first 3D games and visualizations; consider whether the editor workflow or pure engine API is desired.",
+        "config_example": null
+      },
+      "permissions": [
+        "browser",
+        "canvas",
+        "webgl",
+        "webgpu",
+        "webxr",
+        "audio"
+      ],
+      "env_vars": [],
+      "tags": [
+        "runtime",
+        "game-engine",
+        "three-dimensional",
+        "webgl",
+        "webgpu",
+        "webxr",
+        "browser-game",
+        "typescript"
+      ],
+      "use_cases": [
+        "Build browser-first 3D games",
+        "Render interactive 3D apps and visualizations",
+        "Use WebGL2, WebGPU, WebXR, input, audio, assets, and animation in one engine"
+      ],
+      "best_for": [
+        "3D browser games or visualizations that benefit from an engine with a browser-based ecosystem",
+        "Build browser-first 3D games",
+        "Render interactive 3D apps and visualizations",
+        "Use WebGL2, WebGPU, WebXR, input, audio, assets, and animation in one engine",
+        "runtime workflows",
+        "game-engine workflows",
+        "three-dimensional workflows",
+        "webgl workflows"
+      ],
+      "not_for": [
+        "Simple 2D games or small custom 3D scenes where lighter libraries are easier to inspect."
+      ],
+      "alternatives": [
+        "three-js",
+        "babylon-js"
+      ],
+      "supersedes": [],
+      "freshness": "current",
+      "source_confidence": "official",
+      "maintenance_signals": [
+        "Official docs, GitHub repository, and npm package metadata were checked.",
+        "Engine docs describe WebGL2 and WebGPU support.",
+        "Canonical repository URL recorded"
+      ],
+      "risk_flags": [
+        "browser-runtime",
+        "gpu-rendering",
+        "sensitive-permissions"
+      ],
+      "recommended_when": [
+        "Use when a project needs a browser-first 3D game engine with rendering, input, assets, audio, animation, and XR paths.",
+        "Use when a project needs build browser-first 3d games and the upstream source has been reviewed.",
+        "Treat as promising until a maintainer verifies install and behavior."
+      ],
+      "trust_tier": "promising",
+      "review_status": "manual-reviewed",
+      "last_checked": "2026-05-27",
+      "profile_excerpt": "PlayCanvas Engine is an open-source browser 3D game engine built around WebGL2 and WebGPU. It is useful when an agent needs a browser-first 3D engine with rendering, input, assets, animation, audio, physics integration, and WebXR pathways. ## Best For - 3D browser games or visualizations that benefit from an engine wit",
+      "entry_path": "registry/entries/playcanvas-engine/entry.yaml",
+      "profile_path": "registry/entries/playcanvas-engine/profile.md",
+      "url_path": "/entries/playcanvas-engine/",
+      "recommendation_score": 9
+    },
+    {
+      "schema_version": "1.0.0",
       "homepage_url": "https://github.com/microsoft/playwright-mcp",
       "repo_url": "https://github.com/microsoft/playwright-mcp",
       "package_urls": [],
@@ -15016,6 +16536,472 @@
       "profile_path": "registry/entries/playwright-mcp/profile.md",
       "url_path": "/entries/playwright-mcp/",
       "recommendation_score": 9
+    },
+    {
+      "schema_version": "1.0.0",
+      "slug": "rapier-js",
+      "name": "Rapier JS",
+      "type": "runtime",
+      "summary_llm": "Rapier JS provides official JavaScript bindings for the Rapier 2D and 3D physics engines, using WebAssembly packages for browser games and simulations that need higher-performance physics.",
+      "homepage_url": "https://rapier.rs",
+      "repo_url": "https://github.com/dimforge/rapier.js",
+      "package_urls": [
+        "https://www.npmjs.com/package/@dimforge/rapier2d-compat",
+        "https://www.npmjs.com/package/@dimforge/rapier3d-compat"
+      ],
+      "licenses": [
+        "Apache-2.0"
+      ],
+      "copyright_owner": "Dimforge",
+      "source_urls": [
+        "https://rapier.rs",
+        "https://rapier.rs/docs/",
+        "https://github.com/dimforge/rapier.js",
+        "https://www.npmjs.com/package/@dimforge/rapier2d-compat",
+        "https://www.npmjs.com/package/@dimforge/rapier3d-compat"
+      ],
+      "source_kind": "official_docs",
+      "protocols": [],
+      "clients": [
+        "Browser",
+        "JavaScript",
+        "TypeScript"
+      ],
+      "install": {
+        "command": "npm install @dimforge/rapier2d-compat",
+        "notes": "Use the 2D or 3D package that matches the game. Compat packages ease bundling by embedding WASM but increase package size.",
+        "config_example": null
+      },
+      "permissions": [
+        "browser",
+        "wasm"
+      ],
+      "env_vars": [],
+      "tags": [
+        "runtime",
+        "physics",
+        "two-dimensional",
+        "three-dimensional",
+        "wasm",
+        "browser-game",
+        "collision",
+        "simulation"
+      ],
+      "use_cases": [
+        "Add 2D or 3D physics to browser games",
+        "Use WASM-backed rigid-body simulation",
+        "Choose deterministic or compatibility physics packages when needed"
+      ],
+      "best_for": [
+        "Browser games that need stronger 2D or 3D physics than simple custom collision or Matter.js",
+        "Add 2D or 3D physics to browser games",
+        "Use WASM-backed rigid-body simulation",
+        "Choose deterministic or compatibility physics packages when needed",
+        "runtime workflows",
+        "physics workflows",
+        "two-dimensional workflows",
+        "three-dimensional workflows"
+      ],
+      "not_for": [
+        "Projects that cannot tolerate WASM bundling complexity or larger compat package output."
+      ],
+      "alternatives": [
+        "matter-js",
+        "babylon-js",
+        "playcanvas-engine"
+      ],
+      "supersedes": [],
+      "freshness": "current",
+      "source_confidence": "official",
+      "maintenance_signals": [
+        "Official docs, GitHub repository, and npm package metadata were checked.",
+        "README documents distinct package variants for 2D, 3D, SIMD, deterministic, and compat builds.",
+        "Canonical repository URL recorded"
+      ],
+      "risk_flags": [
+        "physics-simulation",
+        "wasm-bundling",
+        "sensitive-permissions"
+      ],
+      "recommended_when": [
+        "Use when a browser game needs 2D or 3D rigid-body physics and the agent can verify WASM loading plus gameplay collisions.",
+        "Use when a project needs add 2d or 3d physics to browser games and the upstream source has been reviewed.",
+        "Treat as promising until a maintainer verifies install and behavior."
+      ],
+      "trust_tier": "promising",
+      "review_status": "manual-reviewed",
+      "last_checked": "2026-05-27",
+      "profile_excerpt": "Rapier JS provides official JavaScript bindings for the Rapier 2D and 3D physics engines. It is a stronger choice than simple collision logic when a browser game needs higher-performance rigid-body physics, but it introduces WASM packaging and loading concerns that must be tested. ## Best For - Browser games that need",
+      "entry_path": "registry/entries/rapier-js/entry.yaml",
+      "profile_path": "registry/entries/rapier-js/profile.md",
+      "url_path": "/entries/rapier-js/",
+      "recommendation_score": 9
+    },
+    {
+      "schema_version": "1.0.0",
+      "slug": "ripgrep",
+      "name": "ripgrep",
+      "type": "runtime",
+      "summary_llm": "ripgrep is a mature Rust command-line search tool that recursively searches files for regex patterns while respecting gitignore rules, making it a strong default grep replacement for coding agents inspecting repositories.",
+      "homepage_url": "https://github.com/BurntSushi/ripgrep",
+      "repo_url": "https://github.com/BurntSushi/ripgrep",
+      "package_urls": [
+        "https://crates.io/crates/ripgrep"
+      ],
+      "licenses": [
+        "MIT",
+        "Unlicense"
+      ],
+      "copyright_owner": "Andrew Gallant",
+      "source_urls": [
+        "https://github.com/BurntSushi/ripgrep",
+        "https://crates.io/crates/ripgrep"
+      ],
+      "source_kind": "github",
+      "protocols": [],
+      "clients": [
+        "CLI"
+      ],
+      "install": {
+        "command": "cargo install ripgrep",
+        "notes": "Prefer rg for fast text search in codebases; use syntax-aware tools when structural matching or safe rewrites matter more than raw text search.",
+        "config_example": null
+      },
+      "permissions": [
+        "filesystem"
+      ],
+      "env_vars": [],
+      "tags": [
+        "search",
+        "grep",
+        "regex",
+        "rust",
+        "coding-agents"
+      ],
+      "use_cases": [
+        "Search codebases quickly",
+        "Respect gitignore while finding text patterns",
+        "Reduce token-heavy file exploration loops"
+      ],
+      "best_for": [
+        "Coding agents that need fast lexical search before reading files",
+        "Search codebases quickly",
+        "Respect gitignore while finding text patterns",
+        "Reduce token-heavy file exploration loops",
+        "search workflows",
+        "grep workflows",
+        "regex workflows",
+        "rust workflows"
+      ],
+      "not_for": [
+        "Syntax-aware refactors or graph queries where AST or index-based tools are better."
+      ],
+      "alternatives": [
+        "ast-grep",
+        "ugrep",
+        "codebase-memory-mcp"
+      ],
+      "supersedes": [],
+      "freshness": "current",
+      "source_confidence": "high",
+      "maintenance_signals": [
+        "Canonical GitHub repository and crates.io package were checked.",
+        "Canonical repository URL recorded"
+      ],
+      "risk_flags": [
+        "reads-local-files",
+        "sensitive-permissions"
+      ],
+      "recommended_when": [
+        "Use as the default text-search primitive before opening files or proposing code changes.",
+        "Use when a project needs search codebases quickly and the upstream source has been reviewed.",
+        "Treat as promising until a maintainer verifies install and behavior."
+      ],
+      "trust_tier": "promising",
+      "review_status": "manual-reviewed",
+      "last_checked": "2026-05-27",
+      "profile_excerpt": "ripgrep is a mature Rust command-line search tool that recursively searches files for regex patterns while respecting gitignore rules, making it a strong default grep replacement for coding agents inspecting repositories. ## Best For - Coding agents that need fast lexical search before reading files ## Recommended When",
+      "entry_path": "registry/entries/ripgrep/entry.yaml",
+      "profile_path": "registry/entries/ripgrep/profile.md",
+      "url_path": "/entries/ripgrep/",
+      "recommendation_score": 9
+    },
+    {
+      "schema_version": "1.0.0",
+      "slug": "three-js",
+      "name": "Three.js",
+      "type": "runtime",
+      "summary_llm": "Three.js is a JavaScript 3D graphics library for rendering browser scenes with WebGL and emerging WebGPU support, useful when a web game or interactive experience is genuinely 3D.",
+      "homepage_url": "https://threejs.org/",
+      "repo_url": "https://github.com/mrdoob/three.js",
+      "package_urls": [
+        "https://www.npmjs.com/package/three"
+      ],
+      "licenses": [
+        "MIT"
+      ],
+      "copyright_owner": "three.js authors",
+      "source_urls": [
+        "https://threejs.org/",
+        "https://threejs.org/docs/index",
+        "https://github.com/mrdoob/three.js",
+        "https://www.npmjs.com/package/three"
+      ],
+      "source_kind": "official_docs",
+      "protocols": [],
+      "clients": [
+        "Browser",
+        "JavaScript",
+        "TypeScript"
+      ],
+      "install": {
+        "command": "npm install three",
+        "notes": "Use for custom 3D browser scenes; pair with separate UI, physics, asset, and game-state choices as needed.",
+        "config_example": null
+      },
+      "permissions": [
+        "browser",
+        "canvas",
+        "webgl",
+        "webgpu"
+      ],
+      "env_vars": [],
+      "tags": [
+        "runtime",
+        "three-dimensional",
+        "webgl",
+        "webgpu",
+        "graphics",
+        "browser-game",
+        "renderer"
+      ],
+      "use_cases": [
+        "Render custom 3D browser scenes",
+        "Build interactive WebGL or WebGPU experiences",
+        "Add 3D visuals to web applications"
+      ],
+      "best_for": [
+        "Custom 3D browser experiences where a focused graphics library is preferable to a full game engine",
+        "Render custom 3D browser scenes",
+        "Build interactive WebGL or WebGPU experiences",
+        "Add 3D visuals to web applications",
+        "runtime workflows",
+        "three-dimensional workflows",
+        "webgl workflows",
+        "webgpu workflows"
+      ],
+      "not_for": [
+        "Simple 2D games where Canvas, Phaser, PixiJS, Excalibur, or KAPLAY would be lighter."
+      ],
+      "alternatives": [
+        "babylon-js",
+        "playcanvas-engine",
+        "pixijs"
+      ],
+      "supersedes": [],
+      "freshness": "current",
+      "source_confidence": "official",
+      "maintenance_signals": [
+        "Official docs, GitHub repository, and npm package metadata were checked.",
+        "Widely used browser 3D library with active releases.",
+        "Canonical repository URL recorded"
+      ],
+      "risk_flags": [
+        "browser-runtime",
+        "gpu-rendering",
+        "sensitive-permissions"
+      ],
+      "recommended_when": [
+        "Use when the core game mechanic or visual direction is actually 3D and the agent can verify the rendered scene in a browser.",
+        "Use when a project needs render custom 3d browser scenes and the upstream source has been reviewed.",
+        "Treat as promising until a maintainer verifies install and behavior."
+      ],
+      "trust_tier": "promising",
+      "review_status": "manual-reviewed",
+      "last_checked": "2026-05-27",
+      "profile_excerpt": "Three.js is a JavaScript 3D graphics library for custom browser scenes. It is useful for games and interactive views where 3D is central, but it is not a full game framework by itself; UI, physics, assets, and state still need deliberate choices. ## Best For - Custom 3D browser experiences where a focused graphics libr",
+      "entry_path": "registry/entries/three-js/entry.yaml",
+      "profile_path": "registry/entries/three-js/profile.md",
+      "url_path": "/entries/three-js/",
+      "recommendation_score": 9
+    },
+    {
+      "schema_version": "1.0.0",
+      "slug": "ugrep",
+      "name": "ugrep",
+      "type": "runtime",
+      "summary_llm": "ugrep is a high-performance grep-compatible search utility with interactive TUI, Boolean and fuzzy search, archive and compressed-file search, document search, and structured output options.",
+      "homepage_url": "https://ugrep.com",
+      "repo_url": "https://github.com/Genivia/ugrep",
+      "package_urls": [
+        "https://github.com/Genivia/ugrep/releases"
+      ],
+      "licenses": [
+        "BSD-3-Clause"
+      ],
+      "copyright_owner": "Genivia",
+      "source_urls": [
+        "https://ugrep.com",
+        "https://github.com/Genivia/ugrep"
+      ],
+      "source_kind": "github",
+      "protocols": [],
+      "clients": [
+        "CLI"
+      ],
+      "install": {
+        "command": null,
+        "notes": "Consider when agents need archive, compressed file, document, Boolean, fuzzy, or interactive search beyond normal code grep workflows.",
+        "config_example": null
+      },
+      "permissions": [
+        "filesystem"
+      ],
+      "env_vars": [],
+      "tags": [
+        "search",
+        "grep",
+        "fuzzy-search",
+        "archives",
+        "tui"
+      ],
+      "use_cases": [
+        "Search archives and compressed files",
+        "Run Boolean or fuzzy local search",
+        "Produce structured search output"
+      ],
+      "best_for": [
+        "Repository audits that need search beyond source text files",
+        "Search archives and compressed files",
+        "Run Boolean or fuzzy local search",
+        "Produce structured search output",
+        "search workflows",
+        "grep workflows",
+        "fuzzy-search workflows",
+        "archives workflows"
+      ],
+      "not_for": [
+        "Default code search when ripgrep already covers the task."
+      ],
+      "alternatives": [
+        "ripgrep",
+        "ast-grep"
+      ],
+      "supersedes": [],
+      "freshness": "current",
+      "source_confidence": "high",
+      "maintenance_signals": [
+        "GitHub repository and project homepage were checked.",
+        "Canonical repository URL recorded"
+      ],
+      "risk_flags": [
+        "reads-local-files",
+        "sensitive-permissions"
+      ],
+      "recommended_when": [
+        "Use when search needs include archives, compressed files, documents, or Boolean/fuzzy matching.",
+        "Use when a project needs search archives and compressed files and the upstream source has been reviewed.",
+        "Treat as promising until a maintainer verifies install and behavior."
+      ],
+      "trust_tier": "promising",
+      "review_status": "manual-reviewed",
+      "last_checked": "2026-05-27",
+      "profile_excerpt": "ugrep is a high-performance grep-compatible search utility with interactive TUI, Boolean and fuzzy search, archive and compressed-file search, document search, and structured output options. ## Best For - Repository audits that need search beyond source text files ## Recommended When - Use when search needs include arc",
+      "entry_path": "registry/entries/ugrep/entry.yaml",
+      "profile_path": "registry/entries/ugrep/profile.md",
+      "url_path": "/entries/ugrep/",
+      "recommendation_score": 9
+    },
+    {
+      "schema_version": "1.0.0",
+      "slug": "ast-grep",
+      "name": "ast-grep",
+      "type": "runtime",
+      "summary_llm": "ast-grep is a Rust and tree-sitter based CLI for structural code search, linting, and rewriting, letting agents match syntax patterns instead of fragile text snippets across many languages.",
+      "homepage_url": "https://ast-grep.github.io/",
+      "repo_url": "https://github.com/ast-grep/ast-grep",
+      "package_urls": [
+        "https://www.npmjs.com/package/@ast-grep/cli"
+      ],
+      "licenses": [
+        "MIT"
+      ],
+      "copyright_owner": "ast-grep",
+      "source_urls": [
+        "https://ast-grep.github.io/",
+        "https://github.com/ast-grep/ast-grep",
+        "https://www.npmjs.com/package/@ast-grep/cli"
+      ],
+      "source_kind": "official_docs",
+      "protocols": [],
+      "clients": [
+        "CLI",
+        "Node.js"
+      ],
+      "install": {
+        "command": "npm install -g @ast-grep/cli",
+        "notes": "Use for syntax-aware search and codemods after reviewing language support and proposed rewrites; keep rewrites reviewable.",
+        "config_example": null
+      },
+      "permissions": [
+        "filesystem"
+      ],
+      "env_vars": [],
+      "tags": [
+        "search",
+        "structural-search",
+        "ast",
+        "tree-sitter",
+        "codemod"
+      ],
+      "use_cases": [
+        "Find syntax patterns across codebases",
+        "Rewrite code with AST captures",
+        "Add lightweight custom lint rules"
+      ],
+      "best_for": [
+        "Agents that need precise code search or reviewable codemods across supported languages",
+        "Find syntax patterns across codebases",
+        "Rewrite code with AST captures",
+        "Add lightweight custom lint rules",
+        "search workflows",
+        "structural-search workflows",
+        "ast workflows",
+        "tree-sitter workflows"
+      ],
+      "not_for": [
+        "Plain text search where ripgrep is simpler and faster to invoke."
+      ],
+      "alternatives": [
+        "ripgrep",
+        "ugrep",
+        "semgrep"
+      ],
+      "supersedes": [],
+      "freshness": "current",
+      "source_confidence": "high",
+      "maintenance_signals": [
+        "Official docs, GitHub repository, and npm package metadata were checked.",
+        "Canonical repository URL recorded"
+      ],
+      "risk_flags": [
+        "reads-local-files",
+        "can-rewrite-code",
+        "sensitive-permissions"
+      ],
+      "recommended_when": [
+        "Use when text grep would overmatch or miss syntax-equivalent code shapes.",
+        "Use when a project needs find syntax patterns across codebases and the upstream source has been reviewed.",
+        "Treat as promising until a maintainer verifies install and behavior."
+      ],
+      "trust_tier": "promising",
+      "review_status": "manual-reviewed",
+      "last_checked": "2026-05-27",
+      "profile_excerpt": "ast-grep is a Rust and tree-sitter based CLI for structural code search, linting, and rewriting, letting agents match syntax patterns instead of fragile text snippets across many languages. ## Best For - Agents that need precise code search or reviewable codemods across supported languages ## Recommended When - Use whe",
+      "entry_path": "registry/entries/ast-grep/entry.yaml",
+      "profile_path": "registry/entries/ast-grep/profile.md",
+      "url_path": "/entries/ast-grep/",
+      "recommendation_score": 8
     },
     {
       "schema_version": "1.0.0",
@@ -15278,6 +17264,190 @@
       "entry_path": "registry/entries/graphiti/entry.yaml",
       "profile_path": "registry/entries/graphiti/profile.md",
       "url_path": "/entries/graphiti/",
+      "recommendation_score": 8
+    },
+    {
+      "schema_version": "1.0.0",
+      "slug": "jscpd",
+      "name": "jscpd",
+      "type": "runtime",
+      "summary_llm": "jscpd is a copy-paste and duplicate-code detector for many programming languages and document formats, giving agents concrete clone reports before collapsing repeated code into simpler shared behavior.",
+      "homepage_url": "https://jscpd.dev/",
+      "repo_url": "https://github.com/kucherenko/jscpd",
+      "package_urls": [
+        "https://www.npmjs.com/package/jscpd"
+      ],
+      "licenses": [
+        "MIT"
+      ],
+      "copyright_owner": "jscpd contributors",
+      "source_urls": [
+        "https://jscpd.dev/",
+        "https://jscpd.dev/getting-started/introduction",
+        "https://github.com/kucherenko/jscpd",
+        "https://www.npmjs.com/package/jscpd"
+      ],
+      "source_kind": "official_docs",
+      "protocols": [],
+      "clients": [
+        "CLI",
+        "Node.js"
+      ],
+      "install": {
+        "command": "npx jscpd ./src",
+        "notes": "Use reports to locate duplication, then refactor manually with tests; tune ignores and thresholds before using in CI.",
+        "config_example": null
+      },
+      "permissions": [
+        "filesystem"
+      ],
+      "env_vars": [],
+      "tags": [
+        "duplicate-code",
+        "static-analysis",
+        "code-quality",
+        "code-simplification",
+        "ci"
+      ],
+      "use_cases": [
+        "Detect duplicated source blocks",
+        "Generate clone reports for refactoring",
+        "Track copy-paste debt in CI"
+      ],
+      "best_for": [
+        "Agents that need objective duplication reports before simplifying repeated implementations",
+        "Detect duplicated source blocks",
+        "Generate clone reports for refactoring",
+        "Track copy-paste debt in CI",
+        "duplicate-code workflows",
+        "static-analysis workflows",
+        "code-quality workflows",
+        "code-simplification workflows"
+      ],
+      "not_for": [
+        "Deciding abstractions automatically without tests or domain review."
+      ],
+      "alternatives": [
+        "knip",
+        "ast-grep",
+        "ripgrep"
+      ],
+      "supersedes": [],
+      "freshness": "current",
+      "source_confidence": "high",
+      "maintenance_signals": [
+        "Official docs, GitHub repository, and npm package metadata were checked.",
+        "Canonical repository URL recorded"
+      ],
+      "risk_flags": [
+        "reads-local-files",
+        "may-report-false-positives",
+        "sensitive-permissions"
+      ],
+      "recommended_when": [
+        "Use when repeated code appears across files and an agent needs a compact clone report before refactoring.",
+        "Use when a project needs detect duplicated source blocks and the upstream source has been reviewed.",
+        "Treat as promising until a maintainer verifies install and behavior."
+      ],
+      "trust_tier": "promising",
+      "review_status": "manual-reviewed",
+      "last_checked": "2026-05-27",
+      "profile_excerpt": "jscpd is a CLI and Node.js duplicate-code detector. It scans source files and documents for copy-paste clones, supports many languages and formats, and can produce machine-readable reports for local review or CI. ## Best For - Finding repeated implementations before a simplification pass - Producing objective clone rep",
+      "entry_path": "registry/entries/jscpd/entry.yaml",
+      "profile_path": "registry/entries/jscpd/profile.md",
+      "url_path": "/entries/jscpd/",
+      "recommendation_score": 8
+    },
+    {
+      "schema_version": "1.0.0",
+      "slug": "knip",
+      "name": "Knip",
+      "type": "runtime",
+      "summary_llm": "Knip is a JavaScript and TypeScript project hygiene CLI that finds unused files, dependencies, exports, types, enum members, and unresolved references so agents can remove dead code with evidence before refactoring.",
+      "homepage_url": "https://knip.dev/",
+      "repo_url": "https://github.com/webpro-nl/knip",
+      "package_urls": [
+        "https://www.npmjs.com/package/knip"
+      ],
+      "licenses": [
+        "ISC"
+      ],
+      "copyright_owner": "Lars Kappert and Knip contributors",
+      "source_urls": [
+        "https://knip.dev/",
+        "https://knip.dev/overview/getting-started",
+        "https://github.com/webpro-nl/knip",
+        "https://www.npmjs.com/package/knip"
+      ],
+      "source_kind": "official_docs",
+      "protocols": [],
+      "clients": [
+        "CLI",
+        "Node.js"
+      ],
+      "install": {
+        "command": "npm init @knip/config",
+        "notes": "Use after reviewing the project's package manager and Node version; treat reports as evidence for review, not automatic deletion.",
+        "config_example": null
+      },
+      "permissions": [
+        "filesystem"
+      ],
+      "env_vars": [],
+      "tags": [
+        "javascript",
+        "typescript",
+        "dead-code",
+        "dependency-analysis",
+        "code-simplification"
+      ],
+      "use_cases": [
+        "Find unused files and exports",
+        "Detect unused or missing dependencies",
+        "Support evidence-backed code deletion"
+      ],
+      "best_for": [
+        "JavaScript and TypeScript repositories where agents need evidence before removing code",
+        "Find unused files and exports",
+        "Detect unused or missing dependencies",
+        "Support evidence-backed code deletion",
+        "javascript workflows",
+        "typescript workflows",
+        "dead-code workflows",
+        "dependency-analysis workflows"
+      ],
+      "not_for": [
+        "Non-JavaScript stacks or projects that cannot tolerate static-analysis false positives."
+      ],
+      "alternatives": [
+        "ast-grep",
+        "jscpd",
+        "ripgrep"
+      ],
+      "supersedes": [],
+      "freshness": "current",
+      "source_confidence": "high",
+      "maintenance_signals": [
+        "Official docs, GitHub repository, and npm package metadata were checked.",
+        "Canonical repository URL recorded"
+      ],
+      "risk_flags": [
+        "reads-local-files",
+        "may-report-false-positives",
+        "sensitive-permissions"
+      ],
+      "recommended_when": [
+        "Use before deleting JavaScript or TypeScript code, exports, files, or dependencies during simplification work.",
+        "Use when a project needs find unused files and exports and the upstream source has been reviewed.",
+        "Treat as promising until a maintainer verifies install and behavior."
+      ],
+      "trust_tier": "promising",
+      "review_status": "manual-reviewed",
+      "last_checked": "2026-05-27",
+      "profile_excerpt": "Knip is a CLI for JavaScript and TypeScript project hygiene. It scans project entry points, workspaces, plugins, and manifests to report unused files, exports, dependencies, types, enum members, and unresolved references. ## Best For - Evidence-backed dead-code and dependency cleanup in JS/TS repositories - Pre-refacto",
+      "entry_path": "registry/entries/knip/entry.yaml",
+      "profile_path": "registry/entries/knip/profile.md",
+      "url_path": "/entries/knip/",
       "recommendation_score": 8
     },
     {
@@ -16351,6 +18521,106 @@
     },
     {
       "schema_version": "1.0.0",
+      "slug": "swarms",
+      "name": "Swarms",
+      "type": "agent-framework",
+      "summary_llm": "Swarms is a Python multi-agent orchestration framework with agent primitives, sequential, concurrent, graph, hierarchical, mixture-of-agents, and router-style workflows for production agent systems.",
+      "homepage_url": "https://docs.swarms.world/",
+      "repo_url": "https://github.com/kyegomez/swarms",
+      "package_urls": [
+        "https://pypi.org/project/swarms/"
+      ],
+      "licenses": [
+        "Apache-2.0"
+      ],
+      "copyright_owner": "Swarms",
+      "source_urls": [
+        "https://docs.swarms.world/",
+        "https://github.com/kyegomez/swarms",
+        "https://pypi.org/project/swarms/"
+      ],
+      "source_kind": "official_docs",
+      "protocols": [
+        "MCP"
+      ],
+      "clients": [
+        "Python"
+      ],
+      "install": {
+        "command": "pip install -U swarms",
+        "notes": "Use with explicit cost, loop, model, and workspace controls; multi-agent workflows can amplify token use and side effects quickly.",
+        "config_example": null
+      },
+      "permissions": [
+        "network",
+        "filesystem"
+      ],
+      "env_vars": [
+        "OPENAI_API_KEY",
+        "ANTHROPIC_API_KEY",
+        "GROQ_API_KEY",
+        "WORKSPACE_DIR"
+      ],
+      "tags": [
+        "agent-framework",
+        "multi-agent",
+        "orchestration",
+        "python",
+        "mcp"
+      ],
+      "use_cases": [
+        "Build multi-agent workflows",
+        "Coordinate sequential, concurrent, graph, and hierarchical agent teams",
+        "Prototype swarm-style task routing"
+      ],
+      "best_for": [
+        "Python teams evaluating explicit multi-agent orchestration patterns",
+        "Build multi-agent workflows",
+        "Coordinate sequential, concurrent, graph, and hierarchical agent teams",
+        "Prototype swarm-style task routing",
+        "agent-framework workflows",
+        "multi-agent workflows",
+        "orchestration workflows",
+        "python workflows"
+      ],
+      "not_for": [
+        "Simple single-agent tasks where graph or role orchestration adds unnecessary complexity."
+      ],
+      "alternatives": [
+        "langgraph",
+        "crewai",
+        "microsoft-autogen",
+        "openai-agents-sdk"
+      ],
+      "supersedes": [],
+      "freshness": "current",
+      "source_confidence": "high",
+      "maintenance_signals": [
+        "GitHub repository, official docs, and PyPI project metadata were checked.",
+        "Canonical repository URL recorded"
+      ],
+      "risk_flags": [
+        "multi-agent-cost-amplification",
+        "model-api-required",
+        "tool-side-effects",
+        "sensitive-permissions"
+      ],
+      "recommended_when": [
+        "Use when the team needs to compare several explicit multi-agent execution patterns in Python.",
+        "Use when a project needs build multi-agent workflows and the upstream source has been reviewed.",
+        "Treat as promising until a maintainer verifies install and behavior."
+      ],
+      "trust_tier": "promising",
+      "review_status": "manual-reviewed",
+      "last_checked": "2026-05-27",
+      "profile_excerpt": "Swarms is a Python multi-agent orchestration framework with agent primitives, sequential, concurrent, graph, hierarchical, mixture-of-agents, and router-style workflows for production agent systems. ## Best For - Python teams evaluating explicit multi-agent orchestration patterns ## Recommended When - Use when the team",
+      "entry_path": "registry/entries/swarms/entry.yaml",
+      "profile_path": "registry/entries/swarms/profile.md",
+      "url_path": "/entries/swarms/",
+      "recommendation_score": 7
+    },
+    {
+      "schema_version": "1.0.0",
       "homepage_url": "https://www.getzep.com/",
       "repo_url": "https://github.com/getzep/zep",
       "package_urls": [
@@ -16438,6 +18708,392 @@
       "profile_path": "registry/entries/zep/profile.md",
       "url_path": "/entries/zep/",
       "recommendation_score": 7
+    },
+    {
+      "schema_version": "1.0.0",
+      "slug": "clude",
+      "name": "Clude",
+      "type": "memory",
+      "summary_llm": "Clude is an early-stage cognitive memory layer and MCP server for AI agents, with hosted, self-hosted, and local modes for storing, recalling, decaying, consolidating, and exporting agent memories.",
+      "homepage_url": "https://clude.io/",
+      "repo_url": "https://github.com/sebbsssss/clude",
+      "package_urls": [
+        "https://www.npmjs.com/package/@clude/sdk"
+      ],
+      "licenses": [
+        "MIT"
+      ],
+      "copyright_owner": "Clude",
+      "source_urls": [
+        "https://clude.io/docs.html",
+        "https://github.com/sebbsssss/clude",
+        "https://www.npmjs.com/package/@clude/sdk"
+      ],
+      "source_kind": "official_docs",
+      "protocols": [
+        "MCP"
+      ],
+      "clients": [
+        "Claude Code",
+        "Claude Desktop",
+        "Cursor",
+        "TypeScript"
+      ],
+      "install": {
+        "command": "npm install -g @clude/sdk",
+        "notes": "Review memory retention, hosted versus local storage, and MCP config writes before use; avoid storing secrets or sensitive user data without explicit policy.",
+        "config_example": null
+      },
+      "permissions": [
+        "network",
+        "filesystem",
+        "database"
+      ],
+      "env_vars": [
+        "CORTEX_API_KEY",
+        "SUPABASE_URL",
+        "SUPABASE_SERVICE_KEY",
+        "ANTHROPIC_API_KEY",
+        "OPENAI_API_KEY",
+        "VOYAGE_API_KEY"
+      ],
+      "tags": [
+        "memory",
+        "mcp",
+        "long-term-memory",
+        "cognitive-architecture",
+        "agents"
+      ],
+      "use_cases": [
+        "Give agents portable long-term memory",
+        "Add MCP memory recall and storage tools",
+        "Compare hosted, local, and self-hosted memory modes"
+      ],
+      "best_for": [
+        "Agent products that need inspectable memory and can define retention boundaries",
+        "Give agents portable long-term memory",
+        "Add MCP memory recall and storage tools",
+        "Compare hosted, local, and self-hosted memory modes",
+        "memory workflows",
+        "mcp workflows",
+        "long-term-memory workflows",
+        "cognitive-architecture workflows"
+      ],
+      "not_for": [
+        "Projects that cannot review memory privacy, storage location, and deletion behavior."
+      ],
+      "alternatives": [
+        "mem0",
+        "zep",
+        "graphiti"
+      ],
+      "supersedes": [],
+      "freshness": "current",
+      "source_confidence": "high",
+      "maintenance_signals": [
+        "Official docs, GitHub repository, and npm package metadata were checked.",
+        "Canonical repository URL recorded"
+      ],
+      "risk_flags": [
+        "stores-user-memory",
+        "data-retention-risk",
+        "early-stage",
+        "hosted-memory-service",
+        "sensitive-permissions"
+      ],
+      "recommended_when": [
+        "Use when agent memory should be explicit, searchable, and portable across MCP-compatible clients.",
+        "Use when a project needs give agents portable long-term memory and the upstream source has been reviewed.",
+        "Treat as promising until a maintainer verifies install and behavior."
+      ],
+      "trust_tier": "promising",
+      "review_status": "manual-reviewed",
+      "last_checked": "2026-05-27",
+      "profile_excerpt": "Clude is an early-stage cognitive memory layer and MCP server for AI agents, with hosted, self-hosted, and local modes for storing, recalling, decaying, consolidating, and exporting agent memories. ## Best For - Agent products that need inspectable memory and can define retention boundaries ## Recommended When - Use wh",
+      "entry_path": "registry/entries/clude/entry.yaml",
+      "profile_path": "registry/entries/clude/profile.md",
+      "url_path": "/entries/clude/",
+      "recommendation_score": 6
+    },
+    {
+      "schema_version": "1.0.0",
+      "slug": "codebase-memory-mcp",
+      "name": "codebase-memory-mcp",
+      "type": "mcp-server",
+      "summary_llm": "codebase-memory-mcp is a local MCP server that indexes source code into a persistent tree-sitter knowledge graph so coding agents can answer structural questions with graph queries instead of repeated grep and file-reading loops.",
+      "homepage_url": "https://deusdata.github.io/codebase-memory-mcp/",
+      "repo_url": "https://github.com/DeusData/codebase-memory-mcp",
+      "package_urls": [
+        "https://github.com/DeusData/codebase-memory-mcp/releases"
+      ],
+      "licenses": [
+        "MIT"
+      ],
+      "copyright_owner": "DeusData",
+      "source_urls": [
+        "https://github.com/DeusData/codebase-memory-mcp",
+        "https://deusdata.github.io/codebase-memory-mcp/",
+        "https://arxiv.org/abs/2603.27277"
+      ],
+      "source_kind": "github",
+      "protocols": [
+        "MCP"
+      ],
+      "clients": [
+        "Claude Code",
+        "Codex CLI",
+        "Cursor",
+        "Aider",
+        "VS Code"
+      ],
+      "install": {
+        "command": null,
+        "notes": "Review releases, checksums, and install behavior before running; the tool reads local code, writes agent config, and stores local SQLite indexes.",
+        "config_example": null
+      },
+      "permissions": [
+        "filesystem",
+        "local-server"
+      ],
+      "env_vars": [
+        "CBM_CACHE_DIR",
+        "CBM_DIAGNOSTICS",
+        "CBM_DOWNLOAD_URL"
+      ],
+      "tags": [
+        "mcp",
+        "code-intelligence",
+        "knowledge-graph",
+        "tree-sitter",
+        "coding-agents"
+      ],
+      "use_cases": [
+        "Give agents structural code search",
+        "Trace call paths and affected symbols",
+        "Reduce repeated grep and file-reading loops"
+      ],
+      "best_for": [
+        "Large repositories where agents repeatedly ask structural codebase questions",
+        "Give agents structural code search",
+        "Trace call paths and affected symbols",
+        "Reduce repeated grep and file-reading loops",
+        "mcp workflows",
+        "code-intelligence workflows",
+        "knowledge-graph workflows",
+        "tree-sitter workflows"
+      ],
+      "not_for": [
+        "Small tasks where normal rg plus targeted file reads are simpler."
+      ],
+      "alternatives": [
+        "ripgrep",
+        "ast-grep",
+        "github-mcp-server"
+      ],
+      "supersedes": [],
+      "freshness": "current",
+      "source_confidence": "high",
+      "maintenance_signals": [
+        "GitHub repository, project docs, release claims, and arXiv preprint were checked.",
+        "Canonical repository URL recorded"
+      ],
+      "risk_flags": [
+        "reads-local-code",
+        "writes-agent-config",
+        "stores-local-index",
+        "early-stage",
+        "sensitive-permissions"
+      ],
+      "recommended_when": [
+        "Use when structural codebase questions dominate and the team can audit local indexing behavior first.",
+        "Use when a project needs give agents structural code search and the upstream source has been reviewed.",
+        "Treat as promising until a maintainer verifies install and behavior."
+      ],
+      "trust_tier": "promising",
+      "review_status": "manual-reviewed",
+      "last_checked": "2026-05-27",
+      "profile_excerpt": "codebase-memory-mcp is a local MCP server that indexes source code into a persistent tree-sitter knowledge graph so coding agents can answer structural questions with graph queries instead of repeated grep and file-reading loops. ## Best For - Large repositories where agents repeatedly ask structural codebase questions",
+      "entry_path": "registry/entries/codebase-memory-mcp/entry.yaml",
+      "profile_path": "registry/entries/codebase-memory-mcp/profile.md",
+      "url_path": "/entries/codebase-memory-mcp/",
+      "recommendation_score": 6
+    },
+    {
+      "schema_version": "1.0.0",
+      "slug": "covenant-research",
+      "name": "Covenant Research",
+      "type": "security",
+      "summary_llm": "Covenant Research is a public research and benchmarking site for a proposed governance layer for autonomous AI agents, including a whitepaper, Harbor agent configurations, governance rules, and preliminary Terminal-Bench results.",
+      "homepage_url": "https://asalsali.github.io/covenant-research/",
+      "repo_url": "https://github.com/asalsali/covenant-research",
+      "package_urls": [],
+      "licenses": [
+        "NOASSERTION"
+      ],
+      "copyright_owner": "asalsali",
+      "source_urls": [
+        "https://github.com/asalsali/covenant-research",
+        "https://asalsali.github.io/covenant-research/",
+        "https://github.com/asalsali/covenant-framework"
+      ],
+      "source_kind": "github",
+      "protocols": [],
+      "clients": [
+        "Claude",
+        "GPT"
+      ],
+      "install": {
+        "command": null,
+        "notes": "Treat as research material until the framework license, benchmark setup, and governance behavior are independently reviewed.",
+        "config_example": null
+      },
+      "permissions": [
+        "network"
+      ],
+      "env_vars": [],
+      "tags": [
+        "governance",
+        "safety",
+        "benchmarks",
+        "autonomous-agents",
+        "research"
+      ],
+      "use_cases": [
+        "Study governance layers for autonomous agents",
+        "Compare governed and vanilla agent benchmark runs",
+        "Review agent safety rule sets"
+      ],
+      "best_for": [
+        "Maintainers tracking governance and benchmark claims for autonomous coding agents",
+        "Study governance layers for autonomous agents",
+        "Compare governed and vanilla agent benchmark runs",
+        "Review agent safety rule sets",
+        "governance workflows",
+        "safety workflows",
+        "benchmarks workflows",
+        "autonomous-agents workflows"
+      ],
+      "not_for": [
+        "Production safety controls without independent review and a clear license posture."
+      ],
+      "alternatives": [
+        "anthropic-building-effective-agents",
+        "inspect-ai",
+        "promptfoo"
+      ],
+      "supersedes": [],
+      "freshness": "current",
+      "source_confidence": "medium",
+      "maintenance_signals": [
+        "GitHub repository and public whitepaper site were checked.",
+        "Canonical repository URL recorded"
+      ],
+      "risk_flags": [
+        "custom-license",
+        "benchmark-not-independent",
+        "early-stage-research",
+        "license-not-asserted"
+      ],
+      "recommended_when": [
+        "Watch when evaluating governance patterns for autonomous agent runs, but require independent reproduction before recommendation.",
+        "Use when a project needs study governance layers for autonomous agents and the upstream source has been reviewed.",
+        "Treat as promising until a maintainer verifies install and behavior."
+      ],
+      "trust_tier": "watchlist",
+      "review_status": "needs-review",
+      "last_checked": "2026-05-27",
+      "profile_excerpt": "Covenant Research is a public research and benchmarking site for a proposed governance layer for autonomous AI agents, including a whitepaper, Harbor agent configurations, governance rules, and preliminary Terminal-Bench results. ## Best For - Maintainers tracking governance and benchmark claims for autonomous coding a",
+      "entry_path": "registry/entries/covenant-research/entry.yaml",
+      "profile_path": "registry/entries/covenant-research/profile.md",
+      "url_path": "/entries/covenant-research/",
+      "recommendation_score": 3
+    },
+    {
+      "schema_version": "1.0.0",
+      "slug": "kaimo",
+      "name": "Kaimo",
+      "type": "payments",
+      "summary_llm": "Kaimo is a very early agent-commerce signal positioning one product URL plus buyer details as a purchase flow using fiat or x402, with a public GitHub landing repository but minimal product documentation so far.",
+      "homepage_url": "https://github.com/kaimo-no",
+      "repo_url": "https://github.com/kaimo-no/kaimo-no.github.io",
+      "package_urls": [],
+      "licenses": [
+        "NOASSERTION"
+      ],
+      "copyright_owner": "kaimo-no",
+      "source_urls": [
+        "https://github.com/kaimo-no",
+        "https://github.com/kaimo-no/kaimo-no.github.io"
+      ],
+      "source_kind": "github",
+      "protocols": [
+        "x402"
+      ],
+      "clients": [],
+      "install": {
+        "command": null,
+        "notes": "Watch only until public docs, license terms, checkout controls, payment limits, and audit trails are available.",
+        "config_example": null
+      },
+      "permissions": [
+        "network",
+        "payments"
+      ],
+      "env_vars": [],
+      "tags": [
+        "payments",
+        "x402",
+        "agent-commerce",
+        "checkout",
+        "watchlist"
+      ],
+      "use_cases": [
+        "Track agent-commerce and x402 checkout patterns",
+        "Watch emerging payment flows for AI buyers"
+      ],
+      "best_for": [
+        "Maintainers watching early agent-commerce infrastructure from community submissions",
+        "Track agent-commerce and x402 checkout patterns",
+        "Watch emerging payment flows for AI buyers",
+        "payments workflows",
+        "x402 workflows",
+        "agent-commerce workflows",
+        "checkout workflows",
+        "watchlist workflows"
+      ],
+      "not_for": [
+        "Recommendations to production agents before docs, limits, receipts, and license terms are clear."
+      ],
+      "alternatives": [
+        "stripe-agent-toolkit"
+      ],
+      "supersedes": [],
+      "freshness": "current",
+      "source_confidence": "low",
+      "maintenance_signals": [
+        "GitHub organization profile and landing repository were checked.",
+        "Canonical repository URL recorded"
+      ],
+      "risk_flags": [
+        "license-not-asserted",
+        "payment-permission-risk",
+        "early-stage",
+        "docs-not-yet-public",
+        "sensitive-permissions"
+      ],
+      "recommended_when": [
+        "Watch for agent-commerce and x402 workflows after product documentation and safety controls appear.",
+        "Use when a project needs track agent-commerce and x402 checkout patterns and the upstream source has been reviewed.",
+        "Treat as promising until a maintainer verifies install and behavior."
+      ],
+      "trust_tier": "watchlist",
+      "review_status": "needs-review",
+      "last_checked": "2026-05-27",
+      "profile_excerpt": "Kaimo is a very early agent-commerce signal positioning one product URL plus buyer details as a purchase flow using fiat or x402, with a public GitHub landing repository but minimal product documentation so far. ## Best For - Maintainers watching early agent-commerce infrastructure from community submissions ## Recomme",
+      "entry_path": "registry/entries/kaimo/entry.yaml",
+      "profile_path": "registry/entries/kaimo/profile.md",
+      "url_path": "/entries/kaimo/",
+      "recommendation_score": 1
     },
     {
       "schema_version": "1.0.0",

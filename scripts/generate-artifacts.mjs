@@ -14,6 +14,18 @@ const installFileUrl = (fileName) => `${installBaseUrl}/install/${fileName}`;
 
 const intentAliases = {
   "better ui": ["frontend", "ui", "design", "component", "visual", "accessibility", "prototype"],
+  "browser game": ["web game", "html5 game", "game", "canvas", "animation", "vite", "phaser", "pixi", "three.js", "input", "collision", "game ui", "game testing"],
+  "web game": ["browser game", "html5 game", "canvas", "webgl", "webgpu", "vite", "phaser", "pixi", "three.js", "playcanvas", "game testing"],
+  "html5 game": ["browser game", "web game", "canvas", "webgl", "2d game", "phaser", "excalibur", "kaplay", "input"],
+  "canvas game": ["browser game", "web game", "canvas", "2d", "game loop", "animation", "collision", "particles", "requestanimationframe"],
+  "2d game": ["browser game", "canvas game", "phaser", "pixi", "excalibur", "kaplay", "matter.js", "rapier", "sprites"],
+  "3d game": ["browser game", "webgl", "webgpu", "three.js", "babylon.js", "playcanvas", "webxr", "3d assets"],
+  "game engine": ["game", "phaser", "pixi", "three.js", "babylon.js", "playcanvas", "excalibur", "kaplay", "matter.js", "rapier", "engine", "physics", "renderer"],
+  "game ui": ["game hud", "menus", "contrast", "readability", "touch targets", "feedback", "onboarding", "pause", "restart"],
+  "game accessibility": ["contrast", "input remapping", "keyboard", "gamepad", "touch", "captions", "reduced motion", "photosensitivity", "wcag"],
+  "game physics": ["matter.js", "rapier", "fixed timestep", "collision", "rigid body", "determinism", "simulation"],
+  "game testing": ["playwright", "browser testing", "canvas pixel check", "input simulation", "state transitions", "restart", "runtime verification"],
+  "canvas performance": ["canvas", "requestanimationframe", "offscreen canvas", "render loop", "batch drawing", "pre-render", "webgl", "webgpu"],
   "faster search": ["search", "retrieval", "index", "semantic", "rerank", "latency"],
   "agent payments": ["payments", "x402", "wallet", "commerce", "checkout", "receipt"],
   "code review": ["pull request", "static analysis", "dependency", "upgrade", "outdated", "package audit"],
@@ -34,7 +46,106 @@ const intentAliases = {
   "prompt engineering": ["prompt", "instructions", "examples", "constraints", "output format", "rubric", "eval"],
   "prompt enhancer": ["prompt", "rewrite", "improve prompt", "prompt forge", "prompt pattern", "output contract"],
   "codex prompt": ["codex", "coding-agent", "agents.md", "scope", "verification", "diff", "tests"],
-  "prompt optimizer": ["prompt", "optimizer", "dataset", "grader", "annotation", "eval", "iteration"]
+  "prompt optimizer": ["prompt", "optimizer", "dataset", "grader", "annotation", "eval", "iteration"],
+  "code simplification": ["refactor", "minimalism", "code quality", "dead code", "duplication", "complexity", "tests", "ast-grep", "knip", "jscpd"],
+  "code compaction": ["simplify code", "reduce code", "minimal code", "dead code", "duplication", "behavior preserving", "refactor"],
+  "minimal code": ["minimalism", "simple design", "small API", "refactor", "remove duplication", "delete dead code", "feature preservation"],
+  "professional code": ["code quality", "maintainability", "clarity", "refactor", "tests", "lint", "style guide", "review"],
+  refactor: ["behavior preserving", "small steps", "tests", "code review", "simplify code", "ast-grep", "codemod"],
+  "dead code": ["unused exports", "unused files", "unused dependencies", "knip", "dependency audit", "delete code"]
+};
+
+const intentRoutes = {
+  "browser game": {
+    read_first: ["practice:browser-games", "practice:frontend", "practice:evals"],
+    compare_options: ["Canvas with Vite or a tiny static server", "Phaser", "PixiJS", "Excalibur", "KAPLAY", "Three.js", "Babylon.js", "PlayCanvas"],
+    choose_by: ["2D or 3D gameplay", "asset loading and physics needs", "dependency budget", "input model", "accessibility needs", "real-browser verification path"],
+    report: ["vnem intents searched", "top matches", "choice", "why"]
+  },
+  "web game": {
+    read_first: ["practice:browser-games", "practice:frontend", "practice:evals"],
+    compare_options: ["Canvas with Vite for compact custom 2D", "Phaser for full 2D game framework needs", "PixiJS for rendering-heavy 2D", "Three.js/Babylon.js/PlayCanvas for true 3D"],
+    choose_by: ["playability requirements", "rendering dimension", "engine structure needed", "browser support", "verification evidence"],
+    report: ["vnem intents searched", "top matches", "choice", "why"]
+  },
+  "html5 game": {
+    read_first: ["practice:browser-games", "practice:frontend", "practice:evals"],
+    compare_options: ["Canvas", "Phaser", "PixiJS", "Excalibur", "KAPLAY"],
+    choose_by: ["custom game feel", "scene and asset needs", "TypeScript preference", "prototype speed", "mobile/touch behavior"],
+    report: ["vnem intents searched", "top matches", "choice", "why"]
+  },
+  "canvas game": {
+    read_first: ["practice:browser-games", "practice:frontend", "practice:evals"],
+    compare_options: ["Canvas with Vite or a tiny static server", "Phaser", "PixiJS", "Excalibur", "KAPLAY"],
+    choose_by: ["custom game feel", "rendering complexity", "input model", "collision needs", "dependency budget", "canvas performance risk"],
+    report: ["vnem intents searched", "top matches", "choice", "why"]
+  },
+  "2d game": {
+    read_first: ["practice:browser-games", "practice:frontend", "practice:evals"],
+    compare_options: ["Canvas for tiny bespoke games", "Phaser for scenes/sprites/audio/cameras", "PixiJS for renderer-first interaction", "Excalibur for TypeScript-first 2D", "KAPLAY for fast prototypes"],
+    choose_by: ["scene complexity", "sprite/asset pipeline", "physics needs", "typing preference", "prototype speed", "polish budget"],
+    report: ["vnem intents searched", "top matches", "choice", "why"]
+  },
+  "3d game": {
+    read_first: ["practice:browser-games", "practice:frontend", "practice:evals"],
+    compare_options: ["Three.js for custom 3D scenes", "Babylon.js for full 3D engine features", "PlayCanvas for browser-first 3D engine/editor workflows"],
+    choose_by: ["3D scene complexity", "asset pipeline", "physics/XR needs", "WebGL/WebGPU support", "performance tooling"],
+    report: ["vnem intents searched", "top matches", "choice", "why"]
+  },
+  "game engine": {
+    read_first: ["practice:browser-games", "practice:frontend", "practice:evals"],
+    compare_options: ["Phaser for full 2D game framework needs", "PixiJS for fast 2D rendering", "Excalibur for TypeScript-first 2D", "KAPLAY for quick playful 2D", "Three.js for custom 3D", "Babylon.js or PlayCanvas for full 3D engine workflows", "Canvas for compact custom 2D MVPs"],
+    choose_by: ["engine features needed", "visual direction", "physics/audio/asset pipeline", "bundle size", "maintenance risk", "runtime verification path"],
+    report: ["vnem intents searched", "top matches", "choice", "why"]
+  },
+  "game ui": {
+    read_first: ["practice:browser-games", "practice:frontend", "practice:evals"],
+    compare_options: ["in-canvas HUD", "DOM overlay UI", "engine UI primitives", "existing app design system"],
+    choose_by: ["readability", "input method", "responsive scaling", "contrast", "feedback clarity", "localization risk"],
+    report: ["vnem intents searched", "top matches", "choice", "why"]
+  },
+  "game accessibility": {
+    read_first: ["practice:browser-games", "practice:frontend", "practice:evals"],
+    compare_options: ["keyboard/touch/gamepad parity", "remappable controls", "high-contrast HUD", "reduced motion", "captions or visual audio cues"],
+    choose_by: ["gameplay-critical information", "required inputs", "motion intensity", "audio dependence", "target devices"],
+    report: ["vnem intents searched", "top matches", "choice", "why"]
+  },
+  "game physics": {
+    read_first: ["practice:browser-games", "practice:evals"],
+    compare_options: ["simple custom collision", "Matter.js for approachable 2D rigid bodies", "Rapier for higher-performance 2D/3D physics"],
+    choose_by: ["collision complexity", "determinism needs", "WASM bundling tolerance", "engine integration", "fixed-step simulation requirements"],
+    report: ["vnem intents searched", "top matches", "choice", "why"]
+  },
+  "game testing": {
+    read_first: ["practice:browser-games", "practice:evals"],
+    compare_options: ["unit tests for pure rules", "browser automation for input flows", "canvas pixel checks for nonblank rendering", "manual smoke playthrough"],
+    choose_by: ["game state complexity", "visual regressions", "input coverage", "restart and terminal states", "CI browser availability"],
+    report: ["vnem intents searched", "top matches", "choice", "why"]
+  },
+  "canvas performance": {
+    read_first: ["practice:browser-games", "practice:frontend"],
+    compare_options: ["plain Canvas 2D", "batched Canvas drawing", "OffscreenCanvas for heavy repeated work", "PixiJS/WebGL for many sprites", "Three.js/Babylon/PlayCanvas for 3D"],
+    choose_by: ["number of moving objects", "text/render cost", "worker support", "GPU needs", "device targets"],
+    report: ["vnem intents searched", "top matches", "choice", "why"]
+  },
+  "better ui": {
+    read_first: ["practice:frontend", "practice:context-engineering", "practice:evals"],
+    compare_options: ["existing project design system", "mature UI primitives", "custom CSS only when scope is tiny"],
+    choose_by: ["workflow fit", "accessibility", "responsive verification", "dependency budget"],
+    report: ["vnem intents searched", "top matches", "choice", "why"]
+  },
+  "code simplification": {
+    read_first: ["practice:code-simplification", "practice:code-review", "practice:evals"],
+    compare_options: ["behavior-preserving refactor", "dead-code audit", "duplicate-code audit", "AST-aware codemods", "repo-native lint and format rules"],
+    choose_by: ["language and framework", "test coverage", "public API stability", "blast radius", "reviewability", "tool permission risk"],
+    report: ["vnem intents searched", "top matches", "choice", "why"]
+  },
+  "code compaction": {
+    read_first: ["practice:code-simplification", "practice:code-review", "practice:evals"],
+    compare_options: ["delete unreachable code", "collapse duplication", "extract only proven shared concepts", "replace custom code with existing local helpers", "defer dependency changes until justified"],
+    choose_by: ["feature preservation evidence", "test coverage", "runtime behavior", "readability after change", "diff size"],
+    report: ["vnem intents searched", "top matches", "choice", "why"]
+  }
 };
 
 const bestPracticeSections = [
@@ -50,6 +161,47 @@ const bestPracticeSections = [
       "Start with the product workflow, then pick UI libraries that reduce implementation risk.",
       "Use visual verification for responsive states before shipping UI generated by agents.",
       "Favor established icon, form, table, and command-menu primitives over handwritten widgets."
+    ]
+  },
+  {
+    id: "browser-games",
+    title: "Browser Games And Interactive Canvas",
+    score: 16,
+    summary: "For browser-native games, choose the lightest proven stack that can deliver real playability: responsive rendering, input, rules, state transitions, visible feedback, accessible UI, and browser-verified behavior.",
+    keywords: ["browser game", "web game", "html5 game", "canvas game", "2d game", "3d game", "game engine", "game ui", "game accessibility", "game physics", "game testing", "canvas performance", "canvas", "animation", "vite", "phaser", "pixi", "excalibur", "kaplay", "three.js", "babylon.js", "playcanvas", "matter.js", "rapier"],
+    sources: [
+      "https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API",
+      "https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame",
+      "https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Optimizing_canvas",
+      "https://web.dev/articles/canvas-performance",
+      "https://vite.dev/guide/",
+      "https://docs.phaser.io/",
+      "https://pixijs.com/",
+      "https://excaliburjs.com/",
+      "https://kaplayjs.com/",
+      "https://threejs.org/docs/",
+      "https://doc.babylonjs.com/setup/support/webGPU",
+      "https://github.com/playcanvas/engine",
+      "https://github.com/liabru/matter-js",
+      "https://github.com/dimforge/rapier.js/",
+      "https://learn.microsoft.com/en-us/gaming/accessibility/guidelines",
+      "https://learn.microsoft.com/en-us/gaming/accessibility/xbox-accessibility-guidelines/102",
+      "https://learn.microsoft.com/en-us/gaming/accessibility/xbox-accessibility-guidelines/107",
+      "https://w3c.github.io/wcag/guidelines/22/",
+      "https://arxiv.org/abs/2605.17637"
+    ],
+    practices: [
+      "Pick the smallest stack that satisfies playability: Canvas with Vite for tiny custom 2D, Phaser for scene/sprite/audio/camera-heavy 2D, PixiJS for renderer-first 2D interaction, Excalibur for TypeScript-first 2D, and KAPLAY for fast playful prototypes.",
+      "Use Three.js for custom 3D scenes, Babylon.js for richer 3D engine features, and PlayCanvas when a browser-first 3D engine/editor workflow is valuable; avoid 3D stacks for simple 2D games.",
+      "Add physics only when game rules need it: prefer simple custom collision first, Matter.js for approachable 2D rigid bodies, and Rapier when higher-performance 2D/3D physics or determinism options matter.",
+      "Build the loop around requestAnimationFrame timestamps, separate update and render work, use fixed-step simulation for physics-sensitive games, and keep pause/resume behavior explicit.",
+      "Model input as actions rather than raw keys so keyboard, pointer, touch, and gamepad controls can share game logic and be remapped for nontrivial games.",
+      "Include asset preload/loading, start, pause, win, lose, restart, and error states before visual flourishes; browser games fail quickly when a terminal state or restart path is missing.",
+      "Design game UI for readability during motion: high-contrast HUD text, clear hit/damage/reward feedback, stable layout, large touch targets, and readable menus on both desktop and mobile.",
+      "Treat accessibility as game feel: provide keyboard/touch parity where practical, avoid color-only cues, respect reduced-motion needs, watch photosensitive flashing, and add captions or visual audio cues when sound carries gameplay information.",
+      "Verify delivered playability in a real browser: serve locally, confirm nonblank canvas pixels, simulate inputs, check state transitions and restart, inspect desktop and mobile viewports, and test audio unlock behavior.",
+      "Use performance work after the game is playable: batch Canvas drawing, pre-render expensive repeated work to snug offscreen buffers, measure before optimizing, and move to WebGL/WebGPU libraries when object count or effects justify it.",
+      "For coding-agent evaluation, judge the delivered game rather than just build success; browser games expose input, spatial mapping, rules, terminal conditions, restart, and visible-feedback failures that normal code checks miss."
     ]
   },
   {
@@ -125,6 +277,27 @@ const bestPracticeSections = [
       "Start with the current stack and lockfiles before recommending replacements.",
       "Separate outdated or risky choices from optional upgrades.",
       "Ask before editing code, installing packages, using secrets, or opening network connections."
+    ]
+  },
+  {
+    id: "code-simplification",
+    title: "Code Simplification And Minimal Refactors",
+    score: 18,
+    summary: "Simplify code by preserving behavior first, deleting proven waste, reducing duplication, and using the project's existing abstractions before introducing new ones.",
+    keywords: ["code simplification", "code compaction", "minimal code", "professional code", "refactor", "dead code", "duplication", "complexity", "knip", "jscpd", "ast-grep"],
+    sources: [
+      "https://refactoring.com/",
+      "https://martinfowler.com/bliki/OpportunisticRefactoring.html",
+      "https://knip.dev/",
+      "https://jscpd.dev/",
+      "https://ast-grep.github.io/"
+    ],
+    practices: [
+      "Treat simplification as behavior-preserving refactoring: characterize current behavior with tests, snapshots, fixtures, or golden examples before deleting or reshaping code.",
+      "Prefer deletion over abstraction when code is unused, unreachable, duplicated, or handled by an existing local helper.",
+      "Use static evidence before edits: lexical search, AST-aware search, unused-file/export/dependency checks, duplicate-code detection, and existing lint or type checks.",
+      "Keep public APIs, data formats, error behavior, and user-visible workflows stable unless the user explicitly asks for a product change.",
+      "Make small reviewable steps: remove dead code, collapse duplication, simplify control flow, then rerun focused and broad verification."
     ]
   },
   {
@@ -368,6 +541,37 @@ const promptPatterns = [
       "- Do not run destructive commands.",
       "- Ask before installing packages, changing secrets, deploying, or touching production data.",
       "- Preserve user changes already present in the worktree."
+    ].join("\n")
+  },
+  {
+    id: "code-simplification",
+    title: "Code Simplification Prompt",
+    intents: ["code simplification", "code compaction", "minimal code", "professional code", "refactor"],
+    summary: "Prompt a coding agent to reduce complexity while proving every existing feature still works.",
+    output_modes: ["agent_prompt", "verification_plan"],
+    template: [
+      "Simplify this code while preserving all existing behavior.",
+      "",
+      "Target:",
+      "<files, modules, or feature area>",
+      "",
+      "Non-goals:",
+      "- Do not redesign product behavior.",
+      "- Do not change public APIs, data formats, or user-visible flows unless explicitly required.",
+      "- Do not add new dependencies unless the existing stack cannot solve the problem cleanly.",
+      "",
+      "Workflow:",
+      "1. Inspect the current implementation, tests, public interfaces, and call sites.",
+      "2. Identify removable code with evidence: unused files, unused exports, duplicate branches, dead paths, repeated helpers, or needless state.",
+      "3. Preserve behavior with focused tests, snapshots, fixtures, type checks, or golden examples before risky edits.",
+      "4. Make small reviewable changes: delete proven waste, collapse duplication, simplify control flow, and reuse existing local helpers.",
+      "5. Run focused verification first, then the broader project checks.",
+      "",
+      "Output:",
+      "- What was simplified.",
+      "- Features or interfaces preserved.",
+      "- Verification commands and results.",
+      "- Residual risk or areas intentionally left unchanged."
     ].join("\n")
   },
   {
@@ -800,7 +1004,7 @@ function buildSearchDocuments(entries) {
     url_path: "/install/prompt-engineering.md",
     trust_tier: "verified",
     type: "prompt-pattern",
-    score: 13,
+    score: 10,
     tags: pattern.intents,
     use_cases: pattern.intents,
     best_for: [pattern.summary],
@@ -826,7 +1030,7 @@ function buildSearchDocuments(entries) {
     url_path: "/install/best-practices.md",
     trust_tier: "verified",
     type: "best-practice",
-    score: 12,
+    score: section.score ?? 12,
     tags: section.keywords,
     use_cases: section.practices,
     best_for: section.practices,
@@ -1022,6 +1226,26 @@ function agentsMarkdown() {
     "- `.vnem/prompt-engineering.md`: prompt enhancement protocol and Codex-oriented prompt guidance.",
     "- `.vnem/prompt-patterns.json`: machine-readable prompt patterns for common agent tasks.",
     "",
+    "## Natural Use Rule",
+    "",
+    "If this `.vnem/` folder exists, use it automatically. The user should not need to say `use vnem`.",
+    "",
+    "Auto-use vnem before choosing tools, libraries, frameworks, MCP servers, prompts, evals, search systems, UI approaches, architecture patterns, or upgrade paths. Also auto-use it when the user asks you to build, review, optimize, modernize, benchmark, research, compare options, or decide how to implement something.",
+    "",
+    "Do not turn every reply into a long vnem report. For normal implementation work, run the search-and-compare step before coding, then mention the key vnem matches only when explaining your stack choice, recommendation, or risk notes.",
+    "",
+    "## Decision Search Protocol",
+    "",
+    "1. Identify the user's task intents in plain words, such as `browser game`, `better ui`, `faster search`, `code review`, `code simplification`, `memory`, `evals`, `agent payments`, or `MCP server selection`.",
+    "2. Read `.vnem/search-index.json` and expand those intents with `intent_aliases`.",
+    "3. Check `intent_routes` for the closest matching task. Read the listed `read_first` documents before choosing a stack.",
+    "4. Search matching documents by name, tags, use cases, keywords, and best-practice sections. Read `.vnem/best-practices.md` for any matching section.",
+    "5. Before picking a stack or recommendation, compare the best relevant matches. Prefer higher `score`, stronger `source_confidence`, fresher `freshness`, clearer licenses, and fewer `risk_flags`.",
+    "6. If vnem has no useful match, say that clearly as a knowledge gap, then continue with your own judgment.",
+    "7. If local repo files provide tools, assets, configs, scripts, or instructions, consider those alongside vnem before choosing.",
+    "",
+    "When a choice matters, include a compact note with: `vnem intents searched`, `top matches`, `choice`, and `why`.",
+    "",
     "## Project Review Protocol",
     "",
     "1. Inspect the user's repository shape before recommending tech. Look for manifests and configs such as `package.json`, `pnpm-lock.yaml`, `yarn.lock`, `pyproject.toml`, `requirements.txt`, `Cargo.toml`, `go.mod`, `Dockerfile`, `astro.config.*`, `next.config.*`, `vite.config.*`, `.github/workflows/*`, `.mcp.*`, and existing agent instructions.",
@@ -1037,6 +1261,8 @@ function agentsMarkdown() {
     "Auto-activate the same protocol even without the trigger phrase when the user asks to write, improve, rewrite, harden, optimize, critique, or template a prompt; asks for a system/developer/agent/Codex/Claude/GPT prompt; or pastes a prompt draft and asks if it is good, powerful, clear, safe, complete, or ready to use.",
     "",
     "Do not auto-activate for ordinary task execution. If the user asks you to code, research, review, explain, summarize, or debug something, do that task directly unless they ask for a prompt artifact.",
+    "",
+    "This only limits prompt rewriting. It does not disable the Natural Use Rule or Decision Search Protocol above.",
     "",
     "Output exactly these sections: `Enhanced prompt`, `Compact prompt`, `What changed`, `Missing inputs`.",
     "",
@@ -1074,6 +1300,13 @@ function searchIndexJson(entries) {
       requires_secrets: false
     },
     intent_aliases: intentAliases,
+    intent_routes: intentRoutes,
+    decision_protocol: {
+      auto_use: true,
+      user_trigger_required: false,
+      read_first_for_build_tasks: ["matching intent_routes", "matching best-practice documents", "high-signal registry entries", "prompt patterns only when a prompt artifact is requested"],
+      evidence_note: ["vnem intents searched", "top matches", "choice", "why"]
+    },
     rank_weights: {
       use_case_match: 5,
       trust_tier: 5,
@@ -1114,6 +1347,8 @@ const index = {
   tags,
   use_cases: useCases,
   intent_aliases: intentAliases,
+  intent_routes: intentRoutes,
+  decision_protocol: searchIndex.decision_protocol,
   entries
 };
 
@@ -1132,6 +1367,7 @@ const llmsTxt = [
   "Read-only perception layer for coding agents.",
   "",
   "Use vnem to recommend current tools, MCPs, skills, evals, security utilities, memory systems, payment rails, identity primitives, and workflow patterns before changing a repo.",
+  "When installed, vnem should be used automatically for build, review, optimization, benchmark, research, and stack/tool decision tasks; no special trigger phrase should be required.",
   "",
   `Safe install command: ${installCommand}`,
   "",

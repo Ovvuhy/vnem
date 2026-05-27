@@ -1,0 +1,71 @@
+schema_version: 1.0.0
+slug: three-js
+name: Three.js
+type: runtime
+summary_llm: >-
+  Three.js is a JavaScript 3D graphics library for rendering browser scenes with WebGL and
+  emerging WebGPU support, useful when a web game or interactive experience is genuinely 3D.
+homepage_url: https://threejs.org/
+repo_url: https://github.com/mrdoob/three.js
+package_urls:
+  - https://www.npmjs.com/package/three
+licenses:
+  - MIT
+copyright_owner: three.js authors
+source_urls:
+  - https://threejs.org/
+  - https://threejs.org/docs/index
+  - https://github.com/mrdoob/three.js
+  - https://www.npmjs.com/package/three
+source_kind: official_docs
+protocols: []
+clients:
+  - Browser
+  - JavaScript
+  - TypeScript
+install:
+  command: npm install three
+  notes: >-
+    Use for custom 3D browser scenes; pair with separate UI, physics, asset, and game-state
+    choices as needed.
+  config_example: null
+permissions:
+  - browser
+  - canvas
+  - webgl
+  - webgpu
+env_vars: []
+tags:
+  - runtime
+  - three-dimensional
+  - webgl
+  - webgpu
+  - graphics
+  - browser-game
+  - renderer
+use_cases:
+  - Render custom 3D browser scenes
+  - Build interactive WebGL or WebGPU experiences
+  - Add 3D visuals to web applications
+best_for:
+  - Custom 3D browser experiences where a focused graphics library is preferable to a full game engine
+not_for:
+  - Simple 2D games where Canvas, Phaser, PixiJS, Excalibur, or KAPLAY would be lighter.
+alternatives:
+  - babylon-js
+  - playcanvas-engine
+  - pixijs
+supersedes: []
+freshness: current
+source_confidence: official
+maintenance_signals:
+  - Official docs, GitHub repository, and npm package metadata were checked.
+  - Widely used browser 3D library with active releases.
+risk_flags:
+  - browser-runtime
+  - gpu-rendering
+recommended_when:
+  - Use when the core game mechanic or visual direction is actually 3D and the agent can verify the rendered scene in a browser.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-27'

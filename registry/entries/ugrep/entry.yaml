@@ -1,0 +1,59 @@
+schema_version: 1.0.0
+slug: ugrep
+name: ugrep
+type: runtime
+summary_llm: >-
+  ugrep is a high-performance grep-compatible search utility with interactive TUI, Boolean and fuzzy
+  search, archive and compressed-file search, document search, and structured output options.
+homepage_url: https://ugrep.com
+repo_url: https://github.com/Genivia/ugrep
+package_urls:
+  - https://github.com/Genivia/ugrep/releases
+licenses:
+  - BSD-3-Clause
+copyright_owner: Genivia
+source_urls:
+  - https://ugrep.com
+  - https://github.com/Genivia/ugrep
+source_kind: github
+protocols: []
+clients:
+  - CLI
+install:
+  command: null
+  notes: >-
+    Consider when agents need archive, compressed file, document, Boolean, fuzzy, or interactive
+    search beyond normal code grep workflows.
+  config_example: null
+permissions:
+  - filesystem
+env_vars: []
+tags:
+  - search
+  - grep
+  - fuzzy-search
+  - archives
+  - tui
+use_cases:
+  - Search archives and compressed files
+  - Run Boolean or fuzzy local search
+  - Produce structured search output
+best_for:
+  - Repository audits that need search beyond source text files
+not_for:
+  - Default code search when ripgrep already covers the task.
+alternatives:
+  - ripgrep
+  - ast-grep
+supersedes: []
+freshness: current
+source_confidence: high
+maintenance_signals:
+  - GitHub repository and project homepage were checked.
+risk_flags:
+  - reads-local-files
+recommended_when:
+  - Use when search needs include archives, compressed files, documents, or Boolean/fuzzy matching.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-27'

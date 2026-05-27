@@ -1,7 +1,7 @@
 # vnem Full Registry
 
-Generated: 2026-05-26T21:02:24.985Z
-Entries: 199
+Generated: 2026-05-27T08:01:28.142Z
+Entries: 219
 
 ## Model Context Protocol
 
@@ -169,7 +169,7 @@ Sources: https://mastra.ai/docs, https://github.com/mastra-ai/mastra
 
 Mastra is a TypeScript agent framework for agents, workflows, RAG, memory, MCP integration, evals, and deployment in JavaScript applications.
 
-Mastra is a TypeScript agent framework for agents, workflows, RAG, memory, MCP integration, evals, and deployment in JavaScript applications. ## Best For - JavaScript and TypeScript teams building production agent apps ## Recommended When - Use when Node-native agent infrastructure is preferred over Python frameworks. 
+Mastra is a TypeScript agent framework for agents, workflows, RAG, memory, MCP integration, evals, and deployment in JavaScript applications. ## Best For - JavaScript and TypeScript teams building production agent apps ## Recommended When - Use when Node-native agent infrastructure is preferred over Python frameworks.
 
 ## Microsoft AutoGen
 
@@ -409,7 +409,7 @@ Sources: https://registry.modelcontextprotocol.io/v0.1/servers/ai.agentdm%2Fagen
 
 AgentDM: Agent to Agent Communication Platform is an MCP server for agentic systems. Agent communication platform for agent to agent messaging via MCP. Messages, channels, skills.
 
-AgentDM: Agent to Agent Communication Platform is an MCP server for agentic systems. Agent communication platform for agent to agent messaging via MCP. Messages, channels, skills. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. 
+AgentDM: Agent to Agent Communication Platform is an MCP server for agentic systems. Agent communication platform for agent to agent messaging via MCP. Messages, channels, skills. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned.
 
 ## Agentic News
 
@@ -481,7 +481,7 @@ Sources: https://registry.modelcontextprotocol.io/v0.1/servers/ai.agenttrust%2Fm
 
 AgentTrust — Identity & Trust for A2A Agents is an MCP server for agentic systems. Identity, trust, and A2A orchestration for autonomous AI agents. Official A2A partner.
 
-AgentTrust — Identity & Trust for A2A Agents is an MCP server for agentic systems. Identity, trust, and A2A orchestration for autonomous AI agents. Official A2A partner. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review 
+AgentTrust — Identity & Trust for A2A Agents is an MCP server for agentic systems. Identity, trust, and A2A orchestration for autonomous AI agents. Official A2A partner. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review
 
 ## ai.adeu/adeu
 
@@ -529,7 +529,7 @@ Sources: https://registry.modelcontextprotocol.io/v0.1/servers/ai.aliengiraffe%2
 
 ai.aliengiraffe/spotdb is an MCP server for agentic systems. Ephemeral data sandbox for AI workflows with guardrails and security
 
-ai.aliengiraffe/spotdb is an MCP server for agentic systems. Ephemeral data sandbox for AI workflows with guardrails and security ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising. This entry 
+ai.aliengiraffe/spotdb is an MCP server for agentic systems. Ephemeral data sandbox for AI workflows with guardrails and security ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising. This entry
 
 ## ai.autoblocks/contextlayer-mcp
 
@@ -745,7 +745,7 @@ Sources: https://registry.modelcontextprotocol.io/v0.1/servers/ai.klavis%2Fstrat
 
 ai.klavis/strata is an MCP server for agentic systems. MCP server for progressive tool usage at any scale (see https://klavis.ai)
 
-ai.klavis/strata is an MCP server for agentic systems. MCP server for progressive tool usage at any scale (see https://klavis.ai) ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising. This entry 
+ai.klavis/strata is an MCP server for agentic systems. MCP server for progressive tool usage at any scale (see https://klavis.ai) ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising. This entry
 
 ## ai.mcpanalytics/analytics
 
@@ -841,7 +841,7 @@ Sources: https://registry.modelcontextprotocol.io/v0.1/servers/ai.nullary%2Fnull
 
 ai.nullary/nullary is an MCP server for agentic systems. Negative results intelligence for drug discovery — query measured failures via MCP.
 
-ai.nullary/nullary is an MCP server for agentic systems. Negative results intelligence for drug discovery — query measured failures via MCP. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising. 
+ai.nullary/nullary is an MCP server for agentic systems. Negative results intelligence for drug discovery — query measured failures via MCP. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising.
 
 ## Anki MCP Server
 
@@ -1057,7 +1057,7 @@ Sources: https://registry.modelcontextprotocol.io/v0.1/servers/ai.borealhost%2Fm
 
 BorealHost is an MCP server for agentic systems. Agent-native web hosting — deploy sites, manage DNS, register domains, scale infrastructure
 
-BorealHost is an MCP server for agentic systems. Agent-native web hosting — deploy sites, manage DNS, register domains, scale infrastructure ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising. 
+BorealHost is an MCP server for agentic systems. Agent-native web hosting — deploy sites, manage DNS, register domains, scale infrastructure ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising.
 
 ## BuyWhere MCP
 
@@ -1225,7 +1225,7 @@ Sources: https://registry.modelcontextprotocol.io/v0.1/servers/ai.com.mcp%2Fcont
 
 Contabo (VPS) MCP Server is an MCP server for agentic systems. Contabo API (v1.0.0) as MCP tools for cloud provisioning, and management. Powered by HAPI MCP server
 
-Contabo (VPS) MCP Server is an MCP server for agentic systems. Contabo API (v1.0.0) as MCP tools for cloud provisioning, and management. Powered by HAPI MCP server ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes 
+Contabo (VPS) MCP Server is an MCP server for agentic systems. Contabo API (v1.0.0) as MCP tools for cloud provisioning, and management. Powered by HAPI MCP server ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes
 
 ## Context7 MCP
 
@@ -1321,7 +1321,7 @@ Sources: https://registry.modelcontextprotocol.io/v0.1/servers/ai.deepledger%2Fm
 
 DeepLedger — AI Bookkeeper for QuickBooks is an MCP server for agentic systems. AI bookkeeping for QuickBooks Online — 28 tools for transactions, reports, and bank feeds
 
-DeepLedger — AI Bookkeeper for QuickBooks is an MCP server for agentic systems. AI bookkeeping for QuickBooks Online — 28 tools for transactions, reports, and bank feeds ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review 
+DeepLedger — AI Bookkeeper for QuickBooks is an MCP server for agentic systems. AI bookkeeping for QuickBooks Online — 28 tools for transactions, reports, and bank feeds ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review
 
 ## Dreamlit
 
@@ -1345,7 +1345,7 @@ Sources: https://registry.modelcontextprotocol.io/v0.1/servers/ai.dreamlit%2Fmcp
 
 Dreamlit is an MCP server for agentic systems. Create, test, publish, and manage Dreamlit notification workflows from AI clients.
 
-Dreamlit is an MCP server for agentic systems. Create, test, publish, and manage Dreamlit notification workflows from AI clients. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising. This entry 
+Dreamlit is an MCP server for agentic systems. Create, test, publish, and manage Dreamlit notification workflows from AI clients. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising. This entry
 
 ## Drillr — The financial MCP for AI agents
 
@@ -1705,7 +1705,7 @@ Sources: https://registry.modelcontextprotocol.io/v0.1/servers/ai.mailjunky%2Fmc
 
 MailJunky is an MCP server for agentic systems. Send emails, track events, and manage contacts with MailJunky.
 
-MailJunky is an MCP server for agentic systems. Send emails, track events, and manage contacts with MailJunky. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising. This entry was seeded from an 
+MailJunky is an MCP server for agentic systems. Send emails, track events, and manage contacts with MailJunky. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising. This entry was seeded from an
 
 ## Marcora
 
@@ -1897,7 +1897,7 @@ Sources: https://registry.modelcontextprotocol.io/v0.1/servers/ai.obris%2Fmcp/ve
 
 Obris is an MCP server for agentic systems. Stop re-explaining yourself to AI. Save knowledge once, use it in every conversation.
 
-Obris is an MCP server for agentic systems. Stop re-explaining yourself to AI. Save knowledge once, use it in every conversation. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising. This entry 
+Obris is an MCP server for agentic systems. Stop re-explaining yourself to AI. Save knowledge once, use it in every conversation. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising. This entry
 
 ## OpenAI Prompt Engineering Guide
 
@@ -1945,7 +1945,7 @@ Sources: https://developers.openai.com/api/docs/guides/prompt-optimizer
 
 OpenAI Prompt Optimizer is official guidance for improving prompts through datasets, graders, annotations, and iterative prompt testing.
 
-OpenAI Prompt Optimizer is official guidance for improving prompts through datasets, graders, annotations, and iterative prompt testing. ## Best For - Teams with examples or eval criteria that can measure prompt quality ## Recommended When - Use when prompt improvement should be measured instead of judged by vibes. ## 
+OpenAI Prompt Optimizer is official guidance for improving prompts through datasets, graders, annotations, and iterative prompt testing. ## Best For - Teams with examples or eval criteria that can measure prompt quality ## Recommended When - Use when prompt improvement should be measured instead of judged by vibes. ##
 
 ## Perspective AI
 
@@ -2042,6 +2042,30 @@ Sources: https://registry.modelcontextprotocol.io/v0.1/servers/ai.djwizard%2Ftvw
 TVWizard is an MCP server for agentic systems. Control Android TV from any AI. 38 MCP tools: playback, recap, recommend, smart-home, schedules.
 
 TVWizard is an MCP server for agentic systems. Control Android TV from any AI. 38 MCP tools: playback, recap, recommend, smart-home, schedules. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promisin
+
+## vnem MCP
+
+Slug: vnem-mcp
+Type: mcp-server
+Trust tier: verified
+Review status: manual-reviewed
+Freshness: current
+Source confidence: official
+Recommendation score: 11
+Protocols: MCP
+Clients: Codex, Claude Desktop, Claude Code, Cursor, VS Code, OpenAI Agents SDK
+Tags: vnem, mcp, registry, agent-tools, best-practices, prompt-patterns, read-only
+Use cases: Give coding agents vnem search and recommendation tools, Query current MCP, skill, memory, eval, prompt, and coding-agent guidance, Compare registry entries with trust and permission notes
+Best for: Repositories that want local, source-backed tool recommendations without granting mutation permissions, Agents that should consult vnem before choosing MCP servers, memory layers, skills, or search tools, Give coding agents vnem search and recommendation tools, Query current MCP, skill, memory, eval, prompt, and coding-agent guidance, Compare registry entries with trust and permission notes, vnem workflows, mcp workflows, registry workflows
+Recommended when: Use when a coding agent should query vnem through MCP instead of manually reading `.vnem/search-index.json`., Use when recommendations need trust tiers, install notes, permissions, risk flags, and source URLs., Use when a project needs give coding agents vnem search and recommendation tools and the upstream source has been reviewed., Prefer this when verified install and behavior notes are required.
+Risk flags: reads-local-files, sensitive-permissions
+Homepage: https://github.com/naellisim/vnem
+Repository: https://github.com/naellisim/vnem
+Sources: https://github.com/naellisim/vnem, https://github.com/modelcontextprotocol/typescript-sdk
+
+vnem MCP is the local read-only MCP server for the vnem registry, exposing generated search data, best-practice notes, prompt patterns, and registry entries to coding agents before they choose tools or upgrade paths.
+
+vnem MCP is the local read-only MCP server for the vnem registry. It exposes vnem search, recommendation, comparison, entry lookup, and best-practice guidance to agent clients over stdio. ## Best For - Coding agents that should consult vnem before choosing MCP servers, skills, memory layers, prompt patterns, evals, sea
 
 ## xmp4 — Semantic code knowledge for your stack
 
@@ -2161,7 +2185,7 @@ Sources: https://registry.modelcontextprotocol.io/v0.1/servers/ai.agentictermina
 
 Agentic Terminal Directory is an MCP server for agentic systems. Verified merchants accepting agentic payments on Lightning/L402/BOLT12/USDT — search, verify, pay.
 
-Agentic Terminal Directory is an MCP server for agentic systems. Verified merchants accepting agentic payments on Lightning/L402/BOLT12/USDT — search, verify, pay. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes 
+Agentic Terminal Directory is an MCP server for agentic systems. Verified merchants accepting agentic payments on Lightning/L402/BOLT12/USDT — search, verify, pay. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes
 
 ## ai.adramp/google-ads
 
@@ -2401,7 +2425,7 @@ Sources: https://registry.modelcontextprotocol.io/v0.1/servers/ai.childanxiety%2
 
 ai.childanxiety/library is an MCP server for agentic systems. Clinician-reviewed library on anxiety, OCD, and phobias in children ages 5–12.
 
-ai.childanxiety/library is an MCP server for agentic systems. Clinician-reviewed library on anxiety, OCD, and phobias in children ages 5–12. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising. 
+ai.childanxiety/library is an MCP server for agentic systems. Clinician-reviewed library on anxiety, OCD, and phobias in children ages 5–12. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising.
 
 ## ai.childpsychiatry/library
 
@@ -2593,7 +2617,7 @@ Sources: https://registry.modelcontextprotocol.io/v0.1/servers/ai.geodesiclabs%2
 
 ai.geodesiclabs/governance-platform is an MCP server for agentic systems. Deterministic AI governance platform. Validates agent outputs, discovers patterns, solves math.
 
-ai.geodesiclabs/governance-platform is an MCP server for agentic systems. Deterministic AI governance platform. Validates agent outputs, discovers patterns, solves math. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review 
+ai.geodesiclabs/governance-platform is an MCP server for agentic systems. Deterministic AI governance platform. Validates agent outputs, discovers patterns, solves math. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review
 
 ## ai.gomarble/mcp-api
 
@@ -2617,7 +2641,7 @@ Sources: https://registry.modelcontextprotocol.io/v0.1/servers/ai.gomarble%2Fmcp
 
 ai.gomarble/mcp-api is an MCP server for agentic systems. GoMarble MCP API Server
 
-ai.gomarble/mcp-api is an MCP server for agentic systems. GoMarble MCP API Server ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising. This entry was seeded from an official registry source and 
+ai.gomarble/mcp-api is an MCP server for agentic systems. GoMarble MCP API Server ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising. This entry was seeded from an official registry source and
 
 ## ai.haymon/database
 
@@ -2833,7 +2857,7 @@ Sources: https://registry.modelcontextprotocol.io/v0.1/servers/ai.myriade%2Fmyri
 
 ai.myriade/myriade is an MCP server for agentic systems. Explore and query your data warehouse through Myriade's AI data analyst agent.
 
-ai.myriade/myriade is an MCP server for agentic systems. Explore and query your data warehouse through Myriade's AI data analyst agent. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising. This 
+ai.myriade/myriade is an MCP server for agentic systems. Explore and query your data warehouse through Myriade's AI data analyst agent. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising. This
 
 ## ai.obaron/aeo
 
@@ -3073,7 +3097,7 @@ Sources: https://registry.modelcontextprotocol.io/v0.1/servers/ai.bezal%2Flocal-
 
 Bezal — Local Business Intelligence for AI Agents is an MCP server for agentic systems. Search 7,000+ local service businesses across America by category, location, or keyword.
 
-Bezal — Local Business Intelligence for AI Agents is an MCP server for agentic systems. Search 7,000+ local service businesses across America by category, location, or keyword. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## 
+Bezal — Local Business Intelligence for AI Agents is an MCP server for agentic systems. Search 7,000+ local service businesses across America by category, location, or keyword. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ##
 
 ## BlueNexus Universal MCP
 
@@ -3433,7 +3457,7 @@ Sources: https://registry.modelcontextprotocol.io/v0.1/servers/ai.donethat%2Fdon
 
 DoneThat is an MCP server for agentic systems. Privacy-first work tracking with summaries, reports, coaching, and AI-ready long-term memory.
 
-DoneThat is an MCP server for agentic systems. Privacy-first work tracking with summaries, reports, coaching, and AI-ready long-term memory. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising. 
+DoneThat is an MCP server for agentic systems. Privacy-first work tracking with summaries, reports, coaching, and AI-ready long-term memory. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising.
 
 ## Filtrix AI MCP
 
@@ -3721,7 +3745,7 @@ Sources: https://registry.modelcontextprotocol.io/v0.1/servers/ai.com.mcp%2Flenn
 
 Lenny Rachitsky Podcast Transcripts MCP Server is an MCP server for agentic systems. MCP server for structured access to Lenny Rachitsky podcast transcripts. For content creators.
 
-Lenny Rachitsky Podcast Transcripts MCP Server is an MCP server for agentic systems. MCP server for structured access to Lenny Rachitsky podcast transcripts. For content creators. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. 
+Lenny Rachitsky Podcast Transcripts MCP Server is an MCP server for agentic systems. MCP server for structured access to Lenny Rachitsky podcast transcripts. For content creators. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned.
 
 ## LlamaIndex Agents
 
@@ -3746,6 +3770,30 @@ Sources: https://docs.llamaindex.ai/en/stable/use_cases/agents/, https://github.
 LlamaIndex Agents provide tool-using and workflow-oriented agent patterns for retrieval-heavy applications, knowledge systems, document search, and RAG pipelines.
 
 LlamaIndex Agents provide tool-using and workflow-oriented agent patterns for retrieval-heavy applications, knowledge systems, document search, and RAG pipelines. ## Best For - RAG-heavy assistants and knowledge workflows ## Recommended When - Use when retrieval and document indexing are the center of the agent design.
+
+## Matter.js
+
+Slug: matter-js
+Type: runtime
+Trust tier: promising
+Review status: manual-reviewed
+Freshness: current
+Source confidence: official
+Recommendation score: 10
+Protocols: none recorded
+Clients: Browser, JavaScript, TypeScript
+Tags: runtime, physics, two-dimensional, browser-game, collision, rigid-body, simulation
+Use cases: Add 2D rigid-body physics to browser games, Simulate collisions, constraints, and forces, Build physics-based prototypes without adopting a full game engine
+Best for: 2D browser games that need approachable rigid-body physics, Add 2D rigid-body physics to browser games, Simulate collisions, constraints, and forces, Build physics-based prototypes without adopting a full game engine, runtime workflows, physics workflows, two-dimensional workflows, browser-game workflows
+Recommended when: Use when game rules need 2D rigid-body behavior and the agent can test collision outcomes in browser gameplay., Use when a project needs add 2d rigid-body physics to browser games and the upstream source has been reviewed., Treat as promising until a maintainer verifies install and behavior.
+Risk flags: physics-simulation, sensitive-permissions
+Homepage: https://brm.io/matter-js/
+Repository: https://github.com/liabru/matter-js
+Sources: https://brm.io/matter-js/, https://github.com/liabru/matter-js, https://www.npmjs.com/package/matter-js
+
+Matter.js is a JavaScript 2D rigid-body physics engine for browser games and simulations, useful when simple collision checks are not enough but a full physics stack should stay approachable.
+
+Matter.js is a JavaScript 2D rigid-body physics engine for browser games and simulations. It is useful when custom overlap checks are not enough, but the game does not need a heavier physics or 3D stack. ## Best For - 2D browser games that need approachable rigid-body physics ## Recommended When - Use when game rules n
 
 ## MemeStack
 
@@ -3841,7 +3889,7 @@ Sources: https://registry.modelcontextprotocol.io/v0.1/servers/ai.namewhisper%2F
 
 Name Whisper — ENS Intelligence Layer is an MCP server for agentic systems. 34 MCP tools to search, register, manage, value, and trade ENS names. AI-powered intelligence layer.
 
-Name Whisper — ENS Intelligence Layer is an MCP server for agentic systems. 34 MCP tools to search, register, manage, value, and trade ENS names. AI-powered intelligence layer. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## 
+Name Whisper — ENS Intelligence Layer is an MCP server for agentic systems. 34 MCP tools to search, register, manage, value, and trade ENS names. AI-powered intelligence layer. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ##
 
 ## NewzAI MCP Server
 
@@ -4057,7 +4105,7 @@ Sources: https://docs.ragas.io/, https://github.com/explodinggradients/ragas
 
 Ragas is an evaluation framework for RAG and LLM applications with metrics for retrieval, generation quality, testset generation, and experiment workflows.
 
-Ragas is an evaluation framework for RAG and LLM applications with metrics for retrieval, generation quality, testset generation, and experiment workflows. ## Best For - Knowledge assistants and retrieval-heavy agent systems ## Recommended When - Use when the agent depends on retrieval quality and grounded answers. ## 
+Ragas is an evaluation framework for RAG and LLM applications with metrics for retrieval, generation quality, testset generation, and experiment workflows. ## Best For - Knowledge assistants and retrieval-heavy agent systems ## Recommended When - Use when the agent depends on retrieval quality and grounded answers. ##
 
 ## Sentry MCP
 
@@ -4153,7 +4201,7 @@ Sources: https://registry.modelcontextprotocol.io/v0.1/servers/ai.artidrop%2Fart
 
 ai.artidrop/artidrop is an MCP server for agentic systems. Publish HTML, Markdown, and multi-file sites as shareable URLs instantly via MCP.
 
-ai.artidrop/artidrop is an MCP server for agentic systems. Publish HTML, Markdown, and multi-file sites as shareable URLs instantly via MCP. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising. 
+ai.artidrop/artidrop is an MCP server for agentic systems. Publish HTML, Markdown, and multi-file sites as shareable URLs instantly via MCP. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising.
 
 ## Aider
 
@@ -4178,6 +4226,30 @@ Sources: https://aider.chat/docs/, https://github.com/Aider-AI/aider
 Aider is an open-source AI pair-programming tool that edits local files, works with Git, maps repositories, and supports many language models from the terminal.
 
 Aider is an open-source AI pair-programming tool that edits local files, works with Git, maps repositories, and supports many language models from the terminal. ## Best For - Small-to-medium coding tasks where Git diffs and local control matter ## Recommended When - Use when a lightweight terminal pair programmer is en
+
+## Babylon.js
+
+Slug: babylon-js
+Type: runtime
+Trust tier: promising
+Review status: manual-reviewed
+Freshness: current
+Source confidence: official
+Recommendation score: 9
+Protocols: none recorded
+Clients: Browser, JavaScript, TypeScript
+Tags: runtime, game-engine, three-dimensional, webgl, webgpu, webxr, browser-game, typescript
+Use cases: Build 3D browser games, Use engine-level scene, material, asset, GUI, XR, and physics features, Target WebGL with WebGPU support paths
+Best for: 3D browser games that benefit from a full engine instead of a focused renderer, Build 3D browser games, Use engine-level scene, material, asset, GUI, XR, and physics features, Target WebGL with WebGPU support paths, runtime workflows, game-engine workflows, three-dimensional workflows, webgl workflows
+Recommended when: Use when an agent needs a full 3D web engine with browser verification, not just a graphics library., Use when a project needs build 3d browser games and the upstream source has been reviewed., Treat as promising until a maintainer verifies install and behavior.
+Risk flags: browser-runtime, gpu-rendering, sensitive-permissions
+Homepage: https://www.babylonjs.com
+Repository: https://github.com/BabylonJS/Babylon.js
+Sources: https://www.babylonjs.com, https://doc.babylonjs.com/, https://doc.babylonjs.com/setup/support/webGPU, https://github.com/BabylonJS/Babylon.js, https://www.npmjs.com/package/@babylonjs/core
+
+Babylon.js is a full-featured browser 3D engine for WebGL/WebGPU games and interactive applications, with engine-level support for scenes, materials, assets, GUI, XR, and physics.
+
+Babylon.js is a full-featured 3D browser engine for WebGL/WebGPU games and interactive applications. It is heavier than a focused renderer, but gives agents engine-level primitives for scenes, materials, assets, GUI, XR, and physics-oriented workflows. ## Best For - 3D browser games that benefit from a full engine inst
 
 ## Clarid HMDA Validator
 
@@ -4251,6 +4323,30 @@ Continue is an open-source AI code assistant and agent platform for VS Code and 
 
 Continue is an open-source AI code assistant and agent platform for VS Code and JetBrains with configurable models, context providers, and team rules. ## Best For - Teams that want configurable editor AI instead of a single hosted assistant ## Recommended When - Use when model choice, local context configuration, and e
 
+## Excalibur.js
+
+Slug: excalibur-js
+Type: runtime
+Trust tier: promising
+Review status: manual-reviewed
+Freshness: current
+Source confidence: official
+Recommendation score: 9
+Protocols: none recorded
+Clients: Browser, TypeScript, JavaScript
+Tags: runtime, game-engine, browser-game, canvas, two-dimensional, typescript, html5-game
+Use cases: Build TypeScript-first 2D browser games, Use actors, scenes, input, collision, and assets, Teach or prototype structured 2D game architecture
+Best for: TypeScript-oriented 2D games that need engine structure without moving into 3D, Build TypeScript-first 2D browser games, Use actors, scenes, input, collision, and assets, Teach or prototype structured 2D game architecture, runtime workflows, game-engine workflows, browser-game workflows, canvas workflows
+Recommended when: Use when a 2D browser game should stay TypeScript-first and benefit from actors, scenes, collision, and asset structure., Use when a project needs build typescript-first 2d browser games and the upstream source has been reviewed., Treat as promising until a maintainer verifies install and behavior.
+Risk flags: browser-runtime, pre-1.0-api, sensitive-permissions
+Homepage: https://excaliburjs.com/
+Repository: https://github.com/excaliburjs/Excalibur
+Sources: https://excaliburjs.com/, https://excaliburjs.com/docs, https://github.com/excaliburjs/Excalibur, https://www.npmjs.com/package/excalibur
+
+Excalibur.js is a TypeScript-first 2D HTML5 canvas game engine for browser games, offering actors, scenes, collision, input, assets, and game-loop structure.
+
+Excalibur.js is a TypeScript-first 2D HTML5 canvas game engine. It is a good fit when an agent needs actors, scenes, collision, input, assets, and a structured loop while staying in a browser-native TypeScript workflow. ## Best For - TypeScript-oriented 2D games that need engine structure without moving into 3D ## Reco
+
 ## Firecrawl MCP
 
 Slug: firecrawl-mcp
@@ -4273,7 +4369,7 @@ Sources: https://docs.firecrawl.dev/mcp-server, https://github.com/mendableai/fi
 
 Firecrawl MCP lets agents crawl, scrape, search, and extract web content through Firecrawl's web data APIs for research and ingestion workflows.
 
-Firecrawl MCP lets agents crawl, scrape, search, and extract web content through Firecrawl's web data APIs for research and ingestion workflows. ## Best For - Research agents that need structured web extraction ## Recommended When - Use when web extraction is permitted and citations or raw sources remain available. ## 
+Firecrawl MCP lets agents crawl, scrape, search, and extract web content through Firecrawl's web data APIs for research and ingestion workflows. ## Best For - Research agents that need structured web extraction ## Recommended When - Use when web extraction is permitted and citations or raw sources remain available. ##
 
 ## GitHub MCP Server
 
@@ -4297,7 +4393,31 @@ Sources: https://github.com/github/github-mcp-server
 
 GitHub MCP Server is GitHub's official MCP server for repository, issue, pull request, search, workflow, and code operations through agent clients.
 
-GitHub MCP Server is GitHub's official MCP server for repository, issue, pull request, search, workflow, and code operations through agent clients. ## Best For - Repository workflows where GitHub is the system of record ## Recommended When - Use when an agent needs GitHub context or PR workflows and token scope can be 
+GitHub MCP Server is GitHub's official MCP server for repository, issue, pull request, search, workflow, and code operations through agent clients. ## Best For - Repository workflows where GitHub is the system of record ## Recommended When - Use when an agent needs GitHub context or PR workflows and token scope can be
+
+## KAPLAY
+
+Slug: kaplay
+Type: runtime
+Trust tier: promising
+Review status: manual-reviewed
+Freshness: current
+Source confidence: official
+Recommendation score: 9
+Protocols: none recorded
+Clients: Browser, JavaScript, TypeScript
+Tags: runtime, game-library, browser-game, canvas, two-dimensional, prototype, typescript
+Use cases: Prototype 2D browser games quickly, Teach simple game objects, collisions, and input, Build small playful web games with concise code
+Best for: Fast 2D browser-game prototypes where concise game code matters most, Prototype 2D browser games quickly, Teach simple game objects, collisions, and input, Build small playful web games with concise code, runtime workflows, game-library workflows, browser-game workflows, canvas workflows
+Recommended when: Use when an agent should make a small 2D browser game feel playable quickly without a heavy engine., Use when a project needs prototype 2d browser games quickly and the upstream source has been reviewed., Treat as promising until a maintainer verifies install and behavior.
+Risk flags: browser-runtime, prototype-oriented, sensitive-permissions
+Homepage: https://kaplayjs.com/
+Repository: https://github.com/kaplayjs/kaplay
+Sources: https://kaplayjs.com/, https://github.com/kaplayjs/kaplay, https://www.npmjs.com/package/kaplay
+
+KAPLAY is a JavaScript and TypeScript 2D game library for fast browser-game prototyping, using component-style game objects, simple physics helpers, input, sprites, and web examples.
+
+KAPLAY is a JavaScript and TypeScript 2D game library for fast browser-game prototyping. It is most useful when an agent needs a small playable game quickly, with simple game objects, collisions, input, sprites, and concise examples. ## Best For - Fast 2D browser-game prototypes where concise game code matters most ##
 
 ## LinkedIn MCP Server
 
@@ -4347,6 +4467,78 @@ Moxt Workspace is an MCP server for agentic systems. Browse and manage files in 
 
 Moxt Workspace is an MCP server for agentic systems. Browse and manage files in your Moxt AI workspace from any MCP client. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: promising. This entry was se
 
+## Phaser
+
+Slug: phaser
+Type: runtime
+Trust tier: promising
+Review status: manual-reviewed
+Freshness: current
+Source confidence: official
+Recommendation score: 9
+Protocols: none recorded
+Clients: Browser, JavaScript, TypeScript
+Tags: runtime, game-engine, browser-game, html5-game, canvas, webgl, two-dimensional, typescript
+Use cases: Build structured 2D browser games, Manage scenes, sprites, assets, input, cameras, and audio, Ship HTML5 games across desktop and mobile browsers
+Best for: 2D games that need a mature game framework instead of custom Canvas code, Build structured 2D browser games, Manage scenes, sprites, assets, input, cameras, and audio, Ship HTML5 games across desktop and mobile browsers, runtime workflows, game-engine workflows, browser-game workflows, html5-game workflows
+Recommended when: Use when a browser game needs scenes, sprites, asset loading, collisions, cameras, audio, and a tested 2D engine., Use when a project needs build structured 2d browser games and the upstream source has been reviewed., Treat as promising until a maintainer verifies install and behavior.
+Risk flags: browser-runtime, canvas-webgl-rendering, sensitive-permissions
+Homepage: https://phaser.io
+Repository: https://github.com/phaserjs/phaser
+Sources: https://phaser.io, https://docs.phaser.io/, https://github.com/phaserjs/phaser, https://www.npmjs.com/package/phaser
+
+Phaser is an open-source HTML5 game framework for building browser 2D games with scenes, sprites, asset loading, input, cameras, animation, audio, and Canvas/WebGL rendering.
+
+Phaser is an open-source HTML5 framework for browser-based 2D games. It is a good default when an agent needs more than a raw Canvas loop: scenes, sprites, asset loading, input, cameras, animation, audio, and Canvas/WebGL rendering. ## Best For - 2D games that need a mature game framework instead of custom Canvas code
+
+## PixiJS
+
+Slug: pixijs
+Type: runtime
+Trust tier: promising
+Review status: manual-reviewed
+Freshness: current
+Source confidence: official
+Recommendation score: 9
+Protocols: none recorded
+Clients: Browser, JavaScript, TypeScript
+Tags: runtime, renderer, browser-game, canvas, webgl, webgpu, two-dimensional, graphics
+Use cases: Render rich 2D browser graphics, Build interactive sprite-heavy scenes, Add a renderer without adopting a full game engine
+Best for: 2D experiences where rendering performance matters more than engine-level game structure, Render rich 2D browser graphics, Build interactive sprite-heavy scenes, Add a renderer without adopting a full game engine, runtime workflows, renderer workflows, browser-game workflows, canvas workflows
+Recommended when: Use when an agent needs a fast browser 2D renderer while keeping game rules and architecture custom., Use when a project needs render rich 2d browser graphics and the upstream source has been reviewed., Treat as promising until a maintainer verifies install and behavior.
+Risk flags: browser-runtime, gpu-rendering, sensitive-permissions
+Homepage: https://pixijs.com/
+Repository: https://github.com/pixijs/pixijs
+Sources: https://pixijs.com/, https://pixijs.com/8.x/guides, https://github.com/pixijs/pixijs, https://www.npmjs.com/package/pixi.js
+
+PixiJS is a lightweight 2D rendering library for rich browser graphics and interactive scenes, using WebGL and WebGPU without imposing a full game-engine architecture.
+
+PixiJS is a lightweight 2D rendering library for rich browser graphics and interactive scenes. It is best treated as a renderer rather than a complete game framework: useful when the game needs fast sprites, filters, textures, and interaction, but the agent should keep rules and state architecture explicit. ## Best For
+
+## PlayCanvas Engine
+
+Slug: playcanvas-engine
+Type: runtime
+Trust tier: promising
+Review status: manual-reviewed
+Freshness: current
+Source confidence: official
+Recommendation score: 9
+Protocols: none recorded
+Clients: Browser, JavaScript, TypeScript
+Tags: runtime, game-engine, three-dimensional, webgl, webgpu, webxr, browser-game, typescript
+Use cases: Build browser-first 3D games, Render interactive 3D apps and visualizations, Use WebGL2, WebGPU, WebXR, input, audio, assets, and animation in one engine
+Best for: 3D browser games or visualizations that benefit from an engine with a browser-based ecosystem, Build browser-first 3D games, Render interactive 3D apps and visualizations, Use WebGL2, WebGPU, WebXR, input, audio, assets, and animation in one engine, runtime workflows, game-engine workflows, three-dimensional workflows, webgl workflows
+Recommended when: Use when a project needs a browser-first 3D game engine with rendering, input, assets, audio, animation, and XR paths., Use when a project needs build browser-first 3d games and the upstream source has been reviewed., Treat as promising until a maintainer verifies install and behavior.
+Risk flags: browser-runtime, gpu-rendering, sensitive-permissions
+Homepage: https://playcanvas.com
+Repository: https://github.com/playcanvas/engine
+Sources: https://playcanvas.com, https://developer.playcanvas.com/user-manual/engine/, https://github.com/playcanvas/engine, https://www.npmjs.com/package/playcanvas
+
+PlayCanvas Engine is an open-source browser 3D game engine built on WebGL2 and WebGPU, with APIs for rendering, assets, input, animation, audio, physics integration, and WebXR.
+
+PlayCanvas Engine is an open-source browser 3D game engine built around WebGL2 and WebGPU. It is useful when an agent needs a browser-first 3D engine with rendering, input, assets, animation, audio, physics integration, and WebXR pathways. ## Best For - 3D browser games or visualizations that benefit from an engine wit
+
 ## Playwright MCP
 
 Slug: playwright-mcp
@@ -4370,6 +4562,126 @@ Sources: https://github.com/microsoft/playwright-mcp
 Playwright MCP is Microsoft's browser automation MCP server for giving agents structured access to pages, snapshots, actions, and web UI testing flows.
 
 Playwright MCP is Microsoft's browser automation MCP server for giving agents structured access to pages, snapshots, actions, and web UI testing flows. ## Best For - Frontend QA, local app inspection, and browser-based debugging ## Recommended When - Use when a coding agent needs real browser evidence instead of guessi
+
+## Rapier JS
+
+Slug: rapier-js
+Type: runtime
+Trust tier: promising
+Review status: manual-reviewed
+Freshness: current
+Source confidence: official
+Recommendation score: 9
+Protocols: none recorded
+Clients: Browser, JavaScript, TypeScript
+Tags: runtime, physics, two-dimensional, three-dimensional, wasm, browser-game, collision, simulation
+Use cases: Add 2D or 3D physics to browser games, Use WASM-backed rigid-body simulation, Choose deterministic or compatibility physics packages when needed
+Best for: Browser games that need stronger 2D or 3D physics than simple custom collision or Matter.js, Add 2D or 3D physics to browser games, Use WASM-backed rigid-body simulation, Choose deterministic or compatibility physics packages when needed, runtime workflows, physics workflows, two-dimensional workflows, three-dimensional workflows
+Recommended when: Use when a browser game needs 2D or 3D rigid-body physics and the agent can verify WASM loading plus gameplay collisions., Use when a project needs add 2d or 3d physics to browser games and the upstream source has been reviewed., Treat as promising until a maintainer verifies install and behavior.
+Risk flags: physics-simulation, wasm-bundling, sensitive-permissions
+Homepage: https://rapier.rs
+Repository: https://github.com/dimforge/rapier.js
+Sources: https://rapier.rs, https://rapier.rs/docs/, https://github.com/dimforge/rapier.js, https://www.npmjs.com/package/@dimforge/rapier2d-compat, https://www.npmjs.com/package/@dimforge/rapier3d-compat
+
+Rapier JS provides official JavaScript bindings for the Rapier 2D and 3D physics engines, using WebAssembly packages for browser games and simulations that need higher-performance physics.
+
+Rapier JS provides official JavaScript bindings for the Rapier 2D and 3D physics engines. It is a stronger choice than simple collision logic when a browser game needs higher-performance rigid-body physics, but it introduces WASM packaging and loading concerns that must be tested. ## Best For - Browser games that need
+
+## ripgrep
+
+Slug: ripgrep
+Type: runtime
+Trust tier: promising
+Review status: manual-reviewed
+Freshness: current
+Source confidence: high
+Recommendation score: 9
+Protocols: none recorded
+Clients: CLI
+Tags: search, grep, regex, rust, coding-agents
+Use cases: Search codebases quickly, Respect gitignore while finding text patterns, Reduce token-heavy file exploration loops
+Best for: Coding agents that need fast lexical search before reading files, Search codebases quickly, Respect gitignore while finding text patterns, Reduce token-heavy file exploration loops, search workflows, grep workflows, regex workflows, rust workflows
+Recommended when: Use as the default text-search primitive before opening files or proposing code changes., Use when a project needs search codebases quickly and the upstream source has been reviewed., Treat as promising until a maintainer verifies install and behavior.
+Risk flags: reads-local-files, sensitive-permissions
+Homepage: https://github.com/BurntSushi/ripgrep
+Repository: https://github.com/BurntSushi/ripgrep
+Sources: https://github.com/BurntSushi/ripgrep, https://crates.io/crates/ripgrep
+
+ripgrep is a mature Rust command-line search tool that recursively searches files for regex patterns while respecting gitignore rules, making it a strong default grep replacement for coding agents inspecting repositories.
+
+ripgrep is a mature Rust command-line search tool that recursively searches files for regex patterns while respecting gitignore rules, making it a strong default grep replacement for coding agents inspecting repositories. ## Best For - Coding agents that need fast lexical search before reading files ## Recommended When
+
+## Three.js
+
+Slug: three-js
+Type: runtime
+Trust tier: promising
+Review status: manual-reviewed
+Freshness: current
+Source confidence: official
+Recommendation score: 9
+Protocols: none recorded
+Clients: Browser, JavaScript, TypeScript
+Tags: runtime, three-dimensional, webgl, webgpu, graphics, browser-game, renderer
+Use cases: Render custom 3D browser scenes, Build interactive WebGL or WebGPU experiences, Add 3D visuals to web applications
+Best for: Custom 3D browser experiences where a focused graphics library is preferable to a full game engine, Render custom 3D browser scenes, Build interactive WebGL or WebGPU experiences, Add 3D visuals to web applications, runtime workflows, three-dimensional workflows, webgl workflows, webgpu workflows
+Recommended when: Use when the core game mechanic or visual direction is actually 3D and the agent can verify the rendered scene in a browser., Use when a project needs render custom 3d browser scenes and the upstream source has been reviewed., Treat as promising until a maintainer verifies install and behavior.
+Risk flags: browser-runtime, gpu-rendering, sensitive-permissions
+Homepage: https://threejs.org/
+Repository: https://github.com/mrdoob/three.js
+Sources: https://threejs.org/, https://threejs.org/docs/index, https://github.com/mrdoob/three.js, https://www.npmjs.com/package/three
+
+Three.js is a JavaScript 3D graphics library for rendering browser scenes with WebGL and emerging WebGPU support, useful when a web game or interactive experience is genuinely 3D.
+
+Three.js is a JavaScript 3D graphics library for custom browser scenes. It is useful for games and interactive views where 3D is central, but it is not a full game framework by itself; UI, physics, assets, and state still need deliberate choices. ## Best For - Custom 3D browser experiences where a focused graphics libr
+
+## ugrep
+
+Slug: ugrep
+Type: runtime
+Trust tier: promising
+Review status: manual-reviewed
+Freshness: current
+Source confidence: high
+Recommendation score: 9
+Protocols: none recorded
+Clients: CLI
+Tags: search, grep, fuzzy-search, archives, tui
+Use cases: Search archives and compressed files, Run Boolean or fuzzy local search, Produce structured search output
+Best for: Repository audits that need search beyond source text files, Search archives and compressed files, Run Boolean or fuzzy local search, Produce structured search output, search workflows, grep workflows, fuzzy-search workflows, archives workflows
+Recommended when: Use when search needs include archives, compressed files, documents, or Boolean/fuzzy matching., Use when a project needs search archives and compressed files and the upstream source has been reviewed., Treat as promising until a maintainer verifies install and behavior.
+Risk flags: reads-local-files, sensitive-permissions
+Homepage: https://ugrep.com
+Repository: https://github.com/Genivia/ugrep
+Sources: https://ugrep.com, https://github.com/Genivia/ugrep
+
+ugrep is a high-performance grep-compatible search utility with interactive TUI, Boolean and fuzzy search, archive and compressed-file search, document search, and structured output options.
+
+ugrep is a high-performance grep-compatible search utility with interactive TUI, Boolean and fuzzy search, archive and compressed-file search, document search, and structured output options. ## Best For - Repository audits that need search beyond source text files ## Recommended When - Use when search needs include arc
+
+## ast-grep
+
+Slug: ast-grep
+Type: runtime
+Trust tier: promising
+Review status: manual-reviewed
+Freshness: current
+Source confidence: high
+Recommendation score: 8
+Protocols: none recorded
+Clients: CLI, Node.js
+Tags: search, structural-search, ast, tree-sitter, codemod
+Use cases: Find syntax patterns across codebases, Rewrite code with AST captures, Add lightweight custom lint rules
+Best for: Agents that need precise code search or reviewable codemods across supported languages, Find syntax patterns across codebases, Rewrite code with AST captures, Add lightweight custom lint rules, search workflows, structural-search workflows, ast workflows, tree-sitter workflows
+Recommended when: Use when text grep would overmatch or miss syntax-equivalent code shapes., Use when a project needs find syntax patterns across codebases and the upstream source has been reviewed., Treat as promising until a maintainer verifies install and behavior.
+Risk flags: reads-local-files, can-rewrite-code, sensitive-permissions
+Homepage: https://ast-grep.github.io/
+Repository: https://github.com/ast-grep/ast-grep
+Sources: https://ast-grep.github.io/, https://github.com/ast-grep/ast-grep, https://www.npmjs.com/package/@ast-grep/cli
+
+ast-grep is a Rust and tree-sitter based CLI for structural code search, linting, and rewriting, letting agents match syntax patterns instead of fragile text snippets across many languages.
+
+ast-grep is a Rust and tree-sitter based CLI for structural code search, linting, and rewriting, letting agents match syntax patterns instead of fragile text snippets across many languages. ## Best For - Agents that need precise code search or reviewable codemods across supported languages ## Recommended When - Use whe
 
 ## Browserbase MCP
 
@@ -4442,6 +4754,54 @@ Sources: https://github.com/getzep/graphiti
 Graphiti is an open-source framework for building temporal knowledge graphs that help agents retrieve facts, events, and relationships over time.
 
 Graphiti is an open-source framework for building temporal knowledge graphs that help agents retrieve facts, events, and relationships over time. ## Best For - Agent memory that benefits from entities, relationships, and time-aware retrieval ## Recommended When - Use when vector search alone is not enough for agent mem
+
+## jscpd
+
+Slug: jscpd
+Type: runtime
+Trust tier: promising
+Review status: manual-reviewed
+Freshness: current
+Source confidence: high
+Recommendation score: 8
+Protocols: none recorded
+Clients: CLI, Node.js
+Tags: duplicate-code, static-analysis, code-quality, code-simplification, ci
+Use cases: Detect duplicated source blocks, Generate clone reports for refactoring, Track copy-paste debt in CI
+Best for: Agents that need objective duplication reports before simplifying repeated implementations, Detect duplicated source blocks, Generate clone reports for refactoring, Track copy-paste debt in CI, duplicate-code workflows, static-analysis workflows, code-quality workflows, code-simplification workflows
+Recommended when: Use when repeated code appears across files and an agent needs a compact clone report before refactoring., Use when a project needs detect duplicated source blocks and the upstream source has been reviewed., Treat as promising until a maintainer verifies install and behavior.
+Risk flags: reads-local-files, may-report-false-positives, sensitive-permissions
+Homepage: https://jscpd.dev/
+Repository: https://github.com/kucherenko/jscpd
+Sources: https://jscpd.dev/, https://jscpd.dev/getting-started/introduction, https://github.com/kucherenko/jscpd, https://www.npmjs.com/package/jscpd
+
+jscpd is a copy-paste and duplicate-code detector for many programming languages and document formats, giving agents concrete clone reports before collapsing repeated code into simpler shared behavior.
+
+jscpd is a CLI and Node.js duplicate-code detector. It scans source files and documents for copy-paste clones, supports many languages and formats, and can produce machine-readable reports for local review or CI. ## Best For - Finding repeated implementations before a simplification pass - Producing objective clone rep
+
+## Knip
+
+Slug: knip
+Type: runtime
+Trust tier: promising
+Review status: manual-reviewed
+Freshness: current
+Source confidence: high
+Recommendation score: 8
+Protocols: none recorded
+Clients: CLI, Node.js
+Tags: javascript, typescript, dead-code, dependency-analysis, code-simplification
+Use cases: Find unused files and exports, Detect unused or missing dependencies, Support evidence-backed code deletion
+Best for: JavaScript and TypeScript repositories where agents need evidence before removing code, Find unused files and exports, Detect unused or missing dependencies, Support evidence-backed code deletion, javascript workflows, typescript workflows, dead-code workflows, dependency-analysis workflows
+Recommended when: Use before deleting JavaScript or TypeScript code, exports, files, or dependencies during simplification work., Use when a project needs find unused files and exports and the upstream source has been reviewed., Treat as promising until a maintainer verifies install and behavior.
+Risk flags: reads-local-files, may-report-false-positives, sensitive-permissions
+Homepage: https://knip.dev/
+Repository: https://github.com/webpro-nl/knip
+Sources: https://knip.dev/, https://knip.dev/overview/getting-started, https://github.com/webpro-nl/knip, https://www.npmjs.com/package/knip
+
+Knip is a JavaScript and TypeScript project hygiene CLI that finds unused files, dependencies, exports, types, enum members, and unresolved references so agents can remove dead code with evidence before refactoring.
+
+Knip is a CLI for JavaScript and TypeScript project hygiene. It scans project entry points, workspaces, plugins, and manifests to report unused files, exports, dependencies, types, enum members, and unresolved references. ## Best For - Evidence-backed dead-code and dependency cleanup in JS/TS repositories - Pre-refacto
 
 ## LangSmith
 
@@ -4731,6 +5091,30 @@ Supabase MCP is a community Supabase MCP server for project, database, SQL, and 
 
 Supabase MCP is a community Supabase MCP server for project, database, SQL, and platform operations through MCP-compatible agent clients. ## Best For - Supabase-backed apps where schema and project context improve agent work ## Recommended When - Use when database scope can be limited and SQL changes are reviewed befor
 
+## Swarms
+
+Slug: swarms
+Type: agent-framework
+Trust tier: promising
+Review status: manual-reviewed
+Freshness: current
+Source confidence: high
+Recommendation score: 7
+Protocols: MCP
+Clients: Python
+Tags: agent-framework, multi-agent, orchestration, python, mcp
+Use cases: Build multi-agent workflows, Coordinate sequential, concurrent, graph, and hierarchical agent teams, Prototype swarm-style task routing
+Best for: Python teams evaluating explicit multi-agent orchestration patterns, Build multi-agent workflows, Coordinate sequential, concurrent, graph, and hierarchical agent teams, Prototype swarm-style task routing, agent-framework workflows, multi-agent workflows, orchestration workflows, python workflows
+Recommended when: Use when the team needs to compare several explicit multi-agent execution patterns in Python., Use when a project needs build multi-agent workflows and the upstream source has been reviewed., Treat as promising until a maintainer verifies install and behavior.
+Risk flags: multi-agent-cost-amplification, model-api-required, tool-side-effects, sensitive-permissions
+Homepage: https://docs.swarms.world/
+Repository: https://github.com/kyegomez/swarms
+Sources: https://docs.swarms.world/, https://github.com/kyegomez/swarms, https://pypi.org/project/swarms/
+
+Swarms is a Python multi-agent orchestration framework with agent primitives, sequential, concurrent, graph, hierarchical, mixture-of-agents, and router-style workflows for production agent systems.
+
+Swarms is a Python multi-agent orchestration framework with agent primitives, sequential, concurrent, graph, hierarchical, mixture-of-agents, and router-style workflows for production agent systems. ## Best For - Python teams evaluating explicit multi-agent orchestration patterns ## Recommended When - Use when the team
+
 ## Zep
 
 Slug: zep
@@ -4754,6 +5138,102 @@ Sources: https://www.getzep.com/, https://github.com/getzep/zep
 Zep is a memory platform for AI agents that builds temporal knowledge graphs and retrieves relevant user, session, and business context for agent applications.
 
 Zep is a memory platform for AI agents that builds temporal knowledge graphs and retrieves relevant user, session, and business context for agent applications. ## Best For - Hosted memory systems that need graph-shaped context ## Recommended When - Use when temporal graph memory is worth the operational and privacy ove
+
+## Clude
+
+Slug: clude
+Type: memory
+Trust tier: promising
+Review status: manual-reviewed
+Freshness: current
+Source confidence: high
+Recommendation score: 6
+Protocols: MCP
+Clients: Claude Code, Claude Desktop, Cursor, TypeScript
+Tags: memory, mcp, long-term-memory, cognitive-architecture, agents
+Use cases: Give agents portable long-term memory, Add MCP memory recall and storage tools, Compare hosted, local, and self-hosted memory modes
+Best for: Agent products that need inspectable memory and can define retention boundaries, Give agents portable long-term memory, Add MCP memory recall and storage tools, Compare hosted, local, and self-hosted memory modes, memory workflows, mcp workflows, long-term-memory workflows, cognitive-architecture workflows
+Recommended when: Use when agent memory should be explicit, searchable, and portable across MCP-compatible clients., Use when a project needs give agents portable long-term memory and the upstream source has been reviewed., Treat as promising until a maintainer verifies install and behavior.
+Risk flags: stores-user-memory, data-retention-risk, early-stage, hosted-memory-service, sensitive-permissions
+Homepage: https://clude.io/
+Repository: https://github.com/sebbsssss/clude
+Sources: https://clude.io/docs.html, https://github.com/sebbsssss/clude, https://www.npmjs.com/package/@clude/sdk
+
+Clude is an early-stage cognitive memory layer and MCP server for AI agents, with hosted, self-hosted, and local modes for storing, recalling, decaying, consolidating, and exporting agent memories.
+
+Clude is an early-stage cognitive memory layer and MCP server for AI agents, with hosted, self-hosted, and local modes for storing, recalling, decaying, consolidating, and exporting agent memories. ## Best For - Agent products that need inspectable memory and can define retention boundaries ## Recommended When - Use wh
+
+## codebase-memory-mcp
+
+Slug: codebase-memory-mcp
+Type: mcp-server
+Trust tier: promising
+Review status: manual-reviewed
+Freshness: current
+Source confidence: high
+Recommendation score: 6
+Protocols: MCP
+Clients: Claude Code, Codex CLI, Cursor, Aider, VS Code
+Tags: mcp, code-intelligence, knowledge-graph, tree-sitter, coding-agents
+Use cases: Give agents structural code search, Trace call paths and affected symbols, Reduce repeated grep and file-reading loops
+Best for: Large repositories where agents repeatedly ask structural codebase questions, Give agents structural code search, Trace call paths and affected symbols, Reduce repeated grep and file-reading loops, mcp workflows, code-intelligence workflows, knowledge-graph workflows, tree-sitter workflows
+Recommended when: Use when structural codebase questions dominate and the team can audit local indexing behavior first., Use when a project needs give agents structural code search and the upstream source has been reviewed., Treat as promising until a maintainer verifies install and behavior.
+Risk flags: reads-local-code, writes-agent-config, stores-local-index, early-stage, sensitive-permissions
+Homepage: https://deusdata.github.io/codebase-memory-mcp/
+Repository: https://github.com/DeusData/codebase-memory-mcp
+Sources: https://github.com/DeusData/codebase-memory-mcp, https://deusdata.github.io/codebase-memory-mcp/, https://arxiv.org/abs/2603.27277
+
+codebase-memory-mcp is a local MCP server that indexes source code into a persistent tree-sitter knowledge graph so coding agents can answer structural questions with graph queries instead of repeated grep and file-reading loops.
+
+codebase-memory-mcp is a local MCP server that indexes source code into a persistent tree-sitter knowledge graph so coding agents can answer structural questions with graph queries instead of repeated grep and file-reading loops. ## Best For - Large repositories where agents repeatedly ask structural codebase questions
+
+## Covenant Research
+
+Slug: covenant-research
+Type: security
+Trust tier: watchlist
+Review status: needs-review
+Freshness: current
+Source confidence: medium
+Recommendation score: 3
+Protocols: none recorded
+Clients: Claude, GPT
+Tags: governance, safety, benchmarks, autonomous-agents, research
+Use cases: Study governance layers for autonomous agents, Compare governed and vanilla agent benchmark runs, Review agent safety rule sets
+Best for: Maintainers tracking governance and benchmark claims for autonomous coding agents, Study governance layers for autonomous agents, Compare governed and vanilla agent benchmark runs, Review agent safety rule sets, governance workflows, safety workflows, benchmarks workflows, autonomous-agents workflows
+Recommended when: Watch when evaluating governance patterns for autonomous agent runs, but require independent reproduction before recommendation., Use when a project needs study governance layers for autonomous agents and the upstream source has been reviewed., Treat as promising until a maintainer verifies install and behavior.
+Risk flags: custom-license, benchmark-not-independent, early-stage-research, license-not-asserted
+Homepage: https://asalsali.github.io/covenant-research/
+Repository: https://github.com/asalsali/covenant-research
+Sources: https://github.com/asalsali/covenant-research, https://asalsali.github.io/covenant-research/, https://github.com/asalsali/covenant-framework
+
+Covenant Research is a public research and benchmarking site for a proposed governance layer for autonomous AI agents, including a whitepaper, Harbor agent configurations, governance rules, and preliminary Terminal-Bench results.
+
+Covenant Research is a public research and benchmarking site for a proposed governance layer for autonomous AI agents, including a whitepaper, Harbor agent configurations, governance rules, and preliminary Terminal-Bench results. ## Best For - Maintainers tracking governance and benchmark claims for autonomous coding a
+
+## Kaimo
+
+Slug: kaimo
+Type: payments
+Trust tier: watchlist
+Review status: needs-review
+Freshness: current
+Source confidence: low
+Recommendation score: 1
+Protocols: x402
+Clients: none recorded
+Tags: payments, x402, agent-commerce, checkout, watchlist
+Use cases: Track agent-commerce and x402 checkout patterns, Watch emerging payment flows for AI buyers
+Best for: Maintainers watching early agent-commerce infrastructure from community submissions, Track agent-commerce and x402 checkout patterns, Watch emerging payment flows for AI buyers, payments workflows, x402 workflows, agent-commerce workflows, checkout workflows, watchlist workflows
+Recommended when: Watch for agent-commerce and x402 workflows after product documentation and safety controls appear., Use when a project needs track agent-commerce and x402 checkout patterns and the upstream source has been reviewed., Treat as promising until a maintainer verifies install and behavior.
+Risk flags: license-not-asserted, payment-permission-risk, early-stage, docs-not-yet-public, sensitive-permissions
+Homepage: https://github.com/kaimo-no
+Repository: https://github.com/kaimo-no/kaimo-no.github.io
+Sources: https://github.com/kaimo-no, https://github.com/kaimo-no/kaimo-no.github.io
+
+Kaimo is a very early agent-commerce signal positioning one product URL plus buyer details as a purchase flow using fiat or x402, with a public GitHub landing repository but minimal product documentation so far.
+
+Kaimo is a very early agent-commerce signal positioning one product URL plus buyer details as a purchase flow using fiat or x402, with a public GitHub landing repository but minimal product documentation so far. ## Best For - Maintainers watching early agent-commerce infrastructure from community submissions ## Recomme
 
 ## OpenAI Swarm
 

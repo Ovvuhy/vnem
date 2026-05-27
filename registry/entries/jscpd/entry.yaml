@@ -1,0 +1,65 @@
+schema_version: 1.0.0
+slug: jscpd
+name: jscpd
+type: runtime
+summary_llm: >-
+  jscpd is a copy-paste and duplicate-code detector for many programming languages
+  and document formats, giving agents concrete clone reports before collapsing repeated
+  code into simpler shared behavior.
+homepage_url: https://jscpd.dev/
+repo_url: https://github.com/kucherenko/jscpd
+package_urls:
+  - https://www.npmjs.com/package/jscpd
+licenses:
+  - MIT
+copyright_owner: jscpd contributors
+source_urls:
+  - https://jscpd.dev/
+  - https://jscpd.dev/getting-started/introduction
+  - https://github.com/kucherenko/jscpd
+  - https://www.npmjs.com/package/jscpd
+source_kind: official_docs
+protocols: []
+clients:
+  - CLI
+  - Node.js
+install:
+  command: npx jscpd ./src
+  notes: >-
+    Use reports to locate duplication, then refactor manually with tests; tune ignores and
+    thresholds before using in CI.
+  config_example: null
+permissions:
+  - filesystem
+env_vars: []
+tags:
+  - duplicate-code
+  - static-analysis
+  - code-quality
+  - code-simplification
+  - ci
+use_cases:
+  - Detect duplicated source blocks
+  - Generate clone reports for refactoring
+  - Track copy-paste debt in CI
+best_for:
+  - Agents that need objective duplication reports before simplifying repeated implementations
+not_for:
+  - Deciding abstractions automatically without tests or domain review.
+alternatives:
+  - knip
+  - ast-grep
+  - ripgrep
+supersedes: []
+freshness: current
+source_confidence: high
+maintenance_signals:
+  - Official docs, GitHub repository, and npm package metadata were checked.
+risk_flags:
+  - reads-local-files
+  - may-report-false-positives
+recommended_when:
+  - Use when repeated code appears across files and an agent needs a compact clone report before refactoring.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-27'

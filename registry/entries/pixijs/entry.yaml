@@ -1,0 +1,73 @@
+schema_version: 1.0.0
+slug: pixijs
+name: PixiJS
+type: runtime
+summary_llm: >-
+  PixiJS is a lightweight 2D rendering library for rich browser graphics and interactive scenes,
+  using WebGL and WebGPU without imposing a full game-engine architecture.
+homepage_url: https://pixijs.com/
+repo_url: https://github.com/pixijs/pixijs
+package_urls:
+  - https://www.npmjs.com/package/pixi.js
+licenses:
+  - MIT
+copyright_owner: Mathew Groves, Chad Engler
+source_urls:
+  - https://pixijs.com/
+  - https://pixijs.com/8.x/guides
+  - https://github.com/pixijs/pixijs
+  - https://www.npmjs.com/package/pixi.js
+source_kind: official_docs
+protocols: []
+clients:
+  - Browser
+  - JavaScript
+  - TypeScript
+install:
+  command: npm install pixi.js
+  notes: >-
+    Use when the main need is fast 2D rendering and interaction; add your own game-state,
+    rules, and scene architecture.
+  config_example: null
+permissions:
+  - browser
+  - canvas
+  - webgl
+  - webgpu
+env_vars: []
+tags:
+  - runtime
+  - renderer
+  - browser-game
+  - canvas
+  - webgl
+  - webgpu
+  - two-dimensional
+  - graphics
+use_cases:
+  - Render rich 2D browser graphics
+  - Build interactive sprite-heavy scenes
+  - Add a renderer without adopting a full game engine
+best_for:
+  - 2D experiences where rendering performance matters more than engine-level game structure
+not_for:
+  - Games that need a complete batteries-included framework for scenes, physics, cameras, and audio.
+alternatives:
+  - phaser
+  - excalibur-js
+  - kaplay
+  - three-js
+supersedes: []
+freshness: current
+source_confidence: official
+maintenance_signals:
+  - Official docs, GitHub repository, and npm package metadata were checked.
+  - Current major release supports modern WebGL/WebGPU rendering paths.
+risk_flags:
+  - browser-runtime
+  - gpu-rendering
+recommended_when:
+  - Use when an agent needs a fast browser 2D renderer while keeping game rules and architecture custom.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-27'

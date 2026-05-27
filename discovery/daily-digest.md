@@ -1,6 +1,6 @@
 # vnem Daily Signals
 
-Generated: 2026-05-26T10:23:10.950Z
+Generated: 2026-05-27T08:01:29.355Z
 
 This digest is designed for maintainers. It summarizes source-backed candidates and stable best-practice signals; it does not auto-promote entries into the registry.
 
@@ -10,14 +10,14 @@ This digest is designed for maintainers. It summarizes source-backed candidates 
 
 ## Best-practice Signals
 
+- Code Simplification And Minimal Refactors: Simplify code by preserving behavior first, deleting proven waste, reducing duplication, and using the project's existing abstractions before introducing new ones.
+- Browser Games And Interactive Canvas: For browser-native games, choose the lightest proven stack that can deliver real playability: responsive rendering, input, rules, state transitions, visible feedback, accessible UI, and browser-verified behavior.
 - Agent Tooling: Treat MCP servers, skills, prompts, and tools as versioned capabilities with provenance, permission notes, and review status.
 - Backend And APIs: Use boring, observable APIs with typed boundaries, explicit auth, and generated clients when agents need reliable integration points.
 - Code Review And Upgrade Audits: Project-review agents should inspect manifests, framework configs, dependency age, security posture, and available drop-in improvements before proposing code changes.
 - Coding Agents: Give repository-editing agents tight scope, strong local context, explicit approval boundaries, and fast verification loops before trusting broader autonomy.
 - Context Engineering: Treat instructions, memory files, retrieval, and artifacts as the agent's working environment; prune noise and make durable context explicit.
 - Data And Memory: Use memory and data connectors only when they improve repeated work, and keep scopes narrow enough for users to reason about.
-- Deployment And Operations: Agent-built systems need cheap preview deploys, logs, rollback paths, and clear operational ownership.
-- Evals And Verification: Agents should prove outputs with tests, screenshots, fixtures, or structured checks before recommending a stack change.
 
 ## Watchlist / Risk Flags
 

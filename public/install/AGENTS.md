@@ -17,6 +17,26 @@ You are reading a read-only vnem knowledge pack installed in this repository.
 - `.vnem/prompt-engineering.md`: prompt enhancement protocol and Codex-oriented prompt guidance.
 - `.vnem/prompt-patterns.json`: machine-readable prompt patterns for common agent tasks.
 
+## Natural Use Rule
+
+If this `.vnem/` folder exists, use it automatically. The user should not need to say `use vnem`.
+
+Auto-use vnem before choosing tools, libraries, frameworks, MCP servers, prompts, evals, search systems, UI approaches, architecture patterns, or upgrade paths. Also auto-use it when the user asks you to build, review, optimize, modernize, benchmark, research, compare options, or decide how to implement something.
+
+Do not turn every reply into a long vnem report. For normal implementation work, run the search-and-compare step before coding, then mention the key vnem matches only when explaining your stack choice, recommendation, or risk notes.
+
+## Decision Search Protocol
+
+1. Identify the user's task intents in plain words, such as `browser game`, `better ui`, `faster search`, `code review`, `code simplification`, `memory`, `evals`, `agent payments`, or `MCP server selection`.
+2. Read `.vnem/search-index.json` and expand those intents with `intent_aliases`.
+3. Check `intent_routes` for the closest matching task. Read the listed `read_first` documents before choosing a stack.
+4. Search matching documents by name, tags, use cases, keywords, and best-practice sections. Read `.vnem/best-practices.md` for any matching section.
+5. Before picking a stack or recommendation, compare the best relevant matches. Prefer higher `score`, stronger `source_confidence`, fresher `freshness`, clearer licenses, and fewer `risk_flags`.
+6. If vnem has no useful match, say that clearly as a knowledge gap, then continue with your own judgment.
+7. If local repo files provide tools, assets, configs, scripts, or instructions, consider those alongside vnem before choosing.
+
+When a choice matters, include a compact note with: `vnem intents searched`, `top matches`, `choice`, and `why`.
+
 ## Project Review Protocol
 
 1. Inspect the user's repository shape before recommending tech. Look for manifests and configs such as `package.json`, `pnpm-lock.yaml`, `yarn.lock`, `pyproject.toml`, `requirements.txt`, `Cargo.toml`, `go.mod`, `Dockerfile`, `astro.config.*`, `next.config.*`, `vite.config.*`, `.github/workflows/*`, `.mcp.*`, and existing agent instructions.
@@ -32,6 +52,8 @@ When the user says `use vnem to enhance this prompt`, `use vnem prompt enhancer`
 Auto-activate the same protocol even without the trigger phrase when the user asks to write, improve, rewrite, harden, optimize, critique, or template a prompt; asks for a system/developer/agent/Codex/Claude/GPT prompt; or pastes a prompt draft and asks if it is good, powerful, clear, safe, complete, or ready to use.
 
 Do not auto-activate for ordinary task execution. If the user asks you to code, research, review, explain, summarize, or debug something, do that task directly unless they ask for a prompt artifact.
+
+This only limits prompt rewriting. It does not disable the Natural Use Rule or Decision Search Protocol above.
 
 Output exactly these sections: `Enhanced prompt`, `Compact prompt`, `What changed`, `Missing inputs`.
 

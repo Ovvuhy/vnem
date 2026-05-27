@@ -34,7 +34,68 @@ This extracts only:
 - `.vnem/prompt-engineering.md`
 - `.vnem/prompt-patterns.json`
 
-Then ask your coding agent to read `.vnem/AGENTS.md`.
+`.vnem/AGENTS.md` is the agent entrypoint. Once an agent has read it, the user should not need special `use vnem` prompts: vnem auto-activates for build, review, optimization, research, benchmark, and stack/tool decision tasks.
+
+vnem does not overwrite a project's root `AGENTS.md` by default. If your agent does not automatically inspect `.vnem/`, point it to `.vnem/AGENTS.md` once at project start or add a small root instruction that links to it.
+
+## Make A Repo vnem-Aware
+
+For the easiest local workflow, install vnem from this checkout into any clean project folder:
+
+```bash
+npm run install:project -- /path/to/my-project
+```
+
+This writes the read-only `.vnem/` pack and creates or updates `/path/to/my-project/AGENTS.md` with a tiny managed pointer. After that, coding agents that read `AGENTS.md` should automatically consult vnem before choosing tools, MCP servers, skills, prompt patterns, evals, memory layers, search tools, or upgrade paths.
+
+Check a project:
+
+```bash
+npm run doctor -- /path/to/my-project
+```
+
+Claude-style projects can also get a `CLAUDE.md` pointer:
+
+```bash
+npm run install:project -- /path/to/my-project --claude
+```
+
+## Use As An MCP Server
+
+vnem also ships an opt-in, read-only MCP server over stdio. It exposes the generated registry and install-pack guidance as tools, resources, and a prompt; it does not install packages, edit files, call upstream services, or collect secrets.
+
+From this repo:
+
+```bash
+npm run mcp
+```
+
+Example MCP client config:
+
+```json
+{
+  "mcpServers": {
+    "vnem": {
+      "command": "node",
+      "args": ["/path/to/vnem/scripts/vnem-mcp-server.mjs"]
+    }
+  }
+}
+```
+
+Main tools:
+
+- `vnem_search`: search registry entries, best-practice notes, and prompt patterns.
+- `vnem_recommend`: run a recommendation pass for an agentic tooling or stack decision.
+- `vnem_get_entry`: fetch one registry entry with provenance, install notes, permissions, and risks.
+- `vnem_compare`: compare two or more registry entries.
+- `vnem_best_practices`: find matching best-practice and prompt-pattern notes.
+
+You can also install the bundled Codex skill from this checkout:
+
+```bash
+npm run vnem -- install-skill
+```
 
 ## Safety Model
 
@@ -42,9 +103,10 @@ V1 is intentionally boring and safe:
 
 - no CLI install
 - no daemon
-- no MCP server
+- optional MCP server is local, read-only, and stdio-only
 - no package install
 - no remote code execution
+- no network calls from MCP tools
 - no secrets collection
 - no edits unless the user explicitly approves them
 
@@ -72,7 +134,7 @@ The marketing site source is intentionally not part of this repository. This rep
 
 If you are working inside this repository, start with [`AGENTS.md`](AGENTS.md).
 
-If you are using vnem inside another project, read `.vnem/AGENTS.md` after installing the pack. Use `.vnem/search-index.json` for tool lookup and `.vnem/best-practices.md` for current stack guidance.
+If you are using vnem inside another project, read `.vnem/AGENTS.md` after installing the pack. It tells agents to automatically search `.vnem/search-index.json`, check `intent_routes`, compare relevant best-practice notes, and report vnem knowledge gaps before choosing a stack or recommendation.
 
 To improve a prompt, say `use vnem to enhance this prompt` and include your rough prompt. The installed pack will route the agent to `.vnem/prompt-engineering.md` and `.vnem/prompt-patterns.json`.
 

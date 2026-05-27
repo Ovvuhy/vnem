@@ -1,0 +1,73 @@
+schema_version: 1.0.0
+slug: playcanvas-engine
+name: PlayCanvas Engine
+type: runtime
+summary_llm: >-
+  PlayCanvas Engine is an open-source browser 3D game engine built on WebGL2 and WebGPU, with
+  APIs for rendering, assets, input, animation, audio, physics integration, and WebXR.
+homepage_url: https://playcanvas.com
+repo_url: https://github.com/playcanvas/engine
+package_urls:
+  - https://www.npmjs.com/package/playcanvas
+licenses:
+  - MIT
+copyright_owner: PlayCanvas Ltd.
+source_urls:
+  - https://playcanvas.com
+  - https://developer.playcanvas.com/user-manual/engine/
+  - https://github.com/playcanvas/engine
+  - https://www.npmjs.com/package/playcanvas
+source_kind: official_docs
+protocols: []
+clients:
+  - Browser
+  - JavaScript
+  - TypeScript
+install:
+  command: npm install playcanvas
+  notes: >-
+    Use for browser-first 3D games and visualizations; consider whether the editor workflow or pure
+    engine API is desired.
+  config_example: null
+permissions:
+  - browser
+  - canvas
+  - webgl
+  - webgpu
+  - webxr
+  - audio
+env_vars: []
+tags:
+  - runtime
+  - game-engine
+  - three-dimensional
+  - webgl
+  - webgpu
+  - webxr
+  - browser-game
+  - typescript
+use_cases:
+  - Build browser-first 3D games
+  - Render interactive 3D apps and visualizations
+  - Use WebGL2, WebGPU, WebXR, input, audio, assets, and animation in one engine
+best_for:
+  - 3D browser games or visualizations that benefit from an engine with a browser-based ecosystem
+not_for:
+  - Simple 2D games or small custom 3D scenes where lighter libraries are easier to inspect.
+alternatives:
+  - three-js
+  - babylon-js
+supersedes: []
+freshness: current
+source_confidence: official
+maintenance_signals:
+  - Official docs, GitHub repository, and npm package metadata were checked.
+  - Engine docs describe WebGL2 and WebGPU support.
+risk_flags:
+  - browser-runtime
+  - gpu-rendering
+recommended_when:
+  - Use when a project needs a browser-first 3D game engine with rendering, input, assets, audio, animation, and XR paths.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-27'

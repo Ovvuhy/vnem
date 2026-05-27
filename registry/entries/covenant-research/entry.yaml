@@ -1,0 +1,64 @@
+schema_version: 1.0.0
+slug: covenant-research
+name: Covenant Research
+type: security
+summary_llm: >-
+  Covenant Research is a public research and benchmarking site for a proposed governance layer for
+  autonomous AI agents, including a whitepaper, Harbor agent configurations, governance rules, and
+  preliminary Terminal-Bench results.
+homepage_url: https://asalsali.github.io/covenant-research/
+repo_url: https://github.com/asalsali/covenant-research
+package_urls: []
+licenses:
+  - NOASSERTION
+copyright_owner: asalsali
+source_urls:
+  - https://github.com/asalsali/covenant-research
+  - https://asalsali.github.io/covenant-research/
+  - https://github.com/asalsali/covenant-framework
+source_kind: github
+protocols: []
+clients:
+  - Claude
+  - GPT
+install:
+  command: null
+  notes: >-
+    Treat as research material until the framework license, benchmark setup, and governance behavior
+    are independently reviewed.
+  config_example: null
+permissions:
+  - network
+env_vars: []
+tags:
+  - governance
+  - safety
+  - benchmarks
+  - autonomous-agents
+  - research
+use_cases:
+  - Study governance layers for autonomous agents
+  - Compare governed and vanilla agent benchmark runs
+  - Review agent safety rule sets
+best_for:
+  - Maintainers tracking governance and benchmark claims for autonomous coding agents
+not_for:
+  - Production safety controls without independent review and a clear license posture.
+alternatives:
+  - anthropic-building-effective-agents
+  - inspect-ai
+  - promptfoo
+supersedes: []
+freshness: current
+source_confidence: medium
+maintenance_signals:
+  - GitHub repository and public whitepaper site were checked.
+risk_flags:
+  - custom-license
+  - benchmark-not-independent
+  - early-stage-research
+recommended_when:
+  - Watch when evaluating governance patterns for autonomous agent runs, but require independent reproduction before recommendation.
+trust_tier: watchlist
+review_status: needs-review
+last_checked: '2026-05-27'

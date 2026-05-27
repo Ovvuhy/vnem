@@ -1,0 +1,74 @@
+schema_version: 1.0.0
+slug: phaser
+name: Phaser
+type: runtime
+summary_llm: >-
+  Phaser is an open-source HTML5 game framework for building browser 2D games with scenes,
+  sprites, asset loading, input, cameras, animation, audio, and Canvas/WebGL rendering.
+homepage_url: https://phaser.io
+repo_url: https://github.com/phaserjs/phaser
+package_urls:
+  - https://www.npmjs.com/package/phaser
+licenses:
+  - MIT
+copyright_owner: Richard Davey, Phaser Studio Inc.
+source_urls:
+  - https://phaser.io
+  - https://docs.phaser.io/
+  - https://github.com/phaserjs/phaser
+  - https://www.npmjs.com/package/phaser
+source_kind: official_docs
+protocols: []
+clients:
+  - Browser
+  - JavaScript
+  - TypeScript
+install:
+  command: npm install phaser
+  notes: >-
+    Use for full 2D browser games when an engine should own scenes, assets, sprites, input,
+    cameras, audio, and game-loop structure.
+  config_example: null
+permissions:
+  - browser
+  - canvas
+  - webgl
+  - audio
+env_vars: []
+tags:
+  - runtime
+  - game-engine
+  - browser-game
+  - html5-game
+  - canvas
+  - webgl
+  - two-dimensional
+  - typescript
+use_cases:
+  - Build structured 2D browser games
+  - Manage scenes, sprites, assets, input, cameras, and audio
+  - Ship HTML5 games across desktop and mobile browsers
+best_for:
+  - 2D games that need a mature game framework instead of custom Canvas code
+not_for:
+  - Tiny one-screen Canvas experiments where an engine would add more structure than value.
+  - True 3D games where Three.js, Babylon.js, or PlayCanvas is a better fit.
+alternatives:
+  - pixijs
+  - excalibur-js
+  - kaplay
+  - three-js
+supersedes: []
+freshness: current
+source_confidence: official
+maintenance_signals:
+  - Official docs, GitHub repository, and npm package metadata were checked.
+  - Commercially maintained by Phaser Studio Inc. with open-source community support.
+risk_flags:
+  - browser-runtime
+  - canvas-webgl-rendering
+recommended_when:
+  - Use when a browser game needs scenes, sprites, asset loading, collisions, cameras, audio, and a tested 2D engine.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-27'

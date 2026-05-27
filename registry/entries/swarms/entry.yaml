@@ -1,0 +1,71 @@
+schema_version: 1.0.0
+slug: swarms
+name: Swarms
+type: agent-framework
+summary_llm: >-
+  Swarms is a Python multi-agent orchestration framework with agent primitives, sequential,
+  concurrent, graph, hierarchical, mixture-of-agents, and router-style workflows for production
+  agent systems.
+homepage_url: https://docs.swarms.world/
+repo_url: https://github.com/kyegomez/swarms
+package_urls:
+  - https://pypi.org/project/swarms/
+licenses:
+  - Apache-2.0
+copyright_owner: Swarms
+source_urls:
+  - https://docs.swarms.world/
+  - https://github.com/kyegomez/swarms
+  - https://pypi.org/project/swarms/
+source_kind: official_docs
+protocols:
+  - MCP
+clients:
+  - Python
+install:
+  command: pip install -U swarms
+  notes: >-
+    Use with explicit cost, loop, model, and workspace controls; multi-agent workflows can amplify
+    token use and side effects quickly.
+  config_example: null
+permissions:
+  - network
+  - filesystem
+env_vars:
+  - OPENAI_API_KEY
+  - ANTHROPIC_API_KEY
+  - GROQ_API_KEY
+  - WORKSPACE_DIR
+tags:
+  - agent-framework
+  - multi-agent
+  - orchestration
+  - python
+  - mcp
+use_cases:
+  - Build multi-agent workflows
+  - Coordinate sequential, concurrent, graph, and hierarchical agent teams
+  - Prototype swarm-style task routing
+best_for:
+  - Python teams evaluating explicit multi-agent orchestration patterns
+not_for:
+  - Simple single-agent tasks where graph or role orchestration adds unnecessary complexity.
+alternatives:
+  - langgraph
+  - crewai
+  - microsoft-autogen
+  - openai-agents-sdk
+supersedes: []
+freshness: current
+source_confidence: high
+maintenance_signals:
+  - GitHub repository, official docs, and PyPI project metadata were checked.
+risk_flags:
+  - multi-agent-cost-amplification
+  - model-api-required
+  - tool-side-effects
+recommended_when:
+  - Use when the team needs to compare several explicit multi-agent execution patterns in Python.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-27'

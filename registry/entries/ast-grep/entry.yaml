@@ -1,0 +1,63 @@
+schema_version: 1.0.0
+slug: ast-grep
+name: ast-grep
+type: runtime
+summary_llm: >-
+  ast-grep is a Rust and tree-sitter based CLI for structural code search, linting, and rewriting,
+  letting agents match syntax patterns instead of fragile text snippets across many languages.
+homepage_url: https://ast-grep.github.io/
+repo_url: https://github.com/ast-grep/ast-grep
+package_urls:
+  - https://www.npmjs.com/package/@ast-grep/cli
+licenses:
+  - MIT
+copyright_owner: ast-grep
+source_urls:
+  - https://ast-grep.github.io/
+  - https://github.com/ast-grep/ast-grep
+  - https://www.npmjs.com/package/@ast-grep/cli
+source_kind: official_docs
+protocols: []
+clients:
+  - CLI
+  - Node.js
+install:
+  command: npm install -g @ast-grep/cli
+  notes: >-
+    Use for syntax-aware search and codemods after reviewing language support and proposed rewrites;
+    keep rewrites reviewable.
+  config_example: null
+permissions:
+  - filesystem
+env_vars: []
+tags:
+  - search
+  - structural-search
+  - ast
+  - tree-sitter
+  - codemod
+use_cases:
+  - Find syntax patterns across codebases
+  - Rewrite code with AST captures
+  - Add lightweight custom lint rules
+best_for:
+  - Agents that need precise code search or reviewable codemods across supported languages
+not_for:
+  - Plain text search where ripgrep is simpler and faster to invoke.
+alternatives:
+  - ripgrep
+  - ugrep
+  - semgrep
+supersedes: []
+freshness: current
+source_confidence: high
+maintenance_signals:
+  - Official docs, GitHub repository, and npm package metadata were checked.
+risk_flags:
+  - reads-local-files
+  - can-rewrite-code
+recommended_when:
+  - Use when text grep would overmatch or miss syntax-equivalent code shapes.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-27'
