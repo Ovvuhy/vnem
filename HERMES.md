@@ -37,11 +37,26 @@ Use primary or source-backed routes first:
 
 - Official MCP Registry feeds.
 - GitHub repositories, releases, topics, and activity signals.
+- Package registries when the package metadata points back to canonical repositories or docs.
 - Official docs, release notes, changelogs, model cards, SDK docs, and benchmark posts.
-- Package registries when they point to canonical source repositories.
 - Research papers and benchmark repositories when implementation or evaluation artifacts are available.
+- Forums and social sources only as lead-generation signals that must be verified against primary sources.
 
 Avoid social-only claims unless they point back to primary sources. If a signal is interesting but weakly sourced, mark it `watchlist`.
+
+## Discovery Routes
+
+The VPS runner currently supports these routes:
+
+- `github-search`: recent GitHub repository activity for MCP, AI agents, coding agents, memory, evals, and agent frameworks.
+- `github-releases`: latest releases from configured high-value repositories such as MCP, GitHub MCP, Supabase MCP, Qdrant MCP, Hermes Agent, Cline, Roo Code, Claude Code, Lunar, and Microsoft MCP Gateway.
+- `mcp-registry`: official MCP Registry latest server feed.
+- `npm-search`: npm package search for MCP servers, coding agents, memory, evals, and related agent tooling.
+- `hacker-news`: Hacker News Algolia search for fresh builder discussions. These candidates are always `watchlist` leads.
+- `reddit`: optional subreddit search. Disabled by default because public access can be rate-limited or noisy; enable only when the VPS environment is allowed to poll those endpoints.
+- `watch-urls`: daily hash checks for official docs, changelogs, model cards, release pages, benchmark pages, and curated ecosystem pages.
+
+Use `HERMES_MIN_PER_ROUTE` to reserve space for smaller routes so GitHub search does not fill the whole candidate report. Use `HERMES_INCLUDE_*` toggles to disable noisy routes.
 
 ## Write Contract
 
@@ -77,17 +92,20 @@ npm run test:install-pack
       "repo_url": "https://github.com/owner/repo",
       "homepage_url": "https://example.com",
       "source_urls": ["https://github.com/owner/repo"],
+      "source_route": "github-search",
       "signal_summary": "Why this surfaced now.",
       "why_builders_should_care": "Concrete capability or risk for agent builders.",
       "suggested_trust_tier": "unreviewed",
       "risk_flags": ["sensitive-permissions"],
-      "recommended_action": "watchlist"
+      "recommended_action": "watchlist",
+      "allow_registry_proposal": true
     }
   ]
 }
 ```
 
 Use `promising` only for official or high-confidence sources. Use `watchlist` when license, permissions, maturity, or source quality is unclear.
+Social and forum candidates must set `allow_registry_proposal: false` and include a `needs-primary-source` risk flag unless they already duplicate an indexed primary source.
 
 ## Safety Rules
 

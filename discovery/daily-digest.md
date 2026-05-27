@@ -1,6 +1,6 @@
 # vnem Daily Signals
 
-Generated: 2026-05-27T16:50:19.771Z
+Generated: 2026-05-27T20:43:11.459Z
 
 This digest is designed for maintainers. It summarizes source-backed candidates and stable best-practice signals; it does not auto-promote entries into the registry.
 
@@ -12,12 +12,12 @@ This digest is designed for maintainers. It summarizes source-backed candidates 
 
 - MCP Gateway And Tool Routing: Use MCP gateways as a policy, discovery, routing, and observability layer only when the agent would otherwise see too many tools or credentials directly.
 - Code Simplification And Minimal Refactors: Simplify code by preserving behavior first, deleting proven waste, reducing duplication, and using the project's existing abstractions before introducing new ones.
+- Visual Experience And Perception Gate: For visual work, judge the actual perceptual artifact: if it looks ugly, generic, oversized, noisy, or mismatched to references, it is not done.
 - Browser Games And Interactive Canvas: For browser-native games, choose the lightest proven stack that can deliver real playability: responsive rendering, input, rules, state transitions, visible feedback, accessible UI, and browser-verified behavior.
 - Persistent Memory And Context Files: Put stable project facts in versioned instruction files, keep volatile task state separate, and review memory for secrets, stale assumptions, and repeated failed approaches.
 - Codex/VNEM Setup: For Codex-based workspaces, keep vnem read-only, load `AGENTS.md` instructions, expose MCP resources deliberately, and use generated guidance before installing tools.
 - IDE Agent Selection: Choose coding agents by editor fit, approval model, model routing, MCP support, maintenance status, and the repo's need for autonomous multi-file changes.
 - Model And Provider Selection: Choose Codex, Claude Code, Gemini/ADK, framework agents, or model APIs by workflow fit, permissions, eval evidence, and operational cost rather than brand preference.
-- Research Source Intake: Treat vnem as a source router, not a document dump: capture official, current, machine-readable sources that help agents make better decisions before editing.
 
 ## Watchlist / Risk Flags
 

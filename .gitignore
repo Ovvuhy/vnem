@@ -2,6 +2,7 @@ node_modules/
 site/dist/
 site/
 landing-dist/
+landing/dashboard/
 .agentic-commons/
 .astro/
 .playwright-cli/

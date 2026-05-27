@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-27T16:50:18.603Z",
+  "generated_at": "2026-05-27T20:43:09.624Z",
   "schema_version": "1.0.0",
   "safety": {
     "mode": "read-only-source-radar",
@@ -145,6 +145,40 @@
       "source_urls": [
         "https://github.com/microsoft/playwright-mcp",
         "https://docs.browserbase.com/integrations/mcp/introduction"
+      ]
+    },
+    {
+      "id": "ui-architecture-sources",
+      "title": "UI Architecture And Design Systems Sources",
+      "category": "visual-design",
+      "priority": "high",
+      "summary": "Track official CSS, accessibility, motion, audio, and contrast sources so visual guidance stays source-backed and does not hard-code unfinished standards as requirements.",
+      "use_when": [
+        "An agent is designing, reviewing, or polishing a UI, game, landing page, dashboard, chat interface, or interactive canvas.",
+        "A recommendation depends on CSS Grid, fluid typography, container queries, glass/depth effects, motion, audio, dark mode, or accessibility contrast.",
+        "vnem needs to distinguish current W3C/WCAG requirements from draft WCAG 3 or APCA-style watchlist ideas."
+      ],
+      "monitor": [
+        "MDN CSS Grid, repeat/minmax, clamp, container queries, backdrop-filter, prefers-reduced-motion, and Web Audio docs",
+        "W3C WCAG 2.2 recommendation and WCAG 3 draft status",
+        "Browser support notes for effects that can harm readability or performance"
+      ],
+      "risk_checks": [
+        "Draft contrast algorithms treated as production requirements",
+        "Motion, flash, blur, or sound that harms accessibility",
+        "Visual effects that reduce text contrast or lack fallback behavior",
+        "Unsourced claims about exact design constants or benchmark improvements"
+      ],
+      "source_urls": [
+        "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Grid_layout",
+        "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/repeat",
+        "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/clamp",
+        "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Containment/Container_queries",
+        "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/backdrop-filter",
+        "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-reduced-motion",
+        "https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API",
+        "https://www.w3.org/TR/WCAG22/",
+        "https://www.w3.org/TR/wcag-3.0/"
       ]
     },
     {

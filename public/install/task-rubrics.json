@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-27T16:50:18.603Z",
+  "generated_at": "2026-05-27T20:43:09.624Z",
   "schema_version": "1.0.0",
   "safety": {
     "mode": "read-only-task-rubrics",
@@ -13,7 +13,7 @@
     {
       "id": "frontend_ui",
       "title": "Frontend UI",
-      "summary": "Build usable, accessible, responsive interfaces that match the product workflow and existing design system before adding decorative complexity.",
+      "summary": "Build usable, accessible, responsive interfaces that match the product workflow, existing design system, and aesthetic perception gate before adding decorative complexity.",
       "modes": [
         "build",
         "review"
@@ -27,17 +27,24 @@
         "tailwind",
         "dashboard",
         "landing page",
-        "prototype"
+        "prototype",
+        "visual polish",
+        "pretty",
+        "polished"
       ],
       "read_first": [
+        "practice:visual-experience",
+        "visual-qa-protocol:vnem-visual-qa-protocol",
+        "design-architecture:vnem-design-architecture",
         "practice:frontend",
         "practice:evals"
       ],
       "quality_bar": [
         "primary user workflow is usable on the first screen",
+        "first screen looks intentionally designed with balanced scale, hierarchy, spacing, and color",
         "layout is responsive and text fits on mobile and desktop",
         "accessibility basics are present: labels, contrast, focus states, and usable target sizes",
-        "visual verification is performed for meaningful UI changes"
+        "visual verification and a perception pass are performed for meaningful UI changes"
       ],
       "approval_gates": [
         "adding UI frameworks or design-system dependencies",
@@ -46,13 +53,72 @@
       "verification": [
         "run project UI checks if present",
         "open the local page/app",
-        "capture or inspect desktop and mobile states"
+        "capture or inspect desktop and mobile states",
+        "fix obvious visual defects before final"
       ],
       "output_contract": [
         "changed UI surface",
         "stack/library choice",
+        "perception verdict",
         "visual verification evidence",
-        "known responsive or accessibility risk"
+        "known responsive, accessibility, or polish risk"
+      ]
+    },
+    {
+      "id": "aesthetic_experience",
+      "title": "Aesthetic Experience And Game Feel",
+      "summary": "For visual and interactive work, the artifact is not deliverable until it feels intentionally designed, polished, responsive, and pleasant to use.",
+      "modes": [
+        "build",
+        "review"
+      ],
+      "intents": [
+        "aesthetic experience",
+        "visual polish",
+        "pretty",
+        "polished ui",
+        "composition",
+        "game feel",
+        "sound design",
+        "reward feedback",
+        "dopamine",
+        "neon",
+        "glow",
+        "microinteractions",
+        "browser game",
+        "interactive canvas"
+      ],
+      "read_first": [
+        "practice:visual-experience",
+        "visual-qa-protocol:vnem-visual-qa-protocol",
+        "design-architecture:vnem-design-architecture",
+        "practice:frontend",
+        "practice:browser-games"
+      ],
+      "quality_bar": [
+        "first screen has strong composition, clear hierarchy, balanced scale, and deliberate spacing",
+        "visual effects are anchored to user actions and reinforce workflow or game state",
+        "motion, flashes, glow, particles, and sound are tasteful rather than noisy",
+        "reference assets and style cues are translated into one cohesive aesthetic",
+        "the agent performs a browser/screenshot polish pass and fixes obvious ugliness before delivery"
+      ],
+      "approval_gates": [
+        "using copyrighted third-party assets",
+        "calling image or audio generation services",
+        "adding intense flashes, autoplay audio, or motion-heavy effects"
+      ],
+      "verification": [
+        "capture desktop and mobile first-screen evidence",
+        "play or interact through reward feedback",
+        "check effect origin follows the interaction or game event",
+        "listen to and mute sound if included",
+        "compare against reference style and fix visible mismatches"
+      ],
+      "output_contract": [
+        "perception verdict",
+        "visual system changed",
+        "reward/motion/audio evidence",
+        "remaining taste, motion, or accessibility risk"
       ]
     },
     {
@@ -362,7 +428,7 @@
     {
       "id": "interactive_canvas",
       "title": "Interactive Canvas And Games",
-      "summary": "Deliver real playability or interaction: responsive rendering, input mapping, state transitions, visual feedback, restart/error states, and real-browser verification.",
+      "summary": "Deliver real playability or interaction with polished game feel: responsive rendering, input mapping, state transitions, action-anchored feedback, restart/error states, and real-browser verification.",
       "modes": [
         "build",
         "debug",
@@ -377,9 +443,15 @@
         "3d game",
         "game physics",
         "game ui",
-        "canvas performance"
+        "canvas performance",
+        "game feel",
+        "reward feedback",
+        "sound design"
       ],
       "read_first": [
+        "practice:visual-experience",
+        "visual-qa-protocol:vnem-visual-qa-protocol",
+        "design-architecture:vnem-design-architecture",
         "practice:browser-games",
         "practice:frontend",
         "practice:evals"
@@ -388,6 +460,7 @@
         "the experience is playable or interactive, not only visually present",
         "input works across relevant desktop and mobile controls",
         "start, win/loss, pause/restart, and error states are explicit where relevant",
+        "reward feedback, glow, particles, score pulses, and sound are anchored to game events and feel good",
         "canvas or animation output is verified in a real browser"
       ],
       "approval_gates": [
@@ -401,13 +474,16 @@
         "confirm nonblank rendering",
         "simulate or manually perform core input",
         "check state transition and restart",
-        "inspect mobile viewport"
+        "inspect mobile viewport",
+        "verify reward effect origin and sound/mute behavior",
+        "run a perception pass on the first screen and one reward moment"
       ],
       "output_contract": [
         "chosen rendering/game stack",
         "core interaction built",
+        "game-feel and perception verdict",
         "browser verification evidence",
-        "known device/performance risk"
+        "known device/performance/polish risk"
       ]
     }
   ]

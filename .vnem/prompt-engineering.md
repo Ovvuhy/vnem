@@ -1,6 +1,6 @@
 # vnem Prompt Engineering
 
-Generated: 2026-05-27T16:50:18.603Z
+Generated: 2026-05-27T20:43:09.624Z
 
 Use this when the user asks to improve, rewrite, harden, or operationalize a prompt. The main trigger phrase is `use vnem to enhance this prompt`.
 
@@ -257,6 +257,81 @@ Output:
 - Integration and verification plan.
 ```
 
+### Visual Build Prompt
+
+Prompt an agent to build a usable visual surface that passes the vnem perception gate.
+
+Intents: visual build, build ui, make app, landing page, browser game, agent dashboard, bento dashboard
+
+Template:
+
+```text
+Build the actual usable visual experience and treat aesthetics as part of done.
+
+Product/User:
+<who uses this and why>
+
+Core Surface:
+<page, app, dashboard, game, chat UI, or component>
+
+Visual Direction:
+- Use local assets, brand cues, and existing design tokens first.
+- Match the user's reference style through palette, scale, spacing, texture, motion, and mood.
+- Use source-backed browser primitives where helpful: CSS Grid, clamp(), container queries, reduced-motion media queries, and Web Audio only when needed.
+
+Perception Gate:
+- The first screen must look intentional, balanced, readable, and responsive.
+- Fix ugly scale, spacing, color, typography, glow, blur, or motion before final.
+- Reward effects must originate at the relevant user action or game event.
+- Sound must be short, pleasant, throttled, and muteable.
+
+Verification:
+- Follow `.vnem/visual-qa-protocol.md` when the vnem pack is present.
+- Inspect or capture desktop and mobile screenshots.
+- Verify one key interaction or reward moment.
+- Check reduced-motion and audio/mute behavior when applicable.
+
+Output:
+- Implemented surface.
+- Local URL or file path.
+- Perception verdict: ship-quality, needs-polish, or blocked.
+- Screenshot/interaction verification notes.
+```
+
+### Visual Polish Review Prompt
+
+Prompt an agent to inspect a rendered UI, name the ugliest visible issue, fix it, and verify again.
+
+Intents: visual polish, review ugly ui, ui critique, design review, polish pass, make it pretty
+
+Template:
+
+```text
+Review this visual surface and improve only what is needed to pass the perception gate.
+
+Target:
+<URL, app route, file path, screenshot, or component>
+
+Review Order:
+1. Inspect the rendered result before editing.
+2. Name the ugliest visible issue in plain language.
+3. Check composition, hierarchy, scale, spacing, color, typography, motion, sound, reference fidelity, and mobile fit.
+4. Patch the smallest visual/design changes that make the surface feel intentional.
+5. Re-check screenshots or interaction evidence before final.
+
+Constraints:
+- Preserve existing product behavior.
+- Use local assets and design tokens first.
+- Do not add packages, fetch media, call image/audio services, or use copyrighted assets without approval.
+- Treat APCA/WCAG 3 contrast notes as watchlist guidance, not final compliance requirements.
+
+Output:
+- Perception verdict.
+- Ugliest issue found and how it changed.
+- Verification evidence.
+- Remaining polish or accessibility risk.
+```
+
 ### Frontend Build Prompt
 
 Prompt for a complete frontend experience with visual verification and responsive constraints.
@@ -278,12 +353,15 @@ Design Constraints:
 - Match existing design system if present.
 - Use domain-appropriate density, typography, color, and motion.
 - Ensure all text fits on mobile and desktop.
+- Pass a perception gate before final: first-screen composition, hierarchy, scale, spacing, color harmony, motion, and reference-style fidelity must look intentionally polished.
+- Anchor visual/reward effects to the relevant user action or game event; avoid disconnected center flashes unless the center is the event.
+- Keep sound effects short, pleasant, throttled, and muteable when audio is included.
 - Verify with browser screenshots after implementation.
 
 Output:
 - Implemented UI.
 - Local URL or file path.
-- Verification notes.
+- Perception verdict and verification notes.
 ```
 
 ### Eval Design Prompt

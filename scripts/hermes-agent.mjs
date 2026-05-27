@@ -55,9 +55,27 @@ function parseListEnv(name) {
     .filter(Boolean);
 }
 
+function envFlag(name, fallback = false) {
+  const raw = process.env[name];
+  if (raw == null || raw === "") return fallback;
+  return !["0", "false", "no", "off"].includes(String(raw).trim().toLowerCase());
+}
+
 function normalizeUrl(value) {
   if (!value) return null;
   return String(value).replace(/\/+$/, "").toLowerCase();
+}
+
+function repoApiUrl(repo) {
+  return `https://api.github.com/repos/${repo}`;
+}
+
+function githubHeaders() {
+  const headers = {
+    accept: "application/vnd.github+json"
+  };
+  if (githubToken) headers.authorization = `Bearer ${githubToken}`;
+  return headers;
 }
 
 function slugDate(value = generatedAt) {
@@ -221,12 +239,7 @@ async function githubSearchRepositories(query, perPage = 10) {
   url.searchParams.set("order", "desc");
   url.searchParams.set("per_page", String(perPage));
 
-  const headers = {
-    accept: "application/vnd.github+json"
-  };
-  if (githubToken) headers.authorization = `Bearer ${githubToken}`;
-
-  const json = await fetchJson(url, { headers });
+  const json = await fetchJson(url, { headers: githubHeaders() });
   return json.items ?? [];
 }
 
@@ -257,6 +270,7 @@ async function discoverGitHub(existingKeys) {
         const duplicate = existingKeys.has(repo.full_name.toLowerCase()) || existingKeys.has(repoUrl);
 
         candidates.push({
+          source_route: "github-search",
           name: repo.full_name,
           title: repo.name,
           description: repo.description ?? "No repository description supplied.",
@@ -284,6 +298,286 @@ async function discoverGitHub(existingKeys) {
       }
     } catch (error) {
       errors.push({ route: "github-search", query, error: error.message });
+    }
+  }
+
+  return { candidates, errors };
+}
+
+async function discoverGitHubReleases(existingKeys) {
+  if (!envFlag("HERMES_INCLUDE_GITHUB_RELEASES", true)) return { candidates: [], errors: [] };
+
+  const defaultRepos = [
+    "modelcontextprotocol/modelcontextprotocol",
+    "github/github-mcp-server",
+    "supabase-community/supabase-mcp",
+    "qdrant/mcp-server-qdrant",
+    "NousResearch/hermes-agent",
+    "cline/cline",
+    "RooVetGit/Roo-Code",
+    "anthropics/claude-code",
+    "microsoft/mcp-gateway",
+    "TheLunarCompany/lunar"
+  ];
+  const repos = parseListEnv("HERMES_RELEASE_REPOS") ?? defaultRepos;
+  const candidates = [];
+  const errors = [];
+
+  for (const repo of repos) {
+    try {
+      const repoJson = await fetchJson(repoApiUrl(repo), { headers: githubHeaders() });
+      let releaseJson = null;
+      try {
+        releaseJson = await fetchJson(`${repoApiUrl(repo)}/releases/latest`, { headers: githubHeaders() });
+      } catch (error) {
+        if (!String(error.message).startsWith("404 ")) throw error;
+      }
+      const repoUrl = normalizeUrl(repoJson.html_url);
+      const duplicate = existingKeys.has(repo.toLowerCase()) || existingKeys.has(repoUrl);
+      const text = `${repoJson.full_name} ${repoJson.description ?? ""} ${releaseJson?.name ?? ""} ${releaseJson?.body ?? ""}`;
+      const riskFlags = inferRiskFlags(text, repoJson.license?.spdx_id);
+
+      candidates.push({
+        source_route: "github-releases",
+        name: repoJson.full_name,
+        title: releaseJson?.name ? `${repoJson.name}: ${releaseJson.name}` : repoJson.name,
+        description: repoJson.description ?? "No repository description supplied.",
+        repo_url: repoJson.html_url,
+        homepage_url: repoJson.homepage || null,
+        source_url: releaseJson?.html_url ?? repoJson.html_url,
+        source_urls: compact([releaseJson?.html_url, repoJson.html_url, repoJson.homepage]),
+        signal_summary: releaseJson
+          ? `Latest GitHub release for watched repository \`${repo}\`; published ${releaseJson.published_at ?? releaseJson.created_at}.`
+          : `Watched GitHub repository \`${repo}\` has no latest-release endpoint; repository pushed ${repoJson.pushed_at}.`,
+        why_builders_should_care: inferBuilderValue(repoJson),
+        suggested_trust_tier: duplicate ? "promising" : "unreviewed",
+        risk_flags: riskFlags,
+        recommended_action: duplicate ? "already-indexed" : "review",
+        reason: duplicate ? "already-indexed" : "candidate",
+        allow_registry_proposal: false,
+        metrics: {
+          stars: repoJson.stargazers_count ?? 0,
+          forks: repoJson.forks_count ?? 0,
+          open_issues: repoJson.open_issues_count ?? 0,
+          language: repoJson.language ?? null,
+          license: repoJson.license?.spdx_id ?? null,
+          created_at: repoJson.created_at,
+          pushed_at: repoJson.pushed_at,
+          release_tag: releaseJson?.tag_name ?? null,
+          release_published_at: releaseJson?.published_at ?? null,
+          topics: repoJson.topics ?? []
+        }
+      });
+    } catch (error) {
+      errors.push({ route: "github-releases", repo, error: error.message });
+    }
+  }
+
+  return { candidates, errors };
+}
+
+function normalizeRepositoryLink(value) {
+  if (!value) return null;
+  if (typeof value === "string") return value.replace(/^git\+/, "").replace(/\.git$/, "");
+  if (typeof value === "object" && typeof value.url === "string") {
+    return value.url.replace(/^git\+/, "").replace(/\.git$/, "");
+  }
+  return null;
+}
+
+async function discoverNpmPackages(existingKeys) {
+  if (!envFlag("HERMES_INCLUDE_NPM", true)) return { candidates: [], errors: [] };
+
+  const defaultQueries = [
+    "keywords:mcp server",
+    "keywords:agent llm",
+    "keywords:coding agent",
+    "keywords:model context protocol",
+    "mcp server",
+    "agent memory",
+    "agent eval"
+  ];
+  const queries = parseListEnv("HERMES_NPM_QUERIES") ?? defaultQueries;
+  const perQuery = Number(process.env.HERMES_NPM_PER_QUERY ?? 4);
+  const candidates = [];
+  const errors = [];
+
+  for (const query of queries) {
+    try {
+      const url = new URL("https://registry.npmjs.org/-/v1/search");
+      url.searchParams.set("text", query);
+      url.searchParams.set("size", String(perQuery));
+      url.searchParams.set("popularity", "0.25");
+      url.searchParams.set("quality", "0.45");
+      url.searchParams.set("maintenance", "0.30");
+
+      const json = await fetchJson(url);
+      for (const item of json.objects ?? []) {
+        const pkg = item.package ?? {};
+        const links = pkg.links ?? {};
+        const repoUrl = normalizeRepositoryLink(links.repository);
+        const npmUrl = links.npm ?? `https://www.npmjs.com/package/${encodeURIComponent(pkg.name)}`;
+        const duplicate = existingKeys.has(String(pkg.name ?? "").toLowerCase()) || existingKeys.has(normalizeUrl(repoUrl)) || existingKeys.has(normalizeUrl(npmUrl));
+        const text = `${pkg.name ?? ""} ${pkg.description ?? ""} ${(pkg.keywords ?? []).join(" ")}`;
+        const riskFlags = inferRiskFlags(text, pkg.license);
+
+        candidates.push({
+          source_route: "npm-search",
+          name: pkg.name,
+          title: pkg.name,
+          description: pkg.description ?? "No npm package description supplied.",
+          repo_url: repoUrl,
+          homepage_url: links.homepage ?? repoUrl ?? npmUrl,
+          package_url: npmUrl,
+          source_url: npmUrl,
+          source_urls: compact([npmUrl, repoUrl, links.homepage, links.bugs]),
+          signal_summary: `Matched npm search \`${query}\`; package updated ${pkg.date ?? "unknown date"}.`,
+          why_builders_should_care: inferBuilderValue({ name: pkg.name, description: pkg.description, topics: pkg.keywords ?? [] }),
+          suggested_trust_tier: duplicate ? "promising" : "unreviewed",
+          risk_flags: riskFlags,
+          recommended_action: duplicate ? "already-indexed" : riskFlags.length > 0 ? "watchlist" : "review",
+          reason: duplicate ? "already-indexed" : "candidate",
+          metrics: {
+            npm_score: item.score?.final ?? null,
+            quality: item.score?.detail?.quality ?? null,
+            popularity: item.score?.detail?.popularity ?? null,
+            maintenance: item.score?.detail?.maintenance ?? null,
+            license: pkg.license ?? null,
+            version: pkg.version ?? null,
+            updated_at: pkg.date ?? null,
+            topics: pkg.keywords ?? []
+          }
+        });
+      }
+    } catch (error) {
+      errors.push({ route: "npm-search", query, error: error.message });
+    }
+  }
+
+  return { candidates, errors };
+}
+
+async function discoverHackerNews(existingKeys) {
+  if (!envFlag("HERMES_INCLUDE_HACKER_NEWS", true)) return { candidates: [], errors: [] };
+
+  const sinceSeconds = Math.floor((Date.now() - lookbackDays * 24 * 60 * 60 * 1000) / 1000);
+  const defaultQueries = [
+    "model context protocol",
+    "coding agent",
+    "AI agent framework",
+    "agent memory",
+    "agent eval",
+    "Claude Code",
+    "OpenAI Codex"
+  ];
+  const queries = parseListEnv("HERMES_HN_QUERIES") ?? defaultQueries;
+  const perQuery = Number(process.env.HERMES_HN_PER_QUERY ?? 4);
+  const candidates = [];
+  const errors = [];
+
+  for (const query of queries) {
+    try {
+      const url = new URL("https://hn.algolia.com/api/v1/search_by_date");
+      url.searchParams.set("query", query);
+      url.searchParams.set("tags", "story");
+      url.searchParams.set("hitsPerPage", String(perQuery));
+      url.searchParams.set("numericFilters", `created_at_i>=${sinceSeconds}`);
+
+      const json = await fetchJson(url);
+      for (const hit of json.hits ?? []) {
+        const discussionUrl = `https://news.ycombinator.com/item?id=${hit.objectID}`;
+        const linkedUrl = hit.url ?? null;
+        const duplicate = existingKeys.has(normalizeUrl(linkedUrl)) || existingKeys.has(normalizeUrl(discussionUrl));
+
+        candidates.push({
+          source_route: "hacker-news",
+          name: `hn-${hit.objectID}`,
+          title: hit.title ?? hit.story_title ?? "Hacker News story",
+          description: "Hacker News discussion surfaced this as an ecosystem lead. Verify against primary sources before promotion.",
+          repo_url: linkedUrl?.includes("github.com") ? linkedUrl : null,
+          homepage_url: linkedUrl,
+          source_url: discussionUrl,
+          source_urls: compact([discussionUrl, linkedUrl]),
+          signal_summary: `Matched Hacker News query \`${query}\`; created ${hit.created_at}; points ${hit.points ?? 0}; comments ${hit.num_comments ?? 0}.`,
+          why_builders_should_care: "May indicate fast-moving builder interest; treat as a lead until backed by an official repo, release, docs page, or paper.",
+          suggested_trust_tier: "watchlist",
+          risk_flags: compact(["social-signal", duplicate ? null : "needs-primary-source"]),
+          recommended_action: duplicate ? "already-indexed" : "watchlist",
+          reason: duplicate ? "already-indexed" : "candidate",
+          allow_registry_proposal: false,
+          metrics: {
+            points: hit.points ?? 0,
+            comments: hit.num_comments ?? 0,
+            created_at: hit.created_at,
+            query
+          }
+        });
+      }
+    } catch (error) {
+      errors.push({ route: "hacker-news", query, error: error.message });
+    }
+  }
+
+  return { candidates, errors };
+}
+
+async function discoverReddit(existingKeys) {
+  if (!envFlag("HERMES_INCLUDE_REDDIT", false)) return { candidates: [], errors: [] };
+
+  const defaultSubreddits = ["LocalLLaMA", "ClaudeAI", "ChatGPTCoding", "MachineLearning"];
+  const defaultQueries = ["mcp", "coding agent", "agent framework", "agent memory", "agent eval"];
+  const subreddits = parseListEnv("HERMES_REDDIT_SUBREDDITS") ?? defaultSubreddits;
+  const queries = parseListEnv("HERMES_REDDIT_QUERIES") ?? defaultQueries;
+  const perQuery = Number(process.env.HERMES_REDDIT_PER_QUERY ?? 3);
+  const candidates = [];
+  const errors = [];
+
+  for (const subreddit of subreddits) {
+    for (const query of queries) {
+      try {
+        const url = new URL(`https://www.reddit.com/r/${encodeURIComponent(subreddit)}/search.json`);
+        url.searchParams.set("q", query);
+        url.searchParams.set("restrict_sr", "1");
+        url.searchParams.set("sort", "new");
+        url.searchParams.set("t", mode === "daily" ? "week" : "day");
+        url.searchParams.set("limit", String(perQuery));
+        url.searchParams.set("raw_json", "1");
+
+        const json = await fetchJson(url, { headers: { "user-agent": `${userAgent} reddit-signal-monitor` } });
+        for (const child of json.data?.children ?? []) {
+          const post = child.data ?? {};
+          const discussionUrl = `https://www.reddit.com${post.permalink}`;
+          const linkedUrl = post.url_overridden_by_dest ?? post.url ?? null;
+          const duplicate = existingKeys.has(normalizeUrl(linkedUrl)) || existingKeys.has(normalizeUrl(discussionUrl));
+
+          candidates.push({
+            source_route: "reddit",
+            name: `reddit-${post.id}`,
+            title: post.title ?? "Reddit post",
+            description: "Reddit discussion surfaced this as an ecosystem lead. Verify against primary sources before promotion.",
+            repo_url: linkedUrl?.includes("github.com") ? linkedUrl : null,
+            homepage_url: linkedUrl,
+            source_url: discussionUrl,
+            source_urls: compact([discussionUrl, linkedUrl]),
+            signal_summary: `Matched Reddit r/${subreddit} query \`${query}\`; created ${post.created_utc ? new Date(post.created_utc * 1000).toISOString() : "unknown"}; score ${post.score ?? 0}; comments ${post.num_comments ?? 0}.`,
+            why_builders_should_care: "May indicate practitioner interest, early pain points, or emerging tools; treat as a lead until backed by a primary source.",
+            suggested_trust_tier: "watchlist",
+            risk_flags: compact(["social-signal", duplicate ? null : "needs-primary-source"]),
+            recommended_action: duplicate ? "already-indexed" : "watchlist",
+            reason: duplicate ? "already-indexed" : "candidate",
+            allow_registry_proposal: false,
+            metrics: {
+              score: post.score ?? 0,
+              comments: post.num_comments ?? 0,
+              subreddit,
+              query,
+              created_at: post.created_utc ? new Date(post.created_utc * 1000).toISOString() : null
+            }
+          });
+        }
+      } catch (error) {
+        errors.push({ route: "reddit", subreddit, query, error: error.message });
+      }
     }
   }
 
@@ -335,6 +629,7 @@ async function discoverMcpRegistry(existingKeys) {
         const duplicate = existingKeys.has(name.toLowerCase()) || urls.some((url) => existingKeys.has(normalizeUrl(url)));
 
         candidates.push({
+          source_route: "mcp-registry",
           name,
           title: server.title ?? name,
           description: server.description ?? server.summary ?? "No description supplied by the source registry.",
@@ -346,7 +641,8 @@ async function discoverMcpRegistry(existingKeys) {
           suggested_trust_tier: "promising",
           risk_flags: inferRiskFlags(`${name} ${server.description ?? ""}`, null),
           recommended_action: duplicate ? "already-indexed" : "review",
-          reason: duplicate ? "already-indexed" : "candidate"
+          reason: duplicate ? "already-indexed" : "candidate",
+          allow_registry_proposal: false
         });
       }
 
@@ -404,6 +700,30 @@ async function watchOfficialUrls(state) {
   return { watched, errors };
 }
 
+function routeRank(route) {
+  const ranks = {
+    "mcp-registry": 0,
+    "github-releases": 1,
+    "github-search": 2,
+    "npm-search": 3,
+    "hacker-news": 4,
+    reddit: 5
+  };
+  return ranks[route] ?? 9;
+}
+
+function sortCandidates(candidates) {
+  return [...candidates].sort((a, b) => {
+    const reasonDelta = Number(a.reason === "already-indexed") - Number(b.reason === "already-indexed");
+    if (reasonDelta !== 0) return reasonDelta;
+    const routeDelta = routeRank(a.source_route) - routeRank(b.source_route);
+    if (routeDelta !== 0) return routeDelta;
+    return (b.metrics?.stars ?? b.metrics?.points ?? b.metrics?.score ?? b.metrics?.npm_score ?? 0) -
+      (a.metrics?.stars ?? a.metrics?.points ?? a.metrics?.score ?? a.metrics?.npm_score ?? 0) ||
+      a.name.localeCompare(b.name);
+  });
+}
+
 function uniqueCandidates(candidates) {
   const seen = new Set();
   const unique = [];
@@ -415,11 +735,36 @@ function uniqueCandidates(candidates) {
     unique.push(candidate);
   }
 
-  return unique.sort((a, b) => {
-    const reasonDelta = Number(a.reason === "already-indexed") - Number(b.reason === "already-indexed");
-    if (reasonDelta !== 0) return reasonDelta;
-    return (b.metrics?.stars ?? 0) - (a.metrics?.stars ?? 0) || a.name.localeCompare(b.name);
-  });
+  return sortCandidates(unique);
+}
+
+function selectCandidates(candidates) {
+  const unique = uniqueCandidates(candidates);
+  const selected = [];
+  const selectedKeys = new Set();
+  const minPerRoute = Number(process.env.HERMES_MIN_PER_ROUTE ?? 2);
+  const routeOrder = ["mcp-registry", "github-releases", "github-search", "npm-search", "hacker-news", "reddit"];
+
+  for (const route of routeOrder) {
+    for (const candidate of unique.filter((item) => item.source_route === route).slice(0, minPerRoute)) {
+      const key = normalizeUrl(candidate.repo_url ?? candidate.source_url ?? candidate.name);
+      if (!selectedKeys.has(key) && selected.length < maxCandidates) {
+        selected.push(candidate);
+        selectedKeys.add(key);
+      }
+    }
+  }
+
+  for (const candidate of unique) {
+    if (selected.length >= maxCandidates) break;
+    const key = normalizeUrl(candidate.repo_url ?? candidate.source_url ?? candidate.name);
+    if (!selectedKeys.has(key)) {
+      selected.push(candidate);
+      selectedKeys.add(key);
+    }
+  }
+
+  return sortCandidates(selected);
 }
 
 async function existingRegistryKeys() {
@@ -463,6 +808,7 @@ async function proposeRegistryEntries(candidates, existingKeys) {
   let proposed = 0;
   for (const candidate of candidates) {
     if (proposed >= registryProposalLimit) break;
+    if (candidate.allow_registry_proposal === false) continue;
     if (candidate.reason === "already-indexed") continue;
     if (!["review", "watchlist"].includes(candidate.recommended_action)) continue;
 
@@ -475,7 +821,9 @@ async function proposeRegistryEntries(candidates, existingKeys) {
     const homepageUrl = candidate.homepage_url ?? repoUrl ?? sourceUrls[0] ?? null;
     const owner = candidate.name.includes("/") ? candidate.name.split("/")[0] : "Unknown upstream";
     const license = candidate.metrics?.license ?? "NOASSERTION";
-    const sourceKind = candidate.source_url?.includes("registry.modelcontextprotocol.io") ? "official_registry" : "github";
+    const sourceKind = candidate.source_url?.includes("registry.modelcontextprotocol.io")
+      ? "official_registry"
+      : candidate.source_route === "npm-search" ? "package_registry" : "github";
     const trustTier = candidate.suggested_trust_tier === "promising" && sourceKind === "official_registry"
       ? "promising"
       : candidate.recommended_action === "watchlist" ? "watchlist" : "unreviewed";
@@ -678,21 +1026,33 @@ async function main() {
   const branch = prepareGitBranch();
   const existingKeys = await existingRegistryKeys();
   const state = await loadState();
-  const [github, mcp, watched] = await Promise.all([
+  const [github, releases, npm, hn, reddit, mcp, watched] = await Promise.all([
     discoverGitHub(existingKeys),
+    discoverGitHubReleases(existingKeys),
+    discoverNpmPackages(existingKeys),
+    discoverHackerNews(existingKeys),
+    discoverReddit(existingKeys),
     discoverMcpRegistry(existingKeys),
     mode === "daily" ? watchOfficialUrls(state) : { watched: [], errors: [] }
   ]);
 
-  const candidates = uniqueCandidates([...github.candidates, ...mcp.candidates]).slice(0, maxCandidates);
+  const candidates = selectCandidates([...github.candidates, ...releases.candidates, ...npm.candidates, ...hn.candidates, ...reddit.candidates, ...mcp.candidates]);
   const report = {
     generated_at: generatedAt,
     mode,
     lookback_days: lookbackDays,
-    source_routes: compact(["github-search", process.env.HERMES_INCLUDE_MCP_REGISTRY === "0" ? null : "mcp-registry", mode === "daily" ? "watch-urls" : null]),
+    source_routes: compact([
+      "github-search",
+      envFlag("HERMES_INCLUDE_GITHUB_RELEASES", true) ? "github-releases" : null,
+      envFlag("HERMES_INCLUDE_NPM", true) ? "npm-search" : null,
+      envFlag("HERMES_INCLUDE_HACKER_NEWS", true) ? "hacker-news" : null,
+      envFlag("HERMES_INCLUDE_REDDIT", false) ? "reddit" : null,
+      process.env.HERMES_INCLUDE_MCP_REGISTRY === "0" ? null : "mcp-registry",
+      mode === "daily" ? "watch-urls" : null
+    ]),
     candidates,
     watched_sources: watched.watched,
-    errors: [...github.errors, ...mcp.errors, ...watched.errors]
+    errors: [...github.errors, ...releases.errors, ...npm.errors, ...hn.errors, ...reddit.errors, ...mcp.errors, ...watched.errors]
   };
 
   if (dryRun) {

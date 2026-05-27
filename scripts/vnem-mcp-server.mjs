@@ -325,6 +325,24 @@ function registerResources(mcpServer) {
   );
   registerFileResource(
     mcpServer,
+    "vnem-design-architecture",
+    "vnem://install/design-architecture",
+    firstExisting(["public/install/design-architecture.md", ".vnem/design-architecture.md"]),
+    "vnem Design Architecture",
+    "Generated source-backed design intelligence for UI, game, dashboard, visual polish, motion, sound, and conversational-agent surfaces.",
+    "text/markdown"
+  );
+  registerFileResource(
+    mcpServer,
+    "vnem-visual-qa-protocol",
+    "vnem://install/visual-qa-protocol",
+    firstExisting(["public/install/visual-qa-protocol.md", ".vnem/visual-qa-protocol.md"]),
+    "vnem Visual QA Protocol",
+    "Generated rendered-quality loop for UI, game, dashboard, canvas, motion, sound, and brand-facing surfaces.",
+    "text/markdown"
+  );
+  registerFileResource(
+    mcpServer,
     "vnem-best-practices",
     "vnem://install/best-practices",
     firstExisting(["public/install/best-practices.md", ".vnem/best-practices.md"]),
@@ -581,6 +599,7 @@ function sourceRadarResults(intent, category, limit) {
 function buildTaskContract(task, intent, route, readFirst, registryEntries) {
   const mode = inferTaskMode(task);
   const rubrics = selectTaskRubrics(task, intent, mode);
+  const perceptionGate = buildPerceptionGate(task, rubrics);
   const rubricIds = new Set(rubrics.flatMap((rubric) => rubric.read_first || []));
   const readFirstIds = uniqueStrings([
     ...rubrics.map((rubric) => `task-rubric:${rubric.id}`),
@@ -622,8 +641,9 @@ function buildTaskContract(task, intent, route, readFirst, registryEntries) {
     smallest_sufficient_capability: route?.compare_options?.length
       ? `Prefer existing project patterns first; if a new capability is needed, compare: ${route.compare_options.join("; ")}.`
       : "Prefer existing project patterns first; add the smallest source-backed tool only when local code cannot satisfy the task cleanly.",
-    choose_by: uniqueStrings([...(route?.choose_by || []), ...rubrics.flatMap((rubric) => rubric.quality_bar || [])]),
+    choose_by: uniqueStrings([...(route?.choose_by || []), ...rubrics.flatMap((rubric) => rubric.quality_bar || []), ...(perceptionGate?.criteria || [])]),
     approval_gates: approvalGates,
+    perception_gate: perceptionGate,
     verification,
     final_report: finalReport,
     safety:
@@ -632,12 +652,73 @@ function buildTaskContract(task, intent, route, readFirst, registryEntries) {
   });
 }
 
+function buildPerceptionGate(task, rubrics) {
+  const text = normalize(task);
+  const rubricIds = new Set(rubrics.map((rubric) => rubric.id));
+  const applies =
+    rubricIds.has("aesthetic_experience") ||
+    rubricIds.has("frontend_ui") ||
+    rubricIds.has("interactive_canvas") ||
+    /\b(ui|frontend|design|visual|aesthetic|pretty|polished|game|canvas|animation|neon|glow|sound|dopamine|reward|microinteraction|dashboard|bento|landing|brand|chat|conversational|typography|motion|glass|dark mode|spacing)\b/.test(text);
+
+  if (!applies) {
+    return null;
+  }
+
+  return {
+    required: true,
+    verdicts: ["ship-quality", "needs-polish", "blocked"],
+    criteria: [
+      "first screen looks intentionally designed, balanced, and domain-appropriate",
+      "scale, spacing, hierarchy, color, typography, and motion match the user's reference or vibe",
+      "reward effects are anchored to the relevant user action or game event",
+      "sound and flashes are pleasant, restrained, muteable, and not noisy",
+      "if screenshots reveal obvious ugliness, iterate before final instead of reporting done"
+    ],
+    ship_blockers: [
+      "ugly or generic first screen",
+      "oversized canvas, board, hero, card, or empty visual surface",
+      "unreadable text, weak contrast, broken hierarchy, or text overflow",
+      "unbalanced spacing, cramped grouping, or mismatched scale",
+      "noisy glow, blur, flash, animation, or particle effects",
+      "reward effects that do not originate from the user action or game event",
+      "harsh, constant, unthrottled, or non-muteable audio",
+      "missing mobile fit or broken responsive layout"
+    ],
+    design_system_expectations: [
+      "reuse existing repo assets, design tokens, CSS variables, and component patterns before inventing new ones",
+      "use a coherent spacing scale and keep internal component padding no larger than external separation",
+      "choose layout structure deliberately: CSS Grid for two-dimensional dashboard/bento layouts, simpler flow for sequential reading",
+      "use readable type scale, line height, and bounded fluid sizing when responsive typography matters",
+      "use current WCAG/W3C guidance as the accessibility baseline; treat WCAG 3/APCA-style contrast as watchlist guidance only",
+      "provide restrained motion, reduced-motion fallback, and short muteable sound when audio is included",
+      "translate reference style into palette, texture, silhouette, glow behavior, and mood rather than disconnected decoration"
+    ],
+    visual_verification: [
+      "inspect or capture a desktop screenshot",
+      "inspect or capture a mobile screenshot",
+      "verify one core interaction or reward moment",
+      "check reduced-motion behavior for motion-heavy surfaces",
+      "check audio unlock, throttling, and mute behavior when sound is included"
+    ],
+    repo_sensing: [
+      "inspect existing design tokens, CSS variables, Tailwind/theme config, and component patterns",
+      "inspect local assets, public images, icons, fonts, screenshots, and user-provided references",
+      "inspect current routes, layout constraints, canvas sizing, HUD/hero/card scale, and mobile breakpoints",
+      "inspect package manifests for existing UI, game, animation, audio, and browser-test tooling before adding anything",
+      "use repo-native assets and styles first; ask before fetching media, generating assets, adding dependencies, or changing config"
+    ]
+  };
+}
+
 function inferTaskMode(task) {
   const text = normalize(task);
-  if (/\b(prompt|rewrite|improve|harden|template|instructions?)\b/.test(text)) return "prompt";
+  if (/\b(prompt|prompting|prompt-engineering|template prompt|system prompt|developer prompt|instructions?)\b/.test(text)) return "prompt";
   if (/\b(debug|fix failing|failing test|error|stack trace|regression|diagnose|root cause)\b/.test(text)) return "debug";
   if (/\b(review|audit|assess|inspect|critique|find bugs|pr review)\b/.test(text)) return "review";
-  if (/\b(plan|design|architect|architecture|proposal|strategy|policy)\b/.test(text)) return "plan";
+  if (/\b(plan|architect|architecture|proposal|strategy|policy)\b/.test(text)) return "plan";
+  if (/\b(build|create|make|implement|develop|ship|add)\b/.test(text)) return "build";
+  if (/\bdesign\b/.test(text)) return "plan";
   if (/\b(choose|select|compare|recommend|evaluate|which|best|decide)\b/.test(text)) return "decision";
   return "build";
 }
@@ -882,6 +963,18 @@ function formatRecommendation(recommendation) {
     lines.push(`- Smallest sufficient capability: ${recommendation.task_contract.smallest_sufficient_capability}`);
     if (recommendation.task_contract.approval_gates?.length) {
       lines.push(`- Approval gates: ${recommendation.task_contract.approval_gates.slice(0, 5).join("; ")}`);
+    }
+    if (recommendation.task_contract.perception_gate?.required) {
+      lines.push(`- Perception gate: ${recommendation.task_contract.perception_gate.criteria.slice(0, 5).join("; ")}`);
+      if (recommendation.task_contract.perception_gate.ship_blockers?.length) {
+        lines.push(`- Design blockers: ${recommendation.task_contract.perception_gate.ship_blockers.slice(0, 4).join("; ")}`);
+      }
+      if (recommendation.task_contract.perception_gate.visual_verification?.length) {
+        lines.push(`- Visual verification: ${recommendation.task_contract.perception_gate.visual_verification.slice(0, 5).join("; ")}`);
+      }
+      if (recommendation.task_contract.perception_gate.repo_sensing?.length) {
+        lines.push(`- Repo sensing: ${recommendation.task_contract.perception_gate.repo_sensing.slice(0, 4).join("; ")}`);
+      }
     }
     if (recommendation.task_contract.verification?.length) {
       lines.push(`- Verification: ${recommendation.task_contract.verification.slice(0, 5).join("; ")}`);

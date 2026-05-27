@@ -84,6 +84,63 @@ try {
     "expected vnem_recommend verification checklist"
   );
 
+  const aestheticRecommendation = await client.callTool({
+    name: "vnem_recommend",
+    arguments: {
+      task: "Build a polished neon browser Snake game with action-anchored reward feedback and restrained sound design.",
+      limit: 4
+    }
+  });
+  const aestheticContract = aestheticRecommendation.structuredContent?.task_contract;
+  assert.equal(aestheticRecommendation.isError, undefined);
+  assert.ok(
+    aestheticContract?.rubric?.some((rubric) => rubric.id === "aesthetic_experience"),
+    "expected vnem_recommend task contract with aesthetic_experience rubric"
+  );
+  assert.equal(aestheticContract?.perception_gate?.required, true, "expected aesthetic work to require the perception gate");
+  assert.ok(
+    aestheticContract?.perception_gate?.ship_blockers?.includes("ugly or generic first screen"),
+    "expected aesthetic work to include ship blockers"
+  );
+  assert.ok(
+    aestheticContract?.perception_gate?.design_system_expectations?.length > 0,
+    "expected aesthetic work to include design-system expectations"
+  );
+  assert.ok(
+    aestheticContract?.perception_gate?.visual_verification?.includes("inspect or capture a desktop screenshot"),
+    "expected aesthetic work to include visual verification"
+  );
+  assert.ok(
+    aestheticContract?.perception_gate?.repo_sensing?.some((item) => item.includes("design tokens")),
+    "expected aesthetic work to include repo-sensing checklist"
+  );
+  assert.ok(
+    aestheticContract?.read_first?.includes("practice:visual-experience"),
+    "expected aesthetic work to read visual-experience guidance first"
+  );
+  assert.ok(
+    aestheticContract?.read_first?.includes("visual-qa-protocol:vnem-visual-qa-protocol"),
+    "expected aesthetic work to read visual QA protocol guidance"
+  );
+  assert.ok(
+    aestheticContract?.read_first?.includes("design-architecture:vnem-design-architecture"),
+    "expected aesthetic work to read design architecture guidance"
+  );
+
+  const nonVisualRecommendation = await client.callTool({
+    name: "vnem_recommend",
+    arguments: {
+      task: "Simplify duplicate JavaScript helper functions without changing behavior.",
+      limit: 4
+    }
+  });
+  assert.equal(nonVisualRecommendation.isError, undefined);
+  assert.equal(
+    nonVisualRecommendation.structuredContent?.task_contract?.perception_gate,
+    undefined,
+    "expected non-visual work to avoid noisy design guidance"
+  );
+
   const entry = await client.callTool({
     name: "vnem_get_entry",
     arguments: {
@@ -121,6 +178,14 @@ try {
     "expected task rubrics resource"
   );
   assert.ok(
+    resources.resources.some((resource) => resource.uri === "vnem://install/design-architecture"),
+    "expected design architecture resource"
+  );
+  assert.ok(
+    resources.resources.some((resource) => resource.uri === "vnem://install/visual-qa-protocol"),
+    "expected visual QA protocol resource"
+  );
+  assert.ok(
     resources.resources.some((resource) => resource.uri === "vnem://install/agent-workspace"),
     "expected agent workspace resource"
   );
@@ -134,6 +199,19 @@ try {
     uri: "vnem://install/task-rubrics"
   });
   assert.ok(taskRubrics.contents[0]?.text?.includes("frontend_ui"));
+
+  const designArchitecture = await client.readResource({
+    uri: "vnem://install/design-architecture"
+  });
+  assert.ok(designArchitecture.contents[0]?.text?.includes("vnem Design Architecture"));
+  assert.ok(designArchitecture.contents[0]?.text?.includes("WCAG 3 and APCA-style contrast work are watchlist/directional only"));
+  assert.ok(designArchitecture.contents[0]?.text?.includes("Guidance Classification"));
+
+  const visualQaProtocol = await client.readResource({
+    uri: "vnem://install/visual-qa-protocol"
+  });
+  assert.ok(visualQaProtocol.contents[0]?.text?.includes("vnem Visual QA Protocol"));
+  assert.ok(visualQaProtocol.contents[0]?.text?.includes("Name the single ugliest visible issue"));
 
   const sourceRadar = await client.readResource({
     uri: "vnem://install/source-radar"

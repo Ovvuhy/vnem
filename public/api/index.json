@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-27T16:50:18.603Z",
+  "generated_at": "2026-05-27T20:43:09.624Z",
   "schema_version": "1.0.0",
   "package_version": "1.0.1",
   "release_version": "1.0.1",
@@ -536,8 +536,13 @@
       "design",
       "component",
       "visual",
+      "aesthetic",
+      "visual polish",
+      "composition",
       "accessibility",
-      "prototype"
+      "prototype",
+      "landing page",
+      "brand assets"
     ],
     "browser game": [
       "web game",
@@ -552,7 +557,10 @@
       "input",
       "collision",
       "game ui",
-      "game testing"
+      "game testing",
+      "game feel",
+      "reward feedback",
+      "sound design"
     ],
     "web game": [
       "browser game",
@@ -632,9 +640,215 @@
       "readability",
       "touch targets",
       "feedback",
+      "reward feedback",
+      "game feel",
+      "screen composition",
       "onboarding",
       "pause",
       "restart"
+    ],
+    "aesthetic experience": [
+      "visual polish",
+      "aesthetic",
+      "aesthetics",
+      "beautiful",
+      "pretty",
+      "polished",
+      "taste",
+      "composition",
+      "layout polish",
+      "neon",
+      "glow",
+      "glowing",
+      "dopamine",
+      "reward feedback",
+      "game feel",
+      "microinteractions",
+      "sound design",
+      "juice",
+      "delight",
+      "perception gate"
+    ],
+    "visual polish": [
+      "aesthetic experience",
+      "beautiful ui",
+      "pretty ui",
+      "design polish",
+      "composition",
+      "visual hierarchy",
+      "spacing",
+      "typography",
+      "color harmony",
+      "reference fidelity"
+    ],
+    "visual qa": [
+      "perception gate",
+      "screenshot verification",
+      "rendered qa",
+      "visual polish",
+      "ugliest issue",
+      "desktop screenshot",
+      "mobile screenshot",
+      "interaction evidence",
+      "repo-first assets"
+    ],
+    "screenshot polish": [
+      "visual qa",
+      "perception gate",
+      "browser verification",
+      "desktop screenshot",
+      "mobile screenshot",
+      "rendered result",
+      "visual polish"
+    ],
+    "game feel": [
+      "aesthetic experience",
+      "reward feedback",
+      "juice",
+      "sound design",
+      "hit stop",
+      "screen flash",
+      "particles",
+      "apple feedback",
+      "input feel",
+      "microinteractions"
+    ],
+    "sound design": [
+      "aesthetic experience",
+      "audio",
+      "web audio",
+      "mute",
+      "sfx",
+      "sound effects",
+      "game feel",
+      "throttled audio",
+      "pleasant tones"
+    ],
+    "reward feedback": [
+      "aesthetic experience",
+      "score pulse",
+      "screen flash",
+      "particles",
+      "apple",
+      "reward",
+      "dopamine",
+      "glow follows action",
+      "interaction anchored"
+    ],
+    "perception gate": [
+      "aesthetic experience",
+      "visual acceptance",
+      "pretty",
+      "polished",
+      "design review",
+      "screenshot critique",
+      "ship quality"
+    ],
+    "ui architecture": [
+      "design architecture",
+      "visual system",
+      "layout system",
+      "spacing system",
+      "typography system",
+      "design tokens",
+      "component architecture",
+      "frontend architecture"
+    ],
+    "bento dashboard": [
+      "dashboard",
+      "bento grid",
+      "css grid",
+      "grid layout",
+      "cards",
+      "kpi",
+      "analytics",
+      "agent dashboard",
+      "dense ui"
+    ],
+    "agent dashboard": [
+      "conversational ui",
+      "chat ui",
+      "agent ui",
+      "evidence cards",
+      "verification debt",
+      "thought process visibility",
+      "sequential disclosure",
+      "bento dashboard"
+    ],
+    "conversational ui": [
+      "agent dashboard",
+      "chat interface",
+      "chat ui",
+      "message feed",
+      "evidence cards",
+      "sequential disclosure",
+      "tool trace",
+      "confidence"
+    ],
+    "motion design": [
+      "microinteraction",
+      "animation",
+      "easing",
+      "duration",
+      "transition",
+      "reduced motion",
+      "hover",
+      "gesture",
+      "feedback"
+    ],
+    "design tokens": [
+      "tokens",
+      "css variables",
+      "semantic tokens",
+      "spacing scale",
+      "type scale",
+      "color roles",
+      "component tokens"
+    ],
+    "dark mode": [
+      "dark theme",
+      "surface elevation",
+      "color contrast",
+      "desaturated accents",
+      "luminance",
+      "theme tokens"
+    ],
+    "glassmorphism": [
+      "glass",
+      "frosted glass",
+      "backdrop-filter",
+      "blur",
+      "translucency",
+      "depth",
+      "rim light",
+      "layered shadow"
+    ],
+    "typography": [
+      "type scale",
+      "fluid typography",
+      "clamp",
+      "line height",
+      "readability",
+      "container query units",
+      "cqi"
+    ],
+    "layout spacing": [
+      "8-point grid",
+      "spacing",
+      "rhythm",
+      "padding",
+      "margin",
+      "gutter",
+      "layout system",
+      "optical spacing"
+    ],
+    "optical alignment": [
+      "perceptual alignment",
+      "visual weight",
+      "icon alignment",
+      "hanging punctuation",
+      "center of mass",
+      "optical balance"
     ],
     "game accessibility": [
       "contrast",
@@ -1108,6 +1322,501 @@
     ]
   },
   "intent_routes": {
+    "aesthetic experience": {
+      "read_first": [
+        "practice:visual-experience",
+        "visual-qa-protocol:vnem-visual-qa-protocol",
+        "design-architecture:vnem-design-architecture",
+        "practice:frontend",
+        "practice:browser-games",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "existing project design system and assets",
+        "custom CSS/canvas polish pass",
+        "lightweight animation and audio",
+        "source-backed image/audio generation only with approval"
+      ],
+      "choose_by": [
+        "first-screen composition",
+        "visual hierarchy",
+        "scale and spacing",
+        "reference-style fidelity",
+        "action-anchored reward feedback",
+        "motion and sound restraint"
+      ],
+      "report": [
+        "perception verdict",
+        "screenshots or interaction evidence",
+        "what was polished",
+        "known taste or device risk"
+      ]
+    },
+    "visual polish": {
+      "read_first": [
+        "practice:visual-experience",
+        "visual-qa-protocol:vnem-visual-qa-protocol",
+        "design-architecture:vnem-design-architecture",
+        "practice:frontend",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "existing design system",
+        "CSS polish pass",
+        "component/layout cleanup",
+        "asset recreation only when needed and approved"
+      ],
+      "choose_by": [
+        "composition",
+        "hierarchy",
+        "spacing",
+        "typography",
+        "color harmony",
+        "responsive fit",
+        "screenshot evidence"
+      ],
+      "report": [
+        "perception verdict",
+        "visual changes",
+        "screenshot evidence",
+        "remaining polish risk"
+      ]
+    },
+    "game feel": {
+      "read_first": [
+        "practice:visual-experience",
+        "visual-qa-protocol:vnem-visual-qa-protocol",
+        "design-architecture:vnem-design-architecture",
+        "practice:browser-games",
+        "practice:frontend",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "custom Canvas feedback",
+        "engine-native particles/audio",
+        "DOM HUD effects",
+        "reduced-motion fallback"
+      ],
+      "choose_by": [
+        "input feel",
+        "reward timing",
+        "effect origin",
+        "sound pleasantness",
+        "playfield scale",
+        "restart path"
+      ],
+      "report": [
+        "game-feel verdict",
+        "reward/audio evidence",
+        "browser playthrough",
+        "known device risk"
+      ]
+    },
+    "reward feedback": {
+      "read_first": [
+        "practice:visual-experience",
+        "visual-qa-protocol:vnem-visual-qa-protocol",
+        "design-architecture:vnem-design-architecture",
+        "practice:browser-games",
+        "practice:frontend"
+      ],
+      "compare_options": [
+        "event-anchored flash",
+        "score pulse",
+        "particle burst",
+        "short Web Audio cue",
+        "reduced-motion fallback"
+      ],
+      "choose_by": [
+        "effect follows the event",
+        "readable HUD",
+        "flashes are restrained",
+        "audio is throttled and muteable"
+      ],
+      "report": [
+        "reward feedback behavior",
+        "effect origin evidence",
+        "audio/motion safety",
+        "remaining polish risk"
+      ]
+    },
+    "sound design": {
+      "read_first": [
+        "practice:visual-experience",
+        "visual-qa-protocol:vnem-visual-qa-protocol",
+        "design-architecture:vnem-design-architecture",
+        "practice:browser-games",
+        "practice:frontend"
+      ],
+      "compare_options": [
+        "Web Audio oscillator cues",
+        "local audio asset",
+        "muted-by-default mode",
+        "visual-only cue"
+      ],
+      "choose_by": [
+        "short pleasant cues",
+        "throttling",
+        "mute control",
+        "audio unlock behavior",
+        "no constant noise"
+      ],
+      "report": [
+        "sound behavior",
+        "mute/unlock handling",
+        "verification evidence",
+        "remaining audio risk"
+      ]
+    },
+    "perception gate": {
+      "read_first": [
+        "practice:visual-experience",
+        "visual-qa-protocol:vnem-visual-qa-protocol",
+        "design-architecture:vnem-design-architecture",
+        "practice:frontend",
+        "practice:browser-games",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "fix current visible defects",
+        "tighten scale and layout",
+        "improve motion/reward feedback",
+        "block delivery until polish passes"
+      ],
+      "choose_by": [
+        "ship-quality first impression",
+        "reference fidelity",
+        "no obvious ugliness",
+        "interaction evidence",
+        "responsive screenshots"
+      ],
+      "report": [
+        "ship-quality, needs-polish, or blocked",
+        "screenshots reviewed",
+        "issues fixed before final",
+        "remaining uncertainty"
+      ]
+    },
+    "visual qa": {
+      "read_first": [
+        "practice:visual-experience",
+        "visual-qa-protocol:vnem-visual-qa-protocol",
+        "design-architecture:vnem-design-architecture",
+        "practice:frontend",
+        "practice:browser-games",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "repo-first rendered inspection",
+        "desktop and mobile screenshot pass",
+        "interaction/reward moment check",
+        "smallest polish fix",
+        "blocked report if evidence cannot be produced"
+      ],
+      "choose_by": [
+        "actual rendered result",
+        "first-screen impression",
+        "mobile fit",
+        "interaction evidence",
+        "ugliest issue fixed before final"
+      ],
+      "report": [
+        "perception verdict",
+        "ugliest issue found and fixed",
+        "screenshot or rendered-inspection evidence",
+        "remaining polish risk"
+      ]
+    },
+    "ui architecture": {
+      "read_first": [
+        "practice:visual-experience",
+        "design-architecture:vnem-design-architecture",
+        "practice:frontend",
+        "source:ui-architecture-sources"
+      ],
+      "compare_options": [
+        "existing design system",
+        "CSS variables and semantic tokens",
+        "CSS Grid/Flexbox layout",
+        "component-local container queries",
+        "custom visual system only when the repo lacks one"
+      ],
+      "choose_by": [
+        "repo-native conventions",
+        "layout stability",
+        "token reusability",
+        "accessibility baseline",
+        "screenshot verification"
+      ],
+      "report": [
+        "design architecture chosen",
+        "tokens or layout system used",
+        "verification evidence",
+        "remaining polish risk"
+      ]
+    },
+    "bento dashboard": {
+      "read_first": [
+        "practice:visual-experience",
+        "design-architecture:vnem-design-architecture",
+        "practice:frontend",
+        "source:ui-architecture-sources"
+      ],
+      "compare_options": [
+        "plain responsive grid",
+        "12-column CSS Grid bento",
+        "existing dashboard components",
+        "linear layout for sequential workflows"
+      ],
+      "choose_by": [
+        "information priority",
+        "grid fit",
+        "consistent gutters",
+        "mobile collapse",
+        "scanability"
+      ],
+      "report": [
+        "dashboard layout choice",
+        "priority-to-size mapping",
+        "responsive verification",
+        "known density risk"
+      ]
+    },
+    "agent dashboard": {
+      "read_first": [
+        "practice:visual-experience",
+        "design-architecture:vnem-design-architecture",
+        "practice:frontend",
+        "practice:agent-tooling",
+        "source:ui-architecture-sources"
+      ],
+      "compare_options": [
+        "chat feed with evidence cards",
+        "bento micro-dashboard",
+        "task trace panel",
+        "plain text report"
+      ],
+      "choose_by": [
+        "verification debt",
+        "source visibility",
+        "cognitive load",
+        "mobile readability",
+        "trust-building evidence"
+      ],
+      "report": [
+        "agent UI pattern",
+        "evidence shown",
+        "verification visibility",
+        "residual trust risk"
+      ]
+    },
+    "conversational ui": {
+      "read_first": [
+        "practice:visual-experience",
+        "design-architecture:vnem-design-architecture",
+        "practice:frontend",
+        "source:ui-architecture-sources"
+      ],
+      "compare_options": [
+        "linear chat disclosure",
+        "inline evidence cards",
+        "expandable tool trace",
+        "dashboard handoff"
+      ],
+      "choose_by": [
+        "message length",
+        "data complexity",
+        "source/evidence needs",
+        "tap target size",
+        "scroll readability"
+      ],
+      "report": [
+        "conversation pattern",
+        "evidence and disclosure design",
+        "accessibility check",
+        "known cognitive-load risk"
+      ]
+    },
+    "motion design": {
+      "read_first": [
+        "practice:visual-experience",
+        "design-architecture:vnem-design-architecture",
+        "practice:frontend",
+        "source:ui-architecture-sources"
+      ],
+      "compare_options": [
+        "CSS transitions",
+        "requestAnimationFrame animation",
+        "reduced-motion fallback",
+        "static state change"
+      ],
+      "choose_by": [
+        "feedback immediacy",
+        "duration",
+        "easing",
+        "motion sensitivity",
+        "performance"
+      ],
+      "report": [
+        "motion behavior",
+        "reduced-motion handling",
+        "interaction evidence",
+        "remaining motion risk"
+      ]
+    },
+    "design tokens": {
+      "read_first": [
+        "practice:visual-experience",
+        "design-architecture:vnem-design-architecture",
+        "practice:frontend",
+        "source:ui-architecture-sources"
+      ],
+      "compare_options": [
+        "existing tokens",
+        "CSS custom properties",
+        "semantic aliases",
+        "component-specific tokens"
+      ],
+      "choose_by": [
+        "repo conventions",
+        "theme needs",
+        "readability",
+        "maintainability",
+        "blast radius"
+      ],
+      "report": [
+        "token strategy",
+        "roles introduced or reused",
+        "verification evidence",
+        "migration risk"
+      ]
+    },
+    "dark mode": {
+      "read_first": [
+        "practice:visual-experience",
+        "design-architecture:vnem-design-architecture",
+        "practice:frontend",
+        "source:ui-architecture-sources"
+      ],
+      "compare_options": [
+        "existing theme tokens",
+        "dark surface ladder",
+        "light-only design",
+        "system color-scheme support"
+      ],
+      "choose_by": [
+        "contrast baseline",
+        "surface elevation",
+        "brand color desaturation",
+        "eye comfort",
+        "theme consistency"
+      ],
+      "report": [
+        "dark-mode strategy",
+        "contrast/elevation evidence",
+        "known accessibility risk"
+      ]
+    },
+    "glassmorphism": {
+      "read_first": [
+        "practice:visual-experience",
+        "design-architecture:vnem-design-architecture",
+        "practice:frontend",
+        "source:ui-architecture-sources"
+      ],
+      "compare_options": [
+        "solid surface",
+        "subtle translucent panel",
+        "backdrop-filter glass",
+        "noise/matte overlay"
+      ],
+      "choose_by": [
+        "text readability",
+        "browser support",
+        "background complexity",
+        "performance",
+        "fallback clarity"
+      ],
+      "report": [
+        "material choice",
+        "readability evidence",
+        "fallback risk"
+      ]
+    },
+    "typography": {
+      "read_first": [
+        "practice:visual-experience",
+        "design-architecture:vnem-design-architecture",
+        "practice:frontend",
+        "source:ui-architecture-sources"
+      ],
+      "compare_options": [
+        "existing type scale",
+        "static accessible scale",
+        "fluid clamp scale",
+        "container-query type"
+      ],
+      "choose_by": [
+        "readability",
+        "mobile fit",
+        "line height",
+        "zoom behavior",
+        "component reuse"
+      ],
+      "report": [
+        "type scale choice",
+        "responsive evidence",
+        "remaining readability risk"
+      ]
+    },
+    "layout spacing": {
+      "read_first": [
+        "practice:visual-experience",
+        "design-architecture:vnem-design-architecture",
+        "practice:frontend"
+      ],
+      "compare_options": [
+        "existing spacing tokens",
+        "8-point spacing scale",
+        "component-local spacing",
+        "layout-specific exceptions"
+      ],
+      "choose_by": [
+        "visual grouping",
+        "internal vs external spacing",
+        "responsive rhythm",
+        "text fit"
+      ],
+      "report": [
+        "spacing system",
+        "grouping evidence",
+        "responsive risk"
+      ]
+    },
+    "optical alignment": {
+      "read_first": [
+        "practice:visual-experience",
+        "design-architecture:vnem-design-architecture",
+        "practice:frontend"
+      ],
+      "compare_options": [
+        "geometric alignment",
+        "manual optical offset",
+        "icon/text contrast adjustment",
+        "hanging punctuation or visual inset"
+      ],
+      "choose_by": [
+        "perceived center",
+        "visual weight",
+        "text/icon harmony",
+        "screenshot evidence"
+      ],
+      "report": [
+        "alignment fix",
+        "perception evidence",
+        "remaining polish risk"
+      ]
+    },
     "mcp gateway": {
       "read_first": [
         "practice:mcp-gateway-tool-routing",
@@ -1723,6 +2432,8 @@
     },
     "browser game": {
       "read_first": [
+        "practice:visual-experience",
+        "visual-qa-protocol:vnem-visual-qa-protocol",
         "practice:browser-games",
         "practice:frontend",
         "practice:evals"
@@ -1742,6 +2453,7 @@
         "asset loading and physics needs",
         "dependency budget",
         "input model",
+        "aesthetic polish and game feel",
         "accessibility needs",
         "real-browser verification path"
       ],
@@ -1754,6 +2466,8 @@
     },
     "web game": {
       "read_first": [
+        "practice:visual-experience",
+        "visual-qa-protocol:vnem-visual-qa-protocol",
         "practice:browser-games",
         "practice:frontend",
         "practice:evals"
@@ -1780,6 +2494,8 @@
     },
     "html5 game": {
       "read_first": [
+        "practice:visual-experience",
+        "visual-qa-protocol:vnem-visual-qa-protocol",
         "practice:browser-games",
         "practice:frontend",
         "practice:evals"
@@ -1807,6 +2523,8 @@
     },
     "canvas game": {
       "read_first": [
+        "practice:visual-experience",
+        "visual-qa-protocol:vnem-visual-qa-protocol",
         "practice:browser-games",
         "practice:frontend",
         "practice:evals"
@@ -1835,6 +2553,8 @@
     },
     "2d game": {
       "read_first": [
+        "practice:visual-experience",
+        "visual-qa-protocol:vnem-visual-qa-protocol",
         "practice:browser-games",
         "practice:frontend",
         "practice:evals"
@@ -1863,6 +2583,8 @@
     },
     "3d game": {
       "read_first": [
+        "practice:visual-experience",
+        "visual-qa-protocol:vnem-visual-qa-protocol",
         "practice:browser-games",
         "practice:frontend",
         "practice:evals"
@@ -1888,6 +2610,8 @@
     },
     "game engine": {
       "read_first": [
+        "practice:visual-experience",
+        "visual-qa-protocol:vnem-visual-qa-protocol",
         "practice:browser-games",
         "practice:frontend",
         "practice:evals"
@@ -1918,6 +2642,8 @@
     },
     "game ui": {
       "read_first": [
+        "practice:visual-experience",
+        "visual-qa-protocol:vnem-visual-qa-protocol",
         "practice:browser-games",
         "practice:frontend",
         "practice:evals"
@@ -1932,8 +2658,10 @@
         "readability",
         "input method",
         "responsive scaling",
+        "composition",
         "contrast",
         "feedback clarity",
+        "game feel",
         "localization risk"
       ],
       "report": [
@@ -2047,6 +2775,9 @@
     },
     "better ui": {
       "read_first": [
+        "practice:visual-experience",
+        "visual-qa-protocol:vnem-visual-qa-protocol",
+        "design-architecture:vnem-design-architecture",
         "practice:frontend",
         "practice:context-engineering",
         "practice:evals"
@@ -2058,6 +2789,8 @@
       ],
       "choose_by": [
         "workflow fit",
+        "first-screen composition",
+        "aesthetic polish",
         "accessibility",
         "responsive verification",
         "dependency budget"
@@ -2228,7 +2961,7 @@
   "operating_protocol": {
     "id": "vnem-operating-loop",
     "title": "vnem Operating Loop",
-    "summary": "A universal read-only operating protocol for coding agents: sense the repo, route task context, choose the smallest sufficient capability, constrain risk, verify with evidence, and report residual uncertainty.",
+    "summary": "A universal read-only operating protocol for coding agents: sense the repo, route task context, choose the smallest sufficient capability, constrain risk, pass an aesthetic perception gate for UI/game work, verify with evidence, and report residual uncertainty.",
     "loop": [
       {
         "step": "Sense",
@@ -2249,6 +2982,10 @@
       {
         "step": "Build/Review/Debug",
         "instruction": "Use the task mode to work in small coherent steps: implement, review, debug, plan, or produce a prompt artifact without drifting into unrelated refactors."
+      },
+      {
+        "step": "Perceive",
+        "instruction": "For UI, game, animation, visual, or content surfaces, judge the artifact like a human before final: first-screen composition, hierarchy, scale, spacing, color harmony, reference-style fidelity, motion, reward feedback, and sound. Iterate until it looks intentionally polished or report the blocker."
       },
       {
         "step": "Verify",
@@ -2279,6 +3016,7 @@
         "run the narrowest relevant check first",
         "run broader tests or builds when blast radius justifies it",
         "for UI or canvas work, verify in a real browser with desktop and mobile evidence",
+        "for aesthetic UI/game work, perform a perception pass on screenshots before final: no oversized empty canvases, no accidental center-only glow, reward effects should follow user action, and sound should be restrained and pleasant",
         "report checks that could not run and why"
       ],
       "report": [
@@ -2286,6 +3024,7 @@
         "top matches and chosen rubric",
         "choice and why",
         "verification evidence",
+        "perception verdict for UI/game work: ship-quality, needs-polish, or blocked",
         "approval gates and residual uncertainty"
       ]
     }
@@ -2294,7 +3033,7 @@
     {
       "id": "frontend_ui",
       "title": "Frontend UI",
-      "summary": "Build usable, accessible, responsive interfaces that match the product workflow and existing design system before adding decorative complexity.",
+      "summary": "Build usable, accessible, responsive interfaces that match the product workflow, existing design system, and aesthetic perception gate before adding decorative complexity.",
       "modes": [
         "build",
         "review"
@@ -2308,17 +3047,24 @@
         "tailwind",
         "dashboard",
         "landing page",
-        "prototype"
+        "prototype",
+        "visual polish",
+        "pretty",
+        "polished"
       ],
       "read_first": [
+        "practice:visual-experience",
+        "visual-qa-protocol:vnem-visual-qa-protocol",
+        "design-architecture:vnem-design-architecture",
         "practice:frontend",
         "practice:evals"
       ],
       "quality_bar": [
         "primary user workflow is usable on the first screen",
+        "first screen looks intentionally designed with balanced scale, hierarchy, spacing, and color",
         "layout is responsive and text fits on mobile and desktop",
         "accessibility basics are present: labels, contrast, focus states, and usable target sizes",
-        "visual verification is performed for meaningful UI changes"
+        "visual verification and a perception pass are performed for meaningful UI changes"
       ],
       "approval_gates": [
         "adding UI frameworks or design-system dependencies",
@@ -2327,13 +3073,72 @@
       "verification": [
         "run project UI checks if present",
         "open the local page/app",
-        "capture or inspect desktop and mobile states"
+        "capture or inspect desktop and mobile states",
+        "fix obvious visual defects before final"
       ],
       "output_contract": [
         "changed UI surface",
         "stack/library choice",
+        "perception verdict",
         "visual verification evidence",
-        "known responsive or accessibility risk"
+        "known responsive, accessibility, or polish risk"
+      ]
+    },
+    {
+      "id": "aesthetic_experience",
+      "title": "Aesthetic Experience And Game Feel",
+      "summary": "For visual and interactive work, the artifact is not deliverable until it feels intentionally designed, polished, responsive, and pleasant to use.",
+      "modes": [
+        "build",
+        "review"
+      ],
+      "intents": [
+        "aesthetic experience",
+        "visual polish",
+        "pretty",
+        "polished ui",
+        "composition",
+        "game feel",
+        "sound design",
+        "reward feedback",
+        "dopamine",
+        "neon",
+        "glow",
+        "microinteractions",
+        "browser game",
+        "interactive canvas"
+      ],
+      "read_first": [
+        "practice:visual-experience",
+        "visual-qa-protocol:vnem-visual-qa-protocol",
+        "design-architecture:vnem-design-architecture",
+        "practice:frontend",
+        "practice:browser-games"
+      ],
+      "quality_bar": [
+        "first screen has strong composition, clear hierarchy, balanced scale, and deliberate spacing",
+        "visual effects are anchored to user actions and reinforce workflow or game state",
+        "motion, flashes, glow, particles, and sound are tasteful rather than noisy",
+        "reference assets and style cues are translated into one cohesive aesthetic",
+        "the agent performs a browser/screenshot polish pass and fixes obvious ugliness before delivery"
+      ],
+      "approval_gates": [
+        "using copyrighted third-party assets",
+        "calling image or audio generation services",
+        "adding intense flashes, autoplay audio, or motion-heavy effects"
+      ],
+      "verification": [
+        "capture desktop and mobile first-screen evidence",
+        "play or interact through reward feedback",
+        "check effect origin follows the interaction or game event",
+        "listen to and mute sound if included",
+        "compare against reference style and fix visible mismatches"
+      ],
+      "output_contract": [
+        "perception verdict",
+        "visual system changed",
+        "reward/motion/audio evidence",
+        "remaining taste, motion, or accessibility risk"
       ]
     },
     {
@@ -2643,7 +3448,7 @@
     {
       "id": "interactive_canvas",
       "title": "Interactive Canvas And Games",
-      "summary": "Deliver real playability or interaction: responsive rendering, input mapping, state transitions, visual feedback, restart/error states, and real-browser verification.",
+      "summary": "Deliver real playability or interaction with polished game feel: responsive rendering, input mapping, state transitions, action-anchored feedback, restart/error states, and real-browser verification.",
       "modes": [
         "build",
         "debug",
@@ -2658,9 +3463,15 @@
         "3d game",
         "game physics",
         "game ui",
-        "canvas performance"
+        "canvas performance",
+        "game feel",
+        "reward feedback",
+        "sound design"
       ],
       "read_first": [
+        "practice:visual-experience",
+        "visual-qa-protocol:vnem-visual-qa-protocol",
+        "design-architecture:vnem-design-architecture",
         "practice:browser-games",
         "practice:frontend",
         "practice:evals"
@@ -2669,6 +3480,7 @@
         "the experience is playable or interactive, not only visually present",
         "input works across relevant desktop and mobile controls",
         "start, win/loss, pause/restart, and error states are explicit where relevant",
+        "reward feedback, glow, particles, score pulses, and sound are anchored to game events and feel good",
         "canvas or animation output is verified in a real browser"
       ],
       "approval_gates": [
@@ -2682,16 +3494,62 @@
         "confirm nonblank rendering",
         "simulate or manually perform core input",
         "check state transition and restart",
-        "inspect mobile viewport"
+        "inspect mobile viewport",
+        "verify reward effect origin and sound/mute behavior",
+        "run a perception pass on the first screen and one reward moment"
       ],
       "output_contract": [
         "chosen rendering/game stack",
         "core interaction built",
+        "game-feel and perception verdict",
         "browser verification evidence",
-        "known device/performance risk"
+        "known device/performance/polish risk"
       ]
     }
   ],
+  "design_architecture": {
+    "id": "vnem-design-architecture",
+    "title": "vnem Design Architecture",
+    "summary": "Source-backed design intelligence for UI, game, visual, dashboard, and conversational-agent work. Use it to make aesthetics a delivery requirement, not a decoration pass.",
+    "url_path": "/install/design-architecture.md",
+    "resource_uri": "vnem://install/design-architecture",
+    "source_urls": [
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Grid_layout",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/repeat",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/clamp",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Containment/Container_queries",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/backdrop-filter",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-reduced-motion",
+      "https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API",
+      "https://www.w3.org/TR/WCAG22/",
+      "https://www.w3.org/TR/wcag-3.0/"
+    ],
+    "guidance_classification": {
+      "standard": [
+        "Use W3C WCAG 2.2 and current accessibility guidance as the hard baseline for contrast, focus visibility, non-color cues, labels, keyboard access, and reduced-motion accommodations.",
+        "Treat browser feature behavior from MDN and linked specifications as source-backed capability guidance, then verify in the target browser when the effect matters."
+      ],
+      "browser_capability": [
+        "CSS Grid, `repeat()`, `minmax()`, `clamp()`, container queries, `backdrop-filter`, Web Audio, and `prefers-reduced-motion` are browser primitives to use deliberately, with fallbacks when support or accessibility matters.",
+        "Browser capabilities are implementation tools, not proof that a design is good; rendered screenshots and interaction checks still decide the perception verdict."
+      ],
+      "heuristic": [
+        "8-point spacing, bento topology, optical alignment, grayscale-first hierarchy, modular type scales, layered shadows, dark-mode surface ladders, and motion timing windows are design heuristics.",
+        "Use heuristics to produce better taste and consistency, but allow repo conventions, brand references, accessibility, and actual screenshots to override them."
+      ],
+      "watchlist": [
+        "WCAG 3 and APCA-style contrast work are draft/watchlist material in this pack, useful for future-facing review but not encoded as normative compliance.",
+        "Do not report APCA numeric targets as required pass/fail criteria unless the project explicitly adopts them."
+      ]
+    }
+  },
+  "visual_qa_protocol": {
+    "id": "vnem-visual-qa-protocol",
+    "title": "vnem Visual QA Protocol",
+    "summary": "A compact rendered-quality loop for UI, game, dashboard, canvas, motion, sound, and brand-facing work. Use it to make aesthetic inspection and screenshot evidence part of done.",
+    "url_path": "/install/visual-qa-protocol.md",
+    "resource_uri": "vnem://install/visual-qa-protocol"
+  },
   "source_radar": [
     {
       "id": "mcp-core-and-registry",
@@ -2804,6 +3662,40 @@
       "source_urls": [
         "https://github.com/microsoft/playwright-mcp",
         "https://docs.browserbase.com/integrations/mcp/introduction"
+      ]
+    },
+    {
+      "id": "ui-architecture-sources",
+      "title": "UI Architecture And Design Systems Sources",
+      "category": "visual-design",
+      "priority": "high",
+      "summary": "Track official CSS, accessibility, motion, audio, and contrast sources so visual guidance stays source-backed and does not hard-code unfinished standards as requirements.",
+      "use_when": [
+        "An agent is designing, reviewing, or polishing a UI, game, landing page, dashboard, chat interface, or interactive canvas.",
+        "A recommendation depends on CSS Grid, fluid typography, container queries, glass/depth effects, motion, audio, dark mode, or accessibility contrast.",
+        "vnem needs to distinguish current W3C/WCAG requirements from draft WCAG 3 or APCA-style watchlist ideas."
+      ],
+      "monitor": [
+        "MDN CSS Grid, repeat/minmax, clamp, container queries, backdrop-filter, prefers-reduced-motion, and Web Audio docs",
+        "W3C WCAG 2.2 recommendation and WCAG 3 draft status",
+        "Browser support notes for effects that can harm readability or performance"
+      ],
+      "risk_checks": [
+        "Draft contrast algorithms treated as production requirements",
+        "Motion, flash, blur, or sound that harms accessibility",
+        "Visual effects that reduce text contrast or lack fallback behavior",
+        "Unsourced claims about exact design constants or benchmark improvements"
+      ],
+      "source_urls": [
+        "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Grid_layout",
+        "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/repeat",
+        "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/clamp",
+        "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Containment/Container_queries",
+        "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/backdrop-filter",
+        "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-reduced-motion",
+        "https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API",
+        "https://www.w3.org/TR/WCAG22/",
+        "https://www.w3.org/TR/wcag-3.0/"
       ]
     },
     {
@@ -2934,6 +3826,7 @@
       "Choose",
       "Constrain",
       "Build/Review/Debug",
+      "Perceive",
       "Verify",
       "Report"
     ],
@@ -2944,6 +3837,8 @@
       "read_first",
       "smallest_sufficient_capability",
       "approval_gates",
+      "perception_gate",
+      "perception_gate.repo_sensing",
       "verification",
       "final_report"
     ],
@@ -2951,6 +3846,7 @@
       "operating protocol",
       "matching task rubric",
       "matching intent_routes",
+      "design architecture and visual QA protocol when the task is visual or interactive",
       "matching best-practice documents",
       "matching source-radar entries when upstream currency matters",
       "high-signal registry entries",
