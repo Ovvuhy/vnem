@@ -10,7 +10,7 @@
     <meta property="og:image" content="../assets/banner.jpg" />
     <title>vnem update: MCP, Skill, and one-command repo install</title>
     <link rel="icon" href="../assets/logo.png" />
-    <link rel="stylesheet" href="../styles.css?v=vnem-blog" />
+    <link rel="stylesheet" href="../styles.css?v=vnem-blog-2" />
   </head>
   <body>
     <div class="noise" aria-hidden="true"></div>
@@ -31,59 +31,86 @@
     </header>
 
     <main class="blog-page">
-      <article class="blog-article">
-        <p class="section-kicker">product update</p>
-        <h1>MCP, Skill, and one-command repo install.</h1>
+      <section class="blog-hero" aria-label="Product update">
+        <div>
+          <p class="section-kicker">product update</p>
+          <h1>MCP, Skill, and one-command repo install.</h1>
+          <p class="lead">vnem now ships a clean-folder curl install, a local read-only MCP server, a bundled Codex skill, and a wider registry for agentic coding decisions.</p>
+        </div>
         <time datetime="2026-05-27">May 27, 2026</time>
-        <p class="lead">vnem is becoming easier to use: a clean-folder curl install, a local read-only MCP server, a bundled Codex skill, and a wider registry for agentic coding decisions.</p>
+      </section>
 
-        <h2>What changed</h2>
-        <p>vnem now has a real local MCP server. It exposes the registry, search index, best-practice notes, prompt patterns, and trust metadata through read-only tools.</p>
-        <ul>
-          <li><code>vnem_search</code></li>
-          <li><code>vnem_recommend</code></li>
-          <li><code>vnem_get_entry</code></li>
-          <li><code>vnem_compare</code></li>
-          <li><code>vnem_best_practices</code></li>
-          <li><code>vnem_sources</code></li>
-        </ul>
-        <p>The MCP server does not install tools, edit code, call external services, collect secrets, or run the projects it recommends. It gives the agent better perception before action.</p>
+      <div class="blog-layout">
+        <aside class="blog-rail" aria-label="Article sections">
+          <span>In this update</span>
+          <nav>
+            <a href="#changed">What changed</a>
+            <a href="#install-path">Install path</a>
+            <a href="#knowledge">Knowledge added</a>
+            <a href="#why">Why it matters</a>
+            <a href="#shape">Current shape</a>
+          </nav>
+        </aside>
 
-        <h2>The install path is simpler</h2>
-        <p>In a clean project folder, the public curl target now gives agents everything they need:</p>
-        <pre class="code-block"><code>curl -fsSL https://vnem.pages.dev/i | tar -xz</code></pre>
-        <p>That extracts a root <code>AGENTS.md</code> pointer plus the full read-only <code>.vnem/</code> pack. When a coding agent starts in that folder, it should read the instructions and use vnem automatically.</p>
-        <p>For existing repos with their own <code>AGENTS.md</code>, use the local installer instead so it updates a managed vnem block:</p>
-        <pre class="code-block"><code>git clone https://github.com/naellisim/vnem.git
+        <article class="blog-article">
+          <section id="changed" class="article-section">
+            <h2>What changed</h2>
+            <p>vnem now has a real local MCP server. It exposes the registry, search index, best-practice notes, prompt patterns, and trust metadata through read-only tools.</p>
+            <ul class="tool-list">
+              <li><code>vnem_search</code></li>
+              <li><code>vnem_recommend</code></li>
+              <li><code>vnem_get_entry</code></li>
+              <li><code>vnem_compare</code></li>
+              <li><code>vnem_best_practices</code></li>
+              <li><code>vnem_sources</code></li>
+            </ul>
+            <p>The MCP server does not install tools, edit code, call external services, collect secrets, or run the projects it recommends. It gives the agent better perception before action.</p>
+          </section>
+
+          <section id="install-path" class="article-section">
+            <h2>The install path is simpler</h2>
+            <p>In a clean project folder, the public curl target now gives agents everything they need:</p>
+            <pre class="code-block"><code>curl -fsSL https://vnem.pages.dev/i | tar -xz</code></pre>
+            <p>That extracts a root <code>AGENTS.md</code> pointer plus the full read-only <code>.vnem/</code> pack. When a coding agent starts in that folder, it should read the instructions and use vnem automatically.</p>
+            <p>For existing repos with their own <code>AGENTS.md</code>, use the local installer instead so it updates a managed vnem block:</p>
+            <pre class="code-block"><code>git clone https://github.com/Ovvuhy/vnem.git
 cd vnem
 npm install
 npm run install:project -- /path/to/project
 npm run doctor -- /path/to/project</code></pre>
+          </section>
 
-        <h2>New knowledge added</h2>
-        <p>This update expands the registry with new agentic infrastructure and coding-efficiency signals.</p>
-        <ul>
-          <li>Source radar for official docs, registries, MCP sources, evals, and verification inputs.</li>
-          <li>Clude as an early cognitive memory layer and MCP server for agent memory.</li>
-          <li>Swarms as a Python multi-agent orchestration framework.</li>
-          <li>Covenant Research as watchlist-level governance research for autonomous agents.</li>
-          <li>Kaimo as an early agent-commerce and x402 signal.</li>
-          <li>ripgrep, ast-grep, ugrep, codebase-memory-mcp, Knip, and jscpd for faster and safer agentic coding workflows.</li>
-          <li>Phaser, PixiJS, Three.js, Babylon.js, Excalibur, KAPLAY, Matter.js, Rapier, and PlayCanvas for browser-game stack choices.</li>
-        </ul>
+          <section id="knowledge" class="article-section">
+            <h2>New knowledge added</h2>
+            <p>This update expands the registry with new agentic infrastructure and coding-efficiency signals.</p>
+            <ul>
+              <li>Source radar for official docs, registries, MCP sources, evals, and verification inputs.</li>
+              <li>Clude as an early cognitive memory layer and MCP server for agent memory.</li>
+              <li>Swarms as a Python multi-agent orchestration framework.</li>
+              <li>Covenant Research as watchlist-level governance research for autonomous agents.</li>
+              <li>Kaimo as an early agent-commerce and x402 signal.</li>
+              <li>ripgrep, ast-grep, ugrep, codebase-memory-mcp, Knip, and jscpd for faster and safer agentic coding workflows.</li>
+              <li>Phaser, PixiJS, Three.js, Babylon.js, Excalibur, KAPLAY, Matter.js, Rapier, and PlayCanvas for browser-game stack choices.</li>
+            </ul>
+          </section>
 
-        <h2>Why this matters</h2>
-        <p>Agents are becoming maintainers, researchers, tool selectors, and sometimes buyers. That makes the step before action more important.</p>
-        <p>An agent should know which tools are current, which are promising but not fully reviewed, which need sensitive permissions, what safer alternatives exist, and when grep is enough versus AST or graph search.</p>
-        <blockquote>Small, local, read-only perception for coding agents.</blockquote>
+          <section id="why" class="article-section">
+            <h2>Why this matters</h2>
+            <p>Agents are becoming maintainers, researchers, tool selectors, and sometimes buyers. That makes the step before action more important.</p>
+            <p>An agent should know which tools are current, which are promising but not fully reviewed, which need sensitive permissions, what safer alternatives exist, and when grep is enough versus AST or graph search.</p>
+            <blockquote>Small, local, read-only perception for coding agents.</blockquote>
+          </section>
 
-        <h2>Current shape</h2>
-        <ol>
-          <li>Install the <code>.vnem/</code> pack into a repo so agents read it through <code>AGENTS.md</code>.</li>
-          <li>Run the local read-only MCP server for tool-based search and recommendations.</li>
-          <li>Install the bundled Codex skill for a cleaner agent workflow.</li>
-        </ol>
-      </article>
+          <section id="shape" class="article-section">
+            <h2>Current shape</h2>
+            <ol>
+              <li>Install the <code>.vnem/</code> pack into a repo so agents read it through <code>AGENTS.md</code>.</li>
+              <li>Run the local read-only MCP server for tool-based search and recommendations.</li>
+              <li>Install the bundled Codex skill for a cleaner agent workflow.</li>
+            </ol>
+          </section>
+        </article>
+      </div>
     </main>
   </body>
 </html>
