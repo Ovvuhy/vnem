@@ -1,6 +1,6 @@
 # vnem Best Practices
 
-Generated: 2026-05-27T08:24:59.373Z
+Generated: 2026-05-27T12:28:45.456Z
 
 Use this as a compact, current guidance layer for coding agents. Prefer these notes when choosing whether to add, replace, or avoid a tool.
 
@@ -193,6 +193,21 @@ Treat instructions, memory files, retrieval, and artifacts as the agent's workin
 Sources: https://docs.anthropic.com/en/docs/claude-code/memory, https://docs.anthropic.com/en/docs/claude-code/sub-agents, https://docs.mem0.ai/, https://docs.letta.com/
 
 Search aliases: context engineering, claude memory, memory, instructions, agents.md, claude.md, retrieval, skills, knowledge pack
+
+## Research Source Intake
+
+Treat Vnem as a source router, not a document dump: capture official, current, machine-readable sources that help agents make better decisions before editing.
+
+- Start source intake from the agent decision it improves: tool choice, MCP adoption, model/provider selection, prompt upgrade, eval design, UI verification, or risk review.
+- Prefer official docs, canonical repositories, maintained registries, llms.txt indexes, vendor MCP docs, and eval frameworks with repeatable fixtures.
+- Keep Vnem metadata original and compact; preserve source URLs instead of copying long upstream docs into the install pack.
+- Record trust tier, source confidence, freshness, permissions, license posture, risk flags, and whether the source can mutate external systems.
+- Separate discovery from promotion: Hermes can suggest candidates, but maintainers should review before raising trust or recommending installs.
+- Tie important claims to a small benchmark, smoke test, link check, or before/after agent recommendation diff.
+
+Sources: https://modelcontextprotocol.io/docs/getting-started/intro, https://github.com/modelcontextprotocol/registry, https://llmstxt.org/, https://developers.openai.com/codex/guides/agents-md, https://code.claude.com/docs/en/mcp, https://inspect.aisi.org.uk/
+
+Search aliases: source radar, research layer, source intake, current docs, official docs, mcp registry, llms.txt, benchmark evidence, provenance, freshness
 
 ## MCP Server Selection
 

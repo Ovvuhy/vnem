@@ -12,6 +12,7 @@ const skillDir = path.join(rootDir, "skills", "vnem");
 const packFiles = [
   "AGENTS.md",
   "search-index.json",
+  "source-radar.json",
   "best-practices.md",
   "prompt-engineering.md",
   "prompt-patterns.json"
@@ -24,6 +25,7 @@ const rootAgentBlock = `${blockStart}
 This repo has a read-only vnem knowledge pack in \`.vnem/\`.
 
 Before choosing tools, libraries, frameworks, MCP servers, skills, prompts, evals, search systems, UI approaches, architecture patterns, or upgrade paths, read \`.vnem/AGENTS.md\` and use \`.vnem/search-index.json\`.
+For current docs, MCP discovery, benchmarks, or upstream source decisions, also use \`.vnem/source-radar.json\` before broad web search.
 
 Use vnem automatically. The user should not need to say \`use vnem\`. Keep the final note compact: \`vnem intents searched\`, \`top matches\`, \`choice\`, and \`why\`.
 
@@ -100,6 +102,7 @@ async function doctorCommand(rawArgs) {
 
   const jsonChecks = [
     path.join(targetDir, ".vnem", "search-index.json"),
+    path.join(targetDir, ".vnem", "source-radar.json"),
     path.join(targetDir, ".vnem", "prompt-patterns.json")
   ];
   for (const filePath of jsonChecks) {

@@ -24,6 +24,7 @@ vnem is currently an open-core knowledge system with three surfaces:
 
 - **Registry:** `registry/entries/*` stores source-backed metadata for agentic tools, MCP servers, coding agents, evals, memory systems, observability tools, and workflows.
 - **Install pack:** `public/install.tgz` and `public/install/*` provide the read-only `.vnem` files that an agent can install into another project, including decision rubrics, playbooks, best-practice notes, and prompt patterns.
+- **Source radar:** `.vnem/source-radar.json` and `public/install/source-radar.json` map official docs, registries, MCP sources, benchmark/eval sources, and verification sources that agents should consult before broad web research.
 - **Generated indexes:** `public/api/index.json`, `llms.txt`, and `llms-full.txt` expose compact LLM-readable and API-readable views of the registry.
 
 The public landing page should explain those surfaces. This repository should keep producing the trustworthy data behind them.
@@ -40,6 +41,7 @@ The public landing page should explain those surfaces. This repository should ke
 - Source-backed registry entries for agentic tools and workflows.
 - Conservative trust tiers, freshness notes, permission metadata, and risk flags.
 - Decision rubrics and playbooks for comparing Codex, Claude Code, Gemini/ADK, MCP servers, model providers, and agent workflows.
+- Source radar metadata for official docs, MCP registries, high-signal MCP sources, evals, observability tools, and client-specific instruction models.
 - Prompt patterns and review protocols that improve agent behavior.
 - Discovery automation that opens reviewable proposals instead of silently changing trusted data.
 - Public-site copy that makes installation, safety, and value obvious.
@@ -64,6 +66,7 @@ The public page should stay visually polished, but the first screen should make 
 - one-line install command
 - exactly what files get installed
 - why read-only matters
+- how source radar reduces repeated research by pointing agents at official/high-signal upstreams first
 - a quick "before vnem / after vnem" example of an agent recommendation
 - visible trust signals: source-backed, risk flags, trust tiers, no auto-execution
 - clear paths for Codex, Claude Code, Gemini/ADK, Cursor/Cline-style tools, and MCP users

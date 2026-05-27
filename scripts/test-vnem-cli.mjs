@@ -19,6 +19,7 @@ runCli(["install", projectDir]);
 for (const fileName of [
   "AGENTS.md",
   "search-index.json",
+  "source-radar.json",
   "best-practices.md",
   "prompt-engineering.md",
   "prompt-patterns.json"
@@ -32,6 +33,7 @@ assert.ok(agents.includes("<!-- vnem:start -->"));
 assert.ok(agents.includes("The user should not need to say `use vnem`"));
 
 JSON.parse(await readFile(path.join(projectDir, ".vnem", "search-index.json"), "utf8"));
+JSON.parse(await readFile(path.join(projectDir, ".vnem", "source-radar.json"), "utf8"));
 JSON.parse(await readFile(path.join(projectDir, ".vnem", "prompt-patterns.json"), "utf8"));
 
 runCli(["install", projectDir]);

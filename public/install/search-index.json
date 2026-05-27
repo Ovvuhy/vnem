@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-27T08:24:59.373Z",
+  "generated_at": "2026-05-27T12:28:45.456Z",
   "schema_version": "1.0.0",
   "install_folder": ".vnem",
   "safety": {
@@ -201,6 +201,45 @@
       "trend",
       "freshness",
       "registry"
+    ],
+    "source radar": [
+      "research layer",
+      "source intake",
+      "docs index",
+      "mcp registry",
+      "official docs",
+      "llms.txt",
+      "freshness",
+      "provenance"
+    ],
+    "research layer": [
+      "source radar",
+      "source intake",
+      "current docs",
+      "official docs",
+      "mcp registry",
+      "benchmark evidence",
+      "evidence"
+    ],
+    "source intake": [
+      "source radar",
+      "research layer",
+      "upstream source",
+      "source trust",
+      "provenance",
+      "license",
+      "permissions",
+      "risk review"
+    ],
+    "benchmark evidence": [
+      "evals",
+      "inspect ai",
+      "promptfoo",
+      "ragas",
+      "quality evidence",
+      "performance data",
+      "regression test",
+      "pilot task"
     ],
     "backend api": [
       "backend",
@@ -886,6 +925,123 @@
         "risk and verification"
       ]
     },
+    "source radar": {
+      "read_first": [
+        "source:mcp-core-and-registry",
+        "source:coding-agent-clients",
+        "source:documentation-ingestion",
+        "playbook:source-intake-review",
+        "practice:research-source-intake"
+      ],
+      "compare_options": [
+        "official docs",
+        "canonical GitHub repositories",
+        "official registries",
+        "vendor MCP docs",
+        "evaluation frameworks",
+        "llms.txt indexes"
+      ],
+      "choose_by": [
+        "source confidence",
+        "freshness",
+        "license clarity",
+        "permission risk",
+        "agent-client relevance",
+        "verification path"
+      ],
+      "report": [
+        "source category",
+        "why it matters",
+        "trust and risk",
+        "intake path",
+        "refresh cadence"
+      ]
+    },
+    "research layer": {
+      "read_first": [
+        "source:mcp-core-and-registry",
+        "source:coding-agent-clients",
+        "source:evaluation-and-observability",
+        "playbook:source-intake-review",
+        "practice:research-source-intake"
+      ],
+      "compare_options": [
+        "static registry entry",
+        "best-practice note",
+        "prompt pattern",
+        "watched source",
+        "benchmark fixture"
+      ],
+      "choose_by": [
+        "whether agents need it before editing",
+        "source trust",
+        "context saved",
+        "maintenance effort",
+        "risk flags"
+      ],
+      "report": [
+        "sources consulted",
+        "decision",
+        "data to add",
+        "verification evidence"
+      ]
+    },
+    "source intake": {
+      "read_first": [
+        "playbook:source-intake-review",
+        "practice:research-source-intake",
+        "source:mcp-core-and-registry"
+      ],
+      "compare_options": [
+        "add watched source only",
+        "add registry entry",
+        "add best-practice note",
+        "add prompt pattern",
+        "defer as out of scope"
+      ],
+      "choose_by": [
+        "official provenance",
+        "license posture",
+        "permissions",
+        "risk flags",
+        "whether a real agent workflow improves"
+      ],
+      "report": [
+        "candidate",
+        "trust tier",
+        "risk flags",
+        "artifact to update",
+        "verification"
+      ]
+    },
+    "benchmark evidence": {
+      "read_first": [
+        "source:evaluation-and-observability",
+        "practice:evals",
+        "playbook:source-intake-review"
+      ],
+      "compare_options": [
+        "small repo pilot",
+        "prompt regression suite",
+        "tool-call trace review",
+        "before/after recommendation diff",
+        "manual maintainer review"
+      ],
+      "choose_by": [
+        "measurable behavior",
+        "repeatability",
+        "cost",
+        "failure-mode coverage",
+        "fit to Vnem's read-only model"
+      ],
+      "report": [
+        "metric",
+        "dataset or fixture",
+        "baseline",
+        "expected improvement",
+        "review gate"
+      ]
+    },
     "code simplification": {
       "read_first": [
         "practice:code-simplification",
@@ -1059,6 +1215,34 @@
       ]
     },
     {
+      "id": "source-intake-review",
+      "title": "Source Intake Review",
+      "intents": [
+        "source radar",
+        "research layer",
+        "source intake",
+        "mcp registry",
+        "docs mcp",
+        "benchmark evidence"
+      ],
+      "summary": "Use this when deciding whether an upstream doc, MCP server, registry, benchmark, or agent workflow source belongs in Vnem.",
+      "workflow": [
+        "Classify the source as protocol docs, client docs, registry feed, MCP server, eval/observability, prompt pattern, or product signal.",
+        "Prefer official docs, canonical repositories, vendor-maintained MCPs, and sources with llms.txt or clear machine-readable indexes.",
+        "Record provenance, license posture, freshness, permissions, risk flags, and what agent decision the source improves.",
+        "Do not copy long upstream documentation into Vnem; link to sources and write original summaries or small metadata entries.",
+        "Choose the smallest artifact: watched source, registry entry, best-practice note, prompt pattern, eval fixture, or no change.",
+        "Require a verification path before promoting trust: link check, local MCP smoke test, install review, or before/after agent benchmark."
+      ],
+      "output_sections": [
+        "Source candidate",
+        "Why it matters",
+        "Trust and risk",
+        "Intake path",
+        "Verification"
+      ]
+    },
+    {
       "id": "prompt-upgrade",
       "title": "Prompt Upgrade",
       "intents": [
@@ -1084,6 +1268,208 @@
       ]
     }
   ],
+  "source_radar": [
+    {
+      "id": "mcp-core-and-registry",
+      "title": "MCP Core Docs And Official Registry",
+      "category": "protocol-registry",
+      "priority": "critical",
+      "summary": "Track MCP protocol docs, specification changes, and the official MCP registry before adding or recommending MCP servers.",
+      "use_when": [
+        "An agent is choosing, comparing, or installing MCP servers.",
+        "A registry entry depends on MCP transport, tools, resources, prompts, elicitation, or auth behavior.",
+        "Hermes or maintainers need a source of truth for new MCP server discovery."
+      ],
+      "monitor": [
+        "Protocol docs and llms.txt index",
+        "Official registry API and repository updates",
+        "Server metadata, package sources, licenses, and published versions"
+      ],
+      "risk_checks": [
+        "Registry preview or API stability notes",
+        "Server provenance and package ownership",
+        "Tool permissions, network access, secrets, and write capability"
+      ],
+      "source_urls": [
+        "https://modelcontextprotocol.io/docs/getting-started/intro",
+        "https://modelcontextprotocol.io/llms.txt",
+        "https://github.com/modelcontextprotocol/registry",
+        "https://registry.modelcontextprotocol.io/v0.1/servers"
+      ]
+    },
+    {
+      "id": "coding-agent-clients",
+      "title": "Coding Agent Client Docs",
+      "category": "agent-client",
+      "priority": "critical",
+      "summary": "Track how major coding agents load instructions, MCP tools, memory, subagents, approvals, and project context.",
+      "use_when": [
+        "Vnem needs to support Codex, Claude Code, OpenCode, Gemini/ADK, or similar coding agents.",
+        "A recommendation depends on how the agent reads AGENTS.md, CLAUDE.md, MCP resources, prompts, or memory.",
+        "The install pack or MCP server should be easier to use across multiple agent clients."
+      ],
+      "monitor": [
+        "Instruction-file behavior",
+        "MCP configuration and transport support",
+        "Memory, subagent, approval, and tool-search behavior",
+        "Windows, terminal, IDE, and browser support"
+      ],
+      "risk_checks": [
+        "Client-specific config drift",
+        "Features that require account login, OAuth, or paid plans",
+        "Actions that bypass repo review, approvals, or least privilege"
+      ],
+      "source_urls": [
+        "https://developers.openai.com/codex/guides/agents-md",
+        "https://code.claude.com/docs/en/overview",
+        "https://code.claude.com/docs/en/mcp",
+        "https://code.claude.com/docs/en/memory",
+        "https://code.claude.com/docs/en/sub-agents",
+        "https://opencode.ai/docs/",
+        "https://adk.dev/"
+      ]
+    },
+    {
+      "id": "documentation-ingestion",
+      "title": "Documentation Ingestion Sources",
+      "category": "current-docs",
+      "priority": "high",
+      "summary": "Prefer LLM-oriented documentation indexes and source-backed doc retrieval so agents stop wasting context on broad web searches.",
+      "use_when": [
+        "A coding agent needs current library, framework, SDK, or MCP documentation.",
+        "Vnem should point to a source rather than copying long upstream docs into the registry.",
+        "A source has an llms.txt index, canonical docs, or a docs-specific MCP."
+      ],
+      "monitor": [
+        "llms.txt and llms-full.txt availability",
+        "Canonical documentation URLs",
+        "Docs MCP servers and CLI doc retrievers"
+      ],
+      "risk_checks": [
+        "Stale generated docs",
+        "Unclear docs provenance",
+        "Copied upstream content that exceeds fair-use or license boundaries"
+      ],
+      "source_urls": [
+        "https://llmstxt.org/",
+        "https://github.com/upstash/context7",
+        "https://docs.firecrawl.dev/mcp-server"
+      ]
+    },
+    {
+      "id": "browser-and-ui-verification",
+      "title": "Browser And UI Verification Sources",
+      "category": "verification-tooling",
+      "priority": "high",
+      "summary": "Track browser automation and hosted browser MCPs that let agents verify rendered apps instead of guessing from code.",
+      "use_when": [
+        "An agent is building UI, debugging a browser app, validating accessibility snapshots, or checking frontend regressions.",
+        "Vnem needs to recommend a browser MCP or verification workflow.",
+        "A product claim depends on visible UI behavior rather than static code."
+      ],
+      "monitor": [
+        "Playwright MCP capabilities",
+        "Browserbase MCP capabilities",
+        "Client support for browser MCPs, screenshots, accessibility snapshots, and hosted sessions"
+      ],
+      "risk_checks": [
+        "Browser/network access",
+        "Credential exposure through pages",
+        "Stateful sessions and paid browser infrastructure"
+      ],
+      "source_urls": [
+        "https://github.com/microsoft/playwright-mcp",
+        "https://docs.browserbase.com/integrations/mcp/introduction"
+      ]
+    },
+    {
+      "id": "platform-and-data-connectors",
+      "title": "Platform And Data Connector Sources",
+      "category": "sensitive-connectors",
+      "priority": "high",
+      "summary": "Track official or vendor-maintained MCPs for repositories, databases, monitoring, payments, and web extraction with explicit permission review.",
+      "use_when": [
+        "An agent needs GitHub, Supabase, Sentry, Stripe, Firecrawl, or another external service.",
+        "A registry entry can read production-like data, write issues, query databases, spend money, or browse the web.",
+        "Vnem needs to recommend least-privilege, read-only, or sandbox-first setup."
+      ],
+      "monitor": [
+        "Official MCP repositories and docs",
+        "Available tool groups, scopes, and read-only modes",
+        "OAuth, PAT, API key, and sandbox guidance"
+      ],
+      "risk_checks": [
+        "Repository write access",
+        "Database writes or production data",
+        "Payment or billing side effects",
+        "Monitoring data sensitivity",
+        "Prompt injection through fetched external content"
+      ],
+      "source_urls": [
+        "https://github.com/github/github-mcp-server",
+        "https://supabase.com/docs/guides/ai-tools/mcp",
+        "https://mcp.sentry.dev/",
+        "https://docs.stripe.com/agents",
+        "https://docs.firecrawl.dev/mcp-server"
+      ]
+    },
+    {
+      "id": "evaluation-and-observability",
+      "title": "Evaluation And Observability Sources",
+      "category": "quality-evidence",
+      "priority": "high",
+      "summary": "Track eval and tracing systems so Vnem can prove whether an agent workflow actually improves output quality, speed, and safety.",
+      "use_when": [
+        "A claim says Vnem improves recommendations, engineering velocity, prompt quality, or tool choice.",
+        "A prompt, MCP, agent, or model switch needs a before/after benchmark.",
+        "Maintainers need traces or eval logs to explain why an agent made a decision."
+      ],
+      "monitor": [
+        "Small repeatable eval frameworks",
+        "Prompt and agent regression suites",
+        "Trace, cost, latency, and tool-call observability"
+      ],
+      "risk_checks": [
+        "Benchmarks that do not match real repo tasks",
+        "Scores without reproducible fixtures",
+        "Telemetry or traces containing secrets or private code"
+      ],
+      "source_urls": [
+        "https://inspect.aisi.org.uk/",
+        "https://www.promptfoo.dev/docs/intro/",
+        "https://docs.ragas.io/",
+        "https://docs.langfuse.com/",
+        "https://docs.arize.com/phoenix"
+      ]
+    },
+    {
+      "id": "secure-mcp-distribution",
+      "title": "Secure MCP Distribution Sources",
+      "category": "distribution",
+      "priority": "medium",
+      "summary": "Track curated MCP catalogs and containerized distribution models for safer team adoption of third-party MCP servers.",
+      "use_when": [
+        "A team wants approved MCP catalogs instead of ad hoc server installs.",
+        "A server has dependency, runtime, or package provenance concerns.",
+        "Vnem needs to distinguish local, remote, containerized, and organization-approved MCP deployment paths."
+      ],
+      "monitor": [
+        "Catalog provenance and SBOM metadata",
+        "Container signing and update cadence",
+        "Team profiles, custom catalogs, and allowed-server policies"
+      ],
+      "risk_checks": [
+        "Catalog beta or preview status",
+        "Container trust and host access",
+        "Remote OAuth and external service permissions"
+      ],
+      "source_urls": [
+        "https://docs.docker.com/ai/mcp-catalog-and-toolkit/catalog/",
+        "https://docs.docker.com/ai/mcp-catalog-and-toolkit/toolkit/"
+      ]
+    }
+  ],
+  "source_radar_url": "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/source-radar.json",
   "decision_protocol": {
     "auto_use": true,
     "user_trigger_required": false,
@@ -1988,6 +2374,520 @@
       ]
     },
     {
+      "id": "playbook:source-intake-review",
+      "kind": "decision-playbook",
+      "title": "Source Intake Review",
+      "summary": "Use this when deciding whether an upstream doc, MCP server, registry, benchmark, or agent workflow source belongs in Vnem.",
+      "url_path": "/install/AGENTS.md",
+      "trust_tier": "verified",
+      "type": "decision-playbook",
+      "score": 15,
+      "tags": [
+        "source radar",
+        "research layer",
+        "source intake",
+        "mcp registry",
+        "docs mcp",
+        "benchmark evidence"
+      ],
+      "use_cases": [
+        "Classify the source as protocol docs, client docs, registry feed, MCP server, eval/observability, prompt pattern, or product signal.",
+        "Prefer official docs, canonical repositories, vendor-maintained MCPs, and sources with llms.txt or clear machine-readable indexes.",
+        "Record provenance, license posture, freshness, permissions, risk flags, and what agent decision the source improves.",
+        "Do not copy long upstream documentation into Vnem; link to sources and write original summaries or small metadata entries.",
+        "Choose the smallest artifact: watched source, registry entry, best-practice note, prompt pattern, eval fixture, or no change.",
+        "Require a verification path before promoting trust: link check, local MCP smoke test, install review, or before/after agent benchmark."
+      ],
+      "best_for": [
+        "Use this when deciding whether an upstream doc, MCP server, registry, benchmark, or agent workflow source belongs in Vnem."
+      ],
+      "risk_flags": [],
+      "source_urls": [
+        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/AGENTS.md"
+      ],
+      "keywords": [
+        "intake",
+        "deciding",
+        "whether",
+        "an",
+        "doc",
+        "mcp",
+        "server",
+        "benchmark",
+        "or",
+        "agent",
+        "workflow",
+        "belongs",
+        "in",
+        "vnem.",
+        "radar",
+        "research",
+        "layer",
+        "docs",
+        "evidence",
+        "classify",
+        "as",
+        "protocol",
+        "client",
+        "feed",
+        "eval/observability",
+        "prompt",
+        "pattern",
+        "product",
+        "signal.",
+        "prefer",
+        "canonical",
+        "repositories",
+        "vendor-maintained",
+        "mcps",
+        "llms.txt",
+        "clear",
+        "machine-readable",
+        "indexes.",
+        "record",
+        "provenance",
+        "license",
+        "posture",
+        "freshness",
+        "permissions",
+        "risk",
+        "flags",
+        "what",
+        "decision",
+        "improves.",
+        "do",
+        "not",
+        "copy",
+        "long",
+        "documentation",
+        "vnem",
+        "link",
+        "to",
+        "write",
+        "original",
+        "summaries",
+        "small",
+        "metadata",
+        "entries.",
+        "choose",
+        "smallest",
+        "artifact",
+        "watched",
+        "entry",
+        "best-practice",
+        "note",
+        "eval",
+        "fixture",
+        "no",
+        "change.",
+        "require",
+        "verification",
+        "path",
+        "promoting",
+        "trust",
+        "check",
+        "local",
+        "smoke",
+        "test",
+        "install",
+        "before/after",
+        "benchmark.",
+        "candidate",
+        "why",
+        "it",
+        "matters"
+      ]
+    },
+    {
+      "id": "practice:research-source-intake",
+      "kind": "best-practice",
+      "title": "Research Source Intake",
+      "summary": "Treat Vnem as a source router, not a document dump: capture official, current, machine-readable sources that help agents make better decisions before editing.",
+      "url_path": "/install/best-practices.md",
+      "trust_tier": "verified",
+      "type": "best-practice",
+      "score": 14,
+      "tags": [
+        "source radar",
+        "research layer",
+        "source intake",
+        "current docs",
+        "official docs",
+        "mcp registry",
+        "llms.txt",
+        "benchmark evidence",
+        "provenance",
+        "freshness"
+      ],
+      "use_cases": [
+        "Start source intake from the agent decision it improves: tool choice, MCP adoption, model/provider selection, prompt upgrade, eval design, UI verification, or risk review.",
+        "Prefer official docs, canonical repositories, maintained registries, llms.txt indexes, vendor MCP docs, and eval frameworks with repeatable fixtures.",
+        "Keep Vnem metadata original and compact; preserve source URLs instead of copying long upstream docs into the install pack.",
+        "Record trust tier, source confidence, freshness, permissions, license posture, risk flags, and whether the source can mutate external systems.",
+        "Separate discovery from promotion: Hermes can suggest candidates, but maintainers should review before raising trust or recommending installs.",
+        "Tie important claims to a small benchmark, smoke test, link check, or before/after agent recommendation diff."
+      ],
+      "best_for": [
+        "Start source intake from the agent decision it improves: tool choice, MCP adoption, model/provider selection, prompt upgrade, eval design, UI verification, or risk review.",
+        "Prefer official docs, canonical repositories, maintained registries, llms.txt indexes, vendor MCP docs, and eval frameworks with repeatable fixtures.",
+        "Keep Vnem metadata original and compact; preserve source URLs instead of copying long upstream docs into the install pack.",
+        "Record trust tier, source confidence, freshness, permissions, license posture, risk flags, and whether the source can mutate external systems.",
+        "Separate discovery from promotion: Hermes can suggest candidates, but maintainers should review before raising trust or recommending installs.",
+        "Tie important claims to a small benchmark, smoke test, link check, or before/after agent recommendation diff."
+      ],
+      "risk_flags": [],
+      "source_urls": [
+        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/best-practices.md",
+        "https://modelcontextprotocol.io/docs/getting-started/intro",
+        "https://github.com/modelcontextprotocol/registry",
+        "https://llmstxt.org/",
+        "https://developers.openai.com/codex/guides/agents-md",
+        "https://code.claude.com/docs/en/mcp",
+        "https://inspect.aisi.org.uk/"
+      ],
+      "keywords": [
+        "research",
+        "intake",
+        "vnem",
+        "as",
+        "router",
+        "not",
+        "document",
+        "dump",
+        "capture",
+        "current",
+        "machine-readable",
+        "help",
+        "agents",
+        "make",
+        "better",
+        "decisions",
+        "editing.",
+        "radar",
+        "layer",
+        "docs",
+        "mcp",
+        "llms.txt",
+        "benchmark",
+        "evidence",
+        "provenance",
+        "freshness",
+        "start",
+        "agent",
+        "decision",
+        "it",
+        "improves",
+        "tool",
+        "choice",
+        "adoption",
+        "model/provider",
+        "selection",
+        "prompt",
+        "upgrade",
+        "eval",
+        "design",
+        "ui",
+        "verification",
+        "or",
+        "risk",
+        "review.",
+        "prefer",
+        "canonical",
+        "repositories",
+        "maintained",
+        "registries",
+        "indexes",
+        "vendor",
+        "frameworks",
+        "repeatable",
+        "fixtures.",
+        "keep",
+        "metadata",
+        "original",
+        "compact",
+        "preserve",
+        "urls",
+        "instead",
+        "of",
+        "copying",
+        "long",
+        "install",
+        "pack.",
+        "record",
+        "trust",
+        "confidence",
+        "permissions",
+        "license",
+        "posture",
+        "flags",
+        "whether",
+        "mutate",
+        "external",
+        "systems.",
+        "separate",
+        "discovery",
+        "promotion",
+        "hermes",
+        "suggest",
+        "candidates",
+        "but",
+        "maintainers",
+        "should",
+        "raising",
+        "recommending",
+        "installs.",
+        "tie",
+        "important",
+        "claims",
+        "to",
+        "small",
+        "smoke",
+        "test",
+        "link",
+        "check",
+        "before/after",
+        "recommendation",
+        "diff."
+      ]
+    },
+    {
+      "id": "source:coding-agent-clients",
+      "kind": "source-radar",
+      "title": "Coding Agent Client Docs",
+      "summary": "Track how major coding agents load instructions, MCP tools, memory, subagents, approvals, and project context.",
+      "url_path": "/install/source-radar.json",
+      "trust_tier": "verified",
+      "type": "source-radar",
+      "score": 13,
+      "tags": [
+        "agent-client",
+        "critical",
+        "Vnem needs to support Codex, Claude Code, OpenCode, Gemini/ADK, or similar coding agents.",
+        "A recommendation depends on how the agent reads AGENTS.md, CLAUDE.md, MCP resources, prompts, or memory.",
+        "The install pack or MCP server should be easier to use across multiple agent clients.",
+        "Instruction-file behavior",
+        "MCP configuration and transport support",
+        "Memory, subagent, approval, and tool-search behavior",
+        "Windows, terminal, IDE, and browser support"
+      ],
+      "use_cases": [
+        "Vnem needs to support Codex, Claude Code, OpenCode, Gemini/ADK, or similar coding agents.",
+        "A recommendation depends on how the agent reads AGENTS.md, CLAUDE.md, MCP resources, prompts, or memory.",
+        "The install pack or MCP server should be easier to use across multiple agent clients."
+      ],
+      "best_for": [
+        "Instruction-file behavior",
+        "MCP configuration and transport support",
+        "Memory, subagent, approval, and tool-search behavior",
+        "Windows, terminal, IDE, and browser support"
+      ],
+      "risk_flags": [
+        "Client-specific config drift",
+        "Features that require account login, OAuth, or paid plans",
+        "Actions that bypass repo review, approvals, or least privilege"
+      ],
+      "source_urls": [
+        "https://developers.openai.com/codex/guides/agents-md",
+        "https://code.claude.com/docs/en/overview",
+        "https://code.claude.com/docs/en/mcp",
+        "https://code.claude.com/docs/en/memory",
+        "https://code.claude.com/docs/en/sub-agents",
+        "https://opencode.ai/docs/",
+        "https://adk.dev/"
+      ],
+      "keywords": [
+        "coding-agent-clients",
+        "coding",
+        "agent",
+        "client",
+        "docs",
+        "agent-client",
+        "critical",
+        "track",
+        "how",
+        "major",
+        "agents",
+        "load",
+        "instructions",
+        "mcp",
+        "tools",
+        "memory",
+        "subagents",
+        "approvals",
+        "context.",
+        "vnem",
+        "to",
+        "support",
+        "codex",
+        "claude",
+        "opencode",
+        "gemini/adk",
+        "or",
+        "similar",
+        "agents.",
+        "recommendation",
+        "depends",
+        "on",
+        "reads",
+        "agents.md",
+        "claude.md",
+        "resources",
+        "prompts",
+        "memory.",
+        "install",
+        "pack",
+        "server",
+        "should",
+        "be",
+        "easier",
+        "across",
+        "multiple",
+        "clients.",
+        "instruction-file",
+        "behavior",
+        "configuration",
+        "transport",
+        "subagent",
+        "approval",
+        "tool-search",
+        "windows",
+        "terminal",
+        "ide",
+        "browser",
+        "client-specific",
+        "config",
+        "drift",
+        "features",
+        "require",
+        "account",
+        "login",
+        "oauth",
+        "paid",
+        "plans",
+        "actions",
+        "bypass",
+        "repo",
+        "least",
+        "privilege",
+        "https",
+        "//developers.openai.com/codex/guides/agents-md",
+        "//code.claude.com/docs/en/overview",
+        "//code.claude.com/docs/en/mcp",
+        "//code.claude.com/docs/en/memory",
+        "//code.claude.com/docs/en/sub-agents",
+        "//opencode.ai/docs/",
+        "//adk.dev/"
+      ]
+    },
+    {
+      "id": "source:mcp-core-and-registry",
+      "kind": "source-radar",
+      "title": "MCP Core Docs And Official Registry",
+      "summary": "Track MCP protocol docs, specification changes, and the official MCP registry before adding or recommending MCP servers.",
+      "url_path": "/install/source-radar.json",
+      "trust_tier": "verified",
+      "type": "source-radar",
+      "score": 13,
+      "tags": [
+        "protocol-registry",
+        "critical",
+        "An agent is choosing, comparing, or installing MCP servers.",
+        "A registry entry depends on MCP transport, tools, resources, prompts, elicitation, or auth behavior.",
+        "Hermes or maintainers need a source of truth for new MCP server discovery.",
+        "Protocol docs and llms.txt index",
+        "Official registry API and repository updates",
+        "Server metadata, package sources, licenses, and published versions"
+      ],
+      "use_cases": [
+        "An agent is choosing, comparing, or installing MCP servers.",
+        "A registry entry depends on MCP transport, tools, resources, prompts, elicitation, or auth behavior.",
+        "Hermes or maintainers need a source of truth for new MCP server discovery."
+      ],
+      "best_for": [
+        "Protocol docs and llms.txt index",
+        "Official registry API and repository updates",
+        "Server metadata, package sources, licenses, and published versions"
+      ],
+      "risk_flags": [
+        "Registry preview or API stability notes",
+        "Server provenance and package ownership",
+        "Tool permissions, network access, secrets, and write capability"
+      ],
+      "source_urls": [
+        "https://modelcontextprotocol.io/docs/getting-started/intro",
+        "https://modelcontextprotocol.io/llms.txt",
+        "https://github.com/modelcontextprotocol/registry",
+        "https://registry.modelcontextprotocol.io/v0.1/servers"
+      ],
+      "keywords": [
+        "mcp-core-and-registry",
+        "mcp",
+        "core",
+        "docs",
+        "protocol-registry",
+        "critical",
+        "track",
+        "protocol",
+        "specification",
+        "changes",
+        "adding",
+        "or",
+        "recommending",
+        "servers.",
+        "an",
+        "agent",
+        "is",
+        "choosing",
+        "comparing",
+        "installing",
+        "entry",
+        "depends",
+        "on",
+        "transport",
+        "tools",
+        "resources",
+        "prompts",
+        "elicitation",
+        "auth",
+        "behavior.",
+        "hermes",
+        "maintainers",
+        "need",
+        "of",
+        "truth",
+        "new",
+        "server",
+        "discovery.",
+        "llms.txt",
+        "index",
+        "api",
+        "repository",
+        "updates",
+        "metadata",
+        "package",
+        "licenses",
+        "published",
+        "versions",
+        "preview",
+        "stability",
+        "notes",
+        "provenance",
+        "ownership",
+        "tool",
+        "permissions",
+        "network",
+        "access",
+        "secrets",
+        "write",
+        "capability",
+        "https",
+        "//modelcontextprotocol.io/docs/getting-started/intro",
+        "//modelcontextprotocol.io/llms.txt",
+        "//github.com/modelcontextprotocol/registry",
+        "//registry.modelcontextprotocol.io/v0.1/servers"
+      ]
+    },
+    {
       "id": "entry:model-context-protocol",
       "kind": "registry-entry",
       "title": "Model Context Protocol",
@@ -2354,6 +3254,112 @@
         "of",
         "opaque",
         "text."
+      ]
+    },
+    {
+      "id": "source:browser-and-ui-verification",
+      "kind": "source-radar",
+      "title": "Browser And UI Verification Sources",
+      "summary": "Track browser automation and hosted browser MCPs that let agents verify rendered apps instead of guessing from code.",
+      "url_path": "/install/source-radar.json",
+      "trust_tier": "verified",
+      "type": "source-radar",
+      "score": 12,
+      "tags": [
+        "verification-tooling",
+        "high",
+        "An agent is building UI, debugging a browser app, validating accessibility snapshots, or checking frontend regressions.",
+        "Vnem needs to recommend a browser MCP or verification workflow.",
+        "A product claim depends on visible UI behavior rather than static code.",
+        "Playwright MCP capabilities",
+        "Browserbase MCP capabilities",
+        "Client support for browser MCPs, screenshots, accessibility snapshots, and hosted sessions"
+      ],
+      "use_cases": [
+        "An agent is building UI, debugging a browser app, validating accessibility snapshots, or checking frontend regressions.",
+        "Vnem needs to recommend a browser MCP or verification workflow.",
+        "A product claim depends on visible UI behavior rather than static code."
+      ],
+      "best_for": [
+        "Playwright MCP capabilities",
+        "Browserbase MCP capabilities",
+        "Client support for browser MCPs, screenshots, accessibility snapshots, and hosted sessions"
+      ],
+      "risk_flags": [
+        "Browser/network access",
+        "Credential exposure through pages",
+        "Stateful sessions and paid browser infrastructure"
+      ],
+      "source_urls": [
+        "https://github.com/microsoft/playwright-mcp",
+        "https://docs.browserbase.com/integrations/mcp/introduction"
+      ],
+      "keywords": [
+        "browser-and-ui-verification",
+        "browser",
+        "ui",
+        "verification",
+        "verification-tooling",
+        "high",
+        "track",
+        "automation",
+        "hosted",
+        "mcps",
+        "let",
+        "agents",
+        "verify",
+        "rendered",
+        "apps",
+        "instead",
+        "of",
+        "guessing",
+        "code.",
+        "an",
+        "agent",
+        "is",
+        "building",
+        "debugging",
+        "app",
+        "validating",
+        "accessibility",
+        "snapshots",
+        "or",
+        "checking",
+        "frontend",
+        "regressions.",
+        "vnem",
+        "to",
+        "recommend",
+        "mcp",
+        "workflow.",
+        "product",
+        "claim",
+        "depends",
+        "on",
+        "visible",
+        "behavior",
+        "rather",
+        "than",
+        "static",
+        "playwright",
+        "capabilities",
+        "browserbase",
+        "client",
+        "support",
+        "screenshots",
+        "sessions",
+        "browser/network",
+        "access",
+        "credential",
+        "exposure",
+        "through",
+        "pages",
+        "stateful",
+        "paid",
+        "infrastructure",
+        "https",
+        "//github.com/microsoft/playwright-mcp",
+        "//docs.browserbase.com/integrations/mcp/introduction"
       ]
     },
     {
@@ -2998,6 +4004,113 @@
       ]
     },
     {
+      "id": "source:documentation-ingestion",
+      "kind": "source-radar",
+      "title": "Documentation Ingestion Sources",
+      "summary": "Prefer LLM-oriented documentation indexes and source-backed doc retrieval so agents stop wasting context on broad web searches.",
+      "url_path": "/install/source-radar.json",
+      "trust_tier": "verified",
+      "type": "source-radar",
+      "score": 12,
+      "tags": [
+        "current-docs",
+        "high",
+        "A coding agent needs current library, framework, SDK, or MCP documentation.",
+        "Vnem should point to a source rather than copying long upstream docs into the registry.",
+        "A source has an llms.txt index, canonical docs, or a docs-specific MCP.",
+        "llms.txt and llms-full.txt availability",
+        "Canonical documentation URLs",
+        "Docs MCP servers and CLI doc retrievers"
+      ],
+      "use_cases": [
+        "A coding agent needs current library, framework, SDK, or MCP documentation.",
+        "Vnem should point to a source rather than copying long upstream docs into the registry.",
+        "A source has an llms.txt index, canonical docs, or a docs-specific MCP."
+      ],
+      "best_for": [
+        "llms.txt and llms-full.txt availability",
+        "Canonical documentation URLs",
+        "Docs MCP servers and CLI doc retrievers"
+      ],
+      "risk_flags": [
+        "Stale generated docs",
+        "Unclear docs provenance",
+        "Copied upstream content that exceeds fair-use or license boundaries"
+      ],
+      "source_urls": [
+        "https://llmstxt.org/",
+        "https://github.com/upstash/context7",
+        "https://docs.firecrawl.dev/mcp-server"
+      ],
+      "keywords": [
+        "documentation-ingestion",
+        "documentation",
+        "ingestion",
+        "current-docs",
+        "high",
+        "prefer",
+        "llm-oriented",
+        "indexes",
+        "source-backed",
+        "doc",
+        "retrieval",
+        "so",
+        "agents",
+        "stop",
+        "wasting",
+        "context",
+        "on",
+        "broad",
+        "web",
+        "searches.",
+        "coding",
+        "agent",
+        "current",
+        "library",
+        "framework",
+        "sdk",
+        "or",
+        "mcp",
+        "documentation.",
+        "vnem",
+        "should",
+        "point",
+        "to",
+        "rather",
+        "than",
+        "copying",
+        "long",
+        "docs",
+        "registry.",
+        "an",
+        "llms.txt",
+        "index",
+        "canonical",
+        "docs-specific",
+        "mcp.",
+        "llms-full.txt",
+        "availability",
+        "urls",
+        "servers",
+        "cli",
+        "retrievers",
+        "stale",
+        "generated",
+        "unclear",
+        "provenance",
+        "copied",
+        "content",
+        "exceeds",
+        "fair-use",
+        "license",
+        "boundaries",
+        "https",
+        "//llmstxt.org/",
+        "//github.com/upstash/context7",
+        "//docs.firecrawl.dev/mcp-server"
+      ]
+    },
+    {
       "id": "practice:evals",
       "kind": "best-practice",
       "title": "Evals And Verification",
@@ -3075,6 +4188,125 @@
         "only",
         "generate",
         "text."
+      ]
+    },
+    {
+      "id": "source:evaluation-and-observability",
+      "kind": "source-radar",
+      "title": "Evaluation And Observability Sources",
+      "summary": "Track eval and tracing systems so Vnem can prove whether an agent workflow actually improves output quality, speed, and safety.",
+      "url_path": "/install/source-radar.json",
+      "trust_tier": "verified",
+      "type": "source-radar",
+      "score": 12,
+      "tags": [
+        "quality-evidence",
+        "high",
+        "A claim says Vnem improves recommendations, engineering velocity, prompt quality, or tool choice.",
+        "A prompt, MCP, agent, or model switch needs a before/after benchmark.",
+        "Maintainers need traces or eval logs to explain why an agent made a decision.",
+        "Small repeatable eval frameworks",
+        "Prompt and agent regression suites",
+        "Trace, cost, latency, and tool-call observability"
+      ],
+      "use_cases": [
+        "A claim says Vnem improves recommendations, engineering velocity, prompt quality, or tool choice.",
+        "A prompt, MCP, agent, or model switch needs a before/after benchmark.",
+        "Maintainers need traces or eval logs to explain why an agent made a decision."
+      ],
+      "best_for": [
+        "Small repeatable eval frameworks",
+        "Prompt and agent regression suites",
+        "Trace, cost, latency, and tool-call observability"
+      ],
+      "risk_flags": [
+        "Benchmarks that do not match real repo tasks",
+        "Scores without reproducible fixtures",
+        "Telemetry or traces containing secrets or private code"
+      ],
+      "source_urls": [
+        "https://inspect.aisi.org.uk/",
+        "https://www.promptfoo.dev/docs/intro/",
+        "https://docs.ragas.io/",
+        "https://docs.langfuse.com/",
+        "https://docs.arize.com/phoenix"
+      ],
+      "keywords": [
+        "evaluation-and-observability",
+        "evaluation",
+        "observability",
+        "quality-evidence",
+        "high",
+        "track",
+        "eval",
+        "tracing",
+        "systems",
+        "so",
+        "vnem",
+        "prove",
+        "whether",
+        "an",
+        "agent",
+        "workflow",
+        "actually",
+        "improves",
+        "output",
+        "quality",
+        "speed",
+        "safety.",
+        "claim",
+        "says",
+        "recommendations",
+        "engineering",
+        "velocity",
+        "prompt",
+        "or",
+        "tool",
+        "choice.",
+        "mcp",
+        "model",
+        "switch",
+        "before/after",
+        "benchmark.",
+        "maintainers",
+        "need",
+        "traces",
+        "logs",
+        "to",
+        "explain",
+        "why",
+        "made",
+        "decision.",
+        "small",
+        "repeatable",
+        "frameworks",
+        "regression",
+        "suites",
+        "trace",
+        "cost",
+        "latency",
+        "tool-call",
+        "benchmarks",
+        "do",
+        "not",
+        "match",
+        "real",
+        "repo",
+        "tasks",
+        "scores",
+        "without",
+        "reproducible",
+        "fixtures",
+        "telemetry",
+        "containing",
+        "secrets",
+        "private",
+        "https",
+        "//inspect.aisi.org.uk/",
+        "//www.promptfoo.dev/docs/intro/",
+        "//docs.ragas.io/",
+        "//docs.langfuse.com/",
+        "//docs.arize.com/phoenix"
       ]
     },
     {
@@ -4069,6 +5301,132 @@
         "auditable",
         "transaction",
         "context."
+      ]
+    },
+    {
+      "id": "source:platform-and-data-connectors",
+      "kind": "source-radar",
+      "title": "Platform And Data Connector Sources",
+      "summary": "Track official or vendor-maintained MCPs for repositories, databases, monitoring, payments, and web extraction with explicit permission review.",
+      "url_path": "/install/source-radar.json",
+      "trust_tier": "verified",
+      "type": "source-radar",
+      "score": 12,
+      "tags": [
+        "sensitive-connectors",
+        "high",
+        "An agent needs GitHub, Supabase, Sentry, Stripe, Firecrawl, or another external service.",
+        "A registry entry can read production-like data, write issues, query databases, spend money, or browse the web.",
+        "Vnem needs to recommend least-privilege, read-only, or sandbox-first setup.",
+        "Official MCP repositories and docs",
+        "Available tool groups, scopes, and read-only modes",
+        "OAuth, PAT, API key, and sandbox guidance"
+      ],
+      "use_cases": [
+        "An agent needs GitHub, Supabase, Sentry, Stripe, Firecrawl, or another external service.",
+        "A registry entry can read production-like data, write issues, query databases, spend money, or browse the web.",
+        "Vnem needs to recommend least-privilege, read-only, or sandbox-first setup."
+      ],
+      "best_for": [
+        "Official MCP repositories and docs",
+        "Available tool groups, scopes, and read-only modes",
+        "OAuth, PAT, API key, and sandbox guidance"
+      ],
+      "risk_flags": [
+        "Repository write access",
+        "Database writes or production data",
+        "Payment or billing side effects",
+        "Monitoring data sensitivity",
+        "Prompt injection through fetched external content"
+      ],
+      "source_urls": [
+        "https://github.com/github/github-mcp-server",
+        "https://supabase.com/docs/guides/ai-tools/mcp",
+        "https://mcp.sentry.dev/",
+        "https://docs.stripe.com/agents",
+        "https://docs.firecrawl.dev/mcp-server"
+      ],
+      "keywords": [
+        "platform-and-data-connectors",
+        "platform",
+        "data",
+        "connector",
+        "sensitive-connectors",
+        "high",
+        "track",
+        "or",
+        "vendor-maintained",
+        "mcps",
+        "repositories",
+        "databases",
+        "monitoring",
+        "payments",
+        "web",
+        "extraction",
+        "explicit",
+        "permission",
+        "review.",
+        "an",
+        "agent",
+        "github",
+        "supabase",
+        "sentry",
+        "stripe",
+        "firecrawl",
+        "another",
+        "external",
+        "service.",
+        "entry",
+        "read",
+        "production-like",
+        "write",
+        "issues",
+        "query",
+        "spend",
+        "money",
+        "browse",
+        "web.",
+        "vnem",
+        "to",
+        "recommend",
+        "least-privilege",
+        "read-only",
+        "sandbox-first",
+        "setup.",
+        "mcp",
+        "docs",
+        "available",
+        "tool",
+        "groups",
+        "scopes",
+        "modes",
+        "oauth",
+        "pat",
+        "api",
+        "key",
+        "sandbox",
+        "guidance",
+        "repository",
+        "access",
+        "database",
+        "writes",
+        "production",
+        "payment",
+        "billing",
+        "side",
+        "effects",
+        "sensitivity",
+        "prompt",
+        "injection",
+        "through",
+        "fetched",
+        "content",
+        "https",
+        "//github.com/github/github-mcp-server",
+        "//supabase.com/docs/guides/ai-tools/mcp",
+        "//mcp.sentry.dev/",
+        "//docs.stripe.com/agents",
+        "//docs.firecrawl.dev/mcp-server"
       ]
     },
     {
@@ -21850,6 +23208,122 @@
       ]
     },
     {
+      "id": "prompt-pattern:source-intake",
+      "kind": "prompt-pattern",
+      "title": "Source Intake Prompt",
+      "summary": "Prompt an agent to decide whether a new source should become a watched source, registry entry, best-practice note, prompt pattern, or eval fixture.",
+      "url_path": "/install/prompt-engineering.md",
+      "trust_tier": "verified",
+      "type": "prompt-pattern",
+      "score": 10,
+      "tags": [
+        "source radar",
+        "research layer",
+        "source intake",
+        "mcp registry",
+        "docs mcp",
+        "benchmark evidence"
+      ],
+      "use_cases": [
+        "source radar",
+        "research layer",
+        "source intake",
+        "mcp registry",
+        "docs mcp",
+        "benchmark evidence"
+      ],
+      "best_for": [
+        "Prompt an agent to decide whether a new source should become a watched source, registry entry, best-practice note, prompt pattern, or eval fixture."
+      ],
+      "risk_flags": [],
+      "source_urls": [
+        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/prompt-engineering.md",
+        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/prompt-patterns.json"
+      ],
+      "keywords": [
+        "intake",
+        "prompt",
+        "an",
+        "agent",
+        "to",
+        "decide",
+        "whether",
+        "new",
+        "should",
+        "become",
+        "watched",
+        "entry",
+        "best-practice",
+        "note",
+        "pattern",
+        "or",
+        "eval",
+        "fixture.",
+        "radar",
+        "research",
+        "layer",
+        "mcp",
+        "docs",
+        "benchmark",
+        "evidence",
+        "path",
+        "verification",
+        "plan",
+        "vnem",
+        "intake.",
+        "repository",
+        "page",
+        "feed",
+        "server",
+        "paper",
+        "decision",
+        "context",
+        "which",
+        "could",
+        "improve",
+        "criteria",
+        "is",
+        "it",
+        "canonical",
+        "vendor-maintained",
+        "otherwise",
+        "high-signal",
+        "what",
+        "permissions",
+        "secrets",
+        "network",
+        "access",
+        "write",
+        "paid",
+        "apis",
+        "involved",
+        "license",
+        "freshness",
+        "maintenance",
+        "provenance",
+        "signals",
+        "visible",
+        "add",
+        "fixture",
+        "no",
+        "change",
+        "would",
+        "prove",
+        "useful",
+        "safe",
+        "enough",
+        "promote",
+        "output",
+        "candidate.",
+        "why",
+        "matters.",
+        "trust",
+        "risk.",
+        "path.",
+        "plan."
+      ]
+    },
+    {
       "id": "prompt-pattern:subagent-delegation",
       "kind": "prompt-pattern",
       "title": "Subagent Delegation Prompt",
@@ -24392,6 +25866,108 @@
         "verifies",
         "install",
         "behavior."
+      ]
+    },
+    {
+      "id": "source:secure-mcp-distribution",
+      "kind": "source-radar",
+      "title": "Secure MCP Distribution Sources",
+      "summary": "Track curated MCP catalogs and containerized distribution models for safer team adoption of third-party MCP servers.",
+      "url_path": "/install/source-radar.json",
+      "trust_tier": "verified",
+      "type": "source-radar",
+      "score": 9,
+      "tags": [
+        "distribution",
+        "medium",
+        "A team wants approved MCP catalogs instead of ad hoc server installs.",
+        "A server has dependency, runtime, or package provenance concerns.",
+        "Vnem needs to distinguish local, remote, containerized, and organization-approved MCP deployment paths.",
+        "Catalog provenance and SBOM metadata",
+        "Container signing and update cadence",
+        "Team profiles, custom catalogs, and allowed-server policies"
+      ],
+      "use_cases": [
+        "A team wants approved MCP catalogs instead of ad hoc server installs.",
+        "A server has dependency, runtime, or package provenance concerns.",
+        "Vnem needs to distinguish local, remote, containerized, and organization-approved MCP deployment paths."
+      ],
+      "best_for": [
+        "Catalog provenance and SBOM metadata",
+        "Container signing and update cadence",
+        "Team profiles, custom catalogs, and allowed-server policies"
+      ],
+      "risk_flags": [
+        "Catalog beta or preview status",
+        "Container trust and host access",
+        "Remote OAuth and external service permissions"
+      ],
+      "source_urls": [
+        "https://docs.docker.com/ai/mcp-catalog-and-toolkit/catalog/",
+        "https://docs.docker.com/ai/mcp-catalog-and-toolkit/toolkit/"
+      ],
+      "keywords": [
+        "secure-mcp-distribution",
+        "secure",
+        "mcp",
+        "distribution",
+        "medium",
+        "track",
+        "curated",
+        "catalogs",
+        "containerized",
+        "models",
+        "safer",
+        "team",
+        "adoption",
+        "of",
+        "third-party",
+        "servers.",
+        "wants",
+        "approved",
+        "instead",
+        "ad",
+        "hoc",
+        "server",
+        "installs.",
+        "dependency",
+        "runtime",
+        "or",
+        "package",
+        "provenance",
+        "concerns.",
+        "vnem",
+        "to",
+        "distinguish",
+        "local",
+        "remote",
+        "organization-approved",
+        "deployment",
+        "paths.",
+        "catalog",
+        "sbom",
+        "metadata",
+        "container",
+        "signing",
+        "update",
+        "cadence",
+        "profiles",
+        "custom",
+        "allowed-server",
+        "policies",
+        "beta",
+        "preview",
+        "status",
+        "trust",
+        "host",
+        "access",
+        "oauth",
+        "external",
+        "service",
+        "permissions",
+        "https",
+        "//docs.docker.com/ai/mcp-catalog-and-toolkit/catalog/",
+        "//docs.docker.com/ai/mcp-catalog-and-toolkit/toolkit/"
       ]
     },
     {
@@ -27787,6 +29363,9 @@
     "//abmeter.ai": [
       "entry:ai-abmeter-abmeter"
     ],
+    "//adk.dev/": [
+      "source:coding-agent-clients"
+    ],
     "//adramp.ai": [
       "entry:ai-adramp-google-ads"
     ],
@@ -27889,6 +29468,18 @@
     "//clude.io/docs.html": [
       "entry:clude"
     ],
+    "//code.claude.com/docs/en/mcp": [
+      "source:coding-agent-clients"
+    ],
+    "//code.claude.com/docs/en/memory": [
+      "source:coding-agent-clients"
+    ],
+    "//code.claude.com/docs/en/overview": [
+      "source:coding-agent-clients"
+    ],
+    "//code.claude.com/docs/en/sub-agents": [
+      "source:coding-agent-clients"
+    ],
     "//complyhat.ai": [
       "entry:ai-complyhat-compliance"
     ],
@@ -27935,6 +29526,7 @@
       "entry:openai-prompt-optimizer"
     ],
     "//developers.openai.com/codex/guides/agents-md": [
+      "source:coding-agent-clients",
       "entry:codex-agents-md"
     ],
     "//doc.babylonjs.com/": [
@@ -27961,9 +29553,11 @@
       "entry:anthropic-claude-code"
     ],
     "//docs.arize.com/phoenix": [
+      "source:evaluation-and-observability",
       "entry:arize-phoenix"
     ],
     "//docs.browserbase.com/integrations/mcp/introduction": [
+      "source:browser-and-ui-verification",
       "entry:browserbase-mcp"
     ],
     "//docs.cline.bot/introduction/overview": [
@@ -27981,7 +29575,15 @@
     "//docs.cursor.com/context/rules": [
       "entry:cursor-agent"
     ],
+    "//docs.docker.com/ai/mcp-catalog-and-toolkit/catalog/": [
+      "source:secure-mcp-distribution"
+    ],
+    "//docs.docker.com/ai/mcp-catalog-and-toolkit/toolkit/": [
+      "source:secure-mcp-distribution"
+    ],
     "//docs.firecrawl.dev/mcp-server": [
+      "source:documentation-ingestion",
+      "source:platform-and-data-connectors",
       "entry:firecrawl-mcp"
     ],
     "//docs.github.com/en/copilot/concepts/about-copilot-coding-agent": [
@@ -27997,6 +29599,7 @@
       "entry:langgraph"
     ],
     "//docs.langfuse.com/": [
+      "source:evaluation-and-observability",
       "entry:langfuse"
     ],
     "//docs.letta.com/": [
@@ -28015,6 +29618,7 @@
       "entry:phaser"
     ],
     "//docs.ragas.io/": [
+      "source:evaluation-and-observability",
       "entry:ragas"
     ],
     "//docs.sentry.io/product/sentry-mcp/": [
@@ -28024,6 +29628,7 @@
       "entry:langsmith"
     ],
     "//docs.stripe.com/agents": [
+      "source:platform-and-data-connectors",
       "entry:stripe-agent-toolkit"
     ],
     "//docs.swarms.world/": [
@@ -28256,6 +29861,7 @@
       "entry:zep"
     ],
     "//github.com/github/github-mcp-server": [
+      "source:platform-and-data-connectors",
       "entry:github-mcp-server"
     ],
     "//github.com/google/adk-python": [
@@ -28351,6 +29957,7 @@
       "entry:microsoft-autogen"
     ],
     "//github.com/microsoft/playwright-mcp": [
+      "source:browser-and-ui-verification",
       "entry:playwright-mcp"
     ],
     "//github.com/microsoft/semantic-kernel": [
@@ -28366,6 +29973,7 @@
       "entry:model-context-protocol"
     ],
     "//github.com/modelcontextprotocol/registry": [
+      "source:mcp-core-and-registry",
       "entry:ai-com-mcp-registry"
     ],
     "//github.com/modelcontextprotocol/typescript-sdk": [
@@ -28469,6 +30077,7 @@
       "entry:inspect-ai"
     ],
     "//github.com/upstash/context7": [
+      "source:documentation-ingestion",
       "entry:context7-mcp"
     ],
     "//github.com/vboykocto/agentic-shelf": [
@@ -28487,6 +30096,7 @@
       "entry:ai-helixar-mcp"
     ],
     "//inspect.aisi.org.uk/": [
+      "source:evaluation-and-observability",
       "entry:inspect-ai"
     ],
     "//jeda.ai": [
@@ -28522,6 +30132,9 @@
     "//limitguard.ai": [
       "entry:ai-limitguard-api-trust-intelligence"
     ],
+    "//llmstxt.org/": [
+      "source:documentation-ingestion"
+    ],
     "//lona.agency": [
       "entry:agency-lona-trading"
     ],
@@ -28543,11 +30156,18 @@
     "//mcp.com.ai": [
       "entry:ai-com-mcp-lenny-rachitsky-podcast"
     ],
+    "//mcp.sentry.dev/": [
+      "source:platform-and-data-connectors"
+    ],
     "//microsoft.github.io/autogen/stable/": [
       "entry:microsoft-autogen"
     ],
     "//modelcontextprotocol.io/docs/getting-started/intro": [
+      "source:mcp-core-and-registry",
       "entry:model-context-protocol"
+    ],
+    "//modelcontextprotocol.io/llms.txt": [
+      "source:mcp-core-and-registry"
     ],
     "//moxt.ai": [
       "entry:ai-moxt-mcp-workspace"
@@ -28576,6 +30196,9 @@
     ],
     "//openarx.ai": [
       "entry:ai-openarx-openarx"
+    ],
+    "//opencode.ai/docs/": [
+      "source:coding-agent-clients"
     ],
     "//openmandate.ai": [
       "entry:ai-openmandate-mcp"
@@ -28663,6 +30286,9 @@
     ],
     "//rapier.rs/docs/": [
       "entry:rapier-js"
+    ],
+    "//registry.modelcontextprotocol.io/v0.1/servers": [
+      "source:mcp-core-and-registry"
     ],
     "//registry.modelcontextprotocol.io/v0.1/servers/ac.inference.sh": [
       "entry:ac-inference-sh-mcp"
@@ -29080,6 +30706,9 @@
       "entry:ai-com-mcp-petstore",
       "entry:ai-com-mcp-linkedin"
     ],
+    "//supabase.com/docs/guides/ai-tools/mcp": [
+      "source:platform-and-data-connectors"
+    ],
     "//swe-agent.com/latest/": [
       "entry:swe-agent"
     ],
@@ -29171,6 +30800,7 @@
       "entry:three-js"
     ],
     "//www.promptfoo.dev/docs/intro/": [
+      "source:evaluation-and-observability",
       "entry:promptfoo"
     ],
     "0-100": [
@@ -29719,8 +31349,11 @@
     "access": [
       "playbook:coding-agent-selection",
       "practice:model-and-provider-selection",
+      "source:mcp-core-and-registry",
       "entry:model-context-protocol",
+      "source:browser-and-ui-verification",
       "practice:mcp-server-selection",
+      "source:platform-and-data-connectors",
       "practice:security",
       "entry:ai-com-mcp-skills-search",
       "entry:ai-agentic-news-mcp",
@@ -29750,7 +31383,9 @@
       "entry:ai-nordax-mcp",
       "entry:ai-nothumansearch-search",
       "entry:sentry-mcp",
+      "prompt-pattern:source-intake",
       "entry:playwright-mcp",
+      "source:secure-mcp-distribution",
       "entry:supabase-mcp"
     ],
     "access.": [
@@ -29758,6 +31393,7 @@
     ],
     "accessibility": [
       "practice:browser-games",
+      "source:browser-and-ui-verification",
       "practice:frontend"
     ],
     "accessibility-first": [
@@ -29770,6 +31406,7 @@
       "practice:context-engineering"
     ],
     "account": [
+      "source:coding-agent-clients",
       "entry:ai-boolsai-scan"
     ],
     "accountant": [
@@ -29783,6 +31420,7 @@
       "prompt-pattern:agent-upgrade-plan"
     ],
     "across": [
+      "source:coding-agent-clients",
       "entry:model-context-protocol",
       "entry:google-agent2agent-protocol",
       "entry:semantic-kernel",
@@ -29819,6 +31457,7 @@
     "actions": [
       "practice:browser-games",
       "playbook:project-stack-review",
+      "source:coding-agent-clients",
       "practice:human-approval-and-durability",
       "entry:playwright-mcp",
       "entry:stripe-agent-toolkit"
@@ -29846,10 +31485,12 @@
       "prompt-pattern:prompt-enhancement"
     ],
     "actually": [
+      "source:evaluation-and-observability",
       "entry:three-js"
     ],
     "ad": [
-      "entry:ai-adadvisor-mcp-server"
+      "entry:ai-adadvisor-mcp-server",
+      "source:secure-mcp-distribution"
     ],
     "adadvisor": [
       "entry:ai-adadvisor-mcp-server"
@@ -29869,6 +31510,7 @@
       "prompt-pattern:code-simplification",
       "prompt-pattern:codex-implementation",
       "entry:matter-js",
+      "prompt-pattern:source-intake",
       "entry:phaser",
       "entry:pixijs",
       "entry:rapier-js",
@@ -29877,6 +31519,7 @@
       "entry:clude"
     ],
     "adding": [
+      "source:mcp-core-and-registry",
       "entry:anthropic-building-effective-agents",
       "prompt-pattern:agent-upgrade-plan"
     ],
@@ -29905,7 +31548,9 @@
       "entry:pixijs"
     ],
     "adoption": [
-      "playbook:mcp-adoption-review"
+      "playbook:mcp-adoption-review",
+      "practice:research-source-intake",
+      "source:secure-mcp-distribution"
     ],
     "ads": [
       "entry:ai-adadvisor-mcp-server",
@@ -29956,14 +31601,21 @@
       "practice:model-and-provider-selection",
       "playbook:project-stack-review",
       "playbook:prompt-upgrade",
+      "playbook:source-intake-review",
+      "practice:research-source-intake",
+      "source:coding-agent-clients",
+      "source:mcp-core-and-registry",
       "entry:model-context-protocol",
       "practice:agent-tooling",
       "entry:google-agent2agent-protocol",
+      "source:browser-and-ui-verification",
       "entry:codex-agents-md",
       "practice:coding-agents",
       "practice:context-engineering",
       "entry:crewai",
       "practice:data",
+      "source:documentation-ingestion",
+      "source:evaluation-and-observability",
       "entry:google-agent-development-kit",
       "practice:human-approval-and-durability",
       "entry:langgraph",
@@ -29972,6 +31624,7 @@
       "practice:observability-and-tracing",
       "entry:openai-agents-sdk",
       "practice:payments",
+      "source:platform-and-data-connectors",
       "entry:pydantic-ai",
       "practice:search",
       "entry:semantic-kernel",
@@ -30010,6 +31663,7 @@
       "entry:promptfoo",
       "entry:ragas",
       "entry:sentry-mcp",
+      "prompt-pattern:source-intake",
       "prompt-pattern:subagent-delegation",
       "entry:ai-mino-web-agent",
       "entry:agentops",
@@ -30048,6 +31702,9 @@
     "agent-callable": [
       "playbook:mcp-adoption-review",
       "practice:backend"
+    ],
+    "agent-client": [
+      "source:coding-agent-clients"
     ],
     "agent-commerce": [
       "entry:kaimo"
@@ -30417,13 +32074,17 @@
       "playbook:coding-agent-selection",
       "practice:model-and-provider-selection",
       "playbook:prompt-upgrade",
+      "practice:research-source-intake",
+      "source:coding-agent-clients",
       "entry:model-context-protocol",
       "entry:google-agent2agent-protocol",
       "practice:backend",
+      "source:browser-and-ui-verification",
       "practice:code-review",
       "entry:codex-agents-md",
       "practice:coding-agents",
       "practice:deployment",
+      "source:documentation-ingestion",
       "practice:evals",
       "entry:google-agent-development-kit",
       "entry:langgraph",
@@ -30622,6 +32283,7 @@
     ],
     "agents.": [
       "playbook:coding-agent-selection",
+      "source:coding-agent-clients",
       "practice:frontend",
       "entry:ai-agenticshelf-mcp",
       "entry:ai-agenttrust-mcp-server",
@@ -30635,6 +32297,7 @@
       "prompt-pattern:eval-design"
     ],
     "agents.md": [
+      "source:coding-agent-clients",
       "entry:codex-agents-md",
       "practice:context-engineering",
       "prompt-pattern:memory-policy"
@@ -31358,6 +33021,9 @@
       "playbook:prompt-upgrade",
       "practice:prompt-engineering"
     ],
+    "allowed-server": [
+      "source:secure-mcp-distribution"
+    ],
     "alone": [
       "entry:graphiti"
     ],
@@ -31385,9 +33051,15 @@
       "practice:code-simplification",
       "playbook:project-stack-review",
       "playbook:prompt-upgrade",
+      "playbook:source-intake-review",
+      "source:mcp-core-and-registry",
       "entry:model-context-protocol",
+      "source:browser-and-ui-verification",
+      "source:documentation-ingestion",
+      "source:evaluation-and-observability",
       "entry:google-agent-development-kit",
       "entry:microsoft-autogen",
+      "source:platform-and-data-connectors",
       "entry:semantic-kernel",
       "entry:ai-abmeter-abmeter",
       "entry:ac-tandem-docs-mcp",
@@ -31546,6 +33218,7 @@
       "entry:ai-com-mcp-petstore",
       "entry:promptfoo",
       "entry:ragas",
+      "prompt-pattern:source-intake",
       "entry:ai-mino-web-agent",
       "entry:agentops",
       "entry:ai-artidrop-artidrop",
@@ -31626,6 +33299,9 @@
     "anomalyarmor": [
       "entry:ai-anomalyarmor-armor-mcp"
     ],
+    "another": [
+      "source:platform-and-data-connectors"
+    ],
     "answer": [
       "prompt-pattern:prompt-enhancement",
       "entry:codebase-memory-mcp"
@@ -31689,6 +33365,7 @@
       "entry:ai-anzenna-anzenna"
     ],
     "api": [
+      "source:mcp-core-and-registry",
       "practice:backend",
       "entry:crewai",
       "entry:google-agent-development-kit",
@@ -31696,6 +33373,7 @@
       "entry:mastra",
       "entry:microsoft-autogen",
       "entry:openai-agents-sdk",
+      "source:platform-and-data-connectors",
       "entry:pydantic-ai",
       "entry:semantic-kernel",
       "entry:vercel-ai-sdk",
@@ -31752,6 +33430,7 @@
       "entry:context7-mcp",
       "entry:ai-com-mcp-hapi-mcp",
       "prompt-pattern:code-simplification",
+      "prompt-pattern:source-intake",
       "entry:firecrawl-mcp",
       "entry:playcanvas-engine",
       "entry:letta",
@@ -31763,6 +33442,7 @@
     "app": [
       "playbook:coding-agent-selection",
       "practice:model-and-provider-selection",
+      "source:browser-and-ui-verification",
       "entry:semantic-kernel",
       "entry:ai-appdeploy-deploy-app",
       "prompt-pattern:ui-build",
@@ -31829,6 +33509,7 @@
       "playbook:coding-agent-selection",
       "practice:model-and-provider-selection",
       "playbook:prompt-upgrade",
+      "source:coding-agent-clients",
       "practice:coding-agents",
       "practice:human-approval-and-durability",
       "entry:langgraph",
@@ -31843,14 +33524,19 @@
       "prompt-pattern:agent-upgrade-plan"
     ],
     "approvals": [
+      "source:coding-agent-clients",
       "practice:human-approval-and-durability",
       "prompt-pattern:agent-upgrade-plan",
       "entry:cline"
+    ],
+    "approved": [
+      "source:secure-mcp-distribution"
     ],
     "approved.": [
       "prompt-pattern:memory-policy"
     ],
     "apps": [
+      "source:browser-and-ui-verification",
       "entry:mastra",
       "entry:pydantic-ai",
       "entry:vercel-ai-sdk",
@@ -31908,6 +33594,7 @@
       "entry:openai-agents-sdk"
     ],
     "artifact": [
+      "playbook:source-intake-review",
       "prompt-pattern:prompt-enhancement"
     ],
     "artifacts": [
@@ -31920,6 +33607,8 @@
     "as": [
       "practice:code-simplification",
       "practice:browser-games",
+      "playbook:source-intake-review",
+      "practice:research-source-intake",
       "practice:agent-tooling",
       "entry:google-agent2agent-protocol",
       "practice:context-engineering",
@@ -32293,6 +33982,7 @@
       "entry:ai-auteng-mcp"
     ],
     "auth": [
+      "source:mcp-core-and-registry",
       "practice:backend",
       "entry:sentry-mcp"
     ],
@@ -32318,6 +34008,7 @@
     ],
     "automation": [
       "playbook:coding-agent-selection",
+      "source:browser-and-ui-verification",
       "entry:ai-imboard-dossier",
       "entry:playwright-mcp",
       "entry:browserbase-mcp",
@@ -32360,10 +34051,12 @@
       "entry:ai-auxen-auxen"
     ],
     "availability": [
+      "source:documentation-ingestion",
       "prompt-pattern:provider-selection"
     ],
     "available": [
-      "practice:code-review"
+      "practice:code-review",
+      "source:platform-and-data-connectors"
     ],
     "available.": [
       "entry:firecrawl-mcp"
@@ -32451,6 +34144,7 @@
     ],
     "be": [
       "practice:browser-games",
+      "source:coding-agent-clients",
       "entry:model-context-protocol",
       "entry:langgraph",
       "practice:mcp-server-selection",
@@ -32479,7 +34173,8 @@
     ],
     "become": [
       "playbook:prompt-upgrade",
-      "practice:security"
+      "practice:security",
+      "prompt-pattern:source-intake"
     ],
     "been": [
       "entry:model-context-protocol",
@@ -32702,11 +34397,18 @@
       "entry:kaimo",
       "entry:openai-swarm"
     ],
+    "before/after": [
+      "playbook:source-intake-review",
+      "practice:research-source-intake",
+      "source:evaluation-and-observability"
+    ],
     "behavior": [
       "practice:code-simplification",
       "practice:browser-games",
       "playbook:mcp-adoption-review",
+      "source:coding-agent-clients",
       "entry:model-context-protocol",
+      "source:browser-and-ui-verification",
       "entry:codex-agents-md",
       "entry:langgraph",
       "entry:ai-abmeter-abmeter",
@@ -32881,6 +34583,7 @@
     ],
     "behavior.": [
       "practice:browser-games",
+      "source:mcp-core-and-registry",
       "entry:google-agent2agent-protocol",
       "entry:crewai",
       "entry:google-agent-development-kit",
@@ -33104,21 +34807,30 @@
       "prompt-pattern:agent-upgrade-plan"
     ],
     "belongs": [
+      "playbook:source-intake-review",
       "prompt-pattern:memory-policy"
     ],
     "benchmark": [
       "practice:model-and-provider-selection",
+      "playbook:source-intake-review",
+      "practice:research-source-intake",
       "practice:evals",
+      "prompt-pattern:source-intake",
       "entry:swe-agent",
       "entry:covenant-research"
     ],
     "benchmark-not-independent": [
       "entry:covenant-research"
     ],
+    "benchmark.": [
+      "playbook:source-intake-review",
+      "source:evaluation-and-observability"
+    ],
     "benchmarking": [
       "entry:covenant-research"
     ],
     "benchmarks": [
+      "source:evaluation-and-observability",
       "entry:inspect-ai",
       "entry:covenant-research"
     ],
@@ -33142,14 +34854,20 @@
     ],
     "best-practice": [
       "playbook:project-stack-review",
-      "entry:vnem-mcp"
+      "playbook:source-intake-review",
+      "entry:vnem-mcp",
+      "prompt-pattern:source-intake"
     ],
     "best-practices": [
       "entry:anthropic-building-effective-agents",
       "entry:vnem-mcp"
     ],
+    "beta": [
+      "source:secure-mcp-distribution"
+    ],
     "better": [
       "playbook:project-stack-review",
+      "practice:research-source-intake",
       "practice:frontend",
       "practice:search",
       "prompt-pattern:agent-upgrade-plan",
@@ -33177,6 +34895,9 @@
     ],
     "bidirectional": [
       "entry:ai-agentrapay-agentra"
+    ],
+    "billing": [
+      "source:platform-and-data-connectors"
     ],
     "bills": [
       "entry:ai-gavelin-mcp"
@@ -33405,6 +35126,7 @@
       "practice:backend",
       "entry:codex-agents-md",
       "practice:coding-agents",
+      "source:documentation-ingestion",
       "entry:pydantic-ai",
       "prompt-pattern:provider-selection",
       "entry:clude"
@@ -33445,6 +35167,7 @@
     ],
     "broad": [
       "practice:code-simplification",
+      "source:documentation-ingestion",
       "entry:anthropic-multi-agent-research-system"
     ],
     "broader": [
@@ -33454,6 +35177,7 @@
     ],
     "browse": [
       "practice:mcp-server-selection",
+      "source:platform-and-data-connectors",
       "entry:ai-buywhere-catalog-api",
       "entry:ac-inference-sh-mcp",
       "entry:ai-memestack-mcp",
@@ -33461,6 +35185,8 @@
     ],
     "browser": [
       "practice:browser-games",
+      "source:coding-agent-clients",
+      "source:browser-and-ui-verification",
       "prompt-pattern:ui-build",
       "entry:matter-js",
       "prompt-pattern:mcp-selection",
@@ -33483,6 +35209,9 @@
       "entry:browserbase-mcp",
       "entry:cline",
       "entry:openhands"
+    ],
+    "browser-and-ui-verification": [
+      "source:browser-and-ui-verification"
     ],
     "browser-based": [
       "entry:playcanvas-engine",
@@ -33523,7 +35252,11 @@
     "browser.": [
       "entry:three-js"
     ],
+    "browser/network": [
+      "source:browser-and-ui-verification"
+    ],
     "browserbase": [
+      "source:browser-and-ui-verification",
       "practice:mcp-server-selection",
       "entry:browserbase-mcp"
     ],
@@ -33588,6 +35321,7 @@
       "entry:zep"
     ],
     "building": [
+      "source:browser-and-ui-verification",
       "entry:google-agent-development-kit",
       "entry:mastra",
       "entry:microsoft-autogen",
@@ -33627,6 +35361,7 @@
       "entry:ai-bezal-local-commerce"
     ],
     "but": [
+      "practice:research-source-intake",
       "entry:matter-js",
       "entry:covenant-research",
       "entry:kaimo"
@@ -33670,6 +35405,9 @@
       "entry:ai-com-mcp-linkedin",
       "entry:phaser"
     ],
+    "bypass": [
+      "source:coding-agent-clients"
+    ],
     "byteray": [
       "entry:ai-byteray-byteray-mcp"
     ],
@@ -33682,6 +35420,9 @@
     ],
     "cache": [
       "entry:codebase-memory-mcp"
+    ],
+    "cadence": [
+      "source:secure-mcp-distribution"
     ],
     "cadence.": [
       "prompt-pattern:memory-policy"
@@ -33768,7 +35509,14 @@
     ],
     "candidate": [
       "playbook:mcp-adoption-review",
-      "playbook:project-stack-review"
+      "playbook:project-stack-review",
+      "playbook:source-intake-review"
+    ],
+    "candidate.": [
+      "prompt-pattern:source-intake"
+    ],
+    "candidates": [
+      "practice:research-source-intake"
     ],
     "cannot": [
       "entry:model-context-protocol",
@@ -33975,10 +35723,13 @@
       "entry:clude"
     ],
     "canonical": [
+      "playbook:source-intake-review",
+      "practice:research-source-intake",
       "entry:model-context-protocol",
       "entry:google-agent2agent-protocol",
       "entry:codex-agents-md",
       "entry:crewai",
+      "source:documentation-ingestion",
       "entry:google-agent-development-kit",
       "entry:langgraph",
       "entry:mastra",
@@ -34078,6 +35829,7 @@
       "entry:promptfoo",
       "entry:ragas",
       "entry:sentry-mcp",
+      "prompt-pattern:source-intake",
       "entry:agentops",
       "entry:aider",
       "entry:babylon-js",
@@ -34142,6 +35894,7 @@
     ],
     "capabilities": [
       "practice:agent-tooling",
+      "source:browser-and-ui-verification",
       "entry:ai-cirra-salesforce-mcp",
       "entry:ai-nexustoken-nexustoken-sdk"
     ],
@@ -34150,10 +35903,12 @@
       "entry:ai-exa-exa"
     ],
     "capability": [
+      "source:mcp-core-and-registry",
       "entry:inspect-ai",
       "prompt-pattern:agent-upgrade-plan"
     ],
     "capture": [
+      "practice:research-source-intake",
       "practice:observability-and-tracing"
     ],
     "captures": [
@@ -34175,7 +35930,11 @@
       "entry:ai-agenticshelf-mcp",
       "entry:ai-buywhere-catalog-api",
       "entry:ai-baselight-baselight",
-      "entry:ai-agenticshelf-graffeo"
+      "entry:ai-agenticshelf-graffeo",
+      "source:secure-mcp-distribution"
+    ],
+    "catalogs": [
+      "source:secure-mcp-distribution"
     ],
     "categories": [
       "entry:ai-obaron-aeo"
@@ -34226,10 +35985,12 @@
       "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:code-simplification",
       "prompt-pattern:codex-implementation",
-      "prompt-pattern:prompt-enhancement"
+      "prompt-pattern:prompt-enhancement",
+      "prompt-pattern:source-intake"
     ],
     "change.": [
       "practice:code-simplification",
+      "playbook:source-intake-review",
       "practice:evals",
       "practice:prompt-engineering",
       "prompt-pattern:memory-policy"
@@ -34242,6 +36003,7 @@
     ],
     "changes": [
       "playbook:prompt-upgrade",
+      "source:mcp-core-and-registry",
       "entry:inspect-ai",
       "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:code-review",
@@ -34288,6 +36050,8 @@
       "practice:deployment"
     ],
     "check": [
+      "playbook:source-intake-review",
+      "practice:research-source-intake",
       "entry:ai-clarid-compliance",
       "entry:ai-alpic-mcp-alpic-mcp",
       "prompt-pattern:eval-design",
@@ -34313,6 +36077,9 @@
       "entry:codebase-memory-mcp",
       "entry:covenant-research",
       "entry:kaimo"
+    ],
+    "checking": [
+      "source:browser-and-ui-verification"
     ],
     "checkout": [
       "entry:kaimo"
@@ -34350,7 +36117,11 @@
       "entry:ai-meacheal-mrc-data"
     ],
     "choice": [
+      "practice:research-source-intake",
       "entry:continue-dev"
+    ],
+    "choice.": [
+      "source:evaluation-and-observability"
     ],
     "choices": [
       "playbook:project-stack-review",
@@ -34361,6 +36132,7 @@
       "playbook:coding-agent-selection",
       "playbook:mcp-adoption-review",
       "practice:model-and-provider-selection",
+      "playbook:source-intake-review",
       "entry:anthropic-building-effective-agents",
       "entry:vnem-mcp",
       "prompt-pattern:mcp-selection",
@@ -34368,6 +36140,7 @@
       "entry:rapier-js"
     ],
     "choosing": [
+      "source:mcp-core-and-registry",
       "practice:evals",
       "entry:vnem-mcp",
       "prompt-pattern:mcp-selection"
@@ -34401,7 +36174,12 @@
     "city/market/founder.": [
       "entry:ai-boolsai-directory"
     ],
+    "claim": [
+      "source:browser-and-ui-verification",
+      "source:evaluation-and-observability"
+    ],
     "claims": [
+      "practice:research-source-intake",
       "entry:codebase-memory-mcp",
       "entry:covenant-research"
     ],
@@ -34415,10 +36193,14 @@
     "classification.": [
       "entry:ai-dragoneye-mcp"
     ],
+    "classify": [
+      "playbook:source-intake-review"
+    ],
     "claude": [
       "playbook:coding-agent-selection",
       "practice:model-and-provider-selection",
       "playbook:prompt-upgrade",
+      "source:coding-agent-clients",
       "entry:model-context-protocol",
       "practice:coding-agents",
       "practice:context-engineering",
@@ -34606,6 +36388,7 @@
       "entry:claude-code-memory"
     ],
     "claude.md": [
+      "source:coding-agent-clients",
       "practice:context-engineering",
       "entry:claude-code-memory"
     ],
@@ -34616,6 +36399,7 @@
       "entry:claude-code-subagents"
     ],
     "clear": [
+      "playbook:source-intake-review",
       "entry:crewai",
       "practice:deployment",
       "practice:payments",
@@ -34636,6 +36420,7 @@
       "prompt-pattern:code-review"
     ],
     "cli": [
+      "source:documentation-ingestion",
       "entry:promptfoo",
       "entry:ripgrep",
       "entry:ugrep",
@@ -34650,7 +36435,13 @@
     ],
     "client": [
       "playbook:mcp-adoption-review",
+      "playbook:source-intake-review",
+      "source:coding-agent-clients",
+      "source:browser-and-ui-verification",
       "practice:mcp-server-selection"
+    ],
+    "client-specific": [
+      "source:coding-agent-clients"
     ],
     "client.": [
       "entry:ai-getperspective-mcp",
@@ -34662,6 +36453,7 @@
       "practice:backend"
     ],
     "clients.": [
+      "source:coding-agent-clients",
       "entry:model-context-protocol",
       "entry:ai-dreamlit-mcp",
       "entry:github-mcp-server",
@@ -34729,6 +36521,7 @@
     "code.": [
       "practice:code-simplification",
       "playbook:project-stack-review",
+      "source:browser-and-ui-verification",
       "prompt-pattern:bug-debug",
       "entry:playwright-mcp"
     ],
@@ -34760,6 +36553,7 @@
       "playbook:coding-agent-selection",
       "practice:model-and-provider-selection",
       "playbook:prompt-upgrade",
+      "source:coding-agent-clients",
       "entry:codex-agents-md",
       "practice:coding-agents",
       "practice:prompt-engineering",
@@ -34778,8 +36572,10 @@
     "coding": [
       "playbook:coding-agent-selection",
       "playbook:prompt-upgrade",
+      "source:coding-agent-clients",
       "entry:codex-agents-md",
       "practice:coding-agents",
+      "source:documentation-ingestion",
       "entry:context7-mcp",
       "entry:ai-kawacode-mcp",
       "entry:vnem-mcp",
@@ -34817,6 +36613,9 @@
       "entry:cursor-agent",
       "entry:github-copilot-coding-agent",
       "entry:openhands"
+    ],
+    "coding-agent-clients": [
+      "source:coding-agent-clients"
     ],
     "coding-agents": [
       "entry:ripgrep",
@@ -34923,6 +36722,7 @@
     ],
     "compact": [
       "playbook:prompt-upgrade",
+      "practice:research-source-intake",
       "entry:openai-agents-sdk",
       "prompt-pattern:prompt-enhancement",
       "entry:jscpd"
@@ -34954,6 +36754,7 @@
     ],
     "comparing": [
       "playbook:coding-agent-selection",
+      "source:mcp-core-and-registry",
       "prompt-pattern:provider-selection"
     ],
     "comparison": [
@@ -35189,6 +36990,9 @@
     "computation": [
       "entry:ai-lucasandersen-mlp-tax"
     ],
+    "concerns.": [
+      "source:secure-mcp-distribution"
+    ],
     "concierge": [
       "entry:ai-getperspective-mcp"
     ],
@@ -35203,6 +37007,7 @@
       "entry:swarms"
     ],
     "confidence": [
+      "practice:research-source-intake",
       "practice:search"
     ],
     "confidence.": [
@@ -35210,6 +37015,7 @@
     ],
     "config": [
       "playbook:project-stack-review",
+      "source:coding-agent-clients",
       "prompt-pattern:agent-upgrade-plan"
     ],
     "configs": [
@@ -35220,6 +37026,7 @@
       "entry:continue-dev"
     ],
     "configuration": [
+      "source:coding-agent-clients",
       "entry:continue-dev"
     ],
     "configurations": [
@@ -35262,6 +37069,7 @@
     ],
     "connector": [
       "playbook:mcp-adoption-review",
+      "source:platform-and-data-connectors",
       "prompt-pattern:mcp-selection"
     ],
     "connectors": [
@@ -35309,7 +37117,18 @@
     "contacts.": [
       "entry:ai-datamerge-mcp"
     ],
+    "container": [
+      "source:secure-mcp-distribution"
+    ],
+    "containerized": [
+      "source:secure-mcp-distribution"
+    ],
+    "containing": [
+      "source:evaluation-and-observability"
+    ],
     "content": [
+      "source:documentation-ingestion",
+      "source:platform-and-data-connectors",
       "entry:ai-autorfp-mcp",
       "entry:ai-marketcore-mcp",
       "entry:ai-dynsoft-sac",
@@ -35327,6 +37146,7 @@
       "practice:coding-agents",
       "practice:context-engineering",
       "practice:data",
+      "source:documentation-ingestion",
       "practice:mcp-server-selection",
       "practice:prompt-engineering",
       "entry:ai-autoblocks-contextlayer-mcp",
@@ -35344,6 +37164,7 @@
       "prompt-pattern:prompt-enhancement",
       "prompt-pattern:memory-policy",
       "entry:sentry-mcp",
+      "prompt-pattern:source-intake",
       "entry:claude-code-memory",
       "entry:continue-dev",
       "entry:github-mcp-server",
@@ -35363,6 +37184,7 @@
       "entry:claude-code-memory"
     ],
     "context.": [
+      "source:coding-agent-clients",
       "practice:payments",
       "prompt-pattern:memory-policy"
     ],
@@ -35460,6 +37282,9 @@
       "practice:subagents-and-multi-agent",
       "prompt-pattern:subagent-delegation"
     ],
+    "copied": [
+      "source:documentation-ingestion"
+    ],
     "copilot": [
       "practice:coding-agents",
       "entry:github-copilot-coding-agent"
@@ -35467,10 +37292,18 @@
     "copilot-style": [
       "playbook:coding-agent-selection"
     ],
+    "copy": [
+      "playbook:source-intake-review"
+    ],
     "copy-paste": [
       "entry:jscpd"
     ],
+    "copying": [
+      "practice:research-source-intake",
+      "source:documentation-ingestion"
+    ],
     "core": [
+      "source:mcp-core-and-registry",
       "prompt-pattern:ui-build",
       "entry:three-js"
     ],
@@ -35486,6 +37319,7 @@
     "cost": [
       "playbook:coding-agent-selection",
       "practice:model-and-provider-selection",
+      "source:evaluation-and-observability",
       "practice:observability-and-tracing",
       "entry:ai-delega-aws-pricing-calculator",
       "prompt-pattern:provider-selection",
@@ -35494,6 +37328,9 @@
     "costs": [
       "practice:observability-and-tracing",
       "entry:agentops"
+    ],
+    "could": [
+      "prompt-pattern:source-intake"
     ],
     "country": [
       "entry:ai-dataforb2b-dataforb2b"
@@ -35542,6 +37379,9 @@
     "creators.": [
       "entry:ai-com-mcp-lenny-rachitsky-podcast"
     ],
+    "credential": [
+      "source:browser-and-ui-verification"
+    ],
     "credentials": [
       "entry:google-agent-development-kit"
     ],
@@ -35571,13 +37411,16 @@
       "prompt-pattern:eval-design",
       "prompt-pattern:prompt-enhancement",
       "prompt-pattern:provider-selection",
-      "prompt-pattern:research"
+      "prompt-pattern:research",
+      "prompt-pattern:source-intake"
     ],
     "criteria.": [
       "practice:prompt-engineering",
       "prompt-pattern:research"
     ],
     "critical": [
+      "source:coding-agent-clients",
+      "source:mcp-core-and-registry",
       "practice:subagents-and-multi-agent"
     ],
     "critical-path": [
@@ -35636,6 +37479,7 @@
       "entry:firecrawl-mcp",
       "entry:github-mcp-server",
       "entry:playwright-mcp",
+      "source:secure-mcp-distribution",
       "entry:browserbase-mcp",
       "entry:claude-code-subagents",
       "entry:graphiti",
@@ -35658,11 +37502,13 @@
       "practice:code-simplification",
       "playbook:project-stack-review",
       "playbook:prompt-upgrade",
+      "practice:research-source-intake",
       "entry:model-context-protocol",
       "entry:google-agent2agent-protocol",
       "practice:code-review",
       "entry:codex-agents-md",
       "entry:crewai",
+      "source:documentation-ingestion",
       "entry:google-agent-development-kit",
       "entry:langgraph",
       "entry:mastra",
@@ -35884,6 +37730,9 @@
       "entry:covenant-research",
       "entry:kaimo"
     ],
+    "current-docs": [
+      "source:documentation-ingestion"
+    ],
     "cursor": [
       "entry:model-context-protocol",
       "practice:coding-agents",
@@ -36064,6 +37913,7 @@
       "entry:phaser",
       "entry:playcanvas-engine",
       "entry:rapier-js",
+      "source:secure-mcp-distribution",
       "entry:three-js",
       "entry:ast-grep"
     ],
@@ -36088,6 +37938,7 @@
       "entry:mastra",
       "entry:microsoft-autogen",
       "entry:openai-agents-sdk",
+      "source:platform-and-data-connectors",
       "entry:pydantic-ai",
       "practice:security",
       "entry:semantic-kernel",
@@ -36302,6 +38153,7 @@
     "database": [
       "practice:backend",
       "practice:data",
+      "source:platform-and-data-connectors",
       "entry:ai-haymon-database",
       "entry:ai-haymon-dbmcp",
       "entry:llamaindex-agents",
@@ -36319,6 +38171,7 @@
     ],
     "databases": [
       "practice:mcp-server-selection",
+      "source:platform-and-data-connectors",
       "practice:security",
       "entry:supabase-mcp"
     ],
@@ -36369,6 +38222,7 @@
       "entry:openhands"
     ],
     "debugging": [
+      "source:browser-and-ui-verification",
       "entry:arize-phoenix",
       "prompt-pattern:bug-debug",
       "entry:sentry-mcp",
@@ -36380,23 +38234,32 @@
     ],
     "decide": [
       "entry:anthropic-building-effective-agents",
+      "prompt-pattern:source-intake",
       "prompt-pattern:subagent-delegation"
     ],
     "deciding": [
+      "playbook:source-intake-review",
       "entry:anthropic-multi-agent-research-system",
       "prompt-pattern:memory-policy",
       "entry:jscpd"
     ],
     "decision": [
       "playbook:project-stack-review",
+      "playbook:source-intake-review",
+      "practice:research-source-intake",
       "prompt-pattern:provider-selection",
-      "prompt-pattern:research"
+      "prompt-pattern:research",
+      "prompt-pattern:source-intake"
     ],
     "decision-making.": [
       "entry:ai-childpsychiatry-library"
     ],
+    "decision.": [
+      "source:evaluation-and-observability"
+    ],
     "decisions": [
       "playbook:prompt-upgrade",
+      "practice:research-source-intake",
       "entry:anthropic-building-effective-agents",
       "entry:ai-kawacode-mcp"
     ],
@@ -36494,12 +38357,16 @@
       "entry:knip"
     ],
     "dependency": [
-      "practice:code-review"
+      "practice:code-review",
+      "source:secure-mcp-distribution"
     ],
     "dependency-analysis": [
       "entry:knip"
     ],
     "depends": [
+      "source:coding-agent-clients",
+      "source:mcp-core-and-registry",
+      "source:browser-and-ui-verification",
       "entry:ragas"
     ],
     "deploy": [
@@ -36521,7 +38388,8 @@
       "entry:ai-borealhost-mcp",
       "entry:ai-alpic-mcp-alpic-mcp",
       "entry:ai-appdeploy-deploy-app",
-      "prompt-pattern:provider-selection"
+      "prompt-pattern:provider-selection",
+      "source:secure-mcp-distribution"
     ],
     "deployments": [
       "practice:human-approval-and-durability"
@@ -36550,6 +38418,7 @@
       "entry:codex-agents-md"
     ],
     "design": [
+      "practice:research-source-intake",
       "entry:google-agent2agent-protocol",
       "practice:frontend",
       "practice:human-approval-and-durability",
@@ -36801,6 +38670,9 @@
     "diagrams.": [
       "entry:ai-auteng-mcp"
     ],
+    "diff.": [
+      "practice:research-source-intake"
+    ],
     "different": [
       "entry:google-agent2agent-protocol"
     ],
@@ -36849,6 +38721,7 @@
       "entry:ai-geodesiclabs-governance-platform"
     ],
     "discovery": [
+      "practice:research-source-intake",
       "entry:google-agent2agent-protocol",
       "entry:microsoft-autogen",
       "practice:security",
@@ -37011,14 +38884,23 @@
       "entry:github-copilot-coding-agent",
       "entry:openhands"
     ],
+    "discovery.": [
+      "source:mcp-core-and-registry"
+    ],
     "distills": [
       "entry:anthropic-building-effective-agents"
     ],
     "distinct": [
       "entry:rapier-js"
     ],
+    "distinguish": [
+      "source:secure-mcp-distribution"
+    ],
     "distributed": [
       "entry:microsoft-autogen"
+    ],
+    "distribution": [
+      "source:secure-mcp-distribution"
     ],
     "dm": [
       "entry:ai-offerhopper-mcp-shopping-optimizer"
@@ -37028,6 +38910,8 @@
     ],
     "do": [
       "playbook:mcp-adoption-review",
+      "playbook:source-intake-review",
+      "source:evaluation-and-observability",
       "practice:security",
       "practice:subagents-and-multi-agent",
       "prompt-pattern:code-simplification",
@@ -37035,16 +38919,26 @@
       "prompt-pattern:mcp-selection",
       "prompt-pattern:subagent-delegation"
     ],
+    "doc": [
+      "playbook:source-intake-review",
+      "source:documentation-ingestion"
+    ],
     "docs": [
+      "playbook:source-intake-review",
+      "practice:research-source-intake",
+      "source:coding-agent-clients",
+      "source:mcp-core-and-registry",
       "entry:model-context-protocol",
       "entry:google-agent2agent-protocol",
       "entry:codex-agents-md",
       "entry:crewai",
+      "source:documentation-ingestion",
       "entry:google-agent-development-kit",
       "entry:langgraph",
       "entry:mastra",
       "entry:microsoft-autogen",
       "entry:openai-agents-sdk",
+      "source:platform-and-data-connectors",
       "entry:pydantic-ai",
       "entry:semantic-kernel",
       "entry:vercel-ai-sdk",
@@ -37064,6 +38958,7 @@
       "entry:promptfoo",
       "entry:ragas",
       "entry:sentry-mcp",
+      "prompt-pattern:source-intake",
       "entry:agentops",
       "entry:aider",
       "entry:babylon-js",
@@ -37106,10 +39001,14 @@
     "docs-not-yet-public": [
       "entry:kaimo"
     ],
+    "docs-specific": [
+      "source:documentation-ingestion"
+    ],
     "docs.": [
       "entry:context7-mcp"
     ],
     "document": [
+      "practice:research-source-intake",
       "entry:codex-agents-md",
       "entry:ai-auteng-docs",
       "entry:ai-auteng-mcp",
@@ -37118,9 +39017,17 @@
       "entry:jscpd"
     ],
     "documentation": [
+      "playbook:source-intake-review",
+      "source:documentation-ingestion",
       "entry:context7-mcp",
       "entry:ai-complyhat-compliance",
       "entry:kaimo"
+    ],
+    "documentation-ingestion": [
+      "source:documentation-ingestion"
+    ],
+    "documentation.": [
+      "source:documentation-ingestion"
     ],
     "documented": [
       "entry:babylon-js"
@@ -37171,6 +39078,7 @@
       "entry:ai-dreamlit-mcp"
     ],
     "drift": [
+      "source:coding-agent-clients",
       "entry:ai-anomalyarmor-armor-mcp"
     ],
     "drillr": [
@@ -37185,6 +39093,9 @@
     ],
     "dspy": [
       "entry:dspy"
+    ],
+    "dump": [
+      "practice:research-source-intake"
     ],
     "duplicate": [
       "prompt-pattern:code-simplification"
@@ -37245,6 +39156,7 @@
       "entry:ai-autonomad-computeback"
     ],
     "easier": [
+      "source:coding-agent-clients",
       "entry:matter-js",
       "entry:playcanvas-engine"
     ],
@@ -37278,6 +39190,7 @@
       "entry:openhands"
     ],
     "editing.": [
+      "practice:research-source-intake",
       "prompt-pattern:codex-implementation"
     ],
     "editor": [
@@ -37313,6 +39226,7 @@
     ],
     "effects": [
       "practice:human-approval-and-durability",
+      "source:platform-and-data-connectors",
       "entry:ai-ludo-game-assets"
     ],
     "effects.": [
@@ -37320,6 +39234,9 @@
     ],
     "effort": [
       "prompt-pattern:research"
+    ],
+    "elicitation": [
+      "source:mcp-core-and-registry"
     ],
     "emails": [
       "entry:ai-fiber-mcp",
@@ -37374,6 +39291,7 @@
     ],
     "engineering": [
       "practice:context-engineering",
+      "source:evaluation-and-observability",
       "practice:prompt-engineering",
       "entry:ai-anomalyarmor-armor-mcp",
       "entry:openai-prompt-engineering-guide",
@@ -37405,6 +39323,7 @@
       "practice:data",
       "practice:deployment",
       "entry:matter-js",
+      "prompt-pattern:source-intake",
       "entry:aider",
       "entry:graphiti"
     ],
@@ -37441,6 +39360,15 @@
     "entries": [
       "playbook:project-stack-review",
       "entry:vnem-mcp"
+    ],
+    "entries.": [
+      "playbook:source-intake-review"
+    ],
+    "entry": [
+      "playbook:source-intake-review",
+      "source:mcp-core-and-registry",
+      "source:platform-and-data-connectors",
+      "prompt-pattern:source-intake"
     ],
     "enum": [
       "entry:knip"
@@ -37500,6 +39428,9 @@
     ],
     "eval": [
       "practice:model-and-provider-selection",
+      "playbook:source-intake-review",
+      "practice:research-source-intake",
+      "source:evaluation-and-observability",
       "practice:observability-and-tracing",
       "entry:dspy",
       "entry:inspect-ai",
@@ -37510,7 +39441,11 @@
       "entry:langfuse",
       "prompt-pattern:provider-selection",
       "entry:promptfoo",
-      "entry:ragas"
+      "entry:ragas",
+      "prompt-pattern:source-intake"
+    ],
+    "eval/observability": [
+      "playbook:source-intake-review"
     ],
     "evals": [
       "playbook:coding-agent-selection",
@@ -37546,6 +39481,7 @@
       "entry:covenant-research"
     ],
     "evaluation": [
+      "source:evaluation-and-observability",
       "entry:google-agent-development-kit",
       "practice:observability-and-tracing",
       "entry:ai-childadhd-library",
@@ -37555,6 +39491,9 @@
       "entry:langfuse",
       "entry:ragas",
       "entry:langsmith"
+    ],
+    "evaluation-and-observability": [
+      "source:evaluation-and-observability"
     ],
     "evaluation-driven": [
       "entry:dspy"
@@ -37589,10 +39528,13 @@
     "evidence": [
       "practice:code-simplification",
       "practice:model-and-provider-selection",
+      "playbook:source-intake-review",
+      "practice:research-source-intake",
       "practice:evals",
       "entry:inspect-ai",
       "prompt-pattern:code-simplification",
       "entry:sentry-mcp",
+      "prompt-pattern:source-intake",
       "entry:playwright-mcp",
       "entry:knip"
     ],
@@ -37637,6 +39579,9 @@
     ],
     "excalibur.js": [
       "entry:excalibur-js"
+    ],
+    "exceeds": [
+      "source:documentation-ingestion"
     ],
     "exchange": [
       "entry:google-agent2agent-protocol"
@@ -37705,6 +39650,7 @@
     ],
     "explain": [
       "practice:coding-agents",
+      "source:evaluation-and-observability",
       "prompt-pattern:bug-debug"
     ],
     "explicit": [
@@ -37714,6 +39660,7 @@
       "practice:human-approval-and-durability",
       "entry:langgraph",
       "practice:payments",
+      "source:platform-and-data-connectors",
       "practice:search",
       "practice:security",
       "prompt-pattern:prompt-enhancement",
@@ -37770,6 +39717,9 @@
     ],
     "exposing": [
       "entry:vnem-mcp"
+    ],
+    "exposure": [
+      "source:browser-and-ui-verification"
     ],
     "extend": [
       "entry:ai-abmeter-abmeter",
@@ -37929,8 +39879,10 @@
     ],
     "external": [
       "playbook:project-stack-review",
+      "practice:research-source-intake",
       "entry:model-context-protocol",
       "practice:human-approval-and-durability",
+      "source:platform-and-data-connectors",
       "entry:ai-abmeter-abmeter",
       "entry:ac-tandem-docs-mcp",
       "entry:agency-lona-trading",
@@ -38080,7 +40032,8 @@
       "entry:ai-artidrop-artidrop",
       "entry:ai-clarid-hmda",
       "entry:ai-com-mcp-linkedin",
-      "entry:ai-moxt-mcp-workspace"
+      "entry:ai-moxt-mcp-workspace",
+      "source:secure-mcp-distribution"
     ],
     "extract": [
       "entry:ai-filegraph-document-processing",
@@ -38090,6 +40043,7 @@
       "entry:mem0"
     ],
     "extraction": [
+      "source:platform-and-data-connectors",
       "entry:firecrawl-mcp",
       "entry:browserbase-mcp"
     ],
@@ -38121,6 +40075,9 @@
       "prompt-pattern:eval-design",
       "entry:sentry-mcp",
       "entry:agentops"
+    ],
+    "fair-use": [
+      "source:documentation-ingestion"
     ],
     "false": [
       "entry:knip"
@@ -38162,12 +40119,14 @@
     ],
     "features": [
       "practice:browser-games",
+      "source:coding-agent-clients",
       "entry:semantic-kernel",
       "prompt-pattern:code-simplification",
       "entry:ai-gethal-mcp",
       "entry:babylon-js"
     ],
     "feed": [
+      "playbook:source-intake-review",
       "entry:ai-abmeter-abmeter",
       "entry:ac-tandem-docs-mcp",
       "entry:agency-lona-trading",
@@ -38313,6 +40272,7 @@
       "entry:ai-com-mcp-openai-tools",
       "entry:ai-openmandate-mcp",
       "entry:ai-com-mcp-petstore",
+      "prompt-pattern:source-intake",
       "entry:ai-mino-web-agent",
       "entry:ai-artidrop-artidrop",
       "entry:ai-clarid-hmda",
@@ -38335,6 +40295,9 @@
     ],
     "fetch": [
       "entry:context7-mcp"
+    ],
+    "fetched": [
+      "source:platform-and-data-connectors"
     ],
     "fiat": [
       "entry:kaimo"
@@ -38471,6 +40434,7 @@
       "entry:ai-agenticshelf-graffeo"
     ],
     "firecrawl": [
+      "source:platform-and-data-connectors",
       "entry:firecrawl-mcp"
     ],
     "firecrawl-mcp": [
@@ -38519,16 +40483,29 @@
     "fixed-step": [
       "practice:browser-games"
     ],
+    "fixture": [
+      "playbook:source-intake-review",
+      "prompt-pattern:source-intake"
+    ],
+    "fixture.": [
+      "prompt-pattern:source-intake"
+    ],
     "fixtures": [
       "practice:code-simplification",
       "practice:evals",
+      "source:evaluation-and-observability",
       "prompt-pattern:code-simplification"
+    ],
+    "fixtures.": [
+      "practice:research-source-intake"
     ],
     "flagging": [
       "entry:ai-abmeter-abmeter"
     ],
     "flags": [
       "playbook:project-stack-review",
+      "playbook:source-intake-review",
+      "practice:research-source-intake",
       "entry:vnem-mcp"
     ],
     "flags.": [
@@ -38615,6 +40592,7 @@
       "entry:google-agent2agent-protocol",
       "practice:code-review",
       "entry:crewai",
+      "source:documentation-ingestion",
       "entry:google-agent-development-kit",
       "entry:langgraph",
       "entry:mastra",
@@ -38636,6 +40614,8 @@
       "playbook:coding-agent-selection"
     ],
     "frameworks": [
+      "practice:research-source-intake",
+      "source:evaluation-and-observability",
       "entry:context7-mcp",
       "prompt-pattern:provider-selection"
     ],
@@ -38649,11 +40629,15 @@
       "entry:ai-newzai-api-news-mcp"
     ],
     "freshness": [
+      "playbook:source-intake-review",
+      "practice:research-source-intake",
       "practice:search",
       "entry:ai-anomalyarmor-armor-mcp",
-      "prompt-pattern:research"
+      "prompt-pattern:research",
+      "prompt-pattern:source-intake"
     ],
     "frontend": [
+      "source:browser-and-ui-verification",
       "practice:frontend",
       "prompt-pattern:ui-build",
       "prompt-pattern:provider-selection",
@@ -38784,7 +40768,8 @@
       "entry:google-agent-development-kit"
     ],
     "gemini/adk": [
-      "practice:model-and-provider-selection"
+      "practice:model-and-provider-selection",
+      "source:coding-agent-clients"
     ],
     "gemini/google": [
       "playbook:coding-agent-selection"
@@ -38802,6 +40787,7 @@
     "generated": [
       "practice:backend",
       "practice:deployment",
+      "source:documentation-ingestion",
       "practice:frontend",
       "entry:context7-mcp",
       "entry:vnem-mcp"
@@ -38834,6 +40820,7 @@
     "github": [
       "playbook:coding-agent-selection",
       "entry:codex-agents-md",
+      "source:platform-and-data-connectors",
       "entry:matter-js",
       "entry:babylon-js",
       "entry:excalibur-js",
@@ -39062,6 +41049,9 @@
       "entry:ai-fathom-api-mcp",
       "entry:ragas"
     ],
+    "groups": [
+      "source:platform-and-data-connectors"
+    ],
     "guarantee.": [
       "entry:kaplay"
     ],
@@ -39075,6 +41065,7 @@
       "entry:ai-helixar-mcp"
     ],
     "guessing": [
+      "source:browser-and-ui-verification",
       "entry:playwright-mcp"
     ],
     "gui": [
@@ -39082,6 +41073,7 @@
     ],
     "guidance": [
       "entry:codex-agents-md",
+      "source:platform-and-data-connectors",
       "entry:openai-prompt-optimizer",
       "entry:vnem-mcp",
       "entry:claude-code-memory"
@@ -39360,6 +41352,7 @@
       "entry:ai-helixar-mcp"
     ],
     "help": [
+      "practice:research-source-intake",
       "entry:ai-borealhost-mcp",
       "entry:ai-alpic-mcp-alpic-mcp",
       "entry:ai-appdeploy-deploy-app",
@@ -39381,6 +41374,10 @@
     "helping": [
       "prompt-pattern:prompt-enhancement"
     ],
+    "hermes": [
+      "practice:research-source-intake",
+      "source:mcp-core-and-registry"
+    ],
     "hi": [
       "entry:ai-byteray-byteray-mcp"
     ],
@@ -39396,6 +41393,10 @@
       "entry:ai-datamerge-mcp"
     ],
     "high": [
+      "source:browser-and-ui-verification",
+      "source:documentation-ingestion",
+      "source:evaluation-and-observability",
+      "source:platform-and-data-connectors",
       "entry:context7-mcp",
       "entry:dspy",
       "entry:inspect-ai",
@@ -39430,6 +41431,9 @@
     "high-risk": [
       "practice:mcp-server-selection"
     ],
+    "high-signal": [
+      "prompt-pattern:source-intake"
+    ],
     "higher-performance": [
       "practice:browser-games",
       "entry:rapier-js"
@@ -39449,6 +41453,9 @@
     "hmm": [
       "entry:ai-lattiq-x402-trading-signals"
     ],
+    "hoc": [
+      "source:secure-mcp-distribution"
+    ],
     "holdings": [
       "entry:ai-fincontext-fincontext"
     ],
@@ -39462,7 +41469,8 @@
       "entry:ai-offerhopper-mcp-shopping-optimizer"
     ],
     "host": [
-      "entry:ai-alpic-mcp-alpic-mcp"
+      "entry:ai-alpic-mcp-alpic-mcp",
+      "source:secure-mcp-distribution"
     ],
     "host.": [
       "entry:ai-cueapi-mcp"
@@ -39470,6 +41478,7 @@
     "hosted": [
       "playbook:coding-agent-selection",
       "practice:model-and-provider-selection",
+      "source:browser-and-ui-verification",
       "practice:search",
       "entry:ai-agenticshelf-mcp",
       "entry:ai-calendarmcp-server",
@@ -39504,6 +41513,7 @@
       "entry:ai-clarid-compliance"
     ],
     "how": [
+      "source:coding-agent-clients",
       "entry:codex-agents-md",
       "practice:data",
       "prompt-pattern:agent-upgrade-plan"
@@ -39522,15 +41532,21 @@
       "entry:phaser"
     ],
     "https": [
+      "source:coding-agent-clients",
+      "source:mcp-core-and-registry",
       "entry:model-context-protocol",
       "entry:google-agent2agent-protocol",
+      "source:browser-and-ui-verification",
       "entry:codex-agents-md",
       "entry:crewai",
+      "source:documentation-ingestion",
+      "source:evaluation-and-observability",
       "entry:google-agent-development-kit",
       "entry:langgraph",
       "entry:mastra",
       "entry:microsoft-autogen",
       "entry:openai-agents-sdk",
+      "source:platform-and-data-connectors",
       "entry:pydantic-ai",
       "entry:semantic-kernel",
       "entry:vercel-ai-sdk",
@@ -39714,6 +41730,7 @@
       "entry:playwright-mcp",
       "entry:rapier-js",
       "entry:ripgrep",
+      "source:secure-mcp-distribution",
       "entry:three-js",
       "entry:ugrep",
       "entry:ast-grep",
@@ -39769,6 +41786,9 @@
     ],
     "icon": [
       "practice:frontend"
+    ],
+    "ide": [
+      "source:coding-agent-clients"
     ],
     "ide-native": [
       "entry:cursor-agent"
@@ -39837,6 +41857,9 @@
       "entry:vnem-mcp",
       "prompt-pattern:ui-build"
     ],
+    "important": [
+      "practice:research-source-intake"
+    ],
     "important.": [
       "entry:continue-dev"
     ],
@@ -39856,6 +41879,7 @@
       "entry:openai-prompt-engineering-guide",
       "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:prompt-enhancement",
+      "prompt-pattern:source-intake",
       "entry:supabase-mcp"
     ],
     "improvement": [
@@ -39872,7 +41896,12 @@
       "prompt-pattern:agent-upgrade-plan"
     ],
     "improves": [
+      "practice:research-source-intake",
+      "source:evaluation-and-observability",
       "entry:mem0"
+    ],
+    "improves.": [
+      "playbook:source-intake-review"
     ],
     "improving": [
       "entry:openai-prompt-engineering-guide",
@@ -39881,6 +41910,7 @@
       "entry:langsmith"
     ],
     "in": [
+      "playbook:source-intake-review",
       "practice:context-engineering",
       "practice:deployment",
       "practice:human-approval-and-durability",
@@ -40080,6 +42110,8 @@
       "entry:covenant-research"
     ],
     "index": [
+      "source:mcp-core-and-registry",
+      "source:documentation-ingestion",
       "practice:search",
       "entry:ai-linkguard-linkguard-mcp",
       "entry:llamaindex-agents"
@@ -40091,8 +42123,13 @@
       "entry:ai-boolsai-directory"
     ],
     "indexes": [
+      "practice:research-source-intake",
+      "source:documentation-ingestion",
       "entry:llamaindex-agents",
       "entry:codebase-memory-mcp"
+    ],
+    "indexes.": [
+      "playbook:source-intake-review"
     ],
     "indexing": [
       "entry:llamaindex-agents",
@@ -40120,6 +42157,7 @@
       "prompt-pattern:prompt-enhancement"
     ],
     "infrastructure": [
+      "source:browser-and-ui-verification",
       "entry:mastra",
       "practice:search",
       "entry:ai-borealhost-mcp",
@@ -40131,7 +42169,11 @@
       "entry:openai-swarm"
     ],
     "ingestion": [
+      "source:documentation-ingestion",
       "entry:firecrawl-mcp"
+    ],
+    "injection": [
+      "source:platform-and-data-connectors"
     ],
     "input": [
       "practice:browser-games",
@@ -40196,6 +42238,9 @@
     "install": [
       "playbook:mcp-adoption-review",
       "playbook:project-stack-review",
+      "playbook:source-intake-review",
+      "practice:research-source-intake",
+      "source:coding-agent-clients",
       "entry:model-context-protocol",
       "practice:agent-tooling",
       "entry:google-agent2agent-protocol",
@@ -40424,6 +42469,7 @@
     ],
     "installing": [
       "playbook:mcp-adoption-review",
+      "source:mcp-core-and-registry",
       "practice:code-review",
       "entry:vnem-mcp",
       "prompt-pattern:codex-implementation"
@@ -40432,11 +42478,17 @@
       "practice:coding-agents",
       "prompt-pattern:agent-upgrade-plan"
     ],
+    "installs.": [
+      "practice:research-source-intake",
+      "source:secure-mcp-distribution"
+    ],
     "instantly": [
       "entry:ai-artidrop-artidrop"
     ],
     "instead": [
+      "practice:research-source-intake",
       "practice:backend",
+      "source:browser-and-ui-verification",
       "entry:langgraph",
       "practice:observability-and-tracing",
       "entry:openai-agents-sdk",
@@ -40447,6 +42499,7 @@
       "entry:continue-dev",
       "entry:phaser",
       "entry:playwright-mcp",
+      "source:secure-mcp-distribution",
       "entry:ast-grep",
       "entry:codebase-memory-mcp"
     ],
@@ -40456,7 +42509,11 @@
     "instruction": [
       "playbook:prompt-upgrade"
     ],
+    "instruction-file": [
+      "source:coding-agent-clients"
+    ],
     "instructions": [
+      "source:coding-agent-clients",
       "entry:codex-agents-md",
       "practice:context-engineering",
       "practice:prompt-engineering",
@@ -40473,6 +42530,14 @@
     ],
     "insufficient": [
       "entry:browserbase-mcp"
+    ],
+    "intake": [
+      "playbook:source-intake-review",
+      "practice:research-source-intake",
+      "prompt-pattern:source-intake"
+    ],
+    "intake.": [
+      "prompt-pattern:source-intake"
     ],
     "integrated": [
       "entry:langsmith"
@@ -40585,7 +42650,8 @@
       "entry:ast-grep"
     ],
     "involved": [
-      "prompt-pattern:codex-implementation"
+      "prompt-pattern:codex-implementation",
+      "prompt-pattern:source-intake"
     ],
     "irs": [
       "entry:ai-lucasandersen-mlp-tax"
@@ -40593,8 +42659,10 @@
     "is": [
       "practice:code-simplification",
       "practice:browser-games",
+      "source:mcp-core-and-registry",
       "entry:model-context-protocol",
       "entry:google-agent2agent-protocol",
+      "source:browser-and-ui-verification",
       "entry:crewai",
       "entry:google-agent-development-kit",
       "entry:langgraph",
@@ -40764,6 +42832,7 @@
       "entry:ai-com-mcp-petstore",
       "entry:promptfoo",
       "entry:ragas",
+      "prompt-pattern:source-intake",
       "entry:ai-mino-web-agent",
       "entry:agentops",
       "entry:ai-artidrop-artidrop",
@@ -40827,6 +42896,7 @@
       "entry:github-copilot-coding-agent"
     ],
     "issues": [
+      "source:platform-and-data-connectors",
       "prompt-pattern:code-review",
       "entry:sentry-mcp",
       "entry:github-mcp-server",
@@ -40836,9 +42906,12 @@
     ],
     "it": [
       "practice:browser-games",
+      "playbook:source-intake-review",
+      "practice:research-source-intake",
       "practice:deployment",
       "entry:ai-exa-exa",
       "entry:ai-obris-mcp",
+      "prompt-pattern:source-intake",
       "entry:ripgrep",
       "entry:openai-swarm"
     ],
@@ -40931,6 +43004,7 @@
     "keep": [
       "practice:code-simplification",
       "practice:browser-games",
+      "practice:research-source-intake",
       "practice:backend",
       "practice:coding-agents",
       "practice:context-engineering",
@@ -40954,6 +43028,7 @@
       "entry:mastra",
       "entry:microsoft-autogen",
       "entry:openai-agents-sdk",
+      "source:platform-and-data-connectors",
       "entry:pydantic-ai",
       "entry:semantic-kernel",
       "entry:vercel-ai-sdk",
@@ -41121,6 +43196,7 @@
       "entry:rapier-js"
     ],
     "latency": [
+      "source:evaluation-and-observability",
       "practice:observability-and-tracing",
       "practice:search",
       "prompt-pattern:provider-selection"
@@ -41290,8 +43366,11 @@
       "entry:ai-law-lawyer-search"
     ],
     "layer": [
+      "playbook:source-intake-review",
+      "practice:research-source-intake",
       "entry:ai-agentrapay-agentra",
       "entry:ai-namewhisper-ens-tools",
+      "prompt-pattern:source-intake",
       "entry:mem0",
       "entry:clude",
       "entry:covenant-research"
@@ -41315,8 +43394,12 @@
     "leakage.": [
       "practice:context-engineering"
     ],
+    "least": [
+      "source:coding-agent-clients"
+    ],
     "least-privilege": [
-      "practice:mcp-server-selection"
+      "practice:mcp-server-selection",
+      "source:platform-and-data-connectors"
     ],
     "legal": [
       "entry:ai-complyme-mcp-mcp",
@@ -41329,6 +43412,7 @@
       "entry:ai-com-mcp-lenny-rachitsky-podcast"
     ],
     "let": [
+      "source:browser-and-ui-verification",
       "practice:security",
       "entry:ai-filegraph-document-processing",
       "entry:ai-mcpcap-mcpcap",
@@ -41369,6 +43453,7 @@
       "entry:playcanvas-engine"
     ],
     "library": [
+      "source:documentation-ingestion",
       "entry:ai-autorfp-mcp",
       "entry:context7-mcp",
       "entry:ai-childadhd-library",
@@ -41386,7 +43471,11 @@
     ],
     "license": [
       "playbook:mcp-adoption-review",
+      "playbook:source-intake-review",
+      "practice:research-source-intake",
+      "source:documentation-ingestion",
       "prompt-pattern:research",
+      "prompt-pattern:source-intake",
       "entry:covenant-research",
       "entry:kaimo"
     ],
@@ -41557,6 +43646,7 @@
       "entry:kaimo"
     ],
     "licenses": [
+      "source:mcp-core-and-registry",
       "practice:security"
     ],
     "lifetime.": [
@@ -41611,6 +43701,10 @@
     ],
     "lineage": [
       "entry:ai-anomalyarmor-armor-mcp"
+    ],
+    "link": [
+      "playbook:source-intake-review",
+      "practice:research-source-intake"
     ],
     "linkedin": [
       "entry:ai-dataforb2b-dataforb2b",
@@ -41817,6 +43911,9 @@
       "entry:ragas",
       "entry:langsmith"
     ],
+    "llm-oriented": [
+      "source:documentation-ingestion"
+    ],
     "llmops": [
       "entry:arize-phoenix"
     ],
@@ -41824,7 +43921,17 @@
       "entry:ai-imboard-dossier",
       "entry:ac-inference-sh-mcp"
     ],
+    "llms-full.txt": [
+      "source:documentation-ingestion"
+    ],
+    "llms.txt": [
+      "playbook:source-intake-review",
+      "practice:research-source-intake",
+      "source:mcp-core-and-registry",
+      "source:documentation-ingestion"
+    ],
     "load": [
+      "source:coding-agent-clients",
       "entry:claude-code-memory"
     ],
     "loading": [
@@ -41836,6 +43943,7 @@
     ],
     "local": [
       "practice:code-simplification",
+      "playbook:source-intake-review",
       "practice:coding-agents",
       "practice:search",
       "entry:ai-ankimcp-anki-mcp-server-addon",
@@ -41848,6 +43956,7 @@
       "entry:aider",
       "entry:continue-dev",
       "entry:playwright-mcp",
+      "source:secure-mcp-distribution",
       "entry:ugrep",
       "entry:browserbase-mcp",
       "entry:openai-codex-cli",
@@ -41877,12 +43986,21 @@
     "logic.": [
       "entry:pydantic-ai"
     ],
+    "login": [
+      "source:coding-agent-clients"
+    ],
     "logs": [
       "practice:deployment",
+      "source:evaluation-and-observability",
       "entry:inspect-ai"
     ],
     "logs.": [
       "entry:inspect-ai"
+    ],
+    "long": [
+      "playbook:source-intake-review",
+      "practice:research-source-intake",
+      "source:documentation-ingestion"
     ],
     "long-lived": [
       "entry:letta"
@@ -41934,8 +44052,15 @@
     "ludo": [
       "entry:ai-ludo-game-assets"
     ],
+    "machine-readable": [
+      "playbook:source-intake-review",
+      "practice:research-source-intake"
+    ],
     "machines": [
       "entry:langgraph"
+    ],
+    "made": [
+      "source:evaluation-and-observability"
     ],
     "mailjunky": [
       "entry:ai-mailjunky-mcp"
@@ -41950,6 +44075,7 @@
       "prompt-pattern:agent-upgrade-plan"
     ],
     "maintained": [
+      "practice:research-source-intake",
       "entry:phaser",
       "entry:openai-swarm"
     ],
@@ -42166,17 +44292,25 @@
       "entry:openai-swarm"
     ],
     "maintainers": [
+      "practice:research-source-intake",
+      "source:mcp-core-and-registry",
+      "source:evaluation-and-observability",
       "entry:covenant-research",
       "entry:kaimo"
+    ],
+    "maintenance": [
+      "prompt-pattern:source-intake"
     ],
     "maintenance.": [
       "prompt-pattern:research"
     ],
     "major": [
+      "source:coding-agent-clients",
       "entry:pixijs"
     ],
     "make": [
       "practice:code-simplification",
+      "practice:research-source-intake",
       "practice:context-engineering",
       "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:code-simplification",
@@ -42339,6 +44473,7 @@
       "entry:mastra"
     ],
     "match": [
+      "source:evaluation-and-observability",
       "entry:context7-mcp",
       "prompt-pattern:ui-build",
       "entry:ast-grep"
@@ -42386,10 +44521,14 @@
       "entry:rapier-js"
     ],
     "matters": [
+      "playbook:source-intake-review",
       "entry:google-agent2agent-protocol",
       "entry:semantic-kernel",
       "entry:kaplay",
       "entry:pixijs"
+    ],
+    "matters.": [
+      "prompt-pattern:source-intake"
     ],
     "mature": [
       "practice:frontend",
@@ -42413,10 +44552,18 @@
       "playbook:coding-agent-selection",
       "playbook:mcp-adoption-review",
       "playbook:project-stack-review",
+      "playbook:source-intake-review",
+      "practice:research-source-intake",
+      "source:coding-agent-clients",
+      "source:mcp-core-and-registry",
       "entry:model-context-protocol",
       "practice:agent-tooling",
+      "source:browser-and-ui-verification",
+      "source:documentation-ingestion",
+      "source:evaluation-and-observability",
       "entry:mastra",
       "practice:mcp-server-selection",
+      "source:platform-and-data-connectors",
       "entry:ai-abmeter-abmeter",
       "entry:ac-tandem-docs-mcp",
       "entry:agency-lona-trading",
@@ -42568,6 +44715,7 @@
       "entry:ai-openmandate-mcp",
       "entry:ai-com-mcp-petstore",
       "entry:sentry-mcp",
+      "prompt-pattern:source-intake",
       "entry:ai-mino-web-agent",
       "entry:ai-artidrop-artidrop",
       "entry:ai-clarid-hmda",
@@ -42576,6 +44724,7 @@
       "entry:ai-com-mcp-linkedin",
       "entry:ai-moxt-mcp-workspace",
       "entry:playwright-mcp",
+      "source:secure-mcp-distribution",
       "entry:browserbase-mcp",
       "entry:stripe-agent-toolkit",
       "entry:anthropic-claude-code",
@@ -42589,6 +44738,9 @@
       "entry:browserbase-mcp",
       "entry:supabase-mcp",
       "entry:clude"
+    ],
+    "mcp-core-and-registry": [
+      "source:mcp-core-and-registry"
     ],
     "mcp-registry": [
       "entry:ai-adadvisor-mcp-server"
@@ -42755,6 +44907,7 @@
       "entry:codebase-memory-mcp"
     ],
     "mcp.": [
+      "source:documentation-ingestion",
       "entry:ai-agentdm-agentdm",
       "entry:ai-nullary-nullary",
       "entry:ai-artidrop-artidrop",
@@ -42762,6 +44915,11 @@
     ],
     "mcp/tool": [
       "practice:model-and-provider-selection"
+    ],
+    "mcps": [
+      "playbook:source-intake-review",
+      "source:browser-and-ui-verification",
+      "source:platform-and-data-connectors"
     ],
     "me": [
       "prompt-pattern:prompt-enhancement"
@@ -42790,6 +44948,7 @@
       "entry:ai-childpsychiatry-library"
     ],
     "medium": [
+      "source:secure-mcp-distribution",
       "entry:covenant-research"
     ],
     "meeting": [
@@ -42818,6 +44977,7 @@
     ],
     "memory": [
       "practice:model-and-provider-selection",
+      "source:coding-agent-clients",
       "practice:context-engineering",
       "practice:data",
       "entry:google-agent-development-kit",
@@ -42840,6 +45000,7 @@
       "entry:claude-code-memory"
     ],
     "memory.": [
+      "source:coding-agent-clients",
       "practice:context-engineering",
       "practice:data",
       "entry:ai-donethat-donethat",
@@ -42879,6 +45040,9 @@
       "entry:ai-adweave-meta-ads-mcp"
     ],
     "metadata": [
+      "playbook:source-intake-review",
+      "practice:research-source-intake",
+      "source:mcp-core-and-registry",
       "entry:matter-js",
       "entry:babylon-js",
       "entry:excalibur-js",
@@ -42887,6 +45051,7 @@
       "entry:pixijs",
       "entry:playcanvas-engine",
       "entry:rapier-js",
+      "source:secure-mcp-distribution",
       "entry:three-js",
       "entry:ast-grep",
       "entry:jscpd",
@@ -42965,6 +45130,7 @@
       "practice:model-and-provider-selection",
       "entry:model-context-protocol",
       "entry:crewai",
+      "source:evaluation-and-observability",
       "practice:mcp-server-selection",
       "practice:observability-and-tracing",
       "entry:vercel-ai-sdk",
@@ -42990,12 +45156,16 @@
     "model.": [
       "playbook:prompt-upgrade"
     ],
+    "model/provider": [
+      "practice:research-source-intake"
+    ],
     "models": [
       "entry:ai-ludo-game-assets",
       "entry:ai-dragoneye-mcp",
       "entry:promptfoo",
       "entry:aider",
-      "entry:continue-dev"
+      "entry:continue-dev",
+      "source:secure-mcp-distribution"
     ],
     "models.": [
       "entry:openai-agents-sdk"
@@ -43004,6 +45174,7 @@
       "entry:pixijs"
     ],
     "modes": [
+      "source:platform-and-data-connectors",
       "prompt-pattern:eval-design",
       "entry:clude"
     ],
@@ -43016,7 +45187,8 @@
       "entry:ai-modulos-demo-booking"
     ],
     "money": [
-      "practice:mcp-server-selection"
+      "practice:mcp-server-selection",
+      "source:platform-and-data-connectors"
     ],
     "monitor": [
       "entry:agentops",
@@ -43027,6 +45199,7 @@
     ],
     "monitoring": [
       "practice:deployment",
+      "source:platform-and-data-connectors",
       "entry:ai-agentic-news-mcp",
       "entry:langsmith"
     ],
@@ -43100,6 +45273,7 @@
       "entry:ai-offerhopper-mcp-shopping-optimizer"
     ],
     "multiple": [
+      "source:coding-agent-clients",
       "entry:semantic-kernel",
       "practice:subagents-and-multi-agent",
       "entry:anthropic-multi-agent-research-system"
@@ -43116,6 +45290,7 @@
     ],
     "mutate": [
       "playbook:project-stack-review",
+      "practice:research-source-intake",
       "practice:mcp-server-selection",
       "practice:security"
     ],
@@ -43180,11 +45355,13 @@
     "need": [
       "practice:browser-games",
       "playbook:mcp-adoption-review",
+      "source:mcp-core-and-registry",
       "entry:model-context-protocol",
       "entry:google-agent2agent-protocol",
       "practice:backend",
       "entry:codex-agents-md",
       "practice:deployment",
+      "source:evaluation-and-observability",
       "entry:langgraph",
       "entry:microsoft-autogen",
       "practice:observability-and-tracing",
@@ -43241,6 +45418,7 @@
     ],
     "network": [
       "playbook:mcp-adoption-review",
+      "source:mcp-core-and-registry",
       "entry:google-agent2agent-protocol",
       "practice:code-review",
       "entry:crewai",
@@ -43406,6 +45584,7 @@
       "entry:promptfoo",
       "entry:ragas",
       "entry:sentry-mcp",
+      "prompt-pattern:source-intake",
       "entry:ai-mino-web-agent",
       "entry:agentops",
       "entry:ai-artidrop-artidrop",
@@ -43448,8 +45627,10 @@
     "new": [
       "practice:code-simplification",
       "practice:model-and-provider-selection",
+      "source:mcp-core-and-registry",
       "entry:ai-boolsai-grep",
       "prompt-pattern:code-simplification",
+      "prompt-pattern:source-intake",
       "entry:openai-swarm"
     ],
     "news": [
@@ -43482,8 +45663,10 @@
     ],
     "no": [
       "playbook:project-stack-review",
+      "playbook:source-intake-review",
       "entry:ai-calendarmcp-server",
-      "prompt-pattern:code-review"
+      "prompt-pattern:code-review",
+      "prompt-pattern:source-intake"
     ],
     "no-canonical-repo-url": [
       "entry:codex-agents-md",
@@ -43615,6 +45798,9 @@
     "not": [
       "playbook:coding-agent-selection",
       "playbook:mcp-adoption-review",
+      "playbook:source-intake-review",
+      "practice:research-source-intake",
+      "source:evaluation-and-observability",
       "practice:human-approval-and-durability",
       "practice:prompt-engineering",
       "practice:security",
@@ -43631,7 +45817,12 @@
       "entry:kaplay",
       "entry:graphiti"
     ],
+    "note": [
+      "playbook:source-intake-review",
+      "prompt-pattern:source-intake"
+    ],
     "notes": [
+      "source:mcp-core-and-registry",
       "entry:model-context-protocol",
       "practice:agent-tooling",
       "entry:codex-agents-md",
@@ -43684,7 +45875,10 @@
       "entry:kaplay"
     ],
     "oauth": [
-      "entry:ai-byteray-byteray-mcp"
+      "source:coding-agent-clients",
+      "source:platform-and-data-connectors",
+      "entry:ai-byteray-byteray-mcp",
+      "source:secure-mcp-distribution"
     ],
     "object": [
       "entry:ai-dragoneye-mcp"
@@ -43703,6 +45897,7 @@
       "entry:ai-obris-mcp"
     ],
     "observability": [
+      "source:evaluation-and-observability",
       "practice:observability-and-tracing",
       "entry:ai-anomalyarmor-armor-mcp",
       "entry:arize-phoenix",
@@ -43724,7 +45919,10 @@
       "entry:ai-filegraph-document-processing"
     ],
     "of": [
+      "practice:research-source-intake",
+      "source:mcp-core-and-registry",
       "practice:backend",
+      "source:browser-and-ui-verification",
       "practice:context-engineering",
       "entry:langgraph",
       "practice:observability-and-tracing",
@@ -43745,6 +45943,7 @@
       "entry:github-mcp-server",
       "entry:phaser",
       "entry:playwright-mcp",
+      "source:secure-mcp-distribution",
       "entry:ast-grep",
       "entry:stripe-agent-toolkit",
       "entry:codebase-memory-mcp"
@@ -43763,6 +45962,10 @@
     ],
     "on": [
       "practice:model-and-provider-selection",
+      "source:coding-agent-clients",
+      "source:mcp-core-and-registry",
+      "source:browser-and-ui-verification",
+      "source:documentation-ingestion",
       "practice:subagents-and-multi-agent",
       "entry:ai-autonomad-computeback",
       "entry:anthropic-multi-agent-research-system",
@@ -44063,6 +46266,9 @@
     "openapi": [
       "entry:ai-com-mcp-hapi-mcp"
     ],
+    "opencode": [
+      "source:coding-agent-clients"
+    ],
     "openhands": [
       "practice:coding-agents",
       "entry:openhands"
@@ -44204,12 +46410,19 @@
       "practice:model-and-provider-selection",
       "playbook:project-stack-review",
       "playbook:prompt-upgrade",
+      "playbook:source-intake-review",
+      "practice:research-source-intake",
+      "source:coding-agent-clients",
+      "source:mcp-core-and-registry",
       "entry:model-context-protocol",
       "entry:google-agent2agent-protocol",
+      "source:browser-and-ui-verification",
       "practice:code-review",
       "entry:codex-agents-md",
       "entry:crewai",
+      "source:documentation-ingestion",
       "practice:evals",
+      "source:evaluation-and-observability",
       "entry:google-agent-development-kit",
       "entry:langgraph",
       "entry:mastra",
@@ -44217,6 +46430,7 @@
       "entry:microsoft-autogen",
       "entry:openai-agents-sdk",
       "practice:payments",
+      "source:platform-and-data-connectors",
       "practice:prompt-engineering",
       "entry:pydantic-ai",
       "practice:search",
@@ -44394,6 +46608,7 @@
       "entry:promptfoo",
       "entry:ragas",
       "entry:sentry-mcp",
+      "prompt-pattern:source-intake",
       "prompt-pattern:subagent-delegation",
       "entry:ai-mino-web-agent",
       "entry:agentops",
@@ -44413,6 +46628,7 @@
       "entry:playwright-mcp",
       "entry:rapier-js",
       "entry:ripgrep",
+      "source:secure-mcp-distribution",
       "entry:three-js",
       "entry:ugrep",
       "entry:ast-grep",
@@ -44461,7 +46677,12 @@
     "organization": [
       "entry:kaimo"
     ],
+    "organization-approved": [
+      "source:secure-mcp-distribution"
+    ],
     "original": [
+      "playbook:source-intake-review",
+      "practice:research-source-intake",
       "prompt-pattern:prompt-enhancement"
     ],
     "oss": [
@@ -44469,6 +46690,9 @@
     ],
     "other": [
       "playbook:mcp-adoption-review"
+    ],
+    "otherwise": [
+      "prompt-pattern:source-intake"
     ],
     "out": [
       "playbook:coding-agent-selection",
@@ -44489,6 +46713,7 @@
     ],
     "output": [
       "playbook:prompt-upgrade",
+      "source:evaluation-and-observability",
       "practice:prompt-engineering",
       "entry:vercel-ai-sdk",
       "entry:openai-prompt-engineering-guide",
@@ -44502,6 +46727,7 @@
       "prompt-pattern:memory-policy",
       "prompt-pattern:provider-selection",
       "prompt-pattern:research",
+      "prompt-pattern:source-intake",
       "prompt-pattern:subagent-delegation",
       "entry:ugrep"
     ],
@@ -44554,15 +46780,21 @@
       "practice:subagents-and-multi-agent"
     ],
     "ownership": [
+      "source:mcp-core-and-registry",
       "entry:crewai"
     ],
     "ownership.": [
       "practice:deployment"
     ],
     "pack": [
+      "source:coding-agent-clients",
       "practice:context-engineering"
     ],
+    "pack.": [
+      "practice:research-source-intake"
+    ],
     "package": [
+      "source:mcp-core-and-registry",
       "practice:code-review",
       "practice:coding-agents",
       "prompt-pattern:agent-upgrade-plan",
@@ -44575,6 +46807,7 @@
       "entry:playcanvas-engine",
       "entry:rapier-js",
       "entry:ripgrep",
+      "source:secure-mcp-distribution",
       "entry:three-js",
       "entry:ast-grep",
       "entry:jscpd",
@@ -44595,19 +46828,27 @@
     ],
     "page": [
       "prompt-pattern:ui-build",
+      "prompt-pattern:source-intake",
       "entry:ai-mino-web-agent"
     ],
     "pages": [
+      "source:browser-and-ui-verification",
       "entry:playwright-mcp"
     ],
     "paid": [
-      "practice:payments"
+      "source:coding-agent-clients",
+      "source:browser-and-ui-verification",
+      "practice:payments",
+      "prompt-pattern:source-intake"
     ],
     "pair": [
       "entry:aider"
     ],
     "pair-programming": [
       "entry:aider"
+    ],
+    "paper": [
+      "prompt-pattern:source-intake"
     ],
     "parallel": [
       "practice:subagents-and-multi-agent",
@@ -44638,18 +46879,24 @@
     "pasting": [
       "practice:context-engineering"
     ],
+    "pat": [
+      "source:platform-and-data-connectors"
+    ],
     "patch": [
       "prompt-pattern:bug-debug",
       "entry:openhands"
     ],
     "path": [
-      "practice:model-and-provider-selection"
+      "practice:model-and-provider-selection",
+      "playbook:source-intake-review",
+      "prompt-pattern:source-intake"
     ],
     "path.": [
       "playbook:mcp-adoption-review",
       "practice:subagents-and-multi-agent",
       "prompt-pattern:ui-build",
-      "prompt-pattern:provider-selection"
+      "prompt-pattern:provider-selection",
+      "prompt-pattern:source-intake"
     ],
     "paths": [
       "practice:deployment",
@@ -44663,11 +46910,14 @@
     "paths.": [
       "entry:vnem-mcp",
       "entry:pixijs",
-      "entry:playcanvas-engine"
+      "entry:playcanvas-engine",
+      "source:secure-mcp-distribution"
     ],
     "pattern": [
+      "playbook:source-intake-review",
       "entry:anthropic-building-effective-agents",
-      "entry:anthropic-multi-agent-research-system"
+      "entry:anthropic-multi-agent-research-system",
+      "prompt-pattern:source-intake"
     ],
     "patterns": [
       "playbook:project-stack-review",
@@ -44701,6 +46951,7 @@
     ],
     "payment": [
       "practice:payments",
+      "source:platform-and-data-connectors",
       "entry:stripe-agent-toolkit",
       "entry:kaimo"
     ],
@@ -44709,6 +46960,7 @@
     ],
     "payments": [
       "practice:payments",
+      "source:platform-and-data-connectors",
       "practice:search",
       "entry:ai-agenticterminal-directory",
       "entry:ai-lattiq-x402-trading-signals",
@@ -44741,6 +46993,7 @@
       "playbook:coding-agent-selection",
       "playbook:mcp-adoption-review",
       "practice:agent-tooling",
+      "source:platform-and-data-connectors",
       "entry:vnem-mcp",
       "prompt-pattern:code-review",
       "prompt-pattern:memory-policy",
@@ -44752,6 +47005,9 @@
     "permissions": [
       "playbook:mcp-adoption-review",
       "practice:model-and-provider-selection",
+      "playbook:source-intake-review",
+      "practice:research-source-intake",
+      "source:mcp-core-and-registry",
       "entry:model-context-protocol",
       "practice:agent-tooling",
       "entry:google-agent2agent-protocol",
@@ -44926,6 +47182,7 @@
       "entry:promptfoo",
       "entry:ragas",
       "entry:sentry-mcp",
+      "prompt-pattern:source-intake",
       "entry:ai-mino-web-agent",
       "entry:agentops",
       "entry:ai-artidrop-artidrop",
@@ -44938,6 +47195,7 @@
       "entry:ai-com-mcp-linkedin",
       "entry:ai-moxt-mcp-workspace",
       "entry:playwright-mcp",
+      "source:secure-mcp-distribution",
       "entry:browserbase-mcp",
       "entry:claude-code-subagents",
       "entry:graphiti",
@@ -45096,10 +47354,12 @@
       "prompt-pattern:code-simplification",
       "prompt-pattern:eval-design",
       "prompt-pattern:provider-selection",
+      "prompt-pattern:source-intake",
       "prompt-pattern:subagent-delegation"
     ],
     "plan.": [
       "prompt-pattern:agent-upgrade-plan",
+      "prompt-pattern:source-intake",
       "prompt-pattern:subagent-delegation"
     ],
     "planners": [
@@ -45108,7 +47368,11 @@
     "planning": [
       "entry:anthropic-building-effective-agents"
     ],
+    "plans": [
+      "source:coding-agent-clients"
+    ],
     "platform": [
+      "source:platform-and-data-connectors",
       "entry:ai-abmeter-abmeter",
       "entry:ai-agentdm-agentdm",
       "entry:ai-meminal-meminal",
@@ -45122,6 +47386,9 @@
       "entry:openhands",
       "entry:supabase-mcp",
       "entry:zep"
+    ],
+    "platform-and-data-connectors": [
+      "source:platform-and-data-connectors"
     ],
     "platform.": [
       "entry:ai-explorium-mcp-explorium",
@@ -45159,6 +47426,7 @@
       "entry:kaplay"
     ],
     "playwright": [
+      "source:browser-and-ui-verification",
       "practice:mcp-server-selection",
       "entry:playwright-mcp",
       "entry:browserbase-mcp"
@@ -45177,6 +47445,9 @@
     "podcast": [
       "entry:ai-com-mcp-lenny-rachitsky-podcast"
     ],
+    "point": [
+      "source:documentation-ingestion"
+    ],
     "pointer": [
       "practice:browser-games"
     ],
@@ -45188,7 +47459,8 @@
       "entry:microsoft-autogen"
     ],
     "policies": [
-      "practice:payments"
+      "practice:payments",
+      "source:secure-mcp-distribution"
     ],
     "policy": [
       "prompt-pattern:memory-policy"
@@ -45231,6 +47503,8 @@
     ],
     "posture": [
       "playbook:mcp-adoption-review",
+      "playbook:source-intake-review",
+      "practice:research-source-intake",
       "practice:code-review"
     ],
     "posture.": [
@@ -45272,12 +47546,15 @@
       "playbook:coding-agent-selection",
       "playbook:mcp-adoption-review",
       "playbook:project-stack-review",
+      "playbook:source-intake-review",
+      "practice:research-source-intake",
       "entry:model-context-protocol",
       "practice:agent-tooling",
       "entry:codex-agents-md",
       "practice:coding-agents",
       "practice:context-engineering",
       "practice:data",
+      "source:documentation-ingestion",
       "practice:evals",
       "practice:frontend",
       "practice:mcp-server-selection",
@@ -45320,6 +47597,7 @@
     ],
     "preserve": [
       "playbook:prompt-upgrade",
+      "practice:research-source-intake",
       "practice:prompt-engineering",
       "prompt-pattern:code-simplification",
       "prompt-pattern:codex-implementation",
@@ -45334,7 +47612,9 @@
       "prompt-pattern:prompt-enhancement"
     ],
     "preview": [
-      "practice:deployment"
+      "source:mcp-core-and-registry",
+      "practice:deployment",
+      "source:secure-mcp-distribution"
     ],
     "price": [
       "entry:ai-buywhere-buywhere-mcp"
@@ -45422,8 +47702,12 @@
       "entry:ai-donethat-donethat"
     ],
     "private": [
+      "source:evaluation-and-observability",
       "entry:ai-auxen-auxen",
       "entry:ai-constellationfinance-constellation-finance-mcp"
+    ],
+    "privilege": [
+      "source:coding-agent-clients"
     ],
     "probe-before-use.": [
       "entry:ai-nothumansearch-search"
@@ -45444,6 +47728,8 @@
     "product": [
       "practice:code-simplification",
       "playbook:prompt-upgrade",
+      "playbook:source-intake-review",
+      "source:browser-and-ui-verification",
       "practice:frontend",
       "entry:microsoft-autogen",
       "entry:ai-agenticshelf-mcp",
@@ -45461,6 +47747,7 @@
       "entry:langgraph",
       "entry:mastra",
       "practice:mcp-server-selection",
+      "source:platform-and-data-connectors",
       "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:codex-implementation",
       "entry:sentry-mcp",
@@ -45468,6 +47755,9 @@
       "entry:covenant-research",
       "entry:kaimo",
       "entry:openai-swarm"
+    ],
+    "production-like": [
+      "source:platform-and-data-connectors"
     ],
     "products": [
       "entry:vercel-ai-sdk",
@@ -45484,7 +47774,8 @@
     ],
     "profiles": [
       "entry:ai-openarx-openarx",
-      "entry:ai-kolens-kolens-mcp"
+      "entry:ai-kolens-kolens-mcp",
+      "source:secure-mcp-distribution"
     ],
     "profiles.": [
       "entry:ai-law-lawyer-search"
@@ -45737,12 +48028,25 @@
       "entry:kaimo",
       "entry:openai-swarm"
     ],
+    "promote": [
+      "prompt-pattern:source-intake"
+    ],
+    "promoting": [
+      "playbook:source-intake-review"
+    ],
+    "promotion": [
+      "practice:research-source-intake"
+    ],
     "prompt": [
       "playbook:project-stack-review",
       "playbook:prompt-upgrade",
+      "playbook:source-intake-review",
+      "practice:research-source-intake",
       "practice:agent-tooling",
+      "source:evaluation-and-observability",
       "entry:langgraph",
       "practice:observability-and-tracing",
+      "source:platform-and-data-connectors",
       "practice:prompt-engineering",
       "entry:dspy",
       "entry:openai-prompt-engineering-guide",
@@ -45762,6 +48066,7 @@
       "prompt-pattern:provider-selection",
       "entry:promptfoo",
       "prompt-pattern:research",
+      "prompt-pattern:source-intake",
       "prompt-pattern:subagent-delegation"
     ],
     "prompt-engineering": [
@@ -45790,6 +48095,8 @@
       "entry:covenant-research"
     ],
     "prompts": [
+      "source:coding-agent-clients",
+      "source:mcp-core-and-registry",
       "entry:model-context-protocol",
       "practice:agent-tooling",
       "practice:mcp-server-selection",
@@ -45835,9 +48142,14 @@
       "entry:github-copilot-coding-agent"
     ],
     "protocol": [
+      "playbook:source-intake-review",
+      "source:mcp-core-and-registry",
       "entry:model-context-protocol",
       "entry:google-agent2agent-protocol",
       "practice:mcp-server-selection"
+    ],
+    "protocol-registry": [
+      "source:mcp-core-and-registry"
     ],
     "protocols": [
       "practice:payments"
@@ -45864,7 +48176,9 @@
       "entry:kaplay"
     ],
     "prove": [
-      "practice:evals"
+      "practice:evals",
+      "source:evaluation-and-observability",
+      "prompt-pattern:source-intake"
     ],
     "proven": [
       "practice:code-simplification",
@@ -45873,10 +48187,16 @@
       "prompt-pattern:code-simplification"
     ],
     "provenance": [
+      "playbook:source-intake-review",
+      "practice:research-source-intake",
+      "source:mcp-core-and-registry",
       "entry:model-context-protocol",
       "practice:agent-tooling",
+      "source:documentation-ingestion",
       "practice:payments",
-      "prompt-pattern:mcp-selection"
+      "prompt-pattern:mcp-selection",
+      "prompt-pattern:source-intake",
+      "source:secure-mcp-distribution"
     ],
     "provide": [
       "entry:llamaindex-agents"
@@ -45943,6 +48263,9 @@
       "entry:ai-auteng-mcp",
       "entry:ai-artidrop-artidrop",
       "entry:ai-com-mcp-linkedin"
+    ],
+    "published": [
+      "source:mcp-core-and-registry"
     ],
     "publishing": [
       "entry:ai-auteng-docs",
@@ -46017,6 +48340,7 @@
     ],
     "quality": [
       "practice:evals",
+      "source:evaluation-and-observability",
       "entry:ai-i18nagent-i18n-agent",
       "entry:openai-prompt-engineering-guide",
       "entry:openai-prompt-optimizer",
@@ -46024,6 +48348,9 @@
       "prompt-pattern:eval-design",
       "prompt-pattern:prompt-enhancement",
       "entry:ragas"
+    ],
+    "quality-evidence": [
+      "source:evaluation-and-observability"
     ],
     "quality.": [
       "entry:ai-anomalyarmor-armor-mcp"
@@ -46043,6 +48370,7 @@
     ],
     "query": [
       "practice:mcp-server-selection",
+      "source:platform-and-data-connectors",
       "entry:ai-nudg3-brand-intelligence",
       "entry:ai-nullary-nullary",
       "entry:ai-kubit-mcp-server",
@@ -46075,6 +48403,11 @@
     "rachitsky": [
       "entry:ai-com-mcp-lenny-rachitsky-podcast"
     ],
+    "radar": [
+      "playbook:source-intake-review",
+      "practice:research-source-intake",
+      "prompt-pattern:source-intake"
+    ],
     "rag": [
       "entry:mastra",
       "entry:arize-phoenix",
@@ -46087,6 +48420,9 @@
     ],
     "ragas": [
       "entry:ragas"
+    ],
+    "raising": [
+      "practice:research-source-intake"
     ],
     "rank": [
       "practice:search"
@@ -46105,6 +48441,8 @@
     "rather": [
       "practice:browser-games",
       "practice:model-and-provider-selection",
+      "source:browser-and-ui-verification",
+      "source:documentation-ingestion",
       "entry:vercel-ai-sdk",
       "entry:letta",
       "entry:openhands"
@@ -46125,12 +48463,14 @@
       "entry:vercel-ai-sdk"
     ],
     "read": [
+      "source:platform-and-data-connectors",
       "entry:cline"
     ],
     "read-only": [
       "playbook:mcp-adoption-review",
       "practice:agent-tooling",
       "practice:data",
+      "source:platform-and-data-connectors",
       "entry:vnem-mcp",
       "entry:ai-fincontext-fincontext"
     ],
@@ -46151,6 +48491,7 @@
       "entry:rapier-js"
     ],
     "reads": [
+      "source:coding-agent-clients",
       "entry:codebase-memory-mcp"
     ],
     "reads-local-code": [
@@ -46170,6 +48511,7 @@
     "real": [
       "practice:browser-games",
       "practice:evals",
+      "source:evaluation-and-observability",
       "entry:ai-fathom-api-mcp",
       "prompt-pattern:code-review",
       "entry:playwright-mcp"
@@ -46213,10 +48555,14 @@
     "recommend": [
       "playbook:mcp-adoption-review",
       "playbook:project-stack-review",
+      "source:browser-and-ui-verification",
+      "source:platform-and-data-connectors",
       "entry:ai-djwizard-tvwizard",
       "prompt-pattern:mcp-selection"
     ],
     "recommendation": [
+      "practice:research-source-intake",
+      "source:coding-agent-clients",
       "practice:deployment",
       "entry:vnem-mcp",
       "prompt-pattern:mcp-selection",
@@ -46228,6 +48574,7 @@
     ],
     "recommendations": [
       "practice:evals",
+      "source:evaluation-and-observability",
       "practice:subagents-and-multi-agent",
       "entry:vnem-mcp",
       "prompt-pattern:agent-upgrade-plan",
@@ -46236,6 +48583,8 @@
     "recommending": [
       "playbook:coding-agent-selection",
       "playbook:mcp-adoption-review",
+      "practice:research-source-intake",
+      "source:mcp-core-and-registry",
       "practice:code-review",
       "practice:evals"
     ],
@@ -46243,6 +48592,8 @@
       "entry:ai-31st-mcp"
     ],
     "record": [
+      "playbook:source-intake-review",
+      "practice:research-source-intake",
       "practice:agent-tooling",
       "entry:github-mcp-server",
       "entry:stripe-agent-toolkit"
@@ -46334,11 +48685,16 @@
       "prompt-pattern:agent-upgrade-plan",
       "entry:ai-namewhisper-ens-tools"
     ],
+    "registries": [
+      "practice:research-source-intake"
+    ],
     "registry.": [
+      "source:documentation-ingestion",
       "entry:ai-com-mcp-skills-search",
       "entry:ai-com-mcp-registry"
     ],
     "regression": [
+      "source:evaluation-and-observability",
       "prompt-pattern:eval-design",
       "entry:promptfoo"
     ],
@@ -46349,6 +48705,7 @@
       "practice:observability-and-tracing"
     ],
     "regressions.": [
+      "source:browser-and-ui-verification",
       "prompt-pattern:code-review"
     ],
     "relationship-aware": [
@@ -46395,7 +48752,8 @@
     "remote": [
       "entry:ac-tandem-docs-mcp",
       "entry:ai-chinamarketing-intelligence",
-      "entry:ai-kolens-kolens-mcp"
+      "entry:ai-kolens-kolens-mcp",
+      "source:secure-mcp-distribution"
     ],
     "removable": [
       "prompt-pattern:code-simplification"
@@ -46414,6 +48772,7 @@
       "entry:three-js"
     ],
     "rendered": [
+      "source:browser-and-ui-verification",
       "entry:three-js"
     ],
     "renderer": [
@@ -46440,6 +48799,8 @@
       "entry:swe-agent"
     ],
     "repeatable": [
+      "practice:research-source-intake",
+      "source:evaluation-and-observability",
       "entry:inspect-ai",
       "entry:openai-prompt-optimizer",
       "entry:promptfoo"
@@ -46477,7 +48838,9 @@
       "practice:model-and-provider-selection",
       "playbook:project-stack-review",
       "playbook:prompt-upgrade",
+      "source:coding-agent-clients",
       "practice:coding-agents",
+      "source:evaluation-and-observability",
       "prompt-pattern:codex-implementation",
       "prompt-pattern:provider-selection"
     ],
@@ -46503,6 +48866,8 @@
       "entry:ai-mcpanalytics-analytics"
     ],
     "repositories": [
+      "playbook:source-intake-review",
+      "practice:research-source-intake",
       "entry:model-context-protocol",
       "entry:google-agent2agent-protocol",
       "entry:codex-agents-md",
@@ -46513,6 +48878,7 @@
       "practice:mcp-server-selection",
       "entry:microsoft-autogen",
       "entry:openai-agents-sdk",
+      "source:platform-and-data-connectors",
       "entry:pydantic-ai",
       "entry:semantic-kernel",
       "entry:vercel-ai-sdk",
@@ -46563,6 +48929,7 @@
     "repository": [
       "playbook:coding-agent-selection",
       "playbook:project-stack-review",
+      "source:mcp-core-and-registry",
       "entry:model-context-protocol",
       "entry:google-agent2agent-protocol",
       "entry:codex-agents-md",
@@ -46573,6 +48940,7 @@
       "entry:mastra",
       "entry:microsoft-autogen",
       "entry:openai-agents-sdk",
+      "source:platform-and-data-connectors",
       "practice:prompt-engineering",
       "entry:pydantic-ai",
       "entry:semantic-kernel",
@@ -46666,6 +49034,7 @@
       "entry:promptfoo",
       "entry:ragas",
       "entry:sentry-mcp",
+      "prompt-pattern:source-intake",
       "entry:agentops",
       "entry:aider",
       "entry:babylon-js",
@@ -46723,6 +49092,7 @@
       "prompt-pattern:bug-debug"
     ],
     "reproducible": [
+      "source:evaluation-and-observability",
       "entry:inspect-ai",
       "entry:swe-agent",
       "entry:openhands"
@@ -46744,6 +49114,8 @@
     "require": [
       "playbook:coding-agent-selection",
       "playbook:prompt-upgrade",
+      "playbook:source-intake-review",
+      "source:coding-agent-clients",
       "practice:coding-agents",
       "practice:human-approval-and-durability",
       "practice:payments",
@@ -46793,6 +49165,8 @@
     ],
     "research": [
       "playbook:prompt-upgrade",
+      "playbook:source-intake-review",
+      "practice:research-source-intake",
       "entry:crewai",
       "entry:microsoft-autogen",
       "practice:subagents-and-multi-agent",
@@ -46803,6 +49177,7 @@
       "entry:ai-conveo-conveo",
       "prompt-pattern:provider-selection",
       "prompt-pattern:research",
+      "prompt-pattern:source-intake",
       "entry:firecrawl-mcp",
       "entry:claude-code-subagents",
       "entry:letta",
@@ -46827,6 +49202,8 @@
       "prompt-pattern:subagent-delegation"
     ],
     "resources": [
+      "source:coding-agent-clients",
+      "source:mcp-core-and-registry",
       "entry:model-context-protocol",
       "practice:mcp-server-selection"
     ],
@@ -46888,6 +49265,7 @@
     ],
     "retrieval": [
       "practice:context-engineering",
+      "source:documentation-ingestion",
       "practice:search",
       "entry:ai-exa-exa",
       "entry:dspy",
@@ -46911,6 +49289,9 @@
     ],
     "retrieved": [
       "practice:context-engineering"
+    ],
+    "retrievers": [
+      "source:documentation-ingestion"
     ],
     "retrieves": [
       "entry:zep"
@@ -46942,7 +49323,9 @@
       "prompt-pattern:research"
     ],
     "review.": [
+      "practice:research-source-intake",
       "practice:mcp-server-selection",
+      "source:platform-and-data-connectors",
       "prompt-pattern:mcp-selection",
       "entry:jscpd",
       "entry:github-copilot-coding-agent"
@@ -47227,6 +49610,8 @@
     ],
     "risk": [
       "playbook:project-stack-review",
+      "playbook:source-intake-review",
+      "practice:research-source-intake",
       "practice:search",
       "entry:vnem-mcp",
       "prompt-pattern:agent-upgrade-plan",
@@ -47268,6 +49653,7 @@
       "entry:ragas",
       "prompt-pattern:research",
       "entry:sentry-mcp",
+      "prompt-pattern:source-intake",
       "entry:agentops",
       "entry:aider",
       "entry:claude-code-memory",
@@ -47358,6 +49744,9 @@
     "route": [
       "entry:ai-offerhopper-mcp-shopping-optimizer"
     ],
+    "router": [
+      "practice:research-source-intake"
+    ],
     "router-style": [
       "entry:swarms"
     ],
@@ -47435,6 +49824,7 @@
       "entry:playcanvas-engine",
       "entry:rapier-js",
       "entry:ripgrep",
+      "source:secure-mcp-distribution",
       "entry:three-js",
       "entry:ugrep",
       "entry:ast-grep",
@@ -47456,11 +49846,13 @@
       "entry:ai-dynsoft-sac"
     ],
     "safe": [
-      "playbook:project-stack-review"
+      "playbook:project-stack-review",
+      "prompt-pattern:source-intake"
     ],
     "safer": [
       "playbook:mcp-adoption-review",
-      "playbook:project-stack-review"
+      "playbook:project-stack-review",
+      "source:secure-mcp-distribution"
     ],
     "safety": [
       "entry:codex-agents-md",
@@ -47470,6 +49862,9 @@
       "entry:claude-code-memory",
       "entry:covenant-research",
       "entry:kaimo"
+    ],
+    "safety.": [
+      "source:evaluation-and-observability"
     ],
     "sales": [
       "entry:ai-gethal-mcp"
@@ -47488,7 +49883,11 @@
       "entry:ai-limitguard-api-trust-intelligence"
     ],
     "sandbox": [
+      "source:platform-and-data-connectors",
       "entry:ai-aliengiraffe-spotdb"
+    ],
+    "sandbox-first": [
+      "source:platform-and-data-connectors"
     ],
     "sandboxed": [
       "entry:openhands"
@@ -47505,6 +49904,12 @@
     ],
     "say": [
       "prompt-pattern:code-review"
+    ],
+    "says": [
+      "source:evaluation-and-observability"
+    ],
+    "sbom": [
+      "source:secure-mcp-distribution"
     ],
     "scale": [
       "entry:ai-klavis-strata",
@@ -47581,7 +49986,8 @@
       "entry:ai-moxt-mcp-workspace"
     ],
     "scopes": [
-      "practice:data"
+      "practice:data",
+      "source:platform-and-data-connectors"
     ],
     "score": [
       "playbook:project-stack-review",
@@ -47597,6 +50003,7 @@
       "entry:inspect-ai"
     ],
     "scores": [
+      "source:evaluation-and-observability",
       "entry:ai-nordax-mcp"
     ],
     "scoring": [
@@ -47620,6 +50027,7 @@
       "prompt-pattern:bug-debug"
     ],
     "screenshots": [
+      "source:browser-and-ui-verification",
       "practice:evals",
       "prompt-pattern:ui-build",
       "entry:browserbase-mcp"
@@ -47634,6 +50042,7 @@
     "sdk": [
       "entry:model-context-protocol",
       "entry:crewai",
+      "source:documentation-ingestion",
       "entry:openai-agents-sdk",
       "entry:semantic-kernel",
       "entry:vercel-ai-sdk",
@@ -47874,6 +50283,9 @@
     "searches": [
       "entry:ripgrep"
     ],
+    "searches.": [
+      "source:documentation-ingestion"
+    ],
     "searching": [
       "entry:mem0"
     ],
@@ -47889,13 +50301,16 @@
     ],
     "secrets": [
       "playbook:project-stack-review",
+      "source:mcp-core-and-registry",
       "practice:code-review",
       "practice:coding-agents",
       "practice:context-engineering",
+      "source:evaluation-and-observability",
       "practice:observability-and-tracing",
       "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:codex-implementation",
-      "prompt-pattern:memory-policy"
+      "prompt-pattern:memory-policy",
+      "prompt-pattern:source-intake"
     ],
     "secrets.": [
       "practice:security",
@@ -47906,7 +50321,11 @@
       "prompt-pattern:prompt-enhancement"
     ],
     "secure": [
+      "source:secure-mcp-distribution",
       "entry:github-copilot-coding-agent"
+    ],
+    "secure-mcp-distribution": [
+      "source:secure-mcp-distribution"
     ],
     "secure.": [
       "entry:ai-gossiper-shopify-admin-mcp"
@@ -47932,6 +50351,7 @@
     "selection": [
       "playbook:coding-agent-selection",
       "practice:model-and-provider-selection",
+      "practice:research-source-intake",
       "practice:mcp-server-selection",
       "prompt-pattern:mcp-selection",
       "prompt-pattern:provider-selection"
@@ -47967,6 +50387,9 @@
       "playbook:mcp-adoption-review",
       "prompt-pattern:mcp-selection",
       "prompt-pattern:memory-policy"
+    ],
+    "sensitive-connectors": [
+      "source:platform-and-data-connectors"
     ],
     "sensitive-permissions": [
       "entry:vnem-mcp",
@@ -48023,11 +50446,15 @@
       "entry:codebase-memory-mcp",
       "entry:kaimo"
     ],
+    "sensitivity": [
+      "source:platform-and-data-connectors"
+    ],
     "sentiment": [
       "entry:ai-aarna-atars-mcp"
     ],
     "sentry": [
       "practice:mcp-server-selection",
+      "source:platform-and-data-connectors",
       "entry:sentry-mcp"
     ],
     "sentry-mcp": [
@@ -48037,6 +50464,7 @@
       "practice:browser-games",
       "playbook:project-stack-review",
       "playbook:prompt-upgrade",
+      "practice:research-source-intake",
       "practice:code-review",
       "practice:payments",
       "entry:anthropic-multi-agent-research-system",
@@ -48053,6 +50481,9 @@
     ],
     "server": [
       "playbook:mcp-adoption-review",
+      "playbook:source-intake-review",
+      "source:coding-agent-clients",
+      "source:mcp-core-and-registry",
       "practice:backend",
       "practice:mcp-server-selection",
       "entry:ai-abmeter-abmeter",
@@ -48202,6 +50633,7 @@
       "entry:ai-com-mcp-openai-tools",
       "entry:ai-openmandate-mcp",
       "entry:ai-com-mcp-petstore",
+      "prompt-pattern:source-intake",
       "entry:ai-mino-web-agent",
       "entry:ai-artidrop-artidrop",
       "entry:ai-clarid-hmda",
@@ -48209,6 +50641,7 @@
       "entry:ai-com-mcp-linkedin",
       "entry:ai-moxt-mcp-workspace",
       "entry:playwright-mcp",
+      "source:secure-mcp-distribution",
       "entry:letta",
       "entry:supabase-mcp",
       "entry:clude",
@@ -48224,6 +50657,7 @@
       "playbook:mcp-adoption-review",
       "entry:model-context-protocol",
       "practice:agent-tooling",
+      "source:documentation-ingestion",
       "practice:mcp-server-selection",
       "entry:ai-helixar-mcp",
       "entry:ai-com-mcp-registry",
@@ -48231,12 +50665,18 @@
       "prompt-pattern:mcp-selection"
     ],
     "servers.": [
-      "entry:model-context-protocol"
+      "source:mcp-core-and-registry",
+      "entry:model-context-protocol",
+      "source:secure-mcp-distribution"
     ],
     "service": [
       "entry:pydantic-ai",
       "entry:ai-bezal-local-commerce",
+      "source:secure-mcp-distribution",
       "entry:clude"
+    ],
+    "service.": [
+      "source:platform-and-data-connectors"
     ],
     "services": [
       "entry:semantic-kernel",
@@ -48247,6 +50687,7 @@
       "entry:zep"
     ],
     "sessions": [
+      "source:browser-and-ui-verification",
       "entry:ai-nocturnus-logic-server",
       "entry:ai-kawacode-mcp",
       "entry:ai-meminal-meminal",
@@ -48274,6 +50715,7 @@
       "entry:ac-tandem-docs-mcp"
     ],
     "setup.": [
+      "source:platform-and-data-connectors",
       "entry:ai-calendarmcp-server"
     ],
     "several": [
@@ -48344,8 +50786,11 @@
     ],
     "should": [
       "playbook:prompt-upgrade",
+      "practice:research-source-intake",
+      "source:coding-agent-clients",
       "entry:model-context-protocol",
       "practice:code-review",
+      "source:documentation-ingestion",
       "practice:evals",
       "entry:google-agent-development-kit",
       "practice:human-approval-and-durability",
@@ -48360,6 +50805,7 @@
       "entry:langfuse",
       "entry:matter-js",
       "prompt-pattern:memory-policy",
+      "prompt-pattern:source-intake",
       "entry:claude-code-memory",
       "entry:excalibur-js",
       "entry:kaplay",
@@ -48368,7 +50814,8 @@
       "entry:clude"
     ],
     "side": [
-      "practice:human-approval-and-durability"
+      "practice:human-approval-and-durability",
+      "source:platform-and-data-connectors"
     ],
     "sidecar": [
       "prompt-pattern:subagent-delegation"
@@ -48380,13 +50827,17 @@
     "signal": [
       "entry:kaimo"
     ],
+    "signal.": [
+      "playbook:source-intake-review"
+    ],
     "signals": [
       "entry:ai-drillr-drillr",
       "entry:ai-nefesh-human-state",
       "entry:ai-buyersense-buyersense",
       "entry:ai-aarna-atars-mcp",
       "entry:ai-boolsai-signals",
-      "entry:ai-lattiq-x402-trading-signals"
+      "entry:ai-lattiq-x402-trading-signals",
+      "prompt-pattern:source-intake"
     ],
     "signals.": [
       "entry:ai-boolsai-grep",
@@ -48396,10 +50847,14 @@
     "signatures": [
       "entry:dspy"
     ],
+    "signing": [
+      "source:secure-mcp-distribution"
+    ],
     "simd": [
       "entry:rapier-js"
     ],
     "similar": [
+      "source:coding-agent-clients",
       "entry:codex-agents-md"
     ],
     "simple": [
@@ -48504,8 +50959,11 @@
       "practice:code-simplification",
       "playbook:coding-agent-selection",
       "practice:model-and-provider-selection",
+      "playbook:source-intake-review",
+      "practice:research-source-intake",
       "practice:coding-agents",
       "practice:evals",
+      "source:evaluation-and-observability",
       "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:code-simplification",
       "prompt-pattern:eval-design",
@@ -48522,6 +50980,7 @@
     ],
     "smallest": [
       "practice:browser-games",
+      "playbook:source-intake-review",
       "prompt-pattern:codex-implementation",
       "prompt-pattern:bug-debug"
     ],
@@ -48529,10 +50988,13 @@
       "entry:ai-djwizard-tvwizard"
     ],
     "smoke": [
+      "playbook:source-intake-review",
+      "practice:research-source-intake",
       "entry:vnem-mcp"
     ],
     "snapshots": [
       "practice:code-simplification",
+      "source:browser-and-ui-verification",
       "prompt-pattern:code-simplification",
       "entry:playwright-mcp"
     ],
@@ -48541,6 +51003,8 @@
     ],
     "so": [
       "practice:browser-games",
+      "source:documentation-ingestion",
+      "source:evaluation-and-observability",
       "practice:observability-and-tracing",
       "entry:context7-mcp",
       "entry:ai-fathom-api-mcp",
@@ -48581,6 +51045,7 @@
       "entry:ai-ludo-game-assets"
     ],
     "source-backed": [
+      "source:documentation-ingestion",
       "practice:mcp-server-selection",
       "entry:ai-exa-exa",
       "entry:anthropic-multi-agent-research-system",
@@ -48615,6 +51080,9 @@
     "specific": [
       "prompt-pattern:prompt-enhancement"
     ],
+    "specification": [
+      "source:mcp-core-and-registry"
+    ],
     "specificity": [
       "practice:prompt-engineering"
     ],
@@ -48622,11 +51090,13 @@
       "prompt-pattern:bug-debug"
     ],
     "speed": [
+      "source:evaluation-and-observability",
       "practice:search",
       "prompt-pattern:agent-upgrade-plan"
     ],
     "spend": [
       "practice:mcp-server-selection",
+      "source:platform-and-data-connectors",
       "entry:ai-autonomad-computeback"
     ],
     "spending": [
@@ -48665,6 +51135,9 @@
     "sso": [
       "entry:ai-byteray-byteray-mcp"
     ],
+    "stability": [
+      "source:mcp-core-and-registry"
+    ],
     "stable": [
       "practice:code-simplification",
       "entry:codex-agents-md",
@@ -48695,6 +51168,7 @@
     "stale": [
       "practice:context-engineering",
       "practice:deployment",
+      "source:documentation-ingestion",
       "practice:security"
     ],
     "standalone": [
@@ -48715,6 +51189,7 @@
     "start": [
       "playbook:coding-agent-selection",
       "practice:model-and-provider-selection",
+      "practice:research-source-intake",
       "practice:code-review",
       "practice:data",
       "practice:frontend",
@@ -48743,6 +51218,7 @@
       "prompt-pattern:research"
     ],
     "stateful": [
+      "source:browser-and-ui-verification",
       "entry:langgraph",
       "entry:letta"
     ],
@@ -48758,6 +51234,7 @@
     ],
     "static": [
       "practice:code-simplification",
+      "source:browser-and-ui-verification",
       "practice:code-review",
       "practice:search",
       "entry:ai-getperspective-mcp"
@@ -48765,6 +51242,9 @@
     "static-analysis": [
       "entry:jscpd",
       "entry:knip"
+    ],
+    "status": [
+      "source:secure-mcp-distribution"
     ],
     "status.": [
       "practice:agent-tooling"
@@ -48792,6 +51272,7 @@
       "entry:ai-agenticshelf-mcp"
     ],
     "stop": [
+      "source:documentation-ingestion",
       "entry:ai-obris-mcp"
     ],
     "storage": [
@@ -48847,6 +51328,7 @@
       "practice:payments"
     ],
     "stripe": [
+      "source:platform-and-data-connectors",
       "entry:stripe-agent-toolkit"
     ],
     "stripe-agent-toolkit": [
@@ -48913,10 +51395,12 @@
       "entry:openhands"
     ],
     "subagent": [
+      "source:coding-agent-clients",
       "practice:subagents-and-multi-agent",
       "prompt-pattern:subagent-delegation"
     ],
     "subagents": [
+      "source:coding-agent-clients",
       "practice:subagents-and-multi-agent",
       "entry:anthropic-multi-agent-research-system",
       "prompt-pattern:subagent-delegation",
@@ -48937,19 +51421,25 @@
     "such": [
       "practice:human-approval-and-durability"
     ],
+    "suggest": [
+      "practice:research-source-intake"
+    ],
     "suites": [
+      "source:evaluation-and-observability",
       "entry:promptfoo"
     ],
     "suites.": [
       "entry:promptfoo"
     ],
     "summaries": [
+      "playbook:source-intake-review",
       "practice:data",
       "entry:ai-cosmonote-notes",
       "entry:ai-donethat-donethat"
     ],
     "supabase": [
       "practice:mcp-server-selection",
+      "source:platform-and-data-connectors",
       "entry:supabase-mcp",
       "entry:clude"
     ],
@@ -48974,6 +51464,8 @@
     "support": [
       "playbook:coding-agent-selection",
       "practice:model-and-provider-selection",
+      "source:coding-agent-clients",
+      "source:browser-and-ui-verification",
       "practice:human-approval-and-durability",
       "prompt-pattern:provider-selection",
       "entry:babylon-js",
@@ -49035,6 +51527,9 @@
     "swe-bench": [
       "entry:swe-agent"
     ],
+    "switch": [
+      "source:evaluation-and-observability"
+    ],
     "switch.": [
       "playbook:coding-agent-selection"
     ],
@@ -49073,6 +51568,7 @@
     "systems": [
       "entry:google-agent2agent-protocol",
       "practice:deployment",
+      "source:evaluation-and-observability",
       "practice:frontend",
       "practice:human-approval-and-durability",
       "entry:anthropic-building-effective-agents",
@@ -49084,6 +51580,7 @@
     ],
     "systems.": [
       "playbook:project-stack-review",
+      "practice:research-source-intake",
       "entry:google-agent2agent-protocol",
       "practice:observability-and-tracing",
       "entry:ai-abmeter-abmeter",
@@ -49290,6 +51787,7 @@
     "tasks": [
       "entry:google-agent2agent-protocol",
       "entry:crewai",
+      "source:evaluation-and-observability",
       "practice:human-approval-and-durability",
       "entry:anthropic-multi-agent-research-system",
       "entry:inspect-ai",
@@ -49320,6 +51818,7 @@
       "entry:openai-agents-sdk",
       "practice:subagents-and-multi-agent",
       "entry:continue-dev",
+      "source:secure-mcp-distribution",
       "entry:anthropic-claude-code",
       "entry:swarms",
       "entry:codebase-memory-mcp"
@@ -49360,6 +51859,7 @@
       "entry:ai-aarna-atars-mcp"
     ],
     "telemetry": [
+      "source:evaluation-and-observability",
       "practice:observability-and-tracing",
       "entry:agentops"
     ],
@@ -49375,6 +51875,7 @@
       "prompt-pattern:memory-policy"
     ],
     "terminal": [
+      "source:coding-agent-clients",
       "entry:codex-agents-md",
       "entry:ai-agenticterminal-directory",
       "entry:aider",
@@ -49403,6 +51904,8 @@
       "practice:search"
     ],
     "test": [
+      "playbook:source-intake-review",
+      "practice:research-source-intake",
       "practice:evals",
       "entry:ai-dreamlit-mcp",
       "entry:ai-alpic-test-test-mcp-server",
@@ -49484,7 +51987,9 @@
     "than": [
       "practice:browser-games",
       "practice:model-and-provider-selection",
+      "source:browser-and-ui-verification",
       "entry:crewai",
+      "source:documentation-ingestion",
       "entry:semantic-kernel",
       "entry:vercel-ai-sdk",
       "entry:phaser",
@@ -49513,7 +52018,8 @@
       "entry:ai-jeda-jeda-ai"
     ],
     "third-party": [
-      "entry:vnem-mcp"
+      "entry:vnem-mcp",
+      "source:secure-mcp-distribution"
     ],
     "thousand": [
       "entry:ai-mino-web-agent"
@@ -49545,7 +52051,9 @@
     ],
     "through": [
       "entry:model-context-protocol",
+      "source:browser-and-ui-verification",
       "entry:microsoft-autogen",
+      "source:platform-and-data-connectors",
       "entry:openai-prompt-optimizer",
       "entry:vnem-mcp",
       "prompt-pattern:agent-upgrade-plan",
@@ -49556,6 +52064,9 @@
       "entry:browserbase-mcp",
       "entry:letta",
       "entry:supabase-mcp"
+    ],
+    "tie": [
+      "practice:research-source-intake"
     ],
     "tiers": [
       "entry:vnem-mcp"
@@ -49597,14 +52108,21 @@
     ],
     "to": [
       "playbook:project-stack-review",
+      "playbook:source-intake-review",
+      "practice:research-source-intake",
+      "source:coding-agent-clients",
       "entry:model-context-protocol",
       "entry:google-agent2agent-protocol",
+      "source:browser-and-ui-verification",
       "practice:coding-agents",
       "practice:data",
+      "source:documentation-ingestion",
       "practice:evals",
+      "source:evaluation-and-observability",
       "entry:google-agent-development-kit",
       "entry:microsoft-autogen",
       "practice:observability-and-tracing",
+      "source:platform-and-data-connectors",
       "entry:ai-agentdm-agentdm",
       "entry:ai-imboard-dossier",
       "entry:ai-inflowpay-app-inflow",
@@ -49633,6 +52151,7 @@
       "entry:ai-namewhisper-ens-tools",
       "prompt-pattern:research",
       "entry:sentry-mcp",
+      "prompt-pattern:source-intake",
       "prompt-pattern:subagent-delegation",
       "entry:aider",
       "entry:claude-code-memory",
@@ -49640,6 +52159,7 @@
       "entry:playcanvas-engine",
       "entry:playwright-mcp",
       "entry:rapier-js",
+      "source:secure-mcp-distribution",
       "entry:three-js",
       "entry:ast-grep",
       "entry:anthropic-claude-code",
@@ -49674,10 +52194,14 @@
     ],
     "tool": [
       "playbook:mcp-adoption-review",
+      "practice:research-source-intake",
+      "source:mcp-core-and-registry",
       "entry:model-context-protocol",
       "practice:agent-tooling",
       "practice:backend",
+      "source:evaluation-and-observability",
       "practice:observability-and-tracing",
+      "source:platform-and-data-connectors",
       "practice:security",
       "entry:vercel-ai-sdk",
       "entry:ai-klavis-strata",
@@ -49692,6 +52216,7 @@
       "entry:anthropic-claude-code"
     ],
     "tool-call": [
+      "source:evaluation-and-observability",
       "practice:observability-and-tracing"
     ],
     "tool-calling": [
@@ -49700,6 +52225,9 @@
     ],
     "tool-permissions": [
       "entry:claude-code-subagents"
+    ],
+    "tool-search": [
+      "source:coding-agent-clients"
     ],
     "tool-side-effects": [
       "entry:swarms"
@@ -49730,6 +52258,8 @@
       "playbook:coding-agent-selection",
       "playbook:mcp-adoption-review",
       "playbook:project-stack-review",
+      "source:coding-agent-clients",
+      "source:mcp-core-and-registry",
       "entry:model-context-protocol",
       "practice:agent-tooling",
       "entry:crewai",
@@ -49926,6 +52456,7 @@
       "prompt-pattern:codex-implementation"
     ],
     "trace": [
+      "source:evaluation-and-observability",
       "entry:openai-agents-sdk",
       "entry:arize-phoenix",
       "entry:langfuse",
@@ -49941,6 +52472,7 @@
     ],
     "traces": [
       "playbook:coding-agent-selection",
+      "source:evaluation-and-observability",
       "practice:observability-and-tracing",
       "entry:arize-phoenix",
       "entry:langfuse",
@@ -49950,6 +52482,7 @@
     ],
     "tracing": [
       "practice:model-and-provider-selection",
+      "source:evaluation-and-observability",
       "practice:observability-and-tracing",
       "entry:openai-agents-sdk",
       "entry:arize-phoenix",
@@ -49958,10 +52491,16 @@
       "entry:langsmith"
     ],
     "track": [
+      "source:coding-agent-clients",
+      "source:mcp-core-and-registry",
+      "source:browser-and-ui-verification",
+      "source:evaluation-and-observability",
       "practice:observability-and-tracing",
+      "source:platform-and-data-connectors",
       "practice:security",
       "entry:ai-compeller-compel",
       "entry:ai-mailjunky-mcp",
+      "source:secure-mcp-distribution",
       "entry:jscpd",
       "entry:kaimo"
     ],
@@ -50010,6 +52549,10 @@
     "translation": [
       "entry:ai-i18nagent-i18n-agent"
     ],
+    "transport": [
+      "source:coding-agent-clients",
+      "source:mcp-core-and-registry"
+    ],
     "travel": [
       "entry:ai-autonomad-travel"
     ],
@@ -50024,16 +52567,23 @@
       "entry:phaser"
     ],
     "trust": [
+      "playbook:source-intake-review",
+      "practice:research-source-intake",
       "practice:search",
       "practice:security",
       "entry:ai-agenttrust-mcp-server",
       "entry:ai-limitguard-api-trust-intelligence",
       "entry:vnem-mcp",
       "entry:ai-agentrapay-agentra",
-      "entry:ai-nordax-mcp"
+      "entry:ai-nordax-mcp",
+      "prompt-pattern:source-intake",
+      "source:secure-mcp-distribution"
     ],
     "trusting": [
       "practice:coding-agents"
+    ],
+    "truth": [
+      "source:mcp-core-and-registry"
     ],
     "ts": [
       "entry:ai-example4-xmp4"
@@ -50120,6 +52670,8 @@
     ],
     "ui": [
       "practice:browser-games",
+      "practice:research-source-intake",
+      "source:browser-and-ui-verification",
       "practice:frontend",
       "practice:search",
       "entry:vercel-ai-sdk",
@@ -50142,6 +52694,9 @@
     ],
     "unbounded": [
       "practice:data"
+    ],
+    "unclear": [
+      "source:documentation-ingestion"
     ],
     "under": [
       "entry:openai-codex-cli",
@@ -50417,7 +52972,11 @@
     ],
     "update": [
       "practice:browser-games",
-      "prompt-pattern:codex-implementation"
+      "prompt-pattern:codex-implementation",
+      "source:secure-mcp-distribution"
+    ],
+    "updates": [
+      "source:mcp-core-and-registry"
     ],
     "updates.": [
       "practice:agent-tooling"
@@ -50430,6 +52989,7 @@
       "practice:model-and-provider-selection",
       "playbook:project-stack-review",
       "playbook:prompt-upgrade",
+      "practice:research-source-intake",
       "practice:code-review",
       "practice:deployment",
       "practice:prompt-engineering",
@@ -50446,6 +53006,8 @@
       "practice:security"
     ],
     "urls": [
+      "practice:research-source-intake",
+      "source:documentation-ingestion",
       "entry:ai-artidrop-artidrop"
     ],
     "urls.": [
@@ -50480,6 +53042,7 @@
       "entry:ai-meminal-meminal",
       "entry:ai-donethat-donethat",
       "entry:matter-js",
+      "prompt-pattern:source-intake",
       "entry:three-js"
     ],
     "useful.": [
@@ -50566,6 +53129,9 @@
     "validates": [
       "entry:ai-geodesiclabs-governance-platform"
     ],
+    "validating": [
+      "source:browser-and-ui-verification"
+    ],
     "validator": [
       "entry:ai-clarid-hmda"
     ],
@@ -50591,15 +53157,22 @@
     "vector": [
       "entry:graphiti"
     ],
+    "velocity": [
+      "source:evaluation-and-observability"
+    ],
     "vendor": [
+      "practice:research-source-intake",
       "entry:google-agent2agent-protocol",
       "entry:ai-boolsai-directory",
       "entry:ai-boolsai-grep"
     ],
     "vendor-maintained": [
       "playbook:mcp-adoption-review",
+      "playbook:source-intake-review",
       "practice:mcp-server-selection",
-      "prompt-pattern:mcp-selection"
+      "source:platform-and-data-connectors",
+      "prompt-pattern:mcp-selection",
+      "prompt-pattern:source-intake"
     ],
     "vendor.": [
       "entry:google-agent2agent-protocol"
@@ -50622,6 +53195,9 @@
       "playbook:mcp-adoption-review",
       "playbook:project-stack-review",
       "playbook:prompt-upgrade",
+      "playbook:source-intake-review",
+      "practice:research-source-intake",
+      "source:browser-and-ui-verification",
       "practice:coding-agents",
       "practice:evals",
       "practice:frontend",
@@ -50635,9 +53211,13 @@
       "prompt-pattern:ui-build",
       "prompt-pattern:prompt-enhancement",
       "prompt-pattern:provider-selection",
+      "prompt-pattern:source-intake",
       "prompt-pattern:subagent-delegation",
       "entry:babylon-js",
       "entry:stripe-agent-toolkit"
+    ],
+    "verification-tooling": [
+      "source:browser-and-ui-verification"
     ],
     "verification.": [
       "practice:code-simplification",
@@ -50872,6 +53452,7 @@
     ],
     "verify": [
       "playbook:mcp-adoption-review",
+      "source:browser-and-ui-verification",
       "practice:mcp-server-selection",
       "entry:ai-imboard-dossier",
       "entry:ai-agenticterminal-directory",
@@ -50896,6 +53477,7 @@
       "entry:claude-code-memory"
     ],
     "versions": [
+      "source:mcp-core-and-registry",
       "entry:langfuse"
     ],
     "versions.": [
@@ -50944,7 +53526,9 @@
       "entry:agentops"
     ],
     "visible": [
-      "practice:browser-games"
+      "practice:browser-games",
+      "source:browser-and-ui-verification",
+      "prompt-pattern:source-intake"
     ],
     "visual": [
       "practice:frontend",
@@ -50964,11 +53548,23 @@
       "practice:browser-games"
     ],
     "vnem": [
+      "playbook:source-intake-review",
+      "practice:research-source-intake",
+      "source:coding-agent-clients",
+      "source:browser-and-ui-verification",
+      "source:documentation-ingestion",
+      "source:evaluation-and-observability",
+      "source:platform-and-data-connectors",
       "entry:vnem-mcp",
-      "prompt-pattern:prompt-enhancement"
+      "prompt-pattern:prompt-enhancement",
+      "prompt-pattern:source-intake",
+      "source:secure-mcp-distribution"
     ],
     "vnem-mcp": [
       "entry:vnem-mcp"
+    ],
+    "vnem.": [
+      "playbook:source-intake-review"
     ],
     "voice.": [
       "playbook:prompt-upgrade"
@@ -51177,7 +53773,8 @@
       "entry:github-copilot-coding-agent"
     ],
     "wants": [
-      "entry:openai-agents-sdk"
+      "entry:openai-agents-sdk",
+      "source:secure-mcp-distribution"
     ],
     "warehouse": [
       "entry:ai-kubit-mcp-server",
@@ -51200,9 +53797,16 @@
       "practice:code-simplification",
       "prompt-pattern:code-simplification"
     ],
+    "wasting": [
+      "source:documentation-ingestion"
+    ],
     "watch": [
       "entry:covenant-research",
       "entry:kaimo"
+    ],
+    "watched": [
+      "playbook:source-intake-review",
+      "prompt-pattern:source-intake"
     ],
     "watching": [
       "entry:kaimo"
@@ -51216,6 +53820,8 @@
     ],
     "web": [
       "practice:browser-games",
+      "source:documentation-ingestion",
+      "source:platform-and-data-connectors",
       "entry:vercel-ai-sdk",
       "entry:ai-com-mcp-skills-search",
       "entry:ai-agentic-news-mcp",
@@ -51262,6 +53868,7 @@
       "entry:firecrawl-mcp"
     ],
     "web.": [
+      "source:platform-and-data-connectors",
       "entry:ai-nothumansearch-search"
     ],
     "webassembly": [
@@ -51326,6 +53933,7 @@
     ],
     "what": [
       "playbook:prompt-upgrade",
+      "playbook:source-intake-review",
       "practice:data",
       "practice:evals",
       "practice:payments",
@@ -51336,7 +53944,8 @@
       "prompt-pattern:prompt-enhancement",
       "prompt-pattern:mcp-selection",
       "prompt-pattern:memory-policy",
-      "prompt-pattern:provider-selection"
+      "prompt-pattern:provider-selection",
+      "prompt-pattern:source-intake"
     ],
     "where": [
       "entry:google-agent2agent-protocol",
@@ -51369,10 +53978,17 @@
     ],
     "whether": [
       "playbook:mcp-adoption-review",
+      "playbook:source-intake-review",
+      "practice:research-source-intake",
+      "source:evaluation-and-observability",
       "practice:security",
       "entry:anthropic-building-effective-agents",
       "entry:anthropic-multi-agent-research-system",
+      "prompt-pattern:source-intake",
       "prompt-pattern:subagent-delegation"
+    ],
+    "which": [
+      "prompt-pattern:source-intake"
     ],
     "while": [
       "prompt-pattern:code-simplification",
@@ -51391,8 +54007,11 @@
       "entry:cursor-agent"
     ],
     "why": [
+      "playbook:source-intake-review",
+      "source:evaluation-and-observability",
       "prompt-pattern:bug-debug",
-      "prompt-pattern:ui-build"
+      "prompt-pattern:ui-build",
+      "prompt-pattern:source-intake"
     ],
     "widely": [
       "entry:three-js"
@@ -51401,6 +54020,7 @@
       "practice:frontend"
     ],
     "windows": [
+      "source:coding-agent-clients",
       "entry:claude-code-subagents"
     ],
     "windsurf": [
@@ -51557,6 +54177,7 @@
     ],
     "without": [
       "playbook:mcp-adoption-review",
+      "source:evaluation-and-observability",
       "practice:human-approval-and-durability",
       "practice:prompt-engineering",
       "practice:security",
@@ -51614,10 +54235,12 @@
       "playbook:coding-agent-selection",
       "playbook:mcp-adoption-review",
       "practice:model-and-provider-selection",
+      "playbook:source-intake-review",
       "entry:model-context-protocol",
       "practice:agent-tooling",
       "entry:google-agent2agent-protocol",
       "entry:codex-agents-md",
+      "source:evaluation-and-observability",
       "practice:frontend",
       "practice:human-approval-and-durability",
       "practice:mcp-server-selection",
@@ -51642,6 +54265,7 @@
     "workflow.": [
       "practice:model-and-provider-selection",
       "practice:agent-tooling",
+      "source:browser-and-ui-verification",
       "practice:mcp-server-selection",
       "prompt-pattern:eval-design",
       "prompt-pattern:mcp-selection",
@@ -51912,6 +54536,7 @@
       "playbook:project-stack-review",
       "prompt-pattern:prompt-enhancement",
       "entry:matter-js",
+      "prompt-pattern:source-intake",
       "entry:babylon-js",
       "entry:phaser",
       "entry:three-js",
@@ -51919,6 +54544,12 @@
     ],
     "wraps": [
       "entry:ai-com-mcp-openai-tools"
+    ],
+    "write": [
+      "playbook:source-intake-review",
+      "source:mcp-core-and-registry",
+      "source:platform-and-data-connectors",
+      "prompt-pattern:source-intake"
     ],
     "write-once": [
       "entry:ai-cueapi-mcp"
@@ -51930,6 +54561,7 @@
       "practice:coding-agents",
       "practice:context-engineering",
       "practice:human-approval-and-durability",
+      "source:platform-and-data-connectors",
       "prompt-pattern:agent-upgrade-plan"
     ],
     "writes-agent-config": [

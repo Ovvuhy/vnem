@@ -25,6 +25,7 @@ vnem is meant to improve the judgment of coding agents, not replace maintainer r
 - **Better recommendations:** agents compare current MCP servers, coding agents, frameworks, evals, memory systems, and workflows before proposing a stack change.
 - **Safer adoption:** each entry tracks source links, licenses, permissions, risk flags, trust tier, and install notes.
 - **Stronger AI selection:** the install pack includes a decision rubric and playbooks for comparing Codex, Claude Code, Gemini/ADK, MCP tools, and agent workflows by fit, risk, verification, cost, and reversibility.
+- **Shared research layer:** source radar maps official docs, registries, MCP sources, evals, and verification sources so agents know where to research before burning context from scratch.
 - **Clearer prompts:** the install pack includes prompt-engineering guidance and reusable prompt patterns for Codex-style implementation, review, debugging, research, eval, and MCP-selection tasks.
 - **Faster repo audits:** agents inspect the project first, then separate stale or risky choices from realistic drop-in improvements.
 
@@ -33,8 +34,9 @@ vnem is meant to improve the judgment of coding agents, not replace maintainer r
 1. Install the read-only pack into a project.
 2. Ask a coding agent to read `.vnem/AGENTS.md`.
 3. The agent uses `.vnem/search-index.json`, `.vnem/best-practices.md`, decision playbooks, and `.vnem/prompt-*` files while reviewing the repo.
-4. The agent scores options against repo fit, capability gain, source trust, permission risk, verification path, and reversibility.
-5. The agent recommends options and asks before changing code, installing packages, using secrets, or touching external systems.
+4. For current docs, MCP discovery, or benchmark claims, the agent checks `.vnem/source-radar.json` before broad web search.
+5. The agent scores options against repo fit, capability gain, source trust, permission risk, verification path, and reversibility.
+6. The agent recommends options and asks before changing code, installing packages, using secrets, or touching external systems.
 
 ## Install The Pack
 
@@ -51,6 +53,7 @@ In a clean project folder, this extracts:
 - `AGENTS.md`
 - `.vnem/AGENTS.md`
 - `.vnem/search-index.json`
+- `.vnem/source-radar.json`
 - `.vnem/best-practices.md`
 - `.vnem/prompt-engineering.md`
 - `.vnem/prompt-patterns.json`
@@ -111,6 +114,7 @@ Main tools:
 - `vnem_get_entry`: fetch one registry entry with provenance, install notes, permissions, and risks.
 - `vnem_compare`: compare two or more registry entries.
 - `vnem_best_practices`: find matching best-practice and prompt-pattern notes.
+- `vnem_sources`: find source-radar entries for upstream docs, registries, MCP sources, and benchmark evidence.
 
 You can also install the bundled Codex skill from this checkout:
 
@@ -145,11 +149,12 @@ The pack is guidance and search data. It does not run the tools it recommends.
 | `public/install/*` | Hosted read-only install-pack files. |
 | `public/install.tgz` | Tiny archive used by the one-line install command. |
 | `.vnem/` | Generated local pack for dogfooding this repo. |
+| `landing/` | Static public landing page and blog bundle for the website. |
 | `llms.txt` | Compact LLM entrypoint. |
 | `llms-full.txt` | Full generated registry context for LLMs. |
 | `HERMES.md` | Operating contract for recurring agentic discovery and daily ecosystem checks. |
 
-The marketing site source is intentionally not part of this repository. This repo is the open registry, generation system, and install pack.
+This repo is the open registry, generation system, install pack, MCP server, and static public site source.
 
 For product direction, public-site clarity, and future commercial boundaries, see [`PRODUCT.md`](PRODUCT.md).
 

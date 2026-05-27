@@ -1,6 +1,6 @@
 # vnem Prompt Engineering
 
-Generated: 2026-05-27T08:24:59.373Z
+Generated: 2026-05-27T12:28:45.456Z
 
 Use this when the user asks to improve, rewrite, harden, or operationalize a prompt. The main trigger phrase is `use vnem to enhance this prompt`.
 
@@ -229,6 +229,38 @@ Output:
 - Comparison of top options.
 - Recommendation with caveats.
 - Links to sources used.
+```
+
+### Source Intake Prompt
+
+Prompt an agent to decide whether a new source should become a watched source, registry entry, best-practice note, prompt pattern, or eval fixture.
+
+Intents: source radar, research layer, source intake, mcp registry, docs mcp, benchmark evidence
+
+Template:
+
+```text
+Review this source for Vnem intake.
+
+Source:
+<URL, repository, docs page, registry feed, MCP server, benchmark, or paper>
+
+Decision Context:
+<which agent decision this source could improve>
+
+Review Criteria:
+- Is it official, canonical, vendor-maintained, or otherwise high-signal?
+- What permissions, secrets, network access, write access, or paid APIs are involved?
+- What license, freshness, maintenance, and provenance signals are visible?
+- Should Vnem add a watched source, registry entry, best-practice note, prompt pattern, eval fixture, or no change?
+- What verification would prove the source is useful and safe enough to promote?
+
+Output:
+- Source candidate.
+- Why it matters.
+- Trust and risk.
+- Intake path.
+- Verification plan.
 ```
 
 ### Subagent Delegation Prompt

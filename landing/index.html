@@ -111,6 +111,10 @@ npm run doctor -- /path/to/project</code></pre>
               <p>Searchable guidance for MCP servers, skills, agent frameworks, evals, memory layers, search tools, identity, payments, and workflow patterns.</p>
             </article>
             <article>
+              <h2>Source radar</h2>
+              <p>Official docs, registries, MCP sources, eval frameworks, and verification sources are mapped so agents research from high-signal upstreams first.</p>
+            </article>
+            <article>
               <h2>Repo-aware review protocol</h2>
               <p>The agent inspects manifests and configs first, then separates stale or risky choices from better current options.</p>
             </article>
@@ -144,12 +148,13 @@ npm run doctor -- /path/to/project</code></pre>
         <div class="section-inner file-grid">
           <div>
             <p class="section-kicker">inside the pack</p>
-            <h2>Six local files. Better agent judgment.</h2>
+            <h2>Seven local files. Better agent judgment.</h2>
           </div>
           <ul class="file-list">
             <li><code>AGENTS.md</code><span>root pointer that tells agents to read vnem automatically</span></li>
             <li><code>.vnem/AGENTS.md</code><span>how the agent should read and report</span></li>
             <li><code>.vnem/search-index.json</code><span>tools, MCPs, scores, freshness, risk flags</span></li>
+            <li><code>.vnem/source-radar.json</code><span>official docs, registries, MCP sources, evals, verification inputs</span></li>
             <li><code>.vnem/best-practices.md</code><span>current stack guidance by project area</span></li>
             <li><code>.vnem/prompt-engineering.md</code><span>prompt enhancement protocol</span></li>
             <li><code>.vnem/prompt-patterns.json</code><span>machine-readable task patterns</span></li>

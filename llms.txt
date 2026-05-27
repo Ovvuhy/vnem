@@ -7,7 +7,7 @@ When installed, vnem should be used automatically for build, review, optimizatio
 
 Safe install command: curl -fsSL https://raw.githubusercontent.com/naellisim/vnem/main/public/install.tgz | tar -xz
 
-Installed files: .vnem/AGENTS.md, .vnem/search-index.json, .vnem/best-practices.md, .vnem/prompt-engineering.md, .vnem/prompt-patterns.json
+Installed files: .vnem/AGENTS.md, .vnem/search-index.json, .vnem/source-radar.json, .vnem/best-practices.md, .vnem/prompt-engineering.md, .vnem/prompt-patterns.json
 Canonical API: /api/index.json
 Agent instructions: /install/AGENTS.md
 Full index: /llms-full.txt

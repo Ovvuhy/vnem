@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-27T08:24:59.373Z",
+  "generated_at": "2026-05-27T12:28:45.456Z",
   "schema_version": "1.0.0",
   "safety": {
     "mode": "read-only-prompt-patterns",
@@ -127,6 +127,25 @@
         "recommendation"
       ],
       "template": "Research this question using current, primary sources where possible.\n\nQuestion:\n<research question>\n\nDecision Criteria:\n- Fit for the stated use case.\n- Freshness and maintenance.\n- License, security, data, and operational risk.\n- Integration effort and reversibility.\n\nOutput:\n- Short answer.\n- Comparison of top options.\n- Recommendation with caveats.\n- Links to sources used."
+    },
+    {
+      "id": "source-intake",
+      "title": "Source Intake Prompt",
+      "intents": [
+        "source radar",
+        "research layer",
+        "source intake",
+        "mcp registry",
+        "docs mcp",
+        "benchmark evidence"
+      ],
+      "summary": "Prompt an agent to decide whether a new source should become a watched source, registry entry, best-practice note, prompt pattern, or eval fixture.",
+      "output_modes": [
+        "source_review",
+        "intake_path",
+        "verification_plan"
+      ],
+      "template": "Review this source for Vnem intake.\n\nSource:\n<URL, repository, docs page, registry feed, MCP server, benchmark, or paper>\n\nDecision Context:\n<which agent decision this source could improve>\n\nReview Criteria:\n- Is it official, canonical, vendor-maintained, or otherwise high-signal?\n- What permissions, secrets, network access, write access, or paid APIs are involved?\n- What license, freshness, maintenance, and provenance signals are visible?\n- Should Vnem add a watched source, registry entry, best-practice note, prompt pattern, eval fixture, or no change?\n- What verification would prove the source is useful and safe enough to promote?\n\nOutput:\n- Source candidate.\n- Why it matters.\n- Trust and risk.\n- Intake path.\n- Verification plan."
     },
     {
       "id": "subagent-delegation",

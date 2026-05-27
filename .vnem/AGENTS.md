@@ -13,6 +13,7 @@ You are reading a read-only vnem knowledge pack installed in this repository.
 ## Files To Read
 
 - `.vnem/search-index.json`: compact local search index for tools, skills, MCP servers, and best-practice notes.
+- `.vnem/source-radar.json`: source intake map for official docs, registries, MCP sources, evals, and verification sources.
 - `.vnem/best-practices.md`: current guidance by project area.
 - `.vnem/prompt-engineering.md`: prompt enhancement protocol and Codex-oriented prompt guidance.
 - `.vnem/prompt-patterns.json`: machine-readable prompt patterns for common agent tasks.
@@ -43,11 +44,12 @@ Prefer the current stack when the recommendation cannot clear the rubric with ev
 1. Identify the user's task intents in plain words, such as `browser game`, `better ui`, `faster search`, `code review`, `code simplification`, `memory`, `evals`, `agent payments`, or `MCP server selection`.
 2. Read `.vnem/search-index.json` and expand those intents with `intent_aliases`.
 3. Check `intent_routes` for the closest matching task. Read the listed `read_first` documents before choosing a stack.
-4. Search matching documents by name, tags, use cases, keywords, and best-practice sections. Read `.vnem/best-practices.md` for any matching section.
-5. Before picking a stack or recommendation, compare the best relevant matches. Prefer higher `score`, stronger `source_confidence`, fresher `freshness`, clearer licenses, fewer `risk_flags`, and stronger decision-rubric fit.
-6. Score important options against the decision rubric. Prefer no change when no option has a clear, verifiable advantage.
-7. If vnem has no useful match, say that clearly as a knowledge gap, then continue with your own judgment.
-8. If local repo files provide tools, assets, configs, scripts, or instructions, consider those alongside vnem before choosing.
+4. If the task depends on current docs, MCP discovery, benchmarks, or upstream tool selection, read `.vnem/source-radar.json` and prefer official or high-signal sources before broader web search.
+5. Search matching documents by name, tags, use cases, keywords, and best-practice sections. Read `.vnem/best-practices.md` for any matching section.
+6. Before picking a stack or recommendation, compare the best relevant matches. Prefer higher `score`, stronger `source_confidence`, fresher `freshness`, clearer licenses, fewer `risk_flags`, and stronger decision-rubric fit.
+7. Score important options against the decision rubric. Prefer no change when no option has a clear, verifiable advantage.
+8. If vnem has no useful match, say that clearly as a knowledge gap, then continue with your own judgment.
+9. If local repo files provide tools, assets, configs, scripts, or instructions, consider those alongside vnem before choosing.
 
 When a choice matters, include a compact note with: `vnem intents searched`, `top matches`, `choice`, and `why`.
 
@@ -88,6 +90,19 @@ Use this before installing or recommending MCP servers and other agent-callable 
 5. Do not install, execute, or configure a server without explicit user approval.
 
 Output sections: `Workflow need`, `Candidate tools`, `Permission risks`, `Verification plan`, `Ask before changing`
+
+### Source Intake Review
+
+Use this when deciding whether an upstream doc, MCP server, registry, benchmark, or agent workflow source belongs in Vnem.
+
+1. Classify the source as protocol docs, client docs, registry feed, MCP server, eval/observability, prompt pattern, or product signal.
+2. Prefer official docs, canonical repositories, vendor-maintained MCPs, and sources with llms.txt or clear machine-readable indexes.
+3. Record provenance, license posture, freshness, permissions, risk flags, and what agent decision the source improves.
+4. Do not copy long upstream documentation into Vnem; link to sources and write original summaries or small metadata entries.
+5. Choose the smallest artifact: watched source, registry entry, best-practice note, prompt pattern, eval fixture, or no change.
+6. Require a verification path before promoting trust: link check, local MCP smoke test, install review, or before/after agent benchmark.
+
+Output sections: `Source candidate`, `Why it matters`, `Trust and risk`, `Intake path`, `Verification`
 
 ### Prompt Upgrade
 

@@ -1,6 +1,6 @@
 # vnem Daily Signals
 
-Generated: 2026-05-27T08:25:10.714Z
+Generated: 2026-05-27T12:28:50.969Z
 
 This digest is designed for maintainers. It summarizes source-backed candidates and stable best-practice signals; it does not auto-promote entries into the registry.
 
@@ -13,11 +13,11 @@ This digest is designed for maintainers. It summarizes source-backed candidates 
 - Code Simplification And Minimal Refactors: Simplify code by preserving behavior first, deleting proven waste, reducing duplication, and using the project's existing abstractions before introducing new ones.
 - Browser Games And Interactive Canvas: For browser-native games, choose the lightest proven stack that can deliver real playability: responsive rendering, input, rules, state transitions, visible feedback, accessible UI, and browser-verified behavior.
 - Model And Provider Selection: Choose Codex, Claude Code, Gemini/ADK, framework agents, or model APIs by workflow fit, permissions, eval evidence, and operational cost rather than brand preference.
+- Research Source Intake: Treat Vnem as a source router, not a document dump: capture official, current, machine-readable sources that help agents make better decisions before editing.
 - Agent Tooling: Treat MCP servers, skills, prompts, and tools as versioned capabilities with provenance, permission notes, and review status.
 - Backend And APIs: Use boring, observable APIs with typed boundaries, explicit auth, and generated clients when agents need reliable integration points.
 - Code Review And Upgrade Audits: Project-review agents should inspect manifests, framework configs, dependency age, security posture, and available drop-in improvements before proposing code changes.
 - Coding Agents: Give repository-editing agents tight scope, strong local context, explicit approval boundaries, and fast verification loops before trusting broader autonomy.
-- Context Engineering: Treat instructions, memory files, retrieval, and artifacts as the agent's working environment; prune noise and make durable context explicit.
 
 ## Watchlist / Risk Flags
 

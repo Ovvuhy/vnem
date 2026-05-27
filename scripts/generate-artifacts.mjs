@@ -32,6 +32,10 @@ const intentAliases = {
   memory: ["memory", "context", "persistence", "knowledge", "state"],
   evals: ["eval", "testing", "benchmark", "verification", "quality", "score"],
   "agent news": ["news", "signals", "release", "trend", "freshness", "registry"],
+  "source radar": ["research layer", "source intake", "docs index", "mcp registry", "official docs", "llms.txt", "freshness", "provenance"],
+  "research layer": ["source radar", "source intake", "current docs", "official docs", "mcp registry", "benchmark evidence", "evidence"],
+  "source intake": ["source radar", "research layer", "upstream source", "source trust", "provenance", "license", "permissions", "risk review"],
+  "benchmark evidence": ["evals", "inspect ai", "promptfoo", "ragas", "quality evidence", "performance data", "regression test", "pilot task"],
   "backend api": ["backend", "api", "database", "server", "runtime", "deployment"],
   security: ["security", "trust", "identity", "compliance", "guardrails", "audit"],
   "coding agents": ["coding-agent", "codebase", "repository", "diff", "terminal", "tests", "pull request"],
@@ -162,6 +166,30 @@ const intentRoutes = {
     choose_by: ["highest concrete capability gap", "permission risk", "verification path", "rollback path", "maintenance cost"],
     report: ["vnem intents searched", "top matches", "upgrade path", "risk and verification"]
   },
+  "source radar": {
+    read_first: ["source:mcp-core-and-registry", "source:coding-agent-clients", "source:documentation-ingestion", "playbook:source-intake-review", "practice:research-source-intake"],
+    compare_options: ["official docs", "canonical GitHub repositories", "official registries", "vendor MCP docs", "evaluation frameworks", "llms.txt indexes"],
+    choose_by: ["source confidence", "freshness", "license clarity", "permission risk", "agent-client relevance", "verification path"],
+    report: ["source category", "why it matters", "trust and risk", "intake path", "refresh cadence"]
+  },
+  "research layer": {
+    read_first: ["source:mcp-core-and-registry", "source:coding-agent-clients", "source:evaluation-and-observability", "playbook:source-intake-review", "practice:research-source-intake"],
+    compare_options: ["static registry entry", "best-practice note", "prompt pattern", "watched source", "benchmark fixture"],
+    choose_by: ["whether agents need it before editing", "source trust", "context saved", "maintenance effort", "risk flags"],
+    report: ["sources consulted", "decision", "data to add", "verification evidence"]
+  },
+  "source intake": {
+    read_first: ["playbook:source-intake-review", "practice:research-source-intake", "source:mcp-core-and-registry"],
+    compare_options: ["add watched source only", "add registry entry", "add best-practice note", "add prompt pattern", "defer as out of scope"],
+    choose_by: ["official provenance", "license posture", "permissions", "risk flags", "whether a real agent workflow improves"],
+    report: ["candidate", "trust tier", "risk flags", "artifact to update", "verification"]
+  },
+  "benchmark evidence": {
+    read_first: ["source:evaluation-and-observability", "practice:evals", "playbook:source-intake-review"],
+    compare_options: ["small repo pilot", "prompt regression suite", "tool-call trace review", "before/after recommendation diff", "manual maintainer review"],
+    choose_by: ["measurable behavior", "repeatability", "cost", "failure-mode coverage", "fit to Vnem's read-only model"],
+    report: ["metric", "dataset or fixture", "baseline", "expected improvement", "review gate"]
+  },
   "code simplification": {
     read_first: ["practice:code-simplification", "practice:code-review", "practice:evals"],
     compare_options: ["behavior-preserving refactor", "dead-code audit", "duplicate-code audit", "AST-aware codemods", "repo-native lint and format rules"],
@@ -267,6 +295,21 @@ const decisionPlaybooks = [
     output_sections: ["Workflow need", "Candidate tools", "Permission risks", "Verification plan", "Ask before changing"]
   },
   {
+    id: "source-intake-review",
+    title: "Source Intake Review",
+    intents: ["source radar", "research layer", "source intake", "mcp registry", "docs mcp", "benchmark evidence"],
+    summary: "Use this when deciding whether an upstream doc, MCP server, registry, benchmark, or agent workflow source belongs in Vnem.",
+    workflow: [
+      "Classify the source as protocol docs, client docs, registry feed, MCP server, eval/observability, prompt pattern, or product signal.",
+      "Prefer official docs, canonical repositories, vendor-maintained MCPs, and sources with llms.txt or clear machine-readable indexes.",
+      "Record provenance, license posture, freshness, permissions, risk flags, and what agent decision the source improves.",
+      "Do not copy long upstream documentation into Vnem; link to sources and write original summaries or small metadata entries.",
+      "Choose the smallest artifact: watched source, registry entry, best-practice note, prompt pattern, eval fixture, or no change.",
+      "Require a verification path before promoting trust: link check, local MCP smoke test, install review, or before/after agent benchmark."
+    ],
+    output_sections: ["Source candidate", "Why it matters", "Trust and risk", "Intake path", "Verification"]
+  },
+  {
     id: "prompt-upgrade",
     title: "Prompt Upgrade",
     intents: ["prompt enhancer", "codex prompt", "claude prompt", "gemini prompt", "agent upgrade"],
@@ -279,6 +322,208 @@ const decisionPlaybooks = [
       "Return both an enhanced prompt and a compact prompt."
     ],
     output_sections: ["Enhanced prompt", "Compact prompt", "What changed", "Missing inputs"]
+  }
+];
+
+const sourceRadar = [
+  {
+    id: "mcp-core-and-registry",
+    title: "MCP Core Docs And Official Registry",
+    category: "protocol-registry",
+    priority: "critical",
+    summary: "Track MCP protocol docs, specification changes, and the official MCP registry before adding or recommending MCP servers.",
+    use_when: [
+      "An agent is choosing, comparing, or installing MCP servers.",
+      "A registry entry depends on MCP transport, tools, resources, prompts, elicitation, or auth behavior.",
+      "Hermes or maintainers need a source of truth for new MCP server discovery."
+    ],
+    monitor: [
+      "Protocol docs and llms.txt index",
+      "Official registry API and repository updates",
+      "Server metadata, package sources, licenses, and published versions"
+    ],
+    risk_checks: [
+      "Registry preview or API stability notes",
+      "Server provenance and package ownership",
+      "Tool permissions, network access, secrets, and write capability"
+    ],
+    source_urls: [
+      "https://modelcontextprotocol.io/docs/getting-started/intro",
+      "https://modelcontextprotocol.io/llms.txt",
+      "https://github.com/modelcontextprotocol/registry",
+      "https://registry.modelcontextprotocol.io/v0.1/servers"
+    ]
+  },
+  {
+    id: "coding-agent-clients",
+    title: "Coding Agent Client Docs",
+    category: "agent-client",
+    priority: "critical",
+    summary: "Track how major coding agents load instructions, MCP tools, memory, subagents, approvals, and project context.",
+    use_when: [
+      "Vnem needs to support Codex, Claude Code, OpenCode, Gemini/ADK, or similar coding agents.",
+      "A recommendation depends on how the agent reads AGENTS.md, CLAUDE.md, MCP resources, prompts, or memory.",
+      "The install pack or MCP server should be easier to use across multiple agent clients."
+    ],
+    monitor: [
+      "Instruction-file behavior",
+      "MCP configuration and transport support",
+      "Memory, subagent, approval, and tool-search behavior",
+      "Windows, terminal, IDE, and browser support"
+    ],
+    risk_checks: [
+      "Client-specific config drift",
+      "Features that require account login, OAuth, or paid plans",
+      "Actions that bypass repo review, approvals, or least privilege"
+    ],
+    source_urls: [
+      "https://developers.openai.com/codex/guides/agents-md",
+      "https://code.claude.com/docs/en/overview",
+      "https://code.claude.com/docs/en/mcp",
+      "https://code.claude.com/docs/en/memory",
+      "https://code.claude.com/docs/en/sub-agents",
+      "https://opencode.ai/docs/",
+      "https://adk.dev/"
+    ]
+  },
+  {
+    id: "documentation-ingestion",
+    title: "Documentation Ingestion Sources",
+    category: "current-docs",
+    priority: "high",
+    summary: "Prefer LLM-oriented documentation indexes and source-backed doc retrieval so agents stop wasting context on broad web searches.",
+    use_when: [
+      "A coding agent needs current library, framework, SDK, or MCP documentation.",
+      "Vnem should point to a source rather than copying long upstream docs into the registry.",
+      "A source has an llms.txt index, canonical docs, or a docs-specific MCP."
+    ],
+    monitor: [
+      "llms.txt and llms-full.txt availability",
+      "Canonical documentation URLs",
+      "Docs MCP servers and CLI doc retrievers"
+    ],
+    risk_checks: [
+      "Stale generated docs",
+      "Unclear docs provenance",
+      "Copied upstream content that exceeds fair-use or license boundaries"
+    ],
+    source_urls: [
+      "https://llmstxt.org/",
+      "https://github.com/upstash/context7",
+      "https://docs.firecrawl.dev/mcp-server"
+    ]
+  },
+  {
+    id: "browser-and-ui-verification",
+    title: "Browser And UI Verification Sources",
+    category: "verification-tooling",
+    priority: "high",
+    summary: "Track browser automation and hosted browser MCPs that let agents verify rendered apps instead of guessing from code.",
+    use_when: [
+      "An agent is building UI, debugging a browser app, validating accessibility snapshots, or checking frontend regressions.",
+      "Vnem needs to recommend a browser MCP or verification workflow.",
+      "A product claim depends on visible UI behavior rather than static code."
+    ],
+    monitor: [
+      "Playwright MCP capabilities",
+      "Browserbase MCP capabilities",
+      "Client support for browser MCPs, screenshots, accessibility snapshots, and hosted sessions"
+    ],
+    risk_checks: [
+      "Browser/network access",
+      "Credential exposure through pages",
+      "Stateful sessions and paid browser infrastructure"
+    ],
+    source_urls: [
+      "https://github.com/microsoft/playwright-mcp",
+      "https://docs.browserbase.com/integrations/mcp/introduction"
+    ]
+  },
+  {
+    id: "platform-and-data-connectors",
+    title: "Platform And Data Connector Sources",
+    category: "sensitive-connectors",
+    priority: "high",
+    summary: "Track official or vendor-maintained MCPs for repositories, databases, monitoring, payments, and web extraction with explicit permission review.",
+    use_when: [
+      "An agent needs GitHub, Supabase, Sentry, Stripe, Firecrawl, or another external service.",
+      "A registry entry can read production-like data, write issues, query databases, spend money, or browse the web.",
+      "Vnem needs to recommend least-privilege, read-only, or sandbox-first setup."
+    ],
+    monitor: [
+      "Official MCP repositories and docs",
+      "Available tool groups, scopes, and read-only modes",
+      "OAuth, PAT, API key, and sandbox guidance"
+    ],
+    risk_checks: [
+      "Repository write access",
+      "Database writes or production data",
+      "Payment or billing side effects",
+      "Monitoring data sensitivity",
+      "Prompt injection through fetched external content"
+    ],
+    source_urls: [
+      "https://github.com/github/github-mcp-server",
+      "https://supabase.com/docs/guides/ai-tools/mcp",
+      "https://mcp.sentry.dev/",
+      "https://docs.stripe.com/agents",
+      "https://docs.firecrawl.dev/mcp-server"
+    ]
+  },
+  {
+    id: "evaluation-and-observability",
+    title: "Evaluation And Observability Sources",
+    category: "quality-evidence",
+    priority: "high",
+    summary: "Track eval and tracing systems so Vnem can prove whether an agent workflow actually improves output quality, speed, and safety.",
+    use_when: [
+      "A claim says Vnem improves recommendations, engineering velocity, prompt quality, or tool choice.",
+      "A prompt, MCP, agent, or model switch needs a before/after benchmark.",
+      "Maintainers need traces or eval logs to explain why an agent made a decision."
+    ],
+    monitor: [
+      "Small repeatable eval frameworks",
+      "Prompt and agent regression suites",
+      "Trace, cost, latency, and tool-call observability"
+    ],
+    risk_checks: [
+      "Benchmarks that do not match real repo tasks",
+      "Scores without reproducible fixtures",
+      "Telemetry or traces containing secrets or private code"
+    ],
+    source_urls: [
+      "https://inspect.aisi.org.uk/",
+      "https://www.promptfoo.dev/docs/intro/",
+      "https://docs.ragas.io/",
+      "https://docs.langfuse.com/",
+      "https://docs.arize.com/phoenix"
+    ]
+  },
+  {
+    id: "secure-mcp-distribution",
+    title: "Secure MCP Distribution Sources",
+    category: "distribution",
+    priority: "medium",
+    summary: "Track curated MCP catalogs and containerized distribution models for safer team adoption of third-party MCP servers.",
+    use_when: [
+      "A team wants approved MCP catalogs instead of ad hoc server installs.",
+      "A server has dependency, runtime, or package provenance concerns.",
+      "Vnem needs to distinguish local, remote, containerized, and organization-approved MCP deployment paths."
+    ],
+    monitor: [
+      "Catalog provenance and SBOM metadata",
+      "Container signing and update cadence",
+      "Team profiles, custom catalogs, and allowed-server policies"
+    ],
+    risk_checks: [
+      "Catalog beta or preview status",
+      "Container trust and host access",
+      "Remote OAuth and external service permissions"
+    ],
+    source_urls: [
+      "https://docs.docker.com/ai/mcp-catalog-and-toolkit/catalog/",
+      "https://docs.docker.com/ai/mcp-catalog-and-toolkit/toolkit/"
+    ]
   }
 ];
 
@@ -548,6 +793,29 @@ const bestPracticeSections = [
     ]
   },
   {
+    id: "research-source-intake",
+    title: "Research Source Intake",
+    score: 14,
+    summary: "Treat Vnem as a source router, not a document dump: capture official, current, machine-readable sources that help agents make better decisions before editing.",
+    keywords: ["source radar", "research layer", "source intake", "current docs", "official docs", "mcp registry", "llms.txt", "benchmark evidence", "provenance", "freshness"],
+    sources: [
+      "https://modelcontextprotocol.io/docs/getting-started/intro",
+      "https://github.com/modelcontextprotocol/registry",
+      "https://llmstxt.org/",
+      "https://developers.openai.com/codex/guides/agents-md",
+      "https://code.claude.com/docs/en/mcp",
+      "https://inspect.aisi.org.uk/"
+    ],
+    practices: [
+      "Start source intake from the agent decision it improves: tool choice, MCP adoption, model/provider selection, prompt upgrade, eval design, UI verification, or risk review.",
+      "Prefer official docs, canonical repositories, maintained registries, llms.txt indexes, vendor MCP docs, and eval frameworks with repeatable fixtures.",
+      "Keep Vnem metadata original and compact; preserve source URLs instead of copying long upstream docs into the install pack.",
+      "Record trust tier, source confidence, freshness, permissions, license posture, risk flags, and whether the source can mutate external systems.",
+      "Separate discovery from promotion: Hermes can suggest candidates, but maintainers should review before raising trust or recommending installs.",
+      "Tie important claims to a small benchmark, smoke test, link check, or before/after agent recommendation diff."
+    ]
+  },
+  {
     id: "mcp-server-selection",
     title: "MCP Server Selection",
     summary: "MCP servers should be selected like dependencies: source-backed, least-privilege, pinned where possible, and tested against the actual client workflow.",
@@ -793,6 +1061,36 @@ const promptPatterns = [
       "- Comparison of top options.",
       "- Recommendation with caveats.",
       "- Links to sources used."
+    ].join("\n")
+  },
+  {
+    id: "source-intake",
+    title: "Source Intake Prompt",
+    intents: ["source radar", "research layer", "source intake", "mcp registry", "docs mcp", "benchmark evidence"],
+    summary: "Prompt an agent to decide whether a new source should become a watched source, registry entry, best-practice note, prompt pattern, or eval fixture.",
+    output_modes: ["source_review", "intake_path", "verification_plan"],
+    template: [
+      "Review this source for Vnem intake.",
+      "",
+      "Source:",
+      "<URL, repository, docs page, registry feed, MCP server, benchmark, or paper>",
+      "",
+      "Decision Context:",
+      "<which agent decision this source could improve>",
+      "",
+      "Review Criteria:",
+      "- Is it official, canonical, vendor-maintained, or otherwise high-signal?",
+      "- What permissions, secrets, network access, write access, or paid APIs are involved?",
+      "- What license, freshness, maintenance, and provenance signals are visible?",
+      "- Should Vnem add a watched source, registry entry, best-practice note, prompt pattern, eval fixture, or no change?",
+      "- What verification would prove the source is useful and safe enough to promote?",
+      "",
+      "Output:",
+      "- Source candidate.",
+      "- Why it matters.",
+      "- Trust and risk.",
+      "- Intake path.",
+      "- Verification plan."
     ].join("\n")
   },
   {
@@ -1247,6 +1545,33 @@ function buildSearchDocuments(entries) {
     keywords: unique(textTokens([section.title, section.summary, ...section.keywords, ...section.practices].join(" "))).slice(0, 120)
   }));
 
+  const sourceRadarDocs = sourceRadar.map((source) => ({
+    id: `source:${source.id}`,
+    kind: "source-radar",
+    title: source.title,
+    summary: source.summary,
+    url_path: "/install/source-radar.json",
+    trust_tier: "verified",
+    type: "source-radar",
+    score: source.priority === "critical" ? 13 : source.priority === "high" ? 12 : 9,
+    tags: unique([source.category, source.priority, ...(source.use_when ?? []), ...(source.monitor ?? [])]),
+    use_cases: source.use_when,
+    best_for: source.monitor,
+    risk_flags: source.risk_checks,
+    source_urls: source.source_urls,
+    keywords: unique(textTokens([
+      source.id,
+      source.title,
+      source.category,
+      source.priority,
+      source.summary,
+      ...(source.use_when ?? []),
+      ...(source.monitor ?? []),
+      ...(source.risk_checks ?? []),
+      ...(source.source_urls ?? [])
+    ].join(" "))).slice(0, 140)
+  }));
+
   const playbookDocs = decisionPlaybooks.map((playbook) => ({
     id: `playbook:${playbook.id}`,
     kind: "decision-playbook",
@@ -1270,7 +1595,7 @@ function buildSearchDocuments(entries) {
     ].join(" "))).slice(0, 120)
   }));
 
-  return [...playbookDocs, ...promptDocs, ...practiceDocs, ...entryDocs].sort((a, b) => b.score - a.score || a.title.localeCompare(b.title));
+  return [...sourceRadarDocs, ...playbookDocs, ...promptDocs, ...practiceDocs, ...entryDocs].sort((a, b) => b.score - a.score || a.title.localeCompare(b.title));
 }
 
 function buildInvertedIndex(documents) {
@@ -1346,6 +1671,46 @@ function promptPatternsJson() {
       "Missing inputs, if any"
     ],
     patterns: promptPatterns
+  };
+}
+
+function sourceRadarJson() {
+  return {
+    generated_at: generatedAt,
+    schema_version: "1.0.0",
+    safety: {
+      mode: "read-only-source-radar",
+      executes_code: false,
+      installs_packages: false,
+      starts_daemons: false,
+      requires_secrets: false,
+      calls_upstream_services: false
+    },
+    intake_policy: {
+      purpose: "Help agents and maintainers decide which upstream sources Vnem should consult, watch, or summarize before recommending tools or stack changes.",
+      prefer: [
+        "official documentation",
+        "canonical repositories",
+        "official registries and package metadata",
+        "vendor-maintained MCP servers",
+        "llms.txt or machine-readable documentation indexes",
+        "repeatable eval and observability sources"
+      ],
+      avoid: [
+        "copying long upstream docs into Vnem",
+        "promoting unreviewed sources to verified",
+        "recommending install or configuration before permission and risk review",
+        "claims about performance without a reproducible benchmark or pilot task"
+      ],
+      promotion_gate: [
+        "source URL and owner recorded",
+        "license posture reviewed",
+        "permissions and risk flags recorded",
+        "freshness or maintenance signal checked",
+        "verification path documented"
+      ]
+    },
+    sources: sourceRadar
   };
 }
 
@@ -1453,6 +1818,7 @@ function agentsMarkdown() {
     "## Files To Read",
     "",
     "- `.vnem/search-index.json`: compact local search index for tools, skills, MCP servers, and best-practice notes.",
+    "- `.vnem/source-radar.json`: source intake map for official docs, registries, MCP sources, evals, and verification sources.",
     "- `.vnem/best-practices.md`: current guidance by project area.",
     "- `.vnem/prompt-engineering.md`: prompt enhancement protocol and Codex-oriented prompt guidance.",
     "- `.vnem/prompt-patterns.json`: machine-readable prompt patterns for common agent tasks.",
@@ -1478,11 +1844,12 @@ function agentsMarkdown() {
     "1. Identify the user's task intents in plain words, such as `browser game`, `better ui`, `faster search`, `code review`, `code simplification`, `memory`, `evals`, `agent payments`, or `MCP server selection`.",
     "2. Read `.vnem/search-index.json` and expand those intents with `intent_aliases`.",
     "3. Check `intent_routes` for the closest matching task. Read the listed `read_first` documents before choosing a stack.",
-    "4. Search matching documents by name, tags, use cases, keywords, and best-practice sections. Read `.vnem/best-practices.md` for any matching section.",
-    "5. Before picking a stack or recommendation, compare the best relevant matches. Prefer higher `score`, stronger `source_confidence`, fresher `freshness`, clearer licenses, fewer `risk_flags`, and stronger decision-rubric fit.",
-    "6. Score important options against the decision rubric. Prefer no change when no option has a clear, verifiable advantage.",
-    "7. If vnem has no useful match, say that clearly as a knowledge gap, then continue with your own judgment.",
-    "8. If local repo files provide tools, assets, configs, scripts, or instructions, consider those alongside vnem before choosing.",
+    "4. If the task depends on current docs, MCP discovery, benchmarks, or upstream tool selection, read `.vnem/source-radar.json` and prefer official or high-signal sources before broader web search.",
+    "5. Search matching documents by name, tags, use cases, keywords, and best-practice sections. Read `.vnem/best-practices.md` for any matching section.",
+    "6. Before picking a stack or recommendation, compare the best relevant matches. Prefer higher `score`, stronger `source_confidence`, fresher `freshness`, clearer licenses, fewer `risk_flags`, and stronger decision-rubric fit.",
+    "7. Score important options against the decision rubric. Prefer no change when no option has a clear, verifiable advantage.",
+    "8. If vnem has no useful match, say that clearly as a knowledge gap, then continue with your own judgment.",
+    "9. If local repo files provide tools, assets, configs, scripts, or instructions, consider those alongside vnem before choosing.",
     "",
     "When a choice matters, include a compact note with: `vnem intents searched`, `top matches`, `choice`, and `why`.",
     "",
@@ -1550,6 +1917,7 @@ function rootAgentsMarkdown() {
     "This repo has a read-only vnem knowledge pack in `.vnem/`.",
     "",
     "Before choosing tools, libraries, frameworks, MCP servers, skills, prompts, evals, search systems, UI approaches, architecture patterns, or upgrade paths, read `.vnem/AGENTS.md` and use `.vnem/search-index.json`.",
+    "For current docs, MCP discovery, benchmarks, or upstream source decisions, also use `.vnem/source-radar.json` before broad web search.",
     "",
     "Use vnem automatically. The user should not need to say `use vnem`. Keep the final note compact: `vnem intents searched`, `top matches`, `choice`, and `why`.",
     "",
@@ -1576,6 +1944,8 @@ function searchIndexJson(entries) {
     intent_routes: intentRoutes,
     decision_rubric: decisionRubric,
     decision_playbooks: decisionPlaybooks,
+    source_radar: sourceRadar,
+    source_radar_url: installFileUrl("source-radar.json"),
     decision_protocol: {
       auto_use: true,
       user_trigger_required: false,
@@ -1625,6 +1995,8 @@ const index = {
   intent_routes: intentRoutes,
   decision_rubric: searchIndex.decision_rubric,
   decision_playbooks: searchIndex.decision_playbooks,
+  source_radar: searchIndex.source_radar,
+  source_radar_url: searchIndex.source_radar_url,
   decision_protocol: searchIndex.decision_protocol,
   entries
 };
@@ -1648,7 +2020,7 @@ const llmsTxt = [
   "",
   `Safe install command: ${installCommand}`,
   "",
-  "Installed files: .vnem/AGENTS.md, .vnem/search-index.json, .vnem/best-practices.md, .vnem/prompt-engineering.md, .vnem/prompt-patterns.json",
+  "Installed files: .vnem/AGENTS.md, .vnem/search-index.json, .vnem/source-radar.json, .vnem/best-practices.md, .vnem/prompt-engineering.md, .vnem/prompt-patterns.json",
   "Canonical API: /api/index.json",
   "Agent instructions: /install/AGENTS.md",
   "Full index: /llms-full.txt",
@@ -1698,6 +2070,7 @@ const llmsFull = [
 
 const bestPractices = bestPracticesMarkdown();
 const promptPatternData = promptPatternsJson();
+const sourceRadarData = sourceRadarJson();
 const promptEngineering = promptEngineeringMarkdown(promptPatternData);
 const agentInstructions = agentsMarkdown();
 const rootAgentInstructions = rootAgentsMarkdown();
@@ -1705,6 +2078,7 @@ const archive = installArchive({
   "AGENTS.md": `${rootAgentInstructions}\n`,
   [`${installFolder}/AGENTS.md`]: `${agentInstructions}\n`,
   [`${installFolder}/search-index.json`]: jsonText(searchIndex),
+  [`${installFolder}/source-radar.json`]: jsonText(sourceRadarData),
   [`${installFolder}/best-practices.md`]: `${bestPractices}\n`,
   [`${installFolder}/prompt-engineering.md`]: `${promptEngineering}\n`,
   [`${installFolder}/prompt-patterns.json`]: jsonText(promptPatternData)
@@ -1713,6 +2087,8 @@ const archive = installArchive({
 await writeJson(path.join(ROOT, "public", "api", "index.json"), index);
 await writeJson(path.join(ROOT, "public", "install", "search-index.json"), searchIndex);
 await writeJson(path.join(ROOT, installFolder, "search-index.json"), searchIndex);
+await writeJson(path.join(ROOT, "public", "install", "source-radar.json"), sourceRadarData);
+await writeJson(path.join(ROOT, installFolder, "source-radar.json"), sourceRadarData);
 await writeJson(path.join(ROOT, "public", "install", "prompt-patterns.json"), promptPatternData);
 await writeJson(path.join(ROOT, installFolder, "prompt-patterns.json"), promptPatternData);
 await writeBytes(path.join(ROOT, "public", installArchiveName), archive);

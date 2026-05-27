@@ -58,6 +58,7 @@ const searchIndex = await readJsonRequired(searchIndexPath, "search index");
 const apiIndex = apiIndexPath ? await readJsonOptional(apiIndexPath) : null;
 const entries = Array.isArray(apiIndex?.entries) ? apiIndex.entries : [];
 const documents = Array.isArray(searchIndex.documents) ? searchIndex.documents : [];
+const sourceRadar = Array.isArray(searchIndex.source_radar) ? searchIndex.source_radar : [];
 const entriesBySlug = new Map(entries.map((entry) => [entry.slug, entry]));
 const documentsById = new Map(documents.map((document) => [document.id, document]));
 
@@ -240,6 +241,35 @@ function registerTools(mcpServer) {
       return toolResult(formatBestPractices(result), result);
     }
   );
+
+  mcpServer.registerTool(
+    "vnem_sources",
+    {
+      title: "vnem Source Radar",
+      description:
+        "Find upstream docs, registries, MCP sources, and eval sources Vnem should consult or monitor before recommending agentic tooling changes.",
+      inputSchema: {
+        intent: z.string().default("source radar").describe("Source, workflow, or decision intent to look up."),
+        category: z.string().optional().describe("Optional source category filter such as protocol-registry, agent-client, current-docs, sensitive-connectors, or quality-evidence."),
+        limit: z.number().int().min(1).max(12).default(8).describe("Maximum source radar entries to return.")
+      },
+      annotations: READ_ONLY
+    },
+    async ({ intent, category, limit }) => {
+      const resolvedIntent = resolveIntent(intent);
+      const results = sourceRadarResults(intent, category, limit);
+      const result = {
+        intent,
+        category: category || null,
+        resolved_intent: resolvedIntent,
+        sources: results,
+        safety:
+          "Read-only source guidance only. Preserve source URLs and review permissions, licenses, and risk flags before promoting a source or installing any tool."
+      };
+
+      return toolResult(formatSourceRadar(result), result);
+    }
+  );
 }
 
 function registerResources(mcpServer) {
@@ -250,6 +280,15 @@ function registerResources(mcpServer) {
     searchIndexPath,
     "vnem Search Index",
     "Generated search data used by the vnem MCP tools.",
+    "application/json"
+  );
+  registerFileResource(
+    mcpServer,
+    "vnem-source-radar",
+    "vnem://install/source-radar",
+    firstExisting(["public/install/source-radar.json", ".vnem/source-radar.json"]),
+    "vnem Source Radar",
+    "Generated source intake map for official docs, registries, MCP sources, evals, and verification sources.",
     "application/json"
   );
   registerFileResource(
@@ -462,6 +501,49 @@ function relevantPracticeDocs(query, intent, limit) {
     }
   }
   return merged.slice(0, limit);
+}
+
+function sourceRadarResults(intent, category, limit) {
+  const query = [intent, category].filter(Boolean).join(" ");
+  const queryText = normalize(query);
+  const terms = tokenize(query);
+  const categoryText = normalize(category);
+
+  return sourceRadar
+    .map((source) => {
+      const haystack = normalize([
+        source.id,
+        source.title,
+        source.category,
+        source.priority,
+        source.summary,
+        ...(source.use_when || []),
+        ...(source.monitor || []),
+        ...(source.risk_checks || []),
+        ...(source.source_urls || [])
+      ].join(" "));
+
+      let score = source.priority === "critical" ? 30 : source.priority === "high" ? 24 : 14;
+      if (categoryText && normalize(source.category) === categoryText) {
+        score += 30;
+      }
+      if (queryText && haystack.includes(queryText)) {
+        score += 25;
+      }
+      for (const term of terms) {
+        if (haystack.includes(term)) {
+          score += 5;
+        }
+      }
+
+      return {
+        ...source,
+        rank_score: score
+      };
+    })
+    .filter((source) => source.rank_score > 0)
+    .sort((a, b) => b.rank_score - a.rank_score || String(a.title).localeCompare(String(b.title)))
+    .slice(0, limit);
 }
 
 function scoreDocument(document, terms, queryText, intent) {
@@ -722,6 +804,41 @@ function formatBestPractices(result) {
     lines.push("- No matching best-practice notes found.");
   }
   return lines.join("\n");
+}
+
+function formatSourceRadar(result) {
+  const lines = [`vnem source radar: ${result.intent || "all sources"}`];
+  if (result.category) {
+    lines.push(`Category: ${result.category}`);
+  }
+  if (result.resolved_intent) {
+    lines.push(`Intent: ${result.resolved_intent.name}`);
+  }
+  lines.push("");
+
+  if (!result.sources.length) {
+    lines.push("- No matching source radar entries found. Inspect vnem://install/source-radar.");
+  } else {
+    for (const source of result.sources) {
+      lines.push(formatSourceLine(source));
+    }
+  }
+
+  lines.push("", `Safety: ${result.safety}`);
+  return lines.join("\n");
+}
+
+function formatSourceLine(source) {
+  const parts = [
+    `- ${source.title}`,
+    `[${source.category || "source"}]`,
+    `priority: ${source.priority || "unknown"}`
+  ];
+  const summary = source.summary ? `\n  ${source.summary}` : "";
+  const useWhen = source.use_when?.length ? `\n  Use when: ${source.use_when.slice(0, 2).join("; ")}` : "";
+  const risk = source.risk_checks?.length ? `\n  Risk checks: ${source.risk_checks.slice(0, 3).join("; ")}` : "";
+  const sources = source.source_urls?.length ? `\n  Sources: ${source.source_urls.slice(0, 4).join(", ")}` : "";
+  return `${parts.join(" ")}${summary}${useWhen}${risk}${sources}`;
 }
 
 function formatResultLine(result) {
