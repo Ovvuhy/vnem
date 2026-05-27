@@ -46,17 +46,18 @@ curl -fsSL https://raw.githubusercontent.com/naellisim/vnem/main/public/install.
 
 Until `vnem.ai` is live, the generated install command uses the GitHub-hosted archive. To generate artifacts for a different host later, run `VNEM_BASE_URL=https://vnem.ai npm run generate`.
 
-This extracts only:
+In a clean project folder, this extracts:
 
+- `AGENTS.md`
 - `.vnem/AGENTS.md`
 - `.vnem/search-index.json`
 - `.vnem/best-practices.md`
 - `.vnem/prompt-engineering.md`
 - `.vnem/prompt-patterns.json`
 
-`.vnem/AGENTS.md` is the agent entrypoint. Once an agent has read it, the user should not need special `use vnem` prompts: vnem auto-activates for build, review, optimization, research, benchmark, and stack/tool decision tasks.
+`AGENTS.md` points coding agents to `.vnem/AGENTS.md`, the full agent entrypoint. Once an agent has read it, the user should not need special `use vnem` prompts: vnem auto-activates for build, review, optimization, research, benchmark, and stack/tool decision tasks.
 
-vnem does not overwrite a project's root `AGENTS.md` by default. If your agent does not automatically inspect `.vnem/`, point it to `.vnem/AGENTS.md` once at project start or add a small root instruction that links to it.
+For existing repos with their own `AGENTS.md`, prefer the CLI installer below because it updates a managed vnem block instead of replacing the whole file.
 
 ## Make A Repo vnem-Aware
 

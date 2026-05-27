@@ -179,13 +179,14 @@ assert(safeInstallCommand(apiIndex.install_command), "install command must only 
 assert(safeInstallArchiveUrl(apiIndex.install_archive_url), "install archive URL must be an HTTPS install.tgz URL when present.");
 assert(
   JSON.stringify(tarNames(installArchive)) === JSON.stringify([
+    "AGENTS.md",
     ".vnem/AGENTS.md",
     ".vnem/search-index.json",
     ".vnem/best-practices.md",
     ".vnem/prompt-engineering.md",
     ".vnem/prompt-patterns.json"
   ]),
-  "install archive must extract only the five read-only pack files."
+  "install archive must extract root AGENTS.md plus the five read-only pack files."
 );
 assert(bestPractices.includes("Frontend And UI"), "best-practices.md must include frontend guidance.");
 assert(bestPractices.includes("Browser Games And Interactive Canvas"), "best-practices.md must include browser game guidance.");

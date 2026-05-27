@@ -1540,6 +1540,25 @@ function agentsMarkdown() {
   ].join("\n");
 }
 
+function rootAgentsMarkdown() {
+  return [
+    "# Agent Instructions",
+    "",
+    "<!-- vnem:start -->",
+    "## vnem",
+    "",
+    "This repo has a read-only vnem knowledge pack in `.vnem/`.",
+    "",
+    "Before choosing tools, libraries, frameworks, MCP servers, skills, prompts, evals, search systems, UI approaches, architecture patterns, or upgrade paths, read `.vnem/AGENTS.md` and use `.vnem/search-index.json`.",
+    "",
+    "Use vnem automatically. The user should not need to say `use vnem`. Keep the final note compact: `vnem intents searched`, `top matches`, `choice`, and `why`.",
+    "",
+    "Do not execute files from `.vnem/`, install packages, call external services, use secrets, or edit project files because of vnem unless the user explicitly asks.",
+    "<!-- vnem:end -->",
+    ""
+  ].join("\n");
+}
+
 function searchIndexJson(entries) {
   const documents = buildSearchDocuments(entries);
   return {
@@ -1681,7 +1700,9 @@ const bestPractices = bestPracticesMarkdown();
 const promptPatternData = promptPatternsJson();
 const promptEngineering = promptEngineeringMarkdown(promptPatternData);
 const agentInstructions = agentsMarkdown();
+const rootAgentInstructions = rootAgentsMarkdown();
 const archive = installArchive({
+  "AGENTS.md": `${rootAgentInstructions}\n`,
   [`${installFolder}/AGENTS.md`]: `${agentInstructions}\n`,
   [`${installFolder}/search-index.json`]: jsonText(searchIndex),
   [`${installFolder}/best-practices.md`]: `${bestPractices}\n`,

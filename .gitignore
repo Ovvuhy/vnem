@@ -1,7 +1,6 @@
 node_modules/
 site/dist/
 site/
-landing/
 landing-dist/
 .agentic-commons/
 .astro/
