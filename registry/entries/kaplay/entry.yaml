@@ -1,0 +1,69 @@
+schema_version: 1.0.0
+slug: kaplay
+name: KAPLAY
+type: runtime
+summary_llm: >-
+  KAPLAY is a JavaScript and TypeScript 2D game library for fast browser-game prototyping,
+  using component-style game objects, simple physics helpers, input, sprites, and web examples.
+homepage_url: https://kaplayjs.com/
+repo_url: https://github.com/kaplayjs/kaplay
+package_urls:
+  - https://www.npmjs.com/package/kaplay
+licenses:
+  - MIT
+copyright_owner: KAPLAY Team
+source_urls:
+  - https://kaplayjs.com/
+  - https://github.com/kaplayjs/kaplay
+  - https://www.npmjs.com/package/kaplay
+source_kind: official_docs
+protocols: []
+clients:
+  - Browser
+  - JavaScript
+  - TypeScript
+install:
+  command: npm install kaplay
+  notes: >-
+    Use for quick 2D prototypes and playful examples; choose Phaser or Excalibur when larger game
+    architecture is the main concern.
+  config_example: null
+permissions:
+  - browser
+  - canvas
+  - audio
+env_vars: []
+tags:
+  - runtime
+  - game-library
+  - browser-game
+  - canvas
+  - two-dimensional
+  - prototype
+  - typescript
+use_cases:
+  - Prototype 2D browser games quickly
+  - Teach simple game objects, collisions, and input
+  - Build small playful web games with concise code
+best_for:
+  - Fast 2D browser-game prototypes where concise game code matters most
+not_for:
+  - Larger games that need a more formal scene, asset, and tooling architecture.
+alternatives:
+  - phaser
+  - excalibur-js
+  - pixijs
+supersedes: []
+freshness: current
+source_confidence: official
+maintenance_signals:
+  - Official website, GitHub repository, and npm package metadata were checked.
+  - Large version number reflects project-specific release scheme, not a maturity guarantee.
+risk_flags:
+  - browser-runtime
+  - prototype-oriented
+recommended_when:
+  - Use when an agent should make a small 2D browser game feel playable quickly without a heavy engine.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-27'

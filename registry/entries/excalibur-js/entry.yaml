@@ -1,0 +1,70 @@
+schema_version: 1.0.0
+slug: excalibur-js
+name: Excalibur.js
+type: runtime
+summary_llm: >-
+  Excalibur.js is a TypeScript-first 2D HTML5 canvas game engine for browser games, offering
+  actors, scenes, collision, input, assets, and game-loop structure.
+homepage_url: https://excaliburjs.com/
+repo_url: https://github.com/excaliburjs/Excalibur
+package_urls:
+  - https://www.npmjs.com/package/excalibur
+licenses:
+  - BSD-2-Clause
+copyright_owner: Erik Onarheim
+source_urls:
+  - https://excaliburjs.com/
+  - https://excaliburjs.com/docs
+  - https://github.com/excaliburjs/Excalibur
+  - https://www.npmjs.com/package/excalibur
+source_kind: official_docs
+protocols: []
+clients:
+  - Browser
+  - TypeScript
+  - JavaScript
+install:
+  command: npm install excalibur
+  notes: >-
+    Use for TypeScript-first 2D browser games; review 0.x API stability before large production
+    commitments.
+  config_example: null
+permissions:
+  - browser
+  - canvas
+  - audio
+env_vars: []
+tags:
+  - runtime
+  - game-engine
+  - browser-game
+  - canvas
+  - two-dimensional
+  - typescript
+  - html5-game
+use_cases:
+  - Build TypeScript-first 2D browser games
+  - Use actors, scenes, input, collision, and assets
+  - Teach or prototype structured 2D game architecture
+best_for:
+  - TypeScript-oriented 2D games that need engine structure without moving into 3D
+not_for:
+  - Projects that require a long-stable 1.x API surface without reviewing current roadmap risk.
+alternatives:
+  - phaser
+  - kaplay
+  - pixijs
+supersedes: []
+freshness: current
+source_confidence: official
+maintenance_signals:
+  - Official docs, GitHub repository, and npm package metadata were checked.
+  - Project README notes the engine is still in 0.x, so API changes remain possible.
+risk_flags:
+  - browser-runtime
+  - pre-1.0-api
+recommended_when:
+  - Use when a 2D browser game should stay TypeScript-first and benefit from actors, scenes, collision, and asset structure.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-27'

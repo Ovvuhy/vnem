@@ -1,0 +1,7 @@
+interface:
+  display_name: "vnem"
+  short_description: "Read-only agentic tooling guidance"
+  default_prompt: "Use $vnem to recommend current tools and safer upgrade paths for this coding task."
+
+policy:
+  allow_implicit_invocation: true

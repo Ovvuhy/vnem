@@ -88,7 +88,8 @@ export function summarizeProfile(profile) {
     .replace(/^# .+$/m, "")
     .replace(/\s+/g, " ")
     .trim()
-    .slice(0, 320);
+    .slice(0, 320)
+    .trimEnd();
 }
 
 export function publicEntry(entry, profile, relativeEntryPath, relativeProfilePath) {

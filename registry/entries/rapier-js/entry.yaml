@@ -1,0 +1,72 @@
+schema_version: 1.0.0
+slug: rapier-js
+name: Rapier JS
+type: runtime
+summary_llm: >-
+  Rapier JS provides official JavaScript bindings for the Rapier 2D and 3D physics engines,
+  using WebAssembly packages for browser games and simulations that need higher-performance physics.
+homepage_url: https://rapier.rs
+repo_url: https://github.com/dimforge/rapier.js
+package_urls:
+  - https://www.npmjs.com/package/@dimforge/rapier2d-compat
+  - https://www.npmjs.com/package/@dimforge/rapier3d-compat
+licenses:
+  - Apache-2.0
+copyright_owner: Dimforge
+source_urls:
+  - https://rapier.rs
+  - https://rapier.rs/docs/
+  - https://github.com/dimforge/rapier.js
+  - https://www.npmjs.com/package/@dimforge/rapier2d-compat
+  - https://www.npmjs.com/package/@dimforge/rapier3d-compat
+source_kind: official_docs
+protocols: []
+clients:
+  - Browser
+  - JavaScript
+  - TypeScript
+install:
+  command: npm install @dimforge/rapier2d-compat
+  notes: >-
+    Use the 2D or 3D package that matches the game. Compat packages ease bundling by embedding
+    WASM but increase package size.
+  config_example: null
+permissions:
+  - browser
+  - wasm
+env_vars: []
+tags:
+  - runtime
+  - physics
+  - two-dimensional
+  - three-dimensional
+  - wasm
+  - browser-game
+  - collision
+  - simulation
+use_cases:
+  - Add 2D or 3D physics to browser games
+  - Use WASM-backed rigid-body simulation
+  - Choose deterministic or compatibility physics packages when needed
+best_for:
+  - Browser games that need stronger 2D or 3D physics than simple custom collision or Matter.js
+not_for:
+  - Projects that cannot tolerate WASM bundling complexity or larger compat package output.
+alternatives:
+  - matter-js
+  - babylon-js
+  - playcanvas-engine
+supersedes: []
+freshness: current
+source_confidence: official
+maintenance_signals:
+  - Official docs, GitHub repository, and npm package metadata were checked.
+  - README documents distinct package variants for 2D, 3D, SIMD, deterministic, and compat builds.
+risk_flags:
+  - physics-simulation
+  - wasm-bundling
+recommended_when:
+  - Use when a browser game needs 2D or 3D rigid-body physics and the agent can verify WASM loading plus gameplay collisions.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-27'

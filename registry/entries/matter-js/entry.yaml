@@ -1,0 +1,64 @@
+schema_version: 1.0.0
+slug: matter-js
+name: Matter.js
+type: runtime
+summary_llm: >-
+  Matter.js is a JavaScript 2D rigid-body physics engine for browser games and simulations,
+  useful when simple collision checks are not enough but a full physics stack should stay approachable.
+homepage_url: https://brm.io/matter-js/
+repo_url: https://github.com/liabru/matter-js
+package_urls:
+  - https://www.npmjs.com/package/matter-js
+licenses:
+  - MIT
+copyright_owner: Liam Brummitt and contributors
+source_urls:
+  - https://brm.io/matter-js/
+  - https://github.com/liabru/matter-js
+  - https://www.npmjs.com/package/matter-js
+source_kind: official_docs
+protocols: []
+clients:
+  - Browser
+  - JavaScript
+  - TypeScript
+install:
+  command: npm install matter-js
+  notes: >-
+    Use when a 2D browser game needs rigid-body physics; keep fixed-step simulation and gameplay
+    determinism requirements explicit.
+  config_example: null
+permissions:
+  - browser
+env_vars: []
+tags:
+  - runtime
+  - physics
+  - two-dimensional
+  - browser-game
+  - collision
+  - rigid-body
+  - simulation
+use_cases:
+  - Add 2D rigid-body physics to browser games
+  - Simulate collisions, constraints, and forces
+  - Build physics-based prototypes without adopting a full game engine
+best_for:
+  - 2D browser games that need approachable rigid-body physics
+not_for:
+  - Simple arcade collision where custom overlap checks would be smaller and easier to verify.
+alternatives:
+  - rapier-js
+  - phaser
+supersedes: []
+freshness: current
+source_confidence: official
+maintenance_signals:
+  - Official site, GitHub repository, and npm package metadata were checked.
+risk_flags:
+  - physics-simulation
+recommended_when:
+  - Use when game rules need 2D rigid-body behavior and the agent can test collision outcomes in browser gameplay.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-27'

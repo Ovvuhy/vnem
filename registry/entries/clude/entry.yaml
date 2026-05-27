@@ -1,0 +1,77 @@
+schema_version: 1.0.0
+slug: clude
+name: Clude
+type: memory
+summary_llm: >-
+  Clude is an early-stage cognitive memory layer and MCP server for AI agents, with hosted,
+  self-hosted, and local modes for storing, recalling, decaying, consolidating, and exporting
+  agent memories.
+homepage_url: https://clude.io/
+repo_url: https://github.com/sebbsssss/clude
+package_urls:
+  - https://www.npmjs.com/package/@clude/sdk
+licenses:
+  - MIT
+copyright_owner: Clude
+source_urls:
+  - https://clude.io/docs.html
+  - https://github.com/sebbsssss/clude
+  - https://www.npmjs.com/package/@clude/sdk
+source_kind: official_docs
+protocols:
+  - MCP
+clients:
+  - Claude Code
+  - Claude Desktop
+  - Cursor
+  - TypeScript
+install:
+  command: npm install -g @clude/sdk
+  notes: >-
+    Review memory retention, hosted versus local storage, and MCP config writes before use; avoid
+    storing secrets or sensitive user data without explicit policy.
+  config_example: null
+permissions:
+  - network
+  - filesystem
+  - database
+env_vars:
+  - CORTEX_API_KEY
+  - SUPABASE_URL
+  - SUPABASE_SERVICE_KEY
+  - ANTHROPIC_API_KEY
+  - OPENAI_API_KEY
+  - VOYAGE_API_KEY
+tags:
+  - memory
+  - mcp
+  - long-term-memory
+  - cognitive-architecture
+  - agents
+use_cases:
+  - Give agents portable long-term memory
+  - Add MCP memory recall and storage tools
+  - Compare hosted, local, and self-hosted memory modes
+best_for:
+  - Agent products that need inspectable memory and can define retention boundaries
+not_for:
+  - Projects that cannot review memory privacy, storage location, and deletion behavior.
+alternatives:
+  - mem0
+  - zep
+  - graphiti
+supersedes: []
+freshness: current
+source_confidence: high
+maintenance_signals:
+  - Official docs, GitHub repository, and npm package metadata were checked.
+risk_flags:
+  - stores-user-memory
+  - data-retention-risk
+  - early-stage
+  - hosted-memory-service
+recommended_when:
+  - Use when agent memory should be explicit, searchable, and portable across MCP-compatible clients.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-27'

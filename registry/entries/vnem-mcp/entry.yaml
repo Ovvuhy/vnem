@@ -1,0 +1,73 @@
+schema_version: 1.0.0
+slug: vnem-mcp
+name: vnem MCP
+type: mcp-server
+summary_llm: >-
+  vnem MCP is the local read-only MCP server for the vnem registry, exposing generated
+  search data, best-practice notes, prompt patterns, and registry entries to coding agents
+  before they choose tools or upgrade paths.
+homepage_url: https://github.com/naellisim/vnem
+repo_url: https://github.com/naellisim/vnem
+package_urls: []
+licenses:
+  - MIT
+  - CC0-1.0
+copyright_owner: vnem contributors
+source_urls:
+  - https://github.com/naellisim/vnem
+  - https://github.com/modelcontextprotocol/typescript-sdk
+source_kind: github
+protocols:
+  - MCP
+clients:
+  - Codex
+  - Claude Desktop
+  - Claude Code
+  - Cursor
+  - VS Code
+  - OpenAI Agents SDK
+install:
+  command: node scripts/vnem-mcp-server.mjs
+  notes: >-
+    Run from a local vnem checkout after npm dependencies are installed, or through
+    `npm run mcp`. The server reads generated vnem artifacts and communicates over stdio.
+  config_example: >-
+    {"mcpServers":{"vnem":{"command":"node","args":["/path/to/vnem/scripts/vnem-mcp-server.mjs"]}}}
+permissions:
+  - filesystem
+env_vars:
+  - VNEM_ROOT
+tags:
+  - vnem
+  - mcp
+  - registry
+  - agent-tools
+  - best-practices
+  - prompt-patterns
+  - read-only
+use_cases:
+  - Give coding agents vnem search and recommendation tools
+  - Query current MCP, skill, memory, eval, prompt, and coding-agent guidance
+  - Compare registry entries with trust and permission notes
+best_for:
+  - Repositories that want local, source-backed tool recommendations without granting mutation permissions
+  - Agents that should consult vnem before choosing MCP servers, memory layers, skills, or search tools
+not_for:
+  - Running third-party tools directly or installing dependencies in the target project.
+alternatives:
+  - model-context-protocol
+  - codex-agents-md
+supersedes: []
+freshness: current
+source_confidence: official
+maintenance_signals:
+  - Implemented in this repository with an SDK-backed smoke test.
+  - Uses generated vnem artifacts instead of vendoring third-party content.
+risk_flags:
+  - reads-local-files
+recommended_when:
+  - Use when a coding agent should query vnem through MCP instead of manually reading `.vnem/search-index.json`.
+  - Use when recommendations need trust tiers, install notes, permissions, risk flags, and source URLs.
+trust_tier: verified
+review_status: manual-reviewed
+last_checked: '2026-05-27'

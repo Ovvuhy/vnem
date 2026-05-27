@@ -1,6 +1,6 @@
 # vnem Best Practices
 
-Generated: 2026-05-27T08:11:19.111Z
+Generated: 2026-05-27T08:21:23.984Z
 
 Use this as a compact, current guidance layer for coding agents. Prefer these notes when choosing whether to add, replace, or avoid a tool.
 
@@ -15,6 +15,26 @@ Prefer mature component systems, accessibility-first primitives, screenshot veri
 Sources: https://www.anthropic.com/engineering/building-effective-agents
 
 Search aliases: better ui, frontend, design, tailwind, astro, react, accessibility, screenshot, component
+
+## Browser Games And Interactive Canvas
+
+For browser-native games, choose the lightest proven stack that can deliver real playability: responsive rendering, input, rules, state transitions, visible feedback, accessible UI, and browser-verified behavior.
+
+- Pick the smallest stack that satisfies playability: Canvas with Vite for tiny custom 2D, Phaser for scene/sprite/audio/camera-heavy 2D, PixiJS for renderer-first 2D interaction, Excalibur for TypeScript-first 2D, and KAPLAY for fast playful prototypes.
+- Use Three.js for custom 3D scenes, Babylon.js for richer 3D engine features, and PlayCanvas when a browser-first 3D engine/editor workflow is valuable; avoid 3D stacks for simple 2D games.
+- Add physics only when game rules need it: prefer simple custom collision first, Matter.js for approachable 2D rigid bodies, and Rapier when higher-performance 2D/3D physics or determinism options matter.
+- Build the loop around requestAnimationFrame timestamps, separate update and render work, use fixed-step simulation for physics-sensitive games, and keep pause/resume behavior explicit.
+- Model input as actions rather than raw keys so keyboard, pointer, touch, and gamepad controls can share game logic and be remapped for nontrivial games.
+- Include asset preload/loading, start, pause, win, lose, restart, and error states before visual flourishes; browser games fail quickly when a terminal state or restart path is missing.
+- Design game UI for readability during motion: high-contrast HUD text, clear hit/damage/reward feedback, stable layout, large touch targets, and readable menus on both desktop and mobile.
+- Treat accessibility as game feel: provide keyboard/touch parity where practical, avoid color-only cues, respect reduced-motion needs, watch photosensitive flashing, and add captions or visual audio cues when sound carries gameplay information.
+- Verify delivered playability in a real browser: serve locally, confirm nonblank canvas pixels, simulate inputs, check state transitions and restart, inspect desktop and mobile viewports, and test audio unlock behavior.
+- Use performance work after the game is playable: batch Canvas drawing, pre-render expensive repeated work to snug offscreen buffers, measure before optimizing, and move to WebGL/WebGPU libraries when object count or effects justify it.
+- For coding-agent evaluation, judge the delivered game rather than just build success; browser games expose input, spatial mapping, rules, terminal conditions, restart, and visible-feedback failures that normal code checks miss.
+
+Sources: https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API, https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame, https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Optimizing_canvas, https://web.dev/articles/canvas-performance, https://vite.dev/guide/, https://docs.phaser.io/, https://pixijs.com/, https://excaliburjs.com/, https://kaplayjs.com/, https://threejs.org/docs/, https://doc.babylonjs.com/setup/support/webGPU, https://github.com/playcanvas/engine, https://github.com/liabru/matter-js, https://github.com/dimforge/rapier.js/, https://learn.microsoft.com/en-us/gaming/accessibility/guidelines, https://learn.microsoft.com/en-us/gaming/accessibility/xbox-accessibility-guidelines/102, https://learn.microsoft.com/en-us/gaming/accessibility/xbox-accessibility-guidelines/107, https://w3c.github.io/wcag/guidelines/22/, https://arxiv.org/abs/2605.17637
+
+Search aliases: browser game, web game, html5 game, canvas game, 2d game, 3d game, game engine, game ui, game accessibility, game physics, game testing, canvas performance, canvas, animation, vite, phaser, pixi, excalibur, kaplay, three.js, babylon.js, playcanvas, matter.js, rapier
 
 ## Backend And APIs
 
@@ -76,6 +96,20 @@ Sources: https://github.com/openai/codex, https://docs.anthropic.com/en/docs/cla
 
 Search aliases: code review, upgrade, dependency, outdated, package, static analysis, best practices
 
+## Code Simplification And Minimal Refactors
+
+Simplify code by preserving behavior first, deleting proven waste, reducing duplication, and using the project's existing abstractions before introducing new ones.
+
+- Treat simplification as behavior-preserving refactoring: characterize current behavior with tests, snapshots, fixtures, or golden examples before deleting or reshaping code.
+- Prefer deletion over abstraction when code is unused, unreachable, duplicated, or handled by an existing local helper.
+- Use static evidence before edits: lexical search, AST-aware search, unused-file/export/dependency checks, duplicate-code detection, and existing lint or type checks.
+- Keep public APIs, data formats, error behavior, and user-visible workflows stable unless the user explicitly asks for a product change.
+- Make small reviewable steps: remove dead code, collapse duplication, simplify control flow, then rerun focused and broad verification.
+
+Sources: https://refactoring.com/, https://martinfowler.com/bliki/OpportunisticRefactoring.html, https://knip.dev/, https://jscpd.dev/, https://ast-grep.github.io/
+
+Search aliases: code simplification, code compaction, minimal code, professional code, refactor, dead code, duplication, complexity, knip, jscpd, ast-grep
+
 ## Security And Trust
 
 Never let discovery become blind execution. Track permissions, licenses, data access, stale links, and whether a tool can mutate user state.
@@ -135,18 +169,6 @@ Give repository-editing agents tight scope, strong local context, explicit appro
 Sources: https://github.com/openai/codex, https://docs.anthropic.com/en/docs/claude-code/overview, https://docs.github.com/en/copilot/concepts/about-copilot-coding-agent, https://aider.chat/docs/, https://docs.all-hands.dev/
 
 Search aliases: coding agents, codex, claude code, copilot, cursor, aider, cline, openhands, codebase, repository
-
-## Model And Provider Selection
-
-Choose Codex, Claude Code, Gemini/ADK, framework agents, or model APIs by workflow fit, permissions, eval evidence, and operational cost rather than brand preference.
-
-- Start from the task shape: repo editing, hosted agent runtime, multi-agent workflow, model app, or tool-calling backend.
-- Compare approval boundaries, shell/filesystem access, memory model, MCP/tool support, tracing, evals, deployment path, and cost.
-- Run a small benchmark or pilot task before standardizing on a new agent/provider workflow.
-
-Sources: https://developers.openai.com/codex/guides/agents-md, https://openai.github.io/openai-agents-python/, https://code.claude.com/docs/en/overview, https://adk.dev/
-
-Search aliases: ai model selection, codex vs claude, gemini agent, provider, model, agent upgrade, adk
 
 ## Subagents And Multi-Agent Work
 
@@ -219,4 +241,16 @@ Upgrade rough prompts into operational instructions with intent, context, constr
 Sources: https://developers.openai.com/api/docs/guides/prompt-engineering, https://developers.openai.com/api/docs/guides/prompt-optimizer, https://developers.openai.com/codex/guides/agents-md
 
 Search aliases: prompt engineering, prompt enhancer, codex prompt, prompt optimizer, instructions, output format, examples, rubric
+
+## Model And Provider Selection
+
+Choose Codex, Claude Code, Gemini/ADK, framework agents, or model APIs by workflow fit, permissions, eval evidence, and operational cost rather than brand preference.
+
+- Start from the task shape: repo editing, hosted agent runtime, multi-agent workflow, model app, browser-game build, or tool-calling backend.
+- Compare approval boundaries, shell/filesystem access, memory model, MCP/tool support, tracing, evals, deployment path, cost, privacy, and reversibility.
+- Run a small benchmark or pilot task before standardizing on a new agent/provider workflow.
+
+Sources: https://developers.openai.com/codex/guides/agents-md, https://openai.github.io/openai-agents-python/, https://code.claude.com/docs/en/overview, https://adk.dev/
+
+Search aliases: ai model selection, codex vs claude, gemini agent, provider, model, agent upgrade, adk
 

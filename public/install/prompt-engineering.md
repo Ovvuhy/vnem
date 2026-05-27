@@ -1,6 +1,6 @@
 # vnem Prompt Engineering
 
-Generated: 2026-05-27T08:11:19.111Z
+Generated: 2026-05-27T08:21:23.984Z
 
 Use this when the user asks to improve, rewrite, harden, or operationalize a prompt. The main trigger phrase is `use vnem to enhance this prompt`.
 
@@ -121,6 +121,39 @@ Constraints:
 - Do not run destructive commands.
 - Ask before installing packages, changing secrets, deploying, or touching production data.
 - Preserve user changes already present in the worktree.
+```
+
+### Code Simplification Prompt
+
+Prompt a coding agent to reduce complexity while proving every existing feature still works.
+
+Intents: code simplification, code compaction, minimal code, professional code, refactor
+
+Template:
+
+```text
+Simplify this code while preserving all existing behavior.
+
+Target:
+<files, modules, or feature area>
+
+Non-goals:
+- Do not redesign product behavior.
+- Do not change public APIs, data formats, or user-visible flows unless explicitly required.
+- Do not add new dependencies unless the existing stack cannot solve the problem cleanly.
+
+Workflow:
+1. Inspect the current implementation, tests, public interfaces, and call sites.
+2. Identify removable code with evidence: unused files, unused exports, duplicate branches, dead paths, repeated helpers, or needless state.
+3. Preserve behavior with focused tests, snapshots, fixtures, type checks, or golden examples before risky edits.
+4. Make small reviewable changes: delete proven waste, collapse duplication, simplify control flow, and reuse existing local helpers.
+5. Run focused verification first, then the broader project checks.
+
+Output:
+- What was simplified.
+- Features or interfaces preserved.
+- Verification commands and results.
+- Residual risk or areas intentionally left unchanged.
 ```
 
 ### Code Review Prompt
@@ -345,7 +378,7 @@ Template:
 Compare AI agents, model providers, or agent frameworks for this workflow.
 
 Workflow:
-<repo editing, agent app, MCP tool use, research, frontend build, eval pipeline, etc.>
+<repo editing, agent app, MCP tool use, research, frontend build, browser game, eval pipeline, etc.>
 
 Current stack:
 <tools, languages, frameworks, CI, deployment, existing agent instructions>
@@ -378,7 +411,7 @@ Current workflow:
 <how the agent is used today>
 
 Goal:
-<what better means: speed, quality, autonomy, accuracy, UI quality, research depth, etc.>
+<what better means: speed, quality, autonomy, accuracy, UI quality, research depth, game-building quality, etc.>
 
 Requirements:
 - Inspect existing instructions, tools, MCP config, scripts, CI, and verification paths first.

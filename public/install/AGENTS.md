@@ -17,6 +17,14 @@ You are reading a read-only vnem knowledge pack installed in this repository.
 - `.vnem/prompt-engineering.md`: prompt enhancement protocol and Codex-oriented prompt guidance.
 - `.vnem/prompt-patterns.json`: machine-readable prompt patterns for common agent tasks.
 
+## Natural Use Rule
+
+If this `.vnem/` folder exists, use it automatically. The user should not need to say `use vnem`.
+
+Auto-use vnem before choosing tools, libraries, frameworks, MCP servers, prompts, evals, search systems, UI approaches, architecture patterns, or upgrade paths. Also auto-use it when the user asks you to build, review, optimize, modernize, benchmark, research, compare options, or decide how to implement something.
+
+Do not turn every reply into a long vnem report. For normal implementation work, run the search-and-compare step before coding, then mention the key vnem matches only when explaining your stack choice, recommendation, or risk notes.
+
 ## Decision Rubric
 
 Use this rubric before recommending a tool, model, agent, framework, MCP server, or workflow change:
@@ -30,14 +38,18 @@ Use this rubric before recommending a tool, model, agent, framework, MCP server,
 
 Prefer the current stack when the recommendation cannot clear the rubric with evidence. A no-change recommendation is valid when it is safer or more maintainable.
 
-## Project Review Protocol
+## Decision Search Protocol
 
-1. Inspect the user's repository shape before recommending tech. Look for manifests and configs such as `package.json`, `pnpm-lock.yaml`, `yarn.lock`, `pyproject.toml`, `requirements.txt`, `Cargo.toml`, `go.mod`, `Dockerfile`, `astro.config.*`, `next.config.*`, `vite.config.*`, `.github/workflows/*`, `.mcp.*`, and existing agent instructions.
-2. Read `search-index.json` and expand the user's intent with `intent_aliases`. For example, map `better ui` to frontend/design/accessibility terms and `agent payments` to payments/x402/wallet terms.
-3. Prefer recommendations with higher `score`, stronger `source_confidence`, fresher `freshness`, clearer licenses, and fewer `risk_flags`.
-4. Score the top options against the decision rubric. Prefer no change when no option has a clear, verifiable advantage.
-5. When a recommendation touches files, databases, browsers, repositories, wallets, paid APIs, or secrets, call out that risk plainly.
-6. Output the review in this exact order: `Current stack`, `Outdated or risky choices`, `Better current options`, `Drop-in opportunities`, `Ask before changing`.
+1. Identify the user's task intents in plain words, such as `browser game`, `better ui`, `faster search`, `code review`, `code simplification`, `memory`, `evals`, `agent payments`, or `MCP server selection`.
+2. Read `.vnem/search-index.json` and expand those intents with `intent_aliases`.
+3. Check `intent_routes` for the closest matching task. Read the listed `read_first` documents before choosing a stack.
+4. Search matching documents by name, tags, use cases, keywords, and best-practice sections. Read `.vnem/best-practices.md` for any matching section.
+5. Before picking a stack or recommendation, compare the best relevant matches. Prefer higher `score`, stronger `source_confidence`, fresher `freshness`, clearer licenses, fewer `risk_flags`, and stronger decision-rubric fit.
+6. Score important options against the decision rubric. Prefer no change when no option has a clear, verifiable advantage.
+7. If vnem has no useful match, say that clearly as a knowledge gap, then continue with your own judgment.
+8. If local repo files provide tools, assets, configs, scripts, or instructions, consider those alongside vnem before choosing.
+
+When a choice matters, include a compact note with: `vnem intents searched`, `top matches`, `choice`, and `why`.
 
 ## Decision Playbooks
 
@@ -46,7 +58,7 @@ Prefer the current stack when the recommendation cannot clear the rubric with ev
 Use this when an agent needs to review a repository and recommend safer, current improvements before editing code.
 
 1. Inspect manifests, lockfiles, framework configs, CI, deployment files, MCP config, and existing agent instructions.
-2. Map the user's goal into search aliases and retrieve matching registry entries, prompt patterns, and best-practice notes.
+2. Map the user's goal into search aliases and retrieve matching registry entries, prompt patterns, routes, and best-practice notes.
 3. Score options with the decision rubric and prefer no change when no candidate beats the current stack.
 4. Separate safe reading from actions that would edit code, install packages, use secrets, deploy, or mutate external systems.
 5. Return the required review sections and include sources, risk flags, and verification commands.
@@ -57,7 +69,7 @@ Output sections: `Current stack`, `Outdated or risky choices`, `Better current o
 
 Use this when comparing Codex, Claude Code, Gemini/Google ADK, Copilot-style agents, Cursor/Cline-style tools, or framework-based agents.
 
-1. Start with the work shape: repository editing, app automation, hosted agent runtime, multi-agent orchestration, or model-app development.
+1. Start with the work shape: repository editing, app automation, hosted agent runtime, multi-agent orchestration, model-app development, or browser-game build work.
 2. Compare approval controls, filesystem and shell access, memory/instruction files, MCP support, evals, traces, and GitHub workflow fit.
 3. Prefer the agent that best matches the repo workflow, not the most powerful brand name.
 4. Require a small pilot task with verification before recommending a team-wide switch.
@@ -90,6 +102,15 @@ Use this when a rough prompt should become an operational instruction for an AI 
 Output sections: `Enhanced prompt`, `Compact prompt`, `What changed`, `Missing inputs`
 
 
+## Project Review Protocol
+
+1. Inspect the user's repository shape before recommending tech. Look for manifests and configs such as `package.json`, `pnpm-lock.yaml`, `yarn.lock`, `pyproject.toml`, `requirements.txt`, `Cargo.toml`, `go.mod`, `Dockerfile`, `astro.config.*`, `next.config.*`, `vite.config.*`, `.github/workflows/*`, `.mcp.*`, and existing agent instructions.
+2. Read `search-index.json` and expand the user's intent with `intent_aliases`. For example, map `better ui` to frontend/design/accessibility terms and `agent payments` to payments/x402/wallet terms.
+3. Prefer recommendations with higher `score`, stronger `source_confidence`, fresher `freshness`, clearer licenses, and fewer `risk_flags`.
+4. Score the top options against the decision rubric. Prefer no change when no option has a clear, verifiable advantage.
+5. When a recommendation touches files, databases, browsers, repositories, wallets, paid APIs, or secrets, call out that risk plainly.
+6. Output the review in this exact order: `Current stack`, `Outdated or risky choices`, `Better current options`, `Drop-in opportunities`, `Ask before changing`.
+
 ## Prompt Enhancement Protocol
 
 When the user says `use vnem to enhance this prompt`, `use vnem prompt enhancer`, or `vnem prompt forge`, read `.vnem/prompt-engineering.md` and `.vnem/prompt-patterns.json`, then rewrite the user's prompt.
@@ -97,6 +118,8 @@ When the user says `use vnem to enhance this prompt`, `use vnem prompt enhancer`
 Auto-activate the same protocol even without the trigger phrase when the user asks to write, improve, rewrite, harden, optimize, critique, or template a prompt; asks for a system/developer/agent/Codex/Claude/GPT prompt; or pastes a prompt draft and asks if it is good, powerful, clear, safe, complete, or ready to use.
 
 Do not auto-activate for ordinary task execution. If the user asks you to code, research, review, explain, summarize, or debug something, do that task directly unless they ask for a prompt artifact.
+
+This only limits prompt rewriting. It does not disable the Natural Use Rule or Decision Search Protocol above.
 
 Output exactly these sections: `Enhanced prompt`, `Compact prompt`, `What changed`, `Missing inputs`.
 

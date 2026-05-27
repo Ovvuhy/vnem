@@ -1,0 +1,65 @@
+schema_version: 1.0.0
+slug: knip
+name: Knip
+type: runtime
+summary_llm: >-
+  Knip is a JavaScript and TypeScript project hygiene CLI that finds unused files,
+  dependencies, exports, types, enum members, and unresolved references so agents can
+  remove dead code with evidence before refactoring.
+homepage_url: https://knip.dev/
+repo_url: https://github.com/webpro-nl/knip
+package_urls:
+  - https://www.npmjs.com/package/knip
+licenses:
+  - ISC
+copyright_owner: Lars Kappert and Knip contributors
+source_urls:
+  - https://knip.dev/
+  - https://knip.dev/overview/getting-started
+  - https://github.com/webpro-nl/knip
+  - https://www.npmjs.com/package/knip
+source_kind: official_docs
+protocols: []
+clients:
+  - CLI
+  - Node.js
+install:
+  command: npm init @knip/config
+  notes: >-
+    Use after reviewing the project's package manager and Node version; treat reports as
+    evidence for review, not automatic deletion.
+  config_example: null
+permissions:
+  - filesystem
+env_vars: []
+tags:
+  - javascript
+  - typescript
+  - dead-code
+  - dependency-analysis
+  - code-simplification
+use_cases:
+  - Find unused files and exports
+  - Detect unused or missing dependencies
+  - Support evidence-backed code deletion
+best_for:
+  - JavaScript and TypeScript repositories where agents need evidence before removing code
+not_for:
+  - Non-JavaScript stacks or projects that cannot tolerate static-analysis false positives.
+alternatives:
+  - ast-grep
+  - jscpd
+  - ripgrep
+supersedes: []
+freshness: current
+source_confidence: high
+maintenance_signals:
+  - Official docs, GitHub repository, and npm package metadata were checked.
+risk_flags:
+  - reads-local-files
+  - may-report-false-positives
+recommended_when:
+  - Use before deleting JavaScript or TypeScript code, exports, files, or dependencies during simplification work.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-27'

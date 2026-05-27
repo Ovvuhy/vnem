@@ -1,0 +1,74 @@
+schema_version: 1.0.0
+slug: codebase-memory-mcp
+name: codebase-memory-mcp
+type: mcp-server
+summary_llm: >-
+  codebase-memory-mcp is a local MCP server that indexes source code into a persistent tree-sitter
+  knowledge graph so coding agents can answer structural questions with graph queries instead of
+  repeated grep and file-reading loops.
+homepage_url: https://deusdata.github.io/codebase-memory-mcp/
+repo_url: https://github.com/DeusData/codebase-memory-mcp
+package_urls:
+  - https://github.com/DeusData/codebase-memory-mcp/releases
+licenses:
+  - MIT
+copyright_owner: DeusData
+source_urls:
+  - https://github.com/DeusData/codebase-memory-mcp
+  - https://deusdata.github.io/codebase-memory-mcp/
+  - https://arxiv.org/abs/2603.27277
+source_kind: github
+protocols:
+  - MCP
+clients:
+  - Claude Code
+  - Codex CLI
+  - Cursor
+  - Aider
+  - VS Code
+install:
+  command: null
+  notes: >-
+    Review releases, checksums, and install behavior before running; the tool reads local code,
+    writes agent config, and stores local SQLite indexes.
+  config_example: null
+permissions:
+  - filesystem
+  - local-server
+env_vars:
+  - CBM_CACHE_DIR
+  - CBM_DIAGNOSTICS
+  - CBM_DOWNLOAD_URL
+tags:
+  - mcp
+  - code-intelligence
+  - knowledge-graph
+  - tree-sitter
+  - coding-agents
+use_cases:
+  - Give agents structural code search
+  - Trace call paths and affected symbols
+  - Reduce repeated grep and file-reading loops
+best_for:
+  - Large repositories where agents repeatedly ask structural codebase questions
+not_for:
+  - Small tasks where normal rg plus targeted file reads are simpler.
+alternatives:
+  - ripgrep
+  - ast-grep
+  - github-mcp-server
+supersedes: []
+freshness: current
+source_confidence: high
+maintenance_signals:
+  - GitHub repository, project docs, release claims, and arXiv preprint were checked.
+risk_flags:
+  - reads-local-code
+  - writes-agent-config
+  - stores-local-index
+  - early-stage
+recommended_when:
+  - Use when structural codebase questions dominate and the team can audit local indexing behavior first.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-27'

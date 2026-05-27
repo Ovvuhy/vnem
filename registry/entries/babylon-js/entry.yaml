@@ -1,0 +1,73 @@
+schema_version: 1.0.0
+slug: babylon-js
+name: Babylon.js
+type: runtime
+summary_llm: >-
+  Babylon.js is a full-featured browser 3D engine for WebGL/WebGPU games and interactive
+  applications, with engine-level support for scenes, materials, assets, GUI, XR, and physics.
+homepage_url: https://www.babylonjs.com
+repo_url: https://github.com/BabylonJS/Babylon.js
+package_urls:
+  - https://www.npmjs.com/package/@babylonjs/core
+licenses:
+  - Apache-2.0
+copyright_owner: Babylon.js contributors
+source_urls:
+  - https://www.babylonjs.com
+  - https://doc.babylonjs.com/
+  - https://doc.babylonjs.com/setup/support/webGPU
+  - https://github.com/BabylonJS/Babylon.js
+  - https://www.npmjs.com/package/@babylonjs/core
+source_kind: official_docs
+protocols: []
+clients:
+  - Browser
+  - JavaScript
+  - TypeScript
+install:
+  command: npm install @babylonjs/core
+  notes: >-
+    Use for substantial 3D browser games or experiences where engine features matter more than a
+    minimal renderer.
+  config_example: null
+permissions:
+  - browser
+  - canvas
+  - webgl
+  - webgpu
+  - audio
+env_vars: []
+tags:
+  - runtime
+  - game-engine
+  - three-dimensional
+  - webgl
+  - webgpu
+  - webxr
+  - browser-game
+  - typescript
+use_cases:
+  - Build 3D browser games
+  - Use engine-level scene, material, asset, GUI, XR, and physics features
+  - Target WebGL with WebGPU support paths
+best_for:
+  - 3D browser games that benefit from a full engine instead of a focused renderer
+not_for:
+  - Lightweight 2D browser games or tiny 3D scenes where Three.js would be simpler.
+alternatives:
+  - three-js
+  - playcanvas-engine
+supersedes: []
+freshness: current
+source_confidence: official
+maintenance_signals:
+  - Official docs, GitHub repository, and npm package metadata were checked.
+  - WebGPU support is documented as part of the engine direction.
+risk_flags:
+  - browser-runtime
+  - gpu-rendering
+recommended_when:
+  - Use when an agent needs a full 3D web engine with browser verification, not just a graphics library.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-27'

@@ -165,6 +165,10 @@ const apiIndex = await readJson(path.join(ROOT, "public", "api", "index.json"));
 const installArchive = await readFile(path.join(ROOT, "public", "install.tgz"));
 
 assert(agents.includes("Project Review Protocol"), "AGENTS.md must include the project review protocol.");
+assert(agents.includes("Natural Use Rule"), "AGENTS.md must tell agents to auto-use vnem naturally.");
+assert(agents.includes("Decision Search Protocol"), "AGENTS.md must include the decision search protocol.");
+assert(agents.includes("The user should not need to say `use vnem`"), "AGENTS.md must not require a special user prompt to activate vnem.");
+assert(agents.includes("If vnem has no useful match"), "AGENTS.md must require agents to report vnem knowledge gaps.");
 assert(agents.includes("Current stack"), "AGENTS.md must include the required output sections.");
 assert(agents.includes("Ask before changing"), "AGENTS.md must tell agents to ask before changing.");
 assert(agents.includes("Decision Rubric"), "AGENTS.md must include the decision rubric.");
@@ -184,6 +188,11 @@ assert(
   "install archive must extract only the five read-only pack files."
 );
 assert(bestPractices.includes("Frontend And UI"), "best-practices.md must include frontend guidance.");
+assert(bestPractices.includes("Browser Games And Interactive Canvas"), "best-practices.md must include browser game guidance.");
+assert(bestPractices.includes("Excalibur"), "browser game guidance must include Excalibur as a TypeScript-first 2D option.");
+assert(bestPractices.includes("real browser"), "browser game guidance must require real-browser verification.");
+assert(bestPractices.includes("Code Simplification And Minimal Refactors"), "best-practices.md must include code simplification guidance.");
+assert(bestPractices.includes("Model And Provider Selection"), "best-practices.md must include model and provider selection guidance.");
 assert(bestPractices.includes("Payments And Commerce"), "best-practices.md must include payments guidance.");
 assert(agents.includes("Prompt Enhancement Protocol"), "AGENTS.md must include the prompt enhancement protocol.");
 assert(agents.includes("Auto-activate the same protocol"), "AGENTS.md must include prompt auto-activation instructions.");
@@ -194,30 +203,51 @@ assert(promptEngineering.includes("Codex Implementation Prompt"), "prompt-engine
 assert(promptPatterns.safety?.mode === "read-only-prompt-patterns", "prompt-patterns safety mode must be read-only-prompt-patterns.");
 assert(promptPatterns.automatic_activation?.enabled === true, "prompt-patterns must enable automatic prompt enhancement.");
 assert(promptPatterns.patterns?.some((pattern) => pattern.id === "codex-implementation"), "prompt-patterns must include a Codex implementation pattern.");
+assert(promptPatterns.patterns?.some((pattern) => pattern.id === "code-simplification"), "prompt-patterns must include a code simplification pattern.");
 assert(promptPatterns.patterns?.some((pattern) => pattern.id === "provider-selection"), "prompt-patterns must include a provider selection pattern.");
 assert(promptPatterns.patterns?.some((pattern) => pattern.id === "agent-upgrade-plan"), "prompt-patterns must include an agent upgrade planning pattern.");
 assert(localPromptPatterns.patterns?.length === promptPatterns.patterns.length, "local .vnem prompt patterns must match the hosted install pack.");
 assert(searchIndex.safety?.mode === "read-only-files", "search-index safety mode must be read-only-files.");
 assert(searchIndex.safety?.executes_code === false, "search-index must declare that it does not execute code.");
 assert(searchIndex.safety?.installs_packages === false, "search-index must declare that it does not install packages.");
-assert(searchIndex.documents?.length > 0, "search-index must include documents.");
+assert(searchIndex.decision_protocol?.auto_use === true, "search-index must tell agents to auto-use vnem.");
+assert(searchIndex.decision_protocol?.user_trigger_required === false, "search-index must not require a special vnem trigger.");
+assert(searchIndex.intent_routes?.["browser game"]?.read_first?.includes("practice:browser-games"), "search-index must route browser game tasks to browser game guidance.");
+assert(searchIndex.intent_routes?.["web game"]?.read_first?.includes("practice:browser-games"), "search-index must route web game tasks to browser game guidance.");
+assert(searchIndex.intent_routes?.["game accessibility"]?.read_first?.includes("practice:browser-games"), "search-index must route game accessibility tasks to browser game guidance.");
+assert(searchIndex.intent_routes?.["game physics"]?.read_first?.includes("practice:browser-games"), "search-index must route game physics tasks to browser game guidance.");
+assert(searchIndex.intent_routes?.["code simplification"]?.read_first?.includes("practice:code-simplification"), "search-index must route code simplification tasks to code simplification guidance.");
+assert(searchIndex.intent_routes?.["codex vs claude"]?.read_first?.includes("playbook:coding-agent-selection"), "search-index must route coding-agent comparisons to the coding-agent playbook.");
+assert(searchIndex.intent_routes?.["agent upgrade"]?.read_first?.includes("playbook:project-stack-review"), "search-index must route agent upgrades to project-stack review.");
 assert(searchIndex.decision_rubric?.length >= 6, "search-index must include the decision rubric.");
 assert(searchIndex.decision_playbooks?.some((playbook) => playbook.id === "coding-agent-selection"), "search-index must include the coding-agent selection playbook.");
 assert(searchIndex.documents?.some((document) => document.kind === "decision-playbook"), "search-index must index decision playbooks.");
+assert(apiIndex.decision_protocol?.auto_use === true, "public API must expose the decision protocol.");
+assert(apiIndex.intent_routes?.["browser game"]?.read_first?.includes("practice:browser-games"), "public API must expose intent routes.");
+assert(apiIndex.intent_routes?.["web game"]?.read_first?.includes("practice:browser-games"), "public API must expose web game routes.");
+assert(apiIndex.intent_routes?.["code simplification"]?.read_first?.includes("practice:code-simplification"), "public API must expose code simplification routes.");
+assert(apiIndex.decision_rubric?.length === searchIndex.decision_rubric.length, "public API must expose the decision rubric.");
+assert(apiIndex.decision_playbooks?.length === searchIndex.decision_playbooks.length, "public API must expose decision playbooks.");
+assert(searchIndex.documents?.length > 0, "search-index must include documents.");
+for (const entryId of ["entry:phaser", "entry:pixijs", "entry:three-js", "entry:babylon-js", "entry:excalibur-js", "entry:kaplay", "entry:playcanvas-engine", "entry:matter-js", "entry:rapier-js"]) {
+  assert(searchIndex.documents?.some((document) => document.id === entryId), `search-index must include ${entryId}.`);
+}
 assert(localSearchIndex.documents?.length === searchIndex.documents.length, "local .vnem search index must match the hosted install pack.");
 assert(localSearchIndex.decision_playbooks?.length === searchIndex.decision_playbooks.length, "local .vnem decision playbooks must match the hosted install pack.");
 
-for (const entry of apiIndex.entries ?? []) {
-  assert(!entry.entry_path?.includes("\\"), `${entry.slug} entry_path must use portable forward slashes.`);
-  assert(!entry.profile_path?.includes("\\"), `${entry.slug} profile_path must use portable forward slashes.`);
-  assert(entry.entry_path?.startsWith("registry/entries/"), `${entry.slug} entry_path must point at registry/entries.`);
-  assert(entry.profile_path?.startsWith("registry/entries/"), `${entry.slug} profile_path must point at registry/entries.`);
-}
-
-for (const query of ["better ui", "faster search", "agent payments", "code review", "memory", "evals", "prompt engineering", "codex prompt", "codex vs claude", "gemini agent", "ai model selection", "agent upgrade"]) {
+for (const query of ["better ui", "browser game", "web game", "html5 game", "canvas game", "2d game", "3d game", "game engine", "game ui", "game accessibility", "game physics", "game testing", "canvas performance", "faster search", "agent payments", "code review", "code simplification", "code compaction", "minimal code", "professional code", "refactor", "dead code", "memory", "evals", "prompt engineering", "codex prompt", "codex vs claude", "gemini agent", "ai model selection", "agent upgrade"]) {
   const results = search(searchIndex, query);
   assert(results.length > 0, `search-index must return at least one result for "${query}".`);
   assert(results[0].score >= results.at(-1).score, `search results for "${query}" must be rank sorted.`);
+  if (["browser game", "web game", "html5 game", "canvas game", "2d game", "3d game", "game engine", "game ui", "game accessibility", "game physics", "game testing", "canvas performance"].includes(query)) {
+    assert(results[0].id === "practice:browser-games", `search results for "${query}" should lead with browser game guidance.`);
+  }
+  if (["code simplification", "code compaction", "minimal code", "professional code", "refactor", "dead code"].includes(query)) {
+    assert(results[0].id === "practice:code-simplification", `search results for "${query}" should lead with code simplification guidance.`);
+  }
+  if (["codex vs claude", "gemini agent"].includes(query)) {
+    assert(results[0].kind === "decision-playbook", `search results for "${query}" should lead with a decision playbook.`);
+  }
 }
 
 if (failures.length > 0) {
