@@ -22,6 +22,7 @@ const textEncoder = new TextEncoder();
 const textDecoder = new TextDecoder();
 const DEMO_MODE = import.meta.env.DEV && new URLSearchParams(window.location.search).has("mock");
 const OFFLINE_MODE = new URLSearchParams(window.location.search).has("offline");
+const SIGN_IN_TIMEOUT_MS = 2500;
 
 export default function App() {
   const wallet = useWallet();
@@ -86,66 +87,57 @@ export default function App() {
   }, [session.authenticated, session.loading, refreshSummary]);
 
   async function signIn() {
-    if (!wallet.publicKey) {
-      setError("connect-wallet-first");
-      return;
-    }
-    if (!wallet.signMessage && !wallet.wallet?.adapter?.signIn) {
-      setError("wallet-does-not-support-message-signing");
-      return;
-    }
+    try {
+      if (!wallet.publicKey) {
+        throw new Error("connect-wallet-first");
+      }
+      if (!wallet.signMessage && !wallet.wallet?.adapter?.signIn) {
+        throw new Error("wallet-does-not-support-message-signing");
+      }
 
-    setError(null);
-    setStatus("signing");
-    const walletAddress = wallet.publicKey.toBase58();
-    const nonceResponse = await fetch("/api/auth/nonce", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({ wallet_address: walletAddress })
-    });
-    const challenge = await nonceResponse.json();
-    if (!nonceResponse.ok) {
-      setStatus("gate");
-      setError(challenge.error ?? "login-challenge-failed");
-      return;
-    }
+      setError(null);
+      setStatus("signing");
+      const walletAddress = wallet.publicKey.toBase58();
+      const nonceResponse = await fetch("/api/auth/nonce", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ wallet_address: walletAddress })
+      });
+      const challenge = await responseJson(nonceResponse, "login-challenge-failed");
 
-    let signed = null;
-    if (wallet.wallet?.adapter?.signIn) {
-      signed = await trySignIn(wallet.wallet.adapter, challenge);
-    }
-    if (!signed && wallet.signMessage) {
-      const signature = await wallet.signMessage(textEncoder.encode(challenge.message));
-      signed = {
-        signature: bs58.encode(signature),
-        message: challenge.message
-      };
-    }
-    if (!signed) {
-      setStatus("gate");
-      setError("wallet-signing-cancelled");
-      return;
-    }
+      let signed = null;
+      if (wallet.signMessage) {
+        const signature = await wallet.signMessage(textEncoder.encode(challenge.message));
+        signed = {
+          signature: bs58.encode(signature),
+          message: challenge.message
+        };
+      }
+      if (!signed && wallet.wallet?.adapter?.signIn) {
+        signed = await trySignIn(wallet.wallet.adapter, challenge);
+      }
+      if (!signed) {
+        throw new Error("wallet-signing-cancelled");
+      }
 
-    const verifyResponse = await fetch("/api/auth/verify", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({
-        challenge: challenge.challenge,
-        wallet_address: walletAddress,
-        signature: signed.signature,
-        message: signed.message
-      })
-    });
-    const verify = await verifyResponse.json();
-    if (!verifyResponse.ok) {
+      const verifyResponse = await fetch("/api/auth/verify", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          challenge: challenge.challenge,
+          wallet_address: walletAddress,
+          signature: signed.signature,
+          message: signed.message
+        })
+      });
+      const verify = await responseJson(verifyResponse, "wallet-verification-failed");
+      setSession({ loading: false, ...verify });
+    } catch (cause) {
       setStatus("gate");
-      setError(verify.error ?? "wallet-verification-failed");
-      return;
+      setError(signInError(cause));
     }
-    setSession({ loading: false, ...verify });
   }
 
   async function logout() {
@@ -434,7 +426,11 @@ function Badge({ children, tone }) {
 
 async function trySignIn(adapter, challenge) {
   try {
-    const output = await adapter.signIn(challenge.sign_in_input);
+    const output = await withTimeout(
+      adapter.signIn(challenge.sign_in_input),
+      SIGN_IN_TIMEOUT_MS,
+      "wallet-signin-unavailable"
+    );
     const signature = output.signature instanceof Uint8Array ? bs58.encode(output.signature) : String(output.signature ?? "");
     const message = output.signedMessage instanceof Uint8Array
       ? textDecoder.decode(output.signedMessage)
@@ -443,6 +439,39 @@ async function trySignIn(adapter, challenge) {
   } catch {
     return null;
   }
+}
+
+async function responseJson(response, fallbackError) {
+  const text = await response.text();
+  let body = {};
+  if (text) {
+    try {
+      body = JSON.parse(text);
+    } catch {
+      throw new Error(response.ok ? "invalid-dashboard-api-response" : fallbackError);
+    }
+  }
+  if (!response.ok) {
+    throw new Error(body.error ?? fallbackError);
+  }
+  return body;
+}
+
+function withTimeout(promise, timeoutMs, errorMessage) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => {
+      setTimeout(() => reject(new Error(errorMessage)), timeoutMs);
+    })
+  ]);
+}
+
+function signInError(cause) {
+  const message = cause?.message ?? String(cause ?? "wallet-signing-cancelled");
+  if (/User rejected|rejected|declined|cancel/i.test(message)) {
+    return "wallet-signing-cancelled";
+  }
+  return message;
 }
 
 function formatDateTime(value) {

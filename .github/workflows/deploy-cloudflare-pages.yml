@@ -46,4 +46,10 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages functions build landing/functions --project-directory landing --outfile landing/_worker.js --output-routes-path landing/_routes.json
+
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy landing --project-name=vnem --branch=main --commit-hash=${{ github.sha }}
