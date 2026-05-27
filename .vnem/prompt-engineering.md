@@ -1,6 +1,6 @@
 # vnem Prompt Engineering
 
-Generated: 2026-05-26T21:02:24.985Z
+Generated: 2026-05-27T08:11:19.111Z
 
 Use this when the user asks to improve, rewrite, harden, or operationalize a prompt. The main trigger phrase is `use vnem to enhance this prompt`.
 
@@ -331,6 +331,66 @@ Output:
 - Where to store it.
 - What to avoid.
 - Review cadence.
+```
+
+### Model And Agent Provider Selection Prompt
+
+Prompt for comparing AI agents, model providers, and agent frameworks by workflow fit and verification evidence.
+
+Intents: codex vs claude, gemini agent, ai model selection, choose coding agent
+
+Template:
+
+```text
+Compare AI agents, model providers, or agent frameworks for this workflow.
+
+Workflow:
+<repo editing, agent app, MCP tool use, research, frontend build, eval pipeline, etc.>
+
+Current stack:
+<tools, languages, frameworks, CI, deployment, existing agent instructions>
+
+Decision Criteria:
+- Repo and workflow fit.
+- Approval boundaries and permission risk.
+- Tool/MCP support, memory/instruction model, evals, traces, and deployment path.
+- Cost, latency, privacy, source availability, and reversibility.
+
+Output:
+- Best fit for this workflow.
+- Tradeoffs between the top options.
+- Small pilot task and verification command.
+- What requires approval before changing.
+```
+
+### Agent Capability Upgrade Prompt
+
+Prompt for improving an AI agent workflow through context, tools, evals, safety gates, and verification.
+
+Intents: agent upgrade, make ai better, improve codex, improve claude, improve gemini
+
+Template:
+
+```text
+Improve this AI agent workflow without weakening safety or maintainability.
+
+Current workflow:
+<how the agent is used today>
+
+Goal:
+<what better means: speed, quality, autonomy, accuracy, UI quality, research depth, etc.>
+
+Requirements:
+- Inspect existing instructions, tools, MCP config, scripts, CI, and verification paths first.
+- Prefer durable context, narrow tools, source-backed recommendations, and small evals before adding automation.
+- Keep destructive commands, package installs, secrets, deploys, and production writes behind approval.
+- Propose changes in reviewable steps with rollback notes.
+
+Output:
+- Highest-impact improvements.
+- What to change first.
+- Risks and approvals needed.
+- Verification plan.
 ```
 
 ## Source Anchors

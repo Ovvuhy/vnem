@@ -1,6 +1,6 @@
 # vnem Best Practices
 
-Generated: 2026-05-26T21:02:24.985Z
+Generated: 2026-05-27T08:11:19.111Z
 
 Use this as a compact, current guidance layer for coding agents. Prefer these notes when choosing whether to add, replace, or avoid a tool.
 
@@ -135,6 +135,18 @@ Give repository-editing agents tight scope, strong local context, explicit appro
 Sources: https://github.com/openai/codex, https://docs.anthropic.com/en/docs/claude-code/overview, https://docs.github.com/en/copilot/concepts/about-copilot-coding-agent, https://aider.chat/docs/, https://docs.all-hands.dev/
 
 Search aliases: coding agents, codex, claude code, copilot, cursor, aider, cline, openhands, codebase, repository
+
+## Model And Provider Selection
+
+Choose Codex, Claude Code, Gemini/ADK, framework agents, or model APIs by workflow fit, permissions, eval evidence, and operational cost rather than brand preference.
+
+- Start from the task shape: repo editing, hosted agent runtime, multi-agent workflow, model app, or tool-calling backend.
+- Compare approval boundaries, shell/filesystem access, memory model, MCP/tool support, tracing, evals, deployment path, and cost.
+- Run a small benchmark or pilot task before standardizing on a new agent/provider workflow.
+
+Sources: https://developers.openai.com/codex/guides/agents-md, https://openai.github.io/openai-agents-python/, https://code.claude.com/docs/en/overview, https://adk.dev/
+
+Search aliases: ai model selection, codex vs claude, gemini agent, provider, model, agent upgrade, adk
 
 ## Subagents And Multi-Agent Work
 

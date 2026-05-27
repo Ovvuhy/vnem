@@ -167,6 +167,9 @@ const installArchive = await readFile(path.join(ROOT, "public", "install.tgz"));
 assert(agents.includes("Project Review Protocol"), "AGENTS.md must include the project review protocol.");
 assert(agents.includes("Current stack"), "AGENTS.md must include the required output sections.");
 assert(agents.includes("Ask before changing"), "AGENTS.md must tell agents to ask before changing.");
+assert(agents.includes("Decision Rubric"), "AGENTS.md must include the decision rubric.");
+assert(agents.includes("Decision Playbooks"), "AGENTS.md must include decision playbooks.");
+assert(agents.includes("Coding Agent Selection"), "AGENTS.md must include coding-agent selection guidance.");
 assert(!dangerousPatternFound(agents), `AGENTS.md contains a dangerous install/execution pattern: ${dangerousPatternFound(agents)}`);
 assert(safeInstallCommand(apiIndex.install_command), "install command must only download or extract the read-only pack files.");
 assert(safeInstallArchiveUrl(apiIndex.install_archive_url), "install archive URL must be an HTTPS install.tgz URL when present.");
@@ -191,12 +194,18 @@ assert(promptEngineering.includes("Codex Implementation Prompt"), "prompt-engine
 assert(promptPatterns.safety?.mode === "read-only-prompt-patterns", "prompt-patterns safety mode must be read-only-prompt-patterns.");
 assert(promptPatterns.automatic_activation?.enabled === true, "prompt-patterns must enable automatic prompt enhancement.");
 assert(promptPatterns.patterns?.some((pattern) => pattern.id === "codex-implementation"), "prompt-patterns must include a Codex implementation pattern.");
+assert(promptPatterns.patterns?.some((pattern) => pattern.id === "provider-selection"), "prompt-patterns must include a provider selection pattern.");
+assert(promptPatterns.patterns?.some((pattern) => pattern.id === "agent-upgrade-plan"), "prompt-patterns must include an agent upgrade planning pattern.");
 assert(localPromptPatterns.patterns?.length === promptPatterns.patterns.length, "local .vnem prompt patterns must match the hosted install pack.");
 assert(searchIndex.safety?.mode === "read-only-files", "search-index safety mode must be read-only-files.");
 assert(searchIndex.safety?.executes_code === false, "search-index must declare that it does not execute code.");
 assert(searchIndex.safety?.installs_packages === false, "search-index must declare that it does not install packages.");
 assert(searchIndex.documents?.length > 0, "search-index must include documents.");
+assert(searchIndex.decision_rubric?.length >= 6, "search-index must include the decision rubric.");
+assert(searchIndex.decision_playbooks?.some((playbook) => playbook.id === "coding-agent-selection"), "search-index must include the coding-agent selection playbook.");
+assert(searchIndex.documents?.some((document) => document.kind === "decision-playbook"), "search-index must index decision playbooks.");
 assert(localSearchIndex.documents?.length === searchIndex.documents.length, "local .vnem search index must match the hosted install pack.");
+assert(localSearchIndex.decision_playbooks?.length === searchIndex.decision_playbooks.length, "local .vnem decision playbooks must match the hosted install pack.");
 
 for (const entry of apiIndex.entries ?? []) {
   assert(!entry.entry_path?.includes("\\"), `${entry.slug} entry_path must use portable forward slashes.`);
@@ -205,7 +214,7 @@ for (const entry of apiIndex.entries ?? []) {
   assert(entry.profile_path?.startsWith("registry/entries/"), `${entry.slug} profile_path must point at registry/entries.`);
 }
 
-for (const query of ["better ui", "faster search", "agent payments", "code review", "memory", "evals", "prompt engineering", "codex prompt"]) {
+for (const query of ["better ui", "faster search", "agent payments", "code review", "memory", "evals", "prompt engineering", "codex prompt", "codex vs claude", "gemini agent", "ai model selection", "agent upgrade"]) {
   const results = search(searchIndex, query);
   assert(results.length > 0, `search-index must return at least one result for "${query}".`);
   assert(results[0].score >= results.at(-1).score, `search results for "${query}" must be rank sorted.`);

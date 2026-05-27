@@ -24,6 +24,7 @@ vnem is meant to improve the judgment of coding agents, not replace maintainer r
 
 - **Better recommendations:** agents compare current MCP servers, coding agents, frameworks, evals, memory systems, and workflows before proposing a stack change.
 - **Safer adoption:** each entry tracks source links, licenses, permissions, risk flags, trust tier, and install notes.
+- **Stronger AI selection:** the install pack includes a decision rubric and playbooks for comparing Codex, Claude Code, Gemini/ADK, MCP tools, and agent workflows by fit, risk, verification, cost, and reversibility.
 - **Clearer prompts:** the install pack includes prompt-engineering guidance and reusable prompt patterns for Codex-style implementation, review, debugging, research, eval, and MCP-selection tasks.
 - **Faster repo audits:** agents inspect the project first, then separate stale or risky choices from realistic drop-in improvements.
 
@@ -31,8 +32,9 @@ vnem is meant to improve the judgment of coding agents, not replace maintainer r
 
 1. Install the read-only pack into a project.
 2. Ask a coding agent to read `.vnem/AGENTS.md`.
-3. The agent uses `.vnem/search-index.json`, `.vnem/best-practices.md`, and `.vnem/prompt-*` files while reviewing the repo.
-4. The agent recommends options and asks before changing code, installing packages, using secrets, or touching external systems.
+3. The agent uses `.vnem/search-index.json`, `.vnem/best-practices.md`, decision playbooks, and `.vnem/prompt-*` files while reviewing the repo.
+4. The agent scores options against repo fit, capability gain, source trust, permission risk, verification path, and reversibility.
+5. The agent recommends options and asks before changing code, installing packages, using secrets, or touching external systems.
 
 ## Install The Pack
 
@@ -97,6 +99,8 @@ If you are using vnem inside another project, read `.vnem/AGENTS.md` after insta
 To improve a prompt, say `use vnem to enhance this prompt` and include your rough prompt. The installed pack will route the agent to `.vnem/prompt-engineering.md` and `.vnem/prompt-patterns.json`.
 
 If the agent has read `.vnem/AGENTS.md`, this can also happen automatically: requests to write, rewrite, optimize, critique, or template a prompt should use the prompt-enhancement protocol even when the user does not say `use vnem`.
+
+To compare AI tools, ask for a vnem-backed review such as `codex vs claude`, `gemini agent`, `ai model selection`, or `agent upgrade`. The installed pack routes those intents to the decision rubric, playbooks, prompt patterns, and relevant registry entries.
 
 ## Trust Tiers
 

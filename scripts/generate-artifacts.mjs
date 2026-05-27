@@ -34,8 +34,118 @@ const intentAliases = {
   "prompt engineering": ["prompt", "instructions", "examples", "constraints", "output format", "rubric", "eval"],
   "prompt enhancer": ["prompt", "rewrite", "improve prompt", "prompt forge", "prompt pattern", "output contract"],
   "codex prompt": ["codex", "coding-agent", "agents.md", "scope", "verification", "diff", "tests"],
-  "prompt optimizer": ["prompt", "optimizer", "dataset", "grader", "annotation", "eval", "iteration"]
+  "prompt optimizer": ["prompt", "optimizer", "dataset", "grader", "annotation", "eval", "iteration"],
+  "codex vs claude": ["codex", "claude code", "coding-agent", "repository", "approvals", "memory", "subagents"],
+  "gemini agent": ["gemini", "google adk", "agent-framework", "vertex ai", "deployment", "evaluation"],
+  "ai model selection": ["model", "provider", "agent", "eval", "cost", "latency", "workflow"],
+  "agent upgrade": ["upgrade", "capability", "workflow", "mcp", "eval", "memory", "observability"]
 };
+
+const reviewOutputSections = [
+  "Current stack",
+  "Outdated or risky choices",
+  "Better current options",
+  "Drop-in opportunities",
+  "Ask before changing"
+];
+
+const decisionRubric = [
+  {
+    id: "repo-fit",
+    label: "Repo fit",
+    weight: 5,
+    check: "Matches the current language, framework, runtime, deployment target, and team workflow."
+  },
+  {
+    id: "capability-gain",
+    label: "Capability gain",
+    weight: 5,
+    check: "Solves a concrete gap instead of adding novelty, overlap, or a parallel toolchain."
+  },
+  {
+    id: "source-trust",
+    label: "Source trust",
+    weight: 4,
+    check: "Comes from official docs, canonical repositories, or high-signal maintainers with clear provenance."
+  },
+  {
+    id: "permission-risk",
+    label: "Permission risk",
+    weight: -4,
+    check: "Minimizes filesystem, repository, browser, database, payment, network, and secret access."
+  },
+  {
+    id: "verification",
+    label: "Verification path",
+    weight: 4,
+    check: "Can be validated with tests, screenshots, traces, fixtures, evals, or a small reversible pilot."
+  },
+  {
+    id: "reversibility",
+    label: "Reversibility",
+    weight: 3,
+    check: "Can be adopted incrementally and rolled back without locking the project into a risky migration."
+  }
+];
+
+const decisionPlaybooks = [
+  {
+    id: "project-stack-review",
+    title: "Project Stack Review",
+    intents: ["stack review", "upgrade audit", "better tools", "repo audit"],
+    summary: "Use this when an agent needs to review a repository and recommend safer, current improvements before editing code.",
+    workflow: [
+      "Inspect manifests, lockfiles, framework configs, CI, deployment files, MCP config, and existing agent instructions.",
+      "Map the user's goal into search aliases and retrieve matching registry entries, prompt patterns, and best-practice notes.",
+      "Score options with the decision rubric and prefer no change when no candidate beats the current stack.",
+      "Separate safe reading from actions that would edit code, install packages, use secrets, deploy, or mutate external systems.",
+      "Return the required review sections and include sources, risk flags, and verification commands."
+    ],
+    output_sections: reviewOutputSections
+  },
+  {
+    id: "coding-agent-selection",
+    title: "Coding Agent Selection",
+    intents: ["codex vs claude", "choose coding agent", "agent upgrade", "gemini agent"],
+    summary: "Use this when comparing Codex, Claude Code, Gemini/Google ADK, Copilot-style agents, Cursor/Cline-style tools, or framework-based agents.",
+    workflow: [
+      "Start with the work shape: repository editing, app automation, hosted agent runtime, multi-agent orchestration, or model-app development.",
+      "Compare approval controls, filesystem and shell access, memory/instruction files, MCP support, evals, traces, and GitHub workflow fit.",
+      "Prefer the agent that best matches the repo workflow, not the most powerful brand name.",
+      "Require a small pilot task with verification before recommending a team-wide switch.",
+      "Call out cost, privacy, source access, and permission tradeoffs explicitly."
+    ],
+    output_sections: ["Use case", "Best fit", "Tradeoffs", "Pilot task", "Ask before changing"]
+  },
+  {
+    id: "mcp-adoption-review",
+    title: "MCP Adoption Review",
+    intents: ["choose mcp", "mcp server", "tool connector", "agent tools"],
+    summary: "Use this before installing or recommending MCP servers and other agent-callable tools.",
+    workflow: [
+      "Identify the exact workflow the tool must unlock and whether the repo already has a safer built-in path.",
+      "Prefer official or vendor-maintained servers for sensitive resources.",
+      "Inspect permissions, environment variables, network behavior, license posture, and source confidence.",
+      "Recommend read-only or narrow-scope setup first, then verify the client can call only intended tools.",
+      "Do not install, execute, or configure a server without explicit user approval."
+    ],
+    output_sections: ["Workflow need", "Candidate tools", "Permission risks", "Verification plan", "Ask before changing"]
+  },
+  {
+    id: "prompt-upgrade",
+    title: "Prompt Upgrade",
+    intents: ["prompt enhancer", "codex prompt", "claude prompt", "gemini prompt"],
+    summary: "Use this when a rough prompt should become an operational instruction for an AI agent or model.",
+    workflow: [
+      "Preserve the user's actual goal and voice.",
+      "Add only missing structure that changes reliability: context, scope, constraints, non-goals, output format, examples, and verification.",
+      "For coding agents, include repo scope, likely files, allowed commands, approval boundaries, verification command, and final reporting requirements.",
+      "For research or product decisions, require current primary sources and separate confirmed facts from judgment.",
+      "Return both an enhanced prompt and a compact prompt."
+    ],
+    output_sections: ["Enhanced prompt", "Compact prompt", "What changed", "Missing inputs"]
+  }
+];
 
 const bestPracticeSections = [
   {
@@ -204,6 +314,23 @@ const bestPracticeSections = [
       "Prefer agents that can inspect the repo, produce diffs, run tests, and explain residual risk.",
       "Keep destructive shell, package installs, deploys, secrets, and production writes behind explicit approval.",
       "Use small, reviewable pull requests and require the agent to report changed files and verification evidence."
+    ]
+  },
+  {
+    id: "model-and-provider-selection",
+    title: "Model And Provider Selection",
+    summary: "Choose Codex, Claude Code, Gemini/ADK, framework agents, or model APIs by workflow fit, permissions, eval evidence, and operational cost rather than brand preference.",
+    keywords: ["ai model selection", "codex vs claude", "gemini agent", "provider", "model", "agent upgrade", "adk"],
+    sources: [
+      "https://developers.openai.com/codex/guides/agents-md",
+      "https://openai.github.io/openai-agents-python/",
+      "https://code.claude.com/docs/en/overview",
+      "https://adk.dev/"
+    ],
+    practices: [
+      "Start from the task shape: repo editing, hosted agent runtime, multi-agent workflow, model app, or tool-calling backend.",
+      "Compare approval boundaries, shell/filesystem access, memory model, MCP/tool support, tracing, evals, deployment path, and cost.",
+      "Run a small benchmark or pilot task before standardizing on a new agent/provider workflow."
     ]
   },
   {
@@ -563,6 +690,62 @@ const promptPatterns = [
       "- What to avoid.",
       "- Review cadence."
     ].join("\n")
+  },
+  {
+    id: "provider-selection",
+    title: "Model And Agent Provider Selection Prompt",
+    intents: ["codex vs claude", "gemini agent", "ai model selection", "choose coding agent"],
+    summary: "Prompt for comparing AI agents, model providers, and agent frameworks by workflow fit and verification evidence.",
+    output_modes: ["comparison", "pilot_plan", "recommendation"],
+    template: [
+      "Compare AI agents, model providers, or agent frameworks for this workflow.",
+      "",
+      "Workflow:",
+      "<repo editing, agent app, MCP tool use, research, frontend build, eval pipeline, etc.>",
+      "",
+      "Current stack:",
+      "<tools, languages, frameworks, CI, deployment, existing agent instructions>",
+      "",
+      "Decision Criteria:",
+      "- Repo and workflow fit.",
+      "- Approval boundaries and permission risk.",
+      "- Tool/MCP support, memory/instruction model, evals, traces, and deployment path.",
+      "- Cost, latency, privacy, source availability, and reversibility.",
+      "",
+      "Output:",
+      "- Best fit for this workflow.",
+      "- Tradeoffs between the top options.",
+      "- Small pilot task and verification command.",
+      "- What requires approval before changing."
+    ].join("\n")
+  },
+  {
+    id: "agent-upgrade-plan",
+    title: "Agent Capability Upgrade Prompt",
+    intents: ["agent upgrade", "make ai better", "improve codex", "improve claude", "improve gemini"],
+    summary: "Prompt for improving an AI agent workflow through context, tools, evals, safety gates, and verification.",
+    output_modes: ["upgrade_plan", "risk_register", "verification_plan"],
+    template: [
+      "Improve this AI agent workflow without weakening safety or maintainability.",
+      "",
+      "Current workflow:",
+      "<how the agent is used today>",
+      "",
+      "Goal:",
+      "<what better means: speed, quality, autonomy, accuracy, UI quality, research depth, etc.>",
+      "",
+      "Requirements:",
+      "- Inspect existing instructions, tools, MCP config, scripts, CI, and verification paths first.",
+      "- Prefer durable context, narrow tools, source-backed recommendations, and small evals before adding automation.",
+      "- Keep destructive commands, package installs, secrets, deploys, and production writes behind approval.",
+      "- Propose changes in reviewable steps with rollback notes.",
+      "",
+      "Output:",
+      "- Highest-impact improvements.",
+      "- What to change first.",
+      "- Risks and approvals needed.",
+      "- Verification plan."
+    ].join("\n")
   }
 ];
 
@@ -835,7 +1018,30 @@ function buildSearchDocuments(entries) {
     keywords: unique(textTokens([section.title, section.summary, ...section.keywords, ...section.practices].join(" "))).slice(0, 120)
   }));
 
-  return [...promptDocs, ...practiceDocs, ...entryDocs].sort((a, b) => b.score - a.score || a.title.localeCompare(b.title));
+  const playbookDocs = decisionPlaybooks.map((playbook) => ({
+    id: `playbook:${playbook.id}`,
+    kind: "decision-playbook",
+    title: playbook.title,
+    summary: playbook.summary,
+    url_path: "/install/AGENTS.md",
+    trust_tier: "verified",
+    type: "decision-playbook",
+    score: 14,
+    tags: playbook.intents,
+    use_cases: playbook.workflow,
+    best_for: [playbook.summary],
+    risk_flags: [],
+    source_urls: [installFileUrl("AGENTS.md")],
+    keywords: unique(textTokens([
+      playbook.title,
+      playbook.summary,
+      ...playbook.intents,
+      ...playbook.workflow,
+      ...playbook.output_sections
+    ].join(" "))).slice(0, 120)
+  }));
+
+  return [...playbookDocs, ...promptDocs, ...practiceDocs, ...entryDocs].sort((a, b) => b.score - a.score || a.title.localeCompare(b.title));
 }
 
 function buildInvertedIndex(documents) {
@@ -1022,13 +1228,35 @@ function agentsMarkdown() {
     "- `.vnem/prompt-engineering.md`: prompt enhancement protocol and Codex-oriented prompt guidance.",
     "- `.vnem/prompt-patterns.json`: machine-readable prompt patterns for common agent tasks.",
     "",
+    "## Decision Rubric",
+    "",
+    "Use this rubric before recommending a tool, model, agent, framework, MCP server, or workflow change:",
+    "",
+    ...decisionRubric.map((item) => `- **${item.label} (${item.weight > 0 ? `+${item.weight}` : item.weight})**: ${item.check}`),
+    "",
+    "Prefer the current stack when the recommendation cannot clear the rubric with evidence. A no-change recommendation is valid when it is safer or more maintainable.",
+    "",
     "## Project Review Protocol",
     "",
     "1. Inspect the user's repository shape before recommending tech. Look for manifests and configs such as `package.json`, `pnpm-lock.yaml`, `yarn.lock`, `pyproject.toml`, `requirements.txt`, `Cargo.toml`, `go.mod`, `Dockerfile`, `astro.config.*`, `next.config.*`, `vite.config.*`, `.github/workflows/*`, `.mcp.*`, and existing agent instructions.",
     "2. Read `search-index.json` and expand the user's intent with `intent_aliases`. For example, map `better ui` to frontend/design/accessibility terms and `agent payments` to payments/x402/wallet terms.",
     "3. Prefer recommendations with higher `score`, stronger `source_confidence`, fresher `freshness`, clearer licenses, and fewer `risk_flags`.",
-    "4. When a recommendation touches files, databases, browsers, repositories, wallets, paid APIs, or secrets, call out that risk plainly.",
-    "5. Output the review in this exact order: `Current stack`, `Outdated or risky choices`, `Better current options`, `Drop-in opportunities`, `Ask before changing`.",
+    "4. Score the top options against the decision rubric. Prefer no change when no option has a clear, verifiable advantage.",
+    "5. When a recommendation touches files, databases, browsers, repositories, wallets, paid APIs, or secrets, call out that risk plainly.",
+    `6. Output the review in this exact order: ${reviewOutputSections.map((section) => `\`${section}\``).join(", ")}.`,
+    "",
+    "## Decision Playbooks",
+    "",
+    ...decisionPlaybooks.flatMap((playbook) => [
+      `### ${playbook.title}`,
+      "",
+      playbook.summary,
+      "",
+      ...playbook.workflow.map((step, index) => `${index + 1}. ${step}`),
+      "",
+      `Output sections: ${playbook.output_sections.map((section) => `\`${section}\``).join(", ")}`,
+      ""
+    ]),
     "",
     "## Prompt Enhancement Protocol",
     "",
@@ -1074,6 +1302,8 @@ function searchIndexJson(entries) {
       requires_secrets: false
     },
     intent_aliases: intentAliases,
+    decision_rubric: decisionRubric,
+    decision_playbooks: decisionPlaybooks,
     rank_weights: {
       use_case_match: 5,
       trust_tier: 5,

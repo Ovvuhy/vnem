@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-26T21:02:24.985Z",
+  "generated_at": "2026-05-27T08:11:19.111Z",
   "schema_version": "1.0.0",
   "entry_count": 199,
   "install_command": "curl -fsSL https://raw.githubusercontent.com/naellisim/vnem/main/public/install.tgz | tar -xz",
@@ -500,6 +500,41 @@
       "annotation",
       "eval",
       "iteration"
+    ],
+    "codex vs claude": [
+      "codex",
+      "claude code",
+      "coding-agent",
+      "repository",
+      "approvals",
+      "memory",
+      "subagents"
+    ],
+    "gemini agent": [
+      "gemini",
+      "google adk",
+      "agent-framework",
+      "vertex ai",
+      "deployment",
+      "evaluation"
+    ],
+    "ai model selection": [
+      "model",
+      "provider",
+      "agent",
+      "eval",
+      "cost",
+      "latency",
+      "workflow"
+    ],
+    "agent upgrade": [
+      "upgrade",
+      "capability",
+      "workflow",
+      "mcp",
+      "eval",
+      "memory",
+      "observability"
     ]
   },
   "entries": [

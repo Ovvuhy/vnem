@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-26T21:02:24.985Z",
+  "generated_at": "2026-05-27T08:11:19.111Z",
   "schema_version": "1.0.0",
   "safety": {
     "mode": "read-only-prompt-patterns",
@@ -184,6 +184,41 @@
         "memory_policy"
       ],
       "template": "Design a memory/context policy for this project.\n\nPersistent memory should include:\n- Stable project conventions.\n- Common commands.\n- Architecture notes that rarely change.\n- Safety and permission boundaries.\n\nPersistent memory should not include:\n- Secrets or credentials.\n- Temporary task state.\n- Unverified assumptions.\n- Sensitive user data unless explicitly approved.\n\nOutput:\n- What to store.\n- Where to store it.\n- What to avoid.\n- Review cadence."
+    },
+    {
+      "id": "provider-selection",
+      "title": "Model And Agent Provider Selection Prompt",
+      "intents": [
+        "codex vs claude",
+        "gemini agent",
+        "ai model selection",
+        "choose coding agent"
+      ],
+      "summary": "Prompt for comparing AI agents, model providers, and agent frameworks by workflow fit and verification evidence.",
+      "output_modes": [
+        "comparison",
+        "pilot_plan",
+        "recommendation"
+      ],
+      "template": "Compare AI agents, model providers, or agent frameworks for this workflow.\n\nWorkflow:\n<repo editing, agent app, MCP tool use, research, frontend build, eval pipeline, etc.>\n\nCurrent stack:\n<tools, languages, frameworks, CI, deployment, existing agent instructions>\n\nDecision Criteria:\n- Repo and workflow fit.\n- Approval boundaries and permission risk.\n- Tool/MCP support, memory/instruction model, evals, traces, and deployment path.\n- Cost, latency, privacy, source availability, and reversibility.\n\nOutput:\n- Best fit for this workflow.\n- Tradeoffs between the top options.\n- Small pilot task and verification command.\n- What requires approval before changing."
+    },
+    {
+      "id": "agent-upgrade-plan",
+      "title": "Agent Capability Upgrade Prompt",
+      "intents": [
+        "agent upgrade",
+        "make ai better",
+        "improve codex",
+        "improve claude",
+        "improve gemini"
+      ],
+      "summary": "Prompt for improving an AI agent workflow through context, tools, evals, safety gates, and verification.",
+      "output_modes": [
+        "upgrade_plan",
+        "risk_register",
+        "verification_plan"
+      ],
+      "template": "Improve this AI agent workflow without weakening safety or maintainability.\n\nCurrent workflow:\n<how the agent is used today>\n\nGoal:\n<what better means: speed, quality, autonomy, accuracy, UI quality, research depth, etc.>\n\nRequirements:\n- Inspect existing instructions, tools, MCP config, scripts, CI, and verification paths first.\n- Prefer durable context, narrow tools, source-backed recommendations, and small evals before adding automation.\n- Keep destructive commands, package installs, secrets, deploys, and production writes behind approval.\n- Propose changes in reviewable steps with rollback notes.\n\nOutput:\n- Highest-impact improvements.\n- What to change first.\n- Risks and approvals needed.\n- Verification plan."
     }
   ]
 }

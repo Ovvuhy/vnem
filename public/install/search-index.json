@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-26T21:02:24.985Z",
+  "generated_at": "2026-05-27T08:11:19.111Z",
   "schema_version": "1.0.0",
   "install_folder": ".vnem",
   "safety": {
@@ -188,8 +188,182 @@
       "annotation",
       "eval",
       "iteration"
+    ],
+    "codex vs claude": [
+      "codex",
+      "claude code",
+      "coding-agent",
+      "repository",
+      "approvals",
+      "memory",
+      "subagents"
+    ],
+    "gemini agent": [
+      "gemini",
+      "google adk",
+      "agent-framework",
+      "vertex ai",
+      "deployment",
+      "evaluation"
+    ],
+    "ai model selection": [
+      "model",
+      "provider",
+      "agent",
+      "eval",
+      "cost",
+      "latency",
+      "workflow"
+    ],
+    "agent upgrade": [
+      "upgrade",
+      "capability",
+      "workflow",
+      "mcp",
+      "eval",
+      "memory",
+      "observability"
     ]
   },
+  "decision_rubric": [
+    {
+      "id": "repo-fit",
+      "label": "Repo fit",
+      "weight": 5,
+      "check": "Matches the current language, framework, runtime, deployment target, and team workflow."
+    },
+    {
+      "id": "capability-gain",
+      "label": "Capability gain",
+      "weight": 5,
+      "check": "Solves a concrete gap instead of adding novelty, overlap, or a parallel toolchain."
+    },
+    {
+      "id": "source-trust",
+      "label": "Source trust",
+      "weight": 4,
+      "check": "Comes from official docs, canonical repositories, or high-signal maintainers with clear provenance."
+    },
+    {
+      "id": "permission-risk",
+      "label": "Permission risk",
+      "weight": -4,
+      "check": "Minimizes filesystem, repository, browser, database, payment, network, and secret access."
+    },
+    {
+      "id": "verification",
+      "label": "Verification path",
+      "weight": 4,
+      "check": "Can be validated with tests, screenshots, traces, fixtures, evals, or a small reversible pilot."
+    },
+    {
+      "id": "reversibility",
+      "label": "Reversibility",
+      "weight": 3,
+      "check": "Can be adopted incrementally and rolled back without locking the project into a risky migration."
+    }
+  ],
+  "decision_playbooks": [
+    {
+      "id": "project-stack-review",
+      "title": "Project Stack Review",
+      "intents": [
+        "stack review",
+        "upgrade audit",
+        "better tools",
+        "repo audit"
+      ],
+      "summary": "Use this when an agent needs to review a repository and recommend safer, current improvements before editing code.",
+      "workflow": [
+        "Inspect manifests, lockfiles, framework configs, CI, deployment files, MCP config, and existing agent instructions.",
+        "Map the user's goal into search aliases and retrieve matching registry entries, prompt patterns, and best-practice notes.",
+        "Score options with the decision rubric and prefer no change when no candidate beats the current stack.",
+        "Separate safe reading from actions that would edit code, install packages, use secrets, deploy, or mutate external systems.",
+        "Return the required review sections and include sources, risk flags, and verification commands."
+      ],
+      "output_sections": [
+        "Current stack",
+        "Outdated or risky choices",
+        "Better current options",
+        "Drop-in opportunities",
+        "Ask before changing"
+      ]
+    },
+    {
+      "id": "coding-agent-selection",
+      "title": "Coding Agent Selection",
+      "intents": [
+        "codex vs claude",
+        "choose coding agent",
+        "agent upgrade",
+        "gemini agent"
+      ],
+      "summary": "Use this when comparing Codex, Claude Code, Gemini/Google ADK, Copilot-style agents, Cursor/Cline-style tools, or framework-based agents.",
+      "workflow": [
+        "Start with the work shape: repository editing, app automation, hosted agent runtime, multi-agent orchestration, or model-app development.",
+        "Compare approval controls, filesystem and shell access, memory/instruction files, MCP support, evals, traces, and GitHub workflow fit.",
+        "Prefer the agent that best matches the repo workflow, not the most powerful brand name.",
+        "Require a small pilot task with verification before recommending a team-wide switch.",
+        "Call out cost, privacy, source access, and permission tradeoffs explicitly."
+      ],
+      "output_sections": [
+        "Use case",
+        "Best fit",
+        "Tradeoffs",
+        "Pilot task",
+        "Ask before changing"
+      ]
+    },
+    {
+      "id": "mcp-adoption-review",
+      "title": "MCP Adoption Review",
+      "intents": [
+        "choose mcp",
+        "mcp server",
+        "tool connector",
+        "agent tools"
+      ],
+      "summary": "Use this before installing or recommending MCP servers and other agent-callable tools.",
+      "workflow": [
+        "Identify the exact workflow the tool must unlock and whether the repo already has a safer built-in path.",
+        "Prefer official or vendor-maintained servers for sensitive resources.",
+        "Inspect permissions, environment variables, network behavior, license posture, and source confidence.",
+        "Recommend read-only or narrow-scope setup first, then verify the client can call only intended tools.",
+        "Do not install, execute, or configure a server without explicit user approval."
+      ],
+      "output_sections": [
+        "Workflow need",
+        "Candidate tools",
+        "Permission risks",
+        "Verification plan",
+        "Ask before changing"
+      ]
+    },
+    {
+      "id": "prompt-upgrade",
+      "title": "Prompt Upgrade",
+      "intents": [
+        "prompt enhancer",
+        "codex prompt",
+        "claude prompt",
+        "gemini prompt"
+      ],
+      "summary": "Use this when a rough prompt should become an operational instruction for an AI agent or model.",
+      "workflow": [
+        "Preserve the user's actual goal and voice.",
+        "Add only missing structure that changes reliability: context, scope, constraints, non-goals, output format, examples, and verification.",
+        "For coding agents, include repo scope, likely files, allowed commands, approval boundaries, verification command, and final reporting requirements.",
+        "For research or product decisions, require current primary sources and separate confirmed facts from judgment.",
+        "Return both an enhanced prompt and a compact prompt."
+      ],
+      "output_sections": [
+        "Enhanced prompt",
+        "Compact prompt",
+        "What changed",
+        "Missing inputs"
+      ]
+    }
+  ],
   "rank_weights": {
     "use_case_match": 5,
     "trust_tier": 5,
@@ -199,6 +373,547 @@
     "risk_flags": -1
   },
   "documents": [
+    {
+      "id": "playbook:coding-agent-selection",
+      "kind": "decision-playbook",
+      "title": "Coding Agent Selection",
+      "summary": "Use this when comparing Codex, Claude Code, Gemini/Google ADK, Copilot-style agents, Cursor/Cline-style tools, or framework-based agents.",
+      "url_path": "/install/AGENTS.md",
+      "trust_tier": "verified",
+      "type": "decision-playbook",
+      "score": 14,
+      "tags": [
+        "codex vs claude",
+        "choose coding agent",
+        "agent upgrade",
+        "gemini agent"
+      ],
+      "use_cases": [
+        "Start with the work shape: repository editing, app automation, hosted agent runtime, multi-agent orchestration, or model-app development.",
+        "Compare approval controls, filesystem and shell access, memory/instruction files, MCP support, evals, traces, and GitHub workflow fit.",
+        "Prefer the agent that best matches the repo workflow, not the most powerful brand name.",
+        "Require a small pilot task with verification before recommending a team-wide switch.",
+        "Call out cost, privacy, source access, and permission tradeoffs explicitly."
+      ],
+      "best_for": [
+        "Use this when comparing Codex, Claude Code, Gemini/Google ADK, Copilot-style agents, Cursor/Cline-style tools, or framework-based agents."
+      ],
+      "risk_flags": [],
+      "source_urls": [
+        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/AGENTS.md"
+      ],
+      "keywords": [
+        "coding",
+        "agent",
+        "selection",
+        "comparing",
+        "codex",
+        "claude",
+        "gemini/google",
+        "adk",
+        "copilot-style",
+        "agents",
+        "cursor/cline-style",
+        "tools",
+        "or",
+        "framework-based",
+        "agents.",
+        "vs",
+        "choose",
+        "upgrade",
+        "gemini",
+        "start",
+        "work",
+        "shape",
+        "repository",
+        "editing",
+        "app",
+        "automation",
+        "hosted",
+        "runtime",
+        "multi-agent",
+        "orchestration",
+        "model-app",
+        "development.",
+        "compare",
+        "approval",
+        "controls",
+        "filesystem",
+        "shell",
+        "access",
+        "memory/instruction",
+        "files",
+        "mcp",
+        "support",
+        "evals",
+        "traces",
+        "github",
+        "workflow",
+        "fit.",
+        "prefer",
+        "best",
+        "matches",
+        "repo",
+        "not",
+        "most",
+        "powerful",
+        "brand",
+        "name.",
+        "require",
+        "small",
+        "pilot",
+        "task",
+        "verification",
+        "recommending",
+        "team-wide",
+        "switch.",
+        "call",
+        "out",
+        "cost",
+        "privacy",
+        "permission",
+        "tradeoffs",
+        "explicitly.",
+        "case",
+        "fit",
+        "ask",
+        "changing"
+      ]
+    },
+    {
+      "id": "playbook:mcp-adoption-review",
+      "kind": "decision-playbook",
+      "title": "MCP Adoption Review",
+      "summary": "Use this before installing or recommending MCP servers and other agent-callable tools.",
+      "url_path": "/install/AGENTS.md",
+      "trust_tier": "verified",
+      "type": "decision-playbook",
+      "score": 14,
+      "tags": [
+        "choose mcp",
+        "mcp server",
+        "tool connector",
+        "agent tools"
+      ],
+      "use_cases": [
+        "Identify the exact workflow the tool must unlock and whether the repo already has a safer built-in path.",
+        "Prefer official or vendor-maintained servers for sensitive resources.",
+        "Inspect permissions, environment variables, network behavior, license posture, and source confidence.",
+        "Recommend read-only or narrow-scope setup first, then verify the client can call only intended tools.",
+        "Do not install, execute, or configure a server without explicit user approval."
+      ],
+      "best_for": [
+        "Use this before installing or recommending MCP servers and other agent-callable tools."
+      ],
+      "risk_flags": [],
+      "source_urls": [
+        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/AGENTS.md"
+      ],
+      "keywords": [
+        "mcp",
+        "adoption",
+        "installing",
+        "or",
+        "recommending",
+        "servers",
+        "other",
+        "agent-callable",
+        "tools.",
+        "choose",
+        "server",
+        "tool",
+        "connector",
+        "agent",
+        "tools",
+        "identify",
+        "exact",
+        "workflow",
+        "must",
+        "unlock",
+        "whether",
+        "repo",
+        "already",
+        "safer",
+        "built-in",
+        "path.",
+        "prefer",
+        "vendor-maintained",
+        "sensitive",
+        "resources.",
+        "inspect",
+        "permissions",
+        "environment",
+        "variables",
+        "network",
+        "behavior",
+        "license",
+        "posture",
+        "confidence.",
+        "recommend",
+        "read-only",
+        "narrow-scope",
+        "setup",
+        "first",
+        "then",
+        "verify",
+        "client",
+        "call",
+        "only",
+        "intended",
+        "do",
+        "not",
+        "install",
+        "execute",
+        "configure",
+        "without",
+        "explicit",
+        "user",
+        "approval.",
+        "need",
+        "candidate",
+        "permission",
+        "risks",
+        "verification",
+        "plan",
+        "ask",
+        "changing"
+      ]
+    },
+    {
+      "id": "playbook:project-stack-review",
+      "kind": "decision-playbook",
+      "title": "Project Stack Review",
+      "summary": "Use this when an agent needs to review a repository and recommend safer, current improvements before editing code.",
+      "url_path": "/install/AGENTS.md",
+      "trust_tier": "verified",
+      "type": "decision-playbook",
+      "score": 14,
+      "tags": [
+        "stack review",
+        "upgrade audit",
+        "better tools",
+        "repo audit"
+      ],
+      "use_cases": [
+        "Inspect manifests, lockfiles, framework configs, CI, deployment files, MCP config, and existing agent instructions.",
+        "Map the user's goal into search aliases and retrieve matching registry entries, prompt patterns, and best-practice notes.",
+        "Score options with the decision rubric and prefer no change when no candidate beats the current stack.",
+        "Separate safe reading from actions that would edit code, install packages, use secrets, deploy, or mutate external systems.",
+        "Return the required review sections and include sources, risk flags, and verification commands."
+      ],
+      "best_for": [
+        "Use this when an agent needs to review a repository and recommend safer, current improvements before editing code."
+      ],
+      "risk_flags": [],
+      "source_urls": [
+        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/AGENTS.md"
+      ],
+      "keywords": [
+        "stack",
+        "an",
+        "agent",
+        "to",
+        "repository",
+        "recommend",
+        "safer",
+        "current",
+        "improvements",
+        "editing",
+        "code.",
+        "upgrade",
+        "audit",
+        "better",
+        "tools",
+        "repo",
+        "inspect",
+        "manifests",
+        "lockfiles",
+        "framework",
+        "configs",
+        "ci",
+        "deployment",
+        "files",
+        "mcp",
+        "config",
+        "existing",
+        "instructions.",
+        "map",
+        "user",
+        "goal",
+        "search",
+        "aliases",
+        "retrieve",
+        "matching",
+        "entries",
+        "prompt",
+        "patterns",
+        "best-practice",
+        "notes.",
+        "score",
+        "options",
+        "decision",
+        "rubric",
+        "prefer",
+        "no",
+        "change",
+        "candidate",
+        "beats",
+        "stack.",
+        "separate",
+        "safe",
+        "reading",
+        "actions",
+        "would",
+        "edit",
+        "install",
+        "packages",
+        "secrets",
+        "deploy",
+        "or",
+        "mutate",
+        "external",
+        "systems.",
+        "return",
+        "required",
+        "sections",
+        "include",
+        "risk",
+        "flags",
+        "verification",
+        "commands.",
+        "outdated",
+        "risky",
+        "choices",
+        "drop-in",
+        "opportunities",
+        "ask",
+        "changing"
+      ]
+    },
+    {
+      "id": "playbook:prompt-upgrade",
+      "kind": "decision-playbook",
+      "title": "Prompt Upgrade",
+      "summary": "Use this when a rough prompt should become an operational instruction for an AI agent or model.",
+      "url_path": "/install/AGENTS.md",
+      "trust_tier": "verified",
+      "type": "decision-playbook",
+      "score": 14,
+      "tags": [
+        "prompt enhancer",
+        "codex prompt",
+        "claude prompt",
+        "gemini prompt"
+      ],
+      "use_cases": [
+        "Preserve the user's actual goal and voice.",
+        "Add only missing structure that changes reliability: context, scope, constraints, non-goals, output format, examples, and verification.",
+        "For coding agents, include repo scope, likely files, allowed commands, approval boundaries, verification command, and final reporting requirements.",
+        "For research or product decisions, require current primary sources and separate confirmed facts from judgment.",
+        "Return both an enhanced prompt and a compact prompt."
+      ],
+      "best_for": [
+        "Use this when a rough prompt should become an operational instruction for an AI agent or model."
+      ],
+      "risk_flags": [],
+      "source_urls": [
+        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/AGENTS.md"
+      ],
+      "keywords": [
+        "prompt",
+        "upgrade",
+        "rough",
+        "should",
+        "become",
+        "an",
+        "operational",
+        "instruction",
+        "ai",
+        "agent",
+        "or",
+        "model.",
+        "enhancer",
+        "codex",
+        "claude",
+        "gemini",
+        "preserve",
+        "user",
+        "actual",
+        "goal",
+        "voice.",
+        "add",
+        "only",
+        "missing",
+        "structure",
+        "changes",
+        "reliability",
+        "context",
+        "scope",
+        "constraints",
+        "non-goals",
+        "output",
+        "format",
+        "examples",
+        "verification.",
+        "coding",
+        "agents",
+        "include",
+        "repo",
+        "likely",
+        "files",
+        "allowed",
+        "commands",
+        "approval",
+        "boundaries",
+        "verification",
+        "command",
+        "final",
+        "reporting",
+        "requirements.",
+        "research",
+        "product",
+        "decisions",
+        "require",
+        "current",
+        "primary",
+        "separate",
+        "confirmed",
+        "facts",
+        "judgment.",
+        "return",
+        "both",
+        "enhanced",
+        "compact",
+        "prompt.",
+        "what",
+        "changed",
+        "inputs"
+      ]
+    },
+    {
+      "id": "prompt-pattern:agent-upgrade-plan",
+      "kind": "prompt-pattern",
+      "title": "Agent Capability Upgrade Prompt",
+      "summary": "Prompt for improving an AI agent workflow through context, tools, evals, safety gates, and verification.",
+      "url_path": "/install/prompt-engineering.md",
+      "trust_tier": "verified",
+      "type": "prompt-pattern",
+      "score": 13,
+      "tags": [
+        "agent upgrade",
+        "make ai better",
+        "improve codex",
+        "improve claude",
+        "improve gemini"
+      ],
+      "use_cases": [
+        "agent upgrade",
+        "make ai better",
+        "improve codex",
+        "improve claude",
+        "improve gemini"
+      ],
+      "best_for": [
+        "Prompt for improving an AI agent workflow through context, tools, evals, safety gates, and verification."
+      ],
+      "risk_flags": [],
+      "source_urls": [
+        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/prompt-engineering.md",
+        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/prompt-patterns.json"
+      ],
+      "keywords": [
+        "agent",
+        "capability",
+        "upgrade",
+        "prompt",
+        "improving",
+        "an",
+        "ai",
+        "workflow",
+        "through",
+        "context",
+        "tools",
+        "evals",
+        "safety",
+        "gates",
+        "verification.",
+        "make",
+        "better",
+        "improve",
+        "codex",
+        "claude",
+        "gemini",
+        "plan",
+        "risk",
+        "register",
+        "verification",
+        "without",
+        "weakening",
+        "or",
+        "maintainability.",
+        "current",
+        "how",
+        "is",
+        "used",
+        "today",
+        "goal",
+        "what",
+        "means",
+        "speed",
+        "quality",
+        "autonomy",
+        "accuracy",
+        "ui",
+        "research",
+        "depth",
+        "etc.",
+        "requirements",
+        "inspect",
+        "existing",
+        "instructions",
+        "mcp",
+        "config",
+        "scripts",
+        "ci",
+        "paths",
+        "first.",
+        "prefer",
+        "durable",
+        "narrow",
+        "source-backed",
+        "recommendations",
+        "small",
+        "adding",
+        "automation.",
+        "keep",
+        "destructive",
+        "commands",
+        "package",
+        "installs",
+        "secrets",
+        "deploys",
+        "production",
+        "writes",
+        "behind",
+        "approval.",
+        "propose",
+        "changes",
+        "in",
+        "reviewable",
+        "steps",
+        "rollback",
+        "notes.",
+        "output",
+        "highest-impact",
+        "improvements.",
+        "to",
+        "change",
+        "risks",
+        "approvals",
+        "needed.",
+        "plan."
+      ]
+    },
     {
       "id": "prompt-pattern:code-review",
       "kind": "prompt-pattern",
@@ -937,6 +1652,115 @@
         "it.",
         "avoid.",
         "cadence."
+      ]
+    },
+    {
+      "id": "prompt-pattern:provider-selection",
+      "kind": "prompt-pattern",
+      "title": "Model And Agent Provider Selection Prompt",
+      "summary": "Prompt for comparing AI agents, model providers, and agent frameworks by workflow fit and verification evidence.",
+      "url_path": "/install/prompt-engineering.md",
+      "trust_tier": "verified",
+      "type": "prompt-pattern",
+      "score": 13,
+      "tags": [
+        "codex vs claude",
+        "gemini agent",
+        "ai model selection",
+        "choose coding agent"
+      ],
+      "use_cases": [
+        "codex vs claude",
+        "gemini agent",
+        "ai model selection",
+        "choose coding agent"
+      ],
+      "best_for": [
+        "Prompt for comparing AI agents, model providers, and agent frameworks by workflow fit and verification evidence."
+      ],
+      "risk_flags": [],
+      "source_urls": [
+        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/prompt-engineering.md",
+        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/prompt-patterns.json"
+      ],
+      "keywords": [
+        "model",
+        "agent",
+        "provider",
+        "selection",
+        "prompt",
+        "comparing",
+        "ai",
+        "agents",
+        "providers",
+        "frameworks",
+        "by",
+        "workflow",
+        "fit",
+        "verification",
+        "evidence.",
+        "codex",
+        "vs",
+        "claude",
+        "gemini",
+        "choose",
+        "coding",
+        "comparison",
+        "pilot",
+        "plan",
+        "recommendation",
+        "compare",
+        "or",
+        "workflow.",
+        "repo",
+        "editing",
+        "app",
+        "mcp",
+        "tool",
+        "research",
+        "frontend",
+        "build",
+        "eval",
+        "pipeline",
+        "etc.",
+        "current",
+        "stack",
+        "tools",
+        "languages",
+        "ci",
+        "deployment",
+        "existing",
+        "instructions",
+        "decision",
+        "criteria",
+        "fit.",
+        "approval",
+        "boundaries",
+        "permission",
+        "risk.",
+        "tool/mcp",
+        "support",
+        "memory/instruction",
+        "evals",
+        "traces",
+        "path.",
+        "cost",
+        "latency",
+        "privacy",
+        "availability",
+        "reversibility.",
+        "output",
+        "best",
+        "tradeoffs",
+        "between",
+        "top",
+        "options.",
+        "small",
+        "task",
+        "command.",
+        "what",
+        "requires",
+        "changing."
       ]
     },
     {
@@ -2903,6 +3727,107 @@
         "verifies",
         "install",
         "behavior."
+      ]
+    },
+    {
+      "id": "practice:model-and-provider-selection",
+      "kind": "best-practice",
+      "title": "Model And Provider Selection",
+      "summary": "Choose Codex, Claude Code, Gemini/ADK, framework agents, or model APIs by workflow fit, permissions, eval evidence, and operational cost rather than brand preference.",
+      "url_path": "/install/best-practices.md",
+      "trust_tier": "verified",
+      "type": "best-practice",
+      "score": 12,
+      "tags": [
+        "ai model selection",
+        "codex vs claude",
+        "gemini agent",
+        "provider",
+        "model",
+        "agent upgrade",
+        "adk"
+      ],
+      "use_cases": [
+        "Start from the task shape: repo editing, hosted agent runtime, multi-agent workflow, model app, or tool-calling backend.",
+        "Compare approval boundaries, shell/filesystem access, memory model, MCP/tool support, tracing, evals, deployment path, and cost.",
+        "Run a small benchmark or pilot task before standardizing on a new agent/provider workflow."
+      ],
+      "best_for": [
+        "Start from the task shape: repo editing, hosted agent runtime, multi-agent workflow, model app, or tool-calling backend.",
+        "Compare approval boundaries, shell/filesystem access, memory model, MCP/tool support, tracing, evals, deployment path, and cost.",
+        "Run a small benchmark or pilot task before standardizing on a new agent/provider workflow."
+      ],
+      "risk_flags": [],
+      "source_urls": [
+        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/best-practices.md",
+        "https://developers.openai.com/codex/guides/agents-md",
+        "https://openai.github.io/openai-agents-python/",
+        "https://code.claude.com/docs/en/overview",
+        "https://adk.dev/"
+      ],
+      "keywords": [
+        "model",
+        "provider",
+        "selection",
+        "choose",
+        "codex",
+        "claude",
+        "gemini/adk",
+        "framework",
+        "agents",
+        "or",
+        "apis",
+        "by",
+        "workflow",
+        "fit",
+        "permissions",
+        "eval",
+        "evidence",
+        "operational",
+        "cost",
+        "rather",
+        "than",
+        "brand",
+        "preference.",
+        "ai",
+        "vs",
+        "gemini",
+        "agent",
+        "upgrade",
+        "adk",
+        "start",
+        "task",
+        "shape",
+        "repo",
+        "editing",
+        "hosted",
+        "runtime",
+        "multi-agent",
+        "app",
+        "tool-calling",
+        "backend.",
+        "compare",
+        "approval",
+        "boundaries",
+        "shell/filesystem",
+        "access",
+        "memory",
+        "mcp/tool",
+        "support",
+        "tracing",
+        "evals",
+        "deployment",
+        "path",
+        "cost.",
+        "run",
+        "small",
+        "benchmark",
+        "pilot",
+        "standardizing",
+        "on",
+        "new",
+        "agent/provider",
+        "workflow."
       ]
     },
     {
@@ -24532,8 +25457,10 @@
       "entry:ai-agenticterminal-directory"
     ],
     "access": [
+      "playbook:coding-agent-selection",
       "entry:model-context-protocol",
       "practice:mcp-server-selection",
+      "practice:model-and-provider-selection",
       "practice:security",
       "entry:ai-com-mcp-skills-search",
       "entry:ai-agentic-news-mcp",
@@ -24588,6 +25515,9 @@
       "entry:ai-adadvisor-mcp-server",
       "entry:ai-fincontext-fincontext"
     ],
+    "accuracy": [
+      "prompt-pattern:agent-upgrade-plan"
+    ],
     "across": [
       "entry:model-context-protocol",
       "prompt-pattern:subagent-delegation",
@@ -24619,6 +25549,7 @@
       "entry:ai-cosmonote-notes"
     ],
     "actions": [
+      "playbook:project-stack-review",
       "practice:human-approval-and-durability",
       "entry:playwright-mcp",
       "entry:stripe-agent-toolkit"
@@ -24636,6 +25567,7 @@
       "entry:ai-com-mcp-strava"
     ],
     "actual": [
+      "playbook:prompt-upgrade",
       "prompt-pattern:ui-build",
       "prompt-pattern:prompt-enhancement",
       "practice:mcp-server-selection"
@@ -24654,11 +25586,13 @@
       "entry:ai-getperspective-mcp"
     ],
     "add": [
+      "playbook:prompt-upgrade",
       "prompt-pattern:codex-implementation",
       "entry:langgraph",
       "practice:prompt-engineering"
     ],
     "adding": [
+      "prompt-pattern:agent-upgrade-plan",
       "entry:anthropic-building-effective-agents"
     ],
     "addon": [
@@ -24667,12 +25601,19 @@
     "adhd": [
       "entry:ai-childadhd-library"
     ],
+    "adk": [
+      "playbook:coding-agent-selection",
+      "practice:model-and-provider-selection"
+    ],
     "admin": [
       "entry:ai-cirra-salesforce-mcp",
       "entry:ai-gossiper-shopify-admin-mcp"
     ],
     "administration": [
       "entry:ai-cirra-salesforce-mcp"
+    ],
+    "adoption": [
+      "playbook:mcp-adoption-review"
     ],
     "ads": [
       "entry:ai-adadvisor-mcp-server",
@@ -24714,12 +25655,18 @@
       "entry:agency-lona-trading"
     ],
     "agent": [
+      "playbook:coding-agent-selection",
+      "playbook:mcp-adoption-review",
+      "playbook:project-stack-review",
+      "playbook:prompt-upgrade",
+      "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:codex-implementation",
       "prompt-pattern:bug-debug",
       "prompt-pattern:eval-design",
       "prompt-pattern:ui-build",
       "prompt-pattern:prompt-enhancement",
       "prompt-pattern:mcp-selection",
+      "prompt-pattern:provider-selection",
       "entry:model-context-protocol",
       "prompt-pattern:subagent-delegation",
       "practice:agent-tooling",
@@ -24734,6 +25681,7 @@
       "entry:langgraph",
       "entry:mastra",
       "entry:microsoft-autogen",
+      "practice:model-and-provider-selection",
       "practice:observability-and-tracing",
       "entry:openai-agents-sdk",
       "practice:payments",
@@ -24790,6 +25738,7 @@
       "practice:deployment"
     ],
     "agent-callable": [
+      "playbook:mcp-adoption-review",
       "practice:backend"
     ],
     "agent-computer": [
@@ -24981,6 +25930,9 @@
       "entry:ai-myriade-myriade",
       "entry:ai-gethal-mcp"
     ],
+    "agent/provider": [
+      "practice:model-and-provider-selection"
+    ],
     "agent2agent": [
       "entry:google-agent2agent-protocol"
     ],
@@ -25149,6 +26101,9 @@
       "entry:agentops"
     ],
     "agents": [
+      "playbook:coding-agent-selection",
+      "playbook:prompt-upgrade",
+      "prompt-pattern:provider-selection",
       "entry:model-context-protocol",
       "entry:google-agent2agent-protocol",
       "practice:backend",
@@ -25161,6 +26116,7 @@
       "entry:langgraph",
       "entry:mastra",
       "entry:microsoft-autogen",
+      "practice:model-and-provider-selection",
       "entry:openai-agents-sdk",
       "entry:pydantic-ai",
       "entry:semantic-kernel",
@@ -25343,6 +26299,7 @@
       "entry:codex-agents-md"
     ],
     "agents.": [
+      "playbook:coding-agent-selection",
       "prompt-pattern:eval-design",
       "practice:frontend",
       "entry:ai-agenticshelf-mcp",
@@ -25370,9 +26327,13 @@
       "entry:ai-childanxiety-library"
     ],
     "ai": [
+      "playbook:prompt-upgrade",
+      "prompt-pattern:agent-upgrade-plan",
+      "prompt-pattern:provider-selection",
       "entry:model-context-protocol",
       "entry:crewai",
       "entry:google-agent-development-kit",
+      "practice:model-and-provider-selection",
       "entry:pydantic-ai",
       "entry:semantic-kernel",
       "entry:vercel-ai-sdk",
@@ -26056,6 +27017,7 @@
       "entry:ai-kolens-kolens-mcp"
     ],
     "aliases": [
+      "playbook:project-stack-review",
       "practice:search"
     ],
     "all": [
@@ -26065,6 +27027,7 @@
       "entry:ai-boolsai-grep"
     ],
     "allowed": [
+      "playbook:prompt-upgrade",
       "practice:prompt-engineering"
     ],
     "alone": [
@@ -26075,6 +27038,7 @@
       "entry:ai-alpic-mcp-alpic-mcp"
     ],
     "already": [
+      "playbook:mcp-adoption-review",
       "prompt-pattern:codex-implementation",
       "entry:pydantic-ai",
       "entry:github-copilot-coding-agent"
@@ -26089,6 +27053,9 @@
       "entry:ai-bezal-local-commerce"
     ],
     "an": [
+      "playbook:project-stack-review",
+      "playbook:prompt-upgrade",
+      "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:bug-debug",
       "prompt-pattern:eval-design",
       "prompt-pattern:prompt-enhancement",
@@ -26430,6 +27397,7 @@
     ],
     "apis": [
       "practice:backend",
+      "practice:model-and-provider-selection",
       "entry:context7-mcp",
       "entry:ai-com-mcp-hapi-mcp",
       "entry:firecrawl-mcp",
@@ -26440,7 +27408,10 @@
       "entry:context7-mcp"
     ],
     "app": [
+      "playbook:coding-agent-selection",
       "prompt-pattern:ui-build",
+      "prompt-pattern:provider-selection",
+      "practice:model-and-provider-selection",
       "entry:semantic-kernel",
       "entry:ai-appdeploy-deploy-app",
       "entry:playwright-mcp"
@@ -26487,17 +27458,24 @@
       "entry:cursor-agent"
     ],
     "approval": [
+      "playbook:coding-agent-selection",
+      "playbook:prompt-upgrade",
+      "prompt-pattern:provider-selection",
       "practice:coding-agents",
       "practice:human-approval-and-durability",
       "entry:langgraph",
+      "practice:model-and-provider-selection",
       "entry:openai-codex-cli",
       "entry:cline"
     ],
     "approval.": [
+      "playbook:mcp-adoption-review",
+      "prompt-pattern:agent-upgrade-plan",
       "practice:coding-agents",
       "practice:security"
     ],
     "approvals": [
+      "prompt-pattern:agent-upgrade-plan",
       "practice:human-approval-and-durability",
       "entry:cline"
     ],
@@ -26744,6 +27722,9 @@
       "entry:openai-swarm"
     ],
     "ask": [
+      "playbook:coding-agent-selection",
+      "playbook:mcp-adoption-review",
+      "playbook:project-stack-review",
       "prompt-pattern:codex-implementation",
       "prompt-pattern:prompt-enhancement",
       "prompt-pattern:mcp-selection",
@@ -26827,6 +27808,7 @@
       "entry:ai-compeller-compel"
     ],
     "audit": [
+      "playbook:project-stack-review",
       "practice:context-engineering",
       "practice:security",
       "entry:ai-helixar-mcp",
@@ -26873,12 +27855,14 @@
       "entry:github-copilot-coding-agent"
     ],
     "automation": [
+      "playbook:coding-agent-selection",
       "entry:ai-imboard-dossier",
       "entry:playwright-mcp",
       "entry:browserbase-mcp",
       "entry:openai-codex-cli"
     ],
     "automation.": [
+      "prompt-pattern:agent-upgrade-plan",
       "entry:crewai",
       "entry:ai-mino-web-agent"
     ],
@@ -26897,6 +27881,7 @@
       "entry:ai-inflowpay-app-inflow"
     ],
     "autonomy": [
+      "prompt-pattern:agent-upgrade-plan",
       "entry:anthropic-building-effective-agents"
     ],
     "autonomy.": [
@@ -26907,6 +27892,9 @@
     ],
     "auxen": [
       "entry:ai-auxen-auxen"
+    ],
+    "availability": [
+      "prompt-pattern:provider-selection"
     ],
     "available": [
       "practice:code-review"
@@ -26942,6 +27930,9 @@
     ],
     "backend-only": [
       "entry:vercel-ai-sdk"
+    ],
+    "backend.": [
+      "practice:model-and-provider-selection"
     ],
     "backlink": [
       "entry:ai-linkguard-linkguard-mcp"
@@ -26986,10 +27977,14 @@
       "entry:github-copilot-coding-agent",
       "entry:supabase-mcp"
     ],
+    "beats": [
+      "playbook:project-stack-review"
+    ],
     "beauty": [
       "entry:ai-fodda-mcp-server"
     ],
     "become": [
+      "playbook:prompt-upgrade",
       "practice:security"
     ],
     "been": [
@@ -27194,6 +28189,7 @@
       "entry:openai-swarm"
     ],
     "behavior": [
+      "playbook:mcp-adoption-review",
       "prompt-pattern:bug-debug",
       "prompt-pattern:eval-design",
       "entry:model-context-protocol",
@@ -27559,6 +28555,7 @@
       "entry:ai-demanddiscovery-mcp"
     ],
     "behind": [
+      "prompt-pattern:agent-upgrade-plan",
       "practice:coding-agents",
       "practice:mcp-server-selection"
     ],
@@ -27567,6 +28564,7 @@
     ],
     "benchmark": [
       "practice:evals",
+      "practice:model-and-provider-selection",
       "entry:swe-agent"
     ],
     "benchmarks": [
@@ -27581,18 +28579,26 @@
       "entry:graphiti"
     ],
     "best": [
+      "playbook:coding-agent-selection",
       "prompt-pattern:mcp-selection",
+      "prompt-pattern:provider-selection",
       "prompt-pattern:research",
       "practice:code-review"
+    ],
+    "best-practice": [
+      "playbook:project-stack-review"
     ],
     "best-practices": [
       "entry:anthropic-building-effective-agents"
     ],
     "better": [
+      "playbook:project-stack-review",
+      "prompt-pattern:agent-upgrade-plan",
       "practice:frontend",
       "practice:search"
     ],
     "between": [
+      "prompt-pattern:provider-selection",
       "entry:google-agent2agent-protocol",
       "entry:ai-nocturnus-logic-server",
       "entry:anthropic-building-effective-agents",
@@ -27815,10 +28821,16 @@
       "entry:ai-com-mcp-linkedin",
       "entry:ai-moxt-mcp-workspace"
     ],
+    "both": [
+      "playbook:prompt-upgrade"
+    ],
     "boundaries": [
+      "playbook:prompt-upgrade",
+      "prompt-pattern:provider-selection",
       "practice:backend",
       "entry:codex-agents-md",
       "practice:coding-agents",
+      "practice:model-and-provider-selection",
       "entry:pydantic-ai"
     ],
     "boundaries.": [
@@ -27835,6 +28847,8 @@
       "entry:github-copilot-coding-agent"
     ],
     "brand": [
+      "playbook:coding-agent-selection",
+      "practice:model-and-provider-selection",
       "entry:ai-nudg3-brand-intelligence",
       "entry:ai-ninar-ninar",
       "entry:ai-chinamarketing-intelligence"
@@ -27917,6 +28931,7 @@
     ],
     "build": [
       "prompt-pattern:ui-build",
+      "prompt-pattern:provider-selection",
       "entry:google-agent-development-kit",
       "entry:langgraph",
       "entry:mastra",
@@ -27949,6 +28964,9 @@
       "entry:ai-auteng-docs",
       "entry:ai-auteng-mcp"
     ],
+    "built-in": [
+      "playbook:mcp-adoption-review"
+    ],
     "bullets": [
       "prompt-pattern:prompt-enhancement"
     ],
@@ -27974,8 +28992,10 @@
     "by": [
       "prompt-pattern:code-review",
       "prompt-pattern:mcp-selection",
+      "prompt-pattern:provider-selection",
       "entry:model-context-protocol",
       "practice:frontend",
+      "practice:model-and-provider-selection",
       "practice:search",
       "entry:ai-com-mcp-skills-search",
       "entry:ai-boolsai-directory",
@@ -28016,6 +29036,8 @@
       "entry:ai-calendarmcp-server"
     ],
     "call": [
+      "playbook:coding-agent-selection",
+      "playbook:mcp-adoption-review",
       "prompt-pattern:mcp-selection",
       "practice:mcp-server-selection",
       "practice:security"
@@ -28073,6 +29095,10 @@
     "can-send-test-data-to-model-providers": [
       "entry:promptfoo",
       "entry:ragas"
+    ],
+    "candidate": [
+      "playbook:mcp-adoption-review",
+      "playbook:project-stack-review"
     ],
     "cannot": [
       "entry:model-context-protocol",
@@ -28414,10 +29440,14 @@
       "entry:ai-exa-exa"
     ],
     "capability": [
+      "prompt-pattern:agent-upgrade-plan",
       "entry:inspect-ai"
     ],
     "capture": [
       "practice:observability-and-tracing"
+    ],
+    "case": [
+      "playbook:coding-agent-selection"
     ],
     "case.": [
       "prompt-pattern:research"
@@ -28476,6 +29506,8 @@
       "entry:ai-helixar-mcp"
     ],
     "change": [
+      "playbook:project-stack-review",
+      "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:codex-implementation",
       "prompt-pattern:prompt-enhancement"
     ],
@@ -28485,11 +29517,14 @@
       "practice:prompt-engineering"
     ],
     "changed": [
+      "playbook:prompt-upgrade",
       "prompt-pattern:code-review",
       "prompt-pattern:codex-implementation",
       "practice:coding-agents"
     ],
     "changes": [
+      "playbook:prompt-upgrade",
+      "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:code-review",
       "prompt-pattern:codex-implementation",
       "entry:inspect-ai",
@@ -28505,11 +29540,15 @@
       "entry:openai-codex-cli"
     ],
     "changing": [
+      "playbook:coding-agent-selection",
+      "playbook:mcp-adoption-review",
+      "playbook:project-stack-review",
       "prompt-pattern:codex-implementation",
       "practice:prompt-engineering"
     ],
     "changing.": [
-      "prompt-pattern:mcp-selection"
+      "prompt-pattern:mcp-selection",
+      "prompt-pattern:provider-selection"
     ],
     "channels": [
       "entry:ai-agentdm-agentdm"
@@ -28561,10 +29600,15 @@
       "entry:continue-dev"
     ],
     "choices": [
+      "playbook:project-stack-review",
       "practice:code-review"
     ],
     "choose": [
+      "playbook:coding-agent-selection",
+      "playbook:mcp-adoption-review",
       "prompt-pattern:mcp-selection",
+      "prompt-pattern:provider-selection",
+      "practice:model-and-provider-selection",
       "entry:anthropic-building-effective-agents"
     ],
     "choosing": [
@@ -28572,6 +29616,9 @@
       "practice:evals"
     ],
     "ci": [
+      "playbook:project-stack-review",
+      "prompt-pattern:agent-upgrade-plan",
+      "prompt-pattern:provider-selection",
       "practice:deployment",
       "entry:promptfoo"
     ],
@@ -28607,10 +29654,15 @@
       "entry:ai-dragoneye-mcp"
     ],
     "claude": [
+      "playbook:coding-agent-selection",
+      "playbook:prompt-upgrade",
+      "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:memory-policy",
+      "prompt-pattern:provider-selection",
       "entry:model-context-protocol",
       "practice:coding-agents",
       "practice:context-engineering",
+      "practice:model-and-provider-selection",
       "entry:ai-abmeter-abmeter",
       "entry:ac-tandem-docs-mcp",
       "entry:agency-lona-trading",
@@ -28818,6 +29870,7 @@
       "entry:ai-com-mcp-openai-tools"
     ],
     "client": [
+      "playbook:mcp-adoption-review",
       "practice:mcp-server-selection"
     ],
     "client.": [
@@ -28875,6 +29928,7 @@
       "entry:openai-codex-cli"
     ],
     "code.": [
+      "playbook:project-stack-review",
       "prompt-pattern:bug-debug",
       "entry:playwright-mcp"
     ],
@@ -28890,9 +29944,14 @@
       "entry:cursor-agent"
     ],
     "codex": [
+      "playbook:coding-agent-selection",
+      "playbook:prompt-upgrade",
+      "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:codex-implementation",
+      "prompt-pattern:provider-selection",
       "entry:codex-agents-md",
       "practice:coding-agents",
+      "practice:model-and-provider-selection",
       "practice:prompt-engineering",
       "entry:ai-bringyour-bringyour",
       "entry:openai-codex-cli"
@@ -28901,8 +29960,11 @@
       "entry:codex-agents-md"
     ],
     "coding": [
+      "playbook:coding-agent-selection",
+      "playbook:prompt-upgrade",
       "prompt-pattern:codex-implementation",
       "prompt-pattern:prompt-enhancement",
+      "prompt-pattern:provider-selection",
       "entry:codex-agents-md",
       "practice:coding-agents",
       "entry:context7-mcp",
@@ -28953,6 +30015,7 @@
       "entry:mastra"
     ],
     "command": [
+      "playbook:prompt-upgrade",
       "practice:prompt-engineering",
       "entry:openai-codex-cli",
       "entry:anthropic-claude-code"
@@ -28960,7 +30023,12 @@
     "command-menu": [
       "practice:frontend"
     ],
+    "command.": [
+      "prompt-pattern:provider-selection"
+    ],
     "commands": [
+      "playbook:prompt-upgrade",
+      "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:codex-implementation",
       "entry:codex-agents-md",
       "practice:prompt-engineering",
@@ -28968,6 +30036,7 @@
       "entry:openai-codex-cli"
     ],
     "commands.": [
+      "playbook:project-stack-review",
       "prompt-pattern:codex-implementation",
       "prompt-pattern:memory-policy"
     ],
@@ -28991,6 +30060,7 @@
       "entry:supabase-mcp"
     ],
     "compact": [
+      "playbook:prompt-upgrade",
       "prompt-pattern:prompt-enhancement",
       "entry:openai-agents-sdk"
     ],
@@ -29003,12 +30073,20 @@
       "entry:ai-explorium-mcp-explorium"
     ],
     "compare": [
+      "playbook:coding-agent-selection",
+      "prompt-pattern:provider-selection",
       "entry:model-context-protocol",
       "prompt-pattern:research",
+      "practice:model-and-provider-selection",
       "entry:ai-buywhere-catalog-api",
       "entry:openai-swarm"
     ],
+    "comparing": [
+      "playbook:coding-agent-selection",
+      "prompt-pattern:provider-selection"
+    ],
     "comparison": [
+      "prompt-pattern:provider-selection",
       "prompt-pattern:research",
       "entry:google-agent2agent-protocol",
       "entry:microsoft-autogen",
@@ -29227,7 +30305,15 @@
     "confidence": [
       "practice:search"
     ],
+    "confidence.": [
+      "playbook:mcp-adoption-review"
+    ],
+    "config": [
+      "playbook:project-stack-review",
+      "prompt-pattern:agent-upgrade-plan"
+    ],
     "configs": [
+      "playbook:project-stack-review",
       "practice:code-review"
     ],
     "configurable": [
@@ -29235,6 +30321,12 @@
     ],
     "configuration": [
       "entry:continue-dev"
+    ],
+    "configure": [
+      "playbook:mcp-adoption-review"
+    ],
+    "confirmed": [
+      "playbook:prompt-upgrade"
     ],
     "conflict": [
       "practice:subagents-and-multi-agent"
@@ -29266,6 +30358,7 @@
       "practice:code-review"
     ],
     "connector": [
+      "playbook:mcp-adoption-review",
       "prompt-pattern:mcp-selection"
     ],
     "connectors": [
@@ -29281,6 +30374,7 @@
       "entry:github-mcp-server"
     ],
     "constraints": [
+      "playbook:prompt-upgrade",
       "prompt-pattern:codex-implementation",
       "prompt-pattern:ui-build",
       "prompt-pattern:prompt-enhancement",
@@ -29317,6 +30411,8 @@
       "entry:ai-com-mcp-linkedin"
     ],
     "context": [
+      "playbook:prompt-upgrade",
+      "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:prompt-enhancement",
       "prompt-pattern:memory-policy",
       "entry:model-context-protocol",
@@ -29395,6 +30491,9 @@
     "controlled": [
       "entry:swe-agent"
     ],
+    "controls": [
+      "playbook:coding-agent-selection"
+    ],
     "controls.": [
       "entry:stripe-agent-toolkit"
     ],
@@ -29448,6 +30547,9 @@
       "practice:coding-agents",
       "entry:github-copilot-coding-agent"
     ],
+    "copilot-style": [
+      "playbook:coding-agent-selection"
+    ],
     "core": [
       "prompt-pattern:ui-build"
     ],
@@ -29458,9 +30560,15 @@
       "entry:ai-cosmonote-notes"
     ],
     "cost": [
+      "playbook:coding-agent-selection",
+      "prompt-pattern:provider-selection",
+      "practice:model-and-provider-selection",
       "practice:observability-and-tracing",
       "entry:ai-delega-aws-pricing-calculator",
       "entry:agentops"
+    ],
+    "cost.": [
+      "practice:model-and-provider-selection"
     ],
     "costs": [
       "practice:observability-and-tracing",
@@ -29529,6 +30637,7 @@
     "criteria": [
       "prompt-pattern:eval-design",
       "prompt-pattern:prompt-enhancement",
+      "prompt-pattern:provider-selection",
       "prompt-pattern:research",
       "practice:prompt-engineering",
       "entry:openai-prompt-engineering-guide",
@@ -29616,8 +30725,12 @@
       "entry:openai-swarm"
     ],
     "current": [
+      "playbook:project-stack-review",
+      "playbook:prompt-upgrade",
+      "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:codex-implementation",
       "prompt-pattern:mcp-selection",
+      "prompt-pattern:provider-selection",
       "entry:model-context-protocol",
       "prompt-pattern:research",
       "entry:google-agent2agent-protocol",
@@ -29984,6 +31097,9 @@
     "cursor-agent": [
       "entry:cursor-agent"
     ],
+    "cursor/cline-style": [
+      "playbook:coding-agent-selection"
+    ],
     "custom": [
       "practice:frontend",
       "entry:ai-newzai-api-newzai",
@@ -30284,12 +31400,15 @@
       "entry:anthropic-multi-agent-research-system"
     ],
     "decision": [
+      "playbook:project-stack-review",
+      "prompt-pattern:provider-selection",
       "prompt-pattern:research"
     ],
     "decision-making.": [
       "entry:ai-childpsychiatry-library"
     ],
     "decisions": [
+      "playbook:prompt-upgrade",
       "entry:anthropic-building-effective-agents",
       "entry:ai-kawacode-mcp"
     ],
@@ -30372,6 +31491,7 @@
       "entry:ragas"
     ],
     "deploy": [
+      "playbook:project-stack-review",
       "entry:google-agent-development-kit",
       "entry:ai-borealhost-mcp"
     ],
@@ -30380,10 +31500,13 @@
       "entry:google-agent-development-kit"
     ],
     "deployment": [
+      "playbook:project-stack-review",
+      "prompt-pattern:provider-selection",
       "practice:backend",
       "practice:deployment",
       "entry:google-agent-development-kit",
       "entry:mastra",
+      "practice:model-and-provider-selection",
       "entry:ai-borealhost-mcp",
       "entry:ai-alpic-mcp-alpic-mcp",
       "entry:ai-appdeploy-deploy-app"
@@ -30392,11 +31515,15 @@
       "practice:human-approval-and-durability"
     ],
     "deploys": [
+      "prompt-pattern:agent-upgrade-plan",
       "practice:coding-agents",
       "practice:deployment"
     ],
     "deprecated": [
       "entry:openai-swarm"
+    ],
+    "depth": [
+      "prompt-pattern:agent-upgrade-plan"
     ],
     "descended": [
       "entry:letta"
@@ -30598,6 +31725,7 @@
       "entry:ai-chinamarketing-intelligence"
     ],
     "destructive": [
+      "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:codex-implementation",
       "practice:coding-agents"
     ],
@@ -30623,6 +31751,9 @@
       "entry:agency-lona-trading",
       "entry:openhands",
       "entry:supabase-mcp"
+    ],
+    "development.": [
+      "playbook:coding-agent-selection"
     ],
     "diagnosed": [
       "practice:observability-and-tracing"
@@ -30840,6 +31971,7 @@
       "entry:ai-borealhost-mcp"
     ],
     "do": [
+      "playbook:mcp-adoption-review",
       "prompt-pattern:codex-implementation",
       "prompt-pattern:mcp-selection",
       "prompt-pattern:subagent-delegation",
@@ -30954,6 +32086,7 @@
       "entry:ai-drillr-drillr"
     ],
     "drop-in": [
+      "playbook:project-stack-review",
       "practice:code-review"
     ],
     "drug": [
@@ -30966,6 +32099,7 @@
       "practice:human-approval-and-durability"
     ],
     "durable": [
+      "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:memory-policy",
       "entry:codex-agents-md",
       "practice:context-engineering",
@@ -31003,13 +32137,18 @@
       "prompt-pattern:eval-design"
     ],
     "edit": [
+      "playbook:project-stack-review",
       "entry:ai-clarid-hmda",
       "entry:openai-codex-cli",
       "entry:anthropic-claude-code",
       "entry:cline"
     ],
     "editing": [
+      "playbook:coding-agent-selection",
+      "playbook:project-stack-review",
+      "prompt-pattern:provider-selection",
       "practice:code-review",
+      "practice:model-and-provider-selection",
       "entry:openai-codex-cli",
       "entry:swe-agent",
       "entry:openhands"
@@ -31098,12 +32237,14 @@
       "prompt-pattern:prompt-enhancement"
     ],
     "enhanced": [
+      "playbook:prompt-upgrade",
       "prompt-pattern:prompt-enhancement"
     ],
     "enhancement": [
       "prompt-pattern:prompt-enhancement"
     ],
     "enhancer": [
+      "playbook:prompt-upgrade",
       "practice:prompt-engineering"
     ],
     "enough": [
@@ -31142,7 +32283,11 @@
       "entry:ai-limitguard-api-trust-intelligence",
       "entry:ai-nordax-mcp"
     ],
+    "entries": [
+      "playbook:project-stack-review"
+    ],
     "environment": [
+      "playbook:mcp-adoption-review",
       "prompt-pattern:prompt-enhancement",
       "practice:agent-tooling",
       "practice:context-engineering",
@@ -31184,7 +32329,9 @@
       "entry:ai-delega-aws-pricing-calculator"
     ],
     "etc.": [
+      "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:codex-implementation",
+      "prompt-pattern:provider-selection",
       "entry:ai-offerhopper-mcp-shopping-optimizer"
     ],
     "eu": [
@@ -31193,6 +32340,8 @@
     ],
     "eval": [
       "prompt-pattern:eval-design",
+      "prompt-pattern:provider-selection",
+      "practice:model-and-provider-selection",
       "practice:observability-and-tracing",
       "entry:dspy",
       "entry:inspect-ai",
@@ -31203,8 +32352,12 @@
       "entry:ragas"
     ],
     "evals": [
+      "playbook:coding-agent-selection",
+      "prompt-pattern:agent-upgrade-plan",
+      "prompt-pattern:provider-selection",
       "practice:evals",
       "entry:mastra",
+      "practice:model-and-provider-selection",
       "entry:dspy",
       "entry:inspect-ai",
       "entry:openai-prompt-engineering-guide",
@@ -31271,12 +32424,14 @@
     ],
     "evidence": [
       "practice:evals",
+      "practice:model-and-provider-selection",
       "entry:inspect-ai",
       "entry:sentry-mcp",
       "entry:playwright-mcp"
     ],
     "evidence.": [
       "prompt-pattern:bug-debug",
+      "prompt-pattern:provider-selection",
       "practice:coding-agents",
       "entry:sentry-mcp"
     ],
@@ -31284,9 +32439,11 @@
       "entry:ai-dynsoft-sac"
     ],
     "exact": [
+      "playbook:mcp-adoption-review",
       "prompt-pattern:prompt-enhancement"
     ],
     "examples": [
+      "playbook:prompt-upgrade",
       "prompt-pattern:eval-design",
       "practice:prompt-engineering",
       "entry:context7-mcp",
@@ -31297,6 +32454,7 @@
       "entry:google-agent2agent-protocol"
     ],
     "execute": [
+      "playbook:mcp-adoption-review",
       "practice:security",
       "entry:ai-imboard-dossier",
       "entry:ac-inference-sh-mcp"
@@ -31316,7 +32474,10 @@
       "entry:supabase-mcp"
     ],
     "existing": [
+      "playbook:project-stack-review",
+      "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:ui-build",
+      "prompt-pattern:provider-selection",
       "entry:semantic-kernel",
       "entry:github-copilot-coding-agent"
     ],
@@ -31350,6 +32511,7 @@
       "practice:coding-agents"
     ],
     "explicit": [
+      "playbook:mcp-adoption-review",
       "prompt-pattern:prompt-enhancement",
       "practice:backend",
       "practice:coding-agents",
@@ -31370,6 +32532,9 @@
     ],
     "explicitly": [
       "prompt-pattern:memory-policy"
+    ],
+    "explicitly.": [
+      "playbook:coding-agent-selection"
     ],
     "exploration": [
       "entry:anthropic-multi-agent-research-system",
@@ -31550,6 +32715,7 @@
       "entry:cline"
     ],
     "external": [
+      "playbook:project-stack-review",
       "entry:model-context-protocol",
       "practice:human-approval-and-durability",
       "entry:ai-abmeter-abmeter",
@@ -31721,6 +32887,7 @@
       "practice:observability-and-tracing"
     ],
     "facts": [
+      "playbook:prompt-upgrade",
       "entry:graphiti",
       "entry:mem0"
     ],
@@ -31949,6 +33116,9 @@
       "entry:anthropic-claude-code"
     ],
     "files": [
+      "playbook:coding-agent-selection",
+      "playbook:project-stack-review",
+      "playbook:prompt-upgrade",
       "prompt-pattern:codex-implementation",
       "prompt-pattern:subagent-delegation",
       "practice:coding-agents",
@@ -31980,6 +33150,7 @@
       "prompt-pattern:codex-implementation"
     ],
     "filesystem": [
+      "playbook:coding-agent-selection",
       "prompt-pattern:mcp-selection",
       "entry:ai-filegraph-document-processing",
       "entry:ai-mcpcap-mcpcap",
@@ -32015,6 +33186,7 @@
       "entry:ai-filtrix-mcp-filtrix-ai"
     ],
     "final": [
+      "playbook:prompt-upgrade",
       "practice:subagents-and-multi-agent"
     ],
     "finance": [
@@ -32043,6 +33215,7 @@
       "entry:firecrawl-mcp"
     ],
     "first": [
+      "playbook:mcp-adoption-review",
       "prompt-pattern:code-review",
       "prompt-pattern:bug-debug",
       "practice:prompt-engineering"
@@ -32051,12 +33224,20 @@
       "practice:human-approval-and-durability",
       "entry:letta"
     ],
+    "first.": [
+      "prompt-pattern:agent-upgrade-plan"
+    ],
     "fit": [
+      "playbook:coding-agent-selection",
+      "prompt-pattern:provider-selection",
       "prompt-pattern:research",
+      "practice:model-and-provider-selection",
       "entry:cline"
     ],
     "fit.": [
-      "prompt-pattern:mcp-selection"
+      "playbook:coding-agent-selection",
+      "prompt-pattern:mcp-selection",
+      "prompt-pattern:provider-selection"
     ],
     "fits": [
       "prompt-pattern:ui-build"
@@ -32073,6 +33254,9 @@
     ],
     "flagging": [
       "entry:ai-abmeter-abmeter"
+    ],
+    "flags": [
+      "playbook:project-stack-review"
     ],
     "flags.": [
       "prompt-pattern:mcp-selection",
@@ -32115,6 +33299,7 @@
       "practice:frontend"
     ],
     "format": [
+      "playbook:prompt-upgrade",
       "prompt-pattern:prompt-enhancement",
       "practice:prompt-engineering"
     ],
@@ -32131,6 +33316,7 @@
       "prompt-pattern:code-review"
     ],
     "framework": [
+      "playbook:project-stack-review",
       "entry:google-agent2agent-protocol",
       "practice:code-review",
       "entry:crewai",
@@ -32138,6 +33324,7 @@
       "entry:langgraph",
       "entry:mastra",
       "entry:microsoft-autogen",
+      "practice:model-and-provider-selection",
       "entry:openai-agents-sdk",
       "entry:pydantic-ai",
       "entry:anthropic-building-effective-agents",
@@ -32148,7 +33335,11 @@
       "entry:graphiti",
       "entry:letta"
     ],
+    "framework-based": [
+      "playbook:coding-agent-selection"
+    ],
     "frameworks": [
+      "prompt-pattern:provider-selection",
       "entry:context7-mcp"
     ],
     "frameworks.": [
@@ -32167,6 +33358,7 @@
     ],
     "frontend": [
       "prompt-pattern:ui-build",
+      "prompt-pattern:provider-selection",
       "practice:frontend",
       "entry:playwright-mcp"
     ],
@@ -32208,6 +33400,7 @@
       "entry:ai-jeda-jeda-ai"
     ],
     "gates": [
+      "prompt-pattern:agent-upgrade-plan",
       "practice:human-approval-and-durability",
       "entry:langgraph"
     ],
@@ -32215,7 +33408,12 @@
       "entry:ai-gavelin-mcp"
     ],
     "gemini": [
+      "playbook:coding-agent-selection",
+      "playbook:prompt-upgrade",
+      "prompt-pattern:agent-upgrade-plan",
+      "prompt-pattern:provider-selection",
       "entry:google-agent-development-kit",
+      "practice:model-and-provider-selection",
       "entry:ai-nudg3-brand-intelligence",
       "entry:ai-ninar-ninar"
     ],
@@ -32224,6 +33422,12 @@
     ],
     "gemini-oriented": [
       "entry:google-agent-development-kit"
+    ],
+    "gemini/adk": [
+      "practice:model-and-provider-selection"
+    ],
+    "gemini/google": [
+      "playbook:coding-agent-selection"
     ],
     "general": [
       "prompt-pattern:prompt-enhancement"
@@ -32263,6 +33467,7 @@
       "entry:aider"
     ],
     "github": [
+      "playbook:coding-agent-selection",
       "entry:codex-agents-md",
       "entry:github-mcp-server",
       "entry:openai-codex-cli",
@@ -32336,6 +33541,9 @@
       "entry:ai-contextstudios-mcp"
     ],
     "goal": [
+      "playbook:project-stack-review",
+      "playbook:prompt-upgrade",
+      "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:prompt-enhancement"
     ],
     "goal.": [
@@ -32751,6 +33959,9 @@
     "high-risk": [
       "practice:mcp-server-selection"
     ],
+    "highest-impact": [
+      "prompt-pattern:agent-upgrade-plan"
+    ],
     "historical": [
       "entry:openai-swarm"
     ],
@@ -32779,6 +33990,8 @@
       "entry:ai-cueapi-mcp"
     ],
     "hosted": [
+      "playbook:coding-agent-selection",
+      "practice:model-and-provider-selection",
       "practice:search",
       "entry:ai-agenticshelf-mcp",
       "entry:ai-calendarmcp-server",
@@ -32809,6 +34022,7 @@
       "entry:ai-clarid-compliance"
     ],
     "how": [
+      "prompt-pattern:agent-upgrade-plan",
       "entry:codex-agents-md",
       "practice:data"
     ],
@@ -33054,6 +34268,7 @@
       "practice:human-approval-and-durability"
     ],
     "identify": [
+      "playbook:mcp-adoption-review",
       "prompt-pattern:bug-debug"
     ],
     "identity": [
@@ -33109,6 +34324,7 @@
       "entry:claude-code-memory"
     ],
     "improve": [
+      "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:prompt-enhancement",
       "entry:crewai",
       "practice:data",
@@ -33126,17 +34342,23 @@
       "entry:dspy"
     ],
     "improvements": [
+      "playbook:project-stack-review",
       "practice:code-review"
+    ],
+    "improvements.": [
+      "prompt-pattern:agent-upgrade-plan"
     ],
     "improves": [
       "entry:mem0"
     ],
     "improving": [
+      "prompt-pattern:agent-upgrade-plan",
       "entry:openai-prompt-engineering-guide",
       "entry:openai-prompt-optimizer",
       "entry:langsmith"
     ],
     "in": [
+      "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:codex-implementation",
       "prompt-pattern:memory-policy",
       "practice:context-engineering",
@@ -33305,6 +34527,8 @@
       "entry:ai-nothumansearch-search"
     ],
     "include": [
+      "playbook:project-stack-review",
+      "playbook:prompt-upgrade",
       "prompt-pattern:code-review",
       "prompt-pattern:prompt-enhancement",
       "prompt-pattern:memory-policy",
@@ -33368,6 +34592,7 @@
       "entry:firecrawl-mcp"
     ],
     "inputs": [
+      "playbook:prompt-upgrade",
       "prompt-pattern:prompt-enhancement",
       "practice:observability-and-tracing",
       "practice:prompt-engineering"
@@ -33385,6 +34610,9 @@
       "entry:ai-conveo-conveo"
     ],
     "inspect": [
+      "playbook:mcp-adoption-review",
+      "playbook:project-stack-review",
+      "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:codex-implementation",
       "prompt-pattern:bug-debug",
       "practice:code-review",
@@ -33408,6 +34636,8 @@
       "entry:playwright-mcp"
     ],
     "install": [
+      "playbook:mcp-adoption-review",
+      "playbook:project-stack-review",
       "entry:model-context-protocol",
       "practice:agent-tooling",
       "entry:google-agent2agent-protocol",
@@ -33615,10 +34845,12 @@
       "prompt-pattern:mcp-selection"
     ],
     "installing": [
+      "playbook:mcp-adoption-review",
       "prompt-pattern:codex-implementation",
       "practice:code-review"
     ],
     "installs": [
+      "prompt-pattern:agent-upgrade-plan",
       "practice:coding-agents"
     ],
     "instantly": [
@@ -33637,7 +34869,12 @@
     "institute": [
       "entry:inspect-ai"
     ],
+    "instruction": [
+      "playbook:prompt-upgrade"
+    ],
     "instructions": [
+      "prompt-pattern:agent-upgrade-plan",
+      "prompt-pattern:provider-selection",
       "entry:codex-agents-md",
       "practice:context-engineering",
       "practice:prompt-engineering",
@@ -33647,6 +34884,7 @@
       "entry:anthropic-claude-code"
     ],
     "instructions.": [
+      "playbook:project-stack-review",
       "practice:agent-tooling"
     ],
     "insufficient": [
@@ -33686,6 +34924,7 @@
       "entry:ai-bluenexus-universal-mcp"
     ],
     "intended": [
+      "playbook:mcp-adoption-review",
       "practice:mcp-server-selection"
     ],
     "intent": [
@@ -33750,6 +34989,7 @@
       "entry:ai-lucasandersen-mlp-tax"
     ],
     "is": [
+      "prompt-pattern:agent-upgrade-plan",
       "entry:model-context-protocol",
       "entry:google-agent2agent-protocol",
       "entry:crewai",
@@ -34014,6 +35254,7 @@
       "entry:openai-prompt-optimizer"
     ],
     "judgment.": [
+      "playbook:prompt-upgrade",
       "practice:subagents-and-multi-agent"
     ],
     "just": [
@@ -34033,6 +35274,7 @@
       "entry:ai-kawacode-mcp"
     ],
     "keep": [
+      "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:subagent-delegation",
       "practice:backend",
       "practice:coding-agents",
@@ -34178,6 +35420,7 @@
       "entry:dspy"
     ],
     "languages": [
+      "prompt-pattern:provider-selection",
       "entry:semantic-kernel",
       "entry:ai-i18nagent-i18n-agent"
     ],
@@ -34192,6 +35435,7 @@
       "entry:openai-agents-sdk"
     ],
     "latency": [
+      "prompt-pattern:provider-selection",
       "practice:observability-and-tracing",
       "practice:search"
     ],
@@ -34437,6 +35681,7 @@
       "entry:ai-example4-xmp4"
     ],
     "license": [
+      "playbook:mcp-adoption-review",
       "prompt-pattern:research"
     ],
     "license-not-asserted": [
@@ -34625,6 +35870,7 @@
       "entry:claude-code-subagents"
     ],
     "likely": [
+      "playbook:prompt-upgrade",
       "prompt-pattern:codex-implementation"
     ],
     "limited": [
@@ -34877,6 +36123,7 @@
       "entry:ai-bezal-local-commerce"
     ],
     "lockfiles": [
+      "playbook:project-stack-review",
       "practice:code-review"
     ],
     "log": [
@@ -34939,6 +36186,9 @@
     ],
     "maintainability": [
       "prompt-pattern:code-review"
+    ],
+    "maintainability.": [
+      "prompt-pattern:agent-upgrade-plan"
     ],
     "maintained": [
       "entry:openai-swarm"
@@ -35140,6 +36390,7 @@
       "prompt-pattern:research"
     ],
     "make": [
+      "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:codex-implementation",
       "prompt-pattern:ui-build",
       "prompt-pattern:prompt-enhancement",
@@ -35174,6 +36425,7 @@
       "entry:ai-meetsquad-squad"
     ],
     "manifests": [
+      "playbook:project-stack-review",
       "practice:code-review"
     ],
     "manipulate": [
@@ -35233,6 +36485,7 @@
       "entry:aider"
     ],
     "map": [
+      "playbook:project-stack-review",
       "entry:anthropic-claude-code"
     ],
     "maps": [
@@ -35273,7 +36526,11 @@
       "prompt-pattern:ui-build",
       "entry:context7-mcp"
     ],
+    "matches": [
+      "playbook:coding-agent-selection"
+    ],
     "matching": [
+      "playbook:project-stack-review",
       "practice:search",
       "entry:ai-law-lawyer-search"
     ],
@@ -35308,7 +36565,12 @@
       "entry:sentry-mcp"
     ],
     "mcp": [
+      "playbook:coding-agent-selection",
+      "playbook:mcp-adoption-review",
+      "playbook:project-stack-review",
+      "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:mcp-selection",
+      "prompt-pattern:provider-selection",
       "entry:model-context-protocol",
       "practice:agent-tooling",
       "entry:mastra",
@@ -35646,8 +36908,14 @@
       "entry:ai-artidrop-artidrop",
       "entry:ai-com-mcp-linkedin"
     ],
+    "mcp/tool": [
+      "practice:model-and-provider-selection"
+    ],
     "me": [
       "prompt-pattern:prompt-enhancement"
+    ],
+    "means": [
+      "prompt-pattern:agent-upgrade-plan"
     ],
     "measurable": [
       "prompt-pattern:eval-design"
@@ -35691,6 +36959,7 @@
       "practice:data",
       "entry:google-agent-development-kit",
       "entry:mastra",
+      "practice:model-and-provider-selection",
       "entry:ai-nocturnus-logic-server",
       "entry:ai-kawacode-mcp",
       "entry:ai-meminal-meminal",
@@ -35713,6 +36982,10 @@
     ],
     "memory/context": [
       "prompt-pattern:memory-policy"
+    ],
+    "memory/instruction": [
+      "playbook:coding-agent-selection",
+      "prompt-pattern:provider-selection"
     ],
     "mental": [
       "entry:crewai"
@@ -35773,6 +37046,7 @@
       "entry:ai-auxen-auxen"
     ],
     "missing": [
+      "playbook:prompt-upgrade",
       "prompt-pattern:code-review",
       "prompt-pattern:prompt-enhancement",
       "practice:prompt-engineering",
@@ -35792,9 +37066,11 @@
     ],
     "model": [
       "prompt-pattern:prompt-enhancement",
+      "prompt-pattern:provider-selection",
       "entry:model-context-protocol",
       "entry:crewai",
       "practice:mcp-server-selection",
+      "practice:model-and-provider-selection",
       "practice:observability-and-tracing",
       "entry:vercel-ai-sdk",
       "entry:ai-auxen-auxen",
@@ -35804,8 +37080,14 @@
     "model-agnostic": [
       "entry:pydantic-ai"
     ],
+    "model-app": [
+      "playbook:coding-agent-selection"
+    ],
     "model-context-protocol": [
       "entry:model-context-protocol"
+    ],
+    "model.": [
+      "playbook:prompt-upgrade"
     ],
     "models": [
       "entry:ai-ludo-game-assets",
@@ -35857,6 +37139,9 @@
     "mortgage": [
       "entry:ai-bankee-inferventis-mcp"
     ],
+    "most": [
+      "playbook:coding-agent-selection"
+    ],
     "motion.": [
       "prompt-pattern:ui-build"
     ],
@@ -35874,11 +37159,13 @@
       "practice:subagents-and-multi-agent"
     ],
     "multi-agent": [
+      "playbook:coding-agent-selection",
       "entry:google-agent2agent-protocol",
       "entry:crewai",
       "entry:google-agent-development-kit",
       "entry:langgraph",
       "entry:microsoft-autogen",
+      "practice:model-and-provider-selection",
       "practice:observability-and-tracing",
       "entry:openai-agents-sdk",
       "practice:subagents-and-multi-agent",
@@ -35905,11 +37192,13 @@
       "entry:ai-ludo-game-assets"
     ],
     "must": [
+      "playbook:mcp-adoption-review",
       "prompt-pattern:prompt-enhancement",
       "prompt-pattern:subagent-delegation",
       "practice:prompt-engineering"
     ],
     "mutate": [
+      "playbook:project-stack-review",
       "practice:mcp-server-selection",
       "practice:security"
     ],
@@ -35927,6 +37216,9 @@
     "name": [
       "entry:ai-namewhisper-ens-tools"
     ],
+    "name.": [
+      "playbook:coding-agent-selection"
+    ],
     "names.": [
       "entry:ai-namewhisper-ens-tools"
     ],
@@ -35934,11 +37226,15 @@
       "practice:observability-and-tracing"
     ],
     "narrow": [
+      "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:bug-debug",
       "practice:backend",
       "practice:data",
       "practice:subagents-and-multi-agent",
       "entry:claude-code-subagents"
+    ],
+    "narrow-scope": [
+      "playbook:mcp-adoption-review"
     ],
     "native.": [
       "entry:ai-nefesh-human-state"
@@ -35962,6 +37258,7 @@
       "practice:agent-tooling"
     ],
     "need": [
+      "playbook:mcp-adoption-review",
       "entry:model-context-protocol",
       "entry:google-agent2agent-protocol",
       "practice:backend",
@@ -35983,6 +37280,7 @@
       "entry:zep"
     ],
     "needed.": [
+      "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:bug-debug"
     ],
     "needing": [
@@ -35998,6 +37296,7 @@
       "entry:graphiti"
     ],
     "network": [
+      "playbook:mcp-adoption-review",
       "entry:google-agent2agent-protocol",
       "practice:code-review",
       "entry:crewai",
@@ -36199,6 +37498,7 @@
       "practice:security"
     ],
     "new": [
+      "practice:model-and-provider-selection",
       "entry:ai-boolsai-grep",
       "entry:openai-swarm"
     ],
@@ -36231,6 +37531,7 @@
       "entry:ai-modulos-demo-booking"
     ],
     "no": [
+      "playbook:project-stack-review",
       "prompt-pattern:code-review",
       "entry:ai-calendarmcp-server"
     ],
@@ -36338,6 +37639,7 @@
       "entry:ai-autonomad-computeback"
     ],
     "non-goals": [
+      "playbook:prompt-upgrade",
       "practice:prompt-engineering"
     ],
     "nordax": [
@@ -36350,6 +37652,8 @@
       "practice:search"
     ],
     "not": [
+      "playbook:coding-agent-selection",
+      "playbook:mcp-adoption-review",
       "prompt-pattern:codex-implementation",
       "prompt-pattern:ui-build",
       "prompt-pattern:mcp-selection",
@@ -36378,6 +37682,8 @@
       "entry:claude-code-subagents"
     ],
     "notes.": [
+      "playbook:project-stack-review",
+      "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:ui-build"
     ],
     "notification": [
@@ -36460,6 +37766,7 @@
     ],
     "on": [
       "prompt-pattern:ui-build",
+      "practice:model-and-provider-selection",
       "practice:subagents-and-multi-agent",
       "entry:ai-autonomad-computeback",
       "entry:anthropic-multi-agent-research-system",
@@ -36494,6 +37801,8 @@
       "entry:ai-deepledger-mcp"
     ],
     "only": [
+      "playbook:mcp-adoption-review",
+      "playbook:prompt-upgrade",
       "prompt-pattern:code-review",
       "prompt-pattern:codex-implementation",
       "prompt-pattern:bug-debug",
@@ -36767,6 +38076,7 @@
       "practice:human-approval-and-durability"
     ],
     "operational": [
+      "playbook:prompt-upgrade",
       "prompt-pattern:prompt-enhancement",
       "entry:model-context-protocol",
       "prompt-pattern:research",
@@ -36778,6 +38088,7 @@
       "entry:langgraph",
       "entry:mastra",
       "entry:microsoft-autogen",
+      "practice:model-and-provider-selection",
       "entry:openai-agents-sdk",
       "practice:prompt-engineering",
       "entry:pydantic-ai",
@@ -36832,6 +38143,9 @@
     "operators.": [
       "entry:ai-hostprofit-mcp"
     ],
+    "opportunities": [
+      "playbook:project-stack-review"
+    ],
     "ops": [
       "practice:deployment"
     ],
@@ -36858,13 +38172,20 @@
       "practice:code-review"
     ],
     "options": [
+      "playbook:project-stack-review",
       "prompt-pattern:research"
     ],
     "options.": [
       "prompt-pattern:mcp-selection",
+      "prompt-pattern:provider-selection",
       "prompt-pattern:research"
     ],
     "or": [
+      "playbook:coding-agent-selection",
+      "playbook:mcp-adoption-review",
+      "playbook:project-stack-review",
+      "playbook:prompt-upgrade",
+      "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:code-review",
       "prompt-pattern:codex-implementation",
       "prompt-pattern:bug-debug",
@@ -36873,6 +38194,7 @@
       "prompt-pattern:prompt-enhancement",
       "prompt-pattern:mcp-selection",
       "prompt-pattern:memory-policy",
+      "prompt-pattern:provider-selection",
       "entry:model-context-protocol",
       "prompt-pattern:subagent-delegation",
       "entry:google-agent2agent-protocol",
@@ -36885,6 +38207,7 @@
       "entry:mastra",
       "practice:mcp-server-selection",
       "entry:microsoft-autogen",
+      "practice:model-and-provider-selection",
       "entry:openai-agents-sdk",
       "practice:payments",
       "practice:prompt-engineering",
@@ -37086,6 +38409,7 @@
       "entry:ai-agentrapay-agentra"
     ],
     "orchestration": [
+      "playbook:coding-agent-selection",
       "practice:agent-tooling",
       "entry:crewai",
       "entry:langgraph",
@@ -37106,7 +38430,11 @@
     "oss": [
       "entry:ai-example4-xmp4"
     ],
+    "other": [
+      "playbook:mcp-adoption-review"
+    ],
     "out": [
+      "playbook:coding-agent-selection",
       "prompt-pattern:mcp-selection",
       "practice:context-engineering",
       "practice:security"
@@ -37118,14 +38446,18 @@
       "entry:ai-cueapi-mcp"
     ],
     "outdated": [
+      "playbook:project-stack-review",
       "practice:code-review"
     ],
     "output": [
+      "playbook:prompt-upgrade",
+      "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:code-review",
       "prompt-pattern:ui-build",
       "prompt-pattern:prompt-enhancement",
       "prompt-pattern:mcp-selection",
       "prompt-pattern:memory-policy",
+      "prompt-pattern:provider-selection",
       "prompt-pattern:research",
       "prompt-pattern:subagent-delegation",
       "practice:prompt-engineering",
@@ -37183,6 +38515,7 @@
       "practice:context-engineering"
     ],
     "package": [
+      "prompt-pattern:agent-upgrade-plan",
       "practice:code-review",
       "practice:coding-agents"
     ],
@@ -37190,6 +38523,7 @@
       "practice:evals"
     ],
     "packages": [
+      "playbook:project-stack-review",
       "prompt-pattern:codex-implementation",
       "practice:code-review"
     ],
@@ -37242,11 +38576,17 @@
       "prompt-pattern:bug-debug",
       "entry:openhands"
     ],
+    "path": [
+      "practice:model-and-provider-selection"
+    ],
     "path.": [
+      "playbook:mcp-adoption-review",
       "prompt-pattern:ui-build",
+      "prompt-pattern:provider-selection",
       "practice:subagents-and-multi-agent"
     ],
     "paths": [
+      "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:codex-implementation",
       "practice:deployment",
       "practice:observability-and-tracing"
@@ -37256,6 +38596,7 @@
       "entry:anthropic-multi-agent-research-system"
     ],
     "patterns": [
+      "playbook:project-stack-review",
       "practice:frontend",
       "entry:google-agent-development-kit",
       "entry:anthropic-building-effective-agents",
@@ -37307,14 +38648,18 @@
       "entry:ai-adadvisor-mcp-server"
     ],
     "permission": [
+      "playbook:coding-agent-selection",
+      "playbook:mcp-adoption-review",
       "prompt-pattern:code-review",
       "prompt-pattern:memory-policy",
+      "prompt-pattern:provider-selection",
       "practice:agent-tooling"
     ],
     "permissioned": [
       "entry:model-context-protocol"
     ],
     "permissions": [
+      "playbook:mcp-adoption-review",
       "prompt-pattern:mcp-selection",
       "entry:model-context-protocol",
       "practice:agent-tooling",
@@ -37325,6 +38670,7 @@
       "entry:langgraph",
       "entry:mastra",
       "entry:microsoft-autogen",
+      "practice:model-and-provider-selection",
       "entry:openai-agents-sdk",
       "entry:pydantic-ai",
       "practice:security",
@@ -37579,8 +38925,16 @@
     "pii": [
       "entry:ai-haymon-dbmcp"
     ],
+    "pilot": [
+      "playbook:coding-agent-selection",
+      "prompt-pattern:provider-selection",
+      "practice:model-and-provider-selection"
+    ],
     "pinned": [
       "practice:mcp-server-selection"
+    ],
+    "pipeline": [
+      "prompt-pattern:provider-selection"
     ],
     "pipelines": [
       "entry:crewai",
@@ -37596,11 +38950,15 @@
       "entry:ai-fincontext-fincontext"
     ],
     "plan": [
+      "playbook:mcp-adoption-review",
+      "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:eval-design",
+      "prompt-pattern:provider-selection",
       "prompt-pattern:subagent-delegation",
       "entry:ai-meetsquad-squad"
     ],
     "plan.": [
+      "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:subagent-delegation"
     ],
     "planners": [
@@ -37694,6 +39052,7 @@
       "entry:ai-haymon-dbmcp"
     ],
     "posture": [
+      "playbook:mcp-adoption-review",
       "practice:code-review"
     ],
     "powered": [
@@ -37703,6 +39062,9 @@
       "entry:ai-com-mcp-strava",
       "entry:ai-com-mcp-petstore",
       "entry:ai-com-mcp-linkedin"
+    ],
+    "powerful": [
+      "playbook:coding-agent-selection"
     ],
     "pr": [
       "prompt-pattern:code-review",
@@ -37720,6 +39082,10 @@
       "entry:openai-prompt-engineering-guide"
     ],
     "prefer": [
+      "playbook:coding-agent-selection",
+      "playbook:mcp-adoption-review",
+      "playbook:project-stack-review",
+      "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:mcp-selection",
       "entry:model-context-protocol",
       "practice:agent-tooling",
@@ -37740,6 +39106,9 @@
       "entry:claude-code-subagents",
       "entry:openai-swarm"
     ],
+    "preference.": [
+      "practice:model-and-provider-selection"
+    ],
     "preferences": [
       "entry:mem0"
     ],
@@ -37753,6 +39122,7 @@
       "prompt-pattern:ui-build"
     ],
     "preserve": [
+      "playbook:prompt-upgrade",
       "prompt-pattern:codex-implementation",
       "prompt-pattern:prompt-enhancement",
       "practice:prompt-engineering"
@@ -37824,6 +39194,7 @@
       "entry:zep"
     ],
     "primary": [
+      "playbook:prompt-upgrade",
       "prompt-pattern:ui-build",
       "prompt-pattern:research"
     ],
@@ -37834,6 +39205,8 @@
       "prompt-pattern:code-review"
     ],
     "privacy": [
+      "playbook:coding-agent-selection",
+      "prompt-pattern:provider-selection",
       "entry:zep"
     ],
     "privacy-first": [
@@ -37856,6 +39229,7 @@
       "entry:openai-codex-cli"
     ],
     "product": [
+      "playbook:prompt-upgrade",
       "practice:frontend",
       "entry:microsoft-autogen",
       "entry:ai-agenticshelf-mcp",
@@ -37867,6 +39241,7 @@
       "prompt-pattern:ui-build"
     ],
     "production": [
+      "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:codex-implementation",
       "practice:coding-agents",
       "entry:langgraph",
@@ -38114,6 +39489,9 @@
       "entry:openai-swarm"
     ],
     "prompt": [
+      "playbook:project-stack-review",
+      "playbook:prompt-upgrade",
+      "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:code-review",
       "prompt-pattern:codex-implementation",
       "prompt-pattern:bug-debug",
@@ -38122,6 +39500,7 @@
       "prompt-pattern:prompt-enhancement",
       "prompt-pattern:mcp-selection",
       "prompt-pattern:memory-policy",
+      "prompt-pattern:provider-selection",
       "prompt-pattern:research",
       "prompt-pattern:subagent-delegation",
       "practice:agent-tooling",
@@ -38145,6 +39524,7 @@
       "entry:dspy"
     ],
     "prompt.": [
+      "playbook:prompt-upgrade",
       "prompt-pattern:prompt-enhancement",
       "entry:ai-gossiper-shopify-admin-mcp"
     ],
@@ -38175,6 +39555,9 @@
     ],
     "proof": [
       "practice:payments"
+    ],
+    "propose": [
+      "prompt-pattern:agent-upgrade-plan"
     ],
     "proposing": [
       "practice:code-review",
@@ -38222,7 +39605,12 @@
     "provide": [
       "entry:llamaindex-agents"
     ],
+    "provider": [
+      "prompt-pattern:provider-selection",
+      "practice:model-and-provider-selection"
+    ],
     "providers": [
+      "prompt-pattern:provider-selection",
       "entry:pydantic-ai",
       "entry:continue-dev"
     ],
@@ -38334,6 +39722,7 @@
       "entry:ai-conveo-conveo"
     ],
     "quality": [
+      "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:eval-design",
       "prompt-pattern:prompt-enhancement",
       "practice:evals",
@@ -38400,6 +39789,7 @@
       "prompt-pattern:memory-policy"
     ],
     "rather": [
+      "practice:model-and-provider-selection",
       "entry:vercel-ai-sdk",
       "entry:letta",
       "entry:openhands"
@@ -38422,6 +39812,7 @@
       "entry:cline"
     ],
     "read-only": [
+      "playbook:mcp-adoption-review",
       "practice:agent-tooling",
       "practice:data",
       "entry:ai-fincontext-fincontext"
@@ -38433,6 +39824,7 @@
       "entry:ai-obaron-aeo"
     ],
     "reading": [
+      "playbook:project-stack-review",
       "entry:openai-codex-cli"
     ],
     "reads.": [
@@ -38476,19 +39868,25 @@
       "entry:stripe-agent-toolkit"
     ],
     "recommend": [
+      "playbook:mcp-adoption-review",
+      "playbook:project-stack-review",
       "prompt-pattern:mcp-selection",
       "entry:ai-djwizard-tvwizard"
     ],
     "recommendation": [
       "prompt-pattern:mcp-selection",
+      "prompt-pattern:provider-selection",
       "prompt-pattern:research",
       "practice:deployment"
     ],
     "recommendations": [
+      "prompt-pattern:agent-upgrade-plan",
       "practice:evals",
       "practice:subagents-and-multi-agent"
     ],
     "recommending": [
+      "playbook:coding-agent-selection",
+      "playbook:mcp-adoption-review",
       "practice:code-review",
       "practice:evals"
     ],
@@ -38550,6 +39948,7 @@
       "entry:ai-newzai-api-news-mcp"
     ],
     "register": [
+      "prompt-pattern:agent-upgrade-plan",
       "entry:ai-borealhost-mcp",
       "entry:ai-namewhisper-ens-tools"
     ],
@@ -38588,6 +39987,7 @@
       "entry:zep"
     ],
     "reliability": [
+      "playbook:prompt-upgrade",
       "entry:ai-arclan-registry"
     ],
     "reliable": [
@@ -38639,8 +40039,14 @@
       "practice:human-approval-and-durability"
     ],
     "repo": [
+      "playbook:coding-agent-selection",
+      "playbook:mcp-adoption-review",
+      "playbook:project-stack-review",
+      "playbook:prompt-upgrade",
       "prompt-pattern:codex-implementation",
-      "practice:coding-agents"
+      "prompt-pattern:provider-selection",
+      "practice:coding-agents",
+      "practice:model-and-provider-selection"
     ],
     "repo-specific": [
       "entry:codex-agents-md"
@@ -38649,6 +40055,9 @@
       "prompt-pattern:codex-implementation",
       "practice:coding-agents",
       "entry:ai-cueapi-mcp"
+    ],
+    "reporting": [
+      "playbook:prompt-upgrade"
     ],
     "reports": [
       "entry:ai-cookiy-cookiy",
@@ -38711,6 +40120,8 @@
       "entry:openai-swarm"
     ],
     "repository": [
+      "playbook:coding-agent-selection",
+      "playbook:project-stack-review",
       "prompt-pattern:codex-implementation",
       "prompt-pattern:mcp-selection",
       "entry:model-context-protocol",
@@ -38864,9 +40275,14 @@
       "entry:github-copilot-coding-agent"
     ],
     "require": [
+      "playbook:coding-agent-selection",
+      "playbook:prompt-upgrade",
       "practice:coding-agents",
       "practice:human-approval-and-durability",
       "practice:payments"
+    ],
+    "required": [
+      "playbook:project-stack-review"
     ],
     "required.": [
       "entry:model-context-protocol",
@@ -38879,10 +40295,15 @@
       "entry:claude-code-subagents"
     ],
     "requirements": [
+      "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:prompt-enhancement",
       "entry:ai-autorfp-mcp"
     ],
+    "requirements.": [
+      "playbook:prompt-upgrade"
+    ],
     "requires": [
+      "prompt-pattern:provider-selection",
       "entry:arize-phoenix"
     ],
     "requires-secret": [
@@ -38897,6 +40318,9 @@
       "practice:search"
     ],
     "research": [
+      "playbook:prompt-upgrade",
+      "prompt-pattern:agent-upgrade-plan",
+      "prompt-pattern:provider-selection",
       "prompt-pattern:research",
       "entry:crewai",
       "entry:microsoft-autogen",
@@ -38926,6 +40350,9 @@
     "resources": [
       "entry:model-context-protocol",
       "practice:mcp-server-selection"
+    ],
+    "resources.": [
+      "playbook:mcp-adoption-review"
     ],
     "respond": [
       "entry:ai-dynsoft-sac"
@@ -38986,6 +40413,7 @@
       "entry:ragas"
     ],
     "retrieve": [
+      "playbook:project-stack-review",
       "entry:ai-com-mcp-linkedin",
       "entry:graphiti",
       "entry:zep"
@@ -39000,6 +40428,8 @@
       "practice:backend"
     ],
     "return": [
+      "playbook:project-stack-review",
+      "playbook:prompt-upgrade",
       "practice:backend",
       "entry:pydantic-ai"
     ],
@@ -39013,6 +40443,7 @@
       "entry:ai-hostprofit-mcp"
     ],
     "reversibility.": [
+      "prompt-pattern:provider-selection",
       "prompt-pattern:research"
     ],
     "review.": [
@@ -39021,6 +40452,7 @@
       "entry:github-copilot-coding-agent"
     ],
     "reviewable": [
+      "prompt-pattern:agent-upgrade-plan",
       "practice:agent-tooling",
       "practice:coding-agents",
       "practice:payments",
@@ -39244,6 +40676,8 @@
       "prompt-pattern:bug-debug"
     ],
     "risk": [
+      "playbook:project-stack-review",
+      "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:codex-implementation",
       "prompt-pattern:mcp-selection",
       "practice:search",
@@ -39253,6 +40687,7 @@
       "prompt-pattern:code-review",
       "prompt-pattern:codex-implementation",
       "prompt-pattern:prompt-enhancement",
+      "prompt-pattern:provider-selection",
       "entry:model-context-protocol",
       "prompt-pattern:research",
       "entry:google-agent2agent-protocol",
@@ -39305,10 +40740,15 @@
       "entry:supabase-mcp",
       "entry:zep"
     ],
+    "risks": [
+      "playbook:mcp-adoption-review",
+      "prompt-pattern:agent-upgrade-plan"
+    ],
     "risks.": [
       "prompt-pattern:code-review"
     ],
     "risky": [
+      "playbook:project-stack-review",
       "practice:code-review",
       "practice:human-approval-and-durability",
       "entry:cline"
@@ -39340,6 +40780,7 @@
       "entry:crewai"
     ],
     "rollback": [
+      "prompt-pattern:agent-upgrade-plan",
       "practice:deployment",
       "practice:human-approval-and-durability"
     ],
@@ -39350,6 +40791,7 @@
       "entry:ai-offerhopper-mcp-shopping-optimizer"
     ],
     "rough": [
+      "playbook:prompt-upgrade",
       "prompt-pattern:prompt-enhancement",
       "practice:prompt-engineering",
       "entry:openai-prompt-engineering-guide"
@@ -39364,6 +40806,7 @@
       "entry:openai-swarm"
     ],
     "rubric": [
+      "playbook:project-stack-review",
       "practice:prompt-engineering"
     ],
     "rules": [
@@ -39378,6 +40821,7 @@
       "prompt-pattern:codex-implementation",
       "prompt-pattern:bug-debug",
       "practice:coding-agents",
+      "practice:model-and-provider-selection",
       "entry:ai-mcpanalytics-analytics",
       "entry:ai-nexustoken-nexustoken-sdk",
       "entry:ac-inference-sh-mcp",
@@ -39397,7 +40841,9 @@
       "entry:langsmith"
     ],
     "runtime": [
+      "playbook:coding-agent-selection",
       "practice:backend",
+      "practice:model-and-provider-selection",
       "entry:vercel-ai-sdk"
     ],
     "runtime.": [
@@ -39412,7 +40858,15 @@
     "sac": [
       "entry:ai-dynsoft-sac"
     ],
+    "safe": [
+      "playbook:project-stack-review"
+    ],
+    "safer": [
+      "playbook:mcp-adoption-review",
+      "playbook:project-stack-review"
+    ],
     "safety": [
+      "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:memory-policy",
       "entry:codex-agents-md",
       "entry:inspect-ai",
@@ -39486,6 +40940,7 @@
       "entry:ai-openarx-openarx"
     ],
     "scope": [
+      "playbook:prompt-upgrade",
       "prompt-pattern:codex-implementation",
       "entry:codex-agents-md",
       "practice:coding-agents",
@@ -39509,6 +40964,7 @@
       "practice:data"
     ],
     "score": [
+      "playbook:project-stack-review",
       "practice:evals",
       "entry:ai-nefesh-human-state",
       "entry:ai-obaron-aeo",
@@ -39549,6 +41005,7 @@
       "entry:browserbase-mcp"
     ],
     "scripts": [
+      "prompt-pattern:agent-upgrade-plan",
       "entry:ai-boolsai-scan"
     ],
     "scrub": [
@@ -39725,6 +41182,7 @@
       "entry:openai-swarm"
     ],
     "search": [
+      "playbook:project-stack-review",
       "practice:search",
       "entry:ai-com-mcp-skills-search",
       "entry:ai-agentic-news-mcp",
@@ -39796,6 +41254,8 @@
       "entry:stripe-agent-toolkit"
     ],
     "secrets": [
+      "playbook:project-stack-review",
+      "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:codex-implementation",
       "prompt-pattern:memory-policy",
       "practice:code-review",
@@ -39808,6 +41268,7 @@
       "practice:security"
     ],
     "sections": [
+      "playbook:project-stack-review",
       "prompt-pattern:prompt-enhancement"
     ],
     "secure": [
@@ -39834,8 +41295,11 @@
       "practice:mcp-server-selection"
     ],
     "selection": [
+      "playbook:coding-agent-selection",
       "prompt-pattern:mcp-selection",
-      "practice:mcp-server-selection"
+      "prompt-pattern:provider-selection",
+      "practice:mcp-server-selection",
+      "practice:model-and-provider-selection"
     ],
     "self-hosting": [
       "entry:ai-calendarmcp-server"
@@ -39859,6 +41323,7 @@
       "prompt-pattern:code-review"
     ],
     "sensitive": [
+      "playbook:mcp-adoption-review",
       "prompt-pattern:mcp-selection",
       "prompt-pattern:memory-policy"
     ],
@@ -39909,6 +41374,8 @@
       "entry:sentry-mcp"
     ],
     "separate": [
+      "playbook:project-stack-review",
+      "playbook:prompt-upgrade",
       "practice:code-review",
       "practice:payments",
       "entry:anthropic-multi-agent-research-system",
@@ -39921,6 +41388,7 @@
       "entry:letta"
     ],
     "server": [
+      "playbook:mcp-adoption-review",
       "practice:backend",
       "practice:mcp-server-selection",
       "entry:ai-abmeter-abmeter",
@@ -40086,6 +41554,7 @@
       "entry:ai-com-mcp-strava"
     ],
     "servers": [
+      "playbook:mcp-adoption-review",
       "prompt-pattern:mcp-selection",
       "entry:model-context-protocol",
       "practice:agent-tooling",
@@ -40131,6 +41600,7 @@
       "entry:ai-adadvisor-mcp-server"
     ],
     "setup": [
+      "playbook:mcp-adoption-review",
       "entry:ac-tandem-docs-mcp"
     ],
     "setup.": [
@@ -40140,6 +41610,8 @@
       "prompt-pattern:code-review"
     ],
     "shape": [
+      "playbook:coding-agent-selection",
+      "practice:model-and-provider-selection",
       "entry:openai-prompt-engineering-guide"
     ],
     "share": [
@@ -40155,6 +41627,7 @@
       "entry:ai-agenticshelf-mcp"
     ],
     "shell": [
+      "playbook:coding-agent-selection",
       "practice:coding-agents",
       "entry:claude-code-subagents",
       "entry:openai-codex-cli",
@@ -40163,6 +41636,9 @@
       "entry:cline",
       "entry:cursor-agent",
       "entry:openhands"
+    ],
+    "shell/filesystem": [
+      "practice:model-and-provider-selection"
     ],
     "ship": [
       "entry:ai-borealhost-mcp",
@@ -40186,6 +41662,7 @@
       "entry:ai-hostprofit-mcp"
     ],
     "should": [
+      "playbook:prompt-upgrade",
       "prompt-pattern:bug-debug",
       "prompt-pattern:prompt-enhancement",
       "prompt-pattern:memory-policy",
@@ -40282,9 +41759,13 @@
       "entry:ai-gossiper-shopify-admin-mcp"
     ],
     "small": [
+      "playbook:coding-agent-selection",
+      "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:eval-design",
+      "prompt-pattern:provider-selection",
       "practice:coding-agents",
-      "practice:evals"
+      "practice:evals",
+      "practice:model-and-provider-selection"
     ],
     "small-to-medium": [
       "entry:aider"
@@ -40335,6 +41816,7 @@
       "entry:ai-ludo-game-assets"
     ],
     "source-backed": [
+      "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:research",
       "practice:mcp-server-selection",
       "entry:ai-exa-exa",
@@ -40374,6 +41856,7 @@
       "prompt-pattern:bug-debug"
     ],
     "speed": [
+      "prompt-pattern:agent-upgrade-plan",
       "practice:search"
     ],
     "spend": [
@@ -40418,12 +41901,15 @@
       "entry:claude-code-memory"
     ],
     "stack": [
+      "playbook:project-stack-review",
+      "prompt-pattern:provider-selection",
       "practice:code-review",
       "practice:evals",
       "entry:ai-example4-xmp4",
       "entry:ai-boolsai-signals"
     ],
     "stack.": [
+      "playbook:project-stack-review",
       "prompt-pattern:mcp-selection"
     ],
     "stacks": [
@@ -40446,10 +41932,15 @@
     "standardized": [
       "entry:model-context-protocol"
     ],
+    "standardizing": [
+      "practice:model-and-provider-selection"
+    ],
     "start": [
+      "playbook:coding-agent-selection",
       "practice:code-review",
       "practice:data",
       "practice:frontend",
+      "practice:model-and-provider-selection",
       "entry:anthropic-building-effective-agents"
     ],
     "startup": [
@@ -40499,6 +41990,9 @@
     ],
     "steer": [
       "entry:codex-agents-md"
+    ],
+    "steps": [
+      "prompt-pattern:agent-upgrade-plan"
     ],
     "steps.": [
       "practice:prompt-engineering"
@@ -40569,6 +42063,7 @@
       "entry:anthropic-multi-agent-research-system"
     ],
     "structure": [
+      "playbook:prompt-upgrade",
       "practice:prompt-engineering"
     ],
     "structured": [
@@ -40651,7 +42146,10 @@
       "entry:ai-meacheal-mrc-data"
     ],
     "support": [
+      "playbook:coding-agent-selection",
+      "prompt-pattern:provider-selection",
       "practice:human-approval-and-durability",
+      "practice:model-and-provider-selection",
       "entry:stripe-agent-toolkit"
     ],
     "support.": [
@@ -40697,6 +42195,9 @@
     "swe-bench": [
       "entry:swe-agent"
     ],
+    "switch.": [
+      "playbook:coding-agent-selection"
+    ],
     "swot": [
       "entry:ai-jeda-jeda-ai"
     ],
@@ -40730,6 +42231,7 @@
       "entry:zep"
     ],
     "systems.": [
+      "playbook:project-stack-review",
       "prompt-pattern:mcp-selection",
       "entry:google-agent2agent-protocol",
       "practice:observability-and-tracing",
@@ -40908,12 +42410,15 @@
       "entry:ac-tandem-docs-mcp"
     ],
     "task": [
+      "playbook:coding-agent-selection",
       "prompt-pattern:codex-implementation",
       "prompt-pattern:prompt-enhancement",
       "prompt-pattern:memory-policy",
+      "prompt-pattern:provider-selection",
       "prompt-pattern:subagent-delegation",
       "practice:context-engineering",
       "entry:crewai",
+      "practice:model-and-provider-selection",
       "practice:payments",
       "entry:anthropic-multi-agent-research-system"
     ],
@@ -40951,6 +42456,9 @@
     ],
     "team-rules": [
       "entry:continue-dev"
+    ],
+    "team-wide": [
+      "playbook:coding-agent-selection"
     ],
     "teammates": [
       "entry:ai-openmandate-mcp"
@@ -41080,6 +42588,7 @@
     ],
     "than": [
       "entry:crewai",
+      "practice:model-and-provider-selection",
       "entry:semantic-kernel",
       "entry:vercel-ai-sdk",
       "entry:letta",
@@ -41089,6 +42598,7 @@
       "prompt-pattern:codex-implementation"
     ],
     "then": [
+      "playbook:mcp-adoption-review",
       "prompt-pattern:bug-debug",
       "practice:frontend",
       "practice:mcp-server-selection"
@@ -41110,6 +42620,7 @@
       "prompt-pattern:eval-design"
     ],
     "through": [
+      "prompt-pattern:agent-upgrade-plan",
       "entry:model-context-protocol",
       "entry:microsoft-autogen",
       "entry:openai-prompt-optimizer",
@@ -41149,6 +42660,8 @@
       "entry:ai-mino-web-agent"
     ],
     "to": [
+      "playbook:project-stack-review",
+      "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:codex-implementation",
       "prompt-pattern:bug-debug",
       "prompt-pattern:eval-design",
@@ -41192,6 +42705,9 @@
       "entry:github-copilot-coding-agent",
       "entry:openai-swarm"
     ],
+    "today": [
+      "prompt-pattern:agent-upgrade-plan"
+    ],
     "together.": [
       "entry:langfuse"
     ],
@@ -41205,7 +42721,9 @@
       "entry:ai-nocturnus-logic-server"
     ],
     "tool": [
+      "playbook:mcp-adoption-review",
       "prompt-pattern:mcp-selection",
+      "prompt-pattern:provider-selection",
       "entry:model-context-protocol",
       "practice:agent-tooling",
       "practice:backend",
@@ -41223,6 +42741,7 @@
       "practice:observability-and-tracing"
     ],
     "tool-calling": [
+      "practice:model-and-provider-selection",
       "entry:vercel-ai-sdk"
     ],
     "tool-permissions": [
@@ -41239,6 +42758,9 @@
       "entry:anthropic-building-effective-agents",
       "entry:llamaindex-agents"
     ],
+    "tool/mcp": [
+      "prompt-pattern:provider-selection"
+    ],
     "tooling": [
       "practice:agent-tooling"
     ],
@@ -41247,7 +42769,12 @@
       "entry:stripe-agent-toolkit"
     ],
     "tools": [
+      "playbook:coding-agent-selection",
+      "playbook:mcp-adoption-review",
+      "playbook:project-stack-review",
+      "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:mcp-selection",
+      "prompt-pattern:provider-selection",
       "entry:model-context-protocol",
       "prompt-pattern:research",
       "practice:agent-tooling",
@@ -41416,6 +42943,7 @@
       "entry:cline"
     ],
     "tools.": [
+      "playbook:mcp-adoption-review",
       "practice:mcp-server-selection",
       "entry:ai-boolsai-directory",
       "entry:ai-meetsquad-squad",
@@ -41426,6 +42954,7 @@
       "entry:ai-openmandate-mcp"
     ],
     "top": [
+      "prompt-pattern:provider-selection",
       "prompt-pattern:research"
     ],
     "touch": [
@@ -41448,6 +42977,8 @@
       "entry:langsmith"
     ],
     "traces": [
+      "playbook:coding-agent-selection",
+      "prompt-pattern:provider-selection",
       "practice:observability-and-tracing",
       "entry:arize-phoenix",
       "entry:langfuse",
@@ -41455,6 +42986,7 @@
       "entry:langsmith"
     ],
     "tracing": [
+      "practice:model-and-provider-selection",
       "practice:observability-and-tracing",
       "entry:openai-agents-sdk",
       "entry:arize-phoenix",
@@ -41478,6 +43010,8 @@
       "entry:ai-boolsai-signals"
     ],
     "tradeoffs": [
+      "playbook:coding-agent-selection",
+      "prompt-pattern:provider-selection",
       "prompt-pattern:research"
     ],
     "trading": [
@@ -41567,6 +43101,7 @@
       "entry:ai-clarid-compliance"
     ],
     "ui": [
+      "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:ui-build",
       "practice:frontend",
       "practice:search",
@@ -41613,6 +43148,9 @@
     ],
     "unless": [
       "prompt-pattern:memory-policy"
+    ],
+    "unlock": [
+      "playbook:mcp-adoption-review"
     ],
     "unrelated": [
       "prompt-pattern:codex-implementation"
@@ -41830,8 +43368,13 @@
       "entry:mem0"
     ],
     "upgrade": [
+      "playbook:coding-agent-selection",
+      "playbook:project-stack-review",
+      "playbook:prompt-upgrade",
+      "prompt-pattern:agent-upgrade-plan",
       "practice:code-review",
       "practice:deployment",
+      "practice:model-and-provider-selection",
       "practice:prompt-engineering"
     ],
     "upgrades.": [
@@ -41864,6 +43407,7 @@
       "entry:ai-lattiq-x402-trading-signals"
     ],
     "used": [
+      "prompt-pattern:agent-upgrade-plan",
       "entry:ai-example4-xmp4"
     ],
     "used.": [
@@ -41879,6 +43423,9 @@
       "prompt-pattern:subagent-delegation"
     ],
     "user": [
+      "playbook:mcp-adoption-review",
+      "playbook:project-stack-review",
+      "playbook:prompt-upgrade",
       "prompt-pattern:codex-implementation",
       "prompt-pattern:ui-build",
       "prompt-pattern:prompt-enhancement",
@@ -41949,6 +43496,7 @@
       "entry:ai-namewhisper-ens-tools"
     ],
     "variables": [
+      "playbook:mcp-adoption-review",
       "practice:agent-tooling"
     ],
     "vector": [
@@ -41960,6 +43508,7 @@
       "entry:ai-boolsai-grep"
     ],
     "vendor-maintained": [
+      "playbook:mcp-adoption-review",
       "prompt-pattern:mcp-selection",
       "practice:mcp-server-selection"
     ],
@@ -41977,10 +43526,16 @@
       "entry:vercel-ai-sdk"
     ],
     "verification": [
+      "playbook:coding-agent-selection",
+      "playbook:mcp-adoption-review",
+      "playbook:project-stack-review",
+      "playbook:prompt-upgrade",
+      "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:codex-implementation",
       "prompt-pattern:bug-debug",
       "prompt-pattern:ui-build",
       "prompt-pattern:prompt-enhancement",
+      "prompt-pattern:provider-selection",
       "prompt-pattern:subagent-delegation",
       "practice:coding-agents",
       "practice:evals",
@@ -41991,6 +43546,8 @@
       "entry:stripe-agent-toolkit"
     ],
     "verification.": [
+      "playbook:prompt-upgrade",
+      "prompt-pattern:agent-upgrade-plan",
       "practice:payments"
     ],
     "verified": [
@@ -42199,6 +43756,7 @@
       "entry:openai-swarm"
     ],
     "verify": [
+      "playbook:mcp-adoption-review",
       "prompt-pattern:codex-implementation",
       "prompt-pattern:bug-debug",
       "prompt-pattern:ui-build",
@@ -42271,6 +43829,9 @@
     "vnem": [
       "prompt-pattern:prompt-enhancement"
     ],
+    "voice.": [
+      "playbook:prompt-upgrade"
+    ],
     "voices.": [
       "entry:ai-ludo-game-assets"
     ],
@@ -42281,7 +43842,10 @@
       "entry:ai-com-mcp-contabo"
     ],
     "vs": [
+      "playbook:coding-agent-selection",
+      "prompt-pattern:provider-selection",
       "entry:model-context-protocol",
+      "practice:model-and-provider-selection",
       "entry:ai-abmeter-abmeter",
       "entry:ac-tandem-docs-mcp",
       "entry:agency-lona-trading",
@@ -42475,6 +44039,9 @@
     "was": [
       "practice:payments"
     ],
+    "weakening": [
+      "prompt-pattern:agent-upgrade-plan"
+    ],
     "web": [
       "entry:vercel-ai-sdk",
       "entry:ai-com-mcp-skills-search",
@@ -42530,10 +44097,13 @@
       "entry:browserbase-mcp"
     ],
     "what": [
+      "playbook:prompt-upgrade",
+      "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:bug-debug",
       "prompt-pattern:prompt-enhancement",
       "prompt-pattern:mcp-selection",
       "prompt-pattern:memory-policy",
+      "prompt-pattern:provider-selection",
       "practice:data",
       "practice:evals",
       "practice:payments",
@@ -42557,6 +44127,7 @@
       "entry:supabase-mcp"
     ],
     "whether": [
+      "playbook:mcp-adoption-review",
       "prompt-pattern:subagent-delegation",
       "practice:security",
       "entry:anthropic-building-effective-agents",
@@ -42735,12 +44306,15 @@
       "entry:ai-moxt-mcp-workspace"
     ],
     "without": [
+      "playbook:mcp-adoption-review",
+      "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:bug-debug",
       "practice:human-approval-and-durability",
       "practice:prompt-engineering",
       "practice:security"
     ],
     "work": [
+      "playbook:coding-agent-selection",
       "prompt-pattern:subagent-delegation",
       "entry:codex-agents-md",
       "entry:crewai",
@@ -42776,11 +44350,15 @@
       "entry:vercel-ai-sdk"
     ],
     "workflow": [
+      "playbook:coding-agent-selection",
+      "playbook:mcp-adoption-review",
+      "prompt-pattern:agent-upgrade-plan",
       "prompt-pattern:codex-implementation",
       "prompt-pattern:bug-debug",
       "prompt-pattern:eval-design",
       "prompt-pattern:ui-build",
       "prompt-pattern:mcp-selection",
+      "prompt-pattern:provider-selection",
       "entry:model-context-protocol",
       "practice:agent-tooling",
       "entry:google-agent2agent-protocol",
@@ -42788,6 +44366,7 @@
       "practice:frontend",
       "practice:human-approval-and-durability",
       "practice:mcp-server-selection",
+      "practice:model-and-provider-selection",
       "entry:anthropic-building-effective-agents",
       "entry:ai-kubit-mcp-server",
       "entry:openai-prompt-engineering-guide",
@@ -42801,8 +44380,10 @@
     "workflow.": [
       "prompt-pattern:eval-design",
       "prompt-pattern:mcp-selection",
+      "prompt-pattern:provider-selection",
       "practice:agent-tooling",
       "practice:mcp-server-selection",
+      "practice:model-and-provider-selection",
       "entry:anthropic-claude-code",
       "entry:cline",
       "entry:cursor-agent"
@@ -43041,6 +44622,7 @@
       "entry:zep"
     ],
     "would": [
+      "playbook:project-stack-review",
       "prompt-pattern:prompt-enhancement"
     ],
     "wraps": [
@@ -43053,6 +44635,7 @@
       "entry:ai-haymon-dbmcp"
     ],
     "writes": [
+      "prompt-pattern:agent-upgrade-plan",
       "practice:coding-agents",
       "practice:context-engineering",
       "practice:human-approval-and-durability"

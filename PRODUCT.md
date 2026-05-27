@@ -13,6 +13,7 @@ Give coding agents better perception:
 - what permissions and risks a tool carries
 - when a tool is a good fit
 - when a tool is stale, risky, or not worth installing
+- which AI agent, model provider, or workflow is the best fit for the user's actual repo and task
 - how to write clearer prompts and safer implementation instructions
 
 The user-facing promise is simple: **sharper stack reviews, better tool choices, and cleaner diffs before an agent edits a repo.**
@@ -22,7 +23,7 @@ The user-facing promise is simple: **sharper stack reviews, better tool choices,
 vnem is currently an open-core knowledge system with three surfaces:
 
 - **Registry:** `registry/entries/*` stores source-backed metadata for agentic tools, MCP servers, coding agents, evals, memory systems, observability tools, and workflows.
-- **Install pack:** `public/install.tgz` and `public/install/*` provide the read-only `.vnem` files that an agent can install into another project.
+- **Install pack:** `public/install.tgz` and `public/install/*` provide the read-only `.vnem` files that an agent can install into another project, including decision rubrics, playbooks, best-practice notes, and prompt patterns.
 - **Generated indexes:** `public/api/index.json`, `llms.txt`, and `llms-full.txt` expose compact LLM-readable and API-readable views of the registry.
 
 The public landing page should explain those surfaces. This repository should keep producing the trustworthy data behind them.
@@ -38,6 +39,7 @@ The public landing page should explain those surfaces. This repository should ke
 
 - Source-backed registry entries for agentic tools and workflows.
 - Conservative trust tiers, freshness notes, permission metadata, and risk flags.
+- Decision rubrics and playbooks for comparing Codex, Claude Code, Gemini/ADK, MCP servers, model providers, and agent workflows.
 - Prompt patterns and review protocols that improve agent behavior.
 - Discovery automation that opens reviewable proposals instead of silently changing trusted data.
 - Public-site copy that makes installation, safety, and value obvious.
