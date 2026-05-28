@@ -11,7 +11,7 @@
   Cache-Control: public, max-age=300
 
 /i
-  Content-Type: application/gzip
+  Content-Type: text/plain; charset=utf-8
   Cache-Control: public, max-age=300
 
 /api/*
