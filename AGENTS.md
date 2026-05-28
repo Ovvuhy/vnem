@@ -62,3 +62,4 @@ When reviewing or changing this repo, report:
 - whether generated artifacts were refreshed
 - what validation ran
 - any remaining uncertainty around source trust, licenses, or network checks
+- a prominent `UPDATES` section after completed improvements, listing exactly what changed, where it landed, validation status, and any remaining limitation

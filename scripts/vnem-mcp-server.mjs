@@ -61,6 +61,7 @@ const documents = Array.isArray(searchIndex.documents) ? searchIndex.documents :
 const sourceRadar = Array.isArray(searchIndex.source_radar) ? searchIndex.source_radar : [];
 const entriesBySlug = new Map(entries.map((entry) => [entry.slug, entry]));
 const documentsById = new Map(documents.map((document) => [document.id, document]));
+const sourceRadarById = new Map(sourceRadar.map((source) => [source.id, source]));
 
 const server = new McpServer(
   {
@@ -80,6 +81,102 @@ registerTools(server);
 await server.connect(new StdioServerTransport());
 
 function registerTools(mcpServer) {
+  mcpServer.registerTool(
+    "vnem_status",
+    {
+      title: "vnem Status",
+      description:
+        "Explain what this vnem MCP server loaded, which read-only surfaces are available, and how fresh the generated data is.",
+      inputSchema: {},
+      annotations: READ_ONLY
+    },
+    async () => {
+      const status = buildStatus();
+      return toolResult(formatStatus(status), status);
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_overview",
+    {
+      title: "vnem Overview",
+      description:
+        "Explain vnem's usable product surfaces: registry, install pack, MCP server, source radar, task rubrics, Hermes, dashboard, and safety model.",
+      inputSchema: {
+        audience: z
+          .enum(["maintainer", "agent", "newcomer"])
+          .default("newcomer")
+          .describe("Who the explanation is for.")
+      },
+      annotations: READ_ONLY
+    },
+    async ({ audience }) => {
+      const overview = buildOverview(audience);
+      return toolResult(formatOverview(overview), overview);
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_route_intent",
+    {
+      title: "Route vnem Intent",
+      description:
+        "Resolve a task or phrase into vnem's intent route, read-first guidance, comparison options, choice criteria, rubrics, and report contract.",
+      inputSchema: {
+        intent: z.string().min(1).describe("Task, decision, or phrase to route."),
+        include_matches: z
+          .boolean()
+          .default(true)
+          .describe("Include the resolved read-first documents when possible.")
+      },
+      annotations: READ_ONLY
+    },
+    async ({ intent, include_matches: includeMatches }) => {
+      const resolvedIntent = resolveIntent(intent);
+      const route = resolvedIntent?.route || searchIndex.intent_routes?.[normalize(intent)] || null;
+      const rubrics = selectTaskRubrics(intent, resolvedIntent, inferTaskMode(intent));
+      const readFirst = includeMatches ? relevantPracticeDocs(intent, resolvedIntent, 8) : [];
+      const result = {
+        intent,
+        resolved_intent: resolvedIntent,
+        route,
+        mode: inferTaskMode(intent),
+        rubrics: rubrics.map((rubric) => ({
+          id: rubric.id,
+          title: rubric.title,
+          summary: rubric.summary,
+          quality_bar: rubric.quality_bar || [],
+          approval_gates: rubric.approval_gates || [],
+          verification: rubric.verification || []
+        })),
+        read_first: readFirst,
+        safety:
+          "Read-only routing only. Use this to choose context and verification, not to install tools or mutate a repo."
+      };
+      return toolResult(formatRouteIntent(result), result);
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_get_source",
+    {
+      title: "Get vnem Source Radar Entry",
+      description:
+        "Fetch one source-radar entry by id or title, including when to use it, what to monitor, risk checks, and source URLs.",
+      inputSchema: {
+        id: z.string().min(1).describe("Source-radar id or exact title.")
+      },
+      annotations: READ_ONLY
+    },
+    async ({ id }) => {
+      const source = findSource(id);
+      if (!source) {
+        return errorResult(`No vnem source-radar entry found for "${id}". Try vnem_sources first.`);
+      }
+      return toolResult(formatSourceDetail(source), source);
+    }
+  );
+
   mcpServer.registerTool(
     "vnem_search",
     {
@@ -386,6 +483,51 @@ function registerResources(mcpServer) {
     "Latest generated discovery digest.",
     "text/markdown"
   );
+  registerFileResource(
+    mcpServer,
+    "vnem-readme",
+    "vnem://repo/readme",
+    firstExisting(["README.md"]),
+    "vnem README",
+    "Repository overview, install instructions, MCP usage, safety model, and local development commands.",
+    "text/markdown"
+  );
+  registerFileResource(
+    mcpServer,
+    "vnem-product",
+    "vnem://repo/product",
+    firstExisting(["PRODUCT.md"]),
+    "vnem Product Direction",
+    "Product direction, public-site clarity goals, commercial boundaries, and non-regression bar.",
+    "text/markdown"
+  );
+  registerFileResource(
+    mcpServer,
+    "vnem-security-roadmap",
+    "vnem://repo/security-roadmap",
+    firstExisting(["SECURITY-ROADMAP.md"]),
+    "vnem Security Roadmap",
+    "Advisory-first roadmap for zero-trust gateway, tool pinning, package firewall, AST indexing, and runtime-security ideas.",
+    "text/markdown"
+  );
+  registerFileResource(
+    mcpServer,
+    "vnem-hermes",
+    "vnem://repo/hermes",
+    firstExisting(["HERMES.md"]),
+    "vnem Hermes",
+    "Discovery operating contract for recurring ecosystem scans and daily synthesis.",
+    "text/markdown"
+  );
+  registerFileResource(
+    mcpServer,
+    "vnem-contributing",
+    "vnem://repo/contributing",
+    firstExisting(["CONTRIBUTING.md"]),
+    "vnem Contributing",
+    "Contribution requirements, branch workflow, trust tiers, and automation safety rules.",
+    "text/markdown"
+  );
 
   if (entries.length > 0) {
     mcpServer.registerResource(
@@ -594,6 +736,181 @@ function sourceRadarResults(intent, category, limit) {
     .filter((source) => source.rank_score > 0)
     .sort((a, b) => b.rank_score - a.rank_score || String(a.title).localeCompare(String(b.title)))
     .slice(0, limit);
+}
+
+function buildStatus() {
+  const entryCountsByType = countBy(entries, (entry) => entry.type || "unknown");
+  const entryCountsByTrustTier = countBy(entries, (entry) => entry.trust_tier || "unknown");
+  const documentCountsByKind = countBy(documents, (document) => document.kind || "unknown");
+
+  return {
+    name: "vnem",
+    version: packageJson?.version || "0.1.0",
+    root_dir: rootDir,
+    data_paths: {
+      search_index: searchIndexPath,
+      api_index: apiIndexPath || null,
+      install_source_radar: firstExisting(["public/install/source-radar.json", ".vnem/source-radar.json"]),
+      daily_digest: firstExisting(["discovery/daily-digest.md"])
+    },
+    generated_at: searchIndex.generated_at || apiIndex?.generated_at || null,
+    release_version: searchIndex.release_version || apiIndex?.release_version || packageJson?.version || null,
+    release_date: searchIndex.release_date || apiIndex?.release_date || null,
+    counts: {
+      registry_entries: entries.length,
+      search_documents: documents.length,
+      source_radar_entries: sourceRadar.length,
+      intent_aliases: Object.keys(searchIndex.intent_aliases || {}).length,
+      intent_routes: Object.keys(searchIndex.intent_routes || {}).length,
+      decision_playbooks: searchIndex.decision_playbooks?.length || 0,
+      task_rubrics: searchIndex.task_rubrics?.length || 0,
+      prompt_patterns: searchIndex.prompt_patterns?.length || 0,
+      by_type: entryCountsByType,
+      by_trust_tier: entryCountsByTrustTier,
+      by_document_kind: documentCountsByKind
+    },
+    mcp: {
+      tools: [
+        "vnem_status",
+        "vnem_overview",
+        "vnem_route_intent",
+        "vnem_get_source",
+        "vnem_search",
+        "vnem_recommend",
+        "vnem_get_entry",
+        "vnem_compare",
+        "vnem_best_practices",
+        "vnem_sources"
+      ],
+      resources: [
+        "vnem://install/search-index",
+        "vnem://install/source-radar",
+        "vnem://api/index",
+        "vnem://install/operating-protocol",
+        "vnem://install/task-rubrics",
+        "vnem://install/design-architecture",
+        "vnem://install/visual-qa-protocol",
+        "vnem://install/best-practices",
+        "vnem://install/agent-workspace",
+        "vnem://install/prompt-engineering",
+        "vnem://install/prompt-patterns",
+        "vnem://discovery/daily-digest",
+        "vnem://repo/readme",
+        "vnem://repo/product",
+        "vnem://repo/security-roadmap",
+        "vnem://repo/hermes",
+        "vnem://repo/contributing",
+        "vnem://entries/{slug}"
+      ],
+      prompts: ["vnem_research_task"],
+      annotations: READ_ONLY
+    },
+    safety: {
+      mode: "read-only stdio MCP server",
+      installs_packages: false,
+      edits_files: false,
+      calls_upstream_services: false,
+      collects_secrets: false,
+      starts_daemons: false,
+      note:
+        "MCP tool annotations are hints for clients. Vnem still keeps tools deterministic and read-only so the server itself does not mutate user systems."
+    }
+  };
+}
+
+function buildOverview(audience) {
+  const status = buildStatus();
+  const surfaces = [
+    {
+      name: "Registry",
+      paths: ["registry/entries/{slug}/entry.yaml", "registry/entries/{slug}/profile.md"],
+      purpose:
+        "Source-backed metadata for MCP servers, coding agents, frameworks, evals, memory systems, workflows, and safety tools.",
+      usable_via: ["public/api/index.json", "vnem_search", "vnem_get_entry", "vnem_compare"]
+    },
+    {
+      name: "Install pack",
+      paths: ["public/install.tgz", "public/install/*", ".vnem/*"],
+      purpose:
+        "Read-only project guidance files that make another repo vnem-aware through AGENTS.md and .vnem files.",
+      usable_via: ["npm run install:project -- <repo>", "npm run doctor -- <repo>"]
+    },
+    {
+      name: "MCP server",
+      paths: ["scripts/vnem-mcp-server.mjs"],
+      purpose:
+        "Opt-in stdio MCP surface exposing registry search, recommendations, intent routing, source radar, resources, and task contracts.",
+      usable_via: ["npm run mcp", "vnem_status", "vnem_overview", "vnem_recommend"]
+    },
+    {
+      name: "Source radar",
+      paths: ["public/install/source-radar.json", ".vnem/source-radar.json"],
+      purpose:
+        "Map of official/high-signal upstream sources agents should consult before broad web research or tool recommendations.",
+      usable_via: ["vnem_sources", "vnem_get_source", "vnem://install/source-radar"]
+    },
+    {
+      name: "Operating protocol and rubrics",
+      paths: ["public/install/operating-protocol.md", "public/install/task-rubrics.json"],
+      purpose:
+        "Compact task-contract layer for sensing the repo, routing work, approval gates, verification, and final reporting.",
+      usable_via: ["vnem_route_intent", "vnem_recommend", "vnem://install/task-rubrics"]
+    },
+    {
+      name: "Visual/design guidance",
+      paths: ["public/install/design-architecture.md", "public/install/visual-qa-protocol.md"],
+      purpose:
+        "Source-backed design and visual QA guidance for UI, games, dashboards, animation, sound, and brand-facing surfaces.",
+      usable_via: ["vnem_recommend for visual tasks", "vnem://install/design-architecture", "vnem://install/visual-qa-protocol"]
+    },
+    {
+      name: "Hermes discovery",
+      paths: ["HERMES.md", "scripts/hermes-agent.mjs", "discovery/daily-digest.md", "discovery/candidates/*"],
+      purpose:
+        "Reviewable ecosystem discovery workflow for new MCP servers, agents, memory tools, evals, and infrastructure signals.",
+      usable_via: ["npm run hermes:dry-run", "npm run digest", "vnem://discovery/daily-digest"]
+    },
+    {
+      name: "Website and dashboard",
+      paths: ["landing/", "dashboard/"],
+      purpose:
+        "Static public site and Hermes dashboard surfaces for explaining and browsing the product.",
+      usable_via: ["npm run dashboard:build", "vnem.pages.dev when deployed"]
+    }
+  ];
+
+  return {
+    audience,
+    one_sentence:
+      "vnem is a read-only perception layer that helps coding agents choose better tools, sources, prompts, rubrics, and safety gates before editing a repo.",
+    current_counts: status.counts,
+    surfaces,
+    safe_workflow: [
+      "Use develop for normal improvements.",
+      "Use experimental for risky prototypes.",
+      "Merge to main only after validation and an understandable diff.",
+      "Keep install-pack and MCP behavior read-only unless the user explicitly asks for a separate runtime surface."
+    ],
+    what_vnem_is_not_yet: [
+      "not a shell-command interceptor",
+      "not a package installer",
+      "not a runtime security gateway",
+      "not an automatic code editor",
+      "not a secret manager"
+    ]
+  };
+}
+
+function findSource(value) {
+  const raw = String(value || "").trim();
+  if (sourceRadarById.has(raw)) {
+    return sourceRadarById.get(raw);
+  }
+  const normalized = normalize(raw);
+  return (
+    sourceRadar.find((source) => normalize(source.id) === normalized || normalize(source.title) === normalized) ||
+    null
+  );
 }
 
 function buildTaskContract(task, intent, route, readFirst, registryEntries) {
@@ -835,6 +1152,17 @@ function resolveIntent(query) {
   const queryText = normalize(query);
   const aliases = searchIndex.intent_aliases || {};
   const routeMap = searchIndex.intent_routes || {};
+  const exactName =
+    Object.keys(aliases).find((name) => normalize(name) === queryText) ||
+    Object.keys(routeMap).find((name) => normalize(name) === queryText);
+  if (exactName) {
+    const exactAliases = aliases[exactName];
+    return {
+      name: exactName,
+      aliases: Array.isArray(exactAliases) ? exactAliases : [],
+      route: routeMap[exactName] || null
+    };
+  }
   const candidates = Object.entries(aliases)
     .map(([name, values]) => ({
       name,
@@ -1070,6 +1398,96 @@ function formatSourceRadar(result) {
   return lines.join("\n");
 }
 
+function formatStatus(status) {
+  return [
+    `vnem status: ${status.version}`,
+    `Generated: ${status.generated_at || "unknown"}`,
+    `Release: ${status.release_version || "unknown"} (${status.release_date || "unknown date"})`,
+    "",
+    "Loaded data:",
+    `- Registry entries: ${status.counts.registry_entries}`,
+    `- Search documents: ${status.counts.search_documents}`,
+    `- Intent routes: ${status.counts.intent_routes}`,
+    `- Source-radar entries: ${status.counts.source_radar_entries}`,
+    `- Task rubrics: ${status.counts.task_rubrics}`,
+    `- Prompt patterns: ${status.counts.prompt_patterns}`,
+    "",
+    "MCP surface:",
+    `- Tools: ${status.mcp.tools.join(", ")}`,
+    `- Prompts: ${status.mcp.prompts.join(", ")}`,
+    `- Key resources: ${status.mcp.resources.slice(0, 10).join(", ")}${status.mcp.resources.length > 10 ? ", ..." : ""}`,
+    "",
+    `Safety: ${status.safety.mode}. Installs packages: ${status.safety.installs_packages}. Edits files: ${status.safety.edits_files}. Calls upstream services: ${status.safety.calls_upstream_services}.`
+  ].join("\n");
+}
+
+function formatOverview(overview) {
+  const lines = [`vnem overview (${overview.audience})`, "", overview.one_sentence, "", "Usable surfaces:"];
+  for (const surface of overview.surfaces) {
+    lines.push(`- ${surface.name}: ${surface.purpose}`);
+    lines.push(`  Paths: ${surface.paths.join(", ")}`);
+    lines.push(`  Use via: ${surface.usable_via.join(", ")}`);
+  }
+  lines.push("", "Safe workflow:", ...overview.safe_workflow.map((item) => `- ${item}`));
+  lines.push("", "Not yet:", ...overview.what_vnem_is_not_yet.map((item) => `- ${item}`));
+  return lines.join("\n");
+}
+
+function formatRouteIntent(result) {
+  const lines = [`vnem route intent: ${result.intent}`];
+  if (result.resolved_intent) {
+    lines.push(`Resolved: ${result.resolved_intent.name}`);
+  } else {
+    lines.push("Resolved: none");
+  }
+  lines.push(`Mode: ${result.mode}`);
+  if (result.route?.compare_options?.length) {
+    lines.push(`Compare options: ${result.route.compare_options.join("; ")}`);
+  }
+  if (result.route?.choose_by?.length) {
+    lines.push(`Choose by: ${result.route.choose_by.join("; ")}`);
+  }
+  if (result.rubrics?.length) {
+    lines.push(`Rubrics: ${result.rubrics.map((rubric) => rubric.id).join(", ")}`);
+  }
+  if (result.route?.read_first?.length) {
+    lines.push("", "Route read-first:");
+    for (const id of result.route.read_first) {
+      lines.push(`- ${id}`);
+    }
+  }
+  if (result.read_first?.length) {
+    lines.push("", "Matched documents:");
+    for (const doc of result.read_first) {
+      lines.push(formatResultLine(doc));
+    }
+  }
+  lines.push("", `Safety: ${result.safety}`);
+  return lines.join("\n");
+}
+
+function formatSourceDetail(source) {
+  const lines = [
+    `${source.title} (${source.id})`,
+    `${source.category || "source"} / priority: ${source.priority || "unknown"}`,
+    "",
+    source.summary || "No summary."
+  ];
+  if (source.use_when?.length) {
+    lines.push("", "Use when:", ...source.use_when.map((item) => `- ${item}`));
+  }
+  if (source.monitor?.length) {
+    lines.push("", "Monitor:", ...source.monitor.map((item) => `- ${item}`));
+  }
+  if (source.risk_checks?.length) {
+    lines.push("", "Risk checks:", ...source.risk_checks.map((item) => `- ${item}`));
+  }
+  if (source.source_urls?.length) {
+    lines.push("", "Sources:", ...source.source_urls.map((url) => `- ${url}`));
+  }
+  return lines.join("\n");
+}
+
 function formatSourceLine(source) {
   const parts = [
     `- ${source.title}`,
@@ -1142,6 +1560,14 @@ function compactObject(object) {
 
 function uniqueStrings(values) {
   return [...new Set(values.filter(Boolean).map((value) => String(value)))];
+}
+
+function countBy(items, getKey) {
+  return items.reduce((counts, item) => {
+    const key = getKey(item);
+    counts[key] = (counts[key] || 0) + 1;
+    return counts;
+  }, {});
 }
 
 function variableValue(value) {

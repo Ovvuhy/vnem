@@ -38,6 +38,10 @@ try {
   const tools = await client.listTools();
   const toolNames = new Set(tools.tools.map((tool) => tool.name));
   for (const name of [
+    "vnem_status",
+    "vnem_overview",
+    "vnem_route_intent",
+    "vnem_get_source",
     "vnem_search",
     "vnem_recommend",
     "vnem_get_entry",
@@ -47,6 +51,53 @@ try {
   ]) {
     assert.equal(toolNames.has(name), true, `expected MCP tool ${name}`);
   }
+  for (const tool of tools.tools) {
+    assert.equal(tool.annotations?.readOnlyHint, true, `expected ${tool.name} to be annotated read-only`);
+    assert.equal(tool.annotations?.destructiveHint, false, `expected ${tool.name} to be annotated non-destructive`);
+  }
+
+  const status = await client.callTool({
+    name: "vnem_status",
+    arguments: {}
+  });
+  assert.equal(status.isError, undefined);
+  assert.equal(status.structuredContent?.safety?.installs_packages, false);
+  assert.ok(status.structuredContent?.counts?.registry_entries >= 200, "expected vnem_status registry count");
+  assert.ok(status.structuredContent?.mcp?.tools?.includes("vnem_route_intent"), "expected vnem_status to list route tool");
+
+  const overview = await client.callTool({
+    name: "vnem_overview",
+    arguments: {
+      audience: "newcomer"
+    }
+  });
+  assert.equal(overview.isError, undefined);
+  assert.ok(
+    overview.structuredContent?.surfaces?.some((surface) => surface.name === "MCP server"),
+    "expected vnem_overview MCP server surface"
+  );
+
+  const routedIntent = await client.callTool({
+    name: "vnem_route_intent",
+    arguments: {
+      intent: "tool pinning",
+      include_matches: true
+    }
+  });
+  assert.equal(routedIntent.isError, undefined);
+  assert.equal(routedIntent.structuredContent?.resolved_intent?.name, "tool pinning");
+  assert.ok(routedIntent.structuredContent?.route?.read_first?.length > 0, "expected routed intent read-first list");
+  assert.ok(routedIntent.structuredContent?.rubrics?.length > 0, "expected routed intent rubrics");
+
+  const sourceDetail = await client.callTool({
+    name: "vnem_get_source",
+    arguments: {
+      id: "mcp-core-and-registry"
+    }
+  });
+  assert.equal(sourceDetail.isError, undefined);
+  assert.equal(sourceDetail.structuredContent?.id, "mcp-core-and-registry");
+  assert.ok(sourceDetail.structuredContent?.source_urls?.length > 0, "expected source detail URLs");
 
   const search = await client.callTool({
     name: "vnem_search",
@@ -189,6 +240,26 @@ try {
     resources.resources.some((resource) => resource.uri === "vnem://install/agent-workspace"),
     "expected agent workspace resource"
   );
+  assert.ok(
+    resources.resources.some((resource) => resource.uri === "vnem://repo/readme"),
+    "expected README resource"
+  );
+  assert.ok(
+    resources.resources.some((resource) => resource.uri === "vnem://repo/product"),
+    "expected product resource"
+  );
+  assert.ok(
+    resources.resources.some((resource) => resource.uri === "vnem://repo/security-roadmap"),
+    "expected security roadmap resource"
+  );
+  assert.ok(
+    resources.resources.some((resource) => resource.uri === "vnem://repo/hermes"),
+    "expected Hermes resource"
+  );
+  assert.ok(
+    resources.resources.some((resource) => resource.uri === "vnem://repo/contributing"),
+    "expected contributing resource"
+  );
 
   const operatingProtocol = await client.readResource({
     uri: "vnem://install/operating-protocol"
@@ -223,6 +294,26 @@ try {
   });
   assert.ok(agentWorkspace.contents[0]?.text?.includes("Agent Workspace"));
   assert.ok(agentWorkspace.contents[0]?.text?.includes("MCP Gateway And Tool Routing"));
+
+  const readme = await client.readResource({
+    uri: "vnem://repo/readme"
+  });
+  assert.ok(readme.contents[0]?.text?.includes("Use As An MCP Server"));
+
+  const product = await client.readResource({
+    uri: "vnem://repo/product"
+  });
+  assert.ok(product.contents[0]?.text?.includes("vnem Product Direction"));
+
+  const securityRoadmap = await client.readResource({
+    uri: "vnem://repo/security-roadmap"
+  });
+  assert.ok(securityRoadmap.contents[0]?.text?.includes("Agentic Security Roadmap"));
+
+  const hermes = await client.readResource({
+    uri: "vnem://repo/hermes"
+  });
+  assert.ok(hermes.contents[0]?.text?.includes("Hermes"));
 
   const entryResource = await client.readResource({
     uri: "vnem://entries/model-context-protocol"
