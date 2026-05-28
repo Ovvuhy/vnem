@@ -181,6 +181,7 @@ function WalletGate({ walletConnected, configured, loading, error, onSignIn }) {
   return (
     <section className="gate-panel" aria-label="vnem Hermes wallet gate">
       <div className="gate-copy">
+        <img className="gate-logo" src="/assets/logo.png" alt="" />
         <div className="product-lock"><LockKeyhole size={18} /> owner access</div>
         <h1>vnem hermes</h1>
         <p>Connect an allowlisted Solana wallet and sign the dashboard challenge.</p>
@@ -222,9 +223,12 @@ function DashboardShell({ summary, status, error, walletAddress, onRefresh, onLo
   return (
     <>
       <header className="topbar">
-        <div>
-          <p className="eyebrow">vnem hermes</p>
-          <h1>Owner dashboard</h1>
+        <div className="topbar-title">
+          <img className="dashboard-logo" src="/assets/logo.png" alt="" />
+          <div>
+            <p className="eyebrow">vnem hermes</p>
+            <h1>Owner dashboard</h1>
+          </div>
         </div>
         <div className="topbar-actions">
           <span className="wallet-chip"><Wallet size={15} /> {shortWallet(walletAddress)}</span>
