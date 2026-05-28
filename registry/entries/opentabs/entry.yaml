@@ -1,0 +1,71 @@
+schema_version: 1.0.0
+homepage_url: https://opentabs.dev/
+repo_url: https://github.com/opentabs-dev/opentabs
+package_urls: []
+licenses:
+  - MIT
+copyright_owner: OpenTabs
+source_kind: official_docs
+protocols:
+  - MCP
+  - Streamable HTTP
+clients:
+  - Claude Code
+  - Cursor
+  - Windsurf
+  - OpenCode
+  - MCP clients
+install:
+  command: null
+  notes: >-
+    Review the upstream docs, permissions, pricing, environment variables, and transport before
+    installing.
+  config_example: null
+permissions:
+  - browser
+  - network
+env_vars:
+  - OPENTABS_SECRET
+tags:
+  - mcp
+  - browser
+  - chrome-extension
+  - authenticated-session
+  - web-apps
+  - gateway-mode
+  - plugins
+use_cases:
+  - Let agents interact with web apps through an existing browser session
+  - Expose internal web-app APIs as MCP tools
+  - Reduce OAuth/API-key setup for tools already open in the user's browser
+best_for:
+  - Local-first workflows where browser-session access is acceptable and plugins can be reviewed
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: high
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags:
+  - authenticated-browser-session
+  - can-act-as-user
+  - plugin-review-required
+  - high-tool-count
+recommended_when:
+  - Use only after reviewing plugins and deciding which authenticated sessions an agent may touch.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-27'
+slug: opentabs
+name: OpenTabs
+type: mcp-server
+summary_llm: >-
+  OpenTabs is a local Chrome extension and MCP server that lets agents call web-app internal APIs
+  through the user's authenticated browser session, with plugin gating, audit logs, and multiple
+  connection modes.
+source_urls:
+  - https://opentabs.dev/
+  - https://opentabs.dev/docs/install
+  - https://github.com/opentabs-dev/opentabs

@@ -1,0 +1,68 @@
+schema_version: 1.0.0
+homepage_url: https://docs.lunar.dev/mcpx/architecture
+repo_url: https://github.com/TheLunarCompany/lunar
+package_urls: []
+licenses:
+  - MIT
+copyright_owner: The Lunar Company
+source_kind: official_docs
+protocols:
+  - MCP
+clients:
+  - MCP clients
+  - Claude Desktop
+  - Claude Code
+  - Cursor
+  - VS Code
+install:
+  command: null
+  notes: >-
+    Review the upstream docs, permissions, pricing, environment variables, and transport before
+    installing.
+  config_example: null
+permissions:
+  - network
+env_vars: []
+tags:
+  - mcp
+  - gateway
+  - mcpx
+  - tool-routing
+  - access-control
+  - authentication
+  - observability
+  - catalog
+use_cases:
+  - Put multiple MCP servers behind a single endpoint
+  - Constrain tool discovery by agent or workflow
+  - Centralize authentication, routing, and audit controls
+best_for:
+  - Teams that have outgrown direct per-client MCP server configuration
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: high
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags:
+  - gateway-operational-risk
+  - centralizes-tool-access
+  - requires-policy-review
+recommended_when:
+  - Use when direct MCP configuration creates too much tool-schema, auth, or audit complexity.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-27'
+slug: lunar-mcpx
+name: Lunar MCPX
+type: orchestration
+summary_llm: >-
+  Lunar MCPX is an MCP gateway that sits between MCP clients and backend MCP servers, providing a
+  single endpoint, aggregated tool catalog, dynamic routing, access rules, authentication, and
+  audit-oriented enterprise controls.
+source_urls:
+  - https://docs.lunar.dev/mcpx/architecture
+  - https://docs.lunar.dev/mcpx/features/
+  - https://github.com/TheLunarCompany/lunar

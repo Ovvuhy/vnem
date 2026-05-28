@@ -15,7 +15,7 @@
   Cache-Control: public, max-age=300
 
 /api/*
-  Cache-Control: public, max-age=300
+  Cache-Control: no-store
 
 /install/*
   Cache-Control: public, max-age=300

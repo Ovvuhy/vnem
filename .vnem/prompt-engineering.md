@@ -1,6 +1,6 @@
 # vnem Prompt Engineering
 
-Generated: 2026-05-27T10:21:10.026Z
+Generated: 2026-05-27T21:08:33.015Z
 
 Use this when the user asks to improve, rewrite, harden, or operationalize a prompt. The main trigger phrase is `use vnem to enhance this prompt`.
 
@@ -257,6 +257,81 @@ Output:
 - Integration and verification plan.
 ```
 
+### Visual Build Prompt
+
+Prompt an agent to build a usable visual surface that passes the vnem perception gate.
+
+Intents: visual build, build ui, make app, landing page, browser game, agent dashboard, bento dashboard
+
+Template:
+
+```text
+Build the actual usable visual experience and treat aesthetics as part of done.
+
+Product/User:
+<who uses this and why>
+
+Core Surface:
+<page, app, dashboard, game, chat UI, or component>
+
+Visual Direction:
+- Use local assets, brand cues, and existing design tokens first.
+- Match the user's reference style through palette, scale, spacing, texture, motion, and mood.
+- Use source-backed browser primitives where helpful: CSS Grid, clamp(), container queries, reduced-motion media queries, and Web Audio only when needed.
+
+Perception Gate:
+- The first screen must look intentional, balanced, readable, and responsive.
+- Fix ugly scale, spacing, color, typography, glow, blur, or motion before final.
+- Reward effects must originate at the relevant user action or game event.
+- Sound must be short, pleasant, throttled, and muteable.
+
+Verification:
+- Follow `.vnem/visual-qa-protocol.md` when the vnem pack is present.
+- Inspect or capture desktop and mobile screenshots.
+- Verify one key interaction or reward moment.
+- Check reduced-motion and audio/mute behavior when applicable.
+
+Output:
+- Implemented surface.
+- Local URL or file path.
+- Perception verdict: ship-quality, needs-polish, or blocked.
+- Screenshot/interaction verification notes.
+```
+
+### Visual Polish Review Prompt
+
+Prompt an agent to inspect a rendered UI, name the ugliest visible issue, fix it, and verify again.
+
+Intents: visual polish, review ugly ui, ui critique, design review, polish pass, make it pretty
+
+Template:
+
+```text
+Review this visual surface and improve only what is needed to pass the perception gate.
+
+Target:
+<URL, app route, file path, screenshot, or component>
+
+Review Order:
+1. Inspect the rendered result before editing.
+2. Name the ugliest visible issue in plain language.
+3. Check composition, hierarchy, scale, spacing, color, typography, motion, sound, reference fidelity, and mobile fit.
+4. Patch the smallest visual/design changes that make the surface feel intentional.
+5. Re-check screenshots or interaction evidence before final.
+
+Constraints:
+- Preserve existing product behavior.
+- Use local assets and design tokens first.
+- Do not add packages, fetch media, call image/audio services, or use copyrighted assets without approval.
+- Treat APCA/WCAG 3 contrast notes as watchlist guidance, not final compliance requirements.
+
+Output:
+- Perception verdict.
+- Ugliest issue found and how it changed.
+- Verification evidence.
+- Remaining polish or accessibility risk.
+```
+
 ### Frontend Build Prompt
 
 Prompt for a complete frontend experience with visual verification and responsive constraints.
@@ -278,12 +353,15 @@ Design Constraints:
 - Match existing design system if present.
 - Use domain-appropriate density, typography, color, and motion.
 - Ensure all text fits on mobile and desktop.
+- Pass a perception gate before final: first-screen composition, hierarchy, scale, spacing, color harmony, motion, and reference-style fidelity must look intentionally polished.
+- Anchor visual/reward effects to the relevant user action or game event; avoid disconnected center flashes unless the center is the event.
+- Keep sound effects short, pleasant, throttled, and muteable when audio is included.
 - Verify with browser screenshots after implementation.
 
 Output:
 - Implemented UI.
 - Local URL or file path.
-- Verification notes.
+- Perception verdict and verification notes.
 ```
 
 ### Eval Design Prompt
@@ -336,6 +414,67 @@ Output:
 - Ask before changing.
 ```
 
+### Source Intake Prompt
+
+Prompt an agent to decide whether an upstream source belongs in vnem without copying long docs or promoting unreviewed claims.
+
+Intents: source radar, source intake, research layer, benchmark evidence
+
+Template:
+
+```text
+Review this source for possible vnem intake.
+
+Source:
+<URL, repository, docs page, registry feed, benchmark, or MCP server>
+
+Decision criteria:
+- What agent decision does this source improve?
+- Is it official, canonical, vendor-maintained, or high-signal?
+- What license, permissions, install, data, or mutation risks are visible?
+- Is there a lightweight verification path such as link check, smoke test, fixture, or before/after recommendation diff?
+
+Rules:
+- Preserve source URLs and write original summaries.
+- Do not copy long upstream documentation into vnem.
+- Do not promote trust beyond the evidence.
+
+Output:
+- Source candidate.
+- Why it matters.
+- Trust and risk.
+- Smallest artifact to update.
+- Verification needed.
+```
+
+### Zero-Trust Gateway Roadmap Prompt
+
+Prompt for turning an ambitious agent-runtime security idea into phased read-only guidance, advisory checks, and deferred runtime scope.
+
+Intents: pre execution gateway, zero trust gateway, tool pinning, package firewall, ast indexer
+
+Template:
+
+```text
+Review this agentic security proposal for vnem.
+
+Proposal:
+<gateway, tool pinning, package firewall, command policy, secret redaction, or AST index idea>
+
+Rules:
+- Keep the current vnem install pack read-only.
+- Separate guidance, advisory analysis, deterministic checks, and runtime enforcement.
+- Treat MCP tool annotations as risk hints, not security guarantees.
+- Require explicit approval before any tool install, config mutation, daemon, secret use, or external service call.
+
+Output:
+- Safe subset to add now.
+- Risky or blocked scope.
+- Phased implementation.
+- Required tests before enforcement.
+- Source anchors and unresolved assumptions.
+```
+
 ### Memory Policy Prompt
 
 Prompt for deciding what belongs in durable project memory versus temporary task context.
@@ -364,6 +503,94 @@ Output:
 - Where to store it.
 - What to avoid.
 - Review cadence.
+```
+
+### Agent Workspace Architecture Prompt
+
+Prompt for designing a read-only-first autonomous developer workspace with agent choice, MCP routing, memory, and verification boundaries.
+
+Intents: agent workspace, autonomous developer environment, coding agents, codex config
+
+Template:
+
+```text
+Design an autonomous developer workspace for this repository.
+
+Goal:
+<what the agent environment should help builders do>
+
+Constraints:
+- Keep the first version read-only unless a maintainer approves mutations.
+- Separate knowledge/catalog guidance from runtime daemons or gateway implementations.
+- Identify secrets, database, browser, repository, filesystem, and deployment risks.
+
+Evaluate:
+- Coding agent client and approval model.
+- MCP servers and whether a gateway is justified.
+- Persistent memory files and update cadence.
+- Verification commands and rollback path.
+
+Output:
+- Recommended architecture.
+- Minimal first setup.
+- Deferred capabilities.
+- Risks and required approvals.
+```
+
+### MCP Gateway Evaluation Prompt
+
+Prompt for deciding whether an MCP gateway is needed and which routing, policy, and observability requirements matter.
+
+Intents: mcp gateway, one mcp, tool routing, mcp servers
+
+Template:
+
+```text
+Evaluate MCP gateway options for this agent workspace.
+
+Current tools:
+<MCP servers, clients, credentials, and high-risk operations>
+
+Decision criteria:
+- Does the agent see too many tools or schemas?
+- Are credentials, policies, logs, or rate limits hard to manage directly?
+- Which tools need role-scoped or task-scoped exposure?
+- Can the team operate a gateway safely?
+
+Output:
+- Gateway needed or not needed.
+- Options to compare.
+- Least-privilege routing plan.
+- Risks, unknowns, and next verification steps.
+```
+
+### Memory Bank Initialization Prompt
+
+Prompt for creating durable agent memory without storing secrets or stale task state.
+
+Intents: memory bank, agent modes, roo code, cline, claude md
+
+Template:
+
+```text
+Initialize persistent agent memory for this project.
+
+Inputs:
+- Repository purpose and architecture.
+- Stable commands and verification steps.
+- Current task state, blockers, and decisions.
+
+Rules:
+- Store durable project facts separately from temporary session notes.
+- Include a decision log for major choices and rejected approaches.
+- Do not store secrets, credentials, private data, or unsourced claims.
+- Define when memory should be reviewed or reset.
+
+Output:
+- Proposed files.
+- Contents for each file.
+- Update protocol.
+- Risks and maintenance notes.
 ```
 
 ## Source Anchors

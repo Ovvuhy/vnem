@@ -47,7 +47,7 @@ recommended_when:
   - Use as reference material only; prefer OpenAI Agents SDK for active projects.
 trust_tier: deprecated
 review_status: deprecated
-last_checked: '2026-05-26'
+last_checked: '2026-05-27'
 slug: openai-swarm
 name: OpenAI Swarm
 type: orchestration

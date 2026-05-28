@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-27T10:21:10.026Z",
+  "generated_at": "2026-05-27T21:08:33.015Z",
   "schema_version": "1.0.0",
   "safety": {
     "mode": "read-only-prompt-patterns",
@@ -143,6 +143,42 @@
       "template": "Decide whether this task benefits from subagents.\n\nTask:\n<task>\n\nRules:\n- Delegate only independent sidecar work.\n- Keep the immediate critical-path task local to the coordinator.\n- Give each subagent a bounded role, owned files or outputs, and definition of done.\n- The coordinator must synthesize results and resolve conflicts.\n\nOutput:\n- Use or do not use subagents, with reason.\n- Subagent assignments if useful.\n- Integration and verification plan."
     },
     {
+      "id": "visual-build",
+      "title": "Visual Build Prompt",
+      "intents": [
+        "visual build",
+        "build ui",
+        "make app",
+        "landing page",
+        "browser game",
+        "agent dashboard",
+        "bento dashboard"
+      ],
+      "summary": "Prompt an agent to build a usable visual surface that passes the vnem perception gate.",
+      "output_modes": [
+        "agent_prompt"
+      ],
+      "template": "Build the actual usable visual experience and treat aesthetics as part of done.\n\nProduct/User:\n<who uses this and why>\n\nCore Surface:\n<page, app, dashboard, game, chat UI, or component>\n\nVisual Direction:\n- Use local assets, brand cues, and existing design tokens first.\n- Match the user's reference style through palette, scale, spacing, texture, motion, and mood.\n- Use source-backed browser primitives where helpful: CSS Grid, clamp(), container queries, reduced-motion media queries, and Web Audio only when needed.\n\nPerception Gate:\n- The first screen must look intentional, balanced, readable, and responsive.\n- Fix ugly scale, spacing, color, typography, glow, blur, or motion before final.\n- Reward effects must originate at the relevant user action or game event.\n- Sound must be short, pleasant, throttled, and muteable.\n\nVerification:\n- Follow `.vnem/visual-qa-protocol.md` when the vnem pack is present.\n- Inspect or capture desktop and mobile screenshots.\n- Verify one key interaction or reward moment.\n- Check reduced-motion and audio/mute behavior when applicable.\n\nOutput:\n- Implemented surface.\n- Local URL or file path.\n- Perception verdict: ship-quality, needs-polish, or blocked.\n- Screenshot/interaction verification notes."
+    },
+    {
+      "id": "visual-polish-review",
+      "title": "Visual Polish Review Prompt",
+      "intents": [
+        "visual polish",
+        "review ugly ui",
+        "ui critique",
+        "design review",
+        "polish pass",
+        "make it pretty"
+      ],
+      "summary": "Prompt an agent to inspect a rendered UI, name the ugliest visible issue, fix it, and verify again.",
+      "output_modes": [
+        "agent_prompt",
+        "review_checklist"
+      ],
+      "template": "Review this visual surface and improve only what is needed to pass the perception gate.\n\nTarget:\n<URL, app route, file path, screenshot, or component>\n\nReview Order:\n1. Inspect the rendered result before editing.\n2. Name the ugliest visible issue in plain language.\n3. Check composition, hierarchy, scale, spacing, color, typography, motion, sound, reference fidelity, and mobile fit.\n4. Patch the smallest visual/design changes that make the surface feel intentional.\n5. Re-check screenshots or interaction evidence before final.\n\nConstraints:\n- Preserve existing product behavior.\n- Use local assets and design tokens first.\n- Do not add packages, fetch media, call image/audio services, or use copyrighted assets without approval.\n- Treat APCA/WCAG 3 contrast notes as watchlist guidance, not final compliance requirements.\n\nOutput:\n- Perception verdict.\n- Ugliest issue found and how it changed.\n- Verification evidence.\n- Remaining polish or accessibility risk."
+    },
+    {
       "id": "ui-build",
       "title": "Frontend Build Prompt",
       "intents": [
@@ -155,7 +191,7 @@
       "output_modes": [
         "agent_prompt"
       ],
-      "template": "Build the actual usable frontend experience, not a marketing placeholder.\n\nProduct/User:\n<who uses this and why>\n\nCore Workflow:\n<primary user flow>\n\nDesign Constraints:\n- Match existing design system if present.\n- Use domain-appropriate density, typography, color, and motion.\n- Ensure all text fits on mobile and desktop.\n- Verify with browser screenshots after implementation.\n\nOutput:\n- Implemented UI.\n- Local URL or file path.\n- Verification notes."
+      "template": "Build the actual usable frontend experience, not a marketing placeholder.\n\nProduct/User:\n<who uses this and why>\n\nCore Workflow:\n<primary user flow>\n\nDesign Constraints:\n- Match existing design system if present.\n- Use domain-appropriate density, typography, color, and motion.\n- Ensure all text fits on mobile and desktop.\n- Pass a perception gate before final: first-screen composition, hierarchy, scale, spacing, color harmony, motion, and reference-style fidelity must look intentionally polished.\n- Anchor visual/reward effects to the relevant user action or game event; avoid disconnected center flashes unless the center is the event.\n- Keep sound effects short, pleasant, throttled, and muteable when audio is included.\n- Verify with browser screenshots after implementation.\n\nOutput:\n- Implemented UI.\n- Local URL or file path.\n- Perception verdict and verification notes."
     },
     {
       "id": "eval-design",
@@ -188,6 +224,40 @@
       "template": "Recommend MCP servers or tools for this workflow.\n\nWorkflow:\n<what the agent needs to do>\n\nConstraints:\n- Prefer official or vendor-maintained sources for sensitive systems.\n- Call out permissions: filesystem, browser, database, repository, payments, secrets.\n- Do not recommend installation before review.\n\nOutput:\n- Current stack.\n- Best options.\n- Risk flags.\n- Ask before changing."
     },
     {
+      "id": "source-intake",
+      "title": "Source Intake Prompt",
+      "intents": [
+        "source radar",
+        "source intake",
+        "research layer",
+        "benchmark evidence"
+      ],
+      "summary": "Prompt an agent to decide whether an upstream source belongs in vnem without copying long docs or promoting unreviewed claims.",
+      "output_modes": [
+        "source_review",
+        "intake_plan"
+      ],
+      "template": "Review this source for possible vnem intake.\n\nSource:\n<URL, repository, docs page, registry feed, benchmark, or MCP server>\n\nDecision criteria:\n- What agent decision does this source improve?\n- Is it official, canonical, vendor-maintained, or high-signal?\n- What license, permissions, install, data, or mutation risks are visible?\n- Is there a lightweight verification path such as link check, smoke test, fixture, or before/after recommendation diff?\n\nRules:\n- Preserve source URLs and write original summaries.\n- Do not copy long upstream documentation into vnem.\n- Do not promote trust beyond the evidence.\n\nOutput:\n- Source candidate.\n- Why it matters.\n- Trust and risk.\n- Smallest artifact to update.\n- Verification needed."
+    },
+    {
+      "id": "zero-trust-gateway-roadmap",
+      "title": "Zero-Trust Gateway Roadmap Prompt",
+      "intents": [
+        "pre execution gateway",
+        "zero trust gateway",
+        "tool pinning",
+        "package firewall",
+        "ast indexer"
+      ],
+      "summary": "Prompt for turning an ambitious agent-runtime security idea into phased read-only guidance, advisory checks, and deferred runtime scope.",
+      "output_modes": [
+        "phased_plan",
+        "risk_register",
+        "verification_gates"
+      ],
+      "template": "Review this agentic security proposal for vnem.\n\nProposal:\n<gateway, tool pinning, package firewall, command policy, secret redaction, or AST index idea>\n\nRules:\n- Keep the current vnem install pack read-only.\n- Separate guidance, advisory analysis, deterministic checks, and runtime enforcement.\n- Treat MCP tool annotations as risk hints, not security guarantees.\n- Require explicit approval before any tool install, config mutation, daemon, secret use, or external service call.\n\nOutput:\n- Safe subset to add now.\n- Risky or blocked scope.\n- Phased implementation.\n- Required tests before enforcement.\n- Source anchors and unresolved assumptions."
+    },
+    {
       "id": "memory-policy",
       "title": "Memory Policy Prompt",
       "intents": [
@@ -201,6 +271,53 @@
         "memory_policy"
       ],
       "template": "Design a memory/context policy for this project.\n\nPersistent memory should include:\n- Stable project conventions.\n- Common commands.\n- Architecture notes that rarely change.\n- Safety and permission boundaries.\n\nPersistent memory should not include:\n- Secrets or credentials.\n- Temporary task state.\n- Unverified assumptions.\n- Sensitive user data unless explicitly approved.\n\nOutput:\n- What to store.\n- Where to store it.\n- What to avoid.\n- Review cadence."
+    },
+    {
+      "id": "agent-workspace-architecture",
+      "title": "Agent Workspace Architecture Prompt",
+      "intents": [
+        "agent workspace",
+        "autonomous developer environment",
+        "coding agents",
+        "codex config"
+      ],
+      "summary": "Prompt for designing a read-only-first autonomous developer workspace with agent choice, MCP routing, memory, and verification boundaries.",
+      "output_modes": [
+        "architecture_plan",
+        "risk_register"
+      ],
+      "template": "Design an autonomous developer workspace for this repository.\n\nGoal:\n<what the agent environment should help builders do>\n\nConstraints:\n- Keep the first version read-only unless a maintainer approves mutations.\n- Separate knowledge/catalog guidance from runtime daemons or gateway implementations.\n- Identify secrets, database, browser, repository, filesystem, and deployment risks.\n\nEvaluate:\n- Coding agent client and approval model.\n- MCP servers and whether a gateway is justified.\n- Persistent memory files and update cadence.\n- Verification commands and rollback path.\n\nOutput:\n- Recommended architecture.\n- Minimal first setup.\n- Deferred capabilities.\n- Risks and required approvals."
+    },
+    {
+      "id": "mcp-gateway-evaluation",
+      "title": "MCP Gateway Evaluation Prompt",
+      "intents": [
+        "mcp gateway",
+        "one mcp",
+        "tool routing",
+        "mcp servers"
+      ],
+      "summary": "Prompt for deciding whether an MCP gateway is needed and which routing, policy, and observability requirements matter.",
+      "output_modes": [
+        "gateway_recommendation"
+      ],
+      "template": "Evaluate MCP gateway options for this agent workspace.\n\nCurrent tools:\n<MCP servers, clients, credentials, and high-risk operations>\n\nDecision criteria:\n- Does the agent see too many tools or schemas?\n- Are credentials, policies, logs, or rate limits hard to manage directly?\n- Which tools need role-scoped or task-scoped exposure?\n- Can the team operate a gateway safely?\n\nOutput:\n- Gateway needed or not needed.\n- Options to compare.\n- Least-privilege routing plan.\n- Risks, unknowns, and next verification steps."
+    },
+    {
+      "id": "memory-bank-initialization",
+      "title": "Memory Bank Initialization Prompt",
+      "intents": [
+        "memory bank",
+        "agent modes",
+        "roo code",
+        "cline",
+        "claude md"
+      ],
+      "summary": "Prompt for creating durable agent memory without storing secrets or stale task state.",
+      "output_modes": [
+        "memory_bank_plan"
+      ],
+      "template": "Initialize persistent agent memory for this project.\n\nInputs:\n- Repository purpose and architecture.\n- Stable commands and verification steps.\n- Current task state, blockers, and decisions.\n\nRules:\n- Store durable project facts separately from temporary session notes.\n- Include a decision log for major choices and rejected approaches.\n- Do not store secrets, credentials, private data, or unsourced claims.\n- Define when memory should be reviewed or reset.\n\nOutput:\n- Proposed files.\n- Contents for each file.\n- Update protocol.\n- Risks and maintenance notes."
     }
   ]
 }

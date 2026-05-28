@@ -43,7 +43,7 @@ recommended_when:
   - Use when agents need to communicate through structured conversations and events.
 trust_tier: promising
 review_status: manual-reviewed
-last_checked: '2026-05-26'
+last_checked: '2026-05-27'
 slug: microsoft-autogen
 name: Microsoft AutoGen
 type: agent-framework

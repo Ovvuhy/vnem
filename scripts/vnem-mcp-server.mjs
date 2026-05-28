@@ -58,6 +58,7 @@ const searchIndex = await readJsonRequired(searchIndexPath, "search index");
 const apiIndex = apiIndexPath ? await readJsonOptional(apiIndexPath) : null;
 const entries = Array.isArray(apiIndex?.entries) ? apiIndex.entries : [];
 const documents = Array.isArray(searchIndex.documents) ? searchIndex.documents : [];
+const sourceRadar = Array.isArray(searchIndex.source_radar) ? searchIndex.source_radar : [];
 const entriesBySlug = new Map(entries.map((entry) => [entry.slug, entry]));
 const documentsById = new Map(documents.map((document) => [document.id, document]));
 
@@ -145,10 +146,12 @@ function registerTools(mcpServer) {
       const registryEntries = matches.filter((match) => match.kind === "registry-entry").slice(0, limit);
       const practices = relevantPracticeDocs(task, intent, 6);
       const route = intent?.route || null;
+      const taskContract = buildTaskContract(task, intent, route, practices, registryEntries);
       const recommendation = {
         task,
         intent,
         route,
+        task_contract: taskContract,
         registry_entries: registryEntries,
         read_first: practices,
         decision_protocol: searchIndex.decision_protocol || null,
@@ -240,6 +243,38 @@ function registerTools(mcpServer) {
       return toolResult(formatBestPractices(result), result);
     }
   );
+
+  mcpServer.registerTool(
+    "vnem_sources",
+    {
+      title: "vnem Source Radar",
+      description:
+        "Find upstream docs, registries, MCP sources, eval sources, and verification sources vnem should consult before recommending agentic tooling changes.",
+      inputSchema: {
+        intent: z.string().default("source radar").describe("Source, workflow, or decision intent to look up."),
+        category: z
+          .string()
+          .optional()
+          .describe("Optional source category filter such as protocol-registry, agent-client, current-docs, sensitive-connectors, or quality-evidence."),
+        limit: z.number().int().min(1).max(12).default(8).describe("Maximum source radar entries to return.")
+      },
+      annotations: READ_ONLY
+    },
+    async ({ intent, category, limit }) => {
+      const resolvedIntent = resolveIntent(intent);
+      const results = sourceRadarResults(intent, category, limit);
+      const result = {
+        intent,
+        category: category || null,
+        resolved_intent: resolvedIntent,
+        sources: results,
+        safety:
+          "Read-only source guidance only. Preserve source URLs and review permissions, licenses, and risk flags before promoting a source or installing any tool."
+      };
+
+      return toolResult(formatSourceRadar(result), result);
+    }
+  );
 }
 
 function registerResources(mcpServer) {
@@ -254,6 +289,15 @@ function registerResources(mcpServer) {
   );
   registerFileResource(
     mcpServer,
+    "vnem-source-radar",
+    "vnem://install/source-radar",
+    firstExisting(["public/install/source-radar.json", ".vnem/source-radar.json"]),
+    "vnem Source Radar",
+    "Generated source intake map for official docs, registries, MCP sources, evals, and verification sources.",
+    "application/json"
+  );
+  registerFileResource(
+    mcpServer,
     "vnem-api-index",
     "vnem://api/index",
     apiIndexPath,
@@ -263,11 +307,56 @@ function registerResources(mcpServer) {
   );
   registerFileResource(
     mcpServer,
+    "vnem-operating-protocol",
+    "vnem://install/operating-protocol",
+    firstExisting(["public/install/operating-protocol.md", ".vnem/operating-protocol.md"]),
+    "vnem Operating Protocol",
+    "Generated universal operating loop for producing compact coding-agent task contracts.",
+    "text/markdown"
+  );
+  registerFileResource(
+    mcpServer,
+    "vnem-task-rubrics",
+    "vnem://install/task-rubrics",
+    firstExisting(["public/install/task-rubrics.json", ".vnem/task-rubrics.json"]),
+    "vnem Task Rubrics",
+    "Generated broad task rubrics for agent quality bars, approval gates, verification, and reporting.",
+    "application/json"
+  );
+  registerFileResource(
+    mcpServer,
+    "vnem-design-architecture",
+    "vnem://install/design-architecture",
+    firstExisting(["public/install/design-architecture.md", ".vnem/design-architecture.md"]),
+    "vnem Design Architecture",
+    "Generated source-backed design intelligence for UI, game, dashboard, visual polish, motion, sound, and conversational-agent surfaces.",
+    "text/markdown"
+  );
+  registerFileResource(
+    mcpServer,
+    "vnem-visual-qa-protocol",
+    "vnem://install/visual-qa-protocol",
+    firstExisting(["public/install/visual-qa-protocol.md", ".vnem/visual-qa-protocol.md"]),
+    "vnem Visual QA Protocol",
+    "Generated rendered-quality loop for UI, game, dashboard, canvas, motion, sound, and brand-facing surfaces.",
+    "text/markdown"
+  );
+  registerFileResource(
+    mcpServer,
     "vnem-best-practices",
     "vnem://install/best-practices",
     firstExisting(["public/install/best-practices.md", ".vnem/best-practices.md"]),
     "vnem Best Practices",
     "Generated best-practice notes for agents.",
+    "text/markdown"
+  );
+  registerFileResource(
+    mcpServer,
+    "vnem-agent-workspace",
+    "vnem://install/agent-workspace",
+    firstExisting(["public/install/agent-workspace.md", ".vnem/agent-workspace.md"]),
+    "vnem Agent Workspace",
+    "Generated guidance for autonomous developer environments, MCP gateways, memory files, and agent modes.",
     "text/markdown"
   );
   registerFileResource(
@@ -464,6 +553,211 @@ function relevantPracticeDocs(query, intent, limit) {
   return merged.slice(0, limit);
 }
 
+function sourceRadarResults(intent, category, limit) {
+  const query = [intent, category].filter(Boolean).join(" ");
+  const queryText = normalize(query);
+  const terms = tokenize(query);
+  const categoryText = normalize(category);
+
+  return sourceRadar
+    .map((source) => {
+      const haystack = normalize([
+        source.id,
+        source.title,
+        source.category,
+        source.priority,
+        source.summary,
+        ...(source.use_when || []),
+        ...(source.monitor || []),
+        ...(source.risk_checks || []),
+        ...(source.source_urls || [])
+      ].join(" "));
+
+      let score = source.priority === "critical" ? 30 : source.priority === "high" ? 24 : 14;
+      if (categoryText && normalize(source.category) === categoryText) {
+        score += 30;
+      }
+      if (queryText && haystack.includes(queryText)) {
+        score += 25;
+      }
+      for (const term of terms) {
+        if (haystack.includes(term)) {
+          score += 5;
+        }
+      }
+
+      return {
+        ...source,
+        rank_score: score
+      };
+    })
+    .filter((source) => source.rank_score > 0)
+    .sort((a, b) => b.rank_score - a.rank_score || String(a.title).localeCompare(String(b.title)))
+    .slice(0, limit);
+}
+
+function buildTaskContract(task, intent, route, readFirst, registryEntries) {
+  const mode = inferTaskMode(task);
+  const rubrics = selectTaskRubrics(task, intent, mode);
+  const perceptionGate = buildPerceptionGate(task, rubrics);
+  const rubricIds = new Set(rubrics.flatMap((rubric) => rubric.read_first || []));
+  const readFirstIds = uniqueStrings([
+    ...rubrics.map((rubric) => `task-rubric:${rubric.id}`),
+    ...rubricIds,
+    ...(route?.read_first || []),
+    ...readFirst.map((doc) => doc.id).filter(Boolean),
+    ...registryEntries.slice(0, 3).map((entry) => entry.id).filter(Boolean)
+  ]);
+  const approvalGates = uniqueStrings([
+    ...(searchIndex.operating_protocol?.default_contract?.approval_gates || []),
+    ...rubrics.flatMap((rubric) => rubric.approval_gates || [])
+  ]);
+  const verification = uniqueStrings([
+    ...(searchIndex.operating_protocol?.default_contract?.verification || []),
+    ...rubrics.flatMap((rubric) => rubric.verification || [])
+  ]);
+  const finalReport = uniqueStrings([
+    ...(searchIndex.operating_protocol?.default_contract?.report || []),
+    ...rubrics.flatMap((rubric) => rubric.output_contract || [])
+  ]);
+
+  return compactObject({
+    mode,
+    intent: intent?.name || null,
+    rubric: rubrics.map((rubric) => ({
+      id: rubric.id,
+      title: rubric.title,
+      summary: rubric.summary,
+      quality_bar: rubric.quality_bar || []
+    })),
+    route: route
+      ? {
+          read_first: route.read_first || [],
+          compare_options: route.compare_options || [],
+          choose_by: route.choose_by || []
+        }
+      : null,
+    read_first: readFirstIds,
+    smallest_sufficient_capability: route?.compare_options?.length
+      ? `Prefer existing project patterns first; if a new capability is needed, compare: ${route.compare_options.join("; ")}.`
+      : "Prefer existing project patterns first; add the smallest source-backed tool only when local code cannot satisfy the task cleanly.",
+    choose_by: uniqueStrings([...(route?.choose_by || []), ...rubrics.flatMap((rubric) => rubric.quality_bar || []), ...(perceptionGate?.criteria || [])]),
+    approval_gates: approvalGates,
+    perception_gate: perceptionGate,
+    verification,
+    final_report: finalReport,
+    safety:
+      "vnem is read-only guidance. Do not install tools, mutate config, use secrets, call external services, or start daemons because of this recommendation without explicit user approval.",
+    matched_rubric_read_first: [...rubricIds]
+  });
+}
+
+function buildPerceptionGate(task, rubrics) {
+  const text = normalize(task);
+  const rubricIds = new Set(rubrics.map((rubric) => rubric.id));
+  const applies =
+    rubricIds.has("aesthetic_experience") ||
+    rubricIds.has("frontend_ui") ||
+    rubricIds.has("interactive_canvas") ||
+    /\b(ui|frontend|design|visual|aesthetic|pretty|polished|game|canvas|animation|neon|glow|sound|dopamine|reward|microinteraction|dashboard|bento|landing|brand|chat|conversational|typography|motion|glass|dark mode|spacing)\b/.test(text);
+
+  if (!applies) {
+    return null;
+  }
+
+  return {
+    required: true,
+    verdicts: ["ship-quality", "needs-polish", "blocked"],
+    criteria: [
+      "first screen looks intentionally designed, balanced, and domain-appropriate",
+      "scale, spacing, hierarchy, color, typography, and motion match the user's reference or vibe",
+      "reward effects are anchored to the relevant user action or game event",
+      "sound and flashes are pleasant, restrained, muteable, and not noisy",
+      "if screenshots reveal obvious ugliness, iterate before final instead of reporting done"
+    ],
+    ship_blockers: [
+      "ugly or generic first screen",
+      "oversized canvas, board, hero, card, or empty visual surface",
+      "unreadable text, weak contrast, broken hierarchy, or text overflow",
+      "unbalanced spacing, cramped grouping, or mismatched scale",
+      "noisy glow, blur, flash, animation, or particle effects",
+      "reward effects that do not originate from the user action or game event",
+      "harsh, constant, unthrottled, or non-muteable audio",
+      "missing mobile fit or broken responsive layout"
+    ],
+    design_system_expectations: [
+      "reuse existing repo assets, design tokens, CSS variables, and component patterns before inventing new ones",
+      "use a coherent spacing scale and keep internal component padding no larger than external separation",
+      "choose layout structure deliberately: CSS Grid for two-dimensional dashboard/bento layouts, simpler flow for sequential reading",
+      "use readable type scale, line height, and bounded fluid sizing when responsive typography matters",
+      "use current WCAG/W3C guidance as the accessibility baseline; treat WCAG 3/APCA-style contrast as watchlist guidance only",
+      "provide restrained motion, reduced-motion fallback, and short muteable sound when audio is included",
+      "translate reference style into palette, texture, silhouette, glow behavior, and mood rather than disconnected decoration"
+    ],
+    visual_verification: [
+      "inspect or capture a desktop screenshot",
+      "inspect or capture a mobile screenshot",
+      "verify one core interaction or reward moment",
+      "check reduced-motion behavior for motion-heavy surfaces",
+      "check audio unlock, throttling, and mute behavior when sound is included"
+    ],
+    repo_sensing: [
+      "inspect existing design tokens, CSS variables, Tailwind/theme config, and component patterns",
+      "inspect local assets, public images, icons, fonts, screenshots, and user-provided references",
+      "inspect current routes, layout constraints, canvas sizing, HUD/hero/card scale, and mobile breakpoints",
+      "inspect package manifests for existing UI, game, animation, audio, and browser-test tooling before adding anything",
+      "use repo-native assets and styles first; ask before fetching media, generating assets, adding dependencies, or changing config"
+    ]
+  };
+}
+
+function inferTaskMode(task) {
+  const text = normalize(task);
+  if (/\b(prompt|prompting|prompt-engineering|template prompt|system prompt|developer prompt|instructions?)\b/.test(text)) return "prompt";
+  if (/\b(debug|fix failing|failing test|error|stack trace|regression|diagnose|root cause)\b/.test(text)) return "debug";
+  if (/\b(review|audit|assess|inspect|critique|find bugs|pr review)\b/.test(text)) return "review";
+  if (/\b(plan|architect|architecture|proposal|strategy|policy)\b/.test(text)) return "plan";
+  if (/\b(build|create|make|implement|develop|ship|add)\b/.test(text)) return "build";
+  if (/\bdesign\b/.test(text)) return "plan";
+  if (/\b(choose|select|compare|recommend|evaluate|which|best|decide)\b/.test(text)) return "decision";
+  return "build";
+}
+
+function selectTaskRubrics(task, intent, mode) {
+  const rubrics = Array.isArray(searchIndex.task_rubrics) ? searchIndex.task_rubrics : [];
+  const queryTerms = new Set(tokenize([task, intent?.name, ...(intent?.aliases || [])].join(" ")));
+  const routeIds = new Set(intent?.route?.read_first || []);
+  const scored = rubrics
+    .map((rubric) => {
+      const haystack = [
+        rubric.id,
+        rubric.title,
+        rubric.summary,
+        ...(rubric.intents || []),
+        ...(rubric.modes || []),
+        ...(rubric.read_first || []),
+        ...(rubric.quality_bar || [])
+      ].map(normalize);
+      let score = rubric.modes?.includes(mode) ? 6 : 0;
+      for (const term of queryTerms) {
+        if (haystack.some((item) => item.includes(term))) score += 2;
+      }
+      for (const id of rubric.read_first || []) {
+        if (routeIds.has(id)) score += 5;
+      }
+      return { rubric, score };
+    })
+    .filter(({ score }) => score > 0)
+    .sort((a, b) => b.score - a.score || a.rubric.id.localeCompare(b.rubric.id));
+
+  if (scored.length) {
+    return scored.slice(0, 2).map(({ rubric }) => rubric);
+  }
+
+  const fallback = rubrics.find((rubric) => rubric.id === "agent_tooling") || rubrics[0];
+  return fallback ? [fallback] : [];
+}
+
 function scoreDocument(document, terms, queryText, intent) {
   const title = normalize(document.title);
   const summary = normalize(document.summary);
@@ -494,8 +788,9 @@ function scoreDocument(document, terms, queryText, intent) {
 
   if (intent) {
     const relatedTerms = tokenize([intent.name, ...(intent.aliases || [])].join(" "));
-    if (intent.route?.read_first?.includes(document.id)) {
-      score += 40;
+    const routeIndex = intent.route?.read_first?.indexOf(document.id) ?? -1;
+    if (routeIndex >= 0) {
+      score += Math.max(50 - routeIndex * 10, 20);
     }
     for (const term of relatedTerms) {
       if (tags.some((tag) => tag.includes(term))) score += 3;
@@ -638,6 +933,12 @@ function formatRecommendation(recommendation) {
   if (recommendation.route?.choose_by?.length) {
     lines.push(`Choose by: ${recommendation.route.choose_by.join("; ")}`);
   }
+  if (recommendation.task_contract) {
+    lines.push(`Mode: ${recommendation.task_contract.mode}`);
+    if (recommendation.task_contract.rubric?.length) {
+      lines.push(`Rubric: ${recommendation.task_contract.rubric.map((rubric) => rubric.id).join(", ")}`);
+    }
+  }
 
   lines.push("", "Top registry matches:");
   if (recommendation.registry_entries.length) {
@@ -655,6 +956,29 @@ function formatRecommendation(recommendation) {
     }
   } else {
     lines.push("- No matching best-practice notes found.");
+  }
+
+  if (recommendation.task_contract) {
+    lines.push("", "Task contract:");
+    lines.push(`- Smallest sufficient capability: ${recommendation.task_contract.smallest_sufficient_capability}`);
+    if (recommendation.task_contract.approval_gates?.length) {
+      lines.push(`- Approval gates: ${recommendation.task_contract.approval_gates.slice(0, 5).join("; ")}`);
+    }
+    if (recommendation.task_contract.perception_gate?.required) {
+      lines.push(`- Perception gate: ${recommendation.task_contract.perception_gate.criteria.slice(0, 5).join("; ")}`);
+      if (recommendation.task_contract.perception_gate.ship_blockers?.length) {
+        lines.push(`- Design blockers: ${recommendation.task_contract.perception_gate.ship_blockers.slice(0, 4).join("; ")}`);
+      }
+      if (recommendation.task_contract.perception_gate.visual_verification?.length) {
+        lines.push(`- Visual verification: ${recommendation.task_contract.perception_gate.visual_verification.slice(0, 5).join("; ")}`);
+      }
+      if (recommendation.task_contract.perception_gate.repo_sensing?.length) {
+        lines.push(`- Repo sensing: ${recommendation.task_contract.perception_gate.repo_sensing.slice(0, 4).join("; ")}`);
+      }
+    }
+    if (recommendation.task_contract.verification?.length) {
+      lines.push(`- Verification: ${recommendation.task_contract.verification.slice(0, 5).join("; ")}`);
+    }
   }
 
   lines.push("", `Safety: ${recommendation.safety}`);
@@ -724,6 +1048,41 @@ function formatBestPractices(result) {
   return lines.join("\n");
 }
 
+function formatSourceRadar(result) {
+  const lines = [`vnem source radar: ${result.intent || "all sources"}`];
+  if (result.category) {
+    lines.push(`Category: ${result.category}`);
+  }
+  if (result.resolved_intent) {
+    lines.push(`Intent: ${result.resolved_intent.name}`);
+  }
+  lines.push("");
+
+  if (!result.sources.length) {
+    lines.push("- No matching source radar entries found. Inspect vnem://install/source-radar.");
+  } else {
+    for (const source of result.sources) {
+      lines.push(formatSourceLine(source));
+    }
+  }
+
+  lines.push("", `Safety: ${result.safety}`);
+  return lines.join("\n");
+}
+
+function formatSourceLine(source) {
+  const parts = [
+    `- ${source.title}`,
+    `[${source.category || "source"}]`,
+    `priority: ${source.priority || "unknown"}`
+  ];
+  const summary = source.summary ? `\n  ${source.summary}` : "";
+  const useWhen = source.use_when?.length ? `\n  Use when: ${source.use_when.slice(0, 2).join("; ")}` : "";
+  const risk = source.risk_checks?.length ? `\n  Risk checks: ${source.risk_checks.slice(0, 3).join("; ")}` : "";
+  const sources = source.source_urls?.length ? `\n  Sources: ${source.source_urls.slice(0, 4).join(", ")}` : "";
+  return `${parts.join(" ")}${summary}${useWhen}${risk}${sources}`;
+}
+
 function formatResultLine(result) {
   const parts = [
     `- ${result.name}`,
@@ -779,6 +1138,10 @@ function compactObject(object) {
       return true;
     })
   );
+}
+
+function uniqueStrings(values) {
+  return [...new Set(values.filter(Boolean).map((value) => String(value)))];
 }
 
 function variableValue(value) {

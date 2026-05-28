@@ -49,7 +49,7 @@ recommended_when:
   - Use when agent behavior should be represented as a graph instead of hidden prompt flow.
 trust_tier: promising
 review_status: manual-reviewed
-last_checked: '2026-05-26'
+last_checked: '2026-05-27'
 slug: langgraph
 name: LangGraph
 type: orchestration

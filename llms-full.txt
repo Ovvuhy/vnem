@@ -1,31 +1,7 @@
 # vnem Full Registry
 
-Generated: 2026-05-27T10:21:10.026Z
-Entries: 219
-
-## Model Context Protocol
-
-Slug: model-context-protocol
-Type: workflow
-Trust tier: verified
-Review status: manual-reviewed
-Freshness: current
-Source confidence: official
-Recommendation score: 13
-Protocols: MCP
-Clients: Claude Desktop, Claude Code, Cursor, VS Code, OpenAI Agents SDK
-Tags: mcp, protocol, tools, resources, prompts, context
-Use cases: Standardize agent access to tools and context, Compare MCP servers by permissions and provenance
-Best for: Teams that need portable tool connections across agent clients, Standardize agent access to tools and context, Compare MCP servers by permissions and provenance, mcp workflows, protocol workflows, tools workflows, resources workflows, prompts workflows
-Recommended when: Use when agent tools should be discoverable, permissioned, and reusable across clients., Use when a project needs standardize agent access to tools and context and the upstream source has been reviewed., Prefer this when verified install and behavior notes are required.
-Risk flags: none recorded
-Homepage: https://modelcontextprotocol.io/docs/getting-started/intro
-Repository: https://github.com/modelcontextprotocol
-Sources: https://modelcontextprotocol.io/docs/getting-started/intro, https://github.com/modelcontextprotocol
-
-Model Context Protocol is an open protocol for connecting AI applications to external tools, resources, prompts, and contextual data through standardized servers.
-
-Model Context Protocol is an open protocol for connecting AI applications to external tools, resources, prompts, and contextual data through standardized servers. ## Best For - Teams that need portable tool connections across agent clients ## Recommended When - Use when agent tools should be discoverable, permissioned,
+Generated: 2026-05-27T21:08:33.015Z
+Entries: 228
 
 ## Agent2Agent Protocol
 
@@ -1778,6 +1754,30 @@ Sources: https://registry.modelcontextprotocol.io/v0.1/servers/ai.lucasandersen%
 MLP Tax Computation Engine is an MCP server for agentic systems. Deterministic MLP tax engine with IRS citations. 6 tools: basis, §751, estate, projections.
 
 MLP Tax Computation Engine is an MCP server for agentic systems. Deterministic MLP tax engine with IRS citations. 6 tools: basis, §751, estate, projections. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust t
+
+## Model Context Protocol
+
+Slug: model-context-protocol
+Type: workflow
+Trust tier: verified
+Review status: manual-reviewed
+Freshness: current
+Source confidence: official
+Recommendation score: 11
+Protocols: MCP, JSON-RPC 2.0
+Clients: Claude Desktop, Claude Code, Cursor, VS Code, OpenAI Agents SDK, Codex
+Tags: mcp, protocol, json-rpc, tools, resources, prompts, security, context
+Use cases: Standardize agent access to tools and context, Compare MCP servers by permissions and provenance, Design safer trust boundaries for agent tool use
+Best for: Teams that need portable, reviewable tool connections across agent clients, Standardize agent access to tools and context, Compare MCP servers by permissions and provenance, Design safer trust boundaries for agent tool use, mcp workflows, protocol workflows, json-rpc workflows, tools workflows
+Recommended when: Use when agent tools should be discoverable, permissioned, and reusable across clients., Review server permissions and transport trust boundaries before connecting high-risk systems., Use when a project needs standardize agent access to tools and context and the upstream source has been reviewed., Prefer this when verified install and behavior notes are required.
+Risk flags: requires-server-review, tool-permissions-are-server-defined
+Homepage: https://modelcontextprotocol.io/docs/getting-started/intro
+Repository: https://github.com/modelcontextprotocol/modelcontextprotocol
+Sources: https://modelcontextprotocol.io/docs/getting-started/intro, https://modelcontextprotocol.io/specification/2025-11-25, https://modelcontextprotocol.io/specification/2025-11-25/basic/security_best_practices, https://github.com/modelcontextprotocol/modelcontextprotocol
+
+Model Context Protocol is an open protocol and schema for connecting AI applications to external tools, resources, prompts, and contextual data through standardized MCP servers.
+
+Model Context Protocol is an open protocol and schema for connecting AI applications to external tools, resources, prompts, and contextual data through standardized MCP servers. ## Best For - Teams that need portable, reviewable tool connections across agent clients ## Recommended When - Use when agent tools should be
 
 ## Nefesh — Real-Time Human State Awareness for AI
 
@@ -4275,30 +4275,6 @@ Clarid HMDA Validator is an MCP server for agentic systems. Validate HMDA LAR fi
 
 Clarid HMDA Validator is an MCP server for agentic systems. Validate HMDA LAR files against CFPB edit checks for community banks and credit unions. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: prom
 
-## Claude Code Memory
-
-Slug: claude-code-memory
-Type: memory
-Trust tier: verified
-Review status: manual-reviewed
-Freshness: current
-Source confidence: official
-Recommendation score: 9
-Protocols: none recorded
-Clients: Claude Code
-Tags: memory, claude-code, instructions, context-engineering, claude-md
-Use cases: Persist stable project instructions, Share agent guidance across coding sessions
-Best for: Project-local context that should be versioned and reviewed with code, Persist stable project instructions, Share agent guidance across coding sessions, memory workflows, claude-code workflows, instructions workflows, context-engineering workflows, claude-md workflows
-Recommended when: Use when coding agents repeatedly need the same project conventions, commands, and safety rules., Use when a project needs persist stable project instructions and the upstream source has been reviewed., Prefer this when verified install and behavior notes are required.
-Risk flags: license-not-asserted, memory-can-leak-sensitive-context, no-canonical-repo-url, sensitive-permissions
-Homepage: https://docs.anthropic.com/en/docs/claude-code/memory
-Repository: none recorded
-Sources: https://docs.anthropic.com/en/docs/claude-code/memory
-
-Claude Code memory uses CLAUDE.md files and imports to persist project, user, and enterprise instructions that agents can load into future coding sessions.
-
-Claude Code memory uses CLAUDE.md files and imports to persist project, user, and enterprise instructions that agents can load into future coding sessions. ## Best For - Project-local context that should be versioned and reviewed with code ## Recommended When - Use when coding agents repeatedly need the same project co
-
 ## Continue
 
 Slug: continue-dev
@@ -4371,30 +4347,6 @@ Firecrawl MCP lets agents crawl, scrape, search, and extract web content through
 
 Firecrawl MCP lets agents crawl, scrape, search, and extract web content through Firecrawl's web data APIs for research and ingestion workflows. ## Best For - Research agents that need structured web extraction ## Recommended When - Use when web extraction is permitted and citations or raw sources remain available. ##
 
-## GitHub MCP Server
-
-Slug: github-mcp-server
-Type: mcp-server
-Trust tier: promising
-Review status: manual-reviewed
-Freshness: current
-Source confidence: official
-Recommendation score: 9
-Protocols: MCP
-Clients: Claude Desktop, Claude Code, Cursor, VS Code, OpenAI Agents SDK
-Tags: mcp, github, repository, pull-requests, issues
-Use cases: Let agents inspect GitHub repositories, Automate issues and pull request workflows
-Best for: Repository workflows where GitHub is the system of record, Let agents inspect GitHub repositories, Automate issues and pull request workflows, mcp workflows, github workflows, repository workflows, pull-requests workflows, issues workflows
-Recommended when: Use when an agent needs GitHub context or PR workflows and token scope can be constrained., Use when a project needs let agents inspect github repositories and the upstream source has been reviewed., Treat as promising until a maintainer verifies install and behavior.
-Risk flags: mutates-repositories, requires-token, sensitive-permissions
-Homepage: https://github.com/github/github-mcp-server
-Repository: https://github.com/github/github-mcp-server
-Sources: https://github.com/github/github-mcp-server
-
-GitHub MCP Server is GitHub's official MCP server for repository, issue, pull request, search, workflow, and code operations through agent clients.
-
-GitHub MCP Server is GitHub's official MCP server for repository, issue, pull request, search, workflow, and code operations through agent clients. ## Best For - Repository workflows where GitHub is the system of record ## Recommended When - Use when an agent needs GitHub context or PR workflows and token scope can be
-
 ## KAPLAY
 
 Slug: kaplay
@@ -4442,6 +4394,30 @@ Sources: https://registry.modelcontextprotocol.io/v0.1/servers/ai.com.mcp%2Flink
 LinkedIn MCP Server is an MCP server for agentic systems. LinkedIn API as MCP tools to retrieve profile data and publish content. Powered by HAPI MCP.
 
 LinkedIn MCP Server is an MCP server for agentic systems. LinkedIn API as MCP tools to retrieve profile data and publish content. Powered by HAPI MCP. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier: p
+
+## Microsoft MCP Gateway
+
+Slug: microsoft-mcp-gateway
+Type: orchestration
+Trust tier: promising
+Review status: manual-reviewed
+Freshness: current
+Source confidence: official
+Recommendation score: 9
+Protocols: MCP
+Clients: MCP clients, VS Code, Azure
+Tags: mcp, gateway, kubernetes, azure, routing, session-aware, reverse-proxy
+Use cases: Route MCP traffic through a managed gateway layer, Operate MCP servers in Kubernetes-oriented environments, Centralize session-aware MCP server lifecycle management
+Best for: Teams already operating Azure or Kubernetes infrastructure for agent tooling, Route MCP traffic through a managed gateway layer, Operate MCP servers in Kubernetes-oriented environments, Centralize session-aware MCP server lifecycle management, mcp workflows, gateway workflows, kubernetes workflows, azure workflows
+Recommended when: Use when MCP routing must be governed in a cloud-native environment with explicit identity and lifecycle controls., Use when a project needs route mcp traffic through a managed gateway layer and the upstream source has been reviewed., Treat as promising until a maintainer verifies install and behavior.
+Risk flags: cloud-configuration-risk, requires-identity-setup, gateway-operational-risk
+Homepage: https://github.com/microsoft/mcp-gateway
+Repository: https://github.com/microsoft/mcp-gateway
+Sources: https://github.com/microsoft/mcp-gateway
+
+Microsoft MCP Gateway is a reverse proxy and management layer for MCP servers focused on scalable, session-aware, stateful routing and lifecycle management in Kubernetes and Azure-oriented environments.
+
+Microsoft MCP Gateway is a reverse proxy and management layer for MCP servers focused on scalable, session-aware, stateful routing and lifecycle management in Kubernetes and Azure-oriented environments. ## Best For - Teams already operating Azure or Kubernetes infrastructure for agent tooling ## Recommended When - Use
 
 ## Moxt Workspace
 
@@ -4707,6 +4683,30 @@ Browserbase MCP gives agents cloud browser sessions for navigation, extraction, 
 
 Browserbase MCP gives agents cloud browser sessions for navigation, extraction, QA, and web automation through MCP-compatible clients. ## Best For - Hosted browser workflows where local Playwright sessions are insufficient ## Recommended When - Use when browser automation needs cloud sessions, screenshots, or managed i
 
+## Claude Code Memory
+
+Slug: claude-code-memory
+Type: memory
+Trust tier: verified
+Review status: manual-reviewed
+Freshness: current
+Source confidence: official
+Recommendation score: 8
+Protocols: none recorded
+Clients: Claude Code
+Tags: memory, claude-code, instructions, context-engineering, claude-md
+Use cases: Persist stable project instructions, Share agent guidance across coding sessions, Separate durable project context from temporary task notes
+Best for: Project-local context that should be versioned and reviewed with code, Persist stable project instructions, Share agent guidance across coding sessions, Separate durable project context from temporary task notes, memory workflows, claude-code workflows, instructions workflows, context-engineering workflows
+Recommended when: Use when coding agents repeatedly need the same project conventions, commands, and safety rules., Use when a project needs persist stable project instructions and the upstream source has been reviewed., Prefer this when verified install and behavior notes are required.
+Risk flags: license-not-asserted, memory-can-leak-sensitive-context, stale-memory-risk, no-canonical-repo-url, sensitive-permissions
+Homepage: https://docs.anthropic.com/en/docs/claude-code/memory
+Repository: none recorded
+Sources: https://docs.anthropic.com/en/docs/claude-code/memory, https://code.claude.com/docs/en/features-overview
+
+Claude Code memory uses CLAUDE.md files and related project, user, and enterprise memory surfaces to persist stable instructions that future coding sessions can load.
+
+Claude Code memory uses CLAUDE.md files and related project, user, and enterprise memory surfaces to persist stable instructions that future coding sessions can load. ## Best For - Project-local context that should be versioned and reviewed with code ## Recommended When - Use when coding agents repeatedly need the same
+
 ## Claude Code Subagents
 
 Slug: claude-code-subagents
@@ -4730,6 +4730,30 @@ Sources: https://docs.anthropic.com/en/docs/claude-code/sub-agents
 Claude Code subagents are specialized agent definitions with focused prompts, tool permissions, and separate context windows for delegated coding and research tasks.
 
 Claude Code subagents are specialized agent definitions with focused prompts, tool permissions, and separate context windows for delegated coding and research tasks. ## Best For - Repeated specialist tasks like test writing, migration review, docs cleanup, and codebase exploration ## Recommended When - Use when a recur
+
+## GitHub MCP Server
+
+Slug: github-mcp-server
+Type: mcp-server
+Trust tier: promising
+Review status: manual-reviewed
+Freshness: current
+Source confidence: official
+Recommendation score: 8
+Protocols: MCP
+Clients: VS Code, Claude Desktop, Claude Code, Cursor, Windsurf, OpenAI Agents SDK, Codex
+Tags: mcp, github, repository, pull-requests, issues, actions, toolsets, read-only-mode
+Use cases: Let agents inspect GitHub repositories and code, Automate issues, pull requests, and workflow triage, Limit visible GitHub tools with explicit toolsets
+Best for: GitHub-native repository workflows with scoped tokens and branch protections, Let agents inspect GitHub repositories and code, Automate issues, pull requests, and workflow triage, Limit visible GitHub tools with explicit toolsets, mcp workflows, github workflows, repository workflows, pull-requests workflows
+Recommended when: Use when an agent needs GitHub context or PR workflows and token scope can be constrained., Prefer read-only mode or narrow toolsets until mutation is explicitly approved., Use when a project needs let agents inspect github repositories and code and the upstream source has been reviewed., Treat as promising until a maintainer verifies install and behavior.
+Risk flags: mutates-repositories, requires-token, high-tool-count, sensitive-permissions
+Homepage: https://github.com/github/github-mcp-server
+Repository: https://github.com/github/github-mcp-server
+Sources: https://github.com/github/github-mcp-server
+
+GitHub MCP Server is GitHub's official MCP server for repository, code search, issue, pull request, workflow, security, and collaboration operations, with toolset controls and read-only mode available.
+
+GitHub MCP Server is GitHub's official MCP server for repository, code search, issue, pull request, workflow, security, and collaboration operations, with toolset controls and read-only mode available. ## Best For - GitHub-native repository workflows with scoped tokens and branch protections ## Recommended When - Use w
 
 ## Graphiti
 
@@ -4851,6 +4875,30 @@ Letta is an open-source framework for stateful agents with memory, tools, archiv
 
 Letta is an open-source framework for stateful agents with memory, tools, archival storage, and server APIs descended from the MemGPT research line. ## Best For - Long-lived agents that need inspectable memory state ## Recommended When - Use when memory should be first-class and inspectable rather than hidden in prompt
 
+## Lunar MCPX
+
+Slug: lunar-mcpx
+Type: orchestration
+Trust tier: promising
+Review status: manual-reviewed
+Freshness: current
+Source confidence: high
+Recommendation score: 8
+Protocols: MCP
+Clients: MCP clients, Claude Desktop, Claude Code, Cursor, VS Code
+Tags: mcp, gateway, mcpx, tool-routing, access-control, authentication, observability, catalog
+Use cases: Put multiple MCP servers behind a single endpoint, Constrain tool discovery by agent or workflow, Centralize authentication, routing, and audit controls
+Best for: Teams that have outgrown direct per-client MCP server configuration, Put multiple MCP servers behind a single endpoint, Constrain tool discovery by agent or workflow, Centralize authentication, routing, and audit controls, mcp workflows, gateway workflows, mcpx workflows, tool-routing workflows
+Recommended when: Use when direct MCP configuration creates too much tool-schema, auth, or audit complexity., Use when a project needs put multiple mcp servers behind a single endpoint and the upstream source has been reviewed., Treat as promising until a maintainer verifies install and behavior.
+Risk flags: gateway-operational-risk, centralizes-tool-access, requires-policy-review
+Homepage: https://docs.lunar.dev/mcpx/architecture
+Repository: https://github.com/TheLunarCompany/lunar
+Sources: https://docs.lunar.dev/mcpx/architecture, https://docs.lunar.dev/mcpx/features/, https://github.com/TheLunarCompany/lunar
+
+Lunar MCPX is an MCP gateway that sits between MCP clients and backend MCP servers, providing a single endpoint, aggregated tool catalog, dynamic routing, access rules, authentication, and audit-oriented enterprise controls.
+
+Lunar MCPX is an MCP gateway that sits between MCP clients and backend MCP servers, providing a single endpoint, aggregated tool catalog, dynamic routing, access rules, authentication, and audit-oriented enterprise controls. ## Best For - Teams that have outgrown direct per-client MCP server configuration ## Recommende
+
 ## Mem0
 
 Slug: mem0
@@ -4898,6 +4946,30 @@ Sources: https://github.com/openai/codex
 OpenAI Codex CLI is an open-source terminal coding agent for reading repositories, editing files, running commands, and producing reviewable changes with user-controlled execution.
 
 OpenAI Codex CLI is an open-source terminal coding agent for reading repositories, editing files, running commands, and producing reviewable changes with user-controlled execution. ## Best For - Terminal-native coding work with reviewable diffs - Repositories that need command execution under approval ## Recommended Wh
+
+## Qdrant MCP Server
+
+Slug: qdrant-mcp-server
+Type: mcp-server
+Trust tier: promising
+Review status: manual-reviewed
+Freshness: current
+Source confidence: official
+Recommendation score: 8
+Protocols: MCP, stdio, SSE, Streamable HTTP
+Clients: Claude Desktop, Claude Code, MCP clients
+Tags: mcp, qdrant, vector-database, memory, semantic-search, retrieval
+Use cases: Give agents semantic memory backed by Qdrant, Store and retrieve project notes or embeddings through MCP, Connect local or hosted Qdrant collections to agent workflows
+Best for: Teams already using Qdrant or needing a small MCP memory layer, Give agents semantic memory backed by Qdrant, Store and retrieve project notes or embeddings through MCP, Connect local or hosted Qdrant collections to agent workflows, mcp workflows, qdrant workflows, vector-database workflows, memory workflows
+Recommended when: Use when stored memories are reviewed, scoped, and safe to persist in a vector database., Use when a project needs give agents semantic memory backed by qdrant and the upstream source has been reviewed., Treat as promising until a maintainer verifies install and behavior.
+Risk flags: database-access, memory-can-leak-sensitive-context, embedding-model-dependency, sensitive-permissions
+Homepage: https://github.com/qdrant/mcp-server-qdrant
+Repository: https://github.com/qdrant/mcp-server-qdrant
+Sources: https://github.com/qdrant/mcp-server-qdrant
+
+Qdrant MCP Server is Qdrant's official MCP implementation for storing and retrieving semantic memory in Qdrant collections through store and find tools.
+
+Qdrant MCP Server is Qdrant's official MCP implementation for storing and retrieving semantic memory in Qdrant collections through store and find tools. ## Best For - Teams already using Qdrant or needing a small MCP memory layer ## Recommended When - Use when stored memories are reviewed, scoped, and safe to persist i
 
 ## Stripe Agent Toolkit
 
@@ -4947,78 +5019,6 @@ SWE-agent is an open-source coding agent system for solving GitHub issues in a c
 
 SWE-agent is an open-source coding agent system for solving GitHub issues in a controlled agent-computer interface with repository editing and tests. ## Best For - Research and controlled coding-agent evaluations ## Recommended When - Use when SWE-bench style issue resolution and reproducible experiments matter. ## Rev
 
-## Claude Code
-
-Slug: anthropic-claude-code
-Type: coding-agent
-Trust tier: promising
-Review status: manual-reviewed
-Freshness: current
-Source confidence: official
-Recommendation score: 7
-Protocols: none recorded
-Clients: Terminal, GitHub, MCP
-Tags: coding-agent, claude-code, subagents, memory, mcp
-Use cases: Let agents inspect and edit code repositories, Coordinate specialist subagents for coding tasks, Persist project instructions in memory files
-Best for: Codebases that benefit from explicit project memory and specialist subagents, Let agents inspect and edit code repositories, Coordinate specialist subagents for coding tasks, Persist project instructions in memory files, coding-agent workflows, claude-code workflows, subagents workflows, memory workflows
-Recommended when: Use when Claude Code's memory files, MCP integration, and subagents map to the team's coding workflow., Use when a project needs let agents inspect and edit code repositories and the upstream source has been reviewed., Treat as promising until a maintainer verifies install and behavior.
-Risk flags: license-not-asserted, can-edit-files, can-run-shell-commands, no-canonical-repo-url, sensitive-permissions
-Homepage: https://docs.anthropic.com/en/docs/claude-code/overview
-Repository: none recorded
-Sources: https://docs.anthropic.com/en/docs/claude-code/overview, https://docs.anthropic.com/en/docs/claude-code/memory, https://docs.anthropic.com/en/docs/claude-code/sub-agents
-
-Claude Code is Anthropic's terminal coding agent for codebase understanding, file edits, command execution, GitHub workflows, MCP tool use, memory files, and subagents.
-
-Claude Code is Anthropic's terminal coding agent for codebase understanding, file edits, command execution, GitHub workflows, MCP tool use, memory files, and subagents. ## Best For - Codebases that benefit from explicit project memory and specialist subagents ## Recommended When - Use when Claude Code's memory files, M
-
-## Cline
-
-Slug: cline
-Type: coding-agent
-Trust tier: promising
-Review status: manual-reviewed
-Freshness: current
-Source confidence: high
-Recommendation score: 7
-Protocols: none recorded
-Clients: VS Code, MCP
-Tags: coding-agent, vscode, mcp, browser, terminal
-Use cases: Use an editor agent with terminal and browser control, Connect VS Code workflows to MCP tools
-Best for: Developer-supervised code edits inside VS Code, Use an editor agent with terminal and browser control, Connect VS Code workflows to MCP tools, coding-agent workflows, vscode workflows, mcp workflows, browser workflows, terminal workflows
-Recommended when: Use when VS Code, explicit approvals, and MCP extension points fit the project workflow., Use when a project needs use an editor agent with terminal and browser control and the upstream source has been reviewed., Treat as promising until a maintainer verifies install and behavior.
-Risk flags: can-edit-files, can-run-shell-commands, browser-access, sensitive-permissions
-Homepage: https://docs.cline.bot/introduction/overview
-Repository: https://github.com/cline/cline
-Sources: https://docs.cline.bot/introduction/overview, https://github.com/cline/cline
-
-Cline is an open-source VS Code coding agent that can read files, edit code, use the terminal and browser, and request approval for risky actions.
-
-Cline is an open-source VS Code coding agent that can read files, edit code, use the terminal and browser, and request approval for risky actions. ## Best For - Developer-supervised code edits inside VS Code ## Recommended When - Use when VS Code, explicit approvals, and MCP extension points fit the project workflow. #
-
-## Cursor Agent
-
-Slug: cursor-agent
-Type: coding-agent
-Trust tier: promising
-Review status: manual-reviewed
-Freshness: current
-Source confidence: official
-Recommendation score: 7
-Protocols: none recorded
-Clients: Cursor, VS Code-like editor
-Tags: coding-agent, editor, rules, codebase
-Use cases: Use an IDE-native agent for multi-file code edits, Guide coding agents with project rules
-Best for: Developers who want agentic edits inside an editor workflow, Use an IDE-native agent for multi-file code edits, Guide coding agents with project rules, coding-agent workflows, editor workflows, rules workflows, codebase workflows, coding-agent discovery and comparison
-Recommended when: Use when project rules and editor context are central to the coding workflow., Use when a project needs use an ide-native agent for multi-file code edits and the upstream source has been reviewed., Treat as promising until a maintainer verifies install and behavior.
-Risk flags: license-not-asserted, can-edit-files, can-run-shell-commands, no-canonical-repo-url, sensitive-permissions
-Homepage: https://docs.cursor.com/agent/overview
-Repository: none recorded
-Sources: https://docs.cursor.com/agent/overview, https://docs.cursor.com/context/rules
-
-Cursor Agent is Cursor's editor-native coding agent for navigating codebases, applying multi-file edits, using project rules, and running terminal-backed tasks.
-
-Cursor Agent is Cursor's editor-native coding agent for navigating codebases, applying multi-file edits, using project rules, and running terminal-backed tasks. ## Best For - Developers who want agentic edits inside an editor workflow ## Recommended When - Use when project rules and editor context are central to the co
-
 ## GitHub Copilot Coding Agent
 
 Slug: github-copilot-coding-agent
@@ -5066,30 +5066,6 @@ Sources: https://docs.all-hands.dev/, https://github.com/All-Hands-AI/OpenHands
 OpenHands is an open-source software engineering agent platform for code editing, terminal use, browsing, issue work, and reproducible development environments.
 
 OpenHands is an open-source software engineering agent platform for code editing, terminal use, browsing, issue work, and reproducible development environments. ## Best For - Sandboxed SWE-agent style tasks that need a full environment ## Recommended When - Use when tasks need an interactive development environment rat
-
-## Supabase MCP
-
-Slug: supabase-mcp
-Type: mcp-server
-Trust tier: promising
-Review status: manual-reviewed
-Freshness: current
-Source confidence: high
-Recommendation score: 7
-Protocols: MCP
-Clients: Claude Desktop, Claude Code, Cursor, VS Code, OpenAI Agents SDK
-Tags: mcp, database, supabase, sql, backend
-Use cases: Let agents inspect Supabase projects, Query or manage development databases through MCP
-Best for: Supabase-backed apps where schema and project context improve agent work, Let agents inspect Supabase projects, Query or manage development databases through MCP, mcp workflows, database workflows, supabase workflows, sql workflows, backend workflows
-Recommended when: Use when database scope can be limited and SQL changes are reviewed before execution., Use when a project needs let agents inspect supabase projects and the upstream source has been reviewed., Treat as promising until a maintainer verifies install and behavior.
-Risk flags: database-access, can-mutate-data, requires-token, sensitive-permissions
-Homepage: https://github.com/supabase-community/supabase-mcp
-Repository: https://github.com/supabase-community/supabase-mcp
-Sources: https://github.com/supabase-community/supabase-mcp
-
-Supabase MCP is a community Supabase MCP server for project, database, SQL, and platform operations through MCP-compatible agent clients.
-
-Supabase MCP is a community Supabase MCP server for project, database, SQL, and platform operations through MCP-compatible agent clients. ## Best For - Supabase-backed apps where schema and project context improve agent work ## Recommended When - Use when database scope can be limited and SQL changes are reviewed befor
 
 ## Swarms
 
@@ -5139,6 +5115,54 @@ Zep is a memory platform for AI agents that builds temporal knowledge graphs and
 
 Zep is a memory platform for AI agents that builds temporal knowledge graphs and retrieves relevant user, session, and business context for agent applications. ## Best For - Hosted memory systems that need graph-shaped context ## Recommended When - Use when temporal graph memory is worth the operational and privacy ove
 
+## Claude Code
+
+Slug: anthropic-claude-code
+Type: coding-agent
+Trust tier: promising
+Review status: manual-reviewed
+Freshness: current
+Source confidence: official
+Recommendation score: 6
+Protocols: none recorded
+Clients: Terminal, GitHub, MCP
+Tags: coding-agent, claude-code, subagents, memory, mcp, hooks, skills
+Use cases: Let agents inspect and edit code repositories, Coordinate specialist subagents for coding tasks, Persist project instructions in memory files, Scope MCP access to specific agents
+Best for: Codebases that benefit from explicit project memory, terminal workflows, and specialist subagents, Let agents inspect and edit code repositories, Coordinate specialist subagents for coding tasks, Persist project instructions in memory files, Scope MCP access to specific agents, coding-agent workflows, claude-code workflows, subagents workflows
+Recommended when: Use when Claude Code's memory files, MCP integration, hooks, skills, and subagents map to the team's coding workflow., Use when a project needs let agents inspect and edit code repositories and the upstream source has been reviewed., Treat as promising until a maintainer verifies install and behavior.
+Risk flags: license-not-asserted, can-edit-files, can-run-shell-commands, mcp-tool-risk, no-canonical-repo-url, sensitive-permissions
+Homepage: https://docs.anthropic.com/en/docs/claude-code/overview
+Repository: none recorded
+Sources: https://docs.anthropic.com/en/docs/claude-code/overview, https://docs.anthropic.com/en/docs/claude-code/memory, https://code.claude.com/docs/en/sub-agents, https://code.claude.com/docs/en/features-overview
+
+Claude Code is Anthropic's terminal coding agent for codebase understanding, file edits, command execution, GitHub workflows, MCP tool use, memory files, hooks, skills, and custom subagents.
+
+Claude Code is Anthropic's terminal coding agent for codebase understanding, file edits, command execution, GitHub workflows, MCP tool use, memory files, hooks, skills, and custom subagents. ## Best For - Codebases that benefit from explicit project memory, terminal workflows, and specialist subagents ## Recommended Wh
+
+## Cline
+
+Slug: cline
+Type: coding-agent
+Trust tier: promising
+Review status: manual-reviewed
+Freshness: current
+Source confidence: high
+Recommendation score: 6
+Protocols: none recorded
+Clients: VS Code, MCP, OpenRouter, Anthropic, OpenAI, Ollama
+Tags: coding-agent, vscode, mcp, browser, terminal, byom, approvals
+Use cases: Use an editor agent with terminal and browser control, Connect VS Code workflows to MCP tools, Run model-flexible coding tasks with explicit approvals
+Best for: Developer-supervised code edits inside VS Code, Use an editor agent with terminal and browser control, Connect VS Code workflows to MCP tools, Run model-flexible coding tasks with explicit approvals, coding-agent workflows, vscode workflows, mcp workflows, browser workflows
+Recommended when: Use when VS Code, explicit approvals, model flexibility, and MCP extension points fit the project workflow., Use when a project needs use an editor agent with terminal and browser control and the upstream source has been reviewed., Treat as promising until a maintainer verifies install and behavior.
+Risk flags: can-edit-files, can-run-shell-commands, browser-access, model-provider-costs, sensitive-permissions
+Homepage: https://docs.cline.bot/introduction/overview
+Repository: https://github.com/cline/cline
+Sources: https://docs.cline.bot/introduction/overview, https://github.com/cline/cline
+
+Cline is an open-source VS Code coding agent that can read and edit files, use terminal and browser capabilities, connect to MCP tools, and request approval for sensitive actions.
+
+Cline is an open-source VS Code coding agent that can read and edit files, use terminal and browser capabilities, connect to MCP tools, and request approval for sensitive actions. ## Best For - Developer-supervised code edits inside VS Code ## Recommended When - Use when VS Code, explicit approvals, model flexibility,
+
 ## Clude
 
 Slug: clude
@@ -5187,6 +5211,126 @@ codebase-memory-mcp is a local MCP server that indexes source code into a persis
 
 codebase-memory-mcp is a local MCP server that indexes source code into a persistent tree-sitter knowledge graph so coding agents can answer structural questions with graph queries instead of repeated grep and file-reading loops. ## Best For - Large repositories where agents repeatedly ask structural codebase questions
 
+## Cursor Agent
+
+Slug: cursor-agent
+Type: coding-agent
+Trust tier: promising
+Review status: manual-reviewed
+Freshness: current
+Source confidence: official
+Recommendation score: 6
+Protocols: none recorded
+Clients: Cursor, VS Code-like editor
+Tags: coding-agent, editor, rules, codebase, terminal, agent
+Use cases: Use an IDE-native agent for multi-file code edits, Guide coding agents with project rules, Run terminal-backed coding tasks with editor context
+Best for: Developers who want agentic edits inside Cursor's editor workflow, Use an IDE-native agent for multi-file code edits, Guide coding agents with project rules, Run terminal-backed coding tasks with editor context, coding-agent workflows, editor workflows, rules workflows, codebase workflows
+Recommended when: Use when Cursor project rules and editor context are central to the coding workflow., Use when a project needs use an ide-native agent for multi-file code edits and the upstream source has been reviewed., Treat as promising until a maintainer verifies install and behavior.
+Risk flags: license-not-asserted, can-edit-files, can-run-shell-commands, hosted-service, no-canonical-repo-url, sensitive-permissions
+Homepage: https://docs.cursor.com/agent/overview
+Repository: none recorded
+Sources: https://docs.cursor.com/agent/overview, https://docs.cursor.com/context/rules, https://docs.cursor.com/en/agent/terminal
+
+Cursor Agent is Cursor's editor-native coding agent for navigating codebases, applying multi-file edits, using project rules, running terminal-backed tasks, and working inside Cursor's IDE context.
+
+Cursor Agent is Cursor's editor-native coding agent for navigating codebases, applying multi-file edits, using project rules, running terminal-backed tasks, and working inside Cursor's IDE context. ## Best For - Developers who want agentic edits inside Cursor's editor workflow ## Recommended When - Use when Cursor proj
+
+## OpenTabs
+
+Slug: opentabs
+Type: mcp-server
+Trust tier: promising
+Review status: manual-reviewed
+Freshness: current
+Source confidence: high
+Recommendation score: 6
+Protocols: MCP, Streamable HTTP
+Clients: Claude Code, Cursor, Windsurf, OpenCode, MCP clients
+Tags: mcp, browser, chrome-extension, authenticated-session, web-apps, gateway-mode, plugins
+Use cases: Let agents interact with web apps through an existing browser session, Expose internal web-app APIs as MCP tools, Reduce OAuth/API-key setup for tools already open in the user's browser
+Best for: Local-first workflows where browser-session access is acceptable and plugins can be reviewed, Let agents interact with web apps through an existing browser session, Expose internal web-app APIs as MCP tools, Reduce OAuth/API-key setup for tools already open in the user's browser, mcp workflows, browser workflows, chrome-extension workflows, authenticated-session workflows
+Recommended when: Use only after reviewing plugins and deciding which authenticated sessions an agent may touch., Use when a project needs let agents interact with web apps through an existing browser session and the upstream source has been reviewed., Treat as promising until a maintainer verifies install and behavior.
+Risk flags: authenticated-browser-session, can-act-as-user, plugin-review-required, high-tool-count, sensitive-permissions
+Homepage: https://opentabs.dev/
+Repository: https://github.com/opentabs-dev/opentabs
+Sources: https://opentabs.dev/, https://opentabs.dev/docs/install, https://github.com/opentabs-dev/opentabs
+
+OpenTabs is a local Chrome extension and MCP server that lets agents call web-app internal APIs through the user's authenticated browser session, with plugin gating, audit logs, and multiple connection modes.
+
+OpenTabs is a local Chrome extension and MCP server that lets agents call web-app internal APIs through the user's authenticated browser session, with plugin gating, audit logs, and multiple connection modes. ## Best For - Local-first workflows where browser-session access is acceptable and plugins can be reviewed ## R
+
+## Roo Code
+
+Slug: roo-code
+Type: coding-agent
+Trust tier: promising
+Review status: manual-reviewed
+Freshness: current
+Source confidence: high
+Recommendation score: 6
+Protocols: none recorded
+Clients: VS Code, Cursor, MCP, OpenRouter, Anthropic, OpenAI
+Tags: coding-agent, roo-code, vscode, custom-modes, mcp, checkpoints, byom
+Use cases: Use role-based modes for planning, coding, asking, and debugging, Connect a VS Code-family coding agent to MCP servers, Experiment with custom mode prompts and permissions
+Best for: Teams that need explicit mode separation and model/provider flexibility inside VS Code-like editors, Use role-based modes for planning, coding, asking, and debugging, Connect a VS Code-family coding agent to MCP servers, Experiment with custom mode prompts and permissions, coding-agent workflows, roo-code workflows, vscode workflows, custom-modes workflows
+Recommended when: Use after confirming the current maintenance path and reviewing mode permissions for the project., Use when a project needs use role-based modes for planning, coding, asking, and debugging and the upstream source has been reviewed., Treat as promising until a maintainer verifies install and behavior.
+Risk flags: can-edit-files, can-run-shell-commands, browser-access, community-handoff, sensitive-permissions
+Homepage: https://github.com/RooCodeInc/Roo-Code
+Repository: https://github.com/RooCodeInc/Roo-Code
+Sources: https://github.com/RooCodeInc/Roo-Code, https://roocodeinc.github.io/Roo-Code/basic-usage/using-modes/
+
+Roo Code is a VS Code-family coding agent that supports Code, Architect, Ask, Debug, and Custom Modes, MCP servers, checkpoints, codebase indexing, and model/provider configuration.
+
+Roo Code is a VS Code-family coding agent that supports Code, Architect, Ask, Debug, and Custom Modes, MCP servers, checkpoints, codebase indexing, and model/provider configuration. ## Best For - Teams that need explicit mode separation and model/provider flexibility inside VS Code-like editors ## Recommended When - Us
+
+## Supabase MCP
+
+Slug: supabase-mcp
+Type: mcp-server
+Trust tier: promising
+Review status: manual-reviewed
+Freshness: current
+Source confidence: high
+Recommendation score: 6
+Protocols: MCP
+Clients: Claude Desktop, Claude Code, Cursor, Windsurf, VS Code, OpenAI Agents SDK, Codex
+Tags: mcp, database, supabase, postgres, sql, migrations, logs, docs-search
+Use cases: Let agents inspect Supabase projects and schemas, Search Supabase documentation from an MCP client, Query or manage development databases through MCP
+Best for: Supabase-backed apps where schema and docs context improve agent work, Let agents inspect Supabase projects and schemas, Search Supabase documentation from an MCP client, Query or manage development databases through MCP, mcp workflows, database workflows, supabase workflows, postgres workflows
+Recommended when: Use when database scope can be limited and SQL or migration changes are reviewed before execution., Keep production projects behind explicit approval and least-privilege access., Use when a project needs let agents inspect supabase projects and schemas and the upstream source has been reviewed., Treat as promising until a maintainer verifies install and behavior.
+Risk flags: database-access, can-mutate-data, requires-token, pre-1.0-upstream, sensitive-permissions
+Homepage: https://github.com/supabase-community/supabase-mcp
+Repository: https://github.com/supabase-community/supabase-mcp
+Sources: https://github.com/supabase-community/supabase-mcp
+
+Supabase MCP connects MCP clients to Supabase projects for docs search, project context, database schema inspection, SQL execution, migrations, logs, advisors, functions, and platform operations.
+
+Supabase MCP connects MCP clients to Supabase projects for docs search, project context, database schema inspection, SQL execution, migrations, logs, advisors, functions, and platform operations. ## Best For - Supabase-backed apps where schema and docs context improve agent work ## Recommended When - Use when database
+
+## Custom Modes Roo Code
+
+Slug: custom-modes-roo-code
+Type: skill
+Trust tier: unreviewed
+Review status: manual-reviewed
+Freshness: current
+Source confidence: medium
+Recommendation score: 4
+Protocols: none recorded
+Clients: Roo Code
+Tags: roo-code, custom-modes, agent-modes, specialists, schemas, permissions
+Use cases: Review examples of specialized Roo Code modes, Prototype role-specific agent prompts and permission groups, Build a mode catalog for architecture, coding, security, and domain tasks
+Best for: Teams experimenting with specialist mode design and willing to audit each mode before use, Review examples of specialized Roo Code modes, Prototype role-specific agent prompts and permission groups, Build a mode catalog for architecture, coding, security, and domain tasks, roo-code workflows, custom-modes workflows, agent-modes workflows, specialists workflows
+Recommended when: Use as an inspiration catalog; import only reviewed modes with scoped permissions., Use when a project needs review examples of specialized roo code modes and the upstream source has been reviewed., Treat as promising until a maintainer verifies install and behavior.
+Risk flags: community-maintained, can-grant-broad-tool-access, mode-audit-required, sensitive-permissions
+Homepage: https://github.com/jtgsystems/Custom-Modes-Roo-Code
+Repository: https://github.com/jtgsystems/Custom-Modes-Roo-Code
+Sources: https://github.com/jtgsystems/Custom-Modes-Roo-Code
+
+Custom Modes Roo Code is a community collection of Roo Code custom-mode and agent configurations with schemas, categorized agents, and supporting scripts for specialized mode-based workflows.
+
+Custom Modes Roo Code is a community collection of Roo Code custom-mode and agent configurations with schemas, categorized agents, and supporting scripts for specialized mode-based workflows. ## Best For - Teams experimenting with specialist mode design and willing to audit each mode before use ## Recommended When - Us
+
 ## Covenant Research
 
 Slug: covenant-research
@@ -5210,6 +5354,78 @@ Sources: https://github.com/asalsali/covenant-research, https://asalsali.github.
 Covenant Research is a public research and benchmarking site for a proposed governance layer for autonomous AI agents, including a whitepaper, Harbor agent configurations, governance rules, and preliminary Terminal-Bench results.
 
 Covenant Research is a public research and benchmarking site for a proposed governance layer for autonomous AI agents, including a whitepaper, Harbor agent configurations, governance rules, and preliminary Terminal-Bench results. ## Best For - Maintainers tracking governance and benchmark claims for autonomous coding a
+
+## MCP Server MySQL
+
+Slug: mcp-server-mysql
+Type: mcp-server
+Trust tier: unreviewed
+Review status: manual-reviewed
+Freshness: current
+Source confidence: medium
+Recommendation score: 3
+Protocols: MCP, Streamable HTTP
+Clients: Claude Desktop, Claude Code, MCP clients
+Tags: mcp, mysql, database, schema, sql, read-only, remote-mcp
+Use cases: Let agents inspect MySQL schemas, Run read-only MySQL queries through MCP, Expose carefully gated database access to coding assistants
+Best for: Development databases where read-only schema and query access can speed backend work, Let agents inspect MySQL schemas, Run read-only MySQL queries through MCP, Expose carefully gated database access to coding assistants, mcp workflows, mysql workflows, database workflows, schema workflows
+Recommended when: Use only with read-only defaults, development data, and explicit approval before enabling writes., Use when a project needs let agents inspect mysql schemas and the upstream source has been reviewed., Treat as promising until a maintainer verifies install and behavior.
+Risk flags: database-access, requires-secrets, write-gates-available, community-maintained, sensitive-permissions
+Homepage: https://github.com/benborla/mcp-server-mysql
+Repository: https://github.com/benborla/mcp-server-mysql
+Sources: https://github.com/benborla/mcp-server-mysql
+
+MCP Server MySQL provides MCP access to MySQL schemas and queries with read-only defaults, explicit write-operation gates, remote mode, rate limits, query complexity controls, and connection pooling.
+
+MCP Server MySQL provides MCP access to MySQL schemas and queries with read-only defaults, explicit write-operation gates, remote mode, rate limits, query complexity controls, and connection pooling. ## Best For - Development databases where read-only schema and query access can speed backend work ## Recommended When -
+
+## Rules Template Memory Bank
+
+Slug: rules-template-memory-bank
+Type: memory
+Trust tier: unreviewed
+Review status: manual-reviewed
+Freshness: current
+Source confidence: medium
+Recommendation score: 3
+Protocols: none recorded
+Clients: Cursor, Cline, Roo Code, Windsurf
+Tags: memory-bank, rules, cline, roo-code, cursor, windsurf, context-engineering
+Use cases: Bootstrap a persistent memory bank for coding agents, Share rule files across multiple IDE agents, Separate planning, implementation, and documentation instructions
+Best for: Teams willing to maintain agent memory files and review rule changes like code, Bootstrap a persistent memory bank for coding agents, Share rule files across multiple IDE agents, Separate planning, implementation, and documentation instructions, memory-bank workflows, rules workflows, cline workflows, roo-code workflows
+Recommended when: Use as a pattern source, then copy only the minimal ideas that match the repository's workflow., Use when a project needs bootstrap a persistent memory bank for coding agents and the upstream source has been reviewed., Treat as promising until a maintainer verifies install and behavior.
+Risk flags: license-not-asserted, community-maintained, stale-memory-risk, can-overconstrain-agents, sensitive-permissions
+Homepage: https://github.com/Bhartendu-Kumar/rules_template
+Repository: https://github.com/Bhartendu-Kumar/rules_template
+Sources: https://github.com/Bhartendu-Kumar/rules_template
+
+Rules Template is a community rule and memory-bank template for Cursor, Cline, Roo Code, and Windsurf that organizes agent instructions, workflow phases, and persistent project context.
+
+Rules Template is a community rule and memory-bank template for Cursor, Cline, Roo Code, and Windsurf that organizes agent instructions, workflow phases, and persistent project context. ## Best For - Teams willing to maintain agent memory files and review rule changes like code ## Recommended When - Use as a pattern so
+
+## Crawl4AI RAG MCP Server
+
+Slug: mcp-crawl4ai-rag
+Type: mcp-server
+Trust tier: unreviewed
+Review status: manual-reviewed
+Freshness: current
+Source confidence: medium
+Recommendation score: 2
+Protocols: MCP, SSE
+Clients: Claude Desktop, Claude Code, Windsurf, MCP clients
+Tags: mcp, rag, crawl4ai, web-crawling, supabase, vector-search, documentation, knowledge-graph
+Use cases: Crawl documentation and retrieve relevant chunks for coding agents, Create a project-specific RAG store for external docs, Search code examples extracted from crawled documentation
+Best for: Experimental documentation RAG workflows where network, database, and embedding costs are acceptable, Crawl documentation and retrieve relevant chunks for coding agents, Create a project-specific RAG store for external docs, Search code examples extracted from crawled documentation, mcp workflows, rag workflows, crawl4ai workflows, web-crawling workflows
+Recommended when: Use as a reviewed RAG experiment, not as default runtime infrastructure for sensitive repos., Use when a project needs crawl documentation and retrieve relevant chunks for coding agents and the upstream source has been reviewed., Treat as promising until a maintainer verifies install and behavior.
+Risk flags: community-maintained, requires-secrets, external-crawling, database-access, can-ingest-third-party-content, sensitive-permissions
+Homepage: https://github.com/coleam00/mcp-crawl4ai-rag
+Repository: https://github.com/coleam00/mcp-crawl4ai-rag
+Sources: https://github.com/coleam00/mcp-crawl4ai-rag
+
+Crawl4AI RAG MCP Server combines web crawling, content chunking, Supabase vector storage, semantic retrieval, optional code-example search, reranking, and optional knowledge-graph features for agent documentation lookup.
+
+Crawl4AI RAG MCP Server combines web crawling, content chunking, Supabase vector storage, semantic retrieval, optional code-example search, reranking, and optional knowledge-graph features for agent documentation lookup. ## Best For - Experimental documentation RAG workflows where network, database, and embedding costs
 
 ## Kaimo
 

@@ -45,7 +45,7 @@ recommended_when:
   - Use when memory improves repeated work and users can inspect or delete stored memories.
 trust_tier: promising
 review_status: manual-reviewed
-last_checked: '2026-05-26'
+last_checked: '2026-05-27'
 slug: mem0
 name: Mem0
 type: memory

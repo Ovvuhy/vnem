@@ -50,7 +50,7 @@ recommended_when:
     workflows.
 trust_tier: promising
 review_status: manual-reviewed
-last_checked: '2026-05-26'
+last_checked: '2026-05-27'
 slug: github-copilot-coding-agent
 name: GitHub Copilot Coding Agent
 type: coding-agent

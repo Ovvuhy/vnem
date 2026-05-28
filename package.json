@@ -1,6 +1,6 @@
 {
   "name": "vnem",
-  "version": "0.1.0",
+  "version": "1.0.1",
   "private": true,
   "type": "module",
   "description": "A read-only intelligence pack and LLM-readable index for agentic tools, MCP servers, skills, evals, and workflows.",
@@ -15,27 +15,48 @@
     "generate": "node scripts/generate-artifacts.mjs",
     "check:links": "node scripts/check-links.mjs",
     "test:install-pack": "node scripts/test-install-pack.mjs",
+    "benchmark:vnem": "node scripts/benchmark-vnem.mjs",
+    "benchmark:visual": "node scripts/benchmark-visual-artifacts.mjs",
     "digest": "node scripts/generate-digest.mjs",
     "discover": "node scripts/discover.mjs --apply",
     "discover:dry-run": "node scripts/discover.mjs --dry-run",
     "hermes:hourly": "node scripts/hermes-agent.mjs --mode hourly",
     "hermes:daily": "node scripts/hermes-agent.mjs --mode daily",
     "hermes:dry-run": "node scripts/hermes-agent.mjs --mode hourly --dry-run",
+    "dashboard:dev": "vite --config dashboard/vite.config.js",
+    "dashboard:build": "vite build --config dashboard/vite.config.js",
+    "dashboard:check": "node --check scripts/hermes-dashboard-api.mjs && node --check scripts/lib/hermes-dashboard-summary.mjs && node --check landing/functions/_shared/auth.js && node --check landing/functions/api/auth/nonce.js && node --check landing/functions/api/auth/verify.js && node --check landing/functions/api/auth/session.js && node --check landing/functions/api/auth/logout.js && node --check landing/functions/api/dashboard/summary.js",
+    "dashboard:api": "node scripts/hermes-dashboard-api.mjs",
+    "test:dashboard": "node scripts/test-dashboard.mjs",
     "vnem": "node scripts/vnem-cli.mjs",
     "install:project": "node scripts/vnem-cli.mjs install",
     "doctor": "node scripts/vnem-cli.mjs doctor",
     "mcp": "node scripts/vnem-mcp-server.mjs",
     "test:cli": "node scripts/test-vnem-cli.mjs",
     "test:mcp": "node scripts/test-mcp-server.mjs",
-    "build": "npm run validate && npm run generate",
-    "test": "npm run validate && npm run generate && npm run test:install-pack && npm run test:cli && npm run test:mcp && npm run discover:dry-run && npm run digest"
+    "build": "npm run validate && npm run generate && npm run dashboard:build",
+    "test": "npm run validate && npm run generate && npm run dashboard:build && npm run test:install-pack && npm run test:cli && npm run test:mcp && npm run test:dashboard && npm run discover:dry-run && npm run digest"
   },
   "dependencies": {
+    "@solana/wallet-adapter-base": "^0.9.27",
+    "@solana/wallet-adapter-react": "^0.15.39",
+    "@solana/wallet-adapter-react-ui": "^0.9.39",
+    "@solana/web3.js": "^1.98.4",
     "@modelcontextprotocol/sdk": "^1.29.0",
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
+    "bs58": "^6.0.0",
+    "buffer": "^6.0.3",
     "js-yaml": "^4.1.0",
+    "lucide-react": "^1.16.0",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "tweetnacl": "^1.0.3",
     "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.0.2",
+    "vite": "^8.0.14"
   },
   "engines": {
     "node": ">=20"

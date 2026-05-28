@@ -48,7 +48,7 @@ recommended_when:
   - Use when the agent surface is a web application rather than a backend-only worker.
 trust_tier: promising
 review_status: manual-reviewed
-last_checked: '2026-05-26'
+last_checked: '2026-05-27'
 slug: vercel-ai-sdk
 name: Vercel AI SDK
 type: runtime

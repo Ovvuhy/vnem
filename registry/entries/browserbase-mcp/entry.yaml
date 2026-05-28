@@ -52,7 +52,7 @@ recommended_when:
   - Use when browser automation needs cloud sessions, screenshots, or managed isolation.
 trust_tier: promising
 review_status: manual-reviewed
-last_checked: '2026-05-26'
+last_checked: '2026-05-27'
 slug: browserbase-mcp
 name: Browserbase MCP
 type: mcp-server

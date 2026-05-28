@@ -52,7 +52,7 @@ recommended_when:
   - Use only when payment authorization, receipts, and test-mode verification are explicit.
 trust_tier: promising
 review_status: manual-reviewed
-last_checked: '2026-05-26'
+last_checked: '2026-05-27'
 slug: stripe-agent-toolkit
 name: Stripe Agent Toolkit
 type: payments

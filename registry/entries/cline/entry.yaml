@@ -10,11 +10,15 @@ protocols: []
 clients:
   - VS Code
   - MCP
+  - OpenRouter
+  - Anthropic
+  - OpenAI
+  - Ollama
 install:
   command: null
   notes: >-
-    Install from the VS Code Marketplace and review terminal/browser/MCP approvals before enabling
-    broad access.
+    Review the upstream docs, permissions, pricing, environment variables, and transport before
+    installing.
   config_example: null
 permissions:
   - filesystem
@@ -25,15 +29,19 @@ permissions:
 env_vars:
   - OPENAI_API_KEY
   - ANTHROPIC_API_KEY
+  - OPENROUTER_API_KEY
 tags:
   - coding-agent
   - vscode
   - mcp
   - browser
   - terminal
+  - byom
+  - approvals
 use_cases:
   - Use an editor agent with terminal and browser control
   - Connect VS Code workflows to MCP tools
+  - Run model-flexible coding tasks with explicit approvals
 best_for:
   - Developer-supervised code edits inside VS Code
 not_for:
@@ -48,17 +56,20 @@ risk_flags:
   - can-edit-files
   - can-run-shell-commands
   - browser-access
+  - model-provider-costs
 recommended_when:
-  - Use when VS Code, explicit approvals, and MCP extension points fit the project workflow.
+  - >-
+    Use when VS Code, explicit approvals, model flexibility, and MCP extension points fit the
+    project workflow.
 trust_tier: promising
 review_status: manual-reviewed
-last_checked: '2026-05-26'
+last_checked: '2026-05-27'
 slug: cline
 name: Cline
 type: coding-agent
 summary_llm: >-
-  Cline is an open-source VS Code coding agent that can read files, edit code, use the terminal and
-  browser, and request approval for risky actions.
+  Cline is an open-source VS Code coding agent that can read and edit files, use terminal and
+  browser capabilities, connect to MCP tools, and request approval for sensitive actions.
 source_urls:
   - https://docs.cline.bot/introduction/overview
   - https://github.com/cline/cline

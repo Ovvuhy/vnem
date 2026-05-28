@@ -1,0 +1,19 @@
+[Unit]
+Description=vnem Hermes dashboard summary API
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=hermes
+Group=hermes
+WorkingDirectory=/opt/vnem
+EnvironmentFile=/etc/hermes/hermes.env
+ExecStart=/usr/bin/env npm run dashboard:api
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

@@ -93,7 +93,7 @@
               <h2>Existing repo: managed install.</h2>
               <p>If the repo already has an <code>AGENTS.md</code>, use the local installer so vnem adds a managed block instead of replacing the file.</p>
             </div>
-            <pre class="code-block"><code>git clone https://github.com/naellisim/vnem.git
+            <pre class="code-block"><code>git clone https://github.com/Ovvuhy/vnem.git
 cd vnem
 npm install
 npm run install:project -- /path/to/project
@@ -109,6 +109,10 @@ npm run doctor -- /path/to/project</code></pre>
             <article>
               <h2>Current agent tooling</h2>
               <p>Searchable guidance for MCP servers, skills, agent frameworks, evals, memory layers, search tools, identity, payments, and workflow patterns.</p>
+            </article>
+            <article>
+              <h2>Source radar</h2>
+              <p>Official docs, registries, MCP sources, eval frameworks, and verification sources are mapped so agents research from high-signal upstreams first.</p>
             </article>
             <article>
               <h2>Repo-aware review protocol</h2>
@@ -144,13 +148,17 @@ npm run doctor -- /path/to/project</code></pre>
         <div class="section-inner file-grid">
           <div>
             <p class="section-kicker">inside the pack</p>
-            <h2>Six local files. Better agent judgment.</h2>
+            <h2>Ten local files. Better agent judgment.</h2>
           </div>
           <ul class="file-list">
             <li><code>AGENTS.md</code><span>root pointer that tells agents to read vnem automatically</span></li>
             <li><code>.vnem/AGENTS.md</code><span>how the agent should read and report</span></li>
+            <li><code>.vnem/operating-protocol.md</code><span>universal loop and task contract</span></li>
+            <li><code>.vnem/task-rubrics.json</code><span>broad quality bars, gates, and verification checks</span></li>
             <li><code>.vnem/search-index.json</code><span>tools, MCPs, scores, freshness, risk flags</span></li>
+            <li><code>.vnem/source-radar.json</code><span>official docs, registries, MCP sources, evals, verification inputs</span></li>
             <li><code>.vnem/best-practices.md</code><span>current stack guidance by project area</span></li>
+            <li><code>.vnem/agent-workspace.md</code><span>MCP gateways, memory files, and agent modes</span></li>
             <li><code>.vnem/prompt-engineering.md</code><span>prompt enhancement protocol</span></li>
             <li><code>.vnem/prompt-patterns.json</code><span>machine-readable task patterns</span></li>
           </ul>
@@ -185,10 +193,15 @@ npm run doctor -- /path/to/project</code></pre>
               <path d="M21.7 4.4 18.4 20c-.2 1-.8 1.2-1.6.8l-4.7-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.4-4.9 8.9-8c.4-.3-.1-.5-.6-.2L6.4 13.8 1.7 12.3c-1-.3-1-1 .2-1.5L20.2 3.7c.9-.3 1.7.2 1.5.7Z" />
             </svg>
           </a>
-          <a class="social-link kickstart-link" href="https://kickstart.easya.io/token/M2DvKKrQiKu8Ux9pz3cKgdudmLqUUQLVbB9Vy9zEASY" rel="noreferrer" aria-label="EasyA Kickstart">
+          <a class="social-link" href="https://github.com/Ovvuhy/vnem" rel="noreferrer" aria-label="GitHub: Ovvuhy/vnem">
             <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path class="kickstart-a" d="M12 2.7 21 21h-3.4l-1.5-3.2H7.9L6.4 21H3L12 2.7Zm-2.8 12.4h5.6L12 8.9l-2.8 6.2Z" />
-              <path class="kickstart-bolt" d="M13.5 7.2 9.3 13h2.8l-1.5 4 4.4-5.8h-2.8l1.3-4Z" />
+              <path d="M12 .5C5.7.5.6 5.6.6 11.9c0 5 3.3 9.3 7.9 10.8.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.4-3.9-1.4-.5-1.3-1.2-1.7-1.2-1.7-1-.7.1-.7.1-.7 1.1.1 1.7 1.2 1.7 1.2 1 1.7 2.7 1.2 3.3.9.1-.7.4-1.2.7-1.5-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 .9-.3 3.1 1.2.9-.2 1.9-.4 2.9-.4s2 .1 2.9.4C17 4.7 18 5 18 5c.6 1.6.2 2.8.1 3.1.7.8 1.2 1.8 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.8C23.4 5.6 18.3.5 12 .5Z" />
+            </svg>
+          </a>
+          <a class="social-link kickstart-link" href="https://kickstart.easya.io/token/M2DvKKrQiKu8Ux9pz3cKgdudmLqUUQLVbB9Vy9zEASY" rel="noreferrer" aria-label="EasyA Kickstart">
+            <svg class="kickstart-mark" viewBox="0 0 1024 1024" aria-hidden="true">
+              <rect class="kickstart-bg" width="1024" height="1024" />
+              <path class="kickstart-shape" d="M704 512C748.804 512 771.206 512 788.319 503.281C803.372 495.611 815.611 483.372 823.281 468.319C832 451.206 832 428.804 832 384V320C832 275.196 832 252.794 823.281 235.681C815.611 220.628 803.372 208.389 788.319 200.719C771.206 192 748.804 192 704 192H640C595.196 192 572.794 192 555.681 200.719C540.628 208.389 528.389 220.628 520.719 235.681C512 252.794 512 275.196 512 320V385.467C511.999 429.295 511.904 451.394 503.281 468.319C495.611 483.372 483.372 495.611 468.319 503.281C451.206 512 428.805 512 384 512H320C275.196 512 252.794 512 235.681 520.719C220.628 528.389 208.389 540.628 200.719 555.681C192 572.794 192 595.196 192 640V704C192 748.804 192 771.206 200.719 788.319C208.389 803.372 220.628 815.611 235.681 823.281C252.794 832 275.196 832 320 832H384C428.804 832 451.206 832 468.319 823.281C483.372 815.611 495.611 803.372 503.281 788.319C512 771.206 512 748.804 512 704V640C512 595.196 512 572.794 520.719 555.681C528.389 540.628 540.628 528.389 555.681 520.719C572.794 512 595.196 512 640 512H704Z" />
             </svg>
           </a>
         </div>

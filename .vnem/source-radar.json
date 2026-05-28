@@ -1,0 +1,302 @@
+{
+  "generated_at": "2026-05-27T21:08:33.015Z",
+  "schema_version": "1.0.0",
+  "safety": {
+    "mode": "read-only-source-radar",
+    "executes_code": false,
+    "installs_packages": false,
+    "starts_daemons": false,
+    "requires_secrets": false,
+    "calls_upstream_services": false
+  },
+  "intake_policy": {
+    "purpose": "Help agents and maintainers decide which upstream sources vnem should consult, watch, or summarize before recommending tools or stack changes.",
+    "prefer": [
+      "official documentation",
+      "canonical repositories",
+      "official registries and package metadata",
+      "vendor-maintained MCP servers",
+      "llms.txt or machine-readable documentation indexes",
+      "repeatable eval and observability sources"
+    ],
+    "avoid": [
+      "copying long upstream docs into vnem",
+      "promoting unreviewed sources to verified",
+      "recommending install or configuration before permission and risk review",
+      "claims about performance without a reproducible benchmark or pilot task"
+    ],
+    "promotion_gate": [
+      "source URL and owner recorded",
+      "license posture reviewed",
+      "permissions and risk flags recorded",
+      "freshness or maintenance signal checked",
+      "verification path documented"
+    ]
+  },
+  "sources": [
+    {
+      "id": "mcp-core-and-registry",
+      "title": "MCP Core Docs And Official Registry",
+      "category": "protocol-registry",
+      "priority": "critical",
+      "summary": "Track MCP protocol docs, specification changes, and the official MCP registry before adding or recommending MCP servers.",
+      "use_when": [
+        "An agent is choosing, comparing, or installing MCP servers.",
+        "A registry entry depends on MCP transport, tools, resources, prompts, elicitation, or auth behavior.",
+        "Hermes or maintainers need a source of truth for new MCP server discovery."
+      ],
+      "monitor": [
+        "Protocol docs and llms.txt index",
+        "Official registry API and repository updates",
+        "Server metadata, package sources, licenses, and published versions"
+      ],
+      "risk_checks": [
+        "Registry preview or API stability notes",
+        "Server provenance and package ownership",
+        "Tool permissions, network access, secrets, and write capability"
+      ],
+      "source_urls": [
+        "https://modelcontextprotocol.io/docs/getting-started/intro",
+        "https://modelcontextprotocol.io/llms.txt",
+        "https://github.com/modelcontextprotocol/registry",
+        "https://registry.modelcontextprotocol.io/v0.1/servers"
+      ]
+    },
+    {
+      "id": "coding-agent-clients",
+      "title": "Coding Agent Client Docs",
+      "category": "agent-client",
+      "priority": "critical",
+      "summary": "Track how major coding agents load instructions, MCP tools, memory, subagents, approvals, and project context.",
+      "use_when": [
+        "vnem needs to support Codex, Claude Code, OpenCode, Gemini/ADK, or similar coding agents.",
+        "A recommendation depends on how the agent reads AGENTS.md, CLAUDE.md, MCP resources, prompts, or memory.",
+        "The install pack or MCP server should be easier to use across multiple agent clients."
+      ],
+      "monitor": [
+        "Instruction-file behavior",
+        "MCP configuration and transport support",
+        "Memory, subagent, approval, and tool-search behavior",
+        "Windows, terminal, IDE, and browser support"
+      ],
+      "risk_checks": [
+        "Client-specific config drift",
+        "Features that require account login, OAuth, or paid plans",
+        "Actions that bypass repo review, approvals, or least privilege"
+      ],
+      "source_urls": [
+        "https://developers.openai.com/codex/guides/agents-md",
+        "https://code.claude.com/docs/en/overview",
+        "https://code.claude.com/docs/en/mcp",
+        "https://code.claude.com/docs/en/memory",
+        "https://code.claude.com/docs/en/sub-agents",
+        "https://opencode.ai/docs/",
+        "https://adk.dev/"
+      ]
+    },
+    {
+      "id": "documentation-ingestion",
+      "title": "Documentation Ingestion Sources",
+      "category": "current-docs",
+      "priority": "high",
+      "summary": "Prefer LLM-oriented documentation indexes and source-backed doc retrieval so agents stop wasting context on broad web searches.",
+      "use_when": [
+        "A coding agent needs current library, framework, SDK, or MCP documentation.",
+        "vnem should point to a source rather than copying long upstream docs into the registry.",
+        "A source has an llms.txt index, canonical docs, or a docs-specific MCP."
+      ],
+      "monitor": [
+        "llms.txt and llms-full.txt availability",
+        "Canonical documentation URLs",
+        "Docs MCP servers and CLI doc retrievers"
+      ],
+      "risk_checks": [
+        "Stale generated docs",
+        "Unclear docs provenance",
+        "Copied upstream content that exceeds fair-use or license boundaries"
+      ],
+      "source_urls": [
+        "https://llmstxt.org/",
+        "https://github.com/upstash/context7",
+        "https://docs.firecrawl.dev/mcp-server"
+      ]
+    },
+    {
+      "id": "browser-and-ui-verification",
+      "title": "Browser And UI Verification Sources",
+      "category": "verification-tooling",
+      "priority": "high",
+      "summary": "Track browser automation and hosted browser MCPs that let agents verify rendered apps instead of guessing from code.",
+      "use_when": [
+        "An agent is building UI, debugging a browser app, validating accessibility snapshots, or checking frontend regressions.",
+        "vnem needs to recommend a browser MCP or verification workflow.",
+        "A product claim depends on visible UI behavior rather than static code."
+      ],
+      "monitor": [
+        "Playwright MCP capabilities",
+        "Browserbase MCP capabilities",
+        "Client support for browser MCPs, screenshots, accessibility snapshots, and hosted sessions"
+      ],
+      "risk_checks": [
+        "Browser/network access",
+        "Credential exposure through pages",
+        "Stateful sessions and paid browser infrastructure"
+      ],
+      "source_urls": [
+        "https://github.com/microsoft/playwright-mcp",
+        "https://docs.browserbase.com/integrations/mcp/introduction"
+      ]
+    },
+    {
+      "id": "ui-architecture-sources",
+      "title": "UI Architecture And Design Systems Sources",
+      "category": "visual-design",
+      "priority": "high",
+      "summary": "Track official CSS, accessibility, motion, audio, and contrast sources so visual guidance stays source-backed and does not hard-code unfinished standards as requirements.",
+      "use_when": [
+        "An agent is designing, reviewing, or polishing a UI, game, landing page, dashboard, chat interface, or interactive canvas.",
+        "A recommendation depends on CSS Grid, fluid typography, container queries, glass/depth effects, motion, audio, dark mode, or accessibility contrast.",
+        "vnem needs to distinguish current W3C/WCAG requirements from draft WCAG 3 or APCA-style watchlist ideas."
+      ],
+      "monitor": [
+        "MDN CSS Grid, repeat/minmax, clamp, container queries, backdrop-filter, prefers-reduced-motion, and Web Audio docs",
+        "W3C WCAG 2.2 recommendation and WCAG 3 draft status",
+        "Browser support notes for effects that can harm readability or performance"
+      ],
+      "risk_checks": [
+        "Draft contrast algorithms treated as production requirements",
+        "Motion, flash, blur, or sound that harms accessibility",
+        "Visual effects that reduce text contrast or lack fallback behavior",
+        "Unsourced claims about exact design constants or benchmark improvements"
+      ],
+      "source_urls": [
+        "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Grid_layout",
+        "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/repeat",
+        "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/clamp",
+        "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Containment/Container_queries",
+        "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/backdrop-filter",
+        "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-reduced-motion",
+        "https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API",
+        "https://www.w3.org/TR/WCAG22/",
+        "https://www.w3.org/TR/wcag-3.0/"
+      ]
+    },
+    {
+      "id": "platform-and-data-connectors",
+      "title": "Platform And Data Connector Sources",
+      "category": "sensitive-connectors",
+      "priority": "high",
+      "summary": "Track official or vendor-maintained MCPs for repositories, databases, monitoring, payments, and web extraction with explicit permission review.",
+      "use_when": [
+        "An agent needs GitHub, Supabase, Sentry, Stripe, Firecrawl, or another external service.",
+        "A registry entry can read production-like data, write issues, query databases, spend money, or browse the web.",
+        "vnem needs to recommend least-privilege, read-only, or sandbox-first setup."
+      ],
+      "monitor": [
+        "Official MCP repositories and docs",
+        "Available tool groups, scopes, and read-only modes",
+        "OAuth, PAT, API key, and sandbox guidance"
+      ],
+      "risk_checks": [
+        "Repository write access",
+        "Database writes or production data",
+        "Payment or billing side effects",
+        "Monitoring data sensitivity",
+        "Prompt injection through fetched external content"
+      ],
+      "source_urls": [
+        "https://github.com/github/github-mcp-server",
+        "https://supabase.com/docs/guides/ai-tools/mcp",
+        "https://mcp.sentry.dev/",
+        "https://docs.stripe.com/agents",
+        "https://docs.firecrawl.dev/mcp-server"
+      ]
+    },
+    {
+      "id": "evaluation-and-observability",
+      "title": "Evaluation And Observability Sources",
+      "category": "quality-evidence",
+      "priority": "high",
+      "summary": "Track eval and tracing systems so vnem can prove whether an agent workflow actually improves output quality, speed, and safety.",
+      "use_when": [
+        "A claim says vnem improves recommendations, engineering velocity, prompt quality, or tool choice.",
+        "A prompt, MCP, agent, or model switch needs a before/after benchmark.",
+        "Maintainers need traces or eval logs to explain why an agent made a decision."
+      ],
+      "monitor": [
+        "Small repeatable eval frameworks",
+        "Prompt and agent regression suites",
+        "Trace, cost, latency, and tool-call observability"
+      ],
+      "risk_checks": [
+        "Benchmarks that do not match real repo tasks",
+        "Scores without reproducible fixtures",
+        "Telemetry or traces containing secrets or private code"
+      ],
+      "source_urls": [
+        "https://inspect.aisi.org.uk/",
+        "https://www.promptfoo.dev/docs/intro/",
+        "https://docs.ragas.io/",
+        "https://docs.langfuse.com/",
+        "https://docs.arize.com/phoenix"
+      ]
+    },
+    {
+      "id": "secure-mcp-distribution",
+      "title": "Secure MCP Distribution Sources",
+      "category": "distribution",
+      "priority": "medium",
+      "summary": "Track curated MCP catalogs and containerized distribution models for safer team adoption of third-party MCP servers.",
+      "use_when": [
+        "A team wants approved MCP catalogs instead of ad hoc server installs.",
+        "A server has dependency, runtime, or package provenance concerns.",
+        "vnem needs to distinguish local, remote, containerized, and organization-approved MCP deployment paths."
+      ],
+      "monitor": [
+        "Catalog provenance and SBOM metadata",
+        "Container signing and update cadence",
+        "Team profiles, custom catalogs, and allowed-server policies"
+      ],
+      "risk_checks": [
+        "Catalog beta or preview status",
+        "Container trust and host access",
+        "Remote OAuth and external service permissions"
+      ],
+      "source_urls": [
+        "https://docs.docker.com/ai/mcp-catalog-and-toolkit/catalog/",
+        "https://docs.docker.com/ai/mcp-catalog-and-toolkit/toolkit/"
+      ]
+    },
+    {
+      "id": "agentic-gateway-security",
+      "title": "Agentic Gateway Security Sources",
+      "category": "security-architecture",
+      "priority": "high",
+      "summary": "Track security sources for tool annotations, schema drift, secret handling, workspace confinement, package risk, and agent runtime approval design.",
+      "use_when": [
+        "A proposal asks vnem to act as a pre-execution gateway, command proxy, package firewall, schema pinning layer, or AST indexer.",
+        "An agent wants to classify tool calls as read-only, mutating, destructive, open-world, or approval-required.",
+        "Maintainers need to distinguish metadata hints from enforceable security controls."
+      ],
+      "monitor": [
+        "MCP tool annotation semantics and list-changed behavior",
+        "Client approval and sandbox behavior",
+        "Package registry provenance and dependency-risk guidance",
+        "Secret detection and redaction rules"
+      ],
+      "risk_checks": [
+        "Untrusted tool metadata must not be treated as enforcement.",
+        "Runtime command interception needs a threat model before implementation.",
+        "Path confinement and redaction claims require adversarial tests.",
+        "Package firewall decisions can break valid developer workflows and need override paths."
+      ],
+      "source_urls": [
+        "https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/",
+        "https://modelcontextprotocol.io/specification/2025-06-18/schema",
+        "https://ts.sdk.modelcontextprotocol.io/variables/types.ToolAnnotationsSchema.html",
+        "https://docs.github.com/en/code-security/secret-scanning/introduction/about-secret-scanning",
+        "https://docs.npmjs.com/about-registry-signatures"
+      ]
+    }
+  ]
+}

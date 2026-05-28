@@ -20,6 +20,8 @@ The project is index-first. Do not vendor third-party tools, copy upstream code,
 - `.vnem/`: generated local dogfood pack.
 - `llms.txt` and `llms-full.txt`: generated LLM-readable indexes.
 - `HERMES.md`: recurring discovery and daily synthesis operating contract.
+- `PRODUCT.md`: product direction, public-site clarity goals, commercial boundaries, and non-regression bar.
+- `SECURITY-ROADMAP.md`: phased roadmap for advisory-first gateway and runtime-security ideas.
 - `landing/`: static landing page and blog bundle for the public website.
 
 The user explicitly changed the prior landing-page policy on 2026-05-27. `landing/` is now allowed in this repo. Do not add a separate `site/` unless the user asks.

@@ -44,7 +44,7 @@ recommended_when:
   - Use when prompt and agent changes need fast pass/fail checks in CI.
 trust_tier: promising
 review_status: manual-reviewed
-last_checked: '2026-05-26'
+last_checked: '2026-05-27'
 slug: promptfoo
 name: promptfoo
 type: eval

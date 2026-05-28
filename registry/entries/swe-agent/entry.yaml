@@ -48,7 +48,7 @@ recommended_when:
   - Use when SWE-bench style issue resolution and reproducible experiments matter.
 trust_tier: promising
 review_status: manual-reviewed
-last_checked: '2026-05-26'
+last_checked: '2026-05-27'
 slug: swe-agent
 name: SWE-agent
 type: coding-agent

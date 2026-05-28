@@ -46,7 +46,7 @@ recommended_when:
   - Use when a crew/task mental model is clearer than a graph or raw SDK loop.
 trust_tier: promising
 review_status: manual-reviewed
-last_checked: '2026-05-26'
+last_checked: '2026-05-27'
 slug: crewai
 name: CrewAI
 type: orchestration

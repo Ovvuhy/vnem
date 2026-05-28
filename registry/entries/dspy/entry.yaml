@@ -44,7 +44,7 @@ recommended_when:
   - Use when repeated prompt tuning should be replaced by evaluation-driven optimization.
 trust_tier: promising
 review_status: manual-reviewed
-last_checked: '2026-05-26'
+last_checked: '2026-05-27'
 slug: dspy
 name: DSPy
 type: eval

@@ -1,20 +1,97 @@
 # vnem Best Practices
 
-Generated: 2026-05-27T10:21:10.026Z
+Generated: 2026-05-27T21:08:33.015Z
 
 Use this as a compact, current guidance layer for coding agents. Prefer these notes when choosing whether to add, replace, or avoid a tool.
 
+## MCP Gateway And Tool Routing
+
+Use MCP gateways as a policy, discovery, routing, and observability layer only when the agent would otherwise see too many tools or credentials directly.
+
+- Start with a small direct MCP server set; add a gateway when tool discovery, authentication, policy, logging, or routing becomes hard to govern.
+- Expose tools by role and task intent instead of broadcasting every server schema to the model.
+- Keep high-risk tools behind explicit policy: repositories, browsers, databases, payments, filesystem writes, deployments, and production data.
+- Centralize audit logs, credential propagation, and rate limits at the gateway when multiple agents or teams share tool access.
+- Treat gateway catalog recommendations as architecture guidance; do not ship gateway daemons, secrets, or runnable configs from a read-only knowledge pack.
+
+Sources: https://modelcontextprotocol.io/docs/getting-started/intro, https://modelcontextprotocol.io/specification/2025-11-25/basic/security_best_practices, https://docs.lunar.dev/mcpx/architecture, https://github.com/microsoft/mcp-gateway
+
+Search aliases: mcp gateway, one mcp, tool routing, discovery control, least privilege, policy, lunar mcpx, microsoft mcp gateway, catalog
+
+## Persistent Memory And Context Files
+
+Put stable project facts in versioned instruction files, keep volatile task state separate, and review memory for secrets, stale assumptions, and repeated failed approaches.
+
+- Use `AGENTS.md` for Codex-facing repository instructions: commands, conventions, scope, and safety boundaries.
+- Use `CLAUDE.md` for Claude Code memory when that client is active, and separate shared project instructions from local machine overrides.
+- Add a memory bank only when the team will maintain it; stale active context is worse than a short instruction file.
+- Record architectural decisions and abandoned approaches so agents do not repeat known dead ends.
+- Never store secrets, credentials, private customer data, or unverified claims in durable agent memory.
+
+Sources: https://developers.openai.com/codex/guides/agents-md, https://docs.anthropic.com/en/docs/claude-code/memory, https://github.com/Bhartendu-Kumar/rules_template
+
+Search aliases: memory bank, persistent memory, context files, agents.md, claude.md, decision log, active context, roo code, cline
+
+## IDE Agent Selection
+
+Choose coding agents by editor fit, approval model, model routing, MCP support, maintenance status, and the repo's need for autonomous multi-file changes.
+
+- Use source-backed product capabilities rather than unsourced benchmark claims when comparing agents.
+- Prefer strong human approval flows for agents that can edit files, run shell commands, or mutate repositories.
+- Use BYOM or OpenRouter-style routing only when the client supports it and the task can tolerate model variability.
+- Treat archived or community-maintained forks as watchlist options until maintenance and security posture are clear.
+- Evaluate agents on one real repository workflow: plan quality, file selection, diffs, verification behavior, and recovery from failed tests.
+
+Sources: https://docs.cursor.com/agent/overview, https://docs.cline.bot/introduction/overview, https://docs.anthropic.com/en/docs/claude-code/overview, https://developers.openai.com/codex
+
+Search aliases: ide agent, coding agents, roo code, cline, cursor agent, claude code, codex, byom, agent modes
+
+## Codex/VNEM Setup
+
+For Codex-based workspaces, keep vnem read-only, load `AGENTS.md` instructions, expose MCP resources deliberately, and use generated guidance before installing tools.
+
+- Keep `AGENTS.md` concise and repository-specific: commands, conventions, verification, and approval boundaries.
+- Read `.vnem/agent-workspace.md` before designing a new autonomous developer environment.
+- Expose vnem through MCP as read-only resources and tools; use it for recommendation context, not for installation or mutation.
+- Prefer generated prompt patterns for recurring architecture, gateway, memory, and implementation prompts.
+- Ask before adding MCP servers, editing client config, installing packages, using secrets, or starting daemons.
+
+Sources: https://developers.openai.com/codex/guides/agents-md, https://platform.openai.com/docs/docs-mcp, https://github.com/openai/codex
+
+Search aliases: codex config, codex, vnem, agents.md, mcp resources, agent workspace, prompt patterns, read-only knowledge pack
+
+## Visual Experience And Perception Gate
+
+For visual work, judge the actual perceptual artifact: if it looks ugly, generic, oversized, noisy, or mismatched to references, it is not done.
+
+- Read `.vnem/design-architecture.md` for UI, game, dashboard, animation, brand, or visual-polish tasks before choosing the final visual approach.
+- A UI, game, animation, or visual artifact is not deliverable until the first screenshot looks intentionally designed, balanced, and domain-appropriate.
+- Run a perception gate before final: composition, hierarchy, scale, spacing, color harmony, typography, motion, sound, and feedback origin.
+- Anchor reward and dopamine effects to the user action or game event; avoid static center glow unless the center is truly the event.
+- For canvas and games, keep the playfield within the viewport with breathing room; oversized empty boards fail the visual check unless the user asked for that scale.
+- Sound design must be short, pleasant, throttled, and muteable; avoid constant tick noise unless it is subtle and intentionally improves feel.
+- Use source-backed CSS capabilities deliberately: CSS Grid for two-dimensional dashboard layout, `clamp()` for bounded fluid sizing, container queries for component-local responsiveness, and `backdrop-filter` only with readable fallbacks.
+- Use WCAG 2.2/current W3C contrast requirements as the accessibility baseline. Treat APCA and WCAG 3 contrast discussions as watchlist guidance until W3C finalizes the algorithm.
+- Translate reference assets into a cohesive motif by extracting palette, texture, silhouette, glow behavior, and spatial mood instead of pasting a disconnected decoration.
+- After a screenshot or browser pass, name the ugliest visible issue and fix it before reporting completion.
+- If the artifact still looks ugly or unpleasant, report it as blocked or needs-polish instead of calling it done.
+
+Sources: https://developer.mozilla.org/en-US/docs/Web/CSS, https://developer.mozilla.org/en-US/docs/Web/CSS/grid, https://developer.mozilla.org/en-US/docs/Web/CSS/clamp, https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_container_queries, https://developer.mozilla.org/en-US/docs/Web/CSS/backdrop-filter, https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API, https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame, https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion, https://w3c.github.io/wcag/guidelines/22/
+
+Search aliases: aesthetic experience, visual polish, pretty, polished, perception gate, game feel, reward feedback, dopamine, neon, glow, sound design, screenshot critique, first screen, composition, reference fidelity, ui architecture, bento dashboard, agent dashboard, motion design, design tokens, dark mode, glassmorphism, typography, layout spacing, optical alignment
+
 ## Frontend And UI
 
-Prefer mature component systems, accessibility-first primitives, screenshot verification, and domain-specific UI patterns before inventing custom interaction layers.
+Prefer mature component systems, accessibility-first primitives, screenshot verification, domain-specific UI patterns, and an aesthetic perception gate before inventing custom interaction layers.
 
 - Start with the product workflow, then pick UI libraries that reduce implementation risk.
+- For user-facing UI, run the perception gate before final: first-screen composition, hierarchy, scale, spacing, color, typography, motion, and responsive fit.
 - Use visual verification for responsive states before shipping UI generated by agents.
 - Favor established icon, form, table, and command-menu primitives over handwritten widgets.
 
 Sources: https://www.anthropic.com/engineering/building-effective-agents
 
-Search aliases: better ui, frontend, design, tailwind, astro, react, accessibility, screenshot, component
+Search aliases: better ui, frontend, design, tailwind, astro, react, accessibility, screenshot, component, visual polish, perception gate
 
 ## Browser Games And Interactive Canvas
 
@@ -27,8 +104,12 @@ For browser-native games, choose the lightest proven stack that can deliver real
 - Model input as actions rather than raw keys so keyboard, pointer, touch, and gamepad controls can share game logic and be remapped for nontrivial games.
 - Include asset preload/loading, start, pause, win, lose, restart, and error states before visual flourishes; browser games fail quickly when a terminal state or restart path is missing.
 - Design game UI for readability during motion: high-contrast HUD text, clear hit/damage/reward feedback, stable layout, large touch targets, and readable menus on both desktop and mobile.
+- Reward feedback should originate at the relevant interaction or game-event coordinates, such as the collectible position, rather than defaulting to a static center flash.
+- Treat game feel as a deliverable: score pulses, particles, hit-stop, glow, and sound should make success feel good without cluttering the playfield.
+- Keep sound restrained, throttled, and muteable; do not tick or beep on every movement step unless the cue is subtle and intentionally improves rhythm.
 - Treat accessibility as game feel: provide keyboard/touch parity where practical, avoid color-only cues, respect reduced-motion needs, watch photosensitive flashing, and add captions or visual audio cues when sound carries gameplay information.
 - Verify delivered playability in a real browser: serve locally, confirm nonblank canvas pixels, simulate inputs, check state transitions and restart, inspect desktop and mobile viewports, and test audio unlock behavior.
+- Before final, judge the first screenshot and one reward moment for polish; a playable game that looks oversized, muddy, static, or unpleasant is not done.
 - Use performance work after the game is playable: batch Canvas drawing, pre-render expensive repeated work to snug offscreen buffers, measure before optimizing, and move to WebGL/WebGPU libraries when object count or effects justify it.
 - For coding-agent evaluation, judge the delivered game rather than just build success; browser games expose input, spatial mapping, rules, terminal conditions, restart, and visible-feedback failures that normal code checks miss.
 
@@ -194,6 +275,21 @@ Sources: https://docs.anthropic.com/en/docs/claude-code/memory, https://docs.ant
 
 Search aliases: context engineering, claude memory, memory, instructions, agents.md, claude.md, retrieval, skills, knowledge pack
 
+## Research Source Intake
+
+Treat vnem as a source router, not a document dump: capture official, current, machine-readable sources that help agents make better decisions before editing.
+
+- Start source intake from the agent decision it improves: tool choice, MCP adoption, model/provider selection, prompt upgrade, eval design, UI verification, or risk review.
+- Prefer official docs, canonical repositories, maintained registries, llms.txt indexes, vendor MCP docs, and eval frameworks with repeatable fixtures.
+- Keep vnem metadata original and compact; preserve source URLs instead of copying long upstream docs into the install pack.
+- Record trust tier, source confidence, freshness, permissions, license posture, risk flags, and whether the source can mutate external systems.
+- Separate discovery from promotion: Hermes can suggest candidates, but maintainers should review before raising trust or recommending installs.
+- Tie important claims to a small benchmark, smoke test, link check, or before/after agent recommendation diff.
+
+Sources: https://modelcontextprotocol.io/docs/getting-started/intro, https://github.com/modelcontextprotocol/registry, https://llmstxt.org/, https://developers.openai.com/codex/guides/agents-md, https://code.claude.com/docs/en/mcp, https://inspect.aisi.org.uk/
+
+Search aliases: source radar, research layer, source intake, current docs, official docs, mcp registry, llms.txt, benchmark evidence, provenance, freshness
+
 ## MCP Server Selection
 
 MCP servers should be selected like dependencies: source-backed, least-privilege, pinned where possible, and tested against the actual client workflow.
@@ -205,6 +301,22 @@ MCP servers should be selected like dependencies: source-backed, least-privilege
 Sources: https://modelcontextprotocol.io/docs/getting-started/intro, https://github.com/microsoft/playwright-mcp, https://github.com/upstash/context7, https://github.com/supabase-community/supabase-mcp, https://docs.browserbase.com/integrations/mcp/introduction
 
 Search aliases: mcp servers, model context protocol, tools, resources, prompts, context7, playwright, browserbase, supabase, sentry
+
+## Zero-Trust Agent Gateway Readiness
+
+Move toward gateway behavior in phases: advisory guidance first, deterministic checks second, runtime enforcement only after threat modeling and adversarial tests.
+
+- Do not convert the read-only vnem install pack into a daemon, shell proxy, package installer, or runtime command interceptor.
+- Treat tool metadata and MCP annotations as risk signals only; trusted clients still need deterministic controls for filesystem, network, secrets, and external side effects.
+- Pin tool schemas by hashing canonical schema JSON and require review when a trusted server's tool schema changes unexpectedly.
+- Redact secrets before logging by combining known token patterns, connection-string patterns, private-key markers, and high-entropy argument detection.
+- Enforce workspace path policy with resolved absolute paths and prefix checks before any future mutating gateway action.
+- Review dependency additions as manifest diffs before installation; use package metadata and provenance signals as advisory checks with human override.
+- Keep AST indexing read-only at first: extract symbols, imports, and calls into a disposable local graph before writing durable index state.
+
+Sources: https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/, https://modelcontextprotocol.io/specification/2025-06-18/schema, https://ts.sdk.modelcontextprotocol.io/variables/types.ToolAnnotationsSchema.html, https://docs.github.com/en/code-security/secret-scanning/introduction/about-secret-scanning, https://docs.npmjs.com/about-registry-signatures
+
+Search aliases: pre execution gateway, zero trust gateway, tool pinning, schema hashing, mcp rug pull, tool poisoning, package firewall, ast indexer, path confinement, secret redaction, command risk
 
 ## Observability And Tracing
 
@@ -241,4 +353,16 @@ Upgrade rough prompts into operational instructions with intent, context, constr
 Sources: https://developers.openai.com/api/docs/guides/prompt-engineering, https://developers.openai.com/api/docs/guides/prompt-optimizer, https://developers.openai.com/codex/guides/agents-md
 
 Search aliases: prompt engineering, prompt enhancer, codex prompt, prompt optimizer, instructions, output format, examples, rubric
+
+## Model And Provider Selection
+
+Choose Codex, Claude Code, Gemini/ADK, framework agents, or model APIs by workflow fit, permissions, eval evidence, and operational cost rather than brand preference.
+
+- Start from the task shape: repo editing, hosted agent runtime, multi-agent workflow, model app, browser-game build, or tool-calling backend.
+- Compare approval boundaries, shell/filesystem access, memory model, MCP/tool support, tracing, evals, deployment path, cost, privacy, and reversibility.
+- Run a small benchmark or pilot task before standardizing on a new agent/provider workflow.
+
+Sources: https://developers.openai.com/codex/guides/agents-md, https://openai.github.io/openai-agents-python/, https://code.claude.com/docs/en/overview, https://adk.dev/
+
+Search aliases: ai model selection, codex vs claude, gemini agent, provider, model, agent upgrade, adk
 

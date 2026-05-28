@@ -48,7 +48,7 @@ recommended_when:
   - Use when a coding agent needs error evidence before proposing a fix.
 trust_tier: promising
 review_status: manual-reviewed
-last_checked: '2026-05-26'
+last_checked: '2026-05-27'
 slug: sentry-mcp
 name: Sentry MCP
 type: mcp-server

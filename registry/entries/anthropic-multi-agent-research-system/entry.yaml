@@ -41,7 +41,7 @@ recommended_when:
   - Use when deciding whether a task benefits from multiple agents instead of one stronger agent.
 trust_tier: verified
 review_status: manual-reviewed
-last_checked: '2026-05-26'
+last_checked: '2026-05-27'
 slug: anthropic-multi-agent-research-system
 name: Anthropic Multi-Agent Research System
 type: orchestration

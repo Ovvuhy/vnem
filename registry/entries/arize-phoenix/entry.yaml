@@ -45,7 +45,7 @@ recommended_when:
   - Use when debugging agent behavior requires traces, datasets, and eval feedback.
 trust_tier: promising
 review_status: manual-reviewed
-last_checked: '2026-05-26'
+last_checked: '2026-05-27'
 slug: arize-phoenix
 name: Arize Phoenix
 type: observability

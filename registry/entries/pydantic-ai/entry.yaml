@@ -46,7 +46,7 @@ recommended_when:
   - Use when agent outputs should be validated like normal application data.
 trust_tier: promising
 review_status: manual-reviewed
-last_checked: '2026-05-26'
+last_checked: '2026-05-27'
 slug: pydantic-ai
 name: Pydantic AI
 type: agent-framework

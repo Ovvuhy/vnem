@@ -45,7 +45,7 @@ recommended_when:
     constraints.
 trust_tier: verified
 review_status: manual-reviewed
-last_checked: '2026-05-26'
+last_checked: '2026-05-27'
 slug: codex-agents-md
 name: Codex AGENTS.md
 type: workflow

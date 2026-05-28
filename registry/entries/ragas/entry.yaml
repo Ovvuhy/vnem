@@ -43,7 +43,7 @@ recommended_when:
   - Use when the agent depends on retrieval quality and grounded answers.
 trust_tier: promising
 review_status: manual-reviewed
-last_checked: '2026-05-26'
+last_checked: '2026-05-27'
 slug: ragas
 name: Ragas
 type: eval

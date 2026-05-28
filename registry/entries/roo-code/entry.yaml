@@ -1,0 +1,77 @@
+schema_version: 1.0.0
+homepage_url: https://github.com/RooCodeInc/Roo-Code
+repo_url: https://github.com/RooCodeInc/Roo-Code
+package_urls: []
+licenses:
+  - Apache-2.0
+copyright_owner: Roo Code, Inc
+source_kind: github
+protocols: []
+clients:
+  - VS Code
+  - Cursor
+  - MCP
+  - OpenRouter
+  - Anthropic
+  - OpenAI
+install:
+  command: null
+  notes: >-
+    Review the upstream docs, permissions, pricing, environment variables, and transport before
+    installing.
+  config_example: null
+permissions:
+  - filesystem
+  - repository
+  - shell
+  - browser
+  - network
+env_vars:
+  - OPENROUTER_API_KEY
+  - OPENAI_API_KEY
+  - ANTHROPIC_API_KEY
+tags:
+  - coding-agent
+  - roo-code
+  - vscode
+  - custom-modes
+  - mcp
+  - checkpoints
+  - byom
+use_cases:
+  - Use role-based modes for planning, coding, asking, and debugging
+  - Connect a VS Code-family coding agent to MCP servers
+  - Experiment with custom mode prompts and permissions
+best_for:
+  - >-
+    Teams that need explicit mode separation and model/provider flexibility inside VS Code-like
+    editors
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: high
+maintenance_signals:
+  - Curated from official docs or canonical source repositories
+risk_flags:
+  - can-edit-files
+  - can-run-shell-commands
+  - browser-access
+  - community-handoff
+recommended_when:
+  - >-
+    Use after confirming the current maintenance path and reviewing mode permissions for the
+    project.
+trust_tier: promising
+review_status: manual-reviewed
+last_checked: '2026-05-27'
+slug: roo-code
+name: Roo Code
+type: coding-agent
+summary_llm: >-
+  Roo Code is a VS Code-family coding agent that supports Code, Architect, Ask, Debug, and Custom
+  Modes, MCP servers, checkpoints, codebase indexing, and model/provider configuration.
+source_urls:
+  - https://github.com/RooCodeInc/Roo-Code
+  - https://roocodeinc.github.io/Roo-Code/basic-usage/using-modes/

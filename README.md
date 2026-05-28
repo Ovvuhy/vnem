@@ -16,6 +16,28 @@ vnem is a small, LLM-readable knowledge pack and registry for agentic tools: MCP
 
 It helps a coding agent answer: _what should I use, what is stale, what is risky, and what is the current better option?_ before it edits a repo.
 
+Live overview: [vnem.pages.dev](https://vnem.pages.dev)
+
+## What Vnem Improves
+
+vnem is meant to improve the judgment of coding agents, not replace maintainer review.
+
+- **Better recommendations:** agents compare current MCP servers, coding agents, frameworks, evals, memory systems, and workflows before proposing a stack change.
+- **Safer adoption:** each entry tracks source links, licenses, permissions, risk flags, trust tier, and install notes.
+- **Universal task contracts:** the operating protocol and broad rubrics steer agents through sensing the repo, choosing small capabilities, constraining risk, verifying, and reporting evidence.
+- **Shared research layer:** source radar maps official docs, registries, MCP sources, evals, and verification sources so agents know where to research before burning context from scratch.
+- **Gateway-ready security guidance:** vnem routes pre-execution gateway, tool pinning, package firewall, and AST-indexer ideas into a phased zero-trust review instead of a risky runtime rewrite.
+- **Clearer prompts:** the install pack includes prompt-engineering guidance and reusable prompt patterns for Codex-style implementation, review, debugging, research, eval, and MCP-selection tasks.
+
+## How It Works
+
+1. Install the read-only pack into a project.
+2. Ask a coding agent to read `.vnem/AGENTS.md`.
+3. The agent follows `.vnem/operating-protocol.md` and selects a broad rubric from `.vnem/task-rubrics.json`.
+4. The agent uses `.vnem/search-index.json`, `.vnem/best-practices.md`, `.vnem/agent-workspace.md`, and `.vnem/prompt-*` files only when routed there.
+5. For current docs, MCP discovery, or benchmark claims, the agent checks `.vnem/source-radar.json` before broad web search.
+6. The agent recommends options and asks before changing code, installing packages, using secrets, or touching external systems.
+
 ## Install The Pack
 
 From any project root:
@@ -30,12 +52,16 @@ In a clean project folder, this extracts:
 
 - `AGENTS.md`
 - `.vnem/AGENTS.md`
+- `.vnem/operating-protocol.md`
+- `.vnem/task-rubrics.json`
 - `.vnem/search-index.json`
+- `.vnem/source-radar.json`
 - `.vnem/best-practices.md`
+- `.vnem/agent-workspace.md`
 - `.vnem/prompt-engineering.md`
 - `.vnem/prompt-patterns.json`
 
-`AGENTS.md` points coding agents to `.vnem/AGENTS.md`, the full agent entrypoint. Once an agent has read it, the user should not need special `use vnem` prompts: vnem auto-activates for build, review, optimization, research, benchmark, and stack/tool decision tasks.
+`AGENTS.md` points coding agents to `.vnem/AGENTS.md`, the full agent entrypoint, plus `.vnem/agent-workspace.md` for autonomous developer environment guidance. Once an agent has read it, the user should not need special `use vnem` prompts: vnem auto-activates for build, review, optimization, research, benchmark, and stack/tool decision tasks.
 
 For existing repos with their own `AGENTS.md`, prefer the CLI installer below because it updates a managed vnem block instead of replacing the whole file.
 
@@ -91,6 +117,7 @@ Main tools:
 - `vnem_get_entry`: fetch one registry entry with provenance, install notes, permissions, and risks.
 - `vnem_compare`: compare two or more registry entries.
 - `vnem_best_practices`: find matching best-practice and prompt-pattern notes.
+- `vnem_sources`: find source-radar entries for upstream docs, registries, MCP sources, and benchmark evidence.
 
 You can also install the bundled Codex skill from this checkout:
 
@@ -125,11 +152,16 @@ The pack is guidance and search data. It does not run the tools it recommends.
 | `public/install/*` | Hosted read-only install-pack files. |
 | `public/install.tgz` | Tiny archive used by the one-line install command. |
 | `.vnem/` | Generated local pack for dogfooding this repo. |
+| `landing/` | Static public landing page and blog bundle for the website. |
+| `PRODUCT.md` | Product direction, public-site clarity goals, and non-regression bar. |
+| `SECURITY-ROADMAP.md` | Advisory-first roadmap for zero-trust gateway and runtime-security ideas. |
 | `llms.txt` | Compact LLM entrypoint. |
 | `llms-full.txt` | Full generated registry context for LLMs. |
 | `HERMES.md` | Operating contract for recurring agentic discovery and daily ecosystem checks. |
 
-The marketing site source is intentionally not part of this repository. This repo is the open registry, generation system, and install pack.
+This repo is the open registry, generation system, install pack, MCP server, and static public site source.
+
+For product direction, public-site clarity, and future commercial boundaries, see [`PRODUCT.md`](PRODUCT.md).
 
 ## For LLMs
 
@@ -140,6 +172,8 @@ If you are using vnem inside another project, read `.vnem/AGENTS.md` after insta
 To improve a prompt, say `use vnem to enhance this prompt` and include your rough prompt. The installed pack will route the agent to `.vnem/prompt-engineering.md` and `.vnem/prompt-patterns.json`.
 
 If the agent has read `.vnem/AGENTS.md`, this can also happen automatically: requests to write, rewrite, optimize, critique, or template a prompt should use the prompt-enhancement protocol even when the user does not say `use vnem`.
+
+To compare AI tools or research sources, ask for a vnem-backed review such as `codex vs claude`, `ai model selection`, `source radar`, `source intake`, or `zero trust gateway`. The installed pack routes those intents to the operating protocol, broad rubrics, source radar, best-practice notes, and relevant registry entries.
 
 ## Trust Tiers
 

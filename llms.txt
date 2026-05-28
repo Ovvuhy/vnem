@@ -7,7 +7,7 @@ When installed, vnem should be used automatically for build, review, optimizatio
 
 Safe install command: curl -fsSL https://raw.githubusercontent.com/naellisim/vnem/main/public/install.tgz | tar -xz
 
-Installed files: .vnem/AGENTS.md, .vnem/search-index.json, .vnem/best-practices.md, .vnem/prompt-engineering.md, .vnem/prompt-patterns.json
+Installed files: .vnem/AGENTS.md, .vnem/operating-protocol.md, .vnem/design-architecture.md, .vnem/visual-qa-protocol.md, .vnem/task-rubrics.json, .vnem/search-index.json, .vnem/source-radar.json, .vnem/best-practices.md, .vnem/agent-workspace.md, .vnem/prompt-engineering.md, .vnem/prompt-patterns.json
 Canonical API: /api/index.json
 Agent instructions: /install/AGENTS.md
 Full index: /llms-full.txt
@@ -17,7 +17,6 @@ Trust tiers: verified, promising, unreviewed, watchlist, deprecated.
 
 ## High-Signal Entries
 
-- [Model Context Protocol](/entries/model-context-protocol/) | workflow | verified   | score 13 | Model Context Protocol is an open protocol for connecting AI applications to external tools, resources, prompts, and contextual data through standardized servers.
 - [Agent2Agent Protocol](/entries/google-agent2agent-protocol/) | workflow | promising  | score 12 | Agent2Agent Protocol is a Google-backed open protocol for agent interoperability, enabling agents and agent runtimes to communicate across vendors and systems.
 - [Codex AGENTS.md](/entries/codex-agents-md/) | workflow | verified   | score 12 | Codex AGENTS.md guidance describes how repository-local instructions can steer coding agents with project conventions, commands, scope, and review expectations.
 - [CrewAI](/entries/crewai/) | orchestration | promising  | score 12 | CrewAI is a Python framework for creating role-based AI agent teams, tasks, crews, flows, knowledge, tools, and multi-agent process automation.
@@ -57,4 +56,5 @@ Trust tiers: verified, promising, unreviewed, watchlist, deprecated.
 - [AnomalyArmor](/entries/ai-anomalyarmor-armor-mcp/) | mcp-server | promising  | score 11 | AnomalyArmor is an MCP server for agentic systems. Data observability tools for engineering teams: alerts, freshness, schema drift, lineage, quality.
 - [Anthropic Building Effective Agents](/entries/anthropic-building-effective-agents/) | workflow | verified   | score 11 | Anthropic's Building Effective Agents guide distills practical patterns: start simple, compose workflows before agents, and use agentic autonomy only when feedback loops justify it.
 - [Anthropic Multi-Agent Research System](/entries/anthropic-multi-agent-research-system/) | orchestration | verified   | score 11 | Anthropic's multi-agent research system writeup is a source-backed pattern for lead agents coordinating specialist subagents on broad, parallel research tasks.
+- [AutoRFP.ai](/entries/ai-autorfp-mcp/) | mcp-server | promising  | score 11 | AutoRFP.ai is an MCP server for agentic systems. Search AutoRFP.ai projects, requirements, content library, and tags for Q&A and analytics.
 

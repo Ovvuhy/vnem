@@ -43,7 +43,7 @@ recommended_when:
   - Use when agent changes need evidence from repeatable eval tasks.
 trust_tier: promising
 review_status: manual-reviewed
-last_checked: '2026-05-26'
+last_checked: '2026-05-27'
 slug: inspect-ai
 name: Inspect AI
 type: eval

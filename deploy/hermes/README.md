@@ -36,6 +36,19 @@ Useful optional settings:
 - `HERMES_PROPOSE_REGISTRY=1`: draft conservative `registry/entries/*` proposals from top non-duplicate candidates.
 - `HERMES_WATCH_URLS`: newline or semicolon separated official changelog/docs URLs for daily source-change checks.
 - `HERMES_GITHUB_QUERIES`: newline, semicolon, or JSON array of GitHub search queries.
+- `HERMES_RELEASE_REPOS`: watched `owner/repo` list for latest GitHub releases.
+- `HERMES_NPM_QUERIES`: npm package search queries for MCP servers, coding agents, memory, evals, and agent tooling.
+- `HERMES_HN_QUERIES`: Hacker News lead-generation queries. These candidates stay `watchlist` until backed by primary sources.
+- `HERMES_INCLUDE_REDDIT=1`: opt into Reddit subreddit search. Keep disabled when public polling is not desired.
+- `HERMES_MIN_PER_ROUTE=2`: reserve candidate slots for smaller routes so GitHub search does not crowd them out.
+
+Route toggles:
+
+- `HERMES_INCLUDE_MCP_REGISTRY=0`
+- `HERMES_INCLUDE_GITHUB_RELEASES=0`
+- `HERMES_INCLUDE_NPM=0`
+- `HERMES_INCLUDE_HACKER_NEWS=0`
+- `HERMES_INCLUDE_REDDIT=1`
 
 ## 3. Install Timers
 
@@ -65,6 +78,39 @@ npm run hermes:daily
 ```
 
 The dry run prints the report JSON and does not write files, create branches, push, or open PRs.
+
+## Optional Owner Dashboard API
+
+The owner dashboard reads a narrow, sanitized JSON summary from the VPS. Keep the service bound to localhost and expose it through Cloudflare Tunnel so the VPS does not need an inbound dashboard port.
+
+Add these values to `/etc/hermes/hermes.env`:
+
+```bash
+VNEM_REPO_DIR=/opt/vnem
+HERMES_DASHBOARD_API_HOST=127.0.0.1
+HERMES_DASHBOARD_API_PORT=8788
+HERMES_DASHBOARD_API_TOKEN=
+```
+
+Install the service:
+
+```bash
+sudo cp deploy/hermes/systemd/hermes-dashboard-api.service /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable --now hermes-dashboard-api.service
+curl -H "Authorization: Bearer $HERMES_DASHBOARD_API_TOKEN" http://127.0.0.1:8788/summary
+```
+
+Create a Cloudflare Tunnel route to `http://127.0.0.1:8788`, then set the Cloudflare Pages secrets:
+
+```bash
+npx wrangler pages secret put DASHBOARD_AUTH_SECRET --project-name vnem
+npx wrangler pages secret put DASHBOARD_ALLOWED_WALLETS --project-name vnem
+npx wrangler pages secret put HERMES_API_BASE_URL --project-name vnem
+npx wrangler pages secret put HERMES_API_TOKEN --project-name vnem
+```
+
+`HERMES_API_TOKEN` in Cloudflare must match `HERMES_DASHBOARD_API_TOKEN` on the VPS. The browser never receives this token; it only talks to the same-origin Pages Function.
 
 ## Optional Nous Hermes Brain
 

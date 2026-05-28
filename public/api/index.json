@@ -1,13 +1,17 @@
 {
-  "generated_at": "2026-05-27T10:21:10.026Z",
+  "generated_at": "2026-05-27T21:08:33.015Z",
   "schema_version": "1.0.0",
-  "entry_count": 219,
+  "package_version": "1.0.1",
+  "release_version": "1.0.1",
+  "release_date": "2026-05-27",
+  "entry_count": 228,
   "install_command": "curl -fsSL https://raw.githubusercontent.com/naellisim/vnem/main/public/install.tgz | tar -xz",
   "install_archive": "/install.tgz",
   "install_archive_url": "https://raw.githubusercontent.com/naellisim/vnem/main/public/install.tgz",
   "trust_tiers": [
     "deprecated",
     "promising",
+    "unreviewed",
     "verified",
     "watchlist"
   ],
@@ -22,17 +26,23 @@
     "payments",
     "runtime",
     "security",
+    "skill",
     "workflow"
   ],
   "protocols": [
     "A2A",
+    "JSON-RPC 2.0",
     "MCP",
+    "SSE",
+    "stdio",
+    "Streamable HTTP",
     "x402"
   ],
   "clients": [
     ".NET",
     "Agent runtimes",
     "Aider",
+    "Anthropic",
     "Azure",
     "Browser",
     "C#",
@@ -41,6 +51,7 @@
     "Claude Code",
     "Claude Desktop",
     "CLI",
+    "Cline",
     "Codex",
     "Codex CLI",
     "CrewAI",
@@ -60,16 +71,22 @@
     "LangSmith",
     "Letta Server",
     "MCP",
+    "MCP clients",
     "Neo4j",
     "Next.js",
     "Node.js",
+    "Ollama",
+    "OpenAI",
     "OpenAI Agents SDK",
     "OpenAI API",
+    "OpenCode",
+    "OpenRouter",
     "OpenTelemetry",
     "Pull Requests",
     "Pydantic",
     "Python",
     "React",
+    "Roo Code",
     "Svelte",
     "Terminal",
     "TypeScript",
@@ -81,8 +98,12 @@
     "Windsurf"
   ],
   "tags": [
+    "access-control",
+    "actions",
+    "agent",
     "agent-commerce",
     "agent-framework",
+    "agent-modes",
     "agent-protocol",
     "agent-tools",
     "agentops",
@@ -90,21 +111,28 @@
     "agents-md",
     "analytics",
     "api",
+    "approvals",
     "archives",
     "ast",
+    "authenticated-session",
+    "authentication",
     "automation",
     "autonomous-agents",
     "azure",
-    "backend",
     "benchmarks",
     "best-practices",
     "browser",
     "browser-game",
+    "byom",
     "canvas",
+    "catalog",
     "checkout",
+    "checkpoints",
+    "chrome-extension",
     "ci",
     "claude-code",
     "claude-md",
+    "cline",
     "cloud-agent",
     "code-intelligence",
     "code-quality",
@@ -122,7 +150,10 @@
     "context-engineering",
     "coordination",
     "costs",
+    "crawl4ai",
     "crm",
+    "cursor",
+    "custom-modes",
     "database",
     "datasets",
     "dead-code",
@@ -132,6 +163,7 @@
     "deployment",
     "deprecated",
     "docs",
+    "docs-search",
     "documentation",
     "documents",
     "duplicate-code",
@@ -148,6 +180,8 @@
     "fuzzy-search",
     "game-engine",
     "game-library",
+    "gateway",
+    "gateway-mode",
     "gemini",
     "git",
     "github",
@@ -159,6 +193,7 @@
     "grep",
     "guardrails",
     "handoffs",
+    "hooks",
     "html5-game",
     "human-in-the-loop",
     "ingestion",
@@ -166,18 +201,24 @@
     "interoperability",
     "issues",
     "javascript",
+    "json-rpc",
     "knowledge-graph",
+    "kubernetes",
     "libraries",
     "llmops",
     "logs",
     "long-term-memory",
     "mcp",
+    "mcpx",
     "memgpt",
     "memory",
+    "memory-bank",
     "metrics",
     "microsoft",
+    "migrations",
     "monitoring",
     "multi-agent",
+    "mysql",
     "observability",
     "opentelemetry",
     "optimization",
@@ -186,11 +227,13 @@
     "pair-programming",
     "parallel",
     "payments",
+    "permissions",
     "personalization",
     "physics",
     "planning",
     "playwright",
     "plugins",
+    "postgres",
     "production",
     "prompt-engineering",
     "prompt-optimizer",
@@ -202,31 +245,42 @@
     "pull-requests",
     "python",
     "qa",
+    "qdrant",
     "quality",
     "rag",
     "read-only",
+    "read-only-mode",
     "receipts",
     "red-team",
     "regex",
     "registry",
+    "remote-mcp",
     "renderer",
     "repository",
     "research",
     "resources",
     "retrieval",
+    "reverse-proxy",
     "rigid-body",
     "roles",
+    "roo-code",
+    "routing",
     "rules",
     "runtime",
     "rust",
     "safety",
+    "schema",
+    "schemas",
     "scoring",
     "scraping",
     "search",
     "security",
+    "semantic-search",
     "server",
+    "session-aware",
     "sessions",
     "simulation",
+    "skills",
     "software-engineering",
     "specialists",
     "sql",
@@ -248,14 +302,18 @@
     "three-dimensional",
     "tool-calling",
     "tool-permissions",
+    "tool-routing",
     "tool-use",
     "tools",
+    "toolsets",
     "tracing",
     "tree-sitter",
     "tui",
     "two-dimensional",
     "typed",
     "typescript",
+    "vector-database",
+    "vector-search",
     "vnem",
     "vscode",
     "wasm",
@@ -266,6 +324,7 @@
     "webgl",
     "webgpu",
     "webxr",
+    "windsurf",
     "workflows",
     "x402"
   ],
@@ -280,10 +339,12 @@
     "Apply reviewable edits to Git repositories",
     "Assign repository issues to an agent",
     "Automate browser flows through MCP",
-    "Automate issues and pull request workflows",
+    "Automate issues, pull requests, and workflow triage",
     "Automate research and back-office workflows",
     "Benchmark repository repair workflows",
+    "Bootstrap a persistent memory bank for coding agents",
     "Build 3D browser games",
+    "Build a mode catalog for architecture, coding, security, and domain tasks",
     "Build and deploy Gemini-oriented agents",
     "Build browser-first 3D games",
     "Build commerce workflows with auditable agent actions",
@@ -305,6 +366,8 @@
     "Build type-safe agents",
     "Build TypeScript agent applications",
     "Build TypeScript-first 2D browser games",
+    "Centralize authentication, routing, and audit controls",
+    "Centralize session-aware MCP server lifecycle management",
     "Checkpoint and resume long-running workflows",
     "Choose between workflows and autonomous agents",
     "Choose deterministic or compatibility physics packages when needed",
@@ -314,14 +377,19 @@
     "Compare MCP servers by permissions and provenance",
     "Compare older swarm patterns to maintained SDKs",
     "Compare registry entries with trust and permission notes",
+    "Connect a VS Code-family coding agent to MCP servers",
     "Connect agents across runtimes",
     "Connect agents to document and data indexes",
     "Connect agents to structured data",
     "Connect bugfix work to Sentry evidence",
+    "Connect local or hosted Qdrant collections to agent workflows",
     "Connect VS Code workflows to MCP tools",
+    "Constrain tool discovery by agent or workflow",
     "Coordinate agent handoffs",
     "Coordinate sequential, concurrent, graph, and hierarchical agent teams",
     "Coordinate specialist subagents for coding tasks",
+    "Crawl documentation and retrieve relevant chunks for coding agents",
+    "Create a project-specific RAG store for external docs",
     "Create repeatable prompt improvement workflows",
     "Create reproducible safety and capability tests",
     "Customize AI coding assistance for teams",
@@ -332,6 +400,7 @@
     "Design interop between vendor agent systems",
     "Design parallel research agent systems",
     "Design prompt output contracts and verification criteria",
+    "Design safer trust boundaries for agent tool use",
     "Design tool-using agent systems conservatively",
     "Detect duplicated source blocks",
     "Detect unused or missing dependencies",
@@ -340,6 +409,9 @@
     "Evaluate and monitor LLM application behavior",
     "Evaluate LLM and agent behavior",
     "Evaluate RAG retrieval and answers",
+    "Experiment with custom mode prompts and permissions",
+    "Expose carefully gated database access to coding assistants",
+    "Expose internal web-app APIs as MCP tools",
     "Extend agents with external tools",
     "Fetch current library documentation for agents",
     "Find syntax patterns across codebases",
@@ -349,6 +421,7 @@
     "Give agents portable long-term memory",
     "Give agents searchable long-term memory",
     "Give agents searchable web or knowledge access",
+    "Give agents semantic memory backed by Qdrant",
     "Give agents structural code search",
     "Give coding agents stable repository instructions",
     "Give coding agents vnem search and recommendation tools",
@@ -361,17 +434,21 @@
     "Let agents crawl and extract web content",
     "Let agents inspect and edit code repositories",
     "Let agents inspect and test web UIs",
-    "Let agents inspect GitHub repositories",
-    "Let agents inspect Supabase projects",
+    "Let agents inspect GitHub repositories and code",
+    "Let agents inspect MySQL schemas",
+    "Let agents inspect Supabase projects and schemas",
     "Let agents inspect websites and web apps",
+    "Let agents interact with web apps through an existing browser session",
     "Let agents investigate production errors",
     "Let agents work with scoped files",
     "Let agents work with Stripe APIs",
+    "Limit visible GitHub tools with explicit toolsets",
     "Manage prompts and datasets",
     "Manage scenes, sprites, assets, input, cameras, and audio",
     "Model work as role-based agent teams",
     "Monitor agent sessions and costs",
     "Open pull requests from automated coding work",
+    "Operate MCP servers in Kubernetes-oriented environments",
     "Optimize LLM pipelines against metrics",
     "Optimize prompts against examples and graders",
     "Pair program from the terminal",
@@ -382,9 +459,12 @@
     "Produce structured search output",
     "Prototype 2D browser games quickly",
     "Prototype distributed agent applications",
+    "Prototype role-specific agent prompts and permission groups",
     "Prototype swarm-style task routing",
+    "Put multiple MCP servers behind a single endpoint",
     "Query current MCP, skill, memory, eval, prompt, and coding-agent guidance",
     "Query or manage development databases through MCP",
+    "Reduce OAuth/API-key setup for tools already open in the user's browser",
     "Reduce repeated grep and file-reading loops",
     "Reduce token-heavy file exploration loops",
     "Regression-test prompts and agents",
@@ -396,21 +476,33 @@
     "Retrieve relationship-aware context for agents",
     "Return validated structured outputs",
     "Review agent safety rule sets",
+    "Review examples of specialized Roo Code modes",
     "Rewrite code with AST captures",
+    "Route MCP traffic through a managed gateway layer",
     "Run autonomous software engineering tasks",
     "Run Boolean or fuzzy local search",
     "Run cloud browser automation for agents",
     "Run LLM red-team checks",
+    "Run model-flexible coding tasks with explicit approvals",
+    "Run read-only MySQL queries through MCP",
+    "Run terminal-backed coding tasks with editor context",
     "Run tests and commands during coding tasks",
+    "Scope MCP access to specific agents",
     "Search archives and compressed files",
+    "Search code examples extracted from crawled documentation",
     "Search codebases quickly",
+    "Search Supabase documentation from an MCP client",
+    "Separate durable project context from temporary task notes",
     "Separate lead-agent synthesis from specialist exploration",
+    "Separate planning, implementation, and documentation instructions",
     "Serve agents through a persistent API",
     "Share agent guidance across coding sessions",
+    "Share rule files across multiple IDE agents",
     "Ship HTML5 games across desktop and mobile browsers",
     "Simulate collisions, constraints, and forces",
     "Solve GitHub issues with an autonomous coding agent",
     "Standardize agent access to tools and context",
+    "Store and retrieve project notes or embeddings through MCP",
     "Study governance layers for autonomous agents",
     "Support evidence-backed code deletion",
     "Target WebGL with WebGPU support paths",
@@ -430,6 +522,7 @@
     "Use engine-level scene, material, asset, GUI, XR, and physics features",
     "Use explicit context providers for code work",
     "Use prompts and tools across multiple languages",
+    "Use role-based modes for planning, coding, asking, and debugging",
     "Use tools and structured outputs in web apps",
     "Use tools, callbacks, and multi-agent patterns",
     "Use WASM-backed rigid-body simulation",
@@ -443,8 +536,13 @@
       "design",
       "component",
       "visual",
+      "aesthetic",
+      "visual polish",
+      "composition",
       "accessibility",
-      "prototype"
+      "prototype",
+      "landing page",
+      "brand assets"
     ],
     "browser game": [
       "web game",
@@ -459,7 +557,10 @@
       "input",
       "collision",
       "game ui",
-      "game testing"
+      "game testing",
+      "game feel",
+      "reward feedback",
+      "sound design"
     ],
     "web game": [
       "browser game",
@@ -539,9 +640,215 @@
       "readability",
       "touch targets",
       "feedback",
+      "reward feedback",
+      "game feel",
+      "screen composition",
       "onboarding",
       "pause",
       "restart"
+    ],
+    "aesthetic experience": [
+      "visual polish",
+      "aesthetic",
+      "aesthetics",
+      "beautiful",
+      "pretty",
+      "polished",
+      "taste",
+      "composition",
+      "layout polish",
+      "neon",
+      "glow",
+      "glowing",
+      "dopamine",
+      "reward feedback",
+      "game feel",
+      "microinteractions",
+      "sound design",
+      "juice",
+      "delight",
+      "perception gate"
+    ],
+    "visual polish": [
+      "aesthetic experience",
+      "beautiful ui",
+      "pretty ui",
+      "design polish",
+      "composition",
+      "visual hierarchy",
+      "spacing",
+      "typography",
+      "color harmony",
+      "reference fidelity"
+    ],
+    "visual qa": [
+      "perception gate",
+      "screenshot verification",
+      "rendered qa",
+      "visual polish",
+      "ugliest issue",
+      "desktop screenshot",
+      "mobile screenshot",
+      "interaction evidence",
+      "repo-first assets"
+    ],
+    "screenshot polish": [
+      "visual qa",
+      "perception gate",
+      "browser verification",
+      "desktop screenshot",
+      "mobile screenshot",
+      "rendered result",
+      "visual polish"
+    ],
+    "game feel": [
+      "aesthetic experience",
+      "reward feedback",
+      "juice",
+      "sound design",
+      "hit stop",
+      "screen flash",
+      "particles",
+      "apple feedback",
+      "input feel",
+      "microinteractions"
+    ],
+    "sound design": [
+      "aesthetic experience",
+      "audio",
+      "web audio",
+      "mute",
+      "sfx",
+      "sound effects",
+      "game feel",
+      "throttled audio",
+      "pleasant tones"
+    ],
+    "reward feedback": [
+      "aesthetic experience",
+      "score pulse",
+      "screen flash",
+      "particles",
+      "apple",
+      "reward",
+      "dopamine",
+      "glow follows action",
+      "interaction anchored"
+    ],
+    "perception gate": [
+      "aesthetic experience",
+      "visual acceptance",
+      "pretty",
+      "polished",
+      "design review",
+      "screenshot critique",
+      "ship quality"
+    ],
+    "ui architecture": [
+      "design architecture",
+      "visual system",
+      "layout system",
+      "spacing system",
+      "typography system",
+      "design tokens",
+      "component architecture",
+      "frontend architecture"
+    ],
+    "bento dashboard": [
+      "dashboard",
+      "bento grid",
+      "css grid",
+      "grid layout",
+      "cards",
+      "kpi",
+      "analytics",
+      "agent dashboard",
+      "dense ui"
+    ],
+    "agent dashboard": [
+      "conversational ui",
+      "chat ui",
+      "agent ui",
+      "evidence cards",
+      "verification debt",
+      "thought process visibility",
+      "sequential disclosure",
+      "bento dashboard"
+    ],
+    "conversational ui": [
+      "agent dashboard",
+      "chat interface",
+      "chat ui",
+      "message feed",
+      "evidence cards",
+      "sequential disclosure",
+      "tool trace",
+      "confidence"
+    ],
+    "motion design": [
+      "microinteraction",
+      "animation",
+      "easing",
+      "duration",
+      "transition",
+      "reduced motion",
+      "hover",
+      "gesture",
+      "feedback"
+    ],
+    "design tokens": [
+      "tokens",
+      "css variables",
+      "semantic tokens",
+      "spacing scale",
+      "type scale",
+      "color roles",
+      "component tokens"
+    ],
+    "dark mode": [
+      "dark theme",
+      "surface elevation",
+      "color contrast",
+      "desaturated accents",
+      "luminance",
+      "theme tokens"
+    ],
+    "glassmorphism": [
+      "glass",
+      "frosted glass",
+      "backdrop-filter",
+      "blur",
+      "translucency",
+      "depth",
+      "rim light",
+      "layered shadow"
+    ],
+    "typography": [
+      "type scale",
+      "fluid typography",
+      "clamp",
+      "line height",
+      "readability",
+      "container query units",
+      "cqi"
+    ],
+    "layout spacing": [
+      "8-point grid",
+      "spacing",
+      "rhythm",
+      "padding",
+      "margin",
+      "gutter",
+      "layout system",
+      "optical spacing"
+    ],
+    "optical alignment": [
+      "perceptual alignment",
+      "visual weight",
+      "icon alignment",
+      "hanging punctuation",
+      "center of mass",
+      "optical balance"
     ],
     "game accessibility": [
       "contrast",
@@ -629,6 +936,91 @@
       "freshness",
       "registry"
     ],
+    "source radar": [
+      "research layer",
+      "source intake",
+      "official docs",
+      "docs index",
+      "mcp registry",
+      "llms.txt",
+      "freshness",
+      "provenance"
+    ],
+    "research layer": [
+      "source radar",
+      "source intake",
+      "current docs",
+      "official docs",
+      "mcp registry",
+      "benchmark evidence",
+      "evidence"
+    ],
+    "source intake": [
+      "source radar",
+      "research layer",
+      "upstream source",
+      "source trust",
+      "source provenance",
+      "source license",
+      "source permissions",
+      "source risk review"
+    ],
+    "benchmark evidence": [
+      "evals",
+      "inspect ai",
+      "promptfoo",
+      "ragas",
+      "quality evidence",
+      "performance data",
+      "regression test",
+      "pilot task"
+    ],
+    "pre execution gateway": [
+      "zero trust gateway",
+      "agent gateway",
+      "tool firewall",
+      "command risk",
+      "alignment barrier",
+      "path confinement",
+      "secret redaction"
+    ],
+    "zero trust gateway": [
+      "pre execution gateway",
+      "tool pinning",
+      "schema hashing",
+      "mcp rug pull",
+      "tool poisoning",
+      "read only hint",
+      "destructive hint"
+    ],
+    "tool pinning": [
+      "schema hash",
+      "tool schema",
+      "mcp rug pull",
+      "tool poisoning",
+      "tools/list_changed",
+      "tool annotations",
+      "tool metadata"
+    ],
+    "package firewall": [
+      "dependency firewall",
+      "package risk",
+      "typosquatting",
+      "dependency install",
+      "npm package",
+      "cargo package",
+      "package metadata"
+    ],
+    "ast indexer": [
+      "tree-sitter",
+      "code graph",
+      "codebase graph",
+      "structural index",
+      "symbol graph",
+      "imports",
+      "call graph",
+      "soft delete"
+    ],
     "backend api": [
       "backend",
       "api",
@@ -693,6 +1085,90 @@
       "imports",
       "project instructions"
     ],
+    "claude md": [
+      "claude.md",
+      "claude code",
+      "memory",
+      "project instructions",
+      "context engineering"
+    ],
+    "agents md": [
+      "agents.md",
+      "codex",
+      "repository instructions",
+      "context engineering",
+      "coding-agent"
+    ],
+    "codex config": [
+      "codex",
+      "agents.md",
+      "mcp",
+      "config.toml",
+      "repository instructions",
+      "context engineering"
+    ],
+    "agent workspace": [
+      "autonomous developer environment",
+      "mcp gateway",
+      "tool routing",
+      "memory bank",
+      "agents.md",
+      "claude.md",
+      "roo code",
+      "cline"
+    ],
+    "mcp gateway": [
+      "mcp",
+      "gateway",
+      "tool routing",
+      "discovery control",
+      "policy",
+      "least privilege",
+      "lunar mcpx",
+      "microsoft mcp gateway"
+    ],
+    "one mcp": [
+      "mcp gateway",
+      "tool routing",
+      "gateway",
+      "aggregation",
+      "policy",
+      "catalog"
+    ],
+    "tool routing": [
+      "mcp gateway",
+      "routing",
+      "tool discovery",
+      "tool exposure",
+      "permissions",
+      "policy"
+    ],
+    "memory bank": [
+      "memory",
+      "context",
+      "persistent memory",
+      "decision log",
+      "active context",
+      "roo code",
+      "cline"
+    ],
+    "roo code": [
+      "roo code",
+      "custom modes",
+      "agent modes",
+      "cline",
+      "mcp",
+      "memory bank"
+    ],
+    "agent modes": [
+      "custom modes",
+      "roo code",
+      "cline",
+      "architect mode",
+      "code mode",
+      "debug mode",
+      "permissions"
+    ],
     "mcp servers": [
       "mcp",
       "model context protocol",
@@ -751,6 +1227,41 @@
       "annotation",
       "eval",
       "iteration"
+    ],
+    "codex vs claude": [
+      "codex",
+      "claude code",
+      "coding-agent",
+      "repository",
+      "approvals",
+      "memory",
+      "subagents"
+    ],
+    "gemini agent": [
+      "gemini",
+      "google adk",
+      "agent-framework",
+      "vertex ai",
+      "deployment",
+      "evaluation"
+    ],
+    "ai model selection": [
+      "model",
+      "provider",
+      "agent",
+      "eval",
+      "cost",
+      "latency",
+      "workflow"
+    ],
+    "agent upgrade": [
+      "upgrade",
+      "capability",
+      "workflow",
+      "mcp",
+      "eval",
+      "memory",
+      "observability"
     ],
     "code simplification": [
       "refactor",
@@ -811,8 +1322,1118 @@
     ]
   },
   "intent_routes": {
+    "aesthetic experience": {
+      "read_first": [
+        "practice:visual-experience",
+        "visual-qa-protocol:vnem-visual-qa-protocol",
+        "design-architecture:vnem-design-architecture",
+        "practice:frontend",
+        "practice:browser-games",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "existing project design system and assets",
+        "custom CSS/canvas polish pass",
+        "lightweight animation and audio",
+        "source-backed image/audio generation only with approval"
+      ],
+      "choose_by": [
+        "first-screen composition",
+        "visual hierarchy",
+        "scale and spacing",
+        "reference-style fidelity",
+        "action-anchored reward feedback",
+        "motion and sound restraint"
+      ],
+      "report": [
+        "perception verdict",
+        "screenshots or interaction evidence",
+        "what was polished",
+        "known taste or device risk"
+      ]
+    },
+    "visual polish": {
+      "read_first": [
+        "practice:visual-experience",
+        "visual-qa-protocol:vnem-visual-qa-protocol",
+        "design-architecture:vnem-design-architecture",
+        "practice:frontend",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "existing design system",
+        "CSS polish pass",
+        "component/layout cleanup",
+        "asset recreation only when needed and approved"
+      ],
+      "choose_by": [
+        "composition",
+        "hierarchy",
+        "spacing",
+        "typography",
+        "color harmony",
+        "responsive fit",
+        "screenshot evidence"
+      ],
+      "report": [
+        "perception verdict",
+        "visual changes",
+        "screenshot evidence",
+        "remaining polish risk"
+      ]
+    },
+    "game feel": {
+      "read_first": [
+        "practice:visual-experience",
+        "visual-qa-protocol:vnem-visual-qa-protocol",
+        "design-architecture:vnem-design-architecture",
+        "practice:browser-games",
+        "practice:frontend",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "custom Canvas feedback",
+        "engine-native particles/audio",
+        "DOM HUD effects",
+        "reduced-motion fallback"
+      ],
+      "choose_by": [
+        "input feel",
+        "reward timing",
+        "effect origin",
+        "sound pleasantness",
+        "playfield scale",
+        "restart path"
+      ],
+      "report": [
+        "game-feel verdict",
+        "reward/audio evidence",
+        "browser playthrough",
+        "known device risk"
+      ]
+    },
+    "reward feedback": {
+      "read_first": [
+        "practice:visual-experience",
+        "visual-qa-protocol:vnem-visual-qa-protocol",
+        "design-architecture:vnem-design-architecture",
+        "practice:browser-games",
+        "practice:frontend"
+      ],
+      "compare_options": [
+        "event-anchored flash",
+        "score pulse",
+        "particle burst",
+        "short Web Audio cue",
+        "reduced-motion fallback"
+      ],
+      "choose_by": [
+        "effect follows the event",
+        "readable HUD",
+        "flashes are restrained",
+        "audio is throttled and muteable"
+      ],
+      "report": [
+        "reward feedback behavior",
+        "effect origin evidence",
+        "audio/motion safety",
+        "remaining polish risk"
+      ]
+    },
+    "sound design": {
+      "read_first": [
+        "practice:visual-experience",
+        "visual-qa-protocol:vnem-visual-qa-protocol",
+        "design-architecture:vnem-design-architecture",
+        "practice:browser-games",
+        "practice:frontend"
+      ],
+      "compare_options": [
+        "Web Audio oscillator cues",
+        "local audio asset",
+        "muted-by-default mode",
+        "visual-only cue"
+      ],
+      "choose_by": [
+        "short pleasant cues",
+        "throttling",
+        "mute control",
+        "audio unlock behavior",
+        "no constant noise"
+      ],
+      "report": [
+        "sound behavior",
+        "mute/unlock handling",
+        "verification evidence",
+        "remaining audio risk"
+      ]
+    },
+    "perception gate": {
+      "read_first": [
+        "practice:visual-experience",
+        "visual-qa-protocol:vnem-visual-qa-protocol",
+        "design-architecture:vnem-design-architecture",
+        "practice:frontend",
+        "practice:browser-games",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "fix current visible defects",
+        "tighten scale and layout",
+        "improve motion/reward feedback",
+        "block delivery until polish passes"
+      ],
+      "choose_by": [
+        "ship-quality first impression",
+        "reference fidelity",
+        "no obvious ugliness",
+        "interaction evidence",
+        "responsive screenshots"
+      ],
+      "report": [
+        "ship-quality, needs-polish, or blocked",
+        "screenshots reviewed",
+        "issues fixed before final",
+        "remaining uncertainty"
+      ]
+    },
+    "visual qa": {
+      "read_first": [
+        "practice:visual-experience",
+        "visual-qa-protocol:vnem-visual-qa-protocol",
+        "design-architecture:vnem-design-architecture",
+        "practice:frontend",
+        "practice:browser-games",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "repo-first rendered inspection",
+        "desktop and mobile screenshot pass",
+        "interaction/reward moment check",
+        "smallest polish fix",
+        "blocked report if evidence cannot be produced"
+      ],
+      "choose_by": [
+        "actual rendered result",
+        "first-screen impression",
+        "mobile fit",
+        "interaction evidence",
+        "ugliest issue fixed before final"
+      ],
+      "report": [
+        "perception verdict",
+        "ugliest issue found and fixed",
+        "screenshot or rendered-inspection evidence",
+        "remaining polish risk"
+      ]
+    },
+    "ui architecture": {
+      "read_first": [
+        "practice:visual-experience",
+        "design-architecture:vnem-design-architecture",
+        "practice:frontend",
+        "source:ui-architecture-sources"
+      ],
+      "compare_options": [
+        "existing design system",
+        "CSS variables and semantic tokens",
+        "CSS Grid/Flexbox layout",
+        "component-local container queries",
+        "custom visual system only when the repo lacks one"
+      ],
+      "choose_by": [
+        "repo-native conventions",
+        "layout stability",
+        "token reusability",
+        "accessibility baseline",
+        "screenshot verification"
+      ],
+      "report": [
+        "design architecture chosen",
+        "tokens or layout system used",
+        "verification evidence",
+        "remaining polish risk"
+      ]
+    },
+    "bento dashboard": {
+      "read_first": [
+        "practice:visual-experience",
+        "design-architecture:vnem-design-architecture",
+        "practice:frontend",
+        "source:ui-architecture-sources"
+      ],
+      "compare_options": [
+        "plain responsive grid",
+        "12-column CSS Grid bento",
+        "existing dashboard components",
+        "linear layout for sequential workflows"
+      ],
+      "choose_by": [
+        "information priority",
+        "grid fit",
+        "consistent gutters",
+        "mobile collapse",
+        "scanability"
+      ],
+      "report": [
+        "dashboard layout choice",
+        "priority-to-size mapping",
+        "responsive verification",
+        "known density risk"
+      ]
+    },
+    "agent dashboard": {
+      "read_first": [
+        "practice:visual-experience",
+        "design-architecture:vnem-design-architecture",
+        "practice:frontend",
+        "practice:agent-tooling",
+        "source:ui-architecture-sources"
+      ],
+      "compare_options": [
+        "chat feed with evidence cards",
+        "bento micro-dashboard",
+        "task trace panel",
+        "plain text report"
+      ],
+      "choose_by": [
+        "verification debt",
+        "source visibility",
+        "cognitive load",
+        "mobile readability",
+        "trust-building evidence"
+      ],
+      "report": [
+        "agent UI pattern",
+        "evidence shown",
+        "verification visibility",
+        "residual trust risk"
+      ]
+    },
+    "conversational ui": {
+      "read_first": [
+        "practice:visual-experience",
+        "design-architecture:vnem-design-architecture",
+        "practice:frontend",
+        "source:ui-architecture-sources"
+      ],
+      "compare_options": [
+        "linear chat disclosure",
+        "inline evidence cards",
+        "expandable tool trace",
+        "dashboard handoff"
+      ],
+      "choose_by": [
+        "message length",
+        "data complexity",
+        "source/evidence needs",
+        "tap target size",
+        "scroll readability"
+      ],
+      "report": [
+        "conversation pattern",
+        "evidence and disclosure design",
+        "accessibility check",
+        "known cognitive-load risk"
+      ]
+    },
+    "motion design": {
+      "read_first": [
+        "practice:visual-experience",
+        "design-architecture:vnem-design-architecture",
+        "practice:frontend",
+        "source:ui-architecture-sources"
+      ],
+      "compare_options": [
+        "CSS transitions",
+        "requestAnimationFrame animation",
+        "reduced-motion fallback",
+        "static state change"
+      ],
+      "choose_by": [
+        "feedback immediacy",
+        "duration",
+        "easing",
+        "motion sensitivity",
+        "performance"
+      ],
+      "report": [
+        "motion behavior",
+        "reduced-motion handling",
+        "interaction evidence",
+        "remaining motion risk"
+      ]
+    },
+    "design tokens": {
+      "read_first": [
+        "practice:visual-experience",
+        "design-architecture:vnem-design-architecture",
+        "practice:frontend",
+        "source:ui-architecture-sources"
+      ],
+      "compare_options": [
+        "existing tokens",
+        "CSS custom properties",
+        "semantic aliases",
+        "component-specific tokens"
+      ],
+      "choose_by": [
+        "repo conventions",
+        "theme needs",
+        "readability",
+        "maintainability",
+        "blast radius"
+      ],
+      "report": [
+        "token strategy",
+        "roles introduced or reused",
+        "verification evidence",
+        "migration risk"
+      ]
+    },
+    "dark mode": {
+      "read_first": [
+        "practice:visual-experience",
+        "design-architecture:vnem-design-architecture",
+        "practice:frontend",
+        "source:ui-architecture-sources"
+      ],
+      "compare_options": [
+        "existing theme tokens",
+        "dark surface ladder",
+        "light-only design",
+        "system color-scheme support"
+      ],
+      "choose_by": [
+        "contrast baseline",
+        "surface elevation",
+        "brand color desaturation",
+        "eye comfort",
+        "theme consistency"
+      ],
+      "report": [
+        "dark-mode strategy",
+        "contrast/elevation evidence",
+        "known accessibility risk"
+      ]
+    },
+    "glassmorphism": {
+      "read_first": [
+        "practice:visual-experience",
+        "design-architecture:vnem-design-architecture",
+        "practice:frontend",
+        "source:ui-architecture-sources"
+      ],
+      "compare_options": [
+        "solid surface",
+        "subtle translucent panel",
+        "backdrop-filter glass",
+        "noise/matte overlay"
+      ],
+      "choose_by": [
+        "text readability",
+        "browser support",
+        "background complexity",
+        "performance",
+        "fallback clarity"
+      ],
+      "report": [
+        "material choice",
+        "readability evidence",
+        "fallback risk"
+      ]
+    },
+    "typography": {
+      "read_first": [
+        "practice:visual-experience",
+        "design-architecture:vnem-design-architecture",
+        "practice:frontend",
+        "source:ui-architecture-sources"
+      ],
+      "compare_options": [
+        "existing type scale",
+        "static accessible scale",
+        "fluid clamp scale",
+        "container-query type"
+      ],
+      "choose_by": [
+        "readability",
+        "mobile fit",
+        "line height",
+        "zoom behavior",
+        "component reuse"
+      ],
+      "report": [
+        "type scale choice",
+        "responsive evidence",
+        "remaining readability risk"
+      ]
+    },
+    "layout spacing": {
+      "read_first": [
+        "practice:visual-experience",
+        "design-architecture:vnem-design-architecture",
+        "practice:frontend"
+      ],
+      "compare_options": [
+        "existing spacing tokens",
+        "8-point spacing scale",
+        "component-local spacing",
+        "layout-specific exceptions"
+      ],
+      "choose_by": [
+        "visual grouping",
+        "internal vs external spacing",
+        "responsive rhythm",
+        "text fit"
+      ],
+      "report": [
+        "spacing system",
+        "grouping evidence",
+        "responsive risk"
+      ]
+    },
+    "optical alignment": {
+      "read_first": [
+        "practice:visual-experience",
+        "design-architecture:vnem-design-architecture",
+        "practice:frontend"
+      ],
+      "compare_options": [
+        "geometric alignment",
+        "manual optical offset",
+        "icon/text contrast adjustment",
+        "hanging punctuation or visual inset"
+      ],
+      "choose_by": [
+        "perceived center",
+        "visual weight",
+        "text/icon harmony",
+        "screenshot evidence"
+      ],
+      "report": [
+        "alignment fix",
+        "perception evidence",
+        "remaining polish risk"
+      ]
+    },
+    "mcp gateway": {
+      "read_first": [
+        "practice:mcp-gateway-tool-routing",
+        "practice:mcp-server-selection",
+        "practice:security"
+      ],
+      "compare_options": [
+        "No gateway with a small MCP set",
+        "Lunar MCPX",
+        "Microsoft MCP Gateway",
+        "Managed control plane"
+      ],
+      "choose_by": [
+        "tool count",
+        "auth and audit requirements",
+        "deployment environment",
+        "least-privilege policy",
+        "session/routing needs"
+      ],
+      "report": [
+        "vnem intents searched",
+        "top matches",
+        "choice",
+        "why",
+        "permission risks"
+      ]
+    },
+    "one mcp": {
+      "read_first": [
+        "practice:mcp-gateway-tool-routing",
+        "practice:mcp-server-selection",
+        "practice:security"
+      ],
+      "compare_options": [
+        "curated small server list",
+        "gateway aggregation",
+        "role-scoped catalogs"
+      ],
+      "choose_by": [
+        "context budget",
+        "tool discovery size",
+        "user approval flow",
+        "secret handling",
+        "rollback path"
+      ],
+      "report": [
+        "vnem intents searched",
+        "top matches",
+        "choice",
+        "why",
+        "permission risks"
+      ]
+    },
+    "tool routing": {
+      "read_first": [
+        "practice:mcp-gateway-tool-routing",
+        "practice:security"
+      ],
+      "compare_options": [
+        "static client config",
+        "role-scoped gateway routing",
+        "task-scoped tool catalogs"
+      ],
+      "choose_by": [
+        "agent role",
+        "task intent",
+        "permissions",
+        "auditability",
+        "blast radius"
+      ],
+      "report": [
+        "vnem intents searched",
+        "top matches",
+        "choice",
+        "why"
+      ]
+    },
+    "memory bank": {
+      "read_first": [
+        "practice:persistent-memory-context-files",
+        "practice:context-engineering",
+        "practice:codex-vnem-setup"
+      ],
+      "compare_options": [
+        "AGENTS.md",
+        "CLAUDE.md",
+        "repo-local memory bank",
+        "tool-specific rules and modes"
+      ],
+      "choose_by": [
+        "agent client",
+        "team maintenance capacity",
+        "secret risk",
+        "context volatility",
+        "need for decision history"
+      ],
+      "report": [
+        "vnem intents searched",
+        "top matches",
+        "choice",
+        "why"
+      ]
+    },
+    "roo code": {
+      "read_first": [
+        "practice:ide-agent-selection",
+        "practice:persistent-memory-context-files",
+        "practice:mcp-gateway-tool-routing"
+      ],
+      "compare_options": [
+        "Roo Code",
+        "Cline",
+        "Cursor Agent",
+        "Claude Code",
+        "Codex"
+      ],
+      "choose_by": [
+        "editor fit",
+        "custom mode needs",
+        "BYOM needs",
+        "approval model",
+        "upstream maintenance status"
+      ],
+      "report": [
+        "vnem intents searched",
+        "top matches",
+        "choice",
+        "why",
+        "source uncertainty"
+      ]
+    },
+    "agent modes": {
+      "read_first": [
+        "practice:ide-agent-selection",
+        "practice:persistent-memory-context-files",
+        "practice:security"
+      ],
+      "compare_options": [
+        "single generalist agent",
+        "planning/code/debug modes",
+        "specialist subagents",
+        "gateway-scoped roles"
+      ],
+      "choose_by": [
+        "tool permissions",
+        "task phase",
+        "context budget",
+        "reviewability",
+        "risk of over-broad tools"
+      ],
+      "report": [
+        "vnem intents searched",
+        "top matches",
+        "choice",
+        "why"
+      ]
+    },
+    "codex config": {
+      "read_first": [
+        "practice:codex-vnem-setup",
+        "practice:persistent-memory-context-files",
+        "practice:mcp-gateway-tool-routing"
+      ],
+      "compare_options": [
+        "AGENTS.md",
+        "Codex MCP config",
+        "vnem read-only MCP",
+        "project-local prompt patterns"
+      ],
+      "choose_by": [
+        "repository scope",
+        "needed tools",
+        "verification commands",
+        "approval boundary",
+        "secrets policy"
+      ],
+      "report": [
+        "vnem intents searched",
+        "top matches",
+        "choice",
+        "why"
+      ]
+    },
+    "claude md": {
+      "read_first": [
+        "practice:persistent-memory-context-files",
+        "practice:ide-agent-selection",
+        "practice:context-engineering"
+      ],
+      "compare_options": [
+        "CLAUDE.md",
+        "AGENTS.md",
+        "tool-specific memory bank",
+        "local untracked overrides"
+      ],
+      "choose_by": [
+        "agent client",
+        "shared versus local instructions",
+        "secrets policy",
+        "maintenance cadence"
+      ],
+      "report": [
+        "vnem intents searched",
+        "top matches",
+        "choice",
+        "why"
+      ]
+    },
+    "agent workspace": {
+      "read_first": [
+        "practice:codex-vnem-setup",
+        "practice:mcp-gateway-tool-routing",
+        "practice:persistent-memory-context-files",
+        "practice:ide-agent-selection"
+      ],
+      "compare_options": [
+        "read-only guidance only",
+        "small direct MCP set",
+        "gateway-controlled MCP workspace",
+        "IDE agent plus terminal agent"
+      ],
+      "choose_by": [
+        "repository risk",
+        "tool permissions",
+        "agent client",
+        "audit needs",
+        "how often context changes"
+      ],
+      "report": [
+        "vnem intents searched",
+        "top matches",
+        "choice",
+        "why",
+        "remaining uncertainty"
+      ]
+    },
+    "source radar": {
+      "read_first": [
+        "source:mcp-core-and-registry",
+        "source:coding-agent-clients",
+        "source:documentation-ingestion",
+        "practice:research-source-intake",
+        "practice:agent-tooling"
+      ],
+      "compare_options": [
+        "official docs",
+        "canonical GitHub repositories",
+        "official registries",
+        "vendor MCP docs",
+        "evaluation frameworks",
+        "llms.txt indexes"
+      ],
+      "choose_by": [
+        "source confidence",
+        "freshness",
+        "license clarity",
+        "permission risk",
+        "agent-client relevance",
+        "verification path"
+      ],
+      "report": [
+        "source category",
+        "why it matters",
+        "trust and risk",
+        "intake path",
+        "refresh cadence"
+      ]
+    },
+    "research layer": {
+      "read_first": [
+        "source:mcp-core-and-registry",
+        "source:coding-agent-clients",
+        "source:evaluation-and-observability",
+        "practice:research-source-intake",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "static registry entry",
+        "best-practice note",
+        "prompt pattern",
+        "watched source",
+        "benchmark fixture"
+      ],
+      "choose_by": [
+        "whether agents need it before editing",
+        "source trust",
+        "context saved",
+        "maintenance effort",
+        "risk flags"
+      ],
+      "report": [
+        "sources consulted",
+        "decision",
+        "data to add",
+        "verification evidence"
+      ]
+    },
+    "source intake": {
+      "read_first": [
+        "source:mcp-core-and-registry",
+        "source:documentation-ingestion",
+        "practice:research-source-intake",
+        "practice:security"
+      ],
+      "compare_options": [
+        "add watched source only",
+        "add registry entry",
+        "add best-practice note",
+        "add prompt pattern",
+        "defer as out of scope"
+      ],
+      "choose_by": [
+        "official provenance",
+        "license posture",
+        "permissions",
+        "risk flags",
+        "whether a real agent workflow improves"
+      ],
+      "report": [
+        "candidate",
+        "trust tier",
+        "risk flags",
+        "artifact to update",
+        "verification"
+      ]
+    },
+    "benchmark evidence": {
+      "read_first": [
+        "source:evaluation-and-observability",
+        "practice:evals",
+        "practice:research-source-intake"
+      ],
+      "compare_options": [
+        "small repo pilot",
+        "prompt regression suite",
+        "tool-call trace review",
+        "before/after recommendation diff",
+        "manual maintainer review"
+      ],
+      "choose_by": [
+        "measurable behavior",
+        "repeatability",
+        "cost",
+        "failure-mode coverage",
+        "fit to vnem's read-only model"
+      ],
+      "report": [
+        "metric",
+        "dataset or fixture",
+        "baseline",
+        "expected improvement",
+        "review gate"
+      ]
+    },
+    "pre execution gateway": {
+      "read_first": [
+        "practice:zero-trust-agent-gateway",
+        "source:agentic-gateway-security",
+        "practice:mcp-server-selection",
+        "practice:security"
+      ],
+      "compare_options": [
+        "read-only vnem guidance",
+        "advisory gateway design",
+        "client-side approval policy",
+        "separate runtime proxy",
+        "language/runtime rewrite"
+      ],
+      "choose_by": [
+        "blast radius",
+        "deterministic controls",
+        "client compatibility",
+        "secret handling",
+        "path confinement",
+        "verification coverage"
+      ],
+      "report": [
+        "safe subset",
+        "blocked risky scope",
+        "phased design",
+        "required tests",
+        "approval gates"
+      ]
+    },
+    "zero trust gateway": {
+      "read_first": [
+        "practice:zero-trust-agent-gateway",
+        "source:agentic-gateway-security",
+        "practice:mcp-server-selection",
+        "practice:security"
+      ],
+      "compare_options": [
+        "tool annotations as hints",
+        "schema hash pinning",
+        "workspace path policy",
+        "redacted audit logging",
+        "package firewall advisory",
+        "runtime sandbox"
+      ],
+      "choose_by": [
+        "enforceability",
+        "trusted boundary",
+        "false-positive cost",
+        "rollback path",
+        "whether the install pack remains read-only"
+      ],
+      "report": [
+        "trust boundary",
+        "control type",
+        "what is deterministic",
+        "what needs human approval"
+      ]
+    },
+    "tool pinning": {
+      "read_first": [
+        "practice:zero-trust-agent-gateway",
+        "source:agentic-gateway-security",
+        "practice:mcp-server-selection"
+      ],
+      "compare_options": [
+        "schema hash pinning",
+        "tool allowlist",
+        "server/version pin",
+        "list_changed invalidation",
+        "manual approval on schema drift"
+      ],
+      "choose_by": [
+        "source trust",
+        "schema stability",
+        "client support",
+        "failure mode",
+        "auditability"
+      ],
+      "report": [
+        "server",
+        "tool",
+        "known hash",
+        "drift behavior",
+        "review action"
+      ]
+    },
+    "package firewall": {
+      "read_first": [
+        "practice:zero-trust-agent-gateway",
+        "source:agentic-gateway-security",
+        "practice:code-review",
+        "practice:security"
+      ],
+      "compare_options": [
+        "manifest diff review",
+        "package metadata check",
+        "typosquat heuristic",
+        "maintainer/license check",
+        "lockfile-only policy"
+      ],
+      "choose_by": [
+        "ecosystem",
+        "registry metadata quality",
+        "install side effects",
+        "maintainer trust",
+        "verification path"
+      ],
+      "report": [
+        "package",
+        "risk signal",
+        "recommended gate",
+        "false-positive handling"
+      ]
+    },
+    "ast indexer": {
+      "read_first": [
+        "practice:zero-trust-agent-gateway",
+        "source:agentic-gateway-security",
+        "practice:code-simplification",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "plain lexical search",
+        "AST-aware search",
+        "disposable read-only graph",
+        "durable code graph service"
+      ],
+      "choose_by": [
+        "repo size",
+        "language support",
+        "index freshness",
+        "write risk",
+        "incremental update correctness"
+      ],
+      "report": [
+        "index scope",
+        "read-only guarantee",
+        "verification",
+        "deferred runtime scope"
+      ]
+    },
+    "codex vs claude": {
+      "read_first": [
+        "practice:ide-agent-selection",
+        "practice:model-and-provider-selection",
+        "practice:agent-tooling",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "Codex",
+        "Claude Code",
+        "Gemini/Google ADK",
+        "Copilot-style agents",
+        "Cursor/Cline-style tools",
+        "framework-based agents"
+      ],
+      "choose_by": [
+        "repo workflow fit",
+        "approval boundaries",
+        "shell and filesystem model",
+        "memory and instruction model",
+        "MCP/tool support",
+        "verification and cost"
+      ],
+      "report": [
+        "vnem intents searched",
+        "top matches",
+        "best fit",
+        "pilot task"
+      ]
+    },
+    "gemini agent": {
+      "read_first": [
+        "practice:ide-agent-selection",
+        "practice:model-and-provider-selection",
+        "practice:agent-tooling",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "Gemini/Google ADK",
+        "Codex",
+        "Claude Code",
+        "hosted agent runtimes",
+        "model API tool-calling"
+      ],
+      "choose_by": [
+        "Google ecosystem fit",
+        "agent framework needs",
+        "deployment path",
+        "tooling and evaluation support",
+        "privacy and cost"
+      ],
+      "report": [
+        "vnem intents searched",
+        "top matches",
+        "choice",
+        "why"
+      ]
+    },
+    "ai model selection": {
+      "read_first": [
+        "practice:model-and-provider-selection",
+        "practice:ide-agent-selection",
+        "practice:evals",
+        "practice:observability-and-tracing"
+      ],
+      "compare_options": [
+        "coding agent",
+        "model API",
+        "agent framework",
+        "MCP-enabled workflow",
+        "existing project tool"
+      ],
+      "choose_by": [
+        "task shape",
+        "quality evidence",
+        "latency",
+        "cost",
+        "privacy",
+        "operational fit",
+        "reversibility"
+      ],
+      "report": [
+        "vnem intents searched",
+        "top matches",
+        "recommendation",
+        "verification plan"
+      ]
+    },
+    "agent upgrade": {
+      "read_first": [
+        "practice:ide-agent-selection",
+        "practice:model-and-provider-selection",
+        "practice:context-engineering",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "better instructions",
+        "prompt pattern",
+        "MCP/tool addition",
+        "memory policy",
+        "eval fixture",
+        "agent/provider switch"
+      ],
+      "choose_by": [
+        "highest concrete capability gap",
+        "permission risk",
+        "verification path",
+        "rollback path",
+        "maintenance cost"
+      ],
+      "report": [
+        "vnem intents searched",
+        "top matches",
+        "upgrade path",
+        "risk and verification"
+      ]
+    },
     "browser game": {
       "read_first": [
+        "practice:visual-experience",
+        "visual-qa-protocol:vnem-visual-qa-protocol",
         "practice:browser-games",
         "practice:frontend",
         "practice:evals"
@@ -832,6 +2453,7 @@
         "asset loading and physics needs",
         "dependency budget",
         "input model",
+        "aesthetic polish and game feel",
         "accessibility needs",
         "real-browser verification path"
       ],
@@ -844,6 +2466,8 @@
     },
     "web game": {
       "read_first": [
+        "practice:visual-experience",
+        "visual-qa-protocol:vnem-visual-qa-protocol",
         "practice:browser-games",
         "practice:frontend",
         "practice:evals"
@@ -870,6 +2494,8 @@
     },
     "html5 game": {
       "read_first": [
+        "practice:visual-experience",
+        "visual-qa-protocol:vnem-visual-qa-protocol",
         "practice:browser-games",
         "practice:frontend",
         "practice:evals"
@@ -897,6 +2523,8 @@
     },
     "canvas game": {
       "read_first": [
+        "practice:visual-experience",
+        "visual-qa-protocol:vnem-visual-qa-protocol",
         "practice:browser-games",
         "practice:frontend",
         "practice:evals"
@@ -925,6 +2553,8 @@
     },
     "2d game": {
       "read_first": [
+        "practice:visual-experience",
+        "visual-qa-protocol:vnem-visual-qa-protocol",
         "practice:browser-games",
         "practice:frontend",
         "practice:evals"
@@ -953,6 +2583,8 @@
     },
     "3d game": {
       "read_first": [
+        "practice:visual-experience",
+        "visual-qa-protocol:vnem-visual-qa-protocol",
         "practice:browser-games",
         "practice:frontend",
         "practice:evals"
@@ -978,6 +2610,8 @@
     },
     "game engine": {
       "read_first": [
+        "practice:visual-experience",
+        "visual-qa-protocol:vnem-visual-qa-protocol",
         "practice:browser-games",
         "practice:frontend",
         "practice:evals"
@@ -1008,6 +2642,8 @@
     },
     "game ui": {
       "read_first": [
+        "practice:visual-experience",
+        "visual-qa-protocol:vnem-visual-qa-protocol",
         "practice:browser-games",
         "practice:frontend",
         "practice:evals"
@@ -1022,8 +2658,10 @@
         "readability",
         "input method",
         "responsive scaling",
+        "composition",
         "contrast",
         "feedback clarity",
+        "game feel",
         "localization risk"
       ],
       "report": [
@@ -1137,6 +2775,9 @@
     },
     "better ui": {
       "read_first": [
+        "practice:visual-experience",
+        "visual-qa-protocol:vnem-visual-qa-protocol",
+        "design-architecture:vnem-design-architecture",
         "practice:frontend",
         "practice:context-engineering",
         "practice:evals"
@@ -1148,6 +2789,8 @@
       ],
       "choose_by": [
         "workflow fit",
+        "first-screen composition",
+        "aesthetic polish",
         "accessibility",
         "responsive verification",
         "dependency budget"
@@ -1213,108 +2856,1013 @@
         "choice",
         "why"
       ]
+    },
+    "minimal code": {
+      "read_first": [
+        "practice:code-simplification",
+        "practice:code-review",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "delete proven waste",
+        "reuse existing helpers",
+        "collapse duplication",
+        "defer abstractions"
+      ],
+      "choose_by": [
+        "behavior preservation",
+        "public API stability",
+        "test evidence",
+        "reviewability"
+      ],
+      "report": [
+        "vnem intents searched",
+        "top matches",
+        "choice",
+        "why"
+      ]
+    },
+    "professional code": {
+      "read_first": [
+        "practice:code-simplification",
+        "practice:code-review",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "small behavior-preserving refactor",
+        "dependency audit",
+        "dead-code cleanup",
+        "repo-native conventions"
+      ],
+      "choose_by": [
+        "maintainability",
+        "behavior evidence",
+        "team conventions",
+        "test coverage"
+      ],
+      "report": [
+        "vnem intents searched",
+        "top matches",
+        "choice",
+        "why"
+      ]
+    },
+    "refactor": {
+      "read_first": [
+        "practice:code-simplification",
+        "practice:code-review",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "small manual refactor",
+        "AST-aware codemod",
+        "dead-code audit",
+        "duplicate-code cleanup"
+      ],
+      "choose_by": [
+        "blast radius",
+        "test coverage",
+        "public API stability",
+        "call-site count"
+      ],
+      "report": [
+        "vnem intents searched",
+        "top matches",
+        "choice",
+        "why"
+      ]
+    },
+    "dead code": {
+      "read_first": [
+        "practice:code-simplification",
+        "practice:code-review",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "lexical search",
+        "unused export checks",
+        "dependency checks",
+        "duplicate-code checks"
+      ],
+      "choose_by": [
+        "static evidence",
+        "runtime reachability",
+        "test coverage",
+        "delete safety"
+      ],
+      "report": [
+        "vnem intents searched",
+        "top matches",
+        "choice",
+        "why"
+      ]
     }
   },
+  "operating_protocol": {
+    "id": "vnem-operating-loop",
+    "title": "vnem Operating Loop",
+    "summary": "A universal read-only operating protocol for coding agents: sense the repo, route task context, choose the smallest sufficient capability, constrain risk, pass an aesthetic perception gate for UI/game work, verify with evidence, and report residual uncertainty.",
+    "loop": [
+      {
+        "step": "Sense",
+        "instruction": "Inspect the repository, existing instructions, manifests, scripts, tests, current stack, and risk surface before recommending tools or changing code."
+      },
+      {
+        "step": "Route",
+        "instruction": "Classify the task mode and intent, expand aliases from the search index, and read only the matching rubric, route, best-practice notes, and high-signal entries."
+      },
+      {
+        "step": "Choose",
+        "instruction": "Prefer existing project patterns and the smallest sufficient source-backed tool or framework; compare trust tier, source confidence, freshness, license clarity, permissions, and reversibility."
+      },
+      {
+        "step": "Constrain",
+        "instruction": "State scope, non-goals, approval gates, and risky operations before mutation; keep installs, secrets, browsers, databases, deployments, payments, and production writes behind explicit approval."
+      },
+      {
+        "step": "Build/Review/Debug",
+        "instruction": "Use the task mode to work in small coherent steps: implement, review, debug, plan, or produce a prompt artifact without drifting into unrelated refactors."
+      },
+      {
+        "step": "Perceive",
+        "instruction": "For UI, game, animation, visual, or content surfaces, judge the artifact like a human before final: first-screen composition, hierarchy, scale, spacing, color harmony, reference-style fidelity, motion, reward feedback, and sound. Iterate until it looks intentionally polished or report the blocker."
+      },
+      {
+        "step": "Verify",
+        "instruction": "Run the strongest reasonable local checks; use tests, fixtures, type checks, screenshots, browser interaction, or structured evidence depending on the task."
+      },
+      {
+        "step": "Report",
+        "instruction": "Summarize changed or recommended surfaces, vnem intent and matches, verification evidence, approval needs, source-trust uncertainty, and residual risk."
+      }
+    ],
+    "default_contract": {
+      "modes": [
+        "build",
+        "review",
+        "plan",
+        "debug",
+        "prompt",
+        "decision"
+      ],
+      "approval_gates": [
+        "installing packages or changing dependency managers",
+        "editing agent, MCP, CI, deployment, database, browser, wallet, payment, or secret configuration",
+        "using credentials, secrets, paid APIs, production data, or external services",
+        "starting daemons, deploying, purchasing, or performing irreversible writes"
+      ],
+      "verification": [
+        "inspect local project instructions and manifests",
+        "run the narrowest relevant check first",
+        "run broader tests or builds when blast radius justifies it",
+        "for UI or canvas work, verify in a real browser with desktop and mobile evidence",
+        "for aesthetic UI/game work, perform a perception pass on screenshots before final: no oversized empty canvases, no accidental center-only glow, reward effects should follow user action, and sound should be restrained and pleasant",
+        "report checks that could not run and why"
+      ],
+      "report": [
+        "vnem intents searched",
+        "top matches and chosen rubric",
+        "choice and why",
+        "verification evidence",
+        "perception verdict for UI/game work: ship-quality, needs-polish, or blocked",
+        "approval gates and residual uncertainty"
+      ]
+    }
+  },
+  "task_rubrics": [
+    {
+      "id": "frontend_ui",
+      "title": "Frontend UI",
+      "summary": "Build usable, accessible, responsive interfaces that match the product workflow, existing design system, and aesthetic perception gate before adding decorative complexity.",
+      "modes": [
+        "build",
+        "review"
+      ],
+      "intents": [
+        "better ui",
+        "frontend",
+        "ui",
+        "design",
+        "react",
+        "tailwind",
+        "dashboard",
+        "landing page",
+        "prototype",
+        "visual polish",
+        "pretty",
+        "polished"
+      ],
+      "read_first": [
+        "practice:visual-experience",
+        "visual-qa-protocol:vnem-visual-qa-protocol",
+        "design-architecture:vnem-design-architecture",
+        "practice:frontend",
+        "practice:evals"
+      ],
+      "quality_bar": [
+        "primary user workflow is usable on the first screen",
+        "first screen looks intentionally designed with balanced scale, hierarchy, spacing, and color",
+        "layout is responsive and text fits on mobile and desktop",
+        "accessibility basics are present: labels, contrast, focus states, and usable target sizes",
+        "visual verification and a perception pass are performed for meaningful UI changes"
+      ],
+      "approval_gates": [
+        "adding UI frameworks or design-system dependencies",
+        "calling paid design or image services"
+      ],
+      "verification": [
+        "run project UI checks if present",
+        "open the local page/app",
+        "capture or inspect desktop and mobile states",
+        "fix obvious visual defects before final"
+      ],
+      "output_contract": [
+        "changed UI surface",
+        "stack/library choice",
+        "perception verdict",
+        "visual verification evidence",
+        "known responsive, accessibility, or polish risk"
+      ]
+    },
+    {
+      "id": "aesthetic_experience",
+      "title": "Aesthetic Experience And Game Feel",
+      "summary": "For visual and interactive work, the artifact is not deliverable until it feels intentionally designed, polished, responsive, and pleasant to use.",
+      "modes": [
+        "build",
+        "review"
+      ],
+      "intents": [
+        "aesthetic experience",
+        "visual polish",
+        "pretty",
+        "polished ui",
+        "composition",
+        "game feel",
+        "sound design",
+        "reward feedback",
+        "dopamine",
+        "neon",
+        "glow",
+        "microinteractions",
+        "browser game",
+        "interactive canvas"
+      ],
+      "read_first": [
+        "practice:visual-experience",
+        "visual-qa-protocol:vnem-visual-qa-protocol",
+        "design-architecture:vnem-design-architecture",
+        "practice:frontend",
+        "practice:browser-games"
+      ],
+      "quality_bar": [
+        "first screen has strong composition, clear hierarchy, balanced scale, and deliberate spacing",
+        "visual effects are anchored to user actions and reinforce workflow or game state",
+        "motion, flashes, glow, particles, and sound are tasteful rather than noisy",
+        "reference assets and style cues are translated into one cohesive aesthetic",
+        "the agent performs a browser/screenshot polish pass and fixes obvious ugliness before delivery"
+      ],
+      "approval_gates": [
+        "using copyrighted third-party assets",
+        "calling image or audio generation services",
+        "adding intense flashes, autoplay audio, or motion-heavy effects"
+      ],
+      "verification": [
+        "capture desktop and mobile first-screen evidence",
+        "play or interact through reward feedback",
+        "check effect origin follows the interaction or game event",
+        "listen to and mute sound if included",
+        "compare against reference style and fix visible mismatches"
+      ],
+      "output_contract": [
+        "perception verdict",
+        "visual system changed",
+        "reward/motion/audio evidence",
+        "remaining taste, motion, or accessibility risk"
+      ]
+    },
+    {
+      "id": "backend_api",
+      "title": "Backend API",
+      "summary": "Keep APIs boring, typed, observable, and narrow enough that agents can verify behavior without guessing about auth or data side effects.",
+      "modes": [
+        "build",
+        "debug",
+        "review"
+      ],
+      "intents": [
+        "backend api",
+        "backend",
+        "api",
+        "server",
+        "database",
+        "auth",
+        "postgres",
+        "runtime"
+      ],
+      "read_first": [
+        "practice:backend",
+        "practice:security",
+        "practice:evals"
+      ],
+      "quality_bar": [
+        "request and response boundaries are typed or validated",
+        "auth, permissions, and data mutation paths are explicit",
+        "errors are structured enough for callers and agents to diagnose",
+        "tests or fixtures cover changed behavior"
+      ],
+      "approval_gates": [
+        "database writes or migrations",
+        "auth policy changes",
+        "production data access",
+        "new network services"
+      ],
+      "verification": [
+        "run focused API tests or fixtures",
+        "run type/lint checks when present",
+        "verify error paths for changed behavior"
+      ],
+      "output_contract": [
+        "API surface changed",
+        "data/auth risk",
+        "verification evidence",
+        "migration or rollout notes if any"
+      ]
+    },
+    {
+      "id": "refactor",
+      "title": "Refactor And Simplification",
+      "summary": "Preserve behavior first, then delete proven waste, collapse duplication, simplify control flow, and reuse local abstractions before adding new ones.",
+      "modes": [
+        "build",
+        "review"
+      ],
+      "intents": [
+        "code simplification",
+        "code compaction",
+        "minimal code",
+        "professional code",
+        "refactor",
+        "dead code",
+        "duplication"
+      ],
+      "read_first": [
+        "practice:code-simplification",
+        "practice:code-review",
+        "practice:evals"
+      ],
+      "quality_bar": [
+        "public APIs, data formats, and user-visible behavior remain stable unless explicitly requested",
+        "deletions are backed by search, tests, or static evidence",
+        "diff is small enough to review",
+        "focused and broad checks are run according to blast radius"
+      ],
+      "approval_gates": [
+        "changing public APIs or data formats",
+        "large rewrites",
+        "dependency replacement",
+        "deleting code without reachability evidence"
+      ],
+      "verification": [
+        "inspect call sites and tests",
+        "run focused tests first",
+        "run broader project checks after shared behavior changes"
+      ],
+      "output_contract": [
+        "behavior preserved",
+        "what was simplified",
+        "evidence for deletion/refactor",
+        "verification results"
+      ]
+    },
+    {
+      "id": "agent_tooling",
+      "title": "Agent Tooling",
+      "summary": "Choose MCP servers, skills, agents, gateways, and prompt tooling as permissioned capabilities with provenance, least privilege, and reviewable setup.",
+      "modes": [
+        "decision",
+        "plan",
+        "review"
+      ],
+      "intents": [
+        "agent",
+        "mcp",
+        "mcp servers",
+        "mcp gateway",
+        "one mcp",
+        "tool routing",
+        "coding agents",
+        "codex config",
+        "agent workspace",
+        "source radar",
+        "source intake",
+        "ai model selection",
+        "agent upgrade",
+        "codex vs claude",
+        "zero trust gateway"
+      ],
+      "read_first": [
+        "practice:agent-tooling",
+        "practice:mcp-server-selection",
+        "practice:mcp-gateway-tool-routing",
+        "practice:security"
+      ],
+      "quality_bar": [
+        "tool choice is tied to one concrete workflow",
+        "permissions and environment variables are called out",
+        "official or high-confidence sources are preferred for sensitive resources",
+        "gateway or memory complexity is justified by governance needs"
+      ],
+      "approval_gates": [
+        "installing MCP servers",
+        "editing client config",
+        "using secrets",
+        "starting daemons",
+        "giving agents write access"
+      ],
+      "verification": [
+        "compare source trust and permissions",
+        "verify the client can expose only intended tools",
+        "record unknown install/runtime risk"
+      ],
+      "output_contract": [
+        "recommended capability",
+        "why it is needed",
+        "permission risks",
+        "approval and verification path"
+      ]
+    },
+    {
+      "id": "data_memory",
+      "title": "Data And Memory",
+      "summary": "Keep durable agent memory short, factual, reviewed, and separate from volatile task state or sensitive data.",
+      "modes": [
+        "plan",
+        "review",
+        "decision"
+      ],
+      "intents": [
+        "memory",
+        "memory bank",
+        "context engineering",
+        "claude memory",
+        "claude md",
+        "agents md",
+        "data",
+        "persistence"
+      ],
+      "read_first": [
+        "practice:persistent-memory-context-files",
+        "practice:context-engineering",
+        "practice:data",
+        "practice:security"
+      ],
+      "quality_bar": [
+        "stable project facts are separated from temporary task notes",
+        "decision history is recorded only when it prevents repeated mistakes",
+        "secrets and private data stay out of durable memory",
+        "memory review or reset cadence is explicit"
+      ],
+      "approval_gates": [
+        "writing durable memory files",
+        "storing sensitive data",
+        "connecting memory services",
+        "using cross-project memory"
+      ],
+      "verification": [
+        "inspect existing instruction files",
+        "check for secret leakage",
+        "confirm owner and update cadence"
+      ],
+      "output_contract": [
+        "what to store",
+        "where to store it",
+        "what to avoid",
+        "review cadence"
+      ]
+    },
+    {
+      "id": "security_sensitive",
+      "title": "Security Sensitive Work",
+      "summary": "Treat security, auth, secrets, payments, production data, deployments, browsers, and databases as high-risk surfaces requiring explicit boundaries and evidence.",
+      "modes": [
+        "build",
+        "review",
+        "debug",
+        "decision"
+      ],
+      "intents": [
+        "security",
+        "auth",
+        "secrets",
+        "payments",
+        "wallet",
+        "database",
+        "deployment",
+        "production",
+        "browser",
+        "permissions",
+        "pre execution gateway",
+        "zero trust gateway",
+        "tool pinning",
+        "package firewall",
+        "ast indexer"
+      ],
+      "read_first": [
+        "practice:security",
+        "practice:zero-trust-agent-gateway",
+        "practice:human-approval-and-durability",
+        "practice:evals"
+      ],
+      "quality_bar": [
+        "sensitive resources and mutation paths are named",
+        "least privilege and rollback are considered before action",
+        "external side effects are approval-gated",
+        "logs or reports avoid exposing secrets"
+      ],
+      "approval_gates": [
+        "using secrets",
+        "touching production data",
+        "deploying",
+        "making purchases",
+        "changing auth or permission policy"
+      ],
+      "verification": [
+        "run local checks without secrets where possible",
+        "verify rollback or recovery path",
+        "report untested risk plainly"
+      ],
+      "output_contract": [
+        "risk surface",
+        "approval required",
+        "verification evidence",
+        "remaining uncertainty"
+      ]
+    },
+    {
+      "id": "docs_prompt",
+      "title": "Docs And Prompts",
+      "summary": "Turn rough instructions, docs, and prompts into operational artifacts with goal, context, constraints, output contract, and verification criteria.",
+      "modes": [
+        "prompt",
+        "plan",
+        "review"
+      ],
+      "intents": [
+        "prompt engineering",
+        "prompt enhancer",
+        "codex prompt",
+        "prompt optimizer",
+        "docs",
+        "documentation",
+        "instructions"
+      ],
+      "read_first": [
+        "practice:prompt-engineering",
+        "prompt-pattern:prompt-enhancement",
+        "prompt-pattern:codex-implementation"
+      ],
+      "quality_bar": [
+        "original intent is preserved",
+        "missing inputs that materially change the outcome are named",
+        "output format and non-goals are explicit",
+        "verification criteria are included for objective or risky tasks"
+      ],
+      "approval_gates": [
+        "turning guidance into executable config",
+        "adding external tools",
+        "embedding secrets or private data in prompts"
+      ],
+      "verification": [
+        "check prompt against desired output contract",
+        "include a compact version when useful",
+        "state missing inputs"
+      ],
+      "output_contract": [
+        "enhanced artifact",
+        "compact version if requested",
+        "what changed",
+        "missing inputs"
+      ]
+    },
+    {
+      "id": "interactive_canvas",
+      "title": "Interactive Canvas And Games",
+      "summary": "Deliver real playability or interaction with polished game feel: responsive rendering, input mapping, state transitions, action-anchored feedback, restart/error states, and real-browser verification.",
+      "modes": [
+        "build",
+        "debug",
+        "review"
+      ],
+      "intents": [
+        "browser game",
+        "web game",
+        "html5 game",
+        "canvas game",
+        "2d game",
+        "3d game",
+        "game physics",
+        "game ui",
+        "canvas performance",
+        "game feel",
+        "reward feedback",
+        "sound design"
+      ],
+      "read_first": [
+        "practice:visual-experience",
+        "visual-qa-protocol:vnem-visual-qa-protocol",
+        "design-architecture:vnem-design-architecture",
+        "practice:browser-games",
+        "practice:frontend",
+        "practice:evals"
+      ],
+      "quality_bar": [
+        "the experience is playable or interactive, not only visually present",
+        "input works across relevant desktop and mobile controls",
+        "start, win/loss, pause/restart, and error states are explicit where relevant",
+        "reward feedback, glow, particles, score pulses, and sound are anchored to game events and feel good",
+        "canvas or animation output is verified in a real browser"
+      ],
+      "approval_gates": [
+        "adding heavy engines or binary assets",
+        "using paid asset services",
+        "fetching remote media",
+        "introducing audio/autoplay behavior"
+      ],
+      "verification": [
+        "serve locally",
+        "confirm nonblank rendering",
+        "simulate or manually perform core input",
+        "check state transition and restart",
+        "inspect mobile viewport",
+        "verify reward effect origin and sound/mute behavior",
+        "run a perception pass on the first screen and one reward moment"
+      ],
+      "output_contract": [
+        "chosen rendering/game stack",
+        "core interaction built",
+        "game-feel and perception verdict",
+        "browser verification evidence",
+        "known device/performance/polish risk"
+      ]
+    }
+  ],
+  "design_architecture": {
+    "id": "vnem-design-architecture",
+    "title": "vnem Design Architecture",
+    "summary": "Source-backed design intelligence for UI, game, visual, dashboard, and conversational-agent work. Use it to make aesthetics a delivery requirement, not a decoration pass.",
+    "url_path": "/install/design-architecture.md",
+    "resource_uri": "vnem://install/design-architecture",
+    "source_urls": [
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Grid_layout",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/repeat",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/clamp",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Containment/Container_queries",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/backdrop-filter",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-reduced-motion",
+      "https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API",
+      "https://www.w3.org/TR/WCAG22/",
+      "https://www.w3.org/TR/wcag-3.0/"
+    ],
+    "guidance_classification": {
+      "standard": [
+        "Use W3C WCAG 2.2 and current accessibility guidance as the hard baseline for contrast, focus visibility, non-color cues, labels, keyboard access, and reduced-motion accommodations.",
+        "Treat browser feature behavior from MDN and linked specifications as source-backed capability guidance, then verify in the target browser when the effect matters."
+      ],
+      "browser_capability": [
+        "CSS Grid, `repeat()`, `minmax()`, `clamp()`, container queries, `backdrop-filter`, Web Audio, and `prefers-reduced-motion` are browser primitives to use deliberately, with fallbacks when support or accessibility matters.",
+        "Browser capabilities are implementation tools, not proof that a design is good; rendered screenshots and interaction checks still decide the perception verdict."
+      ],
+      "heuristic": [
+        "8-point spacing, bento topology, optical alignment, grayscale-first hierarchy, modular type scales, layered shadows, dark-mode surface ladders, and motion timing windows are design heuristics.",
+        "Use heuristics to produce better taste and consistency, but allow repo conventions, brand references, accessibility, and actual screenshots to override them."
+      ],
+      "watchlist": [
+        "WCAG 3 and APCA-style contrast work are draft/watchlist material in this pack, useful for future-facing review but not encoded as normative compliance.",
+        "Do not report APCA numeric targets as required pass/fail criteria unless the project explicitly adopts them."
+      ]
+    }
+  },
+  "visual_qa_protocol": {
+    "id": "vnem-visual-qa-protocol",
+    "title": "vnem Visual QA Protocol",
+    "summary": "A compact rendered-quality loop for UI, game, dashboard, canvas, motion, sound, and brand-facing work. Use it to make aesthetic inspection and screenshot evidence part of done.",
+    "url_path": "/install/visual-qa-protocol.md",
+    "resource_uri": "vnem://install/visual-qa-protocol"
+  },
+  "source_radar": [
+    {
+      "id": "mcp-core-and-registry",
+      "title": "MCP Core Docs And Official Registry",
+      "category": "protocol-registry",
+      "priority": "critical",
+      "summary": "Track MCP protocol docs, specification changes, and the official MCP registry before adding or recommending MCP servers.",
+      "use_when": [
+        "An agent is choosing, comparing, or installing MCP servers.",
+        "A registry entry depends on MCP transport, tools, resources, prompts, elicitation, or auth behavior.",
+        "Hermes or maintainers need a source of truth for new MCP server discovery."
+      ],
+      "monitor": [
+        "Protocol docs and llms.txt index",
+        "Official registry API and repository updates",
+        "Server metadata, package sources, licenses, and published versions"
+      ],
+      "risk_checks": [
+        "Registry preview or API stability notes",
+        "Server provenance and package ownership",
+        "Tool permissions, network access, secrets, and write capability"
+      ],
+      "source_urls": [
+        "https://modelcontextprotocol.io/docs/getting-started/intro",
+        "https://modelcontextprotocol.io/llms.txt",
+        "https://github.com/modelcontextprotocol/registry",
+        "https://registry.modelcontextprotocol.io/v0.1/servers"
+      ]
+    },
+    {
+      "id": "coding-agent-clients",
+      "title": "Coding Agent Client Docs",
+      "category": "agent-client",
+      "priority": "critical",
+      "summary": "Track how major coding agents load instructions, MCP tools, memory, subagents, approvals, and project context.",
+      "use_when": [
+        "vnem needs to support Codex, Claude Code, OpenCode, Gemini/ADK, or similar coding agents.",
+        "A recommendation depends on how the agent reads AGENTS.md, CLAUDE.md, MCP resources, prompts, or memory.",
+        "The install pack or MCP server should be easier to use across multiple agent clients."
+      ],
+      "monitor": [
+        "Instruction-file behavior",
+        "MCP configuration and transport support",
+        "Memory, subagent, approval, and tool-search behavior",
+        "Windows, terminal, IDE, and browser support"
+      ],
+      "risk_checks": [
+        "Client-specific config drift",
+        "Features that require account login, OAuth, or paid plans",
+        "Actions that bypass repo review, approvals, or least privilege"
+      ],
+      "source_urls": [
+        "https://developers.openai.com/codex/guides/agents-md",
+        "https://code.claude.com/docs/en/overview",
+        "https://code.claude.com/docs/en/mcp",
+        "https://code.claude.com/docs/en/memory",
+        "https://code.claude.com/docs/en/sub-agents",
+        "https://opencode.ai/docs/",
+        "https://adk.dev/"
+      ]
+    },
+    {
+      "id": "documentation-ingestion",
+      "title": "Documentation Ingestion Sources",
+      "category": "current-docs",
+      "priority": "high",
+      "summary": "Prefer LLM-oriented documentation indexes and source-backed doc retrieval so agents stop wasting context on broad web searches.",
+      "use_when": [
+        "A coding agent needs current library, framework, SDK, or MCP documentation.",
+        "vnem should point to a source rather than copying long upstream docs into the registry.",
+        "A source has an llms.txt index, canonical docs, or a docs-specific MCP."
+      ],
+      "monitor": [
+        "llms.txt and llms-full.txt availability",
+        "Canonical documentation URLs",
+        "Docs MCP servers and CLI doc retrievers"
+      ],
+      "risk_checks": [
+        "Stale generated docs",
+        "Unclear docs provenance",
+        "Copied upstream content that exceeds fair-use or license boundaries"
+      ],
+      "source_urls": [
+        "https://llmstxt.org/",
+        "https://github.com/upstash/context7",
+        "https://docs.firecrawl.dev/mcp-server"
+      ]
+    },
+    {
+      "id": "browser-and-ui-verification",
+      "title": "Browser And UI Verification Sources",
+      "category": "verification-tooling",
+      "priority": "high",
+      "summary": "Track browser automation and hosted browser MCPs that let agents verify rendered apps instead of guessing from code.",
+      "use_when": [
+        "An agent is building UI, debugging a browser app, validating accessibility snapshots, or checking frontend regressions.",
+        "vnem needs to recommend a browser MCP or verification workflow.",
+        "A product claim depends on visible UI behavior rather than static code."
+      ],
+      "monitor": [
+        "Playwright MCP capabilities",
+        "Browserbase MCP capabilities",
+        "Client support for browser MCPs, screenshots, accessibility snapshots, and hosted sessions"
+      ],
+      "risk_checks": [
+        "Browser/network access",
+        "Credential exposure through pages",
+        "Stateful sessions and paid browser infrastructure"
+      ],
+      "source_urls": [
+        "https://github.com/microsoft/playwright-mcp",
+        "https://docs.browserbase.com/integrations/mcp/introduction"
+      ]
+    },
+    {
+      "id": "ui-architecture-sources",
+      "title": "UI Architecture And Design Systems Sources",
+      "category": "visual-design",
+      "priority": "high",
+      "summary": "Track official CSS, accessibility, motion, audio, and contrast sources so visual guidance stays source-backed and does not hard-code unfinished standards as requirements.",
+      "use_when": [
+        "An agent is designing, reviewing, or polishing a UI, game, landing page, dashboard, chat interface, or interactive canvas.",
+        "A recommendation depends on CSS Grid, fluid typography, container queries, glass/depth effects, motion, audio, dark mode, or accessibility contrast.",
+        "vnem needs to distinguish current W3C/WCAG requirements from draft WCAG 3 or APCA-style watchlist ideas."
+      ],
+      "monitor": [
+        "MDN CSS Grid, repeat/minmax, clamp, container queries, backdrop-filter, prefers-reduced-motion, and Web Audio docs",
+        "W3C WCAG 2.2 recommendation and WCAG 3 draft status",
+        "Browser support notes for effects that can harm readability or performance"
+      ],
+      "risk_checks": [
+        "Draft contrast algorithms treated as production requirements",
+        "Motion, flash, blur, or sound that harms accessibility",
+        "Visual effects that reduce text contrast or lack fallback behavior",
+        "Unsourced claims about exact design constants or benchmark improvements"
+      ],
+      "source_urls": [
+        "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Grid_layout",
+        "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/repeat",
+        "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/clamp",
+        "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Containment/Container_queries",
+        "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/backdrop-filter",
+        "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-reduced-motion",
+        "https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API",
+        "https://www.w3.org/TR/WCAG22/",
+        "https://www.w3.org/TR/wcag-3.0/"
+      ]
+    },
+    {
+      "id": "platform-and-data-connectors",
+      "title": "Platform And Data Connector Sources",
+      "category": "sensitive-connectors",
+      "priority": "high",
+      "summary": "Track official or vendor-maintained MCPs for repositories, databases, monitoring, payments, and web extraction with explicit permission review.",
+      "use_when": [
+        "An agent needs GitHub, Supabase, Sentry, Stripe, Firecrawl, or another external service.",
+        "A registry entry can read production-like data, write issues, query databases, spend money, or browse the web.",
+        "vnem needs to recommend least-privilege, read-only, or sandbox-first setup."
+      ],
+      "monitor": [
+        "Official MCP repositories and docs",
+        "Available tool groups, scopes, and read-only modes",
+        "OAuth, PAT, API key, and sandbox guidance"
+      ],
+      "risk_checks": [
+        "Repository write access",
+        "Database writes or production data",
+        "Payment or billing side effects",
+        "Monitoring data sensitivity",
+        "Prompt injection through fetched external content"
+      ],
+      "source_urls": [
+        "https://github.com/github/github-mcp-server",
+        "https://supabase.com/docs/guides/ai-tools/mcp",
+        "https://mcp.sentry.dev/",
+        "https://docs.stripe.com/agents",
+        "https://docs.firecrawl.dev/mcp-server"
+      ]
+    },
+    {
+      "id": "evaluation-and-observability",
+      "title": "Evaluation And Observability Sources",
+      "category": "quality-evidence",
+      "priority": "high",
+      "summary": "Track eval and tracing systems so vnem can prove whether an agent workflow actually improves output quality, speed, and safety.",
+      "use_when": [
+        "A claim says vnem improves recommendations, engineering velocity, prompt quality, or tool choice.",
+        "A prompt, MCP, agent, or model switch needs a before/after benchmark.",
+        "Maintainers need traces or eval logs to explain why an agent made a decision."
+      ],
+      "monitor": [
+        "Small repeatable eval frameworks",
+        "Prompt and agent regression suites",
+        "Trace, cost, latency, and tool-call observability"
+      ],
+      "risk_checks": [
+        "Benchmarks that do not match real repo tasks",
+        "Scores without reproducible fixtures",
+        "Telemetry or traces containing secrets or private code"
+      ],
+      "source_urls": [
+        "https://inspect.aisi.org.uk/",
+        "https://www.promptfoo.dev/docs/intro/",
+        "https://docs.ragas.io/",
+        "https://docs.langfuse.com/",
+        "https://docs.arize.com/phoenix"
+      ]
+    },
+    {
+      "id": "secure-mcp-distribution",
+      "title": "Secure MCP Distribution Sources",
+      "category": "distribution",
+      "priority": "medium",
+      "summary": "Track curated MCP catalogs and containerized distribution models for safer team adoption of third-party MCP servers.",
+      "use_when": [
+        "A team wants approved MCP catalogs instead of ad hoc server installs.",
+        "A server has dependency, runtime, or package provenance concerns.",
+        "vnem needs to distinguish local, remote, containerized, and organization-approved MCP deployment paths."
+      ],
+      "monitor": [
+        "Catalog provenance and SBOM metadata",
+        "Container signing and update cadence",
+        "Team profiles, custom catalogs, and allowed-server policies"
+      ],
+      "risk_checks": [
+        "Catalog beta or preview status",
+        "Container trust and host access",
+        "Remote OAuth and external service permissions"
+      ],
+      "source_urls": [
+        "https://docs.docker.com/ai/mcp-catalog-and-toolkit/catalog/",
+        "https://docs.docker.com/ai/mcp-catalog-and-toolkit/toolkit/"
+      ]
+    },
+    {
+      "id": "agentic-gateway-security",
+      "title": "Agentic Gateway Security Sources",
+      "category": "security-architecture",
+      "priority": "high",
+      "summary": "Track security sources for tool annotations, schema drift, secret handling, workspace confinement, package risk, and agent runtime approval design.",
+      "use_when": [
+        "A proposal asks vnem to act as a pre-execution gateway, command proxy, package firewall, schema pinning layer, or AST indexer.",
+        "An agent wants to classify tool calls as read-only, mutating, destructive, open-world, or approval-required.",
+        "Maintainers need to distinguish metadata hints from enforceable security controls."
+      ],
+      "monitor": [
+        "MCP tool annotation semantics and list-changed behavior",
+        "Client approval and sandbox behavior",
+        "Package registry provenance and dependency-risk guidance",
+        "Secret detection and redaction rules"
+      ],
+      "risk_checks": [
+        "Untrusted tool metadata must not be treated as enforcement.",
+        "Runtime command interception needs a threat model before implementation.",
+        "Path confinement and redaction claims require adversarial tests.",
+        "Package firewall decisions can break valid developer workflows and need override paths."
+      ],
+      "source_urls": [
+        "https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/",
+        "https://modelcontextprotocol.io/specification/2025-06-18/schema",
+        "https://ts.sdk.modelcontextprotocol.io/variables/types.ToolAnnotationsSchema.html",
+        "https://docs.github.com/en/code-security/secret-scanning/introduction/about-secret-scanning",
+        "https://docs.npmjs.com/about-registry-signatures"
+      ]
+    }
+  ],
+  "source_radar_url": "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/source-radar.json",
   "decision_protocol": {
     "auto_use": true,
     "user_trigger_required": false,
+    "operating_loop": [
+      "Sense",
+      "Route",
+      "Choose",
+      "Constrain",
+      "Build/Review/Debug",
+      "Perceive",
+      "Verify",
+      "Report"
+    ],
+    "task_contract_fields": [
+      "mode",
+      "intent",
+      "rubric",
+      "read_first",
+      "smallest_sufficient_capability",
+      "approval_gates",
+      "perception_gate",
+      "perception_gate.repo_sensing",
+      "verification",
+      "final_report"
+    ],
     "read_first_for_build_tasks": [
+      "operating protocol",
+      "matching task rubric",
       "matching intent_routes",
+      "design architecture and visual QA protocol when the task is visual or interactive",
       "matching best-practice documents",
+      "matching source-radar entries when upstream currency matters",
       "high-signal registry entries",
       "prompt patterns only when a prompt artifact is requested"
     ],
     "evidence_note": [
       "vnem intents searched",
       "top matches",
+      "chosen rubric",
       "choice",
-      "why"
+      "why",
+      "verification evidence",
+      "residual uncertainty"
     ]
   },
   "entries": [
-    {
-      "schema_version": "1.0.0",
-      "homepage_url": "https://modelcontextprotocol.io/docs/getting-started/intro",
-      "repo_url": "https://github.com/modelcontextprotocol",
-      "package_urls": [],
-      "licenses": [
-        "MIT"
-      ],
-      "copyright_owner": "Model Context Protocol",
-      "source_kind": "official_docs",
-      "protocols": [
-        "MCP"
-      ],
-      "clients": [
-        "Claude Desktop",
-        "Claude Code",
-        "Cursor",
-        "VS Code",
-        "OpenAI Agents SDK"
-      ],
-      "install": {
-        "command": null,
-        "notes": "Review the upstream docs, permissions, pricing, environment variables, and transport before installing.",
-        "config_example": null
-      },
-      "permissions": [],
-      "env_vars": [],
-      "tags": [
-        "mcp",
-        "protocol",
-        "tools",
-        "resources",
-        "prompts",
-        "context"
-      ],
-      "use_cases": [
-        "Standardize agent access to tools and context",
-        "Compare MCP servers by permissions and provenance"
-      ],
-      "best_for": [
-        "Teams that need portable tool connections across agent clients",
-        "Standardize agent access to tools and context",
-        "Compare MCP servers by permissions and provenance",
-        "mcp workflows",
-        "protocol workflows",
-        "tools workflows",
-        "resources workflows",
-        "prompts workflows"
-      ],
-      "not_for": [
-        "Projects that cannot review upstream permissions, data handling, pricing, or operational risk."
-      ],
-      "alternatives": [],
-      "supersedes": [],
-      "freshness": "current",
-      "source_confidence": "official",
-      "maintenance_signals": [
-        "Curated from official docs or canonical source repositories",
-        "Canonical repository URL recorded"
-      ],
-      "risk_flags": [],
-      "recommended_when": [
-        "Use when agent tools should be discoverable, permissioned, and reusable across clients.",
-        "Use when a project needs standardize agent access to tools and context and the upstream source has been reviewed.",
-        "Prefer this when verified install and behavior notes are required."
-      ],
-      "trust_tier": "verified",
-      "review_status": "manual-reviewed",
-      "last_checked": "2026-05-26",
-      "slug": "model-context-protocol",
-      "name": "Model Context Protocol",
-      "type": "workflow",
-      "summary_llm": "Model Context Protocol is an open protocol for connecting AI applications to external tools, resources, prompts, and contextual data through standardized servers.",
-      "source_urls": [
-        "https://modelcontextprotocol.io/docs/getting-started/intro",
-        "https://github.com/modelcontextprotocol"
-      ],
-      "profile_excerpt": "Model Context Protocol is an open protocol for connecting AI applications to external tools, resources, prompts, and contextual data through standardized servers. ## Best For - Teams that need portable tool connections across agent clients ## Recommended When - Use when agent tools should be discoverable, permissioned,",
-      "entry_path": "registry/entries/model-context-protocol/entry.yaml",
-      "profile_path": "registry/entries/model-context-protocol/profile.md",
-      "url_path": "/entries/model-context-protocol/",
-      "recommendation_score": 13
-    },
     {
       "schema_version": "1.0.0",
       "homepage_url": "https://developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/",
@@ -1379,7 +3927,7 @@
       ],
       "trust_tier": "promising",
       "review_status": "manual-reviewed",
-      "last_checked": "2026-05-26",
+      "last_checked": "2026-05-27",
       "slug": "google-agent2agent-protocol",
       "name": "Agent2Agent Protocol",
       "type": "workflow",
@@ -1458,7 +4006,7 @@
       ],
       "trust_tier": "verified",
       "review_status": "manual-reviewed",
-      "last_checked": "2026-05-26",
+      "last_checked": "2026-05-27",
       "slug": "codex-agents-md",
       "name": "Codex AGENTS.md",
       "type": "workflow",
@@ -1542,7 +4090,7 @@
       ],
       "trust_tier": "promising",
       "review_status": "manual-reviewed",
-      "last_checked": "2026-05-26",
+      "last_checked": "2026-05-27",
       "slug": "crewai",
       "name": "CrewAI",
       "type": "orchestration",
@@ -1627,7 +4175,7 @@
       ],
       "trust_tier": "promising",
       "review_status": "manual-reviewed",
-      "last_checked": "2026-05-26",
+      "last_checked": "2026-05-27",
       "slug": "google-agent-development-kit",
       "name": "Google Agent Development Kit",
       "type": "agent-framework",
@@ -1714,7 +4262,7 @@
       ],
       "trust_tier": "promising",
       "review_status": "manual-reviewed",
-      "last_checked": "2026-05-26",
+      "last_checked": "2026-05-27",
       "slug": "langgraph",
       "name": "LangGraph",
       "type": "orchestration",
@@ -1797,7 +4345,7 @@
       ],
       "trust_tier": "promising",
       "review_status": "manual-reviewed",
-      "last_checked": "2026-05-26",
+      "last_checked": "2026-05-27",
       "slug": "mastra",
       "name": "Mastra",
       "type": "agent-framework",
@@ -1880,7 +4428,7 @@
       ],
       "trust_tier": "promising",
       "review_status": "manual-reviewed",
-      "last_checked": "2026-05-26",
+      "last_checked": "2026-05-27",
       "slug": "microsoft-autogen",
       "name": "Microsoft AutoGen",
       "type": "agent-framework",
@@ -1964,7 +4512,7 @@
       ],
       "trust_tier": "promising",
       "review_status": "manual-reviewed",
-      "last_checked": "2026-05-26",
+      "last_checked": "2026-05-27",
       "slug": "openai-agents-sdk",
       "name": "OpenAI Agents SDK",
       "type": "agent-framework",
@@ -2048,7 +4596,7 @@
       ],
       "trust_tier": "promising",
       "review_status": "manual-reviewed",
-      "last_checked": "2026-05-26",
+      "last_checked": "2026-05-27",
       "slug": "pydantic-ai",
       "name": "Pydantic AI",
       "type": "agent-framework",
@@ -2134,7 +4682,7 @@
       ],
       "trust_tier": "promising",
       "review_status": "manual-reviewed",
-      "last_checked": "2026-05-26",
+      "last_checked": "2026-05-27",
       "slug": "semantic-kernel",
       "name": "Semantic Kernel",
       "type": "agent-framework",
@@ -2219,7 +4767,7 @@
       ],
       "trust_tier": "promising",
       "review_status": "manual-reviewed",
-      "last_checked": "2026-05-26",
+      "last_checked": "2026-05-27",
       "slug": "vercel-ai-sdk",
       "name": "Vercel AI SDK",
       "type": "runtime",
@@ -4342,7 +6890,7 @@
       ],
       "trust_tier": "verified",
       "review_status": "manual-reviewed",
-      "last_checked": "2026-05-26",
+      "last_checked": "2026-05-27",
       "slug": "anthropic-building-effective-agents",
       "name": "Anthropic Building Effective Agents",
       "type": "workflow",
@@ -4417,7 +6965,7 @@
       ],
       "trust_tier": "verified",
       "review_status": "manual-reviewed",
-      "last_checked": "2026-05-26",
+      "last_checked": "2026-05-27",
       "slug": "anthropic-multi-agent-research-system",
       "name": "Anthropic Multi-Agent Research System",
       "type": "orchestration",
@@ -5377,7 +7925,7 @@
       ],
       "trust_tier": "promising",
       "review_status": "manual-reviewed",
-      "last_checked": "2026-05-26",
+      "last_checked": "2026-05-27",
       "slug": "context7-mcp",
       "name": "Context7 MCP",
       "type": "mcp-server",
@@ -5852,7 +8400,7 @@
       ],
       "trust_tier": "promising",
       "review_status": "manual-reviewed",
-      "last_checked": "2026-05-26",
+      "last_checked": "2026-05-27",
       "slug": "dspy",
       "name": "DSPy",
       "type": "eval",
@@ -6491,7 +9039,7 @@
       ],
       "trust_tier": "promising",
       "review_status": "manual-reviewed",
-      "last_checked": "2026-05-26",
+      "last_checked": "2026-05-27",
       "slug": "inspect-ai",
       "name": "Inspect AI",
       "type": "eval",
@@ -7138,6 +9686,100 @@
     },
     {
       "schema_version": "1.0.0",
+      "homepage_url": "https://modelcontextprotocol.io/docs/getting-started/intro",
+      "repo_url": "https://github.com/modelcontextprotocol/modelcontextprotocol",
+      "package_urls": [],
+      "licenses": [
+        "MIT"
+      ],
+      "copyright_owner": "Model Context Protocol",
+      "source_kind": "official_docs",
+      "protocols": [
+        "MCP",
+        "JSON-RPC 2.0"
+      ],
+      "clients": [
+        "Claude Desktop",
+        "Claude Code",
+        "Cursor",
+        "VS Code",
+        "OpenAI Agents SDK",
+        "Codex"
+      ],
+      "install": {
+        "command": null,
+        "notes": "Review the upstream docs, permissions, pricing, environment variables, and transport before installing.",
+        "config_example": null
+      },
+      "permissions": [],
+      "env_vars": [],
+      "tags": [
+        "mcp",
+        "protocol",
+        "json-rpc",
+        "tools",
+        "resources",
+        "prompts",
+        "security",
+        "context"
+      ],
+      "use_cases": [
+        "Standardize agent access to tools and context",
+        "Compare MCP servers by permissions and provenance",
+        "Design safer trust boundaries for agent tool use"
+      ],
+      "best_for": [
+        "Teams that need portable, reviewable tool connections across agent clients",
+        "Standardize agent access to tools and context",
+        "Compare MCP servers by permissions and provenance",
+        "Design safer trust boundaries for agent tool use",
+        "mcp workflows",
+        "protocol workflows",
+        "json-rpc workflows",
+        "tools workflows"
+      ],
+      "not_for": [
+        "Projects that cannot review upstream permissions, data handling, pricing, or operational risk."
+      ],
+      "alternatives": [],
+      "supersedes": [],
+      "freshness": "current",
+      "source_confidence": "official",
+      "maintenance_signals": [
+        "Curated from official docs or canonical source repositories",
+        "Canonical repository URL recorded"
+      ],
+      "risk_flags": [
+        "requires-server-review",
+        "tool-permissions-are-server-defined"
+      ],
+      "recommended_when": [
+        "Use when agent tools should be discoverable, permissioned, and reusable across clients.",
+        "Review server permissions and transport trust boundaries before connecting high-risk systems.",
+        "Use when a project needs standardize agent access to tools and context and the upstream source has been reviewed.",
+        "Prefer this when verified install and behavior notes are required."
+      ],
+      "trust_tier": "verified",
+      "review_status": "manual-reviewed",
+      "last_checked": "2026-05-27",
+      "slug": "model-context-protocol",
+      "name": "Model Context Protocol",
+      "type": "workflow",
+      "summary_llm": "Model Context Protocol is an open protocol and schema for connecting AI applications to external tools, resources, prompts, and contextual data through standardized MCP servers.",
+      "source_urls": [
+        "https://modelcontextprotocol.io/docs/getting-started/intro",
+        "https://modelcontextprotocol.io/specification/2025-11-25",
+        "https://modelcontextprotocol.io/specification/2025-11-25/basic/security_best_practices",
+        "https://github.com/modelcontextprotocol/modelcontextprotocol"
+      ],
+      "profile_excerpt": "Model Context Protocol is an open protocol and schema for connecting AI applications to external tools, resources, prompts, and contextual data through standardized MCP servers. ## Best For - Teams that need portable, reviewable tool connections across agent clients ## Recommended When - Use when agent tools should be",
+      "entry_path": "registry/entries/model-context-protocol/entry.yaml",
+      "profile_path": "registry/entries/model-context-protocol/profile.md",
+      "url_path": "/entries/model-context-protocol/",
+      "recommendation_score": 11
+    },
+    {
+      "schema_version": "1.0.0",
       "slug": "ai-nefesh-human-state",
       "name": "Nefesh — Real-Time Human State Awareness for AI",
       "type": "mcp-server",
@@ -7591,7 +10233,7 @@
       ],
       "trust_tier": "verified",
       "review_status": "manual-reviewed",
-      "last_checked": "2026-05-26",
+      "last_checked": "2026-05-27",
       "slug": "openai-prompt-engineering-guide",
       "name": "OpenAI Prompt Engineering Guide",
       "type": "workflow",
@@ -7667,7 +10309,7 @@
       ],
       "trust_tier": "verified",
       "review_status": "manual-reviewed",
-      "last_checked": "2026-05-26",
+      "last_checked": "2026-05-27",
       "slug": "openai-prompt-optimizer",
       "name": "OpenAI Prompt Optimizer",
       "type": "eval",
@@ -11149,7 +13791,7 @@
       ],
       "trust_tier": "promising",
       "review_status": "manual-reviewed",
-      "last_checked": "2026-05-26",
+      "last_checked": "2026-05-27",
       "slug": "arize-phoenix",
       "name": "Arize Phoenix",
       "type": "observability",
@@ -13344,7 +15986,7 @@
       ],
       "trust_tier": "promising",
       "review_status": "manual-reviewed",
-      "last_checked": "2026-05-26",
+      "last_checked": "2026-05-27",
       "slug": "langfuse",
       "name": "Langfuse",
       "type": "observability",
@@ -13678,7 +16320,7 @@
       ],
       "trust_tier": "promising",
       "review_status": "manual-reviewed",
-      "last_checked": "2026-05-26",
+      "last_checked": "2026-05-27",
       "slug": "llamaindex-agents",
       "name": "LlamaIndex Agents",
       "type": "agent-framework",
@@ -14727,7 +17369,7 @@
       ],
       "trust_tier": "promising",
       "review_status": "manual-reviewed",
-      "last_checked": "2026-05-26",
+      "last_checked": "2026-05-27",
       "slug": "promptfoo",
       "name": "promptfoo",
       "type": "eval",
@@ -14811,7 +17453,7 @@
       ],
       "trust_tier": "promising",
       "review_status": "manual-reviewed",
-      "last_checked": "2026-05-26",
+      "last_checked": "2026-05-27",
       "slug": "ragas",
       "name": "Ragas",
       "type": "eval",
@@ -14900,7 +17542,7 @@
       ],
       "trust_tier": "promising",
       "review_status": "manual-reviewed",
-      "last_checked": "2026-05-26",
+      "last_checked": "2026-05-27",
       "slug": "sentry-mcp",
       "name": "Sentry MCP",
       "type": "mcp-server",
@@ -15063,7 +17705,7 @@
       ],
       "trust_tier": "promising",
       "review_status": "manual-reviewed",
-      "last_checked": "2026-05-26",
+      "last_checked": "2026-05-27",
       "slug": "agentops",
       "name": "AgentOps",
       "type": "observability",
@@ -15233,7 +17875,7 @@
       ],
       "trust_tier": "promising",
       "review_status": "manual-reviewed",
-      "last_checked": "2026-05-26",
+      "last_checked": "2026-05-27",
       "slug": "aider",
       "name": "Aider",
       "type": "coding-agent",
@@ -15435,87 +18077,6 @@
     },
     {
       "schema_version": "1.0.0",
-      "homepage_url": "https://docs.anthropic.com/en/docs/claude-code/memory",
-      "repo_url": null,
-      "package_urls": [],
-      "licenses": [
-        "NOASSERTION"
-      ],
-      "copyright_owner": "Anthropic",
-      "source_kind": "official_docs",
-      "protocols": [],
-      "clients": [
-        "Claude Code"
-      ],
-      "install": {
-        "command": null,
-        "notes": "Review the upstream docs, permissions, pricing, environment variables, and transport before installing.",
-        "config_example": null
-      },
-      "permissions": [
-        "filesystem"
-      ],
-      "env_vars": [],
-      "tags": [
-        "memory",
-        "claude-code",
-        "instructions",
-        "context-engineering",
-        "claude-md"
-      ],
-      "use_cases": [
-        "Persist stable project instructions",
-        "Share agent guidance across coding sessions"
-      ],
-      "best_for": [
-        "Project-local context that should be versioned and reviewed with code",
-        "Persist stable project instructions",
-        "Share agent guidance across coding sessions",
-        "memory workflows",
-        "claude-code workflows",
-        "instructions workflows",
-        "context-engineering workflows",
-        "claude-md workflows"
-      ],
-      "not_for": [
-        "Projects that cannot review upstream permissions, data handling, pricing, or operational risk."
-      ],
-      "alternatives": [],
-      "supersedes": [],
-      "freshness": "current",
-      "source_confidence": "official",
-      "maintenance_signals": [
-        "Curated from official docs or canonical source repositories"
-      ],
-      "risk_flags": [
-        "license-not-asserted",
-        "memory-can-leak-sensitive-context",
-        "no-canonical-repo-url",
-        "sensitive-permissions"
-      ],
-      "recommended_when": [
-        "Use when coding agents repeatedly need the same project conventions, commands, and safety rules.",
-        "Use when a project needs persist stable project instructions and the upstream source has been reviewed.",
-        "Prefer this when verified install and behavior notes are required."
-      ],
-      "trust_tier": "verified",
-      "review_status": "manual-reviewed",
-      "last_checked": "2026-05-26",
-      "slug": "claude-code-memory",
-      "name": "Claude Code Memory",
-      "type": "memory",
-      "summary_llm": "Claude Code memory uses CLAUDE.md files and imports to persist project, user, and enterprise instructions that agents can load into future coding sessions.",
-      "source_urls": [
-        "https://docs.anthropic.com/en/docs/claude-code/memory"
-      ],
-      "profile_excerpt": "Claude Code memory uses CLAUDE.md files and imports to persist project, user, and enterprise instructions that agents can load into future coding sessions. ## Best For - Project-local context that should be versioned and reviewed with code ## Recommended When - Use when coding agents repeatedly need the same project co",
-      "entry_path": "registry/entries/claude-code-memory/entry.yaml",
-      "profile_path": "registry/entries/claude-code-memory/profile.md",
-      "url_path": "/entries/claude-code-memory/",
-      "recommendation_score": 9
-    },
-    {
-      "schema_version": "1.0.0",
       "homepage_url": "https://docs.continue.dev/",
       "repo_url": "https://github.com/continuedev/continue",
       "package_urls": [],
@@ -15585,7 +18146,7 @@
       ],
       "trust_tier": "promising",
       "review_status": "manual-reviewed",
-      "last_checked": "2026-05-26",
+      "last_checked": "2026-05-27",
       "slug": "continue-dev",
       "name": "Continue",
       "type": "coding-agent",
@@ -15773,7 +18334,7 @@
       ],
       "trust_tier": "promising",
       "review_status": "manual-reviewed",
-      "last_checked": "2026-05-26",
+      "last_checked": "2026-05-27",
       "slug": "firecrawl-mcp",
       "name": "Firecrawl MCP",
       "type": "mcp-server",
@@ -15786,96 +18347,6 @@
       "entry_path": "registry/entries/firecrawl-mcp/entry.yaml",
       "profile_path": "registry/entries/firecrawl-mcp/profile.md",
       "url_path": "/entries/firecrawl-mcp/",
-      "recommendation_score": 9
-    },
-    {
-      "schema_version": "1.0.0",
-      "homepage_url": "https://github.com/github/github-mcp-server",
-      "repo_url": "https://github.com/github/github-mcp-server",
-      "package_urls": [],
-      "licenses": [
-        "MIT"
-      ],
-      "copyright_owner": "GitHub",
-      "source_kind": "github",
-      "protocols": [
-        "MCP"
-      ],
-      "clients": [
-        "Claude Desktop",
-        "Claude Code",
-        "Cursor",
-        "VS Code",
-        "OpenAI Agents SDK"
-      ],
-      "install": {
-        "command": null,
-        "notes": "Use with least-privilege GitHub tokens, scoped repositories, and branch protections.",
-        "config_example": null
-      },
-      "permissions": [
-        "repository",
-        "network"
-      ],
-      "env_vars": [
-        "GITHUB_TOKEN"
-      ],
-      "tags": [
-        "mcp",
-        "github",
-        "repository",
-        "pull-requests",
-        "issues"
-      ],
-      "use_cases": [
-        "Let agents inspect GitHub repositories",
-        "Automate issues and pull request workflows"
-      ],
-      "best_for": [
-        "Repository workflows where GitHub is the system of record",
-        "Let agents inspect GitHub repositories",
-        "Automate issues and pull request workflows",
-        "mcp workflows",
-        "github workflows",
-        "repository workflows",
-        "pull-requests workflows",
-        "issues workflows"
-      ],
-      "not_for": [
-        "Projects that cannot review upstream permissions, data handling, pricing, or operational risk."
-      ],
-      "alternatives": [],
-      "supersedes": [],
-      "freshness": "current",
-      "source_confidence": "official",
-      "maintenance_signals": [
-        "Curated from official docs or canonical source repositories",
-        "Canonical repository URL recorded"
-      ],
-      "risk_flags": [
-        "mutates-repositories",
-        "requires-token",
-        "sensitive-permissions"
-      ],
-      "recommended_when": [
-        "Use when an agent needs GitHub context or PR workflows and token scope can be constrained.",
-        "Use when a project needs let agents inspect github repositories and the upstream source has been reviewed.",
-        "Treat as promising until a maintainer verifies install and behavior."
-      ],
-      "trust_tier": "promising",
-      "review_status": "manual-reviewed",
-      "last_checked": "2026-05-26",
-      "slug": "github-mcp-server",
-      "name": "GitHub MCP Server",
-      "type": "mcp-server",
-      "summary_llm": "GitHub MCP Server is GitHub's official MCP server for repository, issue, pull request, search, workflow, and code operations through agent clients.",
-      "source_urls": [
-        "https://github.com/github/github-mcp-server"
-      ],
-      "profile_excerpt": "GitHub MCP Server is GitHub's official MCP server for repository, issue, pull request, search, workflow, and code operations through agent clients. ## Best For - Repository workflows where GitHub is the system of record ## Recommended When - Use when an agent needs GitHub context or PR workflows and token scope can be",
-      "entry_path": "registry/entries/github-mcp-server/entry.yaml",
-      "profile_path": "registry/entries/github-mcp-server/profile.md",
-      "url_path": "/entries/github-mcp-server/",
       "recommendation_score": 9
     },
     {
@@ -16059,6 +18530,98 @@
         "Use when a project needs extend agents with external tools and the upstream source has been reviewed.",
         "Treat as promising until a maintainer verifies install and behavior."
       ],
+      "recommendation_score": 9
+    },
+    {
+      "schema_version": "1.0.0",
+      "homepage_url": "https://github.com/microsoft/mcp-gateway",
+      "repo_url": "https://github.com/microsoft/mcp-gateway",
+      "package_urls": [],
+      "licenses": [
+        "MIT"
+      ],
+      "copyright_owner": "Microsoft",
+      "source_kind": "github",
+      "protocols": [
+        "MCP"
+      ],
+      "clients": [
+        "MCP clients",
+        "VS Code",
+        "Azure"
+      ],
+      "install": {
+        "command": null,
+        "notes": "Review the upstream docs, permissions, pricing, environment variables, and transport before installing.",
+        "config_example": null
+      },
+      "permissions": [
+        "network",
+        "cloud"
+      ],
+      "env_vars": [
+        "AZURE_CLIENT_ID",
+        "AZURE_TENANT_ID"
+      ],
+      "tags": [
+        "mcp",
+        "gateway",
+        "kubernetes",
+        "azure",
+        "routing",
+        "session-aware",
+        "reverse-proxy"
+      ],
+      "use_cases": [
+        "Route MCP traffic through a managed gateway layer",
+        "Operate MCP servers in Kubernetes-oriented environments",
+        "Centralize session-aware MCP server lifecycle management"
+      ],
+      "best_for": [
+        "Teams already operating Azure or Kubernetes infrastructure for agent tooling",
+        "Route MCP traffic through a managed gateway layer",
+        "Operate MCP servers in Kubernetes-oriented environments",
+        "Centralize session-aware MCP server lifecycle management",
+        "mcp workflows",
+        "gateway workflows",
+        "kubernetes workflows",
+        "azure workflows"
+      ],
+      "not_for": [
+        "Projects that cannot review upstream permissions, data handling, pricing, or operational risk."
+      ],
+      "alternatives": [],
+      "supersedes": [],
+      "freshness": "current",
+      "source_confidence": "official",
+      "maintenance_signals": [
+        "Curated from official docs or canonical source repositories",
+        "Canonical repository URL recorded"
+      ],
+      "risk_flags": [
+        "cloud-configuration-risk",
+        "requires-identity-setup",
+        "gateway-operational-risk"
+      ],
+      "recommended_when": [
+        "Use when MCP routing must be governed in a cloud-native environment with explicit identity and lifecycle controls.",
+        "Use when a project needs route mcp traffic through a managed gateway layer and the upstream source has been reviewed.",
+        "Treat as promising until a maintainer verifies install and behavior."
+      ],
+      "trust_tier": "promising",
+      "review_status": "manual-reviewed",
+      "last_checked": "2026-05-27",
+      "slug": "microsoft-mcp-gateway",
+      "name": "Microsoft MCP Gateway",
+      "type": "orchestration",
+      "summary_llm": "Microsoft MCP Gateway is a reverse proxy and management layer for MCP servers focused on scalable, session-aware, stateful routing and lifecycle management in Kubernetes and Azure-oriented environments.",
+      "source_urls": [
+        "https://github.com/microsoft/mcp-gateway"
+      ],
+      "profile_excerpt": "Microsoft MCP Gateway is a reverse proxy and management layer for MCP servers focused on scalable, session-aware, stateful routing and lifecycle management in Kubernetes and Azure-oriented environments. ## Best For - Teams already operating Azure or Kubernetes infrastructure for agent tooling ## Recommended When - Use",
+      "entry_path": "registry/entries/microsoft-mcp-gateway/entry.yaml",
+      "profile_path": "registry/entries/microsoft-mcp-gateway/profile.md",
+      "url_path": "/entries/microsoft-mcp-gateway/",
       "recommendation_score": 9
     },
     {
@@ -16523,7 +19086,7 @@
       ],
       "trust_tier": "promising",
       "review_status": "manual-reviewed",
-      "last_checked": "2026-05-26",
+      "last_checked": "2026-05-27",
       "slug": "playwright-mcp",
       "name": "Playwright MCP",
       "type": "mcp-server",
@@ -17080,7 +19643,7 @@
       ],
       "trust_tier": "promising",
       "review_status": "manual-reviewed",
-      "last_checked": "2026-05-26",
+      "last_checked": "2026-05-27",
       "slug": "browserbase-mcp",
       "name": "Browserbase MCP",
       "type": "mcp-server",
@@ -17093,6 +19656,90 @@
       "entry_path": "registry/entries/browserbase-mcp/entry.yaml",
       "profile_path": "registry/entries/browserbase-mcp/profile.md",
       "url_path": "/entries/browserbase-mcp/",
+      "recommendation_score": 8
+    },
+    {
+      "schema_version": "1.0.0",
+      "homepage_url": "https://docs.anthropic.com/en/docs/claude-code/memory",
+      "repo_url": null,
+      "package_urls": [],
+      "licenses": [
+        "NOASSERTION"
+      ],
+      "copyright_owner": "Anthropic",
+      "source_kind": "official_docs",
+      "protocols": [],
+      "clients": [
+        "Claude Code"
+      ],
+      "install": {
+        "command": null,
+        "notes": "Review the upstream docs, permissions, pricing, environment variables, and transport before installing.",
+        "config_example": null
+      },
+      "permissions": [
+        "filesystem"
+      ],
+      "env_vars": [],
+      "tags": [
+        "memory",
+        "claude-code",
+        "instructions",
+        "context-engineering",
+        "claude-md"
+      ],
+      "use_cases": [
+        "Persist stable project instructions",
+        "Share agent guidance across coding sessions",
+        "Separate durable project context from temporary task notes"
+      ],
+      "best_for": [
+        "Project-local context that should be versioned and reviewed with code",
+        "Persist stable project instructions",
+        "Share agent guidance across coding sessions",
+        "Separate durable project context from temporary task notes",
+        "memory workflows",
+        "claude-code workflows",
+        "instructions workflows",
+        "context-engineering workflows"
+      ],
+      "not_for": [
+        "Projects that cannot review upstream permissions, data handling, pricing, or operational risk."
+      ],
+      "alternatives": [],
+      "supersedes": [],
+      "freshness": "current",
+      "source_confidence": "official",
+      "maintenance_signals": [
+        "Curated from official docs or canonical source repositories"
+      ],
+      "risk_flags": [
+        "license-not-asserted",
+        "memory-can-leak-sensitive-context",
+        "stale-memory-risk",
+        "no-canonical-repo-url",
+        "sensitive-permissions"
+      ],
+      "recommended_when": [
+        "Use when coding agents repeatedly need the same project conventions, commands, and safety rules.",
+        "Use when a project needs persist stable project instructions and the upstream source has been reviewed.",
+        "Prefer this when verified install and behavior notes are required."
+      ],
+      "trust_tier": "verified",
+      "review_status": "manual-reviewed",
+      "last_checked": "2026-05-27",
+      "slug": "claude-code-memory",
+      "name": "Claude Code Memory",
+      "type": "memory",
+      "summary_llm": "Claude Code memory uses CLAUDE.md files and related project, user, and enterprise memory surfaces to persist stable instructions that future coding sessions can load.",
+      "source_urls": [
+        "https://docs.anthropic.com/en/docs/claude-code/memory",
+        "https://code.claude.com/docs/en/features-overview"
+      ],
+      "profile_excerpt": "Claude Code memory uses CLAUDE.md files and related project, user, and enterprise memory surfaces to persist stable instructions that future coding sessions can load. ## Best For - Project-local context that should be versioned and reviewed with code ## Recommended When - Use when coding agents repeatedly need the same",
+      "entry_path": "registry/entries/claude-code-memory/entry.yaml",
+      "profile_path": "registry/entries/claude-code-memory/profile.md",
+      "url_path": "/entries/claude-code-memory/",
       "recommendation_score": 8
     },
     {
@@ -17166,7 +19813,7 @@
       ],
       "trust_tier": "verified",
       "review_status": "manual-reviewed",
-      "last_checked": "2026-05-26",
+      "last_checked": "2026-05-27",
       "slug": "claude-code-subagents",
       "name": "Claude Code Subagents",
       "type": "workflow",
@@ -17178,6 +19825,107 @@
       "entry_path": "registry/entries/claude-code-subagents/entry.yaml",
       "profile_path": "registry/entries/claude-code-subagents/profile.md",
       "url_path": "/entries/claude-code-subagents/",
+      "recommendation_score": 8
+    },
+    {
+      "schema_version": "1.0.0",
+      "homepage_url": "https://github.com/github/github-mcp-server",
+      "repo_url": "https://github.com/github/github-mcp-server",
+      "package_urls": [],
+      "licenses": [
+        "MIT"
+      ],
+      "copyright_owner": "GitHub",
+      "source_kind": "github",
+      "protocols": [
+        "MCP"
+      ],
+      "clients": [
+        "VS Code",
+        "Claude Desktop",
+        "Claude Code",
+        "Cursor",
+        "Windsurf",
+        "OpenAI Agents SDK",
+        "Codex"
+      ],
+      "install": {
+        "command": null,
+        "notes": "Review the upstream docs, permissions, pricing, environment variables, and transport before installing.",
+        "config_example": null
+      },
+      "permissions": [
+        "repository",
+        "network"
+      ],
+      "env_vars": [
+        "GITHUB_TOKEN",
+        "GITHUB_PERSONAL_ACCESS_TOKEN",
+        "GITHUB_TOOLSETS",
+        "GITHUB_DYNAMIC_TOOLSETS"
+      ],
+      "tags": [
+        "mcp",
+        "github",
+        "repository",
+        "pull-requests",
+        "issues",
+        "actions",
+        "toolsets",
+        "read-only-mode"
+      ],
+      "use_cases": [
+        "Let agents inspect GitHub repositories and code",
+        "Automate issues, pull requests, and workflow triage",
+        "Limit visible GitHub tools with explicit toolsets"
+      ],
+      "best_for": [
+        "GitHub-native repository workflows with scoped tokens and branch protections",
+        "Let agents inspect GitHub repositories and code",
+        "Automate issues, pull requests, and workflow triage",
+        "Limit visible GitHub tools with explicit toolsets",
+        "mcp workflows",
+        "github workflows",
+        "repository workflows",
+        "pull-requests workflows"
+      ],
+      "not_for": [
+        "Projects that cannot review upstream permissions, data handling, pricing, or operational risk."
+      ],
+      "alternatives": [],
+      "supersedes": [],
+      "freshness": "current",
+      "source_confidence": "official",
+      "maintenance_signals": [
+        "Curated from official docs or canonical source repositories",
+        "Canonical repository URL recorded"
+      ],
+      "risk_flags": [
+        "mutates-repositories",
+        "requires-token",
+        "high-tool-count",
+        "sensitive-permissions"
+      ],
+      "recommended_when": [
+        "Use when an agent needs GitHub context or PR workflows and token scope can be constrained.",
+        "Prefer read-only mode or narrow toolsets until mutation is explicitly approved.",
+        "Use when a project needs let agents inspect github repositories and code and the upstream source has been reviewed.",
+        "Treat as promising until a maintainer verifies install and behavior."
+      ],
+      "trust_tier": "promising",
+      "review_status": "manual-reviewed",
+      "last_checked": "2026-05-27",
+      "slug": "github-mcp-server",
+      "name": "GitHub MCP Server",
+      "type": "mcp-server",
+      "summary_llm": "GitHub MCP Server is GitHub's official MCP server for repository, code search, issue, pull request, workflow, security, and collaboration operations, with toolset controls and read-only mode available.",
+      "source_urls": [
+        "https://github.com/github/github-mcp-server"
+      ],
+      "profile_excerpt": "GitHub MCP Server is GitHub's official MCP server for repository, code search, issue, pull request, workflow, security, and collaboration operations, with toolset controls and read-only mode available. ## Best For - GitHub-native repository workflows with scoped tokens and branch protections ## Recommended When - Use w",
+      "entry_path": "registry/entries/github-mcp-server/entry.yaml",
+      "profile_path": "registry/entries/github-mcp-server/profile.md",
+      "url_path": "/entries/github-mcp-server/",
       "recommendation_score": 8
     },
     {
@@ -17252,7 +20000,7 @@
       ],
       "trust_tier": "promising",
       "review_status": "manual-reviewed",
-      "last_checked": "2026-05-26",
+      "last_checked": "2026-05-27",
       "slug": "graphiti",
       "name": "Graphiti",
       "type": "memory",
@@ -17522,7 +20270,7 @@
       ],
       "trust_tier": "promising",
       "review_status": "manual-reviewed",
-      "last_checked": "2026-05-26",
+      "last_checked": "2026-05-27",
       "slug": "langsmith",
       "name": "LangSmith",
       "type": "observability",
@@ -17610,7 +20358,7 @@
       ],
       "trust_tier": "promising",
       "review_status": "manual-reviewed",
-      "last_checked": "2026-05-26",
+      "last_checked": "2026-05-27",
       "slug": "letta",
       "name": "Letta",
       "type": "memory",
@@ -17623,6 +20371,99 @@
       "entry_path": "registry/entries/letta/entry.yaml",
       "profile_path": "registry/entries/letta/profile.md",
       "url_path": "/entries/letta/",
+      "recommendation_score": 8
+    },
+    {
+      "schema_version": "1.0.0",
+      "homepage_url": "https://docs.lunar.dev/mcpx/architecture",
+      "repo_url": "https://github.com/TheLunarCompany/lunar",
+      "package_urls": [],
+      "licenses": [
+        "MIT"
+      ],
+      "copyright_owner": "The Lunar Company",
+      "source_kind": "official_docs",
+      "protocols": [
+        "MCP"
+      ],
+      "clients": [
+        "MCP clients",
+        "Claude Desktop",
+        "Claude Code",
+        "Cursor",
+        "VS Code"
+      ],
+      "install": {
+        "command": null,
+        "notes": "Review the upstream docs, permissions, pricing, environment variables, and transport before installing.",
+        "config_example": null
+      },
+      "permissions": [
+        "network"
+      ],
+      "env_vars": [],
+      "tags": [
+        "mcp",
+        "gateway",
+        "mcpx",
+        "tool-routing",
+        "access-control",
+        "authentication",
+        "observability",
+        "catalog"
+      ],
+      "use_cases": [
+        "Put multiple MCP servers behind a single endpoint",
+        "Constrain tool discovery by agent or workflow",
+        "Centralize authentication, routing, and audit controls"
+      ],
+      "best_for": [
+        "Teams that have outgrown direct per-client MCP server configuration",
+        "Put multiple MCP servers behind a single endpoint",
+        "Constrain tool discovery by agent or workflow",
+        "Centralize authentication, routing, and audit controls",
+        "mcp workflows",
+        "gateway workflows",
+        "mcpx workflows",
+        "tool-routing workflows"
+      ],
+      "not_for": [
+        "Projects that cannot review upstream permissions, data handling, pricing, or operational risk."
+      ],
+      "alternatives": [],
+      "supersedes": [],
+      "freshness": "current",
+      "source_confidence": "high",
+      "maintenance_signals": [
+        "Curated from official docs or canonical source repositories",
+        "Canonical repository URL recorded"
+      ],
+      "risk_flags": [
+        "gateway-operational-risk",
+        "centralizes-tool-access",
+        "requires-policy-review"
+      ],
+      "recommended_when": [
+        "Use when direct MCP configuration creates too much tool-schema, auth, or audit complexity.",
+        "Use when a project needs put multiple mcp servers behind a single endpoint and the upstream source has been reviewed.",
+        "Treat as promising until a maintainer verifies install and behavior."
+      ],
+      "trust_tier": "promising",
+      "review_status": "manual-reviewed",
+      "last_checked": "2026-05-27",
+      "slug": "lunar-mcpx",
+      "name": "Lunar MCPX",
+      "type": "orchestration",
+      "summary_llm": "Lunar MCPX is an MCP gateway that sits between MCP clients and backend MCP servers, providing a single endpoint, aggregated tool catalog, dynamic routing, access rules, authentication, and audit-oriented enterprise controls.",
+      "source_urls": [
+        "https://docs.lunar.dev/mcpx/architecture",
+        "https://docs.lunar.dev/mcpx/features/",
+        "https://github.com/TheLunarCompany/lunar"
+      ],
+      "profile_excerpt": "Lunar MCPX is an MCP gateway that sits between MCP clients and backend MCP servers, providing a single endpoint, aggregated tool catalog, dynamic routing, access rules, authentication, and audit-oriented enterprise controls. ## Best For - Teams that have outgrown direct per-client MCP server configuration ## Recommende",
+      "entry_path": "registry/entries/lunar-mcpx/entry.yaml",
+      "profile_path": "registry/entries/lunar-mcpx/profile.md",
+      "url_path": "/entries/lunar-mcpx/",
       "recommendation_score": 8
     },
     {
@@ -17697,7 +20538,7 @@
       ],
       "trust_tier": "promising",
       "review_status": "manual-reviewed",
-      "last_checked": "2026-05-26",
+      "last_checked": "2026-05-27",
       "slug": "mem0",
       "name": "Mem0",
       "type": "memory",
@@ -17785,7 +20626,7 @@
       ],
       "trust_tier": "promising",
       "review_status": "manual-reviewed",
-      "last_checked": "2026-05-26",
+      "last_checked": "2026-05-27",
       "slug": "openai-codex-cli",
       "name": "OpenAI Codex CLI",
       "type": "coding-agent",
@@ -17797,6 +20638,104 @@
       "entry_path": "registry/entries/openai-codex-cli/entry.yaml",
       "profile_path": "registry/entries/openai-codex-cli/profile.md",
       "url_path": "/entries/openai-codex-cli/",
+      "recommendation_score": 8
+    },
+    {
+      "schema_version": "1.0.0",
+      "homepage_url": "https://github.com/qdrant/mcp-server-qdrant",
+      "repo_url": "https://github.com/qdrant/mcp-server-qdrant",
+      "package_urls": [],
+      "licenses": [
+        "Apache-2.0"
+      ],
+      "copyright_owner": "Qdrant",
+      "source_kind": "github",
+      "protocols": [
+        "MCP",
+        "stdio",
+        "SSE",
+        "Streamable HTTP"
+      ],
+      "clients": [
+        "Claude Desktop",
+        "Claude Code",
+        "MCP clients"
+      ],
+      "install": {
+        "command": null,
+        "notes": "Review the upstream docs, permissions, pricing, environment variables, and transport before installing.",
+        "config_example": null
+      },
+      "permissions": [
+        "database",
+        "network"
+      ],
+      "env_vars": [
+        "QDRANT_URL",
+        "QDRANT_API_KEY",
+        "QDRANT_LOCAL_PATH",
+        "COLLECTION_NAME",
+        "EMBEDDING_MODEL"
+      ],
+      "tags": [
+        "mcp",
+        "qdrant",
+        "vector-database",
+        "memory",
+        "semantic-search",
+        "retrieval"
+      ],
+      "use_cases": [
+        "Give agents semantic memory backed by Qdrant",
+        "Store and retrieve project notes or embeddings through MCP",
+        "Connect local or hosted Qdrant collections to agent workflows"
+      ],
+      "best_for": [
+        "Teams already using Qdrant or needing a small MCP memory layer",
+        "Give agents semantic memory backed by Qdrant",
+        "Store and retrieve project notes or embeddings through MCP",
+        "Connect local or hosted Qdrant collections to agent workflows",
+        "mcp workflows",
+        "qdrant workflows",
+        "vector-database workflows",
+        "memory workflows"
+      ],
+      "not_for": [
+        "Projects that cannot review upstream permissions, data handling, pricing, or operational risk."
+      ],
+      "alternatives": [],
+      "supersedes": [],
+      "freshness": "current",
+      "source_confidence": "official",
+      "maintenance_signals": [
+        "Curated from official docs or canonical source repositories",
+        "Canonical repository URL recorded"
+      ],
+      "risk_flags": [
+        "database-access",
+        "memory-can-leak-sensitive-context",
+        "embedding-model-dependency",
+        "sensitive-permissions"
+      ],
+      "recommended_when": [
+        "Use when stored memories are reviewed, scoped, and safe to persist in a vector database.",
+        "Use when a project needs give agents semantic memory backed by qdrant and the upstream source has been reviewed.",
+        "Treat as promising until a maintainer verifies install and behavior."
+      ],
+      "trust_tier": "promising",
+      "review_status": "manual-reviewed",
+      "last_checked": "2026-05-27",
+      "slug": "qdrant-mcp-server",
+      "name": "Qdrant MCP Server",
+      "type": "mcp-server",
+      "summary_llm": "Qdrant MCP Server is Qdrant's official MCP implementation for storing and retrieving semantic memory in Qdrant collections through store and find tools.",
+      "source_urls": [
+        "https://github.com/qdrant/mcp-server-qdrant"
+      ],
+      "profile_excerpt": "Qdrant MCP Server is Qdrant's official MCP implementation for storing and retrieving semantic memory in Qdrant collections through store and find tools. ## Best For - Teams already using Qdrant or needing a small MCP memory layer ## Recommended When - Use when stored memories are reviewed, scoped, and safe to persist i",
+      "entry_path": "registry/entries/qdrant-mcp-server/entry.yaml",
+      "profile_path": "registry/entries/qdrant-mcp-server/profile.md",
+      "url_path": "/entries/qdrant-mcp-server/",
       "recommendation_score": 8
     },
     {
@@ -17876,7 +20815,7 @@
       ],
       "trust_tier": "promising",
       "review_status": "manual-reviewed",
-      "last_checked": "2026-05-26",
+      "last_checked": "2026-05-27",
       "slug": "stripe-agent-toolkit",
       "name": "Stripe Agent Toolkit",
       "type": "payments",
@@ -17966,7 +20905,7 @@
       ],
       "trust_tier": "promising",
       "review_status": "manual-reviewed",
-      "last_checked": "2026-05-26",
+      "last_checked": "2026-05-27",
       "slug": "swe-agent",
       "name": "SWE-agent",
       "type": "coding-agent",
@@ -17980,275 +20919,6 @@
       "profile_path": "registry/entries/swe-agent/profile.md",
       "url_path": "/entries/swe-agent/",
       "recommendation_score": 8
-    },
-    {
-      "schema_version": "1.0.0",
-      "homepage_url": "https://docs.anthropic.com/en/docs/claude-code/overview",
-      "repo_url": null,
-      "package_urls": [],
-      "licenses": [
-        "NOASSERTION"
-      ],
-      "copyright_owner": "Anthropic",
-      "source_kind": "official_docs",
-      "protocols": [],
-      "clients": [
-        "Terminal",
-        "GitHub",
-        "MCP"
-      ],
-      "install": {
-        "command": "npm install -g @anthropic-ai/claude-code",
-        "notes": "Review workspace trust, tool permissions, MCP servers, and CLAUDE.md memory behavior before using on sensitive repositories.",
-        "config_example": null
-      },
-      "permissions": [
-        "filesystem",
-        "repository",
-        "shell",
-        "network"
-      ],
-      "env_vars": [
-        "ANTHROPIC_API_KEY"
-      ],
-      "tags": [
-        "coding-agent",
-        "claude-code",
-        "subagents",
-        "memory",
-        "mcp"
-      ],
-      "use_cases": [
-        "Let agents inspect and edit code repositories",
-        "Coordinate specialist subagents for coding tasks",
-        "Persist project instructions in memory files"
-      ],
-      "best_for": [
-        "Codebases that benefit from explicit project memory and specialist subagents",
-        "Let agents inspect and edit code repositories",
-        "Coordinate specialist subagents for coding tasks",
-        "Persist project instructions in memory files",
-        "coding-agent workflows",
-        "claude-code workflows",
-        "subagents workflows",
-        "memory workflows"
-      ],
-      "not_for": [
-        "Projects that cannot review upstream permissions, data handling, pricing, or operational risk."
-      ],
-      "alternatives": [],
-      "supersedes": [],
-      "freshness": "current",
-      "source_confidence": "official",
-      "maintenance_signals": [
-        "Curated from official docs or canonical source repositories"
-      ],
-      "risk_flags": [
-        "license-not-asserted",
-        "can-edit-files",
-        "can-run-shell-commands",
-        "no-canonical-repo-url",
-        "sensitive-permissions"
-      ],
-      "recommended_when": [
-        "Use when Claude Code's memory files, MCP integration, and subagents map to the team's coding workflow.",
-        "Use when a project needs let agents inspect and edit code repositories and the upstream source has been reviewed.",
-        "Treat as promising until a maintainer verifies install and behavior."
-      ],
-      "trust_tier": "promising",
-      "review_status": "manual-reviewed",
-      "last_checked": "2026-05-26",
-      "slug": "anthropic-claude-code",
-      "name": "Claude Code",
-      "type": "coding-agent",
-      "summary_llm": "Claude Code is Anthropic's terminal coding agent for codebase understanding, file edits, command execution, GitHub workflows, MCP tool use, memory files, and subagents.",
-      "source_urls": [
-        "https://docs.anthropic.com/en/docs/claude-code/overview",
-        "https://docs.anthropic.com/en/docs/claude-code/memory",
-        "https://docs.anthropic.com/en/docs/claude-code/sub-agents"
-      ],
-      "profile_excerpt": "Claude Code is Anthropic's terminal coding agent for codebase understanding, file edits, command execution, GitHub workflows, MCP tool use, memory files, and subagents. ## Best For - Codebases that benefit from explicit project memory and specialist subagents ## Recommended When - Use when Claude Code's memory files, M",
-      "entry_path": "registry/entries/anthropic-claude-code/entry.yaml",
-      "profile_path": "registry/entries/anthropic-claude-code/profile.md",
-      "url_path": "/entries/anthropic-claude-code/",
-      "recommendation_score": 7
-    },
-    {
-      "schema_version": "1.0.0",
-      "homepage_url": "https://docs.cline.bot/introduction/overview",
-      "repo_url": "https://github.com/cline/cline",
-      "package_urls": [],
-      "licenses": [
-        "Apache-2.0"
-      ],
-      "copyright_owner": "Cline",
-      "source_kind": "github",
-      "protocols": [],
-      "clients": [
-        "VS Code",
-        "MCP"
-      ],
-      "install": {
-        "command": null,
-        "notes": "Install from the VS Code Marketplace and review terminal/browser/MCP approvals before enabling broad access.",
-        "config_example": null
-      },
-      "permissions": [
-        "filesystem",
-        "repository",
-        "shell",
-        "browser",
-        "network"
-      ],
-      "env_vars": [
-        "OPENAI_API_KEY",
-        "ANTHROPIC_API_KEY"
-      ],
-      "tags": [
-        "coding-agent",
-        "vscode",
-        "mcp",
-        "browser",
-        "terminal"
-      ],
-      "use_cases": [
-        "Use an editor agent with terminal and browser control",
-        "Connect VS Code workflows to MCP tools"
-      ],
-      "best_for": [
-        "Developer-supervised code edits inside VS Code",
-        "Use an editor agent with terminal and browser control",
-        "Connect VS Code workflows to MCP tools",
-        "coding-agent workflows",
-        "vscode workflows",
-        "mcp workflows",
-        "browser workflows",
-        "terminal workflows"
-      ],
-      "not_for": [
-        "Projects that cannot review upstream permissions, data handling, pricing, or operational risk."
-      ],
-      "alternatives": [],
-      "supersedes": [],
-      "freshness": "current",
-      "source_confidence": "high",
-      "maintenance_signals": [
-        "Curated from official docs or canonical source repositories",
-        "Canonical repository URL recorded"
-      ],
-      "risk_flags": [
-        "can-edit-files",
-        "can-run-shell-commands",
-        "browser-access",
-        "sensitive-permissions"
-      ],
-      "recommended_when": [
-        "Use when VS Code, explicit approvals, and MCP extension points fit the project workflow.",
-        "Use when a project needs use an editor agent with terminal and browser control and the upstream source has been reviewed.",
-        "Treat as promising until a maintainer verifies install and behavior."
-      ],
-      "trust_tier": "promising",
-      "review_status": "manual-reviewed",
-      "last_checked": "2026-05-26",
-      "slug": "cline",
-      "name": "Cline",
-      "type": "coding-agent",
-      "summary_llm": "Cline is an open-source VS Code coding agent that can read files, edit code, use the terminal and browser, and request approval for risky actions.",
-      "source_urls": [
-        "https://docs.cline.bot/introduction/overview",
-        "https://github.com/cline/cline"
-      ],
-      "profile_excerpt": "Cline is an open-source VS Code coding agent that can read files, edit code, use the terminal and browser, and request approval for risky actions. ## Best For - Developer-supervised code edits inside VS Code ## Recommended When - Use when VS Code, explicit approvals, and MCP extension points fit the project workflow. #",
-      "entry_path": "registry/entries/cline/entry.yaml",
-      "profile_path": "registry/entries/cline/profile.md",
-      "url_path": "/entries/cline/",
-      "recommendation_score": 7
-    },
-    {
-      "schema_version": "1.0.0",
-      "homepage_url": "https://docs.cursor.com/agent/overview",
-      "repo_url": null,
-      "package_urls": [],
-      "licenses": [
-        "NOASSERTION"
-      ],
-      "copyright_owner": "Cursor",
-      "source_kind": "official_docs",
-      "protocols": [],
-      "clients": [
-        "Cursor",
-        "VS Code-like editor"
-      ],
-      "install": {
-        "command": null,
-        "notes": "Install Cursor and configure project rules, model policy, and terminal approvals before broad agent use.",
-        "config_example": null
-      },
-      "permissions": [
-        "filesystem",
-        "repository",
-        "shell",
-        "network"
-      ],
-      "env_vars": [],
-      "tags": [
-        "coding-agent",
-        "editor",
-        "rules",
-        "codebase"
-      ],
-      "use_cases": [
-        "Use an IDE-native agent for multi-file code edits",
-        "Guide coding agents with project rules"
-      ],
-      "best_for": [
-        "Developers who want agentic edits inside an editor workflow",
-        "Use an IDE-native agent for multi-file code edits",
-        "Guide coding agents with project rules",
-        "coding-agent workflows",
-        "editor workflows",
-        "rules workflows",
-        "codebase workflows",
-        "coding-agent discovery and comparison"
-      ],
-      "not_for": [
-        "Projects that cannot review upstream permissions, data handling, pricing, or operational risk."
-      ],
-      "alternatives": [],
-      "supersedes": [],
-      "freshness": "current",
-      "source_confidence": "official",
-      "maintenance_signals": [
-        "Curated from official docs or canonical source repositories"
-      ],
-      "risk_flags": [
-        "license-not-asserted",
-        "can-edit-files",
-        "can-run-shell-commands",
-        "no-canonical-repo-url",
-        "sensitive-permissions"
-      ],
-      "recommended_when": [
-        "Use when project rules and editor context are central to the coding workflow.",
-        "Use when a project needs use an ide-native agent for multi-file code edits and the upstream source has been reviewed.",
-        "Treat as promising until a maintainer verifies install and behavior."
-      ],
-      "trust_tier": "promising",
-      "review_status": "manual-reviewed",
-      "last_checked": "2026-05-26",
-      "slug": "cursor-agent",
-      "name": "Cursor Agent",
-      "type": "coding-agent",
-      "summary_llm": "Cursor Agent is Cursor's editor-native coding agent for navigating codebases, applying multi-file edits, using project rules, and running terminal-backed tasks.",
-      "source_urls": [
-        "https://docs.cursor.com/agent/overview",
-        "https://docs.cursor.com/context/rules"
-      ],
-      "profile_excerpt": "Cursor Agent is Cursor's editor-native coding agent for navigating codebases, applying multi-file edits, using project rules, and running terminal-backed tasks. ## Best For - Developers who want agentic edits inside an editor workflow ## Recommended When - Use when project rules and editor context are central to the co",
-      "entry_path": "registry/entries/cursor-agent/entry.yaml",
-      "profile_path": "registry/entries/cursor-agent/profile.md",
-      "url_path": "/entries/cursor-agent/",
-      "recommendation_score": 7
     },
     {
       "schema_version": "1.0.0",
@@ -18322,7 +20992,7 @@
       ],
       "trust_tier": "promising",
       "review_status": "manual-reviewed",
-      "last_checked": "2026-05-26",
+      "last_checked": "2026-05-27",
       "slug": "github-copilot-coding-agent",
       "name": "GitHub Copilot Coding Agent",
       "type": "coding-agent",
@@ -18413,7 +21083,7 @@
       ],
       "trust_tier": "promising",
       "review_status": "manual-reviewed",
-      "last_checked": "2026-05-26",
+      "last_checked": "2026-05-27",
       "slug": "openhands",
       "name": "OpenHands",
       "type": "coding-agent",
@@ -18426,97 +21096,6 @@
       "entry_path": "registry/entries/openhands/entry.yaml",
       "profile_path": "registry/entries/openhands/profile.md",
       "url_path": "/entries/openhands/",
-      "recommendation_score": 7
-    },
-    {
-      "schema_version": "1.0.0",
-      "homepage_url": "https://github.com/supabase-community/supabase-mcp",
-      "repo_url": "https://github.com/supabase-community/supabase-mcp",
-      "package_urls": [],
-      "licenses": [
-        "Apache-2.0"
-      ],
-      "copyright_owner": "Supabase Community",
-      "source_kind": "github",
-      "protocols": [
-        "MCP"
-      ],
-      "clients": [
-        "Claude Desktop",
-        "Claude Code",
-        "Cursor",
-        "VS Code",
-        "OpenAI Agents SDK"
-      ],
-      "install": {
-        "command": null,
-        "notes": "Use with least-privilege access tokens and separate development projects; production SQL access is high risk.",
-        "config_example": null
-      },
-      "permissions": [
-        "database",
-        "network"
-      ],
-      "env_vars": [
-        "SUPABASE_ACCESS_TOKEN"
-      ],
-      "tags": [
-        "mcp",
-        "database",
-        "supabase",
-        "sql",
-        "backend"
-      ],
-      "use_cases": [
-        "Let agents inspect Supabase projects",
-        "Query or manage development databases through MCP"
-      ],
-      "best_for": [
-        "Supabase-backed apps where schema and project context improve agent work",
-        "Let agents inspect Supabase projects",
-        "Query or manage development databases through MCP",
-        "mcp workflows",
-        "database workflows",
-        "supabase workflows",
-        "sql workflows",
-        "backend workflows"
-      ],
-      "not_for": [
-        "Projects that cannot review upstream permissions, data handling, pricing, or operational risk."
-      ],
-      "alternatives": [],
-      "supersedes": [],
-      "freshness": "current",
-      "source_confidence": "high",
-      "maintenance_signals": [
-        "Curated from official docs or canonical source repositories",
-        "Canonical repository URL recorded"
-      ],
-      "risk_flags": [
-        "database-access",
-        "can-mutate-data",
-        "requires-token",
-        "sensitive-permissions"
-      ],
-      "recommended_when": [
-        "Use when database scope can be limited and SQL changes are reviewed before execution.",
-        "Use when a project needs let agents inspect supabase projects and the upstream source has been reviewed.",
-        "Treat as promising until a maintainer verifies install and behavior."
-      ],
-      "trust_tier": "promising",
-      "review_status": "manual-reviewed",
-      "last_checked": "2026-05-26",
-      "slug": "supabase-mcp",
-      "name": "Supabase MCP",
-      "type": "mcp-server",
-      "summary_llm": "Supabase MCP is a community Supabase MCP server for project, database, SQL, and platform operations through MCP-compatible agent clients.",
-      "source_urls": [
-        "https://github.com/supabase-community/supabase-mcp"
-      ],
-      "profile_excerpt": "Supabase MCP is a community Supabase MCP server for project, database, SQL, and platform operations through MCP-compatible agent clients. ## Best For - Supabase-backed apps where schema and project context improve agent work ## Recommended When - Use when database scope can be limited and SQL changes are reviewed befor",
-      "entry_path": "registry/entries/supabase-mcp/entry.yaml",
-      "profile_path": "registry/entries/supabase-mcp/profile.md",
-      "url_path": "/entries/supabase-mcp/",
       "recommendation_score": 7
     },
     {
@@ -18694,7 +21273,7 @@
       ],
       "trust_tier": "promising",
       "review_status": "manual-reviewed",
-      "last_checked": "2026-05-26",
+      "last_checked": "2026-05-27",
       "slug": "zep",
       "name": "Zep",
       "type": "memory",
@@ -18708,6 +21287,203 @@
       "profile_path": "registry/entries/zep/profile.md",
       "url_path": "/entries/zep/",
       "recommendation_score": 7
+    },
+    {
+      "schema_version": "1.0.0",
+      "homepage_url": "https://docs.anthropic.com/en/docs/claude-code/overview",
+      "repo_url": null,
+      "package_urls": [],
+      "licenses": [
+        "NOASSERTION"
+      ],
+      "copyright_owner": "Anthropic",
+      "source_kind": "official_docs",
+      "protocols": [],
+      "clients": [
+        "Terminal",
+        "GitHub",
+        "MCP"
+      ],
+      "install": {
+        "command": null,
+        "notes": "Review the upstream docs, permissions, pricing, environment variables, and transport before installing.",
+        "config_example": null
+      },
+      "permissions": [
+        "filesystem",
+        "repository",
+        "shell",
+        "network"
+      ],
+      "env_vars": [
+        "ANTHROPIC_API_KEY"
+      ],
+      "tags": [
+        "coding-agent",
+        "claude-code",
+        "subagents",
+        "memory",
+        "mcp",
+        "hooks",
+        "skills"
+      ],
+      "use_cases": [
+        "Let agents inspect and edit code repositories",
+        "Coordinate specialist subagents for coding tasks",
+        "Persist project instructions in memory files",
+        "Scope MCP access to specific agents"
+      ],
+      "best_for": [
+        "Codebases that benefit from explicit project memory, terminal workflows, and specialist subagents",
+        "Let agents inspect and edit code repositories",
+        "Coordinate specialist subagents for coding tasks",
+        "Persist project instructions in memory files",
+        "Scope MCP access to specific agents",
+        "coding-agent workflows",
+        "claude-code workflows",
+        "subagents workflows"
+      ],
+      "not_for": [
+        "Projects that cannot review upstream permissions, data handling, pricing, or operational risk."
+      ],
+      "alternatives": [],
+      "supersedes": [],
+      "freshness": "current",
+      "source_confidence": "official",
+      "maintenance_signals": [
+        "Curated from official docs or canonical source repositories"
+      ],
+      "risk_flags": [
+        "license-not-asserted",
+        "can-edit-files",
+        "can-run-shell-commands",
+        "mcp-tool-risk",
+        "no-canonical-repo-url",
+        "sensitive-permissions"
+      ],
+      "recommended_when": [
+        "Use when Claude Code's memory files, MCP integration, hooks, skills, and subagents map to the team's coding workflow.",
+        "Use when a project needs let agents inspect and edit code repositories and the upstream source has been reviewed.",
+        "Treat as promising until a maintainer verifies install and behavior."
+      ],
+      "trust_tier": "promising",
+      "review_status": "manual-reviewed",
+      "last_checked": "2026-05-27",
+      "slug": "anthropic-claude-code",
+      "name": "Claude Code",
+      "type": "coding-agent",
+      "summary_llm": "Claude Code is Anthropic's terminal coding agent for codebase understanding, file edits, command execution, GitHub workflows, MCP tool use, memory files, hooks, skills, and custom subagents.",
+      "source_urls": [
+        "https://docs.anthropic.com/en/docs/claude-code/overview",
+        "https://docs.anthropic.com/en/docs/claude-code/memory",
+        "https://code.claude.com/docs/en/sub-agents",
+        "https://code.claude.com/docs/en/features-overview"
+      ],
+      "profile_excerpt": "Claude Code is Anthropic's terminal coding agent for codebase understanding, file edits, command execution, GitHub workflows, MCP tool use, memory files, hooks, skills, and custom subagents. ## Best For - Codebases that benefit from explicit project memory, terminal workflows, and specialist subagents ## Recommended Wh",
+      "entry_path": "registry/entries/anthropic-claude-code/entry.yaml",
+      "profile_path": "registry/entries/anthropic-claude-code/profile.md",
+      "url_path": "/entries/anthropic-claude-code/",
+      "recommendation_score": 6
+    },
+    {
+      "schema_version": "1.0.0",
+      "homepage_url": "https://docs.cline.bot/introduction/overview",
+      "repo_url": "https://github.com/cline/cline",
+      "package_urls": [],
+      "licenses": [
+        "Apache-2.0"
+      ],
+      "copyright_owner": "Cline",
+      "source_kind": "github",
+      "protocols": [],
+      "clients": [
+        "VS Code",
+        "MCP",
+        "OpenRouter",
+        "Anthropic",
+        "OpenAI",
+        "Ollama"
+      ],
+      "install": {
+        "command": null,
+        "notes": "Review the upstream docs, permissions, pricing, environment variables, and transport before installing.",
+        "config_example": null
+      },
+      "permissions": [
+        "filesystem",
+        "repository",
+        "shell",
+        "browser",
+        "network"
+      ],
+      "env_vars": [
+        "OPENAI_API_KEY",
+        "ANTHROPIC_API_KEY",
+        "OPENROUTER_API_KEY"
+      ],
+      "tags": [
+        "coding-agent",
+        "vscode",
+        "mcp",
+        "browser",
+        "terminal",
+        "byom",
+        "approvals"
+      ],
+      "use_cases": [
+        "Use an editor agent with terminal and browser control",
+        "Connect VS Code workflows to MCP tools",
+        "Run model-flexible coding tasks with explicit approvals"
+      ],
+      "best_for": [
+        "Developer-supervised code edits inside VS Code",
+        "Use an editor agent with terminal and browser control",
+        "Connect VS Code workflows to MCP tools",
+        "Run model-flexible coding tasks with explicit approvals",
+        "coding-agent workflows",
+        "vscode workflows",
+        "mcp workflows",
+        "browser workflows"
+      ],
+      "not_for": [
+        "Projects that cannot review upstream permissions, data handling, pricing, or operational risk."
+      ],
+      "alternatives": [],
+      "supersedes": [],
+      "freshness": "current",
+      "source_confidence": "high",
+      "maintenance_signals": [
+        "Curated from official docs or canonical source repositories",
+        "Canonical repository URL recorded"
+      ],
+      "risk_flags": [
+        "can-edit-files",
+        "can-run-shell-commands",
+        "browser-access",
+        "model-provider-costs",
+        "sensitive-permissions"
+      ],
+      "recommended_when": [
+        "Use when VS Code, explicit approvals, model flexibility, and MCP extension points fit the project workflow.",
+        "Use when a project needs use an editor agent with terminal and browser control and the upstream source has been reviewed.",
+        "Treat as promising until a maintainer verifies install and behavior."
+      ],
+      "trust_tier": "promising",
+      "review_status": "manual-reviewed",
+      "last_checked": "2026-05-27",
+      "slug": "cline",
+      "name": "Cline",
+      "type": "coding-agent",
+      "summary_llm": "Cline is an open-source VS Code coding agent that can read and edit files, use terminal and browser capabilities, connect to MCP tools, and request approval for sensitive actions.",
+      "source_urls": [
+        "https://docs.cline.bot/introduction/overview",
+        "https://github.com/cline/cline"
+      ],
+      "profile_excerpt": "Cline is an open-source VS Code coding agent that can read and edit files, use terminal and browser capabilities, connect to MCP tools, and request approval for sensitive actions. ## Best For - Developer-supervised code edits inside VS Code ## Recommended When - Use when VS Code, explicit approvals, model flexibility,",
+      "entry_path": "registry/entries/cline/entry.yaml",
+      "profile_path": "registry/entries/cline/profile.md",
+      "url_path": "/entries/cline/",
+      "recommendation_score": 6
     },
     {
       "schema_version": "1.0.0",
@@ -18920,6 +21696,481 @@
     },
     {
       "schema_version": "1.0.0",
+      "homepage_url": "https://docs.cursor.com/agent/overview",
+      "repo_url": null,
+      "package_urls": [],
+      "licenses": [
+        "NOASSERTION"
+      ],
+      "copyright_owner": "Cursor",
+      "source_kind": "official_docs",
+      "protocols": [],
+      "clients": [
+        "Cursor",
+        "VS Code-like editor"
+      ],
+      "install": {
+        "command": null,
+        "notes": "Review the upstream docs, permissions, pricing, environment variables, and transport before installing.",
+        "config_example": null
+      },
+      "permissions": [
+        "filesystem",
+        "repository",
+        "shell",
+        "network"
+      ],
+      "env_vars": [],
+      "tags": [
+        "coding-agent",
+        "editor",
+        "rules",
+        "codebase",
+        "terminal",
+        "agent"
+      ],
+      "use_cases": [
+        "Use an IDE-native agent for multi-file code edits",
+        "Guide coding agents with project rules",
+        "Run terminal-backed coding tasks with editor context"
+      ],
+      "best_for": [
+        "Developers who want agentic edits inside Cursor's editor workflow",
+        "Use an IDE-native agent for multi-file code edits",
+        "Guide coding agents with project rules",
+        "Run terminal-backed coding tasks with editor context",
+        "coding-agent workflows",
+        "editor workflows",
+        "rules workflows",
+        "codebase workflows"
+      ],
+      "not_for": [
+        "Projects that cannot review upstream permissions, data handling, pricing, or operational risk."
+      ],
+      "alternatives": [],
+      "supersedes": [],
+      "freshness": "current",
+      "source_confidence": "official",
+      "maintenance_signals": [
+        "Curated from official docs or canonical source repositories"
+      ],
+      "risk_flags": [
+        "license-not-asserted",
+        "can-edit-files",
+        "can-run-shell-commands",
+        "hosted-service",
+        "no-canonical-repo-url",
+        "sensitive-permissions"
+      ],
+      "recommended_when": [
+        "Use when Cursor project rules and editor context are central to the coding workflow.",
+        "Use when a project needs use an ide-native agent for multi-file code edits and the upstream source has been reviewed.",
+        "Treat as promising until a maintainer verifies install and behavior."
+      ],
+      "trust_tier": "promising",
+      "review_status": "manual-reviewed",
+      "last_checked": "2026-05-27",
+      "slug": "cursor-agent",
+      "name": "Cursor Agent",
+      "type": "coding-agent",
+      "summary_llm": "Cursor Agent is Cursor's editor-native coding agent for navigating codebases, applying multi-file edits, using project rules, running terminal-backed tasks, and working inside Cursor's IDE context.",
+      "source_urls": [
+        "https://docs.cursor.com/agent/overview",
+        "https://docs.cursor.com/context/rules",
+        "https://docs.cursor.com/en/agent/terminal"
+      ],
+      "profile_excerpt": "Cursor Agent is Cursor's editor-native coding agent for navigating codebases, applying multi-file edits, using project rules, running terminal-backed tasks, and working inside Cursor's IDE context. ## Best For - Developers who want agentic edits inside Cursor's editor workflow ## Recommended When - Use when Cursor proj",
+      "entry_path": "registry/entries/cursor-agent/entry.yaml",
+      "profile_path": "registry/entries/cursor-agent/profile.md",
+      "url_path": "/entries/cursor-agent/",
+      "recommendation_score": 6
+    },
+    {
+      "schema_version": "1.0.0",
+      "homepage_url": "https://opentabs.dev/",
+      "repo_url": "https://github.com/opentabs-dev/opentabs",
+      "package_urls": [],
+      "licenses": [
+        "MIT"
+      ],
+      "copyright_owner": "OpenTabs",
+      "source_kind": "official_docs",
+      "protocols": [
+        "MCP",
+        "Streamable HTTP"
+      ],
+      "clients": [
+        "Claude Code",
+        "Cursor",
+        "Windsurf",
+        "OpenCode",
+        "MCP clients"
+      ],
+      "install": {
+        "command": null,
+        "notes": "Review the upstream docs, permissions, pricing, environment variables, and transport before installing.",
+        "config_example": null
+      },
+      "permissions": [
+        "browser",
+        "network"
+      ],
+      "env_vars": [
+        "OPENTABS_SECRET"
+      ],
+      "tags": [
+        "mcp",
+        "browser",
+        "chrome-extension",
+        "authenticated-session",
+        "web-apps",
+        "gateway-mode",
+        "plugins"
+      ],
+      "use_cases": [
+        "Let agents interact with web apps through an existing browser session",
+        "Expose internal web-app APIs as MCP tools",
+        "Reduce OAuth/API-key setup for tools already open in the user's browser"
+      ],
+      "best_for": [
+        "Local-first workflows where browser-session access is acceptable and plugins can be reviewed",
+        "Let agents interact with web apps through an existing browser session",
+        "Expose internal web-app APIs as MCP tools",
+        "Reduce OAuth/API-key setup for tools already open in the user's browser",
+        "mcp workflows",
+        "browser workflows",
+        "chrome-extension workflows",
+        "authenticated-session workflows"
+      ],
+      "not_for": [
+        "Projects that cannot review upstream permissions, data handling, pricing, or operational risk."
+      ],
+      "alternatives": [],
+      "supersedes": [],
+      "freshness": "current",
+      "source_confidence": "high",
+      "maintenance_signals": [
+        "Curated from official docs or canonical source repositories",
+        "Canonical repository URL recorded"
+      ],
+      "risk_flags": [
+        "authenticated-browser-session",
+        "can-act-as-user",
+        "plugin-review-required",
+        "high-tool-count",
+        "sensitive-permissions"
+      ],
+      "recommended_when": [
+        "Use only after reviewing plugins and deciding which authenticated sessions an agent may touch.",
+        "Use when a project needs let agents interact with web apps through an existing browser session and the upstream source has been reviewed.",
+        "Treat as promising until a maintainer verifies install and behavior."
+      ],
+      "trust_tier": "promising",
+      "review_status": "manual-reviewed",
+      "last_checked": "2026-05-27",
+      "slug": "opentabs",
+      "name": "OpenTabs",
+      "type": "mcp-server",
+      "summary_llm": "OpenTabs is a local Chrome extension and MCP server that lets agents call web-app internal APIs through the user's authenticated browser session, with plugin gating, audit logs, and multiple connection modes.",
+      "source_urls": [
+        "https://opentabs.dev/",
+        "https://opentabs.dev/docs/install",
+        "https://github.com/opentabs-dev/opentabs"
+      ],
+      "profile_excerpt": "OpenTabs is a local Chrome extension and MCP server that lets agents call web-app internal APIs through the user's authenticated browser session, with plugin gating, audit logs, and multiple connection modes. ## Best For - Local-first workflows where browser-session access is acceptable and plugins can be reviewed ## R",
+      "entry_path": "registry/entries/opentabs/entry.yaml",
+      "profile_path": "registry/entries/opentabs/profile.md",
+      "url_path": "/entries/opentabs/",
+      "recommendation_score": 6
+    },
+    {
+      "schema_version": "1.0.0",
+      "homepage_url": "https://github.com/RooCodeInc/Roo-Code",
+      "repo_url": "https://github.com/RooCodeInc/Roo-Code",
+      "package_urls": [],
+      "licenses": [
+        "Apache-2.0"
+      ],
+      "copyright_owner": "Roo Code, Inc",
+      "source_kind": "github",
+      "protocols": [],
+      "clients": [
+        "VS Code",
+        "Cursor",
+        "MCP",
+        "OpenRouter",
+        "Anthropic",
+        "OpenAI"
+      ],
+      "install": {
+        "command": null,
+        "notes": "Review the upstream docs, permissions, pricing, environment variables, and transport before installing.",
+        "config_example": null
+      },
+      "permissions": [
+        "filesystem",
+        "repository",
+        "shell",
+        "browser",
+        "network"
+      ],
+      "env_vars": [
+        "OPENROUTER_API_KEY",
+        "OPENAI_API_KEY",
+        "ANTHROPIC_API_KEY"
+      ],
+      "tags": [
+        "coding-agent",
+        "roo-code",
+        "vscode",
+        "custom-modes",
+        "mcp",
+        "checkpoints",
+        "byom"
+      ],
+      "use_cases": [
+        "Use role-based modes for planning, coding, asking, and debugging",
+        "Connect a VS Code-family coding agent to MCP servers",
+        "Experiment with custom mode prompts and permissions"
+      ],
+      "best_for": [
+        "Teams that need explicit mode separation and model/provider flexibility inside VS Code-like editors",
+        "Use role-based modes for planning, coding, asking, and debugging",
+        "Connect a VS Code-family coding agent to MCP servers",
+        "Experiment with custom mode prompts and permissions",
+        "coding-agent workflows",
+        "roo-code workflows",
+        "vscode workflows",
+        "custom-modes workflows"
+      ],
+      "not_for": [
+        "Projects that cannot review upstream permissions, data handling, pricing, or operational risk."
+      ],
+      "alternatives": [],
+      "supersedes": [],
+      "freshness": "current",
+      "source_confidence": "high",
+      "maintenance_signals": [
+        "Curated from official docs or canonical source repositories",
+        "Canonical repository URL recorded"
+      ],
+      "risk_flags": [
+        "can-edit-files",
+        "can-run-shell-commands",
+        "browser-access",
+        "community-handoff",
+        "sensitive-permissions"
+      ],
+      "recommended_when": [
+        "Use after confirming the current maintenance path and reviewing mode permissions for the project.",
+        "Use when a project needs use role-based modes for planning, coding, asking, and debugging and the upstream source has been reviewed.",
+        "Treat as promising until a maintainer verifies install and behavior."
+      ],
+      "trust_tier": "promising",
+      "review_status": "manual-reviewed",
+      "last_checked": "2026-05-27",
+      "slug": "roo-code",
+      "name": "Roo Code",
+      "type": "coding-agent",
+      "summary_llm": "Roo Code is a VS Code-family coding agent that supports Code, Architect, Ask, Debug, and Custom Modes, MCP servers, checkpoints, codebase indexing, and model/provider configuration.",
+      "source_urls": [
+        "https://github.com/RooCodeInc/Roo-Code",
+        "https://roocodeinc.github.io/Roo-Code/basic-usage/using-modes/"
+      ],
+      "profile_excerpt": "Roo Code is a VS Code-family coding agent that supports Code, Architect, Ask, Debug, and Custom Modes, MCP servers, checkpoints, codebase indexing, and model/provider configuration. ## Best For - Teams that need explicit mode separation and model/provider flexibility inside VS Code-like editors ## Recommended When - Us",
+      "entry_path": "registry/entries/roo-code/entry.yaml",
+      "profile_path": "registry/entries/roo-code/profile.md",
+      "url_path": "/entries/roo-code/",
+      "recommendation_score": 6
+    },
+    {
+      "schema_version": "1.0.0",
+      "homepage_url": "https://github.com/supabase-community/supabase-mcp",
+      "repo_url": "https://github.com/supabase-community/supabase-mcp",
+      "package_urls": [],
+      "licenses": [
+        "Apache-2.0"
+      ],
+      "copyright_owner": "Supabase Community",
+      "source_kind": "github",
+      "protocols": [
+        "MCP"
+      ],
+      "clients": [
+        "Claude Desktop",
+        "Claude Code",
+        "Cursor",
+        "Windsurf",
+        "VS Code",
+        "OpenAI Agents SDK",
+        "Codex"
+      ],
+      "install": {
+        "command": null,
+        "notes": "Review the upstream docs, permissions, pricing, environment variables, and transport before installing.",
+        "config_example": null
+      },
+      "permissions": [
+        "database",
+        "network"
+      ],
+      "env_vars": [
+        "SUPABASE_ACCESS_TOKEN"
+      ],
+      "tags": [
+        "mcp",
+        "database",
+        "supabase",
+        "postgres",
+        "sql",
+        "migrations",
+        "logs",
+        "docs-search"
+      ],
+      "use_cases": [
+        "Let agents inspect Supabase projects and schemas",
+        "Search Supabase documentation from an MCP client",
+        "Query or manage development databases through MCP"
+      ],
+      "best_for": [
+        "Supabase-backed apps where schema and docs context improve agent work",
+        "Let agents inspect Supabase projects and schemas",
+        "Search Supabase documentation from an MCP client",
+        "Query or manage development databases through MCP",
+        "mcp workflows",
+        "database workflows",
+        "supabase workflows",
+        "postgres workflows"
+      ],
+      "not_for": [
+        "Projects that cannot review upstream permissions, data handling, pricing, or operational risk."
+      ],
+      "alternatives": [],
+      "supersedes": [],
+      "freshness": "current",
+      "source_confidence": "high",
+      "maintenance_signals": [
+        "Curated from official docs or canonical source repositories",
+        "Canonical repository URL recorded"
+      ],
+      "risk_flags": [
+        "database-access",
+        "can-mutate-data",
+        "requires-token",
+        "pre-1.0-upstream",
+        "sensitive-permissions"
+      ],
+      "recommended_when": [
+        "Use when database scope can be limited and SQL or migration changes are reviewed before execution.",
+        "Keep production projects behind explicit approval and least-privilege access.",
+        "Use when a project needs let agents inspect supabase projects and schemas and the upstream source has been reviewed.",
+        "Treat as promising until a maintainer verifies install and behavior."
+      ],
+      "trust_tier": "promising",
+      "review_status": "manual-reviewed",
+      "last_checked": "2026-05-27",
+      "slug": "supabase-mcp",
+      "name": "Supabase MCP",
+      "type": "mcp-server",
+      "summary_llm": "Supabase MCP connects MCP clients to Supabase projects for docs search, project context, database schema inspection, SQL execution, migrations, logs, advisors, functions, and platform operations.",
+      "source_urls": [
+        "https://github.com/supabase-community/supabase-mcp"
+      ],
+      "profile_excerpt": "Supabase MCP connects MCP clients to Supabase projects for docs search, project context, database schema inspection, SQL execution, migrations, logs, advisors, functions, and platform operations. ## Best For - Supabase-backed apps where schema and docs context improve agent work ## Recommended When - Use when database",
+      "entry_path": "registry/entries/supabase-mcp/entry.yaml",
+      "profile_path": "registry/entries/supabase-mcp/profile.md",
+      "url_path": "/entries/supabase-mcp/",
+      "recommendation_score": 6
+    },
+    {
+      "schema_version": "1.0.0",
+      "homepage_url": "https://github.com/jtgsystems/Custom-Modes-Roo-Code",
+      "repo_url": "https://github.com/jtgsystems/Custom-Modes-Roo-Code",
+      "package_urls": [],
+      "licenses": [
+        "MIT"
+      ],
+      "copyright_owner": "JTG Systems",
+      "source_kind": "github",
+      "protocols": [],
+      "clients": [
+        "Roo Code"
+      ],
+      "install": {
+        "command": null,
+        "notes": "Review the upstream docs, permissions, pricing, environment variables, and transport before installing.",
+        "config_example": null
+      },
+      "permissions": [
+        "filesystem",
+        "shell",
+        "browser",
+        "network"
+      ],
+      "env_vars": [],
+      "tags": [
+        "roo-code",
+        "custom-modes",
+        "agent-modes",
+        "specialists",
+        "schemas",
+        "permissions"
+      ],
+      "use_cases": [
+        "Review examples of specialized Roo Code modes",
+        "Prototype role-specific agent prompts and permission groups",
+        "Build a mode catalog for architecture, coding, security, and domain tasks"
+      ],
+      "best_for": [
+        "Teams experimenting with specialist mode design and willing to audit each mode before use",
+        "Review examples of specialized Roo Code modes",
+        "Prototype role-specific agent prompts and permission groups",
+        "Build a mode catalog for architecture, coding, security, and domain tasks",
+        "roo-code workflows",
+        "custom-modes workflows",
+        "agent-modes workflows",
+        "specialists workflows"
+      ],
+      "not_for": [
+        "Projects that cannot review upstream permissions, data handling, pricing, or operational risk."
+      ],
+      "alternatives": [],
+      "supersedes": [],
+      "freshness": "current",
+      "source_confidence": "medium",
+      "maintenance_signals": [
+        "Curated from official docs or canonical source repositories",
+        "Canonical repository URL recorded"
+      ],
+      "risk_flags": [
+        "community-maintained",
+        "can-grant-broad-tool-access",
+        "mode-audit-required",
+        "sensitive-permissions"
+      ],
+      "recommended_when": [
+        "Use as an inspiration catalog; import only reviewed modes with scoped permissions.",
+        "Use when a project needs review examples of specialized roo code modes and the upstream source has been reviewed.",
+        "Treat as promising until a maintainer verifies install and behavior."
+      ],
+      "trust_tier": "unreviewed",
+      "review_status": "manual-reviewed",
+      "last_checked": "2026-05-27",
+      "slug": "custom-modes-roo-code",
+      "name": "Custom Modes Roo Code",
+      "type": "skill",
+      "summary_llm": "Custom Modes Roo Code is a community collection of Roo Code custom-mode and agent configurations with schemas, categorized agents, and supporting scripts for specialized mode-based workflows.",
+      "source_urls": [
+        "https://github.com/jtgsystems/Custom-Modes-Roo-Code"
+      ],
+      "profile_excerpt": "Custom Modes Roo Code is a community collection of Roo Code custom-mode and agent configurations with schemas, categorized agents, and supporting scripts for specialized mode-based workflows. ## Best For - Teams experimenting with specialist mode design and willing to audit each mode before use ## Recommended When - Us",
+      "entry_path": "registry/entries/custom-modes-roo-code/entry.yaml",
+      "profile_path": "registry/entries/custom-modes-roo-code/profile.md",
+      "url_path": "/entries/custom-modes-roo-code/",
+      "recommendation_score": 4
+    },
+    {
+      "schema_version": "1.0.0",
       "slug": "covenant-research",
       "name": "Covenant Research",
       "type": "security",
@@ -19007,6 +22258,297 @@
       "profile_path": "registry/entries/covenant-research/profile.md",
       "url_path": "/entries/covenant-research/",
       "recommendation_score": 3
+    },
+    {
+      "schema_version": "1.0.0",
+      "homepage_url": "https://github.com/benborla/mcp-server-mysql",
+      "repo_url": "https://github.com/benborla/mcp-server-mysql",
+      "package_urls": [],
+      "licenses": [
+        "MIT"
+      ],
+      "copyright_owner": "Ben Borla",
+      "source_kind": "github",
+      "protocols": [
+        "MCP",
+        "Streamable HTTP"
+      ],
+      "clients": [
+        "Claude Desktop",
+        "Claude Code",
+        "MCP clients"
+      ],
+      "install": {
+        "command": null,
+        "notes": "Review the upstream docs, permissions, pricing, environment variables, and transport before installing.",
+        "config_example": null
+      },
+      "permissions": [
+        "database",
+        "network"
+      ],
+      "env_vars": [
+        "MYSQL_HOST",
+        "MYSQL_PORT",
+        "MYSQL_USER",
+        "MYSQL_PASS",
+        "MYSQL_DB",
+        "MYSQL_CONNECTION_STRING",
+        "REMOTE_SECRET_KEY"
+      ],
+      "tags": [
+        "mcp",
+        "mysql",
+        "database",
+        "schema",
+        "sql",
+        "read-only",
+        "remote-mcp"
+      ],
+      "use_cases": [
+        "Let agents inspect MySQL schemas",
+        "Run read-only MySQL queries through MCP",
+        "Expose carefully gated database access to coding assistants"
+      ],
+      "best_for": [
+        "Development databases where read-only schema and query access can speed backend work",
+        "Let agents inspect MySQL schemas",
+        "Run read-only MySQL queries through MCP",
+        "Expose carefully gated database access to coding assistants",
+        "mcp workflows",
+        "mysql workflows",
+        "database workflows",
+        "schema workflows"
+      ],
+      "not_for": [
+        "Projects that cannot review upstream permissions, data handling, pricing, or operational risk."
+      ],
+      "alternatives": [],
+      "supersedes": [],
+      "freshness": "current",
+      "source_confidence": "medium",
+      "maintenance_signals": [
+        "Curated from official docs or canonical source repositories",
+        "Canonical repository URL recorded"
+      ],
+      "risk_flags": [
+        "database-access",
+        "requires-secrets",
+        "write-gates-available",
+        "community-maintained",
+        "sensitive-permissions"
+      ],
+      "recommended_when": [
+        "Use only with read-only defaults, development data, and explicit approval before enabling writes.",
+        "Use when a project needs let agents inspect mysql schemas and the upstream source has been reviewed.",
+        "Treat as promising until a maintainer verifies install and behavior."
+      ],
+      "trust_tier": "unreviewed",
+      "review_status": "manual-reviewed",
+      "last_checked": "2026-05-27",
+      "slug": "mcp-server-mysql",
+      "name": "MCP Server MySQL",
+      "type": "mcp-server",
+      "summary_llm": "MCP Server MySQL provides MCP access to MySQL schemas and queries with read-only defaults, explicit write-operation gates, remote mode, rate limits, query complexity controls, and connection pooling.",
+      "source_urls": [
+        "https://github.com/benborla/mcp-server-mysql"
+      ],
+      "profile_excerpt": "MCP Server MySQL provides MCP access to MySQL schemas and queries with read-only defaults, explicit write-operation gates, remote mode, rate limits, query complexity controls, and connection pooling. ## Best For - Development databases where read-only schema and query access can speed backend work ## Recommended When -",
+      "entry_path": "registry/entries/mcp-server-mysql/entry.yaml",
+      "profile_path": "registry/entries/mcp-server-mysql/profile.md",
+      "url_path": "/entries/mcp-server-mysql/",
+      "recommendation_score": 3
+    },
+    {
+      "schema_version": "1.0.0",
+      "homepage_url": "https://github.com/Bhartendu-Kumar/rules_template",
+      "repo_url": "https://github.com/Bhartendu-Kumar/rules_template",
+      "package_urls": [],
+      "licenses": [
+        "NOASSERTION"
+      ],
+      "copyright_owner": "Bhartendu Kumar",
+      "source_kind": "github",
+      "protocols": [],
+      "clients": [
+        "Cursor",
+        "Cline",
+        "Roo Code",
+        "Windsurf"
+      ],
+      "install": {
+        "command": null,
+        "notes": "Review the upstream docs, permissions, pricing, environment variables, and transport before installing.",
+        "config_example": null
+      },
+      "permissions": [
+        "filesystem"
+      ],
+      "env_vars": [],
+      "tags": [
+        "memory-bank",
+        "rules",
+        "cline",
+        "roo-code",
+        "cursor",
+        "windsurf",
+        "context-engineering"
+      ],
+      "use_cases": [
+        "Bootstrap a persistent memory bank for coding agents",
+        "Share rule files across multiple IDE agents",
+        "Separate planning, implementation, and documentation instructions"
+      ],
+      "best_for": [
+        "Teams willing to maintain agent memory files and review rule changes like code",
+        "Bootstrap a persistent memory bank for coding agents",
+        "Share rule files across multiple IDE agents",
+        "Separate planning, implementation, and documentation instructions",
+        "memory-bank workflows",
+        "rules workflows",
+        "cline workflows",
+        "roo-code workflows"
+      ],
+      "not_for": [
+        "Projects that cannot review upstream permissions, data handling, pricing, or operational risk."
+      ],
+      "alternatives": [],
+      "supersedes": [],
+      "freshness": "current",
+      "source_confidence": "medium",
+      "maintenance_signals": [
+        "Curated from official docs or canonical source repositories",
+        "Canonical repository URL recorded"
+      ],
+      "risk_flags": [
+        "license-not-asserted",
+        "community-maintained",
+        "stale-memory-risk",
+        "can-overconstrain-agents",
+        "sensitive-permissions"
+      ],
+      "recommended_when": [
+        "Use as a pattern source, then copy only the minimal ideas that match the repository's workflow.",
+        "Use when a project needs bootstrap a persistent memory bank for coding agents and the upstream source has been reviewed.",
+        "Treat as promising until a maintainer verifies install and behavior."
+      ],
+      "trust_tier": "unreviewed",
+      "review_status": "manual-reviewed",
+      "last_checked": "2026-05-27",
+      "slug": "rules-template-memory-bank",
+      "name": "Rules Template Memory Bank",
+      "type": "memory",
+      "summary_llm": "Rules Template is a community rule and memory-bank template for Cursor, Cline, Roo Code, and Windsurf that organizes agent instructions, workflow phases, and persistent project context.",
+      "source_urls": [
+        "https://github.com/Bhartendu-Kumar/rules_template"
+      ],
+      "profile_excerpt": "Rules Template is a community rule and memory-bank template for Cursor, Cline, Roo Code, and Windsurf that organizes agent instructions, workflow phases, and persistent project context. ## Best For - Teams willing to maintain agent memory files and review rule changes like code ## Recommended When - Use as a pattern so",
+      "entry_path": "registry/entries/rules-template-memory-bank/entry.yaml",
+      "profile_path": "registry/entries/rules-template-memory-bank/profile.md",
+      "url_path": "/entries/rules-template-memory-bank/",
+      "recommendation_score": 3
+    },
+    {
+      "schema_version": "1.0.0",
+      "homepage_url": "https://github.com/coleam00/mcp-crawl4ai-rag",
+      "repo_url": "https://github.com/coleam00/mcp-crawl4ai-rag",
+      "package_urls": [],
+      "licenses": [
+        "MIT"
+      ],
+      "copyright_owner": "coleam00",
+      "source_kind": "github",
+      "protocols": [
+        "MCP",
+        "SSE"
+      ],
+      "clients": [
+        "Claude Desktop",
+        "Claude Code",
+        "Windsurf",
+        "MCP clients"
+      ],
+      "install": {
+        "command": null,
+        "notes": "Review the upstream docs, permissions, pricing, environment variables, and transport before installing.",
+        "config_example": null
+      },
+      "permissions": [
+        "network",
+        "database"
+      ],
+      "env_vars": [
+        "OPENAI_API_KEY",
+        "SUPABASE_URL",
+        "SUPABASE_SERVICE_KEY",
+        "NEO4J_URI",
+        "NEO4J_USER",
+        "NEO4J_PASSWORD"
+      ],
+      "tags": [
+        "mcp",
+        "rag",
+        "crawl4ai",
+        "web-crawling",
+        "supabase",
+        "vector-search",
+        "documentation",
+        "knowledge-graph"
+      ],
+      "use_cases": [
+        "Crawl documentation and retrieve relevant chunks for coding agents",
+        "Create a project-specific RAG store for external docs",
+        "Search code examples extracted from crawled documentation"
+      ],
+      "best_for": [
+        "Experimental documentation RAG workflows where network, database, and embedding costs are acceptable",
+        "Crawl documentation and retrieve relevant chunks for coding agents",
+        "Create a project-specific RAG store for external docs",
+        "Search code examples extracted from crawled documentation",
+        "mcp workflows",
+        "rag workflows",
+        "crawl4ai workflows",
+        "web-crawling workflows"
+      ],
+      "not_for": [
+        "Projects that cannot review upstream permissions, data handling, pricing, or operational risk."
+      ],
+      "alternatives": [],
+      "supersedes": [],
+      "freshness": "current",
+      "source_confidence": "medium",
+      "maintenance_signals": [
+        "Curated from official docs or canonical source repositories",
+        "Canonical repository URL recorded"
+      ],
+      "risk_flags": [
+        "community-maintained",
+        "requires-secrets",
+        "external-crawling",
+        "database-access",
+        "can-ingest-third-party-content",
+        "sensitive-permissions"
+      ],
+      "recommended_when": [
+        "Use as a reviewed RAG experiment, not as default runtime infrastructure for sensitive repos.",
+        "Use when a project needs crawl documentation and retrieve relevant chunks for coding agents and the upstream source has been reviewed.",
+        "Treat as promising until a maintainer verifies install and behavior."
+      ],
+      "trust_tier": "unreviewed",
+      "review_status": "manual-reviewed",
+      "last_checked": "2026-05-27",
+      "slug": "mcp-crawl4ai-rag",
+      "name": "Crawl4AI RAG MCP Server",
+      "type": "mcp-server",
+      "summary_llm": "Crawl4AI RAG MCP Server combines web crawling, content chunking, Supabase vector storage, semantic retrieval, optional code-example search, reranking, and optional knowledge-graph features for agent documentation lookup.",
+      "source_urls": [
+        "https://github.com/coleam00/mcp-crawl4ai-rag"
+      ],
+      "profile_excerpt": "Crawl4AI RAG MCP Server combines web crawling, content chunking, Supabase vector storage, semantic retrieval, optional code-example search, reranking, and optional knowledge-graph features for agent documentation lookup. ## Best For - Experimental documentation RAG workflows where network, database, and embedding costs",
+      "entry_path": "registry/entries/mcp-crawl4ai-rag/entry.yaml",
+      "profile_path": "registry/entries/mcp-crawl4ai-rag/profile.md",
+      "url_path": "/entries/mcp-crawl4ai-rag/",
+      "recommendation_score": 2
     },
     {
       "schema_version": "1.0.0",
@@ -19166,7 +22708,7 @@
       ],
       "trust_tier": "deprecated",
       "review_status": "deprecated",
-      "last_checked": "2026-05-26",
+      "last_checked": "2026-05-27",
       "slug": "openai-swarm",
       "name": "OpenAI Swarm",
       "type": "orchestration",
