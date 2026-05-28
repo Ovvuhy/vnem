@@ -78,9 +78,14 @@ export function redactDeep(value) {
   return Object.fromEntries(
     Object.entries(value).map(([key, child]) => [
       key,
-      /token|secret|password|api[_-]?key|authorization/i.test(key) ? "[redacted]" : redactDeep(child)
+      sensitiveKey(key) ? "[redacted]" : redactDeep(child)
     ])
   );
+}
+
+function sensitiveKey(key) {
+  return /^(authorization|token|secret|password|api[_-]?key)$/i.test(key) ||
+    /(^|[_-])(token|secret|password|api[_-]?key)$/i.test(key);
 }
 
 function redactScalar(value) {
