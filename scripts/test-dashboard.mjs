@@ -231,6 +231,7 @@ async function testDashboardFiles() {
   for (const filePath of [
     "dashboard/index.html",
     "dashboard/src/App.jsx",
+    "landing/dashboard/index.html",
     "landing/functions/api/auth/nonce.js",
     "landing/functions/api/auth/verify.js",
     "landing/functions/api/dashboard/summary.js",
@@ -241,4 +242,16 @@ async function testDashboardFiles() {
 
   const workflow = await readFile(".github/workflows/deploy-cloudflare-pages.yml", "utf8");
   assert.ok(workflow.includes("npm run dashboard:build"));
+  assert.ok(workflow.includes("npm run test:dashboard"));
+
+  const dashboardHtml = await readFile("landing/dashboard/index.html", "utf8");
+  const referencedAssets = [...dashboardHtml.matchAll(/(?:src|href)="\/dashboard\/([^"]+)"/g)]
+    .map((match) => match[1])
+    .filter((assetPath) => assetPath.startsWith("assets/"));
+
+  assert.ok(referencedAssets.length > 0, "dashboard build must reference compiled assets");
+  for (const assetPath of referencedAssets) {
+    const filePath = path.join("landing", "dashboard", assetPath);
+    assert.equal(existsSync(filePath), true, `dashboard asset missing from deploy directory: ${filePath}`);
+  }
 }

@@ -43,22 +43,22 @@ jobs:
       - run: npm run dashboard:build
       - run: cp public/install.tgz landing/install.tgz
       - run: npm run test:install-pack
+      - run: npm run test:dashboard
 
-      - name: Skip deploy when Cloudflare credentials are missing
+      - name: Require Cloudflare credentials for deploy
         if: ${{ env.CLOUDFLARE_API_TOKEN == '' || env.CLOUDFLARE_ACCOUNT_ID == '' }}
-        run: echo "Cloudflare credentials are not configured; build and install-pack checks completed, deploy skipped."
+        run: |
+          echo "Cloudflare credentials are not configured; cannot deploy vnem Pages."
+          exit 1
 
       - uses: cloudflare/wrangler-action@v3
-        if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
         with:
           apiToken: ${{ env.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ env.CLOUDFLARE_ACCOUNT_ID }}
           command: pages functions build landing/functions --project-directory landing --outdir landing-functions --output-routes-path landing/_routes.json
       - run: cp landing-functions/index.js landing/_worker.js
-        if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
 
       - uses: cloudflare/wrangler-action@v3
-        if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
         with:
           apiToken: ${{ env.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ env.CLOUDFLARE_ACCOUNT_ID }}
