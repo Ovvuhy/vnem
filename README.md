@@ -112,12 +112,39 @@ Example MCP client config:
 
 Main tools:
 
-- `vnem_search`: search registry entries, best-practice notes, and prompt patterns.
-- `vnem_recommend`: run a recommendation pass for an agentic tooling or stack decision.
+- `vnem_status`: show loaded data paths, generated timestamps, counts, MCP tools/resources/prompts, and read-only safety posture.
+- `vnem_overview`: explain the usable vnem surfaces for newcomers, maintainers, or agents.
+- `vnem_route_intent`: resolve a task or phrase into intent routing, read-first guidance, comparison options, rubrics, approval gates, and verification criteria.
+- `vnem_get_source`: fetch one source-radar entry by ID or title.
+- `vnem_search`: search registry entries, best-practice notes, prompt patterns, source radar, rubrics, and playbooks.
+- `vnem_recommend`: run a recommendation pass for an agentic tooling or stack decision and return a compact task contract.
 - `vnem_get_entry`: fetch one registry entry with provenance, install notes, permissions, and risks.
 - `vnem_compare`: compare two or more registry entries.
 - `vnem_best_practices`: find matching best-practice and prompt-pattern notes.
 - `vnem_sources`: find source-radar entries for upstream docs, registries, MCP sources, and benchmark evidence.
+
+Main resources:
+
+- `vnem://install/search-index`
+- `vnem://install/source-radar`
+- `vnem://api/index`
+- `vnem://install/operating-protocol`
+- `vnem://install/task-rubrics`
+- `vnem://install/design-architecture`
+- `vnem://install/visual-qa-protocol`
+- `vnem://install/best-practices`
+- `vnem://install/agent-workspace`
+- `vnem://install/prompt-engineering`
+- `vnem://install/prompt-patterns`
+- `vnem://discovery/daily-digest`
+- `vnem://repo/readme`
+- `vnem://repo/product`
+- `vnem://repo/security-roadmap`
+- `vnem://repo/hermes`
+- `vnem://repo/contributing`
+- `vnem://entries/{slug}`
+
+The quickest way to understand a running vnem MCP server is to call `vnem_status`, then `vnem_overview`, then `vnem_route_intent` for the task you care about.
 
 You can also install the bundled Codex skill from this checkout:
 
@@ -129,10 +156,10 @@ npm run vnem -- install-skill
 
 V1 is intentionally boring and safe:
 
-- no CLI install
+- no auto-install of discovered third-party tools
 - no daemon
 - optional MCP server is local, read-only, and stdio-only
-- no package install
+- no package installs from the MCP server or install pack
 - no remote code execution
 - no network calls from MCP tools
 - no secrets collection
@@ -153,6 +180,7 @@ The pack is guidance and search data. It does not run the tools it recommends.
 | `public/install.tgz` | Tiny archive used by the one-line install command. |
 | `.vnem/` | Generated local pack for dogfooding this repo. |
 | `landing/` | Static public landing page and blog bundle for the website. |
+| `dashboard/` | Vite/React source for the Hermes owner dashboard surface. |
 | `PRODUCT.md` | Product direction, public-site clarity goals, and non-regression bar. |
 | `SECURITY-ROADMAP.md` | Advisory-first roadmap for zero-trust gateway and runtime-security ideas. |
 | `llms.txt` | Compact LLM entrypoint. |
