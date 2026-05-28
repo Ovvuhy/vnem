@@ -236,10 +236,24 @@ a {
 .gate-status .bad,
 .badge.degraded,
 .badge.watchlist,
-.badge.risk {
+.badge.risk,
+.badge.suspicious,
+.badge.needs-review {
   color: var(--gold);
   border-color: rgba(245, 193, 90, 0.34);
   background: rgba(245, 193, 90, 0.08);
+}
+
+.badge.blocked {
+  color: #ff9b82;
+  border-color: rgba(255, 155, 130, 0.5);
+  background: rgba(255, 85, 85, 0.12);
+}
+
+.badge.low-risk {
+  color: var(--bone);
+  border-color: rgba(128, 181, 255, 0.34);
+  background: rgba(128, 181, 255, 0.08);
 }
 
 .topbar,
