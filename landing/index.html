@@ -29,8 +29,8 @@
         <a href="#mcp">mcp</a>
         <a href="blog/">blog</a>
       </nav>
-      <button class="header-action" id="copyCommandHeader" type="button" aria-label="Copy vnem curl command">
-        <span>copy curl</span>
+      <button class="header-action" id="copyCommandHeader" type="button" aria-label="Copy vnem install command">
+        <span>copy install</span>
       </button>
     </header>
 
@@ -46,11 +46,11 @@
           <h1>Perception layer for agents.</h1>
           <p class="lead">Install a read-only knowledge pack into any repo so coding agents check current tools, MCPs, risks, and upgrade paths before they touch code.</p>
 
-          <div class="command-shell" id="install-command" aria-label="vnem curl command">
+          <div class="command-shell" id="install-command" aria-label="vnem install command">
             <div class="command-row">
               <span class="command-prompt" aria-hidden="true">$</span>
-              <pre><code id="commandText">curl -fsSL https://vnem.pages.dev/i | tar -xz</code></pre>
-              <button id="copyCommand" type="button" aria-label="Copy vnem curl command">
+              <pre><code id="commandText">curl -fsSL https://vnem.pages.dev/i | sh</code></pre>
+              <button id="copyCommand" type="button" aria-label="Copy vnem install command">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M8 7.5a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-7a2 2 0 0 1-2-2v-9Z" />
                   <path d="M5 15.5a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2" />
@@ -60,7 +60,7 @@
             </div>
           </div>
 
-          <p class="outcome-line">Creates <code>AGENTS.md</code> and <code>.vnem/</code>. The agent gets instructions immediately.</p>
+          <p class="outcome-line">Clones <code>Ovvuhy/vnem</code> into <code>./vnem</code>. Use the local installer from there for managed project installs.</p>
         </div>
       </section>
 
@@ -69,21 +69,21 @@
           <p class="section-kicker">install</p>
           <div class="install-grid">
             <div>
-              <h2>Clean folder: one curl.</h2>
-              <p>The public archive now includes everything the agent needs: a root <code>AGENTS.md</code> pointer plus the full read-only <code>.vnem/</code> pack.</p>
+              <h2>Install vnem: one curl.</h2>
+              <p>The public installer clones the full vnem repo into <code>./vnem</code>, so you get the CLI, MCP server, registry, generated pack, and docs.</p>
             </div>
             <div class="steps-list" aria-label="Clean folder install steps">
               <div>
                 <span>01</span>
-                <p>Open the project folder you want agents to work in.</p>
+                <p>Open the folder where you want the vnem checkout to live.</p>
               </div>
               <div>
                 <span>02</span>
-                <pre><code>curl -fsSL https://vnem.pages.dev/i | tar -xz</code></pre>
+                <pre><code>curl -fsSL https://vnem.pages.dev/i | sh</code></pre>
               </div>
               <div>
                 <span>03</span>
-                <p>Start your coding agent there. It should read <code>AGENTS.md</code> and automatically use vnem.</p>
+                <p>Run <code>cd vnem</code>, then use the CLI installer for any project that should receive the read-only pack.</p>
               </div>
             </div>
           </div>
@@ -98,6 +98,14 @@ cd vnem
 npm install
 npm run install:project -- /path/to/project
 npm run doctor -- /path/to/project</code></pre>
+          </div>
+
+          <div class="install-grid secondary-install">
+            <div>
+              <h2>Project pack only.</h2>
+              <p>For a clean project that only needs the read-only agent guidance files, extract the pack directly in that project folder.</p>
+            </div>
+            <pre class="code-block"><code>curl -fsSL https://vnem.pages.dev/install.tgz | tar -xz</code></pre>
           </div>
         </div>
       </section>

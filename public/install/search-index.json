@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-05-27T21:08:33.015Z",
+  "generated_at": "2026-05-28T11:24:56.856Z",
   "schema_version": "1.0.0",
   "package_version": "1.0.1",
   "release_version": "1.0.1",
-  "release_date": "2026-05-27",
+  "release_date": "2026-05-28",
   "install_folder": ".vnem",
   "safety": {
     "mode": "read-only-files",

@@ -12,7 +12,16 @@ vnem accepts source-backed entries for tools that make agents, LLMs, or agent bu
 
 ## Branch And Safety Workflow
 
-Work on a branch. Do not push directly to `main`.
+Use a small number of long-lived integration branches:
+
+- `develop`: normal testing branch for product, MCP, registry, install-pack, docs, and website improvements.
+- `experimental`: high-risk or unclear experiments such as runtime gateway prototypes, large dashboard changes, automation rewrites, or broad registry migrations.
+
+Short-lived feature branches should branch from `develop` unless the work is intentionally risky, in which case branch from `experimental`. Merge reviewed feature work back into its testing branch, then merge `develop` into `main` only when the full validation path is green and the diff is understandable. Merge `experimental` into `develop` only after the risky part has been reduced to a reviewable, tested change.
+
+Do not keep old one-off branches alive after their useful commits are merged, cherry-picked, superseded, or intentionally rejected. Close stale draft PRs with a note and delete their branches after `main` contains the wanted work.
+
+Avoid pushing directly to `main` except for explicit maintainer-directed consolidation, release repair, or branch-cleanup work.
 
 Before opening a PR:
 

@@ -115,6 +115,7 @@ function findingRow(candidate, report, now) {
     source_url: candidate.source_url ?? candidate.repo_url ?? candidate.homepage_url ?? null,
     suggested_trust_tier: candidate.suggested_trust_tier ?? "unreviewed",
     risk_flags: candidate.risk_flags ?? [],
+    repository_review: safeRepositoryReview(candidate.repository_review),
     recommended_action: candidate.recommended_action ?? candidate.reason ?? "review",
     reason: candidate.reason ?? "candidate",
     signal_summary: candidate.signal_summary ?? null,
@@ -133,7 +134,22 @@ function safeMetrics(metrics) {
     license: metrics.license ?? null,
     version: metrics.version ?? metrics.release_tag ?? null,
     updated_at: metrics.updated_at ?? metrics.pushed_at ?? metrics.release_published_at ?? metrics.created_at ?? null,
-    language: metrics.language ?? null
+    language: metrics.language ?? null,
+    repo_risk_score: numberOrNull(metrics.repo_risk_score),
+    repo_trust_score: numberOrNull(metrics.repo_trust_score),
+    repo_verdict: metrics.repo_verdict ?? null
+  };
+}
+
+function safeRepositoryReview(review) {
+  if (!review || typeof review !== "object") return null;
+  return {
+    verdict: review.verdict ?? "unknown",
+    risk_score: numberOrNull(review.risk_score),
+    trust_score: numberOrNull(review.trust_score),
+    flags: Array.isArray(review.flags) ? review.flags.slice(0, 20) : [],
+    reasons: Array.isArray(review.reasons) ? review.reasons.slice(0, 6) : [],
+    reviewed_at: review.reviewed_at ?? null
   };
 }
 

@@ -181,6 +181,7 @@ function WalletGate({ walletConnected, configured, loading, error, onSignIn }) {
   return (
     <section className="gate-panel" aria-label="vnem Hermes wallet gate">
       <div className="gate-copy">
+        <img className="gate-logo" src="/assets/logo.png" alt="" />
         <div className="product-lock"><LockKeyhole size={18} /> owner access</div>
         <h1>vnem hermes</h1>
         <p>Connect an allowlisted Solana wallet and sign the dashboard challenge.</p>
@@ -222,9 +223,12 @@ function DashboardShell({ summary, status, error, walletAddress, onRefresh, onLo
   return (
     <>
       <header className="topbar">
-        <div>
-          <p className="eyebrow">vnem hermes</p>
-          <h1>Owner dashboard</h1>
+        <div className="topbar-title">
+          <img className="dashboard-logo" src="/assets/logo.png" alt="" />
+          <div>
+            <p className="eyebrow">vnem hermes</p>
+            <h1>Owner dashboard</h1>
+          </div>
         </div>
         <div className="topbar-actions">
           <span className="wallet-chip"><Wallet size={15} /> {shortWallet(walletAddress)}</span>
@@ -241,6 +245,7 @@ function DashboardShell({ summary, status, error, walletAddress, onRefresh, onLo
         <Kpi icon={Clock3} label="last sync" value={formatDateTime(summary?.generated_at)} />
         <Kpi icon={Search} label="candidates today" value={summary?.aggregates?.today ?? 0} />
         <Kpi icon={AlertTriangle} label="watchlist" value={summary?.aggregates?.by_action?.watchlist ?? 0} />
+        <Kpi icon={ShieldCheck} label="blocked" value={summary?.aggregates?.by_action?.blocked ?? 0} tone={(summary?.aggregates?.by_action?.blocked ?? 0) > 0 ? "warn" : "ok"} />
         <Kpi icon={Route} label="route errors" value={summary?.errors?.length ?? 0} tone={(summary?.errors?.length ?? 0) > 0 ? "warn" : "ok"} />
         <Kpi icon={Sparkles} label="brain" value={summary?.timers?.brain?.service_result ?? "unknown"} tone={summary?.timers?.brain?.service_result === "success" ? "ok" : "warn"} />
       </section>
@@ -369,6 +374,11 @@ function FindingsTable({ findings, loading }) {
               <td data-label="Action"><Badge tone={finding.recommended_action}>{finding.recommended_action}</Badge></td>
               <td data-label="Risk">
                 <div className="risk-list">
+                  {finding.repository_review ? (
+                    <Badge tone={finding.repository_review.verdict}>
+                      {finding.repository_review.verdict} · risk {finding.repository_review.risk_score}
+                    </Badge>
+                  ) : null}
                   {(finding.risk_flags ?? []).length > 0
                     ? finding.risk_flags.map((flag) => <Badge key={flag} tone="risk">{flag}</Badge>)
                     : <span className="muted">none</span>}

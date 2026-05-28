@@ -1,0 +1,144 @@
+{
+  "generated_at": "2026-05-27T07:10:00.000Z",
+  "mode": "brain-review",
+  "lookback_hours": 1,
+  "source_routes": [
+    "hourly-candidate-triage",
+    "deep-scan-triage"
+  ],
+  "candidates": [
+    {
+      "name": "openai/codex",
+      "title": "OpenAI Codex",
+      "description": "Official OpenAI lightweight coding agent that runs in the terminal. Rust-based, Apache-2.0, with 86k+ stars and active daily development.",
+      "repo_url": "https://github.com/openai/codex",
+      "homepage_url": null,
+      "source_urls": [
+        "https://github.com/openai/codex"
+      ],
+      "signal_summary": "Official OpenAI terminal coding agent. 86,110 stars, 12,572 forks, 5,223 open issues. Apache-2.0, created 2025-04, pushed daily. Highest-signal agent framework signal this cycle.",
+      "why_builders_should_care": "Dominant terminal coding agent reference. Builders comparing or composing agent toolchains need to understand its capabilities, permission model, and limits.",
+      "suggested_trust_tier": "promising",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "reason": "high-signal official source"
+    },
+    {
+      "name": "esengine/DeepSeek-Reasonix",
+      "title": "DeepSeek-Reasonix",
+      "description": "DeepSeek-native AI coding agent for your terminal. Engineered around prefix-cache stability. TypeScript, MIT license, 10.7k stars.",
+      "repo_url": "https://github.com/esengine/DeepSeek-Reasonix",
+      "homepage_url": "https://esengine.github.io/DeepSeek-Reasonix/",
+      "source_urls": [
+        "https://github.com/esengine/DeepSeek-Reasonix",
+        "https://esengine.github.io/DeepSeek-Reasonix/"
+      ],
+      "signal_summary": "10,703 stars, 593 forks, MIT, pushed 2026-05-27T07:02:11Z. Fast-growing DeepSeek-oriented coding agent with prompt-caching focus.",
+      "why_builders_should_care": "Strong star velocity and DeepSeek ecosystem relevance. Offers an alternative architecture pattern (prefix-cache stability) worth understanding for agent framework comparisons.",
+      "suggested_trust_tier": "promising",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "reason": "high star velocity, novel architecture angle"
+    },
+    {
+      "name": "gptme/gptme",
+      "title": "gptme",
+      "description": "Terminal-based AI agent equipped with local tools: writes code, uses terminal, browses the web. Supports persistent autonomous agents. Python, MIT, 4.3k stars.",
+      "repo_url": "https://github.com/gptme/gptme",
+      "homepage_url": "https://gptme.org/docs/",
+      "source_urls": [
+        "https://github.com/gptme/gptme",
+        "https://gptme.org/docs/"
+      ],
+      "signal_summary": "4,310 stars, 390 forks, MIT, active since 2023. Only 13 open issues, pushed 2026-05-27T07:03:56Z. Mature, actively maintained terminal agent.",
+      "why_builders_should_care": "Mature terminal-agent pattern with local tool use and persistent agent support. Useful reference for builders designing similar CLI agent experiences.",
+      "suggested_trust_tier": "promising",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "reason": "mature, low issue count, steady development"
+    },
+    {
+      "name": "rullerzhou-afk/clawd-on-desk",
+      "title": "clawd-on-desk",
+      "description": "Pixel-art desktop pet that watches Claude Code, Codex, Cursor and other AI coding agents. Electron/JS, AGPL-3.0, 3k stars.",
+      "repo_url": "https://github.com/rullerzhou-afk/clawd-on-desk",
+      "homepage_url": null,
+      "source_urls": [
+        "https://github.com/rullerzhou-afk/clawd-on-desk"
+      ],
+      "signal_summary": "3,005 stars, 316 forks, AGPL-3.0, pushed 2026-05-27T07:04:03Z. Novel observability/monitoring concept for coding-agent sessions.",
+      "why_builders_should_care": "First-of-kind observability UX for coding-agent sessions. Signals growing demand for agent session visibility and logging tools.",
+      "suggested_trust_tier": "promising",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "reason": "novel agent observability category signal"
+    },
+    {
+      "name": "collibra/chip",
+      "title": "Collibra MCP Server",
+      "description": "Collibra Model Context Protocol server for enterprise data governance. Go, Apache-2.0, 29 stars.",
+      "repo_url": "https://github.com/collibra/chip",
+      "homepage_url": null,
+      "source_urls": [
+        "https://github.com/collibra/chip"
+      ],
+      "signal_summary": "29 stars, 5 forks, Apache-2.0, pushed 2026-05-27T06:59:44Z. Enterprise data governance company exposing MCP surface.",
+      "why_builders_should_care": "Enterprise MCP signal. Collibra is a known data governance brand; builders tracking MCP adoption in regulated domains should note this.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [],
+      "recommended_action": "watchlist",
+      "reason": "low-star enterprise MCP; needs license/permissions review"
+    },
+    {
+      "name": "string-os/string",
+      "title": "String",
+      "description": "Markdown-runs-as-agent-runtime. One file, any agent. TypeScript, MIT, 17 stars.",
+      "repo_url": "https://github.com/string-os/string",
+      "homepage_url": "https://string-os.org",
+      "source_urls": [
+        "https://github.com/string-os/string",
+        "https://string-os.org"
+      ],
+      "signal_summary": "17 stars, 0 forks, MIT, pushed 2026-05-27T07:04:07Z. Experimental markdown-governed agent runtime.",
+      "why_builders_should_care": "Interesting paradigm: markdown as agent execution substrate. Could influence how agent skills and tool surfaces are defined declaratively.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "sensitive-permissions"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "novel paradigm but early; sensitive-permissions flag from original scan"
+    },
+    {
+      "name": "Tars-Technologies/cx-agent-evals",
+      "title": "CX Agent Evals",
+      "description": "Agent evaluation harness focused on customer-experience agents. TypeScript, MIT, 4 stars.",
+      "repo_url": "https://github.com/Tars-Technologies/cx-agent-evals",
+      "homepage_url": "https://cx-agent-evals-frontend.vercel.app",
+      "source_urls": [
+        "https://github.com/Tars-Technologies/cx-agent-evals",
+        "https://cx-agent-evals-frontend.vercel.app"
+      ],
+      "signal_summary": "4 stars, 0 forks, MIT, pushed 2026-05-27T07:00:10Z. Niche agent evals for CX domain.",
+      "why_builders_should_care": "Adds to the growing agent-eval ecosystem. Useful reference for builders building eval pipelines.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [],
+      "recommended_action": "watchlist",
+      "reason": "low-star; niche eval domain"
+    }
+  ],
+  "duplicates_skipped": [
+    "opencrab (already in deep-scan report)",
+    "fleet-memory (already in deep-scan report)",
+    "agent-eval-harness (already in deep-scan report)",
+    "thane-ai-agent (low-star, watchlisted in prior cycles)",
+    "rayward-external/clawjournal (low-star, watchlisted in prior cycles)",
+    "Fzkuji/OpenProgram (low-star, unreviewed, generic)",
+    "zty522/partner (low-star, unreviewed)",
+    "akyourowngames/friday (star count 0, watchlisted)",
+    "dawsonblock/agent_eval_skills_merged_clean (star count 0)",
+    "donbeeshyvt-jpg/Agent_Memory (no license, star count 0)",
+    "INTEVIA/money-s3-mcp-server (niche accounting MCP, no license)",
+    "R00T-Kim/awesome-offensive-mcp (byzantine GitHub handle, NOASSERTION license)"
+  ],
+  "errors": []
+}

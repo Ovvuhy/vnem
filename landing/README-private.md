@@ -15,7 +15,6 @@ Before uploading, regenerate artifacts and copy the generated install archive in
 
 ```bash
 npm run generate
-cp public/install.tgz landing/i
 cp public/install.tgz landing/install.tgz
 ```
 

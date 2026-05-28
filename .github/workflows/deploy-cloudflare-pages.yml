@@ -26,6 +26,9 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
     steps:
       - uses: actions/checkout@v4
 
@@ -38,19 +41,25 @@ jobs:
       - run: npm run validate
       - run: npm run generate
       - run: npm run dashboard:build
-      - run: cp public/install.tgz landing/i
       - run: cp public/install.tgz landing/install.tgz
       - run: npm run test:install-pack
+      - run: npm run test:dashboard
+
+      - name: Require Cloudflare credentials for deploy
+        if: ${{ env.CLOUDFLARE_API_TOKEN == '' || env.CLOUDFLARE_ACCOUNT_ID == '' }}
+        run: |
+          echo "Cloudflare credentials are not configured; cannot deploy vnem Pages."
+          exit 1
 
       - uses: cloudflare/wrangler-action@v3
         with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          apiToken: ${{ env.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ env.CLOUDFLARE_ACCOUNT_ID }}
           command: pages functions build landing/functions --project-directory landing --outdir landing-functions --output-routes-path landing/_routes.json
       - run: cp landing-functions/index.js landing/_worker.js
 
       - uses: cloudflare/wrangler-action@v3
         with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          apiToken: ${{ env.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ env.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy landing --project-name=vnem --branch=main --commit-hash=${{ github.sha }}

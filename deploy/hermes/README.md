@@ -41,6 +41,9 @@ Useful optional settings:
 - `HERMES_HN_QUERIES`: Hacker News lead-generation queries. These candidates stay `watchlist` until backed by primary sources.
 - `HERMES_INCLUDE_REDDIT=1`: opt into Reddit subreddit search. Keep disabled when public polling is not desired.
 - `HERMES_MIN_PER_ROUTE=2`: reserve candidate slots for smaller routes so GitHub search does not crowd them out.
+- `HERMES_REPO_REVIEW=1`: keep the repository trust/risk review layer enabled.
+- `HERMES_BLOCKED_REPOS`: newline, semicolon, or JSON array of repo names or URLs that must always become `blocked` findings.
+- `HERMES_BLOCKED_DOMAINS`: newline, semicolon, or JSON array of domains that must always become `blocked` findings.
 
 Route toggles:
 

@@ -3314,8 +3314,8 @@ const llmsFull = [
 
 const bestPractices = bestPracticesMarkdown();
 const operatingProtocolMarkdownData = operatingProtocolMarkdown();
-const designArchitectureMarkdownData = designArchitectureMarkdown();
-const visualQaProtocolMarkdownData = visualQaProtocolMarkdown();
+const designArchitectureMarkdownData = designArchitectureMarkdown().trimEnd();
+const visualQaProtocolMarkdownData = visualQaProtocolMarkdown().trimEnd();
 const taskRubricData = taskRubricsJson();
 const sourceRadarData = sourceRadarJson();
 const promptPatternData = promptPatternsJson();

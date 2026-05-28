@@ -80,11 +80,19 @@ export const sampleSummary = {
       title: "@example/mcp-agent-memory",
       source_url: "https://www.npmjs.com/package/@example/mcp-agent-memory",
       suggested_trust_tier: "unreviewed",
-      risk_flags: ["license-not-asserted", "sensitive-permissions"],
-      recommended_action: "watchlist",
-      reason: "candidate",
-      signal_summary: "Matched npm search for agent memory.",
-      metrics: { npm_score: 0.72, version: "0.3.1", license: null }
+      risk_flags: ["license-not-asserted", "sensitive-permissions", "binary-download"],
+      repository_review: {
+        verdict: "blocked",
+        risk_score: 86,
+        trust_score: 14,
+        flags: ["binary-download", "download-button"],
+        reasons: ["README or release text tells users to download/run an executable or installer."],
+        reviewed_at: "2026-05-27T17:00:02.000Z"
+      },
+      recommended_action: "blocked",
+      reason: "blocked",
+      signal_summary: "Matched npm search for agent memory. Repo review: blocked, risk 86/100, trust 14/100.",
+      metrics: { npm_score: 0.72, version: "0.3.1", license: null, repo_risk_score: 86, repo_trust_score: 14, repo_verdict: "blocked" }
     }
   ],
   aggregates: {
@@ -93,8 +101,8 @@ export const sampleSummary = {
     seven_days: 3,
     by_route: { "github-releases": 1, "hacker-news": 1, "npm-search": 1 },
     by_trust_tier: { promising: 1, watchlist: 1, unreviewed: 1 },
-    by_action: { review: 1, watchlist: 2 },
-    by_risk_flag: { "social-signal": 1, "needs-primary-source": 1, "license-not-asserted": 1, "sensitive-permissions": 1 }
+    by_action: { review: 1, watchlist: 1, blocked: 1 },
+    by_risk_flag: { "social-signal": 1, "needs-primary-source": 1, "license-not-asserted": 1, "sensitive-permissions": 1, "binary-download": 1 }
   },
   source_health: [
     { route: "github-search", status: "active", candidates: 8, errors: 0 },
