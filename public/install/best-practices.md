@@ -1,6 +1,6 @@
 # vnem Best Practices
 
-Generated: 2026-05-28T19:11:09.918Z
+Generated: 2026-05-28T20:10:31.300Z
 
 Use this as a compact, current guidance layer for coding agents. Prefer these notes when choosing whether to add, replace, or avoid a tool.
 
@@ -73,13 +73,14 @@ Make AI coding agents better by giving them a tight repo-sensing, plan-first, im
 - Run narrow checks first for speed, then broader tests/builds when the change touches shared behavior, app shell, build config, auth, data, or UI routing.
 - For web apps and UI, a passing build is not enough: open or serve the app, verify desktop and mobile fit, inspect the first screen, and fix the ugliest visible issue before final.
 - Control context: read the exact files needed, summarize findings, avoid dumping huge docs, and reset/split sessions when failed attempts or unrelated history start dominating the context window.
+- Select a mode-specific playbook before coding: feature slice, root-cause bug fix, test-first evidence, refactor, rendered web app, API/data contract, large change, review, or failure recovery.
 - Use subagents, parallel candidates, or Best-of-N only for independent exploration, critique, or alternative designs; keep one owner responsible for the integrated diff.
 - Keep repository instruction files concise, stable, and versioned. Record commands, conventions, verification, and approval boundaries, not temporary task state.
 - Report like an engineer: what changed, why, files touched, verification run, failed checks or unrun checks, residual risk, and any approval needed before deployment or package installs.
 
-Sources: https://www.anthropic.com/engineering/claude-code-best-practices, https://openai.com/business/guides-and-resources/how-openai-uses-codex/, https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results, https://docs.github.com/en/copilot/how-tos/copilot-cli/cli-best-practices, https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md, https://docs.cursor.com/context/rules-for-ai, https://www.anthropic.com/engineering/writing-tools-for-agents, https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents
+Sources: https://www.anthropic.com/engineering/claude-code-best-practices, https://openai.com/business/guides-and-resources/how-openai-uses-codex/, https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results, https://docs.github.com/en/copilot/how-tos/copilot-cli/cli-best-practices, https://docs.github.com/en/copilot/concepts/prompting/response-customization, https://code.visualstudio.com/docs/copilot/customization/custom-instructions, https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md, https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md, https://docs.cursor.com/context/rules-for-ai, https://www.anthropic.com/engineering/writing-tools-for-agents, https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents, https://developers.openai.com/api/docs/guides/agent-evals
 
-Search aliases: coding task, app build, web app, feature build, bug fix, test first, repo understanding, large change, coding agents, plan first, verification loop, acceptance criteria
+Search aliases: coding task, app build, web app, feature build, bug fix, root cause, failure recovery, test first, repo understanding, large change, backend api, coding agents, plan first, verification loop, acceptance criteria
 
 ## Visual Experience And Perception Gate
 

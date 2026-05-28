@@ -1,0 +1,694 @@
+{
+  "generated_at": "2026-05-28T20:10:31.300Z",
+  "schema_version": "1.0.0",
+  "safety": {
+    "mode": "read-only-coding-playbooks",
+    "executes_code": false,
+    "installs_packages": false,
+    "starts_daemons": false,
+    "requires_secrets": false,
+    "edits_files": false
+  },
+  "purpose": "Mode-specific coding-agent execution playbooks. Use them after the coding protocol to pick the right loop for feature work, debugging, tests, refactors, web apps, API/data changes, reviews, large changes, and failure recovery.",
+  "selection_rule": "Select the first playbook whose mode, intents, or triggers match the task. If several match, prefer the one with the strongest verification ladder for the requested outcome.",
+  "playbooks": [
+    {
+      "id": "feature-slice",
+      "title": "Feature Slice Builder",
+      "mode": "build",
+      "intents": [
+        "coding task",
+        "feature build",
+        "app build",
+        "web app",
+        "professional code"
+      ],
+      "triggers": [
+        "implement",
+        "add feature",
+        "build",
+        "app",
+        "workflow",
+        "user story",
+        "acceptance criteria"
+      ],
+      "summary": "Turn a requested feature into the smallest working product slice that matches local architecture and can be verified.",
+      "read_first": [
+        "coding-protocol:vnem-coding-protocol",
+        "practice:agentic-coding-execution",
+        "task-rubric:agentic_coding"
+      ],
+      "repo_sensing": [
+        "Read local agent instructions, manifests, scripts, framework config, tests, and the closest existing feature pattern.",
+        "Identify the entrypoint, state/data owner, component or route owner, and verification command before editing.",
+        "Name non-goals and surfaces that must not change, especially public APIs, schemas, auth, deployment, and dependencies."
+      ],
+      "execution_loop": [
+        "Define observable acceptance criteria in one short list.",
+        "Implement one thin vertical slice first, then fill edge cases only when the slice runs.",
+        "Reuse existing helpers, components, styles, and data patterns before adding abstractions.",
+        "Keep unrelated cleanup, formatting churn, and dependency swaps out of the diff."
+      ],
+      "verification_ladder": [
+        "Run the narrowest existing test or typecheck that covers the changed surface.",
+        "Run the app/build when routing, bundle, framework config, or user-visible behavior changed.",
+        "For UI slices, inspect the rendered screen and mobile fit before final."
+      ],
+      "stop_conditions": [
+        "Missing acceptance criteria would change architecture or data shape.",
+        "The change requires a new dependency, deployment, secret, paid API, migration, or production data.",
+        "The first slice reveals broad redesign or public API churn."
+      ],
+      "anti_patterns": [
+        "start with a rewrite",
+        "invent a parallel architecture",
+        "skip repo pattern discovery",
+        "claim done without a runnable check"
+      ],
+      "final_report": [
+        "feature behavior delivered",
+        "files changed",
+        "verification evidence",
+        "skipped checks and residual risk"
+      ],
+      "source_urls": [
+        "https://www.anthropic.com/engineering/claude-code-best-practices",
+        "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
+        "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
+        "https://docs.github.com/en/copilot/concepts/prompting/response-customization",
+        "https://code.visualstudio.com/docs/copilot/customization/custom-instructions",
+        "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
+        "https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md",
+        "https://docs.cursor.com/context/rules-for-ai",
+        "https://www.anthropic.com/engineering/writing-tools-for-agents",
+        "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "https://www.anthropic.com/engineering/building-effective-agents",
+        "https://developers.openai.com/api/docs/guides/agent-evals"
+      ]
+    },
+    {
+      "id": "bug-root-cause",
+      "title": "Root-Cause Bug Fix",
+      "mode": "debug",
+      "intents": [
+        "bug fix",
+        "debug",
+        "test first",
+        "backend api",
+        "security"
+      ],
+      "triggers": [
+        "bug",
+        "failing test",
+        "regression",
+        "error",
+        "crash",
+        "broken",
+        "root cause",
+        "auth api"
+      ],
+      "summary": "Debug by reproducing or localizing the failure, patching the narrow cause, and proving the regression is blocked.",
+      "read_first": [
+        "coding-protocol:vnem-coding-protocol",
+        "practice:agentic-coding-execution",
+        "practice:code-review",
+        "practice:evals"
+      ],
+      "repo_sensing": [
+        "Capture the exact failing command, error text, route, log, screenshot, or assertion before editing.",
+        "Trace the closest call path and recent local pattern instead of guessing from file names.",
+        "Check whether the failure touches auth, security, data, external services, or generated files."
+      ],
+      "execution_loop": [
+        "Reproduce first when practical; if not, state the missing reproduction evidence.",
+        "Make one hypothesis at a time and patch the smallest root cause.",
+        "Add or adjust a focused regression test when the test harness exists and the bug is behaviorally important.",
+        "Avoid speculative cleanups until the original failure is proven fixed."
+      ],
+      "verification_ladder": [
+        "Run the failing test or smallest reproduction command.",
+        "Run nearby tests for the touched module.",
+        "Run broader build/test only when shared behavior, contracts, auth, data, or routing changed."
+      ],
+      "stop_conditions": [
+        "The fix would weaken security, loosen validation, skip tests, or hide the symptom.",
+        "A malicious test hook, forced pass, or unrelated config change is proposed.",
+        "The failure depends on private credentials, production data, or unavailable services."
+      ],
+      "anti_patterns": [
+        "patch by string guessing",
+        "delete failing assertions",
+        "force tests to pass",
+        "change broad config to hide one failure"
+      ],
+      "final_report": [
+        "root cause",
+        "fix",
+        "regression evidence",
+        "remaining uncertainty"
+      ],
+      "source_urls": [
+        "https://www.anthropic.com/engineering/claude-code-best-practices",
+        "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
+        "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
+        "https://docs.github.com/en/copilot/concepts/prompting/response-customization",
+        "https://code.visualstudio.com/docs/copilot/customization/custom-instructions",
+        "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
+        "https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md",
+        "https://docs.cursor.com/context/rules-for-ai",
+        "https://www.anthropic.com/engineering/writing-tools-for-agents",
+        "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "https://www.anthropic.com/engineering/building-effective-agents",
+        "https://developers.openai.com/api/docs/guides/agent-evals"
+      ]
+    },
+    {
+      "id": "test-first-evidence",
+      "title": "Test-First Evidence Builder",
+      "mode": "build",
+      "intents": [
+        "test first",
+        "bug fix",
+        "feature build",
+        "evals",
+        "benchmark evidence"
+      ],
+      "triggers": [
+        "test",
+        "tdd",
+        "coverage",
+        "verify first",
+        "fixture",
+        "expected output",
+        "regression"
+      ],
+      "summary": "Convert an intended behavior into executable evidence before or alongside implementation.",
+      "read_first": [
+        "coding-protocol:vnem-coding-protocol",
+        "practice:evals",
+        "practice:agentic-coding-execution",
+        "task-rubric:agentic_coding"
+      ],
+      "repo_sensing": [
+        "Inspect existing tests, fixtures, snapshots, helpers, and naming conventions before writing a new test.",
+        "Find the fastest command that runs only the relevant test scope.",
+        "Identify observable behavior instead of implementation details to lock."
+      ],
+      "execution_loop": [
+        "Write or describe the failing expectation first when practical.",
+        "Keep fixtures minimal and deterministic.",
+        "Prefer public API/user behavior tests over brittle private internals.",
+        "Use mocks only where the existing test style already uses them or the external dependency is unavoidable."
+      ],
+      "verification_ladder": [
+        "Run the new focused test and confirm it fails for the right reason if possible.",
+        "Implement the smallest change and rerun the focused test.",
+        "Run adjacent tests or build when shared code changed."
+      ],
+      "stop_conditions": [
+        "No local test harness exists and creating one would be a project decision.",
+        "The test requires real secrets, paid services, production data, or network-only state.",
+        "The only available check would be flaky or unrelated to the acceptance criteria."
+      ],
+      "anti_patterns": [
+        "snapshot huge output blindly",
+        "mock away the behavior under test",
+        "write tests that only mirror implementation"
+      ],
+      "final_report": [
+        "behavior locked",
+        "test or check added",
+        "focused result",
+        "uncovered risk"
+      ],
+      "source_urls": [
+        "https://www.anthropic.com/engineering/claude-code-best-practices",
+        "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
+        "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
+        "https://docs.github.com/en/copilot/concepts/prompting/response-customization",
+        "https://code.visualstudio.com/docs/copilot/customization/custom-instructions",
+        "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
+        "https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md",
+        "https://docs.cursor.com/context/rules-for-ai",
+        "https://www.anthropic.com/engineering/writing-tools-for-agents",
+        "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "https://www.anthropic.com/engineering/building-effective-agents",
+        "https://developers.openai.com/api/docs/guides/agent-evals"
+      ]
+    },
+    {
+      "id": "refactor-preserve",
+      "title": "Behavior-Preserving Refactor",
+      "mode": "build",
+      "intents": [
+        "refactor",
+        "code simplification",
+        "code compaction",
+        "minimal code",
+        "dead code",
+        "professional code"
+      ],
+      "triggers": [
+        "simplify",
+        "refactor",
+        "remove duplication",
+        "dead code",
+        "cleanup",
+        "maintainability",
+        "reduce code"
+      ],
+      "summary": "Simplify code while preserving public behavior, call-site contracts, and reviewability.",
+      "read_first": [
+        "coding-protocol:vnem-coding-protocol",
+        "practice:code-simplification",
+        "practice:code-review",
+        "task-rubric:refactor"
+      ],
+      "repo_sensing": [
+        "Map public interfaces, imports, exports, tests, and call sites before moving or deleting code.",
+        "Identify duplicated behavior, dead branches, unused exports, or repeated helpers with evidence.",
+        "Check formatting and generated-file conventions so mechanical churn stays contained."
+      ],
+      "execution_loop": [
+        "Preserve behavior first; only then remove complexity.",
+        "Make small reviewable steps: rename, extract, inline, delete, or consolidate one pattern at a time.",
+        "Avoid public API, schema, route, or data-format changes unless explicitly requested.",
+        "Prefer deleting proven waste over adding abstractions."
+      ],
+      "verification_ladder": [
+        "Run tests for the touched module or call path.",
+        "Run typecheck/build if interfaces, exports, imports, or framework routing changed.",
+        "Use call-site evidence when tests are absent, and state the residual risk."
+      ],
+      "stop_conditions": [
+        "Behavior preservation cannot be checked and the refactor touches shared or critical code.",
+        "The cleanup requires dependency replacement, architecture migration, or public API churn.",
+        "Generated files or formatting-only churn dominate the diff."
+      ],
+      "anti_patterns": [
+        "rewrite because code looks old",
+        "mix feature changes into refactor",
+        "delete without call-site evidence"
+      ],
+      "final_report": [
+        "what was simplified",
+        "interfaces preserved",
+        "verification evidence",
+        "intentional leftovers"
+      ],
+      "source_urls": [
+        "https://www.anthropic.com/engineering/claude-code-best-practices",
+        "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
+        "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
+        "https://docs.github.com/en/copilot/concepts/prompting/response-customization",
+        "https://code.visualstudio.com/docs/copilot/customization/custom-instructions",
+        "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
+        "https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md",
+        "https://docs.cursor.com/context/rules-for-ai",
+        "https://www.anthropic.com/engineering/writing-tools-for-agents",
+        "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "https://www.anthropic.com/engineering/building-effective-agents",
+        "https://developers.openai.com/api/docs/guides/agent-evals"
+      ]
+    },
+    {
+      "id": "web-app-rendered-quality",
+      "title": "Rendered Web App Builder",
+      "mode": "build",
+      "intents": [
+        "web app",
+        "app build",
+        "better ui",
+        "visual qa",
+        "frontend",
+        "dashboard"
+      ],
+      "triggers": [
+        "web app",
+        "frontend",
+        "react",
+        "vite",
+        "next",
+        "dashboard",
+        "landing",
+        "responsive",
+        "browser"
+      ],
+      "summary": "Build web surfaces as real usable workflows and verify rendered desktop/mobile states, not only code or builds.",
+      "read_first": [
+        "coding-protocol:vnem-coding-protocol",
+        "practice:frontend",
+        "design-architecture:vnem-design-architecture",
+        "visual-qa-protocol:vnem-visual-qa-protocol"
+      ],
+      "repo_sensing": [
+        "Inspect routes, app shell, component library, design tokens, CSS architecture, assets, and dev-server scripts.",
+        "Find the closest existing page/component interaction pattern before creating new UI primitives.",
+        "Identify browser verification path and viewports before final."
+      ],
+      "execution_loop": [
+        "Build the actual primary workflow first, not a marketing placeholder.",
+        "Use stable dimensions for boards, grids, counters, controls, and cards so labels and hover states do not shift layout.",
+        "Keep domain density appropriate: operational apps should be scannable and quiet; games and brand surfaces can be more expressive.",
+        "Polish the first visible screen after behavior works."
+      ],
+      "verification_ladder": [
+        "Run framework build/typecheck or the nearest focused check.",
+        "Open or serve the app and inspect desktop plus mobile viewports when practical.",
+        "Fix the single ugliest visible issue before final if rendered evidence is available."
+      ],
+      "stop_conditions": [
+        "The UI depends on unavailable assets, private accounts, paid APIs, or production data.",
+        "A new UI framework or major design-system swap is needed.",
+        "Rendered text overflows, controls overlap, or the first screen is still generic."
+      ],
+      "anti_patterns": [
+        "ship from static code review only",
+        "oversized hero for an operational tool",
+        "cards inside cards",
+        "unverified responsive layout"
+      ],
+      "final_report": [
+        "workflow built",
+        "visual evidence",
+        "viewport checks",
+        "remaining polish risk"
+      ],
+      "source_urls": [
+        "https://www.anthropic.com/engineering/claude-code-best-practices",
+        "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
+        "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
+        "https://docs.github.com/en/copilot/concepts/prompting/response-customization",
+        "https://code.visualstudio.com/docs/copilot/customization/custom-instructions",
+        "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
+        "https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md",
+        "https://docs.cursor.com/context/rules-for-ai",
+        "https://www.anthropic.com/engineering/writing-tools-for-agents",
+        "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "https://www.anthropic.com/engineering/building-effective-agents",
+        "https://developers.openai.com/api/docs/guides/agent-evals"
+      ]
+    },
+    {
+      "id": "api-data-contract",
+      "title": "API And Data Contract Change",
+      "mode": "build",
+      "intents": [
+        "backend api",
+        "feature build",
+        "bug fix",
+        "security",
+        "data memory"
+      ],
+      "triggers": [
+        "api",
+        "server",
+        "database",
+        "schema",
+        "migration",
+        "auth",
+        "endpoint",
+        "contract"
+      ],
+      "summary": "Change backend/API/data behavior by preserving contracts, isolating risk, and verifying caller-facing behavior.",
+      "read_first": [
+        "coding-protocol:vnem-coding-protocol",
+        "practice:backend",
+        "practice:security",
+        "task-rubric:backend_api"
+      ],
+      "repo_sensing": [
+        "Inspect route handlers, service layers, schemas, migrations, auth middleware, validation, tests, and API docs.",
+        "Find current error handling, status-code, logging, and serialization patterns.",
+        "Identify callers and backwards-compatibility constraints before modifying contracts."
+      ],
+      "execution_loop": [
+        "Preserve current API/data contracts unless the user explicitly requests a breaking change.",
+        "Validate inputs at the boundary and keep secret/auth handling out of logs.",
+        "Use transaction/migration patterns already present in the repo.",
+        "Keep external service calls and production data behind explicit approval."
+      ],
+      "verification_ladder": [
+        "Run focused API/service tests or a local request fixture.",
+        "Run broader backend tests when auth, validation, schema, or shared services changed.",
+        "Report migration/deployment checks separately from local code verification."
+      ],
+      "stop_conditions": [
+        "The change requires production credentials, data migrations, paid APIs, or deployment.",
+        "The patch would log secrets or weaken auth/validation.",
+        "A breaking contract change is implied but not explicitly accepted."
+      ],
+      "anti_patterns": [
+        "loosen validation to satisfy tests",
+        "hardcode environment secrets",
+        "change response shape casually",
+        "skip migration risk"
+      ],
+      "final_report": [
+        "contract changed or preserved",
+        "validation/auth risk",
+        "tests run",
+        "deployment or migration gates"
+      ],
+      "source_urls": [
+        "https://www.anthropic.com/engineering/claude-code-best-practices",
+        "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
+        "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
+        "https://docs.github.com/en/copilot/concepts/prompting/response-customization",
+        "https://code.visualstudio.com/docs/copilot/customization/custom-instructions",
+        "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
+        "https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md",
+        "https://docs.cursor.com/context/rules-for-ai",
+        "https://www.anthropic.com/engineering/writing-tools-for-agents",
+        "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "https://www.anthropic.com/engineering/building-effective-agents",
+        "https://developers.openai.com/api/docs/guides/agent-evals"
+      ]
+    },
+    {
+      "id": "large-change-checkpoints",
+      "title": "Large Change Checkpoint Planner",
+      "mode": "plan",
+      "intents": [
+        "large change",
+        "migration",
+        "refactor",
+        "app build",
+        "agent upgrade"
+      ],
+      "triggers": [
+        "migration",
+        "rewrite",
+        "huge",
+        "large",
+        "multi file",
+        "architecture",
+        "upgrade",
+        "overhaul"
+      ],
+      "summary": "Split broad work into checkpoints with approval gates, verification gates, rollback paths, and reviewable diffs.",
+      "read_first": [
+        "coding-protocol:vnem-coding-protocol",
+        "practice:agentic-coding-execution",
+        "practice:code-simplification",
+        "practice:evals"
+      ],
+      "repo_sensing": [
+        "Map affected modules, ownership boundaries, public contracts, tests, CI, deployment, and generated artifacts.",
+        "Identify the smallest reversible checkpoint that creates value without forcing the whole migration.",
+        "Name what evidence is missing before code mutation."
+      ],
+      "execution_loop": [
+        "Plan in checkpoints before mutating.",
+        "Land one reversible slice at a time.",
+        "Use compatibility shims only when they reduce risk and have a removal path.",
+        "Stop after each checkpoint for verification and review when blast radius is high."
+      ],
+      "verification_ladder": [
+        "Run focused checks per checkpoint.",
+        "Run full build/test before declaring migration progress.",
+        "Use diff review, API compatibility checks, and rollback notes as part of verification."
+      ],
+      "stop_conditions": [
+        "No reliable verification exists for a high-blast-radius change.",
+        "The change requires dependency manager swaps, deployment, secrets, or data migrations without approval.",
+        "The plan cannot be divided into reviewable checkpoints."
+      ],
+      "anti_patterns": [
+        "big bang rewrite",
+        "change architecture and behavior together",
+        "skip rollback path",
+        "hide risk in a huge diff"
+      ],
+      "final_report": [
+        "checkpoint order",
+        "completed slice",
+        "verification gate",
+        "next safe slice"
+      ],
+      "source_urls": [
+        "https://www.anthropic.com/engineering/claude-code-best-practices",
+        "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
+        "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
+        "https://docs.github.com/en/copilot/concepts/prompting/response-customization",
+        "https://code.visualstudio.com/docs/copilot/customization/custom-instructions",
+        "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
+        "https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md",
+        "https://docs.cursor.com/context/rules-for-ai",
+        "https://www.anthropic.com/engineering/writing-tools-for-agents",
+        "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "https://www.anthropic.com/engineering/building-effective-agents",
+        "https://developers.openai.com/api/docs/guides/agent-evals"
+      ]
+    },
+    {
+      "id": "review-risk-scan",
+      "title": "Reviewer Risk Scan",
+      "mode": "review",
+      "intents": [
+        "code review",
+        "repo understanding",
+        "security",
+        "professional code"
+      ],
+      "triggers": [
+        "review",
+        "pr",
+        "risk",
+        "regression",
+        "audit",
+        "outdated",
+        "dependencies"
+      ],
+      "summary": "Review code like an engineer: bugs, regressions, security/data risk, missing tests, and concrete file references first.",
+      "read_first": [
+        "coding-protocol:vnem-coding-protocol",
+        "practice:code-review",
+        "practice:agentic-coding-execution",
+        "task-rubric:agentic_coding"
+      ],
+      "repo_sensing": [
+        "Inspect the diff, touched call paths, tests, manifests, and nearby implementation patterns.",
+        "Identify behavior contracts and user-visible flows affected by the change.",
+        "Separate confirmed issues from questions or style preferences."
+      ],
+      "execution_loop": [
+        "Lead with highest-severity findings and specific file/line references.",
+        "Prioritize bugs, regressions, security/data exposure, concurrency, compatibility, and missing tests.",
+        "Avoid nitpicks unless they hide real risk.",
+        "If no issues are found, say so and name residual test gaps."
+      ],
+      "verification_ladder": [
+        "Run or inspect focused tests when the review request allows commands.",
+        "Use static reasoning only when commands are unavailable, and state that limitation.",
+        "Check generated/lockfile churn for unintended dependency or artifact changes."
+      ],
+      "stop_conditions": [
+        "Review requires private context, credentials, or production data.",
+        "The diff is too large to review honestly without narrowing scope.",
+        "The requested review would require destructive execution."
+      ],
+      "anti_patterns": [
+        "bury findings below summary",
+        "style-only review",
+        "claim safety without tests",
+        "ignore generated dependency changes"
+      ],
+      "final_report": [
+        "findings by severity",
+        "open questions",
+        "test gaps",
+        "change summary only after findings"
+      ],
+      "source_urls": [
+        "https://www.anthropic.com/engineering/claude-code-best-practices",
+        "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
+        "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
+        "https://docs.github.com/en/copilot/concepts/prompting/response-customization",
+        "https://code.visualstudio.com/docs/copilot/customization/custom-instructions",
+        "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
+        "https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md",
+        "https://docs.cursor.com/context/rules-for-ai",
+        "https://www.anthropic.com/engineering/writing-tools-for-agents",
+        "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "https://www.anthropic.com/engineering/building-effective-agents",
+        "https://developers.openai.com/api/docs/guides/agent-evals"
+      ]
+    },
+    {
+      "id": "failure-recovery",
+      "title": "Failure Recovery Loop",
+      "mode": "debug",
+      "intents": [
+        "bug fix",
+        "large change",
+        "coding task",
+        "repo understanding"
+      ],
+      "triggers": [
+        "failed",
+        "blocked",
+        "error",
+        "retry",
+        "cannot run",
+        "eperm",
+        "network",
+        "sandbox",
+        "dependency"
+      ],
+      "summary": "Recover from failed commands or agent attempts by classifying the failure and changing strategy instead of repeating noise.",
+      "read_first": [
+        "coding-protocol:vnem-coding-protocol",
+        "operating-protocol:vnem-operating-loop",
+        "practice:agentic-coding-execution"
+      ],
+      "repo_sensing": [
+        "Capture the exact command, exit code, error class, working directory, and whether sandbox/network/dependency/path state caused it.",
+        "Check local scripts, package manager, lockfiles, and known environment constraints before retrying.",
+        "Decide whether approval, dependency setup, a narrower command, or a code fix is the next safe move."
+      ],
+      "execution_loop": [
+        "Classify the failure: permission, sandbox, missing dependency, bad path/quoting, stale cache/process, network/service, incorrect assumption, or unsupported capability.",
+        "Retry only with a changed condition that addresses the classified cause.",
+        "When context is polluted by repeated failures, summarize learned constraints and restart the task slice cleanly.",
+        "Preserve the original goal and avoid unrelated workaround churn."
+      ],
+      "verification_ladder": [
+        "Run the corrected narrow command.",
+        "Run the original failing check again after the targeted fix.",
+        "Run broader validation only after the original failure is resolved."
+      ],
+      "stop_conditions": [
+        "The next step needs user-private credentials, MFA, captcha, or a personal decision.",
+        "The same blocker repeats after three genuinely different recovery attempts.",
+        "The workaround would bypass safety, licensing, anti-cheat, DRM, or access controls."
+      ],
+      "anti_patterns": [
+        "repeat the exact failed command",
+        "call a sandbox error a code failure",
+        "install random packages without evidence",
+        "hide failed checks"
+      ],
+      "final_report": [
+        "failure class",
+        "changed retry strategy",
+        "verification result",
+        "remaining blocker"
+      ],
+      "source_urls": [
+        "https://www.anthropic.com/engineering/claude-code-best-practices",
+        "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
+        "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
+        "https://docs.github.com/en/copilot/concepts/prompting/response-customization",
+        "https://code.visualstudio.com/docs/copilot/customization/custom-instructions",
+        "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
+        "https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md",
+        "https://docs.cursor.com/context/rules-for-ai",
+        "https://www.anthropic.com/engineering/writing-tools-for-agents",
+        "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "https://www.anthropic.com/engineering/building-effective-agents",
+        "https://developers.openai.com/api/docs/guides/agent-evals"
+      ]
+    }
+  ]
+}

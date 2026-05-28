@@ -68,6 +68,11 @@ try {
     status.structuredContent?.mcp?.resources?.includes("vnem://install/coding-protocol"),
     "expected vnem_status to list coding protocol resource"
   );
+  assert.ok(
+    status.structuredContent?.mcp?.resources?.includes("vnem://install/coding-playbooks"),
+    "expected vnem_status to list coding playbooks resource"
+  );
+  assert.ok(status.structuredContent?.counts?.coding_playbooks >= 9, "expected vnem_status coding playbook count");
 
   const overview = await client.callTool({
     name: "vnem_overview",
@@ -181,6 +186,11 @@ try {
     aestheticContract?.read_first?.includes("design-architecture:vnem-design-architecture"),
     "expected aesthetic work to read design architecture guidance"
   );
+  assert.ok(
+    aestheticContract?.coding_playbook?.id === "web-app-rendered-quality" ||
+      aestheticContract?.read_first?.includes("coding-playbook:web-app-rendered-quality"),
+    "expected aesthetic web/game build work to include rendered-quality coding playbook"
+  );
 
   const nonVisualRecommendation = await client.callTool({
     name: "vnem_recommend",
@@ -190,6 +200,10 @@ try {
     }
   });
   assert.equal(nonVisualRecommendation.isError, undefined);
+  assert.ok(
+    nonVisualRecommendation.structuredContent?.task_contract?.coding_playbook?.id === "refactor-preserve",
+    "expected code simplification to select the refactor-preserve coding playbook"
+  );
   assert.equal(
     nonVisualRecommendation.structuredContent?.task_contract?.perception_gate,
     undefined,
@@ -231,6 +245,10 @@ try {
   assert.ok(
     resources.resources.some((resource) => resource.uri === "vnem://install/coding-protocol"),
     "expected coding protocol resource"
+  );
+  assert.ok(
+    resources.resources.some((resource) => resource.uri === "vnem://install/coding-playbooks"),
+    "expected coding playbooks resource"
   );
   assert.ok(
     resources.resources.some((resource) => resource.uri === "vnem://install/task-rubrics"),
@@ -280,6 +298,14 @@ try {
   assert.ok(codingProtocol.contents[0]?.text?.includes("vnem Coding Protocol"));
   assert.ok(codingProtocol.contents[0]?.text?.includes("Repo Sensing Contract"));
   assert.ok(codingProtocol.contents[0]?.text?.includes("Verification Ladder"));
+
+  const codingPlaybooks = await client.readResource({
+    uri: "vnem://install/coding-playbooks"
+  });
+  const codingPlaybookData = JSON.parse(codingPlaybooks.contents[0]?.text || "{}");
+  assert.equal(codingPlaybookData.safety?.mode, "read-only-coding-playbooks");
+  assert.ok(codingPlaybookData.playbooks?.some((playbook) => playbook.id === "bug-root-cause"));
+  assert.ok(codingPlaybookData.playbooks?.some((playbook) => playbook.id === "web-app-rendered-quality"));
 
   const taskRubrics = await client.readResource({
     uri: "vnem://install/task-rubrics"

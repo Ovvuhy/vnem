@@ -1,6 +1,6 @@
 # vnem Coding Protocol
 
-Generated: 2026-05-28T19:11:09.918Z
+Generated: 2026-05-28T20:10:31.300Z
 
 A read-only coding execution protocol for making agents better at apps, web apps, features, debugging, refactors, and reviews through repo sensing, plan-first work, small diffs, and verifiable outcomes.
 
@@ -14,6 +14,7 @@ A read-only coding execution protocol for making agents better at apps, web apps
 ## How To Use
 
 - Read this file for coding tasks, app builds, web apps, feature work, bug fixes, refactors, and code reviews.
+- Then use `.vnem/coding-playbooks.json` to select the closest concrete execution loop for the task mode.
 - Use `.vnem/search-index.json` to route the task and `.vnem/task-rubrics.json` to pick the quality bar.
 - Use `.vnem/design-architecture.md` and `.vnem/visual-qa-protocol.md` when the task has a visible app, web, UI, canvas, or game surface.
 - Use `.vnem/source-radar.json` when current docs, agent-client behavior, benchmark claims, or framework/tool choices matter.
@@ -92,9 +93,12 @@ A read-only coding execution protocol for making agents better at apps, web apps
 - https://www.anthropic.com/engineering/claude-code-best-practices
 - https://openai.com/business/guides-and-resources/how-openai-uses-codex/
 - https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results
-- https://docs.github.com/en/copilot/how-tos/copilot-cli/cli-best-practices
+- https://docs.github.com/en/copilot/concepts/prompting/response-customization
+- https://code.visualstudio.com/docs/copilot/customization/custom-instructions
 - https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md
+- https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md
 - https://docs.cursor.com/context/rules-for-ai
 - https://www.anthropic.com/engineering/writing-tools-for-agents
 - https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents
 - https://www.anthropic.com/engineering/building-effective-agents
+- https://developers.openai.com/api/docs/guides/agent-evals

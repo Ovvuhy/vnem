@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-28T19:11:09.918Z",
+  "generated_at": "2026-05-28T20:10:31.300Z",
   "schema_version": "1.0.0",
   "package_version": "1.0.1",
   "release_version": "1.0.1",
@@ -558,6 +558,27 @@
       "patch",
       "verify fix"
     ],
+    "failure recovery": [
+      "failed command",
+      "retry",
+      "sandbox",
+      "eperm",
+      "network error",
+      "permission",
+      "blocked",
+      "missing dependency",
+      "bad path",
+      "stale cache"
+    ],
+    "root cause": [
+      "bug fix",
+      "debug",
+      "failing test",
+      "regression",
+      "reproduce",
+      "trace",
+      "smallest patch"
+    ],
     "test first": [
       "tests",
       "tdd",
@@ -832,6 +853,12 @@
       "observability"
     ],
     "code simplification": [
+      "simplify",
+      "simplify code",
+      "simplify duplicate",
+      "duplicate code",
+      "duplicate helper",
+      "deduplicate",
       "refactor",
       "minimalism",
       "code quality",
@@ -2000,6 +2027,8 @@
     },
     "browser game": {
       "read_first": [
+        "coding-protocol:vnem-coding-protocol",
+        "coding-playbook:web-app-rendered-quality",
         "practice:visual-experience",
         "visual-qa-protocol:vnem-visual-qa-protocol",
         "practice:browser-games",
@@ -2034,6 +2063,8 @@
     },
     "web game": {
       "read_first": [
+        "coding-protocol:vnem-coding-protocol",
+        "coding-playbook:web-app-rendered-quality",
         "practice:visual-experience",
         "visual-qa-protocol:vnem-visual-qa-protocol",
         "practice:browser-games",
@@ -2062,6 +2093,8 @@
     },
     "html5 game": {
       "read_first": [
+        "coding-protocol:vnem-coding-protocol",
+        "coding-playbook:web-app-rendered-quality",
         "practice:visual-experience",
         "visual-qa-protocol:vnem-visual-qa-protocol",
         "practice:browser-games",
@@ -2091,6 +2124,8 @@
     },
     "canvas game": {
       "read_first": [
+        "coding-protocol:vnem-coding-protocol",
+        "coding-playbook:web-app-rendered-quality",
         "practice:visual-experience",
         "visual-qa-protocol:vnem-visual-qa-protocol",
         "practice:browser-games",
@@ -2121,6 +2156,8 @@
     },
     "2d game": {
       "read_first": [
+        "coding-protocol:vnem-coding-protocol",
+        "coding-playbook:web-app-rendered-quality",
         "practice:visual-experience",
         "visual-qa-protocol:vnem-visual-qa-protocol",
         "practice:browser-games",
@@ -2151,6 +2188,8 @@
     },
     "3d game": {
       "read_first": [
+        "coding-protocol:vnem-coding-protocol",
+        "coding-playbook:web-app-rendered-quality",
         "practice:visual-experience",
         "visual-qa-protocol:vnem-visual-qa-protocol",
         "practice:browser-games",
@@ -2178,6 +2217,8 @@
     },
     "game engine": {
       "read_first": [
+        "coding-protocol:vnem-coding-protocol",
+        "coding-playbook:web-app-rendered-quality",
         "practice:visual-experience",
         "visual-qa-protocol:vnem-visual-qa-protocol",
         "practice:browser-games",
@@ -2210,6 +2251,8 @@
     },
     "game ui": {
       "read_first": [
+        "coding-protocol:vnem-coding-protocol",
+        "coding-playbook:web-app-rendered-quality",
         "practice:visual-experience",
         "visual-qa-protocol:vnem-visual-qa-protocol",
         "practice:browser-games",
@@ -2241,6 +2284,8 @@
     },
     "game accessibility": {
       "read_first": [
+        "coding-protocol:vnem-coding-protocol",
+        "coding-playbook:web-app-rendered-quality",
         "practice:browser-games",
         "practice:frontend",
         "practice:evals"
@@ -2292,6 +2337,9 @@
     },
     "game testing": {
       "read_first": [
+        "coding-protocol:vnem-coding-protocol",
+        "coding-playbook:test-first-evidence",
+        "coding-playbook:web-app-rendered-quality",
         "practice:browser-games",
         "practice:evals"
       ],
@@ -2344,6 +2392,8 @@
     "coding task": {
       "read_first": [
         "coding-protocol:vnem-coding-protocol",
+        "coding-playbook:feature-slice",
+        "coding-playbook:failure-recovery",
         "operating-protocol:vnem-operating-loop",
         "practice:agentic-coding-execution",
         "practice:code-review",
@@ -2375,6 +2425,8 @@
     "app build": {
       "read_first": [
         "coding-protocol:vnem-coding-protocol",
+        "coding-playbook:feature-slice",
+        "coding-playbook:web-app-rendered-quality",
         "practice:agentic-coding-execution",
         "practice:frontend",
         "practice:backend",
@@ -2404,6 +2456,8 @@
     "web app": {
       "read_first": [
         "coding-protocol:vnem-coding-protocol",
+        "coding-playbook:web-app-rendered-quality",
+        "coding-playbook:feature-slice",
         "practice:agentic-coding-execution",
         "practice:frontend",
         "design-architecture:vnem-design-architecture",
@@ -2435,6 +2489,8 @@
     "feature build": {
       "read_first": [
         "coding-protocol:vnem-coding-protocol",
+        "coding-playbook:feature-slice",
+        "coding-playbook:test-first-evidence",
         "practice:agentic-coding-execution",
         "practice:code-review",
         "practice:evals"
@@ -2463,6 +2519,9 @@
     "bug fix": {
       "read_first": [
         "coding-protocol:vnem-coding-protocol",
+        "coding-playbook:bug-root-cause",
+        "coding-playbook:test-first-evidence",
+        "coding-playbook:failure-recovery",
         "practice:agentic-coding-execution",
         "practice:code-review",
         "practice:evals"
@@ -2488,9 +2547,67 @@
         "remaining uncertainty"
       ]
     },
+    "root cause": {
+      "read_first": [
+        "coding-protocol:vnem-coding-protocol",
+        "coding-playbook:bug-root-cause",
+        "coding-playbook:failure-recovery",
+        "practice:agentic-coding-execution",
+        "practice:code-review",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "reproduce first",
+        "trace call path",
+        "isolate failing input",
+        "smallest root-cause patch",
+        "regression test"
+      ],
+      "choose_by": [
+        "failure evidence",
+        "call-path proof",
+        "minimal patch",
+        "regression coverage",
+        "blast radius"
+      ],
+      "report": [
+        "observed failure",
+        "root cause",
+        "fix",
+        "verification evidence"
+      ]
+    },
+    "failure recovery": {
+      "read_first": [
+        "coding-protocol:vnem-coding-protocol",
+        "coding-playbook:failure-recovery",
+        "operating-protocol:vnem-operating-loop",
+        "practice:agentic-coding-execution"
+      ],
+      "compare_options": [
+        "permission retry with approval",
+        "dependency setup",
+        "path or quoting fix",
+        "narrower command",
+        "summarize constraints and restart slice"
+      ],
+      "choose_by": [
+        "classified failure cause",
+        "changed retry condition",
+        "safety boundary",
+        "original task relevance"
+      ],
+      "report": [
+        "failure class",
+        "changed strategy",
+        "verification result",
+        "remaining blocker"
+      ]
+    },
     "test first": {
       "read_first": [
         "coding-protocol:vnem-coding-protocol",
+        "coding-playbook:test-first-evidence",
         "practice:agentic-coding-execution",
         "practice:evals",
         "practice:code-review"
@@ -2519,6 +2636,7 @@
     "repo understanding": {
       "read_first": [
         "coding-protocol:vnem-coding-protocol",
+        "coding-playbook:review-risk-scan",
         "practice:agentic-coding-execution",
         "practice:code-review",
         "source:coding-agent-clients"
@@ -2547,6 +2665,8 @@
     "large change": {
       "read_first": [
         "coding-protocol:vnem-coding-protocol",
+        "coding-playbook:large-change-checkpoints",
+        "coding-playbook:refactor-preserve",
         "practice:agentic-coding-execution",
         "practice:code-simplification",
         "practice:evals"
@@ -2570,6 +2690,36 @@
         "checkpoint order",
         "verification ladder",
         "approval gates"
+      ]
+    },
+    "backend api": {
+      "read_first": [
+        "coding-protocol:vnem-coding-protocol",
+        "coding-playbook:api-data-contract",
+        "coding-playbook:bug-root-cause",
+        "practice:backend",
+        "practice:security",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "existing route/service pattern",
+        "focused service-layer change",
+        "contract-preserving API patch",
+        "schema or migration behind approval",
+        "defer external service wiring"
+      ],
+      "choose_by": [
+        "current API contract",
+        "validation and auth boundaries",
+        "caller compatibility",
+        "migration risk",
+        "focused service tests"
+      ],
+      "report": [
+        "contract changed or preserved",
+        "auth/data risk",
+        "verification evidence",
+        "deployment or migration gates"
       ]
     },
     "better ui": {
@@ -2604,6 +2754,8 @@
     "code simplification": {
       "read_first": [
         "practice:code-simplification",
+        "coding-protocol:vnem-coding-protocol",
+        "coding-playbook:refactor-preserve",
         "practice:code-review",
         "practice:evals"
       ],
@@ -2632,6 +2784,8 @@
     "code compaction": {
       "read_first": [
         "practice:code-simplification",
+        "coding-protocol:vnem-coding-protocol",
+        "coding-playbook:refactor-preserve",
         "practice:code-review",
         "practice:evals"
       ],
@@ -2659,6 +2813,8 @@
     "minimal code": {
       "read_first": [
         "practice:code-simplification",
+        "coding-protocol:vnem-coding-protocol",
+        "coding-playbook:refactor-preserve",
         "practice:code-review",
         "practice:evals"
       ],
@@ -2684,6 +2840,9 @@
     "professional code": {
       "read_first": [
         "practice:code-simplification",
+        "coding-protocol:vnem-coding-protocol",
+        "coding-playbook:refactor-preserve",
+        "coding-playbook:review-risk-scan",
         "practice:code-review",
         "practice:evals"
       ],
@@ -2709,6 +2868,8 @@
     "refactor": {
       "read_first": [
         "practice:code-simplification",
+        "coding-protocol:vnem-coding-protocol",
+        "coding-playbook:refactor-preserve",
         "practice:code-review",
         "practice:evals"
       ],
@@ -2734,6 +2895,8 @@
     "dead code": {
       "read_first": [
         "practice:code-simplification",
+        "coding-protocol:vnem-coding-protocol",
+        "coding-playbook:refactor-preserve",
         "practice:code-review",
         "practice:evals"
       ],
@@ -2838,12 +3001,15 @@
       "https://www.anthropic.com/engineering/claude-code-best-practices",
       "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
       "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
-      "https://docs.github.com/en/copilot/how-tos/copilot-cli/cli-best-practices",
+      "https://docs.github.com/en/copilot/concepts/prompting/response-customization",
+      "https://code.visualstudio.com/docs/copilot/customization/custom-instructions",
       "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
+      "https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md",
       "https://docs.cursor.com/context/rules-for-ai",
       "https://www.anthropic.com/engineering/writing-tools-for-agents",
       "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
-      "https://www.anthropic.com/engineering/building-effective-agents"
+      "https://www.anthropic.com/engineering/building-effective-agents",
+      "https://developers.openai.com/api/docs/guides/agent-evals"
     ],
     "tags": [
       "coding task",
@@ -2851,11 +3017,708 @@
       "web app",
       "feature build",
       "bug fix",
+      "root cause",
+      "failure recovery",
       "test first",
+      "backend api",
       "repo understanding",
       "large change",
       "verification loop",
       "context engineering"
+    ]
+  },
+  "coding_playbooks": {
+    "generated_at": "2026-05-28T20:10:31.300Z",
+    "schema_version": "1.0.0",
+    "safety": {
+      "mode": "read-only-coding-playbooks",
+      "executes_code": false,
+      "installs_packages": false,
+      "starts_daemons": false,
+      "requires_secrets": false,
+      "edits_files": false
+    },
+    "purpose": "Mode-specific coding-agent execution playbooks. Use them after the coding protocol to pick the right loop for feature work, debugging, tests, refactors, web apps, API/data changes, reviews, large changes, and failure recovery.",
+    "selection_rule": "Select the first playbook whose mode, intents, or triggers match the task. If several match, prefer the one with the strongest verification ladder for the requested outcome.",
+    "playbooks": [
+      {
+        "id": "feature-slice",
+        "title": "Feature Slice Builder",
+        "mode": "build",
+        "intents": [
+          "coding task",
+          "feature build",
+          "app build",
+          "web app",
+          "professional code"
+        ],
+        "triggers": [
+          "implement",
+          "add feature",
+          "build",
+          "app",
+          "workflow",
+          "user story",
+          "acceptance criteria"
+        ],
+        "summary": "Turn a requested feature into the smallest working product slice that matches local architecture and can be verified.",
+        "read_first": [
+          "coding-protocol:vnem-coding-protocol",
+          "practice:agentic-coding-execution",
+          "task-rubric:agentic_coding"
+        ],
+        "repo_sensing": [
+          "Read local agent instructions, manifests, scripts, framework config, tests, and the closest existing feature pattern.",
+          "Identify the entrypoint, state/data owner, component or route owner, and verification command before editing.",
+          "Name non-goals and surfaces that must not change, especially public APIs, schemas, auth, deployment, and dependencies."
+        ],
+        "execution_loop": [
+          "Define observable acceptance criteria in one short list.",
+          "Implement one thin vertical slice first, then fill edge cases only when the slice runs.",
+          "Reuse existing helpers, components, styles, and data patterns before adding abstractions.",
+          "Keep unrelated cleanup, formatting churn, and dependency swaps out of the diff."
+        ],
+        "verification_ladder": [
+          "Run the narrowest existing test or typecheck that covers the changed surface.",
+          "Run the app/build when routing, bundle, framework config, or user-visible behavior changed.",
+          "For UI slices, inspect the rendered screen and mobile fit before final."
+        ],
+        "stop_conditions": [
+          "Missing acceptance criteria would change architecture or data shape.",
+          "The change requires a new dependency, deployment, secret, paid API, migration, or production data.",
+          "The first slice reveals broad redesign or public API churn."
+        ],
+        "anti_patterns": [
+          "start with a rewrite",
+          "invent a parallel architecture",
+          "skip repo pattern discovery",
+          "claim done without a runnable check"
+        ],
+        "final_report": [
+          "feature behavior delivered",
+          "files changed",
+          "verification evidence",
+          "skipped checks and residual risk"
+        ],
+        "source_urls": [
+          "https://www.anthropic.com/engineering/claude-code-best-practices",
+          "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
+          "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
+          "https://docs.github.com/en/copilot/concepts/prompting/response-customization",
+          "https://code.visualstudio.com/docs/copilot/customization/custom-instructions",
+          "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
+          "https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md",
+          "https://docs.cursor.com/context/rules-for-ai",
+          "https://www.anthropic.com/engineering/writing-tools-for-agents",
+          "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+          "https://www.anthropic.com/engineering/building-effective-agents",
+          "https://developers.openai.com/api/docs/guides/agent-evals"
+        ]
+      },
+      {
+        "id": "bug-root-cause",
+        "title": "Root-Cause Bug Fix",
+        "mode": "debug",
+        "intents": [
+          "bug fix",
+          "debug",
+          "test first",
+          "backend api",
+          "security"
+        ],
+        "triggers": [
+          "bug",
+          "failing test",
+          "regression",
+          "error",
+          "crash",
+          "broken",
+          "root cause",
+          "auth api"
+        ],
+        "summary": "Debug by reproducing or localizing the failure, patching the narrow cause, and proving the regression is blocked.",
+        "read_first": [
+          "coding-protocol:vnem-coding-protocol",
+          "practice:agentic-coding-execution",
+          "practice:code-review",
+          "practice:evals"
+        ],
+        "repo_sensing": [
+          "Capture the exact failing command, error text, route, log, screenshot, or assertion before editing.",
+          "Trace the closest call path and recent local pattern instead of guessing from file names.",
+          "Check whether the failure touches auth, security, data, external services, or generated files."
+        ],
+        "execution_loop": [
+          "Reproduce first when practical; if not, state the missing reproduction evidence.",
+          "Make one hypothesis at a time and patch the smallest root cause.",
+          "Add or adjust a focused regression test when the test harness exists and the bug is behaviorally important.",
+          "Avoid speculative cleanups until the original failure is proven fixed."
+        ],
+        "verification_ladder": [
+          "Run the failing test or smallest reproduction command.",
+          "Run nearby tests for the touched module.",
+          "Run broader build/test only when shared behavior, contracts, auth, data, or routing changed."
+        ],
+        "stop_conditions": [
+          "The fix would weaken security, loosen validation, skip tests, or hide the symptom.",
+          "A malicious test hook, forced pass, or unrelated config change is proposed.",
+          "The failure depends on private credentials, production data, or unavailable services."
+        ],
+        "anti_patterns": [
+          "patch by string guessing",
+          "delete failing assertions",
+          "force tests to pass",
+          "change broad config to hide one failure"
+        ],
+        "final_report": [
+          "root cause",
+          "fix",
+          "regression evidence",
+          "remaining uncertainty"
+        ],
+        "source_urls": [
+          "https://www.anthropic.com/engineering/claude-code-best-practices",
+          "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
+          "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
+          "https://docs.github.com/en/copilot/concepts/prompting/response-customization",
+          "https://code.visualstudio.com/docs/copilot/customization/custom-instructions",
+          "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
+          "https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md",
+          "https://docs.cursor.com/context/rules-for-ai",
+          "https://www.anthropic.com/engineering/writing-tools-for-agents",
+          "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+          "https://www.anthropic.com/engineering/building-effective-agents",
+          "https://developers.openai.com/api/docs/guides/agent-evals"
+        ]
+      },
+      {
+        "id": "test-first-evidence",
+        "title": "Test-First Evidence Builder",
+        "mode": "build",
+        "intents": [
+          "test first",
+          "bug fix",
+          "feature build",
+          "evals",
+          "benchmark evidence"
+        ],
+        "triggers": [
+          "test",
+          "tdd",
+          "coverage",
+          "verify first",
+          "fixture",
+          "expected output",
+          "regression"
+        ],
+        "summary": "Convert an intended behavior into executable evidence before or alongside implementation.",
+        "read_first": [
+          "coding-protocol:vnem-coding-protocol",
+          "practice:evals",
+          "practice:agentic-coding-execution",
+          "task-rubric:agentic_coding"
+        ],
+        "repo_sensing": [
+          "Inspect existing tests, fixtures, snapshots, helpers, and naming conventions before writing a new test.",
+          "Find the fastest command that runs only the relevant test scope.",
+          "Identify observable behavior instead of implementation details to lock."
+        ],
+        "execution_loop": [
+          "Write or describe the failing expectation first when practical.",
+          "Keep fixtures minimal and deterministic.",
+          "Prefer public API/user behavior tests over brittle private internals.",
+          "Use mocks only where the existing test style already uses them or the external dependency is unavoidable."
+        ],
+        "verification_ladder": [
+          "Run the new focused test and confirm it fails for the right reason if possible.",
+          "Implement the smallest change and rerun the focused test.",
+          "Run adjacent tests or build when shared code changed."
+        ],
+        "stop_conditions": [
+          "No local test harness exists and creating one would be a project decision.",
+          "The test requires real secrets, paid services, production data, or network-only state.",
+          "The only available check would be flaky or unrelated to the acceptance criteria."
+        ],
+        "anti_patterns": [
+          "snapshot huge output blindly",
+          "mock away the behavior under test",
+          "write tests that only mirror implementation"
+        ],
+        "final_report": [
+          "behavior locked",
+          "test or check added",
+          "focused result",
+          "uncovered risk"
+        ],
+        "source_urls": [
+          "https://www.anthropic.com/engineering/claude-code-best-practices",
+          "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
+          "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
+          "https://docs.github.com/en/copilot/concepts/prompting/response-customization",
+          "https://code.visualstudio.com/docs/copilot/customization/custom-instructions",
+          "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
+          "https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md",
+          "https://docs.cursor.com/context/rules-for-ai",
+          "https://www.anthropic.com/engineering/writing-tools-for-agents",
+          "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+          "https://www.anthropic.com/engineering/building-effective-agents",
+          "https://developers.openai.com/api/docs/guides/agent-evals"
+        ]
+      },
+      {
+        "id": "refactor-preserve",
+        "title": "Behavior-Preserving Refactor",
+        "mode": "build",
+        "intents": [
+          "refactor",
+          "code simplification",
+          "code compaction",
+          "minimal code",
+          "dead code",
+          "professional code"
+        ],
+        "triggers": [
+          "simplify",
+          "refactor",
+          "remove duplication",
+          "dead code",
+          "cleanup",
+          "maintainability",
+          "reduce code"
+        ],
+        "summary": "Simplify code while preserving public behavior, call-site contracts, and reviewability.",
+        "read_first": [
+          "coding-protocol:vnem-coding-protocol",
+          "practice:code-simplification",
+          "practice:code-review",
+          "task-rubric:refactor"
+        ],
+        "repo_sensing": [
+          "Map public interfaces, imports, exports, tests, and call sites before moving or deleting code.",
+          "Identify duplicated behavior, dead branches, unused exports, or repeated helpers with evidence.",
+          "Check formatting and generated-file conventions so mechanical churn stays contained."
+        ],
+        "execution_loop": [
+          "Preserve behavior first; only then remove complexity.",
+          "Make small reviewable steps: rename, extract, inline, delete, or consolidate one pattern at a time.",
+          "Avoid public API, schema, route, or data-format changes unless explicitly requested.",
+          "Prefer deleting proven waste over adding abstractions."
+        ],
+        "verification_ladder": [
+          "Run tests for the touched module or call path.",
+          "Run typecheck/build if interfaces, exports, imports, or framework routing changed.",
+          "Use call-site evidence when tests are absent, and state the residual risk."
+        ],
+        "stop_conditions": [
+          "Behavior preservation cannot be checked and the refactor touches shared or critical code.",
+          "The cleanup requires dependency replacement, architecture migration, or public API churn.",
+          "Generated files or formatting-only churn dominate the diff."
+        ],
+        "anti_patterns": [
+          "rewrite because code looks old",
+          "mix feature changes into refactor",
+          "delete without call-site evidence"
+        ],
+        "final_report": [
+          "what was simplified",
+          "interfaces preserved",
+          "verification evidence",
+          "intentional leftovers"
+        ],
+        "source_urls": [
+          "https://www.anthropic.com/engineering/claude-code-best-practices",
+          "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
+          "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
+          "https://docs.github.com/en/copilot/concepts/prompting/response-customization",
+          "https://code.visualstudio.com/docs/copilot/customization/custom-instructions",
+          "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
+          "https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md",
+          "https://docs.cursor.com/context/rules-for-ai",
+          "https://www.anthropic.com/engineering/writing-tools-for-agents",
+          "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+          "https://www.anthropic.com/engineering/building-effective-agents",
+          "https://developers.openai.com/api/docs/guides/agent-evals"
+        ]
+      },
+      {
+        "id": "web-app-rendered-quality",
+        "title": "Rendered Web App Builder",
+        "mode": "build",
+        "intents": [
+          "web app",
+          "app build",
+          "better ui",
+          "visual qa",
+          "frontend",
+          "dashboard"
+        ],
+        "triggers": [
+          "web app",
+          "frontend",
+          "react",
+          "vite",
+          "next",
+          "dashboard",
+          "landing",
+          "responsive",
+          "browser"
+        ],
+        "summary": "Build web surfaces as real usable workflows and verify rendered desktop/mobile states, not only code or builds.",
+        "read_first": [
+          "coding-protocol:vnem-coding-protocol",
+          "practice:frontend",
+          "design-architecture:vnem-design-architecture",
+          "visual-qa-protocol:vnem-visual-qa-protocol"
+        ],
+        "repo_sensing": [
+          "Inspect routes, app shell, component library, design tokens, CSS architecture, assets, and dev-server scripts.",
+          "Find the closest existing page/component interaction pattern before creating new UI primitives.",
+          "Identify browser verification path and viewports before final."
+        ],
+        "execution_loop": [
+          "Build the actual primary workflow first, not a marketing placeholder.",
+          "Use stable dimensions for boards, grids, counters, controls, and cards so labels and hover states do not shift layout.",
+          "Keep domain density appropriate: operational apps should be scannable and quiet; games and brand surfaces can be more expressive.",
+          "Polish the first visible screen after behavior works."
+        ],
+        "verification_ladder": [
+          "Run framework build/typecheck or the nearest focused check.",
+          "Open or serve the app and inspect desktop plus mobile viewports when practical.",
+          "Fix the single ugliest visible issue before final if rendered evidence is available."
+        ],
+        "stop_conditions": [
+          "The UI depends on unavailable assets, private accounts, paid APIs, or production data.",
+          "A new UI framework or major design-system swap is needed.",
+          "Rendered text overflows, controls overlap, or the first screen is still generic."
+        ],
+        "anti_patterns": [
+          "ship from static code review only",
+          "oversized hero for an operational tool",
+          "cards inside cards",
+          "unverified responsive layout"
+        ],
+        "final_report": [
+          "workflow built",
+          "visual evidence",
+          "viewport checks",
+          "remaining polish risk"
+        ],
+        "source_urls": [
+          "https://www.anthropic.com/engineering/claude-code-best-practices",
+          "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
+          "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
+          "https://docs.github.com/en/copilot/concepts/prompting/response-customization",
+          "https://code.visualstudio.com/docs/copilot/customization/custom-instructions",
+          "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
+          "https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md",
+          "https://docs.cursor.com/context/rules-for-ai",
+          "https://www.anthropic.com/engineering/writing-tools-for-agents",
+          "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+          "https://www.anthropic.com/engineering/building-effective-agents",
+          "https://developers.openai.com/api/docs/guides/agent-evals"
+        ]
+      },
+      {
+        "id": "api-data-contract",
+        "title": "API And Data Contract Change",
+        "mode": "build",
+        "intents": [
+          "backend api",
+          "feature build",
+          "bug fix",
+          "security",
+          "data memory"
+        ],
+        "triggers": [
+          "api",
+          "server",
+          "database",
+          "schema",
+          "migration",
+          "auth",
+          "endpoint",
+          "contract"
+        ],
+        "summary": "Change backend/API/data behavior by preserving contracts, isolating risk, and verifying caller-facing behavior.",
+        "read_first": [
+          "coding-protocol:vnem-coding-protocol",
+          "practice:backend",
+          "practice:security",
+          "task-rubric:backend_api"
+        ],
+        "repo_sensing": [
+          "Inspect route handlers, service layers, schemas, migrations, auth middleware, validation, tests, and API docs.",
+          "Find current error handling, status-code, logging, and serialization patterns.",
+          "Identify callers and backwards-compatibility constraints before modifying contracts."
+        ],
+        "execution_loop": [
+          "Preserve current API/data contracts unless the user explicitly requests a breaking change.",
+          "Validate inputs at the boundary and keep secret/auth handling out of logs.",
+          "Use transaction/migration patterns already present in the repo.",
+          "Keep external service calls and production data behind explicit approval."
+        ],
+        "verification_ladder": [
+          "Run focused API/service tests or a local request fixture.",
+          "Run broader backend tests when auth, validation, schema, or shared services changed.",
+          "Report migration/deployment checks separately from local code verification."
+        ],
+        "stop_conditions": [
+          "The change requires production credentials, data migrations, paid APIs, or deployment.",
+          "The patch would log secrets or weaken auth/validation.",
+          "A breaking contract change is implied but not explicitly accepted."
+        ],
+        "anti_patterns": [
+          "loosen validation to satisfy tests",
+          "hardcode environment secrets",
+          "change response shape casually",
+          "skip migration risk"
+        ],
+        "final_report": [
+          "contract changed or preserved",
+          "validation/auth risk",
+          "tests run",
+          "deployment or migration gates"
+        ],
+        "source_urls": [
+          "https://www.anthropic.com/engineering/claude-code-best-practices",
+          "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
+          "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
+          "https://docs.github.com/en/copilot/concepts/prompting/response-customization",
+          "https://code.visualstudio.com/docs/copilot/customization/custom-instructions",
+          "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
+          "https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md",
+          "https://docs.cursor.com/context/rules-for-ai",
+          "https://www.anthropic.com/engineering/writing-tools-for-agents",
+          "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+          "https://www.anthropic.com/engineering/building-effective-agents",
+          "https://developers.openai.com/api/docs/guides/agent-evals"
+        ]
+      },
+      {
+        "id": "large-change-checkpoints",
+        "title": "Large Change Checkpoint Planner",
+        "mode": "plan",
+        "intents": [
+          "large change",
+          "migration",
+          "refactor",
+          "app build",
+          "agent upgrade"
+        ],
+        "triggers": [
+          "migration",
+          "rewrite",
+          "huge",
+          "large",
+          "multi file",
+          "architecture",
+          "upgrade",
+          "overhaul"
+        ],
+        "summary": "Split broad work into checkpoints with approval gates, verification gates, rollback paths, and reviewable diffs.",
+        "read_first": [
+          "coding-protocol:vnem-coding-protocol",
+          "practice:agentic-coding-execution",
+          "practice:code-simplification",
+          "practice:evals"
+        ],
+        "repo_sensing": [
+          "Map affected modules, ownership boundaries, public contracts, tests, CI, deployment, and generated artifacts.",
+          "Identify the smallest reversible checkpoint that creates value without forcing the whole migration.",
+          "Name what evidence is missing before code mutation."
+        ],
+        "execution_loop": [
+          "Plan in checkpoints before mutating.",
+          "Land one reversible slice at a time.",
+          "Use compatibility shims only when they reduce risk and have a removal path.",
+          "Stop after each checkpoint for verification and review when blast radius is high."
+        ],
+        "verification_ladder": [
+          "Run focused checks per checkpoint.",
+          "Run full build/test before declaring migration progress.",
+          "Use diff review, API compatibility checks, and rollback notes as part of verification."
+        ],
+        "stop_conditions": [
+          "No reliable verification exists for a high-blast-radius change.",
+          "The change requires dependency manager swaps, deployment, secrets, or data migrations without approval.",
+          "The plan cannot be divided into reviewable checkpoints."
+        ],
+        "anti_patterns": [
+          "big bang rewrite",
+          "change architecture and behavior together",
+          "skip rollback path",
+          "hide risk in a huge diff"
+        ],
+        "final_report": [
+          "checkpoint order",
+          "completed slice",
+          "verification gate",
+          "next safe slice"
+        ],
+        "source_urls": [
+          "https://www.anthropic.com/engineering/claude-code-best-practices",
+          "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
+          "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
+          "https://docs.github.com/en/copilot/concepts/prompting/response-customization",
+          "https://code.visualstudio.com/docs/copilot/customization/custom-instructions",
+          "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
+          "https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md",
+          "https://docs.cursor.com/context/rules-for-ai",
+          "https://www.anthropic.com/engineering/writing-tools-for-agents",
+          "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+          "https://www.anthropic.com/engineering/building-effective-agents",
+          "https://developers.openai.com/api/docs/guides/agent-evals"
+        ]
+      },
+      {
+        "id": "review-risk-scan",
+        "title": "Reviewer Risk Scan",
+        "mode": "review",
+        "intents": [
+          "code review",
+          "repo understanding",
+          "security",
+          "professional code"
+        ],
+        "triggers": [
+          "review",
+          "pr",
+          "risk",
+          "regression",
+          "audit",
+          "outdated",
+          "dependencies"
+        ],
+        "summary": "Review code like an engineer: bugs, regressions, security/data risk, missing tests, and concrete file references first.",
+        "read_first": [
+          "coding-protocol:vnem-coding-protocol",
+          "practice:code-review",
+          "practice:agentic-coding-execution",
+          "task-rubric:agentic_coding"
+        ],
+        "repo_sensing": [
+          "Inspect the diff, touched call paths, tests, manifests, and nearby implementation patterns.",
+          "Identify behavior contracts and user-visible flows affected by the change.",
+          "Separate confirmed issues from questions or style preferences."
+        ],
+        "execution_loop": [
+          "Lead with highest-severity findings and specific file/line references.",
+          "Prioritize bugs, regressions, security/data exposure, concurrency, compatibility, and missing tests.",
+          "Avoid nitpicks unless they hide real risk.",
+          "If no issues are found, say so and name residual test gaps."
+        ],
+        "verification_ladder": [
+          "Run or inspect focused tests when the review request allows commands.",
+          "Use static reasoning only when commands are unavailable, and state that limitation.",
+          "Check generated/lockfile churn for unintended dependency or artifact changes."
+        ],
+        "stop_conditions": [
+          "Review requires private context, credentials, or production data.",
+          "The diff is too large to review honestly without narrowing scope.",
+          "The requested review would require destructive execution."
+        ],
+        "anti_patterns": [
+          "bury findings below summary",
+          "style-only review",
+          "claim safety without tests",
+          "ignore generated dependency changes"
+        ],
+        "final_report": [
+          "findings by severity",
+          "open questions",
+          "test gaps",
+          "change summary only after findings"
+        ],
+        "source_urls": [
+          "https://www.anthropic.com/engineering/claude-code-best-practices",
+          "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
+          "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
+          "https://docs.github.com/en/copilot/concepts/prompting/response-customization",
+          "https://code.visualstudio.com/docs/copilot/customization/custom-instructions",
+          "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
+          "https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md",
+          "https://docs.cursor.com/context/rules-for-ai",
+          "https://www.anthropic.com/engineering/writing-tools-for-agents",
+          "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+          "https://www.anthropic.com/engineering/building-effective-agents",
+          "https://developers.openai.com/api/docs/guides/agent-evals"
+        ]
+      },
+      {
+        "id": "failure-recovery",
+        "title": "Failure Recovery Loop",
+        "mode": "debug",
+        "intents": [
+          "bug fix",
+          "large change",
+          "coding task",
+          "repo understanding"
+        ],
+        "triggers": [
+          "failed",
+          "blocked",
+          "error",
+          "retry",
+          "cannot run",
+          "eperm",
+          "network",
+          "sandbox",
+          "dependency"
+        ],
+        "summary": "Recover from failed commands or agent attempts by classifying the failure and changing strategy instead of repeating noise.",
+        "read_first": [
+          "coding-protocol:vnem-coding-protocol",
+          "operating-protocol:vnem-operating-loop",
+          "practice:agentic-coding-execution"
+        ],
+        "repo_sensing": [
+          "Capture the exact command, exit code, error class, working directory, and whether sandbox/network/dependency/path state caused it.",
+          "Check local scripts, package manager, lockfiles, and known environment constraints before retrying.",
+          "Decide whether approval, dependency setup, a narrower command, or a code fix is the next safe move."
+        ],
+        "execution_loop": [
+          "Classify the failure: permission, sandbox, missing dependency, bad path/quoting, stale cache/process, network/service, incorrect assumption, or unsupported capability.",
+          "Retry only with a changed condition that addresses the classified cause.",
+          "When context is polluted by repeated failures, summarize learned constraints and restart the task slice cleanly.",
+          "Preserve the original goal and avoid unrelated workaround churn."
+        ],
+        "verification_ladder": [
+          "Run the corrected narrow command.",
+          "Run the original failing check again after the targeted fix.",
+          "Run broader validation only after the original failure is resolved."
+        ],
+        "stop_conditions": [
+          "The next step needs user-private credentials, MFA, captcha, or a personal decision.",
+          "The same blocker repeats after three genuinely different recovery attempts.",
+          "The workaround would bypass safety, licensing, anti-cheat, DRM, or access controls."
+        ],
+        "anti_patterns": [
+          "repeat the exact failed command",
+          "call a sandbox error a code failure",
+          "install random packages without evidence",
+          "hide failed checks"
+        ],
+        "final_report": [
+          "failure class",
+          "changed retry strategy",
+          "verification result",
+          "remaining blocker"
+        ],
+        "source_urls": [
+          "https://www.anthropic.com/engineering/claude-code-best-practices",
+          "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
+          "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
+          "https://docs.github.com/en/copilot/concepts/prompting/response-customization",
+          "https://code.visualstudio.com/docs/copilot/customization/custom-instructions",
+          "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
+          "https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md",
+          "https://docs.cursor.com/context/rules-for-ai",
+          "https://www.anthropic.com/engineering/writing-tools-for-agents",
+          "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+          "https://www.anthropic.com/engineering/building-effective-agents",
+          "https://developers.openai.com/api/docs/guides/agent-evals"
+        ]
+      }
     ]
   },
   "task_rubrics": [
@@ -2875,14 +3738,21 @@
         "web app",
         "feature build",
         "bug fix",
+        "root cause",
+        "failure recovery",
         "test first",
         "repo understanding",
         "large change",
+        "backend api",
         "coding agents",
         "professional code"
       ],
       "read_first": [
         "coding-protocol:vnem-coding-protocol",
+        "coding-playbook:feature-slice",
+        "coding-playbook:bug-root-cause",
+        "coding-playbook:test-first-evidence",
+        "coding-playbook:refactor-preserve",
         "practice:agentic-coding-execution",
         "operating-protocol:vnem-operating-loop",
         "practice:evals",
@@ -3048,6 +3918,8 @@
         "runtime"
       ],
       "read_first": [
+        "coding-protocol:vnem-coding-protocol",
+        "coding-playbook:api-data-contract",
         "practice:backend",
         "practice:security",
         "practice:evals"
@@ -3524,10 +4396,14 @@
         "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
         "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
         "https://docs.github.com/en/copilot/how-tos/copilot-cli/cli-best-practices",
+        "https://docs.github.com/en/copilot/concepts/prompting/response-customization",
+        "https://code.visualstudio.com/docs/copilot/customization/custom-instructions",
         "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
+        "https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md",
         "https://docs.cursor.com/context/rules-for-ai",
         "https://www.anthropic.com/engineering/writing-tools-for-agents",
-        "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+        "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "https://developers.openai.com/api/docs/guides/agent-evals"
       ]
     },
     {
@@ -3753,6 +4629,7 @@
       "mode",
       "intent",
       "rubric",
+      "coding_playbook",
       "read_first",
       "repo_sensing",
       "smallest_sufficient_capability",
@@ -3765,6 +4642,7 @@
     "read_first_for_build_tasks": [
       "operating protocol",
       "coding protocol for app/web/feature/debug/refactor work",
+      "matching coding playbook",
       "matching task rubric",
       "matching intent_routes",
       "design architecture and visual QA protocol when the task is visual or interactive",
@@ -3777,6 +4655,7 @@
       "vnem intents searched",
       "top matches",
       "chosen rubric",
+      "chosen coding playbook",
       "choice",
       "why",
       "verification evidence",
@@ -3807,9 +4686,12 @@
         "web app",
         "feature build",
         "bug fix",
+        "root cause",
+        "failure recovery",
         "test first",
         "repo understanding",
         "large change",
+        "backend api",
         "coding agents",
         "plan first",
         "verification loop",
@@ -3825,6 +4707,7 @@
         "Run narrow checks first for speed, then broader tests/builds when the change touches shared behavior, app shell, build config, auth, data, or UI routing.",
         "For web apps and UI, a passing build is not enough: open or serve the app, verify desktop and mobile fit, inspect the first screen, and fix the ugliest visible issue before final.",
         "Control context: read the exact files needed, summarize findings, avoid dumping huge docs, and reset/split sessions when failed attempts or unrelated history start dominating the context window.",
+        "Select a mode-specific playbook before coding: feature slice, root-cause bug fix, test-first evidence, refactor, rendered web app, API/data contract, large change, review, or failure recovery.",
         "Use subagents, parallel candidates, or Best-of-N only for independent exploration, critique, or alternative designs; keep one owner responsible for the integrated diff.",
         "Keep repository instruction files concise, stable, and versioned. Record commands, conventions, verification, and approval boundaries, not temporary task state.",
         "Report like an engineer: what changed, why, files touched, verification run, failed checks or unrun checks, residual risk, and any approval needed before deployment or package installs."
@@ -3839,6 +4722,7 @@
         "Run narrow checks first for speed, then broader tests/builds when the change touches shared behavior, app shell, build config, auth, data, or UI routing.",
         "For web apps and UI, a passing build is not enough: open or serve the app, verify desktop and mobile fit, inspect the first screen, and fix the ugliest visible issue before final.",
         "Control context: read the exact files needed, summarize findings, avoid dumping huge docs, and reset/split sessions when failed attempts or unrelated history start dominating the context window.",
+        "Select a mode-specific playbook before coding: feature slice, root-cause bug fix, test-first evidence, refactor, rendered web app, API/data contract, large change, review, or failure recovery.",
         "Use subagents, parallel candidates, or Best-of-N only for independent exploration, critique, or alternative designs; keep one owner responsible for the integrated diff.",
         "Keep repository instruction files concise, stable, and versioned. Record commands, conventions, verification, and approval boundaries, not temporary task state.",
         "Report like an engineer: what changed, why, files touched, verification run, failed checks or unrun checks, residual risk, and any approval needed before deployment or package installs."
@@ -3850,10 +4734,14 @@
         "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
         "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
         "https://docs.github.com/en/copilot/how-tos/copilot-cli/cli-best-practices",
+        "https://docs.github.com/en/copilot/concepts/prompting/response-customization",
+        "https://code.visualstudio.com/docs/copilot/customization/custom-instructions",
         "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
+        "https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md",
         "https://docs.cursor.com/context/rules-for-ai",
         "https://www.anthropic.com/engineering/writing-tools-for-agents",
-        "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+        "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "https://developers.openai.com/api/docs/guides/agent-evals"
       ],
       "keywords": [
         "agentic",
@@ -3884,12 +4772,18 @@
         "feature",
         "bug",
         "fix",
+        "root",
+        "cause",
+        "failure",
+        "recovery",
         "test",
         "first",
         "repo",
         "understanding",
         "large",
         "change",
+        "backend",
+        "api",
         "plan",
         "acceptance",
         "criteria",
@@ -3954,7 +4848,6 @@
         "drive-by",
         "rewrites",
         "public",
-        "api",
         "churn",
         "dependency",
         "swaps",
@@ -3970,12 +4863,7 @@
         "over",
         "new",
         "abstractions.",
-        "add",
-        "an",
-        "abstraction",
-        "only",
-        "removes",
-        "real"
+        "add"
       ]
     },
     {
@@ -3993,7 +4881,10 @@
         "web app",
         "feature build",
         "bug fix",
+        "root cause",
+        "failure recovery",
         "test first",
+        "backend api",
         "repo understanding",
         "large change",
         "verification loop",
@@ -4056,12 +4947,15 @@
         "https://www.anthropic.com/engineering/claude-code-best-practices",
         "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
         "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
-        "https://docs.github.com/en/copilot/how-tos/copilot-cli/cli-best-practices",
+        "https://docs.github.com/en/copilot/concepts/prompting/response-customization",
+        "https://code.visualstudio.com/docs/copilot/customization/custom-instructions",
         "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
+        "https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md",
         "https://docs.cursor.com/context/rules-for-ai",
         "https://www.anthropic.com/engineering/writing-tools-for-agents",
         "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
-        "https://www.anthropic.com/engineering/building-effective-agents"
+        "https://www.anthropic.com/engineering/building-effective-agents",
+        "https://developers.openai.com/api/docs/guides/agent-evals"
       ],
       "keywords": [
         "vnem-coding-protocol",
@@ -4095,8 +4989,14 @@
         "feature",
         "bug",
         "fix",
+        "root",
+        "cause",
+        "failure",
+        "recovery",
         "test",
         "first",
+        "backend",
+        "api",
         "understanding",
         "large",
         "change",
@@ -4212,7 +5112,6 @@
         "copy",
         "route",
         "component",
-        "api",
         "handler",
         "state",
         "store",
@@ -4238,12 +5137,487 @@
         "tokens",
         "components",
         "available",
-        "browser-test",
-        "touches",
+        "browser-test"
+      ]
+    },
+    {
+      "id": "coding-playbook:api-data-contract",
+      "kind": "coding-playbook",
+      "title": "API And Data Contract Change",
+      "summary": "Change backend/API/data behavior by preserving contracts, isolating risk, and verifying caller-facing behavior.",
+      "url_path": "/install/coding-playbooks.json",
+      "trust_tier": "verified",
+      "type": "coding-playbook",
+      "score": 20,
+      "tags": [
+        "coding playbook",
+        "build",
+        "backend api",
+        "feature build",
+        "bug fix",
+        "security",
+        "data memory",
+        "api",
+        "server",
+        "database",
+        "schema",
+        "migration",
         "auth",
-        "payments",
-        "deployment",
-        "secrets"
+        "endpoint",
+        "contract"
+      ],
+      "use_cases": [
+        "Inspect route handlers, service layers, schemas, migrations, auth middleware, validation, tests, and API docs.",
+        "Find current error handling, status-code, logging, and serialization patterns.",
+        "Identify callers and backwards-compatibility constraints before modifying contracts.",
+        "Preserve current API/data contracts unless the user explicitly requests a breaking change.",
+        "Validate inputs at the boundary and keep secret/auth handling out of logs.",
+        "Use transaction/migration patterns already present in the repo.",
+        "Keep external service calls and production data behind explicit approval."
+      ],
+      "best_for": [
+        "Run focused API/service tests or a local request fixture.",
+        "Run broader backend tests when auth, validation, schema, or shared services changed.",
+        "Report migration/deployment checks separately from local code verification."
+      ],
+      "risk_flags": [
+        "The change requires production credentials, data migrations, paid APIs, or deployment.",
+        "The patch would log secrets or weaken auth/validation.",
+        "A breaking contract change is implied but not explicitly accepted."
+      ],
+      "source_urls": [
+        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/coding-playbooks.json",
+        "https://www.anthropic.com/engineering/claude-code-best-practices",
+        "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
+        "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
+        "https://docs.github.com/en/copilot/concepts/prompting/response-customization",
+        "https://code.visualstudio.com/docs/copilot/customization/custom-instructions",
+        "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
+        "https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md",
+        "https://docs.cursor.com/context/rules-for-ai",
+        "https://www.anthropic.com/engineering/writing-tools-for-agents",
+        "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "https://www.anthropic.com/engineering/building-effective-agents",
+        "https://developers.openai.com/api/docs/guides/agent-evals"
+      ],
+      "keywords": [
+        "api-data-contract",
+        "api",
+        "data",
+        "contract",
+        "change",
+        "backend/api/data",
+        "behavior",
+        "by",
+        "preserving",
+        "contracts",
+        "isolating",
+        "risk",
+        "verifying",
+        "caller-facing",
+        "behavior.",
+        "build",
+        "backend",
+        "feature",
+        "bug",
+        "fix",
+        "security",
+        "memory",
+        "server",
+        "database",
+        "schema",
+        "migration",
+        "auth",
+        "endpoint",
+        "coding-protocol",
+        "vnem-coding-protocol",
+        "practice",
+        "task-rubric"
+      ]
+    },
+    {
+      "id": "coding-playbook:refactor-preserve",
+      "kind": "coding-playbook",
+      "title": "Behavior-Preserving Refactor",
+      "summary": "Simplify code while preserving public behavior, call-site contracts, and reviewability.",
+      "url_path": "/install/coding-playbooks.json",
+      "trust_tier": "verified",
+      "type": "coding-playbook",
+      "score": 20,
+      "tags": [
+        "coding playbook",
+        "build",
+        "refactor",
+        "code simplification",
+        "code compaction",
+        "minimal code",
+        "dead code",
+        "professional code",
+        "simplify",
+        "remove duplication",
+        "cleanup",
+        "maintainability",
+        "reduce code"
+      ],
+      "use_cases": [
+        "Map public interfaces, imports, exports, tests, and call sites before moving or deleting code.",
+        "Identify duplicated behavior, dead branches, unused exports, or repeated helpers with evidence.",
+        "Check formatting and generated-file conventions so mechanical churn stays contained.",
+        "Preserve behavior first; only then remove complexity.",
+        "Make small reviewable steps: rename, extract, inline, delete, or consolidate one pattern at a time.",
+        "Avoid public API, schema, route, or data-format changes unless explicitly requested.",
+        "Prefer deleting proven waste over adding abstractions."
+      ],
+      "best_for": [
+        "Run tests for the touched module or call path.",
+        "Run typecheck/build if interfaces, exports, imports, or framework routing changed.",
+        "Use call-site evidence when tests are absent, and state the residual risk."
+      ],
+      "risk_flags": [
+        "Behavior preservation cannot be checked and the refactor touches shared or critical code.",
+        "The cleanup requires dependency replacement, architecture migration, or public API churn.",
+        "Generated files or formatting-only churn dominate the diff."
+      ],
+      "source_urls": [
+        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/coding-playbooks.json",
+        "https://www.anthropic.com/engineering/claude-code-best-practices",
+        "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
+        "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
+        "https://docs.github.com/en/copilot/concepts/prompting/response-customization",
+        "https://code.visualstudio.com/docs/copilot/customization/custom-instructions",
+        "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
+        "https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md",
+        "https://docs.cursor.com/context/rules-for-ai",
+        "https://www.anthropic.com/engineering/writing-tools-for-agents",
+        "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "https://www.anthropic.com/engineering/building-effective-agents",
+        "https://developers.openai.com/api/docs/guides/agent-evals"
+      ],
+      "keywords": [
+        "refactor-preserve",
+        "behavior-preserving",
+        "refactor",
+        "simplify",
+        "while",
+        "preserving",
+        "public",
+        "behavior",
+        "call-site",
+        "contracts",
+        "reviewability.",
+        "build",
+        "simplification",
+        "compaction",
+        "minimal",
+        "dead",
+        "professional",
+        "remove",
+        "duplication",
+        "cleanup",
+        "maintainability",
+        "reduce",
+        "coding-protocol",
+        "vnem-coding-protocol",
+        "practice",
+        "code-simplification",
+        "code-review",
+        "task-rubric"
+      ]
+    },
+    {
+      "id": "coding-playbook:failure-recovery",
+      "kind": "coding-playbook",
+      "title": "Failure Recovery Loop",
+      "summary": "Recover from failed commands or agent attempts by classifying the failure and changing strategy instead of repeating noise.",
+      "url_path": "/install/coding-playbooks.json",
+      "trust_tier": "verified",
+      "type": "coding-playbook",
+      "score": 20,
+      "tags": [
+        "coding playbook",
+        "debug",
+        "bug fix",
+        "large change",
+        "coding task",
+        "repo understanding",
+        "failed",
+        "blocked",
+        "error",
+        "retry",
+        "cannot run",
+        "eperm",
+        "network",
+        "sandbox",
+        "dependency"
+      ],
+      "use_cases": [
+        "Capture the exact command, exit code, error class, working directory, and whether sandbox/network/dependency/path state caused it.",
+        "Check local scripts, package manager, lockfiles, and known environment constraints before retrying.",
+        "Decide whether approval, dependency setup, a narrower command, or a code fix is the next safe move.",
+        "Classify the failure: permission, sandbox, missing dependency, bad path/quoting, stale cache/process, network/service, incorrect assumption, or unsupported capability.",
+        "Retry only with a changed condition that addresses the classified cause.",
+        "When context is polluted by repeated failures, summarize learned constraints and restart the task slice cleanly.",
+        "Preserve the original goal and avoid unrelated workaround churn."
+      ],
+      "best_for": [
+        "Run the corrected narrow command.",
+        "Run the original failing check again after the targeted fix.",
+        "Run broader validation only after the original failure is resolved."
+      ],
+      "risk_flags": [
+        "The next step needs user-private credentials, MFA, captcha, or a personal decision.",
+        "The same blocker repeats after three genuinely different recovery attempts.",
+        "The workaround would bypass safety, licensing, anti-cheat, DRM, or access controls."
+      ],
+      "source_urls": [
+        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/coding-playbooks.json",
+        "https://www.anthropic.com/engineering/claude-code-best-practices",
+        "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
+        "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
+        "https://docs.github.com/en/copilot/concepts/prompting/response-customization",
+        "https://code.visualstudio.com/docs/copilot/customization/custom-instructions",
+        "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
+        "https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md",
+        "https://docs.cursor.com/context/rules-for-ai",
+        "https://www.anthropic.com/engineering/writing-tools-for-agents",
+        "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "https://www.anthropic.com/engineering/building-effective-agents",
+        "https://developers.openai.com/api/docs/guides/agent-evals"
+      ],
+      "keywords": [
+        "failure-recovery",
+        "failure",
+        "recovery",
+        "loop",
+        "recover",
+        "failed",
+        "commands",
+        "or",
+        "agent",
+        "attempts",
+        "by",
+        "classifying",
+        "changing",
+        "strategy",
+        "instead",
+        "of",
+        "repeating",
+        "noise.",
+        "debug",
+        "bug",
+        "fix",
+        "large",
+        "change",
+        "coding",
+        "task",
+        "repo",
+        "understanding",
+        "blocked",
+        "error",
+        "retry",
+        "cannot",
+        "run",
+        "eperm",
+        "network",
+        "sandbox",
+        "dependency",
+        "coding-protocol",
+        "vnem-coding-protocol",
+        "operating-protocol",
+        "vnem-operating-loop",
+        "practice",
+        "agentic-coding-execution"
+      ]
+    },
+    {
+      "id": "coding-playbook:feature-slice",
+      "kind": "coding-playbook",
+      "title": "Feature Slice Builder",
+      "summary": "Turn a requested feature into the smallest working product slice that matches local architecture and can be verified.",
+      "url_path": "/install/coding-playbooks.json",
+      "trust_tier": "verified",
+      "type": "coding-playbook",
+      "score": 20,
+      "tags": [
+        "coding playbook",
+        "build",
+        "coding task",
+        "feature build",
+        "app build",
+        "web app",
+        "professional code",
+        "implement",
+        "add feature",
+        "app",
+        "workflow",
+        "user story",
+        "acceptance criteria"
+      ],
+      "use_cases": [
+        "Read local agent instructions, manifests, scripts, framework config, tests, and the closest existing feature pattern.",
+        "Identify the entrypoint, state/data owner, component or route owner, and verification command before editing.",
+        "Name non-goals and surfaces that must not change, especially public APIs, schemas, auth, deployment, and dependencies.",
+        "Define observable acceptance criteria in one short list.",
+        "Implement one thin vertical slice first, then fill edge cases only when the slice runs.",
+        "Reuse existing helpers, components, styles, and data patterns before adding abstractions.",
+        "Keep unrelated cleanup, formatting churn, and dependency swaps out of the diff."
+      ],
+      "best_for": [
+        "Run the narrowest existing test or typecheck that covers the changed surface.",
+        "Run the app/build when routing, bundle, framework config, or user-visible behavior changed.",
+        "For UI slices, inspect the rendered screen and mobile fit before final."
+      ],
+      "risk_flags": [
+        "Missing acceptance criteria would change architecture or data shape.",
+        "The change requires a new dependency, deployment, secret, paid API, migration, or production data.",
+        "The first slice reveals broad redesign or public API churn."
+      ],
+      "source_urls": [
+        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/coding-playbooks.json",
+        "https://www.anthropic.com/engineering/claude-code-best-practices",
+        "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
+        "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
+        "https://docs.github.com/en/copilot/concepts/prompting/response-customization",
+        "https://code.visualstudio.com/docs/copilot/customization/custom-instructions",
+        "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
+        "https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md",
+        "https://docs.cursor.com/context/rules-for-ai",
+        "https://www.anthropic.com/engineering/writing-tools-for-agents",
+        "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "https://www.anthropic.com/engineering/building-effective-agents",
+        "https://developers.openai.com/api/docs/guides/agent-evals"
+      ],
+      "keywords": [
+        "feature-slice",
+        "feature",
+        "slice",
+        "builder",
+        "turn",
+        "requested",
+        "smallest",
+        "working",
+        "product",
+        "matches",
+        "local",
+        "architecture",
+        "be",
+        "verified.",
+        "build",
+        "coding",
+        "task",
+        "app",
+        "web",
+        "professional",
+        "implement",
+        "add",
+        "workflow",
+        "user",
+        "story",
+        "acceptance",
+        "criteria",
+        "coding-protocol",
+        "vnem-coding-protocol",
+        "practice",
+        "agentic-coding-execution",
+        "task-rubric",
+        "agentic"
+      ]
+    },
+    {
+      "id": "coding-playbook:large-change-checkpoints",
+      "kind": "coding-playbook",
+      "title": "Large Change Checkpoint Planner",
+      "summary": "Split broad work into checkpoints with approval gates, verification gates, rollback paths, and reviewable diffs.",
+      "url_path": "/install/coding-playbooks.json",
+      "trust_tier": "verified",
+      "type": "coding-playbook",
+      "score": 20,
+      "tags": [
+        "coding playbook",
+        "plan",
+        "large change",
+        "migration",
+        "refactor",
+        "app build",
+        "agent upgrade",
+        "rewrite",
+        "huge",
+        "large",
+        "multi file",
+        "architecture",
+        "upgrade",
+        "overhaul"
+      ],
+      "use_cases": [
+        "Map affected modules, ownership boundaries, public contracts, tests, CI, deployment, and generated artifacts.",
+        "Identify the smallest reversible checkpoint that creates value without forcing the whole migration.",
+        "Name what evidence is missing before code mutation.",
+        "Plan in checkpoints before mutating.",
+        "Land one reversible slice at a time.",
+        "Use compatibility shims only when they reduce risk and have a removal path.",
+        "Stop after each checkpoint for verification and review when blast radius is high."
+      ],
+      "best_for": [
+        "Run focused checks per checkpoint.",
+        "Run full build/test before declaring migration progress.",
+        "Use diff review, API compatibility checks, and rollback notes as part of verification."
+      ],
+      "risk_flags": [
+        "No reliable verification exists for a high-blast-radius change.",
+        "The change requires dependency manager swaps, deployment, secrets, or data migrations without approval.",
+        "The plan cannot be divided into reviewable checkpoints."
+      ],
+      "source_urls": [
+        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/coding-playbooks.json",
+        "https://www.anthropic.com/engineering/claude-code-best-practices",
+        "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
+        "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
+        "https://docs.github.com/en/copilot/concepts/prompting/response-customization",
+        "https://code.visualstudio.com/docs/copilot/customization/custom-instructions",
+        "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
+        "https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md",
+        "https://docs.cursor.com/context/rules-for-ai",
+        "https://www.anthropic.com/engineering/writing-tools-for-agents",
+        "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "https://www.anthropic.com/engineering/building-effective-agents",
+        "https://developers.openai.com/api/docs/guides/agent-evals"
+      ],
+      "keywords": [
+        "large-change-checkpoints",
+        "large",
+        "change",
+        "checkpoint",
+        "planner",
+        "split",
+        "broad",
+        "work",
+        "checkpoints",
+        "approval",
+        "gates",
+        "verification",
+        "rollback",
+        "paths",
+        "reviewable",
+        "diffs.",
+        "plan",
+        "migration",
+        "refactor",
+        "app",
+        "build",
+        "agent",
+        "upgrade",
+        "rewrite",
+        "huge",
+        "multi",
+        "file",
+        "architecture",
+        "overhaul",
+        "coding-protocol",
+        "vnem-coding-protocol",
+        "practice",
+        "agentic-coding-execution",
+        "code-simplification",
+        "evals"
       ]
     },
     {
@@ -4380,6 +5754,390 @@
         "read-only",
         "knowledge",
         "pack."
+      ]
+    },
+    {
+      "id": "coding-playbook:web-app-rendered-quality",
+      "kind": "coding-playbook",
+      "title": "Rendered Web App Builder",
+      "summary": "Build web surfaces as real usable workflows and verify rendered desktop/mobile states, not only code or builds.",
+      "url_path": "/install/coding-playbooks.json",
+      "trust_tier": "verified",
+      "type": "coding-playbook",
+      "score": 20,
+      "tags": [
+        "coding playbook",
+        "build",
+        "web app",
+        "app build",
+        "better ui",
+        "visual qa",
+        "frontend",
+        "dashboard",
+        "react",
+        "vite",
+        "next",
+        "landing",
+        "responsive",
+        "browser"
+      ],
+      "use_cases": [
+        "Inspect routes, app shell, component library, design tokens, CSS architecture, assets, and dev-server scripts.",
+        "Find the closest existing page/component interaction pattern before creating new UI primitives.",
+        "Identify browser verification path and viewports before final.",
+        "Build the actual primary workflow first, not a marketing placeholder.",
+        "Use stable dimensions for boards, grids, counters, controls, and cards so labels and hover states do not shift layout.",
+        "Keep domain density appropriate: operational apps should be scannable and quiet; games and brand surfaces can be more expressive.",
+        "Polish the first visible screen after behavior works."
+      ],
+      "best_for": [
+        "Run framework build/typecheck or the nearest focused check.",
+        "Open or serve the app and inspect desktop plus mobile viewports when practical.",
+        "Fix the single ugliest visible issue before final if rendered evidence is available."
+      ],
+      "risk_flags": [
+        "The UI depends on unavailable assets, private accounts, paid APIs, or production data.",
+        "A new UI framework or major design-system swap is needed.",
+        "Rendered text overflows, controls overlap, or the first screen is still generic."
+      ],
+      "source_urls": [
+        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/coding-playbooks.json",
+        "https://www.anthropic.com/engineering/claude-code-best-practices",
+        "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
+        "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
+        "https://docs.github.com/en/copilot/concepts/prompting/response-customization",
+        "https://code.visualstudio.com/docs/copilot/customization/custom-instructions",
+        "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
+        "https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md",
+        "https://docs.cursor.com/context/rules-for-ai",
+        "https://www.anthropic.com/engineering/writing-tools-for-agents",
+        "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "https://www.anthropic.com/engineering/building-effective-agents",
+        "https://developers.openai.com/api/docs/guides/agent-evals"
+      ],
+      "keywords": [
+        "web-app-rendered-quality",
+        "rendered",
+        "web",
+        "app",
+        "builder",
+        "build",
+        "surfaces",
+        "as",
+        "real",
+        "usable",
+        "workflows",
+        "verify",
+        "desktop/mobile",
+        "states",
+        "not",
+        "only",
+        "or",
+        "builds.",
+        "better",
+        "ui",
+        "visual",
+        "qa",
+        "frontend",
+        "dashboard",
+        "react",
+        "vite",
+        "next",
+        "landing",
+        "responsive",
+        "browser",
+        "coding-protocol",
+        "vnem-coding-protocol",
+        "practice",
+        "design-architecture",
+        "vnem-design-architecture",
+        "visual-qa-protocol",
+        "vnem-visual-qa-protocol"
+      ]
+    },
+    {
+      "id": "coding-playbook:review-risk-scan",
+      "kind": "coding-playbook",
+      "title": "Reviewer Risk Scan",
+      "summary": "Review code like an engineer: bugs, regressions, security/data risk, missing tests, and concrete file references first.",
+      "url_path": "/install/coding-playbooks.json",
+      "trust_tier": "verified",
+      "type": "coding-playbook",
+      "score": 20,
+      "tags": [
+        "coding playbook",
+        "review",
+        "code review",
+        "repo understanding",
+        "security",
+        "professional code",
+        "pr",
+        "risk",
+        "regression",
+        "audit",
+        "outdated",
+        "dependencies"
+      ],
+      "use_cases": [
+        "Inspect the diff, touched call paths, tests, manifests, and nearby implementation patterns.",
+        "Identify behavior contracts and user-visible flows affected by the change.",
+        "Separate confirmed issues from questions or style preferences.",
+        "Lead with highest-severity findings and specific file/line references.",
+        "Prioritize bugs, regressions, security/data exposure, concurrency, compatibility, and missing tests.",
+        "Avoid nitpicks unless they hide real risk.",
+        "If no issues are found, say so and name residual test gaps."
+      ],
+      "best_for": [
+        "Run or inspect focused tests when the review request allows commands.",
+        "Use static reasoning only when commands are unavailable, and state that limitation.",
+        "Check generated/lockfile churn for unintended dependency or artifact changes."
+      ],
+      "risk_flags": [
+        "Review requires private context, credentials, or production data.",
+        "The diff is too large to review honestly without narrowing scope.",
+        "The requested review would require destructive execution."
+      ],
+      "source_urls": [
+        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/coding-playbooks.json",
+        "https://www.anthropic.com/engineering/claude-code-best-practices",
+        "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
+        "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
+        "https://docs.github.com/en/copilot/concepts/prompting/response-customization",
+        "https://code.visualstudio.com/docs/copilot/customization/custom-instructions",
+        "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
+        "https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md",
+        "https://docs.cursor.com/context/rules-for-ai",
+        "https://www.anthropic.com/engineering/writing-tools-for-agents",
+        "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "https://www.anthropic.com/engineering/building-effective-agents",
+        "https://developers.openai.com/api/docs/guides/agent-evals"
+      ],
+      "keywords": [
+        "review-risk-scan",
+        "reviewer",
+        "risk",
+        "scan",
+        "like",
+        "an",
+        "engineer",
+        "bugs",
+        "regressions",
+        "security/data",
+        "missing",
+        "tests",
+        "concrete",
+        "file",
+        "references",
+        "first.",
+        "repo",
+        "understanding",
+        "security",
+        "professional",
+        "pr",
+        "regression",
+        "audit",
+        "outdated",
+        "dependencies",
+        "coding-protocol",
+        "vnem-coding-protocol",
+        "practice",
+        "code-review",
+        "agentic-coding-execution",
+        "task-rubric",
+        "agentic",
+        "coding"
+      ]
+    },
+    {
+      "id": "coding-playbook:bug-root-cause",
+      "kind": "coding-playbook",
+      "title": "Root-Cause Bug Fix",
+      "summary": "Debug by reproducing or localizing the failure, patching the narrow cause, and proving the regression is blocked.",
+      "url_path": "/install/coding-playbooks.json",
+      "trust_tier": "verified",
+      "type": "coding-playbook",
+      "score": 20,
+      "tags": [
+        "coding playbook",
+        "debug",
+        "bug fix",
+        "test first",
+        "backend api",
+        "security",
+        "bug",
+        "failing test",
+        "regression",
+        "error",
+        "crash",
+        "broken",
+        "root cause",
+        "auth api"
+      ],
+      "use_cases": [
+        "Capture the exact failing command, error text, route, log, screenshot, or assertion before editing.",
+        "Trace the closest call path and recent local pattern instead of guessing from file names.",
+        "Check whether the failure touches auth, security, data, external services, or generated files.",
+        "Reproduce first when practical; if not, state the missing reproduction evidence.",
+        "Make one hypothesis at a time and patch the smallest root cause.",
+        "Add or adjust a focused regression test when the test harness exists and the bug is behaviorally important.",
+        "Avoid speculative cleanups until the original failure is proven fixed."
+      ],
+      "best_for": [
+        "Run the failing test or smallest reproduction command.",
+        "Run nearby tests for the touched module.",
+        "Run broader build/test only when shared behavior, contracts, auth, data, or routing changed."
+      ],
+      "risk_flags": [
+        "The fix would weaken security, loosen validation, skip tests, or hide the symptom.",
+        "A malicious test hook, forced pass, or unrelated config change is proposed.",
+        "The failure depends on private credentials, production data, or unavailable services."
+      ],
+      "source_urls": [
+        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/coding-playbooks.json",
+        "https://www.anthropic.com/engineering/claude-code-best-practices",
+        "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
+        "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
+        "https://docs.github.com/en/copilot/concepts/prompting/response-customization",
+        "https://code.visualstudio.com/docs/copilot/customization/custom-instructions",
+        "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
+        "https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md",
+        "https://docs.cursor.com/context/rules-for-ai",
+        "https://www.anthropic.com/engineering/writing-tools-for-agents",
+        "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "https://www.anthropic.com/engineering/building-effective-agents",
+        "https://developers.openai.com/api/docs/guides/agent-evals"
+      ],
+      "keywords": [
+        "bug-root-cause",
+        "root-cause",
+        "bug",
+        "fix",
+        "debug",
+        "by",
+        "reproducing",
+        "or",
+        "localizing",
+        "failure",
+        "patching",
+        "narrow",
+        "cause",
+        "proving",
+        "regression",
+        "is",
+        "blocked.",
+        "test",
+        "first",
+        "backend",
+        "api",
+        "security",
+        "failing",
+        "error",
+        "crash",
+        "broken",
+        "root",
+        "auth",
+        "coding-protocol",
+        "vnem-coding-protocol",
+        "practice",
+        "agentic-coding-execution",
+        "code-review",
+        "evals"
+      ]
+    },
+    {
+      "id": "coding-playbook:test-first-evidence",
+      "kind": "coding-playbook",
+      "title": "Test-First Evidence Builder",
+      "summary": "Convert an intended behavior into executable evidence before or alongside implementation.",
+      "url_path": "/install/coding-playbooks.json",
+      "trust_tier": "verified",
+      "type": "coding-playbook",
+      "score": 20,
+      "tags": [
+        "coding playbook",
+        "build",
+        "test first",
+        "bug fix",
+        "feature build",
+        "evals",
+        "benchmark evidence",
+        "test",
+        "tdd",
+        "coverage",
+        "verify first",
+        "fixture",
+        "expected output",
+        "regression"
+      ],
+      "use_cases": [
+        "Inspect existing tests, fixtures, snapshots, helpers, and naming conventions before writing a new test.",
+        "Find the fastest command that runs only the relevant test scope.",
+        "Identify observable behavior instead of implementation details to lock.",
+        "Write or describe the failing expectation first when practical.",
+        "Keep fixtures minimal and deterministic.",
+        "Prefer public API/user behavior tests over brittle private internals.",
+        "Use mocks only where the existing test style already uses them or the external dependency is unavoidable."
+      ],
+      "best_for": [
+        "Run the new focused test and confirm it fails for the right reason if possible.",
+        "Implement the smallest change and rerun the focused test.",
+        "Run adjacent tests or build when shared code changed."
+      ],
+      "risk_flags": [
+        "No local test harness exists and creating one would be a project decision.",
+        "The test requires real secrets, paid services, production data, or network-only state.",
+        "The only available check would be flaky or unrelated to the acceptance criteria."
+      ],
+      "source_urls": [
+        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/coding-playbooks.json",
+        "https://www.anthropic.com/engineering/claude-code-best-practices",
+        "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
+        "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
+        "https://docs.github.com/en/copilot/concepts/prompting/response-customization",
+        "https://code.visualstudio.com/docs/copilot/customization/custom-instructions",
+        "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
+        "https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md",
+        "https://docs.cursor.com/context/rules-for-ai",
+        "https://www.anthropic.com/engineering/writing-tools-for-agents",
+        "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "https://www.anthropic.com/engineering/building-effective-agents",
+        "https://developers.openai.com/api/docs/guides/agent-evals"
+      ],
+      "keywords": [
+        "test-first-evidence",
+        "test-first",
+        "evidence",
+        "builder",
+        "convert",
+        "an",
+        "intended",
+        "behavior",
+        "executable",
+        "or",
+        "alongside",
+        "implementation.",
+        "build",
+        "test",
+        "first",
+        "bug",
+        "fix",
+        "feature",
+        "evals",
+        "benchmark",
+        "tdd",
+        "coverage",
+        "verify",
+        "fixture",
+        "expected",
+        "output",
+        "regression",
+        "coding-protocol",
+        "vnem-coding-protocol",
+        "practice",
+        "agentic-coding-execution",
+        "task-rubric",
+        "agentic",
+        "coding"
       ]
     },
     {
@@ -5001,10 +6759,14 @@
         "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
         "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
         "https://docs.github.com/en/copilot/how-tos/copilot-cli/cli-best-practices",
+        "https://docs.github.com/en/copilot/concepts/prompting/response-customization",
+        "https://code.visualstudio.com/docs/copilot/customization/custom-instructions",
         "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
+        "https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md",
         "https://docs.cursor.com/context/rules-for-ai",
         "https://www.anthropic.com/engineering/writing-tools-for-agents",
-        "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+        "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "https://developers.openai.com/api/docs/guides/agent-evals"
       ],
       "keywords": [
         "agentic-coding-best-practices",
@@ -5120,10 +6882,14 @@
         "//openai.com/business/guides-and-resources/how-openai-uses-codex/",
         "//docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
         "//docs.github.com/en/copilot/how-tos/copilot-cli/cli-best-practices",
+        "//docs.github.com/en/copilot/concepts/prompting/response-customization",
+        "//code.visualstudio.com/docs/copilot/customization/custom-instructions",
         "//github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
+        "//github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md",
         "//docs.cursor.com/context/rules-for-ai",
         "//www.anthropic.com/engineering/writing-tools-for-agents",
-        "//www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+        "//www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "//developers.openai.com/api/docs/guides/agent-evals"
       ]
     },
     {
@@ -6730,9 +8496,12 @@
         "web app",
         "feature build",
         "bug fix",
+        "root cause",
+        "failure recovery",
         "test first",
         "repo understanding",
         "large change",
+        "backend api",
         "coding agents",
         "professional code"
       ],
@@ -6781,11 +8550,17 @@
         "feature",
         "bug",
         "fix",
+        "root",
+        "cause",
+        "failure",
+        "recovery",
         "test",
         "first",
         "understanding",
         "large",
         "change",
+        "backend",
+        "api",
         "agents",
         "professional",
         "instructions",
@@ -19578,13 +21353,18 @@
         ".vnem/coding-protocol.md",
         "if",
         "present.",
+        ".vnem/coding-playbooks.json",
+        "present",
+        "select",
+        "nearest",
+        "playbook",
+        "editing.",
         "inspect",
         "manifests",
         "scripts",
         "tests",
         "framework",
         "config",
-        "nearest",
         "existing",
         "implementation",
         "pattern.",
@@ -19610,7 +21390,6 @@
         "produce",
         "short",
         "plan",
-        "editing.",
         "prefer",
         "patterns",
         "helpers.",
@@ -19640,11 +21419,7 @@
         "justifies",
         "it",
         "web/ui",
-        "rendered",
-        "on",
-        "desktop",
-        "mobile",
-        "practical."
+        "rendered"
       ]
     },
     {
@@ -24270,6 +26045,12 @@
         "cleanly.",
         "workflow",
         "1.",
+        "if",
+        ".vnem/coding-playbooks.json",
+        "exists",
+        "refactor-preserve",
+        "playbook.",
+        "2.",
         "inspect",
         "current",
         "implementation",
@@ -24277,7 +26058,7 @@
         "interfaces",
         "call",
         "sites.",
-        "2.",
+        "3.",
         "identify",
         "removable",
         "evidence",
@@ -24291,7 +26072,7 @@
         "helpers",
         "needless",
         "state.",
-        "3.",
+        "4.",
         "preserve",
         "behavior",
         "focused",
@@ -24303,7 +26084,7 @@
         "examples",
         "risky",
         "edits.",
-        "4.",
+        "5.",
         "make",
         "small",
         "reviewable",
@@ -24318,7 +26099,7 @@
         "reuse",
         "local",
         "helpers.",
-        "5.",
+        "6.",
         "run",
         "first",
         "then",
@@ -24329,13 +26110,7 @@
         "was",
         "simplified.",
         "features",
-        "preserved.",
-        "commands",
-        "results.",
-        "residual",
-        "risk",
-        "areas",
-        "intentionally"
+        "preserved."
       ]
     },
     {
@@ -24423,6 +26198,22 @@
         "application",
         "code.",
         "2.",
+        ".vnem/coding-playbooks.json",
+        "choose",
+        "closest",
+        "playbook",
+        "follow",
+        "its",
+        "sensing",
+        "execution",
+        "loop",
+        "verification",
+        "ladder",
+        "stop",
+        "conditions",
+        "anti",
+        "patterns.",
+        "3.",
         "current",
         "instructions",
         "manifests",
@@ -24431,19 +26222,19 @@
         "local",
         "patterns",
         "editing.",
-        "3.",
+        "4.",
         "nontrivial",
         "work",
         "write",
         "short",
         "plan",
         "mutation.",
-        "4.",
+        "5.",
         "smallest",
         "cohesive",
         "satisfies",
         "objective.",
-        "5.",
+        "6.",
         "add",
         "update",
         "tests",
@@ -24452,11 +26243,11 @@
         "risk",
         "justifies",
         "it.",
-        "6.",
-        "run",
-        "verification",
-        "commands",
         "7.",
+        "run",
+        "commands",
+        "8.",
+        "selected",
         "results",
         "skipped",
         "checks",
@@ -24469,17 +26260,7 @@
         "installing",
         "packages",
         "changing",
-        "secrets",
-        "deploying",
-        "touching",
-        "production",
-        "data.",
-        "preserve",
-        "user",
-        "changes",
-        "already",
-        "present",
-        "worktree."
+        "secrets"
       ]
     },
     {
@@ -36919,6 +38700,11 @@
     ".vnem/agent-workspace.md": [
       "practice:codex-vnem-setup"
     ],
+    ".vnem/coding-playbooks.json": [
+      "prompt-pattern:agentic-coding-task",
+      "prompt-pattern:code-simplification",
+      "prompt-pattern:codex-implementation"
+    ],
     ".vnem/coding-protocol.md": [
       "prompt-pattern:agentic-coding-task",
       "prompt-pattern:codex-implementation"
@@ -37063,6 +38849,9 @@
       "source:coding-agent-clients",
       "entry:anthropic-claude-code"
     ],
+    "//code.visualstudio.com/docs/copilot/customization/custom-instructions": [
+      "source:agentic-coding-best-practices"
+    ],
     "//complyhat.ai": [
       "entry:ai-complyhat-compliance"
     ],
@@ -37122,6 +38911,9 @@
     ],
     "//developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/": [
       "entry:google-agent2agent-protocol"
+    ],
+    "//developers.openai.com/api/docs/guides/agent-evals": [
+      "source:agentic-coding-best-practices"
     ],
     "//developers.openai.com/api/docs/guides/prompt-engineering": [
       "entry:openai-prompt-engineering-guide"
@@ -37200,6 +38992,9 @@
     ],
     "//docs.github.com/en/copilot/concepts/about-copilot-coding-agent": [
       "entry:github-copilot-coding-agent"
+    ],
+    "//docs.github.com/en/copilot/concepts/prompting/response-customization": [
+      "source:agentic-coding-best-practices"
     ],
     "//docs.github.com/en/copilot/how-tos/copilot-cli/cli-best-practices": [
       "source:agentic-coding-best-practices"
@@ -37499,6 +39294,9 @@
     "//github.com/github/github-mcp-server": [
       "source:platform-and-data-connectors",
       "entry:github-mcp-server"
+    ],
+    "//github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md": [
+      "source:agentic-coding-best-practices"
     ],
     "//github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md": [
       "source:agentic-coding-best-practices"
@@ -39010,6 +40808,7 @@
       "prompt-pattern:visual-polish-review"
     ],
     "6.": [
+      "prompt-pattern:code-simplification",
       "prompt-pattern:codex-implementation"
     ],
     "7.": [
@@ -39020,6 +40819,9 @@
     ],
     "8-point": [
       "design-architecture:vnem-design-architecture"
+    ],
+    "8.": [
+      "prompt-pattern:codex-implementation"
     ],
     "90+": [
       "entry:ai-drillr-drillr"
@@ -39055,7 +40857,6 @@
       "practice:zero-trust-agent-gateway"
     ],
     "abstraction": [
-      "practice:agentic-coding-execution",
       "practice:code-simplification"
     ],
     "abstractions": [
@@ -39085,6 +40886,7 @@
     "acceptance": [
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:feature-slice",
       "task-rubric:agentic_coding",
       "prompt-pattern:agentic-coding-task"
     ],
@@ -39282,6 +41084,7 @@
     ],
     "add": [
       "practice:agentic-coding-execution",
+      "coding-playbook:feature-slice",
       "practice:mcp-gateway-tool-routing",
       "design-architecture:vnem-design-architecture",
       "visual-qa-protocol:vnem-visual-qa-protocol",
@@ -39428,6 +41231,8 @@
     "agent": [
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:failure-recovery",
+      "coding-playbook:large-change-checkpoints",
       "practice:mcp-gateway-tool-routing",
       "practice:visual-experience",
       "design-architecture:vnem-design-architecture",
@@ -39770,6 +41575,9 @@
     ],
     "agentic": [
       "practice:agentic-coding-execution",
+      "coding-playbook:feature-slice",
+      "coding-playbook:review-risk-scan",
+      "coding-playbook:test-first-evidence",
       "source:agentic-coding-best-practices",
       "task-rubric:agentic_coding",
       "source:agentic-gateway-security",
@@ -39933,6 +41741,14 @@
     ],
     "agentic-coding-best-practices": [
       "source:agentic-coding-best-practices"
+    ],
+    "agentic-coding-execution": [
+      "coding-playbook:failure-recovery",
+      "coding-playbook:feature-slice",
+      "coding-playbook:large-change-checkpoints",
+      "coding-playbook:review-risk-scan",
+      "coding-playbook:bug-root-cause",
+      "coding-playbook:test-first-evidence"
     ],
     "agentic-gateway-security": [
       "source:agentic-gateway-security"
@@ -40927,13 +42743,15 @@
     "alone": [
       "entry:graphiti"
     ],
+    "alongside": [
+      "coding-playbook:test-first-evidence"
+    ],
     "alpic": [
       "entry:ai-alpic-test-test-mcp-server",
       "entry:ai-alpic-mcp-alpic-mcp"
     ],
     "already": [
       "entry:pydantic-ai",
-      "prompt-pattern:codex-implementation",
       "entry:microsoft-mcp-gateway",
       "entry:ugrep",
       "entry:qdrant-mcp-server",
@@ -40953,8 +42771,9 @@
       "entry:ai-bezal-local-commerce"
     ],
     "an": [
-      "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:review-risk-scan",
+      "coding-playbook:test-first-evidence",
       "practice:code-simplification",
       "design-architecture:vnem-design-architecture",
       "source:mcp-core-and-registry",
@@ -41287,6 +43106,9 @@
     "anthropic-multi-agent-research-system": [
       "entry:anthropic-multi-agent-research-system"
     ],
+    "anti": [
+      "prompt-pattern:codex-implementation"
+    ],
     "anxiety": [
       "entry:ai-childanxiety-library"
     ],
@@ -41317,7 +43139,10 @@
     "api": [
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:api-data-contract",
+      "coding-playbook:bug-root-cause",
       "source:mcp-core-and-registry",
+      "task-rubric:agentic_coding",
       "task-rubric:backend_api",
       "source:platform-and-data-connectors",
       "source:ui-architecture-sources",
@@ -41377,6 +43202,9 @@
       "entry:mcp-crawl4ai-rag",
       "entry:openai-swarm"
     ],
+    "api-data-contract": [
+      "coding-playbook:api-data-contract"
+    ],
     "api.": [
       "entry:ai-buyersense-buyersense"
     ],
@@ -41406,6 +43234,9 @@
     "app": [
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:feature-slice",
+      "coding-playbook:large-change-checkpoints",
+      "coding-playbook:web-app-rendered-quality",
       "visual-qa-protocol:vnem-visual-qa-protocol",
       "practice:model-and-provider-selection",
       "task-rubric:agentic_coding",
@@ -41489,6 +43320,7 @@
       "prompt-pattern:memory-bank-initialization"
     ],
     "approval": [
+      "coding-playbook:large-change-checkpoints",
       "source:coding-agent-clients",
       "practice:codex-vnem-setup",
       "practice:ide-agent-selection",
@@ -41564,6 +43396,8 @@
       "practice:persistent-memory-context-files"
     ],
     "architecture": [
+      "coding-playbook:feature-slice",
+      "coding-playbook:large-change-checkpoints",
       "practice:mcp-gateway-tool-routing",
       "practice:visual-experience",
       "design-architecture:vnem-design-architecture",
@@ -41604,9 +43438,6 @@
     "area": [
       "prompt-pattern:code-simplification"
     ],
-    "areas": [
-      "prompt-pattern:code-simplification"
-    ],
     "argument": [
       "practice:zero-trust-agent-gateway"
     ],
@@ -41639,6 +43470,7 @@
     ],
     "as": [
       "practice:mcp-gateway-tool-routing",
+      "coding-playbook:web-app-rendered-quality",
       "practice:code-simplification",
       "practice:browser-games",
       "practice:codex-vnem-setup",
@@ -42010,6 +43842,9 @@
     "attach": [
       "practice:observability-and-tracing"
     ],
+    "attempts": [
+      "coding-playbook:failure-recovery"
+    ],
     "attorney": [
       "entry:ai-law-lawyer-search"
     ],
@@ -42050,6 +43885,7 @@
     ],
     "audit": [
       "practice:mcp-gateway-tool-routing",
+      "coding-playbook:review-risk-scan",
       "practice:context-engineering",
       "practice:security",
       "entry:ai-helixar-mcp",
@@ -42083,7 +43919,8 @@
       "entry:ai-auteng-mcp"
     ],
     "auth": [
-      "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:api-data-contract",
+      "coding-playbook:bug-root-cause",
       "source:mcp-core-and-registry",
       "task-rubric:backend_api",
       "task-rubric:security_sensitive",
@@ -42252,6 +44089,11 @@
       "entry:qdrant-mcp-server"
     ],
     "backend": [
+      "practice:agentic-coding-execution",
+      "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:api-data-contract",
+      "coding-playbook:bug-root-cause",
+      "task-rubric:agentic_coding",
       "task-rubric:backend_api",
       "practice:backend",
       "entry:lunar-mcpx",
@@ -42262,6 +44104,9 @@
     ],
     "backend.": [
       "practice:model-and-provider-selection"
+    ],
+    "backend/api/data": [
+      "coding-playbook:api-data-contract"
     ],
     "backlink": [
       "entry:ai-linkguard-linkguard-mcp"
@@ -42315,6 +44160,7 @@
       "entry:pixijs"
     ],
     "be": [
+      "coding-playbook:feature-slice",
       "practice:visual-experience",
       "source:agentic-coding-best-practices",
       "source:coding-agent-clients",
@@ -42592,6 +44438,9 @@
       "prompt-pattern:source-intake"
     ],
     "behavior": [
+      "coding-playbook:api-data-contract",
+      "coding-playbook:refactor-preserve",
+      "coding-playbook:test-first-evidence",
       "practice:code-simplification",
       "design-architecture:vnem-design-architecture",
       "source:coding-agent-clients",
@@ -42777,9 +44626,11 @@
       "entry:codebase-memory-mcp"
     ],
     "behavior-preserving": [
+      "coding-playbook:refactor-preserve",
       "practice:code-simplification"
     ],
     "behavior.": [
+      "coding-playbook:api-data-contract",
       "source:mcp-core-and-registry",
       "practice:browser-games",
       "entry:google-agent2agent-protocol",
@@ -43022,6 +44873,7 @@
       "prompt-pattern:source-intake"
     ],
     "benchmark": [
+      "coding-playbook:test-first-evidence",
       "source:agentic-coding-best-practices",
       "practice:ide-agent-selection",
       "practice:model-and-provider-selection",
@@ -43086,6 +44938,7 @@
     "better": [
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:web-app-rendered-quality",
       "source:agentic-coding-best-practices",
       "task-rubric:frontend_ui",
       "practice:research-source-intake",
@@ -43147,9 +45000,13 @@
       "practice:context-engineering"
     ],
     "blocked": [
+      "coding-playbook:failure-recovery",
       "design-architecture:vnem-design-architecture",
       "visual-qa-protocol:vnem-visual-qa-protocol",
       "prompt-pattern:zero-trust-gateway-roadmap"
+    ],
+    "blocked.": [
+      "coding-playbook:bug-root-cause"
     ],
     "blocker": [
       "practice:subagents-and-multi-agent"
@@ -43431,6 +45288,7 @@
     ],
     "broad": [
       "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:large-change-checkpoints",
       "practice:code-simplification",
       "source:agentic-coding-best-practices",
       "task-rubric:agentic_coding",
@@ -43449,6 +45307,9 @@
       "prompt-pattern:code-simplification",
       "prompt-pattern:bug-debug"
     ],
+    "broken": [
+      "coding-playbook:bug-root-cause"
+    ],
     "browse": [
       "source:platform-and-data-connectors",
       "practice:mcp-server-selection",
@@ -43460,6 +45321,7 @@
     "browser": [
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:web-app-rendered-quality",
       "design-architecture:vnem-design-architecture",
       "source:coding-agent-clients",
       "practice:browser-games",
@@ -43579,6 +45441,10 @@
     "bug": [
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:api-data-contract",
+      "coding-playbook:failure-recovery",
+      "coding-playbook:bug-root-cause",
+      "coding-playbook:test-first-evidence",
       "source:agentic-coding-best-practices",
       "task-rubric:agentic_coding",
       "prompt-pattern:agentic-coding-task",
@@ -43588,15 +45454,25 @@
     "bug-first": [
       "prompt-pattern:code-review"
     ],
+    "bug-root-cause": [
+      "coding-playbook:bug-root-cause"
+    ],
     "bugfix": [
       "entry:sentry-mcp"
     ],
     "bugs": [
+      "coding-playbook:review-risk-scan",
       "prompt-pattern:code-review"
     ],
     "build": [
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:api-data-contract",
+      "coding-playbook:refactor-preserve",
+      "coding-playbook:feature-slice",
+      "coding-playbook:large-change-checkpoints",
+      "coding-playbook:web-app-rendered-quality",
+      "coding-playbook:test-first-evidence",
       "design-architecture:vnem-design-architecture",
       "source:agentic-coding-best-practices",
       "practice:browser-games",
@@ -43643,6 +45519,11 @@
     "build/test": [
       "task-rubric:agentic_coding"
     ],
+    "builder": [
+      "coding-playbook:feature-slice",
+      "coding-playbook:web-app-rendered-quality",
+      "coding-playbook:test-first-evidence"
+    ],
     "builders": [
       "prompt-pattern:agent-workspace-architecture"
     ],
@@ -43661,6 +45542,7 @@
       "entry:zep"
     ],
     "builds.": [
+      "coding-playbook:web-app-rendered-quality",
       "entry:rapier-js"
     ],
     "built": [
@@ -43710,7 +45592,10 @@
     ],
     "by": [
       "practice:agentic-coding-execution",
+      "coding-playbook:api-data-contract",
+      "coding-playbook:failure-recovery",
       "practice:mcp-gateway-tool-routing",
+      "coding-playbook:bug-root-cause",
       "practice:code-simplification",
       "practice:ide-agent-selection",
       "practice:model-and-provider-selection",
@@ -43790,6 +45675,9 @@
       "entry:codebase-memory-mcp",
       "entry:opentabs"
     ],
+    "call-site": [
+      "coding-playbook:refactor-preserve"
+    ],
     "call.": [
       "prompt-pattern:zero-trust-gateway-roadmap"
     ],
@@ -43798,6 +45686,9 @@
     ],
     "called": [
       "task-rubric:agent_tooling"
+    ],
+    "caller-facing": [
+      "coding-playbook:api-data-contract"
     ],
     "callers": [
       "task-rubric:backend_api"
@@ -43885,6 +45776,7 @@
       "practice:research-source-intake"
     ],
     "cannot": [
+      "coding-playbook:failure-recovery",
       "entry:google-agent2agent-protocol",
       "entry:codex-agents-md",
       "entry:crewai",
@@ -44359,6 +46251,10 @@
       "entry:ai-bezal-local-commerce"
     ],
     "cause": [
+      "practice:agentic-coding-execution",
+      "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:bug-root-cause",
+      "task-rubric:agentic_coding",
       "prompt-pattern:code-review",
       "prompt-pattern:bug-debug"
     ],
@@ -44403,6 +46299,9 @@
     "change": [
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:api-data-contract",
+      "coding-playbook:failure-recovery",
+      "coding-playbook:large-change-checkpoints",
       "task-rubric:agentic_coding",
       "task-rubric:docs_prompt",
       "prompt-pattern:agentic-coding-task",
@@ -44441,7 +46340,6 @@
       "entry:inspect-ai",
       "prompt-pattern:code-review",
       "prompt-pattern:code-simplification",
-      "prompt-pattern:codex-implementation",
       "entry:promptfoo",
       "prompt-pattern:visual-polish-review",
       "entry:excalibur-js",
@@ -44459,6 +46357,7 @@
       "entry:openai-codex-cli"
     ],
     "changing": [
+      "coding-playbook:failure-recovery",
       "operating-protocol:vnem-operating-loop",
       "task-rubric:refactor",
       "task-rubric:security_sensitive",
@@ -44536,10 +46435,12 @@
       "entry:kaimo"
     ],
     "checkpoint": [
+      "coding-playbook:large-change-checkpoints",
       "practice:human-approval-and-durability",
       "entry:langgraph"
     ],
     "checkpoints": [
+      "coding-playbook:large-change-checkpoints",
       "entry:langgraph",
       "entry:roo-code"
     ],
@@ -44600,6 +46501,7 @@
       "task-rubric:agent_tooling",
       "entry:anthropic-building-effective-agents",
       "entry:vnem-mcp",
+      "prompt-pattern:codex-implementation",
       "prompt-pattern:mcp-selection",
       "entry:rapier-js"
     ],
@@ -44698,6 +46600,9 @@
     "classify": [
       "operating-protocol:vnem-operating-loop",
       "source:agentic-gateway-security"
+    ],
+    "classifying": [
+      "coding-playbook:failure-recovery"
     ],
     "claude": [
       "source:coding-agent-clients",
@@ -44910,6 +46815,7 @@
       "prompt-pattern:code-simplification"
     ],
     "cleanup": [
+      "coding-playbook:refactor-preserve",
       "entry:claude-code-subagents"
     ],
     "clear": [
@@ -45018,6 +46924,9 @@
       "entry:google-agent-development-kit",
       "entry:ai-31st-mcp"
     ],
+    "closest": [
+      "prompt-pattern:codex-implementation"
+    ],
     "cloud": [
       "entry:google-agent-development-kit",
       "entry:ai-calendarmcp-server",
@@ -45067,9 +46976,14 @@
       "entry:jscpd"
     ],
     "code-review": [
+      "coding-playbook:refactor-preserve",
+      "coding-playbook:review-risk-scan",
+      "coding-playbook:bug-root-cause",
       "entry:openai-codex-cli"
     ],
     "code-simplification": [
+      "coding-playbook:refactor-preserve",
+      "coding-playbook:large-change-checkpoints",
       "entry:jscpd",
       "entry:knip"
     ],
@@ -45143,6 +47057,10 @@
     "coding": [
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:failure-recovery",
+      "coding-playbook:feature-slice",
+      "coding-playbook:review-risk-scan",
+      "coding-playbook:test-first-evidence",
       "source:agentic-coding-best-practices",
       "source:coding-agent-clients",
       "practice:ide-agent-selection",
@@ -45204,6 +47122,17 @@
     "coding-agents": [
       "entry:ripgrep",
       "entry:codebase-memory-mcp"
+    ],
+    "coding-protocol": [
+      "coding-playbook:api-data-contract",
+      "coding-playbook:refactor-preserve",
+      "coding-playbook:failure-recovery",
+      "coding-playbook:feature-slice",
+      "coding-playbook:large-change-checkpoints",
+      "coding-playbook:web-app-rendered-quality",
+      "coding-playbook:review-risk-scan",
+      "coding-playbook:bug-root-cause",
+      "coding-playbook:test-first-evidence"
     ],
     "coffee": [
       "entry:ai-agenticshelf-graffeo"
@@ -45294,13 +47223,13 @@
     ],
     "commands": [
       "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:failure-recovery",
       "practice:persistent-memory-context-files",
       "practice:codex-vnem-setup",
       "practice:ide-agent-selection",
       "entry:codex-agents-md",
       "practice:prompt-engineering",
       "prompt-pattern:agent-workspace-architecture",
-      "prompt-pattern:code-simplification",
       "prompt-pattern:codex-implementation",
       "prompt-pattern:memory-bank-initialization",
       "entry:claude-code-memory",
@@ -45354,6 +47283,7 @@
       "entry:jscpd"
     ],
     "compaction": [
+      "coding-playbook:refactor-preserve",
       "practice:code-simplification",
       "task-rubric:refactor",
       "prompt-pattern:code-simplification"
@@ -45658,12 +47588,16 @@
       "entry:kaplay"
     ],
     "concrete": [
+      "coding-playbook:review-risk-scan",
       "task-rubric:agent_tooling",
       "practice:mcp-server-selection",
       "entry:jscpd"
     ],
     "concurrent": [
       "entry:swarms"
+    ],
+    "conditions": [
+      "prompt-pattern:codex-implementation"
     ],
     "confidence": [
       "operating-protocol:vnem-operating-loop",
@@ -45928,6 +47862,7 @@
     ],
     "contract": [
       "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:api-data-contract",
       "task-rubric:docs_prompt",
       "prompt-pattern:agentic-coding-task"
     ],
@@ -45936,6 +47871,8 @@
       "prompt-pattern:prompt-enhancement"
     ],
     "contracts": [
+      "coding-playbook:api-data-contract",
+      "coding-playbook:refactor-preserve",
       "practice:prompt-engineering",
       "entry:openai-prompt-engineering-guide"
     ],
@@ -46019,6 +47956,7 @@
       "practice:agentic-coding-execution"
     ],
     "convert": [
+      "coding-playbook:test-first-evidence",
       "practice:zero-trust-agent-gateway"
     ],
     "cookiy": [
@@ -46113,9 +48051,15 @@
     "cover": [
       "task-rubric:backend_api"
     ],
+    "coverage": [
+      "coding-playbook:test-first-evidence"
+    ],
     "covers": [
       "prompt-pattern:bug-debug",
       "entry:ugrep"
+    ],
+    "crash": [
+      "coding-playbook:bug-root-cause"
     ],
     "crates.io": [
       "entry:ripgrep"
@@ -46193,6 +48137,7 @@
     "criteria": [
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:feature-slice",
       "task-rubric:agentic_coding",
       "task-rubric:docs_prompt",
       "practice:prompt-engineering",
@@ -46792,6 +48737,7 @@
       "source:ui-architecture-sources"
     ],
     "dashboard": [
+      "coding-playbook:web-app-rendered-quality",
       "practice:visual-experience",
       "design-architecture:vnem-design-architecture",
       "visual-qa-protocol:vnem-visual-qa-protocol",
@@ -46804,6 +48750,7 @@
     ],
     "data": [
       "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:api-data-contract",
       "practice:code-simplification",
       "practice:persistent-memory-context-files",
       "task-rubric:agentic_coding",
@@ -47044,13 +48991,13 @@
       "practice:mcp-gateway-tool-routing",
       "task-rubric:data_memory",
       "practice:mcp-server-selection",
-      "entry:pydantic-ai",
-      "prompt-pattern:codex-implementation"
+      "entry:pydantic-ai"
     ],
     "data/auth": [
       "task-rubric:backend_api"
     ],
     "database": [
+      "coding-playbook:api-data-contract",
       "task-rubric:backend_api",
       "source:platform-and-data-connectors",
       "task-rubric:security_sensitive",
@@ -47118,6 +49065,7 @@
       "entry:ai-clarid-compliance"
     ],
     "dead": [
+      "coding-playbook:refactor-preserve",
       "practice:code-simplification",
       "practice:persistent-memory-context-files",
       "task-rubric:refactor",
@@ -47137,6 +49085,8 @@
       "entry:jscpd"
     ],
     "debug": [
+      "coding-playbook:failure-recovery",
+      "coding-playbook:bug-root-cause",
       "operating-protocol:vnem-operating-loop",
       "task-rubric:agentic_coding",
       "task-rubric:backend_api",
@@ -47334,6 +49284,7 @@
       "prompt-pattern:ui-build"
     ],
     "dependencies": [
+      "coding-playbook:review-risk-scan",
       "task-rubric:agentic_coding",
       "task-rubric:frontend_ui",
       "practice:deployment",
@@ -47350,6 +49301,7 @@
     ],
     "dependency": [
       "practice:agentic-coding-execution",
+      "coding-playbook:failure-recovery",
       "task-rubric:refactor",
       "practice:zero-trust-agent-gateway",
       "practice:code-review",
@@ -47375,11 +49327,9 @@
     "deploying": [
       "task-rubric:security_sensitive",
       "entry:google-agent-development-kit",
-      "prompt-pattern:agentic-coding-task",
-      "prompt-pattern:codex-implementation"
+      "prompt-pattern:agentic-coding-task"
     ],
     "deployment": [
-      "coding-protocol:vnem-coding-protocol",
       "practice:model-and-provider-selection",
       "task-rubric:security_sensitive",
       "practice:backend",
@@ -47444,6 +49394,9 @@
       "prompt-pattern:visual-build",
       "prompt-pattern:visual-polish-review",
       "entry:custom-modes-roo-code"
+    ],
+    "design-architecture": [
+      "coding-playbook:web-app-rendered-quality"
     ],
     "design-system": [
       "task-rubric:frontend_ui"
@@ -47548,7 +49501,6 @@
       "entry:ai-31st-mcp",
       "entry:ai-adadvisor-mcp-server",
       "entry:ai-adweave-meta-ads-mcp",
-      "prompt-pattern:agentic-coding-task",
       "entry:ai-agenticterminal-directory",
       "entry:ai-adramp-google-ads",
       "entry:ai-agentrapay-agentra",
@@ -47646,6 +49598,9 @@
     ],
     "desktop.": [
       "prompt-pattern:ui-build"
+    ],
+    "desktop/mobile": [
+      "coding-playbook:web-app-rendered-quality"
     ],
     "destination": [
       "entry:ai-chinamarketing-intelligence"
@@ -47747,6 +49702,9 @@
       "practice:coding-agents",
       "entry:aider",
       "entry:openai-codex-cli"
+    ],
+    "diffs.": [
+      "coding-playbook:large-change-checkpoints"
     ],
     "dimforge/rapier2d-compat": [
       "entry:rapier-js"
@@ -48255,6 +50213,7 @@
       "entry:jscpd"
     ],
     "duplication": [
+      "coding-playbook:refactor-preserve",
       "practice:code-simplification",
       "task-rubric:refactor",
       "prompt-pattern:code-simplification",
@@ -48463,6 +50422,7 @@
       "source:agentic-coding-best-practices"
     ],
     "endpoint": [
+      "coding-playbook:api-data-contract",
       "entry:lunar-mcpx"
     ],
     "endpoints": [
@@ -48508,6 +50468,9 @@
     ],
     "engine/editor": [
       "practice:browser-games"
+    ],
+    "engineer": [
+      "coding-playbook:review-risk-scan"
     ],
     "engineer.": [
       "prompt-pattern:code-review"
@@ -48623,6 +50586,9 @@
       "entry:microsoft-mcp-gateway",
       "entry:openhands"
     ],
+    "eperm": [
+      "coding-playbook:failure-recovery"
+    ],
     "ephemeral": [
       "entry:ai-aliengiraffe-spotdb"
     ],
@@ -48635,6 +50601,8 @@
     ],
     "error": [
       "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:failure-recovery",
+      "coding-playbook:bug-root-cause",
       "practice:code-simplification",
       "task-rubric:backend_api",
       "task-rubric:interactive_canvas",
@@ -48685,6 +50653,9 @@
       "entry:ragas"
     ],
     "evals": [
+      "coding-playbook:large-change-checkpoints",
+      "coding-playbook:bug-root-cause",
+      "coding-playbook:test-first-evidence",
       "source:agentic-coding-best-practices",
       "practice:model-and-provider-selection",
       "practice:evals",
@@ -48782,6 +50753,7 @@
     ],
     "evidence": [
       "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:test-first-evidence",
       "practice:code-simplification",
       "design-architecture:vnem-design-architecture",
       "visual-qa-protocol:vnem-visual-qa-protocol",
@@ -48859,6 +50831,7 @@
       "entry:google-agent2agent-protocol"
     ],
     "executable": [
+      "coding-playbook:test-first-evidence",
       "task-rubric:docs_prompt"
     ],
     "execute": [
@@ -48878,6 +50851,7 @@
       "practice:human-approval-and-durability",
       "entry:langgraph",
       "prompt-pattern:agentic-coding-task",
+      "prompt-pattern:codex-implementation",
       "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:openai-codex-cli",
       "entry:swarms",
@@ -48912,6 +50886,7 @@
       "entry:opentabs"
     ],
     "exists": [
+      "prompt-pattern:code-simplification",
       "prompt-pattern:codex-implementation"
     ],
     "exists.": [
@@ -48926,6 +50901,7 @@
     "expected": [
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:test-first-evidence",
       "prompt-pattern:agentic-coding-task",
       "prompt-pattern:bug-debug"
     ],
@@ -49422,17 +51398,27 @@
       "practice:visual-experience"
     ],
     "failed": [
+      "coding-playbook:failure-recovery",
       "practice:persistent-memory-context-files",
       "practice:ide-agent-selection"
     ],
     "failing": [
       "practice:agentic-coding-execution",
+      "coding-playbook:bug-root-cause",
       "prompt-pattern:bug-debug"
     ],
     "failure": [
+      "practice:agentic-coding-execution",
+      "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:failure-recovery",
+      "coding-playbook:bug-root-cause",
+      "task-rubric:agentic_coding",
       "prompt-pattern:bug-debug",
       "prompt-pattern:eval-design",
       "entry:agentops"
+    ],
+    "failure-recovery": [
+      "coding-playbook:failure-recovery"
     ],
     "failures": [
       "practice:observability-and-tracing",
@@ -49483,11 +51469,17 @@
     "feature": [
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:api-data-contract",
+      "coding-playbook:feature-slice",
+      "coding-playbook:test-first-evidence",
       "task-rubric:agentic_coding",
       "entry:ai-abmeter-abmeter",
       "prompt-pattern:agentic-coding-task",
       "prompt-pattern:code-simplification",
       "prompt-pattern:codex-implementation"
+    ],
+    "feature-slice": [
+      "coding-playbook:feature-slice"
     ],
     "features": [
       "coding-protocol:vnem-coding-protocol",
@@ -49708,6 +51700,8 @@
       "prompt-pattern:eval-design"
     ],
     "file": [
+      "coding-playbook:large-change-checkpoints",
+      "coding-playbook:review-risk-scan",
       "source:agentic-coding-best-practices",
       "practice:ide-agent-selection",
       "prompt-pattern:code-review",
@@ -49879,6 +51873,8 @@
     "first": [
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:bug-root-cause",
+      "coding-playbook:test-first-evidence",
       "practice:code-simplification",
       "practice:visual-experience",
       "design-architecture:vnem-design-architecture",
@@ -49908,6 +51904,7 @@
       "prompt-pattern:ui-build"
     ],
     "first.": [
+      "coding-playbook:review-risk-scan",
       "design-architecture:vnem-design-architecture",
       "prompt-pattern:visual-build",
       "prompt-pattern:visual-polish-review",
@@ -49933,6 +51930,10 @@
     "fix": [
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:api-data-contract",
+      "coding-playbook:failure-recovery",
+      "coding-playbook:bug-root-cause",
+      "coding-playbook:test-first-evidence",
       "visual-qa-protocol:vnem-visual-qa-protocol",
       "task-rubric:aesthetic_experience",
       "task-rubric:agentic_coding",
@@ -49959,6 +51960,7 @@
     "fixture": [
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:test-first-evidence",
       "prompt-pattern:source-intake"
     ],
     "fixtures": [
@@ -50053,6 +52055,7 @@
       "entry:ai-fodda-mcp-server"
     ],
     "follow": [
+      "prompt-pattern:codex-implementation",
       "prompt-pattern:visual-build"
     ],
     "follows": [
@@ -50153,6 +52156,7 @@
       "prompt-pattern:research"
     ],
     "frontend": [
+      "coding-playbook:web-app-rendered-quality",
       "source:browser-and-ui-verification",
       "task-rubric:frontend_ui",
       "practice:frontend",
@@ -50295,6 +52299,7 @@
       "entry:mcp-server-mysql"
     ],
     "gates": [
+      "coding-playbook:large-change-checkpoints",
       "operating-protocol:vnem-operating-loop",
       "task-rubric:agentic_coding",
       "practice:human-approval-and-durability",
@@ -51506,6 +53511,9 @@
     "hud": [
       "visual-qa-protocol:vnem-visual-qa-protocol"
     ],
+    "huge": [
+      "coding-playbook:large-change-checkpoints"
+    ],
     "human": [
       "practice:ide-agent-selection",
       "operating-protocol:vnem-operating-loop",
@@ -51599,6 +53607,7 @@
       "task-rubric:frontend_ui",
       "prompt-pattern:agentic-coding-task",
       "prompt-pattern:code-review",
+      "prompt-pattern:code-simplification",
       "prompt-pattern:codex-implementation",
       "prompt-pattern:bug-debug",
       "prompt-pattern:ui-build",
@@ -51628,6 +53637,7 @@
     ],
     "implement": [
       "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:feature-slice",
       "operating-protocol:vnem-operating-loop",
       "task-rubric:agentic_coding",
       "prompt-pattern:codex-implementation"
@@ -51643,6 +53653,7 @@
       "entry:rules-template-memory-bank"
     ],
     "implementation.": [
+      "coding-playbook:test-first-evidence",
       "source:agentic-gateway-security",
       "prompt-pattern:agentic-coding-task",
       "prompt-pattern:ui-build",
@@ -52375,6 +54386,7 @@
     "instead": [
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:failure-recovery",
       "practice:mcp-gateway-tool-routing",
       "visual-qa-protocol:vnem-visual-qa-protocol",
       "task-rubric:agentic_coding",
@@ -52477,6 +54489,7 @@
       "entry:ai-bluenexus-universal-mcp"
     ],
     "intended": [
+      "coding-playbook:test-first-evidence",
       "task-rubric:agent_tooling",
       "practice:mcp-server-selection"
     ],
@@ -52505,7 +54518,6 @@
       "practice:visual-experience",
       "task-rubric:aesthetic_experience",
       "task-rubric:frontend_ui",
-      "prompt-pattern:code-simplification",
       "prompt-pattern:ui-build"
     ],
     "interact": [
@@ -52603,6 +54615,7 @@
     ],
     "is": [
       "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:bug-root-cause",
       "practice:code-simplification",
       "practice:visual-experience",
       "design-architecture:vnem-design-architecture",
@@ -52853,6 +54866,9 @@
     "iso/iec": [
       "entry:ai-complyhat-compliance"
     ],
+    "isolating": [
+      "coding-playbook:api-data-contract"
+    ],
     "isolation.": [
       "entry:browserbase-mcp"
     ],
@@ -52920,6 +54936,9 @@
     "iterative": [
       "entry:openai-prompt-engineering-guide",
       "entry:openai-prompt-optimizer"
+    ],
+    "its": [
+      "prompt-pattern:codex-implementation"
     ],
     "itself": [
       "coding-protocol:vnem-coding-protocol"
@@ -53191,7 +55210,11 @@
     "lack": [
       "source:ui-architecture-sources"
     ],
+    "ladder": [
+      "prompt-pattern:codex-implementation"
+    ],
     "landing": [
+      "coding-playbook:web-app-rendered-quality",
       "task-rubric:frontend_ui",
       "source:ui-architecture-sources",
       "prompt-pattern:ui-build",
@@ -53246,6 +55269,8 @@
     "large": [
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:failure-recovery",
+      "coding-playbook:large-change-checkpoints",
       "task-rubric:agentic_coding",
       "task-rubric:refactor",
       "practice:context-engineering",
@@ -53253,6 +55278,9 @@
       "prompt-pattern:agentic-coding-task",
       "entry:kaplay",
       "entry:codebase-memory-mcp"
+    ],
+    "large-change-checkpoints": [
+      "coding-playbook:large-change-checkpoints"
     ],
     "larger": [
       "entry:openai-agents-sdk",
@@ -53769,6 +55797,7 @@
     ],
     "like": [
       "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:review-risk-scan",
       "operating-protocol:vnem-operating-loop",
       "practice:evals",
       "practice:mcp-server-selection",
@@ -54054,6 +56083,7 @@
     ],
     "local": [
       "practice:agentic-coding-execution",
+      "coding-playbook:feature-slice",
       "practice:code-simplification",
       "visual-qa-protocol:vnem-visual-qa-protocol",
       "practice:persistent-memory-context-files",
@@ -54094,6 +56124,9 @@
     ],
     "localize": [
       "prompt-pattern:bug-debug"
+    ],
+    "localizing": [
+      "coding-playbook:bug-root-cause"
     ],
     "locally": [
       "task-rubric:interactive_canvas"
@@ -54182,11 +56215,13 @@
     "loop": [
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:failure-recovery",
       "visual-qa-protocol:vnem-visual-qa-protocol",
       "practice:browser-games",
       "operating-protocol:vnem-operating-loop",
       "task-rubric:agentic_coding",
-      "practice:human-approval-and-durability"
+      "practice:human-approval-and-durability",
+      "prompt-pattern:codex-implementation"
     ],
     "loop.": [
       "entry:crewai"
@@ -54238,6 +56273,7 @@
       "entry:rules-template-memory-bank"
     ],
     "maintainability": [
+      "coding-playbook:refactor-preserve",
       "prompt-pattern:code-review"
     ],
     "maintained": [
@@ -54697,6 +56733,9 @@
       "prompt-pattern:visual-build",
       "entry:ast-grep",
       "entry:rules-template-memory-bank"
+    ],
+    "matches": [
+      "coding-playbook:feature-slice"
     ],
     "matching": [
       "operating-protocol:vnem-operating-loop",
@@ -55249,6 +57288,7 @@
       "entry:clude"
     ],
     "memory": [
+      "coding-playbook:api-data-contract",
       "source:coding-agent-clients",
       "practice:persistent-memory-context-files",
       "practice:codex-vnem-setup",
@@ -55375,6 +57415,8 @@
       "entry:microsoft-mcp-gateway"
     ],
     "migration": [
+      "coding-playbook:api-data-contract",
+      "coding-playbook:large-change-checkpoints",
       "task-rubric:backend_api",
       "entry:claude-code-subagents",
       "entry:supabase-mcp"
@@ -55387,6 +57429,7 @@
       "entry:ai-jeda-jeda-ai"
     ],
     "minimal": [
+      "coding-playbook:refactor-preserve",
       "practice:code-simplification",
       "task-rubric:refactor",
       "prompt-pattern:agent-workspace-architecture",
@@ -55409,6 +57452,7 @@
       "entry:ast-grep"
     ],
     "missing": [
+      "coding-playbook:review-risk-scan",
       "task-rubric:docs_prompt",
       "practice:prompt-engineering",
       "entry:openai-prompt-engineering-guide",
@@ -55436,7 +57480,6 @@
       "task-rubric:aesthetic_experience",
       "task-rubric:frontend_ui",
       "task-rubric:interactive_canvas",
-      "prompt-pattern:agentic-coding-task",
       "prompt-pattern:ui-build",
       "prompt-pattern:visual-build",
       "prompt-pattern:visual-polish-review",
@@ -55630,6 +57673,7 @@
       "entry:lunar-mcpx"
     ],
     "multi": [
+      "coding-playbook:large-change-checkpoints",
       "practice:subagents-and-multi-agent",
       "prompt-pattern:subagent-delegation"
     ],
@@ -55758,6 +57802,7 @@
       "practice:observability-and-tracing"
     ],
     "narrow": [
+      "coding-playbook:bug-root-cause",
       "task-rubric:backend_api",
       "practice:backend",
       "practice:data",
@@ -55881,6 +57926,7 @@
       "task-rubric:aesthetic_experience"
     ],
     "network": [
+      "coding-playbook:failure-recovery",
       "source:mcp-core-and-registry",
       "task-rubric:backend_api",
       "practice:zero-trust-agent-gateway",
@@ -56122,6 +58168,7 @@
       "entry:ai-newzai-api-news-mcp"
     ],
     "next": [
+      "coding-playbook:web-app-rendered-quality",
       "prompt-pattern:mcp-gateway-evaluation"
     ],
     "next.js": [
@@ -56251,6 +58298,9 @@
       "practice:visual-experience",
       "practice:context-engineering"
     ],
+    "noise.": [
+      "coding-playbook:failure-recovery"
+    ],
     "noisy": [
       "practice:visual-experience",
       "design-architecture:vnem-design-architecture",
@@ -56296,6 +58346,7 @@
     ],
     "not": [
       "practice:mcp-gateway-tool-routing",
+      "coding-playbook:web-app-rendered-quality",
       "practice:visual-experience",
       "design-architecture:vnem-design-architecture",
       "source:agentic-coding-best-practices",
@@ -56456,6 +58507,7 @@
     "of": [
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:failure-recovery",
       "practice:mcp-gateway-tool-routing",
       "source:mcp-core-and-registry",
       "visual-qa-protocol:vnem-visual-qa-protocol",
@@ -56521,7 +58573,6 @@
       "entry:anthropic-multi-agent-research-system",
       "entry:ai-auxen-auxen",
       "entry:ai-nexustoken-nexustoken-sdk",
-      "prompt-pattern:agentic-coding-task",
       "entry:ai-agenticterminal-directory",
       "entry:ai-childadhd-library",
       "entry:ai-childanxiety-library",
@@ -56572,8 +58623,8 @@
       "entry:ai-deepledger-mcp"
     ],
     "only": [
-      "practice:agentic-coding-execution",
       "practice:mcp-gateway-tool-routing",
+      "coding-playbook:web-app-rendered-quality",
       "source:agentic-coding-best-practices",
       "visual-qa-protocol:vnem-visual-qa-protocol",
       "practice:browser-games",
@@ -56895,6 +58946,9 @@
       "operating-protocol:vnem-operating-loop",
       "entry:microsoft-mcp-gateway"
     ],
+    "operating-protocol": [
+      "coding-playbook:failure-recovery"
+    ],
     "operation": [
       "practice:human-approval-and-durability"
     ],
@@ -57024,7 +59078,11 @@
     "or": [
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:failure-recovery",
       "practice:mcp-gateway-tool-routing",
+      "coding-playbook:web-app-rendered-quality",
+      "coding-playbook:bug-root-cause",
+      "coding-playbook:test-first-evidence",
       "practice:code-simplification",
       "practice:visual-experience",
       "design-architecture:vnem-design-architecture",
@@ -57381,6 +59439,7 @@
       "coding-protocol:vnem-coding-protocol"
     ],
     "outdated": [
+      "coding-playbook:review-risk-scan",
       "practice:code-review"
     ],
     "outgrown": [
@@ -57388,6 +59447,7 @@
     ],
     "output": [
       "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:test-first-evidence",
       "task-rubric:docs_prompt",
       "source:evaluation-and-observability",
       "task-rubric:interactive_canvas",
@@ -57446,6 +59506,9 @@
       "entry:mastra",
       "entry:graphiti",
       "entry:mem0"
+    ],
+    "overhaul": [
+      "coding-playbook:large-change-checkpoints"
     ],
     "overhead.": [
       "entry:zep"
@@ -57650,6 +59713,9 @@
       "prompt-pattern:visual-polish-review",
       "entry:openhands"
     ],
+    "patching": [
+      "coding-playbook:bug-root-cause"
+    ],
     "path": [
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
@@ -57669,6 +59735,7 @@
       "prompt-pattern:ui-build"
     ],
     "paths": [
+      "coding-playbook:large-change-checkpoints",
       "task-rubric:backend_api",
       "task-rubric:security_sensitive",
       "practice:zero-trust-agent-gateway",
@@ -57721,7 +59788,8 @@
     ],
     "patterns.": [
       "entry:google-agent-development-kit",
-      "entry:langgraph"
+      "entry:langgraph",
+      "prompt-pattern:codex-implementation"
     ],
     "pause/restart": [
       "task-rubric:interactive_canvas"
@@ -57746,7 +59814,6 @@
       "entry:kaimo"
     ],
     "payments": [
-      "coding-protocol:vnem-coding-protocol",
       "practice:mcp-gateway-tool-routing",
       "operating-protocol:vnem-operating-loop",
       "source:platform-and-data-connectors",
@@ -58216,6 +60283,7 @@
     "plan": [
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:large-change-checkpoints",
       "source:agentic-coding-best-practices",
       "practice:ide-agent-selection",
       "operating-protocol:vnem-operating-loop",
@@ -58243,6 +60311,9 @@
     "plan.": [
       "prompt-pattern:mcp-gateway-evaluation",
       "prompt-pattern:subagent-delegation"
+    ],
+    "planner": [
+      "coding-playbook:large-change-checkpoints"
     ],
     "planners": [
       "entry:semantic-kernel"
@@ -58299,6 +60370,13 @@
     ],
     "playback": [
       "entry:ai-djwizard-tvwizard"
+    ],
+    "playbook": [
+      "prompt-pattern:agentic-coding-task",
+      "prompt-pattern:codex-implementation"
+    ],
+    "playbook.": [
+      "prompt-pattern:code-simplification"
     ],
     "playcanvas": [
       "practice:browser-games",
@@ -58464,6 +60542,7 @@
       "entry:ai-com-mcp-linkedin"
     ],
     "pr": [
+      "coding-playbook:review-risk-scan",
       "prompt-pattern:code-review",
       "entry:github-mcp-server",
       "entry:github-copilot-coding-agent"
@@ -58472,8 +60551,16 @@
       "task-rubric:agentic_coding",
       "entry:anthropic-building-effective-agents"
     ],
-    "practical.": [
-      "prompt-pattern:agentic-coding-task"
+    "practice": [
+      "coding-playbook:api-data-contract",
+      "coding-playbook:refactor-preserve",
+      "coding-playbook:failure-recovery",
+      "coding-playbook:feature-slice",
+      "coding-playbook:large-change-checkpoints",
+      "coding-playbook:web-app-rendered-quality",
+      "coding-playbook:review-risk-scan",
+      "coding-playbook:bug-root-cause",
+      "coding-playbook:test-first-evidence"
     ],
     "practices": [
       "practice:code-review",
@@ -58561,7 +60648,7 @@
       "task-rubric:backend_api",
       "task-rubric:frontend_ui",
       "task-rubric:interactive_canvas",
-      "prompt-pattern:codex-implementation"
+      "prompt-pattern:agentic-coding-task"
     ],
     "present.": [
       "prompt-pattern:agentic-coding-task",
@@ -58573,7 +60660,6 @@
       "practice:research-source-intake",
       "practice:prompt-engineering",
       "prompt-pattern:code-simplification",
-      "prompt-pattern:codex-implementation",
       "prompt-pattern:prompt-enhancement",
       "prompt-pattern:source-intake",
       "prompt-pattern:visual-polish-review"
@@ -58586,6 +60672,8 @@
       "prompt-pattern:code-simplification"
     ],
     "preserving": [
+      "coding-playbook:api-data-contract",
+      "coding-playbook:refactor-preserve",
       "practice:code-simplification",
       "prompt-pattern:code-simplification",
       "prompt-pattern:prompt-enhancement"
@@ -58736,6 +60824,7 @@
       "entry:openai-codex-cli"
     ],
     "product": [
+      "coding-playbook:feature-slice",
       "practice:code-simplification",
       "practice:ide-agent-selection",
       "source:browser-and-ui-verification",
@@ -58767,7 +60856,6 @@
       "entry:langgraph",
       "entry:mastra",
       "practice:mcp-server-selection",
-      "prompt-pattern:codex-implementation",
       "entry:sentry-mcp",
       "entry:swarms",
       "entry:supabase-mcp",
@@ -58787,6 +60875,9 @@
       "entry:clude"
     ],
     "professional": [
+      "coding-playbook:refactor-preserve",
+      "coding-playbook:feature-slice",
+      "coding-playbook:review-risk-scan",
       "practice:code-simplification",
       "task-rubric:agentic_coding",
       "task-rubric:refactor",
@@ -59284,6 +61375,7 @@
       "entry:lunar-mcpx"
     ],
     "proving": [
+      "coding-playbook:bug-root-cause",
       "prompt-pattern:code-simplification"
     ],
     "provision": [
@@ -59312,6 +61404,7 @@
     ],
     "public": [
       "practice:agentic-coding-execution",
+      "coding-playbook:refactor-preserve",
       "practice:code-simplification",
       "visual-qa-protocol:vnem-visual-qa-protocol",
       "task-rubric:agentic_coding",
@@ -59424,6 +61517,7 @@
       "entry:swarms"
     ],
     "qa": [
+      "coding-playbook:web-app-rendered-quality",
       "visual-qa-protocol:vnem-visual-qa-protocol",
       "entry:playwright-mcp",
       "entry:browserbase-mcp"
@@ -59584,6 +61678,7 @@
       "task-rubric:refactor"
     ],
     "react": [
+      "coding-playbook:web-app-rendered-quality",
       "task-rubric:frontend_ui",
       "practice:frontend",
       "entry:vercel-ai-sdk"
@@ -59667,7 +61762,7 @@
       "practice:search"
     ],
     "real": [
-      "practice:agentic-coding-execution",
+      "coding-playbook:web-app-rendered-quality",
       "design-architecture:vnem-design-architecture",
       "practice:browser-games",
       "practice:ide-agent-selection",
@@ -59775,8 +61870,15 @@
     "records": [
       "entry:agentops"
     ],
+    "recover": [
+      "coding-playbook:failure-recovery"
+    ],
     "recovery": [
+      "practice:agentic-coding-execution",
+      "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:failure-recovery",
       "practice:ide-agent-selection",
+      "task-rubric:agentic_coding",
       "task-rubric:security_sensitive"
     ],
     "recruitment": [
@@ -59811,6 +61913,7 @@
       "entry:ai-adeu-adeu"
     ],
     "reduce": [
+      "coding-playbook:refactor-preserve",
       "source:ui-architecture-sources",
       "practice:frontend",
       "prompt-pattern:code-simplification",
@@ -59825,11 +61928,17 @@
       "practice:code-simplification"
     ],
     "refactor": [
+      "coding-playbook:refactor-preserve",
+      "coding-playbook:large-change-checkpoints",
       "practice:code-simplification",
       "task-rubric:agentic_coding",
       "task-rubric:refactor",
       "prompt-pattern:code-simplification",
       "prompt-pattern:codex-implementation"
+    ],
+    "refactor-preserve": [
+      "coding-playbook:refactor-preserve",
+      "prompt-pattern:code-simplification"
     ],
     "refactoring": [
       "practice:code-simplification",
@@ -59864,6 +61973,7 @@
       "visual-qa-protocol:vnem-visual-qa-protocol"
     ],
     "references": [
+      "coding-playbook:review-risk-scan",
       "practice:visual-experience",
       "entry:knip"
     ],
@@ -59902,6 +62012,9 @@
       "entry:ai-com-mcp-registry"
     ],
     "regression": [
+      "coding-playbook:review-risk-scan",
+      "coding-playbook:bug-root-cause",
+      "coding-playbook:test-first-evidence",
       "source:evaluation-and-observability",
       "prompt-pattern:eval-design",
       "entry:promptfoo"
@@ -59910,6 +62023,7 @@
       "entry:promptfoo"
     ],
     "regressions": [
+      "coding-playbook:review-risk-scan",
       "practice:observability-and-tracing"
     ],
     "regressions.": [
@@ -59994,11 +62108,9 @@
       "prompt-pattern:code-simplification"
     ],
     "remove": [
+      "coding-playbook:refactor-preserve",
       "practice:code-simplification",
       "entry:knip"
-    ],
-    "removes": [
-      "practice:agentic-coding-execution"
     ],
     "removing": [
       "entry:knip"
@@ -60010,6 +62122,7 @@
       "entry:three-js"
     ],
     "rendered": [
+      "coding-playbook:web-app-rendered-quality",
       "design-architecture:vnem-design-architecture",
       "visual-qa-protocol:vnem-visual-qa-protocol",
       "task-rubric:agentic_coding",
@@ -60079,6 +62192,9 @@
       "entry:claude-code-memory",
       "entry:codebase-memory-mcp"
     ],
+    "repeating": [
+      "coding-playbook:failure-recovery"
+    ],
     "replaced": [
       "entry:dspy"
     ],
@@ -60095,6 +62211,8 @@
     "repo": [
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:failure-recovery",
+      "coding-playbook:review-risk-scan",
       "design-architecture:vnem-design-architecture",
       "source:agentic-coding-best-practices",
       "source:coding-agent-clients",
@@ -60409,6 +62527,9 @@
       "entry:swe-agent",
       "entry:openhands"
     ],
+    "reproducing": [
+      "coding-playbook:bug-root-cause"
+    ],
     "reproduction": [
       "coding-protocol:vnem-coding-protocol",
       "entry:covenant-research"
@@ -60423,6 +62544,7 @@
       "practice:browser-games"
     ],
     "requested": [
+      "coding-playbook:feature-slice",
       "task-rubric:docs_prompt",
       "task-rubric:refactor"
     ],
@@ -60544,7 +62666,6 @@
       "task-rubric:agentic_coding",
       "practice:coding-agents",
       "prompt-pattern:code-review",
-      "prompt-pattern:code-simplification",
       "prompt-pattern:codex-implementation"
     ],
     "resolution": [
@@ -60585,6 +62706,7 @@
       "practice:subagents-and-multi-agent"
     ],
     "responsive": [
+      "coding-playbook:web-app-rendered-quality",
       "design-architecture:vnem-design-architecture",
       "practice:browser-games",
       "task-rubric:aesthetic_experience",
@@ -60616,7 +62738,6 @@
       "prompt-pattern:subagent-delegation"
     ],
     "results.": [
-      "prompt-pattern:code-simplification",
       "entry:ac-inference-sh-mcp",
       "entry:covenant-research"
     ],
@@ -60681,6 +62802,9 @@
     "retrieving": [
       "entry:qdrant-mcp-server"
     ],
+    "retry": [
+      "coding-playbook:failure-recovery"
+    ],
     "retry.": [
       "practice:backend"
     ],
@@ -60716,6 +62840,9 @@
       "operating-protocol:vnem-operating-loop",
       "prompt-pattern:research"
     ],
+    "review-risk-scan": [
+      "coding-playbook:review-risk-scan"
+    ],
     "review.": [
       "source:platform-and-data-connectors",
       "practice:research-source-intake",
@@ -60724,9 +62851,13 @@
       "entry:jscpd",
       "entry:github-copilot-coding-agent"
     ],
+    "reviewability.": [
+      "coding-playbook:refactor-preserve"
+    ],
     "reviewable": [
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:large-change-checkpoints",
       "practice:code-simplification",
       "task-rubric:agent_tooling",
       "practice:agent-tooling",
@@ -60968,6 +63099,9 @@
       "entry:kaimo",
       "entry:openai-swarm"
     ],
+    "reviewer": [
+      "coding-playbook:review-risk-scan"
+    ],
     "reviewing": [
       "source:ui-architecture-sources",
       "entry:excalibur-js",
@@ -60994,6 +63128,7 @@
       "entry:ai-offerhopper-mcp-shopping-optimizer"
     ],
     "rewrite": [
+      "coding-playbook:large-change-checkpoints",
       "prompt-pattern:prompt-enhancement",
       "entry:ast-grep"
     ],
@@ -61041,6 +63176,8 @@
       "entry:codebase-memory-mcp"
     ],
     "risk": [
+      "coding-playbook:api-data-contract",
+      "coding-playbook:review-risk-scan",
       "operating-protocol:vnem-operating-loop",
       "task-rubric:aesthetic_experience",
       "task-rubric:agent_tooling",
@@ -61056,7 +63193,6 @@
       "entry:vnem-mcp",
       "prompt-pattern:agent-workspace-architecture",
       "entry:ai-complyme-mcp-mcp",
-      "prompt-pattern:code-simplification",
       "prompt-pattern:codex-implementation",
       "prompt-pattern:mcp-selection",
       "prompt-pattern:zero-trust-gateway-roadmap"
@@ -61190,6 +63326,7 @@
       "entry:crewai"
     ],
     "rollback": [
+      "coding-playbook:large-change-checkpoints",
       "task-rubric:security_sensitive",
       "practice:deployment",
       "practice:human-approval-and-durability",
@@ -61215,8 +63352,15 @@
       "practice:visual-experience"
     ],
     "root": [
+      "practice:agentic-coding-execution",
+      "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:bug-root-cause",
+      "task-rubric:agentic_coding",
       "entry:vnem-mcp",
       "prompt-pattern:bug-debug"
+    ],
+    "root-cause": [
+      "coding-playbook:bug-root-cause"
     ],
     "rossmann": [
       "entry:ai-offerhopper-mcp-shopping-optimizer"
@@ -61300,6 +63444,7 @@
     "run": [
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:failure-recovery",
       "practice:visual-experience",
       "practice:ide-agent-selection",
       "practice:model-and-provider-selection",
@@ -61423,6 +63568,7 @@
       "entry:ai-limitguard-api-trust-intelligence"
     ],
     "sandbox": [
+      "coding-playbook:failure-recovery",
       "source:agentic-gateway-security",
       "source:platform-and-data-connectors",
       "entry:ai-aliengiraffe-spotdb"
@@ -61473,6 +63619,7 @@
       "visual-qa-protocol:vnem-visual-qa-protocol"
     ],
     "scan": [
+      "coding-playbook:review-risk-scan",
       "entry:ai-helixar-mcp",
       "entry:ai-obaron-aeo",
       "entry:ai-boolsai-scan"
@@ -61508,6 +63655,7 @@
       "entry:ai-djwizard-tvwizard"
     ],
     "schema": [
+      "coding-playbook:api-data-contract",
       "practice:mcp-gateway-tool-routing",
       "source:agentic-gateway-security",
       "practice:zero-trust-agent-gateway",
@@ -61922,7 +64070,6 @@
       "entry:mcp-server-mysql"
     ],
     "secrets": [
-      "coding-protocol:vnem-coding-protocol",
       "practice:mcp-gateway-tool-routing",
       "source:mcp-core-and-registry",
       "practice:persistent-memory-context-files",
@@ -61963,6 +64110,9 @@
       "entry:ai-gossiper-shopify-admin-mcp"
     ],
     "security": [
+      "coding-playbook:api-data-contract",
+      "coding-playbook:review-risk-scan",
+      "coding-playbook:bug-root-cause",
       "practice:ide-agent-selection",
       "source:agentic-gateway-security",
       "task-rubric:security_sensitive",
@@ -61981,6 +64131,9 @@
     "security-architecture": [
       "source:agentic-gateway-security"
     ],
+    "security/data": [
+      "coding-playbook:review-risk-scan"
+    ],
     "see": [
       "practice:mcp-gateway-tool-routing",
       "entry:ai-klavis-strata",
@@ -61989,8 +64142,12 @@
     "segments": [
       "entry:ai-com-mcp-strava"
     ],
+    "select": [
+      "prompt-pattern:agentic-coding-task"
+    ],
     "selected": [
-      "practice:mcp-server-selection"
+      "practice:mcp-server-selection",
+      "prompt-pattern:codex-implementation"
     ],
     "selection": [
       "practice:ide-agent-selection",
@@ -62043,7 +64200,8 @@
       "coding-protocol:vnem-coding-protocol",
       "visual-qa-protocol:vnem-visual-qa-protocol",
       "task-rubric:agentic_coding",
-      "prompt-pattern:agentic-coding-task"
+      "prompt-pattern:agentic-coding-task",
+      "prompt-pattern:codex-implementation"
     ],
     "sensitive": [
       "task-rubric:agent_tooling",
@@ -62169,6 +64327,7 @@
       "entry:letta"
     ],
     "server": [
+      "coding-playbook:api-data-contract",
       "practice:mcp-gateway-tool-routing",
       "source:coding-agent-clients",
       "source:mcp-core-and-registry",
@@ -62635,6 +64794,7 @@
       "entry:codebase-memory-mcp"
     ],
     "simplification": [
+      "coding-playbook:refactor-preserve",
       "practice:code-simplification",
       "task-rubric:refactor",
       "prompt-pattern:code-simplification",
@@ -62647,6 +64807,7 @@
       "prompt-pattern:code-simplification"
     ],
     "simplify": [
+      "coding-playbook:refactor-preserve",
       "practice:code-simplification",
       "task-rubric:refactor",
       "prompt-pattern:code-simplification"
@@ -62730,6 +64891,7 @@
       "prompt-pattern:codex-implementation"
     ],
     "slice": [
+      "coding-playbook:feature-slice",
       "task-rubric:agentic_coding"
     ],
     "slices": [
@@ -62766,6 +64928,7 @@
     ],
     "smallest": [
       "practice:agentic-coding-execution",
+      "coding-playbook:feature-slice",
       "practice:browser-games",
       "operating-protocol:vnem-operating-loop",
       "prompt-pattern:codex-implementation",
@@ -62932,6 +65095,7 @@
     ],
     "split": [
       "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:large-change-checkpoints",
       "practice:subagents-and-multi-agent",
       "prompt-pattern:subagent-delegation"
     ],
@@ -63100,6 +65264,7 @@
       "entry:ai-constellationfinance-constellation-finance-mcp"
     ],
     "states": [
+      "coding-playbook:web-app-rendered-quality",
       "visual-qa-protocol:vnem-visual-qa-protocol",
       "task-rubric:frontend_ui",
       "task-rubric:interactive_canvas",
@@ -63165,7 +65330,8 @@
     ],
     "stop": [
       "source:documentation-ingestion",
-      "entry:ai-obris-mcp"
+      "entry:ai-obris-mcp",
+      "prompt-pattern:codex-implementation"
     ],
     "storage": [
       "entry:letta",
@@ -63205,6 +65371,9 @@
       "entry:qdrant-mcp-server",
       "entry:clude"
     ],
+    "story": [
+      "coding-playbook:feature-slice"
+    ],
     "strategic": [
       "entry:ai-jeda-jeda-ai"
     ],
@@ -63212,6 +65381,7 @@
       "entry:ai-lattiq-x402-trading-signals"
     ],
     "strategy": [
+      "coding-playbook:failure-recovery",
       "entry:agency-lona-trading",
       "entry:ai-meetsquad-squad"
     ],
@@ -63456,6 +65626,7 @@
       "entry:aider"
     ],
     "surfaces": [
+      "coding-playbook:web-app-rendered-quality",
       "design-architecture:vnem-design-architecture",
       "operating-protocol:vnem-operating-loop",
       "task-rubric:security_sensitive",
@@ -63749,6 +65920,8 @@
     "task": [
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:failure-recovery",
+      "coding-playbook:feature-slice",
       "practice:mcp-gateway-tool-routing",
       "source:agentic-coding-best-practices",
       "practice:persistent-memory-context-files",
@@ -63769,6 +65942,13 @@
       "prompt-pattern:subagent-delegation",
       "entry:claude-code-memory",
       "entry:swarms"
+    ],
+    "task-rubric": [
+      "coding-playbook:api-data-contract",
+      "coding-playbook:refactor-preserve",
+      "coding-playbook:feature-slice",
+      "coding-playbook:review-risk-scan",
+      "coding-playbook:test-first-evidence"
     ],
     "task-scoped": [
       "prompt-pattern:mcp-gateway-evaluation"
@@ -63813,6 +65993,9 @@
     ],
     "tax": [
       "entry:ai-lucasandersen-mlp-tax"
+    ],
+    "tdd": [
+      "coding-playbook:test-first-evidence"
     ],
     "teach": [
       "entry:excalibur-js",
@@ -63926,6 +66109,8 @@
     "test": [
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:bug-root-cause",
+      "coding-playbook:test-first-evidence",
       "task-rubric:agentic_coding",
       "practice:research-source-intake",
       "practice:evals",
@@ -63939,6 +66124,12 @@
       "prompt-pattern:source-intake",
       "entry:playwright-mcp",
       "entry:claude-code-subagents"
+    ],
+    "test-first": [
+      "coding-playbook:test-first-evidence"
+    ],
+    "test-first-evidence": [
+      "coding-playbook:test-first-evidence"
     ],
     "test-mode": [
       "entry:stripe-agent-toolkit"
@@ -63976,6 +66167,7 @@
     "tests": [
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:review-risk-scan",
       "practice:code-simplification",
       "operating-protocol:vnem-operating-loop",
       "task-rubric:agentic_coding",
@@ -64611,12 +66803,8 @@
     "touch.": [
       "entry:opentabs"
     ],
-    "touches": [
-      "coding-protocol:vnem-coding-protocol"
-    ],
     "touching": [
-      "task-rubric:security_sensitive",
-      "prompt-pattern:codex-implementation"
+      "task-rubric:security_sensitive"
     ],
     "toward": [
       "practice:zero-trust-agent-gateway"
@@ -64795,6 +66983,7 @@
       "entry:dspy"
     ],
     "turn": [
+      "coding-playbook:feature-slice",
       "source:agentic-coding-best-practices",
       "task-rubric:docs_prompt",
       "entry:dspy",
@@ -64907,6 +67096,7 @@
       "entry:ast-grep"
     ],
     "ui": [
+      "coding-playbook:web-app-rendered-quality",
       "practice:visual-experience",
       "design-architecture:vnem-design-architecture",
       "visual-qa-protocol:vnem-visual-qa-protocol",
@@ -64974,6 +67164,8 @@
     "understanding": [
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:failure-recovery",
+      "coding-playbook:review-risk-scan",
       "task-rubric:agentic_coding",
       "entry:anthropic-claude-code"
     ],
@@ -65318,6 +67510,7 @@
       "entry:mem0"
     ],
     "upgrade": [
+      "coding-playbook:large-change-checkpoints",
       "practice:model-and-provider-selection",
       "task-rubric:agent_tooling",
       "practice:research-source-intake",
@@ -65354,6 +67547,7 @@
       "entry:ai-law-lawyer-search"
     ],
     "usable": [
+      "coding-playbook:web-app-rendered-quality",
       "task-rubric:frontend_ui",
       "prompt-pattern:ui-build",
       "prompt-pattern:visual-build"
@@ -65387,6 +67581,7 @@
       "prompt-pattern:subagent-delegation"
     ],
     "user": [
+      "coding-playbook:feature-slice",
       "practice:code-simplification",
       "practice:visual-experience",
       "design-architecture:vnem-design-architecture",
@@ -65397,7 +67592,6 @@
       "practice:security",
       "entry:ai-cookiy-cookiy",
       "prompt-pattern:agentic-coding-task",
-      "prompt-pattern:codex-implementation",
       "prompt-pattern:ui-build",
       "prompt-pattern:prompt-enhancement",
       "prompt-pattern:memory-policy",
@@ -65581,6 +67775,7 @@
     "verification": [
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:large-change-checkpoints",
       "source:agentic-coding-best-practices",
       "visual-qa-protocol:vnem-visual-qa-protocol",
       "practice:codex-vnem-setup",
@@ -65639,6 +67834,9 @@
       "entry:ai-law-lawyer-search",
       "entry:claude-code-memory",
       "entry:claude-code-subagents"
+    ],
+    "verified.": [
+      "coding-playbook:feature-slice"
     ],
     "verifies": [
       "entry:google-agent2agent-protocol",
@@ -65863,6 +68061,8 @@
     ],
     "verify": [
       "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:web-app-rendered-quality",
+      "coding-playbook:test-first-evidence",
       "visual-qa-protocol:vnem-visual-qa-protocol",
       "operating-protocol:vnem-operating-loop",
       "task-rubric:agent_tooling",
@@ -65887,6 +68087,9 @@
     ],
     "verify.": [
       "entry:matter-js"
+    ],
+    "verifying": [
+      "coding-playbook:api-data-contract"
     ],
     "version": [
       "task-rubric:docs_prompt",
@@ -65970,6 +68173,7 @@
     "visual": [
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:web-app-rendered-quality",
       "practice:visual-experience",
       "design-architecture:vnem-design-architecture",
       "visual-qa-protocol:vnem-visual-qa-protocol",
@@ -65992,6 +68196,9 @@
     "visual-polish": [
       "practice:visual-experience"
     ],
+    "visual-qa-protocol": [
+      "coding-playbook:web-app-rendered-quality"
+    ],
     "visual/design": [
       "prompt-pattern:visual-polish-review"
     ],
@@ -66011,6 +68218,7 @@
       "entry:three-js"
     ],
     "vite": [
+      "coding-playbook:web-app-rendered-quality",
       "practice:browser-games"
     ],
     "vnem": [
@@ -66037,15 +68245,29 @@
       "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "vnem-coding-protocol": [
-      "coding-protocol:vnem-coding-protocol"
+      "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:api-data-contract",
+      "coding-playbook:refactor-preserve",
+      "coding-playbook:failure-recovery",
+      "coding-playbook:feature-slice",
+      "coding-playbook:large-change-checkpoints",
+      "coding-playbook:web-app-rendered-quality",
+      "coding-playbook:review-risk-scan",
+      "coding-playbook:bug-root-cause",
+      "coding-playbook:test-first-evidence"
     ],
     "vnem-design-architecture": [
+      "coding-playbook:web-app-rendered-quality",
       "design-architecture:vnem-design-architecture"
     ],
     "vnem-mcp": [
       "entry:vnem-mcp"
     ],
+    "vnem-operating-loop": [
+      "coding-playbook:failure-recovery"
+    ],
     "vnem-visual-qa-protocol": [
+      "coding-playbook:web-app-rendered-quality",
       "visual-qa-protocol:vnem-visual-qa-protocol"
     ],
     "vnem.": [
@@ -66323,6 +68545,8 @@
     "web": [
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:feature-slice",
+      "coding-playbook:web-app-rendered-quality",
       "source:agentic-coding-best-practices",
       "practice:browser-games",
       "task-rubric:agentic_coding",
@@ -66372,6 +68596,9 @@
     ],
     "web-app": [
       "entry:opentabs"
+    ],
+    "web-app-rendered-quality": [
+      "coding-playbook:web-app-rendered-quality"
     ],
     "web-apps": [
       "entry:vercel-ai-sdk",
@@ -66524,6 +68751,7 @@
       "entry:opentabs"
     ],
     "while": [
+      "coding-playbook:refactor-preserve",
       "prompt-pattern:code-simplification",
       "prompt-pattern:prompt-enhancement",
       "entry:pixijs",
@@ -66759,6 +68987,7 @@
     "work": [
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
+      "coding-playbook:large-change-checkpoints",
       "practice:visual-experience",
       "source:agentic-coding-best-practices",
       "practice:browser-games",
@@ -66807,6 +69036,7 @@
       "entry:vercel-ai-sdk"
     ],
     "workflow": [
+      "coding-playbook:feature-slice",
       "practice:browser-games",
       "practice:ide-agent-selection",
       "practice:model-and-provider-selection",
@@ -66852,6 +69082,7 @@
       "entry:rules-template-memory-bank"
     ],
     "workflows": [
+      "coding-playbook:web-app-rendered-quality",
       "practice:code-simplification",
       "source:agentic-gateway-security",
       "entry:google-agent2agent-protocol",
@@ -67094,6 +69325,7 @@
       "entry:custom-modes-roo-code"
     ],
     "working": [
+      "coding-playbook:feature-slice",
       "practice:context-engineering",
       "entry:context7-mcp",
       "prompt-pattern:agentic-coding-task",
@@ -67122,9 +69354,6 @@
     ],
     "workspaces": [
       "practice:codex-vnem-setup"
-    ],
-    "worktree.": [
-      "prompt-pattern:codex-implementation"
     ],
     "world": [
       "entry:ai-agenticshelf-graffeo"

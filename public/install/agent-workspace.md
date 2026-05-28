@@ -12,7 +12,7 @@ Generated read-only guidance for designing an autonomous developer environment w
 
 Start with a small, readable setup: Codex or another coding agent, repository-local instructions, the vnem read-only pack, and only the MCP servers required for the current workflow.
 
-For actual implementation work, route the agent through `.vnem/coding-protocol.md` before editing code. It defines repo sensing, plan-first execution, small diffs, verification, and final reporting for apps, web apps, feature work, debugging, and refactors.
+For actual implementation work, route the agent through `.vnem/coding-protocol.md` and `.vnem/coding-playbooks.json` before editing code. The protocol defines shared repo-sensing and verification rules; the playbooks select the concrete loop for feature slices, bug fixes, tests, refactors, rendered web apps, API/data changes, large changes, reviews, or recovery.
 
 Add gateways, memory banks, browser sessions, database access, and repository mutation tools only after the team can name the approval path and rollback plan.
 

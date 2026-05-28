@@ -1,6 +1,6 @@
 # vnem Prompt Engineering
 
-Generated: 2026-05-28T19:11:09.918Z
+Generated: 2026-05-28T20:10:31.300Z
 
 Use this when the user asks to improve, rewrite, harden, or operationalize a prompt. The main trigger phrase is `use vnem to enhance this prompt`.
 
@@ -112,12 +112,13 @@ Scope:
 
 Workflow:
 1. If `.vnem/coding-protocol.md` exists, read it before editing application code.
-2. Inspect the current implementation, repo instructions, manifests, scripts, and nearest local patterns before editing.
-3. For nontrivial work, write a short plan before mutation.
-4. Make the smallest cohesive change that satisfies the objective.
-5. Add or update tests only where risk justifies it.
-6. Run verification: <commands>.
-7. Report changed files, verification results, skipped checks, and residual risk.
+2. If `.vnem/coding-playbooks.json` exists, choose the closest playbook and follow its repo_sensing, execution_loop, verification_ladder, stop_conditions, and anti_patterns.
+3. Inspect the current implementation, repo instructions, manifests, scripts, and nearest local patterns before editing.
+4. For nontrivial work, write a short plan before mutation.
+5. Make the smallest cohesive change that satisfies the objective.
+6. Add or update tests only where risk justifies it.
+7. Run verification: <commands>.
+8. Report selected playbook, changed files, verification results, skipped checks, and residual risk.
 
 Constraints:
 - Do not run destructive commands.
@@ -146,6 +147,7 @@ Acceptance criteria:
 
 Required repo sensing:
 - Read local agent instructions and `.vnem/coding-protocol.md` if present.
+- Read `.vnem/coding-playbooks.json` if present and select the nearest playbook before editing.
 - Inspect manifests, scripts, tests, framework config, and the nearest existing implementation pattern.
 - Name risky surfaces before mutation: dependencies, auth, database, deployment, secrets, external services, browser automation, or paid APIs.
 
@@ -187,11 +189,12 @@ Non-goals:
 - Do not add new dependencies unless the existing stack cannot solve the problem cleanly.
 
 Workflow:
-1. Inspect the current implementation, tests, public interfaces, and call sites.
-2. Identify removable code with evidence: unused files, unused exports, duplicate branches, dead paths, repeated helpers, or needless state.
-3. Preserve behavior with focused tests, snapshots, fixtures, type checks, or golden examples before risky edits.
-4. Make small reviewable changes: delete proven waste, collapse duplication, simplify control flow, and reuse existing local helpers.
-5. Run focused verification first, then the broader project checks.
+1. If `.vnem/coding-playbooks.json` exists, use the `refactor-preserve` playbook.
+2. Inspect the current implementation, tests, public interfaces, and call sites.
+3. Identify removable code with evidence: unused files, unused exports, duplicate branches, dead paths, repeated helpers, or needless state.
+4. Preserve behavior with focused tests, snapshots, fixtures, type checks, or golden examples before risky edits.
+5. Make small reviewable changes: delete proven waste, collapse duplication, simplify control flow, and reuse existing local helpers.
+6. Run focused verification first, then the broader project checks.
 
 Output:
 - What was simplified.

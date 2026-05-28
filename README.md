@@ -24,7 +24,8 @@ vnem is meant to improve the judgment of coding agents, not replace maintainer r
 
 - **Better recommendations:** agents compare current MCP servers, coding agents, frameworks, evals, memory systems, and workflows before proposing a stack change.
 - **Safer adoption:** each entry tracks source links, licenses, permissions, risk flags, trust tier, and install notes.
-- **Universal task contracts:** the operating protocol and broad rubrics steer agents through sensing the repo, choosing small capabilities, constraining risk, verifying, and reporting evidence.
+- **Coding execution playbooks:** agents pick a task-specific loop for feature slices, root-cause bug fixes, test-first work, refactors, rendered web apps, API/data changes, large changes, reviews, and failure recovery.
+- **Universal task contracts:** the operating protocol, coding protocol, playbooks, and broad rubrics steer agents through sensing the repo, choosing small capabilities, constraining risk, verifying, and reporting evidence.
 - **Shared research layer:** source radar maps official docs, registries, MCP sources, evals, and verification sources so agents know where to research before burning context from scratch.
 - **Gateway-ready security guidance:** vnem routes pre-execution gateway, tool pinning, package firewall, and AST-indexer ideas into a phased zero-trust review instead of a risky runtime rewrite.
 - **Clearer prompts:** the install pack includes prompt-engineering guidance and reusable prompt patterns for Codex-style implementation, review, debugging, research, eval, and MCP-selection tasks.
@@ -33,7 +34,7 @@ vnem is meant to improve the judgment of coding agents, not replace maintainer r
 
 1. Install the read-only pack into a project.
 2. Ask a coding agent to read `.vnem/AGENTS.md`.
-3. The agent follows `.vnem/operating-protocol.md` and selects a broad rubric from `.vnem/task-rubrics.json`.
+3. The agent follows `.vnem/operating-protocol.md`, `.vnem/coding-protocol.md`, and `.vnem/coding-playbooks.json`, then selects a broad rubric from `.vnem/task-rubrics.json`.
 4. The agent uses `.vnem/search-index.json`, `.vnem/best-practices.md`, `.vnem/agent-workspace.md`, and `.vnem/prompt-*` files only when routed there.
 5. For current docs, MCP discovery, or benchmark claims, the agent checks `.vnem/source-radar.json` before broad web search.
 6. The agent recommends options and asks before changing code, installing packages, using secrets, or touching external systems.
@@ -54,6 +55,7 @@ In a clean project folder, this extracts:
 - `.vnem/AGENTS.md`
 - `.vnem/operating-protocol.md`
 - `.vnem/coding-protocol.md`
+- `.vnem/coding-playbooks.json`
 - `.vnem/task-rubrics.json`
 - `.vnem/search-index.json`
 - `.vnem/source-radar.json`
@@ -62,7 +64,7 @@ In a clean project folder, this extracts:
 - `.vnem/prompt-engineering.md`
 - `.vnem/prompt-patterns.json`
 
-`AGENTS.md` points coding agents to `.vnem/AGENTS.md`, the full agent entrypoint, plus `.vnem/coding-protocol.md` for implementation work and `.vnem/agent-workspace.md` for autonomous developer environment guidance. Once an agent has read it, the user should not need special `use vnem` prompts: vnem auto-activates for build, code, debug, review, optimization, research, benchmark, and stack/tool decision tasks.
+`AGENTS.md` points coding agents to `.vnem/AGENTS.md`, the full agent entrypoint, plus `.vnem/coding-protocol.md` and `.vnem/coding-playbooks.json` for implementation work and `.vnem/agent-workspace.md` for autonomous developer environment guidance. Once an agent has read it, the user should not need special `use vnem` prompts: vnem auto-activates for build, code, debug, review, optimization, research, benchmark, and stack/tool decision tasks.
 
 For existing repos with their own `AGENTS.md`, prefer the CLI installer below because it updates a managed vnem block instead of replacing the whole file.
 
@@ -131,6 +133,7 @@ Main resources:
 - `vnem://api/index`
 - `vnem://install/operating-protocol`
 - `vnem://install/coding-protocol`
+- `vnem://install/coding-playbooks`
 - `vnem://install/task-rubrics`
 - `vnem://install/design-architecture`
 - `vnem://install/visual-qa-protocol`

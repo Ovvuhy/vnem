@@ -88,7 +88,10 @@ function safeInstallCommand(command) {
   const expectedFiles = new Set([
     "AGENTS.md",
     "operating-protocol.md",
+    "coding-protocol.md",
+    "coding-playbooks.json",
     "design-architecture.md",
+    "visual-qa-protocol.md",
     "task-rubrics.json",
     "search-index.json",
     "source-radar.json",
@@ -178,6 +181,7 @@ const localPackDir = path.join(ROOT, ".vnem");
 const agents = await readFile(path.join(installDir, "AGENTS.md"), "utf8");
 const operatingProtocol = await readFile(path.join(installDir, "operating-protocol.md"), "utf8");
 const codingProtocol = await readFile(path.join(installDir, "coding-protocol.md"), "utf8");
+const codingPlaybooks = await readJson(path.join(installDir, "coding-playbooks.json"));
 const designArchitecture = await readFile(path.join(installDir, "design-architecture.md"), "utf8");
 const visualQaProtocol = await readFile(path.join(installDir, "visual-qa-protocol.md"), "utf8");
 const taskRubrics = await readJson(path.join(installDir, "task-rubrics.json"));
@@ -189,6 +193,7 @@ const promptPatterns = await readJson(path.join(installDir, "prompt-patterns.jso
 const searchIndex = await readJson(path.join(installDir, "search-index.json"));
 const localSearchIndex = await readJson(path.join(localPackDir, "search-index.json"));
 const localCodingProtocol = await readFile(path.join(localPackDir, "coding-protocol.md"), "utf8");
+const localCodingPlaybooks = await readJson(path.join(localPackDir, "coding-playbooks.json"));
 const localDesignArchitecture = await readFile(path.join(localPackDir, "design-architecture.md"), "utf8");
 const localVisualQaProtocol = await readFile(path.join(localPackDir, "visual-qa-protocol.md"), "utf8");
 const localTaskRubrics = await readJson(path.join(localPackDir, "task-rubrics.json"));
@@ -213,6 +218,7 @@ assert(
     ".vnem/AGENTS.md",
     ".vnem/operating-protocol.md",
     ".vnem/coding-protocol.md",
+    ".vnem/coding-playbooks.json",
     ".vnem/design-architecture.md",
     ".vnem/visual-qa-protocol.md",
     ".vnem/task-rubrics.json",
@@ -223,10 +229,11 @@ assert(
     ".vnem/prompt-engineering.md",
     ".vnem/prompt-patterns.json"
   ]),
-  "install archive must extract root AGENTS.md plus the twelve read-only pack files."
+  "install archive must extract root AGENTS.md plus the thirteen read-only pack files."
 );
 assert(agents.includes("operating-protocol.md"), "AGENTS.md must tell agents to read the operating protocol.");
 assert(agents.includes("coding-protocol.md"), "AGENTS.md must tell agents to read the coding protocol for implementation work.");
+assert(agents.includes("coding-playbooks.json"), "AGENTS.md must tell agents to use coding playbooks for mode-specific implementation work.");
 assert(agents.includes("design-architecture.md"), "AGENTS.md must tell agents to read the design architecture guide for visual work.");
 assert(agents.includes("visual-qa-protocol.md"), "AGENTS.md must tell agents to read the visual QA protocol for rendered visual work.");
 assert(agents.includes("task-rubrics.json"), "AGENTS.md must tell agents to use task rubrics.");
@@ -244,6 +251,12 @@ assert(codingProtocol.includes("Plan Before Mutating"), "coding protocol must in
 assert(codingProtocol.includes("Verification Ladder"), "coding protocol must include a verification ladder.");
 assert(codingProtocol.includes("Web App And App Quality Bar"), "coding protocol must include web app quality guidance.");
 assert(localCodingProtocol === codingProtocol, "local .vnem coding protocol must match the hosted install pack.");
+assert(codingPlaybooks.safety?.mode === "read-only-coding-playbooks", "coding-playbooks safety mode must be read-only-coding-playbooks.");
+for (const playbookId of ["feature-slice", "bug-root-cause", "test-first-evidence", "refactor-preserve", "web-app-rendered-quality", "api-data-contract", "large-change-checkpoints", "review-risk-scan", "failure-recovery"]) {
+  assert(codingPlaybooks.playbooks?.some((playbook) => playbook.id === playbookId), `coding-playbooks must include ${playbookId}.`);
+}
+assert(codingPlaybooks.playbooks?.every((playbook) => playbook.repo_sensing?.length && playbook.execution_loop?.length && playbook.verification_ladder?.length && playbook.stop_conditions?.length), "each coding playbook must include repo sensing, execution, verification, and stop conditions.");
+assert(JSON.stringify(localCodingPlaybooks) === JSON.stringify(codingPlaybooks), "local .vnem coding playbooks must match the hosted install pack.");
 assert(designArchitecture.includes("vnem Design Architecture"), "design-architecture.md must include the design architecture title.");
 assert(designArchitecture.includes("WCAG 3 and APCA-style contrast work are watchlist/directional only"), "design architecture must mark WCAG 3/APCA as watchlist guidance.");
 assert(designArchitecture.includes("CSS Grid"), "design architecture must include grid guidance.");
@@ -322,21 +335,29 @@ assert(searchIndex.task_rubrics?.some((rubric) => rubric.id === "frontend_ui"), 
 assert(searchIndex.task_rubrics?.some((rubric) => rubric.id === "aesthetic_experience"), "search-index must expose the aesthetic experience rubric.");
 assert(searchIndex.decision_protocol?.task_contract_fields?.includes("verification"), "decision protocol must expose task contract fields.");
 assert(searchIndex.decision_protocol?.task_contract_fields?.includes("repo_sensing"), "decision protocol must expose repo sensing task contract fields.");
+assert(searchIndex.decision_protocol?.task_contract_fields?.includes("coding_playbook"), "decision protocol must expose coding playbook task contract fields.");
 assert(searchIndex.decision_protocol?.task_contract_fields?.includes("perception_gate"), "decision protocol must expose perception gate contract fields.");
 assert(searchIndex.source_radar?.length === sourceRadar.sources.length, "search-index must expose source radar entries.");
 assert(searchIndex.coding_protocol?.id === "vnem-coding-protocol", "search-index must expose coding_protocol metadata.");
+assert(searchIndex.coding_playbooks?.playbooks?.length === codingPlaybooks.playbooks.length, "search-index must expose coding playbooks.");
 assert(searchIndex.design_architecture?.id === "vnem-design-architecture", "search-index must expose design_architecture metadata.");
 assert(searchIndex.design_architecture?.guidance_classification?.watchlist?.some((item) => item.includes("WCAG 3")), "search-index must expose watchlist classification for WCAG 3/APCA.");
 assert(searchIndex.visual_qa_protocol?.id === "vnem-visual-qa-protocol", "search-index must expose visual_qa_protocol metadata.");
 assert(searchIndex.documents?.some((document) => document.id === "design-architecture:vnem-design-architecture"), "search-index must index design architecture.");
 assert(searchIndex.documents?.some((document) => document.id === "visual-qa-protocol:vnem-visual-qa-protocol"), "search-index must index visual QA protocol.");
 assert(searchIndex.documents?.some((document) => document.id === "coding-protocol:vnem-coding-protocol"), "search-index must index coding protocol.");
+assert(searchIndex.documents?.some((document) => document.id === "coding-playbook:feature-slice"), "search-index must index feature-slice coding playbook.");
+assert(searchIndex.documents?.some((document) => document.id === "coding-playbook:bug-root-cause"), "search-index must index bug-root-cause coding playbook.");
 assert(searchIndex.documents?.some((document) => document.kind === "source-radar"), "search-index must index source radar documents.");
 assert(searchIndex.intent_routes?.["coding task"]?.read_first?.includes("coding-protocol:vnem-coding-protocol"), "search-index must route coding tasks to the coding protocol.");
+assert(searchIndex.intent_routes?.["coding task"]?.read_first?.includes("coding-playbook:feature-slice"), "search-index must route coding tasks to feature playbooks.");
 assert(searchIndex.intent_routes?.["web app"]?.read_first?.includes("coding-protocol:vnem-coding-protocol"), "search-index must route web app tasks to the coding protocol.");
+assert(searchIndex.intent_routes?.["web app"]?.read_first?.includes("coding-playbook:web-app-rendered-quality"), "search-index must route web app tasks to rendered web app playbooks.");
 assert(searchIndex.intent_routes?.["feature build"]?.read_first?.includes("coding-protocol:vnem-coding-protocol"), "search-index must route feature builds to the coding protocol.");
 assert(searchIndex.intent_routes?.["bug fix"]?.read_first?.includes("coding-protocol:vnem-coding-protocol"), "search-index must route bug fixes to the coding protocol.");
+assert(searchIndex.intent_routes?.["bug fix"]?.read_first?.includes("coding-playbook:bug-root-cause"), "search-index must route bug fixes to root-cause playbooks.");
 assert(searchIndex.intent_routes?.["test first"]?.read_first?.includes("practice:evals"), "search-index must route test-first tasks to eval guidance.");
+assert(searchIndex.intent_routes?.["test first"]?.read_first?.includes("coding-playbook:test-first-evidence"), "search-index must route test-first tasks to test evidence playbooks.");
 assert(searchIndex.intent_routes?.["browser game"]?.read_first?.includes("practice:browser-games"), "search-index must route browser game tasks to browser game guidance.");
 assert(searchIndex.intent_routes?.["visual polish"]?.read_first?.includes("practice:visual-experience"), "search-index must route visual polish tasks to perception guidance.");
 assert(searchIndex.intent_routes?.["game feel"]?.read_first?.includes("practice:visual-experience"), "search-index must route game-feel tasks to perception guidance.");
@@ -365,6 +386,7 @@ assert(searchIndex.intent_routes?.["tool pinning"]?.read_first?.includes("source
 assert(apiIndex.decision_protocol?.auto_use === true, "public API must expose the decision protocol.");
 assert(apiIndex.operating_protocol?.id === "vnem-operating-loop", "public API must expose the operating protocol.");
 assert(apiIndex.coding_protocol?.id === "vnem-coding-protocol", "public API must expose the coding protocol.");
+assert(apiIndex.coding_playbooks?.playbooks?.some((playbook) => playbook.id === "failure-recovery"), "public API must expose coding playbooks.");
 assert(apiIndex.task_rubrics?.some((rubric) => rubric.id === "agent_tooling"), "public API must expose task rubrics.");
 assert(apiIndex.task_rubrics?.some((rubric) => rubric.id === "agentic_coding"), "public API must expose agentic coding rubrics.");
 assert(apiIndex.task_rubrics?.some((rubric) => rubric.id === "aesthetic_experience"), "public API must expose aesthetic task rubrics.");
@@ -373,6 +395,7 @@ assert(apiIndex.design_architecture?.id === "vnem-design-architecture", "public 
 assert(apiIndex.visual_qa_protocol?.id === "vnem-visual-qa-protocol", "public API must expose visual QA protocol metadata.");
 assert(apiIndex.intent_routes?.["browser game"]?.read_first?.includes("practice:browser-games"), "public API must expose intent routes.");
 assert(apiIndex.intent_routes?.["web app"]?.read_first?.includes("coding-protocol:vnem-coding-protocol"), "public API must expose web app coding routes.");
+assert(apiIndex.intent_routes?.["backend api"]?.read_first?.includes("coding-playbook:api-data-contract"), "public API must expose backend API coding routes.");
 assert(apiIndex.intent_routes?.["web game"]?.read_first?.includes("practice:browser-games"), "public API must expose web game routes.");
 assert(apiIndex.intent_routes?.["code simplification"]?.read_first?.includes("practice:code-simplification"), "public API must expose code simplification routes.");
 assert(searchIndex.documents?.length > 0, "search-index must include documents.");
@@ -381,8 +404,9 @@ for (const entryId of ["entry:phaser", "entry:pixijs", "entry:three-js", "entry:
 }
 assert(localSearchIndex.documents?.length === searchIndex.documents.length, "local .vnem search index must match the hosted install pack.");
 assert(localSearchIndex.source_radar?.length === searchIndex.source_radar.length, "local .vnem source radar metadata must match the hosted install pack.");
+assert(localSearchIndex.coding_playbooks?.playbooks?.length === searchIndex.coding_playbooks.playbooks.length, "local .vnem search index must match coding playbook metadata.");
 
-for (const query of ["coding task", "app build", "web app", "feature build", "bug fix", "test first", "repo understanding", "large change", "better ui", "aesthetic experience", "visual polish", "visual qa", "screenshot polish", "game feel", "reward feedback", "sound design", "perception gate", "ui architecture", "bento dashboard", "agent dashboard", "conversational ui", "motion design", "design tokens", "dark mode", "glassmorphism", "typography", "layout spacing", "optical alignment", "browser game", "web game", "html5 game", "canvas game", "2d game", "3d game", "game engine", "game ui", "game accessibility", "game physics", "game testing", "canvas performance", "faster search", "agent payments", "code review", "code simplification", "code compaction", "minimal code", "professional code", "refactor", "dead code", "memory", "evals", "prompt engineering", "codex prompt", "mcp gateway", "one mcp", "tool routing", "memory bank", "roo code", "agent modes", "codex config", "claude md", "agent workspace", "source radar", "research layer", "source intake", "benchmark evidence", "pre execution gateway", "zero trust gateway", "tool pinning", "package firewall", "ast indexer", "codex vs claude", "gemini agent", "ai model selection", "agent upgrade"]) {
+for (const query of ["coding task", "app build", "web app", "feature build", "bug fix", "test first", "repo understanding", "large change", "backend api", "failure recovery", "root cause", "better ui", "aesthetic experience", "visual polish", "visual qa", "screenshot polish", "game feel", "reward feedback", "sound design", "perception gate", "ui architecture", "bento dashboard", "agent dashboard", "conversational ui", "motion design", "design tokens", "dark mode", "glassmorphism", "typography", "layout spacing", "optical alignment", "browser game", "web game", "html5 game", "canvas game", "2d game", "3d game", "game engine", "game ui", "game accessibility", "game physics", "game testing", "canvas performance", "faster search", "agent payments", "code review", "code simplification", "code compaction", "minimal code", "professional code", "refactor", "dead code", "memory", "evals", "prompt engineering", "codex prompt", "mcp gateway", "one mcp", "tool routing", "memory bank", "roo code", "agent modes", "codex config", "claude md", "agent workspace", "source radar", "research layer", "source intake", "benchmark evidence", "pre execution gateway", "zero trust gateway", "tool pinning", "package firewall", "ast indexer", "codex vs claude", "gemini agent", "ai model selection", "agent upgrade"]) {
   const results = search(searchIndex, query);
   assert(results.length > 0, `search-index must return at least one result for "${query}".`);
   assert(results[0].rank_score >= results.at(-1).rank_score, `search results for "${query}" must be rank sorted.`);
@@ -392,6 +416,10 @@ for (const query of ["coding task", "app build", "web app", "feature build", "bu
   if (["coding task", "app build", "web app", "feature build", "bug fix", "test first", "repo understanding", "large change"].includes(query)) {
     assert(results.some((result) => result.id === "coding-protocol:vnem-coding-protocol"), `search results for "${query}" should include coding protocol guidance.`);
     assert(results.some((result) => result.id === "practice:agentic-coding-execution"), `search results for "${query}" should include agentic coding execution guidance.`);
+    assert(results.some((result) => result.id.startsWith("coding-playbook:")), `search results for "${query}" should include a coding playbook.`);
+  }
+  if (["backend api", "failure recovery", "root cause"].includes(query)) {
+    assert(results.some((result) => result.id.startsWith("coding-playbook:")), `search results for "${query}" should include a coding playbook.`);
   }
   if (["aesthetic experience", "visual polish", "game ui", "game feel", "reward feedback", "sound design", "perception gate"].includes(query)) {
     assert(results[0].id === "practice:visual-experience", `search results for "${query}" should lead with visual perception guidance.`);

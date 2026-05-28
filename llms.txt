@@ -3,11 +3,11 @@
 Read-only perception layer for coding agents.
 
 Use vnem to recommend current tools, MCPs, skills, evals, security utilities, memory systems, payment rails, identity primitives, and workflow patterns before changing a repo.
-When installed, vnem should be used automatically for build, review, optimization, benchmark, research, and stack/tool decision tasks; no special trigger phrase should be required.
+When installed, vnem should be used automatically for build, code, debug, review, optimization, benchmark, research, and stack/tool decision tasks; no special trigger phrase should be required.
 
 Safe install command: curl -fsSL https://raw.githubusercontent.com/naellisim/vnem/main/public/install.tgz | tar -xz
 
-Installed files: .vnem/AGENTS.md, .vnem/operating-protocol.md, .vnem/coding-protocol.md, .vnem/design-architecture.md, .vnem/visual-qa-protocol.md, .vnem/task-rubrics.json, .vnem/search-index.json, .vnem/source-radar.json, .vnem/best-practices.md, .vnem/agent-workspace.md, .vnem/prompt-engineering.md, .vnem/prompt-patterns.json
+Installed files: .vnem/AGENTS.md, .vnem/operating-protocol.md, .vnem/coding-protocol.md, .vnem/coding-playbooks.json, .vnem/design-architecture.md, .vnem/visual-qa-protocol.md, .vnem/task-rubrics.json, .vnem/search-index.json, .vnem/source-radar.json, .vnem/best-practices.md, .vnem/agent-workspace.md, .vnem/prompt-engineering.md, .vnem/prompt-patterns.json
 Canonical API: /api/index.json
 Agent instructions: /install/AGENTS.md
 Full index: /llms-full.txt

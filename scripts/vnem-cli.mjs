@@ -13,6 +13,7 @@ const packFiles = [
   "AGENTS.md",
   "operating-protocol.md",
   "coding-protocol.md",
+  "coding-playbooks.json",
   "task-rubrics.json",
   "search-index.json",
   "source-radar.json",
@@ -28,7 +29,7 @@ const rootAgentBlock = `${blockStart}
 
 This repo has a read-only vnem knowledge pack in \`.vnem/\`.
 
-Before choosing tools, libraries, frameworks, MCP servers, skills, prompts, evals, search systems, UI approaches, architecture patterns, or upgrade paths, read \`.vnem/AGENTS.md\`, follow \`.vnem/operating-protocol.md\`, read \`.vnem/coding-protocol.md\` for coding/app/web/feature/debug work, use \`.vnem/search-index.json\`, and consult \`.vnem/agent-workspace.md\` only for autonomous developer environment decisions.
+Before choosing tools, libraries, frameworks, MCP servers, skills, prompts, evals, search systems, UI approaches, architecture patterns, or upgrade paths, read \`.vnem/AGENTS.md\`, follow \`.vnem/operating-protocol.md\`, read \`.vnem/coding-protocol.md\` and \`.vnem/coding-playbooks.json\` for coding/app/web/feature/debug work, use \`.vnem/search-index.json\`, and consult \`.vnem/agent-workspace.md\` only for autonomous developer environment decisions.
 For current docs, MCP discovery, benchmark evidence, or upstream source decisions, also use \`.vnem/source-radar.json\` before broad web search.
 
 Use vnem automatically. The user should not need to say \`use vnem\`. Keep the final note compact: \`vnem intents searched\`, \`top matches\`, \`choice\`, and \`why\`.

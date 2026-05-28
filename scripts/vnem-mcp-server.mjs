@@ -422,6 +422,15 @@ function registerResources(mcpServer) {
   );
   registerFileResource(
     mcpServer,
+    "vnem-coding-playbooks",
+    "vnem://install/coding-playbooks",
+    firstExisting(["public/install/coding-playbooks.json", ".vnem/coding-playbooks.json"]),
+    "vnem Coding Playbooks",
+    "Generated mode-specific coding-agent playbooks for feature slices, root-cause bug fixes, tests, refactors, web apps, API/data work, reviews, large changes, and failure recovery.",
+    "application/json"
+  );
+  registerFileResource(
+    mcpServer,
     "vnem-task-rubrics",
     "vnem://install/task-rubrics",
     firstExisting(["public/install/task-rubrics.json", ".vnem/task-rubrics.json"]),
@@ -771,7 +780,7 @@ function buildStatus() {
       source_radar_entries: sourceRadar.length,
       intent_aliases: Object.keys(searchIndex.intent_aliases || {}).length,
       intent_routes: Object.keys(searchIndex.intent_routes || {}).length,
-      decision_playbooks: searchIndex.decision_playbooks?.length || 0,
+      coding_playbooks: searchIndex.coding_playbooks?.playbooks?.length || 0,
       task_rubrics: searchIndex.task_rubrics?.length || 0,
       prompt_patterns: searchIndex.prompt_patterns?.length || 0,
       by_type: entryCountsByType,
@@ -797,6 +806,7 @@ function buildStatus() {
         "vnem://api/index",
         "vnem://install/operating-protocol",
         "vnem://install/coding-protocol",
+        "vnem://install/coding-playbooks",
         "vnem://install/task-rubrics",
         "vnem://install/design-architecture",
         "vnem://install/visual-qa-protocol",
@@ -861,10 +871,10 @@ function buildOverview(audience) {
     },
     {
       name: "Operating protocol and rubrics",
-      paths: ["public/install/operating-protocol.md", "public/install/coding-protocol.md", "public/install/task-rubrics.json"],
+      paths: ["public/install/operating-protocol.md", "public/install/coding-protocol.md", "public/install/coding-playbooks.json", "public/install/task-rubrics.json"],
       purpose:
-        "Compact task-contract and coding-execution layer for sensing the repo, planning edits, routing work, approval gates, verification, and final reporting.",
-      usable_via: ["vnem_route_intent", "vnem_recommend", "vnem://install/coding-protocol", "vnem://install/task-rubrics"]
+        "Compact task-contract and coding-execution layer for sensing the repo, selecting task-specific playbooks, planning edits, routing work, approval gates, verification, and final reporting.",
+      usable_via: ["vnem_route_intent", "vnem_recommend", "vnem://install/coding-protocol", "vnem://install/coding-playbooks", "vnem://install/task-rubrics"]
     },
     {
       name: "Visual/design guidance",
@@ -926,11 +936,15 @@ function findSource(value) {
 function buildTaskContract(task, intent, route, readFirst, registryEntries) {
   const mode = inferTaskMode(task);
   const rubrics = selectTaskRubrics(task, intent, mode);
+  const playbooks = selectCodingPlaybooks(task, intent, mode, rubrics);
+  const primaryPlaybook = playbooks[0] || null;
   const perceptionGate = buildPerceptionGate(task, rubrics);
   const rubricIds = new Set(rubrics.flatMap((rubric) => rubric.read_first || []));
   const readFirstIds = uniqueStrings([
     ...rubrics.map((rubric) => `task-rubric:${rubric.id}`),
     ...rubricIds,
+    ...playbooks.map((playbook) => `coding-playbook:${playbook.id}`),
+    ...playbooks.flatMap((playbook) => playbook.read_first || []),
     ...(route?.read_first || []),
     ...readFirst.map((doc) => doc.id).filter(Boolean),
     ...registryEntries.slice(0, 3).map((entry) => entry.id).filter(Boolean)
@@ -941,10 +955,12 @@ function buildTaskContract(task, intent, route, readFirst, registryEntries) {
   ]);
   const verification = uniqueStrings([
     ...(searchIndex.operating_protocol?.default_contract?.verification || []),
+    ...(primaryPlaybook?.verification_ladder || []),
     ...rubrics.flatMap((rubric) => rubric.verification || [])
   ]);
   const finalReport = uniqueStrings([
     ...(searchIndex.operating_protocol?.default_contract?.report || []),
+    ...(primaryPlaybook?.final_report || []),
     ...rubrics.flatMap((rubric) => rubric.output_contract || [])
   ]);
 
@@ -957,6 +973,26 @@ function buildTaskContract(task, intent, route, readFirst, registryEntries) {
       summary: rubric.summary,
       quality_bar: rubric.quality_bar || []
     })),
+    coding_playbook: primaryPlaybook
+      ? {
+          id: primaryPlaybook.id,
+          title: primaryPlaybook.title,
+          summary: primaryPlaybook.summary,
+          mode: primaryPlaybook.mode,
+          read_first: primaryPlaybook.read_first || [],
+          repo_sensing: primaryPlaybook.repo_sensing || [],
+          execution_loop: primaryPlaybook.execution_loop || [],
+          verification_ladder: primaryPlaybook.verification_ladder || [],
+          stop_conditions: primaryPlaybook.stop_conditions || [],
+          anti_patterns: primaryPlaybook.anti_patterns || [],
+          final_report: primaryPlaybook.final_report || []
+        }
+      : null,
+    coding_playbook_alternates: playbooks.slice(1, 3).map((playbook) => ({
+      id: playbook.id,
+      title: playbook.title,
+      summary: playbook.summary
+    })),
     route: route
       ? {
           read_first: route.read_first || [],
@@ -968,7 +1004,7 @@ function buildTaskContract(task, intent, route, readFirst, registryEntries) {
     smallest_sufficient_capability: route?.compare_options?.length
       ? `Prefer existing project patterns first; if a new capability is needed, compare: ${route.compare_options.join("; ")}.`
       : "Prefer existing project patterns first; add the smallest source-backed tool only when local code cannot satisfy the task cleanly.",
-    choose_by: uniqueStrings([...(route?.choose_by || []), ...rubrics.flatMap((rubric) => rubric.quality_bar || []), ...(perceptionGate?.criteria || [])]),
+    choose_by: uniqueStrings([...(route?.choose_by || []), ...(primaryPlaybook?.stop_conditions || []), ...rubrics.flatMap((rubric) => rubric.quality_bar || []), ...(perceptionGate?.criteria || [])]),
     approval_gates: approvalGates,
     perception_gate: perceptionGate,
     verification,
@@ -977,6 +1013,65 @@ function buildTaskContract(task, intent, route, readFirst, registryEntries) {
       "vnem is read-only guidance. Do not install tools, mutate config, use secrets, call external services, or start daemons because of this recommendation without explicit user approval.",
     matched_rubric_read_first: [...rubricIds]
   });
+}
+
+function selectCodingPlaybooks(task, intent, mode, rubrics) {
+  const playbooks = Array.isArray(searchIndex.coding_playbooks?.playbooks)
+    ? searchIndex.coding_playbooks.playbooks
+    : [];
+  if (!playbooks.length) {
+    return [];
+  }
+
+  const terms = tokenize([
+    task,
+    intent?.name,
+    ...(intent?.aliases || []),
+    ...(intent?.route?.read_first || []),
+    ...rubrics.flatMap((rubric) => [rubric.id, rubric.title, ...(rubric.intents || []), ...(rubric.read_first || [])])
+  ].join(" "));
+
+  const routeIds = new Set(intent?.route?.read_first || []);
+  const scored = playbooks
+    .map((playbook) => {
+      const haystack = tokenize([
+        playbook.id,
+        playbook.title,
+        playbook.mode,
+        playbook.summary,
+        ...(playbook.intents || []),
+        ...(playbook.triggers || []),
+        ...(playbook.read_first || []),
+        ...(playbook.repo_sensing || []),
+        ...(playbook.execution_loop || []),
+        ...(playbook.verification_ladder || [])
+      ].join(" "));
+      const words = new Set(haystack);
+      let score = playbook.mode === mode ? 20 : 0;
+      if (routeIds.has(`coding-playbook:${playbook.id}`)) {
+        score += 70;
+      }
+      for (const id of playbook.read_first || []) {
+        if (routeIds.has(id)) {
+          score += 8;
+        }
+      }
+      for (const term of terms) {
+        if (words.has(term)) {
+          score += 3;
+        }
+      }
+      return { playbook, score };
+    })
+    .filter((item) => item.score > 0)
+    .sort((a, b) => b.score - a.score || a.playbook.id.localeCompare(b.playbook.id));
+
+  if (!scored.length) {
+    const fallback = playbooks.find((playbook) => playbook.id === "feature-slice") || playbooks[0];
+    return fallback ? [fallback] : [];
+  }
+
+  return scored.slice(0, 3).map(({ playbook }) => playbook);
 }
 
 function buildPerceptionGate(task, rubrics) {
@@ -1276,6 +1371,9 @@ function formatRecommendation(recommendation) {
     if (recommendation.task_contract.rubric?.length) {
       lines.push(`Rubric: ${recommendation.task_contract.rubric.map((rubric) => rubric.id).join(", ")}`);
     }
+    if (recommendation.task_contract.coding_playbook?.id) {
+      lines.push(`Coding playbook: ${recommendation.task_contract.coding_playbook.id}`);
+    }
   }
 
   lines.push("", "Top registry matches:");
@@ -1298,6 +1396,9 @@ function formatRecommendation(recommendation) {
 
   if (recommendation.task_contract) {
     lines.push("", "Task contract:");
+    if (recommendation.task_contract.coding_playbook?.execution_loop?.length) {
+      lines.push(`- Playbook loop: ${recommendation.task_contract.coding_playbook.execution_loop.slice(0, 4).join("; ")}`);
+    }
     lines.push(`- Smallest sufficient capability: ${recommendation.task_contract.smallest_sufficient_capability}`);
     if (recommendation.task_contract.approval_gates?.length) {
       lines.push(`- Approval gates: ${recommendation.task_contract.approval_gates.slice(0, 5).join("; ")}`);

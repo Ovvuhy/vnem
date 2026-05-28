@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-28T19:11:09.918Z",
+  "generated_at": "2026-05-28T20:10:31.300Z",
   "schema_version": "1.0.0",
   "safety": {
     "mode": "read-only-task-rubrics",
@@ -26,14 +26,21 @@
         "web app",
         "feature build",
         "bug fix",
+        "root cause",
+        "failure recovery",
         "test first",
         "repo understanding",
         "large change",
+        "backend api",
         "coding agents",
         "professional code"
       ],
       "read_first": [
         "coding-protocol:vnem-coding-protocol",
+        "coding-playbook:feature-slice",
+        "coding-playbook:bug-root-cause",
+        "coding-playbook:test-first-evidence",
+        "coding-playbook:refactor-preserve",
         "practice:agentic-coding-execution",
         "operating-protocol:vnem-operating-loop",
         "practice:evals",
@@ -199,6 +206,8 @@
         "runtime"
       ],
       "read_first": [
+        "coding-protocol:vnem-coding-protocol",
+        "coding-playbook:api-data-contract",
         "practice:backend",
         "practice:security",
         "practice:evals"

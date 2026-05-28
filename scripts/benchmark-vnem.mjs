@@ -15,14 +15,16 @@ const cases = [
     task: "Build a responsive browser UI for a SaaS dashboard and verify it locally.",
     mode: "build",
     rubrics: ["agentic_coding", "frontend_ui", "aesthetic_experience"],
-    readFirst: ["coding-protocol:vnem-coding-protocol", "practice:frontend"]
+    readFirst: ["coding-protocol:vnem-coding-protocol", "coding-playbook:web-app-rendered-quality", "practice:frontend"],
+    playbook: "web-app-rendered-quality"
   },
   {
     name: "aesthetic browser game",
     task: "Build a polished neon browser Snake game with Magi-sun collectibles, action-anchored reward flashes, restrained sound design, responsive board sizing, and a screenshot polish pass.",
     mode: "build",
     rubrics: ["agentic_coding", "aesthetic_experience", "interactive_canvas"],
-    readFirst: ["coding-protocol:vnem-coding-protocol", "practice:visual-experience", "visual-qa-protocol:vnem-visual-qa-protocol", "design-architecture:vnem-design-architecture", "practice:browser-games"],
+    readFirst: ["coding-protocol:vnem-coding-protocol", "coding-playbook:web-app-rendered-quality", "practice:visual-experience", "visual-qa-protocol:vnem-visual-qa-protocol", "design-architecture:vnem-design-architecture", "practice:browser-games"],
+    playbook: "web-app-rendered-quality",
     perception: true
   },
   {
@@ -30,7 +32,8 @@ const cases = [
     task: "Build a dense bento SaaS dashboard with prioritized KPI tiles, a 12-column CSS Grid layout, responsive mobile collapse, and screenshot verification.",
     mode: "build",
     rubrics: ["agentic_coding", "aesthetic_experience", "frontend_ui"],
-    readFirst: ["coding-protocol:vnem-coding-protocol", "visual-qa-protocol:vnem-visual-qa-protocol", "design-architecture:vnem-design-architecture", "practice:frontend"],
+    readFirst: ["coding-protocol:vnem-coding-protocol", "coding-playbook:web-app-rendered-quality", "visual-qa-protocol:vnem-visual-qa-protocol", "design-architecture:vnem-design-architecture", "practice:frontend"],
+    playbook: "web-app-rendered-quality",
     perception: true
   },
   {
@@ -38,7 +41,8 @@ const cases = [
     task: "Build an agent chat UI with evidence cards, source visibility, sequential disclosure, and a compact dashboard handoff to reduce verification debt.",
     mode: "build",
     rubrics: ["agentic_coding", "aesthetic_experience", "frontend_ui"],
-    readFirst: ["coding-protocol:vnem-coding-protocol", "visual-qa-protocol:vnem-visual-qa-protocol", "design-architecture:vnem-design-architecture", "practice:visual-experience"],
+    readFirst: ["coding-protocol:vnem-coding-protocol", "coding-playbook:web-app-rendered-quality", "visual-qa-protocol:vnem-visual-qa-protocol", "design-architecture:vnem-design-architecture", "practice:visual-experience"],
+    playbook: "web-app-rendered-quality",
     perception: true
   },
   {
@@ -46,7 +50,8 @@ const cases = [
     task: "Build a polished landing page using provided brand assets, reference-style fidelity, responsive typography, and a screenshot polish pass.",
     mode: "build",
     rubrics: ["agentic_coding", "aesthetic_experience", "frontend_ui"],
-    readFirst: ["coding-protocol:vnem-coding-protocol", "visual-qa-protocol:vnem-visual-qa-protocol", "design-architecture:vnem-design-architecture", "practice:frontend"],
+    readFirst: ["coding-protocol:vnem-coding-protocol", "coding-playbook:web-app-rendered-quality", "visual-qa-protocol:vnem-visual-qa-protocol", "design-architecture:vnem-design-architecture", "practice:frontend"],
+    playbook: "web-app-rendered-quality",
     perception: true
   },
   {
@@ -70,21 +75,24 @@ const cases = [
     task: "Review this repository for risky dependencies and outdated tooling before changing anything.",
     mode: "review",
     rubrics: ["agentic_coding"],
-    readFirst: ["coding-protocol:vnem-coding-protocol", "practice:code-review"]
+    readFirst: ["coding-protocol:vnem-coding-protocol", "coding-playbook:review-risk-scan", "practice:code-review"],
+    playbook: "review-risk-scan"
   },
   {
     name: "code simplification",
     task: "Simplify duplicate code in a JavaScript module without changing behavior.",
     mode: "build",
     rubrics: ["agentic_coding", "refactor"],
-    readFirst: ["coding-protocol:vnem-coding-protocol", "practice:code-simplification"]
+    readFirst: ["coding-protocol:vnem-coding-protocol", "coding-playbook:refactor-preserve", "practice:code-simplification"],
+    playbook: "refactor-preserve"
   },
   {
     name: "debug failing test",
     task: "Debug a failing auth API test and patch only the smallest relevant cause.",
     mode: "debug",
     rubrics: ["agentic_coding", "backend_api", "security_sensitive"],
-    readFirst: ["coding-protocol:vnem-coding-protocol", "practice:backend", "practice:security"]
+    readFirst: ["coding-protocol:vnem-coding-protocol", "coding-playbook:bug-root-cause", "practice:backend", "practice:security"],
+    playbook: "bug-root-cause"
   },
   {
     name: "mcp tooling decision",
@@ -167,6 +175,8 @@ try {
       ["mode", contract.mode === benchCase.mode],
       ["rubric", !benchCase.rubrics || benchCase.rubrics.some((id) => rubricIds.has(id))],
       ["read_first", !benchCase.readFirst || benchCase.readFirst.some((id) => readFirstIds.has(id))],
+      ["coding_playbook", !benchCase.playbook || contract.coding_playbook?.id === benchCase.playbook || readFirstIds.has(`coding-playbook:${benchCase.playbook}`)],
+      ["playbook_loop", !benchCase.playbook || (contract.coding_playbook?.execution_loop || []).length > 0],
       ["recommendations", (content?.read_first?.length || 0) > 0 || (content?.registry_entries?.length || 0) > 0],
       ["approval_gates", (contract.approval_gates || []).length > 0],
       ["perception_gate", !benchCase.perception || contract.perception_gate?.required === true],

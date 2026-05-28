@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-28T19:11:09.918Z",
+  "generated_at": "2026-05-28T20:10:31.300Z",
   "schema_version": "1.0.0",
   "safety": {
     "mode": "read-only-source-radar",
@@ -120,10 +120,14 @@
         "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
         "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
         "https://docs.github.com/en/copilot/how-tos/copilot-cli/cli-best-practices",
+        "https://docs.github.com/en/copilot/concepts/prompting/response-customization",
+        "https://code.visualstudio.com/docs/copilot/customization/custom-instructions",
         "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
+        "https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md",
         "https://docs.cursor.com/context/rules-for-ai",
         "https://www.anthropic.com/engineering/writing-tools-for-agents",
-        "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+        "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "https://developers.openai.com/api/docs/guides/agent-evals"
       ]
     },
     {

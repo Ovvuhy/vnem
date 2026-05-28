@@ -23,6 +23,7 @@ try {
     "AGENTS.md",
     "operating-protocol.md",
     "coding-protocol.md",
+    "coding-playbooks.json",
     "task-rubrics.json",
     "search-index.json",
     "source-radar.json",
