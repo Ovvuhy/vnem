@@ -6,6 +6,7 @@ import path from "node:path";
 import { spawnSync } from "node:child_process";
 import yaml from "js-yaml";
 import { ROOT, readEntries, readJson, writeJson, writeText } from "./lib/registry.mjs";
+import { applyTrustReview, reviewCandidateTrust } from "./lib/hermes-repo-risk-review.mjs";
 
 const args = process.argv.slice(2);
 const argSet = new Set(args);
@@ -68,6 +69,18 @@ function normalizeUrl(value) {
 
 function repoApiUrl(repo) {
   return `https://api.github.com/repos/${repo}`;
+}
+
+function githubRepoFromUrl(value) {
+  if (!value) return null;
+  try {
+    const url = new URL(value);
+    if (url.hostname !== "github.com") return null;
+    const [owner, repo] = url.pathname.replace(/^\/+/, "").split("/");
+    return owner && repo ? `${owner}/${repo.replace(/\.git$/, "")}` : null;
+  } catch {
+    return null;
+  }
 }
 
 function githubHeaders() {
@@ -232,6 +245,28 @@ async function fetchText(url) {
   }
 }
 
+async function fetchGitHubReadme(repo) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), Number(process.env.HERMES_FETCH_TIMEOUT_MS ?? 15000));
+
+  try {
+    const response = await fetch(`${repoApiUrl(repo)}/readme`, {
+      signal: controller.signal,
+      headers: {
+        "user-agent": userAgent,
+        ...githubHeaders(),
+        accept: "application/vnd.github.raw"
+      }
+    });
+    if (response.status === 404) return "";
+    if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
+    const limit = Number(process.env.HERMES_REPO_REVIEW_README_BYTES ?? 60_000);
+    return (await response.text()).slice(0, limit);
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 async function githubSearchRepositories(query, perPage = 10) {
   const url = new URL("https://api.github.com/search/repositories");
   url.searchParams.set("q", query);
@@ -365,6 +400,7 @@ async function discoverGitHubReleases(existingKeys) {
           pushed_at: repoJson.pushed_at,
           release_tag: releaseJson?.tag_name ?? null,
           release_published_at: releaseJson?.published_at ?? null,
+          release_assets: (releaseJson?.assets ?? []).map((asset) => asset.name).slice(0, 20),
           topics: repoJson.topics ?? []
         }
       });
@@ -374,6 +410,43 @@ async function discoverGitHubReleases(existingKeys) {
   }
 
   return { candidates, errors };
+}
+
+async function reviewCandidateRepositoryRisk(candidates) {
+  if (!envFlag("HERMES_REPO_REVIEW", true)) return candidates;
+
+  const blocklist = parseListEnv("HERMES_BLOCKED_REPOS") ?? [];
+  const domainBlocklist = parseListEnv("HERMES_BLOCKED_DOMAINS") ?? [];
+  const readmeCache = new Map();
+  const reviewed = [];
+
+  for (const candidate of candidates) {
+    let readmeText = "";
+    const repo = githubRepoFromUrl(candidate.repo_url) ?? githubRepoFromUrl(candidate.source_url);
+
+    if (repo && !readmeCache.has(repo)) {
+      try {
+        readmeCache.set(repo, await fetchGitHubReadme(repo));
+      } catch (error) {
+        readmeCache.set(repo, "");
+        candidate.risk_flags = compact([...(candidate.risk_flags ?? []), "readme-review-unavailable"]);
+        candidate.signal_summary = `${candidate.signal_summary ?? "Source-discovered candidate."} README review unavailable: ${error.message}.`;
+      }
+    }
+    if (repo) readmeText = readmeCache.get(repo) ?? "";
+
+    const review = reviewCandidateTrust(candidate, {
+      readmeText,
+      releaseText: candidate.description ?? "",
+      fileNames: candidate.metrics?.release_assets ?? [],
+      blocklist,
+      domainBlocklist,
+      reviewedAt: generatedAt
+    });
+    reviewed.push(applyTrustReview(candidate, review));
+  }
+
+  return reviewed;
 }
 
 function normalizeRepositoryLink(value) {
@@ -1036,7 +1109,15 @@ async function main() {
     mode === "daily" ? watchOfficialUrls(state) : { watched: [], errors: [] }
   ]);
 
-  const candidates = selectCandidates([...github.candidates, ...releases.candidates, ...npm.candidates, ...hn.candidates, ...reddit.candidates, ...mcp.candidates]);
+  const reviewedCandidates = await reviewCandidateRepositoryRisk(uniqueCandidates([
+    ...github.candidates,
+    ...releases.candidates,
+    ...npm.candidates,
+    ...hn.candidates,
+    ...reddit.candidates,
+    ...mcp.candidates
+  ]));
+  const candidates = selectCandidates(reviewedCandidates);
   const report = {
     generated_at: generatedAt,
     mode,

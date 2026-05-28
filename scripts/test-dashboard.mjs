@@ -129,10 +129,18 @@ async function testSummaryBuilder() {
         source_url: "https://github.com/owner/agent",
         signal_summary: "Fresh agent tool. OPENROUTER_API_KEY=test-openrouter-key",
         suggested_trust_tier: "unreviewed",
-        risk_flags: ["sensitive-permissions"],
-        recommended_action: "watchlist",
+        risk_flags: ["sensitive-permissions", "binary-download"],
+        repository_review: {
+          verdict: "blocked",
+          risk_score: 82,
+          trust_score: 18,
+          flags: ["binary-download"],
+          reasons: ["README or release text tells users to download/run an executable or installer."],
+          reviewed_at: "2026-05-27T12:00:00.000Z"
+        },
+        recommended_action: "blocked",
         reason: "candidate",
-        metrics: { stars: 42, license: "MIT", pushed_at: "2026-05-27T11:30:00.000Z" }
+        metrics: { stars: 42, license: "MIT", pushed_at: "2026-05-27T11:30:00.000Z", repo_risk_score: 82, repo_trust_score: 18, repo_verdict: "blocked" }
       }
     ],
     watched_sources: [],
@@ -175,7 +183,9 @@ async function testSummaryBuilder() {
   assert.equal(summary.findings.length, 1);
   assert.equal(summary.findings[0].signal_summary.includes("test-openrouter-key"), false);
   assert.equal(summary.aggregates.by_route["github-search"], 1);
-  assert.equal(summary.aggregates.by_action.watchlist, 1);
+  assert.equal(summary.findings[0].repository_review.verdict, "blocked");
+  assert.equal(summary.findings[0].metrics.repo_risk_score, 82);
+  assert.equal(summary.aggregates.by_action.blocked, 1);
   assert.equal(summary.errors.some((error) => error.route === "npm-search"), true);
   assert.equal(summary.errors.some((error) => error.route === "candidate-report"), true);
   assert.equal(summary.digest.maintainer_actions.length, 2);

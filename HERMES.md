@@ -58,6 +58,20 @@ The VPS runner currently supports these routes:
 
 Use `HERMES_MIN_PER_ROUTE` to reserve space for smaller routes so GitHub search does not fill the whole candidate report. Use `HERMES_INCLUDE_*` toggles to disable noisy routes.
 
+## Repository Trust Review
+
+Every selected GitHub-backed candidate receives a deterministic `repository_review` before it appears in candidate reports. Hermes fetches repository README text when available, inspects release asset names when present, and combines that with repository metadata.
+
+The review is intentionally conservative. It does not claim that a project is malware. It assigns:
+
+- `risk_score` and `trust_score` from 0 to 100.
+- `verdict`: `low-risk`, `needs-review`, `suspicious`, or `blocked`.
+- `flags` and `reasons` explaining the rating.
+
+Repositories are marked `blocked` when they match maintainer blocklists or strong scam/malware indicators such as executable download funnels, Windows installer copy, antivirus-bypass instructions, password-protected archives, generic file-host links, secret requests, or privileged install prompts. Blocked candidates set `recommended_action: "blocked"`, stay at `watchlist`, and set `allow_registry_proposal: false`.
+
+Configure hard blocks with `HERMES_BLOCKED_REPOS` and `HERMES_BLOCKED_DOMAINS` as newline, semicolon, or JSON-array values. Leave `HERMES_REPO_REVIEW=1` enabled unless debugging the scout.
+
 ## Write Contract
 
 Each run should leave a small, reviewable trail:
@@ -98,6 +112,13 @@ npm run test:install-pack
       "suggested_trust_tier": "unreviewed",
       "risk_flags": ["sensitive-permissions"],
       "recommended_action": "watchlist",
+      "repository_review": {
+        "verdict": "needs-review",
+        "risk_score": 28,
+        "trust_score": 72,
+        "flags": ["license-not-asserted"],
+        "reasons": ["Repository has no detected license metadata."]
+      },
       "allow_registry_proposal": true
     }
   ]
