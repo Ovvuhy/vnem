@@ -1,0 +1,820 @@
+{
+  "generated_at": "2026-05-28T03:01:08.698Z",
+  "mode": "hourly",
+  "lookback_days": 2,
+  "source_routes": [
+    "github-search",
+    "mcp-registry"
+  ],
+  "candidates": [
+    {
+      "name": "vercel-labs/agent-eval",
+      "title": "agent-eval",
+      "description": "No repository description supplied.",
+      "repo_url": "https://github.com/vercel-labs/agent-eval",
+      "homepage_url": "https://agent-eval-playground.vercel.app",
+      "source_url": "https://github.com/vercel-labs/agent-eval",
+      "source_urls": [
+        "https://github.com/vercel-labs/agent-eval",
+        "https://agent-eval-playground.vercel.app"
+      ],
+      "signal_summary": "Matched GitHub search `\"agent eval\" pushed:>=2026-05-26`; pushed 2026-05-28T02:56:27Z; stars 182.",
+      "why_builders_should_care": "May help builders verify agent behavior, regressions, or model/tool quality.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "license-not-asserted"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 182,
+        "forks": 23,
+        "open_issues": 18,
+        "language": "TypeScript",
+        "license": null,
+        "created_at": "2026-01-29T00:26:49Z",
+        "pushed_at": "2026-05-28T02:56:27Z",
+        "topics": []
+      }
+    },
+    {
+      "name": "BlackBeltTechnology/pi-agent-dashboard",
+      "title": "pi-agent-dashboard",
+      "description": "Real-time web dashboard for pi coding-agent sessions. Multi-session view, live chat mirroring, integrated terminal, diff viewer, pi-flows execution, and mobile-first remote control via mDNS or zrok tunnel. Coexists with pi's TUI — doesn't replace it.",
+      "repo_url": "https://github.com/BlackBeltTechnology/pi-agent-dashboard",
+      "homepage_url": null,
+      "source_url": "https://github.com/BlackBeltTechnology/pi-agent-dashboard",
+      "source_urls": [
+        "https://github.com/BlackBeltTechnology/pi-agent-dashboard"
+      ],
+      "signal_summary": "Matched GitHub search `\"coding agent\" pushed:>=2026-05-26`; pushed 2026-05-28T03:01:04Z; stars 123.",
+      "why_builders_should_care": "May be a useful new capability or signal for agent builders to review.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 123,
+        "forks": 14,
+        "open_issues": 13,
+        "language": "TypeScript",
+        "license": "MIT",
+        "created_at": "2026-03-23T05:08:48Z",
+        "pushed_at": "2026-05-28T03:01:04Z",
+        "topics": []
+      }
+    },
+    {
+      "name": "Gindhar2112/frida-mcp",
+      "title": "frida-mcp",
+      "description": "Enable AI-driven automated Android dynamic analysis by controlling Frida through the Model Context Protocol for streamlined reverse engineering.",
+      "repo_url": "https://github.com/Gindhar2112/frida-mcp",
+      "homepage_url": null,
+      "source_url": "https://github.com/Gindhar2112/frida-mcp",
+      "source_urls": [
+        "https://github.com/Gindhar2112/frida-mcp"
+      ],
+      "signal_summary": "Matched GitHub search `\"model context protocol\" pushed:>=2026-05-26`; pushed 2026-05-28T03:00:24Z; stars 9.",
+      "why_builders_should_care": "May expose a useful permissioned tool surface for coding agents.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "license-not-asserted",
+        "sensitive-permissions"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 9,
+        "forks": 3,
+        "open_issues": 0,
+        "language": "Python",
+        "license": null,
+        "created_at": "2026-03-24T03:35:24Z",
+        "pushed_at": "2026-05-28T03:00:24Z",
+        "topics": [
+          "aarch64",
+          "ai-security",
+          "android",
+          "browser-extension",
+          "frida",
+          "fridacontainer",
+          "hooking",
+          "instrumentation",
+          "ios",
+          "java",
+          "mcp",
+          "mcp-client",
+          "mcp-server",
+          "modelcontextprotocol",
+          "r2frida",
+          "runtime-analysis"
+        ]
+      }
+    },
+    {
+      "name": "Lucineer/capitaine",
+      "title": "capitaine",
+      "description": "Capitaine — fork a repo, click Codespaces, the agent is alive. The repo IS the agent.",
+      "repo_url": "https://github.com/Lucineer/capitaine",
+      "homepage_url": "https://capitaine.casey-digennaro.workers.dev",
+      "source_url": "https://github.com/Lucineer/capitaine",
+      "source_urls": [
+        "https://github.com/Lucineer/capitaine",
+        "https://capitaine.casey-digennaro.workers.dev"
+      ],
+      "signal_summary": "Matched GitHub search `topic:ai-agent pushed:>=2026-05-26`; pushed 2026-05-28T03:01:00Z; stars 1.",
+      "why_builders_should_care": "May be a useful new capability or signal for agent builders to review.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "license-not-asserted"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 1,
+        "forks": 1,
+        "open_issues": 65,
+        "language": "TypeScript",
+        "license": null,
+        "created_at": "2026-04-04T21:29:48Z",
+        "pushed_at": "2026-05-28T03:01:00Z",
+        "topics": [
+          "ai-agent",
+          "cocapn",
+          "codespaces",
+          "hackernews",
+          "onboarding"
+        ]
+      }
+    },
+    {
+      "name": "Ub207/vault-sync",
+      "title": "vault-sync",
+      "description": "AI Employee - Platinum Tier | A Digital FTE that manages business operations 24/7 | Email, Social Media, Invoicing, WhatsApp - all automated with human-in-the-loop approval",
+      "repo_url": "https://github.com/Ub207/vault-sync",
+      "homepage_url": null,
+      "source_url": "https://github.com/Ub207/vault-sync",
+      "source_urls": [
+        "https://github.com/Ub207/vault-sync"
+      ],
+      "signal_summary": "Matched GitHub search `topic:mcp pushed:>=2026-05-26`; pushed 2026-05-28T03:01:00Z; stars 1.",
+      "why_builders_should_care": "May expose a useful permissioned tool surface for coding agents.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 1,
+        "forks": 0,
+        "open_issues": 0,
+        "language": "Python",
+        "license": "MIT",
+        "created_at": "2026-03-26T14:45:45Z",
+        "pushed_at": "2026-05-28T03:01:00Z",
+        "topics": [
+          "ai-agent",
+          "ai-automation",
+          "automation",
+          "claude-ai",
+          "mcp",
+          "obsidian",
+          "python",
+          "solo-founder"
+        ]
+      }
+    },
+    {
+      "name": "uncensored-waterford179/mguard",
+      "title": "mguard",
+      "description": "Protect AI agent memory from poisoning attacks with a zero-dependency shield that fits Mem0, LangChain, or custom memory systems.",
+      "repo_url": "https://github.com/uncensored-waterford179/mguard",
+      "homepage_url": null,
+      "source_url": "https://github.com/uncensored-waterford179/mguard",
+      "source_urls": [
+        "https://github.com/uncensored-waterford179/mguard"
+      ],
+      "signal_summary": "Matched GitHub search `\"agent memory\" pushed:>=2026-05-26`; pushed 2026-05-28T02:58:04Z; stars 1.",
+      "why_builders_should_care": "May improve agent context persistence, search, or retrieval workflows.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "license-not-asserted",
+        "sensitive-permissions"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 1,
+        "forks": 0,
+        "open_issues": 0,
+        "language": null,
+        "license": null,
+        "created_at": "2026-03-21T14:19:44Z",
+        "pushed_at": "2026-05-28T02:58:04Z",
+        "topics": [
+          "agent-security",
+          "ai-agents",
+          "ai-security",
+          "ed25519",
+          "eu-ai-act",
+          "firewall",
+          "github-config",
+          "langchain",
+          "mem0",
+          "memory-poisoning",
+          "minja",
+          "owasp",
+          "trust-scoring"
+        ]
+      }
+    },
+    {
+      "name": "ASHUTOSH-KUMAR-RAO/forge",
+      "title": "forge",
+      "description": "a terminal-based AI coding agent. It works the way developers actually work — from the terminal. You describe what you want to build, and Forge plans, writes, runs, and ships the code for you. Use it directly in your terminal",
+      "repo_url": "https://github.com/ASHUTOSH-KUMAR-RAO/forge",
+      "homepage_url": null,
+      "source_url": "https://github.com/ASHUTOSH-KUMAR-RAO/forge",
+      "source_urls": [
+        "https://github.com/ASHUTOSH-KUMAR-RAO/forge"
+      ],
+      "signal_summary": "Matched GitHub search `\"coding agent\" pushed:>=2026-05-26`; pushed 2026-05-28T03:00:44Z; stars 0.",
+      "why_builders_should_care": "May be a useful new capability or signal for agent builders to review.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 0,
+        "open_issues": 0,
+        "language": "TypeScript",
+        "license": "MIT",
+        "created_at": "2026-05-26T13:52:11Z",
+        "pushed_at": "2026-05-28T03:00:44Z",
+        "topics": [
+          "ai",
+          "ai-agent",
+          "clerk",
+          "cli",
+          "coding-agent",
+          "fastapi",
+          "groq",
+          "langchain",
+          "langraph",
+          "llm",
+          "polar",
+          "python",
+          "rag",
+          "supabase",
+          "terminal",
+          "tui",
+          "typescript"
+        ]
+      }
+    },
+    {
+      "name": "Asim00740/Kagantic-vault-structure",
+      "title": "Kagantic-vault-structure",
+      "description": "Provide a structured template for Obsidian-style markdown vaults to improve LLM agent navigation and human readability in Git repositories",
+      "repo_url": "https://github.com/Asim00740/Kagantic-vault-structure",
+      "homepage_url": null,
+      "source_url": "https://github.com/Asim00740/Kagantic-vault-structure",
+      "source_urls": [
+        "https://github.com/Asim00740/Kagantic-vault-structure"
+      ],
+      "signal_summary": "Matched GitHub search `topic:llm-agent pushed:>=2026-05-26`; pushed 2026-05-28T02:56:28Z; stars 0.",
+      "why_builders_should_care": "May be a useful new capability or signal for agent builders to review.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "license-not-asserted"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 0,
+        "open_issues": 0,
+        "language": null,
+        "license": null,
+        "created_at": "2024-06-27T19:02:55Z",
+        "pushed_at": "2026-05-28T02:56:28Z",
+        "topics": [
+          "agentic-ai",
+          "ai-tools",
+          "documentation",
+          "knowledge-base",
+          "knowledge-management",
+          "llm",
+          "llm-agent",
+          "markdown",
+          "note-taking",
+          "obsidian-vault",
+          "rag",
+          "templates",
+          "zettelkasten"
+        ]
+      }
+    },
+    {
+      "name": "atiamzon-nimbus/skills-integrate-mcp-with-copilot",
+      "title": "skills-integrate-mcp-with-copilot",
+      "description": "Exercise: Integrate Model Context Protocol with GitHub Copilot",
+      "repo_url": "https://github.com/atiamzon-nimbus/skills-integrate-mcp-with-copilot",
+      "homepage_url": null,
+      "source_url": "https://github.com/atiamzon-nimbus/skills-integrate-mcp-with-copilot",
+      "source_urls": [
+        "https://github.com/atiamzon-nimbus/skills-integrate-mcp-with-copilot"
+      ],
+      "signal_summary": "Matched GitHub search `\"model context protocol\" pushed:>=2026-05-26`; pushed 2026-05-28T03:00:51Z; stars 0.",
+      "why_builders_should_care": "May expose a useful permissioned tool surface for coding agents.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "sensitive-permissions"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 0,
+        "open_issues": 7,
+        "language": "JavaScript",
+        "license": "MIT",
+        "created_at": "2026-05-28T02:50:36Z",
+        "pushed_at": "2026-05-28T03:00:51Z",
+        "topics": []
+      }
+    },
+    {
+      "name": "dawsonblock/agent_eval_skills_merged_clean",
+      "title": "agent_eval_skills_merged_clean",
+      "description": "No repository description supplied.",
+      "repo_url": "https://github.com/dawsonblock/agent_eval_skills_merged_clean",
+      "homepage_url": "https://agent-eval-skills-merged-clean.vercel.app",
+      "source_url": "https://github.com/dawsonblock/agent_eval_skills_merged_clean",
+      "source_urls": [
+        "https://github.com/dawsonblock/agent_eval_skills_merged_clean",
+        "https://agent-eval-skills-merged-clean.vercel.app"
+      ],
+      "signal_summary": "Matched GitHub search `\"agent eval\" pushed:>=2026-05-26`; pushed 2026-05-28T02:52:49Z; stars 0.",
+      "why_builders_should_care": "May help builders verify agent behavior, regressions, or model/tool quality.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 0,
+        "open_issues": 1,
+        "language": "Python",
+        "license": "Apache-2.0",
+        "created_at": "2026-05-15T23:54:25Z",
+        "pushed_at": "2026-05-28T02:52:49Z",
+        "topics": []
+      }
+    },
+    {
+      "name": "dominiks1260/agent-kit",
+      "title": "agent-kit",
+      "description": "Enable AI agents to send, receive, and manage real email autonomously using 27 email tools via Model Context Protocol without signup or API keys.",
+      "repo_url": "https://github.com/dominiks1260/agent-kit",
+      "homepage_url": null,
+      "source_url": "https://github.com/dominiks1260/agent-kit",
+      "source_urls": [
+        "https://github.com/dominiks1260/agent-kit"
+      ],
+      "signal_summary": "Matched GitHub search `topic:agent-framework pushed:>=2026-05-26`; pushed 2026-05-28T03:00:54Z; stars 0.",
+      "why_builders_should_care": "May help builders verify agent behavior, regressions, or model/tool quality.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "license-not-asserted"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 0,
+        "open_issues": 0,
+        "language": "JavaScript",
+        "license": null,
+        "created_at": "2026-03-25T00:45:40Z",
+        "pushed_at": "2026-05-28T03:00:54Z",
+        "topics": [
+          "adk",
+          "agent-based-modeling",
+          "agent-development-kit",
+          "agent-framework",
+          "agent-security",
+          "agentic-coding",
+          "agents",
+          "ai-agent-framework",
+          "ai-red-team",
+          "claude",
+          "cloudflare",
+          "durable-objects",
+          "langchain-js",
+          "llm-evaluation",
+          "llm-evaluation-framework",
+          "llm-fuzzer",
+          "llm-fuzzing",
+          "llm-scanner",
+          "llm-vulnerabilities",
+          "mcp-client"
+        ]
+      }
+    },
+    {
+      "name": "juandavidru4641/dsplab",
+      "title": "dsplab",
+      "description": "Develop DSP tools and prototypes quickly with DSPLab’s environment, combining optimized code, safe testing, and embedded-ready output.",
+      "repo_url": "https://github.com/juandavidru4641/dsplab",
+      "homepage_url": null,
+      "source_url": "https://github.com/juandavidru4641/dsplab",
+      "source_urls": [
+        "https://github.com/juandavidru4641/dsplab"
+      ],
+      "signal_summary": "Matched GitHub search `topic:llm-agent pushed:>=2026-05-26`; pushed 2026-05-28T02:57:33Z; stars 0.",
+      "why_builders_should_care": "May be a useful new capability or signal for agent builders to review.",
+      "suggested_trust_tier": "watchlist",
+      "risk_flags": [
+        "early-stage"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 0,
+        "open_issues": 0,
+        "language": "JavaScript",
+        "license": "NOASSERTION",
+        "created_at": "2026-03-21T05:40:30Z",
+        "pushed_at": "2026-05-28T02:57:33Z",
+        "topics": [
+          "agentic-ai",
+          "ai",
+          "analog-electronics",
+          "atmega328p",
+          "audio-dsp",
+          "dsp",
+          "electret-microphones",
+          "eurorack",
+          "i2c-bus",
+          "ide",
+          "llm",
+          "llm-agent",
+          "microphone",
+          "sensor-data",
+          "signal-processing",
+          "sound-processing",
+          "strain-gauge",
+          "strain-tensor",
+          "vult",
+          "vultdsp"
+        ]
+      }
+    },
+    {
+      "name": "linny006/agent-eval-harness",
+      "title": "agent-eval-harness",
+      "description": "Live, open-source benchmark for comparing AI coding agents on real GitHub issues",
+      "repo_url": "https://github.com/linny006/agent-eval-harness",
+      "homepage_url": null,
+      "source_url": "https://github.com/linny006/agent-eval-harness",
+      "source_urls": [
+        "https://github.com/linny006/agent-eval-harness"
+      ],
+      "signal_summary": "Matched GitHub search `\"agent eval\" pushed:>=2026-05-26`; pushed 2026-05-28T03:00:35Z; stars 0.",
+      "why_builders_should_care": "May help builders verify agent behavior, regressions, or model/tool quality.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "license-not-asserted",
+        "sensitive-permissions"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 0,
+        "open_issues": 3,
+        "language": "Python",
+        "license": null,
+        "created_at": "2026-05-24T01:08:04Z",
+        "pushed_at": "2026-05-28T03:00:35Z",
+        "topics": [
+          "agent-eval",
+          "agent-evaluation",
+          "ai-benchmarks",
+          "ai-coding-agent-benchmark",
+          "ai-engineering",
+          "ai-evaluation",
+          "ai-research",
+          "ai-tools",
+          "auto-updated",
+          "awesome-list",
+          "benchmark",
+          "codex-vs-opencode",
+          "coding-agent-benchmark",
+          "dev-tools",
+          "developer-tools",
+          "live-data",
+          "llm-benchmarks",
+          "llm-testing",
+          "machine-learning",
+          "swe-bench"
+        ]
+      }
+    },
+    {
+      "name": "linny006/agent-framework-radar",
+      "title": "agent-framework-radar",
+      "description": "Live index of the newest agent frameworks shipping on GitHub, sorted by recency not stars",
+      "repo_url": "https://github.com/linny006/agent-framework-radar",
+      "homepage_url": "https://github.com/linny006?utm_source=github&utm_medium=about&utm_campaign=agent-framework-radar",
+      "source_url": "https://github.com/linny006/agent-framework-radar",
+      "source_urls": [
+        "https://github.com/linny006/agent-framework-radar",
+        "https://github.com/linny006?utm_source=github&utm_medium=about&utm_campaign=agent-framework-radar"
+      ],
+      "signal_summary": "Matched GitHub search `topic:agent-framework pushed:>=2026-05-26`; pushed 2026-05-28T03:00:26Z; stars 0.",
+      "why_builders_should_care": "May affect how builders compose, deploy, or observe agent workflows.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "license-not-asserted",
+        "sensitive-permissions"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 0,
+        "open_issues": 3,
+        "language": "Python",
+        "license": null,
+        "created_at": "2026-05-23T10:52:28Z",
+        "pushed_at": "2026-05-28T03:00:26Z",
+        "topics": [
+          "agent-framework",
+          "agent-orchestration",
+          "agent-platform",
+          "agentic-ai",
+          "ai-agents",
+          "ai-engineering",
+          "ai-orchestration",
+          "ai-tools",
+          "auto-updated",
+          "autonomous-agents",
+          "awesome-agents",
+          "awesome-list",
+          "developer-tools",
+          "generative-ai",
+          "live-data",
+          "llm-development",
+          "multi-agent",
+          "multi-agent-system"
+        ]
+      }
+    },
+    {
+      "name": "looseleaf-acrylic560/claude-md-generator",
+      "title": "claude-md-generator",
+      "description": "Generate CLAUDE.md files quickly with a simple tool that creates clear, structured documentation for your projects and workflows.",
+      "repo_url": "https://github.com/looseleaf-acrylic560/claude-md-generator",
+      "homepage_url": null,
+      "source_url": "https://github.com/looseleaf-acrylic560/claude-md-generator",
+      "source_urls": [
+        "https://github.com/looseleaf-acrylic560/claude-md-generator"
+      ],
+      "signal_summary": "Matched GitHub search `topic:ai-agent pushed:>=2026-05-26`; pushed 2026-05-28T03:01:01Z; stars 0.",
+      "why_builders_should_care": "May improve agent context persistence, search, or retrieval workflows.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "license-not-asserted",
+        "sensitive-permissions"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 0,
+        "open_issues": 0,
+        "language": null,
+        "license": null,
+        "created_at": "2026-03-25T03:02:42Z",
+        "pushed_at": "2026-05-28T03:01:01Z",
+        "topics": [
+          "agent",
+          "agentic-ai",
+          "agents",
+          "ai-agent",
+          "ai-agents",
+          "ai-governance",
+          "anthropic",
+          "antigravity",
+          "automation",
+          "claude-skill",
+          "claude-subagents",
+          "code-generation",
+          "context-optimization",
+          "cursor",
+          "devtools",
+          "dispatch-table",
+          "gemini-cli",
+          "memory",
+          "typescript"
+        ]
+      }
+    },
+    {
+      "name": "nsadras/mycellium",
+      "title": "mycellium",
+      "description": "biologically inspired LLM agent memory system",
+      "repo_url": "https://github.com/nsadras/mycellium",
+      "homepage_url": null,
+      "source_url": "https://github.com/nsadras/mycellium",
+      "source_urls": [
+        "https://github.com/nsadras/mycellium"
+      ],
+      "signal_summary": "Matched GitHub search `\"agent memory\" pushed:>=2026-05-26`; pushed 2026-05-28T02:54:44Z; stars 0.",
+      "why_builders_should_care": "May improve agent context persistence, search, or retrieval workflows.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "license-not-asserted",
+        "sensitive-permissions"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 0,
+        "open_issues": 0,
+        "language": "Python",
+        "license": null,
+        "created_at": "2026-05-12T01:18:24Z",
+        "pushed_at": "2026-05-28T02:54:44Z",
+        "topics": []
+      }
+    },
+    {
+      "name": "pandazxx/a-mem-reproduction",
+      "title": "a-mem-reproduction",
+      "description": "Warmup reproduction of A-Mem (Xu et al., 2025) — part of an agent memory research project. Goal: running, not perfect.",
+      "repo_url": "https://github.com/pandazxx/a-mem-reproduction",
+      "homepage_url": null,
+      "source_url": "https://github.com/pandazxx/a-mem-reproduction",
+      "source_urls": [
+        "https://github.com/pandazxx/a-mem-reproduction"
+      ],
+      "signal_summary": "Matched GitHub search `\"agent memory\" pushed:>=2026-05-26`; pushed 2026-05-28T02:58:22Z; stars 0.",
+      "why_builders_should_care": "May improve agent context persistence, search, or retrieval workflows.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "sensitive-permissions"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 0,
+        "open_issues": 0,
+        "language": "Python",
+        "license": "MIT",
+        "created_at": "2026-05-22T13:10:52Z",
+        "pushed_at": "2026-05-28T02:58:22Z",
+        "topics": []
+      }
+    },
+    {
+      "name": "pandemic-xanthicacid21/mcp-time-travel",
+      "title": "mcp-time-travel",
+      "description": "Record and replay MCP agent sessions with a transparent proxy to debug tool calls deterministically and step through failures interactively.",
+      "repo_url": "https://github.com/pandemic-xanthicacid21/mcp-time-travel",
+      "homepage_url": null,
+      "source_url": "https://github.com/pandemic-xanthicacid21/mcp-time-travel",
+      "source_urls": [
+        "https://github.com/pandemic-xanthicacid21/mcp-time-travel"
+      ],
+      "signal_summary": "Matched GitHub search `topic:ai-agent pushed:>=2026-05-26`; pushed 2026-05-28T03:01:01Z; stars 0.",
+      "why_builders_should_care": "May expose a useful permissioned tool surface for coding agents.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "sensitive-permissions"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 0,
+        "open_issues": 0,
+        "language": "TypeScript",
+        "license": "MIT",
+        "created_at": "2026-03-25T03:39:51Z",
+        "pushed_at": "2026-05-28T03:01:01Z",
+        "topics": [
+          "agentic-ai",
+          "agentic-workflow",
+          "ai-agent",
+          "ai-tools",
+          "claude-desktop",
+          "cli",
+          "debug",
+          "debugger",
+          "debugging",
+          "developer-tools",
+          "langgraph",
+          "llm-tools",
+          "mcp-tools",
+          "model-context-protocol",
+          "sqlite",
+          "sqlite-database",
+          "supabase",
+          "typescript"
+        ]
+      }
+    },
+    {
+      "name": "ramankrishna/bottensor-fleet",
+      "title": "bottensor-fleet",
+      "description": "Graph-native multi-agent fleet for Python. BYO-key. Local-first. Ships with a UI.",
+      "repo_url": "https://github.com/ramankrishna/bottensor-fleet",
+      "homepage_url": "https://pypi.org/project/bottensor-fleet/",
+      "source_url": "https://github.com/ramankrishna/bottensor-fleet",
+      "source_urls": [
+        "https://github.com/ramankrishna/bottensor-fleet",
+        "https://pypi.org/project/bottensor-fleet/"
+      ],
+      "signal_summary": "Matched GitHub search `topic:agent-framework pushed:>=2026-05-26`; pushed 2026-05-28T03:01:02Z; stars 0.",
+      "why_builders_should_care": "May affect how builders compose, deploy, or observe agent workflows.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 0,
+        "open_issues": 0,
+        "language": "Python",
+        "license": "NOASSERTION",
+        "created_at": "2026-05-05T22:21:14Z",
+        "pushed_at": "2026-05-28T03:01:02Z",
+        "topics": [
+          "agent-framework",
+          "agents",
+          "anthropic",
+          "dag",
+          "fastapi",
+          "llm",
+          "multi-agent",
+          "openai",
+          "python",
+          "react"
+        ]
+      }
+    },
+    {
+      "name": "robuxref2005/my_claude_skills",
+      "title": "my_claude_skills",
+      "description": "Share and organize custom Claude AI skills with access to useful external skill libraries and resources for enhanced workflow integration.",
+      "repo_url": "https://github.com/robuxref2005/my_claude_skills",
+      "homepage_url": null,
+      "source_url": "https://github.com/robuxref2005/my_claude_skills",
+      "source_urls": [
+        "https://github.com/robuxref2005/my_claude_skills"
+      ],
+      "signal_summary": "Matched GitHub search `topic:mcp pushed:>=2026-05-26`; pushed 2026-05-28T03:00:59Z; stars 0.",
+      "why_builders_should_care": "May expose a useful permissioned tool surface for coding agents.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 0,
+        "open_issues": 0,
+        "language": null,
+        "license": "MIT",
+        "created_at": "2026-03-25T01:56:46Z",
+        "pushed_at": "2026-05-28T03:00:59Z",
+        "topics": [
+          "agents",
+          "ai-coding",
+          "ai-tools",
+          "automation",
+          "claude-ai",
+          "claude-code",
+          "cli-tools",
+          "codex",
+          "cursor",
+          "developer-tools",
+          "dotfiles",
+          "gemini-cli",
+          "macos",
+          "mcp",
+          "pull-requests",
+          "slack",
+          "workflow"
+        ]
+      }
+    }
+  ],
+  "watched_sources": [],
+  "errors": []
+}

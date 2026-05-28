@@ -1,0 +1,773 @@
+{
+  "generated_at": "2026-05-27T13:03:29.978Z",
+  "mode": "hourly",
+  "lookback_days": 2,
+  "source_routes": [
+    "github-search",
+    "mcp-registry"
+  ],
+  "candidates": [
+    {
+      "name": "the-open-agent/openagent",
+      "title": "openagent",
+      "description": "⚡️next-generation personal AI assistant powered by LLM, RAG and agent loops, supporting computer-use, browser-use and coding agent, demo: https://demo.openagentai.org",
+      "repo_url": "https://github.com/the-open-agent/openagent",
+      "homepage_url": "https://www.openagentai.org/",
+      "source_url": "https://github.com/the-open-agent/openagent",
+      "source_urls": [
+        "https://github.com/the-open-agent/openagent",
+        "https://www.openagentai.org/"
+      ],
+      "signal_summary": "Matched GitHub search `\"coding agent\" pushed:>=2026-05-25`; pushed 2026-05-27T13:01:50Z; stars 4997.",
+      "why_builders_should_care": "May expose a useful permissioned tool surface for coding agents.",
+      "suggested_trust_tier": "watchlist",
+      "risk_flags": [
+        "sensitive-permissions",
+        "early-stage"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 4997,
+        "forks": 575,
+        "open_issues": 49,
+        "language": "Go",
+        "license": "Apache-2.0",
+        "created_at": "2020-05-29T02:45:58Z",
+        "pushed_at": "2026-05-27T13:01:50Z",
+        "topics": [
+          "agent",
+          "agentic",
+          "agentic-ai",
+          "agi",
+          "chatbot",
+          "chatgpt",
+          "gpt",
+          "harness",
+          "hermes-agent",
+          "knowledge-base",
+          "langchain",
+          "llm",
+          "mcp",
+          "model-context-protocol",
+          "multi-agent",
+          "openagent",
+          "openai",
+          "openclaw",
+          "rag"
+        ]
+      }
+    },
+    {
+      "name": "gptme/gptme",
+      "title": "gptme",
+      "description": "Your agent in your terminal, equipped with local tools: writes code, uses the terminal, browses the web. Make your own persistent autonomous agent on top!",
+      "repo_url": "https://github.com/gptme/gptme",
+      "homepage_url": "https://gptme.org/docs/",
+      "source_url": "https://github.com/gptme/gptme",
+      "source_urls": [
+        "https://github.com/gptme/gptme",
+        "https://gptme.org/docs/"
+      ],
+      "signal_summary": "Matched GitHub search `topic:llm-agent pushed:>=2026-05-25`; pushed 2026-05-27T12:56:57Z; stars 4310.",
+      "why_builders_should_care": "May be a useful new capability or signal for agent builders to review.",
+      "suggested_trust_tier": "promising",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 4310,
+        "forks": 390,
+        "open_issues": 13,
+        "language": "Python",
+        "license": "MIT",
+        "created_at": "2023-03-24T16:25:01Z",
+        "pushed_at": "2026-05-27T12:56:57Z",
+        "topics": [
+          "agent",
+          "agents",
+          "ai-agents",
+          "ai-assistant",
+          "anthropic",
+          "chatbot",
+          "chatgpt",
+          "cli",
+          "code-generation",
+          "llamacpp",
+          "llm",
+          "llm-agent",
+          "llm-apps",
+          "openai",
+          "openrouter",
+          "rag"
+        ]
+      }
+    },
+    {
+      "name": "zaxbysauce/opencode-swarm",
+      "title": "opencode-swarm",
+      "description": "  Architect-centric agentic swarm plugin for OpenCode. Hub-and-spoke orchestration with SME consultation, code generation, and QA review.",
+      "repo_url": "https://github.com/zaxbysauce/opencode-swarm",
+      "homepage_url": null,
+      "source_url": "https://github.com/zaxbysauce/opencode-swarm",
+      "source_urls": [
+        "https://github.com/zaxbysauce/opencode-swarm"
+      ],
+      "signal_summary": "Matched GitHub search `topic:mcp pushed:>=2026-05-25`; pushed 2026-05-27T13:01:55Z; stars 336.",
+      "why_builders_should_care": "May expose a useful permissioned tool surface for coding agents.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "sensitive-permissions"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 336,
+        "forks": 35,
+        "open_issues": 65,
+        "language": "TypeScript",
+        "license": "MIT",
+        "created_at": "2026-01-27T16:00:05Z",
+        "pushed_at": "2026-05-27T13:01:55Z",
+        "topics": [
+          "agent-swarm",
+          "ai-agents",
+          "ai-coding",
+          "automation",
+          "bun",
+          "cli",
+          "code-review",
+          "coding-agent",
+          "developer-tools",
+          "github",
+          "guardrails",
+          "llm",
+          "mcp",
+          "multi-agent",
+          "open-source",
+          "opencode",
+          "opencode-plugin",
+          "planning",
+          "software-engineering",
+          "typescript"
+        ]
+      }
+    },
+    {
+      "name": "xbtlin/ai-berkshire",
+      "title": "ai-berkshire",
+      "description": "AI 时代的伯克希尔：基于 Claude Code 的价值投资研究框架。巴菲特·芒格·段永平·李录四大师方法论 + 多Agent并行研究。",
+      "repo_url": "https://github.com/xbtlin/ai-berkshire",
+      "homepage_url": "https://github.com/xbtlin/ai-berkshire#readme",
+      "source_url": "https://github.com/xbtlin/ai-berkshire",
+      "source_urls": [
+        "https://github.com/xbtlin/ai-berkshire",
+        "https://github.com/xbtlin/ai-berkshire#readme"
+      ],
+      "signal_summary": "Matched GitHub search `topic:mcp pushed:>=2026-05-25`; pushed 2026-05-27T13:01:58Z; stars 23.",
+      "why_builders_should_care": "May expose a useful permissioned tool surface for coding agents.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 23,
+        "forks": 4,
+        "open_issues": 2,
+        "language": "Python",
+        "license": "MIT",
+        "created_at": "2026-04-07T11:19:51Z",
+        "pushed_at": "2026-05-27T13:01:58Z",
+        "topics": [
+          "ai",
+          "ai-agent",
+          "anthropic",
+          "berkshire-hathaway",
+          "charlie-munger",
+          "china-stock",
+          "claude",
+          "claude-code",
+          "financial-analysis",
+          "fintech",
+          "fundamental-analysis",
+          "investment",
+          "investment-research",
+          "llm",
+          "mcp",
+          "portfolio-management",
+          "stock-analysis",
+          "stock-market",
+          "value-investing",
+          "warren-buffett"
+        ]
+      }
+    },
+    {
+      "name": "Epistates/awesome-mcp-devtools",
+      "title": "awesome-mcp-devtools",
+      "description": "A curated list of developer tools, SDKs, libraries, and testing utilities for Model Context Protocol (MCP) server development.",
+      "repo_url": "https://github.com/Epistates/awesome-mcp-devtools",
+      "homepage_url": null,
+      "source_url": "https://github.com/Epistates/awesome-mcp-devtools",
+      "source_urls": [
+        "https://github.com/Epistates/awesome-mcp-devtools"
+      ],
+      "signal_summary": "Matched GitHub search `\"model context protocol\" pushed:>=2026-05-25`; pushed 2026-05-27T13:02:36Z; stars 6.",
+      "why_builders_should_care": "May expose a useful permissioned tool surface for coding agents.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 6,
+        "forks": 3,
+        "open_issues": 0,
+        "language": null,
+        "license": "MIT",
+        "created_at": "2025-09-05T05:04:12Z",
+        "pushed_at": "2026-05-27T13:02:36Z",
+        "topics": []
+      }
+    },
+    {
+      "name": "tya5/reyn",
+      "title": "reyn",
+      "description": "LLM agent workflow OS with a Markdown DSL. Constrained, validated, replayable execution. Predictability over autonomy.",
+      "repo_url": "https://github.com/tya5/reyn",
+      "homepage_url": "https://tya5.github.io/reyn/",
+      "source_url": "https://github.com/tya5/reyn",
+      "source_urls": [
+        "https://github.com/tya5/reyn",
+        "https://tya5.github.io/reyn/"
+      ],
+      "signal_summary": "Matched GitHub search `topic:agent-framework pushed:>=2026-05-25`; pushed 2026-05-27T13:01:20Z; stars 5.",
+      "why_builders_should_care": "May affect how builders compose, deploy, or observe agent workflows.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 5,
+        "forks": 0,
+        "open_issues": 8,
+        "language": "Python",
+        "license": "MIT",
+        "created_at": "2026-05-06T15:05:07Z",
+        "pushed_at": "2026-05-27T13:01:20Z",
+        "topics": [
+          "agent",
+          "agent-framework",
+          "agent-runtime",
+          "dsl",
+          "llm",
+          "markdown",
+          "multi-agent",
+          "orchestration",
+          "python",
+          "workflow"
+        ]
+      }
+    },
+    {
+      "name": "zty522/partner",
+      "title": "partner",
+      "description": "Partner 🤝 Your AI Research Companion. \"What have you been doing?\"",
+      "repo_url": "https://github.com/zty522/partner",
+      "homepage_url": null,
+      "source_url": "https://github.com/zty522/partner",
+      "source_urls": [
+        "https://github.com/zty522/partner"
+      ],
+      "signal_summary": "Matched GitHub search `topic:llm-agent pushed:>=2026-05-25`; pushed 2026-05-27T12:59:57Z; stars 3.",
+      "why_builders_should_care": "May be a useful new capability or signal for agent builders to review.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 3,
+        "forks": 0,
+        "open_issues": 0,
+        "language": "Python",
+        "license": "Apache-2.0",
+        "created_at": "2026-05-23T07:06:02Z",
+        "pushed_at": "2026-05-27T12:59:57Z",
+        "topics": [
+          "ai",
+          "ai-scientist",
+          "autonomous-agent",
+          "hermes",
+          "knowledge-base",
+          "literature-review",
+          "llm-agent",
+          "research",
+          "research-assistant",
+          "research-companion"
+        ]
+      }
+    },
+    {
+      "name": "BrettMGoughWork/vai-core",
+      "title": "vai-core",
+      "description": "An skills-based LLM runtime, using lessons learned from previous attempts",
+      "repo_url": "https://github.com/BrettMGoughWork/vai-core",
+      "homepage_url": null,
+      "source_url": "https://github.com/BrettMGoughWork/vai-core",
+      "source_urls": [
+        "https://github.com/BrettMGoughWork/vai-core"
+      ],
+      "signal_summary": "Matched GitHub search `topic:agent-framework pushed:>=2026-05-25`; pushed 2026-05-27T12:59:52Z; stars 2.",
+      "why_builders_should_care": "May affect how builders compose, deploy, or observe agent workflows.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 2,
+        "forks": 1,
+        "open_issues": 7,
+        "language": "Python",
+        "license": "MIT",
+        "created_at": "2026-05-15T08:29:34Z",
+        "pushed_at": "2026-05-27T12:59:52Z",
+        "topics": [
+          "agent-framework",
+          "ai-agents",
+          "autonomous-agents",
+          "hierarchical-agents",
+          "llm",
+          "llm-agents",
+          "multi-agent",
+          "python"
+        ]
+      }
+    },
+    {
+      "name": "410979729/proofrail-hermes",
+      "title": "proofrail-hermes",
+      "description": "Runtime harness plugin for Hermes with evidence-first execution, verification-first workflows, and self-correcting AI agent behavior.",
+      "repo_url": "https://github.com/410979729/proofrail-hermes",
+      "homepage_url": null,
+      "source_url": "https://github.com/410979729/proofrail-hermes",
+      "source_urls": [
+        "https://github.com/410979729/proofrail-hermes"
+      ],
+      "signal_summary": "Matched GitHub search `topic:ai-agent pushed:>=2026-05-25`; pushed 2026-05-27T13:03:23Z; stars 1.",
+      "why_builders_should_care": "May affect how builders compose, deploy, or observe agent workflows.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 1,
+        "forks": 0,
+        "open_issues": 0,
+        "language": "Python",
+        "license": "MIT",
+        "created_at": "2026-05-27T12:32:43Z",
+        "pushed_at": "2026-05-27T13:03:23Z",
+        "topics": [
+          "agent-harness",
+          "ai-agent",
+          "autonomous-coding",
+          "claude-code-harness",
+          "codex-harness",
+          "developer-tools",
+          "hermes",
+          "runtime-harness",
+          "self-correction",
+          "verification"
+        ]
+      }
+    },
+    {
+      "name": "Zeeechenn/stock-sage",
+      "title": "stock-sage",
+      "description": "Agent-ready A股智能决策工作台：本地数据底座 + 多源行情新闻 + 技术/情感/长期研究 + 组合风控 + 可审计记忆，当前聚焦纸上交易验证，后续客户端化。",
+      "repo_url": "https://github.com/Zeeechenn/stock-sage",
+      "homepage_url": "https://stocksage-agent.netlify.app/",
+      "source_url": "https://github.com/Zeeechenn/stock-sage",
+      "source_urls": [
+        "https://github.com/Zeeechenn/stock-sage",
+        "https://stocksage-agent.netlify.app/"
+      ],
+      "signal_summary": "Matched GitHub search `topic:llm-agent pushed:>=2026-05-25`; pushed 2026-05-27T12:58:23Z; stars 1.",
+      "why_builders_should_care": "May expose a useful permissioned tool surface for coding agents.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 1,
+        "forks": 0,
+        "open_issues": 0,
+        "language": "Python",
+        "license": "MIT",
+        "created_at": "2026-05-20T13:51:37Z",
+        "pushed_at": "2026-05-27T12:58:23Z",
+        "topics": [
+          "a-shares",
+          "chinese-stocks",
+          "fastapi",
+          "llm-agent",
+          "mcp",
+          "paper-trading",
+          "python",
+          "quant",
+          "stock-research"
+        ]
+      }
+    },
+    {
+      "name": "7ammad/agentic-memory-frontier",
+      "title": "agentic-memory-frontier",
+      "description": "Research and design workspace for a frontier agentic memory system",
+      "repo_url": "https://github.com/7ammad/agentic-memory-frontier",
+      "homepage_url": null,
+      "source_url": "https://github.com/7ammad/agentic-memory-frontier",
+      "source_urls": [
+        "https://github.com/7ammad/agentic-memory-frontier"
+      ],
+      "signal_summary": "Matched GitHub search `\"agent memory\" pushed:>=2026-05-25`; pushed 2026-05-27T13:01:43Z; stars 0.",
+      "why_builders_should_care": "May improve agent context persistence, search, or retrieval workflows.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "license-not-asserted",
+        "sensitive-permissions"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 0,
+        "open_issues": 0,
+        "language": "Python",
+        "license": null,
+        "created_at": "2026-05-27T06:18:50Z",
+        "pushed_at": "2026-05-27T13:01:43Z",
+        "topics": []
+      }
+    },
+    {
+      "name": "Atomics-hub/agentfile",
+      "title": "agentfile",
+      "description": "Contract language for reviewable AI coding agent delegation.",
+      "repo_url": "https://github.com/Atomics-hub/agentfile",
+      "homepage_url": null,
+      "source_url": "https://github.com/Atomics-hub/agentfile",
+      "source_urls": [
+        "https://github.com/Atomics-hub/agentfile"
+      ],
+      "signal_summary": "Matched GitHub search `\"coding agent\" pushed:>=2026-05-25`; pushed 2026-05-27T13:02:06Z; stars 0.",
+      "why_builders_should_care": "May be a useful new capability or signal for agent builders to review.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 0,
+        "open_issues": 0,
+        "language": "TypeScript",
+        "license": "MIT",
+        "created_at": "2026-05-20T14:33:45Z",
+        "pushed_at": "2026-05-27T13:02:06Z",
+        "topics": []
+      }
+    },
+    {
+      "name": "Atomics-hub/agentk",
+      "title": "agentk",
+      "description": "AgentK is a user-space security kernel for AI agents: an MCP/tool boundary with typed syscalls, taint-aware policy, capability receipts, signed evidence, and replayable flight logs.",
+      "repo_url": "https://github.com/Atomics-hub/agentk",
+      "homepage_url": null,
+      "source_url": "https://github.com/Atomics-hub/agentk",
+      "source_urls": [
+        "https://github.com/Atomics-hub/agentk"
+      ],
+      "signal_summary": "Matched GitHub search `topic:mcp pushed:>=2026-05-25`; pushed 2026-05-27T13:03:22Z; stars 0.",
+      "why_builders_should_care": "May expose a useful permissioned tool surface for coding agents.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 0,
+        "open_issues": 1,
+        "language": "Rust",
+        "license": "MIT",
+        "created_at": "2026-05-22T22:55:04Z",
+        "pushed_at": "2026-05-27T13:03:22Z",
+        "topics": [
+          "agent",
+          "agentic-ai",
+          "kernel",
+          "mcp",
+          "rust",
+          "security"
+        ]
+      }
+    },
+    {
+      "name": "Gura-Ame/AgentMemoryInjection",
+      "title": "AgentMemoryInjection",
+      "description": "AgentMemoryInjection is a pure-Java JVM Tool Interface (JVMTI) agent injector leveraging Project Panama (FFM API) to achieve low-level memory manipulation without native C/C++ libraries.",
+      "repo_url": "https://github.com/Gura-Ame/AgentMemoryInjection",
+      "homepage_url": null,
+      "source_url": "https://github.com/Gura-Ame/AgentMemoryInjection",
+      "source_urls": [
+        "https://github.com/Gura-Ame/AgentMemoryInjection"
+      ],
+      "signal_summary": "Matched GitHub search `\"agent memory\" pushed:>=2026-05-25`; pushed 2026-05-27T13:00:13Z; stars 0.",
+      "why_builders_should_care": "May improve agent context persistence, search, or retrieval workflows.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "sensitive-permissions"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 0,
+        "open_issues": 0,
+        "language": "Java",
+        "license": "MIT",
+        "created_at": "2026-05-26T11:31:51Z",
+        "pushed_at": "2026-05-27T13:00:13Z",
+        "topics": []
+      }
+    },
+    {
+      "name": "Ilenburg1993/chatgpt-docker-puppeteer",
+      "title": "chatgpt-docker-puppeteer",
+      "description": "🤖 Autonomous AI agent for browser automation with Puppeteer - Domain-driven task processing with adaptive validation and real-time monitoring",
+      "repo_url": "https://github.com/Ilenburg1993/chatgpt-docker-puppeteer",
+      "homepage_url": null,
+      "source_url": "https://github.com/Ilenburg1993/chatgpt-docker-puppeteer",
+      "source_urls": [
+        "https://github.com/Ilenburg1993/chatgpt-docker-puppeteer"
+      ],
+      "signal_summary": "Matched GitHub search `topic:ai-agent pushed:>=2026-05-25`; pushed 2026-05-27T13:01:59Z; stars 0.",
+      "why_builders_should_care": "May be a useful new capability or signal for agent builders to review.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "sensitive-permissions"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 0,
+        "open_issues": 16,
+        "language": "JavaScript",
+        "license": "MIT",
+        "created_at": "2026-01-15T22:44:41Z",
+        "pushed_at": "2026-05-27T13:01:59Z",
+        "topics": [
+          "ai-agent",
+          "automation",
+          "browser-automation",
+          "chatgpt",
+          "docker",
+          "nodejs",
+          "puppeteer",
+          "puppeteer-extra",
+          "task-queue",
+          "websocket"
+        ]
+      }
+    },
+    {
+      "name": "kran-seges/skills-integrate-mcp-with-copilot",
+      "title": "skills-integrate-mcp-with-copilot",
+      "description": "Exercise: Integrate Model Context Protocol with GitHub Copilot",
+      "repo_url": "https://github.com/kran-seges/skills-integrate-mcp-with-copilot",
+      "homepage_url": null,
+      "source_url": "https://github.com/kran-seges/skills-integrate-mcp-with-copilot",
+      "source_urls": [
+        "https://github.com/kran-seges/skills-integrate-mcp-with-copilot"
+      ],
+      "signal_summary": "Matched GitHub search `\"model context protocol\" pushed:>=2026-05-25`; pushed 2026-05-27T13:02:15Z; stars 0.",
+      "why_builders_should_care": "May expose a useful permissioned tool surface for coding agents.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "sensitive-permissions"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 0,
+        "open_issues": 1,
+        "language": "JavaScript",
+        "license": "MIT",
+        "created_at": "2026-05-27T13:01:24Z",
+        "pushed_at": "2026-05-27T13:02:15Z",
+        "topics": []
+      }
+    },
+    {
+      "name": "linny006/agent-eval-harness",
+      "title": "agent-eval-harness",
+      "description": "Live, open-source benchmark for comparing AI coding agents on real GitHub issues",
+      "repo_url": "https://github.com/linny006/agent-eval-harness",
+      "homepage_url": null,
+      "source_url": "https://github.com/linny006/agent-eval-harness",
+      "source_urls": [
+        "https://github.com/linny006/agent-eval-harness"
+      ],
+      "signal_summary": "Matched GitHub search `\"agent eval\" pushed:>=2026-05-25`; pushed 2026-05-27T13:00:52Z; stars 0.",
+      "why_builders_should_care": "May help builders verify agent behavior, regressions, or model/tool quality.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "license-not-asserted",
+        "sensitive-permissions"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 0,
+        "open_issues": 3,
+        "language": "Python",
+        "license": null,
+        "created_at": "2026-05-24T01:08:04Z",
+        "pushed_at": "2026-05-27T13:00:52Z",
+        "topics": [
+          "agent-eval",
+          "agent-evaluation",
+          "ai-benchmarks",
+          "ai-coding-agent-benchmark",
+          "ai-engineering",
+          "ai-evaluation",
+          "ai-research",
+          "ai-tools",
+          "auto-updated",
+          "awesome-list",
+          "benchmark",
+          "codex-vs-opencode",
+          "coding-agent-benchmark",
+          "dev-tools",
+          "developer-tools",
+          "live-data",
+          "llm-benchmarks",
+          "llm-testing",
+          "machine-learning",
+          "swe-bench"
+        ]
+      }
+    },
+    {
+      "name": "linny006/agent-framework-radar",
+      "title": "agent-framework-radar",
+      "description": "Live index of the newest agent frameworks shipping on GitHub, sorted by recency not stars",
+      "repo_url": "https://github.com/linny006/agent-framework-radar",
+      "homepage_url": "https://github.com/linny006?utm_source=github&utm_medium=about&utm_campaign=agent-framework-radar",
+      "source_url": "https://github.com/linny006/agent-framework-radar",
+      "source_urls": [
+        "https://github.com/linny006/agent-framework-radar",
+        "https://github.com/linny006?utm_source=github&utm_medium=about&utm_campaign=agent-framework-radar"
+      ],
+      "signal_summary": "Matched GitHub search `topic:agent-framework pushed:>=2026-05-25`; pushed 2026-05-27T13:00:44Z; stars 0.",
+      "why_builders_should_care": "May affect how builders compose, deploy, or observe agent workflows.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "license-not-asserted",
+        "sensitive-permissions"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 0,
+        "open_issues": 3,
+        "language": "Python",
+        "license": null,
+        "created_at": "2026-05-23T10:52:28Z",
+        "pushed_at": "2026-05-27T13:00:44Z",
+        "topics": [
+          "agent-framework",
+          "agent-orchestration",
+          "agent-platform",
+          "agentic-ai",
+          "ai-agents",
+          "ai-engineering",
+          "ai-orchestration",
+          "ai-tools",
+          "auto-updated",
+          "autonomous-agents",
+          "awesome-agents",
+          "awesome-list",
+          "developer-tools",
+          "generative-ai",
+          "live-data",
+          "llm-development",
+          "multi-agent",
+          "multi-agent-system"
+        ]
+      }
+    },
+    {
+      "name": "moritz-epeak/pi-speak",
+      "title": "pi-speak",
+      "description": "Text-to-speech for Pi coding agent. ~90ms latency, 8 voices, self-contained pi package.",
+      "repo_url": "https://github.com/moritz-epeak/pi-speak",
+      "homepage_url": null,
+      "source_url": "https://github.com/moritz-epeak/pi-speak",
+      "source_urls": [
+        "https://github.com/moritz-epeak/pi-speak"
+      ],
+      "signal_summary": "Matched GitHub search `\"coding agent\" pushed:>=2026-05-25`; pushed 2026-05-27T13:02:05Z; stars 0.",
+      "why_builders_should_care": "May be a useful new capability or signal for agent builders to review.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "license-not-asserted"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 0,
+        "open_issues": 0,
+        "language": "TypeScript",
+        "license": null,
+        "created_at": "2026-05-25T14:40:13Z",
+        "pushed_at": "2026-05-27T13:02:05Z",
+        "topics": []
+      }
+    },
+    {
+      "name": "omkarjaliparthi/omkarjaliparthi",
+      "title": "omkarjaliparthi",
+      "description": "AI Platform PM · Founding-team Builder · Solo-shipped a 109-endpoint commercial API + a multi-agent eval pipeline · Open to Founding PM / Senior PM / AI Platform PM · US-wide · No sponsorship needed",
+      "repo_url": "https://github.com/omkarjaliparthi/omkarjaliparthi",
+      "homepage_url": "https://www.insightsbyomkar.com",
+      "source_url": "https://github.com/omkarjaliparthi/omkarjaliparthi",
+      "source_urls": [
+        "https://github.com/omkarjaliparthi/omkarjaliparthi",
+        "https://www.insightsbyomkar.com"
+      ],
+      "signal_summary": "Matched GitHub search `\"agent eval\" pushed:>=2026-05-25`; pushed 2026-05-27T11:46:18Z; stars 0.",
+      "why_builders_should_care": "May help builders verify agent behavior, regressions, or model/tool quality.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "license-not-asserted"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 0,
+        "open_issues": 0,
+        "language": null,
+        "license": null,
+        "created_at": "2026-04-14T21:41:18Z",
+        "pushed_at": "2026-05-27T11:46:18Z",
+        "topics": []
+      }
+    }
+  ],
+  "watched_sources": [],
+  "errors": []
+}

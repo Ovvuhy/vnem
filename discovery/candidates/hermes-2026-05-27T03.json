@@ -1,0 +1,825 @@
+{
+  "generated_at": "2026-05-27T03:02:48.572Z",
+  "mode": "hourly",
+  "lookback_days": 2,
+  "source_routes": [
+    "github-search",
+    "mcp-registry"
+  ],
+  "candidates": [
+    {
+      "name": "esengine/DeepSeek-Reasonix",
+      "title": "DeepSeek-Reasonix",
+      "description": "DeepSeek-native AI coding agent for your terminal. Engineered around prefix-cache stability — leave it running.",
+      "repo_url": "https://github.com/esengine/DeepSeek-Reasonix",
+      "homepage_url": "https://esengine.github.io/DeepSeek-Reasonix/",
+      "source_url": "https://github.com/esengine/DeepSeek-Reasonix",
+      "source_urls": [
+        "https://github.com/esengine/DeepSeek-Reasonix",
+        "https://esengine.github.io/DeepSeek-Reasonix/"
+      ],
+      "signal_summary": "Matched GitHub search `topic:ai-agent pushed:>=2026-05-25`; pushed 2026-05-27T03:02:37Z; stars 10317.",
+      "why_builders_should_care": "May affect how builders compose, deploy, or observe agent workflows.",
+      "suggested_trust_tier": "promising",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 10317,
+        "forks": 566,
+        "open_issues": 220,
+        "language": "TypeScript",
+        "license": "MIT",
+        "created_at": "2026-04-21T08:27:02Z",
+        "pushed_at": "2026-05-27T03:02:37Z",
+        "topics": [
+          "agent",
+          "agent-framework",
+          "ai-agent",
+          "ai-coding",
+          "cli",
+          "coding-agent",
+          "deepseek",
+          "developer-tools",
+          "ink",
+          "llm",
+          "prompt-caching",
+          "r1",
+          "terminal",
+          "tool-use",
+          "tui",
+          "typescript"
+        ]
+      }
+    },
+    {
+      "name": "gptme/gptme",
+      "title": "gptme",
+      "description": "Your agent in your terminal, equipped with local tools: writes code, uses the terminal, browses the web. Make your own persistent autonomous agent on top!",
+      "repo_url": "https://github.com/gptme/gptme",
+      "homepage_url": "https://gptme.org/docs/",
+      "source_url": "https://github.com/gptme/gptme",
+      "source_urls": [
+        "https://github.com/gptme/gptme",
+        "https://gptme.org/docs/"
+      ],
+      "signal_summary": "Matched GitHub search `topic:llm-agent pushed:>=2026-05-25`; pushed 2026-05-27T03:02:42Z; stars 4309.",
+      "why_builders_should_care": "May be a useful new capability or signal for agent builders to review.",
+      "suggested_trust_tier": "promising",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 4309,
+        "forks": 390,
+        "open_issues": 16,
+        "language": "Python",
+        "license": "MIT",
+        "created_at": "2023-03-24T16:25:01Z",
+        "pushed_at": "2026-05-27T03:02:42Z",
+        "topics": [
+          "agent",
+          "agents",
+          "ai-agents",
+          "ai-assistant",
+          "anthropic",
+          "chatbot",
+          "chatgpt",
+          "cli",
+          "code-generation",
+          "llamacpp",
+          "llm",
+          "llm-agent",
+          "llm-apps",
+          "openai",
+          "openrouter",
+          "rag"
+        ]
+      }
+    },
+    {
+      "name": "rahilp/second-brain-cloudflare",
+      "title": "second-brain-cloudflare",
+      "description": "One memory layer, every AI tool. Store anything once — recall it in Claude, ChatGPT, Cursor, or any MCP client. Self-hosted on Cloudflare's free tier.",
+      "repo_url": "https://github.com/rahilp/second-brain-cloudflare",
+      "homepage_url": "https://www.thesecondbrain.dev",
+      "source_url": "https://github.com/rahilp/second-brain-cloudflare",
+      "source_urls": [
+        "https://github.com/rahilp/second-brain-cloudflare",
+        "https://www.thesecondbrain.dev"
+      ],
+      "signal_summary": "Matched GitHub search `topic:mcp pushed:>=2026-05-25`; pushed 2026-05-27T03:02:39Z; stars 87.",
+      "why_builders_should_care": "May expose a useful permissioned tool surface for coding agents.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "sensitive-permissions"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 87,
+        "forks": 18,
+        "open_issues": 20,
+        "language": "TypeScript",
+        "license": "MIT",
+        "created_at": "2026-05-09T23:10:58Z",
+        "pushed_at": "2026-05-27T03:02:39Z",
+        "topics": [
+          "ai-memory",
+          "claude",
+          "claude-ai",
+          "claude-code",
+          "cloudflare",
+          "cloudflare-workers",
+          "d1",
+          "ios-shortcuts",
+          "mcp",
+          "model-context-protocol",
+          "obsidian-plugin",
+          "personal-knowledge-management",
+          "second-brain",
+          "semantic-search",
+          "typescript",
+          "vectorize",
+          "workers"
+        ]
+      }
+    },
+    {
+      "name": "Dicklesworthstone/eidetic_engine_cli",
+      "title": "eidetic_engine_cli",
+      "description": "Durable, local-first, explainable memory for coding agents. A Rust CLI memory substrate built on the franken-stack (Asupersync, FrankenSQLite, Frankensearch, FrankenNetworkX).",
+      "repo_url": "https://github.com/Dicklesworthstone/eidetic_engine_cli",
+      "homepage_url": null,
+      "source_url": "https://github.com/Dicklesworthstone/eidetic_engine_cli",
+      "source_urls": [
+        "https://github.com/Dicklesworthstone/eidetic_engine_cli"
+      ],
+      "signal_summary": "Matched GitHub search `\"coding agent\" pushed:>=2026-05-25`; pushed 2026-05-27T03:02:33Z; stars 16.",
+      "why_builders_should_care": "May improve agent context persistence, search, or retrieval workflows.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "sensitive-permissions"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 16,
+        "forks": 1,
+        "open_issues": 0,
+        "language": "Rust",
+        "license": "NOASSERTION",
+        "created_at": "2026-04-29T08:51:51Z",
+        "pushed_at": "2026-05-27T03:02:33Z",
+        "topics": []
+      }
+    },
+    {
+      "name": "tanveerkhan2005/custom-agent-with-skills",
+      "title": "custom-agent-with-skills",
+      "description": "🤖 Build adaptable AI agents with skill-based systems, enabling efficient context management and seamless integration across any framework.",
+      "repo_url": "https://github.com/tanveerkhan2005/custom-agent-with-skills",
+      "homepage_url": "https://tanveerkhan2005.github.io",
+      "source_url": "https://github.com/tanveerkhan2005/custom-agent-with-skills",
+      "source_urls": [
+        "https://github.com/tanveerkhan2005/custom-agent-with-skills",
+        "https://tanveerkhan2005.github.io"
+      ],
+      "signal_summary": "Matched GitHub search `topic:agent-framework pushed:>=2026-05-25`; pushed 2026-05-27T03:02:18Z; stars 2.",
+      "why_builders_should_care": "May affect how builders compose, deploy, or observe agent workflows.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "license-not-asserted"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 2,
+        "forks": 0,
+        "open_issues": 0,
+        "language": "Python",
+        "license": null,
+        "created_at": "2026-02-06T14:40:18Z",
+        "pushed_at": "2026-05-27T03:02:18Z",
+        "topics": [
+          "agent",
+          "agent-development-kit",
+          "agent-framework",
+          "agent-skill",
+          "agentforce",
+          "agentskills",
+          "ai-agents",
+          "ai-tools",
+          "claude-ai",
+          "claude-code",
+          "claude-code-skills",
+          "claude-skills-hub",
+          "codex",
+          "configuration",
+          "copilot-coding-agent",
+          "create-skills",
+          "gemini-cli",
+          "qwen",
+          "skills-guide",
+          "skills-system"
+        ]
+      }
+    },
+    {
+      "name": "escoffier-labs/brigade",
+      "title": "brigade",
+      "description": "Mise en place for agent memory. Installable starter kit for a harness-agnostic agent workspace.",
+      "repo_url": "https://github.com/escoffier-labs/brigade",
+      "homepage_url": null,
+      "source_url": "https://github.com/escoffier-labs/brigade",
+      "source_urls": [
+        "https://github.com/escoffier-labs/brigade"
+      ],
+      "signal_summary": "Matched GitHub search `\"agent memory\" pushed:>=2026-05-25`; pushed 2026-05-27T02:57:40Z; stars 1.",
+      "why_builders_should_care": "May improve agent context persistence, search, or retrieval workflows.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "sensitive-permissions"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 1,
+        "forks": 0,
+        "open_issues": 0,
+        "language": "Python",
+        "license": "MIT",
+        "created_at": "2026-05-13T21:55:58Z",
+        "pushed_at": "2026-05-27T02:57:40Z",
+        "topics": []
+      }
+    },
+    {
+      "name": "logbookfordevs/ai-field-kit",
+      "title": "ai-field-kit",
+      "description": "A curated, version-controlled collection of everything you need to make AI coding agents actually useful in a real development environment. No fluff — just the configuration, prompts, and automation that ship every day.",
+      "repo_url": "https://github.com/logbookfordevs/ai-field-kit",
+      "homepage_url": "https://ai-field-kit.logbookfordevs.com/",
+      "source_url": "https://github.com/logbookfordevs/ai-field-kit",
+      "source_urls": [
+        "https://github.com/logbookfordevs/ai-field-kit",
+        "https://ai-field-kit.logbookfordevs.com/"
+      ],
+      "signal_summary": "Matched GitHub search `\"coding agent\" pushed:>=2026-05-25`; pushed 2026-05-27T03:02:32Z; stars 1.",
+      "why_builders_should_care": "May be a useful new capability or signal for agent builders to review.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "license-not-asserted"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 1,
+        "forks": 1,
+        "open_issues": 1,
+        "language": "TypeScript",
+        "license": null,
+        "created_at": "2025-07-30T17:54:44Z",
+        "pushed_at": "2026-05-27T03:02:32Z",
+        "topics": []
+      }
+    },
+    {
+      "name": "shibley/mymcptools",
+      "title": "mymcptools",
+      "description": "MCP Server Directory - Find and compare Model Context Protocol servers",
+      "repo_url": "https://github.com/shibley/mymcptools",
+      "homepage_url": "https://mymcptools.vercel.app",
+      "source_url": "https://github.com/shibley/mymcptools",
+      "source_urls": [
+        "https://github.com/shibley/mymcptools",
+        "https://mymcptools.vercel.app"
+      ],
+      "signal_summary": "Matched GitHub search `\"model context protocol\" pushed:>=2026-05-25`; pushed 2026-05-27T03:01:40Z; stars 1.",
+      "why_builders_should_care": "May expose a useful permissioned tool surface for coding agents.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "license-not-asserted"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 1,
+        "forks": 3,
+        "open_issues": 3,
+        "language": "TypeScript",
+        "license": null,
+        "created_at": "2026-03-28T06:21:15Z",
+        "pushed_at": "2026-05-27T03:01:40Z",
+        "topics": []
+      }
+    },
+    {
+      "name": "Acelito7618/agentsmith-cli",
+      "title": "agentsmith-cli",
+      "description": "🌐 Analyze resources efficiently with Agent Smith CLI, a versatile tool for developers to enhance their workflows and optimize data management tasks.",
+      "repo_url": "https://github.com/Acelito7618/agentsmith-cli",
+      "homepage_url": "https://acelito7618.github.io",
+      "source_url": "https://github.com/Acelito7618/agentsmith-cli",
+      "source_urls": [
+        "https://github.com/Acelito7618/agentsmith-cli",
+        "https://acelito7618.github.io"
+      ],
+      "signal_summary": "Matched GitHub search `topic:agent-framework pushed:>=2026-05-25`; pushed 2026-05-27T03:01:39Z; stars 0.",
+      "why_builders_should_care": "May affect how builders compose, deploy, or observe agent workflows.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "sensitive-permissions"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 0,
+        "open_issues": 0,
+        "language": "TypeScript",
+        "license": "MIT",
+        "created_at": "2026-02-04T15:27:43Z",
+        "pushed_at": "2026-05-27T03:01:39Z",
+        "topics": [
+          "agent-framework",
+          "ai-agents",
+          "automation",
+          "cli-tool",
+          "code-analysis",
+          "copilot",
+          "copilot-sdk",
+          "developer-tools",
+          "devtools",
+          "github-copilot",
+          "hierarchical-agents",
+          "llm",
+          "nodejs",
+          "skill-extraction",
+          "subagents",
+          "typescript"
+        ]
+      }
+    },
+    {
+      "name": "AndrewMoryakov/AgentMemory",
+      "title": "AgentMemory",
+      "description": "Shared local memory runtime for AI clients and agents. Exposes CLI, HTTP API, and MCP above pluggable providers like mem0.",
+      "repo_url": "https://github.com/AndrewMoryakov/AgentMemory",
+      "homepage_url": null,
+      "source_url": "https://github.com/AndrewMoryakov/AgentMemory",
+      "source_urls": [
+        "https://github.com/AndrewMoryakov/AgentMemory"
+      ],
+      "signal_summary": "Matched GitHub search `\"agent memory\" pushed:>=2026-05-25`; pushed 2026-05-27T03:01:15Z; stars 0.",
+      "why_builders_should_care": "May expose a useful permissioned tool surface for coding agents.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "sensitive-permissions"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 0,
+        "open_issues": 0,
+        "language": "Python",
+        "license": "MIT",
+        "created_at": "2026-04-11T02:17:59Z",
+        "pushed_at": "2026-05-27T03:01:15Z",
+        "topics": [
+          "agents",
+          "ai",
+          "developer-tools",
+          "llm",
+          "mcp",
+          "mem0",
+          "memory",
+          "model-context-protocol",
+          "python",
+          "tooling"
+        ]
+      }
+    },
+    {
+      "name": "dawsonblock/agent_eval_skills_merged_clean",
+      "title": "agent_eval_skills_merged_clean",
+      "description": "No repository description supplied.",
+      "repo_url": "https://github.com/dawsonblock/agent_eval_skills_merged_clean",
+      "homepage_url": null,
+      "source_url": "https://github.com/dawsonblock/agent_eval_skills_merged_clean",
+      "source_urls": [
+        "https://github.com/dawsonblock/agent_eval_skills_merged_clean"
+      ],
+      "signal_summary": "Matched GitHub search `\"agent eval\" pushed:>=2026-05-25`; pushed 2026-05-27T02:55:34Z; stars 0.",
+      "why_builders_should_care": "May help builders verify agent behavior, regressions, or model/tool quality.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 0,
+        "open_issues": 1,
+        "language": "Python",
+        "license": "Apache-2.0",
+        "created_at": "2026-05-15T23:54:25Z",
+        "pushed_at": "2026-05-27T02:55:34Z",
+        "topics": []
+      }
+    },
+    {
+      "name": "dogunkim/llmnet",
+      "title": "llmnet",
+      "description": "🔍 Transform your local LLMs into a private, high-speed search engine, providing instant answers from your own knowledge base without internet access.",
+      "repo_url": "https://github.com/dogunkim/llmnet",
+      "homepage_url": "https://dogunkim.github.io",
+      "source_url": "https://github.com/dogunkim/llmnet",
+      "source_urls": [
+        "https://github.com/dogunkim/llmnet",
+        "https://dogunkim.github.io"
+      ],
+      "signal_summary": "Matched GitHub search `topic:llm-agent pushed:>=2026-05-25`; pushed 2026-05-27T03:01:55Z; stars 0.",
+      "why_builders_should_care": "May be a useful new capability or signal for agent builders to review.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "license-not-asserted",
+        "sensitive-permissions"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 0,
+        "open_issues": 0,
+        "language": "TypeScript",
+        "license": null,
+        "created_at": "2026-02-06T03:53:23Z",
+        "pushed_at": "2026-05-27T03:01:55Z",
+        "topics": [
+          "consensus",
+          "csharp-lib",
+          "diversity",
+          "embeddings",
+          "internet",
+          "knowledge",
+          "llm",
+          "llm-agent",
+          "network",
+          "ocr",
+          "postgres-vector",
+          "rag",
+          "react",
+          "thought",
+          "webscraping"
+        ]
+      }
+    },
+    {
+      "name": "dreamor/Voice-Assistant",
+      "title": "Voice-Assistant",
+      "description": "🎤 语音助手：通过语音控制电脑，通过大模型可以实现复杂操作，兼容Mac和Windows",
+      "repo_url": "https://github.com/dreamor/Voice-Assistant",
+      "homepage_url": null,
+      "source_url": "https://github.com/dreamor/Voice-Assistant",
+      "source_urls": [
+        "https://github.com/dreamor/Voice-Assistant"
+      ],
+      "signal_summary": "Matched GitHub search `topic:ai-agent pushed:>=2026-05-25`; pushed 2026-05-27T03:02:28Z; stars 0.",
+      "why_builders_should_care": "May be a useful new capability or signal for agent builders to review.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "license-not-asserted"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 0,
+        "open_issues": 0,
+        "language": "Python",
+        "license": null,
+        "created_at": "2026-04-08T15:30:55Z",
+        "pushed_at": "2026-05-27T03:02:28Z",
+        "topics": [
+          "ai-agent",
+          "chinese-speech",
+          "dashscope",
+          "fastapi",
+          "function-calling",
+          "litellm",
+          "llm",
+          "open-interpreter",
+          "python",
+          "speech-recognition",
+          "streaming",
+          "text-to-speech",
+          "voice-assistant",
+          "websocket"
+        ]
+      }
+    },
+    {
+      "name": "Hardik455abc/vsync",
+      "title": "vsync",
+      "description": "⚙️ Streamline your AI development with vsync: one config enables easy access to multiple powerful AI tools.",
+      "repo_url": "https://github.com/Hardik455abc/vsync",
+      "homepage_url": "https://hardik455abc.github.io",
+      "source_url": "https://github.com/Hardik455abc/vsync",
+      "source_urls": [
+        "https://github.com/Hardik455abc/vsync",
+        "https://hardik455abc.github.io"
+      ],
+      "signal_summary": "Matched GitHub search `topic:mcp pushed:>=2026-05-25`; pushed 2026-05-27T03:02:35Z; stars 0.",
+      "why_builders_should_care": "May expose a useful permissioned tool surface for coding agents.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "license-not-asserted"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 2,
+        "open_issues": 1,
+        "language": null,
+        "license": null,
+        "created_at": "2025-04-11T08:07:06Z",
+        "pushed_at": "2026-05-27T03:02:35Z",
+        "topics": [
+          "ai",
+          "ai-coding",
+          "automation",
+          "c64",
+          "codex",
+          "commodore",
+          "cursor",
+          "devtools",
+          "display",
+          "game",
+          "javascipt",
+          "mcp",
+          "mcp-server",
+          "patcher",
+          "provider",
+          "sync",
+          "tickerprovider",
+          "timecode",
+          "unlocker",
+          "vsync"
+        ]
+      }
+    },
+    {
+      "name": "jrbenson/agent-eval",
+      "title": "agent-eval",
+      "description": "Application for creating and running evaluation scenarios against a wide array of LLMs and viewing the results.",
+      "repo_url": "https://github.com/jrbenson/agent-eval",
+      "homepage_url": null,
+      "source_url": "https://github.com/jrbenson/agent-eval",
+      "source_urls": [
+        "https://github.com/jrbenson/agent-eval"
+      ],
+      "signal_summary": "Matched GitHub search `\"agent eval\" pushed:>=2026-05-25`; pushed 2026-05-27T02:27:34Z; stars 0.",
+      "why_builders_should_care": "May help builders verify agent behavior, regressions, or model/tool quality.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 0,
+        "open_issues": 0,
+        "language": "TypeScript",
+        "license": "MIT",
+        "created_at": "2026-05-26T21:05:41Z",
+        "pushed_at": "2026-05-27T02:27:34Z",
+        "topics": []
+      }
+    },
+    {
+      "name": "juancok888/minicode-sdk",
+      "title": "minicode-sdk",
+      "description": "🤖 Build AI agents in Python with minicode-sdk—an extensible framework featuring LLM support, tools, skills, and efficient async operations.",
+      "repo_url": "https://github.com/juancok888/minicode-sdk",
+      "homepage_url": "https://juancok888.github.io",
+      "source_url": "https://github.com/juancok888/minicode-sdk",
+      "source_urls": [
+        "https://github.com/juancok888/minicode-sdk",
+        "https://juancok888.github.io"
+      ],
+      "signal_summary": "Matched GitHub search `topic:mcp pushed:>=2026-05-25`; pushed 2026-05-27T03:02:42Z; stars 0.",
+      "why_builders_should_care": "May expose a useful permissioned tool surface for coding agents.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 0,
+        "open_issues": 0,
+        "language": "Python",
+        "license": "MIT",
+        "created_at": "2025-07-17T20:40:20Z",
+        "pushed_at": "2026-05-27T03:02:42Z",
+        "topics": [
+          "agentic-ai",
+          "ai-agent",
+          "async",
+          "claude",
+          "claude-code",
+          "cli",
+          "iot",
+          "llm",
+          "mcp",
+          "nlp",
+          "openai",
+          "python",
+          "sdk-python",
+          "tuya"
+        ]
+      }
+    },
+    {
+      "name": "linny006/agent-eval-harness",
+      "title": "agent-eval-harness",
+      "description": "Live, open-source benchmark for comparing AI coding agents on real GitHub issues",
+      "repo_url": "https://github.com/linny006/agent-eval-harness",
+      "homepage_url": null,
+      "source_url": "https://github.com/linny006/agent-eval-harness",
+      "source_urls": [
+        "https://github.com/linny006/agent-eval-harness"
+      ],
+      "signal_summary": "Matched GitHub search `\"agent eval\" pushed:>=2026-05-25`; pushed 2026-05-27T03:00:35Z; stars 0.",
+      "why_builders_should_care": "May help builders verify agent behavior, regressions, or model/tool quality.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "license-not-asserted",
+        "sensitive-permissions"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 0,
+        "open_issues": 3,
+        "language": "Python",
+        "license": null,
+        "created_at": "2026-05-24T01:08:04Z",
+        "pushed_at": "2026-05-27T03:00:35Z",
+        "topics": [
+          "agent-eval",
+          "agent-evaluation",
+          "ai-benchmarks",
+          "ai-coding-agent-benchmark",
+          "ai-engineering",
+          "ai-evaluation",
+          "ai-research",
+          "ai-tools",
+          "auto-updated",
+          "awesome-list",
+          "benchmark",
+          "codex-vs-opencode",
+          "coding-agent-benchmark",
+          "dev-tools",
+          "developer-tools",
+          "live-data",
+          "llm-benchmarks",
+          "llm-testing",
+          "machine-learning",
+          "swe-bench"
+        ]
+      }
+    },
+    {
+      "name": "muhzars/Agent.cpp",
+      "title": "Agent.cpp",
+      "description": "⚡ Optimize multi-agent orchestration with Agent.cpp, a high-performance C++ inference engine designed solely for Tiny-MoA on CPU.",
+      "repo_url": "https://github.com/muhzars/Agent.cpp",
+      "homepage_url": "https://muhzars.github.io",
+      "source_url": "https://github.com/muhzars/Agent.cpp",
+      "source_urls": [
+        "https://github.com/muhzars/Agent.cpp",
+        "https://muhzars.github.io"
+      ],
+      "signal_summary": "Matched GitHub search `topic:llm-agent pushed:>=2026-05-25`; pushed 2026-05-27T03:01:38Z; stars 0.",
+      "why_builders_should_care": "May affect how builders compose, deploy, or observe agent workflows.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 0,
+        "open_issues": 0,
+        "language": "C++",
+        "license": "MIT",
+        "created_at": "2024-10-19T05:29:19Z",
+        "pushed_at": "2026-05-27T03:01:38Z",
+        "topics": [
+          "agents",
+          "agents-sdk",
+          "ai",
+          "ai-agent",
+          "aigc",
+          "bazel",
+          "cpp",
+          "edge-ai",
+          "gemini",
+          "genai",
+          "generative-ai",
+          "llm",
+          "llm-agent",
+          "llm-framework",
+          "ollama",
+          "openai",
+          "rag",
+          "sdk"
+        ]
+      }
+    },
+    {
+      "name": "Papudas420/vectis",
+      "title": "vectis",
+      "description": "🛠️ Connect AI agents to expert skills with Vectis, a powerful Model Context Protocol server for seamless search and execution of specialized blueprints.",
+      "repo_url": "https://github.com/Papudas420/vectis",
+      "homepage_url": "https://papudas420.github.io",
+      "source_url": "https://github.com/Papudas420/vectis",
+      "source_urls": [
+        "https://github.com/Papudas420/vectis",
+        "https://papudas420.github.io"
+      ],
+      "signal_summary": "Matched GitHub search `\"model context protocol\" pushed:>=2026-05-25`; pushed 2026-05-27T03:02:11Z; stars 0.",
+      "why_builders_should_care": "May expose a useful permissioned tool surface for coding agents.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "sensitive-permissions"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 0,
+        "open_issues": 0,
+        "language": "TypeScript",
+        "license": "MIT",
+        "created_at": "2023-03-29T12:53:03Z",
+        "pushed_at": "2026-05-27T03:02:11Z",
+        "topics": [
+          "build-automation",
+          "cosmjs",
+          "cosmos",
+          "cross-platform",
+          "crypto",
+          "github-config",
+          "gpu",
+          "graz",
+          "keplr",
+          "keplr-wallet",
+          "leap",
+          "leap-wallet",
+          "qemu",
+          "react-cosmos-hooks",
+          "sbuild",
+          "smart-contracts",
+          "ssi",
+          "vectis-wallet",
+          "virtual-machine",
+          "wallet"
+        ]
+      }
+    },
+    {
+      "name": "rtsitola/hermes-roaming",
+      "title": "hermes-roaming",
+      "description": "Hermes Agent memory roaming across machines via Syncthing — master-slave architecture with automatic import/export",
+      "repo_url": "https://github.com/rtsitola/hermes-roaming",
+      "homepage_url": null,
+      "source_url": "https://github.com/rtsitola/hermes-roaming",
+      "source_urls": [
+        "https://github.com/rtsitola/hermes-roaming"
+      ],
+      "signal_summary": "Matched GitHub search `\"agent memory\" pushed:>=2026-05-25`; pushed 2026-05-27T02:58:47Z; stars 0.",
+      "why_builders_should_care": "May improve agent context persistence, search, or retrieval workflows.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "license-not-asserted",
+        "sensitive-permissions"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 1,
+        "open_issues": 0,
+        "language": "Python",
+        "license": null,
+        "created_at": "2026-05-26T00:24:18Z",
+        "pushed_at": "2026-05-27T02:58:47Z",
+        "topics": []
+      }
+    }
+  ],
+  "watched_sources": [],
+  "errors": []
+}

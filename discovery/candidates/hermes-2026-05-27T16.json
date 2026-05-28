@@ -1,0 +1,763 @@
+{
+  "generated_at": "2026-05-27T16:00:30.056Z",
+  "mode": "hourly",
+  "lookback_days": 2,
+  "source_routes": [
+    "github-search",
+    "mcp-registry"
+  ],
+  "candidates": [
+    {
+      "name": "JKHeadley/instar",
+      "title": "instar",
+      "description": "Persistent Claude Code agents with scheduling, sessions, memory, and Telegram.",
+      "repo_url": "https://github.com/JKHeadley/instar",
+      "homepage_url": "https://instar.sh",
+      "source_url": "https://github.com/JKHeadley/instar",
+      "source_urls": [
+        "https://github.com/JKHeadley/instar",
+        "https://instar.sh"
+      ],
+      "signal_summary": "Matched GitHub search `topic:agent-framework pushed:>=2026-05-25`; pushed 2026-05-27T15:56:26Z; stars 64.",
+      "why_builders_should_care": "May expose a useful permissioned tool surface for coding agents.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "sensitive-permissions"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 64,
+        "forks": 15,
+        "open_issues": 34,
+        "language": "TypeScript",
+        "license": "MIT",
+        "created_at": "2026-02-19T03:48:14Z",
+        "pushed_at": "2026-05-27T15:56:26Z",
+        "topics": [
+          "agent-framework",
+          "agent-identity",
+          "agent-infrastructure",
+          "agent-memory",
+          "agent-skills",
+          "ai-agents",
+          "ai-safety",
+          "autonomous-agents",
+          "claude-code",
+          "cli",
+          "cron",
+          "job-scheduler",
+          "llm",
+          "mcp",
+          "npm-package",
+          "open-source",
+          "persistency",
+          "telegram-bot",
+          "typescript",
+          "whatsapp"
+        ]
+      }
+    },
+    {
+      "name": "cameronrye/openzim-mcp",
+      "title": "openzim-mcp",
+      "description": "OpenZIM MCP is a modern, secure, and high-performance MCP (Model Context Protocol) server that enables AI models to access and search ZIM format knowledge bases offline.",
+      "repo_url": "https://github.com/cameronrye/openzim-mcp",
+      "homepage_url": "https://cameronrye.github.io/openzim-mcp/",
+      "source_url": "https://github.com/cameronrye/openzim-mcp",
+      "source_urls": [
+        "https://github.com/cameronrye/openzim-mcp",
+        "https://cameronrye.github.io/openzim-mcp/"
+      ],
+      "signal_summary": "Matched GitHub search `\"model context protocol\" pushed:>=2026-05-25`; pushed 2026-05-27T15:56:56Z; stars 60.",
+      "why_builders_should_care": "May expose a useful permissioned tool surface for coding agents.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 60,
+        "forks": 11,
+        "open_issues": 4,
+        "language": "Python",
+        "license": "MIT",
+        "created_at": "2025-09-14T18:34:44Z",
+        "pushed_at": "2026-05-27T15:56:56Z",
+        "topics": [
+          "kiwix",
+          "mcp",
+          "mcp-server",
+          "openzim",
+          "zim"
+        ]
+      }
+    },
+    {
+      "name": "xiaonancs/claude-code-source-analysis",
+      "title": "claude-code-source-analysis",
+      "description": "Claude Code 源码深度研究，包括 Foundations/Execution/Infrastructure 三大章节和 23 个子系统的架构分析拆解。",
+      "repo_url": "https://github.com/xiaonancs/claude-code-source-analysis",
+      "homepage_url": null,
+      "source_url": "https://github.com/xiaonancs/claude-code-source-analysis",
+      "source_urls": [
+        "https://github.com/xiaonancs/claude-code-source-analysis"
+      ],
+      "signal_summary": "Matched GitHub search `topic:ai-agent pushed:>=2026-05-25`; pushed 2026-05-27T15:59:53Z; stars 32.",
+      "why_builders_should_care": "May be a useful new capability or signal for agent builders to review.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 32,
+        "forks": 2,
+        "open_issues": 0,
+        "language": "JavaScript",
+        "license": "NOASSERTION",
+        "created_at": "2026-04-13T08:24:35Z",
+        "pushed_at": "2026-05-27T15:59:53Z",
+        "topics": [
+          "agent-harness",
+          "ai-agent",
+          "anthropic",
+          "chinese-documentation",
+          "claude-code",
+          "coding-agent",
+          "llm-agent",
+          "reverse-engineering",
+          "source-analysis",
+          "source-code-analysis",
+          "typescript"
+        ]
+      }
+    },
+    {
+      "name": "paolovella/vellaveto",
+      "title": "vellaveto",
+      "description": "Agentic security control plane for MCP and AI agent tool calls. MCP-native policy gateway with topology discovery and audit.",
+      "repo_url": "https://github.com/paolovella/vellaveto",
+      "homepage_url": null,
+      "source_url": "https://github.com/paolovella/vellaveto",
+      "source_urls": [
+        "https://github.com/paolovella/vellaveto"
+      ],
+      "signal_summary": "Matched GitHub search `topic:mcp pushed:>=2026-05-25`; pushed 2026-05-27T15:59:29Z; stars 6.",
+      "why_builders_should_care": "May expose a useful permissioned tool surface for coding agents.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 6,
+        "forks": 0,
+        "open_issues": 4,
+        "language": "Rust",
+        "license": "NOASSERTION",
+        "created_at": "2026-02-02T17:34:20Z",
+        "pushed_at": "2026-05-27T15:59:29Z",
+        "topics": [
+          "ai-agents",
+          "ai-safety",
+          "ai-security",
+          "audit-log",
+          "compliance",
+          "dlp",
+          "eu-ai-act",
+          "llm-security",
+          "mcp",
+          "mcp-gateway",
+          "model-context-protocol",
+          "oauth",
+          "owasp",
+          "policy-engine",
+          "policy-gateway",
+          "rust",
+          "security",
+          "security-audit",
+          "siem",
+          "tool-use"
+        ]
+      }
+    },
+    {
+      "name": "P4ST4S/mcp-audit",
+      "title": "mcp-audit",
+      "description": "A transparent Go proxy that intercepts, signs, and audits all MCP tool calls between any client and server, without modifying either.",
+      "repo_url": "https://github.com/P4ST4S/mcp-audit",
+      "homepage_url": null,
+      "source_url": "https://github.com/P4ST4S/mcp-audit",
+      "source_urls": [
+        "https://github.com/P4ST4S/mcp-audit"
+      ],
+      "signal_summary": "Matched GitHub search `topic:mcp pushed:>=2026-05-25`; pushed 2026-05-27T16:00:02Z; stars 3.",
+      "why_builders_should_care": "May expose a useful permissioned tool surface for coding agents.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 3,
+        "forks": 0,
+        "open_issues": 6,
+        "language": "Go",
+        "license": "Apache-2.0",
+        "created_at": "2026-05-23T16:43:32Z",
+        "pushed_at": "2026-05-27T16:00:02Z",
+        "topics": [
+          "ai-agents",
+          "anthropic",
+          "audit-log",
+          "golang",
+          "mcp",
+          "model",
+          "promotheus",
+          "proxy",
+          "security"
+        ]
+      }
+    },
+    {
+      "name": "astro-tools/astrodynamics-mcp",
+      "title": "astrodynamics-mcp",
+      "description": "Model Context Protocol server giving any LLM client (Claude, ChatGPT, Cursor, agents) authoritative astrodynamics tools — TLE/SGP4, Lambert, ground-station access, time/frame conversions, porkchop, B-plane.",
+      "repo_url": "https://github.com/astro-tools/astrodynamics-mcp",
+      "homepage_url": "https://astro-tools.github.io/astrodynamics-mcp/",
+      "source_url": "https://github.com/astro-tools/astrodynamics-mcp",
+      "source_urls": [
+        "https://github.com/astro-tools/astrodynamics-mcp",
+        "https://astro-tools.github.io/astrodynamics-mcp/"
+      ],
+      "signal_summary": "Matched GitHub search `\"model context protocol\" pushed:>=2026-05-25`; pushed 2026-05-27T15:57:43Z; stars 1.",
+      "why_builders_should_care": "May expose a useful permissioned tool surface for coding agents.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 1,
+        "forks": 0,
+        "open_issues": 10,
+        "language": "Python",
+        "license": "MIT",
+        "created_at": "2026-05-24T23:05:36Z",
+        "pushed_at": "2026-05-27T15:57:43Z",
+        "topics": [
+          "aerospace",
+          "ai-agents",
+          "astrodynamics",
+          "lambert",
+          "llm",
+          "llm-tools",
+          "mcp",
+          "mcp-server",
+          "mission-analysis",
+          "model-context-protocol",
+          "orbital-mechanics",
+          "python",
+          "sgp4",
+          "space",
+          "tle"
+        ]
+      }
+    },
+    {
+      "name": "nsharir/human-feedback",
+      "title": "human-feedback",
+      "description": "A frictionless feedback layer for AI coding agents. Wraps markdown specs, HTML mockups, and questionnaires into annotatable HTML — and auto-wires into Claude Code, Cursor, Codex, and Hermes.",
+      "repo_url": "https://github.com/nsharir/human-feedback",
+      "homepage_url": null,
+      "source_url": "https://github.com/nsharir/human-feedback",
+      "source_urls": [
+        "https://github.com/nsharir/human-feedback"
+      ],
+      "signal_summary": "Matched GitHub search `\"coding agent\" pushed:>=2026-05-25`; pushed 2026-05-27T16:00:25Z; stars 1.",
+      "why_builders_should_care": "May be a useful new capability or signal for agent builders to review.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 1,
+        "forks": 0,
+        "open_issues": 0,
+        "language": "JavaScript",
+        "license": "MIT",
+        "created_at": "2026-05-24T05:30:34Z",
+        "pushed_at": "2026-05-27T16:00:25Z",
+        "topics": []
+      }
+    },
+    {
+      "name": "outlawresearchlabs/agent-architecture-benchmark",
+      "title": "agent-architecture-benchmark",
+      "description": "Empirical benchmark comparing agent architectures (single-agent, multi-agent, adaptive) on ProgramDev-v0 and CyberGym tasks. Key finding: adaptive architecture > single-agent > fixed-pipeline multi-agent.",
+      "repo_url": "https://github.com/outlawresearchlabs/agent-architecture-benchmark",
+      "homepage_url": null,
+      "source_url": "https://github.com/outlawresearchlabs/agent-architecture-benchmark",
+      "source_urls": [
+        "https://github.com/outlawresearchlabs/agent-architecture-benchmark"
+      ],
+      "signal_summary": "Matched GitHub search `topic:agent-framework pushed:>=2026-05-25`; pushed 2026-05-27T15:49:00Z; stars 1.",
+      "why_builders_should_care": "May help builders verify agent behavior, regressions, or model/tool quality.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 1,
+        "forks": 0,
+        "open_issues": 0,
+        "language": "Python",
+        "license": "MIT",
+        "created_at": "2026-04-15T18:34:05Z",
+        "pushed_at": "2026-05-27T15:49:00Z",
+        "topics": [
+          "agent-framework",
+          "failure-modes",
+          "llm",
+          "mcp",
+          "multi-agent",
+          "safety"
+        ]
+      }
+    },
+    {
+      "name": "ai-akashic/open-memory-protocol",
+      "title": "open-memory-protocol",
+      "description": "  A language-neutral protocol for portable agent memory.",
+      "repo_url": "https://github.com/ai-akashic/open-memory-protocol",
+      "homepage_url": null,
+      "source_url": "https://github.com/ai-akashic/open-memory-protocol",
+      "source_urls": [
+        "https://github.com/ai-akashic/open-memory-protocol"
+      ],
+      "signal_summary": "Matched GitHub search `\"agent memory\" pushed:>=2026-05-25`; pushed 2026-05-27T15:57:06Z; stars 0.",
+      "why_builders_should_care": "May improve agent context persistence, search, or retrieval workflows.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "license-not-asserted",
+        "sensitive-permissions"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 0,
+        "open_issues": 0,
+        "language": "Shell",
+        "license": null,
+        "created_at": "2026-05-21T15:36:44Z",
+        "pushed_at": "2026-05-27T15:57:06Z",
+        "topics": [
+          "agent",
+          "memory"
+        ]
+      }
+    },
+    {
+      "name": "ayuan153/kadmon",
+      "title": "kadmon",
+      "description": "YOLO mode you can trust. An autonomous coding agent that asks the right questions, proves its work, and manages its own context across sessions.",
+      "repo_url": "https://github.com/ayuan153/kadmon",
+      "homepage_url": null,
+      "source_url": "https://github.com/ayuan153/kadmon",
+      "source_urls": [
+        "https://github.com/ayuan153/kadmon"
+      ],
+      "signal_summary": "Matched GitHub search `topic:ai-agent pushed:>=2026-05-25`; pushed 2026-05-27T15:59:50Z; stars 0.",
+      "why_builders_should_care": "May be a useful new capability or signal for agent builders to review.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 0,
+        "open_issues": 0,
+        "language": "Python",
+        "license": "MIT",
+        "created_at": "2026-05-06T17:23:40Z",
+        "pushed_at": "2026-05-27T15:59:50Z",
+        "topics": [
+          "ai-agent",
+          "autonomous-agents",
+          "coding-agent",
+          "llm",
+          "python"
+        ]
+      }
+    },
+    {
+      "name": "connerlambden/helium-news-explorer",
+      "title": "helium-news-explorer",
+      "description": "Interactive single-page explorer for the Helium MCP news-bias corpus. 216 sources, 37 dimensions, fetched live. No dependencies.",
+      "repo_url": "https://github.com/connerlambden/helium-news-explorer",
+      "homepage_url": null,
+      "source_url": "https://github.com/connerlambden/helium-news-explorer",
+      "source_urls": [
+        "https://github.com/connerlambden/helium-news-explorer"
+      ],
+      "signal_summary": "Matched GitHub search `topic:mcp pushed:>=2026-05-25`; pushed 2026-05-27T16:00:05Z; stars 0.",
+      "why_builders_should_care": "May expose a useful permissioned tool surface for coding agents.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "license-not-asserted",
+        "sensitive-permissions"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 0,
+        "open_issues": 0,
+        "language": "HTML",
+        "license": null,
+        "created_at": "2026-05-27T15:44:53Z",
+        "pushed_at": "2026-05-27T16:00:05Z",
+        "topics": [
+          "data-journalism",
+          "data-visualization",
+          "explorer",
+          "github-pages",
+          "helium-mcp",
+          "html",
+          "interactive-visualization",
+          "javascript",
+          "journalism",
+          "mcp",
+          "mcp-server",
+          "media-bias",
+          "media-literacy",
+          "news-bias",
+          "single-page-app",
+          "vanilla-js"
+        ]
+      }
+    },
+    {
+      "name": "falkoro/shelldeck",
+      "title": "shelldeck",
+      "description": "Self-hosted web dashboard to monitor & drive tmux sessions and AI coding agents (Claude Code, Codex, …) — live previews, running/waiting status, AI work summaries, and a real in-browser terminal.",
+      "repo_url": "https://github.com/falkoro/shelldeck",
+      "homepage_url": null,
+      "source_url": "https://github.com/falkoro/shelldeck",
+      "source_urls": [
+        "https://github.com/falkoro/shelldeck"
+      ],
+      "signal_summary": "Matched GitHub search `\"coding agent\" pushed:>=2026-05-25`; pushed 2026-05-27T16:00:07Z; stars 0.",
+      "why_builders_should_care": "May be a useful new capability or signal for agent builders to review.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "sensitive-permissions"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 0,
+        "open_issues": 0,
+        "language": "Rust",
+        "license": "MIT",
+        "created_at": "2026-05-27T13:33:39Z",
+        "pushed_at": "2026-05-27T16:00:07Z",
+        "topics": [
+          "ai-agents",
+          "claude-code",
+          "codex",
+          "dashboard",
+          "rust",
+          "self-hosted",
+          "terminal",
+          "tmux",
+          "xterm"
+        ]
+      }
+    },
+    {
+      "name": "Gene-Liu-portfolio/ctbc-payment-advisor",
+      "title": "ctbc-payment-advisor",
+      "description": "以 MCP × Groq LLM 為核心的信用卡支付建議系統｜支援中信 × 富邦 13 張熱門卡｜Gradio 網頁 Demo + CLI 多輪對話雙介面",
+      "repo_url": "https://github.com/Gene-Liu-portfolio/ctbc-payment-advisor",
+      "homepage_url": null,
+      "source_url": "https://github.com/Gene-Liu-portfolio/ctbc-payment-advisor",
+      "source_urls": [
+        "https://github.com/Gene-Liu-portfolio/ctbc-payment-advisor"
+      ],
+      "signal_summary": "Matched GitHub search `topic:llm-agent pushed:>=2026-05-25`; pushed 2026-05-27T15:55:41Z; stars 0.",
+      "why_builders_should_care": "May expose a useful permissioned tool surface for coding agents.",
+      "suggested_trust_tier": "watchlist",
+      "risk_flags": [
+        "license-not-asserted",
+        "sensitive-permissions",
+        "early-stage"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 1,
+        "open_issues": 0,
+        "language": "Python",
+        "license": null,
+        "created_at": "2026-03-23T08:51:58Z",
+        "pushed_at": "2026-05-27T15:55:41Z",
+        "topics": [
+          "credit-card",
+          "gradio",
+          "groq",
+          "llm-agent",
+          "mcp",
+          "python"
+        ]
+      }
+    },
+    {
+      "name": "holdpoint-dev/holdpoint",
+      "title": "holdpoint",
+      "description": "Universal agent eval-guard CLI — enforce deterministic checkpoints on AI coding agents",
+      "repo_url": "https://github.com/holdpoint-dev/holdpoint",
+      "homepage_url": "https://holdpoint.dev",
+      "source_url": "https://github.com/holdpoint-dev/holdpoint",
+      "source_urls": [
+        "https://github.com/holdpoint-dev/holdpoint",
+        "https://holdpoint.dev"
+      ],
+      "signal_summary": "Matched GitHub search `\"agent eval\" pushed:>=2026-05-25`; pushed 2026-05-27T15:45:01Z; stars 0.",
+      "why_builders_should_care": "May help builders verify agent behavior, regressions, or model/tool quality.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 0,
+        "open_issues": 0,
+        "language": "TypeScript",
+        "license": "MIT",
+        "created_at": "2026-05-14T23:19:00Z",
+        "pushed_at": "2026-05-27T15:45:01Z",
+        "topics": []
+      }
+    },
+    {
+      "name": "linny006/agent-eval-harness",
+      "title": "agent-eval-harness",
+      "description": "Live, open-source benchmark for comparing AI coding agents on real GitHub issues",
+      "repo_url": "https://github.com/linny006/agent-eval-harness",
+      "homepage_url": null,
+      "source_url": "https://github.com/linny006/agent-eval-harness",
+      "source_urls": [
+        "https://github.com/linny006/agent-eval-harness"
+      ],
+      "signal_summary": "Matched GitHub search `\"agent eval\" pushed:>=2026-05-25`; pushed 2026-05-27T15:45:46Z; stars 0.",
+      "why_builders_should_care": "May help builders verify agent behavior, regressions, or model/tool quality.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "license-not-asserted",
+        "sensitive-permissions"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 0,
+        "open_issues": 3,
+        "language": "Python",
+        "license": null,
+        "created_at": "2026-05-24T01:08:04Z",
+        "pushed_at": "2026-05-27T15:45:46Z",
+        "topics": [
+          "agent-eval",
+          "agent-evaluation",
+          "ai-benchmarks",
+          "ai-coding-agent-benchmark",
+          "ai-engineering",
+          "ai-evaluation",
+          "ai-research",
+          "ai-tools",
+          "auto-updated",
+          "awesome-list",
+          "benchmark",
+          "codex-vs-opencode",
+          "coding-agent-benchmark",
+          "dev-tools",
+          "developer-tools",
+          "live-data",
+          "llm-benchmarks",
+          "llm-testing",
+          "machine-learning",
+          "swe-bench"
+        ]
+      }
+    },
+    {
+      "name": "lyumanshanye/innovatorbench-eval",
+      "title": "innovatorbench-eval",
+      "description": "InnovatorBench Agent Eval - Fine-Grained Evaluation Framework for AI Research Agents",
+      "repo_url": "https://github.com/lyumanshanye/innovatorbench-eval",
+      "homepage_url": "https://lyumanshanye.github.io/innovatorbench-eval",
+      "source_url": "https://github.com/lyumanshanye/innovatorbench-eval",
+      "source_urls": [
+        "https://github.com/lyumanshanye/innovatorbench-eval",
+        "https://lyumanshanye.github.io/innovatorbench-eval"
+      ],
+      "signal_summary": "Matched GitHub search `\"agent eval\" pushed:>=2026-05-25`; pushed 2026-05-27T15:32:31Z; stars 0.",
+      "why_builders_should_care": "May help builders verify agent behavior, regressions, or model/tool quality.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "license-not-asserted"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 0,
+        "open_issues": 0,
+        "language": "HTML",
+        "license": null,
+        "created_at": "2026-05-05T19:13:09Z",
+        "pushed_at": "2026-05-27T15:32:31Z",
+        "topics": []
+      }
+    },
+    {
+      "name": "RiceBall-15/agent-memory-system",
+      "title": "agent-memory-system",
+      "description": "Agent记忆系统深度技术调研与设计方案",
+      "repo_url": "https://github.com/RiceBall-15/agent-memory-system",
+      "homepage_url": null,
+      "source_url": "https://github.com/RiceBall-15/agent-memory-system",
+      "source_urls": [
+        "https://github.com/RiceBall-15/agent-memory-system"
+      ],
+      "signal_summary": "Matched GitHub search `\"agent memory\" pushed:>=2026-05-25`; pushed 2026-05-27T15:56:25Z; stars 0.",
+      "why_builders_should_care": "May improve agent context persistence, search, or retrieval workflows.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "license-not-asserted",
+        "sensitive-permissions"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 0,
+        "open_issues": 0,
+        "language": "Java",
+        "license": null,
+        "created_at": "2026-05-27T08:53:33Z",
+        "pushed_at": "2026-05-27T15:56:25Z",
+        "topics": []
+      }
+    },
+    {
+      "name": "ro-ai-labs/ail",
+      "title": "ail",
+      "description": "AIL means Agentic Intent Language. ",
+      "repo_url": "https://github.com/ro-ai-labs/ail",
+      "homepage_url": null,
+      "source_url": "https://github.com/ro-ai-labs/ail",
+      "source_urls": [
+        "https://github.com/ro-ai-labs/ail"
+      ],
+      "signal_summary": "Matched GitHub search `topic:ai-agent pushed:>=2026-05-25`; pushed 2026-05-27T16:00:00Z; stars 0.",
+      "why_builders_should_care": "May be a useful new capability or signal for agent builders to review.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "license-not-asserted"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 0,
+        "open_issues": 0,
+        "language": "Rust",
+        "license": null,
+        "created_at": "2026-05-25T15:23:35Z",
+        "pushed_at": "2026-05-27T16:00:00Z",
+        "topics": [
+          "ai-agent",
+          "programming-language"
+        ]
+      }
+    },
+    {
+      "name": "sambhal-labs/vismaran",
+      "title": "vismaran",
+      "description": "Provable right-to-be-forgotten for AI agent memory. DPDP/GDPR Article 17 erasure across graph (Cognee), vector (pgvector), and inference log (TensorZero), with a signed deletion receipt a regulator can verify offline.",
+      "repo_url": "https://github.com/sambhal-labs/vismaran",
+      "homepage_url": null,
+      "source_url": "https://github.com/sambhal-labs/vismaran",
+      "source_urls": [
+        "https://github.com/sambhal-labs/vismaran"
+      ],
+      "signal_summary": "Matched GitHub search `\"agent memory\" pushed:>=2026-05-25`; pushed 2026-05-27T15:58:39Z; stars 0.",
+      "why_builders_should_care": "May improve agent context persistence, search, or retrieval workflows.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "sensitive-permissions"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 0,
+        "open_issues": 0,
+        "language": "Python",
+        "license": "Apache-2.0",
+        "created_at": "2026-05-27T14:39:34Z",
+        "pushed_at": "2026-05-27T15:58:39Z",
+        "topics": [
+          "agent-memory",
+          "ai-agents",
+          "cognee",
+          "compliance",
+          "data-erasure",
+          "dpdp",
+          "gdpr",
+          "pgvector",
+          "privacy",
+          "right-to-be-forgotten",
+          "tensorzero"
+        ]
+      }
+    },
+    {
+      "name": "therain2020/therain2020-agent",
+      "title": "therain2020-agent",
+      "description": "Add-First Agent Skeleton. BYO-LLM, import tools from Claude Code/Codex/Gemini/Cursor/MCP. 从外部生态导入工具，接入自己的 LLM。",
+      "repo_url": "https://github.com/therain2020/therain2020-agent",
+      "homepage_url": null,
+      "source_url": "https://github.com/therain2020/therain2020-agent",
+      "source_urls": [
+        "https://github.com/therain2020/therain2020-agent"
+      ],
+      "signal_summary": "Matched GitHub search `topic:llm-agent pushed:>=2026-05-25`; pushed 2026-05-27T15:59:20Z; stars 0.",
+      "why_builders_should_care": "May expose a useful permissioned tool surface for coding agents.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 0,
+        "open_issues": 0,
+        "language": "Python",
+        "license": "MIT",
+        "created_at": "2026-05-27T10:20:51Z",
+        "pushed_at": "2026-05-27T15:59:20Z",
+        "topics": [
+          "agent-framework",
+          "ai-tools",
+          "claude-code",
+          "llm-agent",
+          "mcp",
+          "python"
+        ]
+      }
+    }
+  ],
+  "watched_sources": [],
+  "errors": []
+}
