@@ -413,6 +413,15 @@ function registerResources(mcpServer) {
   );
   registerFileResource(
     mcpServer,
+    "vnem-coding-protocol",
+    "vnem://install/coding-protocol",
+    firstExisting(["public/install/coding-protocol.md", ".vnem/coding-protocol.md"]),
+    "vnem Coding Protocol",
+    "Generated coding execution protocol for repo sensing, plan-first work, small diffs, verification, and final reporting.",
+    "text/markdown"
+  );
+  registerFileResource(
+    mcpServer,
     "vnem-task-rubrics",
     "vnem://install/task-rubrics",
     firstExisting(["public/install/task-rubrics.json", ".vnem/task-rubrics.json"]),
@@ -787,6 +796,7 @@ function buildStatus() {
         "vnem://install/source-radar",
         "vnem://api/index",
         "vnem://install/operating-protocol",
+        "vnem://install/coding-protocol",
         "vnem://install/task-rubrics",
         "vnem://install/design-architecture",
         "vnem://install/visual-qa-protocol",
@@ -851,10 +861,10 @@ function buildOverview(audience) {
     },
     {
       name: "Operating protocol and rubrics",
-      paths: ["public/install/operating-protocol.md", "public/install/task-rubrics.json"],
+      paths: ["public/install/operating-protocol.md", "public/install/coding-protocol.md", "public/install/task-rubrics.json"],
       purpose:
-        "Compact task-contract layer for sensing the repo, routing work, approval gates, verification, and final reporting.",
-      usable_via: ["vnem_route_intent", "vnem_recommend", "vnem://install/task-rubrics"]
+        "Compact task-contract and coding-execution layer for sensing the repo, planning edits, routing work, approval gates, verification, and final reporting.",
+      usable_via: ["vnem_route_intent", "vnem_recommend", "vnem://install/coding-protocol", "vnem://install/task-rubrics"]
     },
     {
       name: "Visual/design guidance",

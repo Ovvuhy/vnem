@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-28T11:24:56.856Z",
+  "generated_at": "2026-05-28T19:11:09.918Z",
   "schema_version": "1.0.0",
   "package_version": "1.0.1",
   "release_version": "1.0.1",
@@ -1021,6 +1021,89 @@
       "call graph",
       "soft delete"
     ],
+    "coding task": [
+      "implementation",
+      "feature",
+      "bug fix",
+      "web app",
+      "app build",
+      "repo understanding",
+      "tests",
+      "verification",
+      "plan first",
+      "code quality"
+    ],
+    "app build": [
+      "build app",
+      "application",
+      "web app",
+      "frontend",
+      "backend",
+      "full stack",
+      "feature build",
+      "implementation",
+      "tests",
+      "local verification"
+    ],
+    "web app": [
+      "frontend app",
+      "react app",
+      "vite app",
+      "next app",
+      "dashboard",
+      "landing page",
+      "api integration",
+      "responsive",
+      "browser verification"
+    ],
+    "feature build": [
+      "implement feature",
+      "add feature",
+      "new feature",
+      "application code",
+      "small diff",
+      "tests",
+      "acceptance criteria"
+    ],
+    "bug fix": [
+      "debug",
+      "fix bug",
+      "failing test",
+      "regression",
+      "root cause",
+      "reproduce",
+      "patch",
+      "verify fix"
+    ],
+    "test first": [
+      "tests",
+      "tdd",
+      "verification first",
+      "acceptance criteria",
+      "unit test",
+      "integration test",
+      "screenshot",
+      "fixture"
+    ],
+    "repo understanding": [
+      "codebase understanding",
+      "trace flow",
+      "architecture map",
+      "entrypoint",
+      "call graph",
+      "manifest",
+      "existing pattern"
+    ],
+    "large change": [
+      "migration",
+      "refactor",
+      "multi file",
+      "plan first",
+      "checkpoint",
+      "acceptance criteria",
+      "incremental implementation",
+      "reviewable diff"
+    ],
     "backend api": [
       "backend",
       "api",
@@ -1044,7 +1127,9 @@
       "diff",
       "terminal",
       "tests",
-      "pull request"
+      "pull request",
+      "plan first",
+      "verification loop"
     ],
     "subagents": [
       "sub-agent",
@@ -2773,6 +2858,237 @@
         "why"
       ]
     },
+    "coding task": {
+      "read_first": [
+        "coding-protocol:vnem-coding-protocol",
+        "operating-protocol:vnem-operating-loop",
+        "practice:agentic-coding-execution",
+        "practice:code-review",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "small scoped patch",
+        "plan-first implementation",
+        "test-first fix",
+        "repo-native refactor",
+        "defer broad rewrite"
+      ],
+      "choose_by": [
+        "acceptance criteria",
+        "repo conventions",
+        "existing patterns",
+        "fast verification",
+        "diff reviewability",
+        "rollback path"
+      ],
+      "report": [
+        "task contract",
+        "files inspected",
+        "implementation choice",
+        "verification evidence",
+        "residual risk"
+      ]
+    },
+    "app build": {
+      "read_first": [
+        "coding-protocol:vnem-coding-protocol",
+        "practice:agentic-coding-execution",
+        "practice:frontend",
+        "practice:backend",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "existing app stack",
+        "frontend-only implementation",
+        "backend/API change",
+        "full-stack slice",
+        "prototype behind a narrow route"
+      ],
+      "choose_by": [
+        "user workflow",
+        "current manifests",
+        "existing routes/components",
+        "state/data needs",
+        "test and browser verification path"
+      ],
+      "report": [
+        "app slice built",
+        "stack reused or changed",
+        "verification evidence",
+        "remaining product risk"
+      ]
+    },
+    "web app": {
+      "read_first": [
+        "coding-protocol:vnem-coding-protocol",
+        "practice:agentic-coding-execution",
+        "practice:frontend",
+        "design-architecture:vnem-design-architecture",
+        "visual-qa-protocol:vnem-visual-qa-protocol",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "existing framework route",
+        "component-level implementation",
+        "static Vite surface",
+        "server/API-backed workflow",
+        "dashboard or landing surface"
+      ],
+      "choose_by": [
+        "current framework",
+        "responsive fit",
+        "accessibility",
+        "browser verification",
+        "visual polish",
+        "dependency budget"
+      ],
+      "report": [
+        "web surface changed",
+        "framework/pattern reused",
+        "browser evidence",
+        "remaining responsive or polish risk"
+      ]
+    },
+    "feature build": {
+      "read_first": [
+        "coding-protocol:vnem-coding-protocol",
+        "practice:agentic-coding-execution",
+        "practice:code-review",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "single-file patch",
+        "small cross-module change",
+        "new component/helper",
+        "feature flag or isolated route",
+        "defer architecture change"
+      ],
+      "choose_by": [
+        "acceptance criteria",
+        "minimal behavior surface",
+        "existing tests",
+        "local conventions",
+        "reviewability"
+      ],
+      "report": [
+        "feature behavior",
+        "files changed",
+        "checks run",
+        "known edge cases"
+      ]
+    },
+    "bug fix": {
+      "read_first": [
+        "coding-protocol:vnem-coding-protocol",
+        "practice:agentic-coding-execution",
+        "practice:code-review",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "reproduce first",
+        "add/adjust failing test",
+        "small root-cause patch",
+        "guardrail plus regression test",
+        "defer speculative rewrite"
+      ],
+      "choose_by": [
+        "reproduction evidence",
+        "root cause",
+        "narrowest patch",
+        "regression coverage",
+        "blast radius"
+      ],
+      "report": [
+        "root cause",
+        "fix",
+        "regression evidence",
+        "remaining uncertainty"
+      ]
+    },
+    "test first": {
+      "read_first": [
+        "coding-protocol:vnem-coding-protocol",
+        "practice:agentic-coding-execution",
+        "practice:evals",
+        "practice:code-review"
+      ],
+      "compare_options": [
+        "unit test",
+        "integration fixture",
+        "browser/screenshot check",
+        "golden snapshot",
+        "manual smoke when automation is impossible"
+      ],
+      "choose_by": [
+        "observable behavior",
+        "speed",
+        "flakiness risk",
+        "coverage of acceptance criteria",
+        "agent can rerun it"
+      ],
+      "report": [
+        "verification target",
+        "test or check added",
+        "result",
+        "uncovered risk"
+      ]
+    },
+    "repo understanding": {
+      "read_first": [
+        "coding-protocol:vnem-coding-protocol",
+        "practice:agentic-coding-execution",
+        "practice:code-review",
+        "source:coding-agent-clients"
+      ],
+      "compare_options": [
+        "manifest/config scan",
+        "entrypoint trace",
+        "request/data flow map",
+        "component ownership map",
+        "dependency risk pass"
+      ],
+      "choose_by": [
+        "task relevance",
+        "source proximity",
+        "call-site evidence",
+        "existing docs",
+        "context budget"
+      ],
+      "report": [
+        "current stack",
+        "important files",
+        "flow summary",
+        "risks and unknowns"
+      ]
+    },
+    "large change": {
+      "read_first": [
+        "coding-protocol:vnem-coding-protocol",
+        "practice:agentic-coding-execution",
+        "practice:code-simplification",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "split into checkpoints",
+        "plan-only first",
+        "codemod with review",
+        "migration in slices",
+        "defer until tests exist"
+      ],
+      "choose_by": [
+        "blast radius",
+        "test coverage",
+        "rollback path",
+        "API/data compatibility",
+        "review and merge strategy"
+      ],
+      "report": [
+        "implementation plan",
+        "checkpoint order",
+        "verification ladder",
+        "approval gates"
+      ]
+    },
     "better ui": {
       "read_first": [
         "practice:visual-experience",
@@ -3029,7 +3345,95 @@
       ]
     }
   },
+  "coding_protocol": {
+    "id": "vnem-coding-protocol",
+    "title": "vnem Coding Protocol",
+    "summary": "A read-only coding execution protocol for making agents better at apps, web apps, features, debugging, refactors, and reviews through repo sensing, plan-first work, small diffs, and verifiable outcomes.",
+    "url_path": "/install/coding-protocol.md",
+    "resource_uri": "vnem://install/coding-protocol",
+    "source_urls": [
+      "https://www.anthropic.com/engineering/claude-code-best-practices",
+      "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
+      "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
+      "https://docs.github.com/en/copilot/how-tos/copilot-cli/cli-best-practices",
+      "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
+      "https://docs.cursor.com/context/rules-for-ai",
+      "https://www.anthropic.com/engineering/writing-tools-for-agents",
+      "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+      "https://www.anthropic.com/engineering/building-effective-agents"
+    ],
+    "tags": [
+      "coding task",
+      "app build",
+      "web app",
+      "feature build",
+      "bug fix",
+      "test first",
+      "repo understanding",
+      "large change",
+      "verification loop",
+      "context engineering"
+    ]
+  },
   "task_rubrics": [
+    {
+      "id": "agentic_coding",
+      "title": "Agentic Coding Execution",
+      "summary": "Build, debug, refactor, and review code through repo sensing, plan-first execution, small diffs, and verification evidence instead of broad speculative edits.",
+      "modes": [
+        "build",
+        "debug",
+        "review",
+        "plan"
+      ],
+      "intents": [
+        "coding task",
+        "app build",
+        "web app",
+        "feature build",
+        "bug fix",
+        "test first",
+        "repo understanding",
+        "large change",
+        "coding agents",
+        "professional code"
+      ],
+      "read_first": [
+        "coding-protocol:vnem-coding-protocol",
+        "practice:agentic-coding-execution",
+        "operating-protocol:vnem-operating-loop",
+        "practice:evals",
+        "practice:code-review"
+      ],
+      "quality_bar": [
+        "repo instructions, manifests, scripts, tests, and nearest local patterns are inspected before edits",
+        "nontrivial changes use an explore -> plan -> implement -> verify loop",
+        "diff is scoped to the acceptance criteria and avoids unrelated rewrites",
+        "existing project conventions and helpers are reused before new dependencies or abstractions",
+        "the strongest practical verification is run and skipped checks are reported honestly"
+      ],
+      "approval_gates": [
+        "new dependencies or package-manager changes",
+        "large rewrites",
+        "public API/data format changes",
+        "CI/deploy/auth/database/secret config edits",
+        "production data or external service use"
+      ],
+      "verification": [
+        "inspect local instructions and manifests",
+        "run focused tests/checks first",
+        "run broader build/test when blast radius justifies it",
+        "for UI/web app work, verify the rendered app state when practical",
+        "report unrun checks and residual risk"
+      ],
+      "output_contract": [
+        "repo sensing summary",
+        "plan or chosen slice",
+        "files changed",
+        "verification evidence",
+        "residual risk and approval gates"
+      ]
+    },
     {
       "id": "frontend_ui",
       "title": "Frontend UI",
@@ -3612,6 +4016,38 @@
       ]
     },
     {
+      "id": "agentic-coding-best-practices",
+      "title": "Agentic Coding Best-Practice Sources",
+      "category": "agentic-coding",
+      "priority": "critical",
+      "summary": "Track official and high-signal guidance on how coding agents perform better: repo instructions, plan-first work, verification loops, context management, tool design, and evals.",
+      "use_when": [
+        "vnem needs to improve how agents build apps, web apps, features, bug fixes, and refactors.",
+        "A maintainer wants source-backed guidance for AGENTS.md, CLAUDE.md, GEMINI.md, Copilot instructions, Cursor rules, or coding-agent task prompts.",
+        "A benchmark should compare with/without-vnem coding quality, not only recommendation quality."
+      ],
+      "monitor": [
+        "Official coding-agent best-practice docs from OpenAI, Anthropic, GitHub, Google Gemini CLI, and Cursor",
+        "Guidance on issue-shaped prompts, project instructions, plan mode, verification, context windows, subagents, and evals",
+        "Tool-description and MCP ergonomics research that affects how agents choose and use tools"
+      ],
+      "risk_checks": [
+        "Vendor guidance can be client-specific; keep shared vnem rules client-neutral unless a client file is explicitly generated.",
+        "Do not encode hype claims or productivity numbers without repeatable benchmarks.",
+        "Do not turn best-practice guidance into automatic package installs, config edits, or broad runtime permissions."
+      ],
+      "source_urls": [
+        "https://www.anthropic.com/engineering/claude-code-best-practices",
+        "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
+        "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
+        "https://docs.github.com/en/copilot/how-tos/copilot-cli/cli-best-practices",
+        "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
+        "https://docs.cursor.com/context/rules-for-ai",
+        "https://www.anthropic.com/engineering/writing-tools-for-agents",
+        "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+      ]
+    },
+    {
       "id": "documentation-ingestion",
       "title": "Documentation Ingestion Sources",
       "category": "current-docs",
@@ -3835,6 +4271,7 @@
       "intent",
       "rubric",
       "read_first",
+      "repo_sensing",
       "smallest_sufficient_capability",
       "approval_gates",
       "perception_gate",
@@ -3844,6 +4281,7 @@
     ],
     "read_first_for_build_tasks": [
       "operating protocol",
+      "coding protocol for app/web/feature/debug/refactor work",
       "matching task rubric",
       "matching intent_routes",
       "design architecture and visual QA protocol when the task is visual or interactive",

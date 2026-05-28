@@ -53,6 +53,7 @@ In a clean project folder, this extracts:
 - `AGENTS.md`
 - `.vnem/AGENTS.md`
 - `.vnem/operating-protocol.md`
+- `.vnem/coding-protocol.md`
 - `.vnem/task-rubrics.json`
 - `.vnem/search-index.json`
 - `.vnem/source-radar.json`
@@ -61,7 +62,7 @@ In a clean project folder, this extracts:
 - `.vnem/prompt-engineering.md`
 - `.vnem/prompt-patterns.json`
 
-`AGENTS.md` points coding agents to `.vnem/AGENTS.md`, the full agent entrypoint, plus `.vnem/agent-workspace.md` for autonomous developer environment guidance. Once an agent has read it, the user should not need special `use vnem` prompts: vnem auto-activates for build, review, optimization, research, benchmark, and stack/tool decision tasks.
+`AGENTS.md` points coding agents to `.vnem/AGENTS.md`, the full agent entrypoint, plus `.vnem/coding-protocol.md` for implementation work and `.vnem/agent-workspace.md` for autonomous developer environment guidance. Once an agent has read it, the user should not need special `use vnem` prompts: vnem auto-activates for build, code, debug, review, optimization, research, benchmark, and stack/tool decision tasks.
 
 For existing repos with their own `AGENTS.md`, prefer the CLI installer below because it updates a managed vnem block instead of replacing the whole file.
 
@@ -129,6 +130,7 @@ Main resources:
 - `vnem://install/source-radar`
 - `vnem://api/index`
 - `vnem://install/operating-protocol`
+- `vnem://install/coding-protocol`
 - `vnem://install/task-rubrics`
 - `vnem://install/design-architecture`
 - `vnem://install/visual-qa-protocol`

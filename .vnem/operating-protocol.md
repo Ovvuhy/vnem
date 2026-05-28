@@ -1,6 +1,6 @@
 # vnem Operating Protocol
 
-Generated: 2026-05-28T11:24:56.856Z
+Generated: 2026-05-28T19:11:09.918Z
 
 A universal read-only operating protocol for coding agents: sense the repo, route task context, choose the smallest sufficient capability, constrain risk, pass an aesthetic perception gate for UI/game work, verify with evidence, and report residual uncertainty.
 
@@ -59,6 +59,7 @@ For nontrivial tasks, produce or internally follow a compact task contract:
 
 ## Relationship To Other vnem Files
 
+- Use `.vnem/coding-protocol.md` for app, web app, feature, bug fix, refactor, and review execution guidance.
 - Use `.vnem/task-rubrics.json` to choose the broad quality bar for the task.
 - Use `.vnem/design-architecture.md` for UI, game, visual polish, dashboard, motion, sound, and conversational-agent surfaces.
 - Use `.vnem/visual-qa-protocol.md` when the work has a rendered surface that needs screenshot, mobile, interaction, reward, or sound evidence.

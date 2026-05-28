@@ -65,9 +65,17 @@ const intentAliases = {
   "tool pinning": ["schema hash", "tool schema", "mcp rug pull", "tool poisoning", "tools/list_changed", "tool annotations", "tool metadata"],
   "package firewall": ["dependency firewall", "package risk", "typosquatting", "dependency install", "npm package", "cargo package", "package metadata"],
   "ast indexer": ["tree-sitter", "code graph", "codebase graph", "structural index", "symbol graph", "imports", "call graph", "soft delete"],
+  "coding task": ["implementation", "feature", "bug fix", "web app", "app build", "repo understanding", "tests", "verification", "plan first", "code quality"],
+  "app build": ["build app", "application", "web app", "frontend", "backend", "full stack", "feature build", "implementation", "tests", "local verification"],
+  "web app": ["frontend app", "react app", "vite app", "next app", "dashboard", "landing page", "api integration", "responsive", "browser verification"],
+  "feature build": ["implement feature", "add feature", "new feature", "application code", "small diff", "tests", "acceptance criteria"],
+  "bug fix": ["debug", "fix bug", "failing test", "regression", "root cause", "reproduce", "patch", "verify fix"],
+  "test first": ["tests", "tdd", "verification first", "acceptance criteria", "unit test", "integration test", "screenshot", "fixture"],
+  "repo understanding": ["codebase understanding", "trace flow", "architecture map", "entrypoint", "call graph", "manifest", "existing pattern"],
+  "large change": ["migration", "refactor", "multi file", "plan first", "checkpoint", "acceptance criteria", "incremental implementation", "reviewable diff"],
   "backend api": ["backend", "api", "database", "server", "runtime", "deployment"],
   security: ["security", "trust", "identity", "compliance", "guardrails", "audit"],
-  "coding agents": ["coding-agent", "codebase", "repository", "diff", "terminal", "tests", "pull request"],
+  "coding agents": ["coding-agent", "codebase", "repository", "diff", "terminal", "tests", "pull request", "plan first", "verification loop"],
   subagents: ["sub-agent", "delegation", "parallel", "specialist", "agent team", "coordination"],
   "multi agent": ["multi-agent", "handoffs", "orchestration", "routing", "supervisor", "agent team"],
   swarms: ["swarm", "multi-agent", "handoffs", "parallel", "orchestration"],
@@ -415,6 +423,54 @@ const intentRoutes = {
     choose_by: ["number of moving objects", "text/render cost", "worker support", "GPU needs", "device targets"],
     report: ["vnem intents searched", "top matches", "choice", "why"]
   },
+  "coding task": {
+    read_first: ["coding-protocol:vnem-coding-protocol", "operating-protocol:vnem-operating-loop", "practice:agentic-coding-execution", "practice:code-review", "practice:evals"],
+    compare_options: ["small scoped patch", "plan-first implementation", "test-first fix", "repo-native refactor", "defer broad rewrite"],
+    choose_by: ["acceptance criteria", "repo conventions", "existing patterns", "fast verification", "diff reviewability", "rollback path"],
+    report: ["task contract", "files inspected", "implementation choice", "verification evidence", "residual risk"]
+  },
+  "app build": {
+    read_first: ["coding-protocol:vnem-coding-protocol", "practice:agentic-coding-execution", "practice:frontend", "practice:backend", "practice:evals"],
+    compare_options: ["existing app stack", "frontend-only implementation", "backend/API change", "full-stack slice", "prototype behind a narrow route"],
+    choose_by: ["user workflow", "current manifests", "existing routes/components", "state/data needs", "test and browser verification path"],
+    report: ["app slice built", "stack reused or changed", "verification evidence", "remaining product risk"]
+  },
+  "web app": {
+    read_first: ["coding-protocol:vnem-coding-protocol", "practice:agentic-coding-execution", "practice:frontend", "design-architecture:vnem-design-architecture", "visual-qa-protocol:vnem-visual-qa-protocol", "practice:evals"],
+    compare_options: ["existing framework route", "component-level implementation", "static Vite surface", "server/API-backed workflow", "dashboard or landing surface"],
+    choose_by: ["current framework", "responsive fit", "accessibility", "browser verification", "visual polish", "dependency budget"],
+    report: ["web surface changed", "framework/pattern reused", "browser evidence", "remaining responsive or polish risk"]
+  },
+  "feature build": {
+    read_first: ["coding-protocol:vnem-coding-protocol", "practice:agentic-coding-execution", "practice:code-review", "practice:evals"],
+    compare_options: ["single-file patch", "small cross-module change", "new component/helper", "feature flag or isolated route", "defer architecture change"],
+    choose_by: ["acceptance criteria", "minimal behavior surface", "existing tests", "local conventions", "reviewability"],
+    report: ["feature behavior", "files changed", "checks run", "known edge cases"]
+  },
+  "bug fix": {
+    read_first: ["coding-protocol:vnem-coding-protocol", "practice:agentic-coding-execution", "practice:code-review", "practice:evals"],
+    compare_options: ["reproduce first", "add/adjust failing test", "small root-cause patch", "guardrail plus regression test", "defer speculative rewrite"],
+    choose_by: ["reproduction evidence", "root cause", "narrowest patch", "regression coverage", "blast radius"],
+    report: ["root cause", "fix", "regression evidence", "remaining uncertainty"]
+  },
+  "test first": {
+    read_first: ["coding-protocol:vnem-coding-protocol", "practice:agentic-coding-execution", "practice:evals", "practice:code-review"],
+    compare_options: ["unit test", "integration fixture", "browser/screenshot check", "golden snapshot", "manual smoke when automation is impossible"],
+    choose_by: ["observable behavior", "speed", "flakiness risk", "coverage of acceptance criteria", "agent can rerun it"],
+    report: ["verification target", "test or check added", "result", "uncovered risk"]
+  },
+  "repo understanding": {
+    read_first: ["coding-protocol:vnem-coding-protocol", "practice:agentic-coding-execution", "practice:code-review", "source:coding-agent-clients"],
+    compare_options: ["manifest/config scan", "entrypoint trace", "request/data flow map", "component ownership map", "dependency risk pass"],
+    choose_by: ["task relevance", "source proximity", "call-site evidence", "existing docs", "context budget"],
+    report: ["current stack", "important files", "flow summary", "risks and unknowns"]
+  },
+  "large change": {
+    read_first: ["coding-protocol:vnem-coding-protocol", "practice:agentic-coding-execution", "practice:code-simplification", "practice:evals"],
+    compare_options: ["split into checkpoints", "plan-only first", "codemod with review", "migration in slices", "defer until tests exist"],
+    choose_by: ["blast radius", "test coverage", "rollback path", "API/data compatibility", "review and merge strategy"],
+    report: ["implementation plan", "checkpoint order", "verification ladder", "approval gates"]
+  },
   "better ui": {
     read_first: ["practice:visual-experience", "visual-qa-protocol:vnem-visual-qa-protocol", "design-architecture:vnem-design-architecture", "practice:frontend", "practice:context-engineering", "practice:evals"],
     compare_options: ["existing project design system", "mature UI primitives", "custom CSS only when scope is tiny"],
@@ -536,6 +592,37 @@ const bestPracticeSections = [
       "Expose vnem through MCP as read-only resources and tools; use it for recommendation context, not for installation or mutation.",
       "Prefer generated prompt patterns for recurring architecture, gateway, memory, and implementation prompts.",
       "Ask before adding MCP servers, editing client config, installing packages, using secrets, or starting daemons."
+    ]
+  },
+  {
+    id: "agentic-coding-execution",
+    title: "Agentic Coding Execution",
+    score: 22,
+    summary: "Make AI coding agents better by giving them a tight repo-sensing, plan-first, implementation, verification, and reporting loop instead of vague autonomy.",
+    keywords: ["coding task", "app build", "web app", "feature build", "bug fix", "test first", "repo understanding", "large change", "coding agents", "plan first", "verification loop", "acceptance criteria"],
+    sources: [
+      "https://www.anthropic.com/engineering/claude-code-best-practices",
+      "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
+      "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
+      "https://docs.github.com/en/copilot/how-tos/copilot-cli/cli-best-practices",
+      "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
+      "https://docs.cursor.com/context/rules-for-ai",
+      "https://www.anthropic.com/engineering/writing-tools-for-agents",
+      "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+    ],
+    practices: [
+      "Start implementation tasks by sensing the repo: read local instructions, manifests, scripts, tests, framework config, and the nearest existing implementation pattern before editing.",
+      "For nontrivial work, explore first, then write a short plan, then code. For large changes, make the plan reviewable before mutation.",
+      "Make the task issue-shaped: problem, acceptance criteria, target files or discovery path, non-goals, constraints, and the verification command or visual check that proves success.",
+      "Give the agent a check it can run before or during coding: failing test, unit fixture, build, typecheck, screenshot, browser flow, or expected output.",
+      "Use the smallest coherent diff that satisfies the acceptance criteria; avoid drive-by rewrites, public API churn, dependency swaps, and style conversions unless explicitly required.",
+      "Prefer existing project patterns and local helper APIs over new abstractions. Add an abstraction only when it removes real repeated complexity.",
+      "Run narrow checks first for speed, then broader tests/builds when the change touches shared behavior, app shell, build config, auth, data, or UI routing.",
+      "For web apps and UI, a passing build is not enough: open or serve the app, verify desktop and mobile fit, inspect the first screen, and fix the ugliest visible issue before final.",
+      "Control context: read the exact files needed, summarize findings, avoid dumping huge docs, and reset/split sessions when failed attempts or unrelated history start dominating the context window.",
+      "Use subagents, parallel candidates, or Best-of-N only for independent exploration, critique, or alternative designs; keep one owner responsible for the integrated diff.",
+      "Keep repository instruction files concise, stable, and versioned. Record commands, conventions, verification, and approval boundaries, not temporary task state.",
+      "Report like an engineer: what changed, why, files touched, verification run, failed checks or unrun checks, residual risk, and any approval needed before deployment or package installs."
     ]
   },
   {
@@ -1045,6 +1132,125 @@ const operatingProtocol = {
   }
 };
 
+const codingProtocol = {
+  id: "vnem-coding-protocol",
+  title: "vnem Coding Protocol",
+  summary:
+    "A read-only coding execution protocol for making agents better at apps, web apps, features, debugging, refactors, and reviews through repo sensing, plan-first work, small diffs, and verifiable outcomes.",
+  url_path: "/install/coding-protocol.md",
+  resource_uri: "vnem://install/coding-protocol",
+  tags: [
+    "coding task",
+    "app build",
+    "web app",
+    "feature build",
+    "bug fix",
+    "test first",
+    "repo understanding",
+    "large change",
+    "verification loop",
+    "context engineering"
+  ],
+  source_urls: [
+    "https://www.anthropic.com/engineering/claude-code-best-practices",
+    "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
+    "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
+    "https://docs.github.com/en/copilot/how-tos/copilot-cli/cli-best-practices",
+    "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
+    "https://docs.cursor.com/context/rules-for-ai",
+    "https://www.anthropic.com/engineering/writing-tools-for-agents",
+    "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+    "https://www.anthropic.com/engineering/building-effective-agents"
+  ],
+  sections: [
+    {
+      title: "What Actually Improves AI Coding",
+      bullets: [
+        "Give the agent stable project instructions, but keep them concise enough that the important parts remain visible.",
+        "Give the agent a verification loop it can run itself: tests, build, typecheck, browser screenshot, fixture, expected output, or reproduction step.",
+        "Shape tasks like good issues: problem, acceptance criteria, scope, target files or discovery path, non-goals, and evidence required before final.",
+        "Use an explore -> plan -> implement -> verify loop for nontrivial changes instead of speculative editing.",
+        "Keep the context budget clean: read exact files, summarize discoveries, avoid broad doc dumps, and split unrelated work into a fresh session.",
+        "Prefer small reviewable diffs that reuse existing patterns over broad rewrites, new frameworks, or clever abstractions."
+      ]
+    },
+    {
+      title: "Repo Sensing Contract",
+      bullets: [
+        "Before editing, inspect the nearest agent instruction files, README, package or language manifests, lockfiles, framework config, scripts, tests, CI, and relevant source files.",
+        "Find one or two existing examples of the pattern to copy: route, component, API handler, test, state store, data model, error handling, or styling convention.",
+        "Name the current stack and verification commands before recommending new tooling.",
+        "If the task is visual or browser-based, inspect assets, routes, CSS tokens, existing components, and available browser-test tooling.",
+        "If the task touches auth, payments, data, deployment, secrets, package installs, or production-like resources, stop and identify the approval gate before mutation."
+      ]
+    },
+    {
+      title: "Plan Before Mutating",
+      bullets: [
+        "For small safe changes, keep the plan internal and proceed after sensing the repo.",
+        "For large, ambiguous, security-sensitive, dependency-changing, or multi-module work, write a short plan before editing.",
+        "A good plan names files or modules, the behavior change, non-goals, verification commands, rollback path, and likely risks.",
+        "Do not let planning become an essay. The plan should be short enough to guide the next edits.",
+        "When the plan reveals missing acceptance criteria or risky scope, ask one blocking question or propose the smallest safe first slice."
+      ]
+    },
+    {
+      title: "Implementation Rules",
+      bullets: [
+        "Make the smallest coherent change that satisfies the acceptance criteria.",
+        "Reuse existing project helpers, components, styles, data access layers, and error patterns before adding new ones.",
+        "Add dependencies only when local code or existing dependencies cannot reasonably solve the problem, and state why before installing.",
+        "Preserve public APIs, data formats, migration behavior, and user-visible flows unless the user explicitly asked to change them.",
+        "Keep generated code, formatting-only churn, dependency-lock churn, and unrelated refactors out of the diff unless required by the task.",
+        "For web apps, build the actual usable workflow first, then polish the first viewport and core interaction."
+      ]
+    },
+    {
+      title: "Verification Ladder",
+      bullets: [
+        "Start with the narrowest relevant check: one failing test, a focused unit test, typecheck for touched files, or a small fixture.",
+        "Escalate to broader test/build/lint when shared behavior, public APIs, routing, build config, auth, data, or dependencies changed.",
+        "For UI and web apps, run the app or inspect the rendered artifact when practical; code review alone is not enough for visual fit.",
+        "For bug fixes, reproduce or describe the original failure, then prove the new behavior prevents it.",
+        "For refactors, prove behavior preservation with existing tests, snapshots, fixtures, or call-site evidence before deleting or reshaping code.",
+        "If a check cannot run, report exactly why and what risk remains."
+      ]
+    },
+    {
+      title: "Web App And App Quality Bar",
+      bullets: [
+        "The first screen must reveal the real product/workflow, not a placeholder or generic landing copy.",
+        "The primary workflow should be usable without reading explanatory feature text.",
+        "Text must fit on mobile and desktop; controls need stable dimensions, labels, focus states, and usable tap targets.",
+        "Use domain-appropriate density: dashboards and tools should be scannable and utilitarian; games and branded surfaces can be more expressive.",
+        "Use source-backed libraries or existing project conventions for hard domains such as routing, auth, forms, payments, persistence, browser automation, game engines, and 3D.",
+        "Before final, name and fix the ugliest visible issue if browser/screenshot evidence is available."
+      ]
+    },
+    {
+      title: "Context And Agent-Client Compatibility",
+      bullets: [
+        "AGENTS.md, CLAUDE.md, GEMINI.md, Copilot instructions, and Cursor rules are all repo-context surfaces; keep shared guidance stable and avoid client-specific clutter unless needed.",
+        "Use `.vnem/search-index.json` for fast local routing and `.vnem/source-radar.json` for current upstream docs before broad web search.",
+        "Use MCP tools and resources only when they reduce context or verification cost; do not expose large tool catalogs just because they are available.",
+        "Use subagents or parallel sessions for independent investigation, review, or alternative designs, then integrate through one owner.",
+        "After repeated failed attempts, summarize the learned constraints and restart the task in a cleaner context."
+      ]
+    },
+    {
+      title: "Final Report Contract",
+      bullets: [
+        "State what changed and where.",
+        "State the vnem intent, top matches, and chosen route when the choice mattered.",
+        "List verification commands or rendered checks and their result.",
+        "Call out failed or skipped checks plainly.",
+        "Call out approval gates that remain, such as package installs, deployment, secrets, paid APIs, or production data.",
+        "Keep the report compact enough that the user can decide whether to review, merge, or ask for the next slice."
+      ]
+    }
+  ]
+};
+
 const designArchitecture = {
   id: "vnem-design-architecture",
   title: "vnem Design Architecture",
@@ -1240,6 +1446,25 @@ const visualQaProtocol = {
 };
 
 const taskRubrics = [
+  {
+    id: "agentic_coding",
+    title: "Agentic Coding Execution",
+    summary:
+      "Build, debug, refactor, and review code through repo sensing, plan-first execution, small diffs, and verification evidence instead of broad speculative edits.",
+    modes: ["build", "debug", "review", "plan"],
+    intents: ["coding task", "app build", "web app", "feature build", "bug fix", "test first", "repo understanding", "large change", "coding agents", "professional code"],
+    read_first: ["coding-protocol:vnem-coding-protocol", "practice:agentic-coding-execution", "operating-protocol:vnem-operating-loop", "practice:evals", "practice:code-review"],
+    quality_bar: [
+      "repo instructions, manifests, scripts, tests, and nearest local patterns are inspected before edits",
+      "nontrivial changes use an explore -> plan -> implement -> verify loop",
+      "diff is scoped to the acceptance criteria and avoids unrelated rewrites",
+      "existing project conventions and helpers are reused before new dependencies or abstractions",
+      "the strongest practical verification is run and skipped checks are reported honestly"
+    ],
+    approval_gates: ["new dependencies or package-manager changes", "large rewrites", "public API/data format changes", "CI/deploy/auth/database/secret config edits", "production data or external service use"],
+    verification: ["inspect local instructions and manifests", "run focused tests/checks first", "run broader build/test when blast radius justifies it", "for UI/web app work, verify the rendered app state when practical", "report unrun checks and residual risk"],
+    output_contract: ["repo sensing summary", "plan or chosen slice", "files changed", "verification evidence", "residual risk and approval gates"]
+  },
   {
     id: "frontend_ui",
     title: "Frontend UI",
@@ -1466,6 +1691,38 @@ const sourceRadar = [
       "https://code.claude.com/docs/en/sub-agents",
       "https://opencode.ai/docs/",
       "https://adk.dev/"
+    ]
+  },
+  {
+    id: "agentic-coding-best-practices",
+    title: "Agentic Coding Best-Practice Sources",
+    category: "agentic-coding",
+    priority: "critical",
+    summary: "Track official and high-signal guidance on how coding agents perform better: repo instructions, plan-first work, verification loops, context management, tool design, and evals.",
+    use_when: [
+      "vnem needs to improve how agents build apps, web apps, features, bug fixes, and refactors.",
+      "A maintainer wants source-backed guidance for AGENTS.md, CLAUDE.md, GEMINI.md, Copilot instructions, Cursor rules, or coding-agent task prompts.",
+      "A benchmark should compare with/without-vnem coding quality, not only recommendation quality."
+    ],
+    monitor: [
+      "Official coding-agent best-practice docs from OpenAI, Anthropic, GitHub, Google Gemini CLI, and Cursor",
+      "Guidance on issue-shaped prompts, project instructions, plan mode, verification, context windows, subagents, and evals",
+      "Tool-description and MCP ergonomics research that affects how agents choose and use tools"
+    ],
+    risk_checks: [
+      "Vendor guidance can be client-specific; keep shared vnem rules client-neutral unless a client file is explicitly generated.",
+      "Do not encode hype claims or productivity numbers without repeatable benchmarks.",
+      "Do not turn best-practice guidance into automatic package installs, config edits, or broad runtime permissions."
+    ],
+    source_urls: [
+      "https://www.anthropic.com/engineering/claude-code-best-practices",
+      "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
+      "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
+      "https://docs.github.com/en/copilot/how-tos/copilot-cli/cli-best-practices",
+      "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
+      "https://docs.cursor.com/context/rules-for-ai",
+      "https://www.anthropic.com/engineering/writing-tools-for-agents",
+      "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
     ]
   },
   {
@@ -1723,16 +1980,58 @@ const promptPatterns = [
       "- Do not change: <public API, unrelated files, formatting, dependencies, etc.>",
       "",
       "Workflow:",
-      "1. Inspect the current implementation before editing.",
-      "2. Make the smallest cohesive change that satisfies the objective.",
-      "3. Add or update tests only where risk justifies it.",
-      "4. Run verification: <commands>.",
-      "5. Report changed files, verification results, and residual risk.",
+      "1. If `.vnem/coding-protocol.md` exists, read it before editing application code.",
+      "2. Inspect the current implementation, repo instructions, manifests, scripts, and nearest local patterns before editing.",
+      "3. For nontrivial work, write a short plan before mutation.",
+      "4. Make the smallest cohesive change that satisfies the objective.",
+      "5. Add or update tests only where risk justifies it.",
+      "6. Run verification: <commands>.",
+      "7. Report changed files, verification results, skipped checks, and residual risk.",
       "",
       "Constraints:",
       "- Do not run destructive commands.",
       "- Ask before installing packages, changing secrets, deploying, or touching production data.",
       "- Preserve user changes already present in the worktree."
+    ].join("\n")
+  },
+  {
+    id: "agentic-coding-task",
+    title: "Agentic Coding Task Prompt",
+    intents: ["coding task", "app build", "web app", "feature build", "bug fix", "large change", "test first"],
+    summary: "Prompt a coding agent to turn a product or engineering request into a repo-grounded, verifiable implementation.",
+    output_modes: ["agent_prompt", "task_contract"],
+    template: [
+      "You are a coding agent working in this repository.",
+      "",
+      "Goal:",
+      "<what the user wants built, fixed, reviewed, or improved>",
+      "",
+      "Acceptance criteria:",
+      "- <observable behavior 1>",
+      "- <observable behavior 2>",
+      "- <verification or visual evidence expected>",
+      "",
+      "Required repo sensing:",
+      "- Read local agent instructions and `.vnem/coding-protocol.md` if present.",
+      "- Inspect manifests, scripts, tests, framework config, and the nearest existing implementation pattern.",
+      "- Name risky surfaces before mutation: dependencies, auth, database, deployment, secrets, external services, browser automation, or paid APIs.",
+      "",
+      "Execution rules:",
+      "- For nontrivial work, produce a short plan before editing.",
+      "- Prefer existing project patterns and helpers.",
+      "- Keep the diff small and scoped to the acceptance criteria.",
+      "- Ask before installing packages, changing config outside scope, deploying, or using secrets.",
+      "",
+      "Verification:",
+      "- Run the narrowest relevant check first: <command or check>.",
+      "- Run broader checks when blast radius justifies it: <command or check>.",
+      "- For web/UI work, inspect the rendered app on desktop and mobile when practical.",
+      "",
+      "Final report:",
+      "- What changed and where.",
+      "- Verification run and result.",
+      "- Checks skipped and why.",
+      "- Remaining risk or approval needed."
     ].join("\n")
   },
   {
@@ -2586,7 +2885,36 @@ function buildSearchDocuments(entries) {
     }
   ];
 
-  return [...operatingDocs, ...sourceRadarDocs, ...designArchitectureDocs, ...visualQaDocs, ...rubricDocs, ...promptDocs, ...practiceDocs, ...entryDocs].sort((a, b) => b.score - a.score || a.title.localeCompare(b.title));
+  const codingProtocolDocs = [
+    {
+      id: `coding-protocol:${codingProtocol.id}`,
+      kind: "coding-protocol",
+      title: codingProtocol.title,
+      summary: codingProtocol.summary,
+      url_path: codingProtocol.url_path,
+      trust_tier: "verified",
+      type: "coding-protocol",
+      score: 21,
+      tags: codingProtocol.tags,
+      use_cases: codingProtocol.sections.flatMap((section) => section.bullets),
+      best_for: [
+        "Coding-agent implementation tasks that need repo sensing, plan-first changes, small diffs, and verification evidence.",
+        "Apps, web apps, features, bug fixes, refactors, and reviews where the agent must code rather than only recommend tools."
+      ],
+      risk_flags: [],
+      source_urls: unique([installFileUrl("coding-protocol.md"), ...codingProtocol.source_urls]),
+      keywords: unique(textTokens([
+        codingProtocol.id,
+        codingProtocol.title,
+        codingProtocol.summary,
+        ...codingProtocol.tags,
+        ...codingProtocol.sections.flatMap((section) => [section.title, ...section.bullets]),
+        ...codingProtocol.source_urls
+      ].join(" "))).slice(0, 180)
+    }
+  ];
+
+  return [...operatingDocs, ...codingProtocolDocs, ...sourceRadarDocs, ...designArchitectureDocs, ...visualQaDocs, ...rubricDocs, ...promptDocs, ...practiceDocs, ...entryDocs].sort((a, b) => b.score - a.score || a.title.localeCompare(b.title));
 }
 
 function buildInvertedIndex(documents) {
@@ -2666,6 +2994,7 @@ function operatingProtocolMarkdown() {
     "",
     "## Relationship To Other vnem Files",
     "",
+    "- Use `.vnem/coding-protocol.md` for app, web app, feature, bug fix, refactor, and review execution guidance.",
     "- Use `.vnem/task-rubrics.json` to choose the broad quality bar for the task.",
     "- Use `.vnem/design-architecture.md` for UI, game, visual polish, dashboard, motion, sound, and conversational-agent surfaces.",
     "- Use `.vnem/visual-qa-protocol.md` when the work has a rendered surface that needs screenshot, mobile, interaction, reward, or sound evidence.",
@@ -2673,6 +3002,41 @@ function operatingProtocolMarkdown() {
     "- Use `.vnem/source-radar.json` when the task depends on current docs, upstream registries, benchmark evidence, or agent-client behavior.",
     "- Use `.vnem/best-practices.md` after routing, not as a wall of generic context.",
     "- Use `.vnem/agent-workspace.md` only for autonomous developer environment choices such as MCP gateways, memory files, agent clients, or mode systems.",
+    ""
+  ].join("\n");
+}
+
+function codingProtocolMarkdown() {
+  return [
+    "# vnem Coding Protocol",
+    "",
+    `Generated: ${generatedAt}`,
+    "",
+    codingProtocol.summary,
+    "",
+    "## Safety Boundary",
+    "",
+    "- This file is read-only guidance.",
+    "- Do not treat it as a script, package installer, dependency recommendation, CI config, or runtime agent.",
+    "- Use it to improve how a coding agent thinks and verifies before it edits application code.",
+    "- Keep package installs, deployment, production data, secrets, paid APIs, and broad rewrites behind explicit user approval.",
+    "",
+    "## How To Use",
+    "",
+    "- Read this file for coding tasks, app builds, web apps, feature work, bug fixes, refactors, and code reviews.",
+    "- Use `.vnem/search-index.json` to route the task and `.vnem/task-rubrics.json` to pick the quality bar.",
+    "- Use `.vnem/design-architecture.md` and `.vnem/visual-qa-protocol.md` when the task has a visible app, web, UI, canvas, or game surface.",
+    "- Use `.vnem/source-radar.json` when current docs, agent-client behavior, benchmark claims, or framework/tool choices matter.",
+    "",
+    ...codingProtocol.sections.flatMap((section) => [
+      `## ${section.title}`,
+      "",
+      ...section.bullets.map((item) => `- ${item}`),
+      ""
+    ]),
+    "## Source URLs",
+    "",
+    ...codingProtocol.source_urls.map((url) => `- ${url}`),
     ""
   ].join("\n");
 }
@@ -2958,6 +3322,7 @@ function agentsMarkdown() {
     "## Files To Read",
     "",
     "- `.vnem/operating-protocol.md`: universal loop for sensing the repo, routing context, choosing small capabilities, constraining risk, applying the aesthetic perception gate, verifying, and reporting evidence.",
+    "- `.vnem/coding-protocol.md`: coding execution guide for apps, web apps, features, bug fixes, refactors, repo sensing, plan-first work, and verification loops.",
     "- `.vnem/design-architecture.md`: source-backed design intelligence for UI, game, dashboard, visual polish, motion, sound, and conversational-agent surfaces.",
     "- `.vnem/visual-qa-protocol.md`: rendered visual QA loop for repo-first asset sensing, desktop/mobile checks, interaction moments, ugliest-issue polish, and perception verdicts.",
     "- `.vnem/task-rubrics.json`: broad task rubrics used to shape the quality bar, perception gate, approval gates, verification checklist, and final report.",
@@ -2972,24 +3337,27 @@ function agentsMarkdown() {
     "",
     "If this `.vnem/` folder exists, use it automatically. The user should not need to say `use vnem`.",
     "",
-    "Auto-use vnem before choosing tools, libraries, frameworks, MCP servers, prompts, evals, search systems, UI approaches, visual aesthetics, game feel, architecture patterns, or upgrade paths. Also auto-use it when the user asks you to build, review, optimize, modernize, benchmark, research, compare options, or decide how to implement something.",
+    "Auto-use vnem before choosing tools, libraries, frameworks, MCP servers, prompts, evals, search systems, UI approaches, visual aesthetics, game feel, architecture patterns, or upgrade paths. Also auto-use it when the user asks you to build, code, review, debug, optimize, modernize, benchmark, research, compare options, or decide how to implement something.",
     "",
     "Do not turn every reply into a long vnem report. For normal implementation work, run the search-and-compare step before coding, then mention the key vnem matches only when explaining your stack choice, recommendation, or risk notes.",
     "",
     "## Decision Search Protocol",
     "",
     "1. Read `.vnem/operating-protocol.md` and classify the task mode: `build`, `review`, `plan`, `debug`, `prompt`, or `decision`.",
-    "2. Identify the user's task intents in plain words, such as `browser game`, `visual polish`, `game feel`, `better ui`, `faster search`, `code review`, `code simplification`, `memory`, `evals`, `agent payments`, or `MCP server selection`.",
-    "3. Read `.vnem/search-index.json` and expand those intents with `intent_aliases`.",
-    "4. Select the matching broad rubric from `.vnem/task-rubrics.json` and use its quality bar, approval gates, verification checklist, and output contract.",
-    "5. Check `intent_routes` for the closest matching task. Read the listed `read_first` documents before choosing a stack or visual approach.",
-    "6. If the task depends on current docs, upstream registries, benchmark claims, MCP discovery, or agent-client behavior, read `.vnem/source-radar.json` before broad web search.",
-    "7. Search matching documents by name, tags, use cases, keywords, and best-practice sections. Read `.vnem/best-practices.md` only for matching sections.",
-    "8. Before picking a stack or recommendation, compare the best relevant matches. Prefer higher `score`, stronger `source_confidence`, fresher `freshness`, clearer licenses, fewer `risk_flags`, and the smallest sufficient capability.",
-    "9. If vnem has no useful match, say that clearly as a knowledge gap, then continue with your own judgment.",
-    "10. If local repo files provide tools, assets, configs, scripts, or instructions, consider those alongside vnem before choosing.",
+    "2. For coding tasks, read `.vnem/coding-protocol.md` before editing application code.",
+    "3. Identify the user's task intents in plain words, such as `coding task`, `web app`, `feature build`, `bug fix`, `browser game`, `visual polish`, `game feel`, `better ui`, `faster search`, `code review`, `code simplification`, `memory`, `evals`, `agent payments`, or `MCP server selection`.",
+    "4. Read `.vnem/search-index.json` and expand those intents with `intent_aliases`.",
+    "5. Select the matching broad rubric from `.vnem/task-rubrics.json` and use its quality bar, approval gates, verification checklist, and output contract.",
+    "6. Check `intent_routes` for the closest matching task. Read the listed `read_first` documents before choosing a stack or visual approach.",
+    "7. If the task depends on current docs, upstream registries, benchmark claims, MCP discovery, or agent-client behavior, read `.vnem/source-radar.json` before broad web search.",
+    "8. Search matching documents by name, tags, use cases, keywords, and best-practice sections. Read `.vnem/best-practices.md` only for matching sections.",
+    "9. Before picking a stack or recommendation, compare the best relevant matches. Prefer higher `score`, stronger `source_confidence`, fresher `freshness`, clearer licenses, fewer `risk_flags`, and the smallest sufficient capability.",
+    "10. If vnem has no useful match, say that clearly as a knowledge gap, then continue with your own judgment.",
+    "11. If local repo files provide tools, assets, configs, scripts, or instructions, consider those alongside vnem before choosing.",
     "",
     "For nontrivial tasks, follow a compact task contract: `mode`, `intent`, `rubric`, `read first`, `smallest sufficient capability`, `approval gates`, `perception gate` when visual work is involved, `verification`, and `final report`.",
+    "",
+    "For coding implementation, follow the coding protocol: sense the repo, find existing patterns, plan nontrivial edits, make the smallest coherent diff, run focused checks first, run broader verification when blast radius justifies it, and report skipped checks honestly.",
     "",
     "For UI, game, canvas, animation, dashboard, conversational-agent, or branded surfaces, read `.vnem/design-architecture.md` and `.vnem/visual-qa-protocol.md`, then follow the perception gate: inspect the actual rendered result, name and fix the ugliest visible issue, verify reward effects follow the user action or game event, and do not deliver if it does not look intentionally polished.",
     "",
@@ -3050,6 +3418,8 @@ function agentWorkspaceMarkdown() {
     "## Recommended Default",
     "",
     "Start with a small, readable setup: Codex or another coding agent, repository-local instructions, the vnem read-only pack, and only the MCP servers required for the current workflow.",
+    "",
+    "For actual implementation work, route the agent through `.vnem/coding-protocol.md` before editing code. It defines repo sensing, plan-first execution, small diffs, verification, and final reporting for apps, web apps, feature work, debugging, and refactors.",
     "",
     "Add gateways, memory banks, browser sessions, database access, and repository mutation tools only after the team can name the approval path and rollback plan.",
     "",
@@ -3123,7 +3493,7 @@ function rootAgentsMarkdown() {
     "",
     "This repo has a read-only vnem knowledge pack in `.vnem/`.",
     "",
-    "Before choosing tools, libraries, frameworks, MCP servers, skills, prompts, evals, search systems, UI approaches, visual polish/game feel, architecture patterns, or upgrade paths, read `.vnem/AGENTS.md`, follow `.vnem/operating-protocol.md`, use `.vnem/search-index.json`, read `.vnem/design-architecture.md` and `.vnem/visual-qa-protocol.md` for visual surfaces, and consult `.vnem/agent-workspace.md` only for autonomous developer environment decisions.",
+    "Before choosing tools, libraries, frameworks, MCP servers, skills, prompts, evals, search systems, UI approaches, visual polish/game feel, architecture patterns, or upgrade paths, read `.vnem/AGENTS.md`, follow `.vnem/operating-protocol.md`, read `.vnem/coding-protocol.md` for coding/app/web/feature/debug work, use `.vnem/search-index.json`, read `.vnem/design-architecture.md` and `.vnem/visual-qa-protocol.md` for visual surfaces, and consult `.vnem/agent-workspace.md` only for autonomous developer environment decisions.",
     "For current docs, MCP discovery, benchmark evidence, or upstream source decisions, also use `.vnem/source-radar.json` before broad web search.",
     "",
     "Use vnem automatically. The user should not need to say `use vnem`. Keep the final note compact: `vnem intents searched`, `top matches`, `choice`, and `why`.",
@@ -3153,6 +3523,15 @@ function searchIndexJson(entries) {
     intent_aliases: intentAliases,
     intent_routes: intentRoutes,
     operating_protocol: operatingProtocol,
+    coding_protocol: {
+      id: codingProtocol.id,
+      title: codingProtocol.title,
+      summary: codingProtocol.summary,
+      url_path: codingProtocol.url_path,
+      resource_uri: codingProtocol.resource_uri,
+      source_urls: codingProtocol.source_urls,
+      tags: codingProtocol.tags
+    },
     task_rubrics: taskRubrics,
     design_architecture: {
       id: designArchitecture.id,
@@ -3181,6 +3560,7 @@ function searchIndexJson(entries) {
         "intent",
         "rubric",
         "read_first",
+        "repo_sensing",
         "smallest_sufficient_capability",
         "approval_gates",
         "perception_gate",
@@ -3188,7 +3568,7 @@ function searchIndexJson(entries) {
         "verification",
         "final_report"
       ],
-      read_first_for_build_tasks: ["operating protocol", "matching task rubric", "matching intent_routes", "design architecture and visual QA protocol when the task is visual or interactive", "matching best-practice documents", "matching source-radar entries when upstream currency matters", "high-signal registry entries", "prompt patterns only when a prompt artifact is requested"],
+      read_first_for_build_tasks: ["operating protocol", "coding protocol for app/web/feature/debug/refactor work", "matching task rubric", "matching intent_routes", "design architecture and visual QA protocol when the task is visual or interactive", "matching best-practice documents", "matching source-radar entries when upstream currency matters", "high-signal registry entries", "prompt patterns only when a prompt artifact is requested"],
       evidence_note: ["vnem intents searched", "top matches", "chosen rubric", "choice", "why", "verification evidence", "residual uncertainty"]
     },
     rank_weights: {
@@ -3236,6 +3616,7 @@ const index = {
   intent_aliases: intentAliases,
   intent_routes: intentRoutes,
   operating_protocol: operatingProtocol,
+  coding_protocol: searchIndex.coding_protocol,
   task_rubrics: taskRubrics,
   design_architecture: searchIndex.design_architecture,
   visual_qa_protocol: searchIndex.visual_qa_protocol,
@@ -3264,7 +3645,7 @@ const llmsTxt = [
   "",
   `Safe install command: ${installCommand}`,
   "",
-  "Installed files: .vnem/AGENTS.md, .vnem/operating-protocol.md, .vnem/design-architecture.md, .vnem/visual-qa-protocol.md, .vnem/task-rubrics.json, .vnem/search-index.json, .vnem/source-radar.json, .vnem/best-practices.md, .vnem/agent-workspace.md, .vnem/prompt-engineering.md, .vnem/prompt-patterns.json",
+  "Installed files: .vnem/AGENTS.md, .vnem/operating-protocol.md, .vnem/coding-protocol.md, .vnem/design-architecture.md, .vnem/visual-qa-protocol.md, .vnem/task-rubrics.json, .vnem/search-index.json, .vnem/source-radar.json, .vnem/best-practices.md, .vnem/agent-workspace.md, .vnem/prompt-engineering.md, .vnem/prompt-patterns.json",
   "Canonical API: /api/index.json",
   "Agent instructions: /install/AGENTS.md",
   "Full index: /llms-full.txt",
@@ -3314,6 +3695,7 @@ const llmsFull = [
 
 const bestPractices = bestPracticesMarkdown();
 const operatingProtocolMarkdownData = operatingProtocolMarkdown();
+const codingProtocolMarkdownData = codingProtocolMarkdown().trimEnd();
 const designArchitectureMarkdownData = designArchitectureMarkdown().trimEnd();
 const visualQaProtocolMarkdownData = visualQaProtocolMarkdown().trimEnd();
 const taskRubricData = taskRubricsJson();
@@ -3327,6 +3709,7 @@ const archive = installArchive({
   "AGENTS.md": `${rootAgentInstructions}\n`,
   [`${installFolder}/AGENTS.md`]: `${agentInstructions}\n`,
   [`${installFolder}/operating-protocol.md`]: `${operatingProtocolMarkdownData}\n`,
+  [`${installFolder}/coding-protocol.md`]: `${codingProtocolMarkdownData}\n`,
   [`${installFolder}/design-architecture.md`]: `${designArchitectureMarkdownData}\n`,
   [`${installFolder}/visual-qa-protocol.md`]: `${visualQaProtocolMarkdownData}\n`,
   [`${installFolder}/task-rubrics.json`]: jsonText(taskRubricData),
@@ -3352,6 +3735,8 @@ await writeText(path.join(ROOT, "public", "install", "AGENTS.md"), `${agentInstr
 await writeText(path.join(ROOT, installFolder, "AGENTS.md"), `${agentInstructions}\n`);
 await writeText(path.join(ROOT, "public", "install", "operating-protocol.md"), `${operatingProtocolMarkdownData}\n`);
 await writeText(path.join(ROOT, installFolder, "operating-protocol.md"), `${operatingProtocolMarkdownData}\n`);
+await writeText(path.join(ROOT, "public", "install", "coding-protocol.md"), `${codingProtocolMarkdownData}\n`);
+await writeText(path.join(ROOT, installFolder, "coding-protocol.md"), `${codingProtocolMarkdownData}\n`);
 await writeText(path.join(ROOT, "public", "install", "design-architecture.md"), `${designArchitectureMarkdownData}\n`);
 await writeText(path.join(ROOT, installFolder, "design-architecture.md"), `${designArchitectureMarkdownData}\n`);
 await writeText(path.join(ROOT, "public", "install", "visual-qa-protocol.md"), `${visualQaProtocolMarkdownData}\n`);

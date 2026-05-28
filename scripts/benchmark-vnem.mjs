@@ -14,39 +14,39 @@ const cases = [
     name: "frontend build",
     task: "Build a responsive browser UI for a SaaS dashboard and verify it locally.",
     mode: "build",
-    rubrics: ["frontend_ui", "aesthetic_experience"],
-    readFirst: ["practice:frontend"]
+    rubrics: ["agentic_coding", "frontend_ui", "aesthetic_experience"],
+    readFirst: ["coding-protocol:vnem-coding-protocol", "practice:frontend"]
   },
   {
     name: "aesthetic browser game",
     task: "Build a polished neon browser Snake game with Magi-sun collectibles, action-anchored reward flashes, restrained sound design, responsive board sizing, and a screenshot polish pass.",
     mode: "build",
-    rubrics: ["aesthetic_experience", "interactive_canvas"],
-    readFirst: ["practice:visual-experience", "visual-qa-protocol:vnem-visual-qa-protocol", "design-architecture:vnem-design-architecture", "practice:browser-games"],
+    rubrics: ["agentic_coding", "aesthetic_experience", "interactive_canvas"],
+    readFirst: ["coding-protocol:vnem-coding-protocol", "practice:visual-experience", "visual-qa-protocol:vnem-visual-qa-protocol", "design-architecture:vnem-design-architecture", "practice:browser-games"],
     perception: true
   },
   {
     name: "bento dashboard",
     task: "Build a dense bento SaaS dashboard with prioritized KPI tiles, a 12-column CSS Grid layout, responsive mobile collapse, and screenshot verification.",
     mode: "build",
-    rubrics: ["aesthetic_experience", "frontend_ui"],
-    readFirst: ["visual-qa-protocol:vnem-visual-qa-protocol", "design-architecture:vnem-design-architecture", "practice:frontend"],
+    rubrics: ["agentic_coding", "aesthetic_experience", "frontend_ui"],
+    readFirst: ["coding-protocol:vnem-coding-protocol", "visual-qa-protocol:vnem-visual-qa-protocol", "design-architecture:vnem-design-architecture", "practice:frontend"],
     perception: true
   },
   {
     name: "agent evidence ui",
     task: "Build an agent chat UI with evidence cards, source visibility, sequential disclosure, and a compact dashboard handoff to reduce verification debt.",
     mode: "build",
-    rubrics: ["aesthetic_experience", "frontend_ui"],
-    readFirst: ["visual-qa-protocol:vnem-visual-qa-protocol", "design-architecture:vnem-design-architecture", "practice:visual-experience"],
+    rubrics: ["agentic_coding", "aesthetic_experience", "frontend_ui"],
+    readFirst: ["coding-protocol:vnem-coding-protocol", "visual-qa-protocol:vnem-visual-qa-protocol", "design-architecture:vnem-design-architecture", "practice:visual-experience"],
     perception: true
   },
   {
     name: "brand landing page",
     task: "Build a polished landing page using provided brand assets, reference-style fidelity, responsive typography, and a screenshot polish pass.",
     mode: "build",
-    rubrics: ["aesthetic_experience", "frontend_ui"],
-    readFirst: ["visual-qa-protocol:vnem-visual-qa-protocol", "design-architecture:vnem-design-architecture", "practice:frontend"],
+    rubrics: ["agentic_coding", "aesthetic_experience", "frontend_ui"],
+    readFirst: ["coding-protocol:vnem-coding-protocol", "visual-qa-protocol:vnem-visual-qa-protocol", "design-architecture:vnem-design-architecture", "practice:frontend"],
     perception: true
   },
   {
@@ -69,21 +69,22 @@ const cases = [
     name: "repo review",
     task: "Review this repository for risky dependencies and outdated tooling before changing anything.",
     mode: "review",
-    readFirst: ["practice:code-review"]
+    rubrics: ["agentic_coding"],
+    readFirst: ["coding-protocol:vnem-coding-protocol", "practice:code-review"]
   },
   {
     name: "code simplification",
     task: "Simplify duplicate code in a JavaScript module without changing behavior.",
     mode: "build",
-    rubrics: ["refactor"],
-    readFirst: ["practice:code-simplification"]
+    rubrics: ["agentic_coding", "refactor"],
+    readFirst: ["coding-protocol:vnem-coding-protocol", "practice:code-simplification"]
   },
   {
     name: "debug failing test",
     task: "Debug a failing auth API test and patch only the smallest relevant cause.",
     mode: "debug",
-    rubrics: ["backend_api", "security_sensitive"],
-    readFirst: ["practice:backend", "practice:security"]
+    rubrics: ["agentic_coding", "backend_api", "security_sensitive"],
+    readFirst: ["coding-protocol:vnem-coding-protocol", "practice:backend", "practice:security"]
   },
   {
     name: "mcp tooling decision",

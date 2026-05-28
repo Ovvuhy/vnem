@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-28T11:24:56.856Z",
+  "generated_at": "2026-05-28T19:11:09.918Z",
   "schema_version": "1.0.0",
   "safety": {
     "mode": "read-only-task-rubrics",
@@ -10,6 +10,64 @@
   },
   "purpose": "Broad task rubrics for producing compact agent task contracts across common coding-agent workflows without maintaining narrow playbooks.",
   "rubrics": [
+    {
+      "id": "agentic_coding",
+      "title": "Agentic Coding Execution",
+      "summary": "Build, debug, refactor, and review code through repo sensing, plan-first execution, small diffs, and verification evidence instead of broad speculative edits.",
+      "modes": [
+        "build",
+        "debug",
+        "review",
+        "plan"
+      ],
+      "intents": [
+        "coding task",
+        "app build",
+        "web app",
+        "feature build",
+        "bug fix",
+        "test first",
+        "repo understanding",
+        "large change",
+        "coding agents",
+        "professional code"
+      ],
+      "read_first": [
+        "coding-protocol:vnem-coding-protocol",
+        "practice:agentic-coding-execution",
+        "operating-protocol:vnem-operating-loop",
+        "practice:evals",
+        "practice:code-review"
+      ],
+      "quality_bar": [
+        "repo instructions, manifests, scripts, tests, and nearest local patterns are inspected before edits",
+        "nontrivial changes use an explore -> plan -> implement -> verify loop",
+        "diff is scoped to the acceptance criteria and avoids unrelated rewrites",
+        "existing project conventions and helpers are reused before new dependencies or abstractions",
+        "the strongest practical verification is run and skipped checks are reported honestly"
+      ],
+      "approval_gates": [
+        "new dependencies or package-manager changes",
+        "large rewrites",
+        "public API/data format changes",
+        "CI/deploy/auth/database/secret config edits",
+        "production data or external service use"
+      ],
+      "verification": [
+        "inspect local instructions and manifests",
+        "run focused tests/checks first",
+        "run broader build/test when blast radius justifies it",
+        "for UI/web app work, verify the rendered app state when practical",
+        "report unrun checks and residual risk"
+      ],
+      "output_contract": [
+        "repo sensing summary",
+        "plan or chosen slice",
+        "files changed",
+        "verification evidence",
+        "residual risk and approval gates"
+      ]
+    },
     {
       "id": "frontend_ui",
       "title": "Frontend UI",

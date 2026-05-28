@@ -1,6 +1,6 @@
 # vnem Prompt Engineering
 
-Generated: 2026-05-28T11:24:56.856Z
+Generated: 2026-05-28T19:11:09.918Z
 
 Use this when the user asks to improve, rewrite, harden, or operationalize a prompt. The main trigger phrase is `use vnem to enhance this prompt`.
 
@@ -111,16 +111,60 @@ Scope:
 - Do not change: <public API, unrelated files, formatting, dependencies, etc.>
 
 Workflow:
-1. Inspect the current implementation before editing.
-2. Make the smallest cohesive change that satisfies the objective.
-3. Add or update tests only where risk justifies it.
-4. Run verification: <commands>.
-5. Report changed files, verification results, and residual risk.
+1. If `.vnem/coding-protocol.md` exists, read it before editing application code.
+2. Inspect the current implementation, repo instructions, manifests, scripts, and nearest local patterns before editing.
+3. For nontrivial work, write a short plan before mutation.
+4. Make the smallest cohesive change that satisfies the objective.
+5. Add or update tests only where risk justifies it.
+6. Run verification: <commands>.
+7. Report changed files, verification results, skipped checks, and residual risk.
 
 Constraints:
 - Do not run destructive commands.
 - Ask before installing packages, changing secrets, deploying, or touching production data.
 - Preserve user changes already present in the worktree.
+```
+
+### Agentic Coding Task Prompt
+
+Prompt a coding agent to turn a product or engineering request into a repo-grounded, verifiable implementation.
+
+Intents: coding task, app build, web app, feature build, bug fix, large change, test first
+
+Template:
+
+```text
+You are a coding agent working in this repository.
+
+Goal:
+<what the user wants built, fixed, reviewed, or improved>
+
+Acceptance criteria:
+- <observable behavior 1>
+- <observable behavior 2>
+- <verification or visual evidence expected>
+
+Required repo sensing:
+- Read local agent instructions and `.vnem/coding-protocol.md` if present.
+- Inspect manifests, scripts, tests, framework config, and the nearest existing implementation pattern.
+- Name risky surfaces before mutation: dependencies, auth, database, deployment, secrets, external services, browser automation, or paid APIs.
+
+Execution rules:
+- For nontrivial work, produce a short plan before editing.
+- Prefer existing project patterns and helpers.
+- Keep the diff small and scoped to the acceptance criteria.
+- Ask before installing packages, changing config outside scope, deploying, or using secrets.
+
+Verification:
+- Run the narrowest relevant check first: <command or check>.
+- Run broader checks when blast radius justifies it: <command or check>.
+- For web/UI work, inspect the rendered app on desktop and mobile when practical.
+
+Final report:
+- What changed and where.
+- Verification run and result.
+- Checks skipped and why.
+- Remaining risk or approval needed.
 ```
 
 ### Code Simplification Prompt

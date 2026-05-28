@@ -64,6 +64,10 @@ try {
   assert.equal(status.structuredContent?.safety?.installs_packages, false);
   assert.ok(status.structuredContent?.counts?.registry_entries >= 200, "expected vnem_status registry count");
   assert.ok(status.structuredContent?.mcp?.tools?.includes("vnem_route_intent"), "expected vnem_status to list route tool");
+  assert.ok(
+    status.structuredContent?.mcp?.resources?.includes("vnem://install/coding-protocol"),
+    "expected vnem_status to list coding protocol resource"
+  );
 
   const overview = await client.callTool({
     name: "vnem_overview",
@@ -225,6 +229,10 @@ try {
     "expected operating protocol resource"
   );
   assert.ok(
+    resources.resources.some((resource) => resource.uri === "vnem://install/coding-protocol"),
+    "expected coding protocol resource"
+  );
+  assert.ok(
     resources.resources.some((resource) => resource.uri === "vnem://install/task-rubrics"),
     "expected task rubrics resource"
   );
@@ -265,6 +273,13 @@ try {
     uri: "vnem://install/operating-protocol"
   });
   assert.ok(operatingProtocol.contents[0]?.text?.includes("Universal Loop"));
+
+  const codingProtocol = await client.readResource({
+    uri: "vnem://install/coding-protocol"
+  });
+  assert.ok(codingProtocol.contents[0]?.text?.includes("vnem Coding Protocol"));
+  assert.ok(codingProtocol.contents[0]?.text?.includes("Repo Sensing Contract"));
+  assert.ok(codingProtocol.contents[0]?.text?.includes("Verification Ladder"));
 
   const taskRubrics = await client.readResource({
     uri: "vnem://install/task-rubrics"
