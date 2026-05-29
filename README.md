@@ -20,6 +20,25 @@ It helps a coding agent answer: _what should I use, what is stale, what is risky
 
 Live overview: [vnem.pages.dev](https://vnem.pages.dev)
 
+## Quick Start
+
+Use the read-only pack when you only want repo-local AI guidance:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install.tgz | tar -xz
+```
+
+Use the checkout when you want the CLI installer, doctor checks, or MCP server:
+
+```bash
+git clone https://github.com/Ovvuhy/vnem.git
+cd vnem
+npm install
+npm run install:project -- /path/to/my-project
+npm run doctor -- /path/to/my-project
+node scripts/vnem-cli.mjs mcp-config
+```
+
 ## The VNEM Standard
 
 VNEM is built around one rule: an AI agent should not satisfy one requirement by silently damaging another.
@@ -63,7 +82,7 @@ vnem is meant to improve the judgment of coding agents, not replace maintainer r
 From any project root:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/naellisim/vnem/main/public/install.tgz | tar -xz
+curl -fsSL https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install.tgz | tar -xz
 ```
 
 Until `vnem.ai` is live, the generated install command uses the GitHub-hosted archive. To generate artifacts for a different host later, run `VNEM_BASE_URL=https://vnem.ai npm run generate`.
@@ -72,6 +91,7 @@ In a clean project folder, this extracts:
 
 - `AGENTS.md`
 - `.vnem/AGENTS.md`
+- `.vnem/install-guide.md`
 - `.vnem/operating-protocol.md`
 - `.vnem/quality-contract.md`
 - `.vnem/coding-protocol.md`
@@ -87,6 +107,14 @@ In a clean project folder, this extracts:
 `AGENTS.md` points coding agents to `.vnem/AGENTS.md`, the full agent entrypoint, plus `.vnem/quality-contract.md`, `.vnem/coding-protocol.md`, and `.vnem/coding-playbooks.json` for implementation work and `.vnem/agent-workspace.md` for autonomous developer environment guidance. Once an agent has read it, the user should not need special `use vnem` prompts: vnem auto-activates for build, code, debug, review, optimization, research, benchmark, and stack/tool decision tasks.
 
 For existing repos with their own `AGENTS.md`, prefer the CLI installer below because it updates a managed vnem block instead of replacing the whole file.
+
+PowerShell users can avoid pipe behavior entirely:
+
+```powershell
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install.tgz" -OutFile "vnem-install.tgz"
+tar -xzf vnem-install.tgz
+Remove-Item vnem-install.tgz
+```
 
 ## Make A Repo vnem-Aware
 
@@ -120,18 +148,30 @@ From this repo:
 npm run mcp
 ```
 
-Example MCP client config:
+Generate an absolute-path MCP client config from your checkout:
+
+```bash
+node scripts/vnem-cli.mjs mcp-config
+node scripts/vnem-cli.mjs mcp-config --server-json
+```
+
+Example full MCP client config:
 
 ```json
 {
   "mcpServers": {
     "vnem": {
       "command": "node",
-      "args": ["/path/to/vnem/scripts/vnem-mcp-server.mjs"]
+      "args": ["/path/to/vnem/scripts/vnem-mcp-server.mjs"],
+      "env": {
+        "VNEM_ROOT": "/path/to/vnem"
+      }
     }
   }
 }
 ```
+
+For Claude Code, the server-object form from `node scripts/vnem-cli.mjs mcp-config --server-json` can be passed to `claude mcp add-json vnem '<json>'`. For generic MCP clients, use the full `mcpServers` object.
 
 Main tools:
 
@@ -152,6 +192,7 @@ Main resources:
 - `vnem://install/search-index`
 - `vnem://install/source-radar`
 - `vnem://api/index`
+- `vnem://install/install-guide`
 - `vnem://install/operating-protocol`
 - `vnem://install/quality-contract`
 - `vnem://install/coding-protocol`
@@ -206,6 +247,7 @@ The pack is guidance and search data. It does not run the tools it recommends.
 | `public/install/*` | Hosted read-only install-pack files. |
 | `public/install.tgz` | Tiny archive used by the one-line install command. |
 | `.vnem/` | Generated local pack for dogfooding this repo. |
+| `.vnem/install-guide.md` | Generated setup guide for archive install, managed repo install, MCP config, and verification. |
 | `landing/` | Static public landing page and blog bundle for the website. |
 | `dashboard/` | Vite/React source for the Hermes owner dashboard surface. |
 | `PRODUCT.md` | Product direction, public-site clarity goals, and non-regression bar. |

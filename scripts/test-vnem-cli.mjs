@@ -21,6 +21,7 @@ try {
 
   for (const fileName of [
     "AGENTS.md",
+    "install-guide.md",
     "operating-protocol.md",
     "quality-contract.md",
     "coding-protocol.md",
@@ -55,6 +56,7 @@ try {
   const noAgentsDir = path.join(tmpRoot, "no-agents-project");
   runCli(["install", noAgentsDir, "--no-agents"]);
   assert.equal(existsSync(path.join(noAgentsDir, ".vnem", "AGENTS.md")), true);
+  assert.equal(existsSync(path.join(noAgentsDir, ".vnem", "install-guide.md")), true);
   assert.equal(existsSync(path.join(noAgentsDir, "AGENTS.md")), false);
 
   const claudeDir = path.join(tmpRoot, "claude-project");
@@ -65,6 +67,18 @@ try {
   const skillTarget = path.join(tmpRoot, "skills", "vnem");
   runCli(["install-skill", skillTarget]);
   assert.equal(existsSync(path.join(skillTarget, "SKILL.md")), true);
+
+  const mcpConfig = runCli(["mcp-config"]);
+  const parsedMcpConfig = JSON.parse(mcpConfig.stdout);
+  assert.equal(parsedMcpConfig.mcpServers?.vnem?.command, "node");
+  assert.ok(parsedMcpConfig.mcpServers?.vnem?.args?.[0]?.endsWith("vnem-mcp-server.mjs"));
+  assert.equal(parsedMcpConfig.mcpServers?.vnem?.env?.VNEM_ROOT, rootDir);
+
+  const serverConfig = runCli(["mcp-config", "--server-json"]);
+  const parsedServerConfig = JSON.parse(serverConfig.stdout);
+  assert.equal(parsedServerConfig.command, "node");
+  assert.ok(parsedServerConfig.args?.[0]?.endsWith("vnem-mcp-server.mjs"));
+  assert.equal(parsedServerConfig.env?.VNEM_ROOT, rootDir);
 
   console.log("vnem CLI tests passed");
 } finally {
@@ -81,4 +95,5 @@ function runCli(args) {
     console.error(result.stderr);
   }
   assert.equal(result.status, 0, `vnem ${args.join(" ")} should succeed`);
+  return result;
 }

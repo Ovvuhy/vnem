@@ -12,6 +12,7 @@ You are reading a read-only vnem knowledge pack installed in this repository.
 
 ## Files To Read
 
+- `.vnem/install-guide.md`: setup guide for downloading the pack, refreshing an existing repo install, and connecting the read-only MCP server.
 - `.vnem/operating-protocol.md`: universal loop for sensing the repo, routing context, choosing small capabilities, constraining risk, applying the aesthetic perception gate, verifying, and reporting evidence.
 - `.vnem/quality-contract.md`: Holistic Excellence, Proactive Enhancement, Intelligent Trade-offs, and the Triple-Check Workflow for balancing performance, visuals, playability, accessibility, maintainability, and safety.
 - `.vnem/coding-protocol.md`: coding execution guide for apps, web apps, features, bug fixes, refactors, repo sensing, plan-first work, and verification loops.
@@ -93,6 +94,6 @@ Preserve the user's intent. Add only useful structure: goal, context, scope, con
 This pack was designed to be refreshed with a safe archive download only:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/naellisim/vnem/main/public/install.tgz | tar -xz
+curl -fsSL https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install.tgz | tar -xz
 ```
 

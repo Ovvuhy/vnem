@@ -128,6 +128,14 @@ npm install
 npm run install:project -- /path/to/project
 npm run doctor -- /path/to/project</code></pre>
           </div>
+          <div class="install-grid secondary-install">
+            <div>
+              <h2>Need MCP too?</h2>
+              <p>From the same checkout, generate an absolute-path config instead of hand-writing paths.</p>
+            </div>
+            <pre class="code-block"><code>node scripts/vnem-cli.mjs mcp-config
+node scripts/vnem-cli.mjs mcp-config --server-json</code></pre>
+          </div>
         </div>
       </section>
 
@@ -170,7 +178,10 @@ npm run doctor -- /path/to/project</code></pre>
   "mcpServers": {
     "vnem": {
       "command": "node",
-      "args": ["/path/to/vnem/scripts/vnem-mcp-server.mjs"]
+      "args": ["/path/to/vnem/scripts/vnem-mcp-server.mjs"],
+      "env": {
+        "VNEM_ROOT": "/path/to/vnem"
+      }
     }
   }
 }</code></pre>
@@ -186,6 +197,7 @@ npm run doctor -- /path/to/project</code></pre>
           <ul class="file-list">
             <li><code>AGENTS.md</code><span>root pointer that tells agents to read vnem automatically</span></li>
             <li><code>.vnem/AGENTS.md</code><span>how the agent should read and report</span></li>
+            <li><code>.vnem/install-guide.md</code><span>download, managed install, MCP config, and verification guide</span></li>
             <li><code>.vnem/operating-protocol.md</code><span>universal loop and task contract</span></li>
             <li><code>.vnem/quality-contract.md</code><span>holistic excellence, Triple-Check Workflow, and intelligent trade-offs</span></li>
             <li><code>.vnem/coding-protocol.md</code><span>repo sensing, implementation rules, and verification ladder</span></li>

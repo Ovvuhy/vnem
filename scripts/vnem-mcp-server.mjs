@@ -451,6 +451,15 @@ function registerResources(mcpServer) {
   );
   registerFileResource(
     mcpServer,
+    "vnem-install-guide",
+    "vnem://install/install-guide",
+    firstExisting(["public/install/install-guide.md", ".vnem/install-guide.md"]),
+    "vnem Install And MCP Guide",
+    "Generated setup guide for downloading the read-only pack, using the local installer, and connecting the stdio MCP server.",
+    "text/markdown"
+  );
+  registerFileResource(
+    mcpServer,
     "vnem-quality-contract",
     "vnem://install/quality-contract",
     firstExisting(["public/install/quality-contract.md", ".vnem/quality-contract.md"]),
@@ -829,6 +838,7 @@ function buildStatus() {
       intent_aliases: Object.keys(searchIndex.intent_aliases || {}).length,
       intent_routes: Object.keys(searchIndex.intent_routes || {}).length,
       quality_contract: Boolean(searchIndex.quality_contract),
+      install_guide: Boolean(searchIndex.install_guide),
       coding_playbooks: searchIndex.coding_playbooks?.playbooks?.length || 0,
       task_rubrics: searchIndex.task_rubrics?.length || 0,
       prompt_patterns: searchIndex.prompt_patterns?.length || 0,
@@ -855,6 +865,7 @@ function buildStatus() {
         "vnem://install/source-radar",
         "vnem://api/index",
         "vnem://install/operating-protocol",
+        "vnem://install/install-guide",
         "vnem://install/quality-contract",
         "vnem://install/coding-protocol",
         "vnem://install/coding-playbooks",
@@ -901,10 +912,10 @@ function buildOverview(audience) {
     },
     {
       name: "Install pack",
-      paths: ["public/install.tgz", "public/install/*", ".vnem/*"],
+      paths: ["public/install.tgz", "public/install/install-guide.md", "public/install/*", ".vnem/*"],
       purpose:
-        "Read-only project guidance files that make another repo vnem-aware through AGENTS.md and .vnem files.",
-      usable_via: ["npm run install:project -- <repo>", "npm run doctor -- <repo>"]
+        "Read-only project guidance files that make another repo vnem-aware through AGENTS.md and .vnem files, with setup guidance for safe archive install, managed repo install, and MCP connection.",
+      usable_via: ["vnem://install/install-guide", "npm run install:project -- <repo>", "npm run doctor -- <repo>", "npm run vnem -- mcp-config"]
     },
     {
       name: "MCP server",
@@ -922,10 +933,10 @@ function buildOverview(audience) {
     },
     {
       name: "Operating protocol and rubrics",
-      paths: ["public/install/operating-protocol.md", "public/install/quality-contract.md", "public/install/coding-protocol.md", "public/install/coding-playbooks.json", "public/install/task-rubrics.json"],
+      paths: ["public/install/install-guide.md", "public/install/operating-protocol.md", "public/install/quality-contract.md", "public/install/coding-protocol.md", "public/install/coding-playbooks.json", "public/install/task-rubrics.json"],
       purpose:
         "Compact task-contract and coding-execution layer for sensing the repo, enforcing holistic quality, selecting task-specific playbooks, planning edits, routing work, approval gates, verification, and final reporting.",
-      usable_via: ["vnem_route_intent", "vnem_recommend", "vnem_quality_gate", "vnem://install/quality-contract", "vnem://install/coding-protocol", "vnem://install/coding-playbooks", "vnem://install/task-rubrics"]
+      usable_via: ["vnem_route_intent", "vnem_recommend", "vnem_quality_gate", "vnem://install/install-guide", "vnem://install/quality-contract", "vnem://install/coding-protocol", "vnem://install/coding-playbooks", "vnem://install/task-rubrics"]
     },
     {
       name: "Visual/design guidance",
@@ -1786,6 +1797,7 @@ function formatStatus(status) {
     `- Registry entries: ${status.counts.registry_entries}`,
     `- Search documents: ${status.counts.search_documents}`,
     `- Intent routes: ${status.counts.intent_routes}`,
+    `- Install guide: ${status.counts.install_guide ? "loaded" : "missing"}`,
     `- Quality contract: ${status.counts.quality_contract ? "loaded" : "missing"}`,
     `- Source-radar entries: ${status.counts.source_radar_entries}`,
     `- Task rubrics: ${status.counts.task_rubrics}`,

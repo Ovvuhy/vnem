@@ -66,10 +66,15 @@ try {
   assert.ok(status.structuredContent?.counts?.registry_entries >= 200, "expected vnem_status registry count");
   assert.ok(status.structuredContent?.mcp?.tools?.includes("vnem_route_intent"), "expected vnem_status to list route tool");
   assert.ok(status.structuredContent?.mcp?.tools?.includes("vnem_quality_gate"), "expected vnem_status to list quality gate tool");
+  assert.equal(status.structuredContent?.counts?.install_guide, true, "expected vnem_status install guide count");
   assert.equal(status.structuredContent?.counts?.quality_contract, true, "expected vnem_status quality contract count");
   assert.ok(
     status.structuredContent?.mcp?.resources?.includes("vnem://install/coding-protocol"),
     "expected vnem_status to list coding protocol resource"
+  );
+  assert.ok(
+    status.structuredContent?.mcp?.resources?.includes("vnem://install/install-guide"),
+    "expected vnem_status to list install guide resource"
   );
   assert.ok(
     status.structuredContent?.mcp?.resources?.includes("vnem://install/quality-contract"),
@@ -330,6 +335,10 @@ try {
     "expected operating protocol resource"
   );
   assert.ok(
+    resources.resources.some((resource) => resource.uri === "vnem://install/install-guide"),
+    "expected install guide resource"
+  );
+  assert.ok(
     resources.resources.some((resource) => resource.uri === "vnem://install/quality-contract"),
     "expected quality contract resource"
   );
@@ -382,6 +391,13 @@ try {
     uri: "vnem://install/operating-protocol"
   });
   assert.ok(operatingProtocol.contents[0]?.text?.includes("Universal Loop"));
+
+  const installGuide = await client.readResource({
+    uri: "vnem://install/install-guide"
+  });
+  assert.ok(installGuide.contents[0]?.text?.includes("vnem Install And MCP Guide"));
+  assert.ok(installGuide.contents[0]?.text?.includes("mcp-config"));
+  assert.ok(installGuide.contents[0]?.text?.includes("vnem_status"));
 
   const qualityContract = await client.readResource({
     uri: "vnem://install/quality-contract"

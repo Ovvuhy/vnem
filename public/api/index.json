@@ -1,13 +1,13 @@
 {
-  "generated_at": "2026-05-29T14:18:20.946Z",
+  "generated_at": "2026-05-29T14:29:43.784Z",
   "schema_version": "1.0.0",
   "package_version": "1.0.1",
   "release_version": "1.0.1",
   "release_date": "2026-05-29",
   "entry_count": 228,
-  "install_command": "curl -fsSL https://raw.githubusercontent.com/naellisim/vnem/main/public/install.tgz | tar -xz",
+  "install_command": "curl -fsSL https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install.tgz | tar -xz",
   "install_archive": "/install.tgz",
-  "install_archive_url": "https://raw.githubusercontent.com/naellisim/vnem/main/public/install.tgz",
+  "install_archive_url": "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install.tgz",
   "trust_tiers": [
     "deprecated",
     "promising",
@@ -778,6 +778,40 @@
       "quality profiles",
       "progressive enhancement",
       "fallback path"
+    ],
+    "install vnem": [
+      "download vnem",
+      "setup vnem",
+      "install pack",
+      "curl install",
+      "repo install",
+      "managed agents",
+      "doctor"
+    ],
+    "download vnem": [
+      "install vnem",
+      "install archive",
+      "install.tgz",
+      "curl tar",
+      "powershell download",
+      "safe archive"
+    ],
+    "mcp setup": [
+      "vnem mcp",
+      "mcp config",
+      "mcp json",
+      "stdio server",
+      "claude mcp",
+      "codex mcp",
+      "connect mcp"
+    ],
+    "mcp config": [
+      "mcp setup",
+      "mcp json",
+      "stdio config",
+      "client config",
+      "vnem mcp-config",
+      "claude add-json"
     ],
     "game feel": [
       "aesthetic experience",
@@ -1740,6 +1774,110 @@
         "trade-off alternative",
         "domain preservation",
         "verification"
+      ]
+    },
+    "install vnem": {
+      "read_first": [
+        "install-guide:vnem-install-guide",
+        "operating-protocol:vnem-operating-loop",
+        "quality-contract:vnem-quality-contract",
+        "practice:codex-vnem-setup"
+      ],
+      "compare_options": [
+        "archive install into a project",
+        "local CLI managed install",
+        "Claude/Codex agent instruction pointer",
+        "MCP stdio server from checkout"
+      ],
+      "choose_by": [
+        "fewest manual steps",
+        "no destructive writes",
+        "existing AGENTS.md preservation",
+        "clear verification command",
+        "MCP client compatibility"
+      ],
+      "report": [
+        "install path chosen",
+        "command used",
+        "doctor result",
+        "MCP config if requested"
+      ]
+    },
+    "download vnem": {
+      "read_first": [
+        "install-guide:vnem-install-guide",
+        "operating-protocol:vnem-operating-loop"
+      ],
+      "compare_options": [
+        "curl archive",
+        "PowerShell archive download",
+        "local checkout CLI install"
+      ],
+      "choose_by": [
+        "platform shell",
+        "safe archive URL",
+        "no pipe-to-shell",
+        "clean extraction",
+        "refresh path"
+      ],
+      "report": [
+        "download command",
+        "installed files",
+        "verification command",
+        "remaining platform risk"
+      ]
+    },
+    "mcp setup": {
+      "read_first": [
+        "install-guide:vnem-install-guide",
+        "practice:codex-vnem-setup",
+        "practice:mcp-gateway-tool-routing",
+        "source:mcp-core-and-registry"
+      ],
+      "compare_options": [
+        "generic .mcp.json",
+        "Claude Code add-json",
+        "user-scoped MCP config",
+        "project-scoped MCP config"
+      ],
+      "choose_by": [
+        "local stdio support",
+        "path correctness",
+        "read-only safety",
+        "team sharing needs",
+        "client approval behavior"
+      ],
+      "report": [
+        "MCP config JSON",
+        "client command",
+        "verification with vnem_status",
+        "safety boundary"
+      ]
+    },
+    "mcp config": {
+      "read_first": [
+        "install-guide:vnem-install-guide",
+        "practice:codex-vnem-setup",
+        "source:mcp-core-and-registry"
+      ],
+      "compare_options": [
+        "full client config",
+        "single-server JSON",
+        "project .mcp.json",
+        "user/client settings"
+      ],
+      "choose_by": [
+        "client schema",
+        "absolute path",
+        "VNEM_ROOT env",
+        "stdio transport",
+        "read-only annotations"
+      ],
+      "report": [
+        "config format",
+        "server command",
+        "verification command",
+        "scope recommendation"
       ]
     },
     "aesthetic experience": {
@@ -3897,6 +4035,31 @@
       "https://developers.openai.com/api/docs/guides/agent-evals"
     ]
   },
+  "install_guide": {
+    "id": "vnem-install-guide",
+    "title": "vnem Install And MCP Guide",
+    "summary": "A compact setup guide for downloading the read-only vnem pack, installing it into an existing repo without overwriting local agent instructions, and connecting the local stdio MCP server with generated JSON config.",
+    "url_path": "/install/install-guide.md",
+    "resource_uri": "vnem://install/install-guide",
+    "tags": [
+      "install vnem",
+      "download vnem",
+      "install guide",
+      "mcp setup",
+      "mcp config",
+      "stdio server",
+      "mcp json",
+      "doctor",
+      "managed agents",
+      "safe archive"
+    ],
+    "source_urls": [
+      "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install.tgz",
+      "https://modelcontextprotocol.io/legacy/concepts/transports",
+      "https://docs.anthropic.com/en/docs/claude-code/mcp",
+      "https://docs.anthropic.com/en/docs/claude-code/sdk/sdk-mcp"
+    ]
+  },
   "coding_protocol": {
     "id": "vnem-coding-protocol",
     "title": "vnem Coding Protocol",
@@ -3938,7 +4101,7 @@
     ]
   },
   "coding_playbooks": {
-    "generated_at": "2026-05-29T14:18:20.946Z",
+    "generated_at": "2026-05-29T14:29:43.784Z",
     "schema_version": "1.0.0",
     "safety": {
       "mode": "read-only-coding-playbooks",
@@ -5535,7 +5698,7 @@
       ]
     }
   ],
-  "source_radar_url": "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/source-radar.json",
+  "source_radar_url": "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/source-radar.json",
   "decision_protocol": {
     "auto_use": true,
     "user_trigger_required": false,

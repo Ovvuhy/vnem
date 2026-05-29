@@ -11,7 +11,7 @@ const releaseVersion = packageVersion;
 const releaseDate = generatedDate;
 const installFolder = ".vnem";
 const installArchiveName = "install.tgz";
-const defaultInstallBaseUrl = "https://raw.githubusercontent.com/naellisim/vnem/main/public";
+const defaultInstallBaseUrl = "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public";
 const installBaseUrl = (process.env.VNEM_BASE_URL ?? defaultInstallBaseUrl).replace(/\/+$/, "");
 const installArchiveUrl = `${installBaseUrl}/${installArchiveName}`;
 const installCommand = `curl -fsSL ${installArchiveUrl} | tar -xz`;
@@ -39,6 +39,10 @@ const intentAliases = {
   "production ready": ["ship quality", "quality gate", "professional code", "performance", "visual polish", "accessibility", "maintainability", "verification"],
   "settings gui": ["quality profiles", "settings panel", "graphics settings", "performance mode", "high quality mode", "adaptive quality", "toggles"],
   "intelligent tradeoff": ["trade off", "performance conflict", "avoid degrading visuals", "settings gui", "quality profiles", "progressive enhancement", "fallback path"],
+  "install vnem": ["download vnem", "setup vnem", "install pack", "curl install", "repo install", "managed agents", "doctor"],
+  "download vnem": ["install vnem", "install archive", "install.tgz", "curl tar", "powershell download", "safe archive"],
+  "mcp setup": ["vnem mcp", "mcp config", "mcp json", "stdio server", "claude mcp", "codex mcp", "connect mcp"],
+  "mcp config": ["mcp setup", "mcp json", "stdio config", "client config", "vnem mcp-config", "claude add-json"],
   "game feel": ["aesthetic experience", "reward feedback", "juice", "sound design", "hit stop", "screen flash", "particles", "apple feedback", "input feel", "microinteractions"],
   "sound design": ["aesthetic experience", "audio", "web audio", "mute", "sfx", "sound effects", "game feel", "throttled audio", "pleasant tones"],
   "reward feedback": ["aesthetic experience", "score pulse", "screen flash", "particles", "apple", "reward", "dopamine", "glow follows action", "interaction anchored"],
@@ -168,6 +172,30 @@ const intentRoutes = {
     compare_options: ["optimize bottleneck", "add quality profiles", "progressive enhancement", "defer noncritical work", "explicit fallback with user control"],
     choose_by: ["constraint evidence", "preserved important domains", "user can choose quality/performance", "honest residual risk", "verification path"],
     report: ["constraint", "trade-off alternative", "domain preservation", "verification"]
+  },
+  "install vnem": {
+    read_first: ["install-guide:vnem-install-guide", "operating-protocol:vnem-operating-loop", "quality-contract:vnem-quality-contract", "practice:codex-vnem-setup"],
+    compare_options: ["archive install into a project", "local CLI managed install", "Claude/Codex agent instruction pointer", "MCP stdio server from checkout"],
+    choose_by: ["fewest manual steps", "no destructive writes", "existing AGENTS.md preservation", "clear verification command", "MCP client compatibility"],
+    report: ["install path chosen", "command used", "doctor result", "MCP config if requested"]
+  },
+  "download vnem": {
+    read_first: ["install-guide:vnem-install-guide", "operating-protocol:vnem-operating-loop"],
+    compare_options: ["curl archive", "PowerShell archive download", "local checkout CLI install"],
+    choose_by: ["platform shell", "safe archive URL", "no pipe-to-shell", "clean extraction", "refresh path"],
+    report: ["download command", "installed files", "verification command", "remaining platform risk"]
+  },
+  "mcp setup": {
+    read_first: ["install-guide:vnem-install-guide", "practice:codex-vnem-setup", "practice:mcp-gateway-tool-routing", "source:mcp-core-and-registry"],
+    compare_options: ["generic .mcp.json", "Claude Code add-json", "user-scoped MCP config", "project-scoped MCP config"],
+    choose_by: ["local stdio support", "path correctness", "read-only safety", "team sharing needs", "client approval behavior"],
+    report: ["MCP config JSON", "client command", "verification with vnem_status", "safety boundary"]
+  },
+  "mcp config": {
+    read_first: ["install-guide:vnem-install-guide", "practice:codex-vnem-setup", "source:mcp-core-and-registry"],
+    compare_options: ["full client config", "single-server JSON", "project .mcp.json", "user/client settings"],
+    choose_by: ["client schema", "absolute path", "VNEM_ROOT env", "stdio transport", "read-only annotations"],
+    report: ["config format", "server command", "verification command", "scope recommendation"]
   },
   "aesthetic experience": {
     read_first: ["practice:visual-experience", "visual-qa-protocol:vnem-visual-qa-protocol", "design-architecture:vnem-design-architecture", "practice:frontend", "practice:browser-games", "practice:evals"],
@@ -1335,6 +1363,33 @@ const qualityContract = {
     "Document any remaining trade-off plainly in the final report."
   ],
   source_urls: qualitySourceUrls
+};
+
+const installGuide = {
+  id: "vnem-install-guide",
+  title: "vnem Install And MCP Guide",
+  summary:
+    "A compact setup guide for downloading the read-only vnem pack, installing it into an existing repo without overwriting local agent instructions, and connecting the local stdio MCP server with generated JSON config.",
+  url_path: "/install/install-guide.md",
+  resource_uri: "vnem://install/install-guide",
+  tags: [
+    "install vnem",
+    "download vnem",
+    "install guide",
+    "mcp setup",
+    "mcp config",
+    "stdio server",
+    "mcp json",
+    "doctor",
+    "managed agents",
+    "safe archive"
+  ],
+  source_urls: [
+    installArchiveUrl,
+    "https://modelcontextprotocol.io/legacy/concepts/transports",
+    "https://docs.anthropic.com/en/docs/claude-code/mcp",
+    "https://docs.anthropic.com/en/docs/claude-code/sdk/sdk-mcp"
+  ]
 };
 
 const codingProtocol = {
@@ -3331,6 +3386,40 @@ function buildSearchDocuments(entries) {
     }
   ];
 
+  const installGuideDocs = [
+    {
+      id: `install-guide:${installGuide.id}`,
+      kind: "install-guide",
+      title: installGuide.title,
+      summary: installGuide.summary,
+      url_path: installGuide.url_path,
+      trust_tier: "verified",
+      type: "install-guide",
+      score: 23,
+      tags: installGuide.tags,
+      use_cases: [
+        "Download the read-only vnem pack into a clean project without package installation.",
+        "Use the local CLI installer when an existing AGENTS.md should be preserved.",
+        "Generate absolute-path MCP JSON for local stdio clients.",
+        "Verify installation with vnem doctor and MCP connection with vnem_status."
+      ],
+      best_for: [
+        "New users who need the fewest possible setup decisions.",
+        "Maintainers connecting vnem to Codex, Claude Code, or any MCP-compatible local client.",
+        "Agents that need a read-first setup path before recommending runtime tool changes."
+      ],
+      risk_flags: [],
+      source_urls: unique([installFileUrl("install-guide.md"), ...installGuide.source_urls]),
+      keywords: unique(textTokens([
+        installGuide.id,
+        installGuide.title,
+        installGuide.summary,
+        ...installGuide.tags,
+        "curl tar powershell archive install.tgz mcp config mcp-config stdio claude add-json codex agent doctor npm run mcp"
+      ].join(" "))).slice(0, 160)
+    }
+  ];
+
   const designArchitectureDocs = [
     {
       id: `design-architecture:${designArchitecture.id}`,
@@ -3500,7 +3589,7 @@ function buildSearchDocuments(entries) {
     ].join(" "))).slice(0, 180)
   }));
 
-  return [...qualityContractDocs, ...operatingDocs, ...codingProtocolDocs, ...codingPlaybookDocs, ...sourceRadarDocs, ...designArchitectureDocs, ...visualQaDocs, ...rubricDocs, ...promptDocs, ...practiceDocs, ...entryDocs].sort((a, b) => b.score - a.score || a.title.localeCompare(b.title));
+  return [...qualityContractDocs, ...installGuideDocs, ...operatingDocs, ...codingProtocolDocs, ...codingPlaybookDocs, ...sourceRadarDocs, ...designArchitectureDocs, ...visualQaDocs, ...rubricDocs, ...promptDocs, ...practiceDocs, ...entryDocs].sort((a, b) => b.score - a.score || a.title.localeCompare(b.title));
 }
 
 function buildInvertedIndex(documents) {
@@ -3646,6 +3735,113 @@ function qualityContractMarkdown() {
     "## Source URLs",
     "",
     ...qualityContract.source_urls.map((url) => `- ${url}`),
+    ""
+  ].join("\n");
+}
+
+function installGuideMarkdown() {
+  return [
+    "# vnem Install And MCP Guide",
+    "",
+    `Generated: ${generatedAt}`,
+    "",
+    installGuide.summary,
+    "",
+    "## Safety Boundary",
+    "",
+    "- The install pack is read-only guidance and generated search data.",
+    "- The archive install does not run package manager scripts, shell scripts, daemons, or MCP servers.",
+    "- The MCP server is opt-in, local, stdio-based, and read-only; it exposes vnem search, recommendation, resources, and quality gates.",
+    "- Review any client config before adding it to a shared project or user-wide MCP scope.",
+    "",
+    "## Fastest Pack Install",
+    "",
+    "Use this inside the project that should become vnem-aware:",
+    "",
+    "```bash",
+    installCommand,
+    "```",
+    "",
+    "This extracts `AGENTS.md` plus the `.vnem/` guidance pack. It is best for a clean repo or a repo where replacing/creating the root `AGENTS.md` is acceptable.",
+    "",
+    "PowerShell-safe archive download:",
+    "",
+    "```powershell",
+    `Invoke-WebRequest -Uri \"${installArchiveUrl}\" -OutFile \"vnem-install.tgz\"`,
+    "tar -xzf vnem-install.tgz",
+    "Remove-Item vnem-install.tgz",
+    "```",
+    "",
+    "## Existing Repo Install",
+    "",
+    "If the project already has an `AGENTS.md`, use the local CLI installer from a vnem checkout so it upserts a managed block instead of replacing the whole file:",
+    "",
+    "```bash",
+    "git clone https://github.com/Ovvuhy/vnem.git",
+    "cd vnem",
+    "npm install",
+    "npm run install:project -- /path/to/project",
+    "npm run doctor -- /path/to/project",
+    "```",
+    "",
+    "Claude-style projects can also receive a `CLAUDE.md` pointer:",
+    "",
+    "```bash",
+    "npm run install:project -- /path/to/project --claude",
+    "```",
+    "",
+    "## MCP Setup From A Checkout",
+    "",
+    "The MCP server requires a local checkout with dependencies installed:",
+    "",
+    "```bash",
+    "git clone https://github.com/Ovvuhy/vnem.git",
+    "cd vnem",
+    "npm install",
+    "npm run mcp",
+    "```",
+    "",
+    "For client config, generate absolute-path JSON from the checkout:",
+    "",
+    "```bash",
+    "node scripts/vnem-cli.mjs mcp-config",
+    "node scripts/vnem-cli.mjs mcp-config --server-json",
+    "```",
+    "",
+    "Generic `.mcp.json` shape:",
+    "",
+    "```json",
+    JSON.stringify({
+      mcpServers: {
+        vnem: {
+          command: "node",
+          args: ["/absolute/path/to/vnem/scripts/vnem-mcp-server.mjs"],
+          env: {
+            VNEM_ROOT: "/absolute/path/to/vnem"
+          }
+        }
+      }
+    }, null, 2),
+    "```",
+    "",
+    "Claude Code can add a single-server JSON object with `claude mcp add-json vnem '<json>'`. Other MCP clients usually accept either the full `mcpServers` object above or the single `vnem` server object printed by `--server-json`.",
+    "",
+    "## Verify",
+    "",
+    "- Pack install: run `npm run doctor -- /path/to/project` from the vnem checkout.",
+    "- MCP server: connect the client and call `vnem_status`, then `vnem_overview`, then `vnem_recommend` for a real coding task.",
+    "- Quality gate: for UI/game/app work, call `vnem_quality_gate` or check the `quality_gate` field returned by `vnem_recommend`.",
+    "",
+    "## Troubleshooting",
+    "",
+    "- If the archive command fails, download `install.tgz` directly from the HTTPS URL and extract it with `tar -xzf`.",
+    "- If an MCP client cannot start the server, use the absolute `node` path or verify Node.js 20+ is available to that client process.",
+    "- If paths contain spaces, keep JSON strings quoted and prefer the generated config over hand-written paths.",
+    "- If a project should share MCP config, commit only read-only config and avoid secrets in `.mcp.json`.",
+    "",
+    "## Source URLs",
+    "",
+    ...installGuide.source_urls.map((url) => `- ${url}`),
     ""
   ].join("\n");
 }
@@ -3993,6 +4189,7 @@ function agentsMarkdown() {
     "",
     "## Files To Read",
     "",
+    "- `.vnem/install-guide.md`: setup guide for downloading the pack, refreshing an existing repo install, and connecting the read-only MCP server.",
     "- `.vnem/operating-protocol.md`: universal loop for sensing the repo, routing context, choosing small capabilities, constraining risk, applying the aesthetic perception gate, verifying, and reporting evidence.",
     "- `.vnem/quality-contract.md`: Holistic Excellence, Proactive Enhancement, Intelligent Trade-offs, and the Triple-Check Workflow for balancing performance, visuals, playability, accessibility, maintainability, and safety.",
     "- `.vnem/coding-protocol.md`: coding execution guide for apps, web apps, features, bug fixes, refactors, repo sensing, plan-first work, and verification loops.",
@@ -4213,6 +4410,15 @@ function searchIndexJson(entries) {
       tradeoff_policy: qualityContract.tradeoff_policy,
       source_urls: qualityContract.source_urls
     },
+    install_guide: {
+      id: installGuide.id,
+      title: installGuide.title,
+      summary: installGuide.summary,
+      url_path: installGuide.url_path,
+      resource_uri: installGuide.resource_uri,
+      tags: installGuide.tags,
+      source_urls: installGuide.source_urls
+    },
     coding_protocol: {
       id: codingProtocol.id,
       title: codingProtocol.title,
@@ -4313,6 +4519,7 @@ const index = {
   intent_routes: intentRoutes,
   operating_protocol: operatingProtocol,
   quality_contract: searchIndex.quality_contract,
+  install_guide: searchIndex.install_guide,
   coding_protocol: searchIndex.coding_protocol,
   coding_playbooks: searchIndex.coding_playbooks,
   task_rubrics: taskRubrics,
@@ -4343,7 +4550,7 @@ const llmsTxt = [
   "",
   `Safe install command: ${installCommand}`,
   "",
-  "Installed files: .vnem/AGENTS.md, .vnem/operating-protocol.md, .vnem/quality-contract.md, .vnem/coding-protocol.md, .vnem/coding-playbooks.json, .vnem/design-architecture.md, .vnem/visual-qa-protocol.md, .vnem/task-rubrics.json, .vnem/search-index.json, .vnem/source-radar.json, .vnem/best-practices.md, .vnem/agent-workspace.md, .vnem/prompt-engineering.md, .vnem/prompt-patterns.json",
+  "Installed files: .vnem/AGENTS.md, .vnem/install-guide.md, .vnem/operating-protocol.md, .vnem/quality-contract.md, .vnem/coding-protocol.md, .vnem/coding-playbooks.json, .vnem/design-architecture.md, .vnem/visual-qa-protocol.md, .vnem/task-rubrics.json, .vnem/search-index.json, .vnem/source-radar.json, .vnem/best-practices.md, .vnem/agent-workspace.md, .vnem/prompt-engineering.md, .vnem/prompt-patterns.json",
   "Canonical API: /api/index.json",
   "Agent instructions: /install/AGENTS.md",
   "Full index: /llms-full.txt",
@@ -4394,6 +4601,7 @@ const llmsFull = [
 const bestPractices = bestPracticesMarkdown();
 const operatingProtocolMarkdownData = operatingProtocolMarkdown();
 const qualityContractMarkdownData = qualityContractMarkdown().trimEnd();
+const installGuideMarkdownData = installGuideMarkdown().trimEnd();
 const codingProtocolMarkdownData = codingProtocolMarkdown().trimEnd();
 const codingPlaybookData = codingPlaybooksJson();
 const designArchitectureMarkdownData = designArchitectureMarkdown().trimEnd();
@@ -4408,6 +4616,7 @@ const rootAgentInstructions = rootAgentsMarkdown();
 const archive = installArchive({
   "AGENTS.md": `${rootAgentInstructions}\n`,
   [`${installFolder}/AGENTS.md`]: `${agentInstructions}\n`,
+  [`${installFolder}/install-guide.md`]: `${installGuideMarkdownData}\n`,
   [`${installFolder}/operating-protocol.md`]: `${operatingProtocolMarkdownData}\n`,
   [`${installFolder}/quality-contract.md`]: `${qualityContractMarkdownData}\n`,
   [`${installFolder}/coding-protocol.md`]: `${codingProtocolMarkdownData}\n`,
@@ -4435,6 +4644,8 @@ await writeJson(path.join(ROOT, installFolder, "prompt-patterns.json"), promptPa
 await writeBytes(path.join(ROOT, "public", installArchiveName), archive);
 await writeText(path.join(ROOT, "public", "install", "AGENTS.md"), `${agentInstructions}\n`);
 await writeText(path.join(ROOT, installFolder, "AGENTS.md"), `${agentInstructions}\n`);
+await writeText(path.join(ROOT, "public", "install", "install-guide.md"), `${installGuideMarkdownData}\n`);
+await writeText(path.join(ROOT, installFolder, "install-guide.md"), `${installGuideMarkdownData}\n`);
 await writeText(path.join(ROOT, "public", "install", "operating-protocol.md"), `${operatingProtocolMarkdownData}\n`);
 await writeText(path.join(ROOT, installFolder, "operating-protocol.md"), `${operatingProtocolMarkdownData}\n`);
 await writeText(path.join(ROOT, "public", "install", "quality-contract.md"), `${qualityContractMarkdownData}\n`);

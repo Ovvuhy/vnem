@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-29T14:18:20.946Z",
+  "generated_at": "2026-05-29T14:29:43.784Z",
   "schema_version": "1.0.0",
   "package_version": "1.0.1",
   "release_version": "1.0.1",
@@ -261,6 +261,40 @@
       "quality profiles",
       "progressive enhancement",
       "fallback path"
+    ],
+    "install vnem": [
+      "download vnem",
+      "setup vnem",
+      "install pack",
+      "curl install",
+      "repo install",
+      "managed agents",
+      "doctor"
+    ],
+    "download vnem": [
+      "install vnem",
+      "install archive",
+      "install.tgz",
+      "curl tar",
+      "powershell download",
+      "safe archive"
+    ],
+    "mcp setup": [
+      "vnem mcp",
+      "mcp config",
+      "mcp json",
+      "stdio server",
+      "claude mcp",
+      "codex mcp",
+      "connect mcp"
+    ],
+    "mcp config": [
+      "mcp setup",
+      "mcp json",
+      "stdio config",
+      "client config",
+      "vnem mcp-config",
+      "claude add-json"
     ],
     "game feel": [
       "aesthetic experience",
@@ -1223,6 +1257,110 @@
         "trade-off alternative",
         "domain preservation",
         "verification"
+      ]
+    },
+    "install vnem": {
+      "read_first": [
+        "install-guide:vnem-install-guide",
+        "operating-protocol:vnem-operating-loop",
+        "quality-contract:vnem-quality-contract",
+        "practice:codex-vnem-setup"
+      ],
+      "compare_options": [
+        "archive install into a project",
+        "local CLI managed install",
+        "Claude/Codex agent instruction pointer",
+        "MCP stdio server from checkout"
+      ],
+      "choose_by": [
+        "fewest manual steps",
+        "no destructive writes",
+        "existing AGENTS.md preservation",
+        "clear verification command",
+        "MCP client compatibility"
+      ],
+      "report": [
+        "install path chosen",
+        "command used",
+        "doctor result",
+        "MCP config if requested"
+      ]
+    },
+    "download vnem": {
+      "read_first": [
+        "install-guide:vnem-install-guide",
+        "operating-protocol:vnem-operating-loop"
+      ],
+      "compare_options": [
+        "curl archive",
+        "PowerShell archive download",
+        "local checkout CLI install"
+      ],
+      "choose_by": [
+        "platform shell",
+        "safe archive URL",
+        "no pipe-to-shell",
+        "clean extraction",
+        "refresh path"
+      ],
+      "report": [
+        "download command",
+        "installed files",
+        "verification command",
+        "remaining platform risk"
+      ]
+    },
+    "mcp setup": {
+      "read_first": [
+        "install-guide:vnem-install-guide",
+        "practice:codex-vnem-setup",
+        "practice:mcp-gateway-tool-routing",
+        "source:mcp-core-and-registry"
+      ],
+      "compare_options": [
+        "generic .mcp.json",
+        "Claude Code add-json",
+        "user-scoped MCP config",
+        "project-scoped MCP config"
+      ],
+      "choose_by": [
+        "local stdio support",
+        "path correctness",
+        "read-only safety",
+        "team sharing needs",
+        "client approval behavior"
+      ],
+      "report": [
+        "MCP config JSON",
+        "client command",
+        "verification with vnem_status",
+        "safety boundary"
+      ]
+    },
+    "mcp config": {
+      "read_first": [
+        "install-guide:vnem-install-guide",
+        "practice:codex-vnem-setup",
+        "source:mcp-core-and-registry"
+      ],
+      "compare_options": [
+        "full client config",
+        "single-server JSON",
+        "project .mcp.json",
+        "user/client settings"
+      ],
+      "choose_by": [
+        "client schema",
+        "absolute path",
+        "VNEM_ROOT env",
+        "stdio transport",
+        "read-only annotations"
+      ],
+      "report": [
+        "config format",
+        "server command",
+        "verification command",
+        "scope recommendation"
       ]
     },
     "aesthetic experience": {
@@ -3380,6 +3518,31 @@
       "https://developers.openai.com/api/docs/guides/agent-evals"
     ]
   },
+  "install_guide": {
+    "id": "vnem-install-guide",
+    "title": "vnem Install And MCP Guide",
+    "summary": "A compact setup guide for downloading the read-only vnem pack, installing it into an existing repo without overwriting local agent instructions, and connecting the local stdio MCP server with generated JSON config.",
+    "url_path": "/install/install-guide.md",
+    "resource_uri": "vnem://install/install-guide",
+    "tags": [
+      "install vnem",
+      "download vnem",
+      "install guide",
+      "mcp setup",
+      "mcp config",
+      "stdio server",
+      "mcp json",
+      "doctor",
+      "managed agents",
+      "safe archive"
+    ],
+    "source_urls": [
+      "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install.tgz",
+      "https://modelcontextprotocol.io/legacy/concepts/transports",
+      "https://docs.anthropic.com/en/docs/claude-code/mcp",
+      "https://docs.anthropic.com/en/docs/claude-code/sdk/sdk-mcp"
+    ]
+  },
   "coding_protocol": {
     "id": "vnem-coding-protocol",
     "title": "vnem Coding Protocol",
@@ -3421,7 +3584,7 @@
     ]
   },
   "coding_playbooks": {
-    "generated_at": "2026-05-29T14:18:20.946Z",
+    "generated_at": "2026-05-29T14:29:43.784Z",
     "schema_version": "1.0.0",
     "safety": {
       "mode": "read-only-coding-playbooks",
@@ -5018,7 +5181,7 @@
       ]
     }
   ],
-  "source_radar_url": "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/source-radar.json",
+  "source_radar_url": "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/source-radar.json",
   "decision_protocol": {
     "auto_use": true,
     "user_trigger_required": false,
@@ -5128,7 +5291,7 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/quality-contract.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/quality-contract.md",
         "https://blog.modelcontextprotocol.io/posts/2025-11-03-using-server-instructions/",
         "https://modelcontextprotocol.io/specification/2025-11-25/schema",
         "https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/",
@@ -5369,7 +5532,7 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/best-practices.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/best-practices.md",
         "https://blog.modelcontextprotocol.io/posts/2025-11-03-using-server-instructions/",
         "https://modelcontextprotocol.io/specification/2025-11-25/schema",
         "https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/",
@@ -5512,6 +5675,92 @@
       ]
     },
     {
+      "id": "install-guide:vnem-install-guide",
+      "kind": "install-guide",
+      "title": "vnem Install And MCP Guide",
+      "summary": "A compact setup guide for downloading the read-only vnem pack, installing it into an existing repo without overwriting local agent instructions, and connecting the local stdio MCP server with generated JSON config.",
+      "url_path": "/install/install-guide.md",
+      "trust_tier": "verified",
+      "type": "install-guide",
+      "score": 23,
+      "tags": [
+        "install vnem",
+        "download vnem",
+        "install guide",
+        "mcp setup",
+        "mcp config",
+        "stdio server",
+        "mcp json",
+        "doctor",
+        "managed agents",
+        "safe archive"
+      ],
+      "use_cases": [
+        "Download the read-only vnem pack into a clean project without package installation.",
+        "Use the local CLI installer when an existing AGENTS.md should be preserved.",
+        "Generate absolute-path MCP JSON for local stdio clients.",
+        "Verify installation with vnem doctor and MCP connection with vnem_status."
+      ],
+      "best_for": [
+        "New users who need the fewest possible setup decisions.",
+        "Maintainers connecting vnem to Codex, Claude Code, or any MCP-compatible local client.",
+        "Agents that need a read-first setup path before recommending runtime tool changes."
+      ],
+      "risk_flags": [],
+      "source_urls": [
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/install-guide.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install.tgz",
+        "https://modelcontextprotocol.io/legacy/concepts/transports",
+        "https://docs.anthropic.com/en/docs/claude-code/mcp",
+        "https://docs.anthropic.com/en/docs/claude-code/sdk/sdk-mcp"
+      ],
+      "keywords": [
+        "vnem-install-guide",
+        "vnem",
+        "install",
+        "mcp",
+        "guide",
+        "compact",
+        "setup",
+        "downloading",
+        "read-only",
+        "pack",
+        "installing",
+        "it",
+        "an",
+        "existing",
+        "repo",
+        "without",
+        "overwriting",
+        "local",
+        "agent",
+        "instructions",
+        "connecting",
+        "stdio",
+        "server",
+        "generated",
+        "json",
+        "config.",
+        "download",
+        "config",
+        "doctor",
+        "managed",
+        "agents",
+        "safe",
+        "archive",
+        "curl",
+        "tar",
+        "powershell",
+        "install.tgz",
+        "mcp-config",
+        "claude",
+        "add-json",
+        "codex",
+        "npm",
+        "run"
+      ]
+    },
+    {
       "id": "practice:agentic-coding-execution",
       "kind": "best-practice",
       "title": "Agentic Coding Execution",
@@ -5569,7 +5818,7 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/best-practices.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/best-practices.md",
         "https://www.anthropic.com/engineering/claude-code-best-practices",
         "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
         "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
@@ -5793,7 +6042,7 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/coding-protocol.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/coding-protocol.md",
         "https://www.anthropic.com/engineering/claude-code-best-practices",
         "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
         "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
@@ -6036,7 +6285,7 @@
         "A breaking contract change is implied but not explicitly accepted."
       ],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/coding-playbooks.json",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/coding-playbooks.json",
         "https://www.anthropic.com/engineering/claude-code-best-practices",
         "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
         "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
@@ -6129,7 +6378,7 @@
         "Generated files or formatting-only churn dominate the diff."
       ],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/coding-playbooks.json",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/coding-playbooks.json",
         "https://www.anthropic.com/engineering/claude-code-best-practices",
         "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
         "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
@@ -6220,7 +6469,7 @@
         "The workaround would bypass safety, licensing, anti-cheat, DRM, or access controls."
       ],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/coding-playbooks.json",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/coding-playbooks.json",
         "https://www.anthropic.com/engineering/claude-code-best-practices",
         "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
         "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
@@ -6323,7 +6572,7 @@
         "The first slice reveals broad redesign or public API churn."
       ],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/coding-playbooks.json",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/coding-playbooks.json",
         "https://www.anthropic.com/engineering/claude-code-best-practices",
         "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
         "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
@@ -6418,7 +6667,7 @@
         "The plan cannot be divided into reviewable checkpoints."
       ],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/coding-playbooks.json",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/coding-playbooks.json",
         "https://www.anthropic.com/engineering/claude-code-best-practices",
         "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
         "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
@@ -6506,7 +6755,7 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/best-practices.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/best-practices.md",
         "https://modelcontextprotocol.io/docs/getting-started/intro",
         "https://modelcontextprotocol.io/specification/2025-11-25/basic/security_best_practices",
         "https://docs.lunar.dev/mcpx/architecture",
@@ -6651,7 +6900,7 @@
         "Rendered text overflows, controls overlap, or the first screen is still generic."
       ],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/coding-playbooks.json",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/coding-playbooks.json",
         "https://www.anthropic.com/engineering/claude-code-best-practices",
         "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
         "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
@@ -6748,7 +6997,7 @@
         "The requested review would require destructive execution."
       ],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/coding-playbooks.json",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/coding-playbooks.json",
         "https://www.anthropic.com/engineering/claude-code-best-practices",
         "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
         "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
@@ -6843,7 +7092,7 @@
         "The failure depends on private credentials, production data, or unavailable services."
       ],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/coding-playbooks.json",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/coding-playbooks.json",
         "https://www.anthropic.com/engineering/claude-code-best-practices",
         "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
         "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
@@ -6939,7 +7188,7 @@
         "The only available check would be flaky or unrelated to the acceptance criteria."
       ],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/coding-playbooks.json",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/coding-playbooks.json",
         "https://www.anthropic.com/engineering/claude-code-best-practices",
         "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
         "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
@@ -7028,7 +7277,7 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/best-practices.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/best-practices.md",
         "https://refactoring.com/",
         "https://martinfowler.com/bliki/OpportunisticRefactoring.html",
         "https://knip.dev/",
@@ -7195,7 +7444,7 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/best-practices.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/best-practices.md",
         "https://developer.mozilla.org/en-US/docs/Web/CSS",
         "https://developer.mozilla.org/en-US/docs/Web/CSS/grid",
         "https://developer.mozilla.org/en-US/docs/Web/CSS/clamp",
@@ -7399,7 +7648,7 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/design-architecture.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/design-architecture.md",
         "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Grid_layout",
         "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/repeat",
         "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/clamp",
@@ -7605,7 +7854,7 @@
         "Do not turn best-practice guidance into automatic package installs, config edits, or broad runtime permissions."
       ],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/source-radar.json",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/source-radar.json",
         "https://www.anthropic.com/engineering/claude-code-best-practices",
         "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
         "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
@@ -7776,7 +8025,7 @@
         "Actions that bypass repo review, approvals, or least privilege"
       ],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/source-radar.json",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/source-radar.json",
         "https://developers.openai.com/codex/guides/agents-md",
         "https://code.claude.com/docs/en/overview",
         "https://code.claude.com/docs/en/mcp",
@@ -7901,7 +8150,7 @@
         "Tool permissions, network access, secrets, and write capability"
       ],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/source-radar.json",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/source-radar.json",
         "https://modelcontextprotocol.io/docs/getting-started/intro",
         "https://modelcontextprotocol.io/llms.txt",
         "https://github.com/modelcontextprotocol/registry",
@@ -8019,8 +8268,8 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/visual-qa-protocol.md",
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/design-architecture.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/visual-qa-protocol.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/design-architecture.md",
         "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Grid_layout",
         "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/repeat",
         "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/clamp",
@@ -8265,7 +8514,7 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/best-practices.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/best-practices.md",
         "https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API",
         "https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame",
         "https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Optimizing_canvas",
@@ -8445,7 +8694,7 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/best-practices.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/best-practices.md",
         "https://developers.openai.com/codex/guides/agents-md",
         "https://docs.anthropic.com/en/docs/claude-code/memory",
         "https://github.com/Bhartendu-Kumar/rules_template"
@@ -8567,7 +8816,7 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/best-practices.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/best-practices.md",
         "https://developers.openai.com/codex/guides/agents-md",
         "https://platform.openai.com/docs/docs-mcp",
         "https://github.com/openai/codex"
@@ -8678,7 +8927,7 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/best-practices.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/best-practices.md",
         "https://docs.cursor.com/agent/overview",
         "https://docs.cline.bot/introduction/overview",
         "https://docs.anthropic.com/en/docs/claude-code/overview",
@@ -8800,7 +9049,7 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/best-practices.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/best-practices.md",
         "https://developers.openai.com/codex/guides/agents-md",
         "https://openai.github.io/openai-agents-python/",
         "https://code.claude.com/docs/en/overview",
@@ -8912,7 +9161,7 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/operating-protocol.md"
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/operating-protocol.md"
       ],
       "keywords": [
         "vnem",
@@ -9077,7 +9326,7 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/task-rubrics.json"
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/task-rubrics.json"
       ],
       "keywords": [
         "aesthetic",
@@ -9241,7 +9490,7 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/task-rubrics.json"
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/task-rubrics.json"
       ],
       "keywords": [
         "agent",
@@ -9374,7 +9623,7 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/task-rubrics.json"
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/task-rubrics.json"
       ],
       "keywords": [
         "agentic",
@@ -9526,7 +9775,7 @@
         "Package firewall decisions can break valid developer workflows and need override paths."
       ],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/source-radar.json",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/source-radar.json",
         "https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/",
         "https://modelcontextprotocol.io/specification/2025-06-18/schema",
         "https://ts.sdk.modelcontextprotocol.io/variables/types.ToolAnnotationsSchema.html",
@@ -9662,7 +9911,7 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/task-rubrics.json"
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/task-rubrics.json"
       ],
       "keywords": [
         "backend",
@@ -9767,7 +10016,7 @@
         "Stateful sessions and paid browser infrastructure"
       ],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/source-radar.json",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/source-radar.json",
         "https://github.com/microsoft/playwright-mcp",
         "https://docs.browserbase.com/integrations/mcp/introduction"
       ],
@@ -9872,7 +10121,7 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/task-rubrics.json"
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/task-rubrics.json"
       ],
       "keywords": [
         "data",
@@ -9973,7 +10222,7 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/task-rubrics.json"
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/task-rubrics.json"
       ],
       "keywords": [
         "docs",
@@ -10076,7 +10325,7 @@
         "Copied upstream content that exceeds fair-use or license boundaries"
       ],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/source-radar.json",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/source-radar.json",
         "https://llmstxt.org/",
         "https://github.com/upstash/context7",
         "https://docs.firecrawl.dev/mcp-server"
@@ -10181,7 +10430,7 @@
         "Telemetry or traces containing secrets or private code"
       ],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/source-radar.json",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/source-radar.json",
         "https://inspect.aisi.org.uk/",
         "https://www.promptfoo.dev/docs/intro/",
         "https://docs.ragas.io/",
@@ -10305,7 +10554,7 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/task-rubrics.json"
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/task-rubrics.json"
       ],
       "keywords": [
         "frontend",
@@ -10440,7 +10689,7 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/task-rubrics.json"
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/task-rubrics.json"
       ],
       "keywords": [
         "interactive",
@@ -10597,7 +10846,7 @@
         "Prompt injection through fetched external content"
       ],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/source-radar.json",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/source-radar.json",
         "https://github.com/github/github-mcp-server",
         "https://supabase.com/docs/guides/ai-tools/mcp",
         "https://mcp.sentry.dev/",
@@ -10719,7 +10968,7 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/task-rubrics.json"
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/task-rubrics.json"
       ],
       "keywords": [
         "refactor",
@@ -10840,7 +11089,7 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/best-practices.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/best-practices.md",
         "https://modelcontextprotocol.io/docs/getting-started/intro",
         "https://github.com/modelcontextprotocol/registry",
         "https://llmstxt.org/",
@@ -10993,7 +11242,7 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/task-rubrics.json"
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/task-rubrics.json"
       ],
       "keywords": [
         "security",
@@ -11114,7 +11363,7 @@
         "Unsourced claims about exact design constants or benchmark improvements"
       ],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/source-radar.json",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/source-radar.json",
         "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Grid_layout",
         "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/repeat",
         "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/clamp",
@@ -11282,7 +11531,7 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/best-practices.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/best-practices.md",
         "https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/",
         "https://modelcontextprotocol.io/specification/2025-06-18/schema",
         "https://ts.sdk.modelcontextprotocol.io/variables/types.ToolAnnotationsSchema.html",
@@ -11442,7 +11691,7 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/best-practices.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/best-practices.md",
         "https://modelcontextprotocol.io/docs/getting-started/intro",
         "https://www.anthropic.com/engineering/building-effective-agents"
       ],
@@ -11621,7 +11870,7 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/best-practices.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/best-practices.md",
         "https://www.anthropic.com/engineering/building-effective-agents"
       ],
       "keywords": [
@@ -11697,7 +11946,7 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/best-practices.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/best-practices.md",
         "https://github.com/openai/codex",
         "https://docs.anthropic.com/en/docs/claude-code/overview"
       ],
@@ -11886,7 +12135,7 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/best-practices.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/best-practices.md",
         "https://github.com/openai/codex",
         "https://docs.anthropic.com/en/docs/claude-code/overview",
         "https://docs.github.com/en/copilot/concepts/about-copilot-coding-agent",
@@ -11987,7 +12236,7 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/best-practices.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/best-practices.md",
         "https://docs.anthropic.com/en/docs/claude-code/memory",
         "https://docs.anthropic.com/en/docs/claude-code/sub-agents",
         "https://docs.mem0.ai/",
@@ -12189,7 +12438,7 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/best-practices.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/best-practices.md",
         "https://docs.anthropic.com/en/docs/claude-code/memory",
         "https://docs.mem0.ai/",
         "https://docs.letta.com/"
@@ -12264,7 +12513,7 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/best-practices.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/best-practices.md",
         "https://docs.langfuse.com/",
         "https://docs.arize.com/phoenix",
         "https://docs.sentry.io/product/sentry-mcp/"
@@ -12338,7 +12587,7 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/best-practices.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/best-practices.md",
         "https://inspect.aisi.org.uk/",
         "https://www.promptfoo.dev/docs/intro/",
         "https://docs.ragas.io/"
@@ -12424,7 +12673,7 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/best-practices.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/best-practices.md",
         "https://www.anthropic.com/engineering/building-effective-agents"
       ],
       "keywords": [
@@ -12634,7 +12883,7 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/best-practices.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/best-practices.md",
         "https://docs.langchain.com/oss/python/langgraph/overview",
         "https://openai.github.io/openai-agents-python/",
         "https://microsoft.github.io/autogen/stable/"
@@ -12947,7 +13196,7 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/best-practices.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/best-practices.md",
         "https://modelcontextprotocol.io/docs/getting-started/intro",
         "https://github.com/microsoft/playwright-mcp",
         "https://github.com/upstash/context7",
@@ -13157,7 +13406,7 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/best-practices.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/best-practices.md",
         "https://docs.smith.langchain.com/",
         "https://docs.arize.com/phoenix",
         "https://docs.langfuse.com/",
@@ -13358,7 +13607,7 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/best-practices.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/best-practices.md",
         "https://docs.stripe.com/agents"
       ],
       "keywords": [
@@ -13434,7 +13683,7 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/best-practices.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/best-practices.md",
         "https://developers.openai.com/api/docs/guides/prompt-engineering",
         "https://developers.openai.com/api/docs/guides/prompt-optimizer",
         "https://developers.openai.com/codex/guides/agents-md"
@@ -13632,7 +13881,7 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/best-practices.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/best-practices.md",
         "https://docs.llamaindex.ai/en/stable/use_cases/agents/",
         "https://docs.langchain.com/oss/python/langgraph/overview"
       ],
@@ -13712,7 +13961,7 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/best-practices.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/best-practices.md",
         "https://modelcontextprotocol.io/docs/getting-started/intro",
         "https://www.anthropic.com/engineering/building-effective-agents"
       ],
@@ -13910,7 +14159,7 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/best-practices.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/best-practices.md",
         "https://docs.anthropic.com/en/docs/claude-code/sub-agents",
         "https://www.anthropic.com/engineering/built-multi-agent-research-system",
         "https://openai.github.io/openai-agents-python/",
@@ -22030,8 +22279,8 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/prompt-engineering.md",
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/prompt-patterns.json"
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/prompt-engineering.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/prompt-patterns.json"
       ],
       "keywords": [
         "agent",
@@ -22149,8 +22398,8 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/prompt-engineering.md",
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/prompt-patterns.json"
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/prompt-engineering.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/prompt-patterns.json"
       ],
       "keywords": [
         "agentic",
@@ -26755,8 +27004,8 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/prompt-engineering.md",
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/prompt-patterns.json"
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/prompt-engineering.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/prompt-patterns.json"
       ],
       "keywords": [
         "prompt",
@@ -26840,8 +27089,8 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/prompt-engineering.md",
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/prompt-patterns.json"
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/prompt-engineering.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/prompt-patterns.json"
       ],
       "keywords": [
         "simplification",
@@ -26990,8 +27239,8 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/prompt-engineering.md",
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/prompt-patterns.json"
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/prompt-engineering.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/prompt-patterns.json"
       ],
       "keywords": [
         "codex",
@@ -27636,8 +27885,8 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/prompt-engineering.md",
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/prompt-patterns.json"
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/prompt-engineering.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/prompt-patterns.json"
       ],
       "keywords": [
         "debugging",
@@ -28019,8 +28268,8 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/prompt-engineering.md",
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/prompt-patterns.json"
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/prompt-engineering.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/prompt-patterns.json"
       ],
       "keywords": [
         "eval",
@@ -28186,8 +28435,8 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/prompt-engineering.md",
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/prompt-patterns.json"
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/prompt-engineering.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/prompt-patterns.json"
       ],
       "keywords": [
         "frontend",
@@ -28329,8 +28578,8 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/prompt-engineering.md",
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/prompt-patterns.json"
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/prompt-engineering.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/prompt-patterns.json"
       ],
       "keywords": [
         "general",
@@ -29795,8 +30044,8 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/prompt-engineering.md",
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/prompt-patterns.json"
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/prompt-engineering.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/prompt-patterns.json"
       ],
       "keywords": [
         "mcp",
@@ -29888,8 +30137,8 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/prompt-engineering.md",
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/prompt-patterns.json"
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/prompt-engineering.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/prompt-patterns.json"
       ],
       "keywords": [
         "mcp",
@@ -30070,8 +30319,8 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/prompt-engineering.md",
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/prompt-patterns.json"
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/prompt-engineering.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/prompt-patterns.json"
       ],
       "keywords": [
         "memory",
@@ -30172,8 +30421,8 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/prompt-engineering.md",
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/prompt-patterns.json"
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/prompt-engineering.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/prompt-patterns.json"
       ],
       "keywords": [
         "memory",
@@ -31478,8 +31727,8 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/prompt-engineering.md",
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/prompt-patterns.json"
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/prompt-engineering.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/prompt-patterns.json"
       ],
       "keywords": [
         "research",
@@ -31559,7 +31808,7 @@
         "Remote OAuth and external service permissions"
       ],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/source-radar.json",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/source-radar.json",
         "https://docs.docker.com/ai/mcp-catalog-and-toolkit/catalog/",
         "https://docs.docker.com/ai/mcp-catalog-and-toolkit/toolkit/"
       ],
@@ -31764,8 +32013,8 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/prompt-engineering.md",
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/prompt-patterns.json"
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/prompt-engineering.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/prompt-patterns.json"
       ],
       "keywords": [
         "intake",
@@ -31880,8 +32129,8 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/prompt-engineering.md",
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/prompt-patterns.json"
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/prompt-engineering.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/prompt-patterns.json"
       ],
       "keywords": [
         "subagent",
@@ -32069,8 +32318,8 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/prompt-engineering.md",
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/prompt-patterns.json"
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/prompt-engineering.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/prompt-patterns.json"
       ],
       "keywords": [
         "visual",
@@ -32225,8 +32474,8 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/prompt-engineering.md",
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/prompt-patterns.json"
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/prompt-engineering.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/prompt-patterns.json"
       ],
       "keywords": [
         "visual",
@@ -32374,8 +32623,8 @@
       ],
       "risk_flags": [],
       "source_urls": [
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/prompt-engineering.md",
-        "https://raw.githubusercontent.com/naellisim/vnem/main/public/install/prompt-patterns.json"
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/prompt-engineering.md",
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/prompt-patterns.json"
       ],
       "keywords": [
         "zero-trust",
@@ -41986,6 +42235,9 @@
       "entry:ast-grep",
       "entry:clude"
     ],
+    "add-json": [
+      "install-guide:vnem-install-guide"
+    ],
     "adding": [
       "source:mcp-core-and-registry",
       "visual-qa-protocol:vnem-visual-qa-protocol",
@@ -42110,6 +42362,7 @@
       "entry:agency-lona-trading"
     ],
     "agent": [
+      "install-guide:vnem-install-guide",
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
       "coding-playbook:failure-recovery",
@@ -42641,6 +42894,7 @@
     "agents": [
       "quality-contract:vnem-quality-contract",
       "practice:holistic-excellence-intelligent-tradeoffs",
+      "install-guide:vnem-install-guide",
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
       "practice:mcp-gateway-tool-routing",
@@ -43668,6 +43922,7 @@
     "an": [
       "quality-contract:vnem-quality-contract",
       "practice:holistic-excellence-intelligent-tradeoffs",
+      "install-guide:vnem-install-guide",
       "coding-protocol:vnem-coding-protocol",
       "coding-playbook:review-risk-scan",
       "coding-playbook:test-first-evidence",
@@ -44341,6 +44596,7 @@
       "entry:letta"
     ],
     "archive": [
+      "install-guide:vnem-install-guide",
       "entry:ugrep"
     ],
     "archived": [
@@ -47548,6 +47804,7 @@
       "coding-playbook:failure-recovery"
     ],
     "claude": [
+      "install-guide:vnem-install-guide",
       "source:coding-agent-clients",
       "practice:persistent-memory-context-files",
       "practice:ide-agent-selection",
@@ -47965,6 +48222,7 @@
       "entry:ast-grep"
     ],
     "codex": [
+      "install-guide:vnem-install-guide",
       "source:coding-agent-clients",
       "practice:codex-vnem-setup",
       "practice:ide-agent-selection",
@@ -48217,6 +48475,7 @@
       "entry:mcp-crawl4ai-rag"
     ],
     "compact": [
+      "install-guide:vnem-install-guide",
       "visual-qa-protocol:vnem-visual-qa-protocol",
       "task-rubric:docs_prompt",
       "practice:research-source-intake",
@@ -48544,6 +48803,7 @@
       "practice:search"
     ],
     "config": [
+      "install-guide:vnem-install-guide",
       "practice:agentic-coding-execution",
       "source:agentic-coding-best-practices",
       "source:coding-agent-clients",
@@ -48555,6 +48815,9 @@
       "prompt-pattern:agent-workspace-architecture",
       "prompt-pattern:agentic-coding-task",
       "prompt-pattern:zero-trust-gateway-roadmap"
+    ],
+    "config.": [
+      "install-guide:vnem-install-guide"
     ],
     "configs": [
       "practice:mcp-gateway-tool-routing",
@@ -48613,6 +48876,7 @@
       "entry:roo-code"
     ],
     "connecting": [
+      "install-guide:vnem-install-guide",
       "task-rubric:data_memory",
       "entry:model-context-protocol"
     ],
@@ -49199,6 +49463,9 @@
       "entry:rules-template-memory-bank",
       "entry:mcp-crawl4ai-rag",
       "entry:openai-swarm"
+    ],
+    "curl": [
+      "install-guide:vnem-install-guide"
     ],
     "current": [
       "practice:code-simplification",
@@ -51029,6 +51296,9 @@
     "docs.": [
       "entry:context7-mcp"
     ],
+    "doctor": [
+      "install-guide:vnem-install-guide"
+    ],
     "document": [
       "practice:research-source-intake",
       "entry:codex-agents-md",
@@ -51129,7 +51399,11 @@
       "entry:ai-imboard-dossier"
     ],
     "download": [
+      "install-guide:vnem-install-guide",
       "entry:codebase-memory-mcp"
+    ],
+    "downloading": [
+      "install-guide:vnem-install-guide"
     ],
     "draft": [
       "source:ui-architecture-sources"
@@ -51844,6 +52118,7 @@
       "design-architecture:vnem-design-architecture"
     ],
     "existing": [
+      "install-guide:vnem-install-guide",
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
       "practice:code-simplification",
@@ -53382,6 +53657,7 @@
       "entry:jscpd"
     ],
     "generated": [
+      "install-guide:vnem-install-guide",
       "practice:codex-vnem-setup",
       "source:documentation-ingestion",
       "practice:backend",
@@ -53739,6 +54015,7 @@
       "entry:claude-code-memory"
     ],
     "guide": [
+      "install-guide:vnem-install-guide",
       "entry:anthropic-building-effective-agents",
       "entry:openai-prompt-engineering-guide",
       "entry:cursor-agent"
@@ -55151,6 +55428,7 @@
       "entry:custom-modes-roo-code"
     ],
     "install": [
+      "install-guide:vnem-install-guide",
       "source:coding-agent-clients",
       "practice:research-source-intake",
       "practice:zero-trust-agent-gateway",
@@ -55388,6 +55666,9 @@
       "entry:kaimo",
       "entry:openai-swarm"
     ],
+    "install.tgz": [
+      "install-guide:vnem-install-guide"
+    ],
     "install/runtime": [
       "task-rubric:agent_tooling"
     ],
@@ -55400,6 +55681,7 @@
       "practice:zero-trust-agent-gateway"
     ],
     "installing": [
+      "install-guide:vnem-install-guide",
       "source:mcp-core-and-registry",
       "practice:codex-vnem-setup",
       "task-rubric:agent_tooling",
@@ -55454,6 +55736,7 @@
       "source:coding-agent-clients"
     ],
     "instructions": [
+      "install-guide:vnem-install-guide",
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
       "source:agentic-coding-best-practices",
@@ -55941,6 +56224,7 @@
     ],
     "it": [
       "quality-contract:vnem-quality-contract",
+      "install-guide:vnem-install-guide",
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
       "practice:visual-experience",
@@ -56020,6 +56304,7 @@
       "entry:knip"
     ],
     "json": [
+      "install-guide:vnem-install-guide",
       "practice:zero-trust-agent-gateway"
     ],
     "json-ld.": [
@@ -57128,6 +57413,7 @@
       "entry:ai-bankee-inferventis-mcp"
     ],
     "local": [
+      "install-guide:vnem-install-guide",
       "practice:agentic-coding-execution",
       "coding-playbook:feature-slice",
       "practice:code-simplification",
@@ -57622,6 +57908,7 @@
       "entry:supabase-mcp"
     ],
     "managed": [
+      "install-guide:vnem-install-guide",
       "entry:microsoft-mcp-gateway",
       "entry:browserbase-mcp"
     ],
@@ -57876,6 +58163,7 @@
       "entry:knip"
     ],
     "mcp": [
+      "install-guide:vnem-install-guide",
       "practice:mcp-gateway-tool-routing",
       "source:agentic-coding-best-practices",
       "source:coding-agent-clients",
@@ -58075,6 +58363,9 @@
     "mcp-compatible": [
       "entry:browserbase-mcp",
       "entry:clude"
+    ],
+    "mcp-config": [
+      "install-guide:vnem-install-guide"
     ],
     "mcp-core-and-registry": [
       "source:mcp-core-and-registry"
@@ -59492,6 +59783,7 @@
       "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "npm": [
+      "install-guide:vnem-install-guide",
       "entry:matter-js",
       "entry:babylon-js",
       "entry:excalibur-js",
@@ -60619,6 +60911,9 @@
     "overviews": [
       "entry:ai-nudg3-brand-intelligence"
     ],
+    "overwriting": [
+      "install-guide:vnem-install-guide"
+    ],
     "owned": [
       "practice:subagents-and-multi-agent",
       "prompt-pattern:subagent-delegation"
@@ -60635,6 +60930,7 @@
       "practice:deployment"
     ],
     "pack": [
+      "install-guide:vnem-install-guide",
       "source:coding-agent-clients",
       "practice:codex-vnem-setup",
       "practice:zero-trust-agent-gateway",
@@ -61635,6 +61931,9 @@
       "entry:ai-com-mcp-strava",
       "entry:ai-com-mcp-petstore",
       "entry:ai-com-mcp-linkedin"
+    ],
+    "powershell": [
+      "install-guide:vnem-install-guide"
     ],
     "pr": [
       "coding-playbook:review-risk-scan",
@@ -62830,6 +63129,7 @@
     ],
     "read-only": [
       "quality-contract:vnem-quality-contract",
+      "install-guide:vnem-install-guide",
       "coding-protocol:vnem-coding-protocol",
       "practice:mcp-gateway-tool-routing",
       "practice:codex-vnem-setup",
@@ -63351,6 +63651,7 @@
       "practice:human-approval-and-durability"
     ],
     "repo": [
+      "install-guide:vnem-install-guide",
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
       "coding-playbook:failure-recovery",
@@ -64593,6 +64894,7 @@
       "entry:claude-code-memory"
     ],
     "run": [
+      "install-guide:vnem-install-guide",
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
       "coding-playbook:failure-recovery",
@@ -64691,6 +64993,7 @@
       "prompt-pattern:codex-implementation"
     ],
     "safe": [
+      "install-guide:vnem-install-guide",
       "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:qdrant-mcp-server"
     ],
@@ -65488,6 +65791,7 @@
       "entry:letta"
     ],
     "server": [
+      "install-guide:vnem-install-guide",
       "coding-playbook:api-data-contract",
       "practice:mcp-gateway-tool-routing",
       "source:coding-agent-clients",
@@ -65761,6 +66065,7 @@
       "visual-qa-protocol:vnem-visual-qa-protocol"
     ],
     "setup": [
+      "install-guide:vnem-install-guide",
       "practice:codex-vnem-setup",
       "entry:ac-tandem-docs-mcp",
       "entry:opentabs"
@@ -66492,6 +66797,7 @@
       "source:ui-architecture-sources"
     ],
     "stdio": [
+      "install-guide:vnem-install-guide",
       "entry:qdrant-mcp-server"
     ],
     "steer": [
@@ -67096,6 +67402,9 @@
     ],
     "tandem": [
       "entry:ac-tandem-docs-mcp"
+    ],
+    "tar": [
+      "install-guide:vnem-install-guide"
     ],
     "target": [
       "practice:agentic-coding-execution",
@@ -69474,6 +69783,7 @@
     "vnem": [
       "quality-contract:vnem-quality-contract",
       "practice:holistic-excellence-intelligent-tradeoffs",
+      "install-guide:vnem-install-guide",
       "coding-protocol:vnem-coding-protocol",
       "design-architecture:vnem-design-architecture",
       "source:agentic-coding-best-practices",
@@ -69511,6 +69821,9 @@
     "vnem-design-architecture": [
       "coding-playbook:web-app-rendered-quality",
       "design-architecture:vnem-design-architecture"
+    ],
+    "vnem-install-guide": [
+      "install-guide:vnem-install-guide"
     ],
     "vnem-mcp": [
       "entry:vnem-mcp"
@@ -70219,6 +70532,7 @@
       "practice:visual-experience"
     ],
     "without": [
+      "install-guide:vnem-install-guide",
       "design-architecture:vnem-design-architecture",
       "source:agentic-coding-best-practices",
       "visual-qa-protocol:vnem-visual-qa-protocol",
