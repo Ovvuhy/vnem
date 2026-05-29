@@ -1,0 +1,313 @@
+{
+  "generated_at": "2026-05-29T07:30:00.000Z",
+  "mode": "brain-hourly",
+  "lookback_days": 2,
+  "source_routes": [
+    "github-search",
+    "github-releases",
+    "npm-search",
+    "hacker-news",
+    "mcp-registry"
+  ],
+  "candidates": [
+    {
+      "source_route": "github-releases",
+      "name": "NousResearch/hermes-agent",
+      "title": "hermes-agent: Hermes Agent v0.15.1 (2026.5.29)",
+      "description": "The agent that grows with you. Patch release published 2026-05-29.",
+      "repo_url": "https://github.com/NousResearch/hermes-agent",
+      "homepage_url": "https://hermes-agent.nousresearch.com",
+      "source_url": "https://github.com/NousResearch/hermes-agent/releases/tag/v2026.5.29",
+      "source_urls": [
+        "https://github.com/NousResearch/hermes-agent/releases/tag/v2026.5.29",
+        "https://github.com/NousResearch/hermes-agent"
+      ],
+      "signal_summary": "New release v0.15.1 (2026.5.29), up from v0.14.0 (2026.5.16). 171896 stars, 28857 forks, MIT license. Pushed 2026-05-29.",
+      "why_builders_should_care": "The reference agent framework this very registry runs on. New release cadence matters for builders tracking agent infra.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "sensitive-permissions",
+        "binary-download",
+        "binary-first"
+      ],
+      "recommended_action": "review",
+      "allow_registry_proposal": false,
+      "metrics": {
+        "stars": 171896,
+        "forks": 28857,
+        "open_issues": 14830,
+        "language": "Python",
+        "license": "MIT",
+        "release_tag": "v2026.5.29",
+        "release_published_at": "2026-05-29T01:12:15Z"
+      },
+      "repository_review": {
+        "verdict": "needs-review",
+        "risk_score": 36,
+        "trust_score": 64,
+        "flags": ["binary-download", "binary-first"],
+        "reasons": ["README or release text tells users to download/run an executable or installer.", "Project positioning emphasizes installer download over inspectable source."],
+        "reviewed_at": "2026-05-29T07:30:00.000Z"
+      }
+    },
+    {
+      "source_route": "github-releases",
+      "name": "anthropics/claude-code",
+      "title": "claude-code: v2.1.156",
+      "description": "Claude Code is an agentic coding tool that lives in your terminal, understands your codebase, and helps you code faster.",
+      "repo_url": "https://github.com/anthropics/claude-code",
+      "homepage_url": "https://code.claude.com/docs/en/overview",
+      "source_url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.156",
+      "source_urls": [
+        "https://github.com/anthropics/claude-code/releases/tag/v2.1.156",
+        "https://github.com/anthropics/claude-code"
+      ],
+      "signal_summary": "New release v2.1.156, up from v2.1.153. Published 2026-05-29. 127109+ stars.",
+      "why_builders_should_care": "Core coding agent tool. Release cadence and changelog relevant for builders choosing agent stacks.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": ["license-not-asserted", "sensitive-permissions"],
+      "recommended_action": "review",
+      "allow_registry_proposal": false,
+      "metrics": {
+        "stars": 127109,
+        "language": "Python",
+        "release_tag": "v2.1.156",
+        "release_published_at": "2026-05-29"
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "the-open-agent/openagent",
+      "title": "openagent",
+      "description": "Next-generation personal AI assistant powered by LLM, RAG and agent loops. Supports computer-use, browser-use and coding agent.",
+      "repo_url": "https://github.com/the-open-agent/openagent",
+      "homepage_url": "https://www.openagentai.org/",
+      "source_url": "https://github.com/the-open-agent/openagent",
+      "source_urls": [
+        "https://github.com/the-open-agent/openagent",
+        "https://www.openagentai.org/"
+      ],
+      "signal_summary": "Pushed 2026-05-29, 5064 stars, 579 forks, Apache-2.0. Go-based agent framework with MCP topics.",
+      "why_builders_should_care": "Multi-modal agent framework (computer-use + browser-use + coding). Growing fast, relevant for builders evaluating agent harness options.",
+      "suggested_trust_tier": "watchlist",
+      "risk_flags": ["sensitive-permissions", "early-stage", "readme-review-unavailable"],
+      "recommended_action": "watchlist",
+      "metrics": {
+        "stars": 5064,
+        "forks": 579,
+        "language": "Go",
+        "license": "Apache-2.0",
+        "pushed_at": "2026-05-29T07:00:31Z"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 0,
+        "trust_score": 100,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-05-29T07:30:00.000Z"
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "openlegion-ai/openlegion",
+      "title": "openlegion",
+      "description": "Secure autonomous AI agent framework and platform. Build AI teams by describing what you want.",
+      "repo_url": "https://github.com/openlegion-ai/openlegion",
+      "homepage_url": "https://openlegion.ai",
+      "source_url": "https://github.com/openlegion-ai/openlegion",
+      "source_urls": [
+        "https://github.com/openlegion-ai/openlegion",
+        "https://openlegion.ai"
+      ],
+      "signal_summary": "Pushed 2026-05-29, 98 stars, Python, NOASSERTION license. Topics: agent-framework, docker-sandbox, mcp, multi-agent.",
+      "why_builders_should_care": "Docker-sandboxed multi-agent orchestration. Relevant for security-conscious builders.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": ["readme-review-unavailable", "license-not-asserted"],
+      "recommended_action": "review",
+      "metrics": {
+        "stars": 98,
+        "forks": 18,
+        "language": "Python",
+        "license": "NOASSERTION",
+        "pushed_at": "2026-05-29T06:59:52Z"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 0,
+        "trust_score": 100,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-05-29T07:30:00.000Z"
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "opencue/cuecards",
+      "title": "cuecards",
+      "description": "Agent profile manager for Claude Code & Codex. Per-directory profiles select which skills, MCP servers, and plugins load automatically before launch.",
+      "repo_url": "https://github.com/opencue/cuecards",
+      "homepage_url": "https://opencue.github.io/cuecards/",
+      "source_url": "https://github.com/opencue/cuecards",
+      "source_urls": [
+        "https://github.com/opencue/cuecards",
+        "https://opencue.github.io/cuecards/"
+      ],
+      "signal_summary": "Pushed 2026-05-29, 1 star, TypeScript, MIT. Agent profile/skill management for Claude Code and Codex.",
+      "why_builders_should_care": "Per-directory agent profile selection solves real workflow pain. Low stars but practical.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": ["low-repo-signal", "new-repository"],
+      "recommended_action": "review",
+      "metrics": {
+        "stars": 1,
+        "language": "TypeScript",
+        "license": "MIT",
+        "pushed_at": "2026-05-29T07:00:22Z"
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "MadaBurns/bv-mcp",
+      "title": "bv-mcp",
+      "description": "Open-source DNS & email security scanner. One MCP endpoint, 57 checks, zero install. Cloudflare Workers.",
+      "repo_url": "https://github.com/MadaBurns/bv-mcp",
+      "homepage_url": "https://blackveilsecurity.com",
+      "source_url": "https://github.com/MadaBurns/bv-mcp",
+      "source_urls": [
+        "https://github.com/MadaBurns/bv-mcp",
+        "https://blackveilsecurity.com"
+      ],
+      "signal_summary": "Pushed 2026-05-29, 7 stars, TypeScript, NOASSERTION. DNS/email security MCP server on Cloudflare Workers.",
+      "why_builders_should_care": "Security-focused MCP server. 57 checks via one endpoint. Relevant for builders adding security scanning to agent workflows.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": ["readme-review-unavailable", "license-not-asserted"],
+      "recommended_action": "review",
+      "metrics": {
+        "stars": 7,
+        "forks": 5,
+        "language": "TypeScript",
+        "license": "NOASSERTION",
+        "pushed_at": "2026-05-29T07:00:45Z"
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "promptrails/memoryrails",
+      "title": "memoryrails",
+      "description": "Agent memory management for Go LLM applications.",
+      "repo_url": "https://github.com/promptrails/memoryrails",
+      "homepage_url": "https://promptrails.github.io/memoryrails/",
+      "source_url": "https://github.com/promptrails/memoryrails",
+      "source_urls": [
+        "https://github.com/promptrails/memoryrails",
+        "https://promptrails.github.io/memoryrails/"
+      ],
+      "signal_summary": "Pushed 2026-05-29, 2 stars, Go, MIT. Agent memory management library.",
+      "why_builders_should_care": "Go-native agent memory. Growing ecosystem of memory solutions.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": ["sensitive-permissions", "low-repo-signal"],
+      "recommended_action": "watchlist",
+      "metrics": {
+        "stars": 2,
+        "language": "Go",
+        "license": "MIT",
+        "pushed_at": "2026-05-29T06:50:04Z"
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "wranngle/voice_ai_agent_evals",
+      "title": "voice_ai_agent_evals",
+      "description": "Eval harness for ElevenLabs voice agents: scenarios, latency, prompt versions.",
+      "repo_url": "https://github.com/wranngle/voice_ai_agent_evals",
+      "homepage_url": "https://wranngle.com",
+      "source_url": "https://github.com/wranngle/voice_ai_agent_evals",
+      "source_urls": [
+        "https://github.com/wranngle/voice_ai_agent_evals",
+        "https://wranngle.com"
+      ],
+      "signal_summary": "Pushed 2026-05-29, 1 star, TypeScript, MIT. Voice agent eval harness.",
+      "why_builders_should_care": "Voice agent evaluation is a gap in most eval stacks. Niche but useful.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": ["low-repo-signal", "new-repository"],
+      "recommended_action": "review",
+      "metrics": {
+        "stars": 1,
+        "language": "TypeScript",
+        "license": "MIT",
+        "pushed_at": "2026-05-29T06:53:17Z"
+      }
+    },
+    {
+      "source_route": "npm-search",
+      "name": "nx-mcp",
+      "title": "nx-mcp",
+      "description": "A Model Context Protocol server implementation for Nx monorepos.",
+      "repo_url": "https://github.com/nrwl/nx-console",
+      "homepage_url": "https://nx.dev",
+      "package_url": "https://www.npmjs.com/package/nx-mcp",
+      "source_url": "https://www.npmjs.com/package/nx-mcp",
+      "source_urls": [
+        "https://www.npmjs.com/package/nx-mcp",
+        "https://github.com/nrwl/nx-console"
+      ],
+      "signal_summary": "npm package nx-mcp v0.25.0, updated 2026-04-30. From Nrwl (Nx team). MIT license.",
+      "why_builders_should_care": "Official Nx MCP server. Relevant for monorepo-agent integration.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": ["readme-review-unavailable"],
+      "recommended_action": "review",
+      "metrics": {
+        "version": "0.25.0",
+        "license": "MIT",
+        "updated_at": "2026-04-30T11:38:28.620Z"
+      }
+    },
+    {
+      "source_route": "npm-search",
+      "name": "mcp-framework",
+      "title": "mcp-framework",
+      "description": "Framework for building Model Context Protocol servers in TypeScript.",
+      "repo_url": "https://github.com/QuantGeekDev/mcp-framework",
+      "homepage_url": "https://github.com/QuantGeekDev/mcp-framework#readme",
+      "package_url": "https://www.npmjs.com/package/mcp-framework",
+      "source_url": "https://www.npmjs.com/package/mcp-framework",
+      "source_urls": [
+        "https://www.npmjs.com/package/mcp-framework",
+        "https://github.com/QuantGeekDev/mcp-framework"
+      ],
+      "signal_summary": "npm package mcp-framework. TypeScript MCP server development framework. License not asserted.",
+      "why_builders_should_care": "Framework for building MCP servers. Useful for builders creating custom MCP tools.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": ["license-not-asserted", "readme-review-unavailable"],
+      "recommended_action": "watchlist",
+      "metrics": {
+        "license": "NOASSERTION"
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "Patdolitse/piia-engram",
+      "title": "piia-engram",
+      "description": "One memory. Every AI tool. Yours to keep. Local-first, MCP-compatible, Apache 2.0.",
+      "repo_url": "https://github.com/Patdolitse/piia-engram",
+      "homepage_url": "https://pypi.org/project/piia-engram/",
+      "source_url": "https://github.com/Patdolitse/piia-engram",
+      "source_urls": [
+        "https://github.com/Patdolitse/piia-engram",
+        "https://pypi.org/project/piia-engram/"
+      ],
+      "signal_summary": "Pushed 2026-05-28, 121 stars, Python, Apache-2.0. Cross-tool local-first AI memory with MCP.",
+      "why_builders_should_care": "Cross-tool memory sharing with MCP interface. Strong star count for age.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": ["sensitive-permissions"],
+      "recommended_action": "watchlist",
+      "metrics": {
+        "stars": 121,
+        "forks": 5,
+        "language": "Python",
+        "license": "Apache-2.0",
+        "pushed_at": "2026-05-28T06:03:21Z"
+      }
+    }
+  ]
+}
