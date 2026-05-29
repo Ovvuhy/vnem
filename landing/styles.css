@@ -526,6 +526,48 @@ body.vanta-ready .hero-vanta {
   padding-top: 18px;
 }
 
+.quality-section {
+  background:
+    linear-gradient(180deg, rgba(14, 14, 17, 0.98), rgba(12, 12, 15, 0.99)),
+    #0e0e11;
+}
+
+.quality-list {
+  display: grid;
+  gap: 0;
+  border-top: 1px solid var(--line);
+}
+
+.quality-list article {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 18px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.quality-list span {
+  color: var(--rose);
+  font-size: 0.76rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+}
+
+.quality-list h3 {
+  margin: 0 0 8px;
+  color: rgba(245, 238, 232, 0.94);
+  font-size: 1.06rem;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+.quality-list p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.98rem;
+  line-height: 1.5;
+}
+
 .text-link {
   display: inline-flex;
   margin-top: 20px;

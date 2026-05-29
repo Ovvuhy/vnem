@@ -11,7 +11,11 @@ const packDir = path.join(rootDir, "public", "install");
 const skillDir = path.join(rootDir, "skills", "vnem");
 const packFiles = [
   "AGENTS.md",
+  "install-guide.md",
   "operating-protocol.md",
+  "quality-contract.md",
+  "coding-protocol.md",
+  "coding-playbooks.json",
   "task-rubrics.json",
   "search-index.json",
   "source-radar.json",
@@ -27,7 +31,7 @@ const rootAgentBlock = `${blockStart}
 
 This repo has a read-only vnem knowledge pack in \`.vnem/\`.
 
-Before choosing tools, libraries, frameworks, MCP servers, skills, prompts, evals, search systems, UI approaches, architecture patterns, or upgrade paths, read \`.vnem/AGENTS.md\`, follow \`.vnem/operating-protocol.md\`, use \`.vnem/search-index.json\`, and consult \`.vnem/agent-workspace.md\` only for autonomous developer environment decisions.
+Before choosing tools, libraries, frameworks, MCP servers, skills, prompts, evals, search systems, UI approaches, performance strategies, architecture patterns, or upgrade paths, read \`.vnem/AGENTS.md\`, follow \`.vnem/operating-protocol.md\`, apply \`.vnem/quality-contract.md\`, read \`.vnem/coding-protocol.md\` and \`.vnem/coding-playbooks.json\` for coding/app/web/feature/debug work, use \`.vnem/search-index.json\`, and consult \`.vnem/agent-workspace.md\` only for autonomous developer environment decisions.
 For current docs, MCP discovery, benchmark evidence, or upstream source decisions, also use \`.vnem/source-radar.json\` before broad web search.
 
 Use vnem automatically. The user should not need to say \`use vnem\`. Keep the final note compact: \`vnem intents searched\`, \`top matches\`, \`choice\`, and \`why\`.
@@ -45,6 +49,8 @@ try {
     await doctorCommand(args);
   } else if (command === "install-skill") {
     await installSkillCommand(args);
+  } else if (command === "mcp-config") {
+    await mcpConfigCommand(args);
   } else if (command === "mcp") {
     await import(pathToFileURL(path.join(scriptDir, "vnem-mcp-server.mjs")).href);
   } else if (command === "help" || command === "--help" || command === "-h") {
@@ -103,11 +109,9 @@ async function doctorCommand(rawArgs) {
     ok: await fileContains(path.join(targetDir, "AGENTS.md"), blockStart)
   });
 
-  const jsonChecks = [
-    path.join(targetDir, ".vnem", "search-index.json"),
-    path.join(targetDir, ".vnem", "source-radar.json"),
-    path.join(targetDir, ".vnem", "prompt-patterns.json")
-  ];
+  const jsonChecks = packFiles
+    .filter((fileName) => fileName.endsWith(".json"))
+    .map((fileName) => path.join(targetDir, ".vnem", fileName));
   for (const filePath of jsonChecks) {
     checks.push({
       label: `${path.relative(targetDir, filePath)} parses`,
@@ -133,6 +137,25 @@ async function installSkillCommand(rawArgs) {
   await mkdir(path.dirname(targetDir), { recursive: true });
   await cp(skillDir, targetDir, { recursive: true, force: true });
   console.log(`Installed vnem skill into ${targetDir}`);
+}
+
+async function mcpConfigCommand(rawArgs) {
+  const server = {
+    command: "node",
+    args: [path.join(scriptDir, "vnem-mcp-server.mjs")],
+    env: {
+      VNEM_ROOT: rootDir
+    }
+  };
+  const output = rawArgs.includes("--server-json") || rawArgs.includes("--server")
+    ? server
+    : {
+        mcpServers: {
+          vnem: server
+        }
+      };
+
+  console.log(JSON.stringify(output, null, 2));
 }
 
 async function upsertManagedBlock(filePath, block) {
@@ -205,12 +228,15 @@ Usage:
   vnem install [project-dir] [--no-agents] [--claude]
   vnem doctor [project-dir]
   vnem install-skill [skill-dir]
+  vnem mcp-config [--server-json]
   vnem mcp
 
 Examples:
   vnem install ~/code/my-app
   vnem install ~/code/my-app --claude
   vnem doctor ~/code/my-app
+  vnem mcp-config
+  vnem mcp-config --server-json
   vnem mcp
 `);
 }

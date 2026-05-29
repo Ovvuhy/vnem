@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-28T11:24:56.856Z",
+  "generated_at": "2026-05-29T14:33:58.678Z",
   "schema_version": "1.0.0",
   "safety": {
     "mode": "read-only-source-radar",
@@ -92,6 +92,42 @@
         "https://code.claude.com/docs/en/sub-agents",
         "https://opencode.ai/docs/",
         "https://adk.dev/"
+      ]
+    },
+    {
+      "id": "agentic-coding-best-practices",
+      "title": "Agentic Coding Best-Practice Sources",
+      "category": "agentic-coding",
+      "priority": "critical",
+      "summary": "Track official and high-signal guidance on how coding agents perform better: repo instructions, plan-first work, verification loops, context management, tool design, and evals.",
+      "use_when": [
+        "vnem needs to improve how agents build apps, web apps, features, bug fixes, and refactors.",
+        "A maintainer wants source-backed guidance for AGENTS.md, CLAUDE.md, GEMINI.md, Copilot instructions, Cursor rules, or coding-agent task prompts.",
+        "A benchmark should compare with/without-vnem coding quality, not only recommendation quality."
+      ],
+      "monitor": [
+        "Official coding-agent best-practice docs from OpenAI, Anthropic, GitHub, Google Gemini CLI, and Cursor",
+        "Guidance on issue-shaped prompts, project instructions, plan mode, verification, context windows, subagents, and evals",
+        "Tool-description and MCP ergonomics research that affects how agents choose and use tools"
+      ],
+      "risk_checks": [
+        "Vendor guidance can be client-specific; keep shared vnem rules client-neutral unless a client file is explicitly generated.",
+        "Do not encode hype claims or productivity numbers without repeatable benchmarks.",
+        "Do not turn best-practice guidance into automatic package installs, config edits, or broad runtime permissions."
+      ],
+      "source_urls": [
+        "https://www.anthropic.com/engineering/claude-code-best-practices",
+        "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
+        "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
+        "https://docs.github.com/en/copilot/how-tos/copilot-cli/cli-best-practices",
+        "https://docs.github.com/en/copilot/concepts/prompting/response-customization",
+        "https://code.visualstudio.com/docs/copilot/customization/custom-instructions",
+        "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
+        "https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md",
+        "https://docs.cursor.com/context/rules-for-ai",
+        "https://www.anthropic.com/engineering/writing-tools-for-agents",
+        "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "https://developers.openai.com/api/docs/guides/agent-evals"
       ]
     },
     {

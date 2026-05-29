@@ -1,6 +1,6 @@
 # vnem Prompt Engineering
 
-Generated: 2026-05-28T11:24:56.856Z
+Generated: 2026-05-29T14:33:58.678Z
 
 Use this when the user asks to improve, rewrite, harden, or operationalize a prompt. The main trigger phrase is `use vnem to enhance this prompt`.
 
@@ -111,16 +111,65 @@ Scope:
 - Do not change: <public API, unrelated files, formatting, dependencies, etc.>
 
 Workflow:
-1. Inspect the current implementation before editing.
-2. Make the smallest cohesive change that satisfies the objective.
-3. Add or update tests only where risk justifies it.
-4. Run verification: <commands>.
-5. Report changed files, verification results, and residual risk.
+1. If `.vnem/quality-contract.md` exists, apply the Triple-Check Workflow: Analyze, Architect, Review.
+2. If `.vnem/coding-protocol.md` exists, read it before editing application code.
+3. If `.vnem/coding-playbooks.json` exists, choose the closest playbook and follow its repo_sensing, execution_loop, verification_ladder, stop_conditions, and anti_patterns.
+4. Inspect the current implementation, repo instructions, manifests, scripts, and nearest local patterns before editing.
+5. For nontrivial work, write a short plan before mutation.
+6. Make the smallest cohesive change that satisfies the objective without silently sacrificing performance, visuals, playability, accessibility, maintainability, or safety.
+7. Add or update tests only where risk justifies it.
+8. Run verification: <commands>.
+9. Report selected playbook, quality gate result, changed files, verification results, skipped checks, and residual risk.
 
 Constraints:
 - Do not run destructive commands.
 - Ask before installing packages, changing secrets, deploying, or touching production data.
 - Preserve user changes already present in the worktree.
+```
+
+### Agentic Coding Task Prompt
+
+Prompt a coding agent to turn a product or engineering request into a repo-grounded, verifiable implementation.
+
+Intents: coding task, app build, web app, feature build, bug fix, large change, test first
+
+Template:
+
+```text
+You are a coding agent working in this repository.
+
+Goal:
+<what the user wants built, fixed, reviewed, or improved>
+
+Acceptance criteria:
+- <observable behavior 1>
+- <observable behavior 2>
+- <verification or visual evidence expected>
+
+Required repo sensing:
+- Read `.vnem/quality-contract.md` if present and apply Holistic Excellence, Proactive Enhancement, Intelligent Trade-offs, and the Triple-Check Workflow.
+- Read local agent instructions and `.vnem/coding-protocol.md` if present.
+- Read `.vnem/coding-playbooks.json` if present and select the nearest playbook before editing.
+- Inspect manifests, scripts, tests, framework config, and the nearest existing implementation pattern.
+- Name risky surfaces before mutation: dependencies, auth, database, deployment, secrets, external services, browser automation, or paid APIs.
+
+Execution rules:
+- For nontrivial work, produce a short plan before editing.
+- Prefer existing project patterns and helpers.
+- Keep the diff small and scoped to the acceptance criteria.
+- Do not solve one requirement by silently degrading another important domain; use settings, quality profiles, progressive enhancement, or scoped fallback when constraints conflict.
+- Ask before installing packages, changing config outside scope, deploying, or using secrets.
+
+Verification:
+- Run the narrowest relevant check first: <command or check>.
+- Run broader checks when blast radius justifies it: <command or check>.
+- For web/UI work, inspect the rendered app on desktop and mobile when practical.
+
+Final report:
+- What changed and where.
+- Verification run and result.
+- Checks skipped and why.
+- Remaining risk or approval needed.
 ```
 
 ### Code Simplification Prompt
@@ -143,11 +192,12 @@ Non-goals:
 - Do not add new dependencies unless the existing stack cannot solve the problem cleanly.
 
 Workflow:
-1. Inspect the current implementation, tests, public interfaces, and call sites.
-2. Identify removable code with evidence: unused files, unused exports, duplicate branches, dead paths, repeated helpers, or needless state.
-3. Preserve behavior with focused tests, snapshots, fixtures, type checks, or golden examples before risky edits.
-4. Make small reviewable changes: delete proven waste, collapse duplication, simplify control flow, and reuse existing local helpers.
-5. Run focused verification first, then the broader project checks.
+1. If `.vnem/coding-playbooks.json` exists, use the `refactor-preserve` playbook.
+2. Inspect the current implementation, tests, public interfaces, and call sites.
+3. Identify removable code with evidence: unused files, unused exports, duplicate branches, dead paths, repeated helpers, or needless state.
+4. Preserve behavior with focused tests, snapshots, fixtures, type checks, or golden examples before risky edits.
+5. Make small reviewable changes: delete proven waste, collapse duplication, simplify control flow, and reuse existing local helpers.
+6. Run focused verification first, then the broader project checks.
 
 Output:
 - What was simplified.
@@ -280,6 +330,7 @@ Visual Direction:
 - Use source-backed browser primitives where helpful: CSS Grid, clamp(), container queries, reduced-motion media queries, and Web Audio only when needed.
 
 Perception Gate:
+- Apply `.vnem/quality-contract.md` when present: performance, visuals, playability, accessibility, maintainability, and safety must not be silently traded away.
 - The first screen must look intentional, balanced, readable, and responsive.
 - Fix ugly scale, spacing, color, typography, glow, blur, or motion before final.
 - Reward effects must originate at the relevant user action or game event.
@@ -350,6 +401,7 @@ Core Workflow:
 <primary user flow>
 
 Design Constraints:
+- Apply `.vnem/quality-contract.md` when present and preserve performance, visuals, accessibility, maintainability, and safety together.
 - Match existing design system if present.
 - Use domain-appropriate density, typography, color, and motion.
 - Ensure all text fits on mobile and desktop.

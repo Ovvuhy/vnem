@@ -44,7 +44,7 @@
           <img class="hero-logo" src="assets/logo.png" alt="" />
           <p class="product-mark">vnem</p>
           <h1>Perception layer for agents.</h1>
-          <p class="lead">Install a read-only knowledge pack into any repo so coding agents check current tools, MCPs, risks, and upgrade paths before they touch code.</p>
+          <p class="lead">Install a read-only AI booster into any repo so coding agents optimize performance, visuals, playability, safety, and maintainability together before they touch code.</p>
 
           <div class="command-shell" id="install-command" aria-label="vnem install command">
             <div class="command-row">
@@ -61,6 +61,35 @@
           </div>
 
           <p class="outcome-line">Clones <code>Ovvuhy/vnem</code> into <code>./vnem</code>. Use the local installer from there for managed project installs.</p>
+        </div>
+      </section>
+
+      <section class="plain-section quality-section" aria-label="VNEM quality contract">
+        <div class="section-inner">
+          <p class="section-kicker">quality contract</p>
+          <div class="install-grid">
+            <div>
+              <h2>Triple-check before code.</h2>
+              <p>VNEM prevents the lazy trade-off where an agent makes one metric better by quietly making the product worse somewhere else.</p>
+            </div>
+            <div class="quality-list">
+              <article>
+                <span>01</span>
+                <h3>Analyze</h3>
+                <p>Identify the stated goal, hidden requirements, visible surfaces, interaction needs, and risk domains.</p>
+              </article>
+              <article>
+                <span>02</span>
+                <h3>Architect</h3>
+                <p>Plan performance and visuals/playability together using profiles, toggles, adaptive effects, and fallback paths.</p>
+              </article>
+              <article>
+                <span>03</span>
+                <h3>Review</h3>
+                <p>Verify no important domain was sacrificed before final output, and report any remaining trade-off plainly.</p>
+              </article>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -107,6 +136,15 @@ npm run doctor -- /path/to/project</code></pre>
             </div>
             <pre class="code-block"><code>curl -fsSL https://vnem.pages.dev/install.tgz | tar -xz</code></pre>
           </div>
+
+          <div class="install-grid secondary-install">
+            <div>
+              <h2>Need MCP too?</h2>
+              <p>From the same checkout, generate an absolute-path config instead of hand-writing paths.</p>
+            </div>
+            <pre class="code-block"><code>node scripts/vnem-cli.mjs mcp-config
+node scripts/vnem-cli.mjs mcp-config --server-json</code></pre>
+          </div>
         </div>
       </section>
 
@@ -127,6 +165,10 @@ npm run doctor -- /path/to/project</code></pre>
               <p>The agent inspects manifests and configs first, then separates stale or risky choices from better current options.</p>
             </article>
             <article>
+              <h2>Holistic quality gate</h2>
+              <p>Performance, visuals, playability, accessibility, maintainability, and safety are checked together instead of traded away silently.</p>
+            </article>
+            <article>
               <h2>Real MCP server</h2>
               <p>Use vnem as a local stdio MCP for search, recommendations, entry lookup, comparison, and best-practice routing.</p>
             </article>
@@ -145,7 +187,10 @@ npm run doctor -- /path/to/project</code></pre>
   "mcpServers": {
     "vnem": {
       "command": "node",
-      "args": ["/path/to/vnem/scripts/vnem-mcp-server.mjs"]
+      "args": ["/path/to/vnem/scripts/vnem-mcp-server.mjs"],
+      "env": {
+        "VNEM_ROOT": "/path/to/vnem"
+      }
     }
   }
 }</code></pre>
@@ -156,12 +201,18 @@ npm run doctor -- /path/to/project</code></pre>
         <div class="section-inner file-grid">
           <div>
             <p class="section-kicker">inside the pack</p>
-            <h2>Ten local files. Better agent judgment.</h2>
+            <h2>Local guidance pack. Better agent judgment.</h2>
           </div>
           <ul class="file-list">
             <li><code>AGENTS.md</code><span>root pointer that tells agents to read vnem automatically</span></li>
             <li><code>.vnem/AGENTS.md</code><span>how the agent should read and report</span></li>
+            <li><code>.vnem/install-guide.md</code><span>download, managed install, MCP config, and verification guide</span></li>
             <li><code>.vnem/operating-protocol.md</code><span>universal loop and task contract</span></li>
+            <li><code>.vnem/quality-contract.md</code><span>holistic excellence, Triple-Check Workflow, and intelligent trade-offs</span></li>
+            <li><code>.vnem/coding-protocol.md</code><span>repo sensing, implementation rules, and verification ladder</span></li>
+            <li><code>.vnem/coding-playbooks.json</code><span>mode-specific execution loops for coding tasks</span></li>
+            <li><code>.vnem/design-architecture.md</code><span>visual, motion, sound, dashboard, and game-feel guidance</span></li>
+            <li><code>.vnem/visual-qa-protocol.md</code><span>rendered screenshot, mobile, and interaction quality checks</span></li>
             <li><code>.vnem/task-rubrics.json</code><span>broad quality bars, gates, and verification checks</span></li>
             <li><code>.vnem/search-index.json</code><span>tools, MCPs, scores, freshness, risk flags</span></li>
             <li><code>.vnem/source-radar.json</code><span>official docs, registries, MCP sources, evals, verification inputs</span></li>

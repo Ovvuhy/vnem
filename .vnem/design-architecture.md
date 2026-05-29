@@ -1,6 +1,6 @@
 # vnem Design Architecture
 
-Generated: 2026-05-28T11:24:56.856Z
+Generated: 2026-05-29T14:33:58.678Z
 
 Source-backed design intelligence for UI, game, visual, dashboard, and conversational-agent work. Use it to make aesthetics a delivery requirement, not a decoration pass.
 
@@ -42,6 +42,7 @@ Source-backed design intelligence for UI, game, visual, dashboard, and conversat
 ## Delivery Rule
 
 - A visual surface is not complete just because it builds or responds to input. It must pass a perception gate in a real rendered state.
+- Visual quality, performance, playability, accessibility, and maintainability must be balanced together; do not make the interface faster by making it feel unfinished.
 - Ship-quality means the first screen looks intentional, readable, proportional, responsive, and aligned with the user's reference or domain.
 - Needs-polish means the core behavior works but visual balance, scale, contrast, motion, sound, or reference fidelity is visibly weak.
 - Blocked means browser evidence shows obvious ugliness, unreadable content, oversized canvases, noisy effects, inaccessible motion/audio, or mismatched assets.
