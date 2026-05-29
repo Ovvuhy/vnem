@@ -1,6 +1,6 @@
 # vnem Visual QA Protocol
 
-Generated: 2026-05-28T20:10:31.300Z
+Generated: 2026-05-29T14:18:20.946Z
 
 A compact rendered-quality loop for UI, game, dashboard, canvas, motion, sound, and brand-facing work. Use it to make aesthetic inspection and screenshot evidence part of done.
 
@@ -29,6 +29,7 @@ A compact rendered-quality loop for UI, game, dashboard, canvas, motion, sound, 
 - Serve or open the actual app surface when possible; static code inspection is not enough for visual work.
 - Inspect desktop and mobile states and check that text, controls, canvas, hero, cards, and HUD elements fit without overlap or awkward scale.
 - Name the single ugliest visible issue after inspection, fix it, then re-check before claiming ship-quality.
+- Check that performance fixes did not silently strip visual quality, interaction feedback, playability, accessibility, or settings/fallback controls.
 - Use the verdicts `ship-quality`, `needs-polish`, or `blocked`; do not call a surface done when the first screen is ugly, oversized, unreadable, or mismatched to the reference.
 
 ## Interaction Moment
@@ -48,5 +49,6 @@ A compact rendered-quality loop for UI, game, dashboard, canvas, motion, sound, 
 ## Related Files
 
 - `.vnem/design-architecture.md`: source-backed design architecture and guidance classification.
-- `.vnem/operating-protocol.md`: universal Sense -> Route -> Choose -> Constrain -> Build/Review/Debug -> Verify -> Report loop.
+- `.vnem/operating-protocol.md`: universal Sense -> Route -> Choose -> Constrain -> Quality Gate -> Build/Review/Debug -> Verify -> Report loop.
+- `.vnem/quality-contract.md`: holistic excellence and intelligent trade-off policy.
 - `.vnem/task-rubrics.json`: task-specific quality bars and verification contracts.

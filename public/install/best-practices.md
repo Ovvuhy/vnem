@@ -1,8 +1,23 @@
 # vnem Best Practices
 
-Generated: 2026-05-28T20:10:31.300Z
+Generated: 2026-05-29T14:18:20.946Z
 
 Use this as a compact, current guidance layer for coding agents. Prefer these notes when choosing whether to add, replace, or avoid a tool.
+
+## Holistic Excellence And Intelligent Trade-offs
+
+Treat vnem as an AI booster that prevents agents from satisfying one requirement by silently degrading another: performance, visuals, playability, accessibility, maintainability, and safety must be balanced with explicit evidence.
+
+- Use the Triple-Check Workflow before coding and before final output: Analyze hidden requirements, Architect a balanced solution, then Review that no important domain was sacrificed.
+- When the user asks for speed, optimization, or low latency, do not automatically remove visual quality, animation, sound, accessibility, or game feel; optimize the bottleneck first.
+- When quality domains conflict, propose intelligent alternatives such as quality profiles, settings GUIs, adaptive effects, lazy loading, reduced-motion handling, asset optimization, feature flags, or scoped fallbacks.
+- For UI, games, dashboards, canvas, animation, or branded surfaces, treat visual perception and interaction feel as part of the definition of done, not an optional decoration pass.
+- For production-ready code, require evidence across relevant domains: tests/builds for behavior, browser or screenshot checks for visuals, interaction checks for playability, and explicit approval gates for risky operations.
+- If a trade-off remains after optimization, state it plainly with the reason, user impact, mitigation, and verification that was or was not possible.
+
+Sources: https://blog.modelcontextprotocol.io/posts/2025-11-03-using-server-instructions/, https://modelcontextprotocol.io/specification/2025-11-25/schema, https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/, https://www.anthropic.com/engineering/writing-tools-for-agents, https://code.claude.com/docs/en/best-practices, https://openai.com/index/introducing-codex/, https://www.anthropic.com/engineering/building-effective-agents, https://www.anthropic.com/engineering/claude-code-best-practices, https://openai.com/business/guides-and-resources/how-openai-uses-codex/, https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results, https://docs.github.com/en/copilot/concepts/prompting/response-customization, https://code.visualstudio.com/docs/copilot/customization/custom-instructions, https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md, https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md, https://docs.cursor.com/context/rules-for-ai, https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents, https://developers.openai.com/api/docs/guides/agent-evals
+
+Search aliases: holistic excellence, quality gate, triple check, performance visuals, playability, production ready, settings gui, intelligent tradeoff, domain balance, proactive enhancement
 
 ## MCP Gateway And Tool Routing
 

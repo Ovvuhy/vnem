@@ -31,6 +31,14 @@ const intentAliases = {
   "visual polish": ["aesthetic experience", "beautiful ui", "pretty ui", "design polish", "composition", "visual hierarchy", "spacing", "typography", "color harmony", "reference fidelity"],
   "visual qa": ["perception gate", "screenshot verification", "rendered qa", "visual polish", "ugliest issue", "desktop screenshot", "mobile screenshot", "interaction evidence", "repo-first assets"],
   "screenshot polish": ["visual qa", "perception gate", "browser verification", "desktop screenshot", "mobile screenshot", "rendered result", "visual polish"],
+  "holistic excellence": ["quality gate", "triple check", "production ready", "performance visuals", "playability", "accessibility", "maintainability", "safety", "balanced quality", "ai booster"],
+  "triple check": ["analyze architect review", "quality gate", "analyze", "architect", "review", "before code", "preflight", "final review"],
+  "performance visuals": ["performance and visuals", "fast and beautiful", "fps visual quality", "optimize visuals", "quality profiles", "settings gui", "adaptive effects"],
+  playability: ["game feel", "controls", "input feedback", "reward feedback", "level design", "physics", "sound design", "responsive game"],
+  "quality gate": ["holistic excellence", "production ready", "domain balance", "triple check", "quality floor", "ship quality", "review before final"],
+  "production ready": ["ship quality", "quality gate", "professional code", "performance", "visual polish", "accessibility", "maintainability", "verification"],
+  "settings gui": ["quality profiles", "settings panel", "graphics settings", "performance mode", "high quality mode", "adaptive quality", "toggles"],
+  "intelligent tradeoff": ["trade off", "performance conflict", "avoid degrading visuals", "settings gui", "quality profiles", "progressive enhancement", "fallback path"],
   "game feel": ["aesthetic experience", "reward feedback", "juice", "sound design", "hit stop", "screen flash", "particles", "apple feedback", "input feel", "microinteractions"],
   "sound design": ["aesthetic experience", "audio", "web audio", "mute", "sfx", "sound effects", "game feel", "throttled audio", "pleasant tones"],
   "reward feedback": ["aesthetic experience", "score pulse", "screen flash", "particles", "apple", "reward", "dopamine", "glow follows action", "interaction anchored"],
@@ -113,6 +121,54 @@ const intentAliases = {
 };
 
 const intentRoutes = {
+  "holistic excellence": {
+    read_first: ["quality-contract:vnem-quality-contract", "practice:holistic-excellence-intelligent-tradeoffs", "coding-protocol:vnem-coding-protocol", "visual-qa-protocol:vnem-visual-qa-protocol", "practice:agentic-coding-execution", "practice:evals"],
+    compare_options: ["balanced implementation", "quality profile controls", "progressive enhancement", "adaptive rendering/effects", "scoped fallback with evidence"],
+    choose_by: ["no important domain silently regresses", "performance and visuals/playability are both preserved when relevant", "trade-offs are explicit and controllable", "verification covers every detected domain"],
+    report: ["detected quality domains", "triple-check result", "trade-off decision", "verification evidence"]
+  },
+  "triple check": {
+    read_first: ["quality-contract:vnem-quality-contract", "practice:holistic-excellence-intelligent-tradeoffs", "operating-protocol:vnem-operating-loop", "coding-protocol:vnem-coding-protocol"],
+    compare_options: ["Analyze goal and hidden requirements", "Architect balanced solution", "Review sacrificed domains before final"],
+    choose_by: ["task goal clarity", "domain balance", "risk surface", "verification evidence"],
+    report: ["Analyze", "Architect", "Review", "residual trade-offs"]
+  },
+  "performance visuals": {
+    read_first: ["quality-contract:vnem-quality-contract", "practice:holistic-excellence-intelligent-tradeoffs", "design-architecture:vnem-design-architecture", "visual-qa-protocol:vnem-visual-qa-protocol", "practice:frontend", "practice:browser-games"],
+    compare_options: ["render-path optimization", "asset optimization", "adaptive effects", "quality profiles/settings GUI", "progressive enhancement", "fallback mode"],
+    choose_by: ["measured or plausible bottleneck", "preserved first-screen quality", "preserved interaction/game feel", "user-controllable quality trade-off", "browser/device verification"],
+    report: ["performance strategy", "visual/playability preservation", "settings or fallback", "verification evidence"]
+  },
+  playability: {
+    read_first: ["quality-contract:vnem-quality-contract", "practice:holistic-excellence-intelligent-tradeoffs", "practice:visual-experience", "visual-qa-protocol:vnem-visual-qa-protocol", "practice:browser-games"],
+    compare_options: ["input responsiveness", "reward feedback", "sound and motion polish", "difficulty/restart loop", "performance profile"],
+    choose_by: ["controls feel responsive", "feedback follows action", "game remains readable", "performance does not destroy visual/game feel", "mobile/touch path"],
+    report: ["playability verdict", "interaction evidence", "performance/visual balance", "remaining feel risk"]
+  },
+  "quality gate": {
+    read_first: ["quality-contract:vnem-quality-contract", "practice:holistic-excellence-intelligent-tradeoffs", "operating-protocol:vnem-operating-loop", "coding-protocol:vnem-coding-protocol", "visual-qa-protocol:vnem-visual-qa-protocol"],
+    compare_options: ["pass", "needs targeted revision", "blocked until verification or approval"],
+    choose_by: ["detected domains", "trade-off risks", "verification coverage", "approval gates", "user-visible quality floor"],
+    report: ["quality gate verdict", "domains checked", "warnings", "required verification"]
+  },
+  "production ready": {
+    read_first: ["quality-contract:vnem-quality-contract", "practice:holistic-excellence-intelligent-tradeoffs", "coding-protocol:vnem-coding-protocol", "coding-playbook:feature-slice", "practice:agentic-coding-execution", "practice:evals"],
+    compare_options: ["small production slice", "settings/profile controls", "accessibility/performance pass", "test/eval gate", "defer risky scope"],
+    choose_by: ["works end-to-end", "quality domains are balanced", "tests/build/rendered evidence exist", "risks are explicit", "rollback path"],
+    report: ["production readiness verdict", "domains verified", "known limitations", "remaining approvals"]
+  },
+  "settings gui": {
+    read_first: ["quality-contract:vnem-quality-contract", "practice:holistic-excellence-intelligent-tradeoffs", "practice:frontend", "design-architecture:vnem-design-architecture", "visual-qa-protocol:vnem-visual-qa-protocol"],
+    compare_options: ["quality profile selector", "advanced settings panel", "adaptive auto mode", "reduced-motion/accessibility controls", "minimal fallback toggle"],
+    choose_by: ["clear user control", "safe defaults", "preserved visual quality", "fast mode does not feel broken", "mobile usability"],
+    report: ["settings surface", "default profile", "high-quality path", "fast/fallback path", "verification evidence"]
+  },
+  "intelligent tradeoff": {
+    read_first: ["quality-contract:vnem-quality-contract", "practice:holistic-excellence-intelligent-tradeoffs", "operating-protocol:vnem-operating-loop", "practice:agentic-coding-execution", "practice:evals"],
+    compare_options: ["optimize bottleneck", "add quality profiles", "progressive enhancement", "defer noncritical work", "explicit fallback with user control"],
+    choose_by: ["constraint evidence", "preserved important domains", "user can choose quality/performance", "honest residual risk", "verification path"],
+    report: ["constraint", "trade-off alternative", "domain preservation", "verification"]
+  },
   "aesthetic experience": {
     read_first: ["practice:visual-experience", "visual-qa-protocol:vnem-visual-qa-protocol", "design-architecture:vnem-design-architecture", "practice:frontend", "practice:browser-games", "practice:evals"],
     compare_options: ["existing project design system and assets", "custom CSS/canvas polish pass", "lightweight animation and audio", "source-backed image/audio generation only with approval"],
@@ -535,7 +591,50 @@ const intentRoutes = {
   }
 };
 
+const codingAgentSourceUrls = [
+  "https://www.anthropic.com/engineering/claude-code-best-practices",
+  "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
+  "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
+  "https://docs.github.com/en/copilot/concepts/prompting/response-customization",
+  "https://code.visualstudio.com/docs/copilot/customization/custom-instructions",
+  "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
+  "https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md",
+  "https://docs.cursor.com/context/rules-for-ai",
+  "https://www.anthropic.com/engineering/writing-tools-for-agents",
+  "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+  "https://www.anthropic.com/engineering/building-effective-agents",
+  "https://developers.openai.com/api/docs/guides/agent-evals"
+];
+
+const qualitySourceUrls = unique([
+  "https://blog.modelcontextprotocol.io/posts/2025-11-03-using-server-instructions/",
+  "https://modelcontextprotocol.io/specification/2025-11-25/schema",
+  "https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/",
+  "https://www.anthropic.com/engineering/writing-tools-for-agents",
+  "https://code.claude.com/docs/en/best-practices",
+  "https://openai.com/index/introducing-codex/",
+  "https://www.anthropic.com/engineering/building-effective-agents",
+  ...codingAgentSourceUrls
+]);
+
 const bestPracticeSections = [
+  {
+    id: "holistic-excellence-intelligent-tradeoffs",
+    title: "Holistic Excellence And Intelligent Trade-offs",
+    score: 23,
+    summary:
+      "Treat vnem as an AI booster that prevents agents from satisfying one requirement by silently degrading another: performance, visuals, playability, accessibility, maintainability, and safety must be balanced with explicit evidence.",
+    keywords: ["holistic excellence", "quality gate", "triple check", "performance visuals", "playability", "production ready", "settings gui", "intelligent tradeoff", "domain balance", "proactive enhancement"],
+    sources: qualitySourceUrls,
+    practices: [
+      "Use the Triple-Check Workflow before coding and before final output: Analyze hidden requirements, Architect a balanced solution, then Review that no important domain was sacrificed.",
+      "When the user asks for speed, optimization, or low latency, do not automatically remove visual quality, animation, sound, accessibility, or game feel; optimize the bottleneck first.",
+      "When quality domains conflict, propose intelligent alternatives such as quality profiles, settings GUIs, adaptive effects, lazy loading, reduced-motion handling, asset optimization, feature flags, or scoped fallbacks.",
+      "For UI, games, dashboards, canvas, animation, or branded surfaces, treat visual perception and interaction feel as part of the definition of done, not an optional decoration pass.",
+      "For production-ready code, require evidence across relevant domains: tests/builds for behavior, browser or screenshot checks for visuals, interaction checks for playability, and explicit approval gates for risky operations.",
+      "If a trade-off remains after optimization, state it plainly with the reason, user impact, mitigation, and verification that was or was not possible."
+    ]
+  },
   {
     id: "mcp-gateway-tool-routing",
     title: "MCP Gateway And Tool Routing",
@@ -1087,7 +1186,7 @@ const operatingProtocol = {
   id: "vnem-operating-loop",
   title: "vnem Operating Loop",
   summary:
-    "A universal read-only operating protocol for coding agents: sense the repo, route task context, choose the smallest sufficient capability, constrain risk, pass an aesthetic perception gate for UI/game work, verify with evidence, and report residual uncertainty.",
+    "A universal read-only operating protocol for coding agents: sense the repo, route task context, choose the smallest sufficient capability, constrain risk, pass the holistic quality gate, verify with evidence, and report residual uncertainty.",
   loop: [
     {
       step: "Sense",
@@ -1108,6 +1207,11 @@ const operatingProtocol = {
       step: "Constrain",
       instruction:
         "State scope, non-goals, approval gates, and risky operations before mutation; keep installs, secrets, browsers, databases, deployments, payments, and production writes behind explicit approval."
+    },
+    {
+      step: "Quality Gate",
+      instruction:
+        "Apply the vnem Quality Contract before implementation and before final output: analyze hidden requirements, architect performance and visuals/playability together, and review that no important domain was sacrificed."
     },
     {
       step: "Build/Review/Debug",
@@ -1142,6 +1246,8 @@ const operatingProtocol = {
       "inspect local project instructions and manifests",
       "run the narrowest relevant check first",
       "run broader tests or builds when blast radius justifies it",
+      "apply the Triple-Check Workflow: Analyze, Architect, Review",
+      "verify performance, visuals, playability, accessibility, maintainability, and safety were not silently traded away when those domains apply",
       "for UI or canvas work, verify in a real browser with desktop and mobile evidence",
       "for aesthetic UI/game work, perform a perception pass on screenshots before final: no oversized empty canvases, no accidental center-only glow, reward effects should follow user action, and sound should be restrained and pleasant",
       "report checks that could not run and why"
@@ -1157,20 +1263,79 @@ const operatingProtocol = {
   }
 };
 
-const codingAgentSourceUrls = [
-  "https://www.anthropic.com/engineering/claude-code-best-practices",
-  "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
-  "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
-  "https://docs.github.com/en/copilot/concepts/prompting/response-customization",
-  "https://code.visualstudio.com/docs/copilot/customization/custom-instructions",
-  "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
-  "https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md",
-  "https://docs.cursor.com/context/rules-for-ai",
-  "https://www.anthropic.com/engineering/writing-tools-for-agents",
-  "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
-  "https://www.anthropic.com/engineering/building-effective-agents",
-  "https://developers.openai.com/api/docs/guides/agent-evals"
-];
+const qualityContract = {
+  id: "vnem-quality-contract",
+  title: "vnem Quality Contract",
+  summary:
+    "A read-only AI-booster contract that forces coding agents to optimize performance, visuals, playability, accessibility, maintainability, and safety together instead of silently sacrificing one domain for another.",
+  url_path: "/install/quality-contract.md",
+  resource_uri: "vnem://install/quality-contract",
+  tags: [
+    "holistic excellence",
+    "proactive enhancement",
+    "intelligent trade-offs",
+    "triple check",
+    "quality gate",
+    "performance visuals",
+    "playability",
+    "production ready",
+    "settings gui",
+    "domain balance"
+  ],
+  principles: [
+    {
+      name: "Holistic Excellence",
+      rule: "Performance, visuals, playability, accessibility, maintainability, and safety are all part of done when they apply to the task."
+    },
+    {
+      name: "Proactive Enhancement",
+      rule: "Infer the stronger product the user actually wants, not only the smallest literal interpretation of the prompt."
+    },
+    {
+      name: "Intelligent Trade-offs",
+      rule: "When constraints conflict, engineer controls, modes, fallbacks, and evidence before lowering product quality."
+    }
+  ],
+  triple_check: [
+    {
+      step: "Analyze",
+      instruction:
+        "Identify the user's stated goal, hidden requirements, visible or interactive surfaces, risk domains, and what the user will judge even if they did not say it explicitly."
+    },
+    {
+      step: "Architect",
+      instruction:
+        "Plan for maximum feasible performance and top-tier visuals/playability together. Prefer robust settings, quality profiles, progressive enhancement, fallback paths, asset optimization, and smarter algorithms over degrading the product."
+    },
+    {
+      step: "Review",
+      instruction:
+        "Before final output or code delivery, verify no important domain was sacrificed. If a trade-off remains, state it explicitly with evidence and the next best mitigation."
+    }
+  ],
+  quality_floor: [
+    "Do not solve one requirement by quietly damaging another important requirement.",
+    "Do not remove visual quality, game feel, accessibility, or verification just to claim better performance.",
+    "If performance conflicts with visuals or playability, first offer an intelligent alternative: quality toggles, settings GUI, adaptive effects, lazy loading, reduced-motion handling, asset optimization, feature flags, or scoped fallback.",
+    "For production-ready work, require evidence that the task still works, still looks/feels intentional when visual or interactive, and remains maintainable.",
+    "If evidence cannot be gathered, report the blocked verification and residual risk instead of claiming ship-quality."
+  ],
+  domain_balance: [
+    "performance",
+    "visual quality",
+    "playability",
+    "accessibility",
+    "maintainability",
+    "safety"
+  ],
+  tradeoff_policy: [
+    "Optimize the actual bottleneck before lowering quality.",
+    "Expose user-controllable quality/performance modes when both high performance and high visual quality matter.",
+    "Use progressive enhancement so capable devices get the best experience while constrained devices get a deliberate fallback.",
+    "Document any remaining trade-off plainly in the final report."
+  ],
+  source_urls: qualitySourceUrls
+};
 
 const codingProtocol = {
   id: "vnem-coding-protocol",
@@ -1191,6 +1356,10 @@ const codingProtocol = {
     "backend api",
     "repo understanding",
     "large change",
+    "holistic excellence",
+    "quality gate",
+    "triple check",
+    "performance visuals",
     "verification loop",
     "context engineering"
   ],
@@ -1204,7 +1373,18 @@ const codingProtocol = {
         "Shape tasks like good issues: problem, acceptance criteria, scope, target files or discovery path, non-goals, and evidence required before final.",
         "Use an explore -> plan -> implement -> verify loop for nontrivial changes instead of speculative editing.",
         "Keep the context budget clean: read exact files, summarize discoveries, avoid broad doc dumps, and split unrelated work into a fresh session.",
-        "Prefer small reviewable diffs that reuse existing patterns over broad rewrites, new frameworks, or clever abstractions."
+        "Prefer small reviewable diffs that reuse existing patterns over broad rewrites, new frameworks, or clever abstractions.",
+        "Apply the vnem Quality Contract so performance, visuals, playability, accessibility, maintainability, and safety improve together instead of trading one away silently."
+      ]
+    },
+    {
+      title: "Holistic Excellence Contract",
+      bullets: [
+        "Before coding, run the Triple-Check Workflow: Analyze the stated and hidden goal, Architect a balanced implementation, then Review for sacrificed domains before final.",
+        "Do not satisfy a performance request by quietly removing visual quality, game feel, accessibility, or verification when those domains matter.",
+        "If a fast path and high-quality path conflict, engineer a deliberate alternative such as a settings GUI, quality profile, adaptive effects, lazy loading, reduced-motion path, optimized assets, feature flag, or scoped fallback.",
+        "For production-ready work, preserve behavior, speed, visual polish, interaction feel, maintainability, and safety to the strongest feasible level for the repo and task.",
+        "If a trade-off remains, name it plainly with evidence, user impact, mitigation, and what could not be verified."
       ]
     },
     {
@@ -1641,6 +1821,7 @@ const designArchitecture = {
       title: "Delivery Rule",
       bullets: [
         "A visual surface is not complete just because it builds or responds to input. It must pass a perception gate in a real rendered state.",
+        "Visual quality, performance, playability, accessibility, and maintainability must be balanced together; do not make the interface faster by making it feel unfinished.",
         "Ship-quality means the first screen looks intentional, readable, proportional, responsive, and aligned with the user's reference or domain.",
         "Needs-polish means the core behavior works but visual balance, scale, contrast, motion, sound, or reference fidelity is visibly weak.",
         "Blocked means browser evidence shows obvious ugliness, unreadable content, oversized canvases, noisy effects, inaccessible motion/audio, or mismatched assets."
@@ -1754,6 +1935,7 @@ const visualQaProtocol = {
         "Serve or open the actual app surface when possible; static code inspection is not enough for visual work.",
         "Inspect desktop and mobile states and check that text, controls, canvas, hero, cards, and HUD elements fit without overlap or awkward scale.",
         "Name the single ugliest visible issue after inspection, fix it, then re-check before claiming ship-quality.",
+        "Check that performance fixes did not silently strip visual quality, interaction feedback, playability, accessibility, or settings/fallback controls.",
         "Use the verdicts `ship-quality`, `needs-polish`, or `blocked`; do not call a surface done when the first screen is ugly, oversized, unreadable, or mismatched to the reference."
       ]
     },
@@ -2317,14 +2499,15 @@ const promptPatterns = [
       "- Do not change: <public API, unrelated files, formatting, dependencies, etc.>",
       "",
       "Workflow:",
-      "1. If `.vnem/coding-protocol.md` exists, read it before editing application code.",
-      "2. If `.vnem/coding-playbooks.json` exists, choose the closest playbook and follow its repo_sensing, execution_loop, verification_ladder, stop_conditions, and anti_patterns.",
-      "3. Inspect the current implementation, repo instructions, manifests, scripts, and nearest local patterns before editing.",
-      "4. For nontrivial work, write a short plan before mutation.",
-      "5. Make the smallest cohesive change that satisfies the objective.",
-      "6. Add or update tests only where risk justifies it.",
-      "7. Run verification: <commands>.",
-      "8. Report selected playbook, changed files, verification results, skipped checks, and residual risk.",
+      "1. If `.vnem/quality-contract.md` exists, apply the Triple-Check Workflow: Analyze, Architect, Review.",
+      "2. If `.vnem/coding-protocol.md` exists, read it before editing application code.",
+      "3. If `.vnem/coding-playbooks.json` exists, choose the closest playbook and follow its repo_sensing, execution_loop, verification_ladder, stop_conditions, and anti_patterns.",
+      "4. Inspect the current implementation, repo instructions, manifests, scripts, and nearest local patterns before editing.",
+      "5. For nontrivial work, write a short plan before mutation.",
+      "6. Make the smallest cohesive change that satisfies the objective without silently sacrificing performance, visuals, playability, accessibility, maintainability, or safety.",
+      "7. Add or update tests only where risk justifies it.",
+      "8. Run verification: <commands>.",
+      "9. Report selected playbook, quality gate result, changed files, verification results, skipped checks, and residual risk.",
       "",
       "Constraints:",
       "- Do not run destructive commands.",
@@ -2350,6 +2533,7 @@ const promptPatterns = [
       "- <verification or visual evidence expected>",
       "",
       "Required repo sensing:",
+      "- Read `.vnem/quality-contract.md` if present and apply Holistic Excellence, Proactive Enhancement, Intelligent Trade-offs, and the Triple-Check Workflow.",
       "- Read local agent instructions and `.vnem/coding-protocol.md` if present.",
       "- Read `.vnem/coding-playbooks.json` if present and select the nearest playbook before editing.",
       "- Inspect manifests, scripts, tests, framework config, and the nearest existing implementation pattern.",
@@ -2359,6 +2543,7 @@ const promptPatterns = [
       "- For nontrivial work, produce a short plan before editing.",
       "- Prefer existing project patterns and helpers.",
       "- Keep the diff small and scoped to the acceptance criteria.",
+      "- Do not solve one requirement by silently degrading another important domain; use settings, quality profiles, progressive enhancement, or scoped fallback when constraints conflict.",
       "- Ask before installing packages, changing config outside scope, deploying, or using secrets.",
       "",
       "Verification:",
@@ -2519,6 +2704,7 @@ const promptPatterns = [
       "- Use source-backed browser primitives where helpful: CSS Grid, clamp(), container queries, reduced-motion media queries, and Web Audio only when needed.",
       "",
       "Perception Gate:",
+      "- Apply `.vnem/quality-contract.md` when present: performance, visuals, playability, accessibility, maintainability, and safety must not be silently traded away.",
       "- The first screen must look intentional, balanced, readable, and responsive.",
       "- Fix ugly scale, spacing, color, typography, glow, blur, or motion before final.",
       "- Reward effects must originate at the relevant user action or game event.",
@@ -2585,6 +2771,7 @@ const promptPatterns = [
       "<primary user flow>",
       "",
       "Design Constraints:",
+      "- Apply `.vnem/quality-contract.md` when present and preserve performance, visuals, accessibility, maintainability, and safety together.",
       "- Match existing design system if present.",
       "- Use domain-appropriate density, typography, color, and motion.",
       "- Ensure all text fits on mobile and desktop.",
@@ -3110,6 +3297,40 @@ function buildSearchDocuments(entries) {
     ].join(" "))).slice(0, 140)
   }));
 
+  const qualityContractDocs = [
+    {
+      id: `quality-contract:${qualityContract.id}`,
+      kind: "quality-contract",
+      title: qualityContract.title,
+      summary: qualityContract.summary,
+      url_path: qualityContract.url_path,
+      trust_tier: "verified",
+      type: "quality-contract",
+      score: 24,
+      tags: qualityContract.tags,
+      use_cases: [
+        ...qualityContract.principles.map((principle) => `${principle.name}: ${principle.rule}`),
+        ...qualityContract.triple_check.map((item) => `${item.step}: ${item.instruction}`),
+        ...qualityContract.quality_floor
+      ],
+      best_for: qualityContract.tradeoff_policy,
+      risk_flags: [],
+      source_urls: unique([installFileUrl("quality-contract.md"), ...qualityContract.source_urls]),
+      keywords: unique(textTokens([
+        qualityContract.id,
+        qualityContract.title,
+        qualityContract.summary,
+        ...qualityContract.tags,
+        ...qualityContract.principles.flatMap((principle) => [principle.name, principle.rule]),
+        ...qualityContract.triple_check.flatMap((item) => [item.step, item.instruction]),
+        ...qualityContract.quality_floor,
+        ...qualityContract.domain_balance,
+        ...qualityContract.tradeoff_policy,
+        ...qualityContract.source_urls
+      ].join(" "))).slice(0, 180)
+    }
+  ];
+
   const designArchitectureDocs = [
     {
       id: `design-architecture:${designArchitecture.id}`,
@@ -3279,7 +3500,7 @@ function buildSearchDocuments(entries) {
     ].join(" "))).slice(0, 180)
   }));
 
-  return [...operatingDocs, ...codingProtocolDocs, ...codingPlaybookDocs, ...sourceRadarDocs, ...designArchitectureDocs, ...visualQaDocs, ...rubricDocs, ...promptDocs, ...practiceDocs, ...entryDocs].sort((a, b) => b.score - a.score || a.title.localeCompare(b.title));
+  return [...qualityContractDocs, ...operatingDocs, ...codingProtocolDocs, ...codingPlaybookDocs, ...sourceRadarDocs, ...designArchitectureDocs, ...visualQaDocs, ...rubricDocs, ...promptDocs, ...practiceDocs, ...entryDocs].sort((a, b) => b.score - a.score || a.title.localeCompare(b.title));
 }
 
 function buildInvertedIndex(documents) {
@@ -3343,9 +3564,10 @@ function operatingProtocolMarkdown() {
     "",
     "- Mode: build, review, plan, debug, prompt, or decision.",
     "- Intent and route: matching intent alias, route, rubric, and read-first documents.",
+    "- Quality gate: Triple-Check Workflow, detected domains, quality floor, and intelligent trade-off policy.",
     "- Smallest sufficient capability: existing project pattern first, then source-backed tool only if justified.",
     "- Approval gates: actions that need explicit user consent before mutation or external side effects.",
-    "- Perception gate: for UI, game, canvas, animation, or branded surfaces, screenshots and interaction moments must look intentionally polished before final.",
+    "- perception gate: for UI, game, canvas, animation, or branded surfaces, screenshots and interaction moments must look intentionally polished before final.",
     "- Verification: the strongest reasonable local evidence for this task class.",
     "- Final report: vnem intent, top matches, choice, evidence, uncertainty, and residual risk.",
     "",
@@ -3360,6 +3582,7 @@ function operatingProtocolMarkdown() {
     "## Relationship To Other vnem Files",
     "",
     "- Use `.vnem/coding-protocol.md` for app, web app, feature, bug fix, refactor, and review execution guidance.",
+    "- Use `.vnem/quality-contract.md` for holistic excellence, Triple-Check Workflow, and intelligent trade-off rules.",
     "- Use `.vnem/task-rubrics.json` to choose the broad quality bar for the task.",
     "- Use `.vnem/design-architecture.md` for UI, game, visual polish, dashboard, motion, sound, and conversational-agent surfaces.",
     "- Use `.vnem/visual-qa-protocol.md` when the work has a rendered surface that needs screenshot, mobile, interaction, reward, or sound evidence.",
@@ -3367,6 +3590,62 @@ function operatingProtocolMarkdown() {
     "- Use `.vnem/source-radar.json` when the task depends on current docs, upstream registries, benchmark evidence, or agent-client behavior.",
     "- Use `.vnem/best-practices.md` after routing, not as a wall of generic context.",
     "- Use `.vnem/agent-workspace.md` only for autonomous developer environment choices such as MCP gateways, memory files, agent clients, or mode systems.",
+    ""
+  ].join("\n");
+}
+
+function qualityContractMarkdown() {
+  return [
+    "# vnem Quality Contract",
+    "",
+    `Generated: ${generatedAt}`,
+    "",
+    qualityContract.summary,
+    "",
+    "## Safety Boundary",
+    "",
+    "- This file is read-only guidance.",
+    "- Do not treat it as a runtime optimizer, browser automation script, package installer, settings implementation, or enforcement daemon.",
+    "- Use it to shape the agent's reasoning, MCP task contract, implementation plan, verification, and final report.",
+    "",
+    "## The VNEM Standard",
+    "",
+    "VNEM is built around one rule: an AI agent should not satisfy one requirement by silently damaging another.",
+    "",
+    ...qualityContract.principles.map((principle) => `- **${principle.name}:** ${principle.rule}`),
+    "",
+    "If a user asks for extreme performance, VNEM should not let the agent quietly remove visual quality or game feel. The better answer is to optimize the system and expose control: fast defaults, high-quality modes, adaptive effects, and honest verification evidence.",
+    "",
+    "## Triple-Check Workflow",
+    "",
+    ...qualityContract.triple_check.flatMap((item, index) => [
+      `${index + 1}. **${item.step}**`,
+      `   ${item.instruction}`
+    ]),
+    "",
+    "## Quality Floor",
+    "",
+    ...qualityContract.quality_floor.map((item) => `- ${item}`),
+    "",
+    "## Domain Balance",
+    "",
+    ...qualityContract.domain_balance.map((item) => `- ${item}`),
+    "",
+    "## Intelligent Trade-off Policy",
+    "",
+    ...qualityContract.tradeoff_policy.map((item) => `- ${item}`),
+    "",
+    "## Related Files",
+    "",
+    "- `.vnem/operating-protocol.md`: universal workflow and task contract.",
+    "- `.vnem/coding-protocol.md`: repo-sensing, implementation, verification, and final-report rules.",
+    "- `.vnem/coding-playbooks.json`: task-mode execution loops.",
+    "- `.vnem/design-architecture.md`: visual, motion, sound, dashboard, and game-feel guidance.",
+    "- `.vnem/visual-qa-protocol.md`: rendered inspection and perception verdicts.",
+    "",
+    "## Source URLs",
+    "",
+    ...qualityContract.source_urls.map((url) => `- ${url}`),
     ""
   ].join("\n");
 }
@@ -3389,6 +3668,7 @@ function codingProtocolMarkdown() {
     "## How To Use",
     "",
     "- Read this file for coding tasks, app builds, web apps, feature work, bug fixes, refactors, and code reviews.",
+    "- Read `.vnem/quality-contract.md` for the holistic quality gate: performance, visuals, playability, accessibility, maintainability, and safety must not be silently traded away.",
     "- Then use `.vnem/coding-playbooks.json` to select the closest concrete execution loop for the task mode.",
     "- Use `.vnem/search-index.json` to route the task and `.vnem/task-rubrics.json` to pick the quality bar.",
     "- Use `.vnem/design-architecture.md` and `.vnem/visual-qa-protocol.md` when the task has a visible app, web, UI, canvas, or game surface.",
@@ -3479,7 +3759,8 @@ function visualQaProtocolMarkdown() {
     "## Related Files",
     "",
     "- `.vnem/design-architecture.md`: source-backed design architecture and guidance classification.",
-    "- `.vnem/operating-protocol.md`: universal Sense -> Route -> Choose -> Constrain -> Build/Review/Debug -> Verify -> Report loop.",
+    "- `.vnem/operating-protocol.md`: universal Sense -> Route -> Choose -> Constrain -> Quality Gate -> Build/Review/Debug -> Verify -> Report loop.",
+    "- `.vnem/quality-contract.md`: holistic excellence and intelligent trade-off policy.",
     "- `.vnem/task-rubrics.json`: task-specific quality bars and verification contracts.",
     ""
   ].join("\n");
@@ -3518,6 +3799,11 @@ function codingPlaybooksJson() {
       "Mode-specific coding-agent execution playbooks. Use them after the coding protocol to pick the right loop for feature work, debugging, tests, refactors, web apps, API/data changes, reviews, large changes, and failure recovery.",
     selection_rule:
       "Select the first playbook whose mode, intents, or triggers match the task. If several match, prefer the one with the strongest verification ladder for the requested outcome.",
+    quality_contract: {
+      resource_uri: qualityContract.resource_uri,
+      triple_check: qualityContract.triple_check.map((item) => item.step),
+      tradeoff_policy: qualityContract.tradeoff_policy
+    },
     playbooks: codingPlaybooks
   };
 }
@@ -3708,6 +3994,7 @@ function agentsMarkdown() {
     "## Files To Read",
     "",
     "- `.vnem/operating-protocol.md`: universal loop for sensing the repo, routing context, choosing small capabilities, constraining risk, applying the aesthetic perception gate, verifying, and reporting evidence.",
+    "- `.vnem/quality-contract.md`: Holistic Excellence, Proactive Enhancement, Intelligent Trade-offs, and the Triple-Check Workflow for balancing performance, visuals, playability, accessibility, maintainability, and safety.",
     "- `.vnem/coding-protocol.md`: coding execution guide for apps, web apps, features, bug fixes, refactors, repo sensing, plan-first work, and verification loops.",
     "- `.vnem/coding-playbooks.json`: mode-specific execution playbooks for feature slices, root-cause bug fixes, test-first work, refactors, rendered web apps, API/data changes, large changes, reviews, and failure recovery.",
     "- `.vnem/design-architecture.md`: source-backed design intelligence for UI, game, dashboard, visual polish, motion, sound, and conversational-agent surfaces.",
@@ -3724,30 +4011,32 @@ function agentsMarkdown() {
     "",
     "If this `.vnem/` folder exists, use it automatically. The user should not need to say `use vnem`.",
     "",
-    "Auto-use vnem before choosing tools, libraries, frameworks, MCP servers, prompts, evals, search systems, UI approaches, visual aesthetics, game feel, architecture patterns, or upgrade paths. Also auto-use it when the user asks you to build, code, review, debug, optimize, modernize, benchmark, research, compare options, or decide how to implement something.",
+    "Auto-use vnem before choosing tools, libraries, frameworks, MCP servers, prompts, evals, search systems, UI approaches, visual aesthetics, game feel, performance strategies, architecture patterns, or upgrade paths. Also auto-use it when the user asks you to build, code, review, debug, optimize, modernize, benchmark, research, compare options, or decide how to implement something.",
     "",
     "Do not turn every reply into a long vnem report. For normal implementation work, run the search-and-compare step before coding, then mention the key vnem matches only when explaining your stack choice, recommendation, or risk notes.",
     "",
     "## Decision Search Protocol",
     "",
     "1. Read `.vnem/operating-protocol.md` and classify the task mode: `build`, `review`, `plan`, `debug`, `prompt`, or `decision`.",
-    "2. For coding tasks, read `.vnem/coding-protocol.md` before editing application code.",
-    "3. For implementation/debug/review/refactor/test work, select the closest playbook from `.vnem/coding-playbooks.json` and follow its repo sensing, execution loop, verification ladder, stop conditions, anti-patterns, and final-report fields.",
-    "4. Identify the user's task intents in plain words, such as `coding task`, `web app`, `feature build`, `bug fix`, `browser game`, `visual polish`, `game feel`, `better ui`, `faster search`, `code review`, `code simplification`, `memory`, `evals`, `agent payments`, or `MCP server selection`.",
-    "5. Read `.vnem/search-index.json` and expand those intents with `intent_aliases`.",
-    "6. Select the matching broad rubric from `.vnem/task-rubrics.json` and use its quality bar, approval gates, verification checklist, and output contract.",
-    "7. Check `intent_routes` for the closest matching task. Read the listed `read_first` documents before choosing a stack or visual approach.",
-    "8. If the task depends on current docs, upstream registries, benchmark claims, MCP discovery, or agent-client behavior, read `.vnem/source-radar.json` before broad web search.",
-    "9. Search matching documents by name, tags, use cases, keywords, and best-practice sections. Read `.vnem/best-practices.md` only for matching sections.",
-    "10. Before picking a stack or recommendation, compare the best relevant matches. Prefer higher `score`, stronger `source_confidence`, fresher `freshness`, clearer licenses, fewer `risk_flags`, and the smallest sufficient capability.",
-    "11. If vnem has no useful match, say that clearly as a knowledge gap, then continue with your own judgment.",
-    "12. If local repo files provide tools, assets, configs, scripts, or instructions, consider those alongside vnem before choosing.",
+    "2. For coding, app, UI, game, optimization, or production-ready tasks, read `.vnem/quality-contract.md` and apply the Triple-Check Workflow: Analyze, Architect, Review.",
+    "3. For coding tasks, read `.vnem/coding-protocol.md` before editing application code.",
+    "4. For implementation/debug/review/refactor/test work, select the closest playbook from `.vnem/coding-playbooks.json` and follow its repo sensing, execution loop, verification ladder, stop conditions, anti-patterns, and final-report fields.",
+    "5. Identify the user's task intents in plain words, such as `coding task`, `web app`, `feature build`, `bug fix`, `browser game`, `visual polish`, `game feel`, `performance visuals`, `quality gate`, `settings gui`, `code review`, `code simplification`, `memory`, `evals`, `agent payments`, or `MCP server selection`.",
+    "6. Read `.vnem/search-index.json` and expand those intents with `intent_aliases`.",
+    "7. Select the matching broad rubric from `.vnem/task-rubrics.json` and use its quality bar, approval gates, verification checklist, and output contract.",
+    "8. Check `intent_routes` for the closest matching task. Read the listed `read_first` documents before choosing a stack or visual approach.",
+    "9. If the task depends on current docs, upstream registries, benchmark claims, MCP discovery, or agent-client behavior, read `.vnem/source-radar.json` before broad web search.",
+    "10. Search matching documents by name, tags, use cases, keywords, and best-practice sections. Read `.vnem/best-practices.md` only for matching sections.",
+    "11. Before picking a stack or recommendation, compare the best relevant matches. Prefer higher `score`, stronger `source_confidence`, fresher `freshness`, clearer licenses, fewer `risk_flags`, and the smallest sufficient capability.",
+    "12. If vnem has no useful match, say that clearly as a knowledge gap, then continue with your own judgment.",
+    "13. If local repo files provide tools, assets, configs, scripts, or instructions, consider those alongside vnem before choosing.",
     "",
-    "For nontrivial tasks, follow a compact task contract: `mode`, `intent`, `rubric`, `coding playbook`, `read first`, `smallest sufficient capability`, `approval gates`, `perception gate` when visual work is involved, `verification`, and `final report`.",
+    "For nontrivial tasks, follow a compact task contract: `mode`, `intent`, `rubric`, `coding playbook`, `quality gate`, `triple check`, `domain balance`, `tradeoff policy`, `read first`, `smallest sufficient capability`, `approval gates`, `perception gate` when visual work is involved, `verification`, and `final report`.",
     "",
     "For coding implementation, follow the coding protocol: sense the repo, find existing patterns, plan nontrivial edits, make the smallest coherent diff, run focused checks first, run broader verification when blast radius justifies it, and report skipped checks honestly.",
     "",
     "For UI, game, canvas, animation, dashboard, conversational-agent, or branded surfaces, read `.vnem/design-architecture.md` and `.vnem/visual-qa-protocol.md`, then follow the perception gate: inspect the actual rendered result, name and fix the ugliest visible issue, verify reward effects follow the user action or game event, and do not deliver if it does not look intentionally polished.",
+    "For performance-sensitive visual or game work, do not silently remove visual quality, playability, accessibility, or feedback. Prefer optimized rendering, quality profiles, settings toggles, progressive enhancement, or scoped fallbacks with honest verification.",
     "",
     "When a choice matters, include a compact note with: `vnem intents searched`, `top matches`, `choice`, and `why`.",
     "",
@@ -3807,7 +4096,7 @@ function agentWorkspaceMarkdown() {
     "",
     "Start with a small, readable setup: Codex or another coding agent, repository-local instructions, the vnem read-only pack, and only the MCP servers required for the current workflow.",
     "",
-    "For actual implementation work, route the agent through `.vnem/coding-protocol.md` and `.vnem/coding-playbooks.json` before editing code. The protocol defines shared repo-sensing and verification rules; the playbooks select the concrete loop for feature slices, bug fixes, tests, refactors, rendered web apps, API/data changes, large changes, reviews, or recovery.",
+    "For actual implementation work, route the agent through `.vnem/quality-contract.md`, `.vnem/coding-protocol.md`, and `.vnem/coding-playbooks.json` before editing code. The quality contract prevents silent trade-offs; the protocol defines repo-sensing and verification rules; the playbooks select the concrete loop for feature slices, bug fixes, tests, refactors, rendered web apps, API/data changes, large changes, reviews, or recovery.",
     "",
     "Add gateways, memory banks, browser sessions, database access, and repository mutation tools only after the team can name the approval path and rollback plan.",
     "",
@@ -3881,7 +4170,7 @@ function rootAgentsMarkdown() {
     "",
     "This repo has a read-only vnem knowledge pack in `.vnem/`.",
     "",
-    "Before choosing tools, libraries, frameworks, MCP servers, skills, prompts, evals, search systems, UI approaches, visual polish/game feel, architecture patterns, or upgrade paths, read `.vnem/AGENTS.md`, follow `.vnem/operating-protocol.md`, read `.vnem/coding-protocol.md` and `.vnem/coding-playbooks.json` for coding/app/web/feature/debug work, use `.vnem/search-index.json`, read `.vnem/design-architecture.md` and `.vnem/visual-qa-protocol.md` for visual surfaces, and consult `.vnem/agent-workspace.md` only for autonomous developer environment decisions.",
+    "Before choosing tools, libraries, frameworks, MCP servers, skills, prompts, evals, search systems, UI approaches, visual polish/game feel, performance strategies, architecture patterns, or upgrade paths, read `.vnem/AGENTS.md`, follow `.vnem/operating-protocol.md`, apply `.vnem/quality-contract.md`, read `.vnem/coding-protocol.md` and `.vnem/coding-playbooks.json` for coding/app/web/feature/debug work, use `.vnem/search-index.json`, read `.vnem/design-architecture.md` and `.vnem/visual-qa-protocol.md` for visual surfaces, and consult `.vnem/agent-workspace.md` only for autonomous developer environment decisions.",
     "For current docs, MCP discovery, benchmark evidence, or upstream source decisions, also use `.vnem/source-radar.json` before broad web search.",
     "",
     "Use vnem automatically. The user should not need to say `use vnem`. Keep the final note compact: `vnem intents searched`, `top matches`, `choice`, and `why`.",
@@ -3911,6 +4200,19 @@ function searchIndexJson(entries) {
     intent_aliases: intentAliases,
     intent_routes: intentRoutes,
     operating_protocol: operatingProtocol,
+    quality_contract: {
+      id: qualityContract.id,
+      title: qualityContract.title,
+      summary: qualityContract.summary,
+      url_path: qualityContract.url_path,
+      resource_uri: qualityContract.resource_uri,
+      principles: qualityContract.principles,
+      triple_check: qualityContract.triple_check,
+      quality_floor: qualityContract.quality_floor,
+      domain_balance: qualityContract.domain_balance,
+      tradeoff_policy: qualityContract.tradeoff_policy,
+      source_urls: qualityContract.source_urls
+    },
     coding_protocol: {
       id: codingProtocol.id,
       title: codingProtocol.title,
@@ -3949,6 +4251,10 @@ function searchIndexJson(entries) {
         "intent",
         "rubric",
         "coding_playbook",
+        "quality_gate",
+        "triple_check",
+        "domain_balance",
+        "tradeoff_policy",
         "read_first",
         "repo_sensing",
         "smallest_sufficient_capability",
@@ -3958,8 +4264,8 @@ function searchIndexJson(entries) {
         "verification",
         "final_report"
       ],
-      read_first_for_build_tasks: ["operating protocol", "coding protocol for app/web/feature/debug/refactor work", "matching coding playbook", "matching task rubric", "matching intent_routes", "design architecture and visual QA protocol when the task is visual or interactive", "matching best-practice documents", "matching source-radar entries when upstream currency matters", "high-signal registry entries", "prompt patterns only when a prompt artifact is requested"],
-      evidence_note: ["vnem intents searched", "top matches", "chosen rubric", "chosen coding playbook", "choice", "why", "verification evidence", "residual uncertainty"]
+      read_first_for_build_tasks: ["operating protocol", "quality contract", "coding protocol for app/web/feature/debug/refactor work", "matching coding playbook", "matching task rubric", "matching intent_routes", "design architecture and visual QA protocol when the task is visual or interactive", "matching best-practice documents", "matching source-radar entries when upstream currency matters", "high-signal registry entries", "prompt patterns only when a prompt artifact is requested"],
+      evidence_note: ["vnem intents searched", "top matches", "chosen rubric", "chosen coding playbook", "quality gate verdict", "trade-off warnings", "choice", "why", "verification evidence", "residual uncertainty"]
     },
     rank_weights: {
       use_case_match: 5,
@@ -4006,6 +4312,7 @@ const index = {
   intent_aliases: intentAliases,
   intent_routes: intentRoutes,
   operating_protocol: operatingProtocol,
+  quality_contract: searchIndex.quality_contract,
   coding_protocol: searchIndex.coding_protocol,
   coding_playbooks: searchIndex.coding_playbooks,
   task_rubrics: taskRubrics,
@@ -4029,14 +4336,14 @@ function singleLine(value) {
 const llmsTxt = [
   "# vnem",
   "",
-  "Read-only perception layer for coding agents.",
+  "Read-only AI booster and perception layer for coding agents.",
   "",
-  "Use vnem to recommend current tools, MCPs, skills, evals, security utilities, memory systems, payment rails, identity primitives, and workflow patterns before changing a repo.",
+  "Use vnem to recommend current tools, MCPs, skills, evals, security utilities, memory systems, payment rails, identity primitives, and workflow patterns before changing a repo. For coding work, enforce holistic excellence: performance, visuals, playability, accessibility, maintainability, and safety should not be silently traded away.",
   "When installed, vnem should be used automatically for build, code, debug, review, optimization, benchmark, research, and stack/tool decision tasks; no special trigger phrase should be required.",
   "",
   `Safe install command: ${installCommand}`,
   "",
-  "Installed files: .vnem/AGENTS.md, .vnem/operating-protocol.md, .vnem/coding-protocol.md, .vnem/coding-playbooks.json, .vnem/design-architecture.md, .vnem/visual-qa-protocol.md, .vnem/task-rubrics.json, .vnem/search-index.json, .vnem/source-radar.json, .vnem/best-practices.md, .vnem/agent-workspace.md, .vnem/prompt-engineering.md, .vnem/prompt-patterns.json",
+  "Installed files: .vnem/AGENTS.md, .vnem/operating-protocol.md, .vnem/quality-contract.md, .vnem/coding-protocol.md, .vnem/coding-playbooks.json, .vnem/design-architecture.md, .vnem/visual-qa-protocol.md, .vnem/task-rubrics.json, .vnem/search-index.json, .vnem/source-radar.json, .vnem/best-practices.md, .vnem/agent-workspace.md, .vnem/prompt-engineering.md, .vnem/prompt-patterns.json",
   "Canonical API: /api/index.json",
   "Agent instructions: /install/AGENTS.md",
   "Full index: /llms-full.txt",
@@ -4086,6 +4393,7 @@ const llmsFull = [
 
 const bestPractices = bestPracticesMarkdown();
 const operatingProtocolMarkdownData = operatingProtocolMarkdown();
+const qualityContractMarkdownData = qualityContractMarkdown().trimEnd();
 const codingProtocolMarkdownData = codingProtocolMarkdown().trimEnd();
 const codingPlaybookData = codingPlaybooksJson();
 const designArchitectureMarkdownData = designArchitectureMarkdown().trimEnd();
@@ -4101,6 +4409,7 @@ const archive = installArchive({
   "AGENTS.md": `${rootAgentInstructions}\n`,
   [`${installFolder}/AGENTS.md`]: `${agentInstructions}\n`,
   [`${installFolder}/operating-protocol.md`]: `${operatingProtocolMarkdownData}\n`,
+  [`${installFolder}/quality-contract.md`]: `${qualityContractMarkdownData}\n`,
   [`${installFolder}/coding-protocol.md`]: `${codingProtocolMarkdownData}\n`,
   [`${installFolder}/coding-playbooks.json`]: jsonText(codingPlaybookData),
   [`${installFolder}/design-architecture.md`]: `${designArchitectureMarkdownData}\n`,
@@ -4128,6 +4437,8 @@ await writeText(path.join(ROOT, "public", "install", "AGENTS.md"), `${agentInstr
 await writeText(path.join(ROOT, installFolder, "AGENTS.md"), `${agentInstructions}\n`);
 await writeText(path.join(ROOT, "public", "install", "operating-protocol.md"), `${operatingProtocolMarkdownData}\n`);
 await writeText(path.join(ROOT, installFolder, "operating-protocol.md"), `${operatingProtocolMarkdownData}\n`);
+await writeText(path.join(ROOT, "public", "install", "quality-contract.md"), `${qualityContractMarkdownData}\n`);
+await writeText(path.join(ROOT, installFolder, "quality-contract.md"), `${qualityContractMarkdownData}\n`);
 await writeText(path.join(ROOT, "public", "install", "coding-protocol.md"), `${codingProtocolMarkdownData}\n`);
 await writeText(path.join(ROOT, installFolder, "coding-protocol.md"), `${codingProtocolMarkdownData}\n`);
 await writeJson(path.join(ROOT, "public", "install", "coding-playbooks.json"), codingPlaybookData);

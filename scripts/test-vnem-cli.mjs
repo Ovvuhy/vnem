@@ -22,6 +22,7 @@ try {
   for (const fileName of [
     "AGENTS.md",
     "operating-protocol.md",
+    "quality-contract.md",
     "coding-protocol.md",
     "coding-playbooks.json",
     "task-rubrics.json",
@@ -38,6 +39,7 @@ try {
   const agentsPath = path.join(projectDir, "AGENTS.md");
   let agents = await readFile(agentsPath, "utf8");
   assert.ok(agents.includes("<!-- vnem:start -->"));
+  assert.ok(agents.includes("quality-contract.md"));
   assert.ok(agents.includes("The user should not need to say `use vnem`"));
 
   JSON.parse(await readFile(path.join(projectDir, ".vnem", "search-index.json"), "utf8"));

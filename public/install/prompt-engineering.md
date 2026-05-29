@@ -1,6 +1,6 @@
 # vnem Prompt Engineering
 
-Generated: 2026-05-28T20:10:31.300Z
+Generated: 2026-05-29T14:18:20.946Z
 
 Use this when the user asks to improve, rewrite, harden, or operationalize a prompt. The main trigger phrase is `use vnem to enhance this prompt`.
 
@@ -111,14 +111,15 @@ Scope:
 - Do not change: <public API, unrelated files, formatting, dependencies, etc.>
 
 Workflow:
-1. If `.vnem/coding-protocol.md` exists, read it before editing application code.
-2. If `.vnem/coding-playbooks.json` exists, choose the closest playbook and follow its repo_sensing, execution_loop, verification_ladder, stop_conditions, and anti_patterns.
-3. Inspect the current implementation, repo instructions, manifests, scripts, and nearest local patterns before editing.
-4. For nontrivial work, write a short plan before mutation.
-5. Make the smallest cohesive change that satisfies the objective.
-6. Add or update tests only where risk justifies it.
-7. Run verification: <commands>.
-8. Report selected playbook, changed files, verification results, skipped checks, and residual risk.
+1. If `.vnem/quality-contract.md` exists, apply the Triple-Check Workflow: Analyze, Architect, Review.
+2. If `.vnem/coding-protocol.md` exists, read it before editing application code.
+3. If `.vnem/coding-playbooks.json` exists, choose the closest playbook and follow its repo_sensing, execution_loop, verification_ladder, stop_conditions, and anti_patterns.
+4. Inspect the current implementation, repo instructions, manifests, scripts, and nearest local patterns before editing.
+5. For nontrivial work, write a short plan before mutation.
+6. Make the smallest cohesive change that satisfies the objective without silently sacrificing performance, visuals, playability, accessibility, maintainability, or safety.
+7. Add or update tests only where risk justifies it.
+8. Run verification: <commands>.
+9. Report selected playbook, quality gate result, changed files, verification results, skipped checks, and residual risk.
 
 Constraints:
 - Do not run destructive commands.
@@ -146,6 +147,7 @@ Acceptance criteria:
 - <verification or visual evidence expected>
 
 Required repo sensing:
+- Read `.vnem/quality-contract.md` if present and apply Holistic Excellence, Proactive Enhancement, Intelligent Trade-offs, and the Triple-Check Workflow.
 - Read local agent instructions and `.vnem/coding-protocol.md` if present.
 - Read `.vnem/coding-playbooks.json` if present and select the nearest playbook before editing.
 - Inspect manifests, scripts, tests, framework config, and the nearest existing implementation pattern.
@@ -155,6 +157,7 @@ Execution rules:
 - For nontrivial work, produce a short plan before editing.
 - Prefer existing project patterns and helpers.
 - Keep the diff small and scoped to the acceptance criteria.
+- Do not solve one requirement by silently degrading another important domain; use settings, quality profiles, progressive enhancement, or scoped fallback when constraints conflict.
 - Ask before installing packages, changing config outside scope, deploying, or using secrets.
 
 Verification:
@@ -327,6 +330,7 @@ Visual Direction:
 - Use source-backed browser primitives where helpful: CSS Grid, clamp(), container queries, reduced-motion media queries, and Web Audio only when needed.
 
 Perception Gate:
+- Apply `.vnem/quality-contract.md` when present: performance, visuals, playability, accessibility, maintainability, and safety must not be silently traded away.
 - The first screen must look intentional, balanced, readable, and responsive.
 - Fix ugly scale, spacing, color, typography, glow, blur, or motion before final.
 - Reward effects must originate at the relevant user action or game event.
@@ -397,6 +401,7 @@ Core Workflow:
 <primary user flow>
 
 Design Constraints:
+- Apply `.vnem/quality-contract.md` when present and preserve performance, visuals, accessibility, maintainability, and safety together.
 - Match existing design system if present.
 - Use domain-appropriate density, typography, color, and motion.
 - Ensure all text fits on mobile and desktop.

@@ -28,6 +28,18 @@ const cases = [
     perception: true
   },
   {
+    name: "performance plus visuals game",
+    task: "Build a high-FPS polished browser game with responsive controls, reward feedback, and a settings GUI; make it faster by removing animations and visual effects if needed.",
+    mode: "build",
+    rubrics: ["agentic_coding", "aesthetic_experience", "interactive_canvas"],
+    readFirst: ["quality-contract:vnem-quality-contract", "coding-protocol:vnem-coding-protocol", "coding-playbook:web-app-rendered-quality", "visual-qa-protocol:vnem-visual-qa-protocol", "design-architecture:vnem-design-architecture", "practice:browser-games"],
+    playbook: "web-app-rendered-quality",
+    perception: true,
+    qualityDomains: ["performance", "visual", "playability"],
+    qualityVerdict: "needs_revision",
+    tradeoffWarning: true
+  },
+  {
     name: "bento dashboard",
     task: "Build a dense bento SaaS dashboard with prioritized KPI tiles, a 12-column CSS Grid layout, responsive mobile collapse, and screenshot verification.",
     mode: "build",
@@ -186,6 +198,12 @@ try {
       ["ship_blockers", !benchCase.perception || (contract.perception_gate?.ship_blockers || []).length > 0],
       ["visual_verification", !benchCase.perception || (contract.perception_gate?.visual_verification || []).length > 0],
       ["repo_sensing", !benchCase.perception || (contract.perception_gate?.repo_sensing || []).length > 0],
+      ["quality_gate", !benchCase.qualityDomains && !benchCase.qualityVerdict && !benchCase.tradeoffWarning || Boolean(contract.quality_gate)],
+      ["triple_check", !benchCase.qualityDomains && !benchCase.qualityVerdict && !benchCase.tradeoffWarning || (contract.quality_gate?.triple_check || []).map((item) => item.step).join(" ") === "Analyze Architect Review"],
+      ["quality_domains", !benchCase.qualityDomains || benchCase.qualityDomains.every((domain) => (contract.quality_gate?.detected_domains || []).includes(domain))],
+      ["quality_verdict", !benchCase.qualityVerdict || contract.quality_gate?.verdict === benchCase.qualityVerdict],
+      ["tradeoff_warning", !benchCase.tradeoffWarning || (contract.quality_gate?.tradeoff_warnings || []).length > 0],
+      ["tradeoff_alternative", !benchCase.tradeoffWarning || (contract.quality_gate?.tradeoff_policy || []).some((item) => /profile|settings|adaptive|quality/i.test(item)) || (contract.quality_gate?.tradeoff_warnings || []).some((warning) => /profile|settings|adaptive|quality/i.test(warning.alternative))],
       ["verification", (contract.verification || []).length > 0],
       ["safety", String(contract.safety || "").includes("without explicit user approval")]
     ];

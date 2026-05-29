@@ -70,7 +70,7 @@ const server = new McpServer(
   },
   {
     instructions:
-      "Use vnem as a read-only perception layer before recommending agentic tools, MCP servers, skills, memory systems, prompt patterns, evals, search tools, or stack upgrades. vnem returns provenance and trust tiers; it never installs packages, edits code, calls secrets, or reaches the network."
+      "Use vnem as a read-only AI booster and perception layer before coding, recommending tools, or changing a stack. For coding tasks, call vnem_recommend and apply the Triple-Check Workflow: Analyze the user's true goal and hidden requirements, Architect performance and visuals/playability together, then Review that no important domain was sacrificed. vnem returns provenance, trust tiers, and deterministic quality gates; it never installs packages, edits code, calls secrets, or reaches the network."
   }
 );
 
@@ -261,6 +261,44 @@ function registerTools(mcpServer) {
   );
 
   mcpServer.registerTool(
+    "vnem_quality_gate",
+    {
+      title: "Run vnem Quality Gate",
+      description:
+        "Apply VNEM's Triple-Check Workflow to a coding, app, UI, game, optimization, or production-readiness task and detect silent trade-off risks before code is written or finalized.",
+      inputSchema: {
+        task: z.string().min(1).describe("The task, feature, bug fix, UI/game build, optimization, or production-readiness request."),
+        proposed_approach: z
+          .string()
+          .optional()
+          .describe("Optional proposed implementation approach to review for silent quality trade-offs."),
+        domains: z
+          .array(z.enum(["performance", "visual", "playability", "accessibility", "maintainability", "security/data"]))
+          .optional()
+          .describe("Optional explicit quality domains to include in the gate.")
+      },
+      annotations: READ_ONLY
+    },
+    async ({ task, proposed_approach: proposedApproach, domains }) => {
+      const intent = resolveIntent(task);
+      const mode = inferTaskMode(task);
+      const rubrics = selectTaskRubrics(task, intent, mode);
+      const playbook = selectCodingPlaybooks(task, intent, mode, rubrics)[0] || null;
+      const qualityGate = buildQualityGate(task, proposedApproach || "", intent, rubrics, playbook, domains || []);
+      const result = {
+        task,
+        proposed_approach: proposedApproach || null,
+        intent,
+        mode,
+        quality_gate: qualityGate || buildQualityGate(task, proposedApproach || "", intent, rubrics, playbook, domains || [], { force: true }),
+        safety:
+          "Read-only quality analysis only. This tool does not edit files, run commands, install packages, call upstream services, or enforce runtime policy."
+      };
+      return toolResult(formatQualityGate(result), result);
+    }
+  );
+
+  mcpServer.registerTool(
     "vnem_get_entry",
     {
       title: "Get vnem Entry",
@@ -409,6 +447,15 @@ function registerResources(mcpServer) {
     firstExisting(["public/install/operating-protocol.md", ".vnem/operating-protocol.md"]),
     "vnem Operating Protocol",
     "Generated universal operating loop for producing compact coding-agent task contracts.",
+    "text/markdown"
+  );
+  registerFileResource(
+    mcpServer,
+    "vnem-quality-contract",
+    "vnem://install/quality-contract",
+    firstExisting(["public/install/quality-contract.md", ".vnem/quality-contract.md"]),
+    "vnem Quality Contract",
+    "Generated holistic excellence contract, Triple-Check Workflow, quality floor, and intelligent trade-off policy.",
     "text/markdown"
   );
   registerFileResource(
@@ -615,9 +662,10 @@ function registerPrompts(mcpServer) {
               `Use vnem for this task: ${task}`,
               "",
               "1. Call vnem_recommend with the task.",
-              "2. Read the returned best-practice notes and top registry entries.",
-              "3. Report the vnem intent searched, top matches, recommendation, why, and any source-trust uncertainty.",
-              "4. Do not install tools, edit files, or call external services unless I ask for that separately."
+              "2. For coding, UI, game, optimization, or production-readiness tasks, apply the returned quality_gate and Triple-Check Workflow.",
+              "3. Read the returned best-practice notes and top registry entries.",
+              "4. Report the vnem intent searched, top matches, quality gate verdict, recommendation, why, and any source-trust uncertainty.",
+              "5. Do not install tools, edit files, or call external services unless I ask for that separately."
             ].join("\n")
           }
         }
@@ -780,6 +828,7 @@ function buildStatus() {
       source_radar_entries: sourceRadar.length,
       intent_aliases: Object.keys(searchIndex.intent_aliases || {}).length,
       intent_routes: Object.keys(searchIndex.intent_routes || {}).length,
+      quality_contract: Boolean(searchIndex.quality_contract),
       coding_playbooks: searchIndex.coding_playbooks?.playbooks?.length || 0,
       task_rubrics: searchIndex.task_rubrics?.length || 0,
       prompt_patterns: searchIndex.prompt_patterns?.length || 0,
@@ -795,6 +844,7 @@ function buildStatus() {
         "vnem_get_source",
         "vnem_search",
         "vnem_recommend",
+        "vnem_quality_gate",
         "vnem_get_entry",
         "vnem_compare",
         "vnem_best_practices",
@@ -805,6 +855,7 @@ function buildStatus() {
         "vnem://install/source-radar",
         "vnem://api/index",
         "vnem://install/operating-protocol",
+        "vnem://install/quality-contract",
         "vnem://install/coding-protocol",
         "vnem://install/coding-playbooks",
         "vnem://install/task-rubrics",
@@ -859,8 +910,8 @@ function buildOverview(audience) {
       name: "MCP server",
       paths: ["scripts/vnem-mcp-server.mjs"],
       purpose:
-        "Opt-in stdio MCP surface exposing registry search, recommendations, intent routing, source radar, resources, and task contracts.",
-      usable_via: ["npm run mcp", "vnem_status", "vnem_overview", "vnem_recommend"]
+        "Opt-in stdio MCP surface exposing registry search, recommendations, intent routing, quality gates, source radar, resources, and task contracts.",
+      usable_via: ["npm run mcp", "vnem_status", "vnem_overview", "vnem_recommend", "vnem_quality_gate"]
     },
     {
       name: "Source radar",
@@ -871,10 +922,10 @@ function buildOverview(audience) {
     },
     {
       name: "Operating protocol and rubrics",
-      paths: ["public/install/operating-protocol.md", "public/install/coding-protocol.md", "public/install/coding-playbooks.json", "public/install/task-rubrics.json"],
+      paths: ["public/install/operating-protocol.md", "public/install/quality-contract.md", "public/install/coding-protocol.md", "public/install/coding-playbooks.json", "public/install/task-rubrics.json"],
       purpose:
-        "Compact task-contract and coding-execution layer for sensing the repo, selecting task-specific playbooks, planning edits, routing work, approval gates, verification, and final reporting.",
-      usable_via: ["vnem_route_intent", "vnem_recommend", "vnem://install/coding-protocol", "vnem://install/coding-playbooks", "vnem://install/task-rubrics"]
+        "Compact task-contract and coding-execution layer for sensing the repo, enforcing holistic quality, selecting task-specific playbooks, planning edits, routing work, approval gates, verification, and final reporting.",
+      usable_via: ["vnem_route_intent", "vnem_recommend", "vnem_quality_gate", "vnem://install/quality-contract", "vnem://install/coding-protocol", "vnem://install/coding-playbooks", "vnem://install/task-rubrics"]
     },
     {
       name: "Visual/design guidance",
@@ -902,7 +953,7 @@ function buildOverview(audience) {
   return {
     audience,
     one_sentence:
-      "vnem is a read-only perception layer that helps coding agents choose better tools, sources, prompts, rubrics, and safety gates before editing a repo.",
+      "vnem is a read-only AI booster and perception layer that helps coding agents choose better tools, sources, prompts, rubrics, quality gates, and safety checks before editing a repo.",
     current_counts: status.counts,
     surfaces,
     safe_workflow: [
@@ -939,8 +990,10 @@ function buildTaskContract(task, intent, route, readFirst, registryEntries) {
   const playbooks = selectCodingPlaybooks(task, intent, mode, rubrics);
   const primaryPlaybook = playbooks[0] || null;
   const perceptionGate = buildPerceptionGate(task, rubrics);
+  const qualityGate = buildQualityGate(task, "", intent, rubrics, primaryPlaybook);
   const rubricIds = new Set(rubrics.flatMap((rubric) => rubric.read_first || []));
   const readFirstIds = uniqueStrings([
+    ...(qualityGate?.required_read_first || []),
     ...rubrics.map((rubric) => `task-rubric:${rubric.id}`),
     ...rubricIds,
     ...playbooks.map((playbook) => `coding-playbook:${playbook.id}`),
@@ -955,6 +1008,7 @@ function buildTaskContract(task, intent, route, readFirst, registryEntries) {
   ]);
   const verification = uniqueStrings([
     ...(searchIndex.operating_protocol?.default_contract?.verification || []),
+    ...(qualityGate?.verification_requirements || []),
     ...(primaryPlaybook?.verification_ladder || []),
     ...rubrics.flatMap((rubric) => rubric.verification || [])
   ]);
@@ -988,6 +1042,10 @@ function buildTaskContract(task, intent, route, readFirst, registryEntries) {
           final_report: primaryPlaybook.final_report || []
         }
       : null,
+    quality_gate: qualityGate,
+    triple_check: qualityGate?.triple_check,
+    domain_balance: qualityGate?.detected_domains,
+    tradeoff_policy: qualityGate?.tradeoff_policy,
     coding_playbook_alternates: playbooks.slice(1, 3).map((playbook) => ({
       id: playbook.id,
       title: playbook.title,
@@ -1004,7 +1062,7 @@ function buildTaskContract(task, intent, route, readFirst, registryEntries) {
     smallest_sufficient_capability: route?.compare_options?.length
       ? `Prefer existing project patterns first; if a new capability is needed, compare: ${route.compare_options.join("; ")}.`
       : "Prefer existing project patterns first; add the smallest source-backed tool only when local code cannot satisfy the task cleanly.",
-    choose_by: uniqueStrings([...(route?.choose_by || []), ...(primaryPlaybook?.stop_conditions || []), ...rubrics.flatMap((rubric) => rubric.quality_bar || []), ...(perceptionGate?.criteria || [])]),
+    choose_by: uniqueStrings([...(route?.choose_by || []), ...(qualityGate?.quality_floor || []), ...(primaryPlaybook?.stop_conditions || []), ...rubrics.flatMap((rubric) => rubric.quality_bar || []), ...(perceptionGate?.criteria || [])]),
     approval_gates: approvalGates,
     perception_gate: perceptionGate,
     verification,
@@ -1072,6 +1130,171 @@ function selectCodingPlaybooks(task, intent, mode, rubrics) {
   }
 
   return scored.slice(0, 3).map(({ playbook }) => playbook);
+}
+
+const QUALITY_DOMAIN_KEYWORDS = {
+  performance: ["performance", "fps", "latency", "fast", "faster", "speed", "lightweight", "optimize", "optimized", "bundle", "memory", "render", "lag", "smooth"],
+  visual: ["ui", "design", "visual", "aesthetic", "polish", "animation", "layout", "typography", "glow", "assets", "brand", "dashboard", "landing", "canvas"],
+  playability: ["game", "play", "playability", "controls", "input", "feedback", "reward", "level", "physics", "sound", "sfx", "game feel", "restart"],
+  accessibility: ["mobile", "responsive", "keyboard", "focus", "contrast", "reduced motion", "reduced-motion", "screen reader", "touch", "aria"],
+  maintainability: ["refactor", "tests", "test", "conventions", "api", "architecture", "maintainable", "helpers", "module", "cleanup", "code"],
+  "security/data": ["auth", "secret", "secrets", "database", "payment", "deployment", "external service", "production data", "token", "credential", "permission"]
+};
+
+function buildQualityGate(task, proposedApproach = "", intent, rubrics = [], playbook = null, explicitDomains = [], options = {}) {
+  const mode = inferTaskMode(task);
+  const text = [task, proposedApproach, intent?.name, ...(intent?.aliases || []), ...(rubrics || []).map((rubric) => rubric.id), playbook?.id].join(" ");
+  const detectedDomains = detectQualityDomains(text, explicitDomains);
+  const rubricIds = new Set((rubrics || []).map((rubric) => rubric.id));
+  const intentName = normalize(intent?.name || "");
+  const applies =
+    options.force ||
+    detectedDomains.length > 0 ||
+    Boolean(playbook) ||
+    ["build", "debug", "review"].includes(mode) ||
+    rubricIds.has("agentic_coding") ||
+    rubricIds.has("frontend_ui") ||
+    rubricIds.has("aesthetic_experience") ||
+    rubricIds.has("interactive_canvas") ||
+    ["holistic excellence", "quality gate", "triple check", "performance visuals", "playability", "production ready", "settings gui", "intelligent tradeoff"].includes(intentName);
+
+  if (!applies) {
+    return null;
+  }
+
+  if ((playbook || rubricIds.has("agentic_coding")) && !detectedDomains.includes("maintainability")) {
+    detectedDomains.push("maintainability");
+  }
+  if ((rubricIds.has("frontend_ui") || rubricIds.has("aesthetic_experience") || /\b(ui|design|visual|dashboard|landing|canvas|animation|brand)\b/.test(normalize(text))) && !detectedDomains.includes("visual")) {
+    detectedDomains.push("visual");
+  }
+  if ((rubricIds.has("interactive_canvas") || /\b(game|playability|controls|reward|physics|sound|game feel)\b/.test(normalize(text))) && !detectedDomains.includes("playability")) {
+    detectedDomains.push("playability");
+  }
+  if ((detectedDomains.includes("visual") || detectedDomains.includes("playability")) && !detectedDomains.includes("accessibility")) {
+    detectedDomains.push("accessibility");
+  }
+
+  const tradeoffWarnings = detectTradeoffRisks([task, proposedApproach].join(" "), detectedDomains);
+  const requiredReadFirst = uniqueStrings([
+    "quality-contract:vnem-quality-contract",
+    "practice:holistic-excellence-intelligent-tradeoffs",
+    ...(detectedDomains.includes("visual") || detectedDomains.includes("playability") || detectedDomains.includes("accessibility")
+      ? ["design-architecture:vnem-design-architecture", "visual-qa-protocol:vnem-visual-qa-protocol"]
+      : []),
+    ...(playbook ? [`coding-playbook:${playbook.id}`] : [])
+  ]);
+  const verificationRequirements = qualityVerificationForDomains(detectedDomains);
+  const verdict = tradeoffWarnings.some((warning) => warning.severity === "blocked")
+    ? "blocked"
+    : tradeoffWarnings.length
+      ? "needs_revision"
+      : "pass";
+  const contract = searchIndex.quality_contract || {};
+
+  return {
+    verdict,
+    detected_domains: detectedDomains,
+    triple_check: contract.triple_check || [
+      { step: "Analyze", instruction: "Identify stated goal, hidden requirements, visible/interactive surfaces, and risk domains." },
+      { step: "Architect", instruction: "Plan performance and visuals/playability together before lowering quality." },
+      { step: "Review", instruction: "Verify no important domain was sacrificed before final output." }
+    ],
+    quality_floor: contract.quality_floor || [
+      "Do not solve one requirement by quietly damaging another important requirement.",
+      "If performance conflicts with visuals or playability, first offer an intelligent alternative."
+    ],
+    tradeoff_policy: contract.tradeoff_policy || [
+      "Optimize the actual bottleneck before lowering quality.",
+      "Expose user-controllable quality/performance modes when both high performance and high visual quality matter."
+    ],
+    tradeoff_warnings: tradeoffWarnings,
+    required_read_first: requiredReadFirst,
+    verification_requirements: verificationRequirements,
+    summary:
+      "Use this gate before coding and before final output. A passing implementation must preserve every detected quality domain or explicitly report the remaining trade-off with evidence."
+  };
+}
+
+function detectQualityDomains(value, explicitDomains = []) {
+  const text = normalize(value);
+  const domains = [];
+  for (const domain of explicitDomains) {
+    if (QUALITY_DOMAIN_KEYWORDS[domain] && !domains.includes(domain)) {
+      domains.push(domain);
+    }
+  }
+  for (const [domain, keywords] of Object.entries(QUALITY_DOMAIN_KEYWORDS)) {
+    if (keywords.some((keyword) => text.includes(normalize(keyword))) && !domains.includes(domain)) {
+      domains.push(domain);
+    }
+  }
+  return domains;
+}
+
+function detectTradeoffRisks(value, domains = []) {
+  const text = normalize(value);
+  const hasVisualOrPlay = domains.includes("visual") || domains.includes("playability");
+  const warnings = [];
+  const addWarning = (risk, alternative, severity = "needs_revision") => {
+    warnings.push({ risk, alternative, severity });
+  };
+
+  if (hasVisualOrPlay && /\b(remove|removing|drop|dropping|disable|disabling|turn off|strip|stripping|cut|cutting)\b.*\b(visual|animation|animations|effect|effects|polish|glow|sound|sfx|feedback)\b/.test(text)) {
+    addWarning(
+      "Proposed approach lowers visuals/playability to satisfy another goal.",
+      "Optimize the bottleneck first, then add quality profiles, adaptive effects, settings toggles, reduced-motion handling, or scoped fallback."
+    );
+  }
+  if (hasVisualOrPlay && /\bjust\b.*\bfast\b|\bmake it fast\b|\bonly performance\b/.test(text)) {
+    addWarning(
+      "Performance is being treated as the only success criterion.",
+      "Keep a high-quality path and provide a deliberate fast/default profile instead of silently degrading the product."
+    );
+  }
+  if (hasVisualOrPlay && /\bskip\b.*\b(browser|screenshot|visual|mobile|rendered|interaction)\b/.test(text)) {
+    addWarning(
+      "Rendered verification would be skipped for visual or interactive work.",
+      "Run or inspect desktop/mobile rendered states, or report blocked visual verification honestly."
+    );
+  }
+  if (hasVisualOrPlay && /\bignore\b.*\b(mobile|responsive|accessibility|keyboard|focus|contrast|reduced motion)\b/.test(text)) {
+    addWarning(
+      "Accessibility or responsive quality would be ignored.",
+      "Preserve responsive fit, focus/keyboard basics, contrast, reduced-motion behavior, or document a scoped fallback."
+    );
+  }
+  if (/\bskip\b.*\b(test|tests|verification|build|typecheck)\b/.test(text)) {
+    addWarning(
+      "Verification would be skipped.",
+      "Run the narrowest relevant check first, then broader checks when blast radius justifies it."
+    );
+  }
+
+  return warnings;
+}
+
+function qualityVerificationForDomains(domains) {
+  const checks = ["run the strongest practical focused check for the changed behavior", "report skipped checks and residual risk plainly"];
+  if (domains.includes("performance")) {
+    checks.push("identify the bottleneck or performance-sensitive path before lowering quality");
+  }
+  if (domains.includes("visual")) {
+    checks.push("inspect or capture desktop and mobile rendered states");
+  }
+  if (domains.includes("playability")) {
+    checks.push("verify one meaningful interaction, control, reward, or feedback moment");
+  }
+  if (domains.includes("accessibility")) {
+    checks.push("check responsive fit, focus/keyboard basics, contrast, and reduced-motion path when relevant");
+  }
+  if (domains.includes("maintainability")) {
+    checks.push("reuse repo conventions and run focused tests/type/build checks where available");
+  }
+  if (domains.includes("security/data")) {
+    checks.push("identify approval gates for auth, secrets, database, payments, deployment, external services, or production data");
+  }
+  return uniqueStrings(checks);
 }
 
 function buildPerceptionGate(task, rubrics) {
@@ -1374,6 +1597,12 @@ function formatRecommendation(recommendation) {
     if (recommendation.task_contract.coding_playbook?.id) {
       lines.push(`Coding playbook: ${recommendation.task_contract.coding_playbook.id}`);
     }
+    if (recommendation.task_contract.quality_gate?.verdict) {
+      lines.push(`Quality gate: ${recommendation.task_contract.quality_gate.verdict}`);
+      if (recommendation.task_contract.quality_gate.detected_domains?.length) {
+        lines.push(`Quality domains: ${recommendation.task_contract.quality_gate.detected_domains.join(", ")}`);
+      }
+    }
   }
 
   lines.push("", "Top registry matches:");
@@ -1396,6 +1625,15 @@ function formatRecommendation(recommendation) {
 
   if (recommendation.task_contract) {
     lines.push("", "Task contract:");
+    if (recommendation.task_contract.quality_gate?.triple_check?.length) {
+      lines.push(`- Triple-check: ${recommendation.task_contract.quality_gate.triple_check.map((item) => item.step).join(" -> ")}`);
+    }
+    if (recommendation.task_contract.quality_gate?.tradeoff_warnings?.length) {
+      lines.push(`- Trade-off warnings: ${recommendation.task_contract.quality_gate.tradeoff_warnings.map((warning) => warning.risk).join("; ")}`);
+    }
+    if (recommendation.task_contract.quality_gate?.verification_requirements?.length) {
+      lines.push(`- Quality verification: ${recommendation.task_contract.quality_gate.verification_requirements.slice(0, 5).join("; ")}`);
+    }
     if (recommendation.task_contract.coding_playbook?.execution_loop?.length) {
       lines.push(`- Playbook loop: ${recommendation.task_contract.coding_playbook.execution_loop.slice(0, 4).join("; ")}`);
     }
@@ -1421,6 +1659,35 @@ function formatRecommendation(recommendation) {
   }
 
   lines.push("", `Safety: ${recommendation.safety}`);
+  return lines.join("\n");
+}
+
+function formatQualityGate(result) {
+  const gate = result.quality_gate;
+  const lines = [`vnem quality gate: ${result.task}`];
+  lines.push(`Verdict: ${gate.verdict}`);
+  if (gate.detected_domains?.length) {
+    lines.push(`Domains: ${gate.detected_domains.join(", ")}`);
+  }
+  if (gate.triple_check?.length) {
+    lines.push("", "Triple-Check Workflow:");
+    for (const item of gate.triple_check) {
+      lines.push(`- ${item.step}: ${item.instruction}`);
+    }
+  }
+  if (gate.tradeoff_warnings?.length) {
+    lines.push("", "Trade-off warnings:");
+    for (const warning of gate.tradeoff_warnings) {
+      lines.push(`- ${warning.risk} Alternative: ${warning.alternative}`);
+    }
+  }
+  if (gate.required_read_first?.length) {
+    lines.push("", `Read first: ${gate.required_read_first.join(", ")}`);
+  }
+  if (gate.verification_requirements?.length) {
+    lines.push("", "Verification requirements:", ...gate.verification_requirements.map((item) => `- ${item}`));
+  }
+  lines.push("", `Safety: ${result.safety}`);
   return lines.join("\n");
 }
 
@@ -1519,6 +1786,7 @@ function formatStatus(status) {
     `- Registry entries: ${status.counts.registry_entries}`,
     `- Search documents: ${status.counts.search_documents}`,
     `- Intent routes: ${status.counts.intent_routes}`,
+    `- Quality contract: ${status.counts.quality_contract ? "loaded" : "missing"}`,
     `- Source-radar entries: ${status.counts.source_radar_entries}`,
     `- Task rubrics: ${status.counts.task_rubrics}`,
     `- Prompt patterns: ${status.counts.prompt_patterns}`,

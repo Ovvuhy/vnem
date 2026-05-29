@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-05-28T20:10:31.300Z",
+  "generated_at": "2026-05-29T14:18:20.946Z",
   "schema_version": "1.0.0",
   "package_version": "1.0.1",
   "release_version": "1.0.1",
-  "release_date": "2026-05-28",
+  "release_date": "2026-05-29",
   "entry_count": 228,
   "install_command": "curl -fsSL https://raw.githubusercontent.com/naellisim/vnem/main/public/install.tgz | tar -xz",
   "install_archive": "/install.tgz",
@@ -700,6 +700,84 @@
       "mobile screenshot",
       "rendered result",
       "visual polish"
+    ],
+    "holistic excellence": [
+      "quality gate",
+      "triple check",
+      "production ready",
+      "performance visuals",
+      "playability",
+      "accessibility",
+      "maintainability",
+      "safety",
+      "balanced quality",
+      "ai booster"
+    ],
+    "triple check": [
+      "analyze architect review",
+      "quality gate",
+      "analyze",
+      "architect",
+      "review",
+      "before code",
+      "preflight",
+      "final review"
+    ],
+    "performance visuals": [
+      "performance and visuals",
+      "fast and beautiful",
+      "fps visual quality",
+      "optimize visuals",
+      "quality profiles",
+      "settings gui",
+      "adaptive effects"
+    ],
+    "playability": [
+      "game feel",
+      "controls",
+      "input feedback",
+      "reward feedback",
+      "level design",
+      "physics",
+      "sound design",
+      "responsive game"
+    ],
+    "quality gate": [
+      "holistic excellence",
+      "production ready",
+      "domain balance",
+      "triple check",
+      "quality floor",
+      "ship quality",
+      "review before final"
+    ],
+    "production ready": [
+      "ship quality",
+      "quality gate",
+      "professional code",
+      "performance",
+      "visual polish",
+      "accessibility",
+      "maintainability",
+      "verification"
+    ],
+    "settings gui": [
+      "quality profiles",
+      "settings panel",
+      "graphics settings",
+      "performance mode",
+      "high quality mode",
+      "adaptive quality",
+      "toggles"
+    ],
+    "intelligent tradeoff": [
+      "trade off",
+      "performance conflict",
+      "avoid degrading visuals",
+      "settings gui",
+      "quality profiles",
+      "progressive enhancement",
+      "fallback path"
     ],
     "game feel": [
       "aesthetic experience",
@@ -1434,6 +1512,236 @@
     ]
   },
   "intent_routes": {
+    "holistic excellence": {
+      "read_first": [
+        "quality-contract:vnem-quality-contract",
+        "practice:holistic-excellence-intelligent-tradeoffs",
+        "coding-protocol:vnem-coding-protocol",
+        "visual-qa-protocol:vnem-visual-qa-protocol",
+        "practice:agentic-coding-execution",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "balanced implementation",
+        "quality profile controls",
+        "progressive enhancement",
+        "adaptive rendering/effects",
+        "scoped fallback with evidence"
+      ],
+      "choose_by": [
+        "no important domain silently regresses",
+        "performance and visuals/playability are both preserved when relevant",
+        "trade-offs are explicit and controllable",
+        "verification covers every detected domain"
+      ],
+      "report": [
+        "detected quality domains",
+        "triple-check result",
+        "trade-off decision",
+        "verification evidence"
+      ]
+    },
+    "triple check": {
+      "read_first": [
+        "quality-contract:vnem-quality-contract",
+        "practice:holistic-excellence-intelligent-tradeoffs",
+        "operating-protocol:vnem-operating-loop",
+        "coding-protocol:vnem-coding-protocol"
+      ],
+      "compare_options": [
+        "Analyze goal and hidden requirements",
+        "Architect balanced solution",
+        "Review sacrificed domains before final"
+      ],
+      "choose_by": [
+        "task goal clarity",
+        "domain balance",
+        "risk surface",
+        "verification evidence"
+      ],
+      "report": [
+        "Analyze",
+        "Architect",
+        "Review",
+        "residual trade-offs"
+      ]
+    },
+    "performance visuals": {
+      "read_first": [
+        "quality-contract:vnem-quality-contract",
+        "practice:holistic-excellence-intelligent-tradeoffs",
+        "design-architecture:vnem-design-architecture",
+        "visual-qa-protocol:vnem-visual-qa-protocol",
+        "practice:frontend",
+        "practice:browser-games"
+      ],
+      "compare_options": [
+        "render-path optimization",
+        "asset optimization",
+        "adaptive effects",
+        "quality profiles/settings GUI",
+        "progressive enhancement",
+        "fallback mode"
+      ],
+      "choose_by": [
+        "measured or plausible bottleneck",
+        "preserved first-screen quality",
+        "preserved interaction/game feel",
+        "user-controllable quality trade-off",
+        "browser/device verification"
+      ],
+      "report": [
+        "performance strategy",
+        "visual/playability preservation",
+        "settings or fallback",
+        "verification evidence"
+      ]
+    },
+    "playability": {
+      "read_first": [
+        "quality-contract:vnem-quality-contract",
+        "practice:holistic-excellence-intelligent-tradeoffs",
+        "practice:visual-experience",
+        "visual-qa-protocol:vnem-visual-qa-protocol",
+        "practice:browser-games"
+      ],
+      "compare_options": [
+        "input responsiveness",
+        "reward feedback",
+        "sound and motion polish",
+        "difficulty/restart loop",
+        "performance profile"
+      ],
+      "choose_by": [
+        "controls feel responsive",
+        "feedback follows action",
+        "game remains readable",
+        "performance does not destroy visual/game feel",
+        "mobile/touch path"
+      ],
+      "report": [
+        "playability verdict",
+        "interaction evidence",
+        "performance/visual balance",
+        "remaining feel risk"
+      ]
+    },
+    "quality gate": {
+      "read_first": [
+        "quality-contract:vnem-quality-contract",
+        "practice:holistic-excellence-intelligent-tradeoffs",
+        "operating-protocol:vnem-operating-loop",
+        "coding-protocol:vnem-coding-protocol",
+        "visual-qa-protocol:vnem-visual-qa-protocol"
+      ],
+      "compare_options": [
+        "pass",
+        "needs targeted revision",
+        "blocked until verification or approval"
+      ],
+      "choose_by": [
+        "detected domains",
+        "trade-off risks",
+        "verification coverage",
+        "approval gates",
+        "user-visible quality floor"
+      ],
+      "report": [
+        "quality gate verdict",
+        "domains checked",
+        "warnings",
+        "required verification"
+      ]
+    },
+    "production ready": {
+      "read_first": [
+        "quality-contract:vnem-quality-contract",
+        "practice:holistic-excellence-intelligent-tradeoffs",
+        "coding-protocol:vnem-coding-protocol",
+        "coding-playbook:feature-slice",
+        "practice:agentic-coding-execution",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "small production slice",
+        "settings/profile controls",
+        "accessibility/performance pass",
+        "test/eval gate",
+        "defer risky scope"
+      ],
+      "choose_by": [
+        "works end-to-end",
+        "quality domains are balanced",
+        "tests/build/rendered evidence exist",
+        "risks are explicit",
+        "rollback path"
+      ],
+      "report": [
+        "production readiness verdict",
+        "domains verified",
+        "known limitations",
+        "remaining approvals"
+      ]
+    },
+    "settings gui": {
+      "read_first": [
+        "quality-contract:vnem-quality-contract",
+        "practice:holistic-excellence-intelligent-tradeoffs",
+        "practice:frontend",
+        "design-architecture:vnem-design-architecture",
+        "visual-qa-protocol:vnem-visual-qa-protocol"
+      ],
+      "compare_options": [
+        "quality profile selector",
+        "advanced settings panel",
+        "adaptive auto mode",
+        "reduced-motion/accessibility controls",
+        "minimal fallback toggle"
+      ],
+      "choose_by": [
+        "clear user control",
+        "safe defaults",
+        "preserved visual quality",
+        "fast mode does not feel broken",
+        "mobile usability"
+      ],
+      "report": [
+        "settings surface",
+        "default profile",
+        "high-quality path",
+        "fast/fallback path",
+        "verification evidence"
+      ]
+    },
+    "intelligent tradeoff": {
+      "read_first": [
+        "quality-contract:vnem-quality-contract",
+        "practice:holistic-excellence-intelligent-tradeoffs",
+        "operating-protocol:vnem-operating-loop",
+        "practice:agentic-coding-execution",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "optimize bottleneck",
+        "add quality profiles",
+        "progressive enhancement",
+        "defer noncritical work",
+        "explicit fallback with user control"
+      ],
+      "choose_by": [
+        "constraint evidence",
+        "preserved important domains",
+        "user can choose quality/performance",
+        "honest residual risk",
+        "verification path"
+      ],
+      "report": [
+        "constraint",
+        "trade-off alternative",
+        "domain preservation",
+        "verification"
+      ]
+    },
     "aesthetic experience": {
       "read_first": [
         "practice:visual-experience",
@@ -3440,7 +3748,7 @@
   "operating_protocol": {
     "id": "vnem-operating-loop",
     "title": "vnem Operating Loop",
-    "summary": "A universal read-only operating protocol for coding agents: sense the repo, route task context, choose the smallest sufficient capability, constrain risk, pass an aesthetic perception gate for UI/game work, verify with evidence, and report residual uncertainty.",
+    "summary": "A universal read-only operating protocol for coding agents: sense the repo, route task context, choose the smallest sufficient capability, constrain risk, pass the holistic quality gate, verify with evidence, and report residual uncertainty.",
     "loop": [
       {
         "step": "Sense",
@@ -3457,6 +3765,10 @@
       {
         "step": "Constrain",
         "instruction": "State scope, non-goals, approval gates, and risky operations before mutation; keep installs, secrets, browsers, databases, deployments, payments, and production writes behind explicit approval."
+      },
+      {
+        "step": "Quality Gate",
+        "instruction": "Apply the vnem Quality Contract before implementation and before final output: analyze hidden requirements, architect performance and visuals/playability together, and review that no important domain was sacrificed."
       },
       {
         "step": "Build/Review/Debug",
@@ -3494,6 +3806,8 @@
         "inspect local project instructions and manifests",
         "run the narrowest relevant check first",
         "run broader tests or builds when blast radius justifies it",
+        "apply the Triple-Check Workflow: Analyze, Architect, Review",
+        "verify performance, visuals, playability, accessibility, maintainability, and safety were not silently traded away when those domains apply",
         "for UI or canvas work, verify in a real browser with desktop and mobile evidence",
         "for aesthetic UI/game work, perform a perception pass on screenshots before final: no oversized empty canvases, no accidental center-only glow, reward effects should follow user action, and sound should be restrained and pleasant",
         "report checks that could not run and why"
@@ -3507,6 +3821,81 @@
         "approval gates and residual uncertainty"
       ]
     }
+  },
+  "quality_contract": {
+    "id": "vnem-quality-contract",
+    "title": "vnem Quality Contract",
+    "summary": "A read-only AI-booster contract that forces coding agents to optimize performance, visuals, playability, accessibility, maintainability, and safety together instead of silently sacrificing one domain for another.",
+    "url_path": "/install/quality-contract.md",
+    "resource_uri": "vnem://install/quality-contract",
+    "principles": [
+      {
+        "name": "Holistic Excellence",
+        "rule": "Performance, visuals, playability, accessibility, maintainability, and safety are all part of done when they apply to the task."
+      },
+      {
+        "name": "Proactive Enhancement",
+        "rule": "Infer the stronger product the user actually wants, not only the smallest literal interpretation of the prompt."
+      },
+      {
+        "name": "Intelligent Trade-offs",
+        "rule": "When constraints conflict, engineer controls, modes, fallbacks, and evidence before lowering product quality."
+      }
+    ],
+    "triple_check": [
+      {
+        "step": "Analyze",
+        "instruction": "Identify the user's stated goal, hidden requirements, visible or interactive surfaces, risk domains, and what the user will judge even if they did not say it explicitly."
+      },
+      {
+        "step": "Architect",
+        "instruction": "Plan for maximum feasible performance and top-tier visuals/playability together. Prefer robust settings, quality profiles, progressive enhancement, fallback paths, asset optimization, and smarter algorithms over degrading the product."
+      },
+      {
+        "step": "Review",
+        "instruction": "Before final output or code delivery, verify no important domain was sacrificed. If a trade-off remains, state it explicitly with evidence and the next best mitigation."
+      }
+    ],
+    "quality_floor": [
+      "Do not solve one requirement by quietly damaging another important requirement.",
+      "Do not remove visual quality, game feel, accessibility, or verification just to claim better performance.",
+      "If performance conflicts with visuals or playability, first offer an intelligent alternative: quality toggles, settings GUI, adaptive effects, lazy loading, reduced-motion handling, asset optimization, feature flags, or scoped fallback.",
+      "For production-ready work, require evidence that the task still works, still looks/feels intentional when visual or interactive, and remains maintainable.",
+      "If evidence cannot be gathered, report the blocked verification and residual risk instead of claiming ship-quality."
+    ],
+    "domain_balance": [
+      "performance",
+      "visual quality",
+      "playability",
+      "accessibility",
+      "maintainability",
+      "safety"
+    ],
+    "tradeoff_policy": [
+      "Optimize the actual bottleneck before lowering quality.",
+      "Expose user-controllable quality/performance modes when both high performance and high visual quality matter.",
+      "Use progressive enhancement so capable devices get the best experience while constrained devices get a deliberate fallback.",
+      "Document any remaining trade-off plainly in the final report."
+    ],
+    "source_urls": [
+      "https://blog.modelcontextprotocol.io/posts/2025-11-03-using-server-instructions/",
+      "https://modelcontextprotocol.io/specification/2025-11-25/schema",
+      "https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/",
+      "https://www.anthropic.com/engineering/writing-tools-for-agents",
+      "https://code.claude.com/docs/en/best-practices",
+      "https://openai.com/index/introducing-codex/",
+      "https://www.anthropic.com/engineering/building-effective-agents",
+      "https://www.anthropic.com/engineering/claude-code-best-practices",
+      "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
+      "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
+      "https://docs.github.com/en/copilot/concepts/prompting/response-customization",
+      "https://code.visualstudio.com/docs/copilot/customization/custom-instructions",
+      "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
+      "https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md",
+      "https://docs.cursor.com/context/rules-for-ai",
+      "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+      "https://developers.openai.com/api/docs/guides/agent-evals"
+    ]
   },
   "coding_protocol": {
     "id": "vnem-coding-protocol",
@@ -3540,12 +3929,16 @@
       "backend api",
       "repo understanding",
       "large change",
+      "holistic excellence",
+      "quality gate",
+      "triple check",
+      "performance visuals",
       "verification loop",
       "context engineering"
     ]
   },
   "coding_playbooks": {
-    "generated_at": "2026-05-28T20:10:31.300Z",
+    "generated_at": "2026-05-29T14:18:20.946Z",
     "schema_version": "1.0.0",
     "safety": {
       "mode": "read-only-coding-playbooks",
@@ -3557,6 +3950,20 @@
     },
     "purpose": "Mode-specific coding-agent execution playbooks. Use them after the coding protocol to pick the right loop for feature work, debugging, tests, refactors, web apps, API/data changes, reviews, large changes, and failure recovery.",
     "selection_rule": "Select the first playbook whose mode, intents, or triggers match the task. If several match, prefer the one with the strongest verification ladder for the requested outcome.",
+    "quality_contract": {
+      "resource_uri": "vnem://install/quality-contract",
+      "triple_check": [
+        "Analyze",
+        "Architect",
+        "Review"
+      ],
+      "tradeoff_policy": [
+        "Optimize the actual bottleneck before lowering quality.",
+        "Expose user-controllable quality/performance modes when both high performance and high visual quality matter.",
+        "Use progressive enhancement so capable devices get the best experience while constrained devices get a deliberate fallback.",
+        "Document any remaining trade-off plainly in the final report."
+      ]
+    },
     "playbooks": [
       {
         "id": "feature-slice",
@@ -5137,6 +5544,7 @@
       "Route",
       "Choose",
       "Constrain",
+      "Quality Gate",
       "Build/Review/Debug",
       "Perceive",
       "Verify",
@@ -5147,6 +5555,10 @@
       "intent",
       "rubric",
       "coding_playbook",
+      "quality_gate",
+      "triple_check",
+      "domain_balance",
+      "tradeoff_policy",
       "read_first",
       "repo_sensing",
       "smallest_sufficient_capability",
@@ -5158,6 +5570,7 @@
     ],
     "read_first_for_build_tasks": [
       "operating protocol",
+      "quality contract",
       "coding protocol for app/web/feature/debug/refactor work",
       "matching coding playbook",
       "matching task rubric",
@@ -5173,6 +5586,8 @@
       "top matches",
       "chosen rubric",
       "chosen coding playbook",
+      "quality gate verdict",
+      "trade-off warnings",
       "choice",
       "why",
       "verification evidence",

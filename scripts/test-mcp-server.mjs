@@ -44,6 +44,7 @@ try {
     "vnem_get_source",
     "vnem_search",
     "vnem_recommend",
+    "vnem_quality_gate",
     "vnem_get_entry",
     "vnem_compare",
     "vnem_best_practices",
@@ -64,9 +65,15 @@ try {
   assert.equal(status.structuredContent?.safety?.installs_packages, false);
   assert.ok(status.structuredContent?.counts?.registry_entries >= 200, "expected vnem_status registry count");
   assert.ok(status.structuredContent?.mcp?.tools?.includes("vnem_route_intent"), "expected vnem_status to list route tool");
+  assert.ok(status.structuredContent?.mcp?.tools?.includes("vnem_quality_gate"), "expected vnem_status to list quality gate tool");
+  assert.equal(status.structuredContent?.counts?.quality_contract, true, "expected vnem_status quality contract count");
   assert.ok(
     status.structuredContent?.mcp?.resources?.includes("vnem://install/coding-protocol"),
     "expected vnem_status to list coding protocol resource"
+  );
+  assert.ok(
+    status.structuredContent?.mcp?.resources?.includes("vnem://install/quality-contract"),
+    "expected vnem_status to list quality contract resource"
   );
   assert.ok(
     status.structuredContent?.mcp?.resources?.includes("vnem://install/coding-playbooks"),
@@ -191,6 +198,23 @@ try {
       aestheticContract?.read_first?.includes("coding-playbook:web-app-rendered-quality"),
     "expected aesthetic web/game build work to include rendered-quality coding playbook"
   );
+  assert.equal(aestheticContract?.quality_gate?.verdict, "pass", "expected aesthetic work to include a passing quality gate");
+  assert.ok(
+    aestheticContract?.quality_gate?.detected_domains?.includes("visual"),
+    "expected aesthetic work to detect the visual quality domain"
+  );
+  assert.ok(
+    aestheticContract?.quality_gate?.detected_domains?.includes("playability"),
+    "expected aesthetic browser game work to detect playability"
+  );
+  assert.ok(
+    aestheticContract?.quality_gate?.triple_check?.map((item) => item.step).join(" ") === "Analyze Architect Review",
+    "expected aesthetic work to include the Triple-Check Workflow"
+  );
+  assert.ok(
+    aestheticContract?.read_first?.includes("quality-contract:vnem-quality-contract"),
+    "expected aesthetic work to read the quality contract first"
+  );
 
   const nonVisualRecommendation = await client.callTool({
     name: "vnem_recommend",
@@ -208,6 +232,69 @@ try {
     nonVisualRecommendation.structuredContent?.task_contract?.perception_gate,
     undefined,
     "expected non-visual work to avoid noisy design guidance"
+  );
+  const nonVisualQualityGate = nonVisualRecommendation.structuredContent?.task_contract?.quality_gate;
+  assert.ok(nonVisualQualityGate, "expected non-visual coding work to still include a quality gate");
+  assert.equal(
+    nonVisualQualityGate.detected_domains?.includes("visual"),
+    false,
+    "expected non-visual work to avoid noisy visual quality requirements"
+  );
+  assert.equal(
+    nonVisualQualityGate.detected_domains?.includes("playability"),
+    false,
+    "expected non-visual work to avoid noisy playability requirements"
+  );
+
+  const riskyQualityGate = await client.callTool({
+    name: "vnem_quality_gate",
+    arguments: {
+      task: "Build a polished browser game and make it run faster.",
+      proposed_approach: "Make it faster by removing animations and visual effects, ignore mobile, and skip browser screenshots."
+    }
+  });
+  assert.equal(riskyQualityGate.isError, undefined);
+  assert.equal(
+    riskyQualityGate.structuredContent?.quality_gate?.verdict,
+    "needs_revision",
+    "expected risky performance/visual trade-off to need revision"
+  );
+  assert.ok(
+    riskyQualityGate.structuredContent?.quality_gate?.detected_domains?.includes("performance"),
+    "expected risky quality gate to detect performance"
+  );
+  assert.ok(
+    riskyQualityGate.structuredContent?.quality_gate?.detected_domains?.includes("visual"),
+    "expected risky quality gate to detect visual work"
+  );
+  assert.ok(
+    riskyQualityGate.structuredContent?.quality_gate?.detected_domains?.includes("playability"),
+    "expected risky quality gate to detect playability"
+  );
+  assert.ok(
+    riskyQualityGate.structuredContent?.quality_gate?.tradeoff_warnings?.some((warning) =>
+      warning.alternative.includes("settings toggles")
+    ),
+    "expected risky quality gate to suggest settings/profile alternatives"
+  );
+  assert.ok(
+    riskyQualityGate.structuredContent?.quality_gate?.required_read_first?.includes("quality-contract:vnem-quality-contract"),
+    "expected risky quality gate to require the quality contract"
+  );
+
+  const quietQualityGate = await client.callTool({
+    name: "vnem_quality_gate",
+    arguments: {
+      task: "Refactor duplicate JavaScript helper functions without changing behavior.",
+      proposed_approach: "Extract a shared helper, preserve call sites, and run focused tests."
+    }
+  });
+  assert.equal(quietQualityGate.isError, undefined);
+  assert.equal(quietQualityGate.structuredContent?.quality_gate?.verdict, "pass");
+  assert.equal(
+    quietQualityGate.structuredContent?.quality_gate?.detected_domains?.includes("visual"),
+    false,
+    "expected non-visual quality gate to avoid visual requirements"
   );
 
   const entry = await client.callTool({
@@ -241,6 +328,10 @@ try {
   assert.ok(
     resources.resources.some((resource) => resource.uri === "vnem://install/operating-protocol"),
     "expected operating protocol resource"
+  );
+  assert.ok(
+    resources.resources.some((resource) => resource.uri === "vnem://install/quality-contract"),
+    "expected quality contract resource"
   );
   assert.ok(
     resources.resources.some((resource) => resource.uri === "vnem://install/coding-protocol"),
@@ -291,6 +382,13 @@ try {
     uri: "vnem://install/operating-protocol"
   });
   assert.ok(operatingProtocol.contents[0]?.text?.includes("Universal Loop"));
+
+  const qualityContract = await client.readResource({
+    uri: "vnem://install/quality-contract"
+  });
+  assert.ok(qualityContract.contents[0]?.text?.includes("vnem Quality Contract"));
+  assert.ok(qualityContract.contents[0]?.text?.includes("Triple-Check Workflow"));
+  assert.ok(qualityContract.contents[0]?.text?.includes("Holistic Excellence"));
 
   const codingProtocol = await client.readResource({
     uri: "vnem://install/coding-protocol"

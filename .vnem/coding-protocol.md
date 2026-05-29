@@ -1,6 +1,6 @@
 # vnem Coding Protocol
 
-Generated: 2026-05-28T20:10:31.300Z
+Generated: 2026-05-29T14:18:20.946Z
 
 A read-only coding execution protocol for making agents better at apps, web apps, features, debugging, refactors, and reviews through repo sensing, plan-first work, small diffs, and verifiable outcomes.
 
@@ -14,6 +14,7 @@ A read-only coding execution protocol for making agents better at apps, web apps
 ## How To Use
 
 - Read this file for coding tasks, app builds, web apps, feature work, bug fixes, refactors, and code reviews.
+- Read `.vnem/quality-contract.md` for the holistic quality gate: performance, visuals, playability, accessibility, maintainability, and safety must not be silently traded away.
 - Then use `.vnem/coding-playbooks.json` to select the closest concrete execution loop for the task mode.
 - Use `.vnem/search-index.json` to route the task and `.vnem/task-rubrics.json` to pick the quality bar.
 - Use `.vnem/design-architecture.md` and `.vnem/visual-qa-protocol.md` when the task has a visible app, web, UI, canvas, or game surface.
@@ -27,6 +28,15 @@ A read-only coding execution protocol for making agents better at apps, web apps
 - Use an explore -> plan -> implement -> verify loop for nontrivial changes instead of speculative editing.
 - Keep the context budget clean: read exact files, summarize discoveries, avoid broad doc dumps, and split unrelated work into a fresh session.
 - Prefer small reviewable diffs that reuse existing patterns over broad rewrites, new frameworks, or clever abstractions.
+- Apply the vnem Quality Contract so performance, visuals, playability, accessibility, maintainability, and safety improve together instead of trading one away silently.
+
+## Holistic Excellence Contract
+
+- Before coding, run the Triple-Check Workflow: Analyze the stated and hidden goal, Architect a balanced implementation, then Review for sacrificed domains before final.
+- Do not satisfy a performance request by quietly removing visual quality, game feel, accessibility, or verification when those domains matter.
+- If a fast path and high-quality path conflict, engineer a deliberate alternative such as a settings GUI, quality profile, adaptive effects, lazy loading, reduced-motion path, optimized assets, feature flag, or scoped fallback.
+- For production-ready work, preserve behavior, speed, visual polish, interaction feel, maintainability, and safety to the strongest feasible level for the repo and task.
+- If a trade-off remains, name it plainly with evidence, user impact, mitigation, and what could not be verified.
 
 ## Repo Sensing Contract
 
