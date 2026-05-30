@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-30T10:23:01.386Z",
+  "generated_at": "2026-05-30T14:32:16.710Z",
   "schema_version": "1.0.0",
   "package_version": "1.0.1",
   "release_version": "1.0.1",
@@ -385,6 +385,97 @@
       "exact match",
       "patch rejection",
       "atomic write"
+    ],
+    "semantic code search": [
+      "mcp_semantic_code_search",
+      "local rag",
+      "codebase embeddings",
+      "code search",
+      "concept search",
+      "file discovery",
+      "scale blindness"
+    ],
+    "local rag": [
+      "semantic code search",
+      "codebase embeddings",
+      "local vector index",
+      "private embeddings",
+      "retrieval",
+      "code search"
+    ],
+    "codebase embeddings": [
+      "semantic code search",
+      "local rag",
+      "hashed vectors",
+      "vector database",
+      "code chunks",
+      "workspace index"
+    ],
+    "proof engine": [
+      "self healing",
+      "verification tests",
+      "test driven",
+      "tdd",
+      "healing loop",
+      "silent logic failure",
+      "mcp_run_verification_tests"
+    ],
+    "self healing": [
+      "proof engine",
+      "healing loop",
+      "verification tests",
+      "red green",
+      "test first",
+      "repair loop"
+    ],
+    "verification tests": [
+      "mcp_run_verification_tests",
+      "proof engine",
+      "test first",
+      "healing loop",
+      "red green",
+      "unit test",
+      "integration test"
+    ],
+    "healing loop": [
+      "proof engine",
+      "self healing",
+      "verification tests",
+      "max attempts",
+      "test patch retest",
+      "silent logic failure"
+    ],
+    "ephemeral scripting": [
+      "mcp_execute_ephemeral_script",
+      "dynamic tool generation",
+      "temporary script",
+      "sandbox",
+      "one off parser",
+      "bulk transform"
+    ],
+    "dynamic tool generation": [
+      "ephemeral scripting",
+      "temporary script",
+      "ad hoc tool",
+      "roadblock parser",
+      "local script",
+      "sandboxed helper"
+    ],
+    "scale blindness": [
+      "semantic code search",
+      "local rag",
+      "codebase embeddings",
+      "massive codebase",
+      "file discovery",
+      "context collapse"
+    ],
+    "silent logic failure": [
+      "proof engine",
+      "verification tests",
+      "self healing",
+      "test first",
+      "healing loop",
+      "regression test"
     ],
     "install vnem": [
       "download vnem",
@@ -1767,6 +1858,294 @@
         "chosen patch method",
         "verification",
         "remaining corruption risk"
+      ]
+    },
+    "semantic code search": {
+      "read_first": [
+        "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+        "practice:omniscient-context-self-healing",
+        "precision-execution-protocol:vnem-precision-execution-protocol",
+        "coding-protocol:vnem-coding-protocol"
+      ],
+      "compare_options": [
+        "mcp_semantic_code_search",
+        "ripgrep for exact strings",
+        "manual file read after semantic target is found",
+        "full code graph later if language-specific structure is required"
+      ],
+      "choose_by": [
+        "query is conceptual rather than exact",
+        "repo is large enough that manual traversal wastes context",
+        "results return path, line numbers, snippets, and score",
+        "index is local and private"
+      ],
+      "report": [
+        "query",
+        "top paths",
+        "line ranges",
+        "index freshness",
+        "follow-up files read"
+      ]
+    },
+    "local rag": {
+      "read_first": [
+        "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+        "practice:omniscient-context-self-healing",
+        "practice:context-engineering"
+      ],
+      "compare_options": [
+        "local hashed-vector index",
+        "SQLite/vector store",
+        "external vector DB after approval",
+        "plain lexical search"
+      ],
+      "choose_by": [
+        "privacy",
+        "index freshness",
+        "latency",
+        "dependency weight",
+        "retrieval quality",
+        "maintenance cost"
+      ],
+      "report": [
+        "index engine",
+        "external API use",
+        "files/chunks indexed",
+        "freshness behavior"
+      ]
+    },
+    "codebase embeddings": {
+      "read_first": [
+        "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+        "practice:omniscient-context-self-healing",
+        "practice:context-engineering"
+      ],
+      "compare_options": [
+        "deterministic local embeddings",
+        "AST graph",
+        "hybrid lexical-semantic search",
+        "hosted embeddings after approval"
+      ],
+      "choose_by": [
+        "no paid external API required",
+        "workspace privacy preserved",
+        "line-number snippets returned",
+        "stale indexes detected"
+      ],
+      "report": [
+        "embedding/storage method",
+        "privacy boundary",
+        "query quality",
+        "staleness handling"
+      ]
+    },
+    "proof engine": {
+      "read_first": [
+        "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+        "practice:omniscient-context-self-healing",
+        "coding-protocol:vnem-coding-protocol",
+        "coding-playbook:test-first-evidence",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "test-first red/green loop",
+        "existing regression test",
+        "focused build/typecheck",
+        "manual verification if no test surface exists"
+      ],
+      "choose_by": [
+        "test proves the requested behavior",
+        "red phase fails before implementation when possible",
+        "green phase passes after patch",
+        "loop has max attempts and blocks honestly"
+      ],
+      "report": [
+        "test written or selected",
+        "red verdict",
+        "green verdict",
+        "attempt count",
+        "remaining proof gap"
+      ]
+    },
+    "self healing": {
+      "read_first": [
+        "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+        "practice:omniscient-context-self-healing",
+        "precision-execution-protocol:vnem-precision-execution-protocol",
+        "practice:agentic-coding-execution"
+      ],
+      "compare_options": [
+        "patch and rerun",
+        "narrow failing test first",
+        "semantic search before patching",
+        "blocked after max attempts"
+      ],
+      "choose_by": [
+        "failure output is actionable",
+        "patch is surgical",
+        "attempt limit prevents token burn",
+        "human handoff includes concrete stdout/stderr"
+      ],
+      "report": [
+        "healing status",
+        "attempts",
+        "patch evidence",
+        "test output",
+        "handoff if blocked"
+      ]
+    },
+    "verification tests": {
+      "read_first": [
+        "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+        "practice:omniscient-context-self-healing",
+        "coding-playbook:test-first-evidence",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "unit test",
+        "integration test",
+        "browser test",
+        "static check",
+        "existing project command"
+      ],
+      "choose_by": [
+        "closest automated proof",
+        "fast feedback",
+        "low flake risk",
+        "matches user-visible acceptance criteria"
+      ],
+      "report": [
+        "command",
+        "phase",
+        "verdict",
+        "stdout/stderr summary",
+        "residual coverage risk"
+      ]
+    },
+    "healing loop": {
+      "read_first": [
+        "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+        "practice:omniscient-context-self-healing",
+        "precision-execution-protocol:vnem-precision-execution-protocol"
+      ],
+      "compare_options": [
+        "red -> patch -> green loop",
+        "green-only regression repair",
+        "blocked escalation"
+      ],
+      "choose_by": [
+        "max five attempts",
+        "smallest patch each time",
+        "no silent pass without verification",
+        "failure reason reported"
+      ],
+      "report": [
+        "phase",
+        "attempts",
+        "current verdict",
+        "next action",
+        "blocked reason"
+      ]
+    },
+    "ephemeral scripting": {
+      "read_first": [
+        "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+        "practice:omniscient-context-self-healing",
+        "practice:precision-execution-dynamic-knowledge"
+      ],
+      "compare_options": [
+        "mcp_execute_ephemeral_script",
+        "repo-native script after approval",
+        "manual one-off command",
+        "blocked when script needs unsafe APIs"
+      ],
+      "choose_by": [
+        "temporary helper solves a concrete roadblock",
+        "no permanent workspace clutter",
+        "dangerous APIs are blocked",
+        "stdout is sufficient evidence"
+      ],
+      "report": [
+        "language",
+        "sandbox cleanup",
+        "stdout summary",
+        "blocked risk if rejected"
+      ]
+    },
+    "dynamic tool generation": {
+      "read_first": [
+        "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+        "practice:omniscient-context-self-healing",
+        "practice:mcp-server-selection"
+      ],
+      "compare_options": [
+        "ephemeral script",
+        "temporary fixture parser",
+        "new durable tool after repeated need",
+        "do not proceed when unsafe"
+      ],
+      "choose_by": [
+        "roadblock is unique",
+        "script is bounded and local",
+        "no network/secrets/destructive API",
+        "cleanup verified"
+      ],
+      "report": [
+        "generated helper purpose",
+        "execution result",
+        "cleanup",
+        "whether durable tooling is justified later"
+      ]
+    },
+    "scale blindness": {
+      "read_first": [
+        "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+        "practice:omniscient-context-self-healing",
+        "coding-protocol:vnem-coding-protocol"
+      ],
+      "compare_options": [
+        "semantic concept search",
+        "code graph",
+        "targeted rg",
+        "manual architecture map"
+      ],
+      "choose_by": [
+        "context saved",
+        "retrieval precision",
+        "index freshness",
+        "line-number evidence"
+      ],
+      "report": [
+        "search path",
+        "files found",
+        "context avoided",
+        "next read targets"
+      ]
+    },
+    "silent logic failure": {
+      "read_first": [
+        "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+        "practice:omniscient-context-self-healing",
+        "coding-playbook:test-first-evidence",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "write failing test first",
+        "reuse existing test",
+        "property/fixture test",
+        "browser interaction proof"
+      ],
+      "choose_by": [
+        "test catches wrong behavior",
+        "red phase observed",
+        "green phase observed",
+        "no success claim without proof"
+      ],
+      "report": [
+        "failure prevented",
+        "test evidence",
+        "green proof",
+        "remaining manual risk"
       ]
     },
     "install vnem": {
@@ -4158,6 +4537,81 @@
       "https://developers.openai.com/api/docs/guides/agent-evals"
     ]
   },
+  "omniscient_self_healing_protocol": {
+    "id": "vnem-omniscient-self-healing-protocol",
+    "title": "vnem Omniscient Context And Self-Healing Protocol",
+    "summary": "An opt-in precision-server protocol for reducing scale blindness and silent logic failures with local semantic code search, red/green verification loops, and sandboxed ephemeral scripts.",
+    "url_path": "/install/omniscient-self-healing-protocol.md",
+    "resource_uri": "vnem://install/omniscient-self-healing-protocol",
+    "tools": [
+      {
+        "name": "mcp_semantic_code_search",
+        "type": "read_only_local_index",
+        "use_when": "A worker needs to locate code by concept, behavior, or responsibility before reading files in a large workspace.",
+        "contract": "Use a local private code index to return exact file paths, line ranges, snippets, matched terms, and scores without external embedding APIs."
+      },
+      {
+        "name": "mcp_run_verification_tests",
+        "type": "bounded_execution",
+        "use_when": "A worker needs executable proof that a feature, bug fix, or logic change works before reporting success.",
+        "contract": "Run a safe verification command in red, green, or check phase; track attempts by task id; return pass, red_confirmed, needs_healing, or blocked after max five attempts."
+      },
+      {
+        "name": "mcp_execute_ephemeral_script",
+        "type": "temporary_sandboxed_execution",
+        "use_when": "A worker hits a narrow roadblock that needs a one-off local parser, transformer, or data-inspection helper.",
+        "contract": "Run a short Node/Python helper in an isolated temporary cwd with sanitized env, dangerous APIs blocked, stdout/stderr captured, timeout enforced, and cleanup reported."
+      }
+    ],
+    "semantic_index_policy": [
+      "Build or refresh the local code index when the precision server boots or when watched files change.",
+      "Index text/code files only; skip .git, node_modules, build outputs, runtime caches, binary files, and oversized files.",
+      "Chunk files with line numbers and store deterministic local vectors plus snippets in .vnem-runtime instead of calling paid or external embedding APIs.",
+      "Use semantic search to identify candidate files, then read the returned file ranges before patching or reasoning about exact behavior.",
+      "Treat semantic scores as retrieval signals, not ground truth. Verify with direct file reads and tests."
+    ],
+    "proof_engine_policy": [
+      "Before adding new feature or logic code, write or select the automated test that represents the user's acceptance criteria.",
+      "Prefer a red phase that fails before implementation; a test that passes before code changes is not proof of the missing behavior.",
+      "Patch with mcp_apply_diff_patch only after a failing test or confirmed bug reproduction, then rerun the verification command.",
+      "Repeat patch-and-test only until the command passes or the hard max-attempt limit is reached.",
+      "If the loop blocks, report the failing command, attempt count, stdout/stderr summary, and the smallest human decision needed."
+    ],
+    "ephemeral_script_policy": [
+      "Use ephemeral scripts for unique local roadblocks, not as a replacement for durable project tooling.",
+      "Keep scripts small, deterministic, and local; do not use secrets, network APIs, process spawning, destructive filesystem operations, or shell control tricks.",
+      "Run scripts from a temporary sandbox and delete the script/sandbox after execution.",
+      "Promote a helper into a reviewed repo script only if the same need repeats and the user approves durable tooling."
+    ],
+    "worker_prompt_additions": [
+      "Before manual repo traversal, call mcp_semantic_code_search with the concept you need.",
+      "Before feature or logic code, create or identify the failing automated test and run mcp_run_verification_tests with phase=red when possible.",
+      "After every patch, rerun mcp_run_verification_tests with phase=green and stop only on pass or blocked.",
+      "Use mcp_execute_ephemeral_script only for short local roadblocks and report cleanup status."
+    ],
+    "source_urls": [
+      "https://www.anthropic.com/engineering/building-effective-agents",
+      "https://www.anthropic.com/engineering/writing-tools-for-agents",
+      "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+      "https://code.claude.com/docs/en/best-practices",
+      "https://developers.openai.com/codex/guides/agents-md",
+      "https://modelcontextprotocol.io/specification/2025-11-25/schema",
+      "https://modelcontextprotocol.io/specification/2025-06-18/server/tools",
+      "https://github.com/DeusData/codebase-memory-mcp",
+      "https://github.com/qdrant/mcp-server-qdrant",
+      "https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/",
+      "https://context7.com/",
+      "https://www.anthropic.com/engineering/claude-code-best-practices",
+      "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
+      "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
+      "https://docs.github.com/en/copilot/concepts/prompting/response-customization",
+      "https://code.visualstudio.com/docs/copilot/customization/custom-instructions",
+      "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
+      "https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md",
+      "https://docs.cursor.com/context/rules-for-ai",
+      "https://developers.openai.com/api/docs/guides/agent-evals"
+    ]
+  },
   "install_guide": {
     "id": "vnem-install-guide",
     "title": "vnem Install And MCP Guide",
@@ -4224,7 +4678,7 @@
     ]
   },
   "coding_playbooks": {
-    "generated_at": "2026-05-30T10:23:01.386Z",
+    "generated_at": "2026-05-30T14:32:16.710Z",
     "schema_version": "1.0.0",
     "safety": {
       "mode": "read-only-coding-playbooks",
@@ -5846,6 +6300,11 @@
       "shared_state",
       "reflection_loop",
       "precision_execution",
+      "semantic_code_search",
+      "local_code_index",
+      "verification_tests",
+      "healing_loop",
+      "ephemeral_script",
       "documentation_fetched",
       "patch_dry_run",
       "safe_terminal_command",
@@ -5867,6 +6326,7 @@
       "quality contract",
       "orchestration protocol for complex app/game/research work",
       "precision execution protocol when exact patching/current docs/safe terminal tooling is available",
+      "omniscient self-healing protocol when semantic search/test-healing/ephemeral scripts are available",
       "coding protocol for app/web/feature/debug/refactor work",
       "matching coding playbook",
       "matching task rubric",
@@ -5884,6 +6344,8 @@
       "chosen coding playbook",
       "orchestration pattern",
       "precision execution evidence",
+      "semantic search evidence",
+      "verification/healing-loop evidence",
       "quality gate verdict",
       "trade-off warnings",
       "choice",
@@ -5901,6 +6363,497 @@
     "risk_flags": -1
   },
   "documents": [
+    {
+      "id": "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "kind": "omniscient-self-healing-protocol",
+      "title": "vnem Omniscient Context And Self-Healing Protocol",
+      "summary": "An opt-in precision-server protocol for reducing scale blindness and silent logic failures with local semantic code search, red/green verification loops, and sandboxed ephemeral scripts.",
+      "url_path": "/install/omniscient-self-healing-protocol.md",
+      "trust_tier": "verified",
+      "type": "omniscient-self-healing-protocol",
+      "score": 27,
+      "tags": [
+        "semantic code search",
+        "local rag",
+        "codebase embeddings",
+        "proof engine",
+        "self healing",
+        "verification tests",
+        "healing loop",
+        "ephemeral scripting",
+        "dynamic tool generation",
+        "scale blindness",
+        "silent logic failure",
+        "mcp_semantic_code_search",
+        "mcp_run_verification_tests",
+        "mcp_execute_ephemeral_script"
+      ],
+      "use_cases": [
+        "mcp_semantic_code_search: A worker needs to locate code by concept, behavior, or responsibility before reading files in a large workspace.",
+        "mcp_run_verification_tests: A worker needs executable proof that a feature, bug fix, or logic change works before reporting success.",
+        "mcp_execute_ephemeral_script: A worker hits a narrow roadblock that needs a one-off local parser, transformer, or data-inspection helper.",
+        "Build or refresh the local code index when the precision server boots or when watched files change.",
+        "Index text/code files only; skip .git, node_modules, build outputs, runtime caches, binary files, and oversized files.",
+        "Chunk files with line numbers and store deterministic local vectors plus snippets in .vnem-runtime instead of calling paid or external embedding APIs.",
+        "Use semantic search to identify candidate files, then read the returned file ranges before patching or reasoning about exact behavior.",
+        "Treat semantic scores as retrieval signals, not ground truth. Verify with direct file reads and tests.",
+        "Before adding new feature or logic code, write or select the automated test that represents the user's acceptance criteria.",
+        "Prefer a red phase that fails before implementation; a test that passes before code changes is not proof of the missing behavior.",
+        "Patch with mcp_apply_diff_patch only after a failing test or confirmed bug reproduction, then rerun the verification command.",
+        "Repeat patch-and-test only until the command passes or the hard max-attempt limit is reached.",
+        "If the loop blocks, report the failing command, attempt count, stdout/stderr summary, and the smallest human decision needed.",
+        "Use ephemeral scripts for unique local roadblocks, not as a replacement for durable project tooling.",
+        "Keep scripts small, deterministic, and local; do not use secrets, network APIs, process spawning, destructive filesystem operations, or shell control tricks.",
+        "Run scripts from a temporary sandbox and delete the script/sandbox after execution.",
+        "Promote a helper into a reviewed repo script only if the same need repeats and the user approves durable tooling."
+      ],
+      "best_for": [
+        "Large repositories where agents need conceptual code search before reading files.",
+        "Feature and bug-fix work where a red/green verification loop should block silent logic failures.",
+        "One-off local parsing or transformation roadblocks that need temporary helper scripts without permanent workspace clutter."
+      ],
+      "risk_flags": [
+        "opt-in mutation-capable server",
+        "bounded terminal execution",
+        "temporary script execution",
+        "local index cache"
+      ],
+      "source_urls": [
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/omniscient-self-healing-protocol.md",
+        "https://www.anthropic.com/engineering/building-effective-agents",
+        "https://www.anthropic.com/engineering/writing-tools-for-agents",
+        "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "https://code.claude.com/docs/en/best-practices",
+        "https://developers.openai.com/codex/guides/agents-md",
+        "https://modelcontextprotocol.io/specification/2025-11-25/schema",
+        "https://modelcontextprotocol.io/specification/2025-06-18/server/tools",
+        "https://github.com/DeusData/codebase-memory-mcp",
+        "https://github.com/qdrant/mcp-server-qdrant",
+        "https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/",
+        "https://context7.com/",
+        "https://www.anthropic.com/engineering/claude-code-best-practices",
+        "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
+        "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
+        "https://docs.github.com/en/copilot/concepts/prompting/response-customization",
+        "https://code.visualstudio.com/docs/copilot/customization/custom-instructions",
+        "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
+        "https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md",
+        "https://docs.cursor.com/context/rules-for-ai",
+        "https://developers.openai.com/api/docs/guides/agent-evals"
+      ],
+      "keywords": [
+        "vnem-omniscient-self-healing-protocol",
+        "vnem",
+        "omniscient",
+        "context",
+        "self-healing",
+        "protocol",
+        "an",
+        "opt-in",
+        "precision-server",
+        "reducing",
+        "scale",
+        "blindness",
+        "silent",
+        "logic",
+        "failures",
+        "local",
+        "semantic",
+        "search",
+        "red/green",
+        "verification",
+        "loops",
+        "sandboxed",
+        "ephemeral",
+        "scripts.",
+        "rag",
+        "codebase",
+        "embeddings",
+        "proof",
+        "engine",
+        "self",
+        "healing",
+        "tests",
+        "loop",
+        "scripting",
+        "dynamic",
+        "tool",
+        "generation",
+        "failure",
+        "mcp",
+        "run",
+        "execute",
+        "script",
+        "read",
+        "only",
+        "index",
+        "worker",
+        "to",
+        "locate",
+        "by",
+        "concept",
+        "behavior",
+        "or",
+        "responsibility",
+        "reading",
+        "files",
+        "in",
+        "large",
+        "workspace.",
+        "private",
+        "return",
+        "exact",
+        "file",
+        "paths",
+        "line",
+        "ranges",
+        "snippets",
+        "matched",
+        "terms",
+        "scores",
+        "without",
+        "external",
+        "embedding",
+        "apis.",
+        "bounded",
+        "execution",
+        "executable",
+        "feature",
+        "bug",
+        "fix",
+        "change",
+        "works",
+        "reporting",
+        "success.",
+        "safe",
+        "command",
+        "red",
+        "green",
+        "check",
+        "phase",
+        "track",
+        "attempts",
+        "task",
+        "id",
+        "pass",
+        "confirmed",
+        "blocked",
+        "after",
+        "max",
+        "five",
+        "attempts.",
+        "temporary",
+        "hits",
+        "narrow",
+        "roadblock",
+        "one-off",
+        "parser",
+        "transformer",
+        "data-inspection",
+        "helper.",
+        "short",
+        "node/python",
+        "helper",
+        "isolated",
+        "cwd",
+        "sanitized",
+        "env",
+        "dangerous",
+        "apis",
+        "stdout/stderr",
+        "captured",
+        "timeout",
+        "enforced",
+        "cleanup",
+        "reported.",
+        "build",
+        "refresh",
+        "precision",
+        "server",
+        "boots",
+        "watched",
+        "change.",
+        "text/code",
+        "skip",
+        ".git",
+        "node",
+        "modules",
+        "outputs",
+        "runtime",
+        "caches",
+        "binary",
+        "oversized",
+        "files.",
+        "chunk",
+        "numbers",
+        "store",
+        "deterministic",
+        "vectors",
+        "plus",
+        ".vnem-runtime",
+        "instead",
+        "of",
+        "calling",
+        "paid",
+        "identify",
+        "candidate",
+        "then",
+        "returned",
+        "patching",
+        "reasoning",
+        "about",
+        "behavior.",
+        "as",
+        "retrieval",
+        "signals",
+        "not",
+        "ground",
+        "truth.",
+        "verify",
+        "direct",
+        "reads",
+        "tests.",
+        "adding",
+        "new",
+        "write",
+        "select",
+        "automated",
+        "test",
+        "represents",
+        "user",
+        "acceptance",
+        "criteria.",
+        "prefer",
+        "fails",
+        "implementation",
+        "passes",
+        "changes",
+        "is",
+        "missing",
+        "patch",
+        "apply",
+        "diff",
+        "failing",
+        "reproduction",
+        "rerun",
+        "command.",
+        "repeat",
+        "patch-and-test",
+        "until",
+        "hard",
+        "max-attempt",
+        "limit",
+        "reached.",
+        "if",
+        "blocks",
+        "report",
+        "attempt",
+        "count",
+        "summary",
+        "smallest",
+        "human",
+        "decision",
+        "needed.",
+        "scripts",
+        "unique",
+        "roadblocks",
+        "replacement",
+        "durable",
+        "tooling.",
+        "keep",
+        "small"
+      ]
+    },
+    {
+      "id": "practice:omniscient-context-self-healing",
+      "kind": "best-practice",
+      "title": "Omniscient Context And Self-Healing",
+      "summary": "Solve scale blindness and silent logic failures by finding code through local semantic search, proving behavior with red/green tests, and using temporary bounded scripts only for narrow roadblocks.",
+      "url_path": "/install/best-practices.md",
+      "trust_tier": "verified",
+      "type": "best-practice",
+      "score": 26,
+      "tags": [
+        "semantic code search",
+        "local rag",
+        "codebase embeddings",
+        "proof engine",
+        "self healing",
+        "verification tests",
+        "healing loop",
+        "ephemeral scripting",
+        "dynamic tool generation",
+        "scale blindness",
+        "silent logic failure",
+        "mcp_semantic_code_search",
+        "mcp_run_verification_tests",
+        "mcp_execute_ephemeral_script"
+      ],
+      "use_cases": [
+        "Before manually traversing a large repository, ask a semantic code-search tool for the concept and then read only the returned path/line ranges.",
+        "Keep indexing local and private by default. External embeddings or hosted vector databases require explicit approval and a data-handling review.",
+        "For new features or logic changes, write or select the automated test first. Prefer a red phase that proves the test catches the missing behavior.",
+        "Patch only after the red phase or a confirmed failing regression. Use surgical patching, then rerun the verification command until it passes or the bounded attempt limit is reached.",
+        "Cap self-healing loops at five attempts. If the loop hits the limit, stop and report the failing command, stdout/stderr, attempted fixes, and the smallest human decision needed.",
+        "Use ephemeral scripts only for one-off local parsing, data shaping, or bulk inspection. They should run in a temporary sandbox, block dangerous APIs, return stdout, and delete themselves afterward.",
+        "Do not present tests as mathematical proof of all correctness. Present them as executable evidence tied to the user's acceptance criteria and name residual coverage risk."
+      ],
+      "best_for": [
+        "Before manually traversing a large repository, ask a semantic code-search tool for the concept and then read only the returned path/line ranges.",
+        "Keep indexing local and private by default. External embeddings or hosted vector databases require explicit approval and a data-handling review.",
+        "For new features or logic changes, write or select the automated test first. Prefer a red phase that proves the test catches the missing behavior.",
+        "Patch only after the red phase or a confirmed failing regression. Use surgical patching, then rerun the verification command until it passes or the bounded attempt limit is reached.",
+        "Cap self-healing loops at five attempts. If the loop hits the limit, stop and report the failing command, stdout/stderr, attempted fixes, and the smallest human decision needed.",
+        "Use ephemeral scripts only for one-off local parsing, data shaping, or bulk inspection. They should run in a temporary sandbox, block dangerous APIs, return stdout, and delete themselves afterward.",
+        "Do not present tests as mathematical proof of all correctness. Present them as executable evidence tied to the user's acceptance criteria and name residual coverage risk."
+      ],
+      "risk_flags": [],
+      "source_urls": [
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/best-practices.md",
+        "https://www.anthropic.com/engineering/building-effective-agents",
+        "https://www.anthropic.com/engineering/writing-tools-for-agents",
+        "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "https://code.claude.com/docs/en/best-practices",
+        "https://developers.openai.com/codex/guides/agents-md",
+        "https://modelcontextprotocol.io/specification/2025-11-25/schema",
+        "https://modelcontextprotocol.io/specification/2025-06-18/server/tools",
+        "https://github.com/DeusData/codebase-memory-mcp",
+        "https://github.com/qdrant/mcp-server-qdrant",
+        "https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/",
+        "https://context7.com/",
+        "https://www.anthropic.com/engineering/claude-code-best-practices",
+        "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
+        "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
+        "https://docs.github.com/en/copilot/concepts/prompting/response-customization",
+        "https://code.visualstudio.com/docs/copilot/customization/custom-instructions",
+        "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
+        "https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md",
+        "https://docs.cursor.com/context/rules-for-ai",
+        "https://developers.openai.com/api/docs/guides/agent-evals"
+      ],
+      "keywords": [
+        "omniscient",
+        "context",
+        "self-healing",
+        "solve",
+        "scale",
+        "blindness",
+        "silent",
+        "logic",
+        "failures",
+        "by",
+        "finding",
+        "through",
+        "local",
+        "semantic",
+        "search",
+        "proving",
+        "behavior",
+        "red/green",
+        "tests",
+        "using",
+        "temporary",
+        "bounded",
+        "scripts",
+        "only",
+        "narrow",
+        "roadblocks.",
+        "rag",
+        "codebase",
+        "embeddings",
+        "proof",
+        "engine",
+        "self",
+        "healing",
+        "verification",
+        "loop",
+        "ephemeral",
+        "scripting",
+        "dynamic",
+        "tool",
+        "generation",
+        "failure",
+        "mcp",
+        "run",
+        "execute",
+        "script",
+        "manually",
+        "traversing",
+        "large",
+        "repository",
+        "ask",
+        "code-search",
+        "concept",
+        "then",
+        "read",
+        "returned",
+        "path/line",
+        "ranges.",
+        "keep",
+        "indexing",
+        "private",
+        "default.",
+        "external",
+        "or",
+        "hosted",
+        "vector",
+        "databases",
+        "require",
+        "explicit",
+        "approval",
+        "data-handling",
+        "review.",
+        "new",
+        "features",
+        "changes",
+        "write",
+        "select",
+        "automated",
+        "test",
+        "first.",
+        "prefer",
+        "red",
+        "phase",
+        "proves",
+        "catches",
+        "missing",
+        "behavior.",
+        "patch",
+        "after",
+        "confirmed",
+        "failing",
+        "regression.",
+        "surgical",
+        "patching",
+        "rerun",
+        "command",
+        "until",
+        "it",
+        "passes",
+        "attempt",
+        "limit",
+        "is",
+        "reached.",
+        "cap",
+        "loops",
+        "at",
+        "five",
+        "attempts.",
+        "if",
+        "hits",
+        "stop",
+        "report",
+        "stdout/stderr",
+        "attempted",
+        "fixes",
+        "smallest",
+        "human",
+        "decision",
+        "needed.",
+        "one-off",
+        "parsing"
+      ]
+    },
     {
       "id": "precision-execution-protocol:vnem-precision-execution-protocol",
       "kind": "precision-execution-protocol",
@@ -41305,6 +42258,7 @@
       "entry:ai-dataforb2b-dataforb2b"
     ],
     ".git": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "precision-execution-protocol:vnem-precision-execution-protocol"
     ],
     ".net": [
@@ -41312,6 +42266,9 @@
     ],
     ".net-oriented": [
       "entry:semantic-kernel"
+    ],
+    ".vnem-runtime": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol"
     ],
     ".vnem/agent-workspace.md": [
       "practice:codex-vnem-setup"
@@ -43510,6 +44467,7 @@
       "entry:ai-abmeter-abmeter"
     ],
     "about": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "task-rubric:backend_api",
       "source:ui-architecture-sources"
     ],
@@ -43547,6 +44505,7 @@
       "entry:mcp-crawl4ai-rag"
     ],
     "acceptance": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
       "coding-playbook:feature-slice",
@@ -43788,6 +44747,7 @@
       "install-guide:vnem-install-guide"
     ],
     "adding": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "source:mcp-core-and-registry",
       "visual-qa-protocol:vnem-visual-qa-protocol",
       "practice:codex-vnem-setup",
@@ -43875,6 +44835,8 @@
       "entry:ai-buywhere-buywhere-mcp"
     ],
     "after": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "practice:precision-execution-dynamic-knowledge",
       "practice:multi-agent-orchestration-reflection",
       "design-architecture:vnem-design-architecture",
@@ -45487,6 +46449,7 @@
       "entry:ai-bezal-local-commerce"
     ],
     "an": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:precision-execution-dynamic-knowledge",
       "orchestration-protocol:vnem-orchestration-protocol",
@@ -45949,6 +46912,7 @@
       "task-rubric:agentic_coding"
     ],
     "apis": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:agentic-coding-execution",
       "practice:code-simplification",
@@ -45966,6 +46930,7 @@
       "entry:opentabs"
     ],
     "apis.": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "entry:context7-mcp",
       "prompt-pattern:agentic-coding-task"
     ],
@@ -46036,6 +47001,7 @@
       "precision-execution-protocol:vnem-precision-execution-protocol"
     ],
     "apply": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:precision-execution-dynamic-knowledge",
       "quality-contract:vnem-quality-contract",
@@ -46071,6 +47037,7 @@
       "prompt-pattern:memory-bank-initialization"
     ],
     "approval": [
+      "practice:omniscient-context-self-healing",
       "practice:precision-execution-dynamic-knowledge",
       "practice:holistic-excellence-intelligent-tradeoffs",
       "coding-playbook:large-change-checkpoints",
@@ -46231,6 +47198,7 @@
       "entry:codebase-memory-mcp"
     ],
     "as": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:precision-execution-dynamic-knowledge",
       "practice:multi-agent-orchestration-reflection",
@@ -46478,6 +47446,7 @@
       "entry:openai-swarm"
     ],
     "ask": [
+      "practice:omniscient-context-self-healing",
       "practice:codex-vnem-setup",
       "practice:code-review",
       "practice:evals",
@@ -46595,6 +47564,7 @@
       "design-architecture:vnem-design-architecture"
     ],
     "at": [
+      "practice:omniscient-context-self-healing",
       "coding-protocol:vnem-coding-protocol",
       "practice:mcp-gateway-tool-routing",
       "practice:zero-trust-agent-gateway",
@@ -46613,11 +47583,21 @@
     "attach": [
       "practice:observability-and-tracing"
     ],
+    "attempt": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing"
+    ],
+    "attempted": [
+      "practice:omniscient-context-self-healing"
+    ],
     "attempts": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "coding-playbook:failure-recovery"
     ],
     "attempts.": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "precision-execution-protocol:vnem-precision-execution-protocol"
     ],
     "attorney": [
@@ -46726,6 +47706,8 @@
       "entry:github-mcp-server"
     ],
     "automated": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "practice:agent-tooling",
       "entry:ai-adeu-adeu",
       "entry:github-copilot-coding-agent"
@@ -47229,6 +48211,8 @@
       "prompt-pattern:source-intake"
     ],
     "behavior": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "practice:holistic-excellence-intelligent-tradeoffs",
       "coding-playbook:api-data-contract",
       "coding-playbook:refactor-preserve",
@@ -47421,6 +48405,8 @@
       "practice:code-simplification"
     ],
     "behavior.": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "coding-playbook:api-data-contract",
       "source:mcp-core-and-registry",
       "practice:browser-games",
@@ -47774,6 +48760,7 @@
       "entry:ai-byteray-byteray-mcp"
     ],
     "binary": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "task-rubric:interactive_canvas"
     ],
@@ -47790,6 +48777,10 @@
     "blind": [
       "practice:security"
     ],
+    "blindness": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing"
+    ],
     "blobs": [
       "practice:context-engineering"
     ],
@@ -47798,6 +48789,7 @@
       "practice:precision-execution-dynamic-knowledge"
     ],
     "blocked": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:precision-execution-dynamic-knowledge",
       "orchestration-protocol:vnem-orchestration-protocol",
@@ -47818,6 +48810,7 @@
       "prompt-pattern:memory-bank-initialization"
     ],
     "blocks": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "prompt-pattern:prompt-enhancement",
       "entry:jscpd"
     ],
@@ -47865,6 +48858,9 @@
     ],
     "booster": [
       "practice:holistic-excellence-intelligent-tradeoffs"
+    ],
+    "boots": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol"
     ],
     "bootstrap": [
       "entry:rules-template-memory-bank"
@@ -48054,6 +49050,8 @@
       "prompt-pattern:memory-policy"
     ],
     "bounded": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:precision-execution-dynamic-knowledge",
       "prompt-pattern:subagent-delegation",
@@ -48256,6 +49254,7 @@
       "practice:payments"
     ],
     "bug": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
       "coding-playbook:api-data-contract",
@@ -48282,6 +49281,7 @@
       "prompt-pattern:code-review"
     ],
     "build": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "orchestration-protocol:vnem-orchestration-protocol",
       "practice:agentic-coding-execution",
@@ -48415,6 +49415,8 @@
       "entry:ai-buywhere-catalog-api"
     ],
     "by": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:precision-execution-dynamic-knowledge",
       "quality-contract:vnem-quality-contract",
@@ -48477,6 +49479,9 @@
     "cache": [
       "entry:codebase-memory-mcp"
     ],
+    "caches": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol"
+    ],
     "cadence": [
       "task-rubric:data_memory",
       "source:secure-mcp-distribution"
@@ -48528,6 +49533,7 @@
       "entry:ai-example4-xmp4"
     ],
     "calling": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "task-rubric:aesthetic_experience",
       "task-rubric:frontend_ui",
       "entry:vercel-ai-sdk"
@@ -48599,6 +49605,9 @@
     "can-send-test-data-to-model-providers": [
       "entry:promptfoo",
       "entry:ragas"
+    ],
+    "candidate": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol"
     ],
     "candidate.": [
       "prompt-pattern:source-intake"
@@ -49009,6 +50018,7 @@
       "design-architecture:vnem-design-architecture"
     ],
     "cap": [
+      "practice:omniscient-context-self-healing",
       "entry:ai-constellationfinance-constellation-finance-mcp"
     ],
     "capabilities": [
@@ -49038,6 +50048,9 @@
       "task-rubric:frontend_ui",
       "practice:research-source-intake",
       "practice:observability-and-tracing"
+    ],
+    "captured": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol"
     ],
     "captures": [
       "entry:ast-grep"
@@ -49069,6 +50082,9 @@
     ],
     "catalogs": [
       "source:secure-mcp-distribution"
+    ],
+    "catches": [
+      "practice:omniscient-context-self-healing"
     ],
     "categories": [
       "entry:ai-obaron-aeo"
@@ -49133,6 +50149,7 @@
       "entry:ai-helixar-mcp"
     ],
     "change": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:precision-execution-dynamic-knowledge",
       "practice:agentic-coding-execution",
@@ -49148,6 +50165,7 @@
       "prompt-pattern:prompt-enhancement"
     ],
     "change.": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "practice:code-simplification",
       "practice:evals",
       "practice:prompt-engineering",
@@ -49170,6 +50188,8 @@
       "prompt-pattern:visual-polish-review"
     ],
     "changes": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "orchestration-protocol:vnem-orchestration-protocol",
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
@@ -49227,6 +50247,7 @@
       "practice:deployment"
     ],
     "check": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "quality-contract:vnem-quality-contract",
       "practice:holistic-excellence-intelligent-tradeoffs",
       "practice:agentic-coding-execution",
@@ -49364,6 +50385,9 @@
     ],
     "chrome-extension": [
       "entry:opentabs"
+    ],
+    "chunk": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol"
     ],
     "chunking": [
       "entry:mcp-crawl4ai-rag"
@@ -49667,6 +50691,7 @@
       "prompt-pattern:code-simplification"
     ],
     "cleanup": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "coding-playbook:refactor-preserve",
       "entry:claude-code-subagents"
@@ -49837,6 +50862,9 @@
       "coding-playbook:bug-root-cause",
       "entry:openai-codex-cli"
     ],
+    "code-search": [
+      "practice:omniscient-context-self-healing"
+    ],
     "code-simplification": [
       "coding-playbook:refactor-preserve",
       "coding-playbook:large-change-checkpoints",
@@ -49854,6 +50882,8 @@
       "entry:playwright-mcp"
     ],
     "codebase": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "practice:coding-agents",
       "practice:subagents-and-multi-agent",
       "entry:claude-code-subagents",
@@ -50072,6 +51102,8 @@
       "practice:zero-trust-agent-gateway"
     ],
     "command": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:precision-execution-dynamic-knowledge",
       "practice:agentic-coding-execution",
@@ -50087,6 +51119,9 @@
     ],
     "command-menu": [
       "practice:frontend"
+    ],
+    "command.": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol"
     ],
     "commands": [
       "precision-execution-protocol:vnem-precision-execution-protocol",
@@ -50450,6 +51485,10 @@
     "computation": [
       "entry:ai-lucasandersen-mlp-tax"
     ],
+    "concept": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing"
+    ],
     "concerns.": [
       "source:secure-mcp-distribution"
     ],
@@ -50521,6 +51560,10 @@
     "confirm": [
       "task-rubric:data_memory",
       "task-rubric:interactive_canvas"
+    ],
+    "confirmed": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing"
     ],
     "confirming": [
       "entry:roo-code"
@@ -50671,6 +51714,8 @@
       "prompt-pattern:memory-bank-initialization"
     ],
     "context": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:precision-execution-dynamic-knowledge",
       "practice:multi-agent-orchestration-reflection",
@@ -50936,6 +51981,7 @@
       "entry:mcp-crawl4ai-rag"
     ],
     "count": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "practice:precision-execution-dynamic-knowledge"
     ],
     "country": [
@@ -51055,6 +52101,7 @@
       "prompt-pattern:source-intake"
     ],
     "criteria.": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "task-rubric:docs_prompt",
       "practice:prompt-engineering",
       "prompt-pattern:agentic-coding-task",
@@ -51634,6 +52681,7 @@
       "entry:continue-dev"
     ],
     "cwd": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "precision-execution-protocol:vnem-precision-execution-protocol"
     ],
     "daemon": [
@@ -51650,6 +52698,9 @@
     ],
     "damaging": [
       "quality-contract:vnem-quality-contract"
+    ],
+    "dangerous": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol"
     ],
     "dark": [
       "practice:visual-experience",
@@ -51899,6 +52950,12 @@
     "data-access": [
       "entry:llamaindex-agents"
     ],
+    "data-handling": [
+      "practice:omniscient-context-self-healing"
+    ],
+    "data-inspection": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol"
+    ],
     "data-loss": [
       "prompt-pattern:code-review"
     ],
@@ -51950,6 +53007,7 @@
       "entry:qdrant-mcp-server"
     ],
     "databases": [
+      "practice:omniscient-context-self-healing",
       "practice:mcp-gateway-tool-routing",
       "operating-protocol:vnem-operating-loop",
       "source:platform-and-data-connectors",
@@ -52050,6 +53108,8 @@
       "entry:opentabs"
     ],
     "decision": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "practice:persistent-memory-context-files",
       "task-rubric:agent_tooling",
       "task-rubric:data_memory",
@@ -52116,6 +53176,9 @@
       "entry:ripgrep",
       "entry:ugrep",
       "entry:mcp-crawl4ai-rag"
+    ],
+    "default.": [
+      "practice:omniscient-context-self-healing"
     ],
     "defaults": [
       "entry:mcp-server-mysql"
@@ -52585,6 +53648,7 @@
       "practice:browser-games"
     ],
     "deterministic": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "orchestration-protocol:vnem-orchestration-protocol",
       "practice:multi-agent-orchestration-reflection",
       "practice:zero-trust-agent-gateway",
@@ -52638,6 +53702,7 @@
       "visual-qa-protocol:vnem-visual-qa-protocol"
     ],
     "diff": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:precision-execution-dynamic-knowledge",
       "practice:agentic-coding-execution",
@@ -52675,6 +53740,7 @@
       "entry:codebase-memory-mcp"
     ],
     "direct": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "practice:mcp-gateway-tool-routing",
       "entry:lunar-mcpx"
     ],
@@ -53211,6 +54277,7 @@
       "practice:human-approval-and-durability"
     ],
     "durable": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "practice:persistent-memory-context-files",
       "task-rubric:data_memory",
       "entry:codex-agents-md",
@@ -53230,6 +54297,8 @@
       "entry:openai-codex-cli"
     ],
     "dynamic": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:precision-execution-dynamic-knowledge",
       "entry:github-mcp-server",
@@ -53387,6 +54456,7 @@
       "entry:semantic-kernel"
     ],
     "embedding": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "task-rubric:docs_prompt",
       "entry:qdrant-mcp-server",
       "entry:mcp-crawl4ai-rag"
@@ -53395,6 +54465,8 @@
       "entry:qdrant-mcp-server"
     ],
     "embeddings": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "entry:qdrant-mcp-server"
     ],
     "emerging": [
@@ -53434,6 +54506,9 @@
     "enforceable": [
       "source:agentic-gateway-security"
     ],
+    "enforced": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol"
+    ],
     "enforcement": [
       "practice:zero-trust-agent-gateway"
     ],
@@ -53442,6 +54517,8 @@
       "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "engine": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:browser-games",
       "entry:ai-adeu-adeu",
@@ -53570,6 +54647,9 @@
     "enum": [
       "entry:knip"
     ],
+    "env": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol"
+    ],
     "environment": [
       "task-rubric:agent_tooling",
       "practice:agent-tooling",
@@ -53595,6 +54675,8 @@
       "coding-playbook:failure-recovery"
     ],
     "ephemeral": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "entry:ai-aliengiraffe-spotdb"
     ],
     "equal": [
@@ -53814,6 +54896,7 @@
       "entry:ai-dynsoft-sac"
     ],
     "exact": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:precision-execution-dynamic-knowledge",
       "coding-protocol:vnem-coding-protocol",
@@ -53866,10 +54949,13 @@
       "entry:google-agent2agent-protocol"
     ],
     "executable": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "coding-playbook:test-first-evidence",
       "task-rubric:docs_prompt"
     ],
     "execute": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:precision-execution-dynamic-knowledge",
       "practice:security",
@@ -53880,6 +54966,7 @@
       "practice:payments"
     ],
     "execution": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:precision-execution-dynamic-knowledge",
       "practice:agentic-coding-execution",
@@ -53985,6 +55072,7 @@
       "prompt-pattern:bug-debug"
     ],
     "explicit": [
+      "practice:omniscient-context-self-healing",
       "practice:precision-execution-dynamic-knowledge",
       "practice:multi-agent-orchestration-reflection",
       "practice:holistic-excellence-intelligent-tradeoffs",
@@ -54244,6 +55332,8 @@
       "entry:opentabs"
     ],
     "external": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "task-rubric:agentic_coding",
       "task-rubric:docs_prompt",
       "source:platform-and-data-connectors",
@@ -54454,14 +55544,19 @@
       "practice:ide-agent-selection"
     ],
     "failing": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "practice:agentic-coding-execution",
       "coding-playbook:bug-root-cause",
       "prompt-pattern:bug-debug"
     ],
     "fails": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "precision-execution-protocol:vnem-precision-execution-protocol"
     ],
     "failure": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
       "coding-playbook:failure-recovery",
@@ -54475,6 +55570,8 @@
       "coding-playbook:failure-recovery"
     ],
     "failures": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "orchestration-protocol:vnem-orchestration-protocol",
       "practice:observability-and-tracing",
       "entry:ai-nullary-nullary",
@@ -54537,6 +55634,7 @@
       "quality-contract:vnem-quality-contract"
     ],
     "feature": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "quality-contract:vnem-quality-contract",
       "practice:holistic-excellence-intelligent-tradeoffs",
       "practice:agentic-coding-execution",
@@ -54557,6 +55655,7 @@
       "orchestration-protocol:vnem-orchestration-protocol"
     ],
     "features": [
+      "practice:omniscient-context-self-healing",
       "coding-protocol:vnem-coding-protocol",
       "source:agentic-coding-best-practices",
       "source:coding-agent-clients",
@@ -54789,6 +55888,7 @@
       "prompt-pattern:eval-design"
     ],
     "file": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "coding-playbook:large-change-checkpoints",
       "coding-playbook:review-risk-scan",
@@ -54809,6 +55909,7 @@
       "prompt-pattern:memory-bank-initialization"
     ],
     "files": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "orchestration-protocol:vnem-orchestration-protocol",
       "practice:agentic-coding-execution",
@@ -54848,6 +55949,7 @@
       "entry:rules-template-memory-bank"
     ],
     "files.": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "practice:evals",
       "entry:ai-mcpcap-mcpcap",
       "prompt-pattern:codex-implementation",
@@ -54939,6 +56041,7 @@
       "entry:qdrant-mcp-server"
     ],
     "finding": [
+      "practice:omniscient-context-self-healing",
       "entry:ripgrep"
     ],
     "findings": [
@@ -55001,6 +56104,7 @@
       "prompt-pattern:ui-build"
     ],
     "first.": [
+      "practice:omniscient-context-self-healing",
       "practice:precision-execution-dynamic-knowledge",
       "practice:holistic-excellence-intelligent-tradeoffs",
       "coding-playbook:review-risk-scan",
@@ -55026,7 +56130,12 @@
       "task-rubric:frontend_ui",
       "prompt-pattern:ui-build"
     ],
+    "five": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing"
+    ],
     "fix": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
       "coding-playbook:api-data-contract",
@@ -55053,6 +56162,7 @@
       "practice:browser-games"
     ],
     "fixes": [
+      "practice:omniscient-context-self-healing",
       "source:agentic-coding-best-practices",
       "visual-qa-protocol:vnem-visual-qa-protocol",
       "task-rubric:aesthetic_experience"
@@ -55507,6 +56617,8 @@
       "source:agentic-coding-best-practices"
     ],
     "generation": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "visual-qa-protocol:vnem-visual-qa-protocol",
       "task-rubric:aesthetic_experience",
       "entry:context7-mcp",
@@ -55794,6 +56906,9 @@
       "entry:ai-alpic-test-test-mcp-server",
       "prompt-pattern:prompt-enhancement"
     ],
+    "green": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol"
+    ],
     "grep": [
       "entry:ai-boolsai-grep",
       "entry:ripgrep",
@@ -55814,6 +56929,9 @@
     ],
     "groq": [
       "entry:swarms"
+    ],
+    "ground": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol"
     ],
     "grounded": [
       "entry:ai-fathom-api-mcp",
@@ -56135,6 +57253,7 @@
       "entry:covenant-research"
     ],
     "hard": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "practice:mcp-gateway-tool-routing",
       "entry:openai-prompt-engineering-guide",
       "prompt-pattern:mcp-gateway-evaluation"
@@ -56173,6 +57292,10 @@
       "entry:ai-newzai-api-newzai",
       "entry:ai-newzai-api-news-mcp"
     ],
+    "healing": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing"
+    ],
     "health": [
       "entry:ai-linkguard-linkguard-mcp"
     ],
@@ -56199,9 +57322,11 @@
       "entry:ac-tandem-docs-mcp"
     ],
     "helper": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "practice:agentic-coding-execution"
     ],
     "helper.": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "practice:code-simplification"
     ],
     "helpers": [
@@ -56335,6 +57460,10 @@
       "task-rubric:data_memory",
       "entry:aider"
     ],
+    "hits": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing"
+    ],
     "hmda": [
       "entry:ai-clarid-hmda"
     ],
@@ -56376,6 +57505,7 @@
       "entry:ai-cueapi-mcp"
     ],
     "hosted": [
+      "practice:omniscient-context-self-healing",
       "practice:model-and-provider-selection",
       "source:browser-and-ui-verification",
       "practice:search",
@@ -56688,6 +57818,8 @@
       "coding-playbook:large-change-checkpoints"
     ],
     "human": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "practice:ide-agent-selection",
       "practice:zero-trust-agent-gateway",
       "practice:human-approval-and-durability",
@@ -56735,6 +57867,7 @@
       "visual-qa-protocol:vnem-visual-qa-protocol"
     ],
     "id": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "orchestration-protocol:vnem-orchestration-protocol",
       "entry:microsoft-mcp-gateway"
     ],
@@ -56763,6 +57896,7 @@
       "practice:human-approval-and-durability"
     ],
     "identify": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "quality-contract:vnem-quality-contract",
       "prompt-pattern:agent-workspace-architecture",
       "prompt-pattern:code-simplification",
@@ -56781,6 +57915,8 @@
       "practice:human-approval-and-durability"
     ],
     "if": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:precision-execution-dynamic-knowledge",
       "quality-contract:vnem-quality-contract",
@@ -56829,6 +57965,7 @@
       "prompt-pattern:codex-implementation"
     ],
     "implementation": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
       "practice:codex-vnem-setup",
@@ -56919,6 +58056,7 @@
       "entry:langsmith"
     ],
     "in": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:precision-execution-dynamic-knowledge",
       "design-architecture:vnem-design-architecture",
@@ -57146,6 +58284,7 @@
       "practice:multi-agent-orchestration-reflection"
     ],
     "index": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "source:mcp-core-and-registry",
       "operating-protocol:vnem-operating-loop",
       "source:documentation-ingestion",
@@ -57175,6 +58314,7 @@
       "entry:codebase-memory-mcp"
     ],
     "indexing": [
+      "practice:omniscient-context-self-healing",
       "practice:zero-trust-agent-gateway",
       "entry:llamaindex-agents",
       "entry:codebase-memory-mcp",
@@ -57595,6 +58735,7 @@
       "entry:ai-artidrop-artidrop"
     ],
     "instead": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:precision-execution-dynamic-knowledge",
       "practice:multi-agent-orchestration-reflection",
@@ -57845,6 +58986,8 @@
       "entry:ai-lucasandersen-mlp-tax"
     ],
     "is": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:precision-execution-dynamic-knowledge",
       "orchestration-protocol:vnem-orchestration-protocol",
@@ -58099,6 +59242,9 @@
     "iso/iec": [
       "entry:ai-complyhat-compliance"
     ],
+    "isolated": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol"
+    ],
     "isolating": [
       "coding-playbook:api-data-contract"
     ],
@@ -58131,6 +59277,7 @@
       "entry:openhands"
     ],
     "it": [
+      "practice:omniscient-context-self-healing",
       "practice:multi-agent-orchestration-reflection",
       "quality-contract:vnem-quality-contract",
       "install-guide:vnem-install-guide",
@@ -58274,6 +59421,8 @@
       "entry:ai-kawacode-mcp"
     ],
     "keep": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:precision-execution-dynamic-knowledge",
       "coding-protocol:vnem-coding-protocol",
@@ -58511,6 +59660,8 @@
       "entry:ai-clarid-hmda"
     ],
     "large": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
       "coding-playbook:failure-recovery",
@@ -59059,6 +60210,8 @@
       "prompt-pattern:codex-implementation"
     ],
     "limit": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "entry:github-mcp-server"
     ],
     "limited": [
@@ -59075,6 +60228,7 @@
       "entry:kaimo"
     ],
     "line": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "prompt-pattern:code-review"
     ],
     "line.": [
@@ -59337,6 +60491,8 @@
       "entry:ai-bankee-inferventis-mcp"
     ],
     "local": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "install-guide:vnem-install-guide",
       "practice:agentic-coding-execution",
       "coding-playbook:feature-slice",
@@ -59387,6 +60543,9 @@
     "locally": [
       "task-rubric:interactive_canvas"
     ],
+    "locate": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol"
+    ],
     "location": [
       "entry:ai-bezal-local-commerce",
       "entry:clude"
@@ -59404,6 +60563,8 @@
       "practice:zero-trust-agent-gateway"
     ],
     "logic": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "orchestration-protocol:vnem-orchestration-protocol",
       "practice:multi-agent-orchestration-reflection",
       "practice:browser-games"
@@ -59476,6 +60637,8 @@
       "entry:ai-boolsai-directory"
     ],
     "loop": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "orchestration-protocol:vnem-orchestration-protocol",
       "practice:multi-agent-orchestration-reflection",
       "practice:agentic-coding-execution",
@@ -59492,6 +60655,8 @@
       "entry:crewai"
     ],
     "loops": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "source:agentic-coding-best-practices",
       "practice:coding-agents",
       "entry:openai-agents-sdk",
@@ -59958,6 +61123,7 @@
       "entry:mcp-crawl4ai-rag"
     ],
     "manually": [
+      "practice:omniscient-context-self-healing",
       "task-rubric:interactive_canvas",
       "entry:vnem-mcp"
     ],
@@ -60020,6 +61186,9 @@
       "prompt-pattern:visual-build",
       "entry:ast-grep",
       "entry:rules-template-memory-bank"
+    ],
+    "matched": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol"
     ],
     "matches": [
       "precision-execution-protocol:vnem-precision-execution-protocol",
@@ -60091,6 +61260,12 @@
     "maturity": [
       "entry:kaplay"
     ],
+    "max": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol"
+    ],
+    "max-attempt": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol"
+    ],
     "maximum": [
       "practice:multi-agent-orchestration-reflection",
       "quality-contract:vnem-quality-contract"
@@ -60107,6 +61282,8 @@
       "entry:knip"
     ],
     "mcp": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:precision-execution-dynamic-knowledge",
       "install-guide:vnem-install-guide",
@@ -60763,6 +61940,8 @@
       "entry:ast-grep"
     ],
     "missing": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "coding-playbook:review-risk-scan",
       "task-rubric:docs_prompt",
       "practice:prompt-engineering",
@@ -60891,6 +62070,7 @@
       "entry:opentabs"
     ],
     "modules": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "practice:prompt-engineering",
       "entry:dspy",
       "prompt-pattern:code-simplification"
@@ -61126,6 +62306,8 @@
       "practice:observability-and-tracing"
     ],
     "narrow": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "orchestration-protocol:vnem-orchestration-protocol",
       "practice:multi-agent-orchestration-reflection",
@@ -61214,6 +62396,8 @@
       "entry:rapier-js"
     ],
     "needed.": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "prompt-pattern:bug-debug",
       "prompt-pattern:mcp-gateway-evaluation",
       "prompt-pattern:source-intake",
@@ -61468,6 +62652,8 @@
       "practice:security"
     ],
     "new": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
       "practice:code-simplification",
@@ -61614,6 +62800,9 @@
     "no-data": [
       "entry:ai-bringyour-bringyour"
     ],
+    "node": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol"
+    ],
     "node-native": [
       "entry:mastra"
     ],
@@ -61623,6 +62812,9 @@
       "entry:jscpd",
       "entry:knip",
       "entry:stripe-agent-toolkit"
+    ],
+    "node/python": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol"
     ],
     "noise": [
       "practice:visual-experience",
@@ -61679,6 +62871,7 @@
       "practice:search"
     ],
     "not": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:precision-execution-dynamic-knowledge",
       "quality-contract:vnem-quality-contract",
@@ -61786,6 +62979,7 @@
       "entry:kaplay"
     ],
     "numbers": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "source:agentic-coding-best-practices"
     ],
     "oauth": [
@@ -61844,6 +63038,7 @@
       "entry:ai-filegraph-document-processing"
     ],
     "of": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:precision-execution-dynamic-knowledge",
       "practice:multi-agent-orchestration-reflection",
@@ -61901,6 +63096,10 @@
     ],
     "ollama": [
       "entry:cline"
+    ],
+    "omniscient": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing"
     ],
     "on": [
       "precision-execution-protocol:vnem-precision-execution-protocol",
@@ -61962,6 +63161,10 @@
       "entry:playcanvas-engine",
       "entry:kaimo"
     ],
+    "one-off": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing"
+    ],
     "one-screen": [
       "entry:phaser"
     ],
@@ -61973,6 +63176,8 @@
       "entry:ai-deepledger-mcp"
     ],
     "only": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:precision-execution-dynamic-knowledge",
       "practice:multi-agent-orchestration-reflection",
@@ -62393,6 +63598,7 @@
       "practice:deployment"
     ],
     "opt-in": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:precision-execution-dynamic-knowledge"
     ],
@@ -62441,6 +63647,8 @@
       "entry:ugrep"
     ],
     "or": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:precision-execution-dynamic-knowledge",
       "orchestration-protocol:vnem-orchestration-protocol",
@@ -62874,6 +64082,7 @@
       "entry:rapier-js"
     ],
     "outputs": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "practice:evals",
       "practice:observability-and-tracing",
       "entry:pydantic-ai",
@@ -62932,6 +64141,7 @@
       "practice:persistent-memory-context-files"
     ],
     "oversized": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "practice:visual-experience",
       "design-architecture:vnem-design-architecture",
       "visual-qa-protocol:vnem-visual-qa-protocol"
@@ -63035,6 +64245,7 @@
       "entry:playwright-mcp"
     ],
     "paid": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "source:coding-agent-clients",
       "source:browser-and-ui-verification",
       "task-rubric:frontend_ui",
@@ -63065,7 +64276,11 @@
       "entry:ai-childadhd-library"
     ],
     "parser": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "entry:ai-offerhopper-mcp-shopping-optimizer"
+    ],
+    "parsing": [
+      "practice:omniscient-context-self-healing"
     ],
     "part": [
       "quality-contract:vnem-quality-contract",
@@ -63085,6 +64300,7 @@
       "coding-protocol:vnem-coding-protocol"
     ],
     "pass": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "orchestration-protocol:vnem-orchestration-protocol",
       "practice:multi-agent-orchestration-reflection",
       "design-architecture:vnem-design-architecture",
@@ -63109,6 +64325,8 @@
       "practice:precision-execution-dynamic-knowledge"
     ],
     "passes": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "prompt-pattern:visual-build"
     ],
     "password": [
@@ -63122,12 +64340,17 @@
       "source:platform-and-data-connectors"
     ],
     "patch": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:precision-execution-dynamic-knowledge",
       "orchestration-protocol:vnem-orchestration-protocol",
       "prompt-pattern:bug-debug",
       "prompt-pattern:visual-polish-review",
       "entry:openhands"
+    ],
+    "patch-and-test": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol"
     ],
     "patch.": [
       "practice:precision-execution-dynamic-knowledge"
@@ -63136,6 +64359,8 @@
       "precision-execution-protocol:vnem-precision-execution-protocol"
     ],
     "patching": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "coding-playbook:bug-root-cause"
     ],
     "path": [
@@ -63156,7 +64381,11 @@
       "prompt-pattern:agent-workspace-architecture",
       "prompt-pattern:ui-build"
     ],
+    "path/line": [
+      "practice:omniscient-context-self-healing"
+    ],
     "paths": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "quality-contract:vnem-quality-contract",
       "coding-playbook:large-change-checkpoints",
       "task-rubric:backend_api",
@@ -63607,6 +64836,10 @@
     "petstore": [
       "entry:ai-com-mcp-petstore"
     ],
+    "phase": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing"
+    ],
     "phased": [
       "prompt-pattern:zero-trust-gateway-roadmap"
     ],
@@ -63870,6 +65103,7 @@
       "entry:opentabs"
     ],
     "plus": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "entry:rapier-js",
       "entry:codebase-memory-mcp",
       "entry:kaimo"
@@ -64038,10 +65272,16 @@
       "entry:ast-grep"
     ],
     "precision": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:precision-execution-dynamic-knowledge"
     ],
+    "precision-server": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol"
+    ],
     "prefer": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "practice:precision-execution-dynamic-knowledge",
       "quality-contract:vnem-quality-contract",
       "practice:agentic-coding-execution",
@@ -64260,6 +65500,8 @@
       "entry:ai-donethat-donethat"
     ],
     "private": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "practice:persistent-memory-context-files",
       "task-rubric:data_memory",
       "task-rubric:docs_prompt",
@@ -64751,6 +65993,8 @@
       "entry:letta"
     ],
     "proof": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "practice:payments"
     ],
     "propagation": [
@@ -64789,6 +66033,7 @@
       "entry:github-copilot-coding-agent"
     ],
     "protocol": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "orchestration-protocol:vnem-orchestration-protocol",
       "coding-protocol:vnem-coding-protocol",
@@ -64857,6 +66102,7 @@
       "source:secure-mcp-distribution"
     ],
     "proves": [
+      "practice:omniscient-context-self-healing",
       "practice:agentic-coding-execution"
     ],
     "provide": [
@@ -64879,6 +66125,7 @@
       "entry:lunar-mcpx"
     ],
     "proving": [
+      "practice:omniscient-context-self-healing",
       "coding-playbook:bug-root-cause",
       "prompt-pattern:code-simplification"
     ],
@@ -65134,6 +66381,8 @@
       "task-rubric:refactor"
     ],
     "rag": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "entry:mastra",
       "entry:arize-phoenix",
       "entry:llamaindex-agents",
@@ -65151,8 +66400,12 @@
       "practice:research-source-intake"
     ],
     "ranges": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:precision-execution-dynamic-knowledge"
+    ],
+    "ranges.": [
+      "practice:omniscient-context-self-healing"
     ],
     "rank": [
       "practice:search"
@@ -65205,6 +66458,10 @@
     "reachability": [
       "task-rubric:refactor"
     ],
+    "reached.": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing"
+    ],
     "react": [
       "coding-playbook:web-app-rendered-quality",
       "task-rubric:frontend_ui",
@@ -65212,6 +66469,8 @@
       "entry:vercel-ai-sdk"
     ],
     "read": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
@@ -65265,6 +66524,7 @@
       "entry:ai-obaron-aeo"
     ],
     "reading": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "design-architecture:vnem-design-architecture",
       "entry:vnem-mcp",
       "entry:ripgrep",
@@ -65275,6 +66535,7 @@
       "entry:rapier-js"
     ],
     "reads": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "source:coding-agent-clients",
       "entry:codebase-memory-mcp"
     ],
@@ -65328,6 +66589,7 @@
       "prompt-pattern:subagent-delegation"
     ],
     "reasoning": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "entry:ai-nocturnus-logic-server"
     ],
     "recall": [
@@ -65430,8 +66692,16 @@
     "recursively": [
       "entry:ripgrep"
     ],
+    "red": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing"
+    ],
     "red-team": [
       "entry:promptfoo"
+    ],
+    "red/green": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing"
     ],
     "redact": [
       "practice:zero-trust-agent-gateway"
@@ -65469,6 +66739,7 @@
       "prompt-pattern:visual-build"
     ],
     "reducing": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "practice:code-simplification"
     ],
     "refactor": [
@@ -65530,6 +66801,9 @@
     "reflects": [
       "entry:kaplay"
     ],
+    "refresh": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol"
+    ],
     "reg": [
       "entry:ai-clarid-compliance"
     ],
@@ -65568,6 +66842,9 @@
     ],
     "regression-test": [
       "entry:promptfoo"
+    ],
+    "regression.": [
+      "practice:omniscient-context-self-healing"
     ],
     "regressions": [
       "coding-playbook:review-risk-scan",
@@ -65720,6 +66997,7 @@
       "entry:swe-agent"
     ],
     "repeat": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "practice:persistent-memory-context-files"
     ],
     "repeat/minmax": [
@@ -65757,6 +67035,7 @@
       "entry:dspy"
     ],
     "replacement": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "task-rubric:refactor",
       "entry:ripgrep"
     ],
@@ -65798,6 +67077,8 @@
       "entry:codex-agents-md"
     ],
     "report": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "quality-contract:vnem-quality-contract",
       "operating-protocol:vnem-operating-loop",
@@ -65814,7 +67095,11 @@
     "reported": [
       "task-rubric:agentic_coding"
     ],
+    "reported.": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol"
+    ],
     "reporting": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "practice:agentic-coding-execution"
     ],
     "reports": [
@@ -65904,6 +67189,7 @@
       "entry:ripgrep"
     ],
     "repository": [
+      "practice:omniscient-context-self-healing",
       "source:mcp-core-and-registry",
       "practice:persistent-memory-context-files",
       "practice:ide-agent-selection",
@@ -66084,6 +67370,9 @@
     "represented": [
       "entry:langgraph"
     ],
+    "represents": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol"
+    ],
     "reproduce": [
       "prompt-pattern:bug-debug"
     ],
@@ -66097,6 +67386,7 @@
       "coding-playbook:bug-root-cause"
     ],
     "reproduction": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "coding-protocol:vnem-coding-protocol",
       "entry:covenant-research"
     ],
@@ -66122,6 +67412,7 @@
       "entry:github-copilot-coding-agent"
     ],
     "require": [
+      "practice:omniscient-context-self-healing",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:multi-agent-orchestration-reflection",
       "quality-contract:vnem-quality-contract",
@@ -66215,6 +67506,8 @@
       "entry:mcp-crawl4ai-rag"
     ],
     "rerun": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "practice:code-simplification"
     ],
     "research": [
@@ -66289,6 +67582,9 @@
     "response": [
       "task-rubric:backend_api"
     ],
+    "responsibility": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol"
+    ],
     "responsible": [
       "practice:subagents-and-multi-agent"
     ],
@@ -66350,6 +67646,7 @@
       "practice:observability-and-tracing"
     ],
     "retrieval": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "source:documentation-ingestion",
       "practice:context-engineering",
       "practice:search",
@@ -66396,11 +67693,14 @@
       "practice:backend"
     ],
     "return": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:backend",
       "entry:pydantic-ai"
     ],
     "returned": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "practice:precision-execution-dynamic-knowledge"
     ],
     "reusable": [
@@ -66435,6 +67735,7 @@
       "coding-playbook:review-risk-scan"
     ],
     "review.": [
+      "practice:omniscient-context-self-healing",
       "source:platform-and-data-connectors",
       "practice:research-source-intake",
       "practice:mcp-server-selection",
@@ -66892,6 +68193,15 @@
     "rmf.": [
       "entry:ai-modulos-demo-booking"
     ],
+    "roadblock": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol"
+    ],
+    "roadblocks": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol"
+    ],
+    "roadblocks.": [
+      "practice:omniscient-context-self-healing"
+    ],
     "roadmap": [
       "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:excalibur-js"
@@ -67045,6 +68355,8 @@
       "entry:claude-code-memory"
     ],
     "run": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:precision-execution-dynamic-knowledge",
       "orchestration-protocol:vnem-orchestration-protocol",
@@ -67095,6 +68407,7 @@
       "entry:covenant-research"
     ],
     "runtime": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "source:agentic-coding-best-practices",
       "practice:model-and-provider-selection",
       "source:agentic-gateway-security",
@@ -67148,6 +68461,7 @@
       "prompt-pattern:codex-implementation"
     ],
     "safe": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:precision-execution-dynamic-knowledge",
       "install-guide:vnem-install-guide",
@@ -67205,7 +68519,11 @@
       "source:platform-and-data-connectors"
     ],
     "sandboxed": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "entry:openhands"
+    ],
+    "sanitized": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol"
     ],
     "satisfies": [
       "practice:agentic-coding-execution",
@@ -67236,6 +68554,8 @@
       "entry:microsoft-mcp-gateway"
     ],
     "scale": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "practice:visual-experience",
       "design-architecture:vnem-design-architecture",
       "task-rubric:aesthetic_experience",
@@ -67373,6 +68693,7 @@
       "entry:inspect-ai"
     ],
     "scores": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "source:evaluation-and-observability",
       "entry:ai-nordax-mcp"
     ],
@@ -67419,7 +68740,17 @@
       "prompt-pattern:visual-polish-review",
       "entry:browserbase-mcp"
     ],
+    "script": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing"
+    ],
+    "scripting": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing"
+    ],
     "scripts": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:agentic-coding-execution",
       "operating-protocol:vnem-operating-loop",
@@ -67428,6 +68759,9 @@
       "entry:ai-boolsai-scan",
       "prompt-pattern:codex-implementation",
       "entry:custom-modes-roo-code"
+    ],
+    "scripts.": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol"
     ],
     "scrub": [
       "practice:observability-and-tracing"
@@ -67608,6 +68942,8 @@
       "entry:openai-swarm"
     ],
     "search": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:code-simplification",
       "operating-protocol:vnem-operating-loop",
@@ -67781,6 +69117,8 @@
       "entry:ai-com-mcp-strava"
     ],
     "select": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "prompt-pattern:agentic-coding-task"
     ],
     "selected": [
@@ -67794,6 +69132,14 @@
       "practice:mcp-server-selection",
       "prompt-pattern:mcp-selection"
     ],
+    "self": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing"
+    ],
+    "self-healing": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing"
+    ],
     "self-hosted": [
       "entry:clude"
     ],
@@ -67801,6 +69147,8 @@
       "entry:ai-calendarmcp-server"
     ],
     "semantic": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "practice:search",
       "entry:semantic-kernel",
       "entry:ai-agentic-news-mcp",
@@ -67963,6 +69311,7 @@
       "entry:letta"
     ],
     "server": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "practice:precision-execution-dynamic-knowledge",
       "install-guide:vnem-install-guide",
       "coding-playbook:api-data-contract",
@@ -68335,6 +69684,7 @@
       "entry:ai-offerhopper-mcp-shopping-optimizer"
     ],
     "short": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "practice:agentic-coding-execution",
       "practice:visual-experience",
       "practice:persistent-memory-context-files",
@@ -68399,6 +69749,7 @@
       "entry:kaimo"
     ],
     "signals": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "practice:zero-trust-agent-gateway",
       "entry:ai-drillr-drillr",
       "entry:ai-nefesh-human-state",
@@ -68417,6 +69768,10 @@
     ],
     "signing": [
       "source:secure-mcp-distribution"
+    ],
+    "silent": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing"
     ],
     "silently": [
       "quality-contract:vnem-quality-contract",
@@ -68561,6 +69916,9 @@
     "skills.sh": [
       "entry:ai-com-mcp-skills-search"
     ],
+    "skip": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol"
+    ],
     "skipped": [
       "task-rubric:agentic_coding"
     ],
@@ -68575,6 +69933,7 @@
       "entry:ai-gossiper-shopify-admin-mcp"
     ],
     "small": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "coding-protocol:vnem-coding-protocol",
       "practice:mcp-gateway-tool-routing",
       "practice:code-simplification",
@@ -68601,6 +69960,8 @@
       "entry:matter-js"
     ],
     "smallest": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "quality-contract:vnem-quality-contract",
       "practice:agentic-coding-execution",
       "coding-playbook:feature-slice",
@@ -68629,6 +69990,7 @@
       "entry:playwright-mcp"
     ],
     "snippets": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "entry:ast-grep"
     ],
     "so": [
@@ -68662,6 +70024,7 @@
       "practice:holistic-excellence-intelligent-tradeoffs"
     ],
     "solve": [
+      "practice:omniscient-context-self-healing",
       "quality-contract:vnem-quality-contract",
       "prompt-pattern:agentic-coding-task",
       "prompt-pattern:code-simplification",
@@ -69008,6 +70371,8 @@
       "entry:qdrant-mcp-server"
     ],
     "stdout/stderr": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "precision-execution-protocol:vnem-precision-execution-protocol"
     ],
     "steer": [
@@ -69035,6 +70400,7 @@
       "entry:ai-agenticshelf-mcp"
     ],
     "stop": [
+      "practice:omniscient-context-self-healing",
       "source:documentation-ingestion",
       "entry:ai-obris-mcp",
       "prompt-pattern:codex-implementation"
@@ -69045,6 +70411,7 @@
       "entry:mcp-crawl4ai-rag"
     ],
     "store": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "practice:persistent-memory-context-files",
       "task-rubric:data_memory",
       "prompt-pattern:memory-bank-initialization",
@@ -69234,6 +70601,7 @@
       "practice:prompt-engineering"
     ],
     "success.": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "practice:agentic-coding-execution"
     ],
     "such": [
@@ -69266,6 +70634,7 @@
       "coding-protocol:vnem-coding-protocol"
     ],
     "summary": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "task-rubric:agentic_coding"
     ],
     "supabase": [
@@ -69355,6 +70724,7 @@
       "entry:claude-code-memory"
     ],
     "surgical": [
+      "practice:omniscient-context-self-healing",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:precision-execution-dynamic-knowledge"
     ],
@@ -69657,6 +71027,7 @@
       "entry:codebase-memory-mcp"
     ],
     "task": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "practice:precision-execution-dynamic-knowledge",
       "orchestration-protocol:vnem-orchestration-protocol",
       "practice:multi-agent-orchestration-reflection",
@@ -69814,6 +71185,8 @@
       "entry:zep"
     ],
     "temporary": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "task-rubric:data_memory",
       "practice:context-engineering",
       "prompt-pattern:memory-bank-initialization",
@@ -69850,12 +71223,15 @@
       "entry:aider"
     ],
     "terms": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "entry:kaimo"
     ],
     "terms.": [
       "practice:search"
     ],
     "test": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
@@ -69915,6 +71291,8 @@
       "entry:openai-prompt-optimizer"
     ],
     "tests": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
       "coding-playbook:review-risk-scan",
@@ -69936,6 +71314,7 @@
       "entry:openai-codex-cli"
     ],
     "tests.": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "practice:ide-agent-selection",
       "source:agentic-gateway-security",
       "practice:zero-trust-agent-gateway",
@@ -69971,6 +71350,9 @@
       "practice:backend",
       "practice:evals"
     ],
+    "text/code": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol"
+    ],
     "texture": [
       "visual-qa-protocol:vnem-visual-qa-protocol",
       "prompt-pattern:visual-build"
@@ -70002,6 +71384,8 @@
       "prompt-pattern:codex-implementation"
     ],
     "then": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:multi-agent-orchestration-reflection",
       "practice:holistic-excellence-intelligent-tradeoffs",
@@ -70077,6 +71461,7 @@
       "prompt-pattern:visual-build"
     ],
     "through": [
+      "practice:omniscient-context-self-healing",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:precision-execution-dynamic-knowledge",
       "coding-protocol:vnem-coding-protocol",
@@ -70139,6 +71524,7 @@
       "entry:agentops"
     ],
     "timeout": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "precision-execution-protocol:vnem-precision-execution-protocol"
     ],
     "times": [
@@ -70159,6 +71545,7 @@
       "entry:ai-mino-web-agent"
     ],
     "to": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "orchestration-protocol:vnem-orchestration-protocol",
       "practice:multi-agent-orchestration-reflection",
@@ -70296,6 +71683,8 @@
       "entry:lunar-mcpx"
     ],
     "tool": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "practice:mcp-gateway-tool-routing",
       "source:agentic-coding-best-practices",
       "source:mcp-core-and-registry",
@@ -70371,6 +71760,9 @@
       "practice:agent-tooling",
       "entry:kaplay",
       "entry:microsoft-mcp-gateway"
+    ],
+    "tooling.": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol"
     ],
     "toolkit": [
       "entry:vercel-ai-sdk",
@@ -70631,6 +72023,7 @@
       "entry:langsmith"
     ],
     "track": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "source:agentic-coding-best-practices",
       "source:coding-agent-clients",
       "source:mcp-core-and-registry",
@@ -70702,6 +72095,9 @@
     "transcripts.": [
       "entry:ai-com-mcp-lenny-rachitsky-podcast"
     ],
+    "transformer": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol"
+    ],
     "transition": [
       "task-rubric:interactive_canvas"
     ],
@@ -70728,6 +72124,9 @@
     ],
     "traversal": [
       "precision-execution-protocol:vnem-precision-execution-protocol"
+    ],
+    "traversing": [
+      "practice:omniscient-context-self-healing"
     ],
     "treated": [
       "source:agentic-gateway-security",
@@ -70790,6 +72189,9 @@
     ],
     "truth": [
       "source:mcp-core-and-registry"
+    ],
+    "truth.": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol"
     ],
     "ts": [
       "entry:ai-example4-xmp4"
@@ -71004,6 +72406,9 @@
     "unions.": [
       "entry:ai-clarid-hmda"
     ],
+    "unique": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol"
+    ],
     "unit": [
       "practice:agentic-coding-execution"
     ],
@@ -71072,6 +72477,8 @@
       "task-rubric:security_sensitive"
     ],
     "until": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:visual-experience",
       "practice:ide-agent-selection",
@@ -71410,6 +72817,7 @@
       "prompt-pattern:subagent-delegation"
     ],
     "user": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "quality-contract:vnem-quality-contract",
       "practice:holistic-excellence-intelligent-tradeoffs",
       "coding-playbook:feature-slice",
@@ -71461,6 +72869,7 @@
       "entry:claude-code-memory"
     ],
     "using": [
+      "practice:omniscient-context-self-healing",
       "practice:code-simplification",
       "practice:codex-vnem-setup",
       "task-rubric:aesthetic_experience",
@@ -71550,6 +72959,7 @@
       "entry:rapier-js"
     ],
     "vector": [
+      "practice:omniscient-context-self-healing",
       "entry:graphiti",
       "entry:qdrant-mcp-server",
       "entry:mcp-crawl4ai-rag"
@@ -71559,6 +72969,9 @@
     ],
     "vector-search": [
       "entry:mcp-crawl4ai-rag"
+    ],
+    "vectors": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol"
     ],
     "velocity": [
       "source:evaluation-and-observability"
@@ -71613,6 +73026,8 @@
       "prompt-pattern:agentic-coding-task"
     ],
     "verification": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:precision-execution-dynamic-knowledge",
       "orchestration-protocol:vnem-orchestration-protocol",
@@ -71914,6 +73329,7 @@
       "orchestration-protocol:vnem-orchestration-protocol"
     ],
     "verify": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "orchestration-protocol:vnem-orchestration-protocol",
       "quality-contract:vnem-quality-contract",
@@ -72090,6 +73506,7 @@
       "practice:browser-games"
     ],
     "vnem": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:precision-execution-dynamic-knowledge",
       "orchestration-protocol:vnem-orchestration-protocol",
@@ -72139,6 +73556,9 @@
     ],
     "vnem-mcp": [
       "entry:vnem-mcp"
+    ],
+    "vnem-omniscient-self-healing-protocol": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol"
     ],
     "vnem-operating-loop": [
       "coding-playbook:failure-recovery"
@@ -72416,6 +73836,9 @@
     "watch": [
       "entry:covenant-research",
       "entry:kaimo"
+    ],
+    "watched": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol"
     ],
     "watching": [
       "entry:kaimo"
@@ -72858,6 +74281,7 @@
       "practice:visual-experience"
     ],
     "without": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "install-guide:vnem-install-guide",
       "design-architecture:vnem-design-architecture",
       "source:agentic-coding-best-practices",
@@ -72935,6 +74359,7 @@
       "entry:knip"
     ],
     "worker": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:precision-execution-dynamic-knowledge",
       "orchestration-protocol:vnem-orchestration-protocol",
@@ -73251,6 +74676,7 @@
       "entry:cursor-agent"
     ],
     "works": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "quality-contract:vnem-quality-contract",
       "design-architecture:vnem-design-architecture",
       "task-rubric:interactive_canvas",
@@ -73274,6 +74700,7 @@
       "precision-execution-protocol:vnem-precision-execution-protocol"
     ],
     "workspace.": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "practice:precision-execution-dynamic-knowledge",
       "prompt-pattern:mcp-gateway-evaluation"
     ],
@@ -73309,6 +74736,8 @@
       "practice:multi-agent-orchestration-reflection"
     ],
     "write": [
+      "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "practice:omniscient-context-self-healing",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:agentic-coding-execution",
       "source:mcp-core-and-registry",

@@ -71,7 +71,7 @@ const server = new McpServer(
   },
   {
     instructions:
-      "Use vnem as a read-only AI booster and perception layer before coding, recommending tools, or changing a stack. For coding tasks, call vnem_recommend and apply the Triple-Check Workflow: Analyze the user's true goal and hidden requirements, Architect performance and visuals/playability together, then Review that no important domain was sacrificed. For complex app, game, or research tasks, call vnem_orchestrate to choose a deterministic Single Agent, Orchestrator-Worker, or Split-and-Merge plan before burning context. If a separate opt-in precision server is available, read vnem://install/precision-execution-protocol before exact patching, current-doc fetches, or safe terminal checks. vnem returns provenance, trust tiers, deterministic quality gates, and orchestration schemas; this default server never installs packages, edits code, calls secrets, spawns model workers, or reaches the network."
+      "Use vnem as a read-only AI booster and perception layer before coding, recommending tools, or changing a stack. For coding tasks, call vnem_recommend and apply the Triple-Check Workflow: Analyze the user's true goal and hidden requirements, Architect performance and visuals/playability together, then Review that no important domain was sacrificed. For complex app, game, or research tasks, call vnem_orchestrate to choose a deterministic Single Agent, Orchestrator-Worker, or Split-and-Merge plan before burning context. If a separate opt-in precision server is available, read vnem://install/precision-execution-protocol before exact patching, current-doc fetches, or safe terminal checks, and read vnem://install/omniscient-self-healing-protocol before semantic code search, red/green healing loops, or ephemeral scripting. vnem returns provenance, trust tiers, deterministic quality gates, and orchestration schemas; this default server never installs packages, edits code, calls secrets, spawns model workers, or reaches the network."
   }
 );
 
@@ -512,6 +512,15 @@ function registerResources(mcpServer) {
   );
   registerFileResource(
     mcpServer,
+    "vnem-omniscient-self-healing-protocol",
+    "vnem://install/omniscient-self-healing-protocol",
+    firstExisting(["public/install/omniscient-self-healing-protocol.md", ".vnem/omniscient-self-healing-protocol.md"]),
+    "vnem Omniscient Context And Self-Healing Protocol",
+    "Generated opt-in protocol for local semantic code search, red/green verification loops, and sandboxed ephemeral scripts.",
+    "text/markdown"
+  );
+  registerFileResource(
+    mcpServer,
     "vnem-coding-protocol",
     "vnem://install/coding-protocol",
     firstExisting(["public/install/coding-protocol.md", ".vnem/coding-protocol.md"]),
@@ -717,9 +726,10 @@ function registerPrompts(mcpServer) {
               "2. For complex app, game, coding, or research tasks, call vnem_orchestrate and follow the selected orchestration pattern.",
               "3. For coding, UI, game, optimization, or production-readiness tasks, apply the returned quality_gate and Triple-Check Workflow.",
               "4. If mutation-capable precision tools are available, read vnem://install/precision-execution-protocol before exact patching, current-doc fetches, or safe terminal checks.",
-              "5. Read the returned best-practice notes and top registry entries.",
-              "6. Report the vnem intent searched, top matches, orchestration pattern when used, quality gate verdict, recommendation, why, and any source-trust uncertainty.",
-              "7. Do not install tools, edit files, or call external services unless I ask for that separately."
+              "5. If semantic code search, red/green verification loops, or ephemeral scripts are available, read vnem://install/omniscient-self-healing-protocol before using them.",
+              "6. Read the returned best-practice notes and top registry entries.",
+              "7. Report the vnem intent searched, top matches, orchestration pattern when used, quality gate verdict, recommendation, why, and any source-trust uncertainty.",
+              "8. Do not install tools, edit files, or call external services unless I ask for that separately."
             ].join("\n")
           }
         }
@@ -885,6 +895,7 @@ function buildStatus() {
       quality_contract: Boolean(searchIndex.quality_contract),
       orchestration_protocol: Boolean(searchIndex.orchestration_protocol),
       precision_execution_protocol: Boolean(searchIndex.precision_execution_protocol),
+      omniscient_self_healing_protocol: Boolean(searchIndex.omniscient_self_healing_protocol),
       install_guide: Boolean(searchIndex.install_guide),
       coding_playbooks: searchIndex.coding_playbooks?.playbooks?.length || 0,
       task_rubrics: searchIndex.task_rubrics?.length || 0,
@@ -917,6 +928,7 @@ function buildStatus() {
         "vnem://install/quality-contract",
         "vnem://install/orchestration-protocol",
         "vnem://install/precision-execution-protocol",
+        "vnem://install/omniscient-self-healing-protocol",
         "vnem://install/coding-protocol",
         "vnem://install/coding-playbooks",
         "vnem://install/task-rubrics",
@@ -976,10 +988,10 @@ function buildOverview(audience) {
     },
     {
       name: "Precision MCP server",
-      paths: ["scripts/vnem-precision-mcp-server.mjs", "scripts/lib/precision-execution-layer.mjs"],
+      paths: ["scripts/vnem-precision-mcp-server.mjs", "scripts/lib/precision-execution-layer.mjs", "scripts/lib/omniscient-self-healing-layer.mjs"],
       purpose:
-        "Separate opt-in mutation-capable MCP surface for exact diff patching, current documentation fetches, and bounded terminal feedback inside an explicit workspace.",
-      usable_via: ["npm run precision:mcp", "mcp_apply_diff_patch", "mcp_fetch_documentation", "mcp_execute_terminal_command", "vnem://install/precision-execution-protocol"]
+        "Separate opt-in mutation-capable MCP surface for exact diff patching, current documentation fetches, bounded terminal feedback, local semantic code search, red/green verification loops, and ephemeral scripts inside an explicit workspace.",
+      usable_via: ["npm run precision:mcp", "mcp_semantic_code_search", "mcp_apply_diff_patch", "mcp_fetch_documentation", "mcp_execute_terminal_command", "mcp_run_verification_tests", "mcp_execute_ephemeral_script", "vnem://install/precision-execution-protocol", "vnem://install/omniscient-self-healing-protocol"]
     },
     {
       name: "Source radar",
@@ -990,10 +1002,10 @@ function buildOverview(audience) {
     },
     {
       name: "Operating protocol and rubrics",
-      paths: ["public/install/install-guide.md", "public/install/operating-protocol.md", "public/install/quality-contract.md", "public/install/orchestration-protocol.md", "public/install/precision-execution-protocol.md", "public/install/coding-protocol.md", "public/install/coding-playbooks.json", "public/install/task-rubrics.json"],
+      paths: ["public/install/install-guide.md", "public/install/operating-protocol.md", "public/install/quality-contract.md", "public/install/orchestration-protocol.md", "public/install/precision-execution-protocol.md", "public/install/omniscient-self-healing-protocol.md", "public/install/coding-protocol.md", "public/install/coding-playbooks.json", "public/install/task-rubrics.json"],
       purpose:
         "Compact task-contract and coding-execution layer for sensing the repo, enforcing holistic quality, selecting orchestration patterns, choosing task-specific playbooks, planning exact edits, routing work, approval gates, verification, and final reporting.",
-      usable_via: ["vnem_route_intent", "vnem_recommend", "vnem_quality_gate", "vnem_orchestrate", "vnem://install/install-guide", "vnem://install/quality-contract", "vnem://install/orchestration-protocol", "vnem://install/precision-execution-protocol", "vnem://install/coding-protocol", "vnem://install/coding-playbooks", "vnem://install/task-rubrics"]
+      usable_via: ["vnem_route_intent", "vnem_recommend", "vnem_quality_gate", "vnem_orchestrate", "vnem://install/install-guide", "vnem://install/quality-contract", "vnem://install/orchestration-protocol", "vnem://install/precision-execution-protocol", "vnem://install/omniscient-self-healing-protocol", "vnem://install/coding-protocol", "vnem://install/coding-playbooks", "vnem://install/task-rubrics"]
     },
     {
       name: "Visual/design guidance",
@@ -1061,10 +1073,12 @@ function buildTaskContract(task, intent, route, readFirst, registryEntries) {
   const qualityGate = buildQualityGate(task, "", intent, rubrics, primaryPlaybook);
   const orchestration = buildTaskOrchestrationSummary(task);
   const precisionExecution = buildPrecisionExecutionSummary(task, mode);
+  const omniscientSelfHealing = buildOmniscientSelfHealingSummary(task, mode);
   const rubricIds = new Set(rubrics.flatMap((rubric) => rubric.read_first || []));
   const readFirstIds = uniqueStrings([
     ...(qualityGate?.required_read_first || []),
     ...(precisionExecution?.read_first || []),
+    ...(omniscientSelfHealing?.read_first || []),
     ...rubrics.map((rubric) => `task-rubric:${rubric.id}`),
     ...rubricIds,
     ...playbooks.map((playbook) => `coding-playbook:${playbook.id}`),
@@ -1116,6 +1130,12 @@ function buildTaskContract(task, intent, route, readFirst, registryEntries) {
     quality_gate: qualityGate,
     orchestration,
     precision_execution: precisionExecution,
+    omniscient_self_healing: omniscientSelfHealing,
+    semantic_code_search: omniscientSelfHealing?.semantic_code_search,
+    local_code_index: omniscientSelfHealing?.local_code_index,
+    verification_tests: omniscientSelfHealing?.verification_tests,
+    healing_loop: omniscientSelfHealing?.healing_loop,
+    ephemeral_script: omniscientSelfHealing?.ephemeral_script,
     documentation_fetched: precisionExecution?.documentation_policy,
     patch_dry_run: precisionExecution?.patch_policy,
     safe_terminal_command: precisionExecution?.terminal_policy,
@@ -1177,6 +1197,56 @@ function buildPrecisionExecutionSummary(task, mode) {
       allowed_classes: ["build", "test", "lint", "typecheck", "read-only git inspection"],
       blocks: ["shell chaining", "pipes", "redirection", "package installs", "deploys", "cleanup/destructive commands"],
       timeout_required: true
+    }
+  };
+}
+
+function buildOmniscientSelfHealingSummary(task, mode) {
+  const text = normalize(task);
+  const relevant = mode === "build" ||
+    mode === "debug" ||
+    /\b(code|coding|implement|feature|fix|refactor|test|web app|app|game|ui|logic|large repo|codebase|search|proof|verify|verification|heal|self healing|semantic|ephemeral|script|parser|bulk)\b/.test(text);
+  if (!relevant) {
+    return null;
+  }
+
+  const largeRepoSignals = /\b(large repo|massive|codebase|where is|find all|trace|locate|semantic|search|unknown file|scale)\b/.test(text);
+  const proofSignals = /\b(feature|logic|bug|fix|test|verify|verification|proof|works|regression|silent)\b/.test(text);
+  const ephemeralSignals = /\b(parse|bulk|one off|temporary|ephemeral|script|transform|convert|rename|proprietary|roadblock)\b/.test(text);
+
+  return {
+    availability: "separate opt-in precision MCP server; default vnem MCP remains read-only",
+    read_first: ["omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol"],
+    tools: ["mcp_semantic_code_search", "mcp_run_verification_tests", "mcp_execute_ephemeral_script"],
+    semantic_code_search: {
+      use_before_manual_traversal: largeRepoSignals || mode === "build" || mode === "debug",
+      tool: "mcp_semantic_code_search",
+      returns: ["file paths", "line numbers", "snippets", "scores", "matched terms"],
+      privacy: "local hashed-vector index; no external embedding API"
+    },
+    local_code_index: {
+      cache: ".vnem-runtime/code-index.json",
+      refreshes_on_boot_or_file_change: true,
+      exclude_defaults: [".git", "node_modules", "dist", "build", ".vnem-runtime"],
+      direct_read_required_after_search: true
+    },
+    verification_tests: {
+      test_first_required_for_feature_logic: proofSignals,
+      tool: "mcp_run_verification_tests",
+      phases: ["red", "green", "check"],
+      pass_verdicts: ["red_confirmed", "pass"],
+      fail_verdicts: ["needs_healing", "blocked"]
+    },
+    healing_loop: {
+      max_attempts: 5,
+      required_flow: ["write/select test", "red phase when possible", "surgical patch", "green phase", "repeat until pass or blocked"],
+      blocked_action: "report failing command, stdout/stderr, attempts, and smallest human decision needed"
+    },
+    ephemeral_script: {
+      use_for: ephemeralSignals ? "narrow one-off local roadblock" : "only when a unique local parsing/transformation roadblock appears",
+      tool: "mcp_execute_ephemeral_script",
+      cleanup_required: true,
+      blocks: ["network APIs", "process spawning", "destructive filesystem APIs", "shell scripts by default"]
     }
   };
 }
@@ -1731,6 +1801,9 @@ function formatRecommendation(recommendation) {
     if (recommendation.task_contract.precision_execution?.availability) {
       lines.push(`Precision execution: ${recommendation.task_contract.precision_execution.availability}`);
     }
+    if (recommendation.task_contract.omniscient_self_healing?.availability) {
+      lines.push(`Omniscient/self-healing: ${recommendation.task_contract.omniscient_self_healing.availability}`);
+    }
     if (recommendation.task_contract.quality_gate?.verdict) {
       lines.push(`Quality gate: ${recommendation.task_contract.quality_gate.verdict}`);
       if (recommendation.task_contract.quality_gate.detected_domains?.length) {
@@ -1776,6 +1849,10 @@ function formatRecommendation(recommendation) {
     if (recommendation.task_contract.precision_execution?.tools?.length) {
       lines.push(`- Precision tools: ${recommendation.task_contract.precision_execution.tools.join(", ")}`);
       lines.push("- Precision rule: dry-run exact patches first, fetch current docs before framework-specific code, and use safe terminal checks only.");
+    }
+    if (recommendation.task_contract.omniscient_self_healing?.tools?.length) {
+      lines.push(`- Omniscient tools: ${recommendation.task_contract.omniscient_self_healing.tools.join(", ")}`);
+      lines.push("- Proof rule: semantic search before blind traversal, red/green verification before success claims, and ephemeral scripts only for narrow temporary roadblocks.");
     }
     if (recommendation.task_contract.coding_playbook?.execution_loop?.length) {
       lines.push(`- Playbook loop: ${recommendation.task_contract.coding_playbook.execution_loop.slice(0, 4).join("; ")}`);
@@ -1965,6 +2042,7 @@ function formatStatus(status) {
     `- Quality contract: ${status.counts.quality_contract ? "loaded" : "missing"}`,
     `- Orchestration protocol: ${status.counts.orchestration_protocol ? "loaded" : "missing"}`,
     `- Precision execution protocol: ${status.counts.precision_execution_protocol ? "loaded" : "missing"}`,
+    `- Omniscient self-healing protocol: ${status.counts.omniscient_self_healing_protocol ? "loaded" : "missing"}`,
     `- Source-radar entries: ${status.counts.source_radar_entries}`,
     `- Task rubrics: ${status.counts.task_rubrics}`,
     `- Prompt patterns: ${status.counts.prompt_patterns}`,

@@ -19,6 +19,7 @@
     "test:orchestration": "node scripts/test-orchestration-framework.mjs",
     "test:precision": "node scripts/test-precision-execution-layer.mjs",
     "test:precision-mcp": "node scripts/test-precision-mcp-server.mjs",
+    "test:omniscient": "node scripts/test-omniscient-self-healing-layer.mjs",
     "benchmark:vnem": "node scripts/benchmark-vnem.mjs",
     "benchmark:visual": "node scripts/benchmark-visual-artifacts.mjs",
     "digest": "node scripts/generate-digest.mjs",
@@ -41,7 +42,7 @@
     "test:mcp": "node scripts/test-mcp-server.mjs",
     "test:hermes-risk": "node scripts/test-hermes-risk-review.mjs",
     "build": "npm run validate && npm run generate && npm run dashboard:build",
-    "test": "npm run validate && npm run generate && npm run dashboard:build && npm run test:install-pack && npm run test:orchestration && npm run test:precision && npm run test:precision-mcp && npm run test:cli && npm run test:mcp && npm run test:dashboard && npm run test:hermes-risk && npm run discover:dry-run && npm run digest"
+    "test": "npm run validate && npm run generate && npm run dashboard:build && npm run test:install-pack && npm run test:orchestration && npm run test:precision && npm run test:omniscient && npm run test:precision-mcp && npm run test:cli && npm run test:mcp && npm run test:dashboard && npm run test:hermes-risk && npm run discover:dry-run && npm run digest"
   },
   "dependencies": {
     "@solana/wallet-adapter-base": "^0.9.27",

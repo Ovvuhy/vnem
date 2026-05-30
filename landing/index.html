@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="vnem gives coding agents a knowledge pack, quality gate, orchestration plans, and opt-in precision execution before they touch your repo." />
+    <meta name="description" content="vnem gives coding agents a knowledge pack, quality gate, orchestration plans, opt-in precision execution, local semantic search, and proof loops before they touch your repo." />
     <meta name="theme-color" content="#0d0d0d" />
     <meta property="og:title" content="vnem" />
-    <meta property="og:description" content="An AI booster with current tools, MCPs, best practices, quality gates, orchestration plans, and opt-in precision execution for coding agents." />
+    <meta property="og:description" content="An AI booster with current tools, MCPs, best practices, quality gates, orchestration plans, opt-in precision execution, semantic code search, and verification loops for coding agents." />
     <meta property="og:image" content="assets/banner.jpg" />
     <title>vnem</title>
     <link rel="icon" href="assets/logo.png" />
@@ -128,7 +128,7 @@
           <div class="install-grid">
             <div>
               <h2>Exact patches. Current docs. Real feedback.</h2>
-              <p>The default MCP stays read-only. When a project explicitly enables the precision server, VNEM gives agents a scalpel instead of a full-file rewrite button.</p>
+              <p>The default MCP stays read-only. When a project explicitly enables the precision server, VNEM gives agents controlled mutation, local context, and proof loops instead of a full-file rewrite button.</p>
             </div>
             <div class="quality-list">
               <article>
@@ -145,6 +145,35 @@
                 <span>03</span>
                 <h3>Verify</h3>
                 <p>Run allowlisted build, test, and check commands with stdout, stderr, cwd state, and timeouts.</p>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="plain-section quality-section" aria-label="VNEM omniscient context">
+        <div class="section-inner">
+          <p class="section-kicker">omniscient context</p>
+          <div class="install-grid">
+            <div>
+              <h2>Find the code. Prove the logic. Clean up the helper.</h2>
+              <p>Stage 4 adds a local semantic code index and test-driven healing loop to the opt-in precision server, so agents stop guessing file paths and stop claiming logic works without evidence.</p>
+            </div>
+            <div class="quality-list">
+              <article>
+                <span>01</span>
+                <h3>Search</h3>
+                <p>Use local private semantic search to return paths, line ranges, snippets, and scores before manual traversal.</p>
+              </article>
+              <article>
+                <span>02</span>
+                <h3>Heal</h3>
+                <p>Run red/green verification loops with hard attempt limits before reporting feature or logic success.</p>
+              </article>
+              <article>
+                <span>03</span>
+                <h3>Script</h3>
+                <p>Run short temporary Node or Python helpers for unique local roadblocks, then delete the sandbox.</p>
               </article>
             </div>
           </div>
@@ -207,7 +236,7 @@ node scripts/vnem-cli.mjs mcp-config --server-json</code></pre>
           <div class="install-grid secondary-install">
             <div>
               <h2>Need precision execution?</h2>
-              <p>Enable this only for the project workspace where exact patching, current-doc ingestion, and safe terminal checks are allowed.</p>
+              <p>Enable this only for the project workspace where exact patching, current-doc ingestion, safe terminal checks, semantic search, proof loops, and temporary helpers are allowed.</p>
             </div>
             <pre class="code-block"><code>node scripts/vnem-cli.mjs mcp-config --precision --workspace /path/to/project
 npm run precision:mcp</code></pre>
@@ -241,7 +270,7 @@ npm run precision:mcp</code></pre>
             </article>
             <article>
               <h2>Precision MCP server</h2>
-              <p>Opt in to exact patching, current documentation ingestion, and bounded terminal feedback when a project needs controlled mutation.</p>
+              <p>Opt in to exact patching, current documentation ingestion, semantic code search, bounded verification, and temporary helper scripts when a project needs controlled mutation.</p>
             </article>
           </div>
         </div>
@@ -282,6 +311,7 @@ npm run precision:mcp</code></pre>
             <li><code>.vnem/quality-contract.md</code><span>holistic excellence, Triple-Check Workflow, and intelligent trade-offs</span></li>
             <li><code>.vnem/orchestration-protocol.md</code><span>routing, reflection, Magentic coding, split-and-merge research, shared state</span></li>
             <li><code>.vnem/precision-execution-protocol.md</code><span>exact patching, current docs, safe terminal feedback, and mutation boundaries</span></li>
+            <li><code>.vnem/omniscient-self-healing-protocol.md</code><span>semantic code search, verification loops, and temporary helper scripts</span></li>
             <li><code>.vnem/coding-protocol.md</code><span>repo sensing, implementation rules, and verification ladder</span></li>
             <li><code>.vnem/coding-playbooks.json</code><span>mode-specific execution loops for coding tasks</span></li>
             <li><code>.vnem/design-architecture.md</code><span>visual, motion, sound, dashboard, and game-feel guidance</span></li>

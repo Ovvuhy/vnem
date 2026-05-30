@@ -55,6 +55,9 @@ try {
   }
   assert.equal(toolNames.has("mcp_apply_diff_patch"), false, "default read-only MCP must not expose precision patch tool");
   assert.equal(toolNames.has("mcp_execute_terminal_command"), false, "default read-only MCP must not expose terminal execution tool");
+  assert.equal(toolNames.has("mcp_semantic_code_search"), false, "default read-only MCP must not expose semantic code search tool");
+  assert.equal(toolNames.has("mcp_run_verification_tests"), false, "default read-only MCP must not expose verification test execution tool");
+  assert.equal(toolNames.has("mcp_execute_ephemeral_script"), false, "default read-only MCP must not expose ephemeral script execution tool");
   for (const tool of tools.tools) {
     assert.equal(tool.annotations?.readOnlyHint, true, `expected ${tool.name} to be annotated read-only`);
     assert.equal(tool.annotations?.destructiveHint, false, `expected ${tool.name} to be annotated non-destructive`);
@@ -74,6 +77,7 @@ try {
   assert.equal(status.structuredContent?.counts?.quality_contract, true, "expected vnem_status quality contract count");
   assert.equal(status.structuredContent?.counts?.orchestration_protocol, true, "expected vnem_status orchestration protocol count");
   assert.equal(status.structuredContent?.counts?.precision_execution_protocol, true, "expected vnem_status precision execution protocol count");
+  assert.equal(status.structuredContent?.counts?.omniscient_self_healing_protocol, true, "expected vnem_status omniscient self-healing protocol count");
   assert.ok(
     status.structuredContent?.mcp?.resources?.includes("vnem://install/coding-protocol"),
     "expected vnem_status to list coding protocol resource"
@@ -93,6 +97,10 @@ try {
   assert.ok(
     status.structuredContent?.mcp?.resources?.includes("vnem://install/precision-execution-protocol"),
     "expected vnem_status to list precision execution protocol resource"
+  );
+  assert.ok(
+    status.structuredContent?.mcp?.resources?.includes("vnem://install/omniscient-self-healing-protocol"),
+    "expected vnem_status to list omniscient self-healing protocol resource"
   );
   assert.ok(
     status.structuredContent?.mcp?.resources?.includes("vnem://install/coding-playbooks"),
@@ -251,8 +259,20 @@ try {
     "expected polished browser game recommendation to include opt-in precision patching guidance"
   );
   assert.ok(
+    aestheticContract?.omniscient_self_healing?.tools?.includes("mcp_semantic_code_search"),
+    "expected polished browser game recommendation to include opt-in semantic code search guidance"
+  );
+  assert.ok(
+    aestheticContract?.omniscient_self_healing?.tools?.includes("mcp_run_verification_tests"),
+    "expected polished browser game recommendation to include opt-in verification test guidance"
+  );
+  assert.ok(
     aestheticContract?.read_first?.includes("precision-execution-protocol:vnem-precision-execution-protocol"),
     "expected polished browser game read-first to include precision execution protocol"
+  );
+  assert.ok(
+    aestheticContract?.read_first?.includes("omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol"),
+    "expected polished browser game read-first to include omniscient self-healing protocol"
   );
   assert.ok(
     aestheticContract?.read_first?.includes("quality-contract:vnem-quality-contract"),
@@ -429,6 +449,10 @@ try {
     "expected precision execution protocol resource"
   );
   assert.ok(
+    resources.resources.some((resource) => resource.uri === "vnem://install/omniscient-self-healing-protocol"),
+    "expected omniscient self-healing protocol resource"
+  );
+  assert.ok(
     resources.resources.some((resource) => resource.uri === "vnem://install/coding-protocol"),
     "expected coding protocol resource"
   );
@@ -507,6 +531,14 @@ try {
   assert.ok(precisionProtocol.contents[0]?.text?.includes("mcp_apply_diff_patch"));
   assert.ok(precisionProtocol.contents[0]?.text?.includes("mcp_fetch_documentation"));
   assert.ok(precisionProtocol.contents[0]?.text?.includes("mcp_execute_terminal_command"));
+
+  const omniscientProtocol = await client.readResource({
+    uri: "vnem://install/omniscient-self-healing-protocol"
+  });
+  assert.ok(omniscientProtocol.contents[0]?.text?.includes("vnem Omniscient Context And Self-Healing Protocol"));
+  assert.ok(omniscientProtocol.contents[0]?.text?.includes("mcp_semantic_code_search"));
+  assert.ok(omniscientProtocol.contents[0]?.text?.includes("mcp_run_verification_tests"));
+  assert.ok(omniscientProtocol.contents[0]?.text?.includes("mcp_execute_ephemeral_script"));
 
   const codingProtocol = await client.readResource({
     uri: "vnem://install/coding-protocol"

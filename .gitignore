@@ -13,9 +13,11 @@ landing-functions/
 output/
 .DS_Store
 *.log
+.tmp/
 Nunito.zip
 .env
 .env.*
 !.env.example
 .hermes/
+.vnem-runtime/
 discovery/candidates/link-report.json

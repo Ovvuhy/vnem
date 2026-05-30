@@ -79,6 +79,18 @@ VNEM now has a separate opt-in precision MCP server for teams that explicitly wa
 | Knowledge decay and deprecated APIs | `mcp_fetch_documentation` | Fetches current HTTPS docs, normalizes them into a compact context block, and records them as read-before-write evidence for the worker/task. |
 | Weak feedback loops | `mcp_execute_terminal_command` | Runs one allowlisted build/test/check command in a workspace-confined stateful cwd, captures stdout/stderr, and times out cleanly. |
 
+## Omniscient Context And Self-Healing
+
+The same opt-in precision server now includes a local context and proof layer for larger projects. This does not turn the default MCP server into a writer or shell proxy; it adds tools only when a project explicitly enables `vnem-precision`.
+
+| Problem | Stage 4 tool | Behavior |
+| --- | --- | --- |
+| Scale blindness in large repos | `mcp_semantic_code_search` | Builds a local private hashed-vector code index and returns conceptual matches with exact paths, line ranges, snippets, scores, and matched terms. |
+| Silent logic failures | `mcp_run_verification_tests` | Tracks a bounded red/green/check verification loop by task id, returns `red_confirmed`, `pass`, `needs_healing`, or `blocked`, and caps healing at five attempts. |
+| Unique local roadblocks | `mcp_execute_ephemeral_script` | Runs a short Node/Python helper in a temporary sandbox, blocks dangerous APIs, captures stdout/stderr, and deletes the script and sandbox afterward. |
+
+The practical rule is simple: semantic search before blind traversal, test-first evidence before feature/logic success claims, and ephemeral scripts only for narrow temporary roadblocks.
+
 Run it only for a project that should allow these capabilities:
 
 ```bash
@@ -86,7 +98,7 @@ node scripts/vnem-cli.mjs mcp-config --precision --workspace /path/to/my-project
 npm run precision:mcp
 ```
 
-Use the read-only server first for recommendations, orchestration, and quality gates. Use the precision server only after the task contract calls for exact patching, current documentation context, or bounded build/test feedback.
+Use the read-only server first for recommendations, orchestration, and quality gates. Use the precision server only after the task contract calls for exact patching, current documentation context, semantic code search, red/green verification, ephemeral scripts, or bounded build/test feedback.
 
 ## What Vnem Improves
 
@@ -95,6 +107,7 @@ vnem is meant to improve the judgment of coding agents, not replace maintainer r
 - **Holistic quality gates:** agents run a Triple-Check Workflow: Analyze the real goal, Architect performance and visuals/playability together, then Review that no important domain was sacrificed.
 - **Multi-agent routing:** agents choose Single Agent, Orchestrator-Worker, or Split-and-Merge workflows before complex coding, app/game, or research tasks collapse into one overloaded context.
 - **Precision execution:** agents can use an opt-in scalpel layer for exact patches, current documentation ingestion, and safe terminal feedback instead of broad rewrites or stale API guesses.
+- **Omniscient context and proof loops:** agents can use opt-in local semantic code search, test-driven healing loops, and temporary scripts to reduce blind file traversal and silent logic failures.
 - **Better recommendations:** agents compare current MCP servers, coding agents, frameworks, evals, memory systems, and workflows before proposing a stack change.
 - **Safer adoption:** each entry tracks source links, licenses, permissions, risk flags, trust tier, and install notes.
 - **Coding execution playbooks:** agents pick a task-specific loop for feature slices, root-cause bug fixes, test-first work, refactors, rendered web apps, API/data changes, large changes, reviews, and failure recovery.
@@ -109,8 +122,9 @@ vnem is meant to improve the judgment of coding agents, not replace maintainer r
 2. Ask a coding agent to read `.vnem/AGENTS.md`.
 3. The agent follows `.vnem/operating-protocol.md`, `.vnem/quality-contract.md`, `.vnem/orchestration-protocol.md`, `.vnem/coding-protocol.md`, and `.vnem/coding-playbooks.json`, then selects a broad rubric from `.vnem/task-rubrics.json`.
 4. The agent uses `.vnem/search-index.json`, `.vnem/best-practices.md`, `.vnem/agent-workspace.md`, and `.vnem/prompt-*` files only when routed there.
-5. For current docs, MCP discovery, or benchmark claims, the agent checks `.vnem/source-radar.json` before broad web search.
-6. The agent recommends options and asks before changing code, installing packages, using secrets, or touching external systems.
+5. For opt-in mutation workflows, the agent reads `.vnem/precision-execution-protocol.md` and `.vnem/omniscient-self-healing-protocol.md` before using exact patching, semantic search, verification loops, or ephemeral scripts.
+6. For current docs, MCP discovery, or benchmark claims, the agent checks `.vnem/source-radar.json` before broad web search.
+7. The agent recommends options and asks before changing code, installing packages, using secrets, or touching external systems.
 
 ## Install The Pack
 
@@ -131,8 +145,11 @@ In a clean project folder, this extracts:
 - `.vnem/quality-contract.md`
 - `.vnem/orchestration-protocol.md`
 - `.vnem/precision-execution-protocol.md`
+- `.vnem/omniscient-self-healing-protocol.md`
 - `.vnem/coding-protocol.md`
 - `.vnem/coding-playbooks.json`
+- `.vnem/design-architecture.md`
+- `.vnem/visual-qa-protocol.md`
 - `.vnem/task-rubrics.json`
 - `.vnem/search-index.json`
 - `.vnem/source-radar.json`
@@ -141,7 +158,7 @@ In a clean project folder, this extracts:
 - `.vnem/prompt-engineering.md`
 - `.vnem/prompt-patterns.json`
 
-`AGENTS.md` points coding agents to `.vnem/AGENTS.md`, the full agent entrypoint, plus `.vnem/quality-contract.md`, `.vnem/orchestration-protocol.md`, `.vnem/precision-execution-protocol.md`, `.vnem/coding-protocol.md`, and `.vnem/coding-playbooks.json` for implementation work and `.vnem/agent-workspace.md` for autonomous developer environment guidance. Once an agent has read it, the user should not need special `use vnem` prompts: vnem auto-activates for build, code, debug, review, optimization, research, benchmark, and stack/tool decision tasks.
+`AGENTS.md` points coding agents to `.vnem/AGENTS.md`, the full agent entrypoint, plus `.vnem/quality-contract.md`, `.vnem/orchestration-protocol.md`, `.vnem/precision-execution-protocol.md`, `.vnem/omniscient-self-healing-protocol.md`, `.vnem/coding-protocol.md`, and `.vnem/coding-playbooks.json` for implementation work and `.vnem/agent-workspace.md` for autonomous developer environment guidance. Once an agent has read it, the user should not need special `use vnem` prompts: vnem auto-activates for build, code, debug, review, optimization, research, benchmark, and stack/tool decision tasks.
 
 For existing repos with their own `AGENTS.md`, prefer the CLI installer below because it updates a managed vnem block instead of replacing the whole file.
 
@@ -230,6 +247,9 @@ Precision MCP tools, available only from `scripts/vnem-precision-mcp-server.mjs`
 - `mcp_apply_diff_patch`: exact `SEARCH`/`REPLACE` or unified-diff patching with strict match verification and dry-run-first behavior.
 - `mcp_fetch_documentation`: current HTTPS documentation fetch with compact worker context injection and source hash reporting.
 - `mcp_execute_terminal_command`: workspace-confined, allowlisted build/test/check execution with stdout/stderr capture and timeout handling.
+- `mcp_semantic_code_search`: local private semantic code search with file paths, line ranges, snippets, scores, and matched terms.
+- `mcp_run_verification_tests`: bounded red/green/check verification loop for test-first proof and self-healing.
+- `mcp_execute_ephemeral_script`: temporary Node/Python helper execution in a sandbox with cleanup and dangerous API blocking.
 
 Main resources:
 
@@ -241,6 +261,7 @@ Main resources:
 - `vnem://install/quality-contract`
 - `vnem://install/orchestration-protocol`
 - `vnem://install/precision-execution-protocol`
+- `vnem://install/omniscient-self-healing-protocol`
 - `vnem://install/coding-protocol`
 - `vnem://install/coding-playbooks`
 - `vnem://install/task-rubrics`
@@ -279,7 +300,7 @@ The default pack and default MCP server are intentionally boring and safe:
 - no secrets collection
 - no edits from the default MCP server
 
-The precision MCP server is separate because it can mutate files, fetch documentation, and run bounded verification commands. It must be connected only with an explicit `VNEM_PRECISION_ROOT` workspace and normal client/user approvals.
+The precision MCP server is separate because it can mutate files, fetch documentation, run bounded verification commands, maintain a local code index, and execute temporary scripts. It must be connected only with an explicit `VNEM_PRECISION_ROOT` workspace and normal client/user approvals.
 
 The pack is guidance and search data. The default server does not run the tools it recommends.
 
@@ -298,7 +319,9 @@ The pack is guidance and search data. The default server does not run the tools 
 | `.vnem/install-guide.md` | Generated setup guide for archive install, managed repo install, MCP config, and verification. |
 | `.vnem/orchestration-protocol.md` | Generated deterministic routing, reflection, multi-agent coding, research split-and-merge, and shared-state protocol. |
 | `.vnem/precision-execution-protocol.md` | Generated opt-in protocol for exact patching, current documentation ingestion, and safe stateful terminal feedback. |
+| `.vnem/omniscient-self-healing-protocol.md` | Generated opt-in protocol for local semantic code search, red/green verification loops, and ephemeral scripting. |
 | `scripts/lib/precision-execution-layer.mjs` | Backend library for exact patching, documentation ingestion, and stateful terminal execution. |
+| `scripts/lib/omniscient-self-healing-layer.mjs` | Backend library for local semantic indexing, verification-loop tracking, and temporary script execution. |
 | `scripts/vnem-precision-mcp-server.mjs` | Separate opt-in mutation-capable precision MCP server. |
 | `landing/` | Static public landing page and blog bundle for the website. |
 | `dashboard/` | Vite/React source for the Hermes owner dashboard surface. |

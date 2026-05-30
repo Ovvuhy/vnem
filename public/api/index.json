@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-30T10:23:01.386Z",
+  "generated_at": "2026-05-30T14:32:16.710Z",
   "schema_version": "1.0.0",
   "package_version": "1.0.1",
   "release_version": "1.0.1",
@@ -902,6 +902,97 @@
       "exact match",
       "patch rejection",
       "atomic write"
+    ],
+    "semantic code search": [
+      "mcp_semantic_code_search",
+      "local rag",
+      "codebase embeddings",
+      "code search",
+      "concept search",
+      "file discovery",
+      "scale blindness"
+    ],
+    "local rag": [
+      "semantic code search",
+      "codebase embeddings",
+      "local vector index",
+      "private embeddings",
+      "retrieval",
+      "code search"
+    ],
+    "codebase embeddings": [
+      "semantic code search",
+      "local rag",
+      "hashed vectors",
+      "vector database",
+      "code chunks",
+      "workspace index"
+    ],
+    "proof engine": [
+      "self healing",
+      "verification tests",
+      "test driven",
+      "tdd",
+      "healing loop",
+      "silent logic failure",
+      "mcp_run_verification_tests"
+    ],
+    "self healing": [
+      "proof engine",
+      "healing loop",
+      "verification tests",
+      "red green",
+      "test first",
+      "repair loop"
+    ],
+    "verification tests": [
+      "mcp_run_verification_tests",
+      "proof engine",
+      "test first",
+      "healing loop",
+      "red green",
+      "unit test",
+      "integration test"
+    ],
+    "healing loop": [
+      "proof engine",
+      "self healing",
+      "verification tests",
+      "max attempts",
+      "test patch retest",
+      "silent logic failure"
+    ],
+    "ephemeral scripting": [
+      "mcp_execute_ephemeral_script",
+      "dynamic tool generation",
+      "temporary script",
+      "sandbox",
+      "one off parser",
+      "bulk transform"
+    ],
+    "dynamic tool generation": [
+      "ephemeral scripting",
+      "temporary script",
+      "ad hoc tool",
+      "roadblock parser",
+      "local script",
+      "sandboxed helper"
+    ],
+    "scale blindness": [
+      "semantic code search",
+      "local rag",
+      "codebase embeddings",
+      "massive codebase",
+      "file discovery",
+      "context collapse"
+    ],
+    "silent logic failure": [
+      "proof engine",
+      "verification tests",
+      "self healing",
+      "test first",
+      "healing loop",
+      "regression test"
     ],
     "install vnem": [
       "download vnem",
@@ -2284,6 +2375,294 @@
         "chosen patch method",
         "verification",
         "remaining corruption risk"
+      ]
+    },
+    "semantic code search": {
+      "read_first": [
+        "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+        "practice:omniscient-context-self-healing",
+        "precision-execution-protocol:vnem-precision-execution-protocol",
+        "coding-protocol:vnem-coding-protocol"
+      ],
+      "compare_options": [
+        "mcp_semantic_code_search",
+        "ripgrep for exact strings",
+        "manual file read after semantic target is found",
+        "full code graph later if language-specific structure is required"
+      ],
+      "choose_by": [
+        "query is conceptual rather than exact",
+        "repo is large enough that manual traversal wastes context",
+        "results return path, line numbers, snippets, and score",
+        "index is local and private"
+      ],
+      "report": [
+        "query",
+        "top paths",
+        "line ranges",
+        "index freshness",
+        "follow-up files read"
+      ]
+    },
+    "local rag": {
+      "read_first": [
+        "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+        "practice:omniscient-context-self-healing",
+        "practice:context-engineering"
+      ],
+      "compare_options": [
+        "local hashed-vector index",
+        "SQLite/vector store",
+        "external vector DB after approval",
+        "plain lexical search"
+      ],
+      "choose_by": [
+        "privacy",
+        "index freshness",
+        "latency",
+        "dependency weight",
+        "retrieval quality",
+        "maintenance cost"
+      ],
+      "report": [
+        "index engine",
+        "external API use",
+        "files/chunks indexed",
+        "freshness behavior"
+      ]
+    },
+    "codebase embeddings": {
+      "read_first": [
+        "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+        "practice:omniscient-context-self-healing",
+        "practice:context-engineering"
+      ],
+      "compare_options": [
+        "deterministic local embeddings",
+        "AST graph",
+        "hybrid lexical-semantic search",
+        "hosted embeddings after approval"
+      ],
+      "choose_by": [
+        "no paid external API required",
+        "workspace privacy preserved",
+        "line-number snippets returned",
+        "stale indexes detected"
+      ],
+      "report": [
+        "embedding/storage method",
+        "privacy boundary",
+        "query quality",
+        "staleness handling"
+      ]
+    },
+    "proof engine": {
+      "read_first": [
+        "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+        "practice:omniscient-context-self-healing",
+        "coding-protocol:vnem-coding-protocol",
+        "coding-playbook:test-first-evidence",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "test-first red/green loop",
+        "existing regression test",
+        "focused build/typecheck",
+        "manual verification if no test surface exists"
+      ],
+      "choose_by": [
+        "test proves the requested behavior",
+        "red phase fails before implementation when possible",
+        "green phase passes after patch",
+        "loop has max attempts and blocks honestly"
+      ],
+      "report": [
+        "test written or selected",
+        "red verdict",
+        "green verdict",
+        "attempt count",
+        "remaining proof gap"
+      ]
+    },
+    "self healing": {
+      "read_first": [
+        "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+        "practice:omniscient-context-self-healing",
+        "precision-execution-protocol:vnem-precision-execution-protocol",
+        "practice:agentic-coding-execution"
+      ],
+      "compare_options": [
+        "patch and rerun",
+        "narrow failing test first",
+        "semantic search before patching",
+        "blocked after max attempts"
+      ],
+      "choose_by": [
+        "failure output is actionable",
+        "patch is surgical",
+        "attempt limit prevents token burn",
+        "human handoff includes concrete stdout/stderr"
+      ],
+      "report": [
+        "healing status",
+        "attempts",
+        "patch evidence",
+        "test output",
+        "handoff if blocked"
+      ]
+    },
+    "verification tests": {
+      "read_first": [
+        "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+        "practice:omniscient-context-self-healing",
+        "coding-playbook:test-first-evidence",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "unit test",
+        "integration test",
+        "browser test",
+        "static check",
+        "existing project command"
+      ],
+      "choose_by": [
+        "closest automated proof",
+        "fast feedback",
+        "low flake risk",
+        "matches user-visible acceptance criteria"
+      ],
+      "report": [
+        "command",
+        "phase",
+        "verdict",
+        "stdout/stderr summary",
+        "residual coverage risk"
+      ]
+    },
+    "healing loop": {
+      "read_first": [
+        "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+        "practice:omniscient-context-self-healing",
+        "precision-execution-protocol:vnem-precision-execution-protocol"
+      ],
+      "compare_options": [
+        "red -> patch -> green loop",
+        "green-only regression repair",
+        "blocked escalation"
+      ],
+      "choose_by": [
+        "max five attempts",
+        "smallest patch each time",
+        "no silent pass without verification",
+        "failure reason reported"
+      ],
+      "report": [
+        "phase",
+        "attempts",
+        "current verdict",
+        "next action",
+        "blocked reason"
+      ]
+    },
+    "ephemeral scripting": {
+      "read_first": [
+        "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+        "practice:omniscient-context-self-healing",
+        "practice:precision-execution-dynamic-knowledge"
+      ],
+      "compare_options": [
+        "mcp_execute_ephemeral_script",
+        "repo-native script after approval",
+        "manual one-off command",
+        "blocked when script needs unsafe APIs"
+      ],
+      "choose_by": [
+        "temporary helper solves a concrete roadblock",
+        "no permanent workspace clutter",
+        "dangerous APIs are blocked",
+        "stdout is sufficient evidence"
+      ],
+      "report": [
+        "language",
+        "sandbox cleanup",
+        "stdout summary",
+        "blocked risk if rejected"
+      ]
+    },
+    "dynamic tool generation": {
+      "read_first": [
+        "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+        "practice:omniscient-context-self-healing",
+        "practice:mcp-server-selection"
+      ],
+      "compare_options": [
+        "ephemeral script",
+        "temporary fixture parser",
+        "new durable tool after repeated need",
+        "do not proceed when unsafe"
+      ],
+      "choose_by": [
+        "roadblock is unique",
+        "script is bounded and local",
+        "no network/secrets/destructive API",
+        "cleanup verified"
+      ],
+      "report": [
+        "generated helper purpose",
+        "execution result",
+        "cleanup",
+        "whether durable tooling is justified later"
+      ]
+    },
+    "scale blindness": {
+      "read_first": [
+        "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+        "practice:omniscient-context-self-healing",
+        "coding-protocol:vnem-coding-protocol"
+      ],
+      "compare_options": [
+        "semantic concept search",
+        "code graph",
+        "targeted rg",
+        "manual architecture map"
+      ],
+      "choose_by": [
+        "context saved",
+        "retrieval precision",
+        "index freshness",
+        "line-number evidence"
+      ],
+      "report": [
+        "search path",
+        "files found",
+        "context avoided",
+        "next read targets"
+      ]
+    },
+    "silent logic failure": {
+      "read_first": [
+        "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+        "practice:omniscient-context-self-healing",
+        "coding-playbook:test-first-evidence",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "write failing test first",
+        "reuse existing test",
+        "property/fixture test",
+        "browser interaction proof"
+      ],
+      "choose_by": [
+        "test catches wrong behavior",
+        "red phase observed",
+        "green phase observed",
+        "no success claim without proof"
+      ],
+      "report": [
+        "failure prevented",
+        "test evidence",
+        "green proof",
+        "remaining manual risk"
       ]
     },
     "install vnem": {
@@ -4675,6 +5054,81 @@
       "https://developers.openai.com/api/docs/guides/agent-evals"
     ]
   },
+  "omniscient_self_healing_protocol": {
+    "id": "vnem-omniscient-self-healing-protocol",
+    "title": "vnem Omniscient Context And Self-Healing Protocol",
+    "summary": "An opt-in precision-server protocol for reducing scale blindness and silent logic failures with local semantic code search, red/green verification loops, and sandboxed ephemeral scripts.",
+    "url_path": "/install/omniscient-self-healing-protocol.md",
+    "resource_uri": "vnem://install/omniscient-self-healing-protocol",
+    "tools": [
+      {
+        "name": "mcp_semantic_code_search",
+        "type": "read_only_local_index",
+        "use_when": "A worker needs to locate code by concept, behavior, or responsibility before reading files in a large workspace.",
+        "contract": "Use a local private code index to return exact file paths, line ranges, snippets, matched terms, and scores without external embedding APIs."
+      },
+      {
+        "name": "mcp_run_verification_tests",
+        "type": "bounded_execution",
+        "use_when": "A worker needs executable proof that a feature, bug fix, or logic change works before reporting success.",
+        "contract": "Run a safe verification command in red, green, or check phase; track attempts by task id; return pass, red_confirmed, needs_healing, or blocked after max five attempts."
+      },
+      {
+        "name": "mcp_execute_ephemeral_script",
+        "type": "temporary_sandboxed_execution",
+        "use_when": "A worker hits a narrow roadblock that needs a one-off local parser, transformer, or data-inspection helper.",
+        "contract": "Run a short Node/Python helper in an isolated temporary cwd with sanitized env, dangerous APIs blocked, stdout/stderr captured, timeout enforced, and cleanup reported."
+      }
+    ],
+    "semantic_index_policy": [
+      "Build or refresh the local code index when the precision server boots or when watched files change.",
+      "Index text/code files only; skip .git, node_modules, build outputs, runtime caches, binary files, and oversized files.",
+      "Chunk files with line numbers and store deterministic local vectors plus snippets in .vnem-runtime instead of calling paid or external embedding APIs.",
+      "Use semantic search to identify candidate files, then read the returned file ranges before patching or reasoning about exact behavior.",
+      "Treat semantic scores as retrieval signals, not ground truth. Verify with direct file reads and tests."
+    ],
+    "proof_engine_policy": [
+      "Before adding new feature or logic code, write or select the automated test that represents the user's acceptance criteria.",
+      "Prefer a red phase that fails before implementation; a test that passes before code changes is not proof of the missing behavior.",
+      "Patch with mcp_apply_diff_patch only after a failing test or confirmed bug reproduction, then rerun the verification command.",
+      "Repeat patch-and-test only until the command passes or the hard max-attempt limit is reached.",
+      "If the loop blocks, report the failing command, attempt count, stdout/stderr summary, and the smallest human decision needed."
+    ],
+    "ephemeral_script_policy": [
+      "Use ephemeral scripts for unique local roadblocks, not as a replacement for durable project tooling.",
+      "Keep scripts small, deterministic, and local; do not use secrets, network APIs, process spawning, destructive filesystem operations, or shell control tricks.",
+      "Run scripts from a temporary sandbox and delete the script/sandbox after execution.",
+      "Promote a helper into a reviewed repo script only if the same need repeats and the user approves durable tooling."
+    ],
+    "worker_prompt_additions": [
+      "Before manual repo traversal, call mcp_semantic_code_search with the concept you need.",
+      "Before feature or logic code, create or identify the failing automated test and run mcp_run_verification_tests with phase=red when possible.",
+      "After every patch, rerun mcp_run_verification_tests with phase=green and stop only on pass or blocked.",
+      "Use mcp_execute_ephemeral_script only for short local roadblocks and report cleanup status."
+    ],
+    "source_urls": [
+      "https://www.anthropic.com/engineering/building-effective-agents",
+      "https://www.anthropic.com/engineering/writing-tools-for-agents",
+      "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+      "https://code.claude.com/docs/en/best-practices",
+      "https://developers.openai.com/codex/guides/agents-md",
+      "https://modelcontextprotocol.io/specification/2025-11-25/schema",
+      "https://modelcontextprotocol.io/specification/2025-06-18/server/tools",
+      "https://github.com/DeusData/codebase-memory-mcp",
+      "https://github.com/qdrant/mcp-server-qdrant",
+      "https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/",
+      "https://context7.com/",
+      "https://www.anthropic.com/engineering/claude-code-best-practices",
+      "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
+      "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
+      "https://docs.github.com/en/copilot/concepts/prompting/response-customization",
+      "https://code.visualstudio.com/docs/copilot/customization/custom-instructions",
+      "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
+      "https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md",
+      "https://docs.cursor.com/context/rules-for-ai",
+      "https://developers.openai.com/api/docs/guides/agent-evals"
+    ]
+  },
   "install_guide": {
     "id": "vnem-install-guide",
     "title": "vnem Install And MCP Guide",
@@ -4741,7 +5195,7 @@
     ]
   },
   "coding_playbooks": {
-    "generated_at": "2026-05-30T10:23:01.386Z",
+    "generated_at": "2026-05-30T14:32:16.710Z",
     "schema_version": "1.0.0",
     "safety": {
       "mode": "read-only-coding-playbooks",
@@ -6363,6 +6817,11 @@
       "shared_state",
       "reflection_loop",
       "precision_execution",
+      "semantic_code_search",
+      "local_code_index",
+      "verification_tests",
+      "healing_loop",
+      "ephemeral_script",
       "documentation_fetched",
       "patch_dry_run",
       "safe_terminal_command",
@@ -6384,6 +6843,7 @@
       "quality contract",
       "orchestration protocol for complex app/game/research work",
       "precision execution protocol when exact patching/current docs/safe terminal tooling is available",
+      "omniscient self-healing protocol when semantic search/test-healing/ephemeral scripts are available",
       "coding protocol for app/web/feature/debug/refactor work",
       "matching coding playbook",
       "matching task rubric",
@@ -6401,6 +6861,8 @@
       "chosen coding playbook",
       "orchestration pattern",
       "precision execution evidence",
+      "semantic search evidence",
+      "verification/healing-loop evidence",
       "quality gate verdict",
       "trade-off warnings",
       "choice",

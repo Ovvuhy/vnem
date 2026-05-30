@@ -1,6 +1,6 @@
 # vnem Install And MCP Guide
 
-Generated: 2026-05-30T10:23:01.386Z
+Generated: 2026-05-30T14:32:16.710Z
 
 A compact setup guide for downloading the read-only vnem pack, installing it into an existing repo without overwriting local agent instructions, and connecting the local stdio MCP server with generated JSON config.
 
@@ -101,7 +101,7 @@ For the precision server, use the generated `vnem-precision` config and review `
 - MCP server: connect the client and call `vnem_status`, then `vnem_overview`, then `vnem_recommend` for a real coding task.
 - Quality gate: for UI/game/app work, call `vnem_quality_gate` or check the `quality_gate` field returned by `vnem_recommend`.
 - Orchestration: for complex app, game, coding, or research work, call `vnem_orchestrate` and confirm it returns the expected pattern and JSON schemas.
-- Precision server: call `mcp_apply_diff_patch` with `dry_run=true` before any real apply, `mcp_fetch_documentation` before framework-specific code, and `mcp_execute_terminal_command` only for allowlisted checks.
+- Precision server: call `mcp_apply_diff_patch` with `dry_run=true` before any real apply, `mcp_fetch_documentation` before framework-specific code, `mcp_execute_terminal_command` only for allowlisted checks, `mcp_semantic_code_search` before blind traversal, `mcp_run_verification_tests` for red/green proof loops, and `mcp_execute_ephemeral_script` only for temporary local helpers.
 
 ## Troubleshooting
 

@@ -26,6 +26,7 @@ try {
     "quality-contract.md",
     "orchestration-protocol.md",
     "precision-execution-protocol.md",
+    "omniscient-self-healing-protocol.md",
     "coding-protocol.md",
     "coding-playbooks.json",
     "design-architecture.md",
@@ -47,6 +48,7 @@ try {
   assert.ok(agents.includes("quality-contract.md"));
   assert.ok(agents.includes("orchestration-protocol.md"));
   assert.ok(agents.includes("precision-execution-protocol.md"));
+  assert.ok(agents.includes("omniscient-self-healing-protocol.md"));
   assert.ok(agents.includes("The user should not need to say `use vnem`"));
 
   JSON.parse(await readFile(path.join(projectDir, ".vnem", "search-index.json"), "utf8"));

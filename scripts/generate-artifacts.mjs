@@ -53,6 +53,17 @@ const intentAliases = {
   "stateful terminal": ["mcp_execute_terminal_command", "safe terminal", "build test check", "stdout stderr", "timeout", "stateful cwd"],
   "safe terminal": ["stateful terminal", "sandboxed command", "allowlist", "timeout", "stdout", "stderr", "non-interactive"],
   "destructive editing": ["full file rewrite", "truncate file", "surgical patch", "exact match", "patch rejection", "atomic write"],
+  "semantic code search": ["mcp_semantic_code_search", "local rag", "codebase embeddings", "code search", "concept search", "file discovery", "scale blindness"],
+  "local rag": ["semantic code search", "codebase embeddings", "local vector index", "private embeddings", "retrieval", "code search"],
+  "codebase embeddings": ["semantic code search", "local rag", "hashed vectors", "vector database", "code chunks", "workspace index"],
+  "proof engine": ["self healing", "verification tests", "test driven", "tdd", "healing loop", "silent logic failure", "mcp_run_verification_tests"],
+  "self healing": ["proof engine", "healing loop", "verification tests", "red green", "test first", "repair loop"],
+  "verification tests": ["mcp_run_verification_tests", "proof engine", "test first", "healing loop", "red green", "unit test", "integration test"],
+  "healing loop": ["proof engine", "self healing", "verification tests", "max attempts", "test patch retest", "silent logic failure"],
+  "ephemeral scripting": ["mcp_execute_ephemeral_script", "dynamic tool generation", "temporary script", "sandbox", "one off parser", "bulk transform"],
+  "dynamic tool generation": ["ephemeral scripting", "temporary script", "ad hoc tool", "roadblock parser", "local script", "sandboxed helper"],
+  "scale blindness": ["semantic code search", "local rag", "codebase embeddings", "massive codebase", "file discovery", "context collapse"],
+  "silent logic failure": ["proof engine", "verification tests", "self healing", "test first", "healing loop", "regression test"],
   "install vnem": ["download vnem", "setup vnem", "install pack", "curl install", "repo install", "managed agents", "doctor"],
   "download vnem": ["install vnem", "install archive", "install.tgz", "curl tar", "powershell download", "safe archive"],
   "mcp setup": ["vnem mcp", "mcp config", "mcp json", "stdio server", "claude mcp", "codex mcp", "connect mcp"],
@@ -270,6 +281,72 @@ const intentRoutes = {
     compare_options: ["exact patch", "split smaller patch", "re-read target", "stop and ask"],
     choose_by: ["no whole-file rewrite", "no truncation risk", "diff scoped to intended function", "dry-run passes before apply"],
     report: ["edit risk", "chosen patch method", "verification", "remaining corruption risk"]
+  },
+  "semantic code search": {
+    read_first: ["omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol", "practice:omniscient-context-self-healing", "precision-execution-protocol:vnem-precision-execution-protocol", "coding-protocol:vnem-coding-protocol"],
+    compare_options: ["mcp_semantic_code_search", "ripgrep for exact strings", "manual file read after semantic target is found", "full code graph later if language-specific structure is required"],
+    choose_by: ["query is conceptual rather than exact", "repo is large enough that manual traversal wastes context", "results return path, line numbers, snippets, and score", "index is local and private"],
+    report: ["query", "top paths", "line ranges", "index freshness", "follow-up files read"]
+  },
+  "local rag": {
+    read_first: ["omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol", "practice:omniscient-context-self-healing", "practice:context-engineering"],
+    compare_options: ["local hashed-vector index", "SQLite/vector store", "external vector DB after approval", "plain lexical search"],
+    choose_by: ["privacy", "index freshness", "latency", "dependency weight", "retrieval quality", "maintenance cost"],
+    report: ["index engine", "external API use", "files/chunks indexed", "freshness behavior"]
+  },
+  "codebase embeddings": {
+    read_first: ["omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol", "practice:omniscient-context-self-healing", "practice:context-engineering"],
+    compare_options: ["deterministic local embeddings", "AST graph", "hybrid lexical-semantic search", "hosted embeddings after approval"],
+    choose_by: ["no paid external API required", "workspace privacy preserved", "line-number snippets returned", "stale indexes detected"],
+    report: ["embedding/storage method", "privacy boundary", "query quality", "staleness handling"]
+  },
+  "proof engine": {
+    read_first: ["omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol", "practice:omniscient-context-self-healing", "coding-protocol:vnem-coding-protocol", "coding-playbook:test-first-evidence", "practice:evals"],
+    compare_options: ["test-first red/green loop", "existing regression test", "focused build/typecheck", "manual verification if no test surface exists"],
+    choose_by: ["test proves the requested behavior", "red phase fails before implementation when possible", "green phase passes after patch", "loop has max attempts and blocks honestly"],
+    report: ["test written or selected", "red verdict", "green verdict", "attempt count", "remaining proof gap"]
+  },
+  "self healing": {
+    read_first: ["omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol", "practice:omniscient-context-self-healing", "precision-execution-protocol:vnem-precision-execution-protocol", "practice:agentic-coding-execution"],
+    compare_options: ["patch and rerun", "narrow failing test first", "semantic search before patching", "blocked after max attempts"],
+    choose_by: ["failure output is actionable", "patch is surgical", "attempt limit prevents token burn", "human handoff includes concrete stdout/stderr"],
+    report: ["healing status", "attempts", "patch evidence", "test output", "handoff if blocked"]
+  },
+  "verification tests": {
+    read_first: ["omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol", "practice:omniscient-context-self-healing", "coding-playbook:test-first-evidence", "practice:evals"],
+    compare_options: ["unit test", "integration test", "browser test", "static check", "existing project command"],
+    choose_by: ["closest automated proof", "fast feedback", "low flake risk", "matches user-visible acceptance criteria"],
+    report: ["command", "phase", "verdict", "stdout/stderr summary", "residual coverage risk"]
+  },
+  "healing loop": {
+    read_first: ["omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol", "practice:omniscient-context-self-healing", "precision-execution-protocol:vnem-precision-execution-protocol"],
+    compare_options: ["red -> patch -> green loop", "green-only regression repair", "blocked escalation"],
+    choose_by: ["max five attempts", "smallest patch each time", "no silent pass without verification", "failure reason reported"],
+    report: ["phase", "attempts", "current verdict", "next action", "blocked reason"]
+  },
+  "ephemeral scripting": {
+    read_first: ["omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol", "practice:omniscient-context-self-healing", "practice:precision-execution-dynamic-knowledge"],
+    compare_options: ["mcp_execute_ephemeral_script", "repo-native script after approval", "manual one-off command", "blocked when script needs unsafe APIs"],
+    choose_by: ["temporary helper solves a concrete roadblock", "no permanent workspace clutter", "dangerous APIs are blocked", "stdout is sufficient evidence"],
+    report: ["language", "sandbox cleanup", "stdout summary", "blocked risk if rejected"]
+  },
+  "dynamic tool generation": {
+    read_first: ["omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol", "practice:omniscient-context-self-healing", "practice:mcp-server-selection"],
+    compare_options: ["ephemeral script", "temporary fixture parser", "new durable tool after repeated need", "do not proceed when unsafe"],
+    choose_by: ["roadblock is unique", "script is bounded and local", "no network/secrets/destructive API", "cleanup verified"],
+    report: ["generated helper purpose", "execution result", "cleanup", "whether durable tooling is justified later"]
+  },
+  "scale blindness": {
+    read_first: ["omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol", "practice:omniscient-context-self-healing", "coding-protocol:vnem-coding-protocol"],
+    compare_options: ["semantic concept search", "code graph", "targeted rg", "manual architecture map"],
+    choose_by: ["context saved", "retrieval precision", "index freshness", "line-number evidence"],
+    report: ["search path", "files found", "context avoided", "next read targets"]
+  },
+  "silent logic failure": {
+    read_first: ["omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol", "practice:omniscient-context-self-healing", "coding-playbook:test-first-evidence", "practice:evals"],
+    compare_options: ["write failing test first", "reuse existing test", "property/fixture test", "browser interaction proof"],
+    choose_by: ["test catches wrong behavior", "red phase observed", "green phase observed", "no success claim without proof"],
+    report: ["failure prevented", "test evidence", "green proof", "remaining manual risk"]
   },
   "install vnem": {
     read_first: ["install-guide:vnem-install-guide", "operating-protocol:vnem-operating-loop", "quality-contract:vnem-quality-contract", "practice:codex-vnem-setup"],
@@ -766,6 +843,19 @@ const precisionSourceUrls = unique([
   ...codingAgentSourceUrls
 ]);
 
+const omniscientSourceUrls = unique([
+  "https://www.anthropic.com/engineering/building-effective-agents",
+  "https://www.anthropic.com/engineering/writing-tools-for-agents",
+  "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+  "https://code.claude.com/docs/en/best-practices",
+  "https://developers.openai.com/codex/guides/agents-md",
+  "https://modelcontextprotocol.io/specification/2025-11-25/schema",
+  "https://modelcontextprotocol.io/specification/2025-06-18/server/tools",
+  "https://github.com/DeusData/codebase-memory-mcp",
+  "https://github.com/qdrant/mcp-server-qdrant",
+  ...precisionSourceUrls
+]);
+
 const bestPracticeSections = [
   {
     id: "holistic-excellence-intelligent-tradeoffs",
@@ -818,6 +908,24 @@ const bestPracticeSections = [
       "Before writing framework-specific code, fetch current documentation with mcp_fetch_documentation or an equivalent current-docs MCP and inject the returned context into the worker task.",
       "Use terminal execution only for allowlisted build/test/check commands. Block shell operators, destructive commands, production deploys, broad installs, and commands outside the workspace.",
       "Treat command output as feedback for the next patch. If the command times out, reports input prompts, or is blocked, revise the plan instead of pretending verification passed."
+    ]
+  },
+  {
+    id: "omniscient-context-self-healing",
+    title: "Omniscient Context And Self-Healing",
+    score: 26,
+    summary:
+      "Solve scale blindness and silent logic failures by finding code through local semantic search, proving behavior with red/green tests, and using temporary bounded scripts only for narrow roadblocks.",
+    keywords: ["semantic code search", "local rag", "codebase embeddings", "proof engine", "self healing", "verification tests", "healing loop", "ephemeral scripting", "dynamic tool generation", "scale blindness", "silent logic failure", "mcp_semantic_code_search", "mcp_run_verification_tests", "mcp_execute_ephemeral_script"],
+    sources: omniscientSourceUrls,
+    practices: [
+      "Before manually traversing a large repository, ask a semantic code-search tool for the concept and then read only the returned path/line ranges.",
+      "Keep indexing local and private by default. External embeddings or hosted vector databases require explicit approval and a data-handling review.",
+      "For new features or logic changes, write or select the automated test first. Prefer a red phase that proves the test catches the missing behavior.",
+      "Patch only after the red phase or a confirmed failing regression. Use surgical patching, then rerun the verification command until it passes or the bounded attempt limit is reached.",
+      "Cap self-healing loops at five attempts. If the loop hits the limit, stop and report the failing command, stdout/stderr, attempted fixes, and the smallest human decision needed.",
+      "Use ephemeral scripts only for one-off local parsing, data shaping, or bulk inspection. They should run in a temporary sandbox, block dangerous APIs, return stdout, and delete themselves afterward.",
+      "Do not present tests as mathematical proof of all correctness. Present them as executable evidence tied to the user's acceptance criteria and name residual coverage risk."
     ]
   },
   {
@@ -1649,6 +1757,78 @@ const precisionExecutionProtocol = {
     "Treat failed, blocked, or timed-out commands as evidence that the plan must be revised."
   ],
   source_urls: precisionSourceUrls
+};
+
+const omniscientSelfHealingProtocol = {
+  id: "vnem-omniscient-self-healing-protocol",
+  title: "vnem Omniscient Context And Self-Healing Protocol",
+  summary:
+    "An opt-in precision-server protocol for reducing scale blindness and silent logic failures with local semantic code search, red/green verification loops, and sandboxed ephemeral scripts.",
+  url_path: "/install/omniscient-self-healing-protocol.md",
+  resource_uri: "vnem://install/omniscient-self-healing-protocol",
+  tags: [
+    "semantic code search",
+    "local rag",
+    "codebase embeddings",
+    "proof engine",
+    "self healing",
+    "verification tests",
+    "healing loop",
+    "ephemeral scripting",
+    "dynamic tool generation",
+    "scale blindness",
+    "silent logic failure",
+    "mcp_semantic_code_search",
+    "mcp_run_verification_tests",
+    "mcp_execute_ephemeral_script"
+  ],
+  tools: [
+    {
+      name: "mcp_semantic_code_search",
+      type: "read_only_local_index",
+      use_when: "A worker needs to locate code by concept, behavior, or responsibility before reading files in a large workspace.",
+      contract: "Use a local private code index to return exact file paths, line ranges, snippets, matched terms, and scores without external embedding APIs."
+    },
+    {
+      name: "mcp_run_verification_tests",
+      type: "bounded_execution",
+      use_when: "A worker needs executable proof that a feature, bug fix, or logic change works before reporting success.",
+      contract: "Run a safe verification command in red, green, or check phase; track attempts by task id; return pass, red_confirmed, needs_healing, or blocked after max five attempts."
+    },
+    {
+      name: "mcp_execute_ephemeral_script",
+      type: "temporary_sandboxed_execution",
+      use_when: "A worker hits a narrow roadblock that needs a one-off local parser, transformer, or data-inspection helper.",
+      contract: "Run a short Node/Python helper in an isolated temporary cwd with sanitized env, dangerous APIs blocked, stdout/stderr captured, timeout enforced, and cleanup reported."
+    }
+  ],
+  semantic_index_policy: [
+    "Build or refresh the local code index when the precision server boots or when watched files change.",
+    "Index text/code files only; skip .git, node_modules, build outputs, runtime caches, binary files, and oversized files.",
+    "Chunk files with line numbers and store deterministic local vectors plus snippets in .vnem-runtime instead of calling paid or external embedding APIs.",
+    "Use semantic search to identify candidate files, then read the returned file ranges before patching or reasoning about exact behavior.",
+    "Treat semantic scores as retrieval signals, not ground truth. Verify with direct file reads and tests."
+  ],
+  proof_engine_policy: [
+    "Before adding new feature or logic code, write or select the automated test that represents the user's acceptance criteria.",
+    "Prefer a red phase that fails before implementation; a test that passes before code changes is not proof of the missing behavior.",
+    "Patch with mcp_apply_diff_patch only after a failing test or confirmed bug reproduction, then rerun the verification command.",
+    "Repeat patch-and-test only until the command passes or the hard max-attempt limit is reached.",
+    "If the loop blocks, report the failing command, attempt count, stdout/stderr summary, and the smallest human decision needed."
+  ],
+  ephemeral_script_policy: [
+    "Use ephemeral scripts for unique local roadblocks, not as a replacement for durable project tooling.",
+    "Keep scripts small, deterministic, and local; do not use secrets, network APIs, process spawning, destructive filesystem operations, or shell control tricks.",
+    "Run scripts from a temporary sandbox and delete the script/sandbox after execution.",
+    "Promote a helper into a reviewed repo script only if the same need repeats and the user approves durable tooling."
+  ],
+  worker_prompt_additions: [
+    "Before manual repo traversal, call mcp_semantic_code_search with the concept you need.",
+    "Before feature or logic code, create or identify the failing automated test and run mcp_run_verification_tests with phase=red when possible.",
+    "After every patch, rerun mcp_run_verification_tests with phase=green and stop only on pass or blocked.",
+    "Use mcp_execute_ephemeral_script only for short local roadblocks and report cleanup status."
+  ],
+  source_urls: omniscientSourceUrls
 };
 
 const installGuide = {
@@ -3753,6 +3933,45 @@ function buildSearchDocuments(entries) {
     }
   ];
 
+  const omniscientSelfHealingProtocolDocs = [
+    {
+      id: `omniscient-self-healing-protocol:${omniscientSelfHealingProtocol.id}`,
+      kind: "omniscient-self-healing-protocol",
+      title: omniscientSelfHealingProtocol.title,
+      summary: omniscientSelfHealingProtocol.summary,
+      url_path: omniscientSelfHealingProtocol.url_path,
+      trust_tier: "verified",
+      type: "omniscient-self-healing-protocol",
+      score: 27,
+      tags: omniscientSelfHealingProtocol.tags,
+      use_cases: [
+        ...omniscientSelfHealingProtocol.tools.map((tool) => `${tool.name}: ${tool.use_when}`),
+        ...omniscientSelfHealingProtocol.semantic_index_policy,
+        ...omniscientSelfHealingProtocol.proof_engine_policy,
+        ...omniscientSelfHealingProtocol.ephemeral_script_policy
+      ],
+      best_for: [
+        "Large repositories where agents need conceptual code search before reading files.",
+        "Feature and bug-fix work where a red/green verification loop should block silent logic failures.",
+        "One-off local parsing or transformation roadblocks that need temporary helper scripts without permanent workspace clutter."
+      ],
+      risk_flags: ["opt-in mutation-capable server", "bounded terminal execution", "temporary script execution", "local index cache"],
+      source_urls: unique([installFileUrl("omniscient-self-healing-protocol.md"), ...omniscientSelfHealingProtocol.source_urls]),
+      keywords: unique(textTokens([
+        omniscientSelfHealingProtocol.id,
+        omniscientSelfHealingProtocol.title,
+        omniscientSelfHealingProtocol.summary,
+        ...omniscientSelfHealingProtocol.tags,
+        ...omniscientSelfHealingProtocol.tools.flatMap((tool) => [tool.name, tool.type, tool.use_when, tool.contract]),
+        ...omniscientSelfHealingProtocol.semantic_index_policy,
+        ...omniscientSelfHealingProtocol.proof_engine_policy,
+        ...omniscientSelfHealingProtocol.ephemeral_script_policy,
+        ...omniscientSelfHealingProtocol.worker_prompt_additions,
+        ...omniscientSelfHealingProtocol.source_urls
+      ].join(" "))).slice(0, 220)
+    }
+  ];
+
   const installGuideDocs = [
     {
       id: `install-guide:${installGuide.id}`,
@@ -3956,7 +4175,7 @@ function buildSearchDocuments(entries) {
     ].join(" "))).slice(0, 180)
   }));
 
-  return [...precisionExecutionProtocolDocs, ...orchestrationProtocolDocs, ...qualityContractDocs, ...installGuideDocs, ...operatingDocs, ...codingProtocolDocs, ...codingPlaybookDocs, ...sourceRadarDocs, ...designArchitectureDocs, ...visualQaDocs, ...rubricDocs, ...promptDocs, ...practiceDocs, ...entryDocs].sort((a, b) => b.score - a.score || a.title.localeCompare(b.title));
+  return [...omniscientSelfHealingProtocolDocs, ...precisionExecutionProtocolDocs, ...orchestrationProtocolDocs, ...qualityContractDocs, ...installGuideDocs, ...operatingDocs, ...codingProtocolDocs, ...codingPlaybookDocs, ...sourceRadarDocs, ...designArchitectureDocs, ...visualQaDocs, ...rubricDocs, ...promptDocs, ...practiceDocs, ...entryDocs].sort((a, b) => b.score - a.score || a.title.localeCompare(b.title));
 }
 
 function buildInvertedIndex(documents) {
@@ -4023,6 +4242,7 @@ function operatingProtocolMarkdown() {
     "- Quality gate: Triple-Check Workflow, detected domains, quality floor, and intelligent trade-off policy.",
     "- Orchestration: single-agent, orchestrator-worker, or split-and-merge pattern when task complexity warrants it.",
     "- Precision execution: use exact patching, dynamic documentation, and safe terminal feedback only when the opt-in precision server is explicitly available and appropriate.",
+    "- Omniscient/self-healing: use semantic code search before blind traversal, red/green verification loops before success claims, and ephemeral scripts only for narrow temporary roadblocks.",
     "- Smallest sufficient capability: existing project pattern first, then source-backed tool only if justified.",
     "- Approval gates: actions that need explicit user consent before mutation or external side effects.",
     "- perception gate: for UI, game, canvas, animation, or branded surfaces, screenshots and interaction moments must look intentionally polished before final.",
@@ -4043,6 +4263,7 @@ function operatingProtocolMarkdown() {
     "- Use `.vnem/quality-contract.md` for holistic excellence, Triple-Check Workflow, and intelligent trade-off rules.",
     "- Use `.vnem/orchestration-protocol.md` for complex coding, app, game, research, split-and-merge, reflection, and shared-state workflows.",
     "- Use `.vnem/precision-execution-protocol.md` before using opt-in mutation-capable tools such as surgical patching, dynamic documentation fetches, or stateful terminal execution.",
+    "- Use `.vnem/omniscient-self-healing-protocol.md` before using opt-in semantic code search, test-driven healing loops, or ephemeral scripting.",
     "- Use `.vnem/task-rubrics.json` to choose the broad quality bar for the task.",
     "- Use `.vnem/design-architecture.md` for UI, game, visual polish, dashboard, motion, sound, and conversational-agent surfaces.",
     "- Use `.vnem/visual-qa-protocol.md` when the work has a rendered surface that needs screenshot, mobile, interaction, reward, or sound evidence.",
@@ -4311,6 +4532,85 @@ function precisionExecutionProtocolMarkdown() {
   ].join("\n");
 }
 
+function omniscientSelfHealingProtocolMarkdown() {
+  return [
+    "# vnem Omniscient Context And Self-Healing Protocol",
+    "",
+    `Generated: ${generatedAt}`,
+    "",
+    omniscientSelfHealingProtocol.summary,
+    "",
+    "## Safety Boundary",
+    "",
+    "- This file describes opt-in tools on the mutation-capable precision server. The default VNEM MCP server remains read-only.",
+    "- The semantic index is local and private; it does not call external embedding APIs.",
+    "- Verification tests provide executable evidence, not absolute mathematical proof. Report residual coverage risk honestly.",
+    "- Ephemeral scripts are temporary helpers, not a general shell, installer, deploy path, or persistent automation system.",
+    "",
+    "## Tool Contracts",
+    "",
+    ...omniscientSelfHealingProtocol.tools.flatMap((tool) => [
+      `### ${tool.name}`,
+      "",
+      `Type: \`${tool.type}\``,
+      "",
+      `Use when: ${tool.use_when}`,
+      "",
+      `Contract: ${tool.contract}`,
+      ""
+    ]),
+    "## Local RAG And Semantic Codebase Embeddings",
+    "",
+    "The goal is to stop agents from wasting context windows on blind directory traversal.",
+    "",
+    ...omniscientSelfHealingProtocol.semantic_index_policy.map((item) => `- ${item}`),
+    "",
+    "Required retrieval flow:",
+    "",
+    "1. Ask `mcp_semantic_code_search` for the concept, behavior, component, risk, or responsibility.",
+    "2. Inspect the returned paths, line ranges, snippets, and scores.",
+    "3. Read the exact source range before making claims or writing patches.",
+    "4. Use targeted `rg`/file reads for exact symbols after semantic search narrows the surface.",
+    "",
+    "## Test-Driven Self-Healing",
+    "",
+    "The proof engine exists to stop silent logic failures before the human user finds them.",
+    "",
+    ...omniscientSelfHealingProtocol.proof_engine_policy.map((item) => `- ${item}`),
+    "",
+    "Required red/green flow:",
+    "",
+    "1. Create or identify the automated test that represents the requested behavior.",
+    "2. Run `mcp_run_verification_tests` with `phase=red` when the test should fail before implementation.",
+    "3. Use `mcp_apply_diff_patch` for the smallest exact patch.",
+    "4. Run `mcp_run_verification_tests` with `phase=green`.",
+    "5. If it returns `needs_healing`, patch again only with failure evidence.",
+    "6. If it returns `blocked`, stop and ask for human intervention with concrete evidence.",
+    "",
+    "## Ephemeral Scripting",
+    "",
+    "Dynamic helpers are allowed only when a unique roadblock would otherwise waste context or manual effort.",
+    "",
+    ...omniscientSelfHealingProtocol.ephemeral_script_policy.map((item) => `- ${item}`),
+    "",
+    "## Worker Prompt Additions",
+    "",
+    ...omniscientSelfHealingProtocol.worker_prompt_additions.map((item) => `- ${item}`),
+    "",
+    "## Relationship To VNEM",
+    "",
+    "- `.vnem/quality-contract.md` defines the holistic quality bar.",
+    "- `.vnem/orchestration-protocol.md` decides when work needs multiple agents or reflection.",
+    "- `.vnem/precision-execution-protocol.md` defines exact patching, dynamic documentation, and terminal boundaries.",
+    "- This protocol adds local semantic context, test-first healing loops, and temporary dynamic helper scripts.",
+    "",
+    "## Source URLs",
+    "",
+    ...omniscientSelfHealingProtocol.source_urls.map((url) => `- ${url}`),
+    ""
+  ].join("\n");
+}
+
 function installGuideMarkdown() {
   return [
     "# vnem Install And MCP Guide",
@@ -4414,7 +4714,7 @@ function installGuideMarkdown() {
     "- MCP server: connect the client and call `vnem_status`, then `vnem_overview`, then `vnem_recommend` for a real coding task.",
     "- Quality gate: for UI/game/app work, call `vnem_quality_gate` or check the `quality_gate` field returned by `vnem_recommend`.",
     "- Orchestration: for complex app, game, coding, or research work, call `vnem_orchestrate` and confirm it returns the expected pattern and JSON schemas.",
-    "- Precision server: call `mcp_apply_diff_patch` with `dry_run=true` before any real apply, `mcp_fetch_documentation` before framework-specific code, and `mcp_execute_terminal_command` only for allowlisted checks.",
+    "- Precision server: call `mcp_apply_diff_patch` with `dry_run=true` before any real apply, `mcp_fetch_documentation` before framework-specific code, `mcp_execute_terminal_command` only for allowlisted checks, `mcp_semantic_code_search` before blind traversal, `mcp_run_verification_tests` for red/green proof loops, and `mcp_execute_ephemeral_script` only for temporary local helpers.",
     "",
     "## Troubleshooting",
     "",
@@ -4778,6 +5078,7 @@ function agentsMarkdown() {
     "- `.vnem/quality-contract.md`: Holistic Excellence, Proactive Enhancement, Intelligent Trade-offs, and the Triple-Check Workflow for balancing performance, visuals, playability, accessibility, maintainability, and safety.",
     "- `.vnem/orchestration-protocol.md`: deterministic routing, reflection, Magentic Coding Workflow, split-and-merge research, and shared-state contracts for multi-agent work.",
     "- `.vnem/precision-execution-protocol.md`: opt-in exact patching, dynamic documentation, stateful terminal feedback, and mutation safety rules for precision-capable MCP clients.",
+    "- `.vnem/omniscient-self-healing-protocol.md`: opt-in local semantic code search, red/green healing loops, and ephemeral scripting rules for precision-capable MCP clients.",
     "- `.vnem/coding-protocol.md`: coding execution guide for apps, web apps, features, bug fixes, refactors, repo sensing, plan-first work, and verification loops.",
     "- `.vnem/coding-playbooks.json`: mode-specific execution playbooks for feature slices, root-cause bug fixes, test-first work, refactors, rendered web apps, API/data changes, large changes, reviews, and failure recovery.",
     "- `.vnem/design-architecture.md`: source-backed design intelligence for UI, game, dashboard, visual polish, motion, sound, and conversational-agent surfaces.",
@@ -4804,19 +5105,20 @@ function agentsMarkdown() {
     "2. For coding, app, UI, game, optimization, or production-ready tasks, read `.vnem/quality-contract.md` and apply the Triple-Check Workflow: Analyze, Architect, Review.",
     "3. For complex coding, app, web app, game, or deep research tasks, read `.vnem/orchestration-protocol.md` and choose Single Agent, Orchestrator-Worker, Split-and-Merge, or the bounded reflection loop.",
     "4. Before using mutation-capable precision tools, read `.vnem/precision-execution-protocol.md`; use dry-run exact patching before apply, fetch current docs before framework-specific code, and use only safe terminal checks.",
-    "5. For coding tasks, read `.vnem/coding-protocol.md` before editing application code.",
-    "6. For implementation/debug/review/refactor/test work, select the closest playbook from `.vnem/coding-playbooks.json` and follow its repo sensing, execution loop, verification ladder, stop conditions, anti-patterns, and final-report fields.",
-    "7. Identify the user's task intents in plain words, such as `coding task`, `web app`, `feature build`, `bug fix`, `browser game`, `multi agent orchestration`, `orchestrator worker`, `split and merge`, `reflection loop`, `magentic coding`, `precision execution`, `surgical patch`, `dynamic documentation`, `stateful terminal`, `visual polish`, `game feel`, `performance visuals`, `quality gate`, `settings gui`, `code review`, `code simplification`, `memory`, `evals`, `agent payments`, or `MCP server selection`.",
-    "8. Read `.vnem/search-index.json` and expand those intents with `intent_aliases`.",
-    "9. Select the matching broad rubric from `.vnem/task-rubrics.json` and use its quality bar, approval gates, verification checklist, and output contract.",
-    "10. Check `intent_routes` for the closest matching task. Read the listed `read_first` documents before choosing a stack or visual approach.",
-    "11. If the task depends on current docs, upstream registries, benchmark claims, MCP discovery, or agent-client behavior, read `.vnem/source-radar.json` before broad web search.",
-    "12. Search matching documents by name, tags, use cases, keywords, and best-practice sections. Read `.vnem/best-practices.md` only for matching sections.",
-    "13. Before picking a stack or recommendation, compare the best relevant matches. Prefer higher `score`, stronger `source_confidence`, fresher `freshness`, clearer licenses, fewer `risk_flags`, and the smallest sufficient capability.",
-    "14. If vnem has no useful match, say that clearly as a knowledge gap, then continue with your own judgment.",
-    "15. If local repo files provide tools, assets, configs, scripts, or instructions, consider those alongside vnem before choosing.",
+    "5. Before large-repo traversal or feature/logic proof work, read `.vnem/omniscient-self-healing-protocol.md`; use semantic code search before blind file traversal and red/green verification loops before claiming logic works.",
+    "6. For coding tasks, read `.vnem/coding-protocol.md` before editing application code.",
+    "7. For implementation/debug/review/refactor/test work, select the closest playbook from `.vnem/coding-playbooks.json` and follow its repo sensing, execution loop, verification ladder, stop conditions, anti-patterns, and final-report fields.",
+    "8. Identify the user's task intents in plain words, such as `coding task`, `web app`, `feature build`, `bug fix`, `browser game`, `multi agent orchestration`, `orchestrator worker`, `split and merge`, `reflection loop`, `magentic coding`, `precision execution`, `surgical patch`, `dynamic documentation`, `stateful terminal`, `semantic code search`, `proof engine`, `self healing`, `ephemeral scripting`, `visual polish`, `game feel`, `performance visuals`, `quality gate`, `settings gui`, `code review`, `code simplification`, `memory`, `evals`, `agent payments`, or `MCP server selection`.",
+    "9. Read `.vnem/search-index.json` and expand those intents with `intent_aliases`.",
+    "10. Select the matching broad rubric from `.vnem/task-rubrics.json` and use its quality bar, approval gates, verification checklist, and output contract.",
+    "11. Check `intent_routes` for the closest matching task. Read the listed `read_first` documents before choosing a stack or visual approach.",
+    "12. If the task depends on current docs, upstream registries, benchmark claims, MCP discovery, or agent-client behavior, read `.vnem/source-radar.json` before broad web search.",
+    "13. Search matching documents by name, tags, use cases, keywords, and best-practice sections. Read `.vnem/best-practices.md` only for matching sections.",
+    "14. Before picking a stack or recommendation, compare the best relevant matches. Prefer higher `score`, stronger `source_confidence`, fresher `freshness`, clearer licenses, fewer `risk_flags`, and the smallest sufficient capability.",
+    "15. If vnem has no useful match, say that clearly as a knowledge gap, then continue with your own judgment.",
+    "16. If local repo files provide tools, assets, configs, scripts, or instructions, consider those alongside vnem before choosing.",
     "",
-    "For nontrivial tasks, follow a compact task contract: `mode`, `intent`, `rubric`, `coding playbook`, `orchestration pattern`, `worker roles`, `shared state`, `reflection loop`, `precision execution`, `documentation fetched`, `patch dry-run`, `safe terminal command`, `quality gate`, `triple check`, `domain balance`, `tradeoff policy`, `read first`, `smallest sufficient capability`, `approval gates`, `perception gate` when visual work is involved, `verification`, and `final report`.",
+    "For nontrivial tasks, follow a compact task contract: `mode`, `intent`, `rubric`, `coding playbook`, `orchestration pattern`, `worker roles`, `shared state`, `reflection loop`, `precision execution`, `semantic code search`, `local code index`, `verification tests`, `healing loop`, `ephemeral script`, `documentation fetched`, `patch dry-run`, `safe terminal command`, `quality gate`, `triple check`, `domain balance`, `tradeoff policy`, `read first`, `smallest sufficient capability`, `approval gates`, `perception gate` when visual work is involved, `verification`, and `final report`.",
     "",
     "For coding implementation, follow the coding protocol: sense the repo, find existing patterns, plan nontrivial edits, make the smallest coherent diff, run focused checks first, run broader verification when blast radius justifies it, and report skipped checks honestly.",
     "",
@@ -4881,7 +5183,7 @@ function agentWorkspaceMarkdown() {
     "",
     "Start with a small, readable setup: Codex or another coding agent, repository-local instructions, the vnem read-only pack, and only the MCP servers required for the current workflow.",
     "",
-    "For actual implementation work, route the agent through `.vnem/quality-contract.md`, `.vnem/orchestration-protocol.md`, `.vnem/precision-execution-protocol.md`, `.vnem/coding-protocol.md`, and `.vnem/coding-playbooks.json` before editing code. The quality contract prevents silent trade-offs; the orchestration protocol decides whether the task stays single-agent, uses orchestrator-workers, splits research, or enters reflection; the precision protocol defines optional exact patching, current-docs injection, and safe terminal feedback; the coding protocol defines repo-sensing and verification rules; the playbooks select the concrete loop for feature slices, bug fixes, tests, refactors, rendered web apps, API/data changes, large changes, reviews, or recovery.",
+    "For actual implementation work, route the agent through `.vnem/quality-contract.md`, `.vnem/orchestration-protocol.md`, `.vnem/precision-execution-protocol.md`, `.vnem/omniscient-self-healing-protocol.md`, `.vnem/coding-protocol.md`, and `.vnem/coding-playbooks.json` before editing code. The quality contract prevents silent trade-offs; the orchestration protocol decides whether the task stays single-agent, uses orchestrator-workers, splits research, or enters reflection; the precision protocol defines optional exact patching, current-docs injection, and safe terminal feedback; the omniscient protocol defines optional semantic code search, red/green healing loops, and temporary scripts; the coding protocol defines repo-sensing and verification rules; the playbooks select the concrete loop for feature slices, bug fixes, tests, refactors, rendered web apps, API/data changes, large changes, reviews, or recovery.",
     "",
     "Add gateways, memory banks, browser sessions, database access, and repository mutation tools only after the team can name the approval path and rollback plan.",
     "",
@@ -4955,7 +5257,7 @@ function rootAgentsMarkdown() {
     "",
     "This repo has a read-only vnem knowledge pack in `.vnem/`.",
     "",
-    "Before choosing tools, libraries, frameworks, MCP servers, skills, prompts, evals, search systems, UI approaches, visual polish/game feel, performance strategies, architecture patterns, orchestration patterns, or upgrade paths, read `.vnem/AGENTS.md`, follow `.vnem/operating-protocol.md`, apply `.vnem/quality-contract.md`, read `.vnem/orchestration-protocol.md` for complex coding/research workflows, read `.vnem/precision-execution-protocol.md` before using mutation-capable precision tools, read `.vnem/coding-protocol.md` and `.vnem/coding-playbooks.json` for coding/app/web/feature/debug work, use `.vnem/search-index.json`, read `.vnem/design-architecture.md` and `.vnem/visual-qa-protocol.md` for visual surfaces, and consult `.vnem/agent-workspace.md` only for autonomous developer environment decisions.",
+    "Before choosing tools, libraries, frameworks, MCP servers, skills, prompts, evals, search systems, UI approaches, visual polish/game feel, performance strategies, architecture patterns, orchestration patterns, or upgrade paths, read `.vnem/AGENTS.md`, follow `.vnem/operating-protocol.md`, apply `.vnem/quality-contract.md`, read `.vnem/orchestration-protocol.md` for complex coding/research workflows, read `.vnem/precision-execution-protocol.md` before using mutation-capable precision tools, read `.vnem/omniscient-self-healing-protocol.md` before semantic search/healing-loop/ephemeral-script workflows, read `.vnem/coding-protocol.md` and `.vnem/coding-playbooks.json` for coding/app/web/feature/debug work, use `.vnem/search-index.json`, read `.vnem/design-architecture.md` and `.vnem/visual-qa-protocol.md` for visual surfaces, and consult `.vnem/agent-workspace.md` only for autonomous developer environment decisions.",
     "For current docs, MCP discovery, benchmark evidence, or upstream source decisions, also use `.vnem/source-radar.json` before broad web search.",
     "",
     "Use vnem automatically. The user should not need to say `use vnem`. Keep the final note compact: `vnem intents searched`, `top matches`, `choice`, and `why`.",
@@ -5022,6 +5324,19 @@ function searchIndexJson(entries) {
       terminal_policy: precisionExecutionProtocol.terminal_policy,
       source_urls: precisionExecutionProtocol.source_urls
     },
+    omniscient_self_healing_protocol: {
+      id: omniscientSelfHealingProtocol.id,
+      title: omniscientSelfHealingProtocol.title,
+      summary: omniscientSelfHealingProtocol.summary,
+      url_path: omniscientSelfHealingProtocol.url_path,
+      resource_uri: omniscientSelfHealingProtocol.resource_uri,
+      tools: omniscientSelfHealingProtocol.tools,
+      semantic_index_policy: omniscientSelfHealingProtocol.semantic_index_policy,
+      proof_engine_policy: omniscientSelfHealingProtocol.proof_engine_policy,
+      ephemeral_script_policy: omniscientSelfHealingProtocol.ephemeral_script_policy,
+      worker_prompt_additions: omniscientSelfHealingProtocol.worker_prompt_additions,
+      source_urls: omniscientSelfHealingProtocol.source_urls
+    },
     install_guide: {
       id: installGuide.id,
       title: installGuide.title,
@@ -5074,6 +5389,11 @@ function searchIndexJson(entries) {
         "shared_state",
         "reflection_loop",
         "precision_execution",
+        "semantic_code_search",
+        "local_code_index",
+        "verification_tests",
+        "healing_loop",
+        "ephemeral_script",
         "documentation_fetched",
         "patch_dry_run",
         "safe_terminal_command",
@@ -5090,8 +5410,8 @@ function searchIndexJson(entries) {
         "verification",
         "final_report"
       ],
-      read_first_for_build_tasks: ["operating protocol", "quality contract", "orchestration protocol for complex app/game/research work", "precision execution protocol when exact patching/current docs/safe terminal tooling is available", "coding protocol for app/web/feature/debug/refactor work", "matching coding playbook", "matching task rubric", "matching intent_routes", "design architecture and visual QA protocol when the task is visual or interactive", "matching best-practice documents", "matching source-radar entries when upstream currency matters", "high-signal registry entries", "prompt patterns only when a prompt artifact is requested"],
-      evidence_note: ["vnem intents searched", "top matches", "chosen rubric", "chosen coding playbook", "orchestration pattern", "precision execution evidence", "quality gate verdict", "trade-off warnings", "choice", "why", "verification evidence", "residual uncertainty"]
+      read_first_for_build_tasks: ["operating protocol", "quality contract", "orchestration protocol for complex app/game/research work", "precision execution protocol when exact patching/current docs/safe terminal tooling is available", "omniscient self-healing protocol when semantic search/test-healing/ephemeral scripts are available", "coding protocol for app/web/feature/debug/refactor work", "matching coding playbook", "matching task rubric", "matching intent_routes", "design architecture and visual QA protocol when the task is visual or interactive", "matching best-practice documents", "matching source-radar entries when upstream currency matters", "high-signal registry entries", "prompt patterns only when a prompt artifact is requested"],
+      evidence_note: ["vnem intents searched", "top matches", "chosen rubric", "chosen coding playbook", "orchestration pattern", "precision execution evidence", "semantic search evidence", "verification/healing-loop evidence", "quality gate verdict", "trade-off warnings", "choice", "why", "verification evidence", "residual uncertainty"]
     },
     rank_weights: {
       use_case_match: 5,
@@ -5141,6 +5461,7 @@ const index = {
   quality_contract: searchIndex.quality_contract,
   orchestration_protocol: searchIndex.orchestration_protocol,
   precision_execution_protocol: searchIndex.precision_execution_protocol,
+  omniscient_self_healing_protocol: searchIndex.omniscient_self_healing_protocol,
   install_guide: searchIndex.install_guide,
   coding_protocol: searchIndex.coding_protocol,
   coding_playbooks: searchIndex.coding_playbooks,
@@ -5172,7 +5493,7 @@ const llmsTxt = [
   "",
   `Safe install command: ${installCommand}`,
   "",
-  "Installed files: .vnem/AGENTS.md, .vnem/install-guide.md, .vnem/operating-protocol.md, .vnem/quality-contract.md, .vnem/orchestration-protocol.md, .vnem/precision-execution-protocol.md, .vnem/coding-protocol.md, .vnem/coding-playbooks.json, .vnem/design-architecture.md, .vnem/visual-qa-protocol.md, .vnem/task-rubrics.json, .vnem/search-index.json, .vnem/source-radar.json, .vnem/best-practices.md, .vnem/agent-workspace.md, .vnem/prompt-engineering.md, .vnem/prompt-patterns.json",
+  "Installed files: .vnem/AGENTS.md, .vnem/install-guide.md, .vnem/operating-protocol.md, .vnem/quality-contract.md, .vnem/orchestration-protocol.md, .vnem/precision-execution-protocol.md, .vnem/omniscient-self-healing-protocol.md, .vnem/coding-protocol.md, .vnem/coding-playbooks.json, .vnem/design-architecture.md, .vnem/visual-qa-protocol.md, .vnem/task-rubrics.json, .vnem/search-index.json, .vnem/source-radar.json, .vnem/best-practices.md, .vnem/agent-workspace.md, .vnem/prompt-engineering.md, .vnem/prompt-patterns.json",
   "Canonical API: /api/index.json",
   "Agent instructions: /install/AGENTS.md",
   "Full index: /llms-full.txt",
@@ -5225,6 +5546,7 @@ const operatingProtocolMarkdownData = operatingProtocolMarkdown();
 const qualityContractMarkdownData = qualityContractMarkdown().trimEnd();
 const orchestrationProtocolMarkdownData = orchestrationProtocolMarkdown().trimEnd();
 const precisionExecutionProtocolMarkdownData = precisionExecutionProtocolMarkdown().trimEnd();
+const omniscientSelfHealingProtocolMarkdownData = omniscientSelfHealingProtocolMarkdown().trimEnd();
 const installGuideMarkdownData = installGuideMarkdown().trimEnd();
 const codingProtocolMarkdownData = codingProtocolMarkdown().trimEnd();
 const codingPlaybookData = codingPlaybooksJson();
@@ -5245,6 +5567,7 @@ const archive = installArchive({
   [`${installFolder}/quality-contract.md`]: `${qualityContractMarkdownData}\n`,
   [`${installFolder}/orchestration-protocol.md`]: `${orchestrationProtocolMarkdownData}\n`,
   [`${installFolder}/precision-execution-protocol.md`]: `${precisionExecutionProtocolMarkdownData}\n`,
+  [`${installFolder}/omniscient-self-healing-protocol.md`]: `${omniscientSelfHealingProtocolMarkdownData}\n`,
   [`${installFolder}/coding-protocol.md`]: `${codingProtocolMarkdownData}\n`,
   [`${installFolder}/coding-playbooks.json`]: jsonText(codingPlaybookData),
   [`${installFolder}/design-architecture.md`]: `${designArchitectureMarkdownData}\n`,
@@ -5280,6 +5603,8 @@ await writeText(path.join(ROOT, "public", "install", "orchestration-protocol.md"
 await writeText(path.join(ROOT, installFolder, "orchestration-protocol.md"), `${orchestrationProtocolMarkdownData}\n`);
 await writeText(path.join(ROOT, "public", "install", "precision-execution-protocol.md"), `${precisionExecutionProtocolMarkdownData}\n`);
 await writeText(path.join(ROOT, installFolder, "precision-execution-protocol.md"), `${precisionExecutionProtocolMarkdownData}\n`);
+await writeText(path.join(ROOT, "public", "install", "omniscient-self-healing-protocol.md"), `${omniscientSelfHealingProtocolMarkdownData}\n`);
+await writeText(path.join(ROOT, installFolder, "omniscient-self-healing-protocol.md"), `${omniscientSelfHealingProtocolMarkdownData}\n`);
 await writeText(path.join(ROOT, "public", "install", "coding-protocol.md"), `${codingProtocolMarkdownData}\n`);
 await writeText(path.join(ROOT, installFolder, "coding-protocol.md"), `${codingProtocolMarkdownData}\n`);
 await writeJson(path.join(ROOT, "public", "install", "coding-playbooks.json"), codingPlaybookData);

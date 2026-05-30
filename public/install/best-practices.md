@@ -1,6 +1,6 @@
 # vnem Best Practices
 
-Generated: 2026-05-30T10:23:01.386Z
+Generated: 2026-05-30T14:32:16.710Z
 
 Use this as a compact, current guidance layer for coding agents. Prefer these notes when choosing whether to add, replace, or avoid a tool.
 
@@ -50,6 +50,22 @@ Prevent destructive editing and stale framework syntax by routing mutation-capab
 Sources: https://modelcontextprotocol.io/specification/2025-11-25/schema, https://modelcontextprotocol.io/specification/2025-06-18/server/tools, https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/, https://www.anthropic.com/engineering/writing-tools-for-agents, https://code.claude.com/docs/en/best-practices, https://developers.openai.com/codex/guides/agents-md, https://context7.com/, https://www.anthropic.com/engineering/claude-code-best-practices, https://openai.com/business/guides-and-resources/how-openai-uses-codex/, https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results, https://docs.github.com/en/copilot/concepts/prompting/response-customization, https://code.visualstudio.com/docs/copilot/customization/custom-instructions, https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md, https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md, https://docs.cursor.com/context/rules-for-ai, https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents, https://www.anthropic.com/engineering/building-effective-agents, https://developers.openai.com/api/docs/guides/agent-evals
 
 Search aliases: precision execution, surgical patch, apply diff patch, dynamic documentation, fetch documentation, stateful terminal, safe terminal, destructive editing, knowledge decay, mcp_apply_diff_patch, mcp_fetch_documentation, mcp_execute_terminal_command
+
+## Omniscient Context And Self-Healing
+
+Solve scale blindness and silent logic failures by finding code through local semantic search, proving behavior with red/green tests, and using temporary bounded scripts only for narrow roadblocks.
+
+- Before manually traversing a large repository, ask a semantic code-search tool for the concept and then read only the returned path/line ranges.
+- Keep indexing local and private by default. External embeddings or hosted vector databases require explicit approval and a data-handling review.
+- For new features or logic changes, write or select the automated test first. Prefer a red phase that proves the test catches the missing behavior.
+- Patch only after the red phase or a confirmed failing regression. Use surgical patching, then rerun the verification command until it passes or the bounded attempt limit is reached.
+- Cap self-healing loops at five attempts. If the loop hits the limit, stop and report the failing command, stdout/stderr, attempted fixes, and the smallest human decision needed.
+- Use ephemeral scripts only for one-off local parsing, data shaping, or bulk inspection. They should run in a temporary sandbox, block dangerous APIs, return stdout, and delete themselves afterward.
+- Do not present tests as mathematical proof of all correctness. Present them as executable evidence tied to the user's acceptance criteria and name residual coverage risk.
+
+Sources: https://www.anthropic.com/engineering/building-effective-agents, https://www.anthropic.com/engineering/writing-tools-for-agents, https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents, https://code.claude.com/docs/en/best-practices, https://developers.openai.com/codex/guides/agents-md, https://modelcontextprotocol.io/specification/2025-11-25/schema, https://modelcontextprotocol.io/specification/2025-06-18/server/tools, https://github.com/DeusData/codebase-memory-mcp, https://github.com/qdrant/mcp-server-qdrant, https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/, https://context7.com/, https://www.anthropic.com/engineering/claude-code-best-practices, https://openai.com/business/guides-and-resources/how-openai-uses-codex/, https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results, https://docs.github.com/en/copilot/concepts/prompting/response-customization, https://code.visualstudio.com/docs/copilot/customization/custom-instructions, https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md, https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md, https://docs.cursor.com/context/rules-for-ai, https://developers.openai.com/api/docs/guides/agent-evals
+
+Search aliases: semantic code search, local rag, codebase embeddings, proof engine, self healing, verification tests, healing loop, ephemeral scripting, dynamic tool generation, scale blindness, silent logic failure, mcp_semantic_code_search, mcp_run_verification_tests, mcp_execute_ephemeral_script
 
 ## MCP Gateway And Tool Routing
 

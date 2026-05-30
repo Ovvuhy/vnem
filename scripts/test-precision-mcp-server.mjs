@@ -14,6 +14,12 @@ const tmpRoot = await mkdtemp(path.join(rootDir, ".tmp", "precision-mcp-"));
 const projectDir = path.join(tmpRoot, "project");
 await mkdir(path.join(projectDir, "src"), { recursive: true });
 await writeFile(path.join(projectDir, "src", "app.js"), "export const value = \"old\";\n", "utf8");
+await writeFile(
+  path.join(projectDir, "src", "playerPhysics.js"),
+  "export function resolvePlayerCollision(player, collider) {\n  return collider.overlaps(player.hitbox);\n}\n",
+  "utf8"
+);
+await writeFile(path.join(projectDir, "src", "bad.js"), "function broken( {\n", "utf8");
 
 const client = new Client(
   {
@@ -46,17 +52,44 @@ try {
 
   const tools = await client.listTools();
   const toolNames = new Set(tools.tools.map((tool) => tool.name));
-  for (const name of ["mcp_apply_diff_patch", "mcp_fetch_documentation", "mcp_execute_terminal_command"]) {
+  for (const name of [
+    "mcp_semantic_code_search",
+    "mcp_apply_diff_patch",
+    "mcp_fetch_documentation",
+    "mcp_execute_terminal_command",
+    "mcp_run_verification_tests",
+    "mcp_execute_ephemeral_script"
+  ]) {
     assert.equal(toolNames.has(name), true, `expected precision MCP tool ${name}`);
   }
+  const semanticTool = tools.tools.find((tool) => tool.name === "mcp_semantic_code_search");
   const patchTool = tools.tools.find((tool) => tool.name === "mcp_apply_diff_patch");
   const docsTool = tools.tools.find((tool) => tool.name === "mcp_fetch_documentation");
   const terminalTool = tools.tools.find((tool) => tool.name === "mcp_execute_terminal_command");
+  const verificationTool = tools.tools.find((tool) => tool.name === "mcp_run_verification_tests");
+  const ephemeralTool = tools.tools.find((tool) => tool.name === "mcp_execute_ephemeral_script");
+  assert.equal(semanticTool.annotations?.readOnlyHint, true);
   assert.equal(patchTool.annotations?.readOnlyHint, false);
   assert.equal(patchTool.annotations?.destructiveHint, true);
   assert.equal(docsTool.annotations?.readOnlyHint, true);
   assert.equal(docsTool.annotations?.openWorldHint, true);
   assert.equal(terminalTool.annotations?.readOnlyHint, false);
+  assert.equal(verificationTool.annotations?.readOnlyHint, false);
+  assert.equal(ephemeralTool.annotations?.destructiveHint, true);
+
+  const semantic = await client.callTool({
+    name: "mcp_semantic_code_search",
+    arguments: {
+      query: "player physics collision logic",
+      limit: 3,
+      refresh: true
+    }
+  });
+  assert.equal(semantic.isError, undefined);
+  assert.ok(
+    semantic.structuredContent?.semantic_code_search?.results?.some((item) => item.target_path === "src/playerPhysics.js"),
+    "expected semantic search to locate playerPhysics.js"
+  );
 
   const dryRun = await client.callTool({
     name: "mcp_apply_diff_patch",
@@ -123,6 +156,54 @@ try {
   });
   assert.equal(terminal.isError, undefined);
   assert.equal(terminal.structuredContent?.execution?.ok, true);
+
+  const red = await client.callTool({
+    name: "mcp_run_verification_tests",
+    arguments: {
+      command: "node --check src/bad.js",
+      phase: "red",
+      task_id: "bad-syntax-red",
+      reset: true,
+      timeout_ms: 5000
+    }
+  });
+  assert.equal(red.isError, undefined);
+  assert.equal(red.structuredContent?.verification?.verdict, "red_confirmed");
+
+  const green = await client.callTool({
+    name: "mcp_run_verification_tests",
+    arguments: {
+      command: "node --check src/app.js",
+      phase: "green",
+      task_id: "app-green",
+      reset: true,
+      timeout_ms: 5000
+    }
+  });
+  assert.equal(green.isError, undefined);
+  assert.equal(green.structuredContent?.verification?.verdict, "pass");
+
+  const ephemeral = await client.callTool({
+    name: "mcp_execute_ephemeral_script",
+    arguments: {
+      language: "node",
+      script: "console.log(JSON.stringify({ ok: true, value: 42 }));",
+      timeout_ms: 5000
+    }
+  });
+  assert.equal(ephemeral.isError, undefined);
+  assert.equal(ephemeral.structuredContent?.ephemeral_script?.ok, true);
+  assert.equal(ephemeral.structuredContent?.ephemeral_script?.sandbox?.cleanup?.sandbox_deleted, true);
+
+  const unsafeScript = await client.callTool({
+    name: "mcp_execute_ephemeral_script",
+    arguments: {
+      language: "node",
+      script: "import { exec } from 'node:child_process'; exec('echo bad');"
+    }
+  });
+  assert.equal(unsafeScript.isError, true);
+  assert.equal(unsafeScript.structuredContent?.code, "process_spawn_blocked");
 
   const unsafeTerminal = await client.callTool({
     name: "mcp_execute_terminal_command",

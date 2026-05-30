@@ -51,6 +51,15 @@ const cases = [
     precision: true
   },
   {
+    name: "semantic proof healing build",
+    task: "In a large codebase, find where player physics collision logic lives by concept, write a failing verification test for wall sliding, patch the smallest code surface, rerun the test until it passes, and use a temporary local parser script only if a unique asset-data roadblock appears.",
+    mode: "build",
+    rubrics: ["agentic_coding", "interactive_canvas"],
+    readFirst: ["omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol", "precision-execution-protocol:vnem-precision-execution-protocol", "coding-protocol:vnem-coding-protocol", "practice:omniscient-context-self-healing"],
+    precision: true,
+    omniscient: true
+  },
+  {
     name: "bento dashboard",
     task: "Build a dense bento SaaS dashboard with prioritized KPI tiles, a 12-column CSS Grid layout, responsive mobile collapse, and screenshot verification.",
     mode: "build",
@@ -222,6 +231,13 @@ try {
       ["patch_dry_run", !benchCase.precision || contract.patch_dry_run?.dry_run_first === true],
       ["documentation_policy", !benchCase.precision || contract.documentation_fetched?.fetch_before_framework_specific_code === true],
       ["safe_terminal_command", !benchCase.precision || (contract.safe_terminal_command?.allowed_classes || []).includes("build")],
+      ["omniscient_self_healing", !benchCase.omniscient || (contract.omniscient_self_healing?.tools || []).includes("mcp_semantic_code_search")],
+      ["omniscient_read_first", !benchCase.omniscient || readFirstIds.has("omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol")],
+      ["semantic_code_search", !benchCase.omniscient || contract.semantic_code_search?.tool === "mcp_semantic_code_search"],
+      ["local_code_index", !benchCase.omniscient || contract.local_code_index?.direct_read_required_after_search === true],
+      ["verification_tests", !benchCase.omniscient || contract.verification_tests?.tool === "mcp_run_verification_tests"],
+      ["healing_loop", !benchCase.omniscient || contract.healing_loop?.max_attempts === 5],
+      ["ephemeral_script", !benchCase.omniscient || contract.ephemeral_script?.tool === "mcp_execute_ephemeral_script"],
       ["verification", (contract.verification || []).length > 0],
       ["safety", String(contract.safety || "").includes("without explicit user approval")]
     ];
