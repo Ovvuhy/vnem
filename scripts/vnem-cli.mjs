@@ -15,8 +15,11 @@ const packFiles = [
   "operating-protocol.md",
   "quality-contract.md",
   "orchestration-protocol.md",
+  "precision-execution-protocol.md",
   "coding-protocol.md",
   "coding-playbooks.json",
+  "design-architecture.md",
+  "visual-qa-protocol.md",
   "task-rubrics.json",
   "search-index.json",
   "source-radar.json",
@@ -32,7 +35,7 @@ const rootAgentBlock = `${blockStart}
 
 This repo has a read-only vnem knowledge pack in \`.vnem/\`.
 
-Before choosing tools, libraries, frameworks, MCP servers, skills, prompts, evals, search systems, UI approaches, performance strategies, architecture patterns, orchestration patterns, or upgrade paths, read \`.vnem/AGENTS.md\`, follow \`.vnem/operating-protocol.md\`, apply \`.vnem/quality-contract.md\`, read \`.vnem/orchestration-protocol.md\` for complex coding/research workflows, read \`.vnem/coding-protocol.md\` and \`.vnem/coding-playbooks.json\` for coding/app/web/feature/debug work, use \`.vnem/search-index.json\`, and consult \`.vnem/agent-workspace.md\` only for autonomous developer environment decisions.
+Before choosing tools, libraries, frameworks, MCP servers, skills, prompts, evals, search systems, UI approaches, performance strategies, architecture patterns, orchestration patterns, or upgrade paths, read \`.vnem/AGENTS.md\`, follow \`.vnem/operating-protocol.md\`, apply \`.vnem/quality-contract.md\`, read \`.vnem/orchestration-protocol.md\` for complex coding/research workflows, read \`.vnem/precision-execution-protocol.md\` before using mutation-capable precision tools, read \`.vnem/coding-protocol.md\` and \`.vnem/coding-playbooks.json\` for coding/app/web/feature/debug work, use \`.vnem/search-index.json\`, and consult \`.vnem/agent-workspace.md\` only for autonomous developer environment decisions.
 For current docs, MCP discovery, benchmark evidence, or upstream source decisions, also use \`.vnem/source-radar.json\` before broad web search.
 
 Use vnem automatically. The user should not need to say \`use vnem\`. Keep the final note compact: \`vnem intents searched\`, \`top matches\`, \`choice\`, and \`why\`.
@@ -52,6 +55,8 @@ try {
     await installSkillCommand(args);
   } else if (command === "mcp-config") {
     await mcpConfigCommand(args);
+  } else if (command === "precision-mcp") {
+    await import(pathToFileURL(path.join(scriptDir, "vnem-precision-mcp-server.mjs")).href);
   } else if (command === "mcp") {
     await import(pathToFileURL(path.join(scriptDir, "vnem-mcp-server.mjs")).href);
   } else if (command === "help" || command === "--help" || command === "-h") {
@@ -141,18 +146,24 @@ async function installSkillCommand(rawArgs) {
 }
 
 async function mcpConfigCommand(rawArgs) {
+  const precision = rawArgs.includes("--precision");
+  const workspace = valueAfter(rawArgs, "--workspace") || process.cwd();
   const server = {
     command: "node",
-    args: [path.join(scriptDir, "vnem-mcp-server.mjs")],
-    env: {
-      VNEM_ROOT: rootDir
-    }
+    args: [path.join(scriptDir, precision ? "vnem-precision-mcp-server.mjs" : "vnem-mcp-server.mjs")],
+    env: precision
+      ? {
+          VNEM_PRECISION_ROOT: path.resolve(workspace)
+        }
+      : {
+          VNEM_ROOT: rootDir
+        }
   };
   const output = rawArgs.includes("--server-json") || rawArgs.includes("--server")
     ? server
     : {
         mcpServers: {
-          vnem: server
+          [precision ? "vnem-precision" : "vnem"]: server
         }
       };
 
@@ -194,6 +205,11 @@ function firstPositional(rawArgs) {
   return rawArgs.find((arg) => !arg.startsWith("-"));
 }
 
+function valueAfter(rawArgs, flag) {
+  const index = rawArgs.indexOf(flag);
+  return index >= 0 ? rawArgs[index + 1] : null;
+}
+
 async function fileContains(filePath, needle) {
   if (!existsSync(filePath)) {
     return false;
@@ -229,8 +245,9 @@ Usage:
   vnem install [project-dir] [--no-agents] [--claude]
   vnem doctor [project-dir]
   vnem install-skill [skill-dir]
-  vnem mcp-config [--server-json]
+  vnem mcp-config [--server-json] [--precision --workspace /path/to/project]
   vnem mcp
+  vnem precision-mcp
 
 Examples:
   vnem install ~/code/my-app
@@ -238,6 +255,8 @@ Examples:
   vnem doctor ~/code/my-app
   vnem mcp-config
   vnem mcp-config --server-json
+  vnem mcp-config --precision --workspace ~/code/my-app
   vnem mcp
+  vnem precision-mcp
 `);
 }

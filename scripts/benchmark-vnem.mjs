@@ -39,7 +39,16 @@ const cases = [
     qualityDomains: ["performance", "visual", "playability"],
     qualityVerdict: "needs_revision",
     tradeoffWarning: true,
-    orchestrationPattern: "orchestrator_worker"
+    orchestrationPattern: "orchestrator_worker",
+    precision: true
+  },
+  {
+    name: "precision execution coding",
+    task: "Patch a React web app without destructive full-file rewrites, fetch current React and Vite docs before writing framework-specific code, then run a safe build check.",
+    mode: "build",
+    rubrics: ["agentic_coding", "frontend_ui"],
+    readFirst: ["precision-execution-protocol:vnem-precision-execution-protocol", "coding-protocol:vnem-coding-protocol", "practice:precision-execution-dynamic-knowledge"],
+    precision: true
   },
   {
     name: "bento dashboard",
@@ -208,6 +217,11 @@ try {
       ["tradeoff_alternative", !benchCase.tradeoffWarning || (contract.quality_gate?.tradeoff_policy || []).some((item) => /profile|settings|adaptive|quality/i.test(item)) || (contract.quality_gate?.tradeoff_warnings || []).some((warning) => /profile|settings|adaptive|quality/i.test(warning.alternative))],
       ["orchestration", !benchCase.orchestrationPattern || contract.orchestration?.pattern === benchCase.orchestrationPattern],
       ["orchestration_protocol", !benchCase.orchestrationPattern || contract.orchestration?.read_first?.includes("orchestration-protocol:vnem-orchestration-protocol")],
+      ["precision_execution", !benchCase.precision || (contract.precision_execution?.tools || []).includes("mcp_apply_diff_patch")],
+      ["precision_read_first", !benchCase.precision || readFirstIds.has("precision-execution-protocol:vnem-precision-execution-protocol")],
+      ["patch_dry_run", !benchCase.precision || contract.patch_dry_run?.dry_run_first === true],
+      ["documentation_policy", !benchCase.precision || contract.documentation_fetched?.fetch_before_framework_specific_code === true],
+      ["safe_terminal_command", !benchCase.precision || (contract.safe_terminal_command?.allowed_classes || []).includes("build")],
       ["verification", (contract.verification || []).length > 0],
       ["safety", String(contract.safety || "").includes("without explicit user approval")]
     ];

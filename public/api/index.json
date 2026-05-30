@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-30T08:54:14.885Z",
+  "generated_at": "2026-05-30T10:23:01.386Z",
   "schema_version": "1.0.0",
   "package_version": "1.0.1",
   "release_version": "1.0.1",
@@ -835,6 +835,73 @@
       "coordination log",
       "artifact log",
       "handoff"
+    ],
+    "precision execution": [
+      "surgical patch",
+      "dynamic documentation",
+      "stateful terminal",
+      "safe terminal",
+      "exact patch",
+      "destructive editing",
+      "knowledge decay"
+    ],
+    "surgical patch": [
+      "apply diff patch",
+      "search replace",
+      "unified diff",
+      "exact match",
+      "atomic write",
+      "small diff",
+      "scalpel"
+    ],
+    "apply diff patch": [
+      "mcp_apply_diff_patch",
+      "unified diff",
+      "search replace",
+      "exact match",
+      "patch rejection",
+      "safe edit"
+    ],
+    "dynamic documentation": [
+      "fetch documentation",
+      "mcp_fetch_documentation",
+      "current docs",
+      "live docs",
+      "framework syntax",
+      "knowledge decay"
+    ],
+    "fetch documentation": [
+      "dynamic documentation",
+      "official docs",
+      "markdown docs",
+      "context injection",
+      "read before write",
+      "source-backed code"
+    ],
+    "stateful terminal": [
+      "mcp_execute_terminal_command",
+      "safe terminal",
+      "build test check",
+      "stdout stderr",
+      "timeout",
+      "stateful cwd"
+    ],
+    "safe terminal": [
+      "stateful terminal",
+      "sandboxed command",
+      "allowlist",
+      "timeout",
+      "stdout",
+      "stderr",
+      "non-interactive"
+    ],
+    "destructive editing": [
+      "full file rewrite",
+      "truncate file",
+      "surgical patch",
+      "exact match",
+      "patch rejection",
+      "atomic write"
     ],
     "install vnem": [
       "download vnem",
@@ -2010,6 +2077,213 @@
         "decisions",
         "artifacts",
         "open blockers"
+      ]
+    },
+    "precision execution": {
+      "read_first": [
+        "precision-execution-protocol:vnem-precision-execution-protocol",
+        "coding-protocol:vnem-coding-protocol",
+        "orchestration-protocol:vnem-orchestration-protocol",
+        "practice:precision-execution-dynamic-knowledge",
+        "source:agentic-gateway-security"
+      ],
+      "compare_options": [
+        "read-only guidance only",
+        "dry-run exact patch",
+        "approved exact patch",
+        "current documentation fetch",
+        "safe build/test terminal check"
+      ],
+      "choose_by": [
+        "smallest possible edit",
+        "exact context verified",
+        "current docs fetched before framework-specific code",
+        "terminal command allowlisted",
+        "rollback path clear"
+      ],
+      "report": [
+        "precision mode used",
+        "dry-run result",
+        "documentation evidence",
+        "terminal evidence",
+        "residual mutation risk"
+      ]
+    },
+    "surgical patch": {
+      "read_first": [
+        "precision-execution-protocol:vnem-precision-execution-protocol",
+        "coding-protocol:vnem-coding-protocol",
+        "practice:precision-execution-dynamic-knowledge"
+      ],
+      "compare_options": [
+        "SEARCH/REPLACE exact block",
+        "unified diff hunk",
+        "manual review before apply",
+        "blocked until context matches"
+      ],
+      "choose_by": [
+        "SEARCH block has one exact match",
+        "diff hunk context matches",
+        "atomic write path stays inside workspace",
+        "no broad file rewrite"
+      ],
+      "report": [
+        "target file",
+        "match count",
+        "dry-run hash",
+        "apply hash",
+        "changed ranges"
+      ]
+    },
+    "apply diff patch": {
+      "read_first": [
+        "precision-execution-protocol:vnem-precision-execution-protocol",
+        "coding-protocol:vnem-coding-protocol",
+        "practice:precision-execution-dynamic-knowledge"
+      ],
+      "compare_options": [
+        "mcp_apply_diff_patch dry_run",
+        "mcp_apply_diff_patch apply",
+        "re-read and retry context",
+        "blocked mismatch"
+      ],
+      "choose_by": [
+        "target path confined",
+        "exact context verified",
+        "expected occurrence count",
+        "user approval for non-dry-run"
+      ],
+      "report": [
+        "patch tool",
+        "dry-run status",
+        "applied status",
+        "sha256 before after",
+        "error if mismatch"
+      ]
+    },
+    "dynamic documentation": {
+      "read_first": [
+        "precision-execution-protocol:vnem-precision-execution-protocol",
+        "source:agentic-coding-best-practices",
+        "source:mcp-core-and-registry",
+        "practice:research-source-intake"
+      ],
+      "compare_options": [
+        "built-in docs route",
+        "specific HTTPS docs URL",
+        "local docs from repo",
+        "block write until docs fetched"
+      ],
+      "choose_by": [
+        "official source",
+        "version/topic relevance",
+        "fetched context injected before code",
+        "no syntax from stale memory"
+      ],
+      "report": [
+        "library",
+        "docs URL",
+        "fetched hash",
+        "worker context injected",
+        "remaining docs uncertainty"
+      ]
+    },
+    "fetch documentation": {
+      "read_first": [
+        "precision-execution-protocol:vnem-precision-execution-protocol",
+        "practice:precision-execution-dynamic-knowledge",
+        "practice:research-source-intake"
+      ],
+      "compare_options": [
+        "mcp_fetch_documentation",
+        "repo-local docs",
+        "manual source citation"
+      ],
+      "choose_by": [
+        "source is HTTPS and official where possible",
+        "topic matches code being written",
+        "context block is compact enough for worker"
+      ],
+      "report": [
+        "source URL",
+        "topic",
+        "fetch result",
+        "context injection status"
+      ]
+    },
+    "stateful terminal": {
+      "read_first": [
+        "precision-execution-protocol:vnem-precision-execution-protocol",
+        "coding-protocol:vnem-coding-protocol",
+        "practice:precision-execution-dynamic-knowledge"
+      ],
+      "compare_options": [
+        "mcp_execute_terminal_command",
+        "client-native terminal tool",
+        "manual verification if command is unsafe"
+      ],
+      "choose_by": [
+        "allowlisted command",
+        "workspace-confined cwd",
+        "timeout configured",
+        "stdout/stderr captured"
+      ],
+      "report": [
+        "command",
+        "cwd",
+        "exit code",
+        "timeout",
+        "stdout/stderr summary"
+      ]
+    },
+    "safe terminal": {
+      "read_first": [
+        "precision-execution-protocol:vnem-precision-execution-protocol",
+        "practice:precision-execution-dynamic-knowledge",
+        "coding-protocol:vnem-coding-protocol"
+      ],
+      "compare_options": [
+        "build command",
+        "test command",
+        "lint/typecheck command",
+        "blocked destructive command"
+      ],
+      "choose_by": [
+        "non-interactive",
+        "single command",
+        "no shell operators",
+        "allowlisted script",
+        "timeout evidence"
+      ],
+      "report": [
+        "command safety decision",
+        "result",
+        "blocked reason if unsafe"
+      ]
+    },
+    "destructive editing": {
+      "read_first": [
+        "precision-execution-protocol:vnem-precision-execution-protocol",
+        "practice:precision-execution-dynamic-knowledge",
+        "coding-protocol:vnem-coding-protocol"
+      ],
+      "compare_options": [
+        "exact patch",
+        "split smaller patch",
+        "re-read target",
+        "stop and ask"
+      ],
+      "choose_by": [
+        "no whole-file rewrite",
+        "no truncation risk",
+        "diff scoped to intended function",
+        "dry-run passes before apply"
+      ],
+      "report": [
+        "edit risk",
+        "chosen patch method",
+        "verification",
+        "remaining corruption risk"
       ]
     },
     "install vnem": {
@@ -4335,6 +4609,72 @@
       "https://modelcontextprotocol.io/specification/2025-06-18/server/resources"
     ]
   },
+  "precision_execution_protocol": {
+    "id": "vnem-precision-execution-protocol",
+    "title": "vnem Precision Execution Protocol",
+    "summary": "An opt-in mutation-capable execution protocol for preventing destructive editing and knowledge decay through exact patch verification, current documentation context, and bounded terminal feedback.",
+    "url_path": "/install/precision-execution-protocol.md",
+    "resource_uri": "vnem://install/precision-execution-protocol",
+    "tools": [
+      {
+        "name": "mcp_apply_diff_patch",
+        "type": "mutation",
+        "use_when": "A worker needs to change a file and can provide a narrow SEARCH/REPLACE block or unified diff hunk.",
+        "contract": "Read the target, verify exact context, reject mismatches, dry-run by default, then write atomically only when explicitly applied."
+      },
+      {
+        "name": "mcp_fetch_documentation",
+        "type": "read_with_network",
+        "use_when": "A worker needs current framework, library, engine, or API syntax before writing code.",
+        "contract": "Fetch HTTPS docs, normalize them into compact context, record the source hash, and inject the context before code is written."
+      },
+      {
+        "name": "mcp_execute_terminal_command",
+        "type": "bounded_execution",
+        "use_when": "A worker needs build, test, lint, typecheck, or verification feedback.",
+        "contract": "Run one allowlisted non-interactive command in a workspace-confined cwd, capture stdout/stderr, and timeout gracefully."
+      }
+    ],
+    "edit_policy": [
+      "Do not rewrite an entire file to change one function.",
+      "Use mcp_apply_diff_patch with dry_run=true before a real apply.",
+      "Require exact SEARCH matches or exact unified-diff hunk context; if matching fails, re-read the file and retry with correct context.",
+      "Keep patches inside the active workspace and block .git internals, binary files, symlink escapes, and traversal attempts.",
+      "Report before/after hashes, changed ranges, and whether the patch was dry-run or applied."
+    ],
+    "documentation_policy": [
+      "Do not rely on memory for framework APIs when current docs matter.",
+      "Fetch official or explicitly supplied HTTPS documentation before writing framework-specific code.",
+      "Inject the documentation excerpt into the worker's active context and cite the URL/hash in the worker report.",
+      "Block write attempts that declare required_documentation until those docs have been fetched for the worker/task."
+    ],
+    "terminal_policy": [
+      "Use terminal execution for feedback, not as a general shell.",
+      "Allow only single build/test/check commands; block pipes, redirection, command chaining, deploys, installs, cleanup scripts, and destructive shell commands.",
+      "Keep cwd state inside the workspace, capture stdout/stderr, and return timeout status instead of hanging the agent.",
+      "Treat failed, blocked, or timed-out commands as evidence that the plan must be revised."
+    ],
+    "source_urls": [
+      "https://modelcontextprotocol.io/specification/2025-11-25/schema",
+      "https://modelcontextprotocol.io/specification/2025-06-18/server/tools",
+      "https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/",
+      "https://www.anthropic.com/engineering/writing-tools-for-agents",
+      "https://code.claude.com/docs/en/best-practices",
+      "https://developers.openai.com/codex/guides/agents-md",
+      "https://context7.com/",
+      "https://www.anthropic.com/engineering/claude-code-best-practices",
+      "https://openai.com/business/guides-and-resources/how-openai-uses-codex/",
+      "https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results",
+      "https://docs.github.com/en/copilot/concepts/prompting/response-customization",
+      "https://code.visualstudio.com/docs/copilot/customization/custom-instructions",
+      "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
+      "https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md",
+      "https://docs.cursor.com/context/rules-for-ai",
+      "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+      "https://www.anthropic.com/engineering/building-effective-agents",
+      "https://developers.openai.com/api/docs/guides/agent-evals"
+    ]
+  },
   "install_guide": {
     "id": "vnem-install-guide",
     "title": "vnem Install And MCP Guide",
@@ -4401,7 +4741,7 @@
     ]
   },
   "coding_playbooks": {
-    "generated_at": "2026-05-30T08:54:14.885Z",
+    "generated_at": "2026-05-30T10:23:01.386Z",
     "schema_version": "1.0.0",
     "safety": {
       "mode": "read-only-coding-playbooks",
@@ -6022,6 +6362,10 @@
       "worker_roles",
       "shared_state",
       "reflection_loop",
+      "precision_execution",
+      "documentation_fetched",
+      "patch_dry_run",
+      "safe_terminal_command",
       "quality_gate",
       "triple_check",
       "domain_balance",
@@ -6039,6 +6383,7 @@
       "operating protocol",
       "quality contract",
       "orchestration protocol for complex app/game/research work",
+      "precision execution protocol when exact patching/current docs/safe terminal tooling is available",
       "coding protocol for app/web/feature/debug/refactor work",
       "matching coding playbook",
       "matching task rubric",
@@ -6055,6 +6400,7 @@
       "chosen rubric",
       "chosen coding playbook",
       "orchestration pattern",
+      "precision execution evidence",
       "quality gate verdict",
       "trade-off warnings",
       "choice",

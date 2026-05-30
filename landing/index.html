@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="vnem gives coding agents a read-only knowledge pack, quality gate, and deterministic orchestration plans before they touch your repo." />
+    <meta name="description" content="vnem gives coding agents a knowledge pack, quality gate, orchestration plans, and opt-in precision execution before they touch your repo." />
     <meta name="theme-color" content="#0d0d0d" />
     <meta property="og:title" content="vnem" />
-    <meta property="og:description" content="A read-only AI booster with current tools, MCPs, best practices, quality gates, and orchestration plans for coding agents." />
+    <meta property="og:description" content="An AI booster with current tools, MCPs, best practices, quality gates, orchestration plans, and opt-in precision execution for coding agents." />
     <meta property="og:image" content="assets/banner.jpg" />
     <title>vnem</title>
     <link rel="icon" href="assets/logo.png" />
@@ -44,7 +44,7 @@
           <img class="hero-logo" src="assets/logo.png" alt="" />
           <p class="product-mark">vnem</p>
           <h1>Perception layer for agents.</h1>
-          <p class="lead">Install a read-only AI booster into any repo so coding agents optimize performance, visuals, playability, safety, and maintainability together before they touch code.</p>
+          <p class="lead">Install an AI booster into any repo so coding agents optimize performance, visuals, playability, safety, and maintainability together before they touch code.</p>
 
           <div class="command-shell" id="install-command" aria-label="vnem install command">
             <div class="command-row">
@@ -122,6 +122,35 @@
         </div>
       </section>
 
+      <section class="plain-section quality-section" aria-label="VNEM precision execution">
+        <div class="section-inner">
+          <p class="section-kicker">precision</p>
+          <div class="install-grid">
+            <div>
+              <h2>Exact patches. Current docs. Real feedback.</h2>
+              <p>The default MCP stays read-only. When a project explicitly enables the precision server, VNEM gives agents a scalpel instead of a full-file rewrite button.</p>
+            </div>
+            <div class="quality-list">
+              <article>
+                <span>01</span>
+                <h3>Patch</h3>
+                <p>Apply exact SEARCH/REPLACE blocks or unified diffs only after dry-run context verification.</p>
+              </article>
+              <article>
+                <span>02</span>
+                <h3>Ingest</h3>
+                <p>Fetch current HTTPS framework docs and inject compact context before workers write code.</p>
+              </article>
+              <article>
+                <span>03</span>
+                <h3>Verify</h3>
+                <p>Run allowlisted build, test, and check commands with stdout, stderr, cwd state, and timeouts.</p>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section class="plain-section install-section" id="install" aria-label="Install vnem">
         <div class="section-inner">
           <p class="section-kicker">install</p>
@@ -174,6 +203,15 @@ npm run doctor -- /path/to/project</code></pre>
             <pre class="code-block"><code>node scripts/vnem-cli.mjs mcp-config
 node scripts/vnem-cli.mjs mcp-config --server-json</code></pre>
           </div>
+
+          <div class="install-grid secondary-install">
+            <div>
+              <h2>Need precision execution?</h2>
+              <p>Enable this only for the project workspace where exact patching, current-doc ingestion, and safe terminal checks are allowed.</p>
+            </div>
+            <pre class="code-block"><code>node scripts/vnem-cli.mjs mcp-config --precision --workspace /path/to/project
+npm run precision:mcp</code></pre>
+          </div>
         </div>
       </section>
 
@@ -201,6 +239,10 @@ node scripts/vnem-cli.mjs mcp-config --server-json</code></pre>
               <h2>Real MCP server</h2>
               <p>Use vnem as a local stdio MCP for search, recommendations, orchestration plans, entry lookup, comparison, and best-practice routing.</p>
             </article>
+            <article>
+              <h2>Precision MCP server</h2>
+              <p>Opt in to exact patching, current documentation ingestion, and bounded terminal feedback when a project needs controlled mutation.</p>
+            </article>
           </div>
         </div>
       </section>
@@ -210,7 +252,7 @@ node scripts/vnem-cli.mjs mcp-config --server-json</code></pre>
           <div>
             <p class="section-kicker">mcp</p>
             <h2>Use vnem as a read-only tool server.</h2>
-            <p>For MCP clients, point the server at a local vnem checkout. The server reads generated vnem artifacts and never installs packages, edits code, calls upstream services, or collects secrets.</p>
+            <p>For MCP clients, point the default server at a local vnem checkout. It reads generated artifacts and never installs packages, edits code, calls upstream services, or collects secrets. Precision execution is a separate opt-in server with an explicit workspace root.</p>
           </div>
           <pre class="code-block"><code>{
   "mcpServers": {
@@ -239,6 +281,7 @@ node scripts/vnem-cli.mjs mcp-config --server-json</code></pre>
             <li><code>.vnem/operating-protocol.md</code><span>universal loop and task contract</span></li>
             <li><code>.vnem/quality-contract.md</code><span>holistic excellence, Triple-Check Workflow, and intelligent trade-offs</span></li>
             <li><code>.vnem/orchestration-protocol.md</code><span>routing, reflection, Magentic coding, split-and-merge research, shared state</span></li>
+            <li><code>.vnem/precision-execution-protocol.md</code><span>exact patching, current docs, safe terminal feedback, and mutation boundaries</span></li>
             <li><code>.vnem/coding-protocol.md</code><span>repo sensing, implementation rules, and verification ladder</span></li>
             <li><code>.vnem/coding-playbooks.json</code><span>mode-specific execution loops for coding tasks</span></li>
             <li><code>.vnem/design-architecture.md</code><span>visual, motion, sound, dashboard, and game-feel guidance</span></li>

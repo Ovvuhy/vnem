@@ -71,7 +71,7 @@ const server = new McpServer(
   },
   {
     instructions:
-      "Use vnem as a read-only AI booster and perception layer before coding, recommending tools, or changing a stack. For coding tasks, call vnem_recommend and apply the Triple-Check Workflow: Analyze the user's true goal and hidden requirements, Architect performance and visuals/playability together, then Review that no important domain was sacrificed. For complex app, game, or research tasks, call vnem_orchestrate to choose a deterministic Single Agent, Orchestrator-Worker, or Split-and-Merge plan before burning context. vnem returns provenance, trust tiers, deterministic quality gates, and orchestration schemas; it never installs packages, edits code, calls secrets, spawns model workers, or reaches the network."
+      "Use vnem as a read-only AI booster and perception layer before coding, recommending tools, or changing a stack. For coding tasks, call vnem_recommend and apply the Triple-Check Workflow: Analyze the user's true goal and hidden requirements, Architect performance and visuals/playability together, then Review that no important domain was sacrificed. For complex app, game, or research tasks, call vnem_orchestrate to choose a deterministic Single Agent, Orchestrator-Worker, or Split-and-Merge plan before burning context. If a separate opt-in precision server is available, read vnem://install/precision-execution-protocol before exact patching, current-doc fetches, or safe terminal checks. vnem returns provenance, trust tiers, deterministic quality gates, and orchestration schemas; this default server never installs packages, edits code, calls secrets, spawns model workers, or reaches the network."
   }
 );
 
@@ -503,6 +503,15 @@ function registerResources(mcpServer) {
   );
   registerFileResource(
     mcpServer,
+    "vnem-precision-execution-protocol",
+    "vnem://install/precision-execution-protocol",
+    firstExisting(["public/install/precision-execution-protocol.md", ".vnem/precision-execution-protocol.md"]),
+    "vnem Precision Execution Protocol",
+    "Generated opt-in precision execution protocol for exact patching, dynamic documentation, and safe terminal feedback.",
+    "text/markdown"
+  );
+  registerFileResource(
+    mcpServer,
     "vnem-coding-protocol",
     "vnem://install/coding-protocol",
     firstExisting(["public/install/coding-protocol.md", ".vnem/coding-protocol.md"]),
@@ -707,9 +716,10 @@ function registerPrompts(mcpServer) {
               "1. Call vnem_recommend with the task.",
               "2. For complex app, game, coding, or research tasks, call vnem_orchestrate and follow the selected orchestration pattern.",
               "3. For coding, UI, game, optimization, or production-readiness tasks, apply the returned quality_gate and Triple-Check Workflow.",
-              "4. Read the returned best-practice notes and top registry entries.",
-              "5. Report the vnem intent searched, top matches, orchestration pattern when used, quality gate verdict, recommendation, why, and any source-trust uncertainty.",
-              "6. Do not install tools, edit files, or call external services unless I ask for that separately."
+              "4. If mutation-capable precision tools are available, read vnem://install/precision-execution-protocol before exact patching, current-doc fetches, or safe terminal checks.",
+              "5. Read the returned best-practice notes and top registry entries.",
+              "6. Report the vnem intent searched, top matches, orchestration pattern when used, quality gate verdict, recommendation, why, and any source-trust uncertainty.",
+              "7. Do not install tools, edit files, or call external services unless I ask for that separately."
             ].join("\n")
           }
         }
@@ -874,6 +884,7 @@ function buildStatus() {
       intent_routes: Object.keys(searchIndex.intent_routes || {}).length,
       quality_contract: Boolean(searchIndex.quality_contract),
       orchestration_protocol: Boolean(searchIndex.orchestration_protocol),
+      precision_execution_protocol: Boolean(searchIndex.precision_execution_protocol),
       install_guide: Boolean(searchIndex.install_guide),
       coding_playbooks: searchIndex.coding_playbooks?.playbooks?.length || 0,
       task_rubrics: searchIndex.task_rubrics?.length || 0,
@@ -905,6 +916,7 @@ function buildStatus() {
         "vnem://install/install-guide",
         "vnem://install/quality-contract",
         "vnem://install/orchestration-protocol",
+        "vnem://install/precision-execution-protocol",
         "vnem://install/coding-protocol",
         "vnem://install/coding-playbooks",
         "vnem://install/task-rubrics",
@@ -963,6 +975,13 @@ function buildOverview(audience) {
       usable_via: ["npm run mcp", "vnem_status", "vnem_overview", "vnem_recommend", "vnem_quality_gate", "vnem_orchestrate"]
     },
     {
+      name: "Precision MCP server",
+      paths: ["scripts/vnem-precision-mcp-server.mjs", "scripts/lib/precision-execution-layer.mjs"],
+      purpose:
+        "Separate opt-in mutation-capable MCP surface for exact diff patching, current documentation fetches, and bounded terminal feedback inside an explicit workspace.",
+      usable_via: ["npm run precision:mcp", "mcp_apply_diff_patch", "mcp_fetch_documentation", "mcp_execute_terminal_command", "vnem://install/precision-execution-protocol"]
+    },
+    {
       name: "Source radar",
       paths: ["public/install/source-radar.json", ".vnem/source-radar.json"],
       purpose:
@@ -971,10 +990,10 @@ function buildOverview(audience) {
     },
     {
       name: "Operating protocol and rubrics",
-      paths: ["public/install/install-guide.md", "public/install/operating-protocol.md", "public/install/quality-contract.md", "public/install/orchestration-protocol.md", "public/install/coding-protocol.md", "public/install/coding-playbooks.json", "public/install/task-rubrics.json"],
+      paths: ["public/install/install-guide.md", "public/install/operating-protocol.md", "public/install/quality-contract.md", "public/install/orchestration-protocol.md", "public/install/precision-execution-protocol.md", "public/install/coding-protocol.md", "public/install/coding-playbooks.json", "public/install/task-rubrics.json"],
       purpose:
-        "Compact task-contract and coding-execution layer for sensing the repo, enforcing holistic quality, selecting orchestration patterns, choosing task-specific playbooks, planning edits, routing work, approval gates, verification, and final reporting.",
-      usable_via: ["vnem_route_intent", "vnem_recommend", "vnem_quality_gate", "vnem_orchestrate", "vnem://install/install-guide", "vnem://install/quality-contract", "vnem://install/orchestration-protocol", "vnem://install/coding-protocol", "vnem://install/coding-playbooks", "vnem://install/task-rubrics"]
+        "Compact task-contract and coding-execution layer for sensing the repo, enforcing holistic quality, selecting orchestration patterns, choosing task-specific playbooks, planning exact edits, routing work, approval gates, verification, and final reporting.",
+      usable_via: ["vnem_route_intent", "vnem_recommend", "vnem_quality_gate", "vnem_orchestrate", "vnem://install/install-guide", "vnem://install/quality-contract", "vnem://install/orchestration-protocol", "vnem://install/precision-execution-protocol", "vnem://install/coding-protocol", "vnem://install/coding-playbooks", "vnem://install/task-rubrics"]
     },
     {
       name: "Visual/design guidance",
@@ -1041,9 +1060,11 @@ function buildTaskContract(task, intent, route, readFirst, registryEntries) {
   const perceptionGate = buildPerceptionGate(task, rubrics);
   const qualityGate = buildQualityGate(task, "", intent, rubrics, primaryPlaybook);
   const orchestration = buildTaskOrchestrationSummary(task);
+  const precisionExecution = buildPrecisionExecutionSummary(task, mode);
   const rubricIds = new Set(rubrics.flatMap((rubric) => rubric.read_first || []));
   const readFirstIds = uniqueStrings([
     ...(qualityGate?.required_read_first || []),
+    ...(precisionExecution?.read_first || []),
     ...rubrics.map((rubric) => `task-rubric:${rubric.id}`),
     ...rubricIds,
     ...playbooks.map((playbook) => `coding-playbook:${playbook.id}`),
@@ -1094,6 +1115,10 @@ function buildTaskContract(task, intent, route, readFirst, registryEntries) {
       : null,
     quality_gate: qualityGate,
     orchestration,
+    precision_execution: precisionExecution,
+    documentation_fetched: precisionExecution?.documentation_policy,
+    patch_dry_run: precisionExecution?.patch_policy,
+    safe_terminal_command: precisionExecution?.terminal_policy,
     triple_check: qualityGate?.triple_check,
     domain_balance: qualityGate?.detected_domains,
     tradeoff_policy: qualityGate?.tradeoff_policy,
@@ -1122,6 +1147,38 @@ function buildTaskContract(task, intent, route, readFirst, registryEntries) {
       "vnem is read-only guidance. Do not install tools, mutate config, use secrets, call external services, or start daemons because of this recommendation without explicit user approval.",
     matched_rubric_read_first: [...rubricIds]
   });
+}
+
+function buildPrecisionExecutionSummary(task, mode) {
+  const text = normalize(task);
+  const relevant = mode === "build" ||
+    mode === "debug" ||
+    /\b(code|coding|implement|feature|fix|refactor|test|web app|app|game|ui|react|vite|next|phaser|three|terminal|build|documentation|docs|patch|diff)\b/.test(text);
+  if (!relevant) {
+    return null;
+  }
+
+  return {
+    availability: "separate opt-in precision MCP server; default vnem MCP remains read-only",
+    read_first: ["precision-execution-protocol:vnem-precision-execution-protocol"],
+    tools: ["mcp_apply_diff_patch", "mcp_fetch_documentation", "mcp_execute_terminal_command"],
+    patch_policy: {
+      dry_run_first: true,
+      accepted_formats: ["SEARCH/REPLACE exact block", "unified diff hunk"],
+      reject_on_context_mismatch: true,
+      avoid_whole_file_rewrites: true
+    },
+    documentation_policy: {
+      fetch_before_framework_specific_code: true,
+      inject_context_before_write: true,
+      examples: ["React", "Next.js", "Vite", "Phaser", "PixiJS", "Three.js", "Luau", "Playwright"]
+    },
+    terminal_policy: {
+      allowed_classes: ["build", "test", "lint", "typecheck", "read-only git inspection"],
+      blocks: ["shell chaining", "pipes", "redirection", "package installs", "deploys", "cleanup/destructive commands"],
+      timeout_required: true
+    }
+  };
 }
 
 function buildTaskOrchestrationSummary(task) {
@@ -1671,6 +1728,9 @@ function formatRecommendation(recommendation) {
         `Orchestration: ${recommendation.task_contract.orchestration.pattern} via ${recommendation.task_contract.orchestration.workflow}`
       );
     }
+    if (recommendation.task_contract.precision_execution?.availability) {
+      lines.push(`Precision execution: ${recommendation.task_contract.precision_execution.availability}`);
+    }
     if (recommendation.task_contract.quality_gate?.verdict) {
       lines.push(`Quality gate: ${recommendation.task_contract.quality_gate.verdict}`);
       if (recommendation.task_contract.quality_gate.detected_domains?.length) {
@@ -1712,6 +1772,10 @@ function formatRecommendation(recommendation) {
       lines.push(
         `- Orchestration: ${recommendation.task_contract.orchestration.pattern}; workers ${recommendation.task_contract.orchestration.recommended_workers}; reflection ${recommendation.task_contract.orchestration.reflection_required ? "required" : "not required"}; tool ${recommendation.task_contract.orchestration.mcp_tool}`
       );
+    }
+    if (recommendation.task_contract.precision_execution?.tools?.length) {
+      lines.push(`- Precision tools: ${recommendation.task_contract.precision_execution.tools.join(", ")}`);
+      lines.push("- Precision rule: dry-run exact patches first, fetch current docs before framework-specific code, and use safe terminal checks only.");
     }
     if (recommendation.task_contract.coding_playbook?.execution_loop?.length) {
       lines.push(`- Playbook loop: ${recommendation.task_contract.coding_playbook.execution_loop.slice(0, 4).join("; ")}`);
@@ -1900,6 +1964,7 @@ function formatStatus(status) {
     `- Install guide: ${status.counts.install_guide ? "loaded" : "missing"}`,
     `- Quality contract: ${status.counts.quality_contract ? "loaded" : "missing"}`,
     `- Orchestration protocol: ${status.counts.orchestration_protocol ? "loaded" : "missing"}`,
+    `- Precision execution protocol: ${status.counts.precision_execution_protocol ? "loaded" : "missing"}`,
     `- Source-radar entries: ${status.counts.source_radar_entries}`,
     `- Task rubrics: ${status.counts.task_rubrics}`,
     `- Prompt patterns: ${status.counts.prompt_patterns}`,

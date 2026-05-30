@@ -25,8 +25,11 @@ try {
     "operating-protocol.md",
     "quality-contract.md",
     "orchestration-protocol.md",
+    "precision-execution-protocol.md",
     "coding-protocol.md",
     "coding-playbooks.json",
+    "design-architecture.md",
+    "visual-qa-protocol.md",
     "task-rubrics.json",
     "search-index.json",
     "source-radar.json",
@@ -43,6 +46,7 @@ try {
   assert.ok(agents.includes("<!-- vnem:start -->"));
   assert.ok(agents.includes("quality-contract.md"));
   assert.ok(agents.includes("orchestration-protocol.md"));
+  assert.ok(agents.includes("precision-execution-protocol.md"));
   assert.ok(agents.includes("The user should not need to say `use vnem`"));
 
   JSON.parse(await readFile(path.join(projectDir, ".vnem", "search-index.json"), "utf8"));
@@ -81,6 +85,12 @@ try {
   assert.equal(parsedServerConfig.command, "node");
   assert.ok(parsedServerConfig.args?.[0]?.endsWith("vnem-mcp-server.mjs"));
   assert.equal(parsedServerConfig.env?.VNEM_ROOT, rootDir);
+
+  const precisionConfig = runCli(["mcp-config", "--precision", "--workspace", projectDir]);
+  const parsedPrecisionConfig = JSON.parse(precisionConfig.stdout);
+  assert.equal(parsedPrecisionConfig.mcpServers?.["vnem-precision"]?.command, "node");
+  assert.ok(parsedPrecisionConfig.mcpServers?.["vnem-precision"]?.args?.[0]?.endsWith("vnem-precision-mcp-server.mjs"));
+  assert.equal(parsedPrecisionConfig.mcpServers?.["vnem-precision"]?.env?.VNEM_PRECISION_ROOT, projectDir);
 
   console.log("vnem CLI tests passed");
 } finally {

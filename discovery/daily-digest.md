@@ -1,6 +1,6 @@
 # vnem Daily Signals
 
-Generated: 2026-05-30T08:54:23.824Z
+Generated: 2026-05-30T10:23:13.336Z
 
 This digest is designed for maintainers. It summarizes source-backed candidates and stable best-practice signals; it does not auto-promote entries into the registry.
 
@@ -27,6 +27,7 @@ This digest is designed for maintainers. It summarizes source-backed candidates 
 
 ## Best-practice Signals
 
+- Precision Execution And Dynamic Knowledge: Prevent destructive editing and stale framework syntax by routing mutation-capable work through exact patch verification, current documentation fetches, and bounded build/test terminal feedback.
 - Multi-Agent Orchestration And Reflection: Use deterministic orchestration only when it beats a single agent: simple questions stay single-agent, complex coding/app/game work uses an orchestrator-worker task graph, and broad research splits into independently verified strands before synthesis.
 - Holistic Excellence And Intelligent Trade-offs: Treat vnem as an AI booster that prevents agents from satisfying one requirement by silently degrading another: performance, visuals, playability, accessibility, maintainability, and safety must be balanced with explicit evidence.
 - Agentic Coding Execution: Make AI coding agents better by giving them a tight repo-sensing, plan-first, implementation, verification, and reporting loop instead of vague autonomy.
@@ -34,7 +35,6 @@ This digest is designed for maintainers. It summarizes source-backed candidates 
 - Code Simplification And Minimal Refactors: Simplify code by preserving behavior first, deleting proven waste, reducing duplication, and using the project's existing abstractions before introducing new ones.
 - Visual Experience And Perception Gate: For visual work, judge the actual perceptual artifact: if it looks ugly, generic, oversized, noisy, or mismatched to references, it is not done.
 - Browser Games And Interactive Canvas: For browser-native games, choose the lightest proven stack that can deliver real playability: responsive rendering, input, rules, state transitions, visible feedback, accessible UI, and browser-verified behavior.
-- Persistent Memory And Context Files: Put stable project facts in versioned instruction files, keep volatile task state separate, and review memory for secrets, stale assumptions, and repeated failed approaches.
 
 ## Watchlist / Risk Flags
 

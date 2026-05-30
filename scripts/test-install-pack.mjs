@@ -91,6 +91,7 @@ function safeInstallCommand(command) {
     "operating-protocol.md",
     "quality-contract.md",
     "orchestration-protocol.md",
+    "precision-execution-protocol.md",
     "coding-protocol.md",
     "coding-playbooks.json",
     "design-architecture.md",
@@ -186,6 +187,7 @@ const installGuide = await readFile(path.join(installDir, "install-guide.md"), "
 const operatingProtocol = await readFile(path.join(installDir, "operating-protocol.md"), "utf8");
 const qualityContract = await readFile(path.join(installDir, "quality-contract.md"), "utf8");
 const orchestrationProtocol = await readFile(path.join(installDir, "orchestration-protocol.md"), "utf8");
+const precisionExecutionProtocol = await readFile(path.join(installDir, "precision-execution-protocol.md"), "utf8");
 const codingProtocol = await readFile(path.join(installDir, "coding-protocol.md"), "utf8");
 const codingPlaybooks = await readJson(path.join(installDir, "coding-playbooks.json"));
 const designArchitecture = await readFile(path.join(installDir, "design-architecture.md"), "utf8");
@@ -200,6 +202,7 @@ const searchIndex = await readJson(path.join(installDir, "search-index.json"));
 const localSearchIndex = await readJson(path.join(localPackDir, "search-index.json"));
 const localQualityContract = await readFile(path.join(localPackDir, "quality-contract.md"), "utf8");
 const localOrchestrationProtocol = await readFile(path.join(localPackDir, "orchestration-protocol.md"), "utf8");
+const localPrecisionExecutionProtocol = await readFile(path.join(localPackDir, "precision-execution-protocol.md"), "utf8");
 const localCodingProtocol = await readFile(path.join(localPackDir, "coding-protocol.md"), "utf8");
 const localCodingPlaybooks = await readJson(path.join(localPackDir, "coding-playbooks.json"));
 const localDesignArchitecture = await readFile(path.join(localPackDir, "design-architecture.md"), "utf8");
@@ -228,6 +231,7 @@ assert(
     ".vnem/operating-protocol.md",
     ".vnem/quality-contract.md",
     ".vnem/orchestration-protocol.md",
+    ".vnem/precision-execution-protocol.md",
     ".vnem/coding-protocol.md",
     ".vnem/coding-playbooks.json",
     ".vnem/design-architecture.md",
@@ -240,7 +244,7 @@ assert(
     ".vnem/prompt-engineering.md",
     ".vnem/prompt-patterns.json"
   ]),
-  "install archive must extract root AGENTS.md plus the sixteen read-only pack files."
+  "install archive must extract root AGENTS.md plus the seventeen read-only pack files."
 );
 assert(agents.includes("operating-protocol.md"), "AGENTS.md must tell agents to read the operating protocol.");
 assert(agents.includes("install-guide.md"), "AGENTS.md must mention the install guide.");
@@ -248,6 +252,7 @@ assert(agents.includes("quality-contract.md"), "AGENTS.md must tell agents to re
 assert(agents.includes("Holistic Excellence"), "AGENTS.md must mention Holistic Excellence.");
 assert(agents.includes("Triple-Check Workflow"), "AGENTS.md must mention the Triple-Check Workflow.");
 assert(agents.includes("orchestration-protocol.md"), "AGENTS.md must tell agents to read the orchestration protocol for complex work.");
+assert(agents.includes("precision-execution-protocol.md"), "AGENTS.md must tell agents to read the precision execution protocol before precision tools.");
 assert(agents.includes("coding-protocol.md"), "AGENTS.md must tell agents to read the coding protocol for implementation work.");
 assert(agents.includes("coding-playbooks.json"), "AGENTS.md must tell agents to use coding playbooks for mode-specific implementation work.");
 assert(agents.includes("design-architecture.md"), "AGENTS.md must tell agents to read the design architecture guide for visual work.");
@@ -286,6 +291,13 @@ assert(orchestrationProtocol.includes("single_agent"), "orchestration protocol m
 assert(orchestrationProtocol.includes("orchestrator_worker"), "orchestration protocol must include orchestrator-worker routing.");
 assert(orchestrationProtocol.includes("split_and_merge"), "orchestration protocol must include split-and-merge routing.");
 assert(localOrchestrationProtocol === orchestrationProtocol, "local .vnem orchestration protocol must match the hosted install pack.");
+assert(precisionExecutionProtocol.includes("vnem Precision Execution Protocol"), "precision-execution-protocol.md must include the precision protocol title.");
+assert(precisionExecutionProtocol.includes("mcp_apply_diff_patch"), "precision protocol must include exact patching tool guidance.");
+assert(precisionExecutionProtocol.includes("mcp_fetch_documentation"), "precision protocol must include documentation fetch guidance.");
+assert(precisionExecutionProtocol.includes("mcp_execute_terminal_command"), "precision protocol must include terminal execution guidance.");
+assert(precisionExecutionProtocol.includes("dry_run=true"), "precision protocol must require dry-run patch verification.");
+assert(precisionExecutionProtocol.includes("reject the patch"), "precision protocol must reject mismatched patch context.");
+assert(localPrecisionExecutionProtocol === precisionExecutionProtocol, "local .vnem precision execution protocol must match the hosted install pack.");
 assert(codingProtocol.includes("vnem Coding Protocol"), "coding-protocol.md must include the coding protocol title.");
 assert(codingProtocol.includes("Repo Sensing Contract"), "coding protocol must include repo sensing guidance.");
 assert(codingProtocol.includes("Plan Before Mutating"), "coding protocol must include plan-before-mutation guidance.");
@@ -329,6 +341,7 @@ assert(bestPractices.includes("Frontend And UI"), "best-practices.md must includ
 assert(bestPractices.includes("Agentic Coding Execution"), "best-practices.md must include agentic coding execution guidance.");
 assert(bestPractices.includes("Holistic Excellence And Intelligent Trade-offs"), "best-practices.md must include holistic excellence guidance.");
 assert(bestPractices.includes("Multi-Agent Orchestration And Reflection"), "best-practices.md must include multi-agent orchestration guidance.");
+assert(bestPractices.includes("Precision Execution And Dynamic Knowledge"), "best-practices.md must include precision execution guidance.");
 assert(bestPractices.includes("Browser Games And Interactive Canvas"), "best-practices.md must include browser game guidance.");
 assert(bestPractices.includes("Excalibur"), "browser game guidance must include Excalibur as a TypeScript-first 2D option.");
 assert(bestPractices.includes("real browser"), "browser game guidance must require real-browser verification.");
@@ -383,6 +396,10 @@ assert(searchIndex.decision_protocol?.task_contract_fields?.includes("orchestrat
 assert(searchIndex.decision_protocol?.task_contract_fields?.includes("worker_roles"), "decision protocol must expose worker role task contract fields.");
 assert(searchIndex.decision_protocol?.task_contract_fields?.includes("shared_state"), "decision protocol must expose shared-state task contract fields.");
 assert(searchIndex.decision_protocol?.task_contract_fields?.includes("reflection_loop"), "decision protocol must expose reflection-loop task contract fields.");
+assert(searchIndex.decision_protocol?.task_contract_fields?.includes("precision_execution"), "decision protocol must expose precision execution task contract fields.");
+assert(searchIndex.decision_protocol?.task_contract_fields?.includes("documentation_fetched"), "decision protocol must expose documentation-fetched task contract fields.");
+assert(searchIndex.decision_protocol?.task_contract_fields?.includes("patch_dry_run"), "decision protocol must expose patch dry-run task contract fields.");
+assert(searchIndex.decision_protocol?.task_contract_fields?.includes("safe_terminal_command"), "decision protocol must expose safe terminal task contract fields.");
 assert(searchIndex.decision_protocol?.task_contract_fields?.includes("quality_gate"), "decision protocol must expose quality gate task contract fields.");
 assert(searchIndex.decision_protocol?.task_contract_fields?.includes("triple_check"), "decision protocol must expose triple-check task contract fields.");
 assert(searchIndex.decision_protocol?.task_contract_fields?.includes("domain_balance"), "decision protocol must expose domain balance task contract fields.");
@@ -392,6 +409,7 @@ assert(searchIndex.source_radar?.length === sourceRadar.sources.length, "search-
 assert(searchIndex.coding_protocol?.id === "vnem-coding-protocol", "search-index must expose coding_protocol metadata.");
 assert(searchIndex.quality_contract?.id === "vnem-quality-contract", "search-index must expose quality_contract metadata.");
 assert(searchIndex.orchestration_protocol?.id === "vnem-orchestration-protocol", "search-index must expose orchestration_protocol metadata.");
+assert(searchIndex.precision_execution_protocol?.id === "vnem-precision-execution-protocol", "search-index must expose precision_execution_protocol metadata.");
 assert(searchIndex.install_guide?.id === "vnem-install-guide", "search-index must expose install_guide metadata.");
 assert(searchIndex.coding_playbooks?.playbooks?.length === codingPlaybooks.playbooks.length, "search-index must expose coding playbooks.");
 assert(searchIndex.design_architecture?.id === "vnem-design-architecture", "search-index must expose design_architecture metadata.");
@@ -402,6 +420,7 @@ assert(searchIndex.documents?.some((document) => document.id === "visual-qa-prot
 assert(searchIndex.documents?.some((document) => document.id === "coding-protocol:vnem-coding-protocol"), "search-index must index coding protocol.");
 assert(searchIndex.documents?.some((document) => document.id === "quality-contract:vnem-quality-contract"), "search-index must index quality contract.");
 assert(searchIndex.documents?.some((document) => document.id === "orchestration-protocol:vnem-orchestration-protocol"), "search-index must index orchestration protocol.");
+assert(searchIndex.documents?.some((document) => document.id === "precision-execution-protocol:vnem-precision-execution-protocol"), "search-index must index precision execution protocol.");
 assert(searchIndex.documents?.some((document) => document.id === "install-guide:vnem-install-guide"), "search-index must index install guide.");
 assert(searchIndex.documents?.some((document) => document.id === "coding-playbook:feature-slice"), "search-index must index feature-slice coding playbook.");
 assert(searchIndex.documents?.some((document) => document.id === "coding-playbook:bug-root-cause"), "search-index must index bug-root-cause coding playbook.");
@@ -415,6 +434,10 @@ assert(searchIndex.intent_routes?.["orchestrator worker"]?.read_first?.includes(
 assert(searchIndex.intent_routes?.["split and merge"]?.read_first?.includes("orchestration-protocol:vnem-orchestration-protocol"), "search-index must route split-and-merge tasks to orchestration protocol.");
 assert(searchIndex.intent_routes?.["reflection loop"]?.read_first?.includes("orchestration-protocol:vnem-orchestration-protocol"), "search-index must route reflection-loop tasks to orchestration protocol.");
 assert(searchIndex.intent_routes?.["magentic coding"]?.read_first?.includes("orchestration-protocol:vnem-orchestration-protocol"), "search-index must route Magentic coding tasks to orchestration protocol.");
+assert(searchIndex.intent_routes?.["precision execution"]?.read_first?.includes("precision-execution-protocol:vnem-precision-execution-protocol"), "search-index must route precision execution tasks to precision protocol.");
+assert(searchIndex.intent_routes?.["surgical patch"]?.read_first?.includes("precision-execution-protocol:vnem-precision-execution-protocol"), "search-index must route surgical patch tasks to precision protocol.");
+assert(searchIndex.intent_routes?.["dynamic documentation"]?.read_first?.includes("precision-execution-protocol:vnem-precision-execution-protocol"), "search-index must route dynamic documentation tasks to precision protocol.");
+assert(searchIndex.intent_routes?.["stateful terminal"]?.read_first?.includes("precision-execution-protocol:vnem-precision-execution-protocol"), "search-index must route stateful terminal tasks to precision protocol.");
 assert(searchIndex.intent_routes?.["install vnem"]?.read_first?.includes("install-guide:vnem-install-guide"), "search-index must route install tasks to the install guide.");
 assert(searchIndex.intent_routes?.["download vnem"]?.read_first?.includes("install-guide:vnem-install-guide"), "search-index must route download tasks to the install guide.");
 assert(searchIndex.intent_routes?.["mcp setup"]?.read_first?.includes("install-guide:vnem-install-guide"), "search-index must route MCP setup tasks to the install guide.");
@@ -456,6 +479,7 @@ assert(apiIndex.decision_protocol?.auto_use === true, "public API must expose th
 assert(apiIndex.operating_protocol?.id === "vnem-operating-loop", "public API must expose the operating protocol.");
 assert(apiIndex.quality_contract?.id === "vnem-quality-contract", "public API must expose the quality contract.");
 assert(apiIndex.orchestration_protocol?.id === "vnem-orchestration-protocol", "public API must expose the orchestration protocol.");
+assert(apiIndex.precision_execution_protocol?.id === "vnem-precision-execution-protocol", "public API must expose the precision execution protocol.");
 assert(apiIndex.install_guide?.id === "vnem-install-guide", "public API must expose the install guide.");
 assert(apiIndex.coding_protocol?.id === "vnem-coding-protocol", "public API must expose the coding protocol.");
 assert(apiIndex.coding_playbooks?.playbooks?.some((playbook) => playbook.id === "failure-recovery"), "public API must expose coding playbooks.");
@@ -478,7 +502,7 @@ assert(localSearchIndex.documents?.length === searchIndex.documents.length, "loc
 assert(localSearchIndex.source_radar?.length === searchIndex.source_radar.length, "local .vnem source radar metadata must match the hosted install pack.");
 assert(localSearchIndex.coding_playbooks?.playbooks?.length === searchIndex.coding_playbooks.playbooks.length, "local .vnem search index must match coding playbook metadata.");
 
-for (const query of ["coding task", "app build", "web app", "feature build", "bug fix", "test first", "repo understanding", "large change", "backend api", "failure recovery", "root cause", "holistic excellence", "triple check", "performance visuals", "playability", "quality gate", "production ready", "settings gui", "intelligent tradeoff", "multi agent orchestration", "orchestrator worker", "split and merge", "reflection loop", "magentic coding", "shared state", "install vnem", "download vnem", "mcp setup", "mcp config", "better ui", "aesthetic experience", "visual polish", "visual qa", "screenshot polish", "game feel", "reward feedback", "sound design", "perception gate", "ui architecture", "bento dashboard", "agent dashboard", "conversational ui", "motion design", "design tokens", "dark mode", "glassmorphism", "typography", "layout spacing", "optical alignment", "browser game", "web game", "html5 game", "canvas game", "2d game", "3d game", "game engine", "game ui", "game accessibility", "game physics", "game testing", "canvas performance", "faster search", "agent payments", "code review", "code simplification", "code compaction", "minimal code", "professional code", "refactor", "dead code", "memory", "evals", "prompt engineering", "codex prompt", "mcp gateway", "one mcp", "tool routing", "memory bank", "roo code", "agent modes", "codex config", "claude md", "agent workspace", "source radar", "research layer", "source intake", "benchmark evidence", "pre execution gateway", "zero trust gateway", "tool pinning", "package firewall", "ast indexer", "codex vs claude", "gemini agent", "ai model selection", "agent upgrade"]) {
+for (const query of ["coding task", "app build", "web app", "feature build", "bug fix", "test first", "repo understanding", "large change", "backend api", "failure recovery", "root cause", "holistic excellence", "triple check", "performance visuals", "playability", "quality gate", "production ready", "settings gui", "intelligent tradeoff", "multi agent orchestration", "orchestrator worker", "split and merge", "reflection loop", "magentic coding", "shared state", "precision execution", "surgical patch", "apply diff patch", "dynamic documentation", "fetch documentation", "stateful terminal", "safe terminal", "destructive editing", "install vnem", "download vnem", "mcp setup", "mcp config", "better ui", "aesthetic experience", "visual polish", "visual qa", "screenshot polish", "game feel", "reward feedback", "sound design", "perception gate", "ui architecture", "bento dashboard", "agent dashboard", "conversational ui", "motion design", "design tokens", "dark mode", "glassmorphism", "typography", "layout spacing", "optical alignment", "browser game", "web game", "html5 game", "canvas game", "2d game", "3d game", "game engine", "game ui", "game accessibility", "game physics", "game testing", "canvas performance", "faster search", "agent payments", "code review", "code simplification", "code compaction", "minimal code", "professional code", "refactor", "dead code", "memory", "evals", "prompt engineering", "codex prompt", "mcp gateway", "one mcp", "tool routing", "memory bank", "roo code", "agent modes", "codex config", "claude md", "agent workspace", "source radar", "research layer", "source intake", "benchmark evidence", "pre execution gateway", "zero trust gateway", "tool pinning", "package firewall", "ast indexer", "codex vs claude", "gemini agent", "ai model selection", "agent upgrade"]) {
   const results = search(searchIndex, query);
   assert(results.length > 0, `search-index must return at least one result for "${query}".`);
   assert(results[0].rank_score >= results.at(-1).rank_score, `search results for "${query}" must be rank sorted.`);
@@ -503,6 +527,12 @@ for (const query of ["coding task", "app build", "web app", "feature build", "bu
     assert(
       results.some((result) => result.id === "orchestration-protocol:vnem-orchestration-protocol" || result.id === "practice:multi-agent-orchestration-reflection"),
       `search results for "${query}" should include orchestration protocol or multi-agent guidance.`
+    );
+  }
+  if (["precision execution", "surgical patch", "apply diff patch", "dynamic documentation", "fetch documentation", "stateful terminal", "safe terminal", "destructive editing"].includes(query)) {
+    assert(
+      results.some((result) => result.id === "precision-execution-protocol:vnem-precision-execution-protocol" || result.id === "practice:precision-execution-dynamic-knowledge"),
+      `search results for "${query}" should include precision execution guidance.`
     );
   }
   if (["install vnem", "download vnem", "mcp setup", "mcp config"].includes(query)) {

@@ -45,6 +45,14 @@ const intentAliases = {
   "reflection loop": ["evaluator optimizer", "planner generator evaluator", "generator evaluator", "critique loop", "max iterations", "quality metrics"],
   "magentic coding": ["multi-agent coding", "lead architect", "ui agent", "logic agent", "integration agent", "qa agent", "shared state", "worker claim"],
   "shared state": ["agent memory", "task claims", "worker reports", "state events", "coordination log", "artifact log", "handoff"],
+  "precision execution": ["surgical patch", "dynamic documentation", "stateful terminal", "safe terminal", "exact patch", "destructive editing", "knowledge decay"],
+  "surgical patch": ["apply diff patch", "search replace", "unified diff", "exact match", "atomic write", "small diff", "scalpel"],
+  "apply diff patch": ["mcp_apply_diff_patch", "unified diff", "search replace", "exact match", "patch rejection", "safe edit"],
+  "dynamic documentation": ["fetch documentation", "mcp_fetch_documentation", "current docs", "live docs", "framework syntax", "knowledge decay"],
+  "fetch documentation": ["dynamic documentation", "official docs", "markdown docs", "context injection", "read before write", "source-backed code"],
+  "stateful terminal": ["mcp_execute_terminal_command", "safe terminal", "build test check", "stdout stderr", "timeout", "stateful cwd"],
+  "safe terminal": ["stateful terminal", "sandboxed command", "allowlist", "timeout", "stdout", "stderr", "non-interactive"],
+  "destructive editing": ["full file rewrite", "truncate file", "surgical patch", "exact match", "patch rejection", "atomic write"],
   "install vnem": ["download vnem", "setup vnem", "install pack", "curl install", "repo install", "managed agents", "doctor"],
   "download vnem": ["install vnem", "install archive", "install.tgz", "curl tar", "powershell download", "safe archive"],
   "mcp setup": ["vnem mcp", "mcp config", "mcp json", "stdio server", "claude mcp", "codex mcp", "connect mcp"],
@@ -214,6 +222,54 @@ const intentRoutes = {
     compare_options: ["in-memory task state", "MCP resource snapshot", "versioned handoff file", "external memory store after approval"],
     choose_by: ["deterministic ordinals", "no secrets", "artifact traceability", "task ownership clarity", "client compatibility"],
     report: ["state schema", "claims", "reports", "decisions", "artifacts", "open blockers"]
+  },
+  "precision execution": {
+    read_first: ["precision-execution-protocol:vnem-precision-execution-protocol", "coding-protocol:vnem-coding-protocol", "orchestration-protocol:vnem-orchestration-protocol", "practice:precision-execution-dynamic-knowledge", "source:agentic-gateway-security"],
+    compare_options: ["read-only guidance only", "dry-run exact patch", "approved exact patch", "current documentation fetch", "safe build/test terminal check"],
+    choose_by: ["smallest possible edit", "exact context verified", "current docs fetched before framework-specific code", "terminal command allowlisted", "rollback path clear"],
+    report: ["precision mode used", "dry-run result", "documentation evidence", "terminal evidence", "residual mutation risk"]
+  },
+  "surgical patch": {
+    read_first: ["precision-execution-protocol:vnem-precision-execution-protocol", "coding-protocol:vnem-coding-protocol", "practice:precision-execution-dynamic-knowledge"],
+    compare_options: ["SEARCH/REPLACE exact block", "unified diff hunk", "manual review before apply", "blocked until context matches"],
+    choose_by: ["SEARCH block has one exact match", "diff hunk context matches", "atomic write path stays inside workspace", "no broad file rewrite"],
+    report: ["target file", "match count", "dry-run hash", "apply hash", "changed ranges"]
+  },
+  "apply diff patch": {
+    read_first: ["precision-execution-protocol:vnem-precision-execution-protocol", "coding-protocol:vnem-coding-protocol", "practice:precision-execution-dynamic-knowledge"],
+    compare_options: ["mcp_apply_diff_patch dry_run", "mcp_apply_diff_patch apply", "re-read and retry context", "blocked mismatch"],
+    choose_by: ["target path confined", "exact context verified", "expected occurrence count", "user approval for non-dry-run"],
+    report: ["patch tool", "dry-run status", "applied status", "sha256 before after", "error if mismatch"]
+  },
+  "dynamic documentation": {
+    read_first: ["precision-execution-protocol:vnem-precision-execution-protocol", "source:agentic-coding-best-practices", "source:mcp-core-and-registry", "practice:research-source-intake"],
+    compare_options: ["built-in docs route", "specific HTTPS docs URL", "local docs from repo", "block write until docs fetched"],
+    choose_by: ["official source", "version/topic relevance", "fetched context injected before code", "no syntax from stale memory"],
+    report: ["library", "docs URL", "fetched hash", "worker context injected", "remaining docs uncertainty"]
+  },
+  "fetch documentation": {
+    read_first: ["precision-execution-protocol:vnem-precision-execution-protocol", "practice:precision-execution-dynamic-knowledge", "practice:research-source-intake"],
+    compare_options: ["mcp_fetch_documentation", "repo-local docs", "manual source citation"],
+    choose_by: ["source is HTTPS and official where possible", "topic matches code being written", "context block is compact enough for worker"],
+    report: ["source URL", "topic", "fetch result", "context injection status"]
+  },
+  "stateful terminal": {
+    read_first: ["precision-execution-protocol:vnem-precision-execution-protocol", "coding-protocol:vnem-coding-protocol", "practice:precision-execution-dynamic-knowledge"],
+    compare_options: ["mcp_execute_terminal_command", "client-native terminal tool", "manual verification if command is unsafe"],
+    choose_by: ["allowlisted command", "workspace-confined cwd", "timeout configured", "stdout/stderr captured"],
+    report: ["command", "cwd", "exit code", "timeout", "stdout/stderr summary"]
+  },
+  "safe terminal": {
+    read_first: ["precision-execution-protocol:vnem-precision-execution-protocol", "practice:precision-execution-dynamic-knowledge", "coding-protocol:vnem-coding-protocol"],
+    compare_options: ["build command", "test command", "lint/typecheck command", "blocked destructive command"],
+    choose_by: ["non-interactive", "single command", "no shell operators", "allowlisted script", "timeout evidence"],
+    report: ["command safety decision", "result", "blocked reason if unsafe"]
+  },
+  "destructive editing": {
+    read_first: ["precision-execution-protocol:vnem-precision-execution-protocol", "practice:precision-execution-dynamic-knowledge", "coding-protocol:vnem-coding-protocol"],
+    compare_options: ["exact patch", "split smaller patch", "re-read target", "stop and ask"],
+    choose_by: ["no whole-file rewrite", "no truncation risk", "diff scoped to intended function", "dry-run passes before apply"],
+    report: ["edit risk", "chosen patch method", "verification", "remaining corruption risk"]
   },
   "install vnem": {
     read_first: ["install-guide:vnem-install-guide", "operating-protocol:vnem-operating-loop", "quality-contract:vnem-quality-contract", "practice:codex-vnem-setup"],
@@ -699,6 +755,17 @@ const orchestrationSourceUrls = unique([
   "https://modelcontextprotocol.io/specification/2025-06-18/server/resources"
 ]);
 
+const precisionSourceUrls = unique([
+  "https://modelcontextprotocol.io/specification/2025-11-25/schema",
+  "https://modelcontextprotocol.io/specification/2025-06-18/server/tools",
+  "https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/",
+  "https://www.anthropic.com/engineering/writing-tools-for-agents",
+  "https://code.claude.com/docs/en/best-practices",
+  "https://developers.openai.com/codex/guides/agents-md",
+  "https://context7.com/",
+  ...codingAgentSourceUrls
+]);
+
 const bestPracticeSections = [
   {
     id: "holistic-excellence-intelligent-tradeoffs",
@@ -734,6 +801,23 @@ const bestPracticeSections = [
       "Use shared state as the coordination surface: task claims, ordinals, artifacts, decisions, blockers, and verification evidence should be visible to other agents through MCP resources or structured tool results.",
       "Keep one owner responsible for the final answer or integrated diff. Parallel workers should not independently edit overlapping file surfaces or produce conflicting final narratives.",
       "Treat VNEM orchestration as read-only guidance unless a separate runtime with approvals exists; the MCP server returns plans, schemas, and prompts, not hidden workers or file mutations."
+    ]
+  },
+  {
+    id: "precision-execution-dynamic-knowledge",
+    title: "Precision Execution And Dynamic Knowledge",
+    score: 25,
+    summary:
+      "Prevent destructive editing and stale framework syntax by routing mutation-capable work through exact patch verification, current documentation fetches, and bounded build/test terminal feedback.",
+    keywords: ["precision execution", "surgical patch", "apply diff patch", "dynamic documentation", "fetch documentation", "stateful terminal", "safe terminal", "destructive editing", "knowledge decay", "mcp_apply_diff_patch", "mcp_fetch_documentation", "mcp_execute_terminal_command"],
+    sources: precisionSourceUrls,
+    practices: [
+      "Keep the default VNEM MCP server read-only; expose mutation through a separate opt-in precision server with explicit workspace scope.",
+      "For code edits, prefer exact SEARCH/REPLACE or unified diff hunks over whole-file rewrites. Reject the change when the context does not match instead of guessing.",
+      "Run mcp_apply_diff_patch in dry-run mode first. Apply only after the hash, match count, and changed ranges match the task contract and approval posture.",
+      "Before writing framework-specific code, fetch current documentation with mcp_fetch_documentation or an equivalent current-docs MCP and inject the returned context into the worker task.",
+      "Use terminal execution only for allowlisted build/test/check commands. Block shell operators, destructive commands, production deploys, broad installs, and commands outside the workspace.",
+      "Treat command output as feedback for the next patch. If the command times out, reports input prompts, or is blocked, revise the plan instead of pretending verification passed."
     ]
   },
   {
@@ -1504,6 +1588,69 @@ const orchestrationProtocol = {
   source_urls: orchestrationSourceUrls
 };
 
+const precisionExecutionProtocol = {
+  id: "vnem-precision-execution-protocol",
+  title: "vnem Precision Execution Protocol",
+  summary:
+    "An opt-in mutation-capable execution protocol for preventing destructive editing and knowledge decay through exact patch verification, current documentation context, and bounded terminal feedback.",
+  url_path: "/install/precision-execution-protocol.md",
+  resource_uri: "vnem://install/precision-execution-protocol",
+  tags: [
+    "precision execution",
+    "surgical patch",
+    "apply diff patch",
+    "dynamic documentation",
+    "fetch documentation",
+    "stateful terminal",
+    "safe terminal",
+    "destructive editing",
+    "knowledge decay",
+    "mcp_apply_diff_patch",
+    "mcp_fetch_documentation",
+    "mcp_execute_terminal_command"
+  ],
+  tools: [
+    {
+      name: "mcp_apply_diff_patch",
+      type: "mutation",
+      use_when: "A worker needs to change a file and can provide a narrow SEARCH/REPLACE block or unified diff hunk.",
+      contract: "Read the target, verify exact context, reject mismatches, dry-run by default, then write atomically only when explicitly applied."
+    },
+    {
+      name: "mcp_fetch_documentation",
+      type: "read_with_network",
+      use_when: "A worker needs current framework, library, engine, or API syntax before writing code.",
+      contract: "Fetch HTTPS docs, normalize them into compact context, record the source hash, and inject the context before code is written."
+    },
+    {
+      name: "mcp_execute_terminal_command",
+      type: "bounded_execution",
+      use_when: "A worker needs build, test, lint, typecheck, or verification feedback.",
+      contract: "Run one allowlisted non-interactive command in a workspace-confined cwd, capture stdout/stderr, and timeout gracefully."
+    }
+  ],
+  edit_policy: [
+    "Do not rewrite an entire file to change one function.",
+    "Use mcp_apply_diff_patch with dry_run=true before a real apply.",
+    "Require exact SEARCH matches or exact unified-diff hunk context; if matching fails, re-read the file and retry with correct context.",
+    "Keep patches inside the active workspace and block .git internals, binary files, symlink escapes, and traversal attempts.",
+    "Report before/after hashes, changed ranges, and whether the patch was dry-run or applied."
+  ],
+  documentation_policy: [
+    "Do not rely on memory for framework APIs when current docs matter.",
+    "Fetch official or explicitly supplied HTTPS documentation before writing framework-specific code.",
+    "Inject the documentation excerpt into the worker's active context and cite the URL/hash in the worker report.",
+    "Block write attempts that declare required_documentation until those docs have been fetched for the worker/task."
+  ],
+  terminal_policy: [
+    "Use terminal execution for feedback, not as a general shell.",
+    "Allow only single build/test/check commands; block pipes, redirection, command chaining, deploys, installs, cleanup scripts, and destructive shell commands.",
+    "Keep cwd state inside the workspace, capture stdout/stderr, and return timeout status instead of hanging the agent.",
+    "Treat failed, blocked, or timed-out commands as evidence that the plan must be revised."
+  ],
+  source_urls: precisionSourceUrls
+};
+
 const installGuide = {
   id: "vnem-install-guide",
   title: "vnem Install And MCP Guide",
@@ -1605,6 +1752,8 @@ const codingProtocol = {
       title: "Implementation Rules",
       bullets: [
         "Make the smallest coherent change that satisfies the acceptance criteria.",
+        "When a precision execution MCP is available, prefer exact SEARCH/REPLACE or unified-diff patching with a dry-run over rewriting whole files.",
+        "Before writing framework-specific code, fetch current documentation when syntax, API shape, or engine setup might have changed.",
         "Reuse existing project helpers, components, styles, data access layers, and error patterns before adding new ones.",
         "Add dependencies only when local code or existing dependencies cannot reasonably solve the problem, and state why before installing.",
         "Preserve public APIs, data formats, migration behavior, and user-visible flows unless the user explicitly asked to change them.",
@@ -3566,6 +3715,44 @@ function buildSearchDocuments(entries) {
     }
   ];
 
+  const precisionExecutionProtocolDocs = [
+    {
+      id: `precision-execution-protocol:${precisionExecutionProtocol.id}`,
+      kind: "precision-execution-protocol",
+      title: precisionExecutionProtocol.title,
+      summary: precisionExecutionProtocol.summary,
+      url_path: precisionExecutionProtocol.url_path,
+      trust_tier: "verified",
+      type: "precision-execution-protocol",
+      score: 26,
+      tags: precisionExecutionProtocol.tags,
+      use_cases: [
+        ...precisionExecutionProtocol.tools.map((tool) => `${tool.name}: ${tool.use_when}`),
+        ...precisionExecutionProtocol.edit_policy,
+        ...precisionExecutionProtocol.documentation_policy,
+        ...precisionExecutionProtocol.terminal_policy
+      ],
+      best_for: [
+        "Mutation-capable agent workflows that need exact file edits instead of whole-file rewrites.",
+        "Framework-specific coding where current documentation must be fetched before implementation.",
+        "Build/test/check feedback loops that need stdout, stderr, cwd state, and timeout reporting."
+      ],
+      risk_flags: ["opt-in mutation-capable server", "network fetch for documentation", "bounded terminal execution"],
+      source_urls: unique([installFileUrl("precision-execution-protocol.md"), ...precisionExecutionProtocol.source_urls]),
+      keywords: unique(textTokens([
+        precisionExecutionProtocol.id,
+        precisionExecutionProtocol.title,
+        precisionExecutionProtocol.summary,
+        ...precisionExecutionProtocol.tags,
+        ...precisionExecutionProtocol.tools.flatMap((tool) => [tool.name, tool.type, tool.use_when, tool.contract]),
+        ...precisionExecutionProtocol.edit_policy,
+        ...precisionExecutionProtocol.documentation_policy,
+        ...precisionExecutionProtocol.terminal_policy,
+        ...precisionExecutionProtocol.source_urls
+      ].join(" "))).slice(0, 200)
+    }
+  ];
+
   const installGuideDocs = [
     {
       id: `install-guide:${installGuide.id}`,
@@ -3769,7 +3956,7 @@ function buildSearchDocuments(entries) {
     ].join(" "))).slice(0, 180)
   }));
 
-  return [...orchestrationProtocolDocs, ...qualityContractDocs, ...installGuideDocs, ...operatingDocs, ...codingProtocolDocs, ...codingPlaybookDocs, ...sourceRadarDocs, ...designArchitectureDocs, ...visualQaDocs, ...rubricDocs, ...promptDocs, ...practiceDocs, ...entryDocs].sort((a, b) => b.score - a.score || a.title.localeCompare(b.title));
+  return [...precisionExecutionProtocolDocs, ...orchestrationProtocolDocs, ...qualityContractDocs, ...installGuideDocs, ...operatingDocs, ...codingProtocolDocs, ...codingPlaybookDocs, ...sourceRadarDocs, ...designArchitectureDocs, ...visualQaDocs, ...rubricDocs, ...promptDocs, ...practiceDocs, ...entryDocs].sort((a, b) => b.score - a.score || a.title.localeCompare(b.title));
 }
 
 function buildInvertedIndex(documents) {
@@ -3835,6 +4022,7 @@ function operatingProtocolMarkdown() {
     "- Intent and route: matching intent alias, route, rubric, and read-first documents.",
     "- Quality gate: Triple-Check Workflow, detected domains, quality floor, and intelligent trade-off policy.",
     "- Orchestration: single-agent, orchestrator-worker, or split-and-merge pattern when task complexity warrants it.",
+    "- Precision execution: use exact patching, dynamic documentation, and safe terminal feedback only when the opt-in precision server is explicitly available and appropriate.",
     "- Smallest sufficient capability: existing project pattern first, then source-backed tool only if justified.",
     "- Approval gates: actions that need explicit user consent before mutation or external side effects.",
     "- perception gate: for UI, game, canvas, animation, or branded surfaces, screenshots and interaction moments must look intentionally polished before final.",
@@ -3854,6 +4042,7 @@ function operatingProtocolMarkdown() {
     "- Use `.vnem/coding-protocol.md` for app, web app, feature, bug fix, refactor, and review execution guidance.",
     "- Use `.vnem/quality-contract.md` for holistic excellence, Triple-Check Workflow, and intelligent trade-off rules.",
     "- Use `.vnem/orchestration-protocol.md` for complex coding, app, game, research, split-and-merge, reflection, and shared-state workflows.",
+    "- Use `.vnem/precision-execution-protocol.md` before using opt-in mutation-capable tools such as surgical patching, dynamic documentation fetches, or stateful terminal execution.",
     "- Use `.vnem/task-rubrics.json` to choose the broad quality bar for the task.",
     "- Use `.vnem/design-architecture.md` for UI, game, visual polish, dashboard, motion, sound, and conversational-agent surfaces.",
     "- Use `.vnem/visual-qa-protocol.md` when the work has a rendered surface that needs screenshot, mobile, interaction, reward, or sound evidence.",
@@ -4034,6 +4223,94 @@ function orchestrationProtocolMarkdown() {
   ].join("\n");
 }
 
+function precisionExecutionProtocolMarkdown() {
+  return [
+    "# vnem Precision Execution Protocol",
+    "",
+    `Generated: ${generatedAt}`,
+    "",
+    precisionExecutionProtocol.summary,
+    "",
+    "## Safety Boundary",
+    "",
+    "- This file describes an opt-in precision execution layer. It is not enabled by the default read-only VNEM MCP server.",
+    "- Use the default `vnem` MCP server first for read-only recommendations, quality gates, orchestration plans, and source routing.",
+    "- Use `vnem-precision` only when the user or project explicitly allows mutation-capable tools for the active workspace.",
+    "- The precision server must never bypass the connected client's normal approvals, repository permissions, or user review.",
+    "",
+    "## Tool Contracts",
+    "",
+    ...precisionExecutionProtocol.tools.flatMap((tool) => [
+      `### ${tool.name}`,
+      "",
+      `Type: \`${tool.type}\``,
+      "",
+      `Use when: ${tool.use_when}`,
+      "",
+      `Contract: ${tool.contract}`,
+      ""
+    ]),
+    "## AST-Aware Surgical Patching",
+    "",
+    "VNEM's scalpel rule is strict: change only the intended region, verify the old context exactly, and reject the patch when context has drifted.",
+    "",
+    ...precisionExecutionProtocol.edit_policy.map((item) => `- ${item}`),
+    "",
+    "Required patch flow:",
+    "",
+    "1. Re-read the target file or function immediately before patching.",
+    "2. Build a narrow SEARCH/REPLACE block or unified diff hunk.",
+    "3. Call `mcp_apply_diff_patch` with `dry_run=true`.",
+    "4. Review the match count, changed ranges, and before/after hashes.",
+    "5. Apply with `dry_run=false` only after the dry run matches the task and approvals.",
+    "6. Run focused verification and report the evidence.",
+    "",
+    "## Autonomous Knowledge Ingestor",
+    "",
+    "Agents must not guess framework syntax when current documentation matters.",
+    "",
+    ...precisionExecutionProtocol.documentation_policy.map((item) => `- ${item}`),
+    "",
+    "Required documentation flow:",
+    "",
+    "1. Identify framework/library/API names during Analyze or Architect.",
+    "2. Call `mcp_fetch_documentation` for each library that affects code syntax, component APIs, engine setup, or build behavior.",
+    "3. Put the returned `context_injection` block into the worker's active task context.",
+    "4. If a patch declares `required_documentation`, block the patch until the required docs are recorded for the same worker/task.",
+    "5. Prefer fetched docs over memory when syntax conflicts.",
+    "",
+    "## Stateful Terminal Execution",
+    "",
+    "Terminal feedback is for bounded verification. It is not a general-purpose shell.",
+    "",
+    ...precisionExecutionProtocol.terminal_policy.map((item) => `- ${item}`),
+    "",
+    "Allowed command classes:",
+    "",
+    "- Package-manager build/test/check scripts such as `npm run build`, `npm test`, `pnpm run test`, or `yarn run typecheck`.",
+    "- Static checks such as `node --check file.js`.",
+    "- Read-only Git inspection such as `git status`, `git diff`, `git log`, or `git show`.",
+    "- Language test/check commands such as `cargo test`, `cargo check`, `go test`, `python -m pytest`, or `pytest`.",
+    "",
+    "Blocked command classes:",
+    "",
+    "- Shell chaining, pipes, redirection, backticks, and interactive shell launchers.",
+    "- Package installs, deploys, publish/release scripts, cleanup scripts, destructive file operations, registry edits, system commands, and commands outside the workspace.",
+    "",
+    "## Relationship To VNEM",
+    "",
+    "- `.vnem/quality-contract.md` defines the quality bar.",
+    "- `.vnem/orchestration-protocol.md` decides whether the task needs single-agent, worker orchestration, split-and-merge research, or reflection.",
+    "- `.vnem/coding-protocol.md` defines repo sensing, small diffs, approval gates, verification, and final reporting.",
+    "- This precision protocol defines the optional execution tools for exact patching, dynamic docs, and terminal feedback.",
+    "",
+    "## Source URLs",
+    "",
+    ...precisionExecutionProtocol.source_urls.map((url) => `- ${url}`),
+    ""
+  ].join("\n");
+}
+
 function installGuideMarkdown() {
   return [
     "# vnem Install And MCP Guide",
@@ -4047,6 +4324,7 @@ function installGuideMarkdown() {
     "- The install pack is read-only guidance and generated search data.",
     "- The archive install does not run package manager scripts, shell scripts, daemons, or MCP servers.",
     "- The MCP server is opt-in, local, stdio-based, and read-only; it exposes vnem search, recommendation, resources, quality gates, and deterministic orchestration plans.",
+    "- The separate precision MCP server is mutation-capable and must be enabled only for an explicitly scoped workspace.",
     "- Review any client config before adding it to a shared project or user-wide MCP scope.",
     "",
     "## Fastest Pack Install",
@@ -4103,6 +4381,13 @@ function installGuideMarkdown() {
     "node scripts/vnem-cli.mjs mcp-config --server-json",
     "```",
     "",
+    "Opt-in precision MCP config for a project that should allow exact patching, current-doc fetching, and safe terminal feedback:",
+    "",
+    "```bash",
+    "node scripts/vnem-cli.mjs mcp-config --precision --workspace /path/to/project",
+    "node scripts/vnem-cli.mjs mcp-config --precision --workspace /path/to/project --server-json",
+    "```",
+    "",
     "Generic `.mcp.json` shape:",
     "",
     "```json",
@@ -4121,12 +4406,15 @@ function installGuideMarkdown() {
     "",
     "Claude Code can add a single-server JSON object with `claude mcp add-json vnem '<json>'`. Other MCP clients usually accept either the full `mcpServers` object above or the single `vnem` server object printed by `--server-json`.",
     "",
+    "For the precision server, use the generated `vnem-precision` config and review `VNEM_PRECISION_ROOT` before connecting it. The default read-only server remains the safer default.",
+    "",
     "## Verify",
     "",
     "- Pack install: run `npm run doctor -- /path/to/project` from the vnem checkout.",
     "- MCP server: connect the client and call `vnem_status`, then `vnem_overview`, then `vnem_recommend` for a real coding task.",
     "- Quality gate: for UI/game/app work, call `vnem_quality_gate` or check the `quality_gate` field returned by `vnem_recommend`.",
     "- Orchestration: for complex app, game, coding, or research work, call `vnem_orchestrate` and confirm it returns the expected pattern and JSON schemas.",
+    "- Precision server: call `mcp_apply_diff_patch` with `dry_run=true` before any real apply, `mcp_fetch_documentation` before framework-specific code, and `mcp_execute_terminal_command` only for allowlisted checks.",
     "",
     "## Troubleshooting",
     "",
@@ -4489,6 +4777,7 @@ function agentsMarkdown() {
     "- `.vnem/operating-protocol.md`: universal loop for sensing the repo, routing context, choosing small capabilities, constraining risk, applying the aesthetic perception gate, verifying, and reporting evidence.",
     "- `.vnem/quality-contract.md`: Holistic Excellence, Proactive Enhancement, Intelligent Trade-offs, and the Triple-Check Workflow for balancing performance, visuals, playability, accessibility, maintainability, and safety.",
     "- `.vnem/orchestration-protocol.md`: deterministic routing, reflection, Magentic Coding Workflow, split-and-merge research, and shared-state contracts for multi-agent work.",
+    "- `.vnem/precision-execution-protocol.md`: opt-in exact patching, dynamic documentation, stateful terminal feedback, and mutation safety rules for precision-capable MCP clients.",
     "- `.vnem/coding-protocol.md`: coding execution guide for apps, web apps, features, bug fixes, refactors, repo sensing, plan-first work, and verification loops.",
     "- `.vnem/coding-playbooks.json`: mode-specific execution playbooks for feature slices, root-cause bug fixes, test-first work, refactors, rendered web apps, API/data changes, large changes, reviews, and failure recovery.",
     "- `.vnem/design-architecture.md`: source-backed design intelligence for UI, game, dashboard, visual polish, motion, sound, and conversational-agent surfaces.",
@@ -4514,19 +4803,20 @@ function agentsMarkdown() {
     "1. Read `.vnem/operating-protocol.md` and classify the task mode: `build`, `review`, `plan`, `debug`, `prompt`, or `decision`.",
     "2. For coding, app, UI, game, optimization, or production-ready tasks, read `.vnem/quality-contract.md` and apply the Triple-Check Workflow: Analyze, Architect, Review.",
     "3. For complex coding, app, web app, game, or deep research tasks, read `.vnem/orchestration-protocol.md` and choose Single Agent, Orchestrator-Worker, Split-and-Merge, or the bounded reflection loop.",
-    "4. For coding tasks, read `.vnem/coding-protocol.md` before editing application code.",
-    "5. For implementation/debug/review/refactor/test work, select the closest playbook from `.vnem/coding-playbooks.json` and follow its repo sensing, execution loop, verification ladder, stop conditions, anti-patterns, and final-report fields.",
-    "6. Identify the user's task intents in plain words, such as `coding task`, `web app`, `feature build`, `bug fix`, `browser game`, `multi agent orchestration`, `orchestrator worker`, `split and merge`, `reflection loop`, `magentic coding`, `visual polish`, `game feel`, `performance visuals`, `quality gate`, `settings gui`, `code review`, `code simplification`, `memory`, `evals`, `agent payments`, or `MCP server selection`.",
-    "7. Read `.vnem/search-index.json` and expand those intents with `intent_aliases`.",
-    "8. Select the matching broad rubric from `.vnem/task-rubrics.json` and use its quality bar, approval gates, verification checklist, and output contract.",
-    "9. Check `intent_routes` for the closest matching task. Read the listed `read_first` documents before choosing a stack or visual approach.",
-    "10. If the task depends on current docs, upstream registries, benchmark claims, MCP discovery, or agent-client behavior, read `.vnem/source-radar.json` before broad web search.",
-    "11. Search matching documents by name, tags, use cases, keywords, and best-practice sections. Read `.vnem/best-practices.md` only for matching sections.",
-    "12. Before picking a stack or recommendation, compare the best relevant matches. Prefer higher `score`, stronger `source_confidence`, fresher `freshness`, clearer licenses, fewer `risk_flags`, and the smallest sufficient capability.",
-    "13. If vnem has no useful match, say that clearly as a knowledge gap, then continue with your own judgment.",
-    "14. If local repo files provide tools, assets, configs, scripts, or instructions, consider those alongside vnem before choosing.",
+    "4. Before using mutation-capable precision tools, read `.vnem/precision-execution-protocol.md`; use dry-run exact patching before apply, fetch current docs before framework-specific code, and use only safe terminal checks.",
+    "5. For coding tasks, read `.vnem/coding-protocol.md` before editing application code.",
+    "6. For implementation/debug/review/refactor/test work, select the closest playbook from `.vnem/coding-playbooks.json` and follow its repo sensing, execution loop, verification ladder, stop conditions, anti-patterns, and final-report fields.",
+    "7. Identify the user's task intents in plain words, such as `coding task`, `web app`, `feature build`, `bug fix`, `browser game`, `multi agent orchestration`, `orchestrator worker`, `split and merge`, `reflection loop`, `magentic coding`, `precision execution`, `surgical patch`, `dynamic documentation`, `stateful terminal`, `visual polish`, `game feel`, `performance visuals`, `quality gate`, `settings gui`, `code review`, `code simplification`, `memory`, `evals`, `agent payments`, or `MCP server selection`.",
+    "8. Read `.vnem/search-index.json` and expand those intents with `intent_aliases`.",
+    "9. Select the matching broad rubric from `.vnem/task-rubrics.json` and use its quality bar, approval gates, verification checklist, and output contract.",
+    "10. Check `intent_routes` for the closest matching task. Read the listed `read_first` documents before choosing a stack or visual approach.",
+    "11. If the task depends on current docs, upstream registries, benchmark claims, MCP discovery, or agent-client behavior, read `.vnem/source-radar.json` before broad web search.",
+    "12. Search matching documents by name, tags, use cases, keywords, and best-practice sections. Read `.vnem/best-practices.md` only for matching sections.",
+    "13. Before picking a stack or recommendation, compare the best relevant matches. Prefer higher `score`, stronger `source_confidence`, fresher `freshness`, clearer licenses, fewer `risk_flags`, and the smallest sufficient capability.",
+    "14. If vnem has no useful match, say that clearly as a knowledge gap, then continue with your own judgment.",
+    "15. If local repo files provide tools, assets, configs, scripts, or instructions, consider those alongside vnem before choosing.",
     "",
-    "For nontrivial tasks, follow a compact task contract: `mode`, `intent`, `rubric`, `coding playbook`, `orchestration pattern`, `worker roles`, `shared state`, `reflection loop`, `quality gate`, `triple check`, `domain balance`, `tradeoff policy`, `read first`, `smallest sufficient capability`, `approval gates`, `perception gate` when visual work is involved, `verification`, and `final report`.",
+    "For nontrivial tasks, follow a compact task contract: `mode`, `intent`, `rubric`, `coding playbook`, `orchestration pattern`, `worker roles`, `shared state`, `reflection loop`, `precision execution`, `documentation fetched`, `patch dry-run`, `safe terminal command`, `quality gate`, `triple check`, `domain balance`, `tradeoff policy`, `read first`, `smallest sufficient capability`, `approval gates`, `perception gate` when visual work is involved, `verification`, and `final report`.",
     "",
     "For coding implementation, follow the coding protocol: sense the repo, find existing patterns, plan nontrivial edits, make the smallest coherent diff, run focused checks first, run broader verification when blast radius justifies it, and report skipped checks honestly.",
     "",
@@ -4591,7 +4881,7 @@ function agentWorkspaceMarkdown() {
     "",
     "Start with a small, readable setup: Codex or another coding agent, repository-local instructions, the vnem read-only pack, and only the MCP servers required for the current workflow.",
     "",
-    "For actual implementation work, route the agent through `.vnem/quality-contract.md`, `.vnem/orchestration-protocol.md`, `.vnem/coding-protocol.md`, and `.vnem/coding-playbooks.json` before editing code. The quality contract prevents silent trade-offs; the orchestration protocol decides whether the task stays single-agent, uses orchestrator-workers, splits research, or enters reflection; the coding protocol defines repo-sensing and verification rules; the playbooks select the concrete loop for feature slices, bug fixes, tests, refactors, rendered web apps, API/data changes, large changes, reviews, or recovery.",
+    "For actual implementation work, route the agent through `.vnem/quality-contract.md`, `.vnem/orchestration-protocol.md`, `.vnem/precision-execution-protocol.md`, `.vnem/coding-protocol.md`, and `.vnem/coding-playbooks.json` before editing code. The quality contract prevents silent trade-offs; the orchestration protocol decides whether the task stays single-agent, uses orchestrator-workers, splits research, or enters reflection; the precision protocol defines optional exact patching, current-docs injection, and safe terminal feedback; the coding protocol defines repo-sensing and verification rules; the playbooks select the concrete loop for feature slices, bug fixes, tests, refactors, rendered web apps, API/data changes, large changes, reviews, or recovery.",
     "",
     "Add gateways, memory banks, browser sessions, database access, and repository mutation tools only after the team can name the approval path and rollback plan.",
     "",
@@ -4665,7 +4955,7 @@ function rootAgentsMarkdown() {
     "",
     "This repo has a read-only vnem knowledge pack in `.vnem/`.",
     "",
-    "Before choosing tools, libraries, frameworks, MCP servers, skills, prompts, evals, search systems, UI approaches, visual polish/game feel, performance strategies, architecture patterns, orchestration patterns, or upgrade paths, read `.vnem/AGENTS.md`, follow `.vnem/operating-protocol.md`, apply `.vnem/quality-contract.md`, read `.vnem/orchestration-protocol.md` for complex coding/research workflows, read `.vnem/coding-protocol.md` and `.vnem/coding-playbooks.json` for coding/app/web/feature/debug work, use `.vnem/search-index.json`, read `.vnem/design-architecture.md` and `.vnem/visual-qa-protocol.md` for visual surfaces, and consult `.vnem/agent-workspace.md` only for autonomous developer environment decisions.",
+    "Before choosing tools, libraries, frameworks, MCP servers, skills, prompts, evals, search systems, UI approaches, visual polish/game feel, performance strategies, architecture patterns, orchestration patterns, or upgrade paths, read `.vnem/AGENTS.md`, follow `.vnem/operating-protocol.md`, apply `.vnem/quality-contract.md`, read `.vnem/orchestration-protocol.md` for complex coding/research workflows, read `.vnem/precision-execution-protocol.md` before using mutation-capable precision tools, read `.vnem/coding-protocol.md` and `.vnem/coding-playbooks.json` for coding/app/web/feature/debug work, use `.vnem/search-index.json`, read `.vnem/design-architecture.md` and `.vnem/visual-qa-protocol.md` for visual surfaces, and consult `.vnem/agent-workspace.md` only for autonomous developer environment decisions.",
     "For current docs, MCP discovery, benchmark evidence, or upstream source decisions, also use `.vnem/source-radar.json` before broad web search.",
     "",
     "Use vnem automatically. The user should not need to say `use vnem`. Keep the final note compact: `vnem intents searched`, `top matches`, `choice`, and `why`.",
@@ -4720,6 +5010,18 @@ function searchIndexJson(entries) {
       shared_state_fields: orchestrationProtocol.shared_state_fields,
       source_urls: orchestrationProtocol.source_urls
     },
+    precision_execution_protocol: {
+      id: precisionExecutionProtocol.id,
+      title: precisionExecutionProtocol.title,
+      summary: precisionExecutionProtocol.summary,
+      url_path: precisionExecutionProtocol.url_path,
+      resource_uri: precisionExecutionProtocol.resource_uri,
+      tools: precisionExecutionProtocol.tools,
+      edit_policy: precisionExecutionProtocol.edit_policy,
+      documentation_policy: precisionExecutionProtocol.documentation_policy,
+      terminal_policy: precisionExecutionProtocol.terminal_policy,
+      source_urls: precisionExecutionProtocol.source_urls
+    },
     install_guide: {
       id: installGuide.id,
       title: installGuide.title,
@@ -4771,6 +5073,10 @@ function searchIndexJson(entries) {
         "worker_roles",
         "shared_state",
         "reflection_loop",
+        "precision_execution",
+        "documentation_fetched",
+        "patch_dry_run",
+        "safe_terminal_command",
         "quality_gate",
         "triple_check",
         "domain_balance",
@@ -4784,8 +5090,8 @@ function searchIndexJson(entries) {
         "verification",
         "final_report"
       ],
-      read_first_for_build_tasks: ["operating protocol", "quality contract", "orchestration protocol for complex app/game/research work", "coding protocol for app/web/feature/debug/refactor work", "matching coding playbook", "matching task rubric", "matching intent_routes", "design architecture and visual QA protocol when the task is visual or interactive", "matching best-practice documents", "matching source-radar entries when upstream currency matters", "high-signal registry entries", "prompt patterns only when a prompt artifact is requested"],
-      evidence_note: ["vnem intents searched", "top matches", "chosen rubric", "chosen coding playbook", "orchestration pattern", "quality gate verdict", "trade-off warnings", "choice", "why", "verification evidence", "residual uncertainty"]
+      read_first_for_build_tasks: ["operating protocol", "quality contract", "orchestration protocol for complex app/game/research work", "precision execution protocol when exact patching/current docs/safe terminal tooling is available", "coding protocol for app/web/feature/debug/refactor work", "matching coding playbook", "matching task rubric", "matching intent_routes", "design architecture and visual QA protocol when the task is visual or interactive", "matching best-practice documents", "matching source-radar entries when upstream currency matters", "high-signal registry entries", "prompt patterns only when a prompt artifact is requested"],
+      evidence_note: ["vnem intents searched", "top matches", "chosen rubric", "chosen coding playbook", "orchestration pattern", "precision execution evidence", "quality gate verdict", "trade-off warnings", "choice", "why", "verification evidence", "residual uncertainty"]
     },
     rank_weights: {
       use_case_match: 5,
@@ -4834,6 +5140,7 @@ const index = {
   operating_protocol: operatingProtocol,
   quality_contract: searchIndex.quality_contract,
   orchestration_protocol: searchIndex.orchestration_protocol,
+  precision_execution_protocol: searchIndex.precision_execution_protocol,
   install_guide: searchIndex.install_guide,
   coding_protocol: searchIndex.coding_protocol,
   coding_playbooks: searchIndex.coding_playbooks,
@@ -4865,7 +5172,7 @@ const llmsTxt = [
   "",
   `Safe install command: ${installCommand}`,
   "",
-  "Installed files: .vnem/AGENTS.md, .vnem/install-guide.md, .vnem/operating-protocol.md, .vnem/quality-contract.md, .vnem/orchestration-protocol.md, .vnem/coding-protocol.md, .vnem/coding-playbooks.json, .vnem/design-architecture.md, .vnem/visual-qa-protocol.md, .vnem/task-rubrics.json, .vnem/search-index.json, .vnem/source-radar.json, .vnem/best-practices.md, .vnem/agent-workspace.md, .vnem/prompt-engineering.md, .vnem/prompt-patterns.json",
+  "Installed files: .vnem/AGENTS.md, .vnem/install-guide.md, .vnem/operating-protocol.md, .vnem/quality-contract.md, .vnem/orchestration-protocol.md, .vnem/precision-execution-protocol.md, .vnem/coding-protocol.md, .vnem/coding-playbooks.json, .vnem/design-architecture.md, .vnem/visual-qa-protocol.md, .vnem/task-rubrics.json, .vnem/search-index.json, .vnem/source-radar.json, .vnem/best-practices.md, .vnem/agent-workspace.md, .vnem/prompt-engineering.md, .vnem/prompt-patterns.json",
   "Canonical API: /api/index.json",
   "Agent instructions: /install/AGENTS.md",
   "Full index: /llms-full.txt",
@@ -4917,6 +5224,7 @@ const bestPractices = bestPracticesMarkdown();
 const operatingProtocolMarkdownData = operatingProtocolMarkdown();
 const qualityContractMarkdownData = qualityContractMarkdown().trimEnd();
 const orchestrationProtocolMarkdownData = orchestrationProtocolMarkdown().trimEnd();
+const precisionExecutionProtocolMarkdownData = precisionExecutionProtocolMarkdown().trimEnd();
 const installGuideMarkdownData = installGuideMarkdown().trimEnd();
 const codingProtocolMarkdownData = codingProtocolMarkdown().trimEnd();
 const codingPlaybookData = codingPlaybooksJson();
@@ -4936,6 +5244,7 @@ const archive = installArchive({
   [`${installFolder}/operating-protocol.md`]: `${operatingProtocolMarkdownData}\n`,
   [`${installFolder}/quality-contract.md`]: `${qualityContractMarkdownData}\n`,
   [`${installFolder}/orchestration-protocol.md`]: `${orchestrationProtocolMarkdownData}\n`,
+  [`${installFolder}/precision-execution-protocol.md`]: `${precisionExecutionProtocolMarkdownData}\n`,
   [`${installFolder}/coding-protocol.md`]: `${codingProtocolMarkdownData}\n`,
   [`${installFolder}/coding-playbooks.json`]: jsonText(codingPlaybookData),
   [`${installFolder}/design-architecture.md`]: `${designArchitectureMarkdownData}\n`,
@@ -4969,6 +5278,8 @@ await writeText(path.join(ROOT, "public", "install", "quality-contract.md"), `${
 await writeText(path.join(ROOT, installFolder, "quality-contract.md"), `${qualityContractMarkdownData}\n`);
 await writeText(path.join(ROOT, "public", "install", "orchestration-protocol.md"), `${orchestrationProtocolMarkdownData}\n`);
 await writeText(path.join(ROOT, installFolder, "orchestration-protocol.md"), `${orchestrationProtocolMarkdownData}\n`);
+await writeText(path.join(ROOT, "public", "install", "precision-execution-protocol.md"), `${precisionExecutionProtocolMarkdownData}\n`);
+await writeText(path.join(ROOT, installFolder, "precision-execution-protocol.md"), `${precisionExecutionProtocolMarkdownData}\n`);
 await writeText(path.join(ROOT, "public", "install", "coding-protocol.md"), `${codingProtocolMarkdownData}\n`);
 await writeText(path.join(ROOT, installFolder, "coding-protocol.md"), `${codingProtocolMarkdownData}\n`);
 await writeJson(path.join(ROOT, "public", "install", "coding-playbooks.json"), codingPlaybookData);

@@ -1,6 +1,6 @@
 # vnem Coding Protocol
 
-Generated: 2026-05-30T08:54:14.885Z
+Generated: 2026-05-30T10:23:01.386Z
 
 A read-only coding execution protocol for making agents better at apps, web apps, features, debugging, refactors, and reviews through repo sensing, plan-first work, small diffs, and verifiable outcomes.
 
@@ -57,6 +57,8 @@ A read-only coding execution protocol for making agents better at apps, web apps
 ## Implementation Rules
 
 - Make the smallest coherent change that satisfies the acceptance criteria.
+- When a precision execution MCP is available, prefer exact SEARCH/REPLACE or unified-diff patching with a dry-run over rewriting whole files.
+- Before writing framework-specific code, fetch current documentation when syntax, API shape, or engine setup might have changed.
 - Reuse existing project helpers, components, styles, data access layers, and error patterns before adding new ones.
 - Add dependencies only when local code or existing dependencies cannot reasonably solve the problem, and state why before installing.
 - Preserve public APIs, data formats, migration behavior, and user-visible flows unless the user explicitly asked to change them.

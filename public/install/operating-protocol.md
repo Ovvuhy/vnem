@@ -1,6 +1,6 @@
 # vnem Operating Protocol
 
-Generated: 2026-05-30T08:54:14.885Z
+Generated: 2026-05-30T10:23:01.386Z
 
 A universal read-only operating protocol for coding agents: sense the repo, route task context, choose the smallest sufficient capability, constrain risk, pass the holistic quality gate, verify with evidence, and report residual uncertainty.
 
@@ -39,6 +39,7 @@ For nontrivial tasks, produce or internally follow a compact task contract:
 - Intent and route: matching intent alias, route, rubric, and read-first documents.
 - Quality gate: Triple-Check Workflow, detected domains, quality floor, and intelligent trade-off policy.
 - Orchestration: single-agent, orchestrator-worker, or split-and-merge pattern when task complexity warrants it.
+- Precision execution: use exact patching, dynamic documentation, and safe terminal feedback only when the opt-in precision server is explicitly available and appropriate.
 - Smallest sufficient capability: existing project pattern first, then source-backed tool only if justified.
 - Approval gates: actions that need explicit user consent before mutation or external side effects.
 - perception gate: for UI, game, canvas, animation, or branded surfaces, screenshots and interaction moments must look intentionally polished before final.
@@ -68,6 +69,7 @@ For nontrivial tasks, produce or internally follow a compact task contract:
 - Use `.vnem/coding-protocol.md` for app, web app, feature, bug fix, refactor, and review execution guidance.
 - Use `.vnem/quality-contract.md` for holistic excellence, Triple-Check Workflow, and intelligent trade-off rules.
 - Use `.vnem/orchestration-protocol.md` for complex coding, app, game, research, split-and-merge, reflection, and shared-state workflows.
+- Use `.vnem/precision-execution-protocol.md` before using opt-in mutation-capable tools such as surgical patching, dynamic documentation fetches, or stateful terminal execution.
 - Use `.vnem/task-rubrics.json` to choose the broad quality bar for the task.
 - Use `.vnem/design-architecture.md` for UI, game, visual polish, dashboard, motion, sound, and conversational-agent surfaces.
 - Use `.vnem/visual-qa-protocol.md` when the work has a rendered surface that needs screenshot, mobile, interaction, reward, or sound evidence.

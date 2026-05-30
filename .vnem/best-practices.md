@@ -1,6 +1,6 @@
 # vnem Best Practices
 
-Generated: 2026-05-30T08:54:14.885Z
+Generated: 2026-05-30T10:23:01.386Z
 
 Use this as a compact, current guidance layer for coding agents. Prefer these notes when choosing whether to add, replace, or avoid a tool.
 
@@ -35,6 +35,21 @@ Use deterministic orchestration only when it beats a single agent: simple questi
 Sources: https://www.anthropic.com/engineering/building-effective-agents, https://www.anthropic.com/engineering/multi-agent-research-system, https://www.anthropic.com/engineering/writing-tools-for-agents, https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents, https://openai.github.io/openai-agents-python/multi_agent/, https://openai.github.io/openai-agents-python/guardrails/, https://modelcontextprotocol.io/specification/2025-11-25/schema, https://modelcontextprotocol.io/specification/2025-06-18/server/tools, https://modelcontextprotocol.io/specification/2025-06-18/server/resources
 
 Search aliases: multi agent orchestration, orchestrator worker, split and merge, reflection loop, magentic coding, shared state, subagents, lead architect, generator evaluator, planner generator evaluator
+
+## Precision Execution And Dynamic Knowledge
+
+Prevent destructive editing and stale framework syntax by routing mutation-capable work through exact patch verification, current documentation fetches, and bounded build/test terminal feedback.
+
+- Keep the default VNEM MCP server read-only; expose mutation through a separate opt-in precision server with explicit workspace scope.
+- For code edits, prefer exact SEARCH/REPLACE or unified diff hunks over whole-file rewrites. Reject the change when the context does not match instead of guessing.
+- Run mcp_apply_diff_patch in dry-run mode first. Apply only after the hash, match count, and changed ranges match the task contract and approval posture.
+- Before writing framework-specific code, fetch current documentation with mcp_fetch_documentation or an equivalent current-docs MCP and inject the returned context into the worker task.
+- Use terminal execution only for allowlisted build/test/check commands. Block shell operators, destructive commands, production deploys, broad installs, and commands outside the workspace.
+- Treat command output as feedback for the next patch. If the command times out, reports input prompts, or is blocked, revise the plan instead of pretending verification passed.
+
+Sources: https://modelcontextprotocol.io/specification/2025-11-25/schema, https://modelcontextprotocol.io/specification/2025-06-18/server/tools, https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/, https://www.anthropic.com/engineering/writing-tools-for-agents, https://code.claude.com/docs/en/best-practices, https://developers.openai.com/codex/guides/agents-md, https://context7.com/, https://www.anthropic.com/engineering/claude-code-best-practices, https://openai.com/business/guides-and-resources/how-openai-uses-codex/, https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results, https://docs.github.com/en/copilot/concepts/prompting/response-customization, https://code.visualstudio.com/docs/copilot/customization/custom-instructions, https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md, https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md, https://docs.cursor.com/context/rules-for-ai, https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents, https://www.anthropic.com/engineering/building-effective-agents, https://developers.openai.com/api/docs/guides/agent-evals
+
+Search aliases: precision execution, surgical patch, apply diff patch, dynamic documentation, fetch documentation, stateful terminal, safe terminal, destructive editing, knowledge decay, mcp_apply_diff_patch, mcp_fetch_documentation, mcp_execute_terminal_command
 
 ## MCP Gateway And Tool Routing
 
