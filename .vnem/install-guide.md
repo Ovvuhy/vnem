@@ -1,6 +1,6 @@
 # vnem Install And MCP Guide
 
-Generated: 2026-05-29T14:33:58.678Z
+Generated: 2026-05-30T08:54:14.885Z
 
 A compact setup guide for downloading the read-only vnem pack, installing it into an existing repo without overwriting local agent instructions, and connecting the local stdio MCP server with generated JSON config.
 
@@ -8,7 +8,7 @@ A compact setup guide for downloading the read-only vnem pack, installing it int
 
 - The install pack is read-only guidance and generated search data.
 - The archive install does not run package manager scripts, shell scripts, daemons, or MCP servers.
-- The MCP server is opt-in, local, stdio-based, and read-only; it exposes vnem search, recommendation, resources, and quality gates.
+- The MCP server is opt-in, local, stdio-based, and read-only; it exposes vnem search, recommendation, resources, quality gates, and deterministic orchestration plans.
 - Review any client config before adding it to a shared project or user-wide MCP scope.
 
 ## Fastest Pack Install
@@ -90,6 +90,7 @@ Claude Code can add a single-server JSON object with `claude mcp add-json vnem '
 - Pack install: run `npm run doctor -- /path/to/project` from the vnem checkout.
 - MCP server: connect the client and call `vnem_status`, then `vnem_overview`, then `vnem_recommend` for a real coding task.
 - Quality gate: for UI/game/app work, call `vnem_quality_gate` or check the `quality_gate` field returned by `vnem_recommend`.
+- Orchestration: for complex app, game, coding, or research work, call `vnem_orchestrate` and confirm it returns the expected pattern and JSON schemas.
 
 ## Troubleshooting
 

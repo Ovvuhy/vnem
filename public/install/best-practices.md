@@ -1,6 +1,6 @@
 # vnem Best Practices
 
-Generated: 2026-05-29T14:33:58.678Z
+Generated: 2026-05-30T08:54:14.885Z
 
 Use this as a compact, current guidance layer for coding agents. Prefer these notes when choosing whether to add, replace, or avoid a tool.
 
@@ -18,6 +18,23 @@ Treat vnem as an AI booster that prevents agents from satisfying one requirement
 Sources: https://blog.modelcontextprotocol.io/posts/2025-11-03-using-server-instructions/, https://modelcontextprotocol.io/specification/2025-11-25/schema, https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/, https://www.anthropic.com/engineering/writing-tools-for-agents, https://code.claude.com/docs/en/best-practices, https://openai.com/index/introducing-codex/, https://www.anthropic.com/engineering/building-effective-agents, https://www.anthropic.com/engineering/claude-code-best-practices, https://openai.com/business/guides-and-resources/how-openai-uses-codex/, https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results, https://docs.github.com/en/copilot/concepts/prompting/response-customization, https://code.visualstudio.com/docs/copilot/customization/custom-instructions, https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md, https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/auto-memory.md, https://docs.cursor.com/context/rules-for-ai, https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents, https://developers.openai.com/api/docs/guides/agent-evals
 
 Search aliases: holistic excellence, quality gate, triple check, performance visuals, playability, production ready, settings gui, intelligent tradeoff, domain balance, proactive enhancement
+
+## Multi-Agent Orchestration And Reflection
+
+Use deterministic orchestration only when it beats a single agent: simple questions stay single-agent, complex coding/app/game work uses an orchestrator-worker task graph, and broad research splits into independently verified strands before synthesis.
+
+- Default to a single agent for simple questions and narrow tasks; multi-agent coordination adds latency, cost, and integration risk unless the task has independent subtasks or context pressure.
+- Use code-level routing for determinism: classify the prompt, choose the orchestration pattern, then give agents strict JSON contracts instead of vague free-form delegation.
+- For web apps, apps, and games, use an orchestrator-worker pattern: Lead Architect decomposes the task, UI and Logic workers own separate writable surfaces, Integration owns cross-surface merge, and QA owns verification.
+- For deep research, use split-and-merge: separate source strands, require provenance from each worker, run source verification, then synthesize after contradictions and uncertainty are recorded.
+- For output quality, use a generator/evaluator reflection loop with a maximum of three iterations and explicit pass, revise, or blocked verdicts.
+- Use shared state as the coordination surface: task claims, ordinals, artifacts, decisions, blockers, and verification evidence should be visible to other agents through MCP resources or structured tool results.
+- Keep one owner responsible for the final answer or integrated diff. Parallel workers should not independently edit overlapping file surfaces or produce conflicting final narratives.
+- Treat VNEM orchestration as read-only guidance unless a separate runtime with approvals exists; the MCP server returns plans, schemas, and prompts, not hidden workers or file mutations.
+
+Sources: https://www.anthropic.com/engineering/building-effective-agents, https://www.anthropic.com/engineering/multi-agent-research-system, https://www.anthropic.com/engineering/writing-tools-for-agents, https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents, https://openai.github.io/openai-agents-python/multi_agent/, https://openai.github.io/openai-agents-python/guardrails/, https://modelcontextprotocol.io/specification/2025-11-25/schema, https://modelcontextprotocol.io/specification/2025-06-18/server/tools, https://modelcontextprotocol.io/specification/2025-06-18/server/resources
+
+Search aliases: multi agent orchestration, orchestrator worker, split and merge, reflection loop, magentic coding, shared state, subagents, lead architect, generator evaluator, planner generator evaluator
 
 ## MCP Gateway And Tool Routing
 

@@ -4,7 +4,7 @@ This file is for coding agents working on the vnem repository.
 
 ## Project Purpose
 
-vnem is a read-only perception layer for coding agents. It provides a registry, generated search data, best-practice notes, and install-pack files that help agents recommend current tools and safer upgrade paths before changing user code.
+vnem is a read-only perception layer for coding agents. It provides a registry, deterministic orchestration guidance, generated search data, best-practice notes, and install-pack files that help agents recommend current tools, choose the right agent workflow, and find safer upgrade paths before changing user code.
 
 The project is index-first. Do not vendor third-party tools, copy upstream code, or paste long upstream documentation into the repo.
 
@@ -18,6 +18,7 @@ The project is index-first. Do not vendor third-party tools, copy upstream code,
 - `public/install/*`: generated loose install-pack files.
 - `public/install.tgz`: generated install archive.
 - `.vnem/`: generated local dogfood pack.
+- `.vnem/orchestration-protocol.md`: generated routing, reflection, multi-agent coding, research split-and-merge, and shared-state guidance.
 - `llms.txt` and `llms-full.txt`: generated LLM-readable indexes.
 - `HERMES.md`: recurring discovery and daily synthesis operating contract.
 - `PRODUCT.md`: product direction, public-site clarity goals, commercial boundaries, and non-regression bar.

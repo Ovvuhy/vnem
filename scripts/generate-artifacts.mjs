@@ -39,6 +39,12 @@ const intentAliases = {
   "production ready": ["ship quality", "quality gate", "professional code", "performance", "visual polish", "accessibility", "maintainability", "verification"],
   "settings gui": ["quality profiles", "settings panel", "graphics settings", "performance mode", "high quality mode", "adaptive quality", "toggles"],
   "intelligent tradeoff": ["trade off", "performance conflict", "avoid degrading visuals", "settings gui", "quality profiles", "progressive enhancement", "fallback path"],
+  "multi agent orchestration": ["multi-agent", "orchestration", "agent team", "subagents", "orchestrator worker", "split and merge", "reflection loop", "shared state", "magentic coding"],
+  "orchestrator worker": ["orchestrator-workers", "manager agent", "lead architect", "worker agents", "delegation", "task graph", "agent as tool", "specialist agents"],
+  "split and merge": ["split-and-merge", "parallel research", "research strands", "source verifier", "synthesis agent", "fan out", "merge findings"],
+  "reflection loop": ["evaluator optimizer", "planner generator evaluator", "generator evaluator", "critique loop", "max iterations", "quality metrics"],
+  "magentic coding": ["multi-agent coding", "lead architect", "ui agent", "logic agent", "integration agent", "qa agent", "shared state", "worker claim"],
+  "shared state": ["agent memory", "task claims", "worker reports", "state events", "coordination log", "artifact log", "handoff"],
   "install vnem": ["download vnem", "setup vnem", "install pack", "curl install", "repo install", "managed agents", "doctor"],
   "download vnem": ["install vnem", "install archive", "install.tgz", "curl tar", "powershell download", "safe archive"],
   "mcp setup": ["vnem mcp", "mcp config", "mcp json", "stdio server", "claude mcp", "codex mcp", "connect mcp"],
@@ -172,6 +178,42 @@ const intentRoutes = {
     compare_options: ["optimize bottleneck", "add quality profiles", "progressive enhancement", "defer noncritical work", "explicit fallback with user control"],
     choose_by: ["constraint evidence", "preserved important domains", "user can choose quality/performance", "honest residual risk", "verification path"],
     report: ["constraint", "trade-off alternative", "domain preservation", "verification"]
+  },
+  "multi agent orchestration": {
+    read_first: ["orchestration-protocol:vnem-orchestration-protocol", "practice:multi-agent-orchestration-reflection", "operating-protocol:vnem-operating-loop", "quality-contract:vnem-quality-contract", "practice:agentic-coding-execution", "practice:research-source-intake"],
+    compare_options: ["single agent", "orchestrator-worker", "split-and-merge", "reflection loop", "shared-state handoff"],
+    choose_by: ["task complexity", "context pressure", "independent subtask count", "verification criteria", "latency and cost overhead", "one owner for final synthesis"],
+    report: ["selected pattern", "agent roles", "task graph", "reflection gate", "shared-state fields", "verification evidence"]
+  },
+  "orchestrator worker": {
+    read_first: ["orchestration-protocol:vnem-orchestration-protocol", "practice:multi-agent-orchestration-reflection", "coding-protocol:vnem-coding-protocol", "coding-playbook:web-app-rendered-quality", "quality-contract:vnem-quality-contract", "visual-qa-protocol:vnem-visual-qa-protocol"],
+    compare_options: ["lead architect plus UI/logic/integration/QA workers", "single-agent implementation", "parallel read-only exploration then one diff owner"],
+    choose_by: ["coding/app/game scope", "file ownership clarity", "worker independence", "integration risk", "quality gate coverage"],
+    report: ["lead architect JSON task list", "worker claims", "shared-state reports", "integration owner", "QA verdict"]
+  },
+  "split and merge": {
+    read_first: ["orchestration-protocol:vnem-orchestration-protocol", "practice:multi-agent-orchestration-reflection", "practice:research-source-intake", "source:mcp-core-and-registry", "practice:evals"],
+    compare_options: ["parallel research strands", "single-agent source review", "source-verifier before synthesis", "follow-up research pass"],
+    choose_by: ["independent source strands", "need for primary-source verification", "contradiction risk", "citation burden", "context-window pressure"],
+    report: ["research strands", "sources verified", "contradictions", "synthesis confidence", "remaining uncertainty"]
+  },
+  "reflection loop": {
+    read_first: ["orchestration-protocol:vnem-orchestration-protocol", "practice:multi-agent-orchestration-reflection", "quality-contract:vnem-quality-contract", "practice:agentic-coding-execution", "practice:evals"],
+    compare_options: ["generator/evaluator loop", "single pass with checklist", "blocked escalation"],
+    choose_by: ["clear evaluation criteria", "expected improvement from critique", "max three iterations", "schema-valid output", "verification evidence"],
+    report: ["iteration count", "evaluator verdict", "required changes", "quality metrics", "remaining risk"]
+  },
+  "magentic coding": {
+    read_first: ["orchestration-protocol:vnem-orchestration-protocol", "practice:multi-agent-orchestration-reflection", "coding-protocol:vnem-coding-protocol", "coding-playbook:web-app-rendered-quality", "quality-contract:vnem-quality-contract", "design-architecture:vnem-design-architecture", "visual-qa-protocol:vnem-visual-qa-protocol"],
+    compare_options: ["Lead Architect -> UI Agent -> Logic Agent -> Integration Agent -> QA Agent", "single-agent small slice", "read-only parallel exploration"],
+    choose_by: ["web/app/game build scope", "visual and logic separation", "task dependencies", "file-surface ownership", "browser verification need"],
+    report: ["project type", "agent task list", "claimed tasks", "artifacts", "perception gate", "quality gate"]
+  },
+  "shared state": {
+    read_first: ["orchestration-protocol:vnem-orchestration-protocol", "practice:multi-agent-orchestration-reflection", "operating-protocol:vnem-operating-loop", "practice:persistent-memory-context-files"],
+    compare_options: ["in-memory task state", "MCP resource snapshot", "versioned handoff file", "external memory store after approval"],
+    choose_by: ["deterministic ordinals", "no secrets", "artifact traceability", "task ownership clarity", "client compatibility"],
+    report: ["state schema", "claims", "reports", "decisions", "artifacts", "open blockers"]
   },
   "install vnem": {
     read_first: ["install-guide:vnem-install-guide", "operating-protocol:vnem-operating-loop", "quality-contract:vnem-quality-contract", "practice:codex-vnem-setup"],
@@ -645,6 +687,18 @@ const qualitySourceUrls = unique([
   ...codingAgentSourceUrls
 ]);
 
+const orchestrationSourceUrls = unique([
+  "https://www.anthropic.com/engineering/building-effective-agents",
+  "https://www.anthropic.com/engineering/multi-agent-research-system",
+  "https://www.anthropic.com/engineering/writing-tools-for-agents",
+  "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+  "https://openai.github.io/openai-agents-python/multi_agent/",
+  "https://openai.github.io/openai-agents-python/guardrails/",
+  "https://modelcontextprotocol.io/specification/2025-11-25/schema",
+  "https://modelcontextprotocol.io/specification/2025-06-18/server/tools",
+  "https://modelcontextprotocol.io/specification/2025-06-18/server/resources"
+]);
+
 const bestPracticeSections = [
   {
     id: "holistic-excellence-intelligent-tradeoffs",
@@ -661,6 +715,25 @@ const bestPracticeSections = [
       "For UI, games, dashboards, canvas, animation, or branded surfaces, treat visual perception and interaction feel as part of the definition of done, not an optional decoration pass.",
       "For production-ready code, require evidence across relevant domains: tests/builds for behavior, browser or screenshot checks for visuals, interaction checks for playability, and explicit approval gates for risky operations.",
       "If a trade-off remains after optimization, state it plainly with the reason, user impact, mitigation, and verification that was or was not possible."
+    ]
+  },
+  {
+    id: "multi-agent-orchestration-reflection",
+    title: "Multi-Agent Orchestration And Reflection",
+    score: 24,
+    summary:
+      "Use deterministic orchestration only when it beats a single agent: simple questions stay single-agent, complex coding/app/game work uses an orchestrator-worker task graph, and broad research splits into independently verified strands before synthesis.",
+    keywords: ["multi agent orchestration", "orchestrator worker", "split and merge", "reflection loop", "magentic coding", "shared state", "subagents", "lead architect", "generator evaluator", "planner generator evaluator"],
+    sources: orchestrationSourceUrls,
+    practices: [
+      "Default to a single agent for simple questions and narrow tasks; multi-agent coordination adds latency, cost, and integration risk unless the task has independent subtasks or context pressure.",
+      "Use code-level routing for determinism: classify the prompt, choose the orchestration pattern, then give agents strict JSON contracts instead of vague free-form delegation.",
+      "For web apps, apps, and games, use an orchestrator-worker pattern: Lead Architect decomposes the task, UI and Logic workers own separate writable surfaces, Integration owns cross-surface merge, and QA owns verification.",
+      "For deep research, use split-and-merge: separate source strands, require provenance from each worker, run source verification, then synthesize after contradictions and uncertainty are recorded.",
+      "For output quality, use a generator/evaluator reflection loop with a maximum of three iterations and explicit pass, revise, or blocked verdicts.",
+      "Use shared state as the coordination surface: task claims, ordinals, artifacts, decisions, blockers, and verification evidence should be visible to other agents through MCP resources or structured tool results.",
+      "Keep one owner responsible for the final answer or integrated diff. Parallel workers should not independently edit overlapping file surfaces or produce conflicting final narratives.",
+      "Treat VNEM orchestration as read-only guidance unless a separate runtime with approvals exists; the MCP server returns plans, schemas, and prompts, not hidden workers or file mutations."
     ]
   },
   {
@@ -1363,6 +1436,72 @@ const qualityContract = {
     "Document any remaining trade-off plainly in the final report."
   ],
   source_urls: qualitySourceUrls
+};
+
+const orchestrationProtocol = {
+  id: "vnem-orchestration-protocol",
+  title: "vnem Orchestration Protocol",
+  summary:
+    "A deterministic, model-agnostic routing and multi-agent coordination protocol for choosing Single Agent, Orchestrator-Worker, Split-and-Merge, and Generator/Evaluator reflection patterns before complex work consumes context.",
+  url_path: "/install/orchestration-protocol.md",
+  resource_uri: "vnem://install/orchestration-protocol",
+  tags: [
+    "multi agent orchestration",
+    "orchestrator worker",
+    "split and merge",
+    "reflection loop",
+    "magentic coding",
+    "shared state",
+    "lead architect",
+    "worker agents",
+    "source verifier",
+    "generator evaluator"
+  ],
+  routing: [
+    {
+      pattern: "single_agent",
+      use_when: "The request is a simple question, narrow lookup, or low-risk single-file task where coordination overhead would exceed the value.",
+      output: "One scoped agent answers or acts with focused verification."
+    },
+    {
+      pattern: "orchestrator_worker",
+      use_when: "The request asks to code, build, improve, debug, or verify an app, web app, game, dashboard, UI, API, or multi-file feature.",
+      output: "Lead Architect creates a strict JSON task graph, workers claim scoped tasks, Integration merges, and QA verifies."
+    },
+    {
+      pattern: "split_and_merge",
+      use_when: "The request is complex research, broad comparison, current-source investigation, benchmark collection, or ecosystem scanning.",
+      output: "Research lead splits independent strands, workers gather evidence, source verifier checks claims, and synthesis merges findings."
+    }
+  ],
+  reflection_loop: {
+    max_iterations: 3,
+    generator:
+      "Produce JSON matching the generator_output schema with answer_or_patch_plan, changed_files, assumptions, verification_plan, and residual_risks.",
+    evaluator:
+      "Produce JSON matching the evaluator_output schema with pass, revise, or blocked verdict, score, failures, required_changes, and verification_requirements.",
+    stop_conditions: ["evaluator verdict is pass", "evaluator verdict is blocked", "three iterations completed"]
+  },
+  magentic_coding_roles: [
+    "lead_architect",
+    "ui_agent",
+    "logic_agent",
+    "integration_agent",
+    "qa_agent"
+  ],
+  shared_state_fields: [
+    "run_id",
+    "task",
+    "tasks",
+    "claims",
+    "reports",
+    "artifacts",
+    "facts",
+    "decisions",
+    "events",
+    "next_ordinal"
+  ],
+  source_urls: orchestrationSourceUrls
 };
 
 const installGuide = {
@@ -3386,6 +3525,47 @@ function buildSearchDocuments(entries) {
     }
   ];
 
+  const orchestrationProtocolDocs = [
+    {
+      id: `orchestration-protocol:${orchestrationProtocol.id}`,
+      kind: "orchestration-protocol",
+      title: orchestrationProtocol.title,
+      summary: orchestrationProtocol.summary,
+      url_path: orchestrationProtocol.url_path,
+      trust_tier: "verified",
+      type: "orchestration-protocol",
+      score: 25,
+      tags: orchestrationProtocol.tags,
+      use_cases: [
+        ...orchestrationProtocol.routing.map((route) => `${route.pattern}: ${route.use_when}`),
+        orchestrationProtocol.reflection_loop.generator,
+        orchestrationProtocol.reflection_loop.evaluator,
+        ...orchestrationProtocol.magentic_coding_roles,
+        ...orchestrationProtocol.shared_state_fields
+      ],
+      best_for: [
+        "Complex coding, app, web app, or game work where one agent would lose context or mix file ownership.",
+        "Deep research where independent source strands should be gathered and verified before synthesis.",
+        "Generator/evaluator reflection loops with strict JSON schemas and bounded iterations."
+      ],
+      risk_flags: [],
+      source_urls: unique([installFileUrl("orchestration-protocol.md"), ...orchestrationProtocol.source_urls]),
+      keywords: unique(textTokens([
+        orchestrationProtocol.id,
+        orchestrationProtocol.title,
+        orchestrationProtocol.summary,
+        ...orchestrationProtocol.tags,
+        ...orchestrationProtocol.routing.flatMap((route) => [route.pattern, route.use_when, route.output]),
+        orchestrationProtocol.reflection_loop.generator,
+        orchestrationProtocol.reflection_loop.evaluator,
+        ...orchestrationProtocol.reflection_loop.stop_conditions,
+        ...orchestrationProtocol.magentic_coding_roles,
+        ...orchestrationProtocol.shared_state_fields,
+        ...orchestrationProtocol.source_urls
+      ].join(" "))).slice(0, 180)
+    }
+  ];
+
   const installGuideDocs = [
     {
       id: `install-guide:${installGuide.id}`,
@@ -3589,7 +3769,7 @@ function buildSearchDocuments(entries) {
     ].join(" "))).slice(0, 180)
   }));
 
-  return [...qualityContractDocs, ...installGuideDocs, ...operatingDocs, ...codingProtocolDocs, ...codingPlaybookDocs, ...sourceRadarDocs, ...designArchitectureDocs, ...visualQaDocs, ...rubricDocs, ...promptDocs, ...practiceDocs, ...entryDocs].sort((a, b) => b.score - a.score || a.title.localeCompare(b.title));
+  return [...orchestrationProtocolDocs, ...qualityContractDocs, ...installGuideDocs, ...operatingDocs, ...codingProtocolDocs, ...codingPlaybookDocs, ...sourceRadarDocs, ...designArchitectureDocs, ...visualQaDocs, ...rubricDocs, ...promptDocs, ...practiceDocs, ...entryDocs].sort((a, b) => b.score - a.score || a.title.localeCompare(b.title));
 }
 
 function buildInvertedIndex(documents) {
@@ -3654,6 +3834,7 @@ function operatingProtocolMarkdown() {
     "- Mode: build, review, plan, debug, prompt, or decision.",
     "- Intent and route: matching intent alias, route, rubric, and read-first documents.",
     "- Quality gate: Triple-Check Workflow, detected domains, quality floor, and intelligent trade-off policy.",
+    "- Orchestration: single-agent, orchestrator-worker, or split-and-merge pattern when task complexity warrants it.",
     "- Smallest sufficient capability: existing project pattern first, then source-backed tool only if justified.",
     "- Approval gates: actions that need explicit user consent before mutation or external side effects.",
     "- perception gate: for UI, game, canvas, animation, or branded surfaces, screenshots and interaction moments must look intentionally polished before final.",
@@ -3672,6 +3853,7 @@ function operatingProtocolMarkdown() {
     "",
     "- Use `.vnem/coding-protocol.md` for app, web app, feature, bug fix, refactor, and review execution guidance.",
     "- Use `.vnem/quality-contract.md` for holistic excellence, Triple-Check Workflow, and intelligent trade-off rules.",
+    "- Use `.vnem/orchestration-protocol.md` for complex coding, app, game, research, split-and-merge, reflection, and shared-state workflows.",
     "- Use `.vnem/task-rubrics.json` to choose the broad quality bar for the task.",
     "- Use `.vnem/design-architecture.md` for UI, game, visual polish, dashboard, motion, sound, and conversational-agent surfaces.",
     "- Use `.vnem/visual-qa-protocol.md` when the work has a rendered surface that needs screenshot, mobile, interaction, reward, or sound evidence.",
@@ -3739,6 +3921,119 @@ function qualityContractMarkdown() {
   ].join("\n");
 }
 
+function orchestrationProtocolMarkdown() {
+  return [
+    "# vnem Orchestration Protocol",
+    "",
+    `Generated: ${generatedAt}`,
+    "",
+    orchestrationProtocol.summary,
+    "",
+    "## Safety Boundary",
+    "",
+    "- This file is read-only guidance.",
+    "- Do not treat it as an API key template, model runtime, worker daemon, shell proxy, package installer, or file editor.",
+    "- The MCP server returns deterministic plans, schemas, prompts, and task contracts. It does not secretly spawn LLM workers or mutate a repository.",
+    "- Actual model calls, file writes, browser actions, package installs, network research, and deployments must stay under the connected agent client's normal tool permissions and user approvals.",
+    "",
+    "## Routing & Orchestration Engine",
+    "",
+    "VNEM chooses the smallest orchestration pattern that can realistically satisfy the task:",
+    "",
+    ...orchestrationProtocol.routing.flatMap((route) => [
+      `### ${route.pattern}`,
+      "",
+      `Use when: ${route.use_when}`,
+      "",
+      `Output: ${route.output}`,
+      ""
+    ]),
+    "Routing rule: simple work stays simple. Use multi-agent orchestration only when independent subtasks, context pressure, source verification, or multi-surface coding quality justify the coordination cost.",
+    "",
+    "## Reflection Loop",
+    "",
+    "Use the Planner-Generator-Evaluator pattern when the task has clear quality metrics and iterative critique is likely to improve the result.",
+    "",
+    "- Planner: route the task, define success criteria, choose the workflow, and initialize shared state.",
+    `- Generator Agent: ${orchestrationProtocol.reflection_loop.generator}`,
+    `- Evaluator Agent: ${orchestrationProtocol.reflection_loop.evaluator}`,
+    `- Maximum iterations: ${orchestrationProtocol.reflection_loop.max_iterations}.`,
+    "- Stop on `pass`, stop on `blocked`, or stop after the maximum iterations and return `needs_revision` with remaining failures.",
+    "",
+    "Generator system prompt:",
+    "",
+    "```text",
+    "You are the VNEM Generator Agent. Return only JSON matching the generator_output schema. Use the task contract, shared state, and evaluator feedback. Preserve performance, visuals, playability, accessibility, maintainability, and safety when relevant. Include an executable verification plan and residual risks.",
+    "```",
+    "",
+    "Evaluator system prompt:",
+    "",
+    "```text",
+    "You are the VNEM Evaluator Agent. Return only JSON matching the evaluator_output schema. Pass only when the result is task-aligned, schema-valid, grounded in repo/source evidence, preserves all relevant quality domains, and includes honest verification. If not passing, return concrete required_changes.",
+    "```",
+    "",
+    "## Magentic Coding Workflow",
+    "",
+    "Use this workflow for web apps, web games, apps, dashboards, UI surfaces, full-stack features, and multi-file coding work.",
+    "",
+    "1. Lead Architect inspects the repo and returns a strict JSON task list with ids, owner roles, dependencies, acceptance criteria, and allowed MCP tool contracts.",
+    "2. Workers claim one unclaimed task in shared state before touching files.",
+    "3. UI Agent owns visible surfaces, responsive layout, accessibility basics, and visual polish.",
+    "4. Logic Agent owns app/game behavior, state transitions, inputs, rules, and deterministic logic.",
+    "5. Integration Agent merges surfaces, resolves conflicts, and preserves performance plus visuals/playability together.",
+    "6. QA Agent runs focused checks, browser or screenshot inspection when applicable, interaction checks, and the VNEM quality gate.",
+    "7. Lead Architect synthesizes final status only after worker reports and QA evidence are present.",
+    "",
+    "Lead Architect system prompt:",
+    "",
+    "```text",
+    "You are the VNEM Lead Architect Agent. Return only JSON matching the architect_task_list schema. Break the project into atomic tasks with unique ids, owner roles, dependencies, acceptance criteria, and allowed MCP tool contracts. For web apps and games, separate UI, logic, integration, QA, performance, accessibility, and visual verification work. Never assign overlapping writable file surfaces without explicit sequencing.",
+    "```",
+    "",
+    "Worker system prompt:",
+    "",
+    "```text",
+    "You are a VNEM Worker Agent. Claim exactly one task from shared state before doing work. Use MCP file tools only within the task's allowed contract and report every artifact touched. Return only JSON matching the worker_report schema. If blocked by missing context, dependency conflict, unsafe permission, or unclear file ownership, report blocked instead of improvising.",
+    "```",
+    "",
+    "## Shared State",
+    "",
+    "All agent-to-agent coordination should be represented through MCP-readable context, not private side conversations. Required state fields:",
+    "",
+    ...orchestrationProtocol.shared_state_fields.map((field) => `- \`${field}\``),
+    "",
+    "State rules:",
+    "",
+    "- Every task claim and report receives a monotonically increasing ordinal.",
+    "- Workers report artifacts, evidence, blockers, and changed file surfaces before dependent tasks begin.",
+    "- Facts and decisions must include provenance or the agent that recorded them.",
+    "- Never store secrets, passwords, private keys, raw tokens, or private user data in shared state.",
+    "- One owner must synthesize the final answer or integrated diff; worker outputs are inputs, not competing final reports.",
+    "",
+    "## Required JSON Contracts",
+    "",
+    "- `route_decision`: pattern, confidence, reasons, signals, reflection requirement, max iterations, and worker count.",
+    "- `architect_task_list`: project type plus task ids, roles, dependencies, acceptance criteria, and MCP tool contracts.",
+    "- `worker_claim`: task id, agent id, role, and claim reason.",
+    "- `worker_report`: task id, status, summary, artifacts, evidence, and blockers.",
+    "- `generator_output`: iteration, answer or patch plan, changed files, assumptions, verification plan, and residual risks.",
+    "- `evaluator_output`: iteration, verdict, score, failures, required changes, and verification requirements.",
+    "- `shared_state_event`: ordinal, type, agent id, task id, and payload.",
+    "",
+    "## Web App And Game Quality Bar",
+    "",
+    "- Route app/game work through the Magentic Coding Workflow unless it is clearly a tiny single-surface change.",
+    "- Preserve performance, visual quality, playability, accessibility, maintainability, and safety together.",
+    "- If performance conflicts with visuals/playability, require quality profiles, settings toggles, adaptive effects, asset optimization, reduced-motion handling, or scoped fallbacks before reducing quality.",
+    "- A passing build is not enough for visual or interactive work. Require rendered desktop/mobile evidence, interaction checks, and a perception gate when practical.",
+    "",
+    "## Source URLs",
+    "",
+    ...orchestrationProtocol.source_urls.map((url) => `- ${url}`),
+    ""
+  ].join("\n");
+}
+
 function installGuideMarkdown() {
   return [
     "# vnem Install And MCP Guide",
@@ -3751,7 +4046,7 @@ function installGuideMarkdown() {
     "",
     "- The install pack is read-only guidance and generated search data.",
     "- The archive install does not run package manager scripts, shell scripts, daemons, or MCP servers.",
-    "- The MCP server is opt-in, local, stdio-based, and read-only; it exposes vnem search, recommendation, resources, and quality gates.",
+    "- The MCP server is opt-in, local, stdio-based, and read-only; it exposes vnem search, recommendation, resources, quality gates, and deterministic orchestration plans.",
     "- Review any client config before adding it to a shared project or user-wide MCP scope.",
     "",
     "## Fastest Pack Install",
@@ -3831,6 +4126,7 @@ function installGuideMarkdown() {
     "- Pack install: run `npm run doctor -- /path/to/project` from the vnem checkout.",
     "- MCP server: connect the client and call `vnem_status`, then `vnem_overview`, then `vnem_recommend` for a real coding task.",
     "- Quality gate: for UI/game/app work, call `vnem_quality_gate` or check the `quality_gate` field returned by `vnem_recommend`.",
+    "- Orchestration: for complex app, game, coding, or research work, call `vnem_orchestrate` and confirm it returns the expected pattern and JSON schemas.",
     "",
     "## Troubleshooting",
     "",
@@ -4192,6 +4488,7 @@ function agentsMarkdown() {
     "- `.vnem/install-guide.md`: setup guide for downloading the pack, refreshing an existing repo install, and connecting the read-only MCP server.",
     "- `.vnem/operating-protocol.md`: universal loop for sensing the repo, routing context, choosing small capabilities, constraining risk, applying the aesthetic perception gate, verifying, and reporting evidence.",
     "- `.vnem/quality-contract.md`: Holistic Excellence, Proactive Enhancement, Intelligent Trade-offs, and the Triple-Check Workflow for balancing performance, visuals, playability, accessibility, maintainability, and safety.",
+    "- `.vnem/orchestration-protocol.md`: deterministic routing, reflection, Magentic Coding Workflow, split-and-merge research, and shared-state contracts for multi-agent work.",
     "- `.vnem/coding-protocol.md`: coding execution guide for apps, web apps, features, bug fixes, refactors, repo sensing, plan-first work, and verification loops.",
     "- `.vnem/coding-playbooks.json`: mode-specific execution playbooks for feature slices, root-cause bug fixes, test-first work, refactors, rendered web apps, API/data changes, large changes, reviews, and failure recovery.",
     "- `.vnem/design-architecture.md`: source-backed design intelligence for UI, game, dashboard, visual polish, motion, sound, and conversational-agent surfaces.",
@@ -4216,19 +4513,20 @@ function agentsMarkdown() {
     "",
     "1. Read `.vnem/operating-protocol.md` and classify the task mode: `build`, `review`, `plan`, `debug`, `prompt`, or `decision`.",
     "2. For coding, app, UI, game, optimization, or production-ready tasks, read `.vnem/quality-contract.md` and apply the Triple-Check Workflow: Analyze, Architect, Review.",
-    "3. For coding tasks, read `.vnem/coding-protocol.md` before editing application code.",
-    "4. For implementation/debug/review/refactor/test work, select the closest playbook from `.vnem/coding-playbooks.json` and follow its repo sensing, execution loop, verification ladder, stop conditions, anti-patterns, and final-report fields.",
-    "5. Identify the user's task intents in plain words, such as `coding task`, `web app`, `feature build`, `bug fix`, `browser game`, `visual polish`, `game feel`, `performance visuals`, `quality gate`, `settings gui`, `code review`, `code simplification`, `memory`, `evals`, `agent payments`, or `MCP server selection`.",
-    "6. Read `.vnem/search-index.json` and expand those intents with `intent_aliases`.",
-    "7. Select the matching broad rubric from `.vnem/task-rubrics.json` and use its quality bar, approval gates, verification checklist, and output contract.",
-    "8. Check `intent_routes` for the closest matching task. Read the listed `read_first` documents before choosing a stack or visual approach.",
-    "9. If the task depends on current docs, upstream registries, benchmark claims, MCP discovery, or agent-client behavior, read `.vnem/source-radar.json` before broad web search.",
-    "10. Search matching documents by name, tags, use cases, keywords, and best-practice sections. Read `.vnem/best-practices.md` only for matching sections.",
-    "11. Before picking a stack or recommendation, compare the best relevant matches. Prefer higher `score`, stronger `source_confidence`, fresher `freshness`, clearer licenses, fewer `risk_flags`, and the smallest sufficient capability.",
-    "12. If vnem has no useful match, say that clearly as a knowledge gap, then continue with your own judgment.",
-    "13. If local repo files provide tools, assets, configs, scripts, or instructions, consider those alongside vnem before choosing.",
+    "3. For complex coding, app, web app, game, or deep research tasks, read `.vnem/orchestration-protocol.md` and choose Single Agent, Orchestrator-Worker, Split-and-Merge, or the bounded reflection loop.",
+    "4. For coding tasks, read `.vnem/coding-protocol.md` before editing application code.",
+    "5. For implementation/debug/review/refactor/test work, select the closest playbook from `.vnem/coding-playbooks.json` and follow its repo sensing, execution loop, verification ladder, stop conditions, anti-patterns, and final-report fields.",
+    "6. Identify the user's task intents in plain words, such as `coding task`, `web app`, `feature build`, `bug fix`, `browser game`, `multi agent orchestration`, `orchestrator worker`, `split and merge`, `reflection loop`, `magentic coding`, `visual polish`, `game feel`, `performance visuals`, `quality gate`, `settings gui`, `code review`, `code simplification`, `memory`, `evals`, `agent payments`, or `MCP server selection`.",
+    "7. Read `.vnem/search-index.json` and expand those intents with `intent_aliases`.",
+    "8. Select the matching broad rubric from `.vnem/task-rubrics.json` and use its quality bar, approval gates, verification checklist, and output contract.",
+    "9. Check `intent_routes` for the closest matching task. Read the listed `read_first` documents before choosing a stack or visual approach.",
+    "10. If the task depends on current docs, upstream registries, benchmark claims, MCP discovery, or agent-client behavior, read `.vnem/source-radar.json` before broad web search.",
+    "11. Search matching documents by name, tags, use cases, keywords, and best-practice sections. Read `.vnem/best-practices.md` only for matching sections.",
+    "12. Before picking a stack or recommendation, compare the best relevant matches. Prefer higher `score`, stronger `source_confidence`, fresher `freshness`, clearer licenses, fewer `risk_flags`, and the smallest sufficient capability.",
+    "13. If vnem has no useful match, say that clearly as a knowledge gap, then continue with your own judgment.",
+    "14. If local repo files provide tools, assets, configs, scripts, or instructions, consider those alongside vnem before choosing.",
     "",
-    "For nontrivial tasks, follow a compact task contract: `mode`, `intent`, `rubric`, `coding playbook`, `quality gate`, `triple check`, `domain balance`, `tradeoff policy`, `read first`, `smallest sufficient capability`, `approval gates`, `perception gate` when visual work is involved, `verification`, and `final report`.",
+    "For nontrivial tasks, follow a compact task contract: `mode`, `intent`, `rubric`, `coding playbook`, `orchestration pattern`, `worker roles`, `shared state`, `reflection loop`, `quality gate`, `triple check`, `domain balance`, `tradeoff policy`, `read first`, `smallest sufficient capability`, `approval gates`, `perception gate` when visual work is involved, `verification`, and `final report`.",
     "",
     "For coding implementation, follow the coding protocol: sense the repo, find existing patterns, plan nontrivial edits, make the smallest coherent diff, run focused checks first, run broader verification when blast radius justifies it, and report skipped checks honestly.",
     "",
@@ -4293,7 +4591,7 @@ function agentWorkspaceMarkdown() {
     "",
     "Start with a small, readable setup: Codex or another coding agent, repository-local instructions, the vnem read-only pack, and only the MCP servers required for the current workflow.",
     "",
-    "For actual implementation work, route the agent through `.vnem/quality-contract.md`, `.vnem/coding-protocol.md`, and `.vnem/coding-playbooks.json` before editing code. The quality contract prevents silent trade-offs; the protocol defines repo-sensing and verification rules; the playbooks select the concrete loop for feature slices, bug fixes, tests, refactors, rendered web apps, API/data changes, large changes, reviews, or recovery.",
+    "For actual implementation work, route the agent through `.vnem/quality-contract.md`, `.vnem/orchestration-protocol.md`, `.vnem/coding-protocol.md`, and `.vnem/coding-playbooks.json` before editing code. The quality contract prevents silent trade-offs; the orchestration protocol decides whether the task stays single-agent, uses orchestrator-workers, splits research, or enters reflection; the coding protocol defines repo-sensing and verification rules; the playbooks select the concrete loop for feature slices, bug fixes, tests, refactors, rendered web apps, API/data changes, large changes, reviews, or recovery.",
     "",
     "Add gateways, memory banks, browser sessions, database access, and repository mutation tools only after the team can name the approval path and rollback plan.",
     "",
@@ -4367,7 +4665,7 @@ function rootAgentsMarkdown() {
     "",
     "This repo has a read-only vnem knowledge pack in `.vnem/`.",
     "",
-    "Before choosing tools, libraries, frameworks, MCP servers, skills, prompts, evals, search systems, UI approaches, visual polish/game feel, performance strategies, architecture patterns, or upgrade paths, read `.vnem/AGENTS.md`, follow `.vnem/operating-protocol.md`, apply `.vnem/quality-contract.md`, read `.vnem/coding-protocol.md` and `.vnem/coding-playbooks.json` for coding/app/web/feature/debug work, use `.vnem/search-index.json`, read `.vnem/design-architecture.md` and `.vnem/visual-qa-protocol.md` for visual surfaces, and consult `.vnem/agent-workspace.md` only for autonomous developer environment decisions.",
+    "Before choosing tools, libraries, frameworks, MCP servers, skills, prompts, evals, search systems, UI approaches, visual polish/game feel, performance strategies, architecture patterns, orchestration patterns, or upgrade paths, read `.vnem/AGENTS.md`, follow `.vnem/operating-protocol.md`, apply `.vnem/quality-contract.md`, read `.vnem/orchestration-protocol.md` for complex coding/research workflows, read `.vnem/coding-protocol.md` and `.vnem/coding-playbooks.json` for coding/app/web/feature/debug work, use `.vnem/search-index.json`, read `.vnem/design-architecture.md` and `.vnem/visual-qa-protocol.md` for visual surfaces, and consult `.vnem/agent-workspace.md` only for autonomous developer environment decisions.",
     "For current docs, MCP discovery, benchmark evidence, or upstream source decisions, also use `.vnem/source-radar.json` before broad web search.",
     "",
     "Use vnem automatically. The user should not need to say `use vnem`. Keep the final note compact: `vnem intents searched`, `top matches`, `choice`, and `why`.",
@@ -4409,6 +4707,18 @@ function searchIndexJson(entries) {
       domain_balance: qualityContract.domain_balance,
       tradeoff_policy: qualityContract.tradeoff_policy,
       source_urls: qualityContract.source_urls
+    },
+    orchestration_protocol: {
+      id: orchestrationProtocol.id,
+      title: orchestrationProtocol.title,
+      summary: orchestrationProtocol.summary,
+      url_path: orchestrationProtocol.url_path,
+      resource_uri: orchestrationProtocol.resource_uri,
+      routing: orchestrationProtocol.routing,
+      reflection_loop: orchestrationProtocol.reflection_loop,
+      magentic_coding_roles: orchestrationProtocol.magentic_coding_roles,
+      shared_state_fields: orchestrationProtocol.shared_state_fields,
+      source_urls: orchestrationProtocol.source_urls
     },
     install_guide: {
       id: installGuide.id,
@@ -4457,6 +4767,10 @@ function searchIndexJson(entries) {
         "intent",
         "rubric",
         "coding_playbook",
+        "orchestration_pattern",
+        "worker_roles",
+        "shared_state",
+        "reflection_loop",
         "quality_gate",
         "triple_check",
         "domain_balance",
@@ -4470,8 +4784,8 @@ function searchIndexJson(entries) {
         "verification",
         "final_report"
       ],
-      read_first_for_build_tasks: ["operating protocol", "quality contract", "coding protocol for app/web/feature/debug/refactor work", "matching coding playbook", "matching task rubric", "matching intent_routes", "design architecture and visual QA protocol when the task is visual or interactive", "matching best-practice documents", "matching source-radar entries when upstream currency matters", "high-signal registry entries", "prompt patterns only when a prompt artifact is requested"],
-      evidence_note: ["vnem intents searched", "top matches", "chosen rubric", "chosen coding playbook", "quality gate verdict", "trade-off warnings", "choice", "why", "verification evidence", "residual uncertainty"]
+      read_first_for_build_tasks: ["operating protocol", "quality contract", "orchestration protocol for complex app/game/research work", "coding protocol for app/web/feature/debug/refactor work", "matching coding playbook", "matching task rubric", "matching intent_routes", "design architecture and visual QA protocol when the task is visual or interactive", "matching best-practice documents", "matching source-radar entries when upstream currency matters", "high-signal registry entries", "prompt patterns only when a prompt artifact is requested"],
+      evidence_note: ["vnem intents searched", "top matches", "chosen rubric", "chosen coding playbook", "orchestration pattern", "quality gate verdict", "trade-off warnings", "choice", "why", "verification evidence", "residual uncertainty"]
     },
     rank_weights: {
       use_case_match: 5,
@@ -4519,6 +4833,7 @@ const index = {
   intent_routes: intentRoutes,
   operating_protocol: operatingProtocol,
   quality_contract: searchIndex.quality_contract,
+  orchestration_protocol: searchIndex.orchestration_protocol,
   install_guide: searchIndex.install_guide,
   coding_protocol: searchIndex.coding_protocol,
   coding_playbooks: searchIndex.coding_playbooks,
@@ -4550,7 +4865,7 @@ const llmsTxt = [
   "",
   `Safe install command: ${installCommand}`,
   "",
-  "Installed files: .vnem/AGENTS.md, .vnem/install-guide.md, .vnem/operating-protocol.md, .vnem/quality-contract.md, .vnem/coding-protocol.md, .vnem/coding-playbooks.json, .vnem/design-architecture.md, .vnem/visual-qa-protocol.md, .vnem/task-rubrics.json, .vnem/search-index.json, .vnem/source-radar.json, .vnem/best-practices.md, .vnem/agent-workspace.md, .vnem/prompt-engineering.md, .vnem/prompt-patterns.json",
+  "Installed files: .vnem/AGENTS.md, .vnem/install-guide.md, .vnem/operating-protocol.md, .vnem/quality-contract.md, .vnem/orchestration-protocol.md, .vnem/coding-protocol.md, .vnem/coding-playbooks.json, .vnem/design-architecture.md, .vnem/visual-qa-protocol.md, .vnem/task-rubrics.json, .vnem/search-index.json, .vnem/source-radar.json, .vnem/best-practices.md, .vnem/agent-workspace.md, .vnem/prompt-engineering.md, .vnem/prompt-patterns.json",
   "Canonical API: /api/index.json",
   "Agent instructions: /install/AGENTS.md",
   "Full index: /llms-full.txt",
@@ -4601,6 +4916,7 @@ const llmsFull = [
 const bestPractices = bestPracticesMarkdown();
 const operatingProtocolMarkdownData = operatingProtocolMarkdown();
 const qualityContractMarkdownData = qualityContractMarkdown().trimEnd();
+const orchestrationProtocolMarkdownData = orchestrationProtocolMarkdown().trimEnd();
 const installGuideMarkdownData = installGuideMarkdown().trimEnd();
 const codingProtocolMarkdownData = codingProtocolMarkdown().trimEnd();
 const codingPlaybookData = codingPlaybooksJson();
@@ -4619,6 +4935,7 @@ const archive = installArchive({
   [`${installFolder}/install-guide.md`]: `${installGuideMarkdownData}\n`,
   [`${installFolder}/operating-protocol.md`]: `${operatingProtocolMarkdownData}\n`,
   [`${installFolder}/quality-contract.md`]: `${qualityContractMarkdownData}\n`,
+  [`${installFolder}/orchestration-protocol.md`]: `${orchestrationProtocolMarkdownData}\n`,
   [`${installFolder}/coding-protocol.md`]: `${codingProtocolMarkdownData}\n`,
   [`${installFolder}/coding-playbooks.json`]: jsonText(codingPlaybookData),
   [`${installFolder}/design-architecture.md`]: `${designArchitectureMarkdownData}\n`,
@@ -4650,6 +4967,8 @@ await writeText(path.join(ROOT, "public", "install", "operating-protocol.md"), `
 await writeText(path.join(ROOT, installFolder, "operating-protocol.md"), `${operatingProtocolMarkdownData}\n`);
 await writeText(path.join(ROOT, "public", "install", "quality-contract.md"), `${qualityContractMarkdownData}\n`);
 await writeText(path.join(ROOT, installFolder, "quality-contract.md"), `${qualityContractMarkdownData}\n`);
+await writeText(path.join(ROOT, "public", "install", "orchestration-protocol.md"), `${orchestrationProtocolMarkdownData}\n`);
+await writeText(path.join(ROOT, installFolder, "orchestration-protocol.md"), `${orchestrationProtocolMarkdownData}\n`);
 await writeText(path.join(ROOT, "public", "install", "coding-protocol.md"), `${codingProtocolMarkdownData}\n`);
 await writeText(path.join(ROOT, installFolder, "coding-protocol.md"), `${codingProtocolMarkdownData}\n`);
 await writeJson(path.join(ROOT, "public", "install", "coding-playbooks.json"), codingPlaybookData);

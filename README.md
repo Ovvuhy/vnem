@@ -55,11 +55,26 @@ If a user asks for extreme performance, VNEM should not let the agent quietly re
 | "Build a game." | Ships a technically working but ugly canvas with weak controls and no interaction evidence. | Checks playability, visual fit, reward feedback, responsive sizing, and screenshot or browser evidence. |
 | "Make it production-ready." | Runs a build and ignores user-facing quality gaps. | Applies a quality gate across behavior, performance, visuals, accessibility, maintainability, safety, and verification. |
 
+## Multi-Agent Orchestration
+
+VNEM now includes a deterministic orchestration layer for tasks that are too broad for one context window.
+
+| Task shape | VNEM route | Why |
+| --- | --- | --- |
+| Simple question or narrow lookup | Single Agent | Avoids unnecessary latency, cost, and coordination overhead. |
+| Web app, app, UI, API, or game build | Orchestrator-Worker | A Lead Architect splits the task into JSON work items, workers own UI/logic/integration/QA surfaces, and one owner synthesizes the result. |
+| Complex research or ecosystem scan | Split-and-Merge | Research strands collect evidence independently, a verifier checks sources, and synthesis happens only after contradictions and uncertainty are recorded. |
+
+For coding and app/game work, the Magentic Coding Workflow assigns a Lead Architect, UI Agent, Logic Agent, Integration Agent, and QA Agent through shared-state task claims and worker reports. For quality-sensitive outputs, VNEM adds a bounded Generator/Evaluator reflection loop with a maximum of three iterations and strict JSON verdicts: `pass`, `revise`, or `blocked`.
+
+This is still read-only guidance. The MCP server returns orchestration plans, prompts, shared-state contracts, and JSON schemas through `vnem_orchestrate`; it does not spawn hidden model workers, edit files, install dependencies, or bypass the connected agent client's permissions.
+
 ## What Vnem Improves
 
 vnem is meant to improve the judgment of coding agents, not replace maintainer review.
 
 - **Holistic quality gates:** agents run a Triple-Check Workflow: Analyze the real goal, Architect performance and visuals/playability together, then Review that no important domain was sacrificed.
+- **Multi-agent routing:** agents choose Single Agent, Orchestrator-Worker, or Split-and-Merge workflows before complex coding, app/game, or research tasks collapse into one overloaded context.
 - **Better recommendations:** agents compare current MCP servers, coding agents, frameworks, evals, memory systems, and workflows before proposing a stack change.
 - **Safer adoption:** each entry tracks source links, licenses, permissions, risk flags, trust tier, and install notes.
 - **Coding execution playbooks:** agents pick a task-specific loop for feature slices, root-cause bug fixes, test-first work, refactors, rendered web apps, API/data changes, large changes, reviews, and failure recovery.
@@ -72,7 +87,7 @@ vnem is meant to improve the judgment of coding agents, not replace maintainer r
 
 1. Install the read-only pack into a project.
 2. Ask a coding agent to read `.vnem/AGENTS.md`.
-3. The agent follows `.vnem/operating-protocol.md`, `.vnem/quality-contract.md`, `.vnem/coding-protocol.md`, and `.vnem/coding-playbooks.json`, then selects a broad rubric from `.vnem/task-rubrics.json`.
+3. The agent follows `.vnem/operating-protocol.md`, `.vnem/quality-contract.md`, `.vnem/orchestration-protocol.md`, `.vnem/coding-protocol.md`, and `.vnem/coding-playbooks.json`, then selects a broad rubric from `.vnem/task-rubrics.json`.
 4. The agent uses `.vnem/search-index.json`, `.vnem/best-practices.md`, `.vnem/agent-workspace.md`, and `.vnem/prompt-*` files only when routed there.
 5. For current docs, MCP discovery, or benchmark claims, the agent checks `.vnem/source-radar.json` before broad web search.
 6. The agent recommends options and asks before changing code, installing packages, using secrets, or touching external systems.
@@ -94,6 +109,7 @@ In a clean project folder, this extracts:
 - `.vnem/install-guide.md`
 - `.vnem/operating-protocol.md`
 - `.vnem/quality-contract.md`
+- `.vnem/orchestration-protocol.md`
 - `.vnem/coding-protocol.md`
 - `.vnem/coding-playbooks.json`
 - `.vnem/task-rubrics.json`
@@ -104,7 +120,7 @@ In a clean project folder, this extracts:
 - `.vnem/prompt-engineering.md`
 - `.vnem/prompt-patterns.json`
 
-`AGENTS.md` points coding agents to `.vnem/AGENTS.md`, the full agent entrypoint, plus `.vnem/quality-contract.md`, `.vnem/coding-protocol.md`, and `.vnem/coding-playbooks.json` for implementation work and `.vnem/agent-workspace.md` for autonomous developer environment guidance. Once an agent has read it, the user should not need special `use vnem` prompts: vnem auto-activates for build, code, debug, review, optimization, research, benchmark, and stack/tool decision tasks.
+`AGENTS.md` points coding agents to `.vnem/AGENTS.md`, the full agent entrypoint, plus `.vnem/quality-contract.md`, `.vnem/orchestration-protocol.md`, `.vnem/coding-protocol.md`, and `.vnem/coding-playbooks.json` for implementation work and `.vnem/agent-workspace.md` for autonomous developer environment guidance. Once an agent has read it, the user should not need special `use vnem` prompts: vnem auto-activates for build, code, debug, review, optimization, research, benchmark, and stack/tool decision tasks.
 
 For existing repos with their own `AGENTS.md`, prefer the CLI installer below because it updates a managed vnem block instead of replacing the whole file.
 
@@ -182,6 +198,7 @@ Main tools:
 - `vnem_search`: search registry entries, best-practice notes, prompt patterns, source radar, rubrics, and playbooks.
 - `vnem_recommend`: run a recommendation pass for an agentic tooling or stack decision and return a compact task contract.
 - `vnem_quality_gate`: apply VNEM's Triple-Check Workflow to a task or proposed approach and flag silent performance/visual/playability trade-offs.
+- `vnem_orchestrate`: route a prompt into Single Agent, Orchestrator-Worker, or Split-and-Merge and return strict schemas, prompts, shared-state contracts, and reflection-loop guidance.
 - `vnem_get_entry`: fetch one registry entry with provenance, install notes, permissions, and risks.
 - `vnem_compare`: compare two or more registry entries.
 - `vnem_best_practices`: find matching best-practice and prompt-pattern notes.
@@ -195,6 +212,7 @@ Main resources:
 - `vnem://install/install-guide`
 - `vnem://install/operating-protocol`
 - `vnem://install/quality-contract`
+- `vnem://install/orchestration-protocol`
 - `vnem://install/coding-protocol`
 - `vnem://install/coding-playbooks`
 - `vnem://install/task-rubrics`
@@ -248,6 +266,7 @@ The pack is guidance and search data. It does not run the tools it recommends.
 | `public/install.tgz` | Tiny archive used by the one-line install command. |
 | `.vnem/` | Generated local pack for dogfooding this repo. |
 | `.vnem/install-guide.md` | Generated setup guide for archive install, managed repo install, MCP config, and verification. |
+| `.vnem/orchestration-protocol.md` | Generated deterministic routing, reflection, multi-agent coding, research split-and-merge, and shared-state protocol. |
 | `landing/` | Static public landing page and blog bundle for the website. |
 | `dashboard/` | Vite/React source for the Hermes owner dashboard surface. |
 | `PRODUCT.md` | Product direction, public-site clarity goals, and non-regression bar. |

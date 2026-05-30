@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-05-29T14:33:58.678Z",
+  "generated_at": "2026-05-30T08:54:14.885Z",
   "schema_version": "1.0.0",
   "package_version": "1.0.1",
   "release_version": "1.0.1",
-  "release_date": "2026-05-29",
+  "release_date": "2026-05-30",
   "entry_count": 228,
   "install_command": "curl -fsSL https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install.tgz | tar -xz",
   "install_archive": "/install.tgz",
@@ -778,6 +778,63 @@
       "quality profiles",
       "progressive enhancement",
       "fallback path"
+    ],
+    "multi agent orchestration": [
+      "multi-agent",
+      "orchestration",
+      "agent team",
+      "subagents",
+      "orchestrator worker",
+      "split and merge",
+      "reflection loop",
+      "shared state",
+      "magentic coding"
+    ],
+    "orchestrator worker": [
+      "orchestrator-workers",
+      "manager agent",
+      "lead architect",
+      "worker agents",
+      "delegation",
+      "task graph",
+      "agent as tool",
+      "specialist agents"
+    ],
+    "split and merge": [
+      "split-and-merge",
+      "parallel research",
+      "research strands",
+      "source verifier",
+      "synthesis agent",
+      "fan out",
+      "merge findings"
+    ],
+    "reflection loop": [
+      "evaluator optimizer",
+      "planner generator evaluator",
+      "generator evaluator",
+      "critique loop",
+      "max iterations",
+      "quality metrics"
+    ],
+    "magentic coding": [
+      "multi-agent coding",
+      "lead architect",
+      "ui agent",
+      "logic agent",
+      "integration agent",
+      "qa agent",
+      "shared state",
+      "worker claim"
+    ],
+    "shared state": [
+      "agent memory",
+      "task claims",
+      "worker reports",
+      "state events",
+      "coordination log",
+      "artifact log",
+      "handoff"
     ],
     "install vnem": [
       "download vnem",
@@ -1774,6 +1831,185 @@
         "trade-off alternative",
         "domain preservation",
         "verification"
+      ]
+    },
+    "multi agent orchestration": {
+      "read_first": [
+        "orchestration-protocol:vnem-orchestration-protocol",
+        "practice:multi-agent-orchestration-reflection",
+        "operating-protocol:vnem-operating-loop",
+        "quality-contract:vnem-quality-contract",
+        "practice:agentic-coding-execution",
+        "practice:research-source-intake"
+      ],
+      "compare_options": [
+        "single agent",
+        "orchestrator-worker",
+        "split-and-merge",
+        "reflection loop",
+        "shared-state handoff"
+      ],
+      "choose_by": [
+        "task complexity",
+        "context pressure",
+        "independent subtask count",
+        "verification criteria",
+        "latency and cost overhead",
+        "one owner for final synthesis"
+      ],
+      "report": [
+        "selected pattern",
+        "agent roles",
+        "task graph",
+        "reflection gate",
+        "shared-state fields",
+        "verification evidence"
+      ]
+    },
+    "orchestrator worker": {
+      "read_first": [
+        "orchestration-protocol:vnem-orchestration-protocol",
+        "practice:multi-agent-orchestration-reflection",
+        "coding-protocol:vnem-coding-protocol",
+        "coding-playbook:web-app-rendered-quality",
+        "quality-contract:vnem-quality-contract",
+        "visual-qa-protocol:vnem-visual-qa-protocol"
+      ],
+      "compare_options": [
+        "lead architect plus UI/logic/integration/QA workers",
+        "single-agent implementation",
+        "parallel read-only exploration then one diff owner"
+      ],
+      "choose_by": [
+        "coding/app/game scope",
+        "file ownership clarity",
+        "worker independence",
+        "integration risk",
+        "quality gate coverage"
+      ],
+      "report": [
+        "lead architect JSON task list",
+        "worker claims",
+        "shared-state reports",
+        "integration owner",
+        "QA verdict"
+      ]
+    },
+    "split and merge": {
+      "read_first": [
+        "orchestration-protocol:vnem-orchestration-protocol",
+        "practice:multi-agent-orchestration-reflection",
+        "practice:research-source-intake",
+        "source:mcp-core-and-registry",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "parallel research strands",
+        "single-agent source review",
+        "source-verifier before synthesis",
+        "follow-up research pass"
+      ],
+      "choose_by": [
+        "independent source strands",
+        "need for primary-source verification",
+        "contradiction risk",
+        "citation burden",
+        "context-window pressure"
+      ],
+      "report": [
+        "research strands",
+        "sources verified",
+        "contradictions",
+        "synthesis confidence",
+        "remaining uncertainty"
+      ]
+    },
+    "reflection loop": {
+      "read_first": [
+        "orchestration-protocol:vnem-orchestration-protocol",
+        "practice:multi-agent-orchestration-reflection",
+        "quality-contract:vnem-quality-contract",
+        "practice:agentic-coding-execution",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "generator/evaluator loop",
+        "single pass with checklist",
+        "blocked escalation"
+      ],
+      "choose_by": [
+        "clear evaluation criteria",
+        "expected improvement from critique",
+        "max three iterations",
+        "schema-valid output",
+        "verification evidence"
+      ],
+      "report": [
+        "iteration count",
+        "evaluator verdict",
+        "required changes",
+        "quality metrics",
+        "remaining risk"
+      ]
+    },
+    "magentic coding": {
+      "read_first": [
+        "orchestration-protocol:vnem-orchestration-protocol",
+        "practice:multi-agent-orchestration-reflection",
+        "coding-protocol:vnem-coding-protocol",
+        "coding-playbook:web-app-rendered-quality",
+        "quality-contract:vnem-quality-contract",
+        "design-architecture:vnem-design-architecture",
+        "visual-qa-protocol:vnem-visual-qa-protocol"
+      ],
+      "compare_options": [
+        "Lead Architect -> UI Agent -> Logic Agent -> Integration Agent -> QA Agent",
+        "single-agent small slice",
+        "read-only parallel exploration"
+      ],
+      "choose_by": [
+        "web/app/game build scope",
+        "visual and logic separation",
+        "task dependencies",
+        "file-surface ownership",
+        "browser verification need"
+      ],
+      "report": [
+        "project type",
+        "agent task list",
+        "claimed tasks",
+        "artifacts",
+        "perception gate",
+        "quality gate"
+      ]
+    },
+    "shared state": {
+      "read_first": [
+        "orchestration-protocol:vnem-orchestration-protocol",
+        "practice:multi-agent-orchestration-reflection",
+        "operating-protocol:vnem-operating-loop",
+        "practice:persistent-memory-context-files"
+      ],
+      "compare_options": [
+        "in-memory task state",
+        "MCP resource snapshot",
+        "versioned handoff file",
+        "external memory store after approval"
+      ],
+      "choose_by": [
+        "deterministic ordinals",
+        "no secrets",
+        "artifact traceability",
+        "task ownership clarity",
+        "client compatibility"
+      ],
+      "report": [
+        "state schema",
+        "claims",
+        "reports",
+        "decisions",
+        "artifacts",
+        "open blockers"
       ]
     },
     "install vnem": {
@@ -4035,6 +4271,70 @@
       "https://developers.openai.com/api/docs/guides/agent-evals"
     ]
   },
+  "orchestration_protocol": {
+    "id": "vnem-orchestration-protocol",
+    "title": "vnem Orchestration Protocol",
+    "summary": "A deterministic, model-agnostic routing and multi-agent coordination protocol for choosing Single Agent, Orchestrator-Worker, Split-and-Merge, and Generator/Evaluator reflection patterns before complex work consumes context.",
+    "url_path": "/install/orchestration-protocol.md",
+    "resource_uri": "vnem://install/orchestration-protocol",
+    "routing": [
+      {
+        "pattern": "single_agent",
+        "use_when": "The request is a simple question, narrow lookup, or low-risk single-file task where coordination overhead would exceed the value.",
+        "output": "One scoped agent answers or acts with focused verification."
+      },
+      {
+        "pattern": "orchestrator_worker",
+        "use_when": "The request asks to code, build, improve, debug, or verify an app, web app, game, dashboard, UI, API, or multi-file feature.",
+        "output": "Lead Architect creates a strict JSON task graph, workers claim scoped tasks, Integration merges, and QA verifies."
+      },
+      {
+        "pattern": "split_and_merge",
+        "use_when": "The request is complex research, broad comparison, current-source investigation, benchmark collection, or ecosystem scanning.",
+        "output": "Research lead splits independent strands, workers gather evidence, source verifier checks claims, and synthesis merges findings."
+      }
+    ],
+    "reflection_loop": {
+      "max_iterations": 3,
+      "generator": "Produce JSON matching the generator_output schema with answer_or_patch_plan, changed_files, assumptions, verification_plan, and residual_risks.",
+      "evaluator": "Produce JSON matching the evaluator_output schema with pass, revise, or blocked verdict, score, failures, required_changes, and verification_requirements.",
+      "stop_conditions": [
+        "evaluator verdict is pass",
+        "evaluator verdict is blocked",
+        "three iterations completed"
+      ]
+    },
+    "magentic_coding_roles": [
+      "lead_architect",
+      "ui_agent",
+      "logic_agent",
+      "integration_agent",
+      "qa_agent"
+    ],
+    "shared_state_fields": [
+      "run_id",
+      "task",
+      "tasks",
+      "claims",
+      "reports",
+      "artifacts",
+      "facts",
+      "decisions",
+      "events",
+      "next_ordinal"
+    ],
+    "source_urls": [
+      "https://www.anthropic.com/engineering/building-effective-agents",
+      "https://www.anthropic.com/engineering/multi-agent-research-system",
+      "https://www.anthropic.com/engineering/writing-tools-for-agents",
+      "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+      "https://openai.github.io/openai-agents-python/multi_agent/",
+      "https://openai.github.io/openai-agents-python/guardrails/",
+      "https://modelcontextprotocol.io/specification/2025-11-25/schema",
+      "https://modelcontextprotocol.io/specification/2025-06-18/server/tools",
+      "https://modelcontextprotocol.io/specification/2025-06-18/server/resources"
+    ]
+  },
   "install_guide": {
     "id": "vnem-install-guide",
     "title": "vnem Install And MCP Guide",
@@ -4101,7 +4401,7 @@
     ]
   },
   "coding_playbooks": {
-    "generated_at": "2026-05-29T14:33:58.678Z",
+    "generated_at": "2026-05-30T08:54:14.885Z",
     "schema_version": "1.0.0",
     "safety": {
       "mode": "read-only-coding-playbooks",
@@ -5718,6 +6018,10 @@
       "intent",
       "rubric",
       "coding_playbook",
+      "orchestration_pattern",
+      "worker_roles",
+      "shared_state",
+      "reflection_loop",
       "quality_gate",
       "triple_check",
       "domain_balance",
@@ -5734,6 +6038,7 @@
     "read_first_for_build_tasks": [
       "operating protocol",
       "quality contract",
+      "orchestration protocol for complex app/game/research work",
       "coding protocol for app/web/feature/debug/refactor work",
       "matching coding playbook",
       "matching task rubric",
@@ -5749,6 +6054,7 @@
       "top matches",
       "chosen rubric",
       "chosen coding playbook",
+      "orchestration pattern",
       "quality gate verdict",
       "trade-off warnings",
       "choice",

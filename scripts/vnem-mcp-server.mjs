@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 import { McpServer, ResourceTemplate } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
+import { buildOrchestrationPlan } from "./lib/orchestration-framework.mjs";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = process.env.VNEM_ROOT
@@ -70,7 +71,7 @@ const server = new McpServer(
   },
   {
     instructions:
-      "Use vnem as a read-only AI booster and perception layer before coding, recommending tools, or changing a stack. For coding tasks, call vnem_recommend and apply the Triple-Check Workflow: Analyze the user's true goal and hidden requirements, Architect performance and visuals/playability together, then Review that no important domain was sacrificed. vnem returns provenance, trust tiers, and deterministic quality gates; it never installs packages, edits code, calls secrets, or reaches the network."
+      "Use vnem as a read-only AI booster and perception layer before coding, recommending tools, or changing a stack. For coding tasks, call vnem_recommend and apply the Triple-Check Workflow: Analyze the user's true goal and hidden requirements, Architect performance and visuals/playability together, then Review that no important domain was sacrificed. For complex app, game, or research tasks, call vnem_orchestrate to choose a deterministic Single Agent, Orchestrator-Worker, or Split-and-Merge plan before burning context. vnem returns provenance, trust tiers, deterministic quality gates, and orchestration schemas; it never installs packages, edits code, calls secrets, spawns model workers, or reaches the network."
   }
 );
 
@@ -299,6 +300,30 @@ function registerTools(mcpServer) {
   );
 
   mcpServer.registerTool(
+    "vnem_orchestrate",
+    {
+      title: "Plan vnem Orchestration",
+      description:
+        "Route a prompt into VNEM's deterministic orchestration patterns: Single Agent for simple tasks, Orchestrator-Worker for coding/app/game work, and Split-and-Merge for complex research. Returns strict schemas, agent prompts, task claims, reflection-loop contracts, and shared-state guidance without executing models or mutating files.",
+      inputSchema: {
+        task: z.string().min(1).describe("User prompt, coding task, app/game build, or research request to route."),
+        max_workers: z
+          .number()
+          .int()
+          .min(1)
+          .max(12)
+          .default(5)
+          .describe("Upper bound for recommended worker count. VNEM may choose fewer for determinism and cost control.")
+      },
+      annotations: READ_ONLY
+    },
+    async ({ task, max_workers: maxWorkers }) => {
+      const plan = buildOrchestrationPlan(task, { maxWorkers });
+      return toolResult(formatOrchestrationPlan(plan), plan);
+    }
+  );
+
+  mcpServer.registerTool(
     "vnem_get_entry",
     {
       title: "Get vnem Entry",
@@ -465,6 +490,15 @@ function registerResources(mcpServer) {
     firstExisting(["public/install/quality-contract.md", ".vnem/quality-contract.md"]),
     "vnem Quality Contract",
     "Generated holistic excellence contract, Triple-Check Workflow, quality floor, and intelligent trade-off policy.",
+    "text/markdown"
+  );
+  registerFileResource(
+    mcpServer,
+    "vnem-orchestration-protocol",
+    "vnem://install/orchestration-protocol",
+    firstExisting(["public/install/orchestration-protocol.md", ".vnem/orchestration-protocol.md"]),
+    "vnem Orchestration Protocol",
+    "Generated deterministic routing, reflection, multi-agent coding, research split-and-merge, and shared-state protocol.",
     "text/markdown"
   );
   registerFileResource(
@@ -671,10 +705,11 @@ function registerPrompts(mcpServer) {
               `Use vnem for this task: ${task}`,
               "",
               "1. Call vnem_recommend with the task.",
-              "2. For coding, UI, game, optimization, or production-readiness tasks, apply the returned quality_gate and Triple-Check Workflow.",
-              "3. Read the returned best-practice notes and top registry entries.",
-              "4. Report the vnem intent searched, top matches, quality gate verdict, recommendation, why, and any source-trust uncertainty.",
-              "5. Do not install tools, edit files, or call external services unless I ask for that separately."
+              "2. For complex app, game, coding, or research tasks, call vnem_orchestrate and follow the selected orchestration pattern.",
+              "3. For coding, UI, game, optimization, or production-readiness tasks, apply the returned quality_gate and Triple-Check Workflow.",
+              "4. Read the returned best-practice notes and top registry entries.",
+              "5. Report the vnem intent searched, top matches, orchestration pattern when used, quality gate verdict, recommendation, why, and any source-trust uncertainty.",
+              "6. Do not install tools, edit files, or call external services unless I ask for that separately."
             ].join("\n")
           }
         }
@@ -838,6 +873,7 @@ function buildStatus() {
       intent_aliases: Object.keys(searchIndex.intent_aliases || {}).length,
       intent_routes: Object.keys(searchIndex.intent_routes || {}).length,
       quality_contract: Boolean(searchIndex.quality_contract),
+      orchestration_protocol: Boolean(searchIndex.orchestration_protocol),
       install_guide: Boolean(searchIndex.install_guide),
       coding_playbooks: searchIndex.coding_playbooks?.playbooks?.length || 0,
       task_rubrics: searchIndex.task_rubrics?.length || 0,
@@ -855,6 +891,7 @@ function buildStatus() {
         "vnem_search",
         "vnem_recommend",
         "vnem_quality_gate",
+        "vnem_orchestrate",
         "vnem_get_entry",
         "vnem_compare",
         "vnem_best_practices",
@@ -867,6 +904,7 @@ function buildStatus() {
         "vnem://install/operating-protocol",
         "vnem://install/install-guide",
         "vnem://install/quality-contract",
+        "vnem://install/orchestration-protocol",
         "vnem://install/coding-protocol",
         "vnem://install/coding-playbooks",
         "vnem://install/task-rubrics",
@@ -921,8 +959,8 @@ function buildOverview(audience) {
       name: "MCP server",
       paths: ["scripts/vnem-mcp-server.mjs"],
       purpose:
-        "Opt-in stdio MCP surface exposing registry search, recommendations, intent routing, quality gates, source radar, resources, and task contracts.",
-      usable_via: ["npm run mcp", "vnem_status", "vnem_overview", "vnem_recommend", "vnem_quality_gate"]
+        "Opt-in stdio MCP surface exposing registry search, recommendations, intent routing, orchestration plans, quality gates, source radar, resources, and task contracts.",
+      usable_via: ["npm run mcp", "vnem_status", "vnem_overview", "vnem_recommend", "vnem_quality_gate", "vnem_orchestrate"]
     },
     {
       name: "Source radar",
@@ -933,10 +971,10 @@ function buildOverview(audience) {
     },
     {
       name: "Operating protocol and rubrics",
-      paths: ["public/install/install-guide.md", "public/install/operating-protocol.md", "public/install/quality-contract.md", "public/install/coding-protocol.md", "public/install/coding-playbooks.json", "public/install/task-rubrics.json"],
+      paths: ["public/install/install-guide.md", "public/install/operating-protocol.md", "public/install/quality-contract.md", "public/install/orchestration-protocol.md", "public/install/coding-protocol.md", "public/install/coding-playbooks.json", "public/install/task-rubrics.json"],
       purpose:
-        "Compact task-contract and coding-execution layer for sensing the repo, enforcing holistic quality, selecting task-specific playbooks, planning edits, routing work, approval gates, verification, and final reporting.",
-      usable_via: ["vnem_route_intent", "vnem_recommend", "vnem_quality_gate", "vnem://install/install-guide", "vnem://install/quality-contract", "vnem://install/coding-protocol", "vnem://install/coding-playbooks", "vnem://install/task-rubrics"]
+        "Compact task-contract and coding-execution layer for sensing the repo, enforcing holistic quality, selecting orchestration patterns, choosing task-specific playbooks, planning edits, routing work, approval gates, verification, and final reporting.",
+      usable_via: ["vnem_route_intent", "vnem_recommend", "vnem_quality_gate", "vnem_orchestrate", "vnem://install/install-guide", "vnem://install/quality-contract", "vnem://install/orchestration-protocol", "vnem://install/coding-protocol", "vnem://install/coding-playbooks", "vnem://install/task-rubrics"]
     },
     {
       name: "Visual/design guidance",
@@ -1002,6 +1040,7 @@ function buildTaskContract(task, intent, route, readFirst, registryEntries) {
   const primaryPlaybook = playbooks[0] || null;
   const perceptionGate = buildPerceptionGate(task, rubrics);
   const qualityGate = buildQualityGate(task, "", intent, rubrics, primaryPlaybook);
+  const orchestration = buildTaskOrchestrationSummary(task);
   const rubricIds = new Set(rubrics.flatMap((rubric) => rubric.read_first || []));
   const readFirstIds = uniqueStrings([
     ...(qualityGate?.required_read_first || []),
@@ -1054,6 +1093,7 @@ function buildTaskContract(task, intent, route, readFirst, registryEntries) {
         }
       : null,
     quality_gate: qualityGate,
+    orchestration,
     triple_check: qualityGate?.triple_check,
     domain_balance: qualityGate?.detected_domains,
     tradeoff_policy: qualityGate?.tradeoff_policy,
@@ -1082,6 +1122,24 @@ function buildTaskContract(task, intent, route, readFirst, registryEntries) {
       "vnem is read-only guidance. Do not install tools, mutate config, use secrets, call external services, or start daemons because of this recommendation without explicit user approval.",
     matched_rubric_read_first: [...rubricIds]
   });
+}
+
+function buildTaskOrchestrationSummary(task) {
+  const plan = buildOrchestrationPlan(task, { maxWorkers: 5 });
+  return {
+    pattern: plan.route.pattern,
+    confidence: plan.route.confidence,
+    reasons: plan.route.reasons,
+    reflection_required: plan.route.reflection_required,
+    max_iterations: plan.route.max_iterations,
+    recommended_workers: plan.route.recommended_workers,
+    workflow: plan.workflow.name,
+    worker_roles: plan.workflow.agents.map((agent) => agent.role),
+    task_ids: plan.workflow.tasks.map((item) => item.id),
+    read_first: ["orchestration-protocol:vnem-orchestration-protocol"],
+    mcp_tool: "vnem_orchestrate",
+    resource_uri: "vnem://install/orchestration-protocol"
+  };
 }
 
 function selectCodingPlaybooks(task, intent, mode, rubrics) {
@@ -1608,6 +1666,11 @@ function formatRecommendation(recommendation) {
     if (recommendation.task_contract.coding_playbook?.id) {
       lines.push(`Coding playbook: ${recommendation.task_contract.coding_playbook.id}`);
     }
+    if (recommendation.task_contract.orchestration?.pattern) {
+      lines.push(
+        `Orchestration: ${recommendation.task_contract.orchestration.pattern} via ${recommendation.task_contract.orchestration.workflow}`
+      );
+    }
     if (recommendation.task_contract.quality_gate?.verdict) {
       lines.push(`Quality gate: ${recommendation.task_contract.quality_gate.verdict}`);
       if (recommendation.task_contract.quality_gate.detected_domains?.length) {
@@ -1644,6 +1707,11 @@ function formatRecommendation(recommendation) {
     }
     if (recommendation.task_contract.quality_gate?.verification_requirements?.length) {
       lines.push(`- Quality verification: ${recommendation.task_contract.quality_gate.verification_requirements.slice(0, 5).join("; ")}`);
+    }
+    if (recommendation.task_contract.orchestration?.pattern) {
+      lines.push(
+        `- Orchestration: ${recommendation.task_contract.orchestration.pattern}; workers ${recommendation.task_contract.orchestration.recommended_workers}; reflection ${recommendation.task_contract.orchestration.reflection_required ? "required" : "not required"}; tool ${recommendation.task_contract.orchestration.mcp_tool}`
+      );
     }
     if (recommendation.task_contract.coding_playbook?.execution_loop?.length) {
       lines.push(`- Playbook loop: ${recommendation.task_contract.coding_playbook.execution_loop.slice(0, 4).join("; ")}`);
@@ -1699,6 +1767,38 @@ function formatQualityGate(result) {
     lines.push("", "Verification requirements:", ...gate.verification_requirements.map((item) => `- ${item}`));
   }
   lines.push("", `Safety: ${result.safety}`);
+  return lines.join("\n");
+}
+
+function formatOrchestrationPlan(plan) {
+  const lines = [`vnem orchestration plan: ${plan.task}`];
+  lines.push(`Pattern: ${plan.route.pattern}`);
+  lines.push(`Confidence: ${plan.route.confidence}`);
+  if (plan.route.reasons?.length) {
+    lines.push(`Reasons: ${plan.route.reasons.join("; ")}`);
+  }
+  lines.push(`Workflow: ${plan.workflow.name}`);
+  lines.push(`Recommended workers: ${plan.route.recommended_workers}`);
+  lines.push(`Reflection loop: ${plan.reflection_loop.enabled ? `enabled, max ${plan.reflection_loop.max_iterations}` : "not required"}`);
+  if (plan.workflow.agents?.length) {
+    lines.push("", "Agents:");
+    for (const agent of plan.workflow.agents) {
+      lines.push(`- ${agent.id} (${agent.role}): ${agent.responsibility}`);
+    }
+  }
+  if (plan.workflow.tasks?.length) {
+    lines.push("", "Task graph:");
+    for (const task of plan.workflow.tasks.slice(0, 8)) {
+      const deps = task.dependencies?.length ? ` after ${task.dependencies.join(", ")}` : "";
+      lines.push(`- ${task.id} [${task.role}]${deps}: ${task.title}`);
+    }
+  }
+  lines.push("", "Structured contracts:");
+  lines.push(`- Route decision schema: ${Boolean(plan.schemas?.route_decision)}`);
+  lines.push(`- Architect task-list schema: ${Boolean(plan.schemas?.architect_task_list)}`);
+  lines.push(`- Worker claim/report schemas: ${Boolean(plan.schemas?.worker_claim && plan.schemas?.worker_report)}`);
+  lines.push(`- Shared state events: ${plan.shared_state?.events?.length || 0} initial event(s)`);
+  lines.push("", `Safety: ${plan.safety}`);
   return lines.join("\n");
 }
 
@@ -1799,6 +1899,7 @@ function formatStatus(status) {
     `- Intent routes: ${status.counts.intent_routes}`,
     `- Install guide: ${status.counts.install_guide ? "loaded" : "missing"}`,
     `- Quality contract: ${status.counts.quality_contract ? "loaded" : "missing"}`,
+    `- Orchestration protocol: ${status.counts.orchestration_protocol ? "loaded" : "missing"}`,
     `- Source-radar entries: ${status.counts.source_radar_entries}`,
     `- Task rubrics: ${status.counts.task_rubrics}`,
     `- Prompt patterns: ${status.counts.prompt_patterns}`,

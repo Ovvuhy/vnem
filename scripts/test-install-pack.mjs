@@ -90,6 +90,7 @@ function safeInstallCommand(command) {
     "install-guide.md",
     "operating-protocol.md",
     "quality-contract.md",
+    "orchestration-protocol.md",
     "coding-protocol.md",
     "coding-playbooks.json",
     "design-architecture.md",
@@ -184,6 +185,7 @@ const agents = await readFile(path.join(installDir, "AGENTS.md"), "utf8");
 const installGuide = await readFile(path.join(installDir, "install-guide.md"), "utf8");
 const operatingProtocol = await readFile(path.join(installDir, "operating-protocol.md"), "utf8");
 const qualityContract = await readFile(path.join(installDir, "quality-contract.md"), "utf8");
+const orchestrationProtocol = await readFile(path.join(installDir, "orchestration-protocol.md"), "utf8");
 const codingProtocol = await readFile(path.join(installDir, "coding-protocol.md"), "utf8");
 const codingPlaybooks = await readJson(path.join(installDir, "coding-playbooks.json"));
 const designArchitecture = await readFile(path.join(installDir, "design-architecture.md"), "utf8");
@@ -197,6 +199,7 @@ const promptPatterns = await readJson(path.join(installDir, "prompt-patterns.jso
 const searchIndex = await readJson(path.join(installDir, "search-index.json"));
 const localSearchIndex = await readJson(path.join(localPackDir, "search-index.json"));
 const localQualityContract = await readFile(path.join(localPackDir, "quality-contract.md"), "utf8");
+const localOrchestrationProtocol = await readFile(path.join(localPackDir, "orchestration-protocol.md"), "utf8");
 const localCodingProtocol = await readFile(path.join(localPackDir, "coding-protocol.md"), "utf8");
 const localCodingPlaybooks = await readJson(path.join(localPackDir, "coding-playbooks.json"));
 const localDesignArchitecture = await readFile(path.join(localPackDir, "design-architecture.md"), "utf8");
@@ -224,6 +227,7 @@ assert(
     ".vnem/install-guide.md",
     ".vnem/operating-protocol.md",
     ".vnem/quality-contract.md",
+    ".vnem/orchestration-protocol.md",
     ".vnem/coding-protocol.md",
     ".vnem/coding-playbooks.json",
     ".vnem/design-architecture.md",
@@ -236,13 +240,14 @@ assert(
     ".vnem/prompt-engineering.md",
     ".vnem/prompt-patterns.json"
   ]),
-  "install archive must extract root AGENTS.md plus the fifteen read-only pack files."
+  "install archive must extract root AGENTS.md plus the sixteen read-only pack files."
 );
 assert(agents.includes("operating-protocol.md"), "AGENTS.md must tell agents to read the operating protocol.");
 assert(agents.includes("install-guide.md"), "AGENTS.md must mention the install guide.");
 assert(agents.includes("quality-contract.md"), "AGENTS.md must tell agents to read the quality contract.");
 assert(agents.includes("Holistic Excellence"), "AGENTS.md must mention Holistic Excellence.");
 assert(agents.includes("Triple-Check Workflow"), "AGENTS.md must mention the Triple-Check Workflow.");
+assert(agents.includes("orchestration-protocol.md"), "AGENTS.md must tell agents to read the orchestration protocol for complex work.");
 assert(agents.includes("coding-protocol.md"), "AGENTS.md must tell agents to read the coding protocol for implementation work.");
 assert(agents.includes("coding-playbooks.json"), "AGENTS.md must tell agents to use coding playbooks for mode-specific implementation work.");
 assert(agents.includes("design-architecture.md"), "AGENTS.md must tell agents to read the design architecture guide for visual work.");
@@ -272,6 +277,15 @@ assert(qualityContract.includes("Architect"), "quality contract must include Arc
 assert(qualityContract.includes("Review"), "quality contract must include Review.");
 assert(qualityContract.includes("settings GUI"), "quality contract must include settings GUI trade-off guidance.");
 assert(localQualityContract === qualityContract, "local .vnem quality contract must match the hosted install pack.");
+assert(orchestrationProtocol.includes("vnem Orchestration Protocol"), "orchestration-protocol.md must include the orchestration protocol title.");
+assert(orchestrationProtocol.includes("Routing & Orchestration Engine"), "orchestration protocol must include routing engine guidance.");
+assert(orchestrationProtocol.includes("Reflection Loop"), "orchestration protocol must include reflection-loop guidance.");
+assert(orchestrationProtocol.includes("Magentic Coding Workflow"), "orchestration protocol must include Magentic coding guidance.");
+assert(orchestrationProtocol.includes("Shared State"), "orchestration protocol must include shared-state guidance.");
+assert(orchestrationProtocol.includes("single_agent"), "orchestration protocol must include single-agent routing.");
+assert(orchestrationProtocol.includes("orchestrator_worker"), "orchestration protocol must include orchestrator-worker routing.");
+assert(orchestrationProtocol.includes("split_and_merge"), "orchestration protocol must include split-and-merge routing.");
+assert(localOrchestrationProtocol === orchestrationProtocol, "local .vnem orchestration protocol must match the hosted install pack.");
 assert(codingProtocol.includes("vnem Coding Protocol"), "coding-protocol.md must include the coding protocol title.");
 assert(codingProtocol.includes("Repo Sensing Contract"), "coding protocol must include repo sensing guidance.");
 assert(codingProtocol.includes("Plan Before Mutating"), "coding protocol must include plan-before-mutation guidance.");
@@ -314,6 +328,7 @@ assert(localSourceRadar.sources?.length === sourceRadar.sources.length, "local .
 assert(bestPractices.includes("Frontend And UI"), "best-practices.md must include frontend guidance.");
 assert(bestPractices.includes("Agentic Coding Execution"), "best-practices.md must include agentic coding execution guidance.");
 assert(bestPractices.includes("Holistic Excellence And Intelligent Trade-offs"), "best-practices.md must include holistic excellence guidance.");
+assert(bestPractices.includes("Multi-Agent Orchestration And Reflection"), "best-practices.md must include multi-agent orchestration guidance.");
 assert(bestPractices.includes("Browser Games And Interactive Canvas"), "best-practices.md must include browser game guidance.");
 assert(bestPractices.includes("Excalibur"), "browser game guidance must include Excalibur as a TypeScript-first 2D option.");
 assert(bestPractices.includes("real browser"), "browser game guidance must require real-browser verification.");
@@ -364,6 +379,10 @@ assert(searchIndex.task_rubrics?.some((rubric) => rubric.id === "aesthetic_exper
 assert(searchIndex.decision_protocol?.task_contract_fields?.includes("verification"), "decision protocol must expose task contract fields.");
 assert(searchIndex.decision_protocol?.task_contract_fields?.includes("repo_sensing"), "decision protocol must expose repo sensing task contract fields.");
 assert(searchIndex.decision_protocol?.task_contract_fields?.includes("coding_playbook"), "decision protocol must expose coding playbook task contract fields.");
+assert(searchIndex.decision_protocol?.task_contract_fields?.includes("orchestration_pattern"), "decision protocol must expose orchestration pattern task contract fields.");
+assert(searchIndex.decision_protocol?.task_contract_fields?.includes("worker_roles"), "decision protocol must expose worker role task contract fields.");
+assert(searchIndex.decision_protocol?.task_contract_fields?.includes("shared_state"), "decision protocol must expose shared-state task contract fields.");
+assert(searchIndex.decision_protocol?.task_contract_fields?.includes("reflection_loop"), "decision protocol must expose reflection-loop task contract fields.");
 assert(searchIndex.decision_protocol?.task_contract_fields?.includes("quality_gate"), "decision protocol must expose quality gate task contract fields.");
 assert(searchIndex.decision_protocol?.task_contract_fields?.includes("triple_check"), "decision protocol must expose triple-check task contract fields.");
 assert(searchIndex.decision_protocol?.task_contract_fields?.includes("domain_balance"), "decision protocol must expose domain balance task contract fields.");
@@ -372,6 +391,7 @@ assert(searchIndex.decision_protocol?.task_contract_fields?.includes("perception
 assert(searchIndex.source_radar?.length === sourceRadar.sources.length, "search-index must expose source radar entries.");
 assert(searchIndex.coding_protocol?.id === "vnem-coding-protocol", "search-index must expose coding_protocol metadata.");
 assert(searchIndex.quality_contract?.id === "vnem-quality-contract", "search-index must expose quality_contract metadata.");
+assert(searchIndex.orchestration_protocol?.id === "vnem-orchestration-protocol", "search-index must expose orchestration_protocol metadata.");
 assert(searchIndex.install_guide?.id === "vnem-install-guide", "search-index must expose install_guide metadata.");
 assert(searchIndex.coding_playbooks?.playbooks?.length === codingPlaybooks.playbooks.length, "search-index must expose coding playbooks.");
 assert(searchIndex.design_architecture?.id === "vnem-design-architecture", "search-index must expose design_architecture metadata.");
@@ -381,6 +401,7 @@ assert(searchIndex.documents?.some((document) => document.id === "design-archite
 assert(searchIndex.documents?.some((document) => document.id === "visual-qa-protocol:vnem-visual-qa-protocol"), "search-index must index visual QA protocol.");
 assert(searchIndex.documents?.some((document) => document.id === "coding-protocol:vnem-coding-protocol"), "search-index must index coding protocol.");
 assert(searchIndex.documents?.some((document) => document.id === "quality-contract:vnem-quality-contract"), "search-index must index quality contract.");
+assert(searchIndex.documents?.some((document) => document.id === "orchestration-protocol:vnem-orchestration-protocol"), "search-index must index orchestration protocol.");
 assert(searchIndex.documents?.some((document) => document.id === "install-guide:vnem-install-guide"), "search-index must index install guide.");
 assert(searchIndex.documents?.some((document) => document.id === "coding-playbook:feature-slice"), "search-index must index feature-slice coding playbook.");
 assert(searchIndex.documents?.some((document) => document.id === "coding-playbook:bug-root-cause"), "search-index must index bug-root-cause coding playbook.");
@@ -389,6 +410,11 @@ assert(searchIndex.intent_routes?.["coding task"]?.read_first?.includes("coding-
 assert(searchIndex.intent_routes?.["quality gate"]?.read_first?.includes("quality-contract:vnem-quality-contract"), "search-index must route quality gate tasks to the quality contract.");
 assert(searchIndex.intent_routes?.["performance visuals"]?.read_first?.includes("quality-contract:vnem-quality-contract"), "search-index must route performance/visual tasks to the quality contract.");
 assert(searchIndex.intent_routes?.["settings gui"]?.read_first?.includes("quality-contract:vnem-quality-contract"), "search-index must route settings GUI tasks to the quality contract.");
+assert(searchIndex.intent_routes?.["multi agent orchestration"]?.read_first?.includes("orchestration-protocol:vnem-orchestration-protocol"), "search-index must route multi-agent tasks to orchestration protocol.");
+assert(searchIndex.intent_routes?.["orchestrator worker"]?.read_first?.includes("orchestration-protocol:vnem-orchestration-protocol"), "search-index must route orchestrator-worker tasks to orchestration protocol.");
+assert(searchIndex.intent_routes?.["split and merge"]?.read_first?.includes("orchestration-protocol:vnem-orchestration-protocol"), "search-index must route split-and-merge tasks to orchestration protocol.");
+assert(searchIndex.intent_routes?.["reflection loop"]?.read_first?.includes("orchestration-protocol:vnem-orchestration-protocol"), "search-index must route reflection-loop tasks to orchestration protocol.");
+assert(searchIndex.intent_routes?.["magentic coding"]?.read_first?.includes("orchestration-protocol:vnem-orchestration-protocol"), "search-index must route Magentic coding tasks to orchestration protocol.");
 assert(searchIndex.intent_routes?.["install vnem"]?.read_first?.includes("install-guide:vnem-install-guide"), "search-index must route install tasks to the install guide.");
 assert(searchIndex.intent_routes?.["download vnem"]?.read_first?.includes("install-guide:vnem-install-guide"), "search-index must route download tasks to the install guide.");
 assert(searchIndex.intent_routes?.["mcp setup"]?.read_first?.includes("install-guide:vnem-install-guide"), "search-index must route MCP setup tasks to the install guide.");
@@ -429,6 +455,7 @@ assert(searchIndex.intent_routes?.["tool pinning"]?.read_first?.includes("source
 assert(apiIndex.decision_protocol?.auto_use === true, "public API must expose the decision protocol.");
 assert(apiIndex.operating_protocol?.id === "vnem-operating-loop", "public API must expose the operating protocol.");
 assert(apiIndex.quality_contract?.id === "vnem-quality-contract", "public API must expose the quality contract.");
+assert(apiIndex.orchestration_protocol?.id === "vnem-orchestration-protocol", "public API must expose the orchestration protocol.");
 assert(apiIndex.install_guide?.id === "vnem-install-guide", "public API must expose the install guide.");
 assert(apiIndex.coding_protocol?.id === "vnem-coding-protocol", "public API must expose the coding protocol.");
 assert(apiIndex.coding_playbooks?.playbooks?.some((playbook) => playbook.id === "failure-recovery"), "public API must expose coding playbooks.");
@@ -451,7 +478,7 @@ assert(localSearchIndex.documents?.length === searchIndex.documents.length, "loc
 assert(localSearchIndex.source_radar?.length === searchIndex.source_radar.length, "local .vnem source radar metadata must match the hosted install pack.");
 assert(localSearchIndex.coding_playbooks?.playbooks?.length === searchIndex.coding_playbooks.playbooks.length, "local .vnem search index must match coding playbook metadata.");
 
-for (const query of ["coding task", "app build", "web app", "feature build", "bug fix", "test first", "repo understanding", "large change", "backend api", "failure recovery", "root cause", "holistic excellence", "triple check", "performance visuals", "playability", "quality gate", "production ready", "settings gui", "intelligent tradeoff", "install vnem", "download vnem", "mcp setup", "mcp config", "better ui", "aesthetic experience", "visual polish", "visual qa", "screenshot polish", "game feel", "reward feedback", "sound design", "perception gate", "ui architecture", "bento dashboard", "agent dashboard", "conversational ui", "motion design", "design tokens", "dark mode", "glassmorphism", "typography", "layout spacing", "optical alignment", "browser game", "web game", "html5 game", "canvas game", "2d game", "3d game", "game engine", "game ui", "game accessibility", "game physics", "game testing", "canvas performance", "faster search", "agent payments", "code review", "code simplification", "code compaction", "minimal code", "professional code", "refactor", "dead code", "memory", "evals", "prompt engineering", "codex prompt", "mcp gateway", "one mcp", "tool routing", "memory bank", "roo code", "agent modes", "codex config", "claude md", "agent workspace", "source radar", "research layer", "source intake", "benchmark evidence", "pre execution gateway", "zero trust gateway", "tool pinning", "package firewall", "ast indexer", "codex vs claude", "gemini agent", "ai model selection", "agent upgrade"]) {
+for (const query of ["coding task", "app build", "web app", "feature build", "bug fix", "test first", "repo understanding", "large change", "backend api", "failure recovery", "root cause", "holistic excellence", "triple check", "performance visuals", "playability", "quality gate", "production ready", "settings gui", "intelligent tradeoff", "multi agent orchestration", "orchestrator worker", "split and merge", "reflection loop", "magentic coding", "shared state", "install vnem", "download vnem", "mcp setup", "mcp config", "better ui", "aesthetic experience", "visual polish", "visual qa", "screenshot polish", "game feel", "reward feedback", "sound design", "perception gate", "ui architecture", "bento dashboard", "agent dashboard", "conversational ui", "motion design", "design tokens", "dark mode", "glassmorphism", "typography", "layout spacing", "optical alignment", "browser game", "web game", "html5 game", "canvas game", "2d game", "3d game", "game engine", "game ui", "game accessibility", "game physics", "game testing", "canvas performance", "faster search", "agent payments", "code review", "code simplification", "code compaction", "minimal code", "professional code", "refactor", "dead code", "memory", "evals", "prompt engineering", "codex prompt", "mcp gateway", "one mcp", "tool routing", "memory bank", "roo code", "agent modes", "codex config", "claude md", "agent workspace", "source radar", "research layer", "source intake", "benchmark evidence", "pre execution gateway", "zero trust gateway", "tool pinning", "package firewall", "ast indexer", "codex vs claude", "gemini agent", "ai model selection", "agent upgrade"]) {
   const results = search(searchIndex, query);
   assert(results.length > 0, `search-index must return at least one result for "${query}".`);
   assert(results[0].rank_score >= results.at(-1).rank_score, `search results for "${query}" must be rank sorted.`);
@@ -470,6 +497,12 @@ for (const query of ["coding task", "app build", "web app", "feature build", "bu
     assert(
       results.some((result) => result.id === "quality-contract:vnem-quality-contract" || result.id === "practice:holistic-excellence-intelligent-tradeoffs"),
       `search results for "${query}" should include the quality contract or holistic excellence guidance.`
+    );
+  }
+  if (["multi agent orchestration", "orchestrator worker", "split and merge", "reflection loop", "magentic coding", "shared state"].includes(query)) {
+    assert(
+      results.some((result) => result.id === "orchestration-protocol:vnem-orchestration-protocol" || result.id === "practice:multi-agent-orchestration-reflection"),
+      `search results for "${query}" should include orchestration protocol or multi-agent guidance.`
     );
   }
   if (["install vnem", "download vnem", "mcp setup", "mcp config"].includes(query)) {

@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-05-29T14:33:58.678Z",
+  "generated_at": "2026-05-30T08:54:14.885Z",
   "schema_version": "1.0.0",
   "package_version": "1.0.1",
   "release_version": "1.0.1",
-  "release_date": "2026-05-29",
+  "release_date": "2026-05-30",
   "install_folder": ".vnem",
   "safety": {
     "mode": "read-only-files",
@@ -261,6 +261,63 @@
       "quality profiles",
       "progressive enhancement",
       "fallback path"
+    ],
+    "multi agent orchestration": [
+      "multi-agent",
+      "orchestration",
+      "agent team",
+      "subagents",
+      "orchestrator worker",
+      "split and merge",
+      "reflection loop",
+      "shared state",
+      "magentic coding"
+    ],
+    "orchestrator worker": [
+      "orchestrator-workers",
+      "manager agent",
+      "lead architect",
+      "worker agents",
+      "delegation",
+      "task graph",
+      "agent as tool",
+      "specialist agents"
+    ],
+    "split and merge": [
+      "split-and-merge",
+      "parallel research",
+      "research strands",
+      "source verifier",
+      "synthesis agent",
+      "fan out",
+      "merge findings"
+    ],
+    "reflection loop": [
+      "evaluator optimizer",
+      "planner generator evaluator",
+      "generator evaluator",
+      "critique loop",
+      "max iterations",
+      "quality metrics"
+    ],
+    "magentic coding": [
+      "multi-agent coding",
+      "lead architect",
+      "ui agent",
+      "logic agent",
+      "integration agent",
+      "qa agent",
+      "shared state",
+      "worker claim"
+    ],
+    "shared state": [
+      "agent memory",
+      "task claims",
+      "worker reports",
+      "state events",
+      "coordination log",
+      "artifact log",
+      "handoff"
     ],
     "install vnem": [
       "download vnem",
@@ -1257,6 +1314,185 @@
         "trade-off alternative",
         "domain preservation",
         "verification"
+      ]
+    },
+    "multi agent orchestration": {
+      "read_first": [
+        "orchestration-protocol:vnem-orchestration-protocol",
+        "practice:multi-agent-orchestration-reflection",
+        "operating-protocol:vnem-operating-loop",
+        "quality-contract:vnem-quality-contract",
+        "practice:agentic-coding-execution",
+        "practice:research-source-intake"
+      ],
+      "compare_options": [
+        "single agent",
+        "orchestrator-worker",
+        "split-and-merge",
+        "reflection loop",
+        "shared-state handoff"
+      ],
+      "choose_by": [
+        "task complexity",
+        "context pressure",
+        "independent subtask count",
+        "verification criteria",
+        "latency and cost overhead",
+        "one owner for final synthesis"
+      ],
+      "report": [
+        "selected pattern",
+        "agent roles",
+        "task graph",
+        "reflection gate",
+        "shared-state fields",
+        "verification evidence"
+      ]
+    },
+    "orchestrator worker": {
+      "read_first": [
+        "orchestration-protocol:vnem-orchestration-protocol",
+        "practice:multi-agent-orchestration-reflection",
+        "coding-protocol:vnem-coding-protocol",
+        "coding-playbook:web-app-rendered-quality",
+        "quality-contract:vnem-quality-contract",
+        "visual-qa-protocol:vnem-visual-qa-protocol"
+      ],
+      "compare_options": [
+        "lead architect plus UI/logic/integration/QA workers",
+        "single-agent implementation",
+        "parallel read-only exploration then one diff owner"
+      ],
+      "choose_by": [
+        "coding/app/game scope",
+        "file ownership clarity",
+        "worker independence",
+        "integration risk",
+        "quality gate coverage"
+      ],
+      "report": [
+        "lead architect JSON task list",
+        "worker claims",
+        "shared-state reports",
+        "integration owner",
+        "QA verdict"
+      ]
+    },
+    "split and merge": {
+      "read_first": [
+        "orchestration-protocol:vnem-orchestration-protocol",
+        "practice:multi-agent-orchestration-reflection",
+        "practice:research-source-intake",
+        "source:mcp-core-and-registry",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "parallel research strands",
+        "single-agent source review",
+        "source-verifier before synthesis",
+        "follow-up research pass"
+      ],
+      "choose_by": [
+        "independent source strands",
+        "need for primary-source verification",
+        "contradiction risk",
+        "citation burden",
+        "context-window pressure"
+      ],
+      "report": [
+        "research strands",
+        "sources verified",
+        "contradictions",
+        "synthesis confidence",
+        "remaining uncertainty"
+      ]
+    },
+    "reflection loop": {
+      "read_first": [
+        "orchestration-protocol:vnem-orchestration-protocol",
+        "practice:multi-agent-orchestration-reflection",
+        "quality-contract:vnem-quality-contract",
+        "practice:agentic-coding-execution",
+        "practice:evals"
+      ],
+      "compare_options": [
+        "generator/evaluator loop",
+        "single pass with checklist",
+        "blocked escalation"
+      ],
+      "choose_by": [
+        "clear evaluation criteria",
+        "expected improvement from critique",
+        "max three iterations",
+        "schema-valid output",
+        "verification evidence"
+      ],
+      "report": [
+        "iteration count",
+        "evaluator verdict",
+        "required changes",
+        "quality metrics",
+        "remaining risk"
+      ]
+    },
+    "magentic coding": {
+      "read_first": [
+        "orchestration-protocol:vnem-orchestration-protocol",
+        "practice:multi-agent-orchestration-reflection",
+        "coding-protocol:vnem-coding-protocol",
+        "coding-playbook:web-app-rendered-quality",
+        "quality-contract:vnem-quality-contract",
+        "design-architecture:vnem-design-architecture",
+        "visual-qa-protocol:vnem-visual-qa-protocol"
+      ],
+      "compare_options": [
+        "Lead Architect -> UI Agent -> Logic Agent -> Integration Agent -> QA Agent",
+        "single-agent small slice",
+        "read-only parallel exploration"
+      ],
+      "choose_by": [
+        "web/app/game build scope",
+        "visual and logic separation",
+        "task dependencies",
+        "file-surface ownership",
+        "browser verification need"
+      ],
+      "report": [
+        "project type",
+        "agent task list",
+        "claimed tasks",
+        "artifacts",
+        "perception gate",
+        "quality gate"
+      ]
+    },
+    "shared state": {
+      "read_first": [
+        "orchestration-protocol:vnem-orchestration-protocol",
+        "practice:multi-agent-orchestration-reflection",
+        "operating-protocol:vnem-operating-loop",
+        "practice:persistent-memory-context-files"
+      ],
+      "compare_options": [
+        "in-memory task state",
+        "MCP resource snapshot",
+        "versioned handoff file",
+        "external memory store after approval"
+      ],
+      "choose_by": [
+        "deterministic ordinals",
+        "no secrets",
+        "artifact traceability",
+        "task ownership clarity",
+        "client compatibility"
+      ],
+      "report": [
+        "state schema",
+        "claims",
+        "reports",
+        "decisions",
+        "artifacts",
+        "open blockers"
       ]
     },
     "install vnem": {
@@ -3518,6 +3754,70 @@
       "https://developers.openai.com/api/docs/guides/agent-evals"
     ]
   },
+  "orchestration_protocol": {
+    "id": "vnem-orchestration-protocol",
+    "title": "vnem Orchestration Protocol",
+    "summary": "A deterministic, model-agnostic routing and multi-agent coordination protocol for choosing Single Agent, Orchestrator-Worker, Split-and-Merge, and Generator/Evaluator reflection patterns before complex work consumes context.",
+    "url_path": "/install/orchestration-protocol.md",
+    "resource_uri": "vnem://install/orchestration-protocol",
+    "routing": [
+      {
+        "pattern": "single_agent",
+        "use_when": "The request is a simple question, narrow lookup, or low-risk single-file task where coordination overhead would exceed the value.",
+        "output": "One scoped agent answers or acts with focused verification."
+      },
+      {
+        "pattern": "orchestrator_worker",
+        "use_when": "The request asks to code, build, improve, debug, or verify an app, web app, game, dashboard, UI, API, or multi-file feature.",
+        "output": "Lead Architect creates a strict JSON task graph, workers claim scoped tasks, Integration merges, and QA verifies."
+      },
+      {
+        "pattern": "split_and_merge",
+        "use_when": "The request is complex research, broad comparison, current-source investigation, benchmark collection, or ecosystem scanning.",
+        "output": "Research lead splits independent strands, workers gather evidence, source verifier checks claims, and synthesis merges findings."
+      }
+    ],
+    "reflection_loop": {
+      "max_iterations": 3,
+      "generator": "Produce JSON matching the generator_output schema with answer_or_patch_plan, changed_files, assumptions, verification_plan, and residual_risks.",
+      "evaluator": "Produce JSON matching the evaluator_output schema with pass, revise, or blocked verdict, score, failures, required_changes, and verification_requirements.",
+      "stop_conditions": [
+        "evaluator verdict is pass",
+        "evaluator verdict is blocked",
+        "three iterations completed"
+      ]
+    },
+    "magentic_coding_roles": [
+      "lead_architect",
+      "ui_agent",
+      "logic_agent",
+      "integration_agent",
+      "qa_agent"
+    ],
+    "shared_state_fields": [
+      "run_id",
+      "task",
+      "tasks",
+      "claims",
+      "reports",
+      "artifacts",
+      "facts",
+      "decisions",
+      "events",
+      "next_ordinal"
+    ],
+    "source_urls": [
+      "https://www.anthropic.com/engineering/building-effective-agents",
+      "https://www.anthropic.com/engineering/multi-agent-research-system",
+      "https://www.anthropic.com/engineering/writing-tools-for-agents",
+      "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+      "https://openai.github.io/openai-agents-python/multi_agent/",
+      "https://openai.github.io/openai-agents-python/guardrails/",
+      "https://modelcontextprotocol.io/specification/2025-11-25/schema",
+      "https://modelcontextprotocol.io/specification/2025-06-18/server/tools",
+      "https://modelcontextprotocol.io/specification/2025-06-18/server/resources"
+    ]
+  },
   "install_guide": {
     "id": "vnem-install-guide",
     "title": "vnem Install And MCP Guide",
@@ -3584,7 +3884,7 @@
     ]
   },
   "coding_playbooks": {
-    "generated_at": "2026-05-29T14:33:58.678Z",
+    "generated_at": "2026-05-30T08:54:14.885Z",
     "schema_version": "1.0.0",
     "safety": {
       "mode": "read-only-coding-playbooks",
@@ -5201,6 +5501,10 @@
       "intent",
       "rubric",
       "coding_playbook",
+      "orchestration_pattern",
+      "worker_roles",
+      "shared_state",
+      "reflection_loop",
       "quality_gate",
       "triple_check",
       "domain_balance",
@@ -5217,6 +5521,7 @@
     "read_first_for_build_tasks": [
       "operating protocol",
       "quality contract",
+      "orchestration protocol for complex app/game/research work",
       "coding protocol for app/web/feature/debug/refactor work",
       "matching coding playbook",
       "matching task rubric",
@@ -5232,6 +5537,7 @@
       "top matches",
       "chosen rubric",
       "chosen coding playbook",
+      "orchestration pattern",
       "quality gate verdict",
       "trade-off warnings",
       "choice",
@@ -5249,6 +5555,395 @@
     "risk_flags": -1
   },
   "documents": [
+    {
+      "id": "orchestration-protocol:vnem-orchestration-protocol",
+      "kind": "orchestration-protocol",
+      "title": "vnem Orchestration Protocol",
+      "summary": "A deterministic, model-agnostic routing and multi-agent coordination protocol for choosing Single Agent, Orchestrator-Worker, Split-and-Merge, and Generator/Evaluator reflection patterns before complex work consumes context.",
+      "url_path": "/install/orchestration-protocol.md",
+      "trust_tier": "verified",
+      "type": "orchestration-protocol",
+      "score": 25,
+      "tags": [
+        "multi agent orchestration",
+        "orchestrator worker",
+        "split and merge",
+        "reflection loop",
+        "magentic coding",
+        "shared state",
+        "lead architect",
+        "worker agents",
+        "source verifier",
+        "generator evaluator"
+      ],
+      "use_cases": [
+        "single_agent: The request is a simple question, narrow lookup, or low-risk single-file task where coordination overhead would exceed the value.",
+        "orchestrator_worker: The request asks to code, build, improve, debug, or verify an app, web app, game, dashboard, UI, API, or multi-file feature.",
+        "split_and_merge: The request is complex research, broad comparison, current-source investigation, benchmark collection, or ecosystem scanning.",
+        "Produce JSON matching the generator_output schema with answer_or_patch_plan, changed_files, assumptions, verification_plan, and residual_risks.",
+        "Produce JSON matching the evaluator_output schema with pass, revise, or blocked verdict, score, failures, required_changes, and verification_requirements.",
+        "lead_architect",
+        "ui_agent",
+        "logic_agent",
+        "integration_agent",
+        "qa_agent",
+        "run_id",
+        "task",
+        "tasks",
+        "claims",
+        "reports",
+        "artifacts",
+        "facts",
+        "decisions",
+        "events",
+        "next_ordinal"
+      ],
+      "best_for": [
+        "Complex coding, app, web app, or game work where one agent would lose context or mix file ownership.",
+        "Deep research where independent source strands should be gathered and verified before synthesis.",
+        "Generator/evaluator reflection loops with strict JSON schemas and bounded iterations."
+      ],
+      "risk_flags": [],
+      "source_urls": [
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/orchestration-protocol.md",
+        "https://www.anthropic.com/engineering/building-effective-agents",
+        "https://www.anthropic.com/engineering/multi-agent-research-system",
+        "https://www.anthropic.com/engineering/writing-tools-for-agents",
+        "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "https://openai.github.io/openai-agents-python/multi_agent/",
+        "https://openai.github.io/openai-agents-python/guardrails/",
+        "https://modelcontextprotocol.io/specification/2025-11-25/schema",
+        "https://modelcontextprotocol.io/specification/2025-06-18/server/tools",
+        "https://modelcontextprotocol.io/specification/2025-06-18/server/resources"
+      ],
+      "keywords": [
+        "vnem-orchestration-protocol",
+        "vnem",
+        "orchestration",
+        "protocol",
+        "deterministic",
+        "model-agnostic",
+        "routing",
+        "multi-agent",
+        "coordination",
+        "choosing",
+        "single",
+        "agent",
+        "orchestrator-worker",
+        "split-and-merge",
+        "generator/evaluator",
+        "reflection",
+        "patterns",
+        "complex",
+        "work",
+        "consumes",
+        "context.",
+        "multi",
+        "orchestrator",
+        "worker",
+        "split",
+        "merge",
+        "loop",
+        "magentic",
+        "coding",
+        "shared",
+        "state",
+        "lead",
+        "architect",
+        "agents",
+        "verifier",
+        "generator",
+        "evaluator",
+        "request",
+        "is",
+        "simple",
+        "question",
+        "narrow",
+        "lookup",
+        "or",
+        "low-risk",
+        "single-file",
+        "task",
+        "where",
+        "overhead",
+        "would",
+        "exceed",
+        "value.",
+        "one",
+        "scoped",
+        "answers",
+        "acts",
+        "focused",
+        "verification.",
+        "asks",
+        "to",
+        "build",
+        "improve",
+        "debug",
+        "verify",
+        "an",
+        "app",
+        "web",
+        "game",
+        "dashboard",
+        "ui",
+        "api",
+        "multi-file",
+        "feature.",
+        "creates",
+        "strict",
+        "json",
+        "graph",
+        "workers",
+        "claim",
+        "tasks",
+        "integration",
+        "merges",
+        "qa",
+        "verifies.",
+        "research",
+        "broad",
+        "comparison",
+        "current-source",
+        "investigation",
+        "benchmark",
+        "collection",
+        "ecosystem",
+        "scanning.",
+        "splits",
+        "independent",
+        "strands",
+        "gather",
+        "evidence",
+        "checks",
+        "claims",
+        "synthesis",
+        "findings.",
+        "produce",
+        "matching",
+        "output",
+        "schema",
+        "answer",
+        "patch",
+        "plan",
+        "changed",
+        "files",
+        "assumptions",
+        "verification",
+        "residual",
+        "risks.",
+        "pass",
+        "revise",
+        "blocked",
+        "verdict",
+        "score",
+        "failures",
+        "required",
+        "changes",
+        "requirements.",
+        "three",
+        "iterations",
+        "completed",
+        "logic",
+        "run",
+        "id",
+        "reports",
+        "artifacts",
+        "facts",
+        "decisions",
+        "events",
+        "next",
+        "ordinal",
+        "https",
+        "//www.anthropic.com/engineering/building-effective-agents",
+        "//www.anthropic.com/engineering/multi-agent-research-system",
+        "//www.anthropic.com/engineering/writing-tools-for-agents",
+        "//www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "//openai.github.io/openai-agents-python/multi",
+        "agent/",
+        "//openai.github.io/openai-agents-python/guardrails/",
+        "//modelcontextprotocol.io/specification/2025-11-25/schema",
+        "//modelcontextprotocol.io/specification/2025-06-18/server/tools",
+        "//modelcontextprotocol.io/specification/2025-06-18/server/resources"
+      ]
+    },
+    {
+      "id": "practice:multi-agent-orchestration-reflection",
+      "kind": "best-practice",
+      "title": "Multi-Agent Orchestration And Reflection",
+      "summary": "Use deterministic orchestration only when it beats a single agent: simple questions stay single-agent, complex coding/app/game work uses an orchestrator-worker task graph, and broad research splits into independently verified strands before synthesis.",
+      "url_path": "/install/best-practices.md",
+      "trust_tier": "verified",
+      "type": "best-practice",
+      "score": 24,
+      "tags": [
+        "multi agent orchestration",
+        "orchestrator worker",
+        "split and merge",
+        "reflection loop",
+        "magentic coding",
+        "shared state",
+        "subagents",
+        "lead architect",
+        "generator evaluator",
+        "planner generator evaluator"
+      ],
+      "use_cases": [
+        "Default to a single agent for simple questions and narrow tasks; multi-agent coordination adds latency, cost, and integration risk unless the task has independent subtasks or context pressure.",
+        "Use code-level routing for determinism: classify the prompt, choose the orchestration pattern, then give agents strict JSON contracts instead of vague free-form delegation.",
+        "For web apps, apps, and games, use an orchestrator-worker pattern: Lead Architect decomposes the task, UI and Logic workers own separate writable surfaces, Integration owns cross-surface merge, and QA owns verification.",
+        "For deep research, use split-and-merge: separate source strands, require provenance from each worker, run source verification, then synthesize after contradictions and uncertainty are recorded.",
+        "For output quality, use a generator/evaluator reflection loop with a maximum of three iterations and explicit pass, revise, or blocked verdicts.",
+        "Use shared state as the coordination surface: task claims, ordinals, artifacts, decisions, blockers, and verification evidence should be visible to other agents through MCP resources or structured tool results.",
+        "Keep one owner responsible for the final answer or integrated diff. Parallel workers should not independently edit overlapping file surfaces or produce conflicting final narratives.",
+        "Treat VNEM orchestration as read-only guidance unless a separate runtime with approvals exists; the MCP server returns plans, schemas, and prompts, not hidden workers or file mutations."
+      ],
+      "best_for": [
+        "Default to a single agent for simple questions and narrow tasks; multi-agent coordination adds latency, cost, and integration risk unless the task has independent subtasks or context pressure.",
+        "Use code-level routing for determinism: classify the prompt, choose the orchestration pattern, then give agents strict JSON contracts instead of vague free-form delegation.",
+        "For web apps, apps, and games, use an orchestrator-worker pattern: Lead Architect decomposes the task, UI and Logic workers own separate writable surfaces, Integration owns cross-surface merge, and QA owns verification.",
+        "For deep research, use split-and-merge: separate source strands, require provenance from each worker, run source verification, then synthesize after contradictions and uncertainty are recorded.",
+        "For output quality, use a generator/evaluator reflection loop with a maximum of three iterations and explicit pass, revise, or blocked verdicts.",
+        "Use shared state as the coordination surface: task claims, ordinals, artifacts, decisions, blockers, and verification evidence should be visible to other agents through MCP resources or structured tool results.",
+        "Keep one owner responsible for the final answer or integrated diff. Parallel workers should not independently edit overlapping file surfaces or produce conflicting final narratives.",
+        "Treat VNEM orchestration as read-only guidance unless a separate runtime with approvals exists; the MCP server returns plans, schemas, and prompts, not hidden workers or file mutations."
+      ],
+      "risk_flags": [],
+      "source_urls": [
+        "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install/best-practices.md",
+        "https://www.anthropic.com/engineering/building-effective-agents",
+        "https://www.anthropic.com/engineering/multi-agent-research-system",
+        "https://www.anthropic.com/engineering/writing-tools-for-agents",
+        "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "https://openai.github.io/openai-agents-python/multi_agent/",
+        "https://openai.github.io/openai-agents-python/guardrails/",
+        "https://modelcontextprotocol.io/specification/2025-11-25/schema",
+        "https://modelcontextprotocol.io/specification/2025-06-18/server/tools",
+        "https://modelcontextprotocol.io/specification/2025-06-18/server/resources"
+      ],
+      "keywords": [
+        "multi-agent",
+        "orchestration",
+        "reflection",
+        "deterministic",
+        "only",
+        "it",
+        "beats",
+        "single",
+        "agent",
+        "simple",
+        "questions",
+        "stay",
+        "single-agent",
+        "complex",
+        "coding/app/game",
+        "work",
+        "uses",
+        "an",
+        "orchestrator-worker",
+        "task",
+        "graph",
+        "broad",
+        "research",
+        "splits",
+        "independently",
+        "verified",
+        "strands",
+        "synthesis.",
+        "multi",
+        "orchestrator",
+        "worker",
+        "split",
+        "merge",
+        "loop",
+        "magentic",
+        "coding",
+        "shared",
+        "state",
+        "subagents",
+        "lead",
+        "architect",
+        "generator",
+        "evaluator",
+        "planner",
+        "default",
+        "to",
+        "narrow",
+        "tasks",
+        "coordination",
+        "adds",
+        "latency",
+        "cost",
+        "integration",
+        "risk",
+        "unless",
+        "independent",
+        "subtasks",
+        "or",
+        "context",
+        "pressure.",
+        "code-level",
+        "routing",
+        "determinism",
+        "classify",
+        "prompt",
+        "choose",
+        "pattern",
+        "then",
+        "give",
+        "agents",
+        "strict",
+        "json",
+        "contracts",
+        "instead",
+        "of",
+        "vague",
+        "free-form",
+        "delegation.",
+        "web",
+        "apps",
+        "games",
+        "decomposes",
+        "ui",
+        "logic",
+        "workers",
+        "own",
+        "separate",
+        "writable",
+        "surfaces",
+        "owns",
+        "cross-surface",
+        "qa",
+        "verification.",
+        "deep",
+        "split-and-merge",
+        "require",
+        "provenance",
+        "each",
+        "run",
+        "verification",
+        "synthesize",
+        "after",
+        "contradictions",
+        "uncertainty",
+        "recorded.",
+        "output",
+        "quality",
+        "generator/evaluator",
+        "maximum",
+        "three",
+        "iterations",
+        "explicit",
+        "pass",
+        "revise",
+        "blocked",
+        "verdicts.",
+        "as",
+        "surface",
+        "claims",
+        "ordinals"
+      ]
+    },
     {
       "id": "quality-contract:vnem-quality-contract",
       "kind": "quality-contract",
@@ -40745,11 +41440,20 @@
     "//modelcontextprotocol.io/specification/2025-06-18/schema": [
       "source:agentic-gateway-security"
     ],
+    "//modelcontextprotocol.io/specification/2025-06-18/server/resources": [
+      "orchestration-protocol:vnem-orchestration-protocol"
+    ],
+    "//modelcontextprotocol.io/specification/2025-06-18/server/tools": [
+      "orchestration-protocol:vnem-orchestration-protocol"
+    ],
     "//modelcontextprotocol.io/specification/2025-11-25": [
       "entry:model-context-protocol"
     ],
     "//modelcontextprotocol.io/specification/2025-11-25/basic/security": [
       "entry:model-context-protocol"
+    ],
+    "//modelcontextprotocol.io/specification/2025-11-25/schema": [
+      "orchestration-protocol:vnem-orchestration-protocol"
     ],
     "//moxt.ai": [
       "entry:ai-moxt-mcp-workspace"
@@ -40778,6 +41482,12 @@
     "//openai.github.io/openai-agents-python/": [
       "entry:openai-agents-sdk",
       "entry:openai-swarm"
+    ],
+    "//openai.github.io/openai-agents-python/guardrails/": [
+      "orchestration-protocol:vnem-orchestration-protocol"
+    ],
+    "//openai.github.io/openai-agents-python/multi": [
+      "orchestration-protocol:vnem-orchestration-protocol"
     ],
     "//openarx.ai": [
       "entry:ai-openarx-openarx"
@@ -41334,6 +42044,7 @@
       "entry:ai-anomalyarmor-armor-mcp"
     ],
     "//www.anthropic.com/engineering/building-effective-agents": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "entry:anthropic-building-effective-agents"
     ],
     "//www.anthropic.com/engineering/built-multi-agent-research-system": [
@@ -41343,9 +42054,14 @@
       "source:agentic-coding-best-practices"
     ],
     "//www.anthropic.com/engineering/demystifying-evals-for-ai-agents": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "source:agentic-coding-best-practices"
     ],
+    "//www.anthropic.com/engineering/multi-agent-research-system": [
+      "orchestration-protocol:vnem-orchestration-protocol"
+    ],
     "//www.anthropic.com/engineering/writing-tools-for-agents": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "source:agentic-coding-best-practices"
     ],
     "//www.babylonjs.com": [
@@ -42182,6 +42898,9 @@
     "actors": [
       "entry:excalibur-js"
     ],
+    "acts": [
+      "orchestration-protocol:vnem-orchestration-protocol"
+    ],
     "actual": [
       "quality-contract:vnem-quality-contract",
       "practice:visual-experience",
@@ -42256,6 +42975,7 @@
       "entry:ai-ankimcp-anki-mcp-server-addon"
     ],
     "adds": [
+      "practice:multi-agent-orchestration-reflection",
       "entry:swarms"
     ],
     "adhd": [
@@ -42325,6 +43045,7 @@
       "entry:ai-buywhere-buywhere-mcp"
     ],
     "after": [
+      "practice:multi-agent-orchestration-reflection",
       "design-architecture:vnem-design-architecture",
       "visual-qa-protocol:vnem-visual-qa-protocol",
       "task-rubric:refactor",
@@ -42362,6 +43083,8 @@
       "entry:agency-lona-trading"
     ],
     "agent": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection",
       "install-guide:vnem-install-guide",
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
@@ -42695,6 +43418,9 @@
       "prompt-pattern:codex-implementation",
       "entry:ai-gethal-mcp"
     ],
+    "agent/": [
+      "orchestration-protocol:vnem-orchestration-protocol"
+    ],
     "agent/provider": [
       "practice:model-and-provider-selection"
     ],
@@ -42892,6 +43618,8 @@
       "entry:agentops"
     ],
     "agents": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection",
       "quality-contract:vnem-quality-contract",
       "practice:holistic-excellence-intelligent-tradeoffs",
       "install-guide:vnem-install-guide",
@@ -43920,6 +44648,8 @@
       "entry:ai-bezal-local-commerce"
     ],
     "an": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection",
       "quality-contract:vnem-quality-contract",
       "practice:holistic-excellence-intelligent-tradeoffs",
       "install-guide:vnem-install-guide",
@@ -44223,6 +44953,7 @@
       "quality-contract:vnem-quality-contract"
     ],
     "answer": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "prompt-pattern:prompt-enhancement",
       "entry:codebase-memory-mcp"
     ],
@@ -44231,6 +44962,7 @@
       "prompt-pattern:research"
     ],
     "answers": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "entry:ragas"
     ],
     "answers.": [
@@ -44299,6 +45031,7 @@
       "prompt-pattern:visual-polish-review"
     ],
     "api": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
       "coding-playbook:api-data-contract",
@@ -44394,6 +45127,7 @@
       "prompt-pattern:agentic-coding-task"
     ],
     "app": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
       "coding-playbook:feature-slice",
@@ -44539,6 +45273,7 @@
       "prompt-pattern:agent-workspace-architecture"
     ],
     "apps": [
+      "practice:multi-agent-orchestration-reflection",
       "coding-protocol:vnem-coding-protocol",
       "source:agentic-coding-best-practices",
       "source:browser-and-ui-verification",
@@ -44557,6 +45292,8 @@
       "entry:matter-js"
     ],
     "architect": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection",
       "quality-contract:vnem-quality-contract",
       "practice:holistic-excellence-intelligent-tradeoffs",
       "coding-protocol:vnem-coding-protocol",
@@ -44633,6 +45370,7 @@
       "prompt-pattern:source-intake"
     ],
     "artifacts": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "task-rubric:docs_prompt",
       "practice:context-engineering",
       "entry:vnem-mcp"
@@ -44641,6 +45379,7 @@
       "entry:codebase-memory-mcp"
     ],
     "as": [
+      "practice:multi-agent-orchestration-reflection",
       "practice:holistic-excellence-intelligent-tradeoffs",
       "practice:mcp-gateway-tool-routing",
       "coding-playbook:web-app-rendered-quality",
@@ -44900,6 +45639,7 @@
       "entry:roo-code"
     ],
     "asks": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "practice:holistic-excellence-intelligent-tradeoffs",
       "practice:code-simplification",
       "source:agentic-gateway-security"
@@ -44963,6 +45703,7 @@
       "entry:ai-kawacode-mcp"
     ],
     "assumptions": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "practice:persistent-memory-context-files",
       "practice:context-engineering"
     ],
@@ -45372,6 +46113,9 @@
       "entry:clude",
       "entry:opentabs",
       "entry:supabase-mcp"
+    ],
+    "beats": [
+      "practice:multi-agent-orchestration-reflection"
     ],
     "beauty": [
       "entry:ai-fodda-mcp-server"
@@ -46056,6 +46800,7 @@
       "prompt-pattern:source-intake"
     ],
     "benchmark": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "coding-playbook:test-first-evidence",
       "source:agentic-coding-best-practices",
       "practice:ide-agent-selection",
@@ -46184,6 +46929,8 @@
       "practice:context-engineering"
     ],
     "blocked": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection",
       "quality-contract:vnem-quality-contract",
       "coding-playbook:failure-recovery",
       "design-architecture:vnem-design-architecture",
@@ -46485,6 +47232,8 @@
       "entry:ai-bringyour-bringyour"
     ],
     "broad": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection",
       "coding-protocol:vnem-coding-protocol",
       "coding-playbook:large-change-checkpoints",
       "practice:code-simplification",
@@ -46659,6 +47408,7 @@
       "prompt-pattern:code-review"
     ],
     "build": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
       "coding-playbook:api-data-contract",
@@ -47516,6 +48266,7 @@
       "prompt-pattern:memory-policy"
     ],
     "changed": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "task-rubric:aesthetic_experience",
       "task-rubric:agentic_coding",
       "task-rubric:backend_api",
@@ -47529,6 +48280,7 @@
       "prompt-pattern:visual-polish-review"
     ],
     "changes": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
       "source:mcp-core-and-registry",
@@ -47644,6 +48396,7 @@
       "entry:roo-code"
     ],
     "checks": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "practice:holistic-excellence-intelligent-tradeoffs",
       "practice:code-simplification",
       "task-rubric:agentic_coding",
@@ -47691,6 +48444,7 @@
       "prompt-pattern:memory-bank-initialization"
     ],
     "choose": [
+      "practice:multi-agent-orchestration-reflection",
       "source:agentic-coding-best-practices",
       "practice:browser-games",
       "practice:ide-agent-selection",
@@ -47704,6 +48458,7 @@
       "entry:rapier-js"
     ],
     "choosing": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "practice:visual-experience",
       "source:mcp-core-and-registry",
       "practice:evals",
@@ -47759,6 +48514,7 @@
       "entry:ai-boolsai-directory"
     ],
     "claim": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "quality-contract:vnem-quality-contract",
       "source:browser-and-ui-verification",
       "source:evaluation-and-observability"
@@ -47768,6 +48524,8 @@
       "visual-qa-protocol:vnem-visual-qa-protocol"
     ],
     "claims": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection",
       "source:agentic-coding-best-practices",
       "practice:persistent-memory-context-files",
       "practice:ide-agent-selection",
@@ -47797,6 +48555,7 @@
       "entry:ai-dragoneye-mcp"
     ],
     "classify": [
+      "practice:multi-agent-orchestration-reflection",
       "operating-protocol:vnem-operating-loop",
       "source:agentic-gateway-security"
     ],
@@ -48168,6 +48927,9 @@
     "code-intelligence": [
       "entry:codebase-memory-mcp"
     ],
+    "code-level": [
+      "practice:multi-agent-orchestration-reflection"
+    ],
     "code-like": [
       "entry:cursor-agent",
       "entry:roo-code"
@@ -48256,6 +49018,8 @@
       "practice:codex-vnem-setup"
     ],
     "coding": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection",
       "quality-contract:vnem-quality-contract",
       "practice:holistic-excellence-intelligent-tradeoffs",
       "practice:agentic-coding-execution",
@@ -48337,6 +49101,9 @@
       "coding-playbook:bug-root-cause",
       "coding-playbook:test-first-evidence"
     ],
+    "coding/app/game": [
+      "practice:multi-agent-orchestration-reflection"
+    ],
     "coffee": [
       "entry:ai-agenticshelf-graffeo"
     ],
@@ -48369,6 +49136,7 @@
       "entry:jscpd"
     ],
     "collection": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "entry:ai-ankimcp-anki-mcp-server-addon",
       "entry:qdrant-mcp-server",
       "entry:custom-modes-roo-code"
@@ -48520,6 +49288,7 @@
       "practice:ide-agent-selection"
     ],
     "comparison": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "entry:google-agent2agent-protocol",
       "entry:microsoft-autogen",
       "entry:ai-abmeter-abmeter",
@@ -48698,10 +49467,15 @@
       "prompt-pattern:ui-build",
       "entry:pixijs"
     ],
+    "completed": [
+      "orchestration-protocol:vnem-orchestration-protocol"
+    ],
     "completion": [
       "practice:payments"
     ],
     "complex": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection",
       "design-architecture:vnem-design-architecture"
     ],
     "complexity": [
@@ -48948,6 +49722,9 @@
     "consult": [
       "entry:vnem-mcp"
     ],
+    "consumes": [
+      "orchestration-protocol:vnem-orchestration-protocol"
+    ],
     "contabo": [
       "entry:ai-com-mcp-contabo"
     ],
@@ -48992,6 +49769,7 @@
       "prompt-pattern:memory-bank-initialization"
     ],
     "context": [
+      "practice:multi-agent-orchestration-reflection",
       "coding-protocol:vnem-coding-protocol",
       "source:agentic-coding-best-practices",
       "practice:persistent-memory-context-files",
@@ -49040,6 +49818,7 @@
       "entry:rules-template-memory-bank"
     ],
     "context.": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "source:coding-agent-clients",
       "practice:payments",
       "prompt-pattern:memory-policy",
@@ -49078,10 +49857,14 @@
       "prompt-pattern:prompt-enhancement"
     ],
     "contracts": [
+      "practice:multi-agent-orchestration-reflection",
       "coding-playbook:api-data-contract",
       "coding-playbook:refactor-preserve",
       "practice:prompt-engineering",
       "entry:openai-prompt-engineering-guide"
+    ],
+    "contradictions": [
+      "practice:multi-agent-orchestration-reflection"
     ],
     "contrast": [
       "design-architecture:vnem-design-architecture",
@@ -49177,6 +49960,8 @@
       "entry:anthropic-multi-agent-research-system"
     ],
     "coordination": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection",
       "entry:anthropic-multi-agent-research-system"
     ],
     "coordinator": [
@@ -49229,6 +50014,7 @@
       "entry:ai-cosmonote-notes"
     ],
     "cost": [
+      "practice:multi-agent-orchestration-reflection",
       "practice:model-and-provider-selection",
       "source:evaluation-and-observability",
       "practice:observability-and-tracing",
@@ -49296,6 +50082,7 @@
       "entry:ai-nexustoken-nexustoken-sdk"
     ],
     "creates": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "entry:lunar-mcpx"
     ],
     "creating": [
@@ -49381,6 +50168,9 @@
     "cross-project": [
       "task-rubric:data_memory",
       "practice:context-engineering"
+    ],
+    "cross-surface": [
+      "practice:multi-agent-orchestration-reflection"
     ],
     "crypto": [
       "entry:ai-bankee-inferventis-mcp",
@@ -49713,6 +50503,9 @@
     "current-docs": [
       "source:documentation-ingestion"
     ],
+    "current-source": [
+      "orchestration-protocol:vnem-orchestration-protocol"
+    ],
     "cursor": [
       "source:agentic-coding-best-practices",
       "practice:ide-agent-selection",
@@ -49946,6 +50739,7 @@
       "source:ui-architecture-sources"
     ],
     "dashboard": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "coding-playbook:web-app-rendered-quality",
       "practice:visual-experience",
       "design-architecture:vnem-design-architecture",
@@ -50293,6 +51087,7 @@
       "entry:jscpd"
     ],
     "debug": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "coding-playbook:failure-recovery",
       "coding-playbook:bug-root-cause",
       "operating-protocol:vnem-operating-loop",
@@ -50350,6 +51145,7 @@
       "source:evaluation-and-observability"
     ],
     "decisions": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "practice:persistent-memory-context-files",
       "source:agentic-gateway-security",
       "practice:research-source-intake",
@@ -50365,6 +51161,9 @@
     "declarative": [
       "entry:dspy"
     ],
+    "decomposes": [
+      "practice:multi-agent-orchestration-reflection"
+    ],
     "decoration": [
       "practice:holistic-excellence-intelligent-tradeoffs",
       "design-architecture:vnem-design-architecture"
@@ -50379,12 +51178,14 @@
       "entry:ai-auxen-auxen"
     ],
     "deep": [
+      "practice:multi-agent-orchestration-reflection",
       "entry:ai-meminal-meminal"
     ],
     "deepledger": [
       "entry:ai-deepledger-mcp"
     ],
     "default": [
+      "practice:multi-agent-orchestration-reflection",
       "entry:ripgrep",
       "entry:ugrep",
       "entry:mcp-crawl4ai-rag"
@@ -50436,6 +51237,9 @@
       "entry:ai-helixar-mcp",
       "prompt-pattern:subagent-delegation",
       "entry:claude-code-subagents"
+    ],
+    "delegation.": [
+      "practice:multi-agent-orchestration-reflection"
     ],
     "delete": [
       "task-rubric:refactor",
@@ -50846,9 +51650,12 @@
       "entry:openai-prompt-engineering-guide"
     ],
     "determinism": [
+      "practice:multi-agent-orchestration-reflection",
       "practice:browser-games"
     ],
     "deterministic": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection",
       "practice:zero-trust-agent-gateway",
       "entry:ai-lucasandersen-mlp-tax",
       "entry:ai-geodesiclabs-governance-platform",
@@ -51488,6 +52295,7 @@
       "entry:ai-agenticshelf-mcp"
     ],
     "each": [
+      "practice:multi-agent-orchestration-reflection",
       "prompt-pattern:memory-bank-initialization",
       "prompt-pattern:subagent-delegation",
       "entry:custom-modes-roo-code"
@@ -51516,6 +52324,7 @@
       "entry:ai-boolsai-directory"
     ],
     "ecosystem": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "entry:playcanvas-engine"
     ],
     "ecosystem.": [
@@ -51958,6 +52767,10 @@
       "entry:inspect-ai",
       "entry:swe-agent"
     ],
+    "evaluator": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection"
+    ],
     "even": [
       "quality-contract:vnem-quality-contract"
     ],
@@ -51976,6 +52789,7 @@
       "prompt-pattern:visual-build"
     ],
     "events": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "task-rubric:interactive_canvas",
       "entry:ai-autonomad-travel",
       "entry:ai-mailjunky-mcp",
@@ -51995,6 +52809,7 @@
       "design-architecture:vnem-design-architecture"
     ],
     "evidence": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "quality-contract:vnem-quality-contract",
       "practice:holistic-excellence-intelligent-tradeoffs",
       "coding-protocol:vnem-coding-protocol",
@@ -52068,6 +52883,9 @@
     ],
     "excalibur.js": [
       "entry:excalibur-js"
+    ],
+    "exceed": [
+      "orchestration-protocol:vnem-orchestration-protocol"
     ],
     "exceeds": [
       "source:documentation-ingestion"
@@ -52197,6 +53015,7 @@
       "prompt-pattern:bug-debug"
     ],
     "explicit": [
+      "practice:multi-agent-orchestration-reflection",
       "practice:holistic-excellence-intelligent-tradeoffs",
       "practice:mcp-gateway-tool-routing",
       "visual-qa-protocol:vnem-visual-qa-protocol",
@@ -52641,6 +53460,7 @@
       "practice:observability-and-tracing"
     ],
     "facts": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "practice:persistent-memory-context-files",
       "task-rubric:data_memory",
       "prompt-pattern:memory-bank-initialization",
@@ -52678,6 +53498,7 @@
       "coding-playbook:failure-recovery"
     ],
     "failures": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "practice:observability-and-tracing",
       "entry:ai-nullary-nullary",
       "prompt-pattern:eval-design",
@@ -52754,6 +53575,9 @@
     ],
     "feature-slice": [
       "coding-playbook:feature-slice"
+    ],
+    "feature.": [
+      "orchestration-protocol:vnem-orchestration-protocol"
     ],
     "features": [
       "coding-protocol:vnem-coding-protocol",
@@ -52997,6 +53821,7 @@
       "prompt-pattern:memory-bank-initialization"
     ],
     "files": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
       "visual-qa-protocol:vnem-visual-qa-protocol",
@@ -53129,6 +53954,9 @@
     ],
     "findings": [
       "prompt-pattern:code-review"
+    ],
+    "findings.": [
+      "orchestration-protocol:vnem-orchestration-protocol"
     ],
     "finds": [
       "entry:knip"
@@ -53323,6 +54151,7 @@
       "task-rubric:frontend_ui"
     ],
     "focused": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "practice:code-simplification",
       "task-rubric:agentic_coding",
       "task-rubric:backend_api",
@@ -53428,6 +54257,9 @@
       "entry:ai-contextstudios-mcp",
       "entry:ai-newzai-api-news-mcp"
     ],
+    "free-form": [
+      "practice:multi-agent-orchestration-reflection"
+    ],
     "fresh": [
       "coding-protocol:vnem-coding-protocol"
     ],
@@ -53495,6 +54327,7 @@
       "entry:ai-memestack-mcp"
     ],
     "game": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "quality-contract:vnem-quality-contract",
       "practice:holistic-excellence-intelligent-tradeoffs",
       "coding-protocol:vnem-coding-protocol",
@@ -53543,6 +54376,7 @@
       "entry:matter-js"
     ],
     "games": [
+      "practice:multi-agent-orchestration-reflection",
       "practice:holistic-excellence-intelligent-tradeoffs",
       "practice:visual-experience",
       "visual-qa-protocol:vnem-visual-qa-protocol",
@@ -53617,6 +54451,9 @@
       "practice:mcp-gateway-tool-routing",
       "task-rubric:agent_tooling"
     ],
+    "gather": [
+      "orchestration-protocol:vnem-orchestration-protocol"
+    ],
     "gathered": [
       "quality-contract:vnem-quality-contract"
     ],
@@ -53679,6 +54516,14 @@
     "generation.": [
       "entry:ai-filtrix-mcp-filtrix-ai",
       "entry:openhands"
+    ],
+    "generator": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection"
+    ],
+    "generator/evaluator": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection"
     ],
     "generic": [
       "practice:visual-experience"
@@ -53747,6 +54592,7 @@
       "entry:ripgrep"
     ],
     "give": [
+      "practice:multi-agent-orchestration-reflection",
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
       "entry:codex-agents-md",
@@ -53908,6 +54754,8 @@
       "entry:vnem-mcp"
     ],
     "graph": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection",
       "entry:crewai",
       "entry:langgraph",
       "entry:openai-agents-sdk",
@@ -54576,6 +55424,7 @@
       "entry:mcp-server-mysql"
     ],
     "https": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "source:agentic-coding-best-practices",
       "source:coding-agent-clients",
       "source:mcp-core-and-registry",
@@ -54860,6 +55709,7 @@
       "visual-qa-protocol:vnem-visual-qa-protocol"
     ],
     "id": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "entry:microsoft-mcp-gateway"
     ],
     "ide": [
@@ -55000,6 +55850,7 @@
       "entry:pixijs"
     ],
     "improve": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "coding-protocol:vnem-coding-protocol",
       "source:agentic-coding-best-practices",
       "entry:crewai",
@@ -55254,10 +56105,15 @@
       "entry:covenant-research"
     ],
     "independent": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection",
       "practice:subagents-and-multi-agent",
       "entry:anthropic-multi-agent-research-system",
       "prompt-pattern:subagent-delegation",
       "entry:covenant-research"
+    ],
+    "independently": [
+      "practice:multi-agent-orchestration-reflection"
     ],
     "index": [
       "source:mcp-core-and-registry",
@@ -55701,6 +56557,7 @@
       "entry:ai-artidrop-artidrop"
     ],
     "instead": [
+      "practice:multi-agent-orchestration-reflection",
       "quality-contract:vnem-quality-contract",
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
@@ -55778,6 +56635,8 @@
       "entry:semantic-kernel"
     ],
     "integration": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection",
       "practice:backend",
       "entry:mastra",
       "entry:semantic-kernel",
@@ -55924,6 +56783,9 @@
     "investigate": [
       "entry:sentry-mcp"
     ],
+    "investigation": [
+      "orchestration-protocol:vnem-orchestration-protocol"
+    ],
     "investment": [
       "entry:ai-fincontext-fincontext"
     ],
@@ -55940,6 +56802,7 @@
       "entry:ai-lucasandersen-mlp-tax"
     ],
     "is": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "coding-playbook:bug-root-cause",
       "practice:code-simplification",
       "practice:visual-experience",
@@ -56223,6 +57086,7 @@
       "entry:openhands"
     ],
     "it": [
+      "practice:multi-agent-orchestration-reflection",
       "quality-contract:vnem-quality-contract",
       "install-guide:vnem-install-guide",
       "practice:agentic-coding-execution",
@@ -56258,6 +57122,10 @@
     ],
     "items.": [
       "entry:ai-cosmonote-notes"
+    ],
+    "iterations": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection"
     ],
     "iterative": [
       "entry:openai-prompt-engineering-guide",
@@ -56304,6 +57172,8 @@
       "entry:knip"
     ],
     "json": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection",
       "install-guide:vnem-install-guide",
       "practice:zero-trust-agent-gateway"
     ],
@@ -56616,6 +57486,7 @@
       "design-architecture:vnem-design-architecture"
     ],
     "latency": [
+      "practice:multi-agent-orchestration-reflection",
       "practice:holistic-excellence-intelligent-tradeoffs",
       "source:evaluation-and-observability",
       "practice:observability-and-tracing",
@@ -56820,6 +57691,8 @@
       "practice:holistic-excellence-intelligent-tradeoffs"
     ],
     "lead": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection",
       "entry:anthropic-multi-agent-research-system"
     ],
     "lead-agent": [
@@ -57480,6 +58353,8 @@
       "practice:zero-trust-agent-gateway"
     ],
     "logic": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection",
       "practice:browser-games"
     ],
     "logic.": [
@@ -57540,6 +58415,9 @@
     "looks/feels": [
       "quality-contract:vnem-quality-contract"
     ],
+    "lookup": [
+      "orchestration-protocol:vnem-orchestration-protocol"
+    ],
     "lookup.": [
       "entry:mcp-crawl4ai-rag"
     ],
@@ -57547,6 +58425,8 @@
       "entry:ai-boolsai-directory"
     ],
     "loop": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection",
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
       "coding-playbook:failure-recovery",
@@ -57575,6 +58455,9 @@
       "practice:holistic-excellence-intelligent-tradeoffs",
       "entry:kaimo"
     ],
+    "low-risk": [
+      "orchestration-protocol:vnem-orchestration-protocol"
+    ],
     "lowering": [
       "quality-contract:vnem-quality-contract"
     ],
@@ -57599,6 +58482,10 @@
     ],
     "made": [
       "source:evaluation-and-observability"
+    ],
+    "magentic": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection"
     ],
     "mailjunky": [
       "entry:ai-mailjunky-mcp"
@@ -58086,6 +58973,7 @@
       "coding-playbook:feature-slice"
     ],
     "matching": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "operating-protocol:vnem-operating-loop",
       "practice:search",
       "entry:ai-law-lawyer-search"
@@ -58149,6 +59037,7 @@
       "entry:kaplay"
     ],
     "maximum": [
+      "practice:multi-agent-orchestration-reflection",
       "quality-contract:vnem-quality-contract"
     ],
     "may": [
@@ -58700,6 +59589,13 @@
     "merchants": [
       "entry:ai-agenticterminal-directory"
     ],
+    "merge": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection"
+    ],
+    "merges": [
+      "orchestration-protocol:vnem-orchestration-protocol"
+    ],
     "mermaid": [
       "entry:ai-auteng-docs",
       "entry:ai-auteng-mcp"
@@ -58880,6 +59776,7 @@
       "entry:cline"
     ],
     "model-agnostic": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "entry:pydantic-ai"
     ],
     "model-api-required": [
@@ -59028,11 +59925,15 @@
       "entry:lunar-mcpx"
     ],
     "multi": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection",
       "coding-playbook:large-change-checkpoints",
       "practice:subagents-and-multi-agent",
       "prompt-pattern:subagent-delegation"
     ],
     "multi-agent": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection",
       "practice:model-and-provider-selection",
       "entry:google-agent2agent-protocol",
       "entry:crewai",
@@ -59050,6 +59951,7 @@
       "entry:swarms"
     ],
     "multi-file": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "practice:ide-agent-selection",
       "entry:ai-artidrop-artidrop",
       "entry:cursor-agent"
@@ -59157,6 +60059,8 @@
       "practice:observability-and-tracing"
     ],
     "narrow": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection",
       "coding-playbook:bug-root-cause",
       "task-rubric:backend_api",
       "practice:backend",
@@ -59519,6 +60423,7 @@
       "entry:ai-newzai-api-news-mcp"
     ],
     "next": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "quality-contract:vnem-quality-contract",
       "coding-playbook:web-app-rendered-quality",
       "prompt-pattern:mcp-gateway-evaluation"
@@ -59863,6 +60768,7 @@
       "entry:ai-filegraph-document-processing"
     ],
     "of": [
+      "practice:multi-agent-orchestration-reflection",
       "quality-contract:vnem-quality-contract",
       "practice:holistic-excellence-intelligent-tradeoffs",
       "practice:agentic-coding-execution",
@@ -59956,6 +60862,7 @@
       "entry:ai-obris-mcp"
     ],
     "one": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "quality-contract:vnem-quality-contract",
       "practice:holistic-excellence-intelligent-tradeoffs",
       "coding-protocol:vnem-coding-protocol",
@@ -59986,6 +60893,7 @@
       "entry:ai-deepledger-mcp"
     ],
     "only": [
+      "practice:multi-agent-orchestration-reflection",
       "quality-contract:vnem-quality-contract",
       "practice:mcp-gateway-tool-routing",
       "coding-playbook:web-app-rendered-quality",
@@ -60444,6 +61352,8 @@
       "entry:ugrep"
     ],
     "or": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection",
       "quality-contract:vnem-quality-contract",
       "practice:holistic-excellence-intelligent-tradeoffs",
       "practice:agentic-coding-execution",
@@ -60738,6 +61648,8 @@
       "entry:ai-agentrapay-agentra"
     ],
     "orchestration": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection",
       "practice:agent-tooling",
       "entry:crewai",
       "entry:langgraph",
@@ -60752,12 +61664,26 @@
     "orchestration.": [
       "entry:semantic-kernel"
     ],
+    "orchestrator": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection"
+    ],
+    "orchestrator-worker": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection"
+    ],
     "order": [
       "design-architecture:vnem-design-architecture",
       "prompt-pattern:visual-polish-review"
     ],
     "ordered": [
       "prompt-pattern:code-review"
+    ],
+    "ordinal": [
+      "orchestration-protocol:vnem-orchestration-protocol"
+    ],
+    "ordinals": [
+      "practice:multi-agent-orchestration-reflection"
     ],
     "organization": [
       "entry:kaimo"
@@ -60816,6 +61742,8 @@
       "entry:lunar-mcpx"
     ],
     "output": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection",
       "quality-contract:vnem-quality-contract",
       "practice:holistic-excellence-intelligent-tradeoffs",
       "coding-protocol:vnem-coding-protocol",
@@ -60881,6 +61809,9 @@
     "overhaul": [
       "coding-playbook:large-change-checkpoints"
     ],
+    "overhead": [
+      "orchestration-protocol:vnem-orchestration-protocol"
+    ],
     "overhead.": [
       "entry:zep"
     ],
@@ -60914,6 +61845,9 @@
     "overwriting": [
       "install-guide:vnem-install-guide"
     ],
+    "own": [
+      "practice:multi-agent-orchestration-reflection"
+    ],
     "owned": [
       "practice:subagents-and-multi-agent",
       "prompt-pattern:subagent-delegation"
@@ -60928,6 +61862,9 @@
     ],
     "ownership.": [
       "practice:deployment"
+    ],
+    "owns": [
+      "practice:multi-agent-orchestration-reflection"
     ],
     "pack": [
       "install-guide:vnem-install-guide",
@@ -61051,6 +61988,8 @@
       "coding-protocol:vnem-coding-protocol"
     ],
     "pass": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection",
       "design-architecture:vnem-design-architecture",
       "operating-protocol:vnem-operating-loop",
       "task-rubric:aesthetic_experience",
@@ -61083,6 +62022,7 @@
       "source:platform-and-data-connectors"
     ],
     "patch": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "prompt-pattern:bug-debug",
       "prompt-pattern:visual-polish-review",
       "entry:openhands"
@@ -61129,6 +62069,7 @@
       "entry:playcanvas-engine"
     ],
     "pattern": [
+      "practice:multi-agent-orchestration-reflection",
       "practice:agentic-coding-execution",
       "entry:anthropic-building-effective-agents",
       "entry:anthropic-multi-agent-research-system",
@@ -61138,6 +62079,7 @@
       "prompt-pattern:agentic-coding-task"
     ],
     "patterns": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
       "practice:codex-vnem-setup",
@@ -61664,6 +62606,7 @@
       "task-rubric:security_sensitive"
     ],
     "plan": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "quality-contract:vnem-quality-contract",
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
@@ -61697,6 +62640,7 @@
       "prompt-pattern:subagent-delegation"
     ],
     "planner": [
+      "practice:multi-agent-orchestration-reflection",
       "coding-playbook:large-change-checkpoints"
     ],
     "planners": [
@@ -62076,6 +63020,9 @@
       "prompt-pattern:code-simplification",
       "prompt-pattern:prompt-enhancement"
     ],
+    "pressure.": [
+      "practice:multi-agent-orchestration-reflection"
+    ],
     "pretty": [
       "practice:visual-experience",
       "task-rubric:aesthetic_experience",
@@ -62219,6 +63166,7 @@
       "entry:crewai"
     ],
     "produce": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "operating-protocol:vnem-operating-loop",
       "practice:coding-agents",
       "prompt-pattern:agentic-coding-task",
@@ -62582,6 +63530,7 @@
       "practice:research-source-intake"
     ],
     "prompt": [
+      "practice:multi-agent-orchestration-reflection",
       "practice:codex-vnem-setup",
       "operating-protocol:vnem-operating-loop",
       "task-rubric:agent_tooling",
@@ -62710,6 +63659,7 @@
       "entry:github-copilot-coding-agent"
     ],
     "protocol": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "coding-protocol:vnem-coding-protocol",
       "source:mcp-core-and-registry",
       "visual-qa-protocol:vnem-visual-qa-protocol",
@@ -62762,6 +63712,7 @@
       "prompt-pattern:code-simplification"
     ],
     "provenance": [
+      "practice:multi-agent-orchestration-reflection",
       "source:mcp-core-and-registry",
       "task-rubric:agent_tooling",
       "source:agentic-gateway-security",
@@ -62937,6 +63888,8 @@
       "entry:swarms"
     ],
     "qa": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection",
       "coding-playbook:web-app-rendered-quality",
       "visual-qa-protocol:vnem-visual-qa-protocol",
       "entry:playwright-mcp",
@@ -62952,6 +63905,7 @@
       "entry:ai-conveo-conveo"
     ],
     "quality": [
+      "practice:multi-agent-orchestration-reflection",
       "quality-contract:vnem-quality-contract",
       "practice:holistic-excellence-intelligent-tradeoffs",
       "coding-protocol:vnem-coding-protocol",
@@ -63010,9 +63964,11 @@
       "entry:mcp-server-mysql"
     ],
     "question": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "prompt-pattern:research"
     ],
     "questions": [
+      "practice:multi-agent-orchestration-reflection",
       "entry:codebase-memory-mcp"
     ],
     "quickbooks": [
@@ -63301,6 +64257,9 @@
       "practice:agent-tooling",
       "entry:stripe-agent-toolkit"
     ],
+    "recorded.": [
+      "practice:multi-agent-orchestration-reflection"
+    ],
     "recording": [
       "entry:ai-31st-mcp"
     ],
@@ -63417,6 +64376,10 @@
     ],
     "references.": [
       "prompt-pattern:code-review"
+    ],
+    "reflection": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection"
     ],
     "reflects": [
       "entry:kaplay"
@@ -63698,6 +64661,7 @@
       "practice:agentic-coding-execution"
     ],
     "reports": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "task-rubric:security_sensitive",
       "entry:ai-cookiy-cookiy",
       "entry:ai-deepledger-mcp",
@@ -63979,6 +64943,7 @@
       "entry:covenant-research"
     ],
     "request": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "coding-protocol:vnem-coding-protocol",
       "task-rubric:backend_api",
       "prompt-pattern:agentic-coding-task",
@@ -63999,6 +64964,7 @@
       "entry:github-copilot-coding-agent"
     ],
     "require": [
+      "practice:multi-agent-orchestration-reflection",
       "quality-contract:vnem-quality-contract",
       "practice:holistic-excellence-intelligent-tradeoffs",
       "source:coding-agent-clients",
@@ -64012,6 +64978,7 @@
       "entry:covenant-research"
     ],
     "required": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "coding-protocol:vnem-coding-protocol",
       "task-rubric:security_sensitive",
       "prompt-pattern:agent-workspace-architecture",
@@ -64050,6 +65017,7 @@
       "prompt-pattern:mcp-gateway-evaluation"
     ],
     "requirements.": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "source:ui-architecture-sources",
       "prompt-pattern:visual-polish-review"
     ],
@@ -64090,6 +65058,8 @@
       "practice:code-simplification"
     ],
     "research": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection",
       "source:agentic-coding-best-practices",
       "practice:research-source-intake",
       "entry:crewai",
@@ -64118,6 +65088,7 @@
       "practice:code-simplification"
     ],
     "residual": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "quality-contract:vnem-quality-contract",
       "operating-protocol:vnem-operating-loop",
       "task-rubric:agentic_coding",
@@ -64567,6 +65538,10 @@
     "reviews": [
       "coding-protocol:vnem-coding-protocol"
     ],
+    "revise": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection"
+    ],
     "reward": [
       "practice:visual-experience",
       "visual-qa-protocol:vnem-visual-qa-protocol",
@@ -64629,6 +65604,7 @@
       "entry:codebase-memory-mcp"
     ],
     "risk": [
+      "practice:multi-agent-orchestration-reflection",
       "quality-contract:vnem-quality-contract",
       "coding-playbook:api-data-contract",
       "coding-playbook:review-risk-scan",
@@ -64726,6 +65702,7 @@
       "prompt-pattern:source-intake"
     ],
     "risks.": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "prompt-pattern:agent-workspace-architecture",
       "prompt-pattern:code-review"
     ],
@@ -64847,6 +65824,8 @@
       "entry:openai-swarm"
     ],
     "routing": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection",
       "practice:mcp-gateway-tool-routing",
       "practice:ide-agent-selection",
       "task-rubric:agent_tooling",
@@ -64894,6 +65873,8 @@
       "entry:claude-code-memory"
     ],
     "run": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection",
       "install-guide:vnem-install-guide",
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
@@ -65100,6 +66081,9 @@
       "entry:ai-obaron-aeo",
       "entry:ai-boolsai-scan"
     ],
+    "scanning.": [
+      "orchestration-protocol:vnem-orchestration-protocol"
+    ],
     "scans": [
       "entry:ai-boolsai-grep"
     ],
@@ -65131,6 +66115,7 @@
       "entry:ai-djwizard-tvwizard"
     ],
     "schema": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "coding-playbook:api-data-contract",
       "practice:mcp-gateway-tool-routing",
       "source:agentic-gateway-security",
@@ -65173,6 +66158,7 @@
       "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "scoped": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "quality-contract:vnem-quality-contract",
       "practice:holistic-excellence-intelligent-tradeoffs",
       "task-rubric:agentic_coding",
@@ -65196,6 +66182,7 @@
       "practice:data"
     ],
     "score": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "task-rubric:interactive_canvas",
       "practice:evals",
       "entry:ai-nefesh-human-state",
@@ -65759,6 +66746,7 @@
       "entry:sentry-mcp"
     ],
     "separate": [
+      "practice:multi-agent-orchestration-reflection",
       "practice:browser-games",
       "practice:persistent-memory-context-files",
       "task-rubric:data_memory",
@@ -66104,6 +67092,8 @@
       "entry:ai-artidrop-artidrop"
     ],
     "shared": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection",
       "source:agentic-coding-best-practices",
       "practice:persistent-memory-context-files",
       "task-rubric:refactor",
@@ -66260,6 +67250,8 @@
       "entry:codex-agents-md"
     ],
     "simple": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection",
       "practice:browser-games",
       "entry:anthropic-building-effective-agents",
       "entry:matter-js",
@@ -66325,13 +67317,19 @@
       "entry:ai-buywhere-buywhere-mcp"
     ],
     "single": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection",
       "visual-qa-protocol:vnem-visual-qa-protocol",
       "entry:continue-dev",
       "entry:lunar-mcpx"
     ],
     "single-agent": [
+      "practice:multi-agent-orchestration-reflection",
       "practice:observability-and-tracing",
       "entry:swarms"
+    ],
+    "single-file": [
+      "orchestration-protocol:vnem-orchestration-protocol"
     ],
     "site": [
       "entry:ai-boolsai-directory",
@@ -66588,10 +67586,20 @@
       "practice:payments"
     ],
     "split": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection",
       "coding-protocol:vnem-coding-protocol",
       "coding-playbook:large-change-checkpoints",
       "practice:subagents-and-multi-agent",
       "prompt-pattern:subagent-delegation"
+    ],
+    "split-and-merge": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection"
+    ],
+    "splits": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection"
     ],
     "sports": [
       "entry:ai-fodda-mcp-server",
@@ -66714,6 +67722,8 @@
       "entry:ai-demanddiscovery-mcp"
     ],
     "state": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection",
       "quality-contract:vnem-quality-contract",
       "practice:browser-games",
       "practice:persistent-memory-context-files",
@@ -66788,6 +67798,7 @@
       "practice:agent-tooling"
     ],
     "stay": [
+      "practice:multi-agent-orchestration-reflection",
       "task-rubric:data_memory",
       "entry:google-agent-development-kit",
       "entry:matter-js",
@@ -66869,6 +67880,10 @@
     "story": [
       "coding-playbook:feature-slice"
     ],
+    "strands": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection"
+    ],
     "strategic": [
       "entry:ai-jeda-jeda-ai"
     ],
@@ -66898,6 +67913,8 @@
       "entry:ai-nefesh-human-state"
     ],
     "strict": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection",
       "practice:payments"
     ],
     "string": [
@@ -66988,6 +68005,7 @@
       "prompt-pattern:subagent-delegation"
     ],
     "subagents": [
+      "practice:multi-agent-orchestration-reflection",
       "source:agentic-coding-best-practices",
       "source:coding-agent-clients",
       "practice:subagents-and-multi-agent",
@@ -67005,6 +68023,9 @@
     ],
     "subset": [
       "prompt-pattern:zero-trust-gateway-roadmap"
+    ],
+    "subtasks": [
+      "practice:multi-agent-orchestration-reflection"
     ],
     "subtle": [
       "practice:visual-experience"
@@ -67106,6 +68127,7 @@
       "entry:roo-code"
     ],
     "surface": [
+      "practice:multi-agent-orchestration-reflection",
       "design-architecture:vnem-design-architecture",
       "visual-qa-protocol:vnem-visual-qa-protocol",
       "operating-protocol:vnem-operating-loop",
@@ -67123,6 +68145,7 @@
       "entry:aider"
     ],
     "surfaces": [
+      "practice:multi-agent-orchestration-reflection",
       "quality-contract:vnem-quality-contract",
       "practice:holistic-excellence-intelligent-tradeoffs",
       "coding-playbook:web-app-rendered-quality",
@@ -67190,10 +68213,15 @@
       "entry:ast-grep"
     ],
     "synthesis": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "practice:subagents-and-multi-agent",
       "entry:anthropic-multi-agent-research-system"
     ],
+    "synthesis.": [
+      "practice:multi-agent-orchestration-reflection"
+    ],
     "synthesize": [
+      "practice:multi-agent-orchestration-reflection",
       "prompt-pattern:subagent-delegation"
     ],
     "system": [
@@ -67419,6 +68447,8 @@
       "entry:codebase-memory-mcp"
     ],
     "task": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection",
       "quality-contract:vnem-quality-contract",
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
@@ -67460,6 +68490,8 @@
       "entry:ugrep"
     ],
     "tasks": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection",
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
       "practice:visual-experience",
@@ -67754,6 +68786,7 @@
       "prompt-pattern:codex-implementation"
     ],
     "then": [
+      "practice:multi-agent-orchestration-reflection",
       "practice:holistic-excellence-intelligent-tradeoffs",
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
@@ -67794,6 +68827,8 @@
       "practice:zero-trust-agent-gateway"
     ],
     "three": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection",
       "entry:ai-openarx-openarx"
     ],
     "three-dimensional": [
@@ -67895,6 +68930,8 @@
       "entry:ai-mino-web-agent"
     ],
     "to": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection",
       "quality-contract:vnem-quality-contract",
       "practice:mcp-gateway-tool-routing",
       "practice:visual-experience",
@@ -68640,6 +69677,8 @@
       "entry:ast-grep"
     ],
     "ui": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection",
       "practice:holistic-excellence-intelligent-tradeoffs",
       "coding-playbook:web-app-rendered-quality",
       "practice:visual-experience",
@@ -68683,6 +69722,7 @@
       "practice:data"
     ],
     "uncertainty": [
+      "practice:multi-agent-orchestration-reflection",
       "task-rubric:security_sensitive"
     ],
     "uncertainty.": [
@@ -68737,6 +69777,7 @@
       "prompt-pattern:mcp-gateway-evaluation"
     ],
     "unless": [
+      "practice:multi-agent-orchestration-reflection",
       "practice:agentic-coding-execution",
       "practice:code-simplification",
       "practice:visual-experience",
@@ -69167,6 +70208,7 @@
       "entry:mem0"
     ],
     "uses": [
+      "practice:multi-agent-orchestration-reflection",
       "entry:vnem-mcp",
       "prompt-pattern:ui-build",
       "prompt-pattern:visual-build",
@@ -69211,6 +70253,7 @@
       "entry:ai-com-mcp-openai-tools"
     ],
     "vague": [
+      "practice:multi-agent-orchestration-reflection",
       "practice:agentic-coding-execution",
       "entry:openai-prompt-engineering-guide"
     ],
@@ -69243,6 +70286,7 @@
       "entry:ai-namewhisper-ens-tools"
     ],
     "value.": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "entry:phaser"
     ],
     "vanilla": [
@@ -69303,6 +70347,7 @@
       "entry:vercel-ai-sdk"
     ],
     "verdict": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "task-rubric:aesthetic_experience",
       "task-rubric:frontend_ui",
       "task-rubric:interactive_canvas",
@@ -69314,11 +70359,16 @@
     "verdicts": [
       "visual-qa-protocol:vnem-visual-qa-protocol"
     ],
+    "verdicts.": [
+      "practice:multi-agent-orchestration-reflection"
+    ],
     "verifiable": [
       "coding-protocol:vnem-coding-protocol",
       "prompt-pattern:agentic-coding-task"
     ],
     "verification": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection",
       "quality-contract:vnem-quality-contract",
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
@@ -69364,11 +70414,14 @@
       "source:browser-and-ui-verification"
     ],
     "verification.": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection",
       "practice:code-simplification",
       "task-rubric:interactive_canvas",
       "practice:payments"
     ],
     "verified": [
+      "practice:multi-agent-orchestration-reflection",
       "task-rubric:interactive_canvas",
       "entry:codex-agents-md",
       "entry:anthropic-building-effective-agents",
@@ -69384,6 +70437,9 @@
     ],
     "verified.": [
       "coding-playbook:feature-slice"
+    ],
+    "verifier": [
+      "orchestration-protocol:vnem-orchestration-protocol"
     ],
     "verifies": [
       "entry:google-agent2agent-protocol",
@@ -69606,7 +70662,11 @@
       "entry:kaimo",
       "entry:openai-swarm"
     ],
+    "verifies.": [
+      "orchestration-protocol:vnem-orchestration-protocol"
+    ],
     "verify": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "quality-contract:vnem-quality-contract",
       "coding-protocol:vnem-coding-protocol",
       "coding-playbook:web-app-rendered-quality",
@@ -69781,6 +70841,7 @@
       "practice:browser-games"
     ],
     "vnem": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "quality-contract:vnem-quality-contract",
       "practice:holistic-excellence-intelligent-tradeoffs",
       "install-guide:vnem-install-guide",
@@ -69830,6 +70891,9 @@
     ],
     "vnem-operating-loop": [
       "coding-playbook:failure-recovery"
+    ],
+    "vnem-orchestration-protocol": [
+      "orchestration-protocol:vnem-orchestration-protocol"
     ],
     "vnem-quality-contract": [
       "quality-contract:vnem-quality-contract"
@@ -70115,6 +71179,8 @@
       "design-architecture:vnem-design-architecture"
     ],
     "web": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection",
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
       "coding-playbook:feature-slice",
@@ -70271,6 +71337,7 @@
       "prompt-pattern:visual-polish-review"
     ],
     "where": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "task-rubric:data_memory",
       "task-rubric:interactive_canvas",
       "task-rubric:security_sensitive",
@@ -70557,6 +71624,8 @@
       "entry:covenant-research"
     ],
     "work": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection",
       "quality-contract:vnem-quality-contract",
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
@@ -70605,8 +71674,16 @@
       "prompt-pattern:subagent-delegation",
       "entry:knip"
     ],
+    "worker": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection"
+    ],
     "worker.": [
       "entry:vercel-ai-sdk"
+    ],
+    "workers": [
+      "orchestration-protocol:vnem-orchestration-protocol",
+      "practice:multi-agent-orchestration-reflection"
     ],
     "workflow": [
       "practice:holistic-excellence-intelligent-tradeoffs",
@@ -70945,6 +72022,7 @@
       "entry:zep"
     ],
     "would": [
+      "orchestration-protocol:vnem-orchestration-protocol",
       "practice:mcp-gateway-tool-routing",
       "prompt-pattern:prompt-enhancement",
       "entry:matter-js",
@@ -70955,6 +72033,9 @@
     ],
     "wraps": [
       "entry:ai-com-mcp-openai-tools"
+    ],
+    "writable": [
+      "practice:multi-agent-orchestration-reflection"
     ],
     "write": [
       "practice:agentic-coding-execution",

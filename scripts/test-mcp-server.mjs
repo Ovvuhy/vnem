@@ -45,6 +45,7 @@ try {
     "vnem_search",
     "vnem_recommend",
     "vnem_quality_gate",
+    "vnem_orchestrate",
     "vnem_get_entry",
     "vnem_compare",
     "vnem_best_practices",
@@ -66,8 +67,10 @@ try {
   assert.ok(status.structuredContent?.counts?.registry_entries >= 200, "expected vnem_status registry count");
   assert.ok(status.structuredContent?.mcp?.tools?.includes("vnem_route_intent"), "expected vnem_status to list route tool");
   assert.ok(status.structuredContent?.mcp?.tools?.includes("vnem_quality_gate"), "expected vnem_status to list quality gate tool");
+  assert.ok(status.structuredContent?.mcp?.tools?.includes("vnem_orchestrate"), "expected vnem_status to list orchestration tool");
   assert.equal(status.structuredContent?.counts?.install_guide, true, "expected vnem_status install guide count");
   assert.equal(status.structuredContent?.counts?.quality_contract, true, "expected vnem_status quality contract count");
+  assert.equal(status.structuredContent?.counts?.orchestration_protocol, true, "expected vnem_status orchestration protocol count");
   assert.ok(
     status.structuredContent?.mcp?.resources?.includes("vnem://install/coding-protocol"),
     "expected vnem_status to list coding protocol resource"
@@ -79,6 +82,10 @@ try {
   assert.ok(
     status.structuredContent?.mcp?.resources?.includes("vnem://install/quality-contract"),
     "expected vnem_status to list quality contract resource"
+  );
+  assert.ok(
+    status.structuredContent?.mcp?.resources?.includes("vnem://install/orchestration-protocol"),
+    "expected vnem_status to list orchestration protocol resource"
   );
   assert.ok(
     status.structuredContent?.mcp?.resources?.includes("vnem://install/coding-playbooks"),
@@ -216,6 +223,22 @@ try {
     aestheticContract?.quality_gate?.triple_check?.map((item) => item.step).join(" ") === "Analyze Architect Review",
     "expected aesthetic work to include the Triple-Check Workflow"
   );
+  assert.equal(
+    aestheticContract?.orchestration?.pattern,
+    "orchestrator_worker",
+    "expected polished browser game work to select orchestrator-worker orchestration"
+  );
+  assert.equal(
+    aestheticContract?.orchestration?.workflow,
+    "Magentic Coding Workflow",
+    "expected polished browser game work to use the Magentic Coding Workflow"
+  );
+  assert.ok(
+    aestheticContract?.orchestration?.worker_roles?.includes("ui_agent") &&
+      aestheticContract?.orchestration?.worker_roles?.includes("logic_agent") &&
+      aestheticContract?.orchestration?.worker_roles?.includes("qa_agent"),
+    "expected polished browser game orchestration to include UI, logic, and QA workers"
+  );
   assert.ok(
     aestheticContract?.read_first?.includes("quality-contract:vnem-quality-contract"),
     "expected aesthetic work to read the quality contract first"
@@ -302,6 +325,46 @@ try {
     "expected non-visual quality gate to avoid visual requirements"
   );
 
+  const simpleOrchestration = await client.callTool({
+    name: "vnem_orchestrate",
+    arguments: {
+      task: "What is MCP?"
+    }
+  });
+  assert.equal(simpleOrchestration.isError, undefined);
+  assert.equal(simpleOrchestration.structuredContent?.route?.pattern, "single_agent");
+  assert.equal(simpleOrchestration.structuredContent?.reflection_loop?.enabled, false);
+
+  const gameOrchestration = await client.callTool({
+    name: "vnem_orchestrate",
+    arguments: {
+      task: "Build a polished browser game with settings GUI, responsive controls, reward feedback, and browser verification.",
+      max_workers: 6
+    }
+  });
+  assert.equal(gameOrchestration.isError, undefined);
+  assert.equal(gameOrchestration.structuredContent?.route?.pattern, "orchestrator_worker");
+  assert.equal(gameOrchestration.structuredContent?.workflow?.name, "Magentic Coding Workflow");
+  assert.equal(gameOrchestration.structuredContent?.workflow?.project_type, "web_game");
+  assert.ok(gameOrchestration.structuredContent?.workflow?.agents?.some((agent) => agent.role === "lead_architect"));
+  assert.ok(gameOrchestration.structuredContent?.workflow?.agents?.some((agent) => agent.role === "ui_agent"));
+  assert.ok(gameOrchestration.structuredContent?.workflow?.agents?.some((agent) => agent.role === "logic_agent"));
+  assert.ok(gameOrchestration.structuredContent?.workflow?.agents?.some((agent) => agent.role === "qa_agent"));
+  assert.ok(gameOrchestration.structuredContent?.schemas?.architect_task_list, "expected architect JSON schema");
+  assert.ok(gameOrchestration.structuredContent?.shared_state?.tasks?.length >= 5, "expected shared-state task graph");
+
+  const researchOrchestration = await client.callTool({
+    name: "vnem_orchestrate",
+    arguments: {
+      task: "Deep research the current MCP gateway landscape, compare official sources, and synthesize risks.",
+      max_workers: 4
+    }
+  });
+  assert.equal(researchOrchestration.isError, undefined);
+  assert.equal(researchOrchestration.structuredContent?.route?.pattern, "split_and_merge");
+  assert.equal(researchOrchestration.structuredContent?.workflow?.name, "Split-and-Merge Research Workflow");
+  assert.ok(researchOrchestration.structuredContent?.workflow?.tasks?.some((task) => task.role === "source_verifier"));
+
   const entry = await client.callTool({
     name: "vnem_get_entry",
     arguments: {
@@ -341,6 +404,10 @@ try {
   assert.ok(
     resources.resources.some((resource) => resource.uri === "vnem://install/quality-contract"),
     "expected quality contract resource"
+  );
+  assert.ok(
+    resources.resources.some((resource) => resource.uri === "vnem://install/orchestration-protocol"),
+    "expected orchestration protocol resource"
   );
   assert.ok(
     resources.resources.some((resource) => resource.uri === "vnem://install/coding-protocol"),
@@ -405,6 +472,14 @@ try {
   assert.ok(qualityContract.contents[0]?.text?.includes("vnem Quality Contract"));
   assert.ok(qualityContract.contents[0]?.text?.includes("Triple-Check Workflow"));
   assert.ok(qualityContract.contents[0]?.text?.includes("Holistic Excellence"));
+
+  const orchestrationProtocol = await client.readResource({
+    uri: "vnem://install/orchestration-protocol"
+  });
+  assert.ok(orchestrationProtocol.contents[0]?.text?.includes("vnem Orchestration Protocol"));
+  assert.ok(orchestrationProtocol.contents[0]?.text?.includes("Routing & Orchestration Engine"));
+  assert.ok(orchestrationProtocol.contents[0]?.text?.includes("Magentic Coding Workflow"));
+  assert.ok(orchestrationProtocol.contents[0]?.text?.includes("Shared State"));
 
   const codingProtocol = await client.readResource({
     uri: "vnem://install/coding-protocol"

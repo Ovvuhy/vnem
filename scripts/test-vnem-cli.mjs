@@ -24,6 +24,7 @@ try {
     "install-guide.md",
     "operating-protocol.md",
     "quality-contract.md",
+    "orchestration-protocol.md",
     "coding-protocol.md",
     "coding-playbooks.json",
     "task-rubrics.json",
@@ -41,6 +42,7 @@ try {
   let agents = await readFile(agentsPath, "utf8");
   assert.ok(agents.includes("<!-- vnem:start -->"));
   assert.ok(agents.includes("quality-contract.md"));
+  assert.ok(agents.includes("orchestration-protocol.md"));
   assert.ok(agents.includes("The user should not need to say `use vnem`"));
 
   JSON.parse(await readFile(path.join(projectDir, ".vnem", "search-index.json"), "utf8"));

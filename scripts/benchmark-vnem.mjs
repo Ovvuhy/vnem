@@ -25,7 +25,8 @@ const cases = [
     rubrics: ["agentic_coding", "aesthetic_experience", "interactive_canvas"],
     readFirst: ["coding-protocol:vnem-coding-protocol", "coding-playbook:web-app-rendered-quality", "practice:visual-experience", "visual-qa-protocol:vnem-visual-qa-protocol", "design-architecture:vnem-design-architecture", "practice:browser-games"],
     playbook: "web-app-rendered-quality",
-    perception: true
+    perception: true,
+    orchestrationPattern: "orchestrator_worker"
   },
   {
     name: "performance plus visuals game",
@@ -37,7 +38,8 @@ const cases = [
     perception: true,
     qualityDomains: ["performance", "visual", "playability"],
     qualityVerdict: "needs_revision",
-    tradeoffWarning: true
+    tradeoffWarning: true,
+    orchestrationPattern: "orchestrator_worker"
   },
   {
     name: "bento dashboard",
@@ -204,6 +206,8 @@ try {
       ["quality_verdict", !benchCase.qualityVerdict || contract.quality_gate?.verdict === benchCase.qualityVerdict],
       ["tradeoff_warning", !benchCase.tradeoffWarning || (contract.quality_gate?.tradeoff_warnings || []).length > 0],
       ["tradeoff_alternative", !benchCase.tradeoffWarning || (contract.quality_gate?.tradeoff_policy || []).some((item) => /profile|settings|adaptive|quality/i.test(item)) || (contract.quality_gate?.tradeoff_warnings || []).some((warning) => /profile|settings|adaptive|quality/i.test(warning.alternative))],
+      ["orchestration", !benchCase.orchestrationPattern || contract.orchestration?.pattern === benchCase.orchestrationPattern],
+      ["orchestration_protocol", !benchCase.orchestrationPattern || contract.orchestration?.read_first?.includes("orchestration-protocol:vnem-orchestration-protocol")],
       ["verification", (contract.verification || []).length > 0],
       ["safety", String(contract.safety || "").includes("without explicit user approval")]
     ];

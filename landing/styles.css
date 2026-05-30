@@ -562,6 +562,7 @@ body.vanta-ready .hero-vanta {
 }
 
 .quality-list p {
+  grid-column: 2;
   margin: 0;
   color: var(--muted);
   font-size: 0.98rem;
