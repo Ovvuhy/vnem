@@ -22,6 +22,7 @@
     "test:omniscient": "node scripts/test-omniscient-self-healing-layer.mjs",
     "benchmark:vnem": "node scripts/benchmark-vnem.mjs",
     "benchmark:visual": "node scripts/benchmark-visual-artifacts.mjs",
+    "benchmark:visual:browser": "node scripts/benchmark-visual-browser.mjs",
     "digest": "node scripts/generate-digest.mjs",
     "discover": "node scripts/discover.mjs --apply",
     "discover:dry-run": "node scripts/discover.mjs --dry-run",
