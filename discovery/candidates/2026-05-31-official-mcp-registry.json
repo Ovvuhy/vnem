@@ -1,0 +1,366 @@
+{
+  "generated_at": "2026-05-31T10:25:48.770Z",
+  "source": "https://registry.modelcontextprotocol.io/v0.1/servers",
+  "candidates": [
+    {
+      "name": "ac.inference.sh/mcp",
+      "title": "inference.sh",
+      "description": "Run 150+ AI apps — image, video, audio, LLMs, 3D and more. Browse, execute, stream results.",
+      "version": "1.0.1",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ac.inference.sh%2Fmcp/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ac.tandem/docs-mcp",
+      "title": "ac.tandem/docs-mcp",
+      "description": "Remote MCP server for Tandem docs, install guides, SDKs, workflows, and agent setup help.",
+      "version": "0.3.2",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ac.tandem%2Fdocs-mcp/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "agency.lona/trading",
+      "title": "agency.lona/trading",
+      "description": "AI-powered trading strategy development: backtesting, market data, and portfolio analysis",
+      "version": "2.0.0",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/agency.lona%2Ftrading/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.aarna/atars-mcp",
+      "title": "aTars MCP",
+      "description": "Crypto market signals, technical indicators, and sentiment analysis for AI agents.",
+      "version": "0.1.0",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.aarna%2Fatars-mcp/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.abmeter/abmeter",
+      "title": "ABMeter",
+      "description": "Feature flagging and A/B testing platform with AI-first experimentation workflows.",
+      "version": "0.1.0",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.abmeter%2Fabmeter/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.adadvisor/mcp-server",
+      "title": "AdAdvisor MCP Server",
+      "description": "Query Meta Ads performance data — accounts, campaigns, ad sets, ads, metrics & settings.",
+      "version": "1.0.1",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.adadvisor%2Fmcp-server/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.adeu/adeu",
+      "title": "ai.adeu/adeu",
+      "description": "Automated DOCX Redlining Engine",
+      "version": "1.7.1",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.adeu%2Fadeu/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.adramp/google-ads",
+      "title": "ai.adramp/google-ads",
+      "description": "Google Ads MCP server — manage campaigns, keywords, and metrics.",
+      "version": "1.0.3",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.adramp%2Fgoogle-ads/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.adweave/meta-ads-mcp",
+      "title": "AdWeave — Meta Ads MCP Server",
+      "description": "Meta Ads MCP server with 47 tools for campaigns, creatives, audiences, and insights.",
+      "version": "1.0.0",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.adweave%2Fmeta-ads-mcp/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.agentdm/agentdm",
+      "title": "AgentDM: Agent to Agent Communication Platform",
+      "description": "Agent communication platform for agent to agent messaging via MCP. Messages, channels, skills.",
+      "version": "2.0.0",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.agentdm%2Fagentdm/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.agentic-news/mcp",
+      "title": "Agentic News",
+      "description": "AI-powered news intelligence — 21 tools for personalized monitoring, briefings, and semantic search",
+      "version": "1.0.0",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.agentic-news%2Fmcp/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.agenticshelf/graffeo",
+      "title": "Graffeo Coffee Roasting",
+      "description": "Live MCP catalog for Graffeo Coffee Roasting - Simply the World's Finest Coffee since 1935.",
+      "version": "1.0.2",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.agenticshelf%2Fgraffeo/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.agenticshelf/mcp",
+      "title": "Agentic Shelf",
+      "description": "Hosted MCP for e-commerce: live product catalog, stock, and pricing for AI agents.",
+      "version": "1.0.0",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.agenticshelf%2Fmcp/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.agenticterminal/directory",
+      "title": "Agentic Terminal Directory",
+      "description": "Verified merchants accepting agentic payments on Lightning/L402/BOLT12/USDT — search, verify, pay.",
+      "version": "1.0.0",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.agenticterminal%2Fdirectory/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.agentrapay/agentra",
+      "title": "ai.agentrapay/agentra",
+      "description": "Identity oracle and trust layer for autonomous AI agents. Bidirectional KYA and trust scoring.",
+      "version": "1.0.0",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.agentrapay%2Fagentra/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.agenttrust/mcp-server",
+      "title": "AgentTrust — Identity & Trust for A2A Agents",
+      "description": "Identity, trust, and A2A orchestration for autonomous AI agents. Official A2A partner.",
+      "version": "1.1.1",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.agenttrust%2Fmcp-server/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.aliengiraffe/spotdb",
+      "title": "ai.aliengiraffe/spotdb",
+      "description": "Ephemeral data sandbox for AI workflows with guardrails and security",
+      "version": "0.1.0",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.aliengiraffe%2Fspotdb/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.alpic.mcp/alpic-mcp",
+      "title": "Alpic",
+      "description": "Manage your projects, debug deployment, and check analytics for any MCP server you host with Alpic",
+      "version": "0.0.1",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.alpic.mcp%2Falpic-mcp/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.alpic.test/test-mcp-server",
+      "title": "ai.alpic.test/test-mcp-server",
+      "description": "Alpic Test MCP Server - great server!",
+      "version": "0.0.1",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.alpic.test%2Ftest-mcp-server/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.ankimcp/anki-mcp-server",
+      "title": "Anki MCP Server",
+      "description": "MCP server for Anki flashcards: adaptive review, notes, media, and deck management via AnkiConnect.",
+      "version": "0.18.5",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.ankimcp%2Fanki-mcp-server/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.ankimcp/anki-mcp-server-addon",
+      "title": "AnkiMCP Server",
+      "description": "Anki addon that exposes your flashcard collection to AI assistants via a local MCP server.",
+      "version": "0.15.1",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.ankimcp%2Fanki-mcp-server-addon/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.anomalyarmor/armor-mcp",
+      "title": "AnomalyArmor",
+      "description": "Data observability tools for engineering teams: alerts, freshness, schema drift, lineage, quality.",
+      "version": "0.6.1",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.anomalyarmor%2Farmor-mcp/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.anzenna/anzenna",
+      "title": "ai.anzenna/anzenna",
+      "description": "MCP server for Anzenna",
+      "version": "0.1",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.anzenna%2Fanzenna/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.appdeploy/deploy-app",
+      "title": "AppDeploy",
+      "description": "AppDeploy turns app ideas described in AI chat into live full-stack web applications",
+      "version": "1.0.0",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.appdeploy%2Fdeploy-app/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.arclan/registry",
+      "title": "Arclan MCP Registry",
+      "description": "MCP server registry — validated by live handshake, scored on reliability, monitored continuously.",
+      "version": "0.1.0",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.arclan%2Fregistry/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.artidrop/artidrop",
+      "title": "ai.artidrop/artidrop",
+      "description": "Publish HTML, Markdown, and multi-file sites as shareable URLs instantly via MCP.",
+      "version": "1.1.0",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.artidrop%2Fartidrop/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.auteng/docs",
+      "title": "AutEng MCP - Markdown Publishing & Document Share Links",
+      "description": "Publish markdown documents as public share links with mermaid diagram support. Built by AutEng.ai",
+      "version": "1.1.0",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.auteng%2Fdocs/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.auteng/mcp",
+      "title": "AutEng MCP - Markdown Publishing & Document Share Links",
+      "description": "Publish markdown documents as public share links with mermaid diagrams. Built by AutEng.ai",
+      "version": "1.0.1",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.auteng%2Fmcp/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.autoblocks/contextlayer-mcp",
+      "title": "ai.autoblocks/contextlayer-mcp",
+      "description": "Personal context management for AI assistants",
+      "version": "0.0.3",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.autoblocks%2Fcontextlayer-mcp/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.autoblocks/ctxl",
+      "title": "ai.autoblocks/ctxl",
+      "description": "Personal context management for AI assistants",
+      "version": "0.0.2",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.autoblocks%2Fctxl/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.autoblocks/ctxl-mcp",
+      "title": "ai.autoblocks/ctxl-mcp",
+      "description": "Personal context management for AI assistants",
+      "version": "0.0.2",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.autoblocks%2Fctxl-mcp/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.autonomad/computeback",
+      "title": "ai.autonomad/computeback",
+      "description": "Agent Rewards Marketplace: earn $NOMD on B2B work, spend on agent capabilities.",
+      "version": "1.1.3",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.autonomad%2Fcomputeback/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.autonomad/travel",
+      "title": "ai.autonomad/travel",
+      "description": "AI travel agent — book flights, hotels, activities, and events worldwide via autonomad.ai.",
+      "version": "1.4.0",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.autonomad%2Ftravel/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.autorfp/mcp",
+      "title": "AutoRFP.ai",
+      "description": "Search AutoRFP.ai projects, requirements, content library, and tags for Q&A and analytics.",
+      "version": "1.0.0",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.autorfp%2Fmcp/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.auxen/auxen",
+      "title": "Auxen",
+      "description": "Provision private AI model endpoints on dedicated GPUs (Llama, Qwen, Mistral). Pay per minute.",
+      "version": "1.0.2",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.auxen%2Fauxen/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.bankee/inferventis-mcp",
+      "title": "Inferventis MCP Server",
+      "description": "Loan & mortgage calculator, compound interest, ROI, crypto prices, FX conversion for AI agents.",
+      "version": "1.0.2",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.bankee%2Finferventis-mcp/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.baselight/baselight",
+      "title": "ai.baselight/baselight",
+      "description": "Query Baselight's public catalog of 70,000+ datasets — finance, demographics, sports, and more.",
+      "version": "1.0.0",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.baselight%2Fbaselight/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.bezal/local-commerce",
+      "title": "Bezal — Local Business Intelligence for AI Agents",
+      "description": "Search 7,000+ local service businesses across America by category, location, or keyword.",
+      "version": "1.0.0",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.bezal%2Flocal-commerce/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.bluenexus/universal-mcp",
+      "title": "BlueNexus Universal MCP",
+      "description": "Connect your AI to all your data - 200+ sources, intelligently filtered, compliance-ready.",
+      "version": "1.1.2",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.bluenexus%2Funiversal-mcp/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.boolsai/directory",
+      "title": "Boolsai Directory",
+      "description": "Indexed ecommerce site directory — vendor lookups, brands by city/market/founder. 10 tools.",
+      "version": "1.0.0",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.boolsai%2Fdirectory/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 # vnem Install And MCP Guide
 
-Generated: 2026-05-30T14:32:16.710Z
+Generated: 2026-05-31T10:25:48.986Z
 
 A compact setup guide for downloading the read-only vnem pack, installing it into an existing repo without overwriting local agent instructions, and connecting the local stdio MCP server with generated JSON config.
 
