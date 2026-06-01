@@ -9,7 +9,10 @@ export const initialTelemetryState = Object.freeze({
   events: [],
   activeIngestions: [],
   routeErrors: [],
+  mission: null,
   pipeline: null,
+  targetingStatus: "idle",
+  targetingError: null,
   systemError: null
 });
 
@@ -40,7 +43,11 @@ export function useTelemetry(options = {}) {
     };
   }, []);
 
-  return state;
+  return {
+    ...state,
+    deployTarget: controllerRef.current.deployTarget,
+    refreshTelemetryHistory: controllerRef.current.loadHistory
+  };
 }
 
 export function createTelemetryReceiver(options = {}) {
@@ -128,6 +135,7 @@ export function createTelemetryReceiver(options = {}) {
       setState({
         activeIngestions: normalizeIngestions(history.active_ingestions),
         routeErrors: normalizeIngestions(history.route_errors),
+        mission: history.mission ?? null,
         pipeline: history.pipeline ?? null,
         systemError: null
       });
@@ -149,15 +157,69 @@ export function createTelemetryReceiver(options = {}) {
         ? normalizeIngestions([event.active_ingestion, ...state.activeIngestions.filter((item) => item.id !== event.active_ingestion.id)])
         : state.activeIngestions;
 
+    const mission = event.mission ?? state.mission;
+    const targetingStatus = event.type === "mission_updated" ? "confirmed" : state.targetingStatus;
+
     setState({
       status: "connected",
       lastEvent: event,
       events: [event, ...state.events].slice(0, 60),
       activeIngestions,
       routeErrors: event.route_errors ? normalizeIngestions(event.route_errors) : state.routeErrors,
+      mission,
       pipeline: event.pipeline ?? state.pipeline,
+      targetingStatus,
+      targetingError: event.type === "mission_updated" ? null : state.targetingError,
       systemError: null
     });
+  }
+
+  async function deployTarget(target) {
+    if (!fetchImpl) {
+      const error = {
+        error: "fetch-unavailable",
+        message: "The browser fetch API is unavailable."
+      };
+      setState({
+        targetingStatus: "error",
+        targetingError: error
+      });
+      return { ok: false, error };
+    }
+
+    setState({
+      targetingStatus: "submitting",
+      targetingError: null
+    });
+
+    try {
+      const result = await requestJson(fetchImpl, `${baseUrl}/api/intelligence/target`, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json"
+        },
+        body: JSON.stringify({
+          query: target.query,
+          threat_tolerance: target.threatTolerance
+        })
+      });
+      setState({
+        targetingStatus: "awaiting_confirmation",
+        mission: result.mission ?? state.mission,
+        targetingError: null
+      });
+      return result;
+    } catch (error) {
+      const structured = normalizeRequestError(error);
+      setState({
+        targetingStatus: "error",
+        targetingError: structured
+      });
+      return {
+        ok: false,
+        error: structured
+      };
+    }
   }
 
   function disconnect(options = {}) {
@@ -171,20 +233,27 @@ export function createTelemetryReceiver(options = {}) {
   return {
     connect,
     disconnect,
+    deployTarget,
     loadHistory,
     getState: () => state
   };
 }
 
-async function requestJson(fetchImpl, url) {
+async function requestJson(fetchImpl, url, options = {}) {
   const response = await fetchImpl(url, {
+    method: options.method ?? "GET",
     headers: {
-      accept: "application/json"
-    }
+      accept: "application/json",
+      ...(options.headers ?? {})
+    },
+    body: options.body
   });
   const text = await response.text();
   if (!response.ok) {
-    throw new Error(text || `HTTP_${response.status}`);
+    const error = new Error(text || `HTTP_${response.status}`);
+    error.status = response.status;
+    error.payload = parseOptionalJson(text);
+    throw error;
   }
   return text ? JSON.parse(text) : {};
 }
@@ -202,6 +271,31 @@ function parseTelemetryEvent(data) {
       message: String(data ?? "")
     };
   }
+}
+
+function parseOptionalJson(text) {
+  try {
+    return text ? JSON.parse(text) : null;
+  } catch {
+    return null;
+  }
+}
+
+function normalizeRequestError(error) {
+  const payload = error?.payload;
+  if (payload && typeof payload === "object") {
+    return {
+      error: payload.error ?? "request-failed",
+      error_code: payload.error_code ?? `HTTP_${error.status ?? "unknown"}`,
+      message: payload.message ?? error.message,
+      target_path: payload.target_path ?? null
+    };
+  }
+  return {
+    error: "request-failed",
+    error_code: `HTTP_${error?.status ?? "unknown"}`,
+    message: error?.message ?? "Request failed"
+  };
 }
 
 function normalizeBaseUrl(value) {

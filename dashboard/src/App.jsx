@@ -265,6 +265,7 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
 
       {status === "error" ? <div className="inline-error">{humanize(error)}</div> : null}
 
+      <TargetingConsole telemetry={telemetry} />
       <AutonomousPipeline telemetry={telemetry} summary={summary} />
 
       <section className="workspace-grid">
@@ -336,9 +337,93 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
   );
 }
 
+function TargetingConsole({ telemetry }) {
+  const activeMission = telemetry.mission ?? telemetry.pipeline?.mission ?? null;
+  const [researchTarget, setResearchTarget] = useState("");
+  const [threatTolerance, setThreatTolerance] = useState("30");
+  const busy = telemetry.targetingStatus === "submitting" || telemetry.targetingStatus === "awaiting_confirmation";
+  const missionQuery = activeMission?.query ?? "luau architecture OR agentic workflow";
+  const missionTolerance = activeMission?.threat_tolerance ?? 30;
+
+  useEffect(() => {
+    if (activeMission?.threat_tolerance) {
+      setThreatTolerance(String(activeMission.threat_tolerance));
+    }
+  }, [activeMission?.threat_tolerance]);
+
+  async function submitTarget(event) {
+    event.preventDefault();
+    const query = researchTarget.trim();
+    if (!query || busy) {
+      return;
+    }
+    await telemetry.deployTarget?.({
+      query,
+      threatTolerance: Number(threatTolerance)
+    });
+  }
+
+  return (
+    <section className="targeting-console" aria-label="Dynamic targeting console">
+      <div className="targeting-copy">
+        <p className="eyebrow">dynamic targeting console</p>
+        <h2>Retarget Research AI without restarting Hermes</h2>
+        <p>Push a new GitHub discovery mission into the live intelligence engine and force an immediate research cycle.</p>
+      </div>
+      <form className="targeting-form" onSubmit={submitTarget}>
+        <label className="target-input">
+          <span>research target</span>
+          <input
+            value={researchTarget}
+            onChange={(event) => setResearchTarget(event.target.value)}
+            placeholder="high-performance luau architecture / rust entity component system / agentic workflow mcp"
+            minLength={3}
+            maxLength={180}
+            disabled={busy}
+          />
+        </label>
+        <label className="tolerance-select">
+          <span>threat tolerance</span>
+          <select value={threatTolerance} onChange={(event) => setThreatTolerance(event.target.value)} disabled={busy}>
+            <option value="15">15% strict</option>
+            <option value="30">30% standard</option>
+            <option value="50">50% experimental</option>
+          </select>
+        </label>
+        <button type="submit" className="primary-action targeting-submit" disabled={busy || researchTarget.trim().length < 3}>
+          <Radio size={17} />
+          {busy ? "Retargeting..." : "Deploy Intelligence"}
+        </button>
+      </form>
+      <div className="targeting-readout">
+        <div>
+          <span>active mission</span>
+          <strong>{missionQuery}</strong>
+        </div>
+        <Badge tone={telemetry.targetingStatus === "confirmed" ? "ok" : "review"}>
+          {missionTolerance}% tolerance
+        </Badge>
+        <Badge tone={telemetry.status === "connected" ? "ok" : "watchlist"}>
+          {telemetry.targetingStatus === "awaiting_confirmation" ? "awaiting SSE confirmation" : humanize(telemetry.targetingStatus ?? "idle")}
+        </Badge>
+      </div>
+      {telemetry.targetingError ? (
+        <div className="targeting-error" role="status">
+          <AlertTriangle size={16} />
+          <span>{humanize(telemetry.targetingError.error_code ?? telemetry.targetingError.error)}</span>
+          {telemetry.targetingError.message ? <small>{telemetry.targetingError.message}</small> : null}
+        </div>
+      ) : null}
+    </section>
+  );
+}
+
 function AutonomousPipeline({ telemetry, summary }) {
   const activeIngestions = telemetry.activeIngestions ?? [];
   const active = activeIngestions.find((item) => item.status !== "committed_to_repo") ?? activeIngestions[0] ?? null;
+  const mission = telemetry.mission ?? telemetry.pipeline?.mission ?? null;
+  const activeQuery = mission?.query ?? active?.repository?.query ?? "luau architecture OR agentic workflow";
+  const threatTolerance = mission?.threat_tolerance ?? active?.protection_report?.threat_tolerance ?? 30;
   const stages = pipelineStages(active);
   const events = (telemetry.events ?? []).filter((event) => event.type?.startsWith("pipeline") || event.agent_stage).slice(0, 5);
 
@@ -356,6 +441,12 @@ function AutonomousPipeline({ telemetry, summary }) {
           <Radio size={18} />
           <span>{telemetry.status === "connected" ? "live telemetry linked" : `telemetry ${telemetry.status ?? "idle"}`}</span>
         </div>
+      </div>
+
+      <div className="pipeline-mission-strip">
+        <span>active search query</span>
+        <strong>{activeQuery}</strong>
+        <Badge tone="review">{threatTolerance}% threat tolerance</Badge>
       </div>
 
       <div className="agent-flow" aria-label="Three-agent progression">

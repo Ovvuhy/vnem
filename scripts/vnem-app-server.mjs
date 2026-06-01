@@ -16,24 +16,42 @@ const activeIngestions = [];
 const routeErrors = [];
 let intelligenceTimer = null;
 let intelligenceFirstCycle = null;
+let liveIntelligenceRuntime = {
+  repositoryRoot: rootDir,
+  fetchImpl: null,
+  pollIntervalMs: null,
+  minPollIntervalMs: null,
+  maxPollIntervalMs: null,
+  stageDelayMs: null
+};
 let pipelineSequence = 0;
 const terminalStatuses = new Set(["staged_for_review", "isolated_by_protection", "research_no_candidate"]);
 const researchCache = {
   etag: null,
   lastFetchAt: 0,
   nextPollAt: 0,
+  lastQuery: null,
   seenRepositoryIds: new Set()
 };
 const defaultResearchQuery = "luau architecture OR agentic workflow";
+const defaultThreatTolerance = 30;
 const defaultResearchPollMinMs = 5 * 60 * 1000;
 const defaultResearchPollMaxMs = 10 * 60 * 1000;
+const intelligenceMission = {
+  query: defaultResearchQuery,
+  threatTolerance: defaultThreatTolerance,
+  updatedAt: null,
+  revision: 0,
+  source: "default"
+};
 const endpoints = [
   "GET /api/connector/status",
   "GET /api/connector/preview",
   "POST /api/connector/apply",
   "POST /api/connector/rollback",
   "GET /api/telemetry/history",
-  "GET /api/telemetry/stream"
+  "GET /api/telemetry/stream",
+  "POST /api/intelligence/target"
 ];
 
 export function getAppServerStatus(options = {}) {
@@ -50,7 +68,8 @@ export function getAppServerStatus(options = {}) {
       external_interfaces_allowed: false,
       host_header_policy: "127.0.0.1, localhost, or [::1] only",
       origin_policy: "missing, null, localhost, 127.0.0.1, or [::1] only"
-    }
+    },
+    intelligence_mission: missionSnapshot()
   };
 }
 
@@ -129,6 +148,15 @@ export function createVnemAppServer(options = {}) {
         return;
       }
 
+      if (route === "POST /api/intelligence/target") {
+        const payload = await readJsonRequest(request, { maxBytes: 16 * 1024 });
+        const result = retargetLiveIntelligence(payload, {
+          repositoryRoot
+        });
+        writeJson(response, 202, result);
+        return;
+      }
+
       if (route === "GET /api/connector/status") {
         const payload = await detectAiClients();
         writeJson(response, 200, payload);
@@ -184,16 +212,25 @@ export function createVnemAppServer(options = {}) {
         return;
       }
 
+      if (url.pathname.startsWith("/api/intelligence/")) {
+        writeJson(response, 405, {
+          ok: false,
+          error: "method-or-endpoint-not-supported",
+          route
+        });
+        return;
+      }
+
       writeJson(response, 404, {
         ok: false,
         error: "not-found",
         route
       });
     } catch (error) {
-      const status = isPermissionError(error) ? 500 : 500;
+      const status = Number.isInteger(error?.statusCode) ? error.statusCode : 500;
       writeJson(response, status, {
         ok: false,
-        error: isPermissionError(error) ? "permission-denied" : "vnem-app-server-error",
+        error: error?.publicError ?? (isPermissionError(error) ? "permission-denied" : "vnem-app-server-error"),
         error_code: safeErrorCode(error),
         target_path: error?.path || null,
         message: safeErrorMessage(error)
@@ -229,11 +266,51 @@ export function telemetryHistoryPayload() {
     generated_at: new Date().toISOString(),
     active_ingestions: activeIngestions.slice(0, 12),
     route_errors: routeErrors.slice(0, 12),
+    mission: missionSnapshot(),
     pipeline: pipelineSnapshot()
   };
 }
 
+export function retargetLiveIntelligence(payload, options = {}) {
+  const normalized = normalizeIntelligenceTarget(payload);
+  const mission = updateIntelligenceMission({
+    query: normalized.query,
+    threatTolerance: normalized.threatTolerance,
+    source: "dashboard"
+  });
+  updateLiveIntelligenceRuntime({
+    repositoryRoot: options.repositoryRoot
+  });
+
+  const event = pipelineEvent({
+    type: "mission_updated",
+    message: `Research AI retargeted to: ${mission.query}`,
+    agent_stage: "research"
+  });
+  broadcastTelemetry(event);
+
+  const cycleOptions = {
+    ...liveIntelligenceRuntime,
+    query: mission.query,
+    threatTolerance: mission.threat_tolerance,
+    force: true
+  };
+  intelligenceFirstCycle = runLiveIntelligenceCycle(cycleOptions).catch((error) => broadcastRouteError(error, {
+    message: `Forced intelligence cycle failed for "${mission.query}".`,
+    route: "github-search",
+    stage: "research"
+  }));
+
+  return {
+    ok: true,
+    status: "retargeted",
+    cycle_status: "started",
+    mission
+  };
+}
+
 export function startLiveIntelligenceEngine(options = {}) {
+  updateLiveIntelligenceRuntime(options);
   if (intelligenceTimer) {
     return {
       firstCycle: intelligenceFirstCycle ?? Promise.resolve(null)
@@ -241,17 +318,17 @@ export function startLiveIntelligenceEngine(options = {}) {
   }
 
   intelligenceFirstCycle = runLiveIntelligenceCycle({
-    ...options,
+    ...liveIntelligenceRuntime,
     force: options.force ?? true
   }).catch((error) => broadcastRouteError(error, {
     message: "Live intelligence engine failed during initial cycle."
   }));
 
   const schedule = () => {
-    const delayMs = nextPollDelayMs(options);
+    const delayMs = nextPollDelayMs(liveIntelligenceRuntime);
     intelligenceTimer = setTimeout(() => {
       intelligenceTimer = null;
-      void runLiveIntelligenceCycle(options).catch((error) => broadcastRouteError(error, {
+      void runLiveIntelligenceCycle(liveIntelligenceRuntime).catch((error) => broadcastRouteError(error, {
         message: "Live intelligence engine polling cycle failed."
       }));
       schedule();
@@ -276,6 +353,8 @@ export function stopLiveIntelligenceEngine() {
 export async function runLiveIntelligenceCycle(options = {}) {
   const repositoryRoot = path.resolve(options.repositoryRoot || rootDir);
   const fetchImpl = options.fetchImpl ?? globalThis.fetch?.bind(globalThis);
+  const query = normalizeResearchQuery(options.query ?? intelligenceMission.query);
+  const threatTolerance = normalizeThreatTolerance(options.threatTolerance ?? intelligenceMission.threatTolerance);
   if (typeof fetchImpl !== "function") {
     throw routeError("FETCH_UNAVAILABLE", "Global fetch is unavailable in this Node.js runtime.", {
       route: "github-search",
@@ -289,7 +368,7 @@ export async function runLiveIntelligenceCycle(options = {}) {
     pollIntervalMs: options.pollIntervalMs,
     minPollIntervalMs: options.minPollIntervalMs,
     maxPollIntervalMs: options.maxPollIntervalMs,
-    query: options.query
+    query
   });
 
   if (!ingestion) {
@@ -317,14 +396,14 @@ export async function runLiveIntelligenceCycle(options = {}) {
   }
 
   await waitForStageDelay(options.stageDelayMs);
-  const protectedIngestion = await runProtectionScan(ingestion, { fetchImpl });
+  const protectedIngestion = await runProtectionScan(ingestion, { fetchImpl, threatTolerance });
   broadcastTelemetry(pipelineEvent({
     message: protectedIngestion.latest_event.message,
     agent_stage: protectedIngestion.current_agent,
     active_ingestion: protectedIngestion
   }));
 
-  if (protectedIngestion.threat_score >= 30) {
+  if (protectedIngestion.threat_score >= threatTolerance) {
     return pipelineEvent({
       message: protectedIngestion.latest_event.message,
       agent_stage: protectedIngestion.current_agent,
@@ -350,7 +429,14 @@ export async function researchLiveRepositoryCandidate(options = {}) {
   }
 
   const fetchImpl = options.fetchImpl;
-  const query = options.query ?? defaultResearchQuery;
+  const query = normalizeResearchQuery(options.query ?? intelligenceMission.query);
+  if (researchCache.lastQuery !== query) {
+    researchCache.etag = null;
+    researchCache.nextPollAt = 0;
+    researchCache.lastQuery = query;
+    researchCache.seenRepositoryIds.clear();
+  }
+
   const url = new URL("https://api.github.com/search/repositories");
   url.searchParams.set("q", query);
   url.searchParams.set("sort", "updated");
@@ -504,8 +590,9 @@ function createResearchNoCandidateIngestion(query) {
 export async function runProtectionScan(ingestion, options = {}) {
   const audit = await fetchRepositoryAuditText(ingestion.repository, { fetchImpl: options.fetchImpl });
   const scan = scanThreatSignatures(audit.combinedText);
+  const threatTolerance = normalizeThreatTolerance(options.threatTolerance ?? intelligenceMission.threatTolerance);
   const now = new Date().toISOString();
-  const blocked = scan.threat_score >= 30;
+  const blocked = scan.threat_score >= threatTolerance;
 
   Object.assign(ingestion, {
     current_agent: "protection",
@@ -515,6 +602,8 @@ export async function runProtectionScan(ingestion, options = {}) {
     action_dispatch: blocked ? "Isolated by Protection AI" : "Scanning",
     protection_report: {
       ...scan,
+      block_threshold: threatTolerance,
+      threat_tolerance: threatTolerance,
       fetched_assets: audit.fetchedAssets,
       unavailable_assets: audit.unavailableAssets
     },
@@ -522,8 +611,8 @@ export async function runProtectionScan(ingestion, options = {}) {
     latest_event: {
       agent: "protection",
       message: blocked
-        ? `Protection AI isolated ${ingestion.repository.full_name}. Threat score: ${scan.threat_score}%. Flags: ${scan.flags.join(", ") || "none"}.`
-        : `Protection AI scanned README/package surfaces for ${ingestion.repository.full_name}. Threat score: ${scan.threat_score}%. No blocking signatures found.`,
+        ? `Protection AI isolated ${ingestion.repository.full_name}. Threat score: ${scan.threat_score}% exceeded the ${threatTolerance}% tolerance. Flags: ${scan.flags.join(", ") || "none"}.`
+        : `Protection AI scanned README/package surfaces for ${ingestion.repository.full_name}. Threat score: ${scan.threat_score}% below the ${threatTolerance}% tolerance. No blocking signatures found.`,
       timestamp: now
     }
   });
@@ -685,6 +774,7 @@ function pipelineEvent(payload) {
     active_ingestion: payload.active_ingestion,
     active_ingestions: activeIngestions.slice(0, 12),
     route_errors: routeErrors.slice(0, 12),
+    mission: missionSnapshot(),
     pipeline: pipelineSnapshot()
   };
 }
@@ -697,11 +787,87 @@ function pipelineSnapshot() {
     queue_depth: activeIngestions.filter((item) => !terminalStatuses.has(item.status)).length,
     completed_recently: activeIngestions.filter((item) => item.status === "staged_for_review").length,
     route_errors: routeErrors.length,
+    mission: missionSnapshot(),
     stages: ["research", "protection", "giving"].map((agent) => ({
       agent,
       status: active?.current_agent === agent ? "active" : active ? "standby" : "idle"
     }))
   };
+}
+
+function missionSnapshot() {
+  return {
+    query: intelligenceMission.query,
+    threat_tolerance: intelligenceMission.threatTolerance,
+    block_threshold: intelligenceMission.threatTolerance,
+    revision: intelligenceMission.revision,
+    source: intelligenceMission.source,
+    updated_at: intelligenceMission.updatedAt,
+    next_poll_at: researchCache.nextPollAt ? new Date(researchCache.nextPollAt).toISOString() : null
+  };
+}
+
+function updateIntelligenceMission(nextMission) {
+  const query = normalizeResearchQuery(nextMission.query);
+  const threatTolerance = normalizeThreatTolerance(nextMission.threatTolerance);
+  if (query !== intelligenceMission.query) {
+    researchCache.etag = null;
+    researchCache.nextPollAt = 0;
+    researchCache.lastQuery = null;
+    researchCache.seenRepositoryIds.clear();
+  }
+
+  intelligenceMission.query = query;
+  intelligenceMission.threatTolerance = threatTolerance;
+  intelligenceMission.updatedAt = new Date().toISOString();
+  intelligenceMission.revision += 1;
+  intelligenceMission.source = nextMission.source ?? "dashboard";
+  return missionSnapshot();
+}
+
+function updateLiveIntelligenceRuntime(options = {}) {
+  liveIntelligenceRuntime = {
+    repositoryRoot: path.resolve(options.repositoryRoot || liveIntelligenceRuntime.repositoryRoot || rootDir),
+    fetchImpl: Object.hasOwn(options, "fetchImpl") ? options.fetchImpl : liveIntelligenceRuntime.fetchImpl,
+    pollIntervalMs: Object.hasOwn(options, "pollIntervalMs") ? options.pollIntervalMs : liveIntelligenceRuntime.pollIntervalMs,
+    minPollIntervalMs: Object.hasOwn(options, "minPollIntervalMs") ? options.minPollIntervalMs : liveIntelligenceRuntime.minPollIntervalMs,
+    maxPollIntervalMs: Object.hasOwn(options, "maxPollIntervalMs") ? options.maxPollIntervalMs : liveIntelligenceRuntime.maxPollIntervalMs,
+    stageDelayMs: Object.hasOwn(options, "stageDelayMs") ? options.stageDelayMs : liveIntelligenceRuntime.stageDelayMs
+  };
+  return liveIntelligenceRuntime;
+}
+
+function normalizeIntelligenceTarget(payload) {
+  if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
+    throw httpError(400, "INVALID_TARGET_PAYLOAD", "Expected JSON object with query and threat_tolerance.");
+  }
+  return {
+    query: normalizeResearchQuery(payload.query),
+    threatTolerance: normalizeThreatTolerance(payload.threat_tolerance)
+  };
+}
+
+function normalizeResearchQuery(value) {
+  const query = String(value ?? "").replace(/[\u0000-\u001f\u007f]+/g, " ").replace(/\s+/g, " ").trim();
+  if (query.length < 3) {
+    throw httpError(400, "QUERY_TOO_SHORT", "Research target must contain at least 3 characters.");
+  }
+  if (query.length > 180) {
+    throw httpError(400, "QUERY_TOO_LONG", "Research target must be 180 characters or less.");
+  }
+  return query;
+}
+
+function normalizeThreatTolerance(value) {
+  const threatTolerance = Number(value);
+  if (!Number.isFinite(threatTolerance)) {
+    throw httpError(400, "INVALID_THREAT_TOLERANCE", "threat_tolerance must be a finite number.");
+  }
+  const rounded = Math.round(threatTolerance);
+  if (rounded < 1 || rounded > 100) {
+    throw httpError(400, "INVALID_THREAT_TOLERANCE", "threat_tolerance must be between 1 and 100.");
+  }
+  return rounded;
 }
 
 function trimActiveIngestions() {
@@ -734,6 +900,7 @@ function openTelemetryStream(request, response) {
     timestamp: new Date().toISOString(),
     active_ingestions: activeIngestions.slice(0, 12),
     route_errors: routeErrors.slice(0, 12),
+    mission: missionSnapshot(),
     pipeline: pipelineSnapshot()
   });
 
@@ -833,6 +1000,14 @@ function routeError(code, message, details = {}) {
   return error;
 }
 
+function httpError(statusCode, code, message) {
+  const error = new Error(message);
+  error.statusCode = statusCode;
+  error.code = code;
+  error.publicError = statusCode >= 400 && statusCode < 500 ? "bad-request" : "vnem-app-server-error";
+  return error;
+}
+
 function broadcastRouteError(error, details = {}) {
   const now = new Date().toISOString();
   const routeErrorPayload = {
@@ -852,6 +1027,7 @@ function broadcastRouteError(error, details = {}) {
     route_error: routeErrorPayload,
     route_errors: routeErrors.slice(0, 12),
     active_ingestions: activeIngestions.slice(0, 12),
+    mission: missionSnapshot(),
     pipeline: pipelineSnapshot()
   });
 }
@@ -890,6 +1066,7 @@ function buildDispatchMarkdown(ingestion, options = {}) {
     "## Protection AI Report",
     "",
     `- Threat score: ${ingestion.threat_score}%`,
+    `- Block threshold: ${report.block_threshold ?? intelligenceMission.threatTolerance}%`,
     `- Risk tier: ${ingestion.risk_tier}`,
     `- Flags: ${(report.flags ?? []).join(", ") || "none"}`,
     `- Scanned bytes: ${report.scanned_bytes ?? 0}`,
@@ -1073,16 +1250,35 @@ function sanitizeHeader(value) {
 }
 
 async function drainRequestBody(request) {
-  const maxBytes = 1024 * 1024;
+  await readRequestBody(request, { maxBytes: 1024 * 1024 });
+}
+
+async function readJsonRequest(request, options = {}) {
+  const text = await readRequestBody(request, {
+    maxBytes: options.maxBytes ?? 16 * 1024
+  });
+  if (!text.trim()) {
+    throw httpError(400, "EMPTY_JSON_BODY", "Request body must contain a JSON object.");
+  }
+  try {
+    return JSON.parse(text);
+  } catch {
+    throw httpError(400, "INVALID_JSON_BODY", "Request body must be valid JSON.");
+  }
+}
+
+async function readRequestBody(request, options = {}) {
+  const maxBytes = options.maxBytes ?? 1024 * 1024;
   let total = 0;
+  const chunks = [];
   for await (const chunk of request) {
     total += chunk.length;
     if (total > maxBytes) {
-      const error = new Error("Request body exceeded 1 MiB");
-      error.code = "PAYLOAD_TOO_LARGE";
-      throw error;
+      throw httpError(413, "PAYLOAD_TOO_LARGE", `Request body exceeded ${maxBytes} bytes.`);
     }
+    chunks.push(Buffer.from(chunk));
   }
+  return Buffer.concat(chunks).toString("utf8");
 }
 
 function hasPermissionFailure(value, seen = new Set()) {

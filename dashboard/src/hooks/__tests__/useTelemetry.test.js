@@ -33,12 +33,30 @@ class MockEventSource {
 
 const logs = [];
 const states = [];
+const fetchCalls = [];
 MockEventSource.instances = [];
 
 const receiver = createTelemetryReceiver({
   baseUrl: "http://127.0.0.1:9099/",
   EventSourceImpl: MockEventSource,
-  fetchImpl: async (url) => {
+  fetchImpl: async (url, options = {}) => {
+    fetchCalls.push({ url, options });
+    if (url === "http://127.0.0.1:9099/api/intelligence/target") {
+      assert.equal(options.method, "POST");
+      assert.deepEqual(JSON.parse(options.body), {
+        query: "agentic workflow mcp",
+        threat_tolerance: 50
+      });
+      return jsonResponse({
+        ok: true,
+        status: "retargeted",
+        cycle_status: "started",
+        mission: {
+          query: "agentic workflow mcp",
+          threat_tolerance: 50
+        }
+      }, 202);
+    }
     assert.equal(url, "http://127.0.0.1:9099/api/telemetry/history");
     return jsonResponse({
       active_ingestions: [
@@ -50,7 +68,15 @@ const receiver = createTelemetryReceiver({
         }
       ],
       pipeline: {
-        active_agent: "research"
+        active_agent: "research",
+        mission: {
+          query: "luau architecture OR agentic workflow",
+          threat_tolerance: 30
+        }
+      },
+      mission: {
+        query: "luau architecture OR agentic workflow",
+        threat_tolerance: 30
       },
       route_errors: [
         {
@@ -72,10 +98,32 @@ assert.equal(receiver.getState().status, "connecting");
 await waitFor(() => receiver.getState().activeIngestions.length > 0);
 assert.equal(receiver.getState().activeIngestions[0].id, "ingestion-test");
 assert.equal(receiver.getState().pipeline.active_agent, "research");
+assert.equal(receiver.getState().mission.query, "luau architecture OR agentic workflow");
 assert.equal(receiver.getState().routeErrors[0].error_code, "GITHUB_RATE_LIMITED");
 
 source.emitOpen();
 assert.equal(receiver.getState().status, "connected");
+
+const targetResult = await receiver.deployTarget({
+  query: "agentic workflow mcp",
+  threatTolerance: 50
+});
+assert.equal(targetResult.status, "retargeted");
+assert.equal(receiver.getState().targetingStatus, "awaiting_confirmation");
+assert.equal(receiver.getState().mission.query, "agentic workflow mcp");
+assert.equal(fetchCalls.some((call) => call.url === "http://127.0.0.1:9099/api/intelligence/target"), true);
+
+source.emitMessage(JSON.stringify({
+  type: "mission_updated",
+  message: "Research AI retargeted to: agentic workflow mcp",
+  mission: {
+    query: "agentic workflow mcp",
+    threat_tolerance: 50
+  },
+  route_errors: []
+}));
+assert.equal(receiver.getState().targetingStatus, "confirmed");
+assert.equal(receiver.getState().mission.threat_tolerance, 50);
 
 source.emitMessage(JSON.stringify({
   type: "pipeline_ingestion_updated",
@@ -89,10 +137,10 @@ source.emitMessage(JSON.stringify({
   route_errors: []
 }));
 assert.equal(receiver.getState().lastEvent.type, "pipeline_ingestion_updated");
-assert.equal(receiver.getState().events.length, 1);
+assert.equal(receiver.getState().events.length, 2);
 assert.equal(receiver.getState().activeIngestions[0].current_agent, "protection");
 assert.equal(receiver.getState().routeErrors.length, 0);
-assert.deepEqual(logs[0], [
+assert.deepEqual(logs[1], [
   "[Telemetry Receiver]",
   "{\"type\":\"pipeline_ingestion_updated\",\"message\":\"Telemetry bridge active\",\"active_ingestion\":{\"id\":\"ingestion-test\",\"title\":\"Pipeline baseline\",\"current_agent\":\"protection\",\"status\":\"sandboxing\"},\"route_errors\":[]}"
 ]);

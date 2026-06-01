@@ -580,6 +580,137 @@ a {
   background: rgba(245, 193, 90, 0.055);
 }
 
+.targeting-console {
+  width: min(1660px, 100%);
+  margin: 0 auto 20px;
+  border: 1px solid var(--line);
+  background:
+    linear-gradient(135deg, rgba(255, 155, 130, 0.11), transparent 38%),
+    linear-gradient(180deg, rgba(18, 18, 16, 0.9), rgba(11, 11, 13, 0.8));
+  padding: clamp(16px, 2vw, 24px);
+  display: grid;
+  grid-template-columns: minmax(260px, 0.75fr) minmax(420px, 1.25fr);
+  gap: 16px;
+  align-items: start;
+  animation: rise 460ms ease both;
+}
+
+.targeting-copy h2 {
+  margin: 8px 0 10px;
+  color: var(--bone);
+  font-size: clamp(24px, 2.5vw, 36px);
+  line-height: 1.02;
+}
+
+.targeting-copy p:not(.eyebrow) {
+  margin: 0;
+  color: var(--bone-soft);
+  line-height: 1.48;
+  max-width: 560px;
+}
+
+.targeting-form {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) minmax(180px, 0.36fr) auto;
+  gap: 10px;
+  align-items: end;
+}
+
+.target-input,
+.tolerance-select {
+  min-width: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.target-input span,
+.tolerance-select span,
+.targeting-readout span {
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.target-input input,
+.tolerance-select select {
+  width: 100%;
+  min-height: 46px;
+  border: 1px solid var(--line);
+  outline: 0;
+  color: var(--bone);
+  background: rgba(11, 11, 13, 0.74);
+  padding: 0 13px;
+  font-weight: 750;
+}
+
+.target-input input:focus,
+.tolerance-select select:focus {
+  border-color: rgba(255, 155, 130, 0.58);
+  box-shadow: 0 0 0 3px rgba(255, 155, 130, 0.11);
+}
+
+.target-input input::placeholder {
+  color: rgba(245, 238, 232, 0.36);
+}
+
+.target-input input:disabled,
+.tolerance-select select:disabled {
+  color: var(--dim);
+  opacity: 0.76;
+}
+
+.targeting-submit {
+  min-height: 46px;
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 12px;
+}
+
+.targeting-readout {
+  grid-column: 2;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  border: 1px solid rgba(245, 238, 232, 0.1);
+  background: rgba(245, 238, 232, 0.035);
+  padding: 12px;
+}
+
+.targeting-readout > div {
+  min-width: 0;
+  flex: 1;
+}
+
+.targeting-readout strong {
+  display: block;
+  margin-top: 5px;
+  color: var(--bone);
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.targeting-error {
+  grid-column: 2;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 6px 9px;
+  align-items: center;
+  border: 1px solid rgba(245, 193, 90, 0.28);
+  background: rgba(245, 193, 90, 0.06);
+  color: var(--gold);
+  padding: 12px;
+}
+
+.targeting-error small {
+  grid-column: 1 / -1;
+  color: var(--bone-soft);
+  overflow-wrap: anywhere;
+}
+
 .pipeline-showcase {
   width: min(1660px, 100%);
   margin: 0 auto 20px;
@@ -638,6 +769,31 @@ a {
   font-size: 12px;
   letter-spacing: 0.1em;
   font-weight: 800;
+}
+
+.pipeline-mission-strip {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  border: 1px solid rgba(255, 155, 130, 0.24);
+  background: rgba(255, 155, 130, 0.065);
+  padding: 12px 14px;
+}
+
+.pipeline-mission-strip > span {
+  color: var(--solar);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.pipeline-mission-strip strong {
+  min-width: 0;
+  color: var(--bone);
+  overflow-wrap: anywhere;
 }
 
 .agent-flow {
@@ -1137,7 +1293,19 @@ a {
     grid-template-columns: 1fr;
   }
 
+  .targeting-console,
+  .targeting-form,
+  .targeting-readout {
+    grid-template-columns: 1fr;
+  }
+
+  .targeting-readout,
+  .targeting-error {
+    grid-column: 1;
+  }
+
   .pipeline-hero,
+  .pipeline-mission-strip,
   .pipeline-detail-grid,
   .agent-flow,
   .filter-console,
@@ -1195,6 +1363,8 @@ a {
   }
 
   .pipeline-live-card,
+  .targeting-console,
+  .targeting-readout,
   .pipeline-current,
   .pipeline-console,
   .pipeline-queue,
@@ -1213,6 +1383,10 @@ a {
 
   .console-line {
     grid-template-columns: 1fr;
+  }
+
+  .targeting-submit {
+    width: 100%;
   }
 
 }
