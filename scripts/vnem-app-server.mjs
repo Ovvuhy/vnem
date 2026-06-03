@@ -14,6 +14,13 @@ const defaultPort = 9099;
 const telemetryConnections = new Set();
 const activeIngestions = [];
 const routeErrors = [];
+const openRouterProviderErrors = [];
+let openRouterProviderState = {
+  status: "missing_key",
+  model: "local-fallback",
+  last_error_at: null,
+  retry_after: null
+};
 let intelligenceTimer = null;
 let intelligenceFirstCycle = null;
 let liveIntelligenceRuntime = {
@@ -75,7 +82,8 @@ export function getAppServerStatus(options = {}) {
       host_header_policy: "127.0.0.1, localhost, or [::1] only",
       origin_policy: "missing, null, localhost, 127.0.0.1, or [::1] only"
     },
-    intelligence_mission: missionSnapshot()
+    intelligence_mission: missionSnapshot(),
+    intelligence_provider: intelligenceProviderSnapshot()
   };
 }
 
@@ -273,7 +281,8 @@ export function telemetryHistoryPayload() {
     active_ingestions: activeIngestions.slice(0, 12),
     route_errors: routeErrors.slice(0, 12),
     mission: missionSnapshot(),
-    pipeline: pipelineSnapshot()
+    pipeline: pipelineSnapshot(),
+    intelligence_provider: intelligenceProviderSnapshot()
   };
 }
 
@@ -1258,6 +1267,10 @@ export function scanThreatSignatures(text) {
 export async function callOpenRouterJson(options = {}) {
   const apiKey = String(process.env.OPENROUTER_API_KEY ?? "").trim();
   if (!apiKey) {
+    setOpenRouterProviderState("missing_key", {
+      message: "OPENROUTER_API_KEY is not configured.",
+      stage: options.stage ?? "unknown"
+    });
     return {
       ok: false,
       code: "OPENROUTER_API_KEY_MISSING",
@@ -1270,6 +1283,11 @@ export async function callOpenRouterJson(options = {}) {
 
   const fetchImpl = options.fetchImpl ?? globalThis.fetch?.bind(globalThis);
   if (typeof fetchImpl !== "function") {
+    setOpenRouterProviderState("local_fallback", {
+      code: "OPENROUTER_FETCH_UNAVAILABLE",
+      message: "No fetch implementation is available for OpenRouter.",
+      stage: options.stage ?? "unknown"
+    });
     return {
       ok: false,
       code: "OPENROUTER_FETCH_UNAVAILABLE",
@@ -1301,6 +1319,12 @@ export async function callOpenRouterJson(options = {}) {
 
     if (response.status === 429) {
       const retryAfter = readHeader(response, "retry-after");
+      setOpenRouterProviderState("rate_limited", {
+        code: "OPENROUTER_RATE_LIMITED",
+        message: `OpenRouter rate limited VNEM${retryAfter ? `; retry after ${retryAfter}s` : ""}.`,
+        retry_after: retryAfter,
+        stage: options.stage ?? "unknown"
+      });
       return {
         ok: false,
         code: "OPENROUTER_RATE_LIMITED",
@@ -1320,6 +1344,12 @@ export async function callOpenRouterJson(options = {}) {
 
     if (!response.ok) {
       const bodyText = await safeReadText(response);
+      setOpenRouterProviderState("local_fallback", {
+        code: `OPENROUTER_HTTP_${response.status}`,
+        message: `OpenRouter returned HTTP ${response.status}.`,
+        response_excerpt: bodyText.slice(0, 500),
+        stage: options.stage ?? "unknown"
+      });
       return {
         ok: false,
         code: `OPENROUTER_HTTP_${response.status}`,
@@ -1335,12 +1365,18 @@ export async function callOpenRouterJson(options = {}) {
     const responseBody = await response.json();
     const content = responseBody?.choices?.[0]?.message?.content;
     const json = parseJsonObjectContent(content);
+    setOpenRouterProviderState("active");
     return {
       ok: true,
       json,
       raw: responseBody
     };
   } catch (cause) {
+    setOpenRouterProviderState("local_fallback", {
+      code: "OPENROUTER_REQUEST_FAILED",
+      message: `OpenRouter request failed: ${safeErrorMessage(cause)}`,
+      stage: options.stage ?? "unknown"
+    });
     return {
       ok: false,
       code: "OPENROUTER_REQUEST_FAILED",
@@ -1351,6 +1387,45 @@ export async function callOpenRouterJson(options = {}) {
       })
     };
   }
+}
+
+function intelligenceProviderSnapshot() {
+  const hasKey = isOpenRouterConfigured();
+  const status = hasKey ? openRouterProviderState.status === "missing_key" ? "active" : openRouterProviderState.status : "missing_key";
+  const model = status === "active" ? openRouterHermesModel : "local-fallback";
+  return {
+    status,
+    model,
+    configured: hasKey,
+    retry_after: openRouterProviderState.retry_after ?? null,
+    last_error_at: openRouterProviderState.last_error_at ?? null,
+    errors: openRouterProviderErrors.slice(0, 6)
+  };
+}
+
+function setOpenRouterProviderState(status, error = null) {
+  const normalized = status === "local_fallback" ? "local_fallback" : status;
+  openRouterProviderState = {
+    status: normalized,
+    model: normalized === "active" ? openRouterHermesModel : "local-fallback",
+    last_error_at: error ? new Date().toISOString() : openRouterProviderState.last_error_at,
+    retry_after: error?.retry_after ?? null
+  };
+
+  if (error) {
+    openRouterProviderErrors.unshift({
+      timestamp: openRouterProviderState.last_error_at,
+      status: normalized,
+      code: error.code ?? normalized,
+      message: error.message ?? "OpenRouter provider fallback activated.",
+      stage: error.stage ?? "unknown",
+      retry_after: error.retry_after ?? null,
+      response_excerpt: error.response_excerpt ?? null
+    });
+    openRouterProviderErrors.splice(6);
+  }
+
+  return intelligenceProviderSnapshot();
 }
 
 function isOpenRouterConfigured() {
@@ -1429,7 +1504,8 @@ function pipelineEvent(payload) {
     active_ingestions: activeIngestions.slice(0, 12),
     route_errors: routeErrors.slice(0, 12),
     mission: missionSnapshot(),
-    pipeline: pipelineSnapshot()
+    pipeline: pipelineSnapshot(),
+    intelligence_provider: intelligenceProviderSnapshot()
   };
 }
 
@@ -1442,6 +1518,7 @@ function pipelineSnapshot() {
     completed_recently: activeIngestions.filter((item) => item.status === "staged_for_review").length,
     route_errors: routeErrors.length,
     mission: missionSnapshot(),
+    intelligence_provider: intelligenceProviderSnapshot(),
     stages: ["research", "protection", "giving"].map((agent) => ({
       agent,
       status: active?.current_agent === agent ? "active" : active ? "standby" : "idle"
@@ -1570,7 +1647,8 @@ function openTelemetryStream(request, response) {
     active_ingestions: activeIngestions.slice(0, 12),
     route_errors: routeErrors.slice(0, 12),
     mission: missionSnapshot(),
-    pipeline: pipelineSnapshot()
+    pipeline: pipelineSnapshot(),
+    intelligence_provider: intelligenceProviderSnapshot()
   });
 
   connection.heartbeat = setInterval(() => {

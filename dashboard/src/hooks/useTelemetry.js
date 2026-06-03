@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { createVnemApiClient, normalizeRequestError } from "../lib/vnemApiClient.js";
 
 const DEFAULT_BASE_URL = import.meta.env?.VITE_VNEM_APP_SERVER_URL ?? "http://127.0.0.1:9099";
 
@@ -11,6 +12,7 @@ export const initialTelemetryState = Object.freeze({
   routeErrors: [],
   mission: null,
   pipeline: null,
+  intelligenceProvider: null,
   targetingStatus: "idle",
   targetingError: null,
   systemError: null
@@ -51,14 +53,17 @@ export function useTelemetry(options = {}) {
 }
 
 export function createTelemetryReceiver(options = {}) {
-  const baseUrl = normalizeBaseUrl(options.baseUrl ?? DEFAULT_BASE_URL);
-  const streamUrl = `${baseUrl}/api/telemetry/stream`;
+  const apiOptions = {
+    baseUrl: options.baseUrl ?? DEFAULT_BASE_URL
+  };
+  if (Object.hasOwn(options, "fetchImpl")) {
+    apiOptions.fetchImpl = options.fetchImpl;
+  }
+  const apiClient = createVnemApiClient(apiOptions);
+  const streamUrl = apiClient.streamUrl;
   const EventSourceImpl = Object.hasOwn(options, "EventSourceImpl")
     ? options.EventSourceImpl
     : globalThis.EventSource;
-  const fetchImpl = Object.hasOwn(options, "fetchImpl")
-    ? options.fetchImpl
-    : globalThis.fetch?.bind(globalThis);
   const consoleImpl = options.consoleImpl ?? console;
   const onStateChange = typeof options.onStateChange === "function" ? options.onStateChange : () => {};
 
@@ -83,7 +88,7 @@ export function createTelemetryReceiver(options = {}) {
     if (source) {
       return source;
     }
-    if (fetchImpl) {
+    if (apiClient.hasFetch) {
       void loadHistory();
     }
     if (!EventSourceImpl) {
@@ -131,12 +136,13 @@ export function createTelemetryReceiver(options = {}) {
 
   async function loadHistory() {
     try {
-      const history = await requestJson(fetchImpl, `${baseUrl}/api/telemetry/history`);
+      const history = await apiClient.telemetryHistory();
       setState({
         activeIngestions: normalizeIngestions(history.active_ingestions),
         routeErrors: normalizeIngestions(history.route_errors),
         mission: history.mission ?? null,
         pipeline: history.pipeline ?? null,
+        intelligenceProvider: history.intelligence_provider ?? null,
         systemError: null
       });
     } catch (error) {
@@ -158,7 +164,7 @@ export function createTelemetryReceiver(options = {}) {
         : state.activeIngestions;
 
     const mission = event.mission ?? state.mission;
-    const targetingStatus = event.type === "mission_updated" ? "confirmed" : state.targetingStatus;
+    const targetingStatus = nextTargetingStatus(event, state.targetingStatus);
 
     setState({
       status: "connected",
@@ -168,14 +174,15 @@ export function createTelemetryReceiver(options = {}) {
       routeErrors: event.route_errors ? normalizeIngestions(event.route_errors) : state.routeErrors,
       mission,
       pipeline: event.pipeline ?? state.pipeline,
+      intelligenceProvider: event.intelligence_provider ?? event.pipeline?.intelligence_provider ?? state.intelligenceProvider,
       targetingStatus,
-      targetingError: event.type === "mission_updated" ? null : state.targetingError,
+      targetingError: shouldClearTargetingError(event) ? null : state.targetingError,
       systemError: null
     });
   }
 
   async function deployTarget(target) {
-    if (!fetchImpl) {
+    if (!apiClient.hasFetch) {
       const error = {
         error: "fetch-unavailable",
         message: "The browser fetch API is unavailable."
@@ -193,16 +200,7 @@ export function createTelemetryReceiver(options = {}) {
     });
 
     try {
-      const result = await requestJson(fetchImpl, `${baseUrl}/api/intelligence/target`, {
-        method: "POST",
-        headers: {
-          "content-type": "application/json"
-        },
-        body: JSON.stringify({
-          query: target.query,
-          threat_tolerance: target.threatTolerance
-        })
-      });
+      const result = await apiClient.deployIntelligenceTarget(target);
       setState({
         targetingStatus: "awaiting_confirmation",
         mission: result.mission ?? state.mission,
@@ -239,25 +237,6 @@ export function createTelemetryReceiver(options = {}) {
   };
 }
 
-async function requestJson(fetchImpl, url, options = {}) {
-  const response = await fetchImpl(url, {
-    method: options.method ?? "GET",
-    headers: {
-      accept: "application/json",
-      ...(options.headers ?? {})
-    },
-    body: options.body
-  });
-  const text = await response.text();
-  if (!response.ok) {
-    const error = new Error(text || `HTTP_${response.status}`);
-    error.status = response.status;
-    error.payload = parseOptionalJson(text);
-    throw error;
-  }
-  return text ? JSON.parse(text) : {};
-}
-
 function normalizeIngestions(value) {
   return Array.isArray(value) ? value.filter(Boolean) : [];
 }
@@ -273,31 +252,24 @@ function parseTelemetryEvent(data) {
   }
 }
 
-function parseOptionalJson(text) {
-  try {
-    return text ? JSON.parse(text) : null;
-  } catch {
-    return null;
+function nextTargetingStatus(event, currentStatus) {
+  if (event.type === "pipeline_research_noop") {
+    return "cache_standby";
   }
+  if (event.type === "mission_updated") {
+    return "confirmed";
+  }
+  const status = event.active_ingestion?.status;
+  if (status === "staged_for_review") {
+    return "completed";
+  }
+  if (status === "isolated_by_protection") {
+    return "isolated";
+  }
+  return currentStatus;
 }
 
-function normalizeRequestError(error) {
-  const payload = error?.payload;
-  if (payload && typeof payload === "object") {
-    return {
-      error: payload.error ?? "request-failed",
-      error_code: payload.error_code ?? `HTTP_${error.status ?? "unknown"}`,
-      message: payload.message ?? error.message,
-      target_path: payload.target_path ?? null
-    };
-  }
-  return {
-    error: "request-failed",
-    error_code: `HTTP_${error?.status ?? "unknown"}`,
-    message: error?.message ?? "Request failed"
-  };
-}
-
-function normalizeBaseUrl(value) {
-  return String(value || DEFAULT_BASE_URL).replace(/\/+$/, "");
+function shouldClearTargetingError(event) {
+  return ["mission_updated", "pipeline_research_noop"].includes(event.type) ||
+    ["researching", "sandboxing", "staged_for_review", "isolated_by_protection"].includes(event.active_ingestion?.status);
 }

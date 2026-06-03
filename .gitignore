@@ -20,4 +20,5 @@ Nunito.zip
 !.env.example
 .hermes/
 .vnem-runtime/
+.vnem/staging/
 discovery/candidates/link-report.json
