@@ -1,0 +1,560 @@
+VNEM PROJECT OVERVIEW
+Generated for future planning: 2026-06-01
+
+1. Short Explanation
+
+VNEM is a read-only AI booster and perception layer for coding agents.
+
+Its job is to make AI coding agents think better before they touch code. It gives agents local rules, protocols, tool recommendations, quality gates, coding playbooks, install files, MCP tools, and safety guidance so they do not blindly guess, use stale tools, ruin visuals for performance, rewrite files destructively, or claim work is finished without evidence.
+
+In simple words:
+
+VNEM is not the AI model itself. VNEM is the improvement layer around the AI.
+
+It helps Codex, Claude, Gemini, OpenCode, Claude Code, and other coding agents act more like careful senior engineers by giving them structured context, safer workflows, current tool knowledge, and verification rules.
+
+
+2. Core Philosophy
+
+VNEM is built around one main rule:
+
+An AI agent should not satisfy one requirement by silently damaging another.
+
+For example, if a user says "make the game faster", a normal AI might remove animations, reduce visuals, cut effects, and call it optimized. VNEM pushes the AI to find smarter alternatives first: render optimization, quality profiles, settings toggles, adaptive effects, asset compression, reduced-motion paths, and honest benchmarks.
+
+The VNEM standard has three main ideas:
+
+Holistic Excellence:
+Performance, visuals, playability, accessibility, maintainability, safety, and verification are all part of "done".
+
+Proactive Enhancement:
+The AI should infer the stronger product the user actually wants, not only the smallest literal version of the prompt.
+
+Intelligent Trade-offs:
+When constraints conflict, the AI should create controls, modes, fallback paths, and evidence before lowering product quality.
+
+
+3. What VNEM Is Trying To Solve
+
+VNEM exists because normal AI coding agents often fail in predictable ways:
+
+- They start editing before understanding the repo.
+- They search the web from zero every time, wasting context and tokens.
+- They recommend outdated packages or deprecated APIs.
+- They rewrite whole files and accidentally destroy good code.
+- They focus on one domain, such as performance, while sacrificing visuals, game feel, accessibility, or maintainability.
+- They guess where code lives in large repos.
+- They say something works without running meaningful tests.
+- They make apps that technically function but look weak, feel unfinished, or break on mobile.
+- They hallucinate tool behavior, library syntax, or modern best practices.
+- They do not clearly separate read-only guidance from mutation-capable execution.
+
+VNEM addresses those issues with local instructions, MCP servers, generated install packs, search indexes, quality contracts, orchestration plans, precision editing tools, semantic code search, and verification loops.
+
+
+4. What VNEM Contains
+
+The repository currently contains several major parts:
+
+README.md:
+The main GitHub presentation page. It explains what VNEM is, how to install it, how the MCP server works, the VNEM Standard, orchestration, precision execution, and self-healing.
+
+public/install.tgz:
+The generated install archive. Users can download and extract it into another project to make that project VNEM-aware.
+
+.vnem/:
+The generated local guidance pack. This is what an AI agent reads inside a project. It includes the main instructions, quality contract, protocols, search index, playbooks, and rubrics.
+
+public/install/:
+The public version of the same install pack. These files are packaged into public/install.tgz.
+
+scripts/generate-artifacts.mjs:
+The source of truth for generating the .vnem pack, public install files, API index, llms.txt, llms-full.txt, and install archive.
+
+scripts/vnem-mcp-server.mjs:
+The default read-only VNEM MCP server. It gives recommendations, search, quality gates, orchestration plans, best practices, and resources. It does not edit files, run commands, install packages, or call secrets.
+
+scripts/vnem-precision-mcp-server.mjs:
+The opt-in precision MCP server. This one is mutation/execution-capable, but only inside the configured workspace and only through constrained tools.
+
+scripts/lib/precision-execution-layer.mjs:
+Backend logic for exact patching, documentation fetching, and safe terminal command execution.
+
+scripts/lib/omniscient-self-healing-layer.mjs:
+Backend logic for local semantic code search, bounded verification loops, and temporary ephemeral scripts.
+
+registry/:
+The indexed tool and ecosystem knowledge base. It contains entries for MCP servers, skills, frameworks, tools, evals, and agentic infrastructure.
+
+landing/:
+The public landing page and GitHub Pages/Cloudflare Pages style presentation.
+
+dashboard/:
+The dashboard application source.
+
+scripts/test-*.mjs:
+The test suite for registry validation, install packs, CLI behavior, MCP behavior, precision execution, orchestration, dashboard checks, and omniscient/self-healing behavior.
+
+llms.txt and llms-full.txt:
+LLM-readable summaries of the project and registry, intended for AI systems and crawlers.
+
+
+5. How The Read-Only VNEM Pack Works
+
+The simplest VNEM usage is the read-only pack.
+
+A user installs the pack into a project. This creates AGENTS.md and a .vnem directory. The AI coding agent reads AGENTS.md, then follows the deeper VNEM protocols.
+
+The read-only pack tells the AI:
+
+- Read the project before editing.
+- Understand the user's real goal, not only the literal wording.
+- Apply the Triple-Check Workflow.
+- Use quality gates before coding.
+- Choose the right workflow for simple tasks, app/game builds, research, debugging, review, refactors, and large changes.
+- Preserve performance, visuals, playability, accessibility, maintainability, and safety together.
+- Use current tool and package knowledge before recommending stack changes.
+- Report verification evidence before claiming success.
+- Avoid installing tools, editing files, running commands, using secrets, or touching external systems unless the user explicitly asks.
+
+The important files in the installed pack are:
+
+AGENTS.md:
+Short root entrypoint telling agents to follow VNEM.
+
+.vnem/AGENTS.md:
+Full agent instruction entrypoint.
+
+.vnem/quality-contract.md:
+Defines Holistic Excellence, Proactive Enhancement, Intelligent Trade-offs, and the Triple-Check Workflow.
+
+.vnem/operating-protocol.md:
+General operating rules for how the AI should reason, route, verify, and report.
+
+.vnem/orchestration-protocol.md:
+Rules for single-agent, orchestrator-worker, split-and-merge, and reflection workflows.
+
+.vnem/precision-execution-protocol.md:
+Rules for exact patching, documentation fetching, and safe terminal feedback when the precision server is enabled.
+
+.vnem/omniscient-self-healing-protocol.md:
+Rules for semantic code search, red/green verification loops, and ephemeral scripts when the precision server is enabled.
+
+.vnem/coding-protocol.md:
+Specific coding-agent rules.
+
+.vnem/coding-playbooks.json:
+Task-specific coding workflows.
+
+.vnem/design-architecture.md:
+Design and frontend guidance.
+
+.vnem/visual-qa-protocol.md:
+Visual quality and browser/screenshot verification guidance.
+
+.vnem/task-rubrics.json:
+Rubrics for different task types.
+
+.vnem/search-index.json:
+Searchable local index for tools, routes, protocols, and best-practice notes.
+
+.vnem/source-radar.json:
+Research source map for official docs, registries, tool sources, and verification references.
+
+.vnem/best-practices.md:
+Best-practice notes for agent workflows, tools, safety, and implementation.
+
+.vnem/prompt-engineering.md and .vnem/prompt-patterns.json:
+Reusable prompt guidance and prompt templates.
+
+
+6. How The Default MCP Server Works
+
+The default MCP server is read-only.
+
+It is started from the repo and exposed to an MCP-compatible client. Its purpose is to give the AI structured recommendations and context without granting it execution power.
+
+Main default MCP tools include:
+
+vnem_recommend:
+Takes a task and returns recommended tools, protocols, task contracts, read-first documents, quality gates, orchestration guidance, and risk notes.
+
+vnem_search:
+Searches the VNEM registry and local knowledge index.
+
+vnem_get_entry:
+Gets detailed information for a specific registry entry.
+
+vnem_compare:
+Compares multiple tools or entries.
+
+vnem_best_practices:
+Returns best-practice guidance for a task or domain.
+
+vnem_quality_gate:
+Checks a task or proposed approach against VNEM's quality standards. It can detect risky trade-offs like removing visuals for performance or skipping mobile checks.
+
+vnem_orchestrate:
+Chooses the right orchestration pattern for the task: Single Agent, Orchestrator-Worker, Split-and-Merge, or Reflection Loop.
+
+vnem_status:
+Reports loaded data, counts, resources, and server state.
+
+vnem_overview:
+Explains the major project surfaces and how they are usable.
+
+The default MCP server also exposes read-only resources such as:
+
+vnem://install/quality-contract
+vnem://install/orchestration-protocol
+vnem://install/precision-execution-protocol
+vnem://install/omniscient-self-healing-protocol
+vnem://install/coding-protocol
+vnem://install/coding-playbooks
+vnem://install/task-rubrics
+vnem://install/search-index
+vnem://install/source-radar
+vnem://install/best-practices
+
+Important:
+
+The default MCP server does not install packages, edit files, execute commands, fetch secrets, or call external services. It is guidance and structured context only.
+
+
+7. How The Precision MCP Server Works
+
+VNEM also has a separate opt-in precision MCP server.
+
+This server is for projects that explicitly want controlled mutation and execution capabilities. It should only be enabled for a workspace where the user accepts those capabilities.
+
+Main precision tools:
+
+mcp_apply_diff_patch:
+Applies exact patches using unified diffs or SEARCH/REPLACE blocks. It verifies the old code exists exactly before editing. If the match fails, it rejects the patch instead of guessing. This reduces destructive editing.
+
+mcp_fetch_documentation:
+Fetches current HTTPS documentation for a library/framework and compresses it into worker context. This reduces stale API hallucinations.
+
+mcp_execute_terminal_command:
+Runs allowlisted build/test/check commands in a workspace-confined stateful terminal session. It captures stdout/stderr and times out cleanly.
+
+mcp_semantic_code_search:
+Builds a local private hashed-vector code index and searches by concept, not only filename. It returns file paths, line ranges, snippets, scores, and matched terms.
+
+mcp_run_verification_tests:
+Runs a bounded red/green/check test loop. It returns verdicts such as red_confirmed, pass, needs_healing, or blocked. It caps healing at five attempts.
+
+mcp_execute_ephemeral_script:
+Runs a short temporary Node or Python helper script inside a workspace-local sandbox, captures output, then deletes the script and sandbox. It blocks dangerous APIs, network APIs, process spawning, destructive filesystem APIs, eval, system paths, and shell scripts by default.
+
+Important:
+
+The precision server is not the default safe mode. It is opt-in because it can edit files or run local commands within its rules.
+
+
+8. How VNEM Installs
+
+There are three main install/use paths.
+
+Path A: Install only the read-only pack into a project
+
+From the target project root:
+
+curl -fsSL https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install.tgz | tar -xz
+
+PowerShell version:
+
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install.tgz" -OutFile "vnem-install.tgz"
+tar -xzf vnem-install.tgz
+Remove-Item vnem-install.tgz
+
+This creates AGENTS.md and .vnem/ files in the target project.
+
+
+Path B: Clone VNEM and use the CLI installer
+
+git clone https://github.com/Ovvuhy/vnem.git
+cd vnem
+npm install
+npm run install:project -- /path/to/my-project
+npm run doctor -- /path/to/my-project
+
+This is better for existing repos because the installer can manage VNEM blocks instead of replacing important files.
+
+
+Path C: Use VNEM as an MCP server
+
+From the VNEM checkout:
+
+npm install
+node scripts/vnem-cli.mjs mcp-config
+
+For read-only MCP:
+
+npm run mcp
+
+For opt-in precision MCP:
+
+node scripts/vnem-cli.mjs mcp-config --precision --workspace /path/to/my-project
+npm run precision:mcp
+
+Exact command names may depend on the current package.json scripts, so use package.json as the final source of truth.
+
+
+9. How VNEM Improves AI Coding
+
+VNEM improves coding agents by forcing better process:
+
+Analyze:
+The AI identifies the real goal, hidden requirements, user-facing surfaces, risk domains, and what the user will judge even if they did not say it directly.
+
+Architect:
+The AI plans performance, visuals, playability, accessibility, maintainability, and safety together. It should choose smarter trade-offs, not silent downgrades.
+
+Review:
+The AI verifies that no important domain was sacrificed. If a trade-off remains, it should state it clearly.
+
+For app and web work, VNEM pushes agents to consider:
+
+- Visual quality
+- Layout and responsive behavior
+- Accessibility
+- Performance
+- Browser verification
+- Screenshot evidence
+- Build/test evidence
+- State handling
+- Error states
+- Maintainable file structure
+- Realistic user workflows
+
+For game work, VNEM also pushes:
+
+- Controls
+- Feedback
+- Game feel
+- Difficulty curve
+- Visual clarity
+- Audio/interaction polish
+- Performance profiles
+- Mobile/desktop input differences
+- Playability verification
+
+For backend or infrastructure work, VNEM pushes:
+
+- Risk checks
+- Security boundaries
+- Dependency review
+- Tests
+- Migration safety
+- Rollback awareness
+- Current documentation
+- Minimal safe changes
+
+
+10. Multi-Agent Orchestration
+
+VNEM includes guidance for routing work into different agent patterns.
+
+Single Agent:
+Used for simple questions or narrow tasks.
+
+Orchestrator-Worker:
+Used for apps, web apps, games, APIs, UI work, and larger builds. A Lead Architect breaks the task into JSON work items, workers claim tasks, and a central plan tracks progress.
+
+Split-and-Merge:
+Used for complex research. Different research strands gather evidence, then a synthesis step combines them and records uncertainty.
+
+Reflection Loop:
+Used for quality-sensitive outputs. A Generator produces the answer/code, an Evaluator critiques it against strict quality metrics, and the loop repeats up to a maximum iteration limit.
+
+VNEM currently provides the deterministic schemas, instructions, and routing guidance. It does not secretly spawn hidden model workers by itself in the default read-only server.
+
+
+11. Precision Editing And Safety
+
+VNEM's precision layer is designed to reduce destructive editing.
+
+Instead of letting an AI rewrite a huge file, the AI can use mcp_apply_diff_patch. That tool requires exact old code context. If the SEARCH block does not match the current file exactly, the change is rejected.
+
+This makes the AI re-read the file and patch correctly rather than corrupting it.
+
+The precision layer also protects paths by keeping operations inside the configured workspace.
+
+Terminal commands are allowlisted. Dangerous commands are blocked. Long-running or hanging commands time out.
+
+Ephemeral scripts are temporary and constrained. They are useful for one-off parsing or transformation tasks, but they are not a full security sandbox or VM.
+
+
+12. Omniscient Context And Self-Healing
+
+The newest Stage 4 layer adds three major improvements.
+
+Local semantic code search:
+VNEM indexes the local workspace into a private hashed-vector store. The AI can ask conceptual questions like "where is player collision handled?" and receive likely file paths, line ranges, snippets, and scores.
+
+Test-driven self-healing:
+VNEM pushes the AI to write or identify tests before implementing feature logic. It should run a red phase when a test should fail, patch the code, then run a green phase until the test passes or the attempt limit is reached.
+
+Ephemeral scripting:
+If the AI hits a unique local roadblock, it can create a short temporary script, run it, capture output, and have VNEM delete it. This helps with small parsing, analysis, or transformation problems without permanently cluttering the repo.
+
+Realistic limitation:
+The semantic search is currently a lightweight local hashed-vector system, not a neural embedding database like Chroma or FAISS with transformer embeddings. That is intentional for now because it keeps install complexity low and avoids external paid APIs.
+
+
+13. Generated Artifact System
+
+VNEM uses generated artifacts heavily.
+
+The source of truth is scripts/generate-artifacts.mjs.
+
+Generated outputs include:
+
+- .vnem files
+- public/install files
+- public/api/index.json
+- public/install.tgz
+- llms.txt
+- llms-full.txt
+- search-index.json
+
+Important rule:
+
+Do not manually edit generated .vnem files or public/install files unless there is a very specific reason. Most protocol/content changes should be made in scripts/generate-artifacts.mjs, then regenerated with:
+
+npm run generate
+
+Then tests should be run.
+
+
+14. Main Developer Commands
+
+Common commands:
+
+npm install
+Installs project dependencies.
+
+npm run generate
+Regenerates VNEM install artifacts, API index, llms files, and archive.
+
+npm run validate
+Validates the registry.
+
+npm run test
+Runs the full verification suite.
+
+npm run test:mcp
+Tests the default MCP server.
+
+npm run test:precision-mcp
+Tests the precision MCP server.
+
+npm run test:omniscient
+Tests the semantic search, verification loop, and ephemeral script layer.
+
+npm run benchmark:vnem
+Runs VNEM benchmark checks.
+
+npm run dashboard:build
+Builds the dashboard.
+
+npm run dashboard:check
+Runs syntax checks for dashboard-related server/function files.
+
+
+15. What VNEM Does Not Do
+
+VNEM is not:
+
+- A replacement for the LLM model.
+- A guarantee that every AI output is perfect.
+- A hidden autonomous agent swarm by default.
+- A full security sandbox or VM.
+- A paid external embedding service.
+- A runtime anti-cheat or OS-level command firewall.
+- A tool that should bypass user permission.
+- A reason to trust code without review.
+
+VNEM improves the process and available context. It still needs good model behavior, correct tool use, tests, and human judgment for important changes.
+
+
+16. Current Safety Model
+
+Default mode:
+Read-only. VNEM recommends, searches, routes, and provides context. It does not mutate anything.
+
+Precision mode:
+Opt-in. VNEM can patch files, fetch docs, run allowlisted commands, run semantic search, run verification tests, and execute constrained temporary scripts in the configured workspace.
+
+Generated pack:
+Read-only instructions and local data for the agent.
+
+User permission:
+Still matters. VNEM should not make the connected AI install packages, use secrets, change external accounts, or run risky operations without explicit user approval.
+
+
+17. GitHub Page / Public Presentation
+
+The GitHub page currently presents VNEM as:
+
+- A read-only AI booster and perception layer.
+- A local installable guidance pack.
+- A registry and research layer for agentic tools.
+- A default read-only MCP server.
+- An opt-in precision MCP server.
+- A quality standard for performance, visuals, playability, accessibility, maintainability, and safety.
+- A system for orchestration, precision execution, semantic code search, and self-healing verification.
+
+Future GitHub page improvements could include:
+
+- A clearer diagram showing read-only pack vs read-only MCP vs precision MCP.
+- A short demo video or GIF.
+- A benchmark page comparing AI with VNEM vs AI without VNEM.
+- More install screenshots for Codex, Claude Desktop, Cursor, OpenCode, and other clients.
+- A "What should I install?" decision table.
+- More real examples of bad AI output vs VNEM-guided output.
+
+
+18. Future Ideas List
+
+Possible future VNEM improvements:
+
+- Real neural local embeddings with optional dependencies.
+- Better semantic indexing for AST symbols, imports, call graphs, components, routes, and tests.
+- Stronger benchmark harness comparing agents with and without VNEM.
+- More web app and game-specific playbooks.
+- More visual QA automation.
+- Better install UX for Windows users.
+- One-command MCP setup for common clients.
+- Config wizard for Claude Desktop, Codex, Cursor, Windsurf, OpenCode, and Gemini CLI.
+- Better dashboard for registry browsing and benchmark results.
+- More official-source-backed best practices.
+- Package risk scoring and typosquatting checks.
+- Tool schema pinning and MCP rug-pull detection.
+- Stronger shared-state orchestration for multi-agent workflows.
+- More examples and templates for games, SaaS apps, landing pages, dashboards, APIs, and full-stack apps.
+- Clear paid/product packaging plan if VNEM becomes commercial.
+
+
+19. Best Mental Model
+
+Think of VNEM as four layers:
+
+Layer 1: Local Pack
+Files installed into a project so the AI knows how to behave.
+
+Layer 2: Read-Only MCP
+Structured recommendations, search, quality gates, and orchestration.
+
+Layer 3: Precision MCP
+Exact patching, current docs, safe terminal commands, semantic search, verification loops, and temporary scripts.
+
+Layer 4: Public Project / Product
+README, landing page, dashboard, registry, benchmark results, docs, and future community/commercial packaging.
+
+
+20. One-Sentence Summary
+
+VNEM is a local AI-improvement layer that gives coding agents better context, safer workflows, stronger quality standards, current tool knowledge, precision editing, semantic code search, and verification loops so they build better software without quietly sacrificing performance, visuals, playability, safety, or maintainability.
+

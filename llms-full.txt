@@ -1,6 +1,6 @@
 # vnem Full Registry
 
-Generated: 2026-05-30T14:32:16.710Z
+Generated: 2026-06-03T15:40:11.362Z
 Entries: 228
 
 ## Agent2Agent Protocol

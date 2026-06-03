@@ -20,6 +20,14 @@
     "test:precision": "node scripts/test-precision-execution-layer.mjs",
     "test:precision-mcp": "node scripts/test-precision-mcp-server.mjs",
     "test:omniscient": "node scripts/test-omniscient-self-healing-layer.mjs",
+    "test:100x-architecture": "node scripts/test-100x-architecture.mjs",
+    "test:detect-ai-clients": "node scripts/test-detect-ai-clients.mjs",
+    "test:preview-connector": "node scripts/test-preview-connector-changes.mjs",
+    "test:apply-connector": "node scripts/test-apply-connector-changes.mjs",
+    "test:app-server": "node scripts/test-vnem-app-server.mjs",
+    "test:launch-dev": "node scripts/test-launch-dev.mjs",
+    "test:dashboard-connector": "node dashboard/src/hooks/__tests__/useVnemConnector.test.js",
+    "test:dashboard-telemetry": "node dashboard/src/hooks/__tests__/useTelemetry.test.js",
     "benchmark:vnem": "node scripts/benchmark-vnem.mjs",
     "benchmark:visual": "node scripts/benchmark-visual-artifacts.mjs",
     "benchmark:visual:browser": "node scripts/benchmark-visual-browser.mjs",
@@ -33,7 +41,9 @@
     "dashboard:build": "vite build --config dashboard/vite.config.js",
     "dashboard:check": "node --check scripts/hermes-dashboard-api.mjs && node --check scripts/lib/hermes-dashboard-summary.mjs && node --check landing/functions/_shared/auth.js && node --check landing/functions/api/auth/nonce.js && node --check landing/functions/api/auth/verify.js && node --check landing/functions/api/auth/session.js && node --check landing/functions/api/auth/logout.js && node --check landing/functions/api/dashboard/summary.js",
     "dashboard:api": "node scripts/hermes-dashboard-api.mjs",
+    "dev:all": "node scripts/launch-dev.mjs",
     "test:dashboard": "node scripts/test-dashboard.mjs",
+    "test:dashboard-api-local": "node scripts/test-hermes-dashboard-api-local.mjs",
     "vnem": "node scripts/vnem-cli.mjs",
     "install:project": "node scripts/vnem-cli.mjs install",
     "doctor": "node scripts/vnem-cli.mjs doctor",
@@ -43,7 +53,7 @@
     "test:mcp": "node scripts/test-mcp-server.mjs",
     "test:hermes-risk": "node scripts/test-hermes-risk-review.mjs",
     "build": "npm run validate && npm run generate && npm run dashboard:build",
-    "test": "npm run validate && npm run generate && npm run dashboard:build && npm run test:install-pack && npm run test:orchestration && npm run test:precision && npm run test:omniscient && npm run test:precision-mcp && npm run test:cli && npm run test:mcp && npm run test:dashboard && npm run test:hermes-risk && npm run discover:dry-run && npm run digest"
+    "test": "npm run validate && npm run generate && npm run dashboard:build && npm run test:install-pack && npm run test:orchestration && npm run test:precision && npm run test:omniscient && npm run test:100x-architecture && npm run test:detect-ai-clients && npm run test:preview-connector && npm run test:apply-connector && npm run test:app-server && npm run test:launch-dev && npm run test:dashboard-connector && npm run test:dashboard-telemetry && npm run test:precision-mcp && npm run test:cli && npm run test:mcp && npm run test:dashboard && npm run test:dashboard-api-local && npm run test:hermes-risk && npm run discover:dry-run && npm run digest"
   },
   "dependencies": {
     "@solana/wallet-adapter-base": "^0.9.27",

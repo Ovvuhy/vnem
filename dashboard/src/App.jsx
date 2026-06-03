@@ -9,14 +9,22 @@ import {
   Filter,
   LockKeyhole,
   LogOut,
+  Radio,
   RefreshCcw,
   Route,
   Search,
   ShieldCheck,
-  Sparkles,
   Wallet
 } from "lucide-react";
+import logoUrl from "../../assets/brand/logo.png";
+import { AutonomousPipeline } from "./components/AutonomousPipeline.jsx";
+import { FindingsMatrix } from "./components/FindingsMatrix.jsx";
+import { Badge } from "./components/PipelinePrimitives.jsx";
+import { TargetingConsole } from "./components/TargetingConsole.jsx";
+import { usePipelineExecution } from "./hooks/usePipelineExecution.js";
 import { sampleSummary } from "./sampleSummary.js";
+import { useTelemetry } from "./hooks/useTelemetry.js";
+import { useVnemConnector } from "./hooks/useVnemConnector.js";
 
 const textEncoder = new TextEncoder();
 const textDecoder = new TextDecoder();
@@ -26,6 +34,7 @@ const SIGN_IN_TIMEOUT_MS = 2500;
 
 export default function App() {
   const wallet = useWallet();
+  const telemetry = useTelemetry();
   const [session, setSession] = useState({ loading: true, authenticated: false });
   const [summary, setSummary] = useState(DEMO_MODE ? sampleSummary : null);
   const [status, setStatus] = useState(DEMO_MODE ? "ready" : "loading");
@@ -169,6 +178,7 @@ export default function App() {
         summary={summary}
         status={status}
         error={error}
+        telemetry={telemetry}
         walletAddress={session.wallet_address}
         onRefresh={refreshSummary}
         onLogout={logout}
@@ -181,7 +191,7 @@ function WalletGate({ walletConnected, configured, loading, error, onSignIn }) {
   return (
     <section className="gate-panel" aria-label="vnem Hermes wallet gate">
       <div className="gate-copy">
-        <img className="gate-logo" src="/assets/logo.png" alt="" />
+        <img className="gate-logo" src={logoUrl} alt="" />
         <div className="product-lock"><LockKeyhole size={18} /> owner access</div>
         <h1>vnem hermes</h1>
         <p>Connect an allowlisted Solana wallet and sign the dashboard challenge.</p>
@@ -202,29 +212,34 @@ function WalletGate({ walletConnected, configured, loading, error, onSignIn }) {
   );
 }
 
-function DashboardShell({ summary, status, error, walletAddress, onRefresh, onLogout }) {
-  const [routeFilter, setRouteFilter] = useState("all");
-  const [trustFilter, setTrustFilter] = useState("all");
-  const [actionFilter, setActionFilter] = useState("all");
+function DashboardShell({ summary, status, error, telemetry, walletAddress, onRefresh, onLogout }) {
+  const [stageFilter, setStageFilter] = useState("all");
+  const [riskFilter, setRiskFilter] = useState("all");
+  const [originFilter, setOriginFilter] = useState("all");
   const [query, setQuery] = useState("");
+  const connector = useVnemConnector();
+  const pipelineExecution = usePipelineExecution(telemetry, summary);
 
-  const findings = summary?.findings ?? [];
-  const routes = unique(["all", ...findings.map((finding) => finding.source_route)]);
-  const trustTiers = unique(["all", ...findings.map((finding) => finding.suggested_trust_tier)]);
-  const actions = unique(["all", ...findings.map((finding) => finding.recommended_action)]);
+  const findings = useMemo(() => (summary?.findings ?? []).map(normalizeFinding), [summary?.findings]);
+  const originOptions = unique(["all", ...findings.map((finding) => finding.origin.label)]);
   const filtered = useMemo(() => findings.filter((finding) => {
-    const text = `${finding.title} ${finding.signal_summary ?? ""} ${(finding.risk_flags ?? []).join(" ")}`.toLowerCase();
-    return (routeFilter === "all" || finding.source_route === routeFilter) &&
-      (trustFilter === "all" || finding.suggested_trust_tier === trustFilter) &&
-      (actionFilter === "all" || finding.recommended_action === actionFilter) &&
+    const text = `${finding.title} ${finding.summary} ${finding.origin.label} ${finding.stage.label}`.toLowerCase();
+    return (stageFilter === "all" || finding.stage.key === stageFilter) &&
+      (riskFilter === "all" || finding.risk.key === riskFilter) &&
+      (originFilter === "all" || finding.origin.label === originFilter) &&
       (!query || text.includes(query.toLowerCase()));
-  }), [findings, routeFilter, trustFilter, actionFilter, query]);
+  }), [findings, stageFilter, riskFilter, originFilter, query]);
+
+  useEffect(() => {
+    connector.refreshStatus();
+    connector.fetchPreview();
+  }, [connector.refreshStatus, connector.fetchPreview]);
 
   return (
     <>
       <header className="topbar">
         <div className="topbar-title">
-          <img className="dashboard-logo" src="/assets/logo.png" alt="" />
+          <img className="dashboard-logo" src={logoUrl} alt="" />
           <div>
             <p className="eyebrow">vnem hermes</p>
             <h1>Owner dashboard</h1>
@@ -242,35 +257,44 @@ function DashboardShell({ summary, status, error, walletAddress, onRefresh, onLo
       </header>
 
       <section className="status-strip" aria-label="Hermes status">
-        <Kpi icon={Clock3} label="last sync" value={formatDateTime(summary?.generated_at)} />
+        <Kpi icon={Clock3} label="last sync" value={formatCompactDateTime(summary?.generated_at)} />
         <Kpi icon={Search} label="candidates today" value={summary?.aggregates?.today ?? 0} />
         <Kpi icon={AlertTriangle} label="watchlist" value={summary?.aggregates?.by_action?.watchlist ?? 0} />
         <Kpi icon={ShieldCheck} label="blocked" value={summary?.aggregates?.by_action?.blocked ?? 0} tone={(summary?.aggregates?.by_action?.blocked ?? 0) > 0 ? "warn" : "ok"} />
         <Kpi icon={Route} label="route errors" value={summary?.errors?.length ?? 0} tone={(summary?.errors?.length ?? 0) > 0 ? "warn" : "ok"} />
-        <Kpi icon={Sparkles} label="brain" value={summary?.timers?.brain?.service_result ?? "unknown"} tone={summary?.timers?.brain?.service_result === "success" ? "ok" : "warn"} />
+        <Kpi icon={Radio} label="telemetry" value={telemetry.status === "connected" ? "live" : humanize(telemetry.status ?? "offline")} tone={telemetry.status === "connected" ? "ok" : "warn"} />
       </section>
 
+      <IntelligenceProviderDiagnostic provider={telemetry.intelligenceProvider} />
+
       {status === "error" ? <div className="inline-error">{humanize(error)}</div> : null}
+
+      <TargetingConsole telemetry={telemetry} execution={pipelineExecution} />
+      <AutonomousPipeline telemetry={telemetry} execution={pipelineExecution} />
 
       <section className="workspace-grid">
         <div className="main-column">
           <section className="panel findings-panel" aria-label="Findings">
             <div className="panel-head">
               <div>
-                <p className="eyebrow">findings</p>
-                <h2>Agentic signals</h2>
+                <p className="eyebrow">intelligence matrix</p>
+                <h2>Research findings</h2>
               </div>
               <div className="search-box">
                 <Search size={16} />
-                <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="filter findings" />
+                <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="search signals, origins, stages" />
               </div>
             </div>
-            <div className="filters" aria-label="Finding filters">
-              <SelectFilter icon={Filter} label="route" value={routeFilter} options={routes} onChange={setRouteFilter} />
-              <SelectFilter label="trust" value={trustFilter} options={trustTiers} onChange={setTrustFilter} />
-              <SelectFilter label="action" value={actionFilter} options={actions} onChange={setActionFilter} />
-            </div>
-            <FindingsTable findings={filtered} loading={status === "loading"} />
+            <FindingFilters
+              stageFilter={stageFilter}
+              riskFilter={riskFilter}
+              originFilter={originFilter}
+              originOptions={originOptions}
+              onStageFilter={setStageFilter}
+              onRiskFilter={setRiskFilter}
+              onOriginFilter={setOriginFilter}
+            />
+            <FindingsMatrix findings={filtered} loading={status === "loading"} />
           </section>
 
           <section className="panel timeline-panel" aria-label="Runs">
@@ -285,6 +309,8 @@ function DashboardShell({ summary, status, error, walletAddress, onRefresh, onLo
         </div>
 
         <aside className="side-column">
+          <ConnectorPanel connector={connector} />
+
           <section className="panel" aria-label="Source health">
             <div className="panel-head compact">
               <div>
@@ -302,16 +328,270 @@ function DashboardShell({ summary, status, error, walletAddress, onRefresh, onLo
                 <h2>Maintainer notes</h2>
               </div>
             </div>
-            <p>{summary?.digest?.excerpt ?? "No digest available yet."}</p>
-            <ul>
-              {(summary?.digest?.maintainer_actions ?? []).slice(0, 4).map((action) => (
-                <li key={action}>{action}</li>
-              ))}
-            </ul>
+            <MaintainerNotes digest={summary?.digest} />
           </section>
         </aside>
       </section>
     </>
+  );
+}
+
+function IntelligenceProviderDiagnostic({ provider }) {
+  const status = provider?.status ?? "missing_key";
+  const active = status === "active";
+  const rateLimited = status === "rate_limited";
+  const tone = active ? "ok" : rateLimited ? "critical" : "review";
+  const badgeText = active ? "Hermes 3 Active" : "Local Fallback Active";
+  const model = provider?.model ?? "local-fallback";
+  const latestError = provider?.errors?.[0] ?? null;
+  const detail = active
+    ? "OpenRouter inference is driving Research AI, Protection AI, and Giving AI stages when live cycles run."
+    : providerFallbackDetail(status, latestError, provider);
+
+  return (
+    <section className={`provider-diagnostic ${active ? "active" : "fallback"}`} aria-label="Intelligence provider">
+      <div className="provider-title">
+        {active ? <ShieldCheck size={18} /> : <AlertTriangle size={18} />}
+        <div>
+          <p className="eyebrow">intelligence provider</p>
+          <h2>{active ? "OpenRouter Hermes inference online" : "Deterministic fallback online"}</h2>
+        </div>
+      </div>
+      <div className="provider-state">
+        <Badge tone={tone}>{badgeText}</Badge>
+        <code>{model}</code>
+      </div>
+      <p>{detail}</p>
+      {!active && latestError ? (
+        <div className="provider-error">
+          <span>{latestError.code ?? status}</span>
+          <strong>{latestError.message ?? "OpenRouter provider fallback is active."}</strong>
+          {latestError.retry_after ?? provider?.retry_after ? <em>retry after {latestError.retry_after ?? provider.retry_after}s</em> : null}
+        </div>
+      ) : null}
+    </section>
+  );
+}
+
+function providerFallbackDetail(status, latestError, provider) {
+  if (status === "rate_limited") {
+    return `OpenRouter free-tier limit was hit, so VNEM is using local deterministic fallback${latestError?.retry_after ?? provider?.retry_after ? ` until the retry window clears` : ""}.`;
+  }
+  if (status === "missing_key") {
+    return "OPENROUTER_API_KEY is not configured, so VNEM is using local deterministic research, protection, and dispatch logic.";
+  }
+  return latestError?.message ?? "OpenRouter inference is unavailable for this cycle, so VNEM is using local deterministic fallback.";
+}
+
+function MaintainerNotes({ digest }) {
+  const excerptBlocks = parseMaintainerBlocks(digest?.excerpt ?? "No digest available yet.");
+  const actionBlocks = (digest?.maintainer_actions ?? [])
+    .slice(0, 4)
+    .flatMap((action) => parseMaintainerBlocks(action));
+
+  return (
+    <div className="maintainer-notes">
+      <div className="note-blocks">
+        {excerptBlocks.map((block, index) => (
+          <p className="note-line" key={`excerpt-${index}`}>{renderNoteParts(block, `excerpt-${index}`)}</p>
+        ))}
+      </div>
+      {actionBlocks.length > 0 ? (
+        <ul className="note-actions">
+          {actionBlocks.map((action, index) => (
+            <li key={`action-${index}`}>{renderNoteParts(action, `action-${index}`)}</li>
+          ))}
+        </ul>
+      ) : null}
+    </div>
+  );
+}
+
+function parseMaintainerBlocks(value) {
+  return String(value ?? "")
+    .replace(/\r/g, "\n")
+    .split(/\n+/)
+    .flatMap((line) => line.split(/\s*\|\s*/))
+    .map((line) => line.replace(/^\s*[-*•]\s*/, "").trim())
+    .filter(Boolean);
+}
+
+function renderNoteParts(value, keyPrefix) {
+  const pattern = /(https?:\/\/[^\s]+|\bv?\d+(?:\.\d+){1,3}(?:[-+][\w.-]+)?\b|\b[a-f0-9]{8,40}\b)/gi;
+  const parts = [];
+  let lastIndex = 0;
+  for (const match of value.matchAll(pattern)) {
+    if (match.index > lastIndex) {
+      parts.push(<span key={`${keyPrefix}-text-${lastIndex}`}>{value.slice(lastIndex, match.index)}</span>);
+    }
+    const token = match[0].replace(/[),.;]+$/, "");
+    const suffix = match[0].slice(token.length);
+    if (/^https?:\/\//i.test(token)) {
+      parts.push(
+        <a className="note-link" href={token} target="_blank" rel="noreferrer" key={`${keyPrefix}-url-${match.index}`} aria-label={`Open ${linkLabel(token)}`}>
+          <ExternalLink size={13} />
+          {linkLabel(token)}
+        </a>
+      );
+    } else {
+      parts.push(<span className="note-token" key={`${keyPrefix}-token-${match.index}`}>{token}</span>);
+    }
+    if (suffix) {
+      parts.push(<span key={`${keyPrefix}-suffix-${match.index}`}>{suffix}</span>);
+    }
+    lastIndex = match.index + match[0].length;
+  }
+  if (lastIndex < value.length) {
+    parts.push(<span key={`${keyPrefix}-text-end`}>{value.slice(lastIndex)}</span>);
+  }
+  return parts.length > 0 ? parts : value;
+}
+
+function linkLabel(value) {
+  try {
+    return new URL(value).hostname.replace(/^www\./, "");
+  } catch {
+    return "source";
+  }
+}
+
+function FindingFilters({ stageFilter, riskFilter, originFilter, originOptions, onStageFilter, onRiskFilter, onOriginFilter }) {
+  return (
+    <div className="filter-console" aria-label="Finding filters">
+      <div className="filter-console-title">
+        <Filter size={15} />
+        <span>tactical filter block</span>
+      </div>
+      <SegmentedControl
+        label="agent stage"
+        value={stageFilter}
+        options={[
+          ["all", "All"],
+          ["research", "Research"],
+          ["protection", "Protection"],
+          ["giving", "Giving"]
+        ]}
+        onChange={onStageFilter}
+      />
+      <SegmentedControl
+        label="risk tier"
+        value={riskFilter}
+        options={[
+          ["all", "All"],
+          ["low", "Low"],
+          ["review", "Review"],
+          ["critical", "Critical"]
+        ]}
+        onChange={onRiskFilter}
+      />
+      <label className="origin-filter">
+        <span>origin source</span>
+        <select value={originFilter} onChange={(event) => onOriginFilter(event.target.value)}>
+          {originOptions.map((option) => (
+            <option key={option} value={option}>{option === "all" ? "All Sources" : option}</option>
+          ))}
+        </select>
+      </label>
+    </div>
+  );
+}
+
+function SegmentedControl({ label, value, options, onChange }) {
+  return (
+    <div className="segmented-control">
+      <span>{label}</span>
+      <div>
+        {options.map(([key, text]) => (
+          <button
+            key={key}
+            type="button"
+            className={value === key ? "active" : ""}
+            onClick={() => onChange(key)}
+          >
+            {text}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ConnectorPanel({ connector }) {
+  const clients = connector.clients ?? [];
+  const linkedCount = clients.filter((client) => client.vnem_connection_present).length;
+
+  async function refreshConnectors() {
+    await Promise.all([connector.refreshStatus(), connector.fetchPreview()]);
+  }
+
+  return (
+    <section className="panel connector-panel" aria-label="Local AI client connectors">
+      <div className="panel-head compact">
+        <div>
+          <p className="eyebrow">connectors</p>
+          <h2>Local clients</h2>
+        </div>
+        <button type="button" className="icon-button" onClick={refreshConnectors} aria-label="Refresh connector status">
+          <RefreshCcw size={17} />
+        </button>
+      </div>
+      <div className="connector-summary">
+        <Badge tone={linkedCount > 0 ? "ok" : "review"}>{linkedCount} linked</Badge>
+        <Badge tone={connector.isProcessing ? "watchlist" : "ok"}>{connector.isProcessing ? "working" : "ready"}</Badge>
+      </div>
+      {connector.systemError ? <ConnectorError error={connector.systemError} /> : null}
+      <div className="connector-list">
+        {clients.length === 0 ? (
+          <div className="empty-state">Start the local app server to inspect client connectors.</div>
+        ) : clients.map((client) => (
+          <ConnectorClientRow
+            key={client.id}
+            client={client}
+            preview={connector.previewData?.[client.id]}
+            disabled={connector.isProcessing}
+            onToggle={connector.toggleClientLink}
+          />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function ConnectorClientRow({ client, preview, disabled, onToggle }) {
+  const state = connectorState(client);
+  const action = connectorAction(client, preview);
+  const targetPath = preview?.selected_config_path ?? client.config_files?.find((file) => file.exists)?.path;
+
+  return (
+    <div className="connector-row">
+      <div className="connector-row-main">
+        <strong>{client.display_name ?? client.id}</strong>
+        <span>{targetPath ?? "no local config path selected"}</span>
+      </div>
+      <div className="connector-row-meta">
+        <Badge tone={state.tone}>{state.label}</Badge>
+        {preview?.preview_status ? <Badge tone={preview.would_change ? "review" : "ok"}>{preview.preview_status}</Badge> : null}
+      </div>
+      <button
+        type="button"
+        className="secondary-action connector-action"
+        onClick={() => onToggle(client.id, action)}
+        disabled={disabled || !action}
+      >
+        <ShieldCheck size={15} />
+        {action ?? "unavailable"}
+      </button>
+    </div>
+  );
+}
+
+function ConnectorError({ error }) {
+  return (
+    <div className="connector-error" role="status">
+      <AlertTriangle size={16} />
+      <span>{humanize(error.error_code ?? error.error)}</span>
+      {error.target_path ? <code>{error.target_path}</code> : null}
+    </div>
   );
 }
 
@@ -321,73 +601,6 @@ function Kpi({ icon: Icon, label, value, tone }) {
       <Icon size={18} />
       <span>{label}</span>
       <strong>{value}</strong>
-    </div>
-  );
-}
-
-function SelectFilter({ icon: Icon, label, value, options, onChange }) {
-  return (
-    <label className="filter-control">
-      {Icon ? <Icon size={14} /> : null}
-      <span>{label}</span>
-      <select value={value} onChange={(event) => onChange(event.target.value)}>
-        {options.map((option) => (
-          <option key={option} value={option}>{option}</option>
-        ))}
-      </select>
-    </label>
-  );
-}
-
-function FindingsTable({ findings, loading }) {
-  if (loading) {
-    return <div className="empty-state">Loading Hermes summary.</div>;
-  }
-  if (findings.length === 0) {
-    return <div className="empty-state">No findings match the active filters.</div>;
-  }
-
-  return (
-    <div className="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Signal</th>
-            <th>Route</th>
-            <th>Trust</th>
-            <th>Action</th>
-            <th>Risk</th>
-          </tr>
-        </thead>
-        <tbody>
-          {findings.map((finding) => (
-            <tr key={finding.id}>
-              <td data-label="Signal">
-                <a className="finding-link" href={finding.source_url ?? "#"} target="_blank" rel="noreferrer">
-                  {finding.title}
-                  {finding.source_url ? <ExternalLink size={13} /> : null}
-                </a>
-                <p>{finding.signal_summary ?? finding.description}</p>
-              </td>
-              <td data-label="Route"><Badge>{finding.source_route}</Badge></td>
-              <td data-label="Trust"><Badge tone={finding.suggested_trust_tier}>{finding.suggested_trust_tier}</Badge></td>
-              <td data-label="Action"><Badge tone={finding.recommended_action}>{finding.recommended_action}</Badge></td>
-              <td data-label="Risk">
-                <div className="risk-list">
-                  {finding.repository_review ? (
-                    <Badge tone={finding.repository_review.verdict}>
-                      {finding.repository_review.verdict} · risk {finding.repository_review.risk_score}
-                    </Badge>
-                  ) : null}
-                  {(finding.risk_flags ?? []).length > 0
-                    ? finding.risk_flags.map((flag) => <Badge key={flag} tone="risk">{flag}</Badge>)
-                    : <span className="muted">none</span>}
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
     </div>
   );
 }
@@ -421,17 +634,13 @@ function SourceHealth({ sources }) {
           <span className={`route-state ${source.status}`} />
           <div>
             <strong>{source.route}</strong>
-            <span>{source.candidates ?? 0} candidates · {source.errors ?? 0} errors</span>
+            <span>{source.candidates ?? 0} candidates / {source.errors ?? 0} errors</span>
           </div>
           <Badge tone={source.status}>{source.status}</Badge>
         </div>
       ))}
     </div>
   );
-}
-
-function Badge({ children, tone }) {
-  return <span className={`badge ${tone ?? ""}`}>{children}</span>;
 }
 
 async function trySignIn(adapter, challenge) {
@@ -494,9 +703,136 @@ function formatDateTime(value) {
   }).format(new Date(value));
 }
 
+function formatCompactDateTime(value) {
+  if (!value) return "unknown";
+  const date = new Date(value);
+  const day = new Intl.DateTimeFormat(undefined, {
+    month: "short",
+    day: "numeric"
+  }).format(date).replace(",", "");
+  const time = new Intl.DateTimeFormat(undefined, {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false
+  }).format(date);
+  return `${day} ${time}`;
+}
+
 function shortWallet(value) {
   if (!value) return "not signed in";
   return `${value.slice(0, 4)}...${value.slice(-4)}`;
+}
+
+function normalizeFinding(finding) {
+  const origin = originDetails(finding.source_route);
+  const riskScore = finding.repository_review?.risk_score ?? finding.metrics?.repo_risk_score ?? riskScoreFromFlags(finding.risk_flags);
+  const trustScore = finding.repository_review?.trust_score ?? finding.metrics?.repo_trust_score ?? trustScoreFromTier(finding.suggested_trust_tier);
+  const risk = riskDetails(finding.repository_review?.verdict, riskScore);
+  return {
+    id: finding.id,
+    title: finding.title,
+    sourceUrl: finding.source_url,
+    summary: finding.signal_summary ?? finding.description ?? "No signal summary provided.",
+    origin,
+    trustScore: clampPercent(trustScore),
+    trustLabel: trustScore >= 85 ? "Verified Source" : trustScore >= 60 ? "Needs Review" : "Unverified Lead",
+    risk,
+    stage: stageDetails(finding.recommended_action, risk.key),
+    action: actionDetails(finding.recommended_action, risk.key)
+  };
+}
+
+function originDetails(route) {
+  const map = {
+    "github-search": ["GitHub Scrape", "Repository discovery and source inspection"],
+    "github-releases": ["GitHub Release", "Watched repository release feed"],
+    "hacker-news": ["Dev Forum Signal", "Community discussion requiring primary-source validation"],
+    "npm-search": ["Package Registry", "Package metadata and install-surface scan"],
+    "mcp-registry": ["MCP Registry", "Model Context Protocol catalog route"],
+    "watch-urls": ["Watch URL", "Maintainer-defined source monitor"],
+    "dev-forum": ["OpenAI Dev Forum", "Implementation pattern from developer discussion"],
+    "paper-scan": ["ArXiv Paper", "Research literature and benchmark scan"]
+  };
+  const [label, description] = map[route] ?? [humanize(route ?? "unknown route"), "Unmapped discovery route"];
+  return { label, description };
+}
+
+function riskDetails(verdict, score) {
+  const normalized = String(verdict ?? "").toLowerCase();
+  if (normalized === "blocked" || score >= 75) {
+    return { key: "critical", label: "CRITICAL / ISOLATED", detail: `Threat score ${clampPercent(score)}%` };
+  }
+  if (score >= 35) {
+    return { key: "review", label: "REVIEW / SANDBOX", detail: `Threat score ${clampPercent(score)}%` };
+  }
+  return { key: "low", label: "LOW RISK / CLEAN", detail: `Threat score ${clampPercent(score)}%` };
+}
+
+function stageDetails(action, riskKey) {
+  if (riskKey === "critical") return { key: "protection", label: "Protection AI" };
+  if (["review", "promote", "approved"].includes(action)) return { key: "giving", label: "Giving AI" };
+  return { key: "research", label: "Research AI" };
+}
+
+function actionDetails(action, riskKey) {
+  if (riskKey === "critical" || action === "blocked") {
+    return { label: "Isolated by Protection AI", detail: "Repository dispatch blocked until manual review" };
+  }
+  if (action === "watchlist") {
+    return { label: "Scanning", detail: "Waiting for primary source or stronger trust signal" };
+  }
+  if (["promote", "approved", "committed"].includes(action)) {
+    return { label: "Committed to Repo", detail: "Dispatch accepted into the simulated repository lane" };
+  }
+  return { label: "Pending Approval", detail: "Giving AI can package this once maintainer review passes" };
+}
+
+function trustScoreFromTier(tier) {
+  const map = {
+    curated: 97,
+    verified: 94,
+    promising: 88,
+    watchlist: 62,
+    unreviewed: 38,
+    suspicious: 22,
+    blocked: 12
+  };
+  return map[String(tier ?? "").toLowerCase()] ?? 50;
+}
+
+function riskScoreFromFlags(flags = []) {
+  return Math.min(100, (flags?.length ?? 0) * 18);
+}
+
+function clampPercent(value) {
+  const number = Number(value ?? 0);
+  return Math.max(0, Math.min(100, Math.round(Number.isFinite(number) ? number : 0)));
+}
+
+function connectorState(client) {
+  if (client.vnem_connection_present) {
+    return { label: "linked", tone: "ok" };
+  }
+  if (client.custom_mcp_hook_present) {
+    return { label: "mcp ready", tone: "review" };
+  }
+  if (client.installed || client.config_profile_present) {
+    return { label: "detected", tone: "promising" };
+  }
+  return { label: "missing", tone: "quiet" };
+}
+
+function connectorAction(client, preview) {
+  if (!client.installed && !client.config_profile_present) {
+    return null;
+  }
+  if (client.vnem_connection_present) {
+    return "rollback";
+  }
+  if (preview?.would_change !== false) {
+    return "apply";
+  }
+  return null;
 }
 
 function unique(values) {
@@ -504,5 +840,5 @@ function unique(values) {
 }
 
 function humanize(value) {
-  return String(value ?? "unknown").replace(/-/g, " ");
+  return String(value ?? "unknown").replace(/[-_]/g, " ");
 }
