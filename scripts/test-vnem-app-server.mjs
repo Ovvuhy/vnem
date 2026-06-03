@@ -48,7 +48,55 @@ try {
   await writeFile(claudeConfigPath, baseline, "utf8");
 
   const moduleUrl = `${pathToFileURL(path.join(rootDir, "scripts", "vnem-app-server.mjs")).href}?test=${Date.now()}`;
-  const { getAppServerStatus, scanThreatSignatures, startVnemAppServer } = await import(moduleUrl);
+  const {
+    callOpenRouterJson,
+    getAppServerStatus,
+    researchLiveRepositoryCandidate,
+    runGivingStaging,
+    runProtectionScan,
+    scanThreatSignatures,
+    startVnemAppServer
+  } = await import(moduleUrl);
+  process.env.OPENROUTER_API_KEY = "test-openrouter-key";
+  const openRouterCapture = { body: null, headers: null };
+  const openRouterJson = await callOpenRouterJson({
+    stage: "research",
+    fetchImpl: async (_url, init) => {
+      openRouterCapture.body = JSON.parse(init.body);
+      openRouterCapture.headers = init.headers;
+      return jsonFetchResponse({
+        choices: [
+          {
+            message: {
+              content: JSON.stringify({
+                title: "Hermes-generated candidate",
+                description: "LLM structured research result.",
+                source_route: "github-search",
+                candidate_score: 88
+              })
+            }
+          }
+        ]
+      });
+    },
+    messages: [{ role: "user", content: "test" }]
+  });
+  assert.equal(openRouterJson.ok, true);
+  assert.equal(openRouterJson.json.candidate_score, 88);
+  assert.equal(openRouterCapture.body.model, "nousresearch/hermes-3-llama-3.1-405b:free");
+  assert.deepEqual(openRouterCapture.body.response_format, { type: "json_object" });
+  assert.match(openRouterCapture.headers.Authorization, /^Bearer test-openrouter-key/);
+
+  const openRouterLimited = await callOpenRouterJson({
+    stage: "research",
+    fetchImpl: async () => jsonFetchResponse({ error: { message: "limited" } }, 429, { "retry-after": "12" }),
+    messages: [{ role: "user", content: "test" }]
+  });
+  assert.equal(openRouterLimited.ok, false);
+  assert.equal(openRouterLimited.code, "OPENROUTER_RATE_LIMITED");
+  assert.equal(openRouterLimited.retryAfter, "12");
+  delete process.env.OPENROUTER_API_KEY;
+
   const status = getAppServerStatus({ port: 0, repositoryRoot: tmpRoot });
   assert.equal(status.host, "127.0.0.1");
   assert.ok(status.endpoints.includes("GET /api/connector/status"));
@@ -89,6 +137,7 @@ try {
   assert.equal(telemetryHistory.body.active_ingestions[0].status, "staged_for_review");
   assert.equal(telemetryHistory.body.active_ingestions[0].threat_score < 30, true);
   assert.equal(Array.isArray(telemetryHistory.body.route_errors), true);
+  assert.equal(telemetryHistory.body.mission.vector, "github");
   assert.equal(mockFetch.calls.some((url) => url.startsWith("https://api.github.com/search/repositories")), true);
   assert.equal(mockFetch.calls.some((url) => url.endsWith("/README.md")), true);
   const stagingFiles = await readdir(path.join(tmpRoot, ".vnem", "staging"));
@@ -99,6 +148,7 @@ try {
 
   const target = await requestJson(port, "POST", "/api/intelligence/target", {}, JSON.stringify({
     query: "rust entity component system",
+    vector: "github",
     threat_tolerance: 50
   }));
   assert.equal(target.statusCode, 202);
@@ -106,6 +156,7 @@ try {
   assert.equal(target.body.status, "retargeted");
   assert.equal(target.body.cycle_status, "started");
   assert.equal(target.body.mission.query, "rust entity component system");
+  assert.equal(target.body.mission.vector, "github");
   assert.equal(target.body.mission.threat_tolerance, 50);
 
   const retargetedHistory = await waitForTelemetryHistory(port, (body) => (
@@ -119,6 +170,49 @@ try {
   assert.equal(retargetedHistory.body.active_ingestions[0].protection_report.block_threshold, 50);
   assert.equal(mockFetch.calls.some((url) => url.includes("q=rust+entity+component+system")), true);
 
+  const npmTarget = await requestJson(port, "POST", "/api/intelligence/target", {}, JSON.stringify({
+    query: "agentic workflow",
+    vector: "npm",
+    threat_tolerance: 30
+  }));
+  assert.equal(npmTarget.statusCode, 202);
+  assert.equal(npmTarget.body.mission.vector, "npm");
+  assert.equal(npmTarget.body.mission.vector_label, "NPM Package Registry");
+
+  const npmHistory = await waitForTelemetryHistory(port, (body) => (
+    body.mission?.vector === "npm" &&
+    body.active_ingestions?.[0]?.source_route === "npm-search" &&
+    body.active_ingestions?.[0]?.status === "staged_for_review"
+  ));
+  const npmIngestion = npmHistory.body.active_ingestions[0];
+  assert.equal(npmIngestion.title, "vnem-agent-runner");
+  assert.equal(npmIngestion.repository.kind, "npm_package");
+  assert.equal(npmIngestion.repository.vector, "npm");
+  assert.equal(npmIngestion.repository.diagnostics.score_components.search_score, 0.96);
+  assert.equal(npmIngestion.repository.diagnostics.score_components.quality, 0.91);
+  assert.equal(npmIngestion.repository.diagnostics.score_components.popularity, 0.72);
+  assert.equal(npmIngestion.repository.diagnostics.metadata_source, "NPM Registry /-/v1/search");
+  assert.equal(npmIngestion.protection_report.fetched_assets[0].label, "npm-search-metadata");
+  assert.equal(npmIngestion.threat_score < 30, true);
+  assert.equal(mockFetch.calls.some((url) => url.startsWith("https://registry.npmjs.org/-/v1/search")), true);
+
+  const mcpTarget = await requestJson(port, "POST", "/api/intelligence/target", {}, JSON.stringify({
+    query: "agentic workflow mcp",
+    vector: "mcp",
+    threat_tolerance: 30
+  }));
+  assert.equal(mcpTarget.statusCode, 202);
+  assert.equal(mcpTarget.body.mission.vector, "mcp");
+  const mcpHistory = await waitForTelemetryHistory(port, (body) => (
+    body.mission?.vector === "mcp" &&
+    body.active_ingestions?.[0]?.source_route === "mcp-registry" &&
+    body.active_ingestions?.[0]?.status === "staged_for_review"
+  ));
+  assert.match(mcpHistory.body.active_ingestions[0].title, /agentic workflow mcp MCP server/);
+  assert.equal(mcpHistory.body.active_ingestions[0].repository.kind, "mcp_tool");
+  assert.equal(mcpHistory.body.active_ingestions[0].repository.adapter.mode, "deterministic-local");
+  assert.equal(mcpHistory.body.active_ingestions[0].repository.diagnostics.route, "mcp-registry");
+
   const invalidTarget = await requestJson(port, "POST", "/api/intelligence/target", {}, JSON.stringify({
     query: "x",
     threat_tolerance: 30
@@ -126,6 +220,14 @@ try {
   assert.equal(invalidTarget.statusCode, 400);
   assertJsonContentType(invalidTarget);
   assert.equal(invalidTarget.body.error_code, "QUERY_TOO_SHORT");
+
+  const invalidVector = await requestJson(port, "POST", "/api/intelligence/target", {}, JSON.stringify({
+    query: "agent workflow",
+    vector: "unknown",
+    threat_tolerance: 30
+  }));
+  assert.equal(invalidVector.statusCode, 400);
+  assert.equal(invalidVector.body.error_code, "INVALID_INTELLIGENCE_VECTOR");
 
   const telemetry = await requestTelemetry(port);
   assert.equal(telemetry.statusCode, 200);
@@ -176,6 +278,36 @@ try {
   assert.equal(externalOrigin.statusCode, 403);
   assertJsonContentType(externalOrigin);
   assert.equal(externalOrigin.body.reason, "non-local-origin-header");
+
+  process.env.OPENROUTER_API_KEY = "test-openrouter-key";
+  const llmFetch = createOpenRouterPipelineMockFetch();
+  const llmResearch = await researchLiveRepositoryCandidate({
+    fetchImpl: llmFetch,
+    force: true,
+    query: "openrouter llm orchestration",
+    vector: "github",
+    pollIntervalMs: 600000
+  });
+  assert.equal(llmResearch.title, "Hermes LLM Candidate");
+  assert.equal(llmResearch.trust_score, 91);
+  assert.equal(llmResearch.repository.llm_research.model, "nousresearch/hermes-3-llama-3.1-405b:free");
+
+  const llmProtection = await runProtectionScan(llmResearch, {
+    fetchImpl: llmFetch,
+    threatTolerance: 30
+  });
+  assert.equal(llmProtection.threat_score, 12);
+  assert.deepEqual(llmProtection.protection_report.flags, ["clean-metadata"]);
+  assert.equal(llmProtection.protection_report.model_provider, "openrouter");
+
+  const llmDispatch = await runGivingStaging(llmProtection, {
+    repositoryRoot: tmpRoot,
+    fetchImpl: llmFetch
+  });
+  const llmDispatchMarkdown = await readFile(llmDispatch.staged_dispatch.path, "utf8");
+  assert.match(llmDispatchMarkdown, /# Hermes LLM Candidate/);
+  assert.match(llmDispatchMarkdown, /Generated by: OpenRouter/);
+  delete process.env.OPENROUTER_API_KEY;
 
   console.log("vnem app server tests passed");
 } finally {
@@ -310,7 +442,7 @@ function closeServer(targetServer) {
 }
 
 function snapshotEnv() {
-  const keys = ["APPDATA", "LOCALAPPDATA", "HOME", "USERPROFILE", "XDG_CONFIG_HOME", "ProgramFiles", "ProgramFiles(x86)"];
+  const keys = ["APPDATA", "LOCALAPPDATA", "HOME", "USERPROFILE", "XDG_CONFIG_HOME", "ProgramFiles", "ProgramFiles(x86)", "OPENROUTER_API_KEY"];
   return Object.fromEntries(keys.map((key) => [key, process.env[key]]));
 }
 
@@ -392,6 +524,64 @@ function createMockFetch() {
         etag: "\"vnem-test-etag\""
       });
     }
+    if (target.startsWith("https://registry.npmjs.org/-/v1/search")) {
+      const query = new URL(target).searchParams.get("text");
+      assert.equal(query, "agentic workflow");
+      return jsonFetchResponse({
+        objects: [
+          {
+            package: {
+              name: "tiny-unrelated-package",
+              version: "0.0.1",
+              description: "Small unrelated package.",
+              keywords: ["misc"],
+              date: "2026-01-01T00:00:00.000Z",
+              links: {
+                npm: "https://www.npmjs.com/package/tiny-unrelated-package"
+              },
+              publisher: { username: "example" },
+              maintainers: [{ username: "example" }]
+            },
+            score: {
+              final: 0.1,
+              detail: {
+                quality: 0.1,
+                popularity: 0.1,
+                maintenance: 0.1
+              }
+            },
+            searchScore: 0.1
+          },
+          {
+            package: {
+              name: "vnem-agent-runner",
+              version: "1.4.0",
+              description: "Agentic workflow planning utilities for MCP context routing, code review loops, and benchmarked AI development.",
+              keywords: ["agentic", "workflow", "mcp", "llm", "architecture"],
+              date: "2026-05-29T00:00:00.000Z",
+              links: {
+                npm: "https://www.npmjs.com/package/vnem-agent-runner",
+                repository: "https://github.com/ovvuh/vnem-agent-runner",
+                homepage: "https://github.com/ovvuh/vnem-agent-runner#readme"
+              },
+              publisher: { username: "ovvuh" },
+              maintainers: [{ username: "ovvuh" }]
+            },
+            score: {
+              final: 0.92,
+              detail: {
+                quality: 0.91,
+                popularity: 0.72,
+                maintenance: 0.88
+              }
+            },
+            searchScore: 0.96
+          }
+        ],
+        total: 2,
+        time: "2026-06-01T00:00:00.000Z"
+      });
+    }
     if (target === "https://raw.githubusercontent.com/bevyengine/bevy/main/README.md") {
       return textFetchResponse([
         "# Bevy",
@@ -424,6 +614,99 @@ function createMockFetch() {
     return textFetchResponse("not found", 404);
   };
   mockFetch.calls = calls;
+  return mockFetch;
+}
+
+function createOpenRouterPipelineMockFetch() {
+  const mockFetch = async (url, init = {}) => {
+    const target = String(url);
+    if (target.startsWith("https://api.github.com/search/repositories")) {
+      return jsonFetchResponse({
+        total_count: 1,
+        incomplete_results: false,
+        items: [
+          {
+            id: 900,
+            name: "pipeline-core",
+            full_name: "openrouter/pipeline-core",
+            html_url: "https://github.com/openrouter/pipeline-core",
+            description: "Agentic orchestration pipeline reference for LLM-backed research and safety review.",
+            owner: { login: "openrouter" },
+            default_branch: "main",
+            stargazers_count: 200,
+            forks_count: 12,
+            language: "TypeScript",
+            updated_at: "2026-06-01T00:00:00Z",
+            pushed_at: "2026-06-01T00:00:00Z"
+          }
+        ]
+      });
+    }
+    if (target.startsWith("https://raw.githubusercontent.com/")) {
+      return textFetchResponse("Safe documentation. No lifecycle scripts, shell execution, or obfuscated payloads.");
+    }
+    if (target === "https://openrouter.ai/api/v1/chat/completions") {
+      const body = JSON.parse(init.body);
+      const system = body.messages?.[0]?.content ?? "";
+      assert.deepEqual(body.response_format, { type: "json_object" });
+      assert.equal(body.model, "nousresearch/hermes-3-llama-3.1-405b:free");
+      if (system.includes("VNEM Research Core")) {
+        return jsonFetchResponse({
+          choices: [
+            {
+              message: {
+                content: JSON.stringify({
+                  title: "Hermes LLM Candidate",
+                  description: "LLM-ranked research candidate for orchestration and production safety workflow improvements.",
+                  source_route: "github-search",
+                  candidate_score: 91
+                })
+              }
+            }
+          ]
+        });
+      }
+      if (system.includes("VNEM Protection Guard")) {
+        return jsonFetchResponse({
+          choices: [
+            {
+              message: {
+                content: JSON.stringify({
+                  threat_score: 12,
+                  flags: ["clean-metadata"]
+                })
+              }
+            }
+          ]
+        });
+      }
+      if (system.includes("VNEM Giving Core")) {
+        return jsonFetchResponse({
+          choices: [
+            {
+              message: {
+                content: JSON.stringify({
+                  markdown: [
+                    "# Hermes LLM Candidate",
+                    "",
+                    "## Discovery",
+                    "Research Core ranked this candidate as useful for VNEM orchestration.",
+                    "",
+                    "## Safety",
+                    "Protection Guard found clean metadata and no blocking lifecycle scripts.",
+                    "",
+                    "## Integration Plan",
+                    "Stage the notes for maintainer review only."
+                  ].join("\\n")
+                })
+              }
+            }
+          ]
+        });
+      }
+    }
+    return textFetchResponse("not found", 404);
+  };
   return mockFetch;
 }
 

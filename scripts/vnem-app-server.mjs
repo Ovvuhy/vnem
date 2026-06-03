@@ -31,14 +31,20 @@ const researchCache = {
   lastFetchAt: 0,
   nextPollAt: 0,
   lastQuery: null,
+  lastVector: null,
   seenRepositoryIds: new Set()
 };
 const defaultResearchQuery = "luau architecture OR agentic workflow";
 const defaultThreatTolerance = 30;
+const defaultIntelligenceVector = "github";
+const intelligenceVectors = new Set(["github", "npm", "mcp"]);
 const defaultResearchPollMinMs = 5 * 60 * 1000;
 const defaultResearchPollMaxMs = 10 * 60 * 1000;
+const openRouterChatCompletionsUrl = "https://openrouter.ai/api/v1/chat/completions";
+const openRouterHermesModel = "nousresearch/hermes-3-llama-3.1-405b:free";
 const intelligenceMission = {
   query: defaultResearchQuery,
+  vector: defaultIntelligenceVector,
   threatTolerance: defaultThreatTolerance,
   updatedAt: null,
   revision: 0,
@@ -275,6 +281,7 @@ export function retargetLiveIntelligence(payload, options = {}) {
   const normalized = normalizeIntelligenceTarget(payload);
   const mission = updateIntelligenceMission({
     query: normalized.query,
+    vector: normalized.vector,
     threatTolerance: normalized.threatTolerance,
     source: "dashboard"
   });
@@ -292,6 +299,7 @@ export function retargetLiveIntelligence(payload, options = {}) {
   const cycleOptions = {
     ...liveIntelligenceRuntime,
     query: mission.query,
+    vector: mission.vector,
     threatTolerance: mission.threat_tolerance,
     force: true
   };
@@ -354,6 +362,7 @@ export async function runLiveIntelligenceCycle(options = {}) {
   const repositoryRoot = path.resolve(options.repositoryRoot || rootDir);
   const fetchImpl = options.fetchImpl ?? globalThis.fetch?.bind(globalThis);
   const query = normalizeResearchQuery(options.query ?? intelligenceMission.query);
+  const vector = normalizeIntelligenceVector(options.vector ?? intelligenceMission.vector);
   const threatTolerance = normalizeThreatTolerance(options.threatTolerance ?? intelligenceMission.threatTolerance);
   if (typeof fetchImpl !== "function") {
     throw routeError("FETCH_UNAVAILABLE", "Global fetch is unavailable in this Node.js runtime.", {
@@ -368,13 +377,15 @@ export async function runLiveIntelligenceCycle(options = {}) {
     pollIntervalMs: options.pollIntervalMs,
     minPollIntervalMs: options.minPollIntervalMs,
     maxPollIntervalMs: options.maxPollIntervalMs,
-    query
+    query,
+    vector
   });
 
   if (!ingestion) {
+    const descriptor = vectorDescriptor(vector);
     const event = pipelineEvent({
       type: "pipeline_research_noop",
-      message: "Research AI skipped GitHub polling because the live search cache is still fresh.",
+      message: `Research AI skipped ${descriptor.origin} polling because the live search cache is still fresh.`,
       agent_stage: "research"
     });
     broadcastTelemetry(event);
@@ -412,7 +423,7 @@ export async function runLiveIntelligenceCycle(options = {}) {
   }
 
   await waitForStageDelay(options.stageDelayMs);
-  const staged = await runGivingStaging(protectedIngestion, { repositoryRoot });
+  const staged = await runGivingStaging(protectedIngestion, { repositoryRoot, fetchImpl });
   const event = pipelineEvent({
     message: staged.latest_event.message,
     agent_stage: staged.current_agent,
@@ -430,13 +441,134 @@ export async function researchLiveRepositoryCandidate(options = {}) {
 
   const fetchImpl = options.fetchImpl;
   const query = normalizeResearchQuery(options.query ?? intelligenceMission.query);
-  if (researchCache.lastQuery !== query) {
+  const vector = normalizeIntelligenceVector(options.vector ?? intelligenceMission.vector);
+  if (researchCache.lastQuery !== query || researchCache.lastVector !== vector) {
     researchCache.etag = null;
     researchCache.nextPollAt = 0;
     researchCache.lastQuery = query;
+    researchCache.lastVector = vector;
     researchCache.seenRepositoryIds.clear();
   }
 
+  if (vector === "npm") {
+    const ingestion = await researchNpmPackageCandidate({
+      ...options,
+      fetchImpl,
+      query
+    });
+    return applyResearchCoreInference(ingestion, {
+      fetchImpl,
+      query,
+      vector,
+      sourceContext: ingestion?.repository
+    });
+  }
+
+  if (vector === "mcp") {
+    researchCache.lastFetchAt = now;
+    researchCache.nextPollAt = now + nextPollDelayMs(options);
+    const ingestion = createMcpRegistryIngestion(query);
+    return applyResearchCoreInference(ingestion, {
+      fetchImpl,
+      query,
+      vector,
+      sourceContext: ingestion.repository
+    });
+  }
+
+  const ingestion = await researchGithubRepositoryCandidate({
+    ...options,
+    fetchImpl,
+    query
+  });
+  return applyResearchCoreInference(ingestion, {
+    fetchImpl,
+    query,
+    vector,
+    sourceContext: ingestion?.repository
+  });
+}
+
+async function applyResearchCoreInference(ingestion, options = {}) {
+  if (!ingestion || ingestion.status === "research_no_candidate" || !isOpenRouterConfigured()) {
+    return ingestion;
+  }
+
+  const result = await callOpenRouterJson({
+    fetchImpl: options.fetchImpl,
+    stage: "research",
+    maxTokens: 420,
+    temperature: 0.2,
+    messages: [
+      {
+        role: "system",
+        content: [
+          "You are VNEM Research Core.",
+          "Evaluate the user's research query and the provided source candidate.",
+          "Return only JSON with keys: title, description, source_route, candidate_score.",
+          "title must be concise. description must be realistic and implementation-focused.",
+          "source_route must be one of github-search, npm-search, or mcp-registry.",
+          "candidate_score must be an integer from 1 to 100."
+        ].join(" ")
+      },
+      {
+        role: "user",
+        content: JSON.stringify({
+          query: options.query,
+          vector: options.vector,
+          source_candidate: compactForModel(options.sourceContext ?? ingestion.repository)
+        })
+      }
+    ]
+  });
+
+  if (!result.ok) {
+    recordOpenRouterFallback(result, "research");
+    return ingestion;
+  }
+
+  const payload = result.json;
+  const title = cleanSummary(payload.title).slice(0, 120);
+  const description = cleanSummary(payload.description);
+  const sourceRoute = normalizeLlmSourceRoute(payload.source_route, ingestion.source_route);
+  const candidateScore = clampScore(payload.candidate_score, 1, 100, ingestion.trust_score ?? 50);
+  if (!title || !description) {
+    return ingestion;
+  }
+
+  const now = new Date().toISOString();
+  ingestion.title = title;
+  ingestion.source_route = sourceRoute;
+  ingestion.trust_score = candidateScore;
+  ingestion.repository.full_name = title;
+  ingestion.repository.name = title;
+  ingestion.repository.description = description;
+  ingestion.repository.source_route = sourceRoute;
+  ingestion.repository.llm_research = {
+    provider: "openrouter",
+    model: openRouterHermesModel,
+    candidate_score: candidateScore,
+    generated_at: now
+  };
+  ingestion.latest_event = {
+    agent: "research",
+    message: `Research AI evaluated ${title}: ${description}`,
+    timestamp: now
+  };
+  ingestion.timeline.unshift({
+    agent: "research",
+    status: ingestion.status,
+    message: ingestion.latest_event.message,
+    timestamp: now
+  });
+  ingestion.timeline = ingestion.timeline.slice(0, 8);
+  return ingestion;
+}
+
+async function researchGithubRepositoryCandidate(options = {}) {
+  const now = Date.now();
+  const fetchImpl = options.fetchImpl;
+  const query = options.query;
   const url = new URL("https://api.github.com/search/repositories");
   url.searchParams.set("q", query);
   url.searchParams.set("sort", "updated");
@@ -480,13 +612,62 @@ export async function researchLiveRepositoryCandidate(options = {}) {
   const body = await response.json();
   const candidate = selectHighValueRepository(body.items ?? []);
   if (!candidate) {
-    return createResearchNoCandidateIngestion(query);
+    return createResearchNoCandidateIngestion(query, "github");
   }
 
   researchCache.seenRepositoryIds.add(candidate.id);
   return createRepositoryIngestion(candidate, {
     query,
+    vector: "github",
     trigger: "live_github_search"
+  });
+}
+
+async function researchNpmPackageCandidate(options = {}) {
+  const now = Date.now();
+  const fetchImpl = options.fetchImpl;
+  const query = options.query;
+  const url = new URL("https://registry.npmjs.org/-/v1/search");
+  url.searchParams.set("text", query);
+  url.searchParams.set("size", "5");
+
+  const response = await fetchImpl(url.href, {
+    headers: {
+      accept: "application/json",
+      "user-agent": "vnem-live-intelligence-engine"
+    }
+  });
+  researchCache.lastFetchAt = now;
+  researchCache.nextPollAt = now + nextPollDelayMs(options);
+
+  if (response.status === 403 || response.status === 429) {
+    throw routeError("NPM_RATE_LIMITED", `NPM Registry search rate limited VNEM with HTTP ${response.status}.`, {
+      route: "npm-search",
+      stage: "research",
+      target_url: url.href
+    });
+  }
+  if (!response.ok) {
+    throw routeError(`NPM_HTTP_${response.status}`, `NPM Registry search returned HTTP ${response.status}.`, {
+      route: "npm-search",
+      stage: "research",
+      target_url: url.href
+    });
+  }
+
+  const body = await response.json();
+  const candidate = selectHighValueNpmPackage(body.objects ?? []);
+  if (!candidate) {
+    return createResearchNoCandidateIngestion(query, "npm");
+  }
+
+  const packageName = candidate.package?.name;
+  if (packageName) {
+    researchCache.seenRepositoryIds.add(`npm:${packageName}`);
+  }
+  return createNpmPackageIngestion(candidate, {
+    query,
+    trigger: "live_npm_search"
   });
 }
 
@@ -506,6 +687,8 @@ function createRepositoryIngestion(repository, options = {}) {
     source_url: repository.html_url,
     repository_target: repository.html_url,
     repository: {
+      kind: "github_repository",
+      vector: options.vector ?? "github",
       id: repository.id,
       owner,
       name,
@@ -518,7 +701,8 @@ function createRepositoryIngestion(repository, options = {}) {
       language: repository.language ?? null,
       updated_at: repository.updated_at ?? null,
       pushed_at: repository.pushed_at ?? null,
-      query: options.query ?? defaultResearchQuery
+      query: options.query ?? defaultResearchQuery,
+      source_route: "github-search"
     },
     current_agent: "research",
     status: "researching",
@@ -547,19 +731,196 @@ function createRepositoryIngestion(repository, options = {}) {
   return ingestion;
 }
 
-function createResearchNoCandidateIngestion(query) {
+function createNpmPackageIngestion(candidate, options = {}) {
   pipelineSequence += 1;
   const now = new Date().toISOString();
-  const message = `Research AI polled GitHub Search for "${query}" but found no new high-value repository candidate.`;
+  const packageData = candidate.package ?? {};
+  const packageName = packageData.name ?? "unknown-package";
+  const description = cleanSummary(packageData.description || "No package description provided.");
+  const npmUrl = packageData.links?.npm ?? `https://www.npmjs.com/package/${encodeURIComponent(packageName)}`;
+  const keywords = Array.isArray(packageData.keywords) ? packageData.keywords.filter(Boolean) : [];
+  const maintainers = Array.isArray(packageData.maintainers) ? packageData.maintainers.filter(Boolean) : [];
+  const publisher = packageData.publisher ?? null;
+  const scoreComponents = npmScoreComponents(candidate);
+  const message = `Research AI discovered NPM package ${packageName}: ${description}`;
+  const ingestion = {
+    id: `ingestion-${pipelineSequence}-npm-${slugify(packageName)}`,
+    trigger: options.trigger ?? "live_npm_search",
+    title: packageName,
+    source_origin: "NPM Package Registry",
+    source_route: "npm-search",
+    source_url: npmUrl,
+    repository_target: npmUrl,
+    repository: {
+      kind: "npm_package",
+      vector: "npm",
+      id: `npm:${packageName}`,
+      owner: publisher?.username ?? maintainers[0]?.username ?? "npm",
+      name: packageName,
+      full_name: packageName,
+      html_url: npmUrl,
+      default_branch: null,
+      description,
+      language: "JavaScript",
+      updated_at: packageData.date ?? null,
+      pushed_at: packageData.date ?? null,
+      query: options.query ?? defaultResearchQuery,
+      source_route: "npm-search",
+      package: {
+        name: packageName,
+        version: packageData.version ?? null,
+        keywords,
+        publisher,
+        maintainers,
+        links: packageData.links ?? {},
+        score: candidate.score ?? null,
+        search_score: candidate.searchScore ?? null
+      },
+      diagnostics: {
+        vector: "npm",
+        score_components: scoreComponents,
+        trust_score_formula: "clamp(12, 96, round(40 + candidate_score * 0.58))",
+        metadata_source: "NPM Registry /-/v1/search"
+      },
+      audit_text: buildNpmAuditText(packageData, candidate)
+    },
+    current_agent: "research",
+    status: "researching",
+    trust_score: npmTrustScore(candidate),
+    threat_score: null,
+    risk_tier: "unknown",
+    action_dispatch: "Scanning",
+    created_at: now,
+    updated_at: now,
+    latest_event: {
+      agent: "research",
+      message,
+      timestamp: now
+    },
+    timeline: [
+      {
+        agent: "research",
+        status: "researching",
+        message,
+        timestamp: now
+      }
+    ]
+  };
+  activeIngestions.unshift(ingestion);
+  trimActiveIngestions();
+  return ingestion;
+}
+
+function createMcpRegistryIngestion(query) {
+  pipelineSequence += 1;
+  const now = new Date().toISOString();
+  const toolName = `${query} MCP server`;
+  const description = cleanSummary(`Deterministic MCP registry lead for ${query}. This local V1 adapter models the MCP catalog route until live registry federation is wired into the app server.`);
+  const url = `vnem://mcp-registry/${slugify(query)}`;
+  const message = `Research AI discovered MCP catalog lead ${toolName}: ${description}`;
+  const ingestion = {
+    id: `ingestion-${pipelineSequence}-mcp-${slugify(query)}`,
+    trigger: "local_mcp_registry_adapter",
+    title: toolName,
+    source_origin: "MCP Tool Catalog",
+    source_route: "mcp-registry",
+    source_url: url,
+    repository_target: url,
+    repository: {
+      kind: "mcp_tool",
+      vector: "mcp",
+      id: `mcp:${slugify(query)}`,
+      owner: "vnem",
+      name: toolName,
+      full_name: toolName,
+      html_url: url,
+      default_branch: null,
+      description,
+      language: "MCP",
+      updated_at: now,
+      pushed_at: now,
+      query,
+      source_route: "mcp-registry",
+      package: {
+        name: toolName,
+        version: "catalog-preview",
+        keywords: ["mcp", "tool", "agent", ...query.toLowerCase().split(/\s+/).filter(Boolean).slice(0, 5)],
+        publisher: { username: "vnem" },
+        maintainers: [{ username: "vnem" }],
+        links: { npm: null },
+        score: { final: 0.78 },
+        search_score: 0.78
+      },
+      adapter: {
+        mode: "deterministic-local",
+        route: "mcp-registry",
+        sync_status: "local-preview-until-federated-registry-sync",
+        execution: "catalog metadata only; no remote install or mutation"
+      },
+      diagnostics: {
+        vector: "mcp",
+        adapter: "local deterministic MCP registry adapter",
+        route: "mcp-registry",
+        sync_status: "federated registry sync pending",
+        metadata_source: "local catalog simulation"
+      },
+      audit_text: [
+        `name: ${toolName}`,
+        `description: ${description}`,
+        `keywords: mcp, tool, agent, ${query}`,
+        "source: local deterministic MCP registry adapter",
+        "execution: read-only catalog signal, no package install command"
+      ].join("\n")
+    },
+    current_agent: "research",
+    status: "researching",
+    trust_score: 72,
+    threat_score: null,
+    risk_tier: "unknown",
+    action_dispatch: "Scanning",
+    created_at: now,
+    updated_at: now,
+    latest_event: {
+      agent: "research",
+      message,
+      timestamp: now
+    },
+    timeline: [
+      {
+        agent: "research",
+        status: "researching",
+        message,
+        timestamp: now
+      }
+    ]
+  };
+  activeIngestions.unshift(ingestion);
+  trimActiveIngestions();
+  return ingestion;
+}
+
+function createResearchNoCandidateIngestion(query, vector = "github") {
+  pipelineSequence += 1;
+  const now = new Date().toISOString();
+  const descriptor = vectorDescriptor(vector);
+  const message = `Research AI polled ${descriptor.origin} for "${query}" but found no new high-value candidate.`;
   const ingestion = {
     id: `ingestion-${pipelineSequence}-no-candidate`,
-    trigger: "live_github_search",
-    title: "No high-value repository candidate",
-    source_origin: "GitHub Scrape",
-    source_route: "github-search",
-    source_url: "https://api.github.com/search/repositories",
+    trigger: `live_${vector}_search`,
+    title: "No high-value candidate",
+    source_origin: descriptor.origin,
+    source_route: descriptor.route,
+    source_url: descriptor.url,
     repository_target: null,
-    repository: { query },
+    repository: {
+      kind: `${vector}_no_candidate`,
+      vector,
+      query,
+      full_name: "No high-value candidate",
+      html_url: descriptor.url,
+      description: message,
+      source_route: descriptor.route
+    },
     current_agent: "research",
     status: "research_no_candidate",
     trust_score: 0,
@@ -589,7 +950,10 @@ function createResearchNoCandidateIngestion(query) {
 
 export async function runProtectionScan(ingestion, options = {}) {
   const audit = await fetchRepositoryAuditText(ingestion.repository, { fetchImpl: options.fetchImpl });
-  const scan = scanThreatSignatures(audit.combinedText);
+  const localScan = scanThreatSignatures(audit.combinedText);
+  const scan = await runProtectionGuardInference(ingestion, audit, localScan, {
+    fetchImpl: options.fetchImpl
+  });
   const threatTolerance = normalizeThreatTolerance(options.threatTolerance ?? intelligenceMission.threatTolerance);
   const now = new Date().toISOString();
   const blocked = scan.threat_score >= threatTolerance;
@@ -627,6 +991,61 @@ export async function runProtectionScan(ingestion, options = {}) {
   return ingestion;
 }
 
+async function runProtectionGuardInference(ingestion, audit, localScan, options = {}) {
+  if (!isOpenRouterConfigured()) {
+    return localScan;
+  }
+
+  const result = await callOpenRouterJson({
+    fetchImpl: options.fetchImpl,
+    stage: "protection",
+    maxTokens: 460,
+    temperature: 0.1,
+    messages: [
+      {
+        role: "system",
+        content: [
+          "You are VNEM Protection Guard.",
+          "Analyze the source description, metadata, and code/documentation context for vulnerabilities, malware, destructive lifecycle scripts, and suspicious automation.",
+          "Return only JSON with keys: threat_score, flags.",
+          "threat_score must be an integer from 0 to 100.",
+          "flags must be an array of short kebab-case strings.",
+          "Do not invent flags if the context is clean."
+        ].join(" ")
+      },
+      {
+        role: "user",
+        content: JSON.stringify({
+          candidate: compactForModel(ingestion.repository),
+          local_regex_scan: localScan,
+          fetched_assets: audit.fetchedAssets,
+          unavailable_assets: audit.unavailableAssets,
+          audit_context: String(audit.combinedText ?? "").slice(0, 12000)
+        })
+      }
+    ]
+  });
+
+  if (!result.ok) {
+    recordOpenRouterFallback(result, "protection");
+    return localScan;
+  }
+
+  const flags = Array.isArray(result.json.flags)
+    ? result.json.flags.map((flag) => slugify(flag)).filter(Boolean).slice(0, 12)
+    : [];
+  const threatScore = clampScore(result.json.threat_score, 0, 100, localScan.threat_score);
+  return {
+    threat_score: threatScore,
+    risk_tier: threatScore >= 60 ? "critical" : threatScore >= 30 ? "review" : "low",
+    flags,
+    scanned_bytes: audit.combinedText.length,
+    model_provider: "openrouter",
+    model: openRouterHermesModel,
+    local_regex_scan: localScan
+  };
+}
+
 export async function runGivingStaging(ingestion, options = {}) {
   const repositoryRoot = path.resolve(options.repositoryRoot || rootDir);
   const stagingDir = path.join(repositoryRoot, ".vnem", "staging");
@@ -637,7 +1056,8 @@ export async function runGivingStaging(ingestion, options = {}) {
   const repository = ingestion.repository;
   const fileName = `dispatch-${slugify(repository.full_name)}-${timestamp}.md`;
   const filePath = path.join(stagingDir, fileName);
-  const content = buildDispatchMarkdown(ingestion, {
+  const content = await buildGivingDispatchMarkdown(ingestion, {
+    fetchImpl: options.fetchImpl,
     generatedAt: now.toISOString()
   });
   await writeFile(filePath, content, "utf8");
@@ -669,8 +1089,77 @@ export async function runGivingStaging(ingestion, options = {}) {
   return ingestion;
 }
 
+async function buildGivingDispatchMarkdown(ingestion, options = {}) {
+  if (!isOpenRouterConfigured()) {
+    return buildDispatchMarkdown(ingestion, options);
+  }
+
+  const result = await callOpenRouterJson({
+    fetchImpl: options.fetchImpl,
+    stage: "giving",
+    maxTokens: 900,
+    temperature: 0.25,
+    messages: [
+      {
+        role: "system",
+        content: [
+          "You are VNEM Giving Core.",
+          "Write reviewable Markdown deployment notes for a maintainer.",
+          "Return only JSON with key markdown.",
+          "The markdown must summarize the discovery, safety checks, and a theoretical integration plan.",
+          "Do not claim that code was merged or installed. The dispatch is staged locally for review only."
+        ].join(" ")
+      },
+      {
+        role: "user",
+        content: JSON.stringify({
+          generated_at: options.generatedAt,
+          ingestion: compactForModel(ingestion),
+          protection_report: ingestion.protection_report
+        })
+      }
+    ]
+  });
+
+  if (!result.ok) {
+    recordOpenRouterFallback(result, "giving");
+    return buildDispatchMarkdown(ingestion, options);
+  }
+
+  const markdown = String(result.json.markdown ?? "").trim();
+  if (!markdown || markdown.length < 80) {
+    return buildDispatchMarkdown(ingestion, options);
+  }
+  return [
+    markdown,
+    "",
+    "---",
+    "",
+    `Generated by: OpenRouter / ${openRouterHermesModel}`,
+    `Generated at: ${options.generatedAt}`
+  ].join("\n");
+}
+
 async function fetchRepositoryAuditText(repository, options = {}) {
   const fetchImpl = options.fetchImpl;
+  if (repository.kind !== "github_repository" || !repository.owner || !repository.name || !repository.default_branch) {
+    const text = [
+      repository.audit_text,
+      repository.description,
+      JSON.stringify(repository.package ?? {}, null, 2)
+    ].filter(Boolean).join("\n\n").slice(0, 160000);
+    return {
+      combinedText: text,
+      fetchedAssets: [
+        {
+          label: repository.kind === "npm_package" ? "npm-search-metadata" : "catalog-metadata",
+          bytes_scanned: text.length
+        }
+      ],
+      unavailableAssets: []
+    };
+  }
+
   const owner = encodeURIComponent(repository.owner);
   const name = encodeURIComponent(repository.name);
   const branch = encodeURIComponent(repository.default_branch || "main");
@@ -766,6 +1255,171 @@ export function scanThreatSignatures(text) {
   };
 }
 
+export async function callOpenRouterJson(options = {}) {
+  const apiKey = String(process.env.OPENROUTER_API_KEY ?? "").trim();
+  if (!apiKey) {
+    return {
+      ok: false,
+      code: "OPENROUTER_API_KEY_MISSING",
+      error: routeError("OPENROUTER_API_KEY_MISSING", "OPENROUTER_API_KEY is not configured.", {
+        route: "openrouter",
+        stage: options.stage ?? "unknown"
+      })
+    };
+  }
+
+  const fetchImpl = options.fetchImpl ?? globalThis.fetch?.bind(globalThis);
+  if (typeof fetchImpl !== "function") {
+    return {
+      ok: false,
+      code: "OPENROUTER_FETCH_UNAVAILABLE",
+      error: routeError("OPENROUTER_FETCH_UNAVAILABLE", "No fetch implementation is available for OpenRouter.", {
+        route: "openrouter",
+        stage: options.stage ?? "unknown"
+      })
+    };
+  }
+
+  const requestBody = {
+    model: options.model ?? openRouterHermesModel,
+    messages: options.messages ?? [],
+    response_format: { type: "json_object" },
+    temperature: Number.isFinite(options.temperature) ? options.temperature : 0.2,
+    max_tokens: Number.isFinite(options.maxTokens) ? options.maxTokens : 600
+  };
+
+  try {
+    const response = await fetchImpl(openRouterChatCompletionsUrl, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+        "X-Title": "VNEM Hermes"
+      },
+      body: JSON.stringify(requestBody)
+    });
+
+    if (response.status === 429) {
+      const retryAfter = readHeader(response, "retry-after");
+      return {
+        ok: false,
+        code: "OPENROUTER_RATE_LIMITED",
+        retryAfter,
+        error: routeError(
+          "OPENROUTER_RATE_LIMITED",
+          `OpenRouter rate limited VNEM${retryAfter ? `; retry after ${retryAfter}s` : ""}.`,
+          {
+            route: "openrouter",
+            stage: options.stage ?? "unknown",
+            target_url: openRouterChatCompletionsUrl,
+            retry_after: retryAfter
+          }
+        )
+      };
+    }
+
+    if (!response.ok) {
+      const bodyText = await safeReadText(response);
+      return {
+        ok: false,
+        code: `OPENROUTER_HTTP_${response.status}`,
+        error: routeError(`OPENROUTER_HTTP_${response.status}`, `OpenRouter returned HTTP ${response.status}.`, {
+          route: "openrouter",
+          stage: options.stage ?? "unknown",
+          target_url: openRouterChatCompletionsUrl,
+          response_excerpt: bodyText.slice(0, 500)
+        })
+      };
+    }
+
+    const responseBody = await response.json();
+    const content = responseBody?.choices?.[0]?.message?.content;
+    const json = parseJsonObjectContent(content);
+    return {
+      ok: true,
+      json,
+      raw: responseBody
+    };
+  } catch (cause) {
+    return {
+      ok: false,
+      code: "OPENROUTER_REQUEST_FAILED",
+      error: routeError("OPENROUTER_REQUEST_FAILED", `OpenRouter request failed: ${safeErrorMessage(cause)}`, {
+        route: "openrouter",
+        stage: options.stage ?? "unknown",
+        target_url: openRouterChatCompletionsUrl
+      })
+    };
+  }
+}
+
+function isOpenRouterConfigured() {
+  return Boolean(String(process.env.OPENROUTER_API_KEY ?? "").trim());
+}
+
+function parseJsonObjectContent(content) {
+  if (content && typeof content === "object" && !Array.isArray(content)) {
+    return content;
+  }
+  const text = String(content ?? "").trim();
+  if (!text) {
+    throw new Error("OpenRouter returned an empty message content.");
+  }
+  try {
+    return JSON.parse(text);
+  } catch {
+    const objectMatch = text.match(/\{[\s\S]*\}/);
+    if (objectMatch) {
+      return JSON.parse(objectMatch[0]);
+    }
+    throw new Error("OpenRouter response content was not valid JSON.");
+  }
+}
+
+async function safeReadText(response) {
+  try {
+    return await response.text();
+  } catch {
+    return "";
+  }
+}
+
+function recordOpenRouterFallback(result, stage) {
+  if (!result?.error || result.code === "OPENROUTER_API_KEY_MISSING") {
+    return;
+  }
+  broadcastRouteError(result.error, {
+    route: "openrouter",
+    stage,
+    message: `${safeErrorMessage(result.error)} VNEM fell back to deterministic ${stage} logic.`
+  });
+}
+
+function compactForModel(value) {
+  return JSON.parse(JSON.stringify(value ?? {}, (_key, nestedValue) => {
+    if (typeof nestedValue === "string") {
+      return nestedValue.slice(0, 4000);
+    }
+    return nestedValue;
+  }));
+}
+
+function normalizeLlmSourceRoute(value, fallback) {
+  const route = String(value ?? "").trim().toLowerCase();
+  if (["github-search", "npm-search", "mcp-registry"].includes(route)) {
+    return route;
+  }
+  return fallback ?? "github-search";
+}
+
+function clampScore(value, min, max, fallback) {
+  const number = Number(value);
+  if (!Number.isFinite(number)) {
+    return Math.max(min, Math.min(max, Math.round(Number(fallback ?? min))));
+  }
+  return Math.max(min, Math.min(max, Math.round(number)));
+}
+
 function pipelineEvent(payload) {
   return {
     type: payload.type ?? "pipeline_ingestion_updated",
@@ -796,8 +1450,11 @@ function pipelineSnapshot() {
 }
 
 function missionSnapshot() {
+  const descriptor = vectorDescriptor(intelligenceMission.vector);
   return {
     query: intelligenceMission.query,
+    vector: intelligenceMission.vector,
+    vector_label: descriptor.label,
     threat_tolerance: intelligenceMission.threatTolerance,
     block_threshold: intelligenceMission.threatTolerance,
     revision: intelligenceMission.revision,
@@ -809,15 +1466,18 @@ function missionSnapshot() {
 
 function updateIntelligenceMission(nextMission) {
   const query = normalizeResearchQuery(nextMission.query);
+  const vector = normalizeIntelligenceVector(nextMission.vector ?? intelligenceMission.vector);
   const threatTolerance = normalizeThreatTolerance(nextMission.threatTolerance);
-  if (query !== intelligenceMission.query) {
+  if (query !== intelligenceMission.query || vector !== intelligenceMission.vector) {
     researchCache.etag = null;
     researchCache.nextPollAt = 0;
     researchCache.lastQuery = null;
+    researchCache.lastVector = null;
     researchCache.seenRepositoryIds.clear();
   }
 
   intelligenceMission.query = query;
+  intelligenceMission.vector = vector;
   intelligenceMission.threatTolerance = threatTolerance;
   intelligenceMission.updatedAt = new Date().toISOString();
   intelligenceMission.revision += 1;
@@ -843,6 +1503,7 @@ function normalizeIntelligenceTarget(payload) {
   }
   return {
     query: normalizeResearchQuery(payload.query),
+    vector: normalizeIntelligenceVector(payload.vector ?? defaultIntelligenceVector),
     threatTolerance: normalizeThreatTolerance(payload.threat_tolerance)
   };
 }
@@ -868,6 +1529,14 @@ function normalizeThreatTolerance(value) {
     throw httpError(400, "INVALID_THREAT_TOLERANCE", "threat_tolerance must be between 1 and 100.");
   }
   return rounded;
+}
+
+function normalizeIntelligenceVector(value) {
+  const vector = String(value ?? defaultIntelligenceVector).trim().toLowerCase();
+  if (!intelligenceVectors.has(vector)) {
+    throw httpError(400, "INVALID_INTELLIGENCE_VECTOR", "vector must be one of: github, npm, mcp.");
+  }
+  return vector;
 }
 
 function trimActiveIngestions() {
@@ -949,6 +1618,16 @@ function selectHighValueRepository(items) {
     .sort((left, right) => right.score - left.score)[0]?.item ?? null;
 }
 
+function selectHighValueNpmPackage(objects) {
+  return [...objects]
+    .filter((item) => item?.package?.name && !researchCache.seenRepositoryIds.has(`npm:${item.package.name}`))
+    .map((item) => ({
+      item,
+      score: npmCandidateScore(item)
+    }))
+    .sort((left, right) => right.score - left.score)[0]?.item ?? null;
+}
+
 function repositoryCandidateScore(repository) {
   const description = `${repository.full_name ?? ""} ${repository.description ?? ""}`.toLowerCase();
   const keywordBoost = [
@@ -969,8 +1648,54 @@ function repositoryCandidateScore(repository) {
   return keywordBoost + stars + forks + recent;
 }
 
+function npmCandidateScore(candidate) {
+  return npmScoreComponents(candidate).candidate_score;
+}
+
+function npmScoreComponents(candidate) {
+  const packageData = candidate.package ?? {};
+  const text = `${packageData.name ?? ""} ${packageData.description ?? ""} ${(packageData.keywords ?? []).join(" ")}`.toLowerCase();
+  const keywordBoost = [
+    "agent",
+    "agentic",
+    "workflow",
+    "mcp",
+    "llm",
+    "prompt",
+    "performance",
+    "architecture",
+    "eslint",
+    "vite",
+    "react",
+    "typescript"
+  ].reduce((score, keyword) => score + (text.includes(keyword) ? 8 : 0), 0);
+  const search = Number(candidate.searchScore ?? 0) * 20;
+  const final = Number(candidate.score?.final ?? 0) * 40;
+  const quality = Number(candidate.score?.detail?.quality ?? 0) * 16;
+  const popularity = Number(candidate.score?.detail?.popularity ?? 0) * 12;
+  const recent = recencyScore(packageData.date);
+  const candidateScore = keywordBoost + search + final + quality + popularity + recent;
+  return {
+    search_score: Number(candidate.searchScore ?? 0),
+    weighted_search_score: roundMetric(search),
+    final_score: Number(candidate.score?.final ?? 0),
+    weighted_final_score: roundMetric(final),
+    quality: Number(candidate.score?.detail?.quality ?? 0),
+    weighted_quality: roundMetric(quality),
+    popularity: Number(candidate.score?.detail?.popularity ?? 0),
+    weighted_popularity: roundMetric(popularity),
+    recency_score: roundMetric(recent),
+    keyword_boost: roundMetric(keywordBoost),
+    candidate_score: roundMetric(candidateScore)
+  };
+}
+
 function repositoryTrustScore(repository) {
   return Math.max(10, Math.min(98, Math.round(42 + repositoryCandidateScore(repository) * 0.62)));
+}
+
+function npmTrustScore(candidate) {
+  return Math.max(12, Math.min(96, Math.round(40 + npmCandidateScore(candidate) * 0.58)));
 }
 
 function recencyScore(value) {
@@ -987,6 +1712,55 @@ function recencyScore(value) {
 
 function cleanSummary(value) {
   return String(value ?? "").replace(/\s+/g, " ").trim().slice(0, 260);
+}
+
+function roundMetric(value) {
+  return Math.round(Number(value ?? 0) * 100) / 100;
+}
+
+function buildNpmAuditText(packageData, candidate) {
+  const maintainers = Array.isArray(packageData.maintainers)
+    ? packageData.maintainers.map((item) => item.username || item.email || item.name).filter(Boolean)
+    : [];
+  const publisher = packageData.publisher?.username || packageData.publisher?.email || packageData.publisher?.name || "";
+  const keywords = Array.isArray(packageData.keywords) ? packageData.keywords.filter(Boolean) : [];
+  return [
+    `name: ${packageData.name ?? "unknown"}`,
+    `version: ${packageData.version ?? "unknown"}`,
+    `description: ${packageData.description ?? ""}`,
+    `keywords: ${keywords.join(", ")}`,
+    `publisher: ${publisher}`,
+    `maintainers: ${maintainers.join(", ")}`,
+    `npm_url: ${packageData.links?.npm ?? ""}`,
+    `repository_url: ${packageData.links?.repository ?? ""}`,
+    `homepage_url: ${packageData.links?.homepage ?? ""}`,
+    `score: ${JSON.stringify(candidate.score ?? {})}`
+  ].join("\n");
+}
+
+function vectorDescriptor(vector) {
+  const normalized = normalizeIntelligenceVector(vector);
+  const map = {
+    github: {
+      label: "GitHub Repositories",
+      origin: "GitHub Scrape",
+      route: "github-search",
+      url: "https://api.github.com/search/repositories"
+    },
+    npm: {
+      label: "NPM Package Registry",
+      origin: "NPM Package Registry",
+      route: "npm-search",
+      url: "https://registry.npmjs.org/-/v1/search"
+    },
+    mcp: {
+      label: "MCP Tool Catalog",
+      origin: "MCP Tool Catalog",
+      route: "mcp-registry",
+      url: "vnem://mcp-registry"
+    }
+  };
+  return map[normalized];
 }
 
 function readHeader(response, name) {
@@ -1043,6 +1817,7 @@ function slugify(value) {
 function buildDispatchMarkdown(ingestion, options = {}) {
   const repository = ingestion.repository;
   const report = ingestion.protection_report ?? {};
+  const descriptor = vectorDescriptor(repository.vector ?? intelligenceMission.vector);
   return [
     `# VNEM Live Intelligence Dispatch: ${repository.full_name}`,
     "",
@@ -1050,9 +1825,11 @@ function buildDispatchMarkdown(ingestion, options = {}) {
     "",
     "## Source",
     "",
-    `- Repository: ${repository.full_name}`,
+    `- Target: ${repository.full_name}`,
+    `- Intelligence vector: ${descriptor.label}`,
+    `- Source route: ${repository.source_route ?? ingestion.source_route ?? descriptor.route}`,
     `- URL: ${repository.html_url}`,
-    `- Default branch: ${repository.default_branch}`,
+    `- Default branch: ${repository.default_branch ?? "not applicable"}`,
     `- Language: ${repository.language ?? "unknown"}`,
     `- Stars: ${repository.stargazers_count ?? 0}`,
     `- Forks: ${repository.forks_count ?? 0}`,
