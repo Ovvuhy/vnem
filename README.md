@@ -5,14 +5,16 @@
 <h1 align="center">vnem</h1>
 
 <p align="center">
-  <strong>Read-only AI booster and perception layer for coding agents.</strong>
+  <strong>AI-improvement forge for coding agents: protected Core, app dashboard, and reviewable Research -> Protection -> Giving pipeline.</strong>
 </p>
 
 <p align="center">
   <img src="assets/brand/banner.png" alt="vnem banner" width="100%" />
 </p>
 
-vnem is a read-only AI booster for coding agents. It gives agents a local perception layer so they optimize performance, visuals, playability, safety, and maintainability before touching code.
+vnem is an AI-improvement forge for coding agents. **VNEM Core** is the protected read-only perception layer: it gives agents local guidance so they optimize performance, visuals, playability, safety, and maintainability before touching code.
+
+The current repo is also growing the **VNEM App** and reviewable **Research AI -> Protection AI -> Giving AI** pipeline. Those app surfaces can stage and review local markdown dispatches, but they must stay explicit, auditable, and honest about what is implemented versus planned.
 
 It also ships an LLM-readable knowledge pack and registry for agentic tools: MCP servers, skills, frameworks, evals, safety utilities, memory systems, payment rails, identity tools, and workflow patterns.
 
@@ -22,13 +24,13 @@ Live overview: [vnem.pages.dev](https://vnem.pages.dev)
 
 ## Quick Start
 
-Use the read-only pack when you only want repo-local AI guidance:
+Use the read-only pack when you only want repo-local AI guidance inside the current project:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install.tgz | tar -xz
 ```
 
-Use the checkout when you want the CLI installer, doctor checks, or MCP server:
+Use the checkout when you want the CLI installer, doctor checks, MCP server, dashboard, or local intelligence app server:
 
 ```bash
 git clone https://github.com/Ovvuhy/vnem.git
@@ -38,6 +40,14 @@ npm run install:project -- /path/to/my-project
 npm run doctor -- /path/to/my-project
 node scripts/vnem-cli.mjs mcp-config
 ```
+
+Run the owner dashboard and local app server when you want live Research AI -> Protection AI -> Giving AI dispatch review:
+
+```bash
+npm run dev:all
+```
+
+The dashboard exposes explicit review controls. A staged Giving AI dispatch can be opened, inspected as markdown, promoted into `.vnem/approved/`, or rejected and deleted from `.vnem/staging/`. Approval does not commit code, execute scripts, install packages, or touch external systems.
 
 ## The VNEM Standard
 
@@ -124,7 +134,11 @@ vnem is meant to improve the judgment of coding agents, not replace maintainer r
 4. The agent uses `.vnem/search-index.json`, `.vnem/best-practices.md`, `.vnem/agent-workspace.md`, and `.vnem/prompt-*` files only when routed there.
 5. For opt-in mutation workflows, the agent reads `.vnem/precision-execution-protocol.md` and `.vnem/omniscient-self-healing-protocol.md` before using exact patching, semantic search, verification loops, or ephemeral scripts.
 6. For current docs, MCP discovery, or benchmark claims, the agent checks `.vnem/source-radar.json` before broad web search.
-7. The agent recommends options and asks before changing code, installing packages, using secrets, or touching external systems.
+7. If the local app server is running, Research AI can ingest a target from the dashboard, Protection AI reviews provenance/risk/license/safety, and Giving AI stages a markdown dispatch in `.vnem/staging/`.
+8. The dashboard owner reviews the staged dispatch through the findings matrix. Approve moves the markdown into `.vnem/approved/`; reject deletes the staged markdown and clears the active review item.
+9. The app server serializes OpenRouter inference calls. If OpenRouter returns a 429, VNEM pauses for the exact `retry-after` window, keeps the active payload queued, broadcasts a resume countdown, then continues instead of silently dropping to fallback.
+10. The dashboard system map translates current telemetry into plain current-vs-planned surfaces, next actions, blocked/review states, connector readiness, and provider backoff status. See [`docs/current-system.md`](docs/current-system.md) for the maintained current system contract.
+11. The agent recommends options and asks before changing code, installing packages, using secrets, or touching external systems.
 
 ## Install The Pack
 

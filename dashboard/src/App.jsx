@@ -18,10 +18,14 @@ import {
 } from "lucide-react";
 import logoUrl from "../../assets/brand/logo.png";
 import { AutonomousPipeline } from "./components/AutonomousPipeline.jsx";
+import { DispatchReviewModal } from "./components/DispatchReviewModal.jsx";
 import { FindingsMatrix } from "./components/FindingsMatrix.jsx";
 import { Badge } from "./components/PipelinePrimitives.jsx";
 import { TargetingConsole } from "./components/TargetingConsole.jsx";
+import { VnemSystemBrief } from "./components/VnemSystemBrief.jsx";
 import { usePipelineExecution } from "./hooks/usePipelineExecution.js";
+import { createVnemApiClient, normalizeRequestError } from "./lib/vnemApiClient.js";
+import { derivePipelineVerdict } from "./lib/pipelineVerdicts.js";
 import { sampleSummary } from "./sampleSummary.js";
 import { useTelemetry } from "./hooks/useTelemetry.js";
 import { useVnemConnector } from "./hooks/useVnemConnector.js";
@@ -218,14 +222,29 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
   const [originFilter, setOriginFilter] = useState("all");
   const [query, setQuery] = useState("");
   const connector = useVnemConnector();
+  const apiClient = useMemo(() => createVnemApiClient(), []);
+  const [selectedFinding, setSelectedFinding] = useState(null);
+  const [dispatchReview, setDispatchReview] = useState(null);
+  const [dispatchStatus, setDispatchStatus] = useState("idle");
+  const [dispatchError, setDispatchError] = useState(null);
   const pipelineExecution = usePipelineExecution(telemetry, summary);
 
-  const findings = useMemo(() => (summary?.findings ?? []).map(normalizeFinding), [summary?.findings]);
+  const findings = useMemo(() => {
+    const dashboardFindings = (summary?.findings ?? []).map(normalizeFinding);
+    const liveFindings = (telemetry.activeIngestions ?? [])
+      .filter((ingestion) => ingestion?.staged_dispatch?.file_name || ingestion?.approved_dispatch?.file_name)
+      .map(normalizeIngestionFinding);
+    const byId = new Map();
+    for (const finding of [...liveFindings, ...dashboardFindings]) {
+      byId.set(finding.id, finding);
+    }
+    return [...byId.values()];
+  }, [summary?.findings, telemetry.activeIngestions]);
   const originOptions = unique(["all", ...findings.map((finding) => finding.origin.label)]);
   const filtered = useMemo(() => findings.filter((finding) => {
-    const text = `${finding.title} ${finding.summary} ${finding.origin.label} ${finding.stage.label}`.toLowerCase();
+    const text = `${finding.title} ${finding.summary} ${finding.origin.label} ${finding.stage.label} ${finding.verdict.label} ${finding.verdict.reason}`.toLowerCase();
     return (stageFilter === "all" || finding.stage.key === stageFilter) &&
-      (riskFilter === "all" || finding.risk.key === riskFilter) &&
+      (riskFilter === "all" || finding.verdict.verdict === riskFilter) &&
       (originFilter === "all" || finding.origin.label === originFilter) &&
       (!query || text.includes(query.toLowerCase()));
   }), [findings, stageFilter, riskFilter, originFilter, query]);
@@ -234,6 +253,59 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
     connector.refreshStatus();
     connector.fetchPreview();
   }, [connector.refreshStatus, connector.fetchPreview]);
+
+  const openDispatchReview = useCallback(async (finding) => {
+    if (!finding?.dispatch?.id || finding.dispatch.status !== "staged_for_review") {
+      return;
+    }
+    setSelectedFinding(finding);
+    setDispatchReview(null);
+    setDispatchError(null);
+    setDispatchStatus("loading");
+    try {
+      const review = await apiClient.reviewDispatch(finding.dispatch.id);
+      setDispatchReview(review);
+      setDispatchStatus("ready");
+    } catch (cause) {
+      setDispatchError(normalizeRequestError(cause));
+      setDispatchStatus("error");
+    }
+  }, [apiClient]);
+
+  const closeDispatchReview = useCallback(() => {
+    setSelectedFinding(null);
+    setDispatchReview(null);
+    setDispatchError(null);
+    setDispatchStatus("idle");
+  }, []);
+
+  const approveSelectedDispatch = useCallback(async () => {
+    if (!selectedFinding?.dispatch?.id) return;
+    setDispatchStatus("approving");
+    setDispatchError(null);
+    try {
+      await apiClient.approveDispatch(selectedFinding.dispatch.id);
+      await telemetry.refreshTelemetryHistory?.();
+      closeDispatchReview();
+    } catch (cause) {
+      setDispatchError(normalizeRequestError(cause));
+      setDispatchStatus("ready");
+    }
+  }, [apiClient, closeDispatchReview, selectedFinding?.dispatch?.id, telemetry]);
+
+  const rejectSelectedDispatch = useCallback(async () => {
+    if (!selectedFinding?.dispatch?.id) return;
+    setDispatchStatus("rejecting");
+    setDispatchError(null);
+    try {
+      await apiClient.rejectDispatch(selectedFinding.dispatch.id);
+      await telemetry.refreshTelemetryHistory?.();
+      closeDispatchReview();
+    } catch (cause) {
+      setDispatchError(normalizeRequestError(cause));
+      setDispatchStatus("ready");
+    }
+  }, [apiClient, closeDispatchReview, selectedFinding?.dispatch?.id, telemetry]);
 
   return (
     <>
@@ -269,6 +341,7 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
 
       {status === "error" ? <div className="inline-error">{humanize(error)}</div> : null}
 
+      <VnemSystemBrief telemetry={telemetry} execution={pipelineExecution} summary={summary} connector={connector} />
       <TargetingConsole telemetry={telemetry} execution={pipelineExecution} />
       <AutonomousPipeline telemetry={telemetry} execution={pipelineExecution} />
 
@@ -294,7 +367,7 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
               onRiskFilter={setRiskFilter}
               onOriginFilter={setOriginFilter}
             />
-            <FindingsMatrix findings={filtered} loading={status === "loading"} />
+            <FindingsMatrix findings={filtered} loading={status === "loading"} onReviewFinding={openDispatchReview} />
           </section>
 
           <section className="panel timeline-panel" aria-label="Runs">
@@ -332,6 +405,16 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
           </section>
         </aside>
       </section>
+
+      <DispatchReviewModal
+        finding={selectedFinding}
+        review={dispatchReview}
+        status={dispatchStatus}
+        error={dispatchError}
+        onClose={closeDispatchReview}
+        onApprove={approveSelectedDispatch}
+        onReject={rejectSelectedDispatch}
+      />
     </>
   );
 }
@@ -339,11 +422,21 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
 function IntelligenceProviderDiagnostic({ provider }) {
   const status = provider?.status ?? "missing_key";
   const active = status === "active";
-  const rateLimited = status === "rate_limited";
+  const paused = status === "paused_for_backoff";
+  const rateLimited = status === "rate_limited" || paused;
+  const [now, setNow] = useState(Date.now());
+
+  useEffect(() => {
+    if (!paused) return undefined;
+    const timer = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(timer);
+  }, [paused]);
+
   const tone = active ? "ok" : rateLimited ? "critical" : "review";
-  const badgeText = active ? "Hermes 3 Active" : "Local Fallback Active";
+  const badgeText = active ? "Hermes 3 Active" : paused ? "Paused for Backoff" : "Local Fallback Active";
   const model = provider?.model ?? "local-fallback";
   const latestError = provider?.errors?.[0] ?? null;
+  const retryRemaining = paused ? formatBackoffRemaining(provider?.retry_until, provider?.retry_after_ms, now) : null;
   const detail = active
     ? "OpenRouter inference is driving Research AI, Protection AI, and Giving AI stages when live cycles run."
     : providerFallbackDetail(status, latestError, provider);
@@ -354,7 +447,7 @@ function IntelligenceProviderDiagnostic({ provider }) {
         {active ? <ShieldCheck size={18} /> : <AlertTriangle size={18} />}
         <div>
           <p className="eyebrow">intelligence provider</p>
-          <h2>{active ? "OpenRouter Hermes inference online" : "Deterministic fallback online"}</h2>
+          <h2>{active ? "OpenRouter Hermes inference online" : paused ? "OpenRouter backoff queue paused" : "Deterministic fallback online"}</h2>
         </div>
       </div>
       <div className="provider-state">
@@ -362,6 +455,7 @@ function IntelligenceProviderDiagnostic({ provider }) {
         <code>{model}</code>
       </div>
       <p>{detail}</p>
+      {retryRemaining ? <div className="provider-countdown"><Clock3 size={15} /> resumes in <strong>{retryRemaining}</strong></div> : null}
       {!active && latestError ? (
         <div className="provider-error">
           <span>{latestError.code ?? status}</span>
@@ -374,6 +468,9 @@ function IntelligenceProviderDiagnostic({ provider }) {
 }
 
 function providerFallbackDetail(status, latestError, provider) {
+  if (status === "paused_for_backoff") {
+    return "OpenRouter asked VNEM to wait before another Hermes 3 inference request. The active intelligence payload remains queued and will continue after the backoff window.";
+  }
   if (status === "rate_limited") {
     return `OpenRouter free-tier limit was hit, so VNEM is using local deterministic fallback${latestError?.retry_after ?? provider?.retry_after ? ` until the retry window clears` : ""}.`;
   }
@@ -474,13 +571,14 @@ function FindingFilters({ stageFilter, riskFilter, originFilter, originOptions, 
         onChange={onStageFilter}
       />
       <SegmentedControl
-        label="risk tier"
+        label="protection verdict"
         value={riskFilter}
         options={[
           ["all", "All"],
-          ["low", "Low"],
-          ["review", "Review"],
-          ["critical", "Critical"]
+          ["allow", "Allow"],
+          ["needs-review", "Review"],
+          ["quarantine", "Quarantine"],
+          ["blocked", "Blocked"]
         ]}
         onChange={onRiskFilter}
       />
@@ -693,6 +791,21 @@ function signInError(cause) {
   return message;
 }
 
+function formatBackoffRemaining(retryUntil, retryAfterMs, now) {
+  const parsedRetryUntil = retryUntil ? Date.parse(retryUntil) : NaN;
+  const parsedRetryAfter = Number(retryAfterMs);
+  const targetMs = Number.isFinite(parsedRetryUntil)
+    ? parsedRetryUntil
+    : Number.isFinite(parsedRetryAfter)
+      ? now + parsedRetryAfter
+      : now;
+  const remaining = Math.max(0, targetMs - now);
+  const seconds = Math.ceil(remaining / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const rest = seconds % 60;
+  return minutes > 0 ? `${minutes}m ${String(rest).padStart(2, "0")}s` : `${seconds}s`;
+}
+
 function formatDateTime(value) {
   if (!value) return "unknown";
   return new Intl.DateTimeFormat(undefined, {
@@ -723,22 +836,50 @@ function shortWallet(value) {
   return `${value.slice(0, 4)}...${value.slice(-4)}`;
 }
 
+function normalizeIngestionFinding(ingestion) {
+  const origin = originDetails(ingestion.source_route);
+  const verdict = derivePipelineVerdict(ingestion);
+  const risk = riskDetails(verdict);
+  const dispatchFile = ingestion.staged_dispatch ?? ingestion.approved_dispatch ?? null;
+  return {
+    id: ingestion.id,
+    title: ingestion.title ?? ingestion.repository?.full_name ?? "Live intelligence dispatch",
+    sourceUrl: ingestion.source_url ?? ingestion.repository?.html_url ?? null,
+    summary: ingestion.latest_event?.message ?? ingestion.repository?.description ?? "Live intelligence dispatch staged by Giving AI.",
+    origin,
+    trustScore: verdict.trustScore,
+    trustLabel: verdict.trustScore >= 85 ? "Verified Source" : verdict.trustScore >= 60 ? "Needs Review" : "Unverified Lead",
+    risk,
+    verdict,
+    stage: stageDetails(ingestion.status === "completed" ? "approved" : "review", verdict),
+    action: ingestion.status === "completed"
+      ? { label: "Approved Dispatch", detail: "Dispatch accepted into .vnem/approved/ without executing code" }
+      : actionDetails("review", verdict),
+    dispatch: {
+      id: ingestion.id,
+      status: ingestion.status,
+      fileName: dispatchFile?.file_name ?? null,
+      generatedAt: dispatchFile?.generated_at ?? dispatchFile?.approved_at ?? null
+    }
+  };
+}
+
 function normalizeFinding(finding) {
   const origin = originDetails(finding.source_route);
-  const riskScore = finding.repository_review?.risk_score ?? finding.metrics?.repo_risk_score ?? riskScoreFromFlags(finding.risk_flags);
-  const trustScore = finding.repository_review?.trust_score ?? finding.metrics?.repo_trust_score ?? trustScoreFromTier(finding.suggested_trust_tier);
-  const risk = riskDetails(finding.repository_review?.verdict, riskScore);
+  const verdict = derivePipelineVerdict(finding);
+  const risk = riskDetails(verdict);
   return {
     id: finding.id,
     title: finding.title,
     sourceUrl: finding.source_url,
     summary: finding.signal_summary ?? finding.description ?? "No signal summary provided.",
     origin,
-    trustScore: clampPercent(trustScore),
-    trustLabel: trustScore >= 85 ? "Verified Source" : trustScore >= 60 ? "Needs Review" : "Unverified Lead",
+    trustScore: verdict.trustScore,
+    trustLabel: verdict.trustScore >= 85 ? "Verified Source" : verdict.trustScore >= 60 ? "Needs Review" : "Unverified Lead",
     risk,
-    stage: stageDetails(finding.recommended_action, risk.key),
-    action: actionDetails(finding.recommended_action, risk.key)
+    verdict,
+    stage: stageDetails(finding.recommended_action, verdict),
+    action: actionDetails(finding.recommended_action, verdict)
   };
 }
 
@@ -757,56 +898,30 @@ function originDetails(route) {
   return { label, description };
 }
 
-function riskDetails(verdict, score) {
-  const normalized = String(verdict ?? "").toLowerCase();
-  if (normalized === "blocked" || score >= 75) {
-    return { key: "critical", label: "CRITICAL / ISOLATED", detail: `Threat score ${clampPercent(score)}%` };
-  }
-  if (score >= 35) {
-    return { key: "review", label: "REVIEW / SANDBOX", detail: `Threat score ${clampPercent(score)}%` };
-  }
-  return { key: "low", label: "LOW RISK / CLEAN", detail: `Threat score ${clampPercent(score)}%` };
+function riskDetails(verdict) {
+  return { key: verdict.riskKey, label: verdict.riskLabel, detail: `Threat score ${verdict.threatScore}%` };
 }
 
-function stageDetails(action, riskKey) {
-  if (riskKey === "critical") return { key: "protection", label: "Protection AI" };
-  if (["review", "promote", "approved"].includes(action)) return { key: "giving", label: "Giving AI" };
+function stageDetails(action, verdict) {
+  if (["blocked", "quarantine"].includes(verdict.verdict)) return { key: "protection", label: "Protection AI" };
+  if (["review", "promote", "approved", "watchlist"].includes(action) || verdict.givingEligible) return { key: "giving", label: "Giving AI" };
   return { key: "research", label: "Research AI" };
 }
 
-function actionDetails(action, riskKey) {
-  if (riskKey === "critical" || action === "blocked") {
-    return { label: "Isolated by Protection AI", detail: "Repository dispatch blocked until manual review" };
+function actionDetails(action, verdict) {
+  if (verdict.verdict === "blocked") {
+    return { label: "Blocked by Protection AI", detail: "Giving AI cannot apply, install, execute, or stage this item" };
   }
-  if (action === "watchlist") {
-    return { label: "Scanning", detail: "Waiting for primary source or stronger trust signal" };
+  if (verdict.verdict === "quarantine") {
+    return { label: "Quarantined", detail: "Kept for audit/research only; isolated from Giving AI application paths" };
   }
-  if (["promote", "approved", "committed"].includes(action)) {
-    return { label: "Committed to Repo", detail: "Dispatch accepted into the simulated repository lane" };
+  if (verdict.verdict === "needs-review") {
+    return { label: "Maintainer Review Required", detail: "Giving AI may only proceed after source, license, permissions, and install surface are checked" };
   }
-  return { label: "Pending Approval", detail: "Giving AI can package this once maintainer review passes" };
-}
-
-function trustScoreFromTier(tier) {
-  const map = {
-    curated: 97,
-    verified: 94,
-    promising: 88,
-    watchlist: 62,
-    unreviewed: 38,
-    suspicious: 22,
-    blocked: 12
-  };
-  return map[String(tier ?? "").toLowerCase()] ?? 50;
-}
-
-function riskScoreFromFlags(flags = []) {
-  return Math.min(100, (flags?.length ?? 0) * 18);
-}
-
-function clampPercent(value) {
-  const number = Number(value ?? 0);
-  return Math.max(0, Math.min(100, Math.round(Number.isFinite(number) ? number : 0)));
+  if (action === "approved") {
+    return { label: "Approved Dispatch", detail: "Dispatch accepted into .vnem/approved/ without executing code" };
+  }
+  return { label: "Eligible for Giving AI", detail: "No blocking issue found in current checks; still review before applying risky changes" };
 }
 
 function connectorState(client) {

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-03T16:57:16.290Z",
+  "generated_at": "2026-06-03T21:57:31.533Z",
   "schema_version": "1.0.0",
   "package_version": "1.0.1",
   "release_version": "1.0.1",
@@ -4678,7 +4678,7 @@
     ]
   },
   "coding_playbooks": {
-    "generated_at": "2026-06-03T16:57:16.290Z",
+    "generated_at": "2026-06-03T21:57:31.533Z",
     "schema_version": "1.0.0",
     "safety": {
       "mode": "read-only-coding-playbooks",

@@ -87,17 +87,35 @@ try {
   assert.deepEqual(openRouterCapture.body.response_format, { type: "json_object" });
   assert.match(openRouterCapture.headers.Authorization, /^Bearer test-openrouter-key/);
 
+  let openRouterLimitedAttempts = 0;
+  const observedBackoffSleeps = [];
   const openRouterLimited = await callOpenRouterJson({
     stage: "research",
-    fetchImpl: async () => jsonFetchResponse({ error: { message: "limited" } }, 429, { "retry-after": "12" }),
-    messages: [{ role: "user", content: "test" }]
+    fetchImpl: async () => {
+      openRouterLimitedAttempts += 1;
+      if (openRouterLimitedAttempts === 1) {
+        return jsonFetchResponse({ error: { message: "limited" } }, 429, { "retry-after": "12" });
+      }
+      return jsonFetchResponse({
+        choices: [
+          {
+            message: {
+              content: JSON.stringify({ recovered: true, stage: "research" })
+            }
+          }
+        ]
+      });
+    },
+    messages: [{ role: "user", content: "test" }],
+    sleepImpl: async (delayMs) => observedBackoffSleeps.push(delayMs)
   });
-  assert.equal(openRouterLimited.ok, false);
-  assert.equal(openRouterLimited.code, "OPENROUTER_RATE_LIMITED");
-  assert.equal(openRouterLimited.retryAfter, "12");
+  assert.equal(openRouterLimited.ok, true);
+  assert.deepEqual(openRouterLimited.json, { recovered: true, stage: "research" });
+  assert.equal(openRouterLimitedAttempts, 2, "OpenRouter 429 must requeue instead of falling back immediately");
+  assert.deepEqual(observedBackoffSleeps, [12000], "retry-after seconds must control the exact backoff delay");
   const limitedStatus = getAppServerStatus({ port: 0, repositoryRoot: tmpRoot });
-  assert.equal(limitedStatus.intelligence_provider.status, "rate_limited");
-  assert.equal(limitedStatus.intelligence_provider.model, "local-fallback");
+  assert.equal(limitedStatus.intelligence_provider.status, "active");
+  assert.equal(limitedStatus.intelligence_provider.errors[0].status, "paused_for_backoff");
   assert.equal(limitedStatus.intelligence_provider.errors[0].code, "OPENROUTER_RATE_LIMITED");
   delete process.env.OPENROUTER_API_KEY;
 
@@ -154,6 +172,24 @@ try {
   assert.match(stagedDispatch, /VNEM Live Intelligence Dispatch: ovvuh\/vnem-agent-workflow/);
   assert.match(stagedDispatch, /Threat score: 0%/);
 
+  const baselineDispatchId = telemetryHistory.body.active_ingestions[0].id;
+  const dispatchReview = await requestJson(port, "GET", `/api/intelligence/dispatch/${encodeURIComponent(baselineDispatchId)}`);
+  assert.equal(dispatchReview.statusCode, 200);
+  assert.equal(dispatchReview.body.dispatch.id, baselineDispatchId);
+  assert.equal(dispatchReview.body.dispatch.file_name, stagingFiles[0]);
+  assert.match(dispatchReview.body.markdown, /VNEM Live Intelligence Dispatch: ovvuh\/vnem-agent-workflow/);
+
+  const approveDispatch = await requestJson(port, "POST", `/api/intelligence/dispatch/${encodeURIComponent(baselineDispatchId)}/approve`);
+  assert.equal(approveDispatch.statusCode, 200);
+  assert.equal(approveDispatch.body.status, "completed");
+  assert.equal(approveDispatch.body.dispatch.approved_file_name, stagingFiles[0]);
+  assert.equal(existsSync(path.join(tmpRoot, ".vnem", "staging", stagingFiles[0])), false, "approve must remove staged file");
+  assert.equal(existsSync(path.join(tmpRoot, ".vnem", "approved", stagingFiles[0])), true, "approve must move dispatch to approved");
+  const approvedHistory = await requestJson(port, "GET", "/api/telemetry/history");
+  assert.equal(approvedHistory.body.active_ingestions[0].id, baselineDispatchId);
+  assert.equal(approvedHistory.body.active_ingestions[0].status, "completed");
+  assert.equal(approvedHistory.body.active_ingestions[0].action_dispatch, "Approved");
+
   const target = await requestJson(port, "POST", "/api/intelligence/target", {}, JSON.stringify({
     query: "rust entity component system",
     vector: "github",
@@ -177,6 +213,15 @@ try {
   assert.equal(retargetedHistory.body.active_ingestions[0].status, "staged_for_review");
   assert.equal(retargetedHistory.body.active_ingestions[0].protection_report.block_threshold, 50);
   assert.equal(mockFetch.calls.some((url) => url.includes("q=rust+entity+component+system")), true);
+
+  const bevyDispatchId = retargetedHistory.body.active_ingestions[0].id;
+  const bevyStagedName = retargetedHistory.body.active_ingestions[0].staged_dispatch.file_name;
+  const rejectDispatch = await requestJson(port, "POST", `/api/intelligence/dispatch/${encodeURIComponent(bevyDispatchId)}/reject`);
+  assert.equal(rejectDispatch.statusCode, 200);
+  assert.equal(rejectDispatch.body.status, "rejected");
+  assert.equal(existsSync(path.join(tmpRoot, ".vnem", "staging", bevyStagedName)), false, "reject must delete staged file");
+  const rejectedHistory = await requestJson(port, "GET", "/api/telemetry/history");
+  assert.equal(rejectedHistory.body.active_ingestions.some((item) => item.id === bevyDispatchId), false, "reject must clear ingestion from active history");
 
   const npmTarget = await requestJson(port, "POST", "/api/intelligence/target", {}, JSON.stringify({
     query: "agentic workflow",

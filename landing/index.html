@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="vnem gives coding agents a knowledge pack, quality gate, orchestration plans, opt-in precision execution, local semantic search, and proof loops before they touch your repo." />
+    <meta name="description" content="vnem is an AI-improvement forge for coding agents: protected Core guidance, app dashboard, source-backed Research AI, conservative Protection AI, and reviewable Giving AI dispatches." />
     <meta name="theme-color" content="#0d0d0d" />
     <meta property="og:title" content="vnem" />
-    <meta property="og:description" content="An AI booster with current tools, MCPs, best practices, quality gates, orchestration plans, opt-in precision execution, semantic code search, and verification loops for coding agents." />
+    <meta property="og:description" content="Protected VNEM Core guidance plus a growing dashboard pipeline for Research AI, Protection AI, Giving AI, connector previews, and honest current-vs-planned system status." />
     <meta property="og:image" content="assets/banner.jpg" />
     <title>vnem</title>
     <link rel="icon" href="assets/logo.png" />
@@ -26,7 +26,9 @@
       </a>
       <nav class="header-nav" aria-label="Primary">
         <a href="#install">install</a>
+        <a href="#intelligence">intelligence</a>
         <a href="#mcp">mcp</a>
+        <a href="dashboard/">dashboard</a>
         <a href="blog/">blog</a>
       </nav>
       <button class="header-action" id="copyCommandHeader" type="button" aria-label="Copy vnem install command">
@@ -43,8 +45,8 @@
         <div class="hero-center">
           <img class="hero-logo" src="assets/logo.png" alt="" />
           <p class="product-mark">vnem</p>
-          <h1>Perception layer for agents.</h1>
-          <p class="lead">Install an AI booster into any repo so coding agents optimize performance, visuals, playability, safety, and maintainability together before they touch code.</p>
+          <h1>AI-improvement forge for agents.</h1>
+          <p class="lead">VNEM Core stays protected and read-only while the VNEM App grows a live Research AI → Protection AI → Giving AI review pipeline for safer coding-agent upgrades.</p>
 
           <div class="command-shell" id="install-command" aria-label="vnem install command">
             <div class="command-row">
@@ -60,7 +62,7 @@
             </div>
           </div>
 
-          <p class="outcome-line">Clones <code>Ovvuhy/vnem</code> into <code>./vnem</code>. Use the local installer from there for managed project installs.</p>
+          <p class="outcome-line">Clones <code>Ovvuhy/vnem</code> into <code>./vnem</code>. Use the local installer from there for managed project installs, MCP config, and the owner dashboard.</p>
         </div>
       </section>
 
@@ -180,6 +182,35 @@
         </div>
       </section>
 
+      <section class="plain-section quality-section" id="intelligence" aria-label="VNEM intelligence pipeline">
+        <div class="section-inner">
+          <p class="section-kicker">intelligence pipeline</p>
+          <div class="install-grid">
+            <div>
+              <h2>Research. Protect. Stage. Review.</h2>
+              <p>The local app server can turn a dashboard target into an auditable dispatch flow: Research AI gathers a source-backed signal, Protection AI reviews provenance and risk, and Giving AI stages markdown for explicit owner approval.</p>
+            </div>
+            <div class="quality-list">
+              <article>
+                <span>01</span>
+                <h3>Smart queue</h3>
+                <p>OpenRouter inference is serialized. If a 429 happens, VNEM waits for the exact retry window, keeps the active payload queued, and shows a resume countdown.</p>
+              </article>
+              <article>
+                <span>02</span>
+                <h3>Review modal</h3>
+                <p>Staged findings open from the matrix into a markdown review view with Research, Protection, and Giving notes plus the raw dispatch body.</p>
+              </article>
+              <article>
+                <span>03</span>
+                <h3>Safe approval</h3>
+                <p>Approve only moves markdown from <code>.vnem/staging/</code> to <code>.vnem/approved/</code>. Reject deletes the staged file. Neither action commits code or executes scripts.</p>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section class="plain-section install-section" id="install" aria-label="Install vnem">
         <div class="section-inner">
           <p class="section-kicker">install</p>
@@ -222,6 +253,15 @@ npm run doctor -- /path/to/project</code></pre>
               <p>For a clean project that only needs the read-only agent guidance files, extract the pack directly in that project folder.</p>
             </div>
             <pre class="code-block"><code>curl -fsSL https://vnem.pages.dev/install.tgz | tar -xz</code></pre>
+          </div>
+
+          <div class="install-grid secondary-install">
+            <div>
+              <h2>Need dashboard review?</h2>
+              <p>Run the local app server and dashboard together. Use the dashboard to submit a target, watch Research AI / Protection AI / Giving AI telemetry, review staged dispatch markdown, and approve or reject it safely.</p>
+            </div>
+            <pre class="code-block"><code>npm run dev:all
+# then open the printed dashboard URL</code></pre>
           </div>
 
           <div class="install-grid secondary-install">

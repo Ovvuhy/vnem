@@ -13,6 +13,19 @@ export function createVnemApiClient(options = {}) {
     telemetryHistory() {
       return requestJson(fetchImpl, `${baseUrl}/api/telemetry/history`);
     },
+    reviewDispatch(id) {
+      return requestJson(fetchImpl, `${baseUrl}/api/intelligence/dispatch/${encodeURIComponent(id)}`);
+    },
+    approveDispatch(id) {
+      return requestJson(fetchImpl, `${baseUrl}/api/intelligence/dispatch/${encodeURIComponent(id)}/approve`, {
+        method: "POST"
+      });
+    },
+    rejectDispatch(id) {
+      return requestJson(fetchImpl, `${baseUrl}/api/intelligence/dispatch/${encodeURIComponent(id)}/reject`, {
+        method: "POST"
+      });
+    },
     deployIntelligenceTarget(target) {
       return requestJson(fetchImpl, `${baseUrl}/api/intelligence/target`, {
         method: "POST",

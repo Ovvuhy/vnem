@@ -1,8 +1,18 @@
 # vnem Product Direction
 
-vnem's product goal is to make AI coding agents more useful before they touch a user's codebase.
+vnem's product goal is to make AI coding agents more useful before they touch a user's codebase, then grow into a safe AI-improvement app around that protected core.
 
-The open repository should stay focused on a safe, source-backed, read-only knowledge layer. Future product surfaces can make that layer easier to install, browse, trust, and apply, but they should not weaken the safety model.
+Use the current product framing precisely:
+
+- **VNEM Core** is the protected read-only layer: install pack, registry, source radar, prompts, rubrics, quality gates, and generated LLM/API artifacts.
+- **VNEM App** is the dashboard and local control center: telemetry, targeting, connector status, findings, staged dispatch review, logs, errors, and next actions.
+- **Research AI** finds source-backed improvement candidates.
+- **Protection AI** checks risk, provenance, permissions, package/install surface, license concerns, and blocked/quarantine states.
+- **Giving AI** stages approved/reviewable work as local markdown dispatches and reports validation/rollback notes when changes are explicitly requested.
+- **VNEM Connectors** are the future-safe local client configuration path: detect, preview, apply, revert, log, and never fake connection state.
+- **VNEM AI** is planned, not currently a trained standalone model: a future customizable AI surface with modes, providers, tools, rules, memory, and app-builder/security workflows.
+
+The open repository should keep VNEM Core safe and source-backed while making the app/dashboard/pipeline easier to understand, trust, and extend. Future product surfaces can make that layer easier to install, browse, trust, and apply, but they should not weaken the safety model.
 
 ## Core Promise
 

@@ -8,6 +8,7 @@ import {
   ShieldCheck
 } from "lucide-react";
 import { formatMetric, formatTime } from "../lib/dashboardFormat.js";
+import { derivePipelineVerdict } from "../lib/pipelineVerdicts.js";
 import { Badge, SkeletonEmpty } from "./PipelinePrimitives.jsx";
 
 export function AutonomousPipeline({ telemetry, execution }) {
@@ -115,11 +116,12 @@ function LineageManifest({ execution }) {
 }
 
 function ActiveIngestion({ active }) {
+  const verdict = active ? derivePipelineVerdict(active) : null;
   return (
     <div className="pipeline-current">
       <div className="section-title-row">
         <span>active ingestion</span>
-        <Badge tone={active ? riskTone(active.risk_tier) : "quiet"}>{active ? active.status : "idle"}</Badge>
+        <Badge tone={verdict?.tone ?? "quiet"}>{verdict ? verdict.shortLabel : "idle"}</Badge>
       </div>
       {active ? (
         <>
@@ -127,8 +129,13 @@ function ActiveIngestion({ active }) {
           <p>{active.latest_event?.message ?? "Pipeline event received."}</p>
           <div className="ingestion-meta">
             <span><GitBranch size={14} /> {active.source_origin}</span>
-            <span><ShieldCheck size={14} /> {active.trust_score ?? "--"}% trust</span>
-            <span><ShieldAlert size={14} /> {active.threat_score ?? 0}% threat</span>
+            <span><ShieldCheck size={14} /> {verdict.trustScore}% trust</span>
+            <span><ShieldAlert size={14} /> {verdict.threatScore}% threat</span>
+          </div>
+          <div className={`pipeline-verdict-card ${verdict.tone}`}>
+            <strong>{verdict.label}</strong>
+            <span>{verdict.reason}</span>
+            <em>{verdict.givingEligible ? "Giving AI eligible with review controls" : "Giving AI blocked for this verdict"}</em>
           </div>
         </>
       ) : (
@@ -300,11 +307,4 @@ function agentStages(active) {
       stateLabel: activeAgent === "giving" ? "staging dispatch" : activeAgent === "complete" ? "dispatch sealed" : "handoff ready"
     }
   ];
-}
-
-function riskTone(riskTier) {
-  if (riskTier === "critical") return "critical";
-  if (riskTier === "review") return "review";
-  if (riskTier === "low") return "ok";
-  return "quiet";
 }

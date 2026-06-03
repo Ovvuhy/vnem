@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import http from "node:http";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -25,6 +25,7 @@ let openRouterProviderState = {
 };
 let intelligenceTimer = null;
 let intelligenceFirstCycle = null;
+let openRouterQueue = Promise.resolve();
 let liveIntelligenceRuntime = {
   repositoryRoot: rootDir,
   fetchImpl: null,
@@ -66,7 +67,10 @@ const endpoints = [
   "POST /api/connector/rollback",
   "GET /api/telemetry/history",
   "GET /api/telemetry/stream",
-  "POST /api/intelligence/target"
+  "POST /api/intelligence/target",
+  "GET /api/intelligence/dispatch/:id",
+  "POST /api/intelligence/dispatch/:id/approve",
+  "POST /api/intelligence/dispatch/:id/reject"
 ];
 
 export function getAppServerStatus(options = {}) {
@@ -170,6 +174,19 @@ export function createVnemAppServer(options = {}) {
           repositoryRoot
         });
         writeJson(response, 202, result);
+        return;
+      }
+
+      const dispatchRoute = matchDispatchRoute(request.method, url.pathname);
+      if (dispatchRoute) {
+        if (dispatchRoute.action === "read") {
+          const result = await readDispatchForReview(dispatchRoute.id, { repositoryRoot });
+          writeJson(response, 200, result);
+          return;
+        }
+        await drainRequestBody(request);
+        const result = await resolveDispatchReview(dispatchRoute.id, dispatchRoute.action, { repositoryRoot });
+        writeJson(response, 200, result);
         return;
       }
 
@@ -285,6 +302,109 @@ export function telemetryHistoryPayload() {
     mission: missionSnapshot(),
     pipeline: pipelineSnapshot(),
     intelligence_provider: intelligenceProviderSnapshot()
+  };
+}
+
+export async function readDispatchForReview(id, options = {}) {
+  const ingestion = findDispatchIngestion(id);
+  const staged = dispatchStagedFile(ingestion);
+  const stagingDir = path.join(path.resolve(options.repositoryRoot || rootDir), ".vnem", "staging");
+  const filePath = safeChildPath(stagingDir, staged.file_name);
+  const markdown = await readFile(filePath, "utf8");
+  return {
+    ok: true,
+    dispatch: {
+      id: ingestion.id,
+      title: ingestion.title,
+      status: ingestion.status,
+      file_name: staged.file_name,
+      generated_at: staged.generated_at ?? null,
+      source_route: ingestion.source_route,
+      source_url: ingestion.source_url ?? ingestion.repository?.html_url ?? null,
+      protection_report: ingestion.protection_report ?? null
+    },
+    markdown
+  };
+}
+
+export async function resolveDispatchReview(id, action, options = {}) {
+  if (!["approve", "reject"].includes(action)) {
+    throw httpError(405, "INVALID_DISPATCH_ACTION", "Dispatch action must be approve or reject.");
+  }
+
+  const repositoryRoot = path.resolve(options.repositoryRoot || rootDir);
+  const ingestion = findDispatchIngestion(id);
+  const staged = dispatchStagedFile(ingestion);
+  const stagingDir = path.join(repositoryRoot, ".vnem", "staging");
+  const sourcePath = safeChildPath(stagingDir, staged.file_name);
+  const now = new Date().toISOString();
+
+  if (action === "approve") {
+    const approvedDir = path.join(repositoryRoot, ".vnem", "approved");
+    await mkdir(approvedDir, { recursive: true });
+    const approvedPath = safeChildPath(approvedDir, staged.file_name);
+    await rename(sourcePath, approvedPath);
+    Object.assign(ingestion, {
+      current_agent: "complete",
+      status: "completed",
+      action_dispatch: "Approved",
+      approved_dispatch: {
+        path: approvedPath,
+        file_name: staged.file_name,
+        approved_at: now
+      },
+      staged_dispatch: null,
+      updated_at: now,
+      latest_event: {
+        agent: "review",
+        message: `Maintainer approved ${staged.file_name}; dispatch moved to ${approvedPath}.`,
+        timestamp: now
+      }
+    });
+    ingestion.timeline.unshift({
+      agent: "review",
+      status: ingestion.status,
+      message: ingestion.latest_event.message,
+      timestamp: now
+    });
+    ingestion.timeline = ingestion.timeline.slice(0, 8);
+    const event = pipelineEvent({
+      type: "dispatch_approved",
+      message: ingestion.latest_event.message,
+      agent_stage: "review",
+      active_ingestion: ingestion
+    });
+    broadcastTelemetry(event);
+    return {
+      ok: true,
+      status: "completed",
+      dispatch: {
+        id: ingestion.id,
+        approved_file_name: staged.file_name,
+        approved_path: approvedPath
+      }
+    };
+  }
+
+  await rm(sourcePath, { force: true });
+  const index = activeIngestions.findIndex((item) => item.id === ingestion.id);
+  if (index >= 0) {
+    activeIngestions.splice(index, 1);
+  }
+  const event = pipelineEvent({
+    type: "dispatch_rejected",
+    message: `Maintainer rejected ${staged.file_name}; staged dispatch discarded without applying code.`,
+    agent_stage: "review"
+  });
+  broadcastTelemetry(event);
+  return {
+    ok: true,
+    status: "rejected",
+    dispatch: {
+      id: ingestion.id,
+      rejected_file_name: staged.file_name,
+      rejected_at: now
+    }
   };
 }
 
@@ -1267,6 +1387,13 @@ export function scanThreatSignatures(text) {
 }
 
 export async function callOpenRouterJson(options = {}) {
+  const runQueued = () => executeOpenRouterJsonRequest(options);
+  const queued = openRouterQueue.then(runQueued, runQueued);
+  openRouterQueue = queued.catch(() => null);
+  return queued;
+}
+
+async function executeOpenRouterJsonRequest(options = {}) {
   const apiKey = String(process.env.OPENROUTER_API_KEY ?? "").trim();
   if (!apiKey) {
     setOpenRouterProviderState("missing_key", {
@@ -1307,99 +1434,136 @@ export async function callOpenRouterJson(options = {}) {
     temperature: Number.isFinite(options.temperature) ? options.temperature : 0.2,
     max_tokens: Number.isFinite(options.maxTokens) ? options.maxTokens : 600
   };
+  const maxRateLimitRetries = Number.isInteger(options.maxRateLimitRetries) ? options.maxRateLimitRetries : 1;
+  const sleepImpl = typeof options.sleepImpl === "function" ? options.sleepImpl : sleep;
 
-  try {
-    const response = await fetchImpl(openRouterChatCompletionsUrl, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-        "X-Title": "VNEM Hermes"
-      },
-      body: JSON.stringify(requestBody)
-    });
-
-    if (response.status === 429) {
-      const retryAfter = readHeader(response, "retry-after");
-      setOpenRouterProviderState("rate_limited", {
-        code: "OPENROUTER_RATE_LIMITED",
-        message: `OpenRouter rate limited VNEM${retryAfter ? `; retry after ${retryAfter}s` : ""}.`,
-        retry_after: retryAfter,
-        stage: options.stage ?? "unknown"
+  for (let attempt = 0; attempt <= maxRateLimitRetries; attempt += 1) {
+    try {
+      const response = await fetchImpl(openRouterChatCompletionsUrl, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+          "X-Title": "VNEM Hermes"
+        },
+        body: JSON.stringify(requestBody)
       });
-      return {
-        ok: false,
-        code: "OPENROUTER_RATE_LIMITED",
-        retryAfter,
-        error: routeError(
-          "OPENROUTER_RATE_LIMITED",
-          `OpenRouter rate limited VNEM${retryAfter ? `; retry after ${retryAfter}s` : ""}.`,
-          {
+
+      if (response.status === 429) {
+        const retryAfter = readHeader(response, "retry-after");
+        const backoffMs = parseRetryAfterMs(retryAfter);
+        const retryUntil = new Date(Date.now() + backoffMs).toISOString();
+        const errorContext = {
+          code: "OPENROUTER_RATE_LIMITED",
+          message: `OpenRouter rate limited VNEM; pausing ${options.stage ?? "unknown"} stage for ${Math.ceil(backoffMs / 1000)}s before requeue.`,
+          retry_after: retryAfter,
+          retry_after_ms: backoffMs,
+          retry_until: retryUntil,
+          stage: options.stage ?? "unknown"
+        };
+        setOpenRouterProviderState("paused_for_backoff", errorContext);
+        broadcastTelemetry({
+          type: "intelligence_provider",
+          message: errorContext.message,
+          status: "paused_for_backoff",
+          agent_stage: options.stage ?? "unknown",
+          retry_after: retryAfter,
+          retry_after_ms: backoffMs,
+          retry_until: retryUntil,
+          intelligence_provider: intelligenceProviderSnapshot(),
+          active_ingestions: activeIngestions.slice(0, 12),
+          mission: missionSnapshot(),
+          pipeline: pipelineSnapshot()
+        });
+        if (attempt < maxRateLimitRetries) {
+          await sleepImpl(backoffMs);
+          continue;
+        }
+        return {
+          ok: false,
+          code: "OPENROUTER_RATE_LIMITED",
+          retryAfter,
+          retryAfterMs: backoffMs,
+          retryUntil,
+          error: routeError("OPENROUTER_RATE_LIMITED", errorContext.message, {
             route: "openrouter",
             stage: options.stage ?? "unknown",
             target_url: openRouterChatCompletionsUrl,
-            retry_after: retryAfter
-          }
-        )
-      };
-    }
+            retry_after: retryAfter,
+            retry_after_ms: backoffMs,
+            retry_until: retryUntil
+          })
+        };
+      }
 
-    if (!response.ok) {
-      const bodyText = await safeReadText(response);
+      if (!response.ok) {
+        const bodyText = await safeReadText(response);
+        setOpenRouterProviderState("local_fallback", {
+          code: `OPENROUTER_HTTP_${response.status}`,
+          message: `OpenRouter returned HTTP ${response.status}.`,
+          response_excerpt: bodyText.slice(0, 500),
+          stage: options.stage ?? "unknown"
+        });
+        return {
+          ok: false,
+          code: `OPENROUTER_HTTP_${response.status}`,
+          error: routeError(`OPENROUTER_HTTP_${response.status}`, `OpenRouter returned HTTP ${response.status}.`, {
+            route: "openrouter",
+            stage: options.stage ?? "unknown",
+            target_url: openRouterChatCompletionsUrl,
+            response_excerpt: bodyText.slice(0, 500)
+          })
+        };
+      }
+
+      const responseBody = await response.json();
+      const content = responseBody?.choices?.[0]?.message?.content;
+      const json = parseJsonObjectContent(content);
+      setOpenRouterProviderState("active");
+      return {
+        ok: true,
+        json,
+        raw: responseBody
+      };
+    } catch (cause) {
       setOpenRouterProviderState("local_fallback", {
-        code: `OPENROUTER_HTTP_${response.status}`,
-        message: `OpenRouter returned HTTP ${response.status}.`,
-        response_excerpt: bodyText.slice(0, 500),
+        code: "OPENROUTER_REQUEST_FAILED",
+        message: `OpenRouter request failed: ${safeErrorMessage(cause)}`,
         stage: options.stage ?? "unknown"
       });
       return {
         ok: false,
-        code: `OPENROUTER_HTTP_${response.status}`,
-        error: routeError(`OPENROUTER_HTTP_${response.status}`, `OpenRouter returned HTTP ${response.status}.`, {
+        code: "OPENROUTER_REQUEST_FAILED",
+        error: routeError("OPENROUTER_REQUEST_FAILED", `OpenRouter request failed: ${safeErrorMessage(cause)}`, {
           route: "openrouter",
           stage: options.stage ?? "unknown",
-          target_url: openRouterChatCompletionsUrl,
-          response_excerpt: bodyText.slice(0, 500)
+          target_url: openRouterChatCompletionsUrl
         })
       };
     }
-
-    const responseBody = await response.json();
-    const content = responseBody?.choices?.[0]?.message?.content;
-    const json = parseJsonObjectContent(content);
-    setOpenRouterProviderState("active");
-    return {
-      ok: true,
-      json,
-      raw: responseBody
-    };
-  } catch (cause) {
-    setOpenRouterProviderState("local_fallback", {
-      code: "OPENROUTER_REQUEST_FAILED",
-      message: `OpenRouter request failed: ${safeErrorMessage(cause)}`,
-      stage: options.stage ?? "unknown"
-    });
-    return {
-      ok: false,
-      code: "OPENROUTER_REQUEST_FAILED",
-      error: routeError("OPENROUTER_REQUEST_FAILED", `OpenRouter request failed: ${safeErrorMessage(cause)}`, {
-        route: "openrouter",
-        stage: options.stage ?? "unknown",
-        target_url: openRouterChatCompletionsUrl
-      })
-    };
   }
+
+  return {
+    ok: false,
+    code: "OPENROUTER_QUEUE_EXHAUSTED",
+    error: routeError("OPENROUTER_QUEUE_EXHAUSTED", "OpenRouter queue exhausted without a response.", {
+      route: "openrouter",
+      stage: options.stage ?? "unknown"
+    })
+  };
 }
 
 function intelligenceProviderSnapshot() {
   const hasKey = isOpenRouterConfigured();
   const status = hasKey ? openRouterProviderState.status === "missing_key" ? "active" : openRouterProviderState.status : "missing_key";
-  const model = status === "active" ? openRouterHermesModel : "local-fallback";
+  const model = ["active", "paused_for_backoff"].includes(status) ? openRouterHermesModel : "local-fallback";
   return {
     status,
     model,
     configured: hasKey,
     retry_after: openRouterProviderState.retry_after ?? null,
+    retry_after_ms: openRouterProviderState.retry_after_ms ?? null,
+    retry_until: openRouterProviderState.retry_until ?? null,
     last_error_at: openRouterProviderState.last_error_at ?? null,
     errors: openRouterProviderErrors.slice(0, 6)
   };
@@ -1409,9 +1573,11 @@ function setOpenRouterProviderState(status, error = null) {
   const normalized = status === "local_fallback" ? "local_fallback" : status;
   openRouterProviderState = {
     status: normalized,
-    model: normalized === "active" ? openRouterHermesModel : "local-fallback",
+    model: ["active", "paused_for_backoff"].includes(normalized) ? openRouterHermesModel : "local-fallback",
     last_error_at: error ? new Date().toISOString() : openRouterProviderState.last_error_at,
-    retry_after: error?.retry_after ?? null
+    retry_after: error?.retry_after ?? null,
+    retry_after_ms: error?.retry_after_ms ?? null,
+    retry_until: error?.retry_until ?? null
   };
 
   if (error) {
@@ -1422,6 +1588,8 @@ function setOpenRouterProviderState(status, error = null) {
       message: error.message ?? "OpenRouter provider fallback activated.",
       stage: error.stage ?? "unknown",
       retry_after: error.retry_after ?? null,
+      retry_after_ms: error.retry_after_ms ?? null,
+      retry_until: error.retry_until ?? null,
       response_excerpt: error.response_excerpt ?? null
     });
     openRouterProviderErrors.splice(6);
@@ -1451,6 +1619,29 @@ function parseJsonObjectContent(content) {
     }
     throw new Error("OpenRouter response content was not valid JSON.");
   }
+}
+
+function parseRetryAfterMs(value) {
+  const raw = String(value ?? "").trim();
+  if (!raw) {
+    return 1000;
+  }
+  const seconds = Number(raw);
+  if (Number.isFinite(seconds) && seconds >= 0) {
+    return Math.max(0, Math.round(seconds * 1000));
+  }
+  const retryAt = Date.parse(raw);
+  if (Number.isFinite(retryAt)) {
+    return Math.max(0, retryAt - Date.now());
+  }
+  return 1000;
+}
+
+function sleep(delayMs) {
+  return new Promise((resolve) => {
+    const timer = setTimeout(resolve, Math.max(0, delayMs));
+    timer.unref?.();
+  });
 }
 
 async function safeReadText(response) {
@@ -1620,6 +1811,57 @@ function normalizeIntelligenceVector(value) {
 
 function trimActiveIngestions() {
   activeIngestions.splice(12);
+}
+
+function matchDispatchRoute(method, pathname) {
+  const match = String(pathname ?? "").match(/^\/api\/intelligence\/dispatch\/([^/]+)(?:\/(approve|reject))?$/);
+  if (!match) {
+    return null;
+  }
+  if (method === "GET" && !match[2]) {
+    return {
+      id: decodeURIComponent(match[1]),
+      action: "read"
+    };
+  }
+  if (method === "POST" && ["approve", "reject"].includes(match[2])) {
+    return {
+      id: decodeURIComponent(match[1]),
+      action: match[2]
+    };
+  }
+  throw httpError(405, "DISPATCH_METHOD_NOT_ALLOWED", "Dispatch review supports GET /dispatch/:id, POST /dispatch/:id/approve, and POST /dispatch/:id/reject.");
+}
+
+function findDispatchIngestion(id) {
+  const safeId = String(id ?? "").trim();
+  const ingestion = activeIngestions.find((item) => item.id === safeId);
+  if (!ingestion) {
+    throw httpError(404, "DISPATCH_NOT_FOUND", "No active staged dispatch matched the requested id.");
+  }
+  return ingestion;
+}
+
+function dispatchStagedFile(ingestion) {
+  const staged = ingestion?.staged_dispatch;
+  const fileName = String(staged?.file_name ?? "").trim();
+  if (!staged || !fileName) {
+    throw httpError(409, "DISPATCH_NOT_STAGED", "The requested ingestion is not staged for review.");
+  }
+  if (path.basename(fileName) !== fileName || !fileName.endsWith(".md")) {
+    throw httpError(400, "INVALID_DISPATCH_FILE", "The staged dispatch file name is invalid.");
+  }
+  return staged;
+}
+
+function safeChildPath(parentDir, childName) {
+  const parent = path.resolve(parentDir);
+  const target = path.resolve(parent, childName);
+  const relative = path.relative(parent, target);
+  if (relative.startsWith("..") || path.isAbsolute(relative)) {
+    throw httpError(400, "DISPATCH_PATH_OUTSIDE_REVIEW_ROOT", "Dispatch path escaped the review directory.");
+  }
+  return target;
 }
 
 function trimRouteErrors() {
