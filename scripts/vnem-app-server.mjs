@@ -5,10 +5,12 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { applyConnectorChanges } from "./apply-connector-changes.mjs";
 import { detectAiClients } from "./detect-ai-clients.mjs";
+import { loadLocalEnv } from "./local-env.mjs";
 import { generateConnectorPreviews } from "./preview-connector-changes.mjs";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(scriptDir, "..");
+loadLocalEnv(rootDir);
 const loopbackHost = "127.0.0.1";
 const defaultPort = 9099;
 const telemetryConnections = new Set();

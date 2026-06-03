@@ -4,13 +4,18 @@ import dns from "node:dns";
 import path from "node:path";
 import readline from "node:readline";
 import { fileURLToPath } from "node:url";
+import { loadLocalEnv } from "./local-env.mjs";
 
+const scriptDir = path.dirname(fileURLToPath(import.meta.url));
+const rootDir = path.resolve(scriptDir, "..");
+const localSecretEnv = loadLocalEnv(rootDir, { apply: false }).values;
 const dashboardPort = 4174;
 const dashboardApiPort = 8788;
 const appServerPort = 9099;
 const developmentPorts = [dashboardPort, dashboardApiPort, appServerPort];
 const dashboardApiToken = "local_development_secret_token_2026";
 const viteBin = "node_modules/vite/bin/vite.js";
+const protectedEnvKeys = ["OPENROUTER_API_KEY"];
 const services = [
   {
     id: "api",
@@ -22,7 +27,8 @@ const services = [
       HERMES_DASHBOARD_API_TOKEN: dashboardApiToken,
       HERMES_DASHBOARD_API_HOST: "127.0.0.1",
       HERMES_DASHBOARD_API_PORT: String(dashboardApiPort)
-    }
+    },
+    exposeProtectedEnv: false
   },
   {
     id: "app-server",
@@ -31,9 +37,11 @@ const services = [
     command: process.execPath,
     args: ["scripts/vnem-app-server.mjs", "--port", String(appServerPort)],
     env: {
+      ...localSecretEnv,
       VNEM_APP_SERVER_HOST: "127.0.0.1",
       VNEM_APP_SERVER_PORT: String(appServerPort)
-    }
+    },
+    exposeProtectedEnv: true
   },
   {
     id: "vite",
@@ -44,7 +52,8 @@ const services = [
     env: {
       VITE_VNEM_APP_SERVER_URL: `http://127.0.0.1:${appServerPort}`,
       VITE_HERMES_DASHBOARD_API_TARGET: `http://127.0.0.1:${dashboardApiPort}`
-    }
+    },
+    exposeProtectedEnv: false
   }
 ];
 
@@ -190,11 +199,7 @@ function launchService(service) {
   try {
     child = spawn(service.command, service.args, {
       cwd: process.cwd(),
-      env: {
-        ...process.env,
-        ...service.env,
-        NODE_OPTIONS: withIpv4First(process.env.NODE_OPTIONS)
-      },
+      env: buildServiceEnv(service),
       stdio: ["ignore", "pipe", "pipe"],
       windowsHide: true
     });
@@ -222,6 +227,22 @@ function launchService(service) {
     prefixRaw(service.label, "\x1b[31m", `exited unexpectedly with ${reason}`);
     shutdown(code === 0 ? 1 : code ?? 1, `${service.id}-exit`);
   });
+}
+
+export function buildServiceEnv(service) {
+  const env = {
+    ...process.env,
+    ...service.env,
+    NODE_OPTIONS: withIpv4First(process.env.NODE_OPTIONS)
+  };
+
+  if (service.exposeProtectedEnv !== true) {
+    for (const key of protectedEnvKeys) {
+      delete env[key];
+    }
+  }
+
+  return env;
 }
 
 function pipePrefixed(stream, label, color) {

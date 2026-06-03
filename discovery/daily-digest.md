@@ -1,6 +1,6 @@
 # vnem Daily Signals
 
-Generated: 2026-06-03T15:55:33.602Z
+Generated: 2026-06-03T16:57:38.569Z
 
 This digest is designed for maintainers. It summarizes source-backed candidates and stable best-practice signals; it does not auto-promote entries into the registry.
 
