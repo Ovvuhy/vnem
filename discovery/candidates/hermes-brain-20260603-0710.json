@@ -1,0 +1,437 @@
+{
+  "generated_at": "2026-06-03T07:10:00.000Z",
+  "mode": "brain",
+  "lookback_days": 3,
+  "source_routes": [
+    "github-search",
+    "github-releases",
+    "npm-search",
+    "hacker-news",
+    "mcp-registry"
+  ],
+  "candidates": [
+    {
+      "source_route": "github-search",
+      "name": "affaan-m/ECC",
+      "title": "ECC - Agent Harness Performance Optimization System",
+      "description": "Agent harness performance optimization system covering skills, instincts, memory, security, and research.",
+      "repo_url": "https://github.com/affaan-m/ECC",
+      "homepage_url": null,
+      "source_url": "https://github.com/affaan-m/ECC",
+      "source_urls": [
+        "https://github.com/affaan-m/ECC"
+      ],
+      "signal_summary": "Surged to 204k+ stars. Matches topic:mcp + pushed:>=2026-06-01 search. Heavy recent push activity 2026-06-02. README review unavailable due to GitHub rate limits. Repo review: low-risk, risk 0, trust 100.",
+      "why_builders_should_care": "Very high star count (204k) signals broad builder interest in agent harness optimization — skills, instincts, memory, security patterns.",
+      "suggested_trust_tier": "promising",
+      "risk_flags": [
+        "readme-review-unavailable"
+      ],
+      "recommended_action": "review",
+      "allow_registry_proposal": true,
+      "metrics": {
+        "stars": 204502,
+        "language": "JavaScript",
+        "pushed_at": "2026-06-02"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 0,
+        "trust_score": 100,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-06-03T07:10:00.000Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": false,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "MemPalace/mempalace",
+      "title": "MemPalace",
+      "description": "Best-benchmarked open-source AI memory system.",
+      "repo_url": "https://github.com/MemPalace/mempalace",
+      "homepage_url": null,
+      "source_url": "https://github.com/MemPalace/mempalace",
+      "source_urls": [
+        "https://github.com/MemPalace/mempalace"
+      ],
+      "signal_summary": "53k stars, active 2026-06-03. Positioned as best-benchmarked open-source AI memory system. Not in current vnem registry.",
+      "why_builders_should_care": "Strong benchmark claims and high star count for an open-source AI memory system — directly relevant to agent memory evaluation.",
+      "suggested_trust_tier": "promising",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "allow_registry_proposal": true,
+      "metrics": {
+        "stars": 53332,
+        "language": "Python",
+        "pushed_at": "2026-06-03"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 0,
+        "trust_score": 100,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-06-03T07:10:00.000Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": false,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "gastownhall/beads",
+      "title": "Beads - Memory Upgrade for Coding Agents",
+      "description": "A memory upgrade for your coding agent.",
+      "repo_url": "https://github.com/gastownhall/beads",
+      "homepage_url": null,
+      "source_url": "https://github.com/gastownhall/beads",
+      "source_urls": [
+        "https://github.com/gastownhall/beads"
+      ],
+      "signal_summary": "24k stars, pushed 2026-06-03. Explicitly targets coding agent memory. Not in current vnem registry.",
+      "why_builders_should_care": "Focused on-agent memory with strong community uptake (24k stars). Pairs with and complements existing memory entries.",
+      "suggested_trust_tier": "promising",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "allow_registry_proposal": true,
+      "metrics": {
+        "stars": 24291,
+        "language": "Go",
+        "pushed_at": "2026-06-03"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 0,
+        "trust_score": 100,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-06-03T07:10:00.000Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": false,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "atomicstrata/atomicmemory",
+      "title": "Atomic Memory",
+      "description": "Portable semantic memory for AI agents: core engine, TypeScript SDK, framework adapters, MCP server.",
+      "repo_url": "https://github.com/atomicstrata/atomicmemory",
+      "homepage_url": null,
+      "source_url": "https://github.com/atomicstrata/atomicmemory",
+      "source_urls": [
+        "https://github.com/atomicstrata/atomicmemory"
+      ],
+      "signal_summary": "138 stars, created 2026-05-18, active 2026-06-03. Includes MCP server and TypeScript SDK. Not in registry.",
+      "why_builders_should_care": "Portable semantic memory with MCP server + SDK adapters. Multi-framework support.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [],
+      "recommended_action": "watchlist",
+      "allow_registry_proposal": true,
+      "metrics": {
+        "stars": 138,
+        "language": "TypeScript",
+        "created_at": "2026-05-18",
+        "pushed_at": "2026-06-03"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 0,
+        "trust_score": 100,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-06-03T07:10:00.000Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": false,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "volcengine/OpenViking",
+      "title": "OpenViking",
+      "description": "Open-source context database designed specifically for AI Agents (such as openclaw).",
+      "repo_url": "https://github.com/volcengine/OpenViking",
+      "homepage_url": null,
+      "source_url": "https://github.com/volcengine/OpenViking",
+      "source_urls": [
+        "https://github.com/volcengine/OpenViking"
+      ],
+      "signal_summary": "25k stars, pushed 2026-06-03. From Volcengine. Not in registry. Focused on context database for agents.",
+      "why_builders_should_care": "Context database approach for agent state; significant community uptake. Different architectural angle from memory-layer entries.",
+      "suggested_trust_tier": "promising",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "allow_registry_proposal": true,
+      "metrics": {
+        "stars": 25069,
+        "language": "Python",
+        "pushed_at": "2026-06-03"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 0,
+        "trust_score": 100,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-06-03T07:10:00.000Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": false,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "HKUDS/nanobot",
+      "title": "Nanobot",
+      "description": "Lightweight, open-source AI agent for your tools, chats, and workflows.",
+      "repo_url": "https://github.com/HKUDS/nanobot",
+      "homepage_url": null,
+      "source_url": "https://github.com/HKUDS/nanobot",
+      "source_urls": [
+        "https://github.com/HKUDS/nanobot"
+      ],
+      "signal_summary": "43k stars, active 2026-06-03. Lightweight agent for tools, chats, workflows. Not in registry.",
+      "why_builders_should_care": "High star count for a lightweight agent framework. Directly relevant to agent builder workflow decisions.",
+      "suggested_trust_tier": "promising",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "allow_registry_proposal": true,
+      "metrics": {
+        "stars": 43562,
+        "language": "Python",
+        "pushed_at": "2026-06-03"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 0,
+        "trust_score": 100,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-06-03T07:10:00.000Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": false,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "conductor-oss/conductor",
+      "title": "Conductor",
+      "description": "Event driven agentic workflow engine providing durable and highly resilient execution.",
+      "repo_url": "https://github.com/conductor-oss/conductor",
+      "homepage_url": null,
+      "source_url": "https://github.com/conductor-oss/conductor",
+      "source_urls": [
+        "https://github.com/conductor-oss/conductor"
+      ],
+      "signal_summary": "31k stars, pushed 2026-06-03. Event-driven agentic workflow engine. Not in registry.",
+      "why_builders_should_care": "Durable, resilient workflow execution for agentic systems. Mature project with significant uptake.",
+      "suggested_trust_tier": "promising",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "allow_registry_proposal": true,
+      "metrics": {
+        "stars": 31876,
+        "language": "Java",
+        "pushed_at": "2026-06-03"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 0,
+        "trust_score": 100,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-06-03T07:10:00.000Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": false,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "garyqlin/gbase",
+      "title": "GBase - Recursive Self-Improvement Agent Framework",
+      "description": "Recursive Self-Improvement Agent Framework with memory, evolution, quality gates, and identity system.",
+      "repo_url": "https://github.com/garyqlin/gbase",
+      "homepage_url": null,
+      "source_url": "https://github.com/garyqlin/gbase",
+      "source_urls": [
+        "https://github.com/garyqlin/gbase"
+      ],
+      "signal_summary": "103 stars, created 2026-05-25, active 2026-06-03. Newer entrant in recursive self-improvement agents. Not in registry.",
+      "why_builders_should_care": "Recursive self-improvement architecture with identity/quality gates. Emerging pattern worth tracking.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [],
+      "recommended_action": "watchlist",
+      "allow_registry_proposal": false,
+      "metrics": {
+        "stars": 103,
+        "language": "Python",
+        "created_at": "2026-05-25",
+        "pushed_at": "2026-06-03"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 0,
+        "trust_score": 100,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-06-03T07:10:00.000Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": false,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "hacker-news",
+      "name": "Narwhal - TUI Database CLI with built-in MCP server",
+      "title": "Narwhal",
+      "description": "TUI database client with a built-in MCP server. Five databases (postgres, mysql, sqlite, duckdb, clickhouse).",
+      "repo_url": "https://github.com/Nonanti/narwhal",
+      "homepage_url": null,
+      "source_url": "https://github.com/Nonanti/narwhal",
+      "source_urls": [
+        "https://github.com/Nonanti/narwhal"
+      ],
+      "signal_summary": "33 stars, created 2026-05-27. Show HN. Database MCP server with multi-DB support. Not in registry.",
+      "why_builders_should_care": "Multi-database MCP server — postgres, mysql, sqlite, duckdb, clickhouse in one tool. Practical for agent DB access patterns.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "sensitive-permissions"
+      ],
+      "recommended_action": "watchlist",
+      "allow_registry_proposal": false,
+      "metrics": {
+        "stars": 33,
+        "language": "Rust",
+        "created_at": "2026-05-27"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 0,
+        "trust_score": 100,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-06-03T07:10:00.000Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": false,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-releases",
+      "name": "NousResearch/hermes-agent",
+      "title": "hermes-agent v0.15.2 (2026.5.29.2)",
+      "description": "The agent that grows with you.",
+      "repo_url": "https://github.com/NousResearch/hermes-agent",
+      "homepage_url": "https://hermes-agent.nousresearch.com",
+      "source_url": "https://github.com/NousResearch/hermes-agent/releases/tag/v2026.5.29.2",
+      "source_urls": [
+        "https://github.com/NousResearch/hermes-agent",
+        "https://hermes-agent.nousresearch.com"
+      ],
+      "signal_summary": "Release v2026.5.29.2 published 2026-05-29. 177k stars. Already tracked in daily digest. Not yet in registry. binary-first flags from release assets.",
+      "why_builders_should_care": "Hermes Agent is the runtime this brain runs on. Keeping its registry entry current matters for self-describing the stack.",
+      "suggested_trust_tier": "promising",
+      "risk_flags": [
+        "binary-download",
+        "sensitive-permissions"
+      ],
+      "recommended_action": "review",
+      "allow_registry_proposal": true,
+      "metrics": {
+        "stars": 177853,
+        "language": "Python",
+        "release_tag": "v2026.5.29.2",
+        "release_published_at": "2026-05-29"
+      },
+      "repository_review": {
+        "verdict": "needs-review",
+        "risk_score": 36,
+        "trust_score": 64,
+        "flags": [
+          "binary-download"
+        ],
+        "reasons": [
+          "Release assets include binary distributions. Standard for Python packages but noted."
+        ],
+        "reviewed_at": "2026-06-03T07:10:00.000Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "hacker-news",
+      "name": "MCP-Scan / Snyk Agent Scan - Security scanners for MCP servers",
+      "title": "MCP Security Scanners",
+      "description": "Security scanning tools for MCP servers, AI agents, and agent skills. Multiple projects active: mcp-scan (invariantlabs-ai), agent-scan (snyk).",
+      "repo_url": "https://github.com/invariantlabs-ai/mcp-scan",
+      "homepage_url": null,
+      "source_url": "https://github.com/invariantlabs-ai/mcp-scan",
+      "source_urls": [
+        "https://github.com/invariantlabs-ai/mcp-scan",
+        "https://github.com/snyk/agent-scan"
+      ],
+      "signal_summary": "Two dedicated MCP security scanners surfaced in HN discussions. Not in vnem registry. Important safety category.",
+      "why_builders_should_care": "Dedicated security scanners for MCP tool surface. Directly relevant to vnem's safety model and gateway roadmap.",
+      "suggested_trust_tier": "promising",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "allow_registry_proposal": true,
+      "metrics": {
+        "stars": 0,
+        "language": "multiple",
+        "created_at": "2026-02"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 0,
+        "trust_score": 100,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-06-03T07:10:00.000Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": false,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    }
+  ]
+}

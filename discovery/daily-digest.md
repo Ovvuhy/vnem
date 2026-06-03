@@ -1,57 +1,44 @@
 # vnem Daily Signals
 
-Generated: 2026-05-28T08:00:00.000Z
+Generated: 2026-06-03T07:10:00.000Z
 
 Hermes summarizes source-backed agent and LLM ecosystem signals. This digest does not auto-promote entries into the registry.
 
-## New Candidate Signals (hourly T07 — 2026-05-28)
+## New Candidate Signals
 
-- awesome-agent-memory | unreviewed | watchlist | https://github.com/TeleAI-UAGI/Awesome-Agent-Memory — 438 stars, Apache-2.0, curated agent memory systems/papers/benchmarks
-- instar | unreviewed | watchlist | https://github.com/JKHeadley/instar — 64 stars, MIT, persistent Claude Code agents with scheduling, sessions, memory, Telegram
-- wolfpack | unreviewed | review | https://github.com/almogdepaz/wolfpack — 30 stars, MIT, mobile/desktop command center for AI coding agents (Claude, Codex, Gemini) secured by Tailscale
-- discord-mcp | unreviewed | review | https://github.com/PaSympa/discord-mcp — 9 stars, MIT, MCP server to control Discord (messages, channels, roles, permissions, moderation)
-- sagent | unreviewed | review | https://github.com/rekursiv-ai/sagent — 8 stars, Apache-2.0, multi-provider self-mutating coding LLM CLI with async/recursive spawn
-- knowing | unreviewed | watchlist | https://github.com/blackwell-systems/knowing — 7 stars, MIT, permanent code intelligence layer, content-addressed graph with Merkle proofs, 23 MCP tools
-
-## New Candidate Signals (daily deep — 2026-05-28)
-
-- hermes-agent: Hermes Agent v0.14.0 (2026.5.16) | unreviewed | review | https://github.com/NousResearch/hermes-agent/releases/tag/v2026.5.16
-- claude-code: v2.1.153 | unreviewed | review | https://github.com/anthropics/claude-code/releases/tag/v2.1.153
-- minsky | watchlist | watchlist | https://github.com/fyodoriv/minsky
-- void-memory | unreviewed | watchlist | https://github.com/Efeta7451/void-memory
-- Easy-agentic-memory-system-easy-memory- | unreviewed | watchlist | https://github.com/Mursaleen-khan1/Easy-agentic-memory-system-easy-memory-
-- mcp-security-checklist | unreviewed | review | https://github.com/patrickbatem5194/mcp-security-checklist
-- sentinel | unreviewed | review | https://github.com/Spoonbillguru666/sentinel
-- vault-sync | unreviewed | review | https://github.com/Ub207/vault-sync
-- mguard | unreviewed | watchlist | https://github.com/uncensored-waterford179/mguard
-- openclaw-skill | unreviewed | watchlist | https://github.com/unexplained-familyephedraceae871/openclaw-skill
-- iosm-cli | unreviewed | review | https://github.com/viettua3978/iosm-cli
-- Memory-Like-A-Tree | unreviewed | watchlist | https://github.com/zxt-01/Memory-Like-A-Tree
-- Kagantic-vault-structure | unreviewed | watchlist | https://github.com/Asim00740/Kagantic-vault-structure
-- parecode | unreviewed | watchlist | https://github.com/BasilSkyWalk/parecode
+- BittleBits GEO Assistant | promising | review | https://registry.modelcontextprotocol.io/v0.1/servers/ai.bittlebits%2Fbittlebits/versions/latest
+- hermes-agent: Hermes Agent v0.15.2 (2026.5.29.2) | promising | review | https://github.com/NousResearch/hermes-agent/releases/tag/v2026.5.29.2
+- claude-code: v2.1.161 | unreviewed | review | https://github.com/anthropics/claude-code/releases/tag/v2.1.161
+- three.ws | unreviewed | watchlist | https://github.com/nirholas/three.ws
+- mk-qa-master | unreviewed | review | https://github.com/kao273183/mk-qa-master
+- agent-memory-orchestrator | unreviewed | watchlist | https://github.com/spurbey/agent-memory-orchestrator
+- reyn | unreviewed | review | https://github.com/tya5/reyn
+- Claudeception | watchlist | blocked | https://github.com/DanTo228/Claudeception
+- Build-Agentic-AI-and-Gen-AI-Agents-with-MCP | watchlist | blocked | https://github.com/Jfgj-gom/Build-Agentic-AI-and-Gen-AI-Agents-with-MCP
+- ripple-iui | unreviewed | watchlist | https://github.com/qbtrix/ripple-iui
+- artha | unreviewed | review | https://github.com/Tej-Katika/artha
+- ads-mcp | unreviewed | review | https://github.com/adkit/ads-mcp
+- ComfyUI_RH_Univideo | watchlist | watchlist | https://github.com/nalcapital/ComfyUI_RH_Univideo
+- CapturePort | watchlist | blocked | https://github.com/wyrtensi/CapturePort
+- MultiAgent-AI | watchlist | watchlist | https://github.com/Albertossilva-maker/MultiAgent-AI
 - nx-mcp | unreviewed | review | https://www.npmjs.com/package/nx-mcp
-- mcp-framework | unreviewed | watchlist | https://www.npmjs.com/package/mcp-framework
-- Show HN: VAEN – Package and import portable AI coding-agent Harnesses | watchlist | watchlist | https://news.ycombinator.com/item?id=48300485
-- The Codex Showcase | watchlist | watchlist | https://news.ycombinator.com/item?id=48289024
-
-## MCP Registry (already indexed)
-
-- ac.inference.sh/mcp | promising | already-indexed | license-not-asserted
-- ac.tandem/docs-mcp | promising | already-indexed | license-not-asserted
+- chrome-devtools-mcp | watchlist | watchlist | https://www.npmjs.com/package/chrome-devtools-mcp
+- Microsoft announces Scout, an autonomous AI agent built on OpenClaw | watchlist | watchlist | https://news.ycombinator.com/item?id=48374079
+- Show HN: Paseo – Beautiful open-source coding agent interface | watchlist | watchlist | https://news.ycombinator.com/item?id=48377250
+- ECC - Agent Harness Performance Optimization | promising | review | https://github.com/affaan-m/ECC
+- MemPalace - Open-source AI memory system | promising | review | https://github.com/MemPalace/mempalace
+- Beads - Memory upgrade for coding agents | promising | review | https://github.com/gastownhall/beads
+- OpenViking - Context database for AI Agents | promising | review | https://github.com/volcengine/OpenViking
+- Nanobot - Lightweight AI agent | promising | review | https://github.com/HKUDS/nanobot
+- Conductor - Event-driven agentic workflow engine | promising | review | https://github.com/conductor-oss/conductor
+- GBase - Recursive Self-Improvement Agent Framework | unreviewed | watchlist | https://github.com/garyqlin/gbase
+- Atomic Memory - Portable semantic memory w/ MCP server | unreviewed | watchlist | https://github.com/atomicstrata/atomicmemory
+- Narwhal - TUI database CLI w/ built-in MCP server | unreviewed | watchlist | https://github.com/Nonanti/narwhal
+- MCP Security Scanners (mcp-scan, agent-scan) | promising | review | https://github.com/invariantlabs-ai/mcp-scan
 
 ## Watched Primary Sources
 
 - No configured watched source changed, or no watched sources are configured.
-
-## Top Candidates for Maintainer Review
-
-These have the strongest signal (stars, activity, or relevance) and lowest risk flags:
-
-1. **awesome-agent-memory** (TeleAI-UAGI/Awesome-Agent-Memory) — 438 stars, Apache-2.0, actively maintained. Curated memory systems/benchmarks/papers. Useful reference even if not a registry entry. Low risk.
-2. **instar** (JKHeadley/instar) — 64 stars, MIT, persistent Claude Code agents. Actively pushed today. Relevant to agent infrastructure builders.
-3. **knowing** (blackwell-systems/knowing) — 7 stars, MIT, code intelligence graph with Merkle proofs + 23 MCP tools. Interesting for provenance/audit use cases.
-4. **wolfpack** (almogdepaz/wolfpack) — 30 stars, MIT, multi-agent mobile command center. Tailscale-secured. Practical for ops-minded builders.
-5. **discord-mcp** (PaSympa/discord-mcp) — 9 stars, MIT, Discord MCP server. Straightforward single-purpose MCP.
 
 ## Watchlist / Risk Flags
 
@@ -78,8 +65,9 @@ These have the strongest signal (stars, activity, or relevance) and lowest risk 
 
 ## Maintainer Actions
 
-- Review top 5 candidates above before merging.
+- Review Hermes candidate reports before merging.
 - Promote candidates only after checking source links, license posture, permissions, and install docs.
-- Promising registry proposals this cycle: **awesome-agent-memory** (strongest signal, clean license), **instar** (practical agent infra), **knowing** (code intel + MCP).
 - Keep social ingestion disabled unless official credentials and terms-compliant access are configured.
 - If generated pack files changed, verify `AGENTS.md`, `search-index.json`, `best-practices.md`, and `agent-workspace.md` still describe read-only behavior.
+- Consider registry entries for top new signals: ECC, MemPalace, Beads, OpenViking, Nanobot, Conductor, MCP security scanners.
+- hermes-agent release v0.15.2 should get a registry entry if one does not exist.
