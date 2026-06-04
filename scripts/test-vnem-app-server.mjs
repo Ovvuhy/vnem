@@ -125,6 +125,9 @@ try {
   assert.ok(status.endpoints.includes("POST /api/connector/apply"));
   assert.ok(status.endpoints.includes("GET /api/telemetry/stream"));
   assert.ok(status.endpoints.includes("POST /api/intelligence/target"));
+  assert.ok(status.endpoints.includes("GET /api/intelligence/review-queue"));
+  assert.ok(status.endpoints.includes("POST /api/intelligence/triage/refresh"));
+  assert.ok(status.endpoints.includes("POST /api/intelligence/candidate/:id/review"));
   assert.ok(status.endpoints.includes("POST /api/giving/branch/preview"));
   assert.ok(status.endpoints.includes("POST /api/giving/branch/prepare"));
   assert.equal(status.intelligence_provider.status, "missing_key");
@@ -159,13 +162,18 @@ try {
   assert.equal(Array.isArray(telemetryHistory.body.active_ingestions), true);
   assert.ok(telemetryHistory.body.active_ingestions.length > 0, "live intelligence engine must expose baseline ingestions");
   assert.equal(telemetryHistory.body.active_ingestions[0].title, "ovvuh/vnem-agent-workflow");
-  assert.equal(telemetryHistory.body.active_ingestions[0].current_agent, "complete");
+  assert.equal(telemetryHistory.body.active_ingestions[0].current_agent, "complete", JSON.stringify({ status: telemetryHistory.body.active_ingestions[0].status, verdict: telemetryHistory.body.active_ingestions[0].pipeline_verdict, report: telemetryHistory.body.active_ingestions[0].protection_report }, null, 2));
   assert.equal(telemetryHistory.body.active_ingestions[0].status, "staged_for_review");
   assert.equal(telemetryHistory.body.active_ingestions[0].threat_score < 30, true);
   assert.equal(Array.isArray(telemetryHistory.body.route_errors), true);
   assert.equal(telemetryHistory.body.intelligence_provider.status, "missing_key");
   assert.equal(telemetryHistory.body.intelligence_provider.model, "local-fallback");
   assert.equal(telemetryHistory.body.mission.vector, "github");
+  assert.equal(telemetryHistory.body.review_queue.ok, true);
+  assert.equal(telemetryHistory.body.review_queue.branchEligible >= 1, true);
+  assert.equal(Array.isArray(telemetryHistory.body.review_queue.topBranchCandidates), true);
+  assert.equal(Array.isArray(telemetryHistory.body.branch_candidate_set.branchEligibleCandidates), true);
+  assert.equal(telemetryHistory.body.branch_candidate_set.canPreviewBranch, true);
   assert.equal(mockFetch.calls.some((url) => url.startsWith("https://api.github.com/search/repositories")), true);
   assert.equal(mockFetch.calls.some((url) => url.endsWith("/README.md")), true);
   const stagingFiles = await readdir(path.join(tmpRoot, ".vnem", "staging"));
@@ -226,6 +234,24 @@ try {
   assert.equal(unconfirmedPrepare.body.pushStatus, "not-pushed");
 
   const baselineDispatchId = telemetryHistory.body.active_ingestions[0].id;
+  const reviewQueueResponse = await requestJson(port, "GET", "/api/intelligence/review-queue");
+  assert.equal(reviewQueueResponse.statusCode, 200);
+  assert.equal(reviewQueueResponse.body.ok, true);
+  assert.equal(reviewQueueResponse.body.branchEligible >= 1, true);
+  const triageRefresh = await requestJson(port, "POST", "/api/intelligence/triage/refresh");
+  assert.equal(triageRefresh.statusCode, 200);
+  assert.equal(triageRefresh.body.ok, true);
+  const malformedCandidateReview = await requestJson(port, "POST", `/api/intelligence/candidate/${encodeURIComponent(baselineDispatchId)}/review`, {}, JSON.stringify({
+    decision: "ship-it",
+    notes: "invalid"
+  }));
+  assert.equal(malformedCandidateReview.statusCode, 400);
+  assert.equal(malformedCandidateReview.body.error_code, "CANDIDATE_REVIEW_REJECTED");
+  const missingCandidateReview = await requestJson(port, "POST", "/api/intelligence/candidate/not-present/review", {}, JSON.stringify({
+    decision: "keep-reviewing"
+  }));
+  assert.equal(missingCandidateReview.statusCode, 404);
+  assert.equal(missingCandidateReview.body.error_code, "CANDIDATE_NOT_FOUND");
   const dispatchReview = await requestJson(port, "GET", `/api/intelligence/dispatch/${encodeURIComponent(baselineDispatchId)}`);
   assert.equal(dispatchReview.statusCode, 200);
   assert.equal(dispatchReview.body.dispatch.id, baselineDispatchId);
@@ -242,6 +268,16 @@ try {
   assert.equal(approvedHistory.body.active_ingestions[0].id, baselineDispatchId);
   assert.equal(approvedHistory.body.active_ingestions[0].status, "completed");
   assert.equal(approvedHistory.body.active_ingestions[0].action_dispatch, "Approved");
+  const candidateReview = await requestJson(port, "POST", `/api/intelligence/candidate/${encodeURIComponent(baselineDispatchId)}/review`, {}, JSON.stringify({
+    decision: "keep-reviewing",
+    notes: "Route test: keep review record only.",
+    reviewedBy: "manual-owner"
+  }));
+  assert.equal(candidateReview.statusCode, 200);
+  assert.equal(candidateReview.body.ok, true);
+  assert.equal(candidateReview.body.review.decision, "keep-reviewing");
+  assert.equal(existsSync(path.join(tmpRoot, "discovery", "reviews", `${baselineDispatchId}.json`)), true, "candidate review route must write safe local JSON record");
+  assert.equal(candidateReview.body.review_queue.ok, true);
 
   const target = await requestJson(port, "POST", "/api/intelligence/target", {}, JSON.stringify({
     query: "rust entity component system",
@@ -260,21 +296,38 @@ try {
     body.mission?.query === "rust entity component system" &&
     body.pipeline?.mission?.threat_tolerance === 50 &&
     body.active_ingestions?.[0]?.title === "bevyengine/bevy" &&
-    body.active_ingestions?.[0]?.status === "staged_for_review"
+    body.active_ingestions?.[0]?.status === "awaiting_manual_review"
   ));
-  assert.equal(retargetedHistory.body.active_ingestions[0].repository.query, "rust entity component system");
-  assert.equal(retargetedHistory.body.active_ingestions[0].status, "staged_for_review");
-  assert.equal(retargetedHistory.body.active_ingestions[0].protection_report.block_threshold, 50);
+  const bevyCandidate = retargetedHistory.body.active_ingestions[0];
+  assert.equal(bevyCandidate.repository.query, "rust entity component system");
+  assert.equal(bevyCandidate.status, "awaiting_manual_review");
+  assert.equal(bevyCandidate.pipeline_verdict, "needs-review");
+  assert.equal(bevyCandidate.protection_report.verdict, "needs-review");
+  assert.equal(bevyCandidate.protection_report.block_threshold, 50);
+  assert.equal(bevyCandidate.staged_dispatch ?? null, null, "missing-license candidates must not auto-stage a Giving dispatch");
+  assert.equal(retargetedHistory.body.review_queue.topReviewCandidates.some((item) => item.id === bevyCandidate.id), true, "missing-license Bevy candidate should be surfaced for manual review");
+  assert.equal(retargetedHistory.body.branch_candidate_set.branchEligibleCandidates.some((item) => item.id === bevyCandidate.id), false, "unreviewed needs-review candidate must not be branch-eligible");
+  assert.equal(retargetedHistory.body.branch_candidate_set.excludedCandidates.some((item) => item.id === bevyCandidate.id && item.verdict === "needs-review"), true);
   assert.equal(mockFetch.calls.some((url) => url.includes("q=rust+entity+component+system")), true);
 
-  const bevyDispatchId = retargetedHistory.body.active_ingestions[0].id;
-  const bevyStagedName = retargetedHistory.body.active_ingestions[0].staged_dispatch.file_name;
-  const rejectDispatch = await requestJson(port, "POST", `/api/intelligence/dispatch/${encodeURIComponent(bevyDispatchId)}/reject`);
-  assert.equal(rejectDispatch.statusCode, 200);
-  assert.equal(rejectDispatch.body.status, "rejected");
-  assert.equal(existsSync(path.join(tmpRoot, ".vnem", "staging", bevyStagedName)), false, "reject must delete staged file");
-  const rejectedHistory = await requestJson(port, "GET", "/api/telemetry/history");
-  assert.equal(rejectedHistory.body.active_ingestions.some((item) => item.id === bevyDispatchId), false, "reject must clear ingestion from active history");
+  const bevyDispatchId = bevyCandidate.id;
+  const bevyReview = await requestJson(port, "POST", `/api/intelligence/candidate/${encodeURIComponent(bevyDispatchId)}/review`, {}, JSON.stringify({
+    decision: "approve-for-giving",
+    notes: "Manual owner reviewed source, license situation, permissions, and install surface.",
+    reviewedBy: "manual-owner"
+  }));
+  assert.equal(bevyReview.statusCode, 200);
+  assert.equal(bevyReview.body.ok, true);
+  assert.equal(bevyReview.body.review.decision, "approve-for-giving");
+  assert.equal(bevyReview.body.review.reviewSatisfied, true);
+  assert.equal(existsSync(path.join(tmpRoot, "discovery", "reviews", `${bevyDispatchId}.json`)), true, "manual review must write a safe local JSON record");
+  assert.equal(bevyReview.body.review_queue.topReviewCandidates.some((item) => item.id === bevyDispatchId), false, "review-satisfied Bevy should leave the top review queue");
+  assert.equal(bevyReview.body.review_queue.branchEligible >= 1, true);
+  assert.equal(bevyReview.body.review_queue.branchCandidateSet.branchEligibleCandidates.some((item) => item.id === bevyDispatchId), true, "review-satisfied needs-review candidate should become branch-eligible");
+
+  const reviewedHistory = await requestJson(port, "GET", "/api/telemetry/history");
+  assert.equal(reviewedHistory.body.branch_candidate_set.branchEligibleCandidates.some((item) => item.id === bevyDispatchId), true);
+  assert.equal(reviewedHistory.body.active_ingestions.some((item) => item.id === bevyDispatchId && item.status === "review_satisfied"), true);
 
   const npmTarget = await requestJson(port, "POST", "/api/intelligence/target", {}, JSON.stringify({
     query: "agentic workflow",
@@ -288,10 +341,13 @@ try {
   const npmHistory = await waitForTelemetryHistory(port, (body) => (
     body.mission?.vector === "npm" &&
     body.active_ingestions?.[0]?.source_route === "npm-search" &&
-    body.active_ingestions?.[0]?.status === "staged_for_review"
+    body.active_ingestions?.[0]?.status === "awaiting_manual_review"
   ));
   const npmIngestion = npmHistory.body.active_ingestions[0];
   assert.equal(npmIngestion.title, "vnem-agent-runner");
+  assert.equal(npmIngestion.pipeline_verdict, "needs-review");
+  assert.equal(Boolean(npmIngestion.review_satisfied), false);
+  assert.equal(npmHistory.body.branch_candidate_set.branchEligibleCandidates.some((item) => item.id === npmIngestion.id), false, "unreviewed missing-license NPM package must not be branch-eligible");
   assert.equal(npmIngestion.repository.kind, "npm_package");
   assert.equal(npmIngestion.repository.vector, "npm");
   assert.equal(npmIngestion.repository.diagnostics.score_components.search_score, 0.96);
@@ -312,9 +368,11 @@ try {
   const mcpHistory = await waitForTelemetryHistory(port, (body) => (
     body.mission?.vector === "mcp" &&
     body.active_ingestions?.[0]?.source_route === "mcp-registry" &&
-    body.active_ingestions?.[0]?.status === "staged_for_review"
+    body.active_ingestions?.[0]?.status === "awaiting_manual_review"
   ));
   assert.match(mcpHistory.body.active_ingestions[0].title, /agentic workflow mcp MCP server/);
+  assert.equal(mcpHistory.body.active_ingestions[0].pipeline_verdict, "needs-review");
+  assert.equal(mcpHistory.body.branch_candidate_set.branchEligibleCandidates.some((item) => item.id === mcpHistory.body.active_ingestions[0].id), false, "unreviewed MCP catalog lead must not be branch-eligible");
   assert.equal(mcpHistory.body.active_ingestions[0].repository.kind, "mcp_tool");
   assert.equal(mcpHistory.body.active_ingestions[0].repository.adapter.mode, "deterministic-local");
   assert.equal(mcpHistory.body.active_ingestions[0].repository.diagnostics.route, "mcp-registry");
@@ -622,6 +680,7 @@ function createMockFetch() {
             stargazers_count: 420,
             forks_count: 36,
             language: "TypeScript",
+            license: { spdx_id: "MIT" },
             updated_at: "2026-05-30T12:00:00Z",
             pushed_at: "2026-05-30T12:00:00Z"
           }

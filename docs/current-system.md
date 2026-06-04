@@ -48,7 +48,7 @@ Current implemented behavior:
 3. Verdict counters show allowed, needs-review, quarantined, and blocked candidates.
 4. The branch lane shows the planned branch name, base branch (`main`), included candidates, isolated candidates, validation status, push status, and review status.
 5. Branch preview calls the local app-server preview endpoint and does not mutate git.
-6. Branch preparation is backend-supported only through explicit confirmation (`confirm: "prepare-giving-branch"`), clean-main checks, branch-name checks, a branch-plan file, validation, and push to the review branch. Dashboard prepare remains disabled until the confirmation/review UX is added, so it cannot fake or accidentally trigger branch writes.
+6. Branch preparation is backend-supported only through explicit confirmation (`confirm: "prepare-giving-branch"`), clean-main checks, branch-name checks, a branch-plan file, validation, and push to the review branch. The dashboard now opens an exact-confirmation modal after a successful preview instead of faking branch work.
 
 Backend branch preparation behavior:
 
@@ -125,6 +125,39 @@ The top card must say:
 - whether a branch has actually been previewed, prepared, committed, or pushed.
 
 Raw findings, maintainer notes, connector details, mission controls, and logs are secondary details. They should not bury the current mission, blocker, candidate queue, or safe branch status.
+
+## Pipeline v2: actionable Research / Protection / Giving queue
+
+Pipeline v2 is implemented as a deterministic metadata-level gating layer for live candidates. It improves the old giant `needs-review` pile without weakening Protection AI.
+
+Implemented now:
+
+1. Candidate enrichment normalizes source URL, route/type, repository/package metadata, license, stars/forks, last update, README/install indicators, duplicate keys, already-indexed status, maturity/relevance/trust/risk scores, and enrichment reasons.
+2. Verdict classification produces `allow`, `needs-review`, `quarantine`, or `blocked`:
+   - `allow` requires a primary/source-backed route, an accepted license, low-risk metadata, and no duplicate/already-indexed marker. It is not a full safety guarantee.
+   - `needs-review` covers missing/unknown license, weak source, unclear permissions, incomplete metadata, low confidence, or review flags. These candidates do not reach branch preparation until manual review is satisfied.
+   - `quarantine` covers suspicious install surfaces such as lifecycle/postinstall scripts, shell-pipe installs, binary/download hints, privileged commands, obfuscation, or network execution concerns.
+   - `blocked` covers strong unsafe indicators such as malware, credential theft, secret collection/exfiltration, destructive commands, hidden persistence, scam/phishing, exploit chains, ransomware, keylogger behavior, or unsafe automation.
+3. The review queue groups candidates into branch-ready, top review candidates, hidden low-signal, already indexed, duplicates, missing license, needs-primary-source, suspicious, quarantined, and blocked counts. Large piles surface a small top review queue rather than dumping every raw finding as the main action.
+4. Manual review uses `POST /api/intelligence/candidate/:id/review` and stores safe local JSON under `discovery/reviews/<candidate-id>.json`. Supported decisions are `approve-for-giving`, `keep-reviewing`, `reject-low-signal`, `quarantine`, and `block`.
+5. Manual `approve-for-giving` can satisfy a `needs-review` candidate for branch preview. It does not execute code, install packages, commit, push, or stage a dispatch by itself.
+6. The branch candidate set includes only `allow` candidates or `needs-review` candidates with satisfied manual review. It excludes blocked, quarantined, rejected, duplicate, already-indexed, and unreviewed `needs-review` candidates with explicit reasons.
+7. The dashboard consumes backend `review_queue` and `branch_candidate_set`, separates branch-ready candidates from top review candidates, provides candidate review actions when no staged dispatch exists, and keeps prepare behind a successful preview plus exact confirmation.
+
+Planned / still deeper work:
+
+- Deeper license/provenance scanning beyond available metadata.
+- Package tarball/source-tree inspection for install scripts and binaries where appropriate.
+- Richer source federation for MCP and external registries.
+- More granular residual-risk notes before Giving AI writes implementation code.
+
+Safety boundaries:
+
+- Protection is metadata-level unless a deeper scan is explicitly shown.
+- `allow` means current checks did not find a blocker; it does not mean fully safe or guaranteed safe.
+- Review approval writes a local JSON record only.
+- Giving branch flow is review-first and branch-first.
+- `main` remains protected behind manual review; Pipeline v2 does not auto-merge or push research output to `main`.
 
 ## Candidate triage layer
 

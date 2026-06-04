@@ -288,7 +288,8 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
     setSelectedFinding(fallbackFinding);
     setDispatchReview({
       markdown: candidateMarkdown(candidate),
-      dispatch: { file_name: "candidate-details.md" }
+      dispatch: { file_name: "candidate-details.md" },
+      candidateReview: { id: candidate.id, decisionSet: ["approve-for-giving", "reject-low-signal", "quarantine", "block"] }
     });
     setDispatchError(null);
     setDispatchStatus("ready");
@@ -329,6 +330,30 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
     }
   }, [apiClient, closeDispatchReview, selectedFinding?.dispatch?.id, telemetry]);
 
+  const reviewSelectedCandidate = useCallback(async (decision, notes) => {
+    const candidateId = dispatchReview?.candidateReview?.id ?? selectedFinding?.id;
+    if (!candidateId) return;
+    setDispatchStatus("candidate-reviewing");
+    setDispatchError(null);
+    try {
+      const result = await apiClient.reviewCandidate(candidateId, {
+        decision,
+        notes,
+        reviewedBy: "manual-owner"
+      });
+      if (result?.ok === false) {
+        setDispatchError(result);
+        setDispatchStatus("ready");
+        return;
+      }
+      await telemetry.refreshTelemetryHistory?.();
+      closeDispatchReview();
+    } catch (cause) {
+      setDispatchError(normalizeRequestError(cause));
+      setDispatchStatus("ready");
+    }
+  }, [apiClient, closeDispatchReview, dispatchReview?.candidateReview?.id, selectedFinding?.id, telemetry]);
+
   return (
     <>
       <header className="topbar">
@@ -368,6 +393,7 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
         telemetry={telemetry}
         apiClient={apiClient}
         onBranchPreview={setBranchPreview}
+        onBranchPrepared={setBranchPreview}
         onReviewCandidate={openCandidateReview}
       />
       <AutonomousPipeline telemetry={telemetry} execution={pipelineExecution} />
@@ -459,6 +485,7 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
         onClose={closeDispatchReview}
         onApprove={approveSelectedDispatch}
         onReject={rejectSelectedDispatch}
+        onCandidateReview={reviewSelectedCandidate}
       />
     </>
   );

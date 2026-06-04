@@ -3347,6 +3347,94 @@ a {
   overflow: hidden;
 }
 
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  padding: clamp(14px, 3vw, 34px);
+  background: rgba(5, 5, 7, 0.72);
+  backdrop-filter: blur(14px);
+}
+
+.review-modal.prepare-modal {
+  position: relative;
+  width: min(760px, 100%);
+  max-height: min(820px, calc(100svh - 40px));
+  overflow: auto;
+  display: grid;
+  gap: 14px;
+  padding: clamp(18px, 3vw, 28px);
+  border: 1px solid var(--line-strong);
+  border-radius: 18px;
+  background: rgba(11, 11, 13, 0.97);
+  box-shadow: 0 38px 120px rgba(0, 0, 0, 0.58);
+}
+
+.modal-close {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+}
+
+.prepare-plan-grid {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 9px 14px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(245, 238, 232, 0.04);
+}
+
+.prepare-plan-grid span,
+.confirm-field {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.prepare-plan-grid strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: var(--bone);
+}
+
+.confirm-field {
+  display: grid;
+  gap: 8px;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.confirm-field input,
+.confirm-field textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 11px 12px;
+  color: var(--bone);
+  background: rgba(245, 238, 232, 0.045);
+  font: inherit;
+}
+
+.candidate-review-actions {
+  width: 100%;
+  display: grid;
+  gap: 12px;
+}
+
+.candidate-review-actions > div,
+.modal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
 .details-workspace .matrix-head,
 .details-workspace .finding-row {
   grid-template-columns: 1fr;

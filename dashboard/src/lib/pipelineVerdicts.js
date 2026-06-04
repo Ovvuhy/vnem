@@ -94,7 +94,7 @@ const CONTRACT = {
 
 export function derivePipelineVerdict(item = {}) {
   const source = item.repository_review ?? item.protection_report ?? item.review ?? item;
-  const explicit = normalizeExplicitVerdict(source.verdict ?? source.protection_verdict ?? item.verdict ?? item.recommended_action ?? item.status);
+  const explicit = normalizeExplicitVerdict(source.verdict ?? source.protection_verdict ?? item.pipeline_verdict ?? item.verdict ?? item.recommended_action ?? item.status);
   const flags = normalizeFlags(source.flags ?? item.risk_flags ?? source.risk_flags ?? item.flags);
   const threatScore = clampPercent(source.threat_score ?? source.risk_score ?? item.threat_score ?? item.metrics?.repo_risk_score ?? riskScoreFromFlags(flags));
   const trustScore = clampPercent(source.trust_score ?? item.trust_score ?? item.metrics?.repo_trust_score ?? 50);

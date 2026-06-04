@@ -25,6 +25,7 @@
     "test:preview-connector": "node scripts/test-preview-connector-changes.mjs",
     "test:apply-connector": "node scripts/test-apply-connector-changes.mjs",
     "test:app-server": "node scripts/test-vnem-app-server.mjs",
+    "test:candidate-pipeline": "node scripts/test-candidate-pipeline.mjs",
     "test:launch-dev": "node scripts/test-launch-dev.mjs",
     "test:dashboard-connector": "node dashboard/src/hooks/__tests__/useVnemConnector.test.js",
     "test:dashboard-telemetry": "node dashboard/src/hooks/__tests__/useTelemetry.test.js",

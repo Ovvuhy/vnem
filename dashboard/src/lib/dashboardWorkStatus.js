@@ -12,7 +12,7 @@ export function deriveDashboardWorkStatus({ telemetry = {}, summary = null, exec
   const lastResearch = lastResearchEvent({ telemetry, candidates, summary });
   const lastResearchAgeMs = lastResearch?.timestamp ? Math.max(0, now - Date.parse(lastResearch.timestamp)) : null;
   const staleTelemetry = Boolean(lastResearchAgeMs && lastResearchAgeMs > staleAfterMs);
-  const triage = deriveCandidateTriage(candidates);
+  const triage = mergeBackendReviewQueue(deriveCandidateTriage(candidates), telemetry.reviewQueue);
   const blocker = deriveBlocker({ backendLive, provider, routeErrors, mission, triage, branchPreview, staleTelemetry, dataMode });
   const status = deriveRealStatus({ backendLive, provider, mission, triage, branchPreview, blocker, dataMode });
 
@@ -51,10 +51,16 @@ export function deriveDashboardWorkStatus({ telemetry = {}, summary = null, exec
       previewAvailable: backendLive && triage.branchEligible > 0,
       previewStatus: mission.givingBranch.previewStatus ?? "not-requested",
       prepareEndpoint: true,
-      prepareEnabled: false,
-      prepareDisabledReason: mission.givingBranch.previewStatus === "ready"
-        ? "Prepare endpoint exists, but dashboard confirmation UX is intentionally required before branch writes."
-        : "Run a backend preview and add exact-branch confirmation before prepare can be enabled.",
+      prepareEnabled: backendLive && branchPreview?.ok !== false && branchPreview?.branchName && triage.branchEligible > 0,
+      prepareDisabledReason: !backendLive
+        ? "Backend offline; branch writes disabled."
+        : triage.branchEligible === 0
+          ? "No branch-eligible candidates have passed Protection/review gates."
+          : branchPreview?.ok === false
+            ? "Latest branch preview failed; fix the rejection first."
+            : branchPreview?.branchName
+              ? "Exact branch-name confirmation is required before preparing the Giving branch."
+              : "Run backend preview before preparing a branch.",
       pushStatus: mission.givingBranch.pushStatus,
       reviewStatus: mission.givingBranch.reviewStatus
     }
@@ -109,12 +115,82 @@ export function deriveCandidateTriage(candidates = []) {
     counts,
     ...buckets,
     topCandidates,
+    branchReadyCandidates: topCandidates.filter((candidate) => candidate.branchEligible),
     nextAction: counts.branchEligible > 0
       ? "Preview a Giving branch with the branch-eligible candidates."
       : topCandidates.length > 0
         ? `Review top ${topCandidates.length} candidates instead of all ${counts.total}.`
         : "Start a focused research mission to produce candidates."
   };
+}
+
+function mergeBackendReviewQueue(localTriage, reviewQueue) {
+  if (!reviewQueue?.ok) return localTriage;
+  const topReview = normalizeQueueCandidates(reviewQueue.topReviewCandidates ?? []);
+  const topBranch = normalizeQueueCandidates(reviewQueue.topBranchCandidates ?? [], true);
+  const topCandidates = [...topBranch, ...topReview].slice(0, 5);
+  const counts = {
+    total: reviewQueue.totalFound ?? localTriage.counts.total,
+    allow: reviewQueue.branchEligible ?? localTriage.counts.allow,
+    needsReview: Math.max(0, (reviewQueue.totalFound ?? 0) - (reviewQueue.branchEligible ?? 0) - (reviewQueue.blocked ?? 0) - (reviewQueue.quarantined ?? 0) - (reviewQueue.alreadyIndexed ?? 0) - (reviewQueue.duplicateCandidates ?? 0) - (reviewQueue.hiddenLowSignal ?? 0)),
+    quarantine: reviewQueue.quarantined ?? localTriage.counts.quarantine,
+    blocked: reviewQueue.blocked ?? localTriage.counts.blocked,
+    branchEligible: reviewQueue.branchEligible ?? localTriage.counts.branchEligible
+  };
+  return {
+    ...localTriage,
+    total: reviewQueue.totalFound ?? localTriage.total,
+    branchEligible: reviewQueue.branchEligible ?? localTriage.branchEligible,
+    topReviewCandidates: topReview.length,
+    counts,
+    alreadyIndexed: reviewQueue.alreadyIndexed ?? localTriage.alreadyIndexed,
+    missingLicense: reviewQueue.missingLicense ?? localTriage.missingLicense,
+    weakSource: reviewQueue.needsPrimarySource ?? localTriage.weakSource,
+    duplicateOrLowSignal: (reviewQueue.duplicateCandidates ?? 0) + (reviewQueue.hiddenLowSignal ?? 0) + (reviewQueue.rejected ?? 0),
+    needsPrimarySource: reviewQueue.needsPrimarySource ?? localTriage.needsPrimarySource,
+    suspiciousPackage: reviewQueue.suspicious ?? localTriage.suspiciousPackage,
+    blocked: reviewQueue.blocked ?? localTriage.blocked,
+    quarantined: reviewQueue.quarantined ?? localTriage.quarantined,
+    hiddenLowSignal: reviewQueue.hiddenLowSignal ?? 0,
+    duplicateCandidates: reviewQueue.duplicateCandidates ?? 0,
+    rejected: reviewQueue.rejected ?? 0,
+    topCandidates,
+    branchReadyCandidates: topBranch,
+    recommendedAction: reviewQueue.recommendedAction,
+    reason: reviewQueue.reason,
+    nextAction: reviewQueue.recommendedAction === "preview-branch"
+      ? "Preview the Giving branch with branch-ready candidates."
+      : reviewQueue.recommendedAction === "review-top-candidates"
+        ? `${reviewQueue.totalFound} candidates exist; review the top ${topReview.length || 5} first while VNEM groups the rest.`
+        : reviewQueue.reason ?? localTriage.nextAction
+  };
+}
+
+function normalizeQueueCandidates(candidates = [], branchReady = false) {
+  return candidates.map((candidate) => {
+    const enrichment = candidate.enrichment ?? {};
+    const reasons = (candidate.queueReasons ?? []).map((reason) => ({ key: String(reason).replace(/[^a-z0-9]+/gi, "-"), label: String(reason) }));
+    const summary = reasons.map((reason) => reason.label).join("; ") || (enrichment.enrichmentReasons ?? []).map(String).join("; ") || "Backend-enriched pipeline candidate.";
+    return {
+      id: candidate.id,
+      title: candidate.title,
+      summary,
+      verdict: candidate.verdict,
+      verdictLabel: candidate.verdict === "allow" ? "Allowed" : candidate.verdict === "needs-review" ? "Needs review" : candidate.verdict,
+      verdictTone: candidate.verdict === "allow" ? "ok" : candidate.verdict === "blocked" ? "critical" : "review",
+      sourceRoute: candidate.sourceRoute ?? enrichment.sourceRoute ?? "backend-review-queue",
+      trustScore: enrichment.trustScore ?? 0,
+      threatScore: enrichment.riskScore ?? 0,
+      branchEligible: Boolean(candidate.branchEligible || branchReady),
+      branchReady: Boolean(candidate.branchEligible || branchReady),
+      reviewRequiredForGiving: candidate.verdict === "needs-review" && !candidate.reviewSatisfied,
+      userReviewSatisfied: Boolean(candidate.reviewSatisfied),
+      whyNotBranchEligible: candidate.branchEligible || branchReady ? "Ready for branch preview." : reasons[0]?.label ?? "Manual review required.",
+      nextAction: candidate.branchEligible || branchReady ? "Preview a Giving branch plan." : "Review source, license, permissions, and install surface.",
+      triageReasons: reasons,
+      raw: candidate
+    };
+  });
 }
 
 function deriveRealStatus({ backendLive, provider, mission, triage, branchPreview, blocker, dataMode }) {
@@ -157,7 +233,7 @@ function deriveBlocker({ backendLive, provider, routeErrors, mission, triage, br
     return { key: "preview-not-run", reason: `${triage.branchEligible} candidate${triage.branchEligible === 1 ? " is" : "s are"} branch-eligible, but no backend preview has run yet.`, nextAction: "Preview branch plan." };
   }
   if (mission.givingBranch.previewStatus === "ready") {
-    return { key: "prepare-confirmation-missing", reason: "Branch preview is ready; branch writes still need explicit confirmation UX.", nextAction: "Add/confirm exact-branch prepare flow, then run validation and push the review branch." };
+    return { key: "prepare-confirmation-required", reason: "Branch preview is ready; branch writes still need exact owner confirmation.", nextAction: "Type the exact branch name or prepare-giving-branch in the prepare modal, then run backend validation and push only the review branch." };
   }
   return { key: "no-blocker", reason: "No hard blocker is visible in current state.", nextAction: mission.nextAction };
 }

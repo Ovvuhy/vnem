@@ -1,12 +1,15 @@
+import { useState } from "react";
 import { AlertTriangle, CheckCircle2, FileText, Loader2, ShieldCheck, Trash2, X } from "lucide-react";
 
-export function DispatchReviewModal({ finding, review, status, error, onClose, onApprove, onReject }) {
+export function DispatchReviewModal({ finding, review, status, error, onClose, onApprove, onReject, onCandidateReview }) {
+  const [candidateNotes, setCandidateNotes] = useState("");
   if (!finding) {
     return null;
   }
 
-  const busy = status === "loading" || status === "approving" || status === "rejecting";
+  const busy = status === "loading" || status === "approving" || status === "rejecting" || status === "candidate-reviewing";
   const canPromoteDispatch = Boolean(finding.dispatch?.id && review?.dispatch);
+  const canReviewCandidate = Boolean(review?.candidateReview?.id && onCandidateReview);
   const markdown = review?.markdown ?? "";
   const sections = summarizeSections(markdown);
 
@@ -58,15 +61,44 @@ export function DispatchReviewModal({ finding, review, status, error, onClose, o
         )}
 
         <footer className="dispatch-modal-actions">
-          <p>{canPromoteDispatch ? "Approval only moves this markdown from .vnem/staging/ to .vnem/approved/. It does not commit to main or execute code." : "This is a candidate detail view only. No backend review dispatch exists yet, so approve/reject is disabled."}</p>
-          <div>
-            <button className="critical-action" type="button" onClick={onReject} disabled={busy || !canPromoteDispatch}>
-              <Trash2 size={16} /> {status === "rejecting" ? "discarding" : "Reject & Discard"}
-            </button>
-            <button className="approve-action" type="button" onClick={onApprove} disabled={busy || !canPromoteDispatch}>
-              <CheckCircle2 size={16} /> {status === "approving" ? "promoting" : "Promote to Approved"}
-            </button>
-          </div>
+          {canReviewCandidate ? (
+            <div className="candidate-review-actions">
+              <p>This candidate has no staged dispatch yet. These actions only write a local review record; they do not execute code, commit, push, or merge.</p>
+              <label className="confirm-field">
+                Review notes
+                <textarea value={candidateNotes} onChange={(event) => setCandidateNotes(event.target.value)} placeholder="Source, license, permissions, install surface, and why this decision is safe." rows={3} />
+              </label>
+              <div>
+                <button className="approve-action" type="button" onClick={() => onCandidateReview("approve-for-giving", candidateNotes)} disabled={busy}>
+                  <CheckCircle2 size={16} /> Approve for Giving
+                </button>
+                <button className="secondary-action" type="button" onClick={() => onCandidateReview("keep-reviewing", candidateNotes)} disabled={busy}>
+                  Keep reviewing
+                </button>
+                <button className="secondary-action" type="button" onClick={() => onCandidateReview("reject-low-signal", candidateNotes)} disabled={busy}>
+                  Reject low signal
+                </button>
+                <button className="critical-action" type="button" onClick={() => onCandidateReview("quarantine", candidateNotes)} disabled={busy}>
+                  Quarantine
+                </button>
+                <button className="critical-action" type="button" onClick={() => onCandidateReview("block", candidateNotes)} disabled={busy}>
+                  Block
+                </button>
+              </div>
+            </div>
+          ) : (
+            <>
+              <p>{canPromoteDispatch ? "Approval only moves this markdown from .vnem/staging/ to .vnem/approved/. It does not commit to main or execute code." : "This is a candidate detail view only. No backend review dispatch exists yet, so approve/reject is disabled."}</p>
+              <div>
+                <button className="critical-action" type="button" onClick={onReject} disabled={busy || !canPromoteDispatch}>
+                  <Trash2 size={16} /> {status === "rejecting" ? "discarding" : "Reject & Discard"}
+                </button>
+                <button className="approve-action" type="button" onClick={onApprove} disabled={busy || !canPromoteDispatch}>
+                  <CheckCircle2 size={16} /> {status === "approving" ? "promoting" : "Promote to Approved"}
+                </button>
+              </div>
+            </>
+          )}
         </footer>
       </section>
     </div>

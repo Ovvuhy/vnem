@@ -56,7 +56,8 @@ test("allowed candidates enable preview path", () => {
         repository_review: { verdict: "allow", risk_score: 8, trust_score: 91, flags: [] },
         risk_flags: []
       })]
-    }
+    },
+    now: Date.parse("2026-06-04T12:03:00.000Z")
   });
   assert.equal(status.status.key, "ready-for-branch-preview");
   assert.equal(status.triage.branchEligible, 1);
@@ -114,6 +115,30 @@ test("candidate triage explains missing license and weak sources", () => {
   assert.equal(triage.weakSource, 1);
   assert.equal(triage.needsPrimarySource, 1);
   assert.equal(triage.topCandidates.length, 2);
+});
+
+test("backend review queue candidates render readable summaries", () => {
+  const status = deriveDashboardWorkStatus({
+    telemetry: {
+      status: "connected",
+      reviewQueue: {
+        ok: true,
+        totalFound: 1,
+        branchEligible: 0,
+        missingLicense: 1,
+        topReviewCandidates: [{
+          id: "candidate-readable",
+          title: "Readable Candidate",
+          verdict: "needs-review",
+          queueReasons: ["missing license", "manual review required"],
+          enrichment: { trustScore: 61, riskScore: 0, sourceRoute: "github-search" }
+        }]
+      }
+    }
+  });
+  assert.equal(status.topCandidates[0].summary, "missing license; manual review required");
+  assert.equal(status.topCandidates[0].triageReasons[0].label, "missing license");
+  assert.equal(String(status.topCandidates[0].summary).includes("[object Object]"), false);
 });
 
 console.log("dashboard work status tests passed");

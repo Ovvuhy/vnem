@@ -39,6 +39,23 @@ export function createVnemApiClient(options = {}) {
         })
       });
     },
+    reviewQueue() {
+      return requestJson(fetchImpl, `${baseUrl}/api/intelligence/review-queue`);
+    },
+    refreshTriage() {
+      return requestJson(fetchImpl, `${baseUrl}/api/intelligence/triage/refresh`, {
+        method: "POST"
+      });
+    },
+    reviewCandidate(id, review) {
+      return requestJson(fetchImpl, `${baseUrl}/api/intelligence/candidate/${encodeURIComponent(id)}/review`, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json"
+        },
+        body: JSON.stringify(review)
+      });
+    },
     previewGivingBranch(plan) {
       return requestJson(fetchImpl, `${baseUrl}/api/giving/branch/preview`, {
         method: "POST",

@@ -8,6 +8,7 @@ import { detectAiClients } from "./detect-ai-clients.mjs";
 import { loadLocalEnv } from "./local-env.mjs";
 import { generateConnectorPreviews } from "./preview-connector-changes.mjs";
 import { prepareGivingBranch, previewGivingBranchPlan } from "./giving-branch.mjs";
+import { applyCandidateClassification, buildBranchCandidateSet, buildReviewQueue, readReviewRecords, writeReviewRecord } from "./candidate-pipeline.mjs";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(scriptDir, "..");
@@ -36,7 +37,7 @@ let liveIntelligenceRuntime = {
   stageDelayMs: null
 };
 let pipelineSequence = 0;
-const terminalStatuses = new Set(["staged_for_review", "isolated_by_protection", "research_no_candidate"]);
+const terminalStatuses = new Set(["staged_for_review", "isolated_by_protection", "quarantined_by_protection", "awaiting_manual_review", "review_satisfied", "rejected_low_signal", "research_no_candidate"]);
 const researchCache = {
   etag: null,
   lastFetchAt: 0,
@@ -72,6 +73,9 @@ const endpoints = [
   "GET /api/intelligence/dispatch/:id",
   "POST /api/intelligence/dispatch/:id/approve",
   "POST /api/intelligence/dispatch/:id/reject",
+  "GET /api/intelligence/review-queue",
+  "POST /api/intelligence/triage/refresh",
+  "POST /api/intelligence/candidate/:id/review",
   "POST /api/giving/branch/preview",
   "POST /api/giving/branch/prepare"
 ];
@@ -177,6 +181,37 @@ export function createVnemAppServer(options = {}) {
           repositoryRoot
         });
         writeJson(response, 202, result);
+        return;
+      }
+
+      if (route === "GET /api/intelligence/review-queue") {
+        const result = await intelligenceReviewQueuePayload({ repositoryRoot });
+        writeJson(response, 200, result);
+        return;
+      }
+
+      if (route === "POST /api/intelligence/triage/refresh") {
+        await drainRequestBody(request);
+        const result = await intelligenceReviewQueuePayload({ repositoryRoot });
+        broadcastTelemetry({
+          type: "candidate_triage_refreshed",
+          message: `${result.totalFound} candidates triaged: ${result.branchEligible} branch-ready, ${result.topReviewCandidates.length} top review candidates.`,
+          agent_stage: "protection",
+          review_queue: result,
+          branch_candidate_set: result.branchCandidateSet,
+          active_ingestions: activeIngestions.slice(0, 12),
+          mission: missionSnapshot(),
+          pipeline: pipelineSnapshot()
+        });
+        writeJson(response, 200, result);
+        return;
+      }
+
+      const candidateReviewRoute = matchCandidateReviewRoute(request.method, url.pathname);
+      if (candidateReviewRoute) {
+        const payload = await readJsonRequest(request, { maxBytes: 12 * 1024 });
+        const result = await resolveCandidateReview(candidateReviewRoute.id, payload, { repositoryRoot });
+        writeJson(response, result.ok ? 200 : 400, result);
         return;
       }
 
@@ -334,6 +369,7 @@ export function broadcastTelemetry(payload) {
 }
 
 export function telemetryHistoryPayload() {
+  const reviewQueue = buildReviewQueue(activeIngestions);
   return {
     ok: true,
     service: "vnem-app-server",
@@ -342,7 +378,91 @@ export function telemetryHistoryPayload() {
     route_errors: routeErrors.slice(0, 12),
     mission: missionSnapshot(),
     pipeline: pipelineSnapshot(),
+    review_queue: reviewQueue,
+    branch_candidate_set: buildBranchCandidateSet(activeIngestions, { queue: reviewQueue }),
     intelligence_provider: intelligenceProviderSnapshot()
+  };
+}
+
+export async function intelligenceReviewQueuePayload(options = {}) {
+  const repositoryRoot = path.resolve(options.repositoryRoot || rootDir);
+  const reviewRecords = await readReviewRecords(repositoryRoot);
+  for (const ingestion of activeIngestions) {
+    const record = reviewRecords.get(String(ingestion.id));
+    if (record) {
+      ingestion.review_record = record;
+      ingestion.review_satisfied = Boolean(record.reviewSatisfied);
+      ingestion.rejected_low_signal = Boolean(record.rejectedLowSignal);
+      if (record.verdictOverride) {
+        ingestion.pipeline_verdict = record.verdictOverride;
+        ingestion.protection_report = { ...(ingestion.protection_report ?? {}), verdict: record.verdictOverride };
+      }
+    }
+  }
+  const queue = buildReviewQueue(activeIngestions, { reviewRecords });
+  return {
+    ...queue,
+    branchCandidateSet: buildBranchCandidateSet(activeIngestions, { queue })
+  };
+}
+
+export async function resolveCandidateReview(id, payload = {}, options = {}) {
+  const repositoryRoot = path.resolve(options.repositoryRoot || rootDir);
+  const ingestion = activeIngestions.find((item) => String(item.id) === String(id));
+  if (!ingestion) {
+    throw httpError(404, "CANDIDATE_NOT_FOUND", `No active candidate found for ${id}.`);
+  }
+  let result;
+  try {
+    result = await writeReviewRecord(repositoryRoot, ingestion, {
+      decision: payload.decision,
+      notes: payload.notes,
+      reviewedBy: payload.reviewedBy ?? "manual-owner"
+    });
+  } catch (error) {
+    return {
+      ok: false,
+      error: "candidate-review-rejected",
+      error_code: "CANDIDATE_REVIEW_REJECTED",
+      message: safeErrorMessage(error)
+    };
+  }
+  Object.assign(ingestion, result.candidate, {
+    status: result.record.reviewSatisfied ? "review_satisfied" : result.record.rejectedLowSignal ? "rejected_low_signal" : result.candidate.status,
+    current_agent: result.record.reviewSatisfied ? "giving" : "review",
+    action_dispatch: result.record.reviewSatisfied ? "Approved for Giving branch preview" : result.record.decision,
+    updated_at: result.record.reviewedAt,
+    latest_event: {
+      agent: "review",
+      message: `Maintainer review for ${ingestion.title}: ${result.record.decision}.`,
+      timestamp: result.record.reviewedAt
+    }
+  });
+  ingestion.timeline.unshift({
+    agent: "review",
+    status: ingestion.status,
+    message: ingestion.latest_event.message,
+    timestamp: result.record.reviewedAt
+  });
+  ingestion.timeline = ingestion.timeline.slice(0, 8);
+  const queue = await intelligenceReviewQueuePayload({ repositoryRoot });
+  broadcastTelemetry({
+    type: "candidate_review_recorded",
+    message: ingestion.latest_event.message,
+    agent_stage: "review",
+    active_ingestion: ingestion,
+    review_queue: queue,
+    branch_candidate_set: queue.branchCandidateSet,
+    active_ingestions: activeIngestions.slice(0, 12),
+    mission: missionSnapshot(),
+    pipeline: pipelineSnapshot()
+  });
+  return {
+    ok: true,
+    candidate: ingestion,
+    review: result.record,
+    review_file: result.filePath,
+    review_queue: queue
   };
 }
 
@@ -586,7 +706,7 @@ export async function runLiveIntelligenceCycle(options = {}) {
     active_ingestion: protectedIngestion
   }));
 
-  if (protectedIngestion.threat_score >= threatTolerance) {
+  if (["blocked", "quarantine", "needs-review"].includes(protectedIngestion.pipeline_verdict) || protectedIngestion.threat_score >= threatTolerance) {
     return pipelineEvent({
       message: protectedIngestion.latest_event.message,
       agent_stage: protectedIngestion.current_agent,
@@ -871,6 +991,7 @@ function createRepositoryIngestion(repository, options = {}) {
       stargazers_count: repository.stargazers_count ?? 0,
       forks_count: repository.forks_count ?? 0,
       language: repository.language ?? null,
+      license: repository.license ?? null,
       updated_at: repository.updated_at ?? null,
       pushed_at: repository.pushed_at ?? null,
       query: options.query ?? defaultResearchQuery,
@@ -1126,18 +1247,36 @@ export async function runProtectionScan(ingestion, options = {}) {
   const scan = await runProtectionGuardInference(ingestion, audit, localScan, {
     fetchImpl: options.fetchImpl
   });
+  const classified = applyCandidateClassification({
+    ...ingestion,
+    threat_score: scan.threat_score,
+    protection_report: {
+      ...scan,
+      fetched_assets: audit.fetchedAssets,
+      unavailable_assets: audit.unavailableAssets
+    }
+  });
   const threatTolerance = normalizeThreatTolerance(options.threatTolerance ?? intelligenceMission.threatTolerance);
   const now = new Date().toISOString();
-  const blocked = scan.threat_score >= threatTolerance;
+  const verdict = classified.pipeline_verdict;
+  const blocked = verdict === "blocked" || scan.threat_score >= threatTolerance;
+  const quarantined = verdict === "quarantine";
 
   Object.assign(ingestion, {
     current_agent: "protection",
-    status: blocked ? "isolated_by_protection" : "sandboxing",
+    status: blocked ? "isolated_by_protection" : quarantined ? "quarantined_by_protection" : verdict === "needs-review" ? "awaiting_manual_review" : "sandboxing",
     threat_score: scan.threat_score,
-    risk_tier: scan.risk_tier,
-    action_dispatch: blocked ? "Isolated by Protection AI" : "Scanning",
+    risk_tier: verdict === "allow" ? "low" : verdict === "needs-review" ? "review" : verdict,
+    action_dispatch: blocked ? "Blocked by Protection AI" : quarantined ? "Quarantined by Protection AI" : verdict === "needs-review" ? "Manual review required" : "Eligible for Giving staging",
+    enrichment: classified.enrichment,
+    pipeline_verdict: verdict,
     protection_report: {
       ...scan,
+      verdict,
+      risk_score: classified.enrichment.riskScore,
+      trust_score: classified.enrichment.trustScore,
+      reasons: classified.protection_report.reasons,
+      enrichment: classified.enrichment,
       block_threshold: threatTolerance,
       threat_tolerance: threatTolerance,
       fetched_assets: audit.fetchedAssets,
@@ -1147,8 +1286,12 @@ export async function runProtectionScan(ingestion, options = {}) {
     latest_event: {
       agent: "protection",
       message: blocked
-        ? `Protection AI isolated ${ingestion.repository.full_name}. Threat score: ${scan.threat_score}% exceeded the ${threatTolerance}% tolerance. Flags: ${scan.flags.join(", ") || "none"}.`
-        : `Protection AI scanned README/package surfaces for ${ingestion.repository.full_name}. Threat score: ${scan.threat_score}% below the ${threatTolerance}% tolerance. No blocking signatures found.`,
+        ? `Protection AI blocked ${ingestion.repository.full_name}. Verdict: ${verdict}; threat score ${scan.threat_score}%. Flags: ${scan.flags.join(", ") || "none"}.`
+        : quarantined
+          ? `Protection AI quarantined ${ingestion.repository.full_name}. Verdict: quarantine; install/binary/permission concerns require deeper audit.`
+          : verdict === "needs-review"
+            ? `Protection AI enriched ${ingestion.repository.full_name}. Verdict: needs-review. Reasons: ${classified.protection_report.reasons.join("; ")}.`
+            : `Protection AI allowed ${ingestion.repository.full_name} by current metadata checks. This is not a full safety guarantee.`,
       timestamp: now
     }
   });
@@ -1730,6 +1873,7 @@ function clampScore(value, min, max, fallback) {
 }
 
 function pipelineEvent(payload) {
+  const reviewQueue = buildReviewQueue(activeIngestions);
   return {
     type: payload.type ?? "pipeline_ingestion_updated",
     message: payload.message,
@@ -1739,6 +1883,8 @@ function pipelineEvent(payload) {
     route_errors: routeErrors.slice(0, 12),
     mission: missionSnapshot(),
     pipeline: pipelineSnapshot(),
+    review_queue: reviewQueue,
+    branch_candidate_set: buildBranchCandidateSet(activeIngestions, { queue: reviewQueue }),
     intelligence_provider: intelligenceProviderSnapshot()
   };
 }
@@ -1852,6 +1998,12 @@ function normalizeIntelligenceVector(value) {
 
 function trimActiveIngestions() {
   activeIngestions.splice(12);
+}
+
+function matchCandidateReviewRoute(method, pathname) {
+  if (method !== "POST") return null;
+  const match = String(pathname ?? "").match(/^\/api\/intelligence\/candidate\/([^/]+)\/review$/);
+  return match ? { id: decodeURIComponent(match[1]) } : null;
 }
 
 function matchDispatchRoute(method, pathname) {
