@@ -28,6 +28,7 @@ export function deriveImprovementMission({ telemetry = {}, summary = null, branc
 
   return {
     id: `mission-${slug}`,
+    query,
     title: missionSource.title ?? `Improve ${humanReadableQuery(query)}`,
     goal: missionSource.goal ?? "Make Research AI produce safe, reviewable, branch-ready VNEM improvements without touching main.",
     status,

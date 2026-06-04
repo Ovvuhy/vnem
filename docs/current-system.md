@@ -104,6 +104,45 @@ Current dashboard code derives this verdict from existing candidate shapes inclu
 
 Current backend behavior stages/reviews markdown rather than applying code. The verdict contract clarifies and visualizes the gate; it does not claim complete malware scanning, execute discovered repos, install packages, or make Giving AI auto-apply changes.
 
+## Dashboard Command Center and real work status
+
+The dashboard now prioritizes one action-oriented workflow at the top instead of leading with many large telemetry panels:
+
+```text
+Current Mission -> Research Status -> Protection Decision -> Giving Branch -> Manual Review
+```
+
+The Command Center is a current UI/state-derivation layer. It does not fake AI autonomy. It derives a real work status from connected telemetry, provider state, mission candidates, branch preview results, route errors, and sample/offline state. Possible statuses include idle/offline, researching, Protection reviewing, waiting for review, ready for branch preview, branch preview ready, branch prepared/pushed, blocked, provider backoff, and backend offline.
+
+The top card must say:
+
+- the active mission;
+- whether the backend is live;
+- whether data is live, sample/summary, fallback, or stale;
+- what the current blocker is;
+- what action should be clicked next;
+- whether branch preview is available;
+- whether a branch has actually been previewed, prepared, committed, or pushed.
+
+Raw findings, maintainer notes, connector details, mission controls, and logs are secondary details. They should not bury the current mission, blocker, candidate queue, or safe branch status.
+
+## Candidate triage layer
+
+When many candidates are stuck at `needs-review`, the dashboard should not show only a scary raw count. The triage helper groups candidates into actionable reasons:
+
+- top 5 review candidates;
+- branch-eligible candidates;
+- already indexed;
+- missing license;
+- weak source / social signal;
+- likely duplicate or low signal;
+- needs primary source;
+- suspicious package/install surface;
+- quarantined;
+- blocked.
+
+This layer does not magically allow unsafe work. It explains why candidates are stuck and points the user at the small set most likely to move forward. If 161 candidates are all `needs-review`, the correct behavior is to say why and recommend reviewing the top 5, not to dump all 161 as the main view.
+
 ## Current dashboard quality bar
 
 The dashboard should answer these questions without requiring the user to read source code:

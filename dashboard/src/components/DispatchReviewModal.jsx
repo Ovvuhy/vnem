@@ -6,6 +6,7 @@ export function DispatchReviewModal({ finding, review, status, error, onClose, o
   }
 
   const busy = status === "loading" || status === "approving" || status === "rejecting";
+  const canPromoteDispatch = Boolean(finding.dispatch?.id && review?.dispatch);
   const markdown = review?.markdown ?? "";
   const sections = summarizeSections(markdown);
 
@@ -57,12 +58,12 @@ export function DispatchReviewModal({ finding, review, status, error, onClose, o
         )}
 
         <footer className="dispatch-modal-actions">
-          <p>Approval only moves this markdown from <code>.vnem/staging/</code> to <code>.vnem/approved/</code>. It does not commit to main or execute code.</p>
+          <p>{canPromoteDispatch ? "Approval only moves this markdown from .vnem/staging/ to .vnem/approved/. It does not commit to main or execute code." : "This is a candidate detail view only. No backend review dispatch exists yet, so approve/reject is disabled."}</p>
           <div>
-            <button className="critical-action" type="button" onClick={onReject} disabled={busy || !review}>
+            <button className="critical-action" type="button" onClick={onReject} disabled={busy || !canPromoteDispatch}>
               <Trash2 size={16} /> {status === "rejecting" ? "discarding" : "Reject & Discard"}
             </button>
-            <button className="approve-action" type="button" onClick={onApprove} disabled={busy || !review}>
+            <button className="approve-action" type="button" onClick={onApprove} disabled={busy || !canPromoteDispatch}>
               <CheckCircle2 size={16} /> {status === "approving" ? "promoting" : "Promote to Approved"}
             </button>
           </div>

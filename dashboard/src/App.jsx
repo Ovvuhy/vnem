@@ -23,9 +23,11 @@ import { FindingsMatrix } from "./components/FindingsMatrix.jsx";
 import { ImprovementMissionControl } from "./components/ImprovementMissionControl.jsx";
 import { Badge } from "./components/PipelinePrimitives.jsx";
 import { TargetingConsole } from "./components/TargetingConsole.jsx";
+import { VnemCommandCenter } from "./components/VnemCommandCenter.jsx";
 import { VnemSystemBrief } from "./components/VnemSystemBrief.jsx";
 import { usePipelineExecution } from "./hooks/usePipelineExecution.js";
 import { createVnemApiClient, normalizeRequestError } from "./lib/vnemApiClient.js";
+import { deriveDashboardWorkStatus } from "./lib/dashboardWorkStatus.js";
 import { derivePipelineVerdict } from "./lib/pipelineVerdicts.js";
 import { sampleSummary } from "./sampleSummary.js";
 import { useTelemetry } from "./hooks/useTelemetry.js";
@@ -230,6 +232,7 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
   const [dispatchError, setDispatchError] = useState(null);
   const [branchPreview, setBranchPreview] = useState(null);
   const pipelineExecution = usePipelineExecution(telemetry, summary);
+  const workStatus = useMemo(() => deriveDashboardWorkStatus({ telemetry, summary, execution: pipelineExecution, connector, branchPreview }), [telemetry, summary, pipelineExecution, connector, branchPreview]);
 
   const findings = useMemo(() => {
     const dashboardFindings = (summary?.findings ?? []).map(normalizeFinding);
@@ -273,6 +276,23 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
       setDispatchStatus("error");
     }
   }, [apiClient]);
+
+  const openCandidateReview = useCallback((candidate) => {
+    const matchingFinding = findings.find((finding) => finding.id === candidate?.id);
+    if (matchingFinding?.dispatch?.status === "staged_for_review") {
+      void openDispatchReview(matchingFinding);
+      return;
+    }
+    const fallbackFinding = matchingFinding ?? candidateToFinding(candidate);
+    if (!fallbackFinding) return;
+    setSelectedFinding(fallbackFinding);
+    setDispatchReview({
+      markdown: candidateMarkdown(candidate),
+      dispatch: { file_name: "candidate-details.md" }
+    });
+    setDispatchError(null);
+    setDispatchStatus("ready");
+  }, [findings, openDispatchReview]);
 
   const closeDispatchReview = useCallback(() => {
     setSelectedFinding(null);
@@ -343,12 +363,34 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
 
       {status === "error" ? <div className="inline-error">{humanize(error)}</div> : null}
 
-      <VnemSystemBrief telemetry={telemetry} execution={pipelineExecution} summary={summary} connector={connector} />
-      <ImprovementMissionControl telemetry={telemetry} summary={summary} apiClient={apiClient} branchPreview={branchPreview} onBranchPreview={setBranchPreview} />
-      <TargetingConsole telemetry={telemetry} execution={pipelineExecution} />
+      <VnemCommandCenter
+        workStatus={workStatus}
+        telemetry={telemetry}
+        apiClient={apiClient}
+        onBranchPreview={setBranchPreview}
+        onReviewCandidate={openCandidateReview}
+      />
       <AutonomousPipeline telemetry={telemetry} execution={pipelineExecution} />
 
-      <section className="workspace-grid">
+      <section className="candidate-queue panel" aria-label="Top candidate queue">
+        <div className="panel-head compact">
+          <div>
+            <p className="eyebrow">candidate queue</p>
+            <h2>Top 5 to review</h2>
+          </div>
+          <Badge tone={workStatus.triage.branchEligible > 0 ? "ok" : "review"}>{workStatus.triage.branchEligible} branch-eligible</Badge>
+        </div>
+        <CandidateQueue candidates={workStatus.topCandidates} triage={workStatus.triage} onReviewCandidate={openCandidateReview} />
+      </section>
+
+      <details className="details-panel">
+        <summary>Mission controls, connectors, logs, and raw telemetry</summary>
+        <VnemSystemBrief telemetry={telemetry} execution={pipelineExecution} summary={summary} connector={connector} />
+        <ImprovementMissionControl telemetry={telemetry} summary={summary} apiClient={apiClient} branchPreview={branchPreview} onBranchPreview={setBranchPreview} />
+        <TargetingConsole telemetry={telemetry} execution={pipelineExecution} />
+      </details>
+
+      <section className="workspace-grid details-workspace">
         <div className="main-column">
           <section className="panel findings-panel" aria-label="Findings">
             <div className="panel-head">
@@ -419,6 +461,50 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
         onReject={rejectSelectedDispatch}
       />
     </>
+  );
+}
+
+function CandidateQueue({ candidates, triage, onReviewCandidate }) {
+  if (candidates.length === 0) {
+    return <div className="empty-state">No candidates yet. Start or redeploy a focused mission to give Research AI real work.</div>;
+  }
+  return (
+    <div className="candidate-queue-grid">
+      <div className="triage-summary">
+        <span><strong>{triage.total}</strong> total</span>
+        <span><strong>{triage.alreadyIndexed}</strong> already indexed</span>
+        <span><strong>{triage.missingLicense}</strong> missing license</span>
+        <span><strong>{triage.weakSource}</strong> weak source</span>
+        <span><strong>{triage.duplicateOrLowSignal}</strong> duplicate/low signal</span>
+        <span><strong>{triage.needsPrimarySource}</strong> needs primary source</span>
+        <span><strong>{triage.suspiciousPackage}</strong> suspicious package</span>
+        <span><strong>{triage.blocked + triage.quarantined}</strong> isolated</span>
+      </div>
+      <div className="top-candidate-list">
+        {candidates.map((candidate, index) => (
+          <article className="top-candidate-card" key={candidate.id}>
+            <div className="candidate-rank">#{index + 1}</div>
+            <div className="candidate-main">
+              <div className="candidate-title-line">
+                <strong>{candidate.title}</strong>
+                <Badge tone={candidate.verdictTone}>{candidate.verdictLabel}</Badge>
+              </div>
+              <p>{candidate.summary}</p>
+              <div className="candidate-meta-row">
+                <span>{candidate.sourceRoute}</span>
+                <span>trust {candidate.trustScore}%</span>
+                <span>risk {candidate.threatScore}%</span>
+                <span>{candidate.whyNotBranchEligible}</span>
+              </div>
+              <div className="candidate-reasons">
+                {candidate.triageReasons.map((reason) => <span key={`${candidate.id}-${reason.key}-${reason.label}`}>{reason.label}</span>)}
+              </div>
+            </div>
+            <button className="secondary-action" type="button" onClick={() => onReviewCandidate(candidate)}>Review</button>
+          </article>
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -884,6 +970,36 @@ function normalizeFinding(finding) {
     stage: stageDetails(finding.recommended_action, verdict),
     action: actionDetails(finding.recommended_action, verdict)
   };
+}
+
+function candidateToFinding(candidate) {
+  if (!candidate) return null;
+  return {
+    id: candidate.id,
+    title: candidate.title,
+    sourceUrl: candidate.sourceUrl,
+    summary: candidate.summary,
+    origin: originDetails(candidate.sourceRoute),
+    trustScore: candidate.trustScore,
+    trustLabel: candidate.trustScore >= 85 ? "Verified Source" : candidate.trustScore >= 60 ? "Needs Review" : "Unverified Lead",
+    risk: { key: candidate.verdict, label: candidate.verdictLabel, detail: `Threat score ${candidate.threatScore}%` },
+    verdict: {
+      verdict: candidate.verdict,
+      label: candidate.verdictLabel,
+      shortLabel: candidate.verdictLabel,
+      tone: candidate.verdictTone,
+      reason: candidate.verdictReason,
+      nextAction: candidate.nextAction
+    },
+    stage: { key: candidate.stage ?? "protection", label: candidate.stage === "giving" ? "Giving AI" : "Protection AI" },
+    action: { label: "Candidate details", detail: candidate.nextAction }
+  };
+}
+
+function candidateMarkdown(candidate) {
+  if (!candidate) return "No candidate selected.";
+  const reasons = (candidate.triageReasons ?? []).map((reason) => `- ${reason.label}`).join("\n") || "- No extra triage reason detected.";
+  return `# Candidate Review: ${candidate.title}\n\n## Research\nSource route: ${candidate.sourceRoute}\nSource URL: ${candidate.sourceUrl ?? "not provided"}\n\n${candidate.summary}\n\n## Protection\nVerdict: ${candidate.verdictLabel}\nTrust score: ${candidate.trustScore}%\nRisk score: ${candidate.threatScore}%\nReason: ${candidate.verdictReason}\n\nTriage reasons:\n${reasons}\n\n## Giving\nBranch eligible: ${candidate.branchEligible ? "yes" : "no"}\nWhy not branch eligible: ${candidate.whyNotBranchEligible}\nNext action: ${candidate.nextAction}\n`;
 }
 
 function originDetails(route) {

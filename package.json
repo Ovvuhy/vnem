@@ -32,6 +32,7 @@
     "test:dashboard-verdicts": "node dashboard/src/lib/__tests__/pipelineVerdicts.test.js",
     "test:dashboard-missions": "node dashboard/src/lib/__tests__/improvementMissions.test.js",
     "test:dashboard-branch": "node dashboard/src/lib/__tests__/givingBranch.test.js",
+    "test:dashboard-work-status": "node dashboard/src/lib/__tests__/dashboardWorkStatus.test.js",
     "test:giving-branch": "node scripts/test-giving-branch.mjs",
     "benchmark:vnem": "node scripts/benchmark-vnem.mjs",
     "benchmark:visual": "node scripts/benchmark-visual-artifacts.mjs",
@@ -58,7 +59,7 @@
     "test:mcp": "node scripts/test-mcp-server.mjs",
     "test:hermes-risk": "node scripts/test-hermes-risk-review.mjs",
     "build": "npm run validate && npm run generate && npm run dashboard:build",
-    "test": "npm run validate && npm run generate && npm run dashboard:build && npm run test:install-pack && npm run test:orchestration && npm run test:precision && npm run test:omniscient && npm run test:100x-architecture && npm run test:detect-ai-clients && npm run test:preview-connector && npm run test:apply-connector && npm run test:app-server && npm run test:launch-dev && npm run test:dashboard-connector && npm run test:dashboard-telemetry && npm run test:dashboard-system && npm run test:dashboard-verdicts && npm run test:dashboard-missions && npm run test:dashboard-branch && npm run test:giving-branch && npm run test:precision-mcp && npm run test:cli && npm run test:mcp && npm run test:dashboard && npm run test:dashboard-api-local && npm run test:hermes-risk && npm run discover:dry-run && npm run digest"
+    "test": "npm run validate && npm run generate && npm run dashboard:build && npm run test:install-pack && npm run test:orchestration && npm run test:precision && npm run test:omniscient && npm run test:100x-architecture && npm run test:detect-ai-clients && npm run test:preview-connector && npm run test:apply-connector && npm run test:app-server && npm run test:launch-dev && npm run test:dashboard-connector && npm run test:dashboard-telemetry && npm run test:dashboard-system && npm run test:dashboard-verdicts && npm run test:dashboard-missions && npm run test:dashboard-branch && npm run test:dashboard-work-status && npm run test:giving-branch && npm run test:precision-mcp && npm run test:cli && npm run test:mcp && npm run test:dashboard && npm run test:dashboard-api-local && npm run test:hermes-risk && npm run discover:dry-run && npm run digest"
   },
   "dependencies": {
     "@solana/wallet-adapter-base": "^0.9.27",
