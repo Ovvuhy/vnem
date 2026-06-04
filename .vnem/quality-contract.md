@@ -1,6 +1,6 @@
 # vnem Quality Contract
 
-Generated: 2026-06-03T21:57:31.533Z
+Generated: 2026-06-04T11:01:40.430Z
 
 A read-only AI-booster contract that forces coding agents to optimize performance, visuals, playability, accessibility, maintainability, and safety together instead of silently sacrificing one domain for another.
 

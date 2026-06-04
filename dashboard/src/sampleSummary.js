@@ -6,6 +6,16 @@ export const sampleSummary = {
     dirty_files: 0,
     clean: true
   },
+  mission: {
+    id: "mission-dashboard-ai-engine",
+    query: "dashboard AI mission engine",
+    title: "Improve dashboard AI mission engine",
+    goal: "Research, protect, and prepare safe branch-ready VNEM improvements while main stays protected.",
+    priority: "high",
+    vector: "github",
+    vector_label: "GitHub Repositories",
+    source: "sample-dashboard-summary"
+  },
   timers: {
     hourly: {
       active_state: "active",

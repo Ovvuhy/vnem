@@ -20,6 +20,7 @@ import logoUrl from "../../assets/brand/logo.png";
 import { AutonomousPipeline } from "./components/AutonomousPipeline.jsx";
 import { DispatchReviewModal } from "./components/DispatchReviewModal.jsx";
 import { FindingsMatrix } from "./components/FindingsMatrix.jsx";
+import { ImprovementMissionControl } from "./components/ImprovementMissionControl.jsx";
 import { Badge } from "./components/PipelinePrimitives.jsx";
 import { TargetingConsole } from "./components/TargetingConsole.jsx";
 import { VnemSystemBrief } from "./components/VnemSystemBrief.jsx";
@@ -342,6 +343,7 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
       {status === "error" ? <div className="inline-error">{humanize(error)}</div> : null}
 
       <VnemSystemBrief telemetry={telemetry} execution={pipelineExecution} summary={summary} connector={connector} />
+      <ImprovementMissionControl telemetry={telemetry} summary={summary} />
       <TargetingConsole telemetry={telemetry} execution={pipelineExecution} />
       <AutonomousPipeline telemetry={telemetry} execution={pipelineExecution} />
 

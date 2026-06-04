@@ -964,6 +964,332 @@ a {
   line-height: 1.42;
 }
 
+.mission-control {
+  border: 1px solid rgba(255, 196, 107, 0.28);
+  background:
+    radial-gradient(circle at 12% 0%, rgba(255, 196, 107, 0.18), transparent 32%),
+    linear-gradient(135deg, rgba(21, 21, 21, 0.96), rgba(12, 12, 12, 0.94));
+  border-radius: 28px;
+  padding: clamp(18px, 3vw, 30px);
+  display: grid;
+  gap: 18px;
+  box-shadow: 0 30px 92px rgba(0, 0, 0, 0.42);
+}
+
+.mission-header,
+.mission-title-row,
+.mission-live-card,
+.mission-flow,
+.mission-grid,
+.mission-lower-grid,
+.mission-verdict-counts,
+.mission-targets,
+.branch-name,
+.branch-inclusions {
+  display: flex;
+  align-items: center;
+}
+
+.mission-header {
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.mission-header h2 {
+  margin: 0;
+  font-size: clamp(1.6rem, 3vw, 2.5rem);
+}
+
+.mission-header p,
+.mission-header strong {
+  color: var(--bone-soft);
+  max-width: 860px;
+}
+
+.mission-header strong {
+  display: block;
+  margin-top: 10px;
+  color: var(--bone);
+}
+
+.mission-title-row {
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 4px 0 10px;
+}
+
+.mission-live-card {
+  flex: 0 0 auto;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 180px;
+  gap: 8px;
+  padding: 16px;
+  border-radius: 18px;
+  border: 1px solid var(--line);
+  background: rgba(245, 238, 232, 0.05);
+  color: var(--bone);
+}
+
+.mission-live-card em {
+  color: var(--accent);
+  font-style: normal;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.mission-flow {
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.mission-stage {
+  min-width: 155px;
+  border: 1px solid var(--line);
+  background: rgba(245, 238, 232, 0.045);
+  border-radius: 18px;
+  padding: 13px;
+  display: grid;
+  gap: 7px;
+  color: var(--bone-soft);
+}
+
+.mission-stage span {
+  color: var(--accent);
+}
+
+.mission-stage strong {
+  color: var(--bone);
+}
+
+.mission-stage em {
+  font-style: normal;
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+.mission-stage.complete,
+.mission-stage.active,
+.mission-stage.waiting-review {
+  border-color: rgba(255, 196, 107, 0.36);
+  background: rgba(255, 196, 107, 0.08);
+}
+
+.mission-stage.blocked {
+  border-color: rgba(255, 155, 130, 0.42);
+  background: rgba(255, 85, 85, 0.09);
+}
+
+.mission-stage.protected {
+  border-color: rgba(132, 219, 181, 0.36);
+}
+
+.mission-grid,
+.mission-lower-grid {
+  align-items: stretch;
+  gap: 14px;
+  display: grid;
+}
+
+.mission-grid {
+  grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.95fr) minmax(220px, 0.7fr);
+}
+
+.mission-lower-grid {
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 0.85fr);
+}
+
+.mission-card {
+  border: 1px solid var(--line);
+  background: rgba(8, 8, 8, 0.38);
+  border-radius: 20px;
+  padding: 16px;
+  display: grid;
+  gap: 13px;
+}
+
+.mission-verdict-counts {
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.mission-verdict {
+  flex: 1 1 120px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 12px;
+  background: rgba(245, 238, 232, 0.04);
+}
+
+.mission-verdict strong {
+  display: block;
+  font-size: 1.55rem;
+  color: var(--bone);
+}
+
+.mission-verdict span,
+.mission-candidate span,
+.mission-candidate em,
+.branch-facts dd,
+.branch-lane p,
+.mission-log p,
+.mission-control-button em {
+  color: var(--bone-soft);
+}
+
+.mission-verdict.ok { border-color: rgba(132, 219, 181, 0.34); }
+.mission-verdict.review { border-color: rgba(255, 196, 107, 0.36); }
+.mission-verdict.warning { border-color: rgba(255, 196, 107, 0.48); }
+.mission-verdict.critical { border-color: rgba(255, 155, 130, 0.45); }
+
+.mission-candidate-list,
+.mission-targets,
+.mission-activity,
+.mission-controls {
+  display: grid;
+  gap: 10px;
+}
+
+.mission-candidate,
+.mission-target,
+.mission-log,
+.mission-control-button {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 11px;
+  background: rgba(245, 238, 232, 0.035);
+}
+
+.mission-candidate {
+  display: grid;
+  gap: 4px;
+}
+
+.mission-candidate.ok { border-left: 3px solid var(--ok); }
+.mission-candidate.review { border-left: 3px solid var(--accent); }
+.mission-candidate.warning { border-left: 3px solid var(--warn); }
+.mission-candidate.critical { border-left: 3px solid var(--critical); }
+
+.branch-name {
+  gap: 8px;
+  min-width: 0;
+}
+
+.branch-name code {
+  overflow-wrap: anywhere;
+  color: var(--accent);
+}
+
+.branch-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+}
+
+.branch-facts div {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 9px;
+  background: rgba(245, 238, 232, 0.035);
+}
+
+.branch-facts dt {
+  color: var(--muted);
+  text-transform: uppercase;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+}
+
+.branch-facts dd {
+  margin: 4px 0 0;
+  overflow-wrap: anywhere;
+}
+
+.branch-lane p {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  margin: 0;
+}
+
+.branch-inclusions {
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.branch-inclusions span {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 6px 9px;
+  color: var(--bone-soft);
+}
+
+.mission-target {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.mission-target span {
+  color: var(--accent);
+  font-size: 0.78rem;
+}
+
+.mission-log {
+  display: grid;
+  gap: 5px;
+}
+
+.mission-log span {
+  color: var(--accent);
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+}
+
+.mission-log p {
+  margin: 0;
+}
+
+.mission-control-button {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  color: var(--bone);
+  text-align: left;
+}
+
+.mission-control-button:disabled {
+  opacity: 0.76;
+  cursor: not-allowed;
+}
+
+.mission-control-button span {
+  display: grid;
+  gap: 4px;
+}
+
+.mission-control-button em {
+  font-style: normal;
+  line-height: 1.35;
+}
+
+@media (max-width: 1100px) {
+  .mission-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .mission-grid,
+  .mission-lower-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .targeting-console {
   width: min(1660px, 100%);
   margin: 0 auto 20px;
