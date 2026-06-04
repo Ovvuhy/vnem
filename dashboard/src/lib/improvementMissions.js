@@ -6,7 +6,7 @@ const BRANCH_PREFIX = "vnem-giving";
 const DEFAULT_QUERY = "VNEM dashboard AI mission engine";
 const TERMINAL_REVIEW_STATUSES = new Set(["staged_for_review", "completed"]);
 
-export function deriveImprovementMission({ telemetry = {}, summary = null } = {}) {
+export function deriveImprovementMission({ telemetry = {}, summary = null, branchPreview = null } = {}) {
   const telemetryMode = telemetry.status === "connected" ? "live" : "offline-or-sample";
   const missionSource = telemetry.mission ?? summary?.mission ?? {};
   const query = normalizeMissionQuery(missionSource.query ?? summary?.mission?.query ?? DEFAULT_QUERY);
@@ -22,7 +22,7 @@ export function deriveImprovementMission({ telemetry = {}, summary = null } = {}
   const hasUnsafeBlocked = verdictSummary.quarantine > 0 || verdictSummary.blocked > 0;
   const status = missionStatus({ telemetryMode, candidates, verdictSummary, includedCandidates });
   const currentStage = missionStage(status, candidates);
-  const givingBranch = buildGivingBranch({ slug, includedCandidates, blockedCandidateIds });
+  const givingBranch = applyBranchPreview(buildGivingBranch({ slug, includedCandidates, blockedCandidateIds, excludedCandidates: candidates.filter((candidate) => !includedCandidates.includes(candidate)) }), branchPreview);
   const logs = buildMissionLogs({ telemetry, candidates, givingBranch, telemetryMode });
   const nextAction = buildNextAction({ status, telemetryMode, includedCandidates, hasUnsafeBlocked, verdictSummary, givingBranch });
 
@@ -140,7 +140,7 @@ function missionStage(status, candidates) {
   return "research";
 }
 
-function buildGivingBranch({ slug, includedCandidates, blockedCandidateIds }) {
+function buildGivingBranch({ slug, includedCandidates, blockedCandidateIds, excludedCandidates = [] }) {
   const contract = buildGivingBranchContract({
     missionId: `mission-${slug}`,
     branchName: `${BRANCH_PREFIX}/${slug}`,
@@ -162,7 +162,45 @@ function buildGivingBranch({ slug, includedCandidates, blockedCandidateIds }) {
     changedFiles: contract.changedFiles,
     rollbackNotes: contract.rollbackNotes,
     mainProtected: true,
-    backendAction: "planned"
+    backendAction: "preview-available",
+    previewStatus: "not-requested",
+    requestPayload: {
+      sourceMissionId: contract.sourceMissionId,
+      missionTitle: `Improve ${slug.replace(/-/g, " ")}`,
+      branchName: contract.branchName,
+      baseBranch: contract.baseBranch,
+      includedCandidates: includedCandidates.map(toBranchCandidate),
+      excludedCandidates: excludedCandidates.map(toBranchCandidate),
+      validationCommands: contract.validationCommands
+    }
+  };
+}
+
+function applyBranchPreview(branch, preview) {
+  if (!preview) return branch;
+  return {
+    ...branch,
+    status: preview.ok ? "preview-ready" : "preview-rejected",
+    validation: preview.validationStatus ?? branch.validation,
+    pushStatus: preview.pushStatus ?? branch.pushStatus,
+    reviewStatus: preview.reviewStatus ?? branch.reviewStatus,
+    commit: preview.commitHash ?? branch.commit,
+    previewStatus: preview.ok ? "ready" : "rejected",
+    backendAction: preview.ok ? "prepare-available" : "blocked-by-backend-preview",
+    error: preview.ok ? null : preview.message ?? preview.error_code ?? "Branch preview rejected",
+    requiredChecks: preview.requiredChecks ?? [],
+    blockedCandidateIds: preview.blockedCandidateIds ?? branch.blockedCandidateIds
+  };
+}
+
+function toBranchCandidate(candidate) {
+  return {
+    id: candidate.id,
+    title: candidate.title,
+    verdict: candidate.verdict,
+    reviewSatisfied: candidate.userReviewSatisfied,
+    sourceRoute: candidate.sourceRoute,
+    sourceUrl: candidate.sourceUrl
   };
 }
 
@@ -223,13 +261,22 @@ function buildControls({ telemetryMode, givingBranch, includedCandidates }) {
       detail: "Protection AI verdicts are derived from current telemetry/candidate metadata. Manual rerun endpoint is planned."
     },
     {
+      key: "preview-branch",
+      label: "Preview branch plan",
+      enabled: telemetryMode === "live" && includedCandidates.length > 0,
+      state: includedCandidates.length > 0 ? "backend-preview-available" : "blocked-or-waiting",
+      detail: givingBranch.status === "planned" || givingBranch.status === "preview-ready"
+        ? `Ask the local app server to validate the branch plan for ${givingBranch.name}; preview does not mutate git.`
+        : "Preview is unavailable until Protection AI leaves at least one allowed or reviewed candidate."
+    },
+    {
       key: "prepare-branch",
       label: "Prepare Giving branch",
       enabled: false,
-      state: includedCandidates.length > 0 ? "planned-safe-branch" : "blocked-or-waiting",
-      detail: givingBranch.status === "planned"
-        ? `Planned backend action only: create ${givingBranch.name} from main after explicit review and clean worktree checks.`
-        : "No branch can be prepared until Protection AI leaves at least one allowed or reviewed candidate."
+      state: givingBranch.previewStatus === "ready" ? "requires-explicit-confirmation" : "preview-required",
+      detail: givingBranch.previewStatus === "ready"
+        ? `Backend preview passed. Prepare still requires explicit confirmation, clean main, validation, and no push to main.`
+        : "Run branch preview first. Prepare is disabled in the dashboard until explicit confirmation support is added."
     },
     {
       key: "manual-review",

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { CheckCircle2, GitBranch, GitCommitHorizontal, LockKeyhole, PlayCircle, Radio, Route, ShieldAlert, Sparkles } from "lucide-react";
 import { deriveImprovementMission } from "../lib/improvementMissions.js";
 import { Badge } from "./PipelinePrimitives.jsx";
@@ -11,9 +12,27 @@ const stageOrder = [
   { key: "main", label: "Main" }
 ];
 
-export function ImprovementMissionControl({ telemetry, summary }) {
-  const mission = deriveImprovementMission({ telemetry, summary });
+export function ImprovementMissionControl({ telemetry, summary, apiClient = null, branchPreview = null, onBranchPreview = null }) {
+  const [branchActionStatus, setBranchActionStatus] = useState("idle");
+  const [branchActionError, setBranchActionError] = useState(null);
+  const mission = deriveImprovementMission({ telemetry, summary, branchPreview });
   const stageStates = missionStageStates(mission);
+
+  async function handlePreviewBranch() {
+    if (!apiClient?.previewGivingBranch || !mission.givingBranch.requestPayload) return;
+    setBranchActionStatus("previewing");
+    setBranchActionError(null);
+    try {
+      const result = await apiClient.previewGivingBranch(mission.givingBranch.requestPayload);
+      onBranchPreview?.(result);
+      setBranchActionStatus("preview-ready");
+    } catch (error) {
+      const payload = error?.payload ?? { ok: false, message: error?.message ?? "Branch preview failed" };
+      onBranchPreview?.(payload);
+      setBranchActionError(payload.message ?? payload.error_code ?? "Branch preview failed");
+      setBranchActionStatus("preview-error");
+    }
+  }
 
   return (
     <section className="mission-control" aria-label="VNEM improvement mission control">
@@ -53,7 +72,7 @@ export function ImprovementMissionControl({ telemetry, summary }) {
 
       <div className="mission-lower-grid">
         <MissionActivity logs={mission.logs} />
-        <MissionControls controls={mission.controls} />
+        <MissionControls controls={mission.controls} status={branchActionStatus} error={branchActionError} onPreviewBranch={handlePreviewBranch} />
       </div>
     </section>
   );
@@ -109,7 +128,8 @@ function MissionBranchLane({ branch }) {
         <div><dt>push</dt><dd>{branch.pushStatus}</dd></div>
         <div><dt>review</dt><dd>{branch.reviewStatus}</dd></div>
       </dl>
-      <p><LockKeyhole size={14} /> Main stays protected. Branch creation is a planned backend action, not fake live automation.</p>
+      <p><LockKeyhole size={14} /> Main stays protected. Preview validates the branch plan without mutating git; prepare requires explicit confirmation and backend checks.</p>
+      {branch.error ? <p><ShieldAlert size={14} /> {branch.error}</p> : null}
       <div className="branch-inclusions">
         <span>{branch.includedCandidates.length} included</span>
         <span>{branch.blockedCandidateIds.length} isolated</span>
@@ -155,15 +175,22 @@ function MissionActivity({ logs }) {
   );
 }
 
-function MissionControls({ controls }) {
+function MissionControls({ controls, status, error, onPreviewBranch }) {
   return (
     <article className="mission-card mission-controls">
       <div className="section-title-row">
         <span>honest controls</span>
-        <Badge tone="review">preview / planned</Badge>
+        <Badge tone={status === "preview-ready" ? "ok" : status === "preview-error" ? "critical" : "review"}>{status === "idle" ? "preview / protected" : status}</Badge>
       </div>
+      {error ? <div className="inline-error">{error}</div> : null}
       {controls.map((control) => (
-        <button type="button" className="mission-control-button" disabled={!control.enabled} key={control.key}>
+        <button
+          type="button"
+          className="mission-control-button"
+          disabled={!control.enabled || status === "previewing"}
+          key={control.key}
+          onClick={control.key === "preview-branch" ? onPreviewBranch : undefined}
+        >
           <PlayCircle size={15} />
           <span>
             <strong>{control.label}</strong>

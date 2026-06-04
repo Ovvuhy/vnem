@@ -7,6 +7,7 @@ import { applyConnectorChanges } from "./apply-connector-changes.mjs";
 import { detectAiClients } from "./detect-ai-clients.mjs";
 import { loadLocalEnv } from "./local-env.mjs";
 import { generateConnectorPreviews } from "./preview-connector-changes.mjs";
+import { prepareGivingBranch, previewGivingBranchPlan } from "./giving-branch.mjs";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(scriptDir, "..");
@@ -70,7 +71,9 @@ const endpoints = [
   "POST /api/intelligence/target",
   "GET /api/intelligence/dispatch/:id",
   "POST /api/intelligence/dispatch/:id/approve",
-  "POST /api/intelligence/dispatch/:id/reject"
+  "POST /api/intelligence/dispatch/:id/reject",
+  "POST /api/giving/branch/preview",
+  "POST /api/giving/branch/prepare"
 ];
 
 export function getAppServerStatus(options = {}) {
@@ -177,6 +180,35 @@ export function createVnemAppServer(options = {}) {
         return;
       }
 
+      if (route === "POST /api/giving/branch/preview") {
+        const payload = await readJsonRequest(request, { maxBytes: 32 * 1024 });
+        const result = previewGivingBranchPlan(payload);
+        writeJson(response, result.ok ? 200 : 400, result);
+        broadcastTelemetry({
+          type: "giving_branch_preview",
+          message: result.ok ? `Giving AI branch preview ready: ${result.branchName}` : `Giving AI branch preview rejected: ${result.error_code}`,
+          agent_stage: "giving",
+          branch_name: result.branchName ?? null,
+          ok: result.ok
+        });
+        return;
+      }
+
+      if (route === "POST /api/giving/branch/prepare") {
+        const payload = await readJsonRequest(request, { maxBytes: 32 * 1024 });
+        const result = await prepareGivingBranch(payload, { repositoryRoot });
+        writeJson(response, result.ok ? 200 : 400, result);
+        broadcastTelemetry({
+          type: "giving_branch_prepare",
+          message: result.ok ? `Giving AI branch pushed for review: ${result.branchName}` : `Giving AI branch prepare rejected: ${result.error_code}`,
+          agent_stage: "giving",
+          branch_name: result.branchName ?? null,
+          push_status: result.pushStatus ?? null,
+          ok: result.ok
+        });
+        return;
+      }
+
       const dispatchRoute = matchDispatchRoute(request.method, url.pathname);
       if (dispatchRoute) {
         if (dispatchRoute.action === "read") {
@@ -246,6 +278,15 @@ export function createVnemAppServer(options = {}) {
       }
 
       if (url.pathname.startsWith("/api/intelligence/")) {
+        writeJson(response, 405, {
+          ok: false,
+          error: "method-or-endpoint-not-supported",
+          route
+        });
+        return;
+      }
+
+      if (url.pathname.startsWith("/api/giving/")) {
         writeJson(response, 405, {
           ok: false,
           error: "method-or-endpoint-not-supported",

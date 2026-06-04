@@ -91,7 +91,8 @@ test("derives a focused mission from live telemetry with safe branch contract", 
   assert.equal(mission.givingBranch.blockedCandidateIds.includes("ingestion-quarantine"), true);
   assert.equal(mission.givingBranch.pushStatus, "not-pushed");
   assert.equal(mission.controls.find((control) => control.key === "prepare-branch").enabled, false);
-  assert.equal(mission.controls.find((control) => control.key === "prepare-branch").state, "planned-safe-branch");
+  assert.equal(mission.controls.find((control) => control.key === "preview-branch").state, "backend-preview-available");
+  assert.equal(mission.controls.find((control) => control.key === "prepare-branch").state, "preview-required");
   assert.match(mission.nextAction, /planned safe branch/i);
 });
 

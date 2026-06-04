@@ -10,7 +10,7 @@ VNEM is being built as an AI-improvement platform, but the repo should stay hone
 | VNEM App / Dashboard | In progress | Shows owner-gated dashboard status, local AI client connector status, targeting controls, pipeline telemetry, improvement mission control, findings, route health, provider state, and staged dispatch review. | It must label live, sample, fallback, preview, and planned states clearly. |
 | Research AI | In progress | Accepts dashboard targets, queries configured source routes, ranks candidates, and emits source-backed telemetry when the local app server is running. | A source signal is not approval. It must pass Protection AI before Giving AI can stage anything. |
 | Protection AI | In progress | Reviews candidate provenance, route metadata, package surfaces, permissions, flags, threat score, and block/isolate decisions. | It should be conservative. Blocked or quarantined items are not applied. |
-| Giving AI | In progress | Stages reviewable markdown dispatches in `.vnem/staging/`, can promote approved markdown into `.vnem/approved/`, and now has a dashboard safe-branch contract lane for future branch preparation. | Approval moves markdown only today. Research-derived implementation output must go to a `vnem-giving/<slug>` branch before manual review; it must not directly touch `main`. |
+| Giving AI | In progress | Stages reviewable markdown dispatches in `.vnem/staging/`, can promote approved markdown into `.vnem/approved/`, previews safe branch plans through the app server, and has a confirmed prepare endpoint for `vnem-giving/<slug>` review branches. | Approval moves markdown only today. Research-derived implementation output must go to a `vnem-giving/<slug>` branch before manual review; it must not directly touch `main`. |
 | VNEM Connectors | Foundation | Detects local AI clients, previews config changes, and supports explicit apply/revert style connector flows. | Never fake connected state. Preview before apply. Show errors honestly. |
 | VNEM AI | Planned | Future customizable AI surface with provider settings, modes, tools, rules, personality, local/cloud model support, and app-builder/prompt/security workflows. | Do not present this as implemented until the repo contains working UI/API behavior and validation. |
 
@@ -47,17 +47,18 @@ Current implemented behavior:
 2. The mission UI shows Research AI -> Protection AI -> Giving AI -> Safe Branch -> Manual Review -> Main.
 3. Verdict counters show allowed, needs-review, quarantined, and blocked candidates.
 4. The branch lane shows the planned branch name, base branch (`main`), included candidates, isolated candidates, validation status, push status, and review status.
-5. Branch preparation controls are disabled/planned until a tested backend action exists. This is intentional: no fake branch creation, no hidden git commands, and no auto-push.
+5. Branch preview calls the local app-server preview endpoint and does not mutate git.
+6. Branch preparation is backend-supported only through explicit confirmation (`confirm: "prepare-giving-branch"`), clean-main checks, branch-name checks, a branch-plan file, validation, and push to the review branch. Dashboard prepare remains disabled until the confirmation/review UX is added, so it cannot fake or accidentally trigger branch writes.
 
-Planned backend behavior:
+Backend branch preparation behavior:
 
-1. Create a branch named `vnem-giving/<short-slug>` from a clean `main` worktree.
-2. Include only candidates with verdict `allow`, or `needs-review` after explicit maintainer review is satisfied.
-3. Refuse branch preparation if any included candidate is `quarantine` or `blocked`.
-4. Run configured validation before any push.
-5. Push the safe branch only after validation passes.
-6. Mark the branch as waiting for manual review.
-7. Never merge to `main` without manual review/activation.
+1. Preview accepts a candidate plan and returns the branch name, base branch, included/excluded candidates, blocked IDs, required checks, validation commands, and manual-review status without mutating git.
+2. Prepare requires explicit `confirm: "prepare-giving-branch"` so branch writes cannot happen from an accidental dashboard click.
+3. Prepare creates a branch named `vnem-giving/<short-slug>` from a clean `main` worktree.
+4. Included candidates must have verdict `allow`, or `needs-review` after explicit maintainer review is satisfied.
+5. Prepare refuses any included `quarantine` or `blocked` candidate.
+6. Prepare writes a reviewable branch-plan file under `discovery/branch-plans/`, commits it on the Giving branch, runs configured validation, and pushes only the review branch after validation passes.
+7. Prepare never pushes or merges `main`; `main` changes require a separate manual review/merge action.
 
 ## Giving AI safe branch contract
 

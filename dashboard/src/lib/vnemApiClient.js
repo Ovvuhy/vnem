@@ -38,6 +38,24 @@ export function createVnemApiClient(options = {}) {
           threat_tolerance: target.threatTolerance
         })
       });
+    },
+    previewGivingBranch(plan) {
+      return requestJson(fetchImpl, `${baseUrl}/api/giving/branch/preview`, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json"
+        },
+        body: JSON.stringify(plan)
+      });
+    },
+    prepareGivingBranch(plan) {
+      return requestJson(fetchImpl, `${baseUrl}/api/giving/branch/prepare`, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json"
+        },
+        body: JSON.stringify(plan)
+      });
     }
   };
 }

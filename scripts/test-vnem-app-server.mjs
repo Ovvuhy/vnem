@@ -125,6 +125,8 @@ try {
   assert.ok(status.endpoints.includes("POST /api/connector/apply"));
   assert.ok(status.endpoints.includes("GET /api/telemetry/stream"));
   assert.ok(status.endpoints.includes("POST /api/intelligence/target"));
+  assert.ok(status.endpoints.includes("POST /api/giving/branch/preview"));
+  assert.ok(status.endpoints.includes("POST /api/giving/branch/prepare"));
   assert.equal(status.intelligence_provider.status, "missing_key");
   assert.equal(status.intelligence_provider.model, "local-fallback");
   assert.equal(
@@ -171,6 +173,57 @@ try {
   const stagedDispatch = await readFile(path.join(tmpRoot, ".vnem", "staging", stagingFiles[0]), "utf8");
   assert.match(stagedDispatch, /VNEM Live Intelligence Dispatch: ovvuh\/vnem-agent-workflow/);
   assert.match(stagedDispatch, /Threat score: 0%/);
+
+  const branchPreview = await requestJson(port, "POST", "/api/giving/branch/preview", {}, JSON.stringify({
+    sourceMissionId: "mission-dashboard-ai-engine",
+    missionTitle: "Improve dashboard AI mission engine",
+    branchName: "vnem-giving/dashboard-ai-mission-engine",
+    baseBranch: "main",
+    includedCandidates: [
+      {
+        id: "ingestion-allowed",
+        title: "Allowed dashboard mission candidate",
+        verdict: "allow",
+        sourceRoute: "github-search"
+      }
+    ],
+    excludedCandidates: [
+      {
+        id: "ingestion-blocked",
+        title: "Blocked unsafe candidate",
+        verdict: "blocked",
+        sourceRoute: "npm-search"
+      }
+    ],
+    validationCommands: ["npm run test:dashboard-missions"]
+  }));
+  assert.equal(branchPreview.statusCode, 200);
+  assert.equal(branchPreview.body.ok, true);
+  assert.equal(branchPreview.body.mode, "preview");
+  assert.equal(branchPreview.body.branchName, "vnem-giving/dashboard-ai-mission-engine");
+  assert.equal(branchPreview.body.baseBranch, "main");
+  assert.equal(branchPreview.body.pushStatus, "not-pushed");
+  assert.equal(branchPreview.body.reviewStatus, "waiting-for-manual-review");
+  assert.equal(branchPreview.body.blockedCandidateIds.includes("ingestion-blocked"), true);
+
+  const invalidBranchPreview = await requestJson(port, "POST", "/api/giving/branch/preview", {}, JSON.stringify({
+    sourceMissionId: "mission-dashboard-ai-engine",
+    branchName: "feature/not-allowed",
+    baseBranch: "main",
+    includedCandidates: [{ id: "candidate", title: "Candidate", verdict: "allow" }]
+  }));
+  assert.equal(invalidBranchPreview.statusCode, 400);
+  assert.equal(invalidBranchPreview.body.error_code, "GIVING_BRANCH_PLAN_INVALID");
+
+  const unconfirmedPrepare = await requestJson(port, "POST", "/api/giving/branch/prepare", {}, JSON.stringify({
+    sourceMissionId: "mission-dashboard-ai-engine",
+    branchName: "vnem-giving/dashboard-ai-mission-engine",
+    baseBranch: "main",
+    includedCandidates: [{ id: "candidate", title: "Candidate", verdict: "allow" }]
+  }));
+  assert.equal(unconfirmedPrepare.statusCode, 400);
+  assert.equal(unconfirmedPrepare.body.error_code, "GIVING_BRANCH_CONFIRMATION_REQUIRED");
+  assert.equal(unconfirmedPrepare.body.pushStatus, "not-pushed");
 
   const baselineDispatchId = telemetryHistory.body.active_ingestions[0].id;
   const dispatchReview = await requestJson(port, "GET", `/api/intelligence/dispatch/${encodeURIComponent(baselineDispatchId)}`);

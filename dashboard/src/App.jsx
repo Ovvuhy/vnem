@@ -228,6 +228,7 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
   const [dispatchReview, setDispatchReview] = useState(null);
   const [dispatchStatus, setDispatchStatus] = useState("idle");
   const [dispatchError, setDispatchError] = useState(null);
+  const [branchPreview, setBranchPreview] = useState(null);
   const pipelineExecution = usePipelineExecution(telemetry, summary);
 
   const findings = useMemo(() => {
@@ -343,7 +344,7 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
       {status === "error" ? <div className="inline-error">{humanize(error)}</div> : null}
 
       <VnemSystemBrief telemetry={telemetry} execution={pipelineExecution} summary={summary} connector={connector} />
-      <ImprovementMissionControl telemetry={telemetry} summary={summary} />
+      <ImprovementMissionControl telemetry={telemetry} summary={summary} apiClient={apiClient} branchPreview={branchPreview} onBranchPreview={setBranchPreview} />
       <TargetingConsole telemetry={telemetry} execution={pipelineExecution} />
       <AutonomousPipeline telemetry={telemetry} execution={pipelineExecution} />
 
