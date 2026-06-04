@@ -1,57 +1,45 @@
 # vnem Daily Signals
 
-Generated: 2026-05-28T08:00:00.000Z
+Generated: 2026-06-04T08:00:00.000Z
 
 Hermes summarizes source-backed agent and LLM ecosystem signals. This digest does not auto-promote entries into the registry.
 
-## New Candidate Signals (hourly T07 — 2026-05-28)
+## New Candidate Signals
 
-- awesome-agent-memory | unreviewed | watchlist | https://github.com/TeleAI-UAGI/Awesome-Agent-Memory — 438 stars, Apache-2.0, curated agent memory systems/papers/benchmarks
-- instar | unreviewed | watchlist | https://github.com/JKHeadley/instar — 64 stars, MIT, persistent Claude Code agents with scheduling, sessions, memory, Telegram
-- wolfpack | unreviewed | review | https://github.com/almogdepaz/wolfpack — 30 stars, MIT, mobile/desktop command center for AI coding agents (Claude, Codex, Gemini) secured by Tailscale
-- discord-mcp | unreviewed | review | https://github.com/PaSympa/discord-mcp — 9 stars, MIT, MCP server to control Discord (messages, channels, roles, permissions, moderation)
-- sagent | unreviewed | review | https://github.com/rekursiv-ai/sagent — 8 stars, Apache-2.0, multi-provider self-mutating coding LLM CLI with async/recursive spawn
-- knowing | unreviewed | watchlist | https://github.com/blackwell-systems/knowing — 7 stars, MIT, permanent code intelligence layer, content-addressed graph with Merkle proofs, 23 MCP tools
+### Daily Synthesis (2026-06-04 06:31 UTC)
 
-## New Candidate Signals (daily deep — 2026-05-28)
-
-- hermes-agent: Hermes Agent v0.14.0 (2026.5.16) | unreviewed | review | https://github.com/NousResearch/hermes-agent/releases/tag/v2026.5.16
-- claude-code: v2.1.153 | unreviewed | review | https://github.com/anthropics/claude-code/releases/tag/v2.1.153
-- minsky | watchlist | watchlist | https://github.com/fyodoriv/minsky
-- void-memory | unreviewed | watchlist | https://github.com/Efeta7451/void-memory
-- Easy-agentic-memory-system-easy-memory- | unreviewed | watchlist | https://github.com/Mursaleen-khan1/Easy-agentic-memory-system-easy-memory-
-- mcp-security-checklist | unreviewed | review | https://github.com/patrickbatem5194/mcp-security-checklist
-- sentinel | unreviewed | review | https://github.com/Spoonbillguru666/sentinel
-- vault-sync | unreviewed | review | https://github.com/Ub207/vault-sync
-- mguard | unreviewed | watchlist | https://github.com/uncensored-waterford179/mguard
-- openclaw-skill | unreviewed | watchlist | https://github.com/unexplained-familyephedraceae871/openclaw-skill
-- iosm-cli | unreviewed | review | https://github.com/viettua3978/iosm-cli
-- Memory-Like-A-Tree | unreviewed | watchlist | https://github.com/zxt-01/Memory-Like-A-Tree
-- Kagantic-vault-structure | unreviewed | watchlist | https://github.com/Asim00740/Kagantic-vault-structure
-- parecode | unreviewed | watchlist | https://github.com/BasilSkyWalk/parecode
+- BittleBits GEO Assistant | promising | review | https://registry.modelcontextprotocol.io/v0.1/servers/ai.bittlebits%2Fbittlebits/versions/latest
+- hermes-agent: Hermes Agent v0.15.2 (2026.5.29.2) | unreviewed | review | https://github.com/NousResearch/hermes-agent/releases/tag/v2026.5.29.2
+- claude-code: v2.1.162 | unreviewed | review | https://github.com/anthropics/claude-code/releases/tag/v2.1.162
+- mcp: mcp-server-supabase: v0.8.1 | unreviewed | review | https://github.com/supabase/mcp/releases/tag/mcp-server-supabase-v0.8.1
+- opencode | promising | review | https://github.com/anomalyco/opencode
+- lightfast | unreviewed | watchlist | https://github.com/lightfastai/lightfast
+- agent-arch | unreviewed | review | https://github.com/agent-axiom/agent-arch
+- brigade | unreviewed | watchlist | https://github.com/escoffier-labs/brigade
+- aha-mcp | unreviewed | review | https://github.com/cedricziel/aha-mcp
+- personal_agent | unreviewed | review | https://github.com/alextra-lab/personal_agent
+- the-librarian | unreviewed | watchlist | https://github.com/JimJafar/the-librarian
+- symbiont-orga-demo | watchlist | watchlist | https://github.com/ThirdKeyAI/symbiont-orga-demo
+- sentinel-override | unreviewed | watchlist | https://github.com/dirtysouthalpha/sentinel-override
+- nl2sql-agent-evaluator | watchlist | watchlist | https://github.com/mpugazh54-cyber/nl2sql-agent-evaluator
+- anchor | unreviewed | watchlist | https://github.com/priyank766/anchor
 - nx-mcp | unreviewed | review | https://www.npmjs.com/package/nx-mcp
-- mcp-framework | unreviewed | watchlist | https://www.npmjs.com/package/mcp-framework
-- Show HN: VAEN – Package and import portable AI coding-agent Harnesses | watchlist | watchlist | https://news.ycombinator.com/item?id=48300485
-- The Codex Showcase | watchlist | watchlist | https://news.ycombinator.com/item?id=48289024
+- chrome-devtools-mcp | watchlist | watchlist | https://www.npmjs.com/package/chrome-devtools-mcp
+- Microsoft announces Scout, an autonomous AI agent built on OpenClaw | watchlist | watchlist | https://news.ycombinator.com/item?id=48374079
+- Launch HN: Hyper (YC P26) – Company brain to power agentic development | watchlist | watchlist | https://news.ycombinator.com/item?id=48387095
 
-## MCP Registry (already indexed)
+### Hourly Additions (2026-06-04 07:00 UTC)
 
-- ac.inference.sh/mcp | promising | already-indexed | license-not-asserted
-- ac.tandem/docs-mcp | promising | already-indexed | license-not-asserted
+- Auto-Empirical-Research-Skills | promising | review | https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills | 1664 stars, 23k+ agent skills for empirical social science research
+- memtomem | unreviewed | watchlist | https://github.com/memtomem/memtomem | Markdown-first agent memory via MCP, Apache-2.0
+- MCP-HUB | unreviewed | review | https://github.com/badhope/MCP-HUB | Open-source registry of 4,403+ MCP servers
+- uniqent | unreviewed | watchlist | https://github.com/RiggdAI/uniqent | Agent brain bundling for cross-framework portability
+- AuroraCoder | unreviewed | review | https://github.com/1001WillsStudio/AuroraCoder | Autonomous coding agent with Docker sandbox + VNC
+- llm-agents-radar | unreviewed | watchlist | https://github.com/linny006/llm-agents-radar | Live-updating index of LLM agent frameworks, no license
 
 ## Watched Primary Sources
 
 - No configured watched source changed, or no watched sources are configured.
-
-## Top Candidates for Maintainer Review
-
-These have the strongest signal (stars, activity, or relevance) and lowest risk flags:
-
-1. **awesome-agent-memory** (TeleAI-UAGI/Awesome-Agent-Memory) — 438 stars, Apache-2.0, actively maintained. Curated memory systems/benchmarks/papers. Useful reference even if not a registry entry. Low risk.
-2. **instar** (JKHeadley/instar) — 64 stars, MIT, persistent Claude Code agents. Actively pushed today. Relevant to agent infrastructure builders.
-3. **knowing** (blackwell-systems/knowing) — 7 stars, MIT, code intelligence graph with Merkle proofs + 23 MCP tools. Interesting for provenance/audit use cases.
-4. **wolfpack** (almogdepaz/wolfpack) — 30 stars, MIT, multi-agent mobile command center. Tailscale-secured. Practical for ops-minded builders.
-5. **discord-mcp** (PaSympa/discord-mcp) — 9 stars, MIT, Discord MCP server. Straightforward single-purpose MCP.
 
 ## Watchlist / Risk Flags
 
@@ -78,8 +66,7 @@ These have the strongest signal (stars, activity, or relevance) and lowest risk 
 
 ## Maintainer Actions
 
-- Review top 5 candidates above before merging.
+- Review Hermes candidate reports before merging.
 - Promote candidates only after checking source links, license posture, permissions, and install docs.
-- Promising registry proposals this cycle: **awesome-agent-memory** (strongest signal, clean license), **instar** (practical agent infra), **knowing** (code intel + MCP).
 - Keep social ingestion disabled unless official credentials and terms-compliant access are configured.
 - If generated pack files changed, verify `AGENTS.md`, `search-index.json`, `best-practices.md`, and `agent-workspace.md` still describe read-only behavior.

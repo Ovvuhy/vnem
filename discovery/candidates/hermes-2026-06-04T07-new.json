@@ -1,0 +1,234 @@
+{
+  "generated_at": "2026-06-04T08:00:00.000Z",
+  "mode": "brain-consolidated",
+  "lookback_hours": 1,
+  "source_routes": [
+    "github-search"
+  ],
+  "note": "Consolidated new signals from hourly 07:00 run not already present in hermes-deep-2026-06-04.json / daily-digest.md",
+  "candidates": [
+    {
+      "source_route": "github-search",
+      "name": "brycewang-stanford/Auto-Empirical-Research-Skills",
+      "title": "Auto-Empirical-Research-Skills",
+      "description": "A curated collection of 23,000+ agent skills for empirical research across 8 social science disciplines. Maintained by CoPaper.AI from Stanford REAP.",
+      "repo_url": "https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills",
+      "homepage_url": "https://copaper.ai",
+      "source_urls": [
+        "https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills",
+        "https://copaper.ai"
+      ],
+      "signal_summary": "Matched GitHub search topic:ai-agent pushed:>=2026-06-02; pushed 2026-06-04T07:00:45Z; stars 1664, forks 245. Low-risk, risk 0/100, trust 100/100. README review unavailable due to rate limit.",
+      "why_builders_should_care": "Large curated agent-skills library for empirical research. Relevant for agents that need structured social-science methodology skills.",
+      "suggested_trust_tier": "promising",
+      "risk_flags": [
+        "readme-review-unavailable"
+      ],
+      "recommended_action": "review",
+      "allow_registry_proposal": true,
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 0,
+        "trust_score": 100,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-06-04T07:01:18.744Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "memtomem/memtomem",
+      "title": "memtomem",
+      "description": "Markdown-first, long-term memory infrastructure for AI agents. Hybrid BM25 + semantic search across markdown/code files via MCP.",
+      "repo_url": "https://github.com/memtomem/memtomem",
+      "homepage_url": "https://memtomem.com",
+      "source_urls": [
+        "https://github.com/memtomem/memtomem",
+        "https://memtomem.com"
+      ],
+      "signal_summary": "Matched GitHub search topic:mcp pushed:>=2026-06-02; pushed 2026-06-04T07:00:54Z; stars 6, forks 24. Apache-2.0. Low-risk, risk 0/100, trust 100/100.",
+      "why_builders_should_care": "Memory infrastructure for agents with MCP interface. Apache-2.0 license, active development.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "sensitive-permissions",
+        "readme-review-unavailable"
+      ],
+      "recommended_action": "watchlist",
+      "allow_registry_proposal": true,
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 0,
+        "trust_score": 100,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-06-04T07:01:18.744Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "badhope/MCP-HUB",
+      "title": "MCP-HUB",
+      "description": "A free, open-source registry of 4,403+ Model Context Protocol servers, prompts, and resources. Discover, search, and one-click install MCP configs.",
+      "repo_url": "https://github.com/badhope/MCP-HUB",
+      "homepage_url": "https://badhope.github.io/MCP-HUB/",
+      "source_urls": [
+        "https://github.com/badhope/MCP-HUB",
+        "https://badhope.github.io/MCP-HUB/"
+      ],
+      "signal_summary": "Matched GitHub search model context protocol pushed:>=2026-06-02; pushed 2026-06-04T06:58:42Z; stars 4. MIT. Low-risk, risk 8/100, trust 92/100.",
+      "why_builders_should_care": "Community MCP registry alternative. Low stars but potentially useful discovery surface.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "readme-review-unavailable",
+        "low-repo-signal"
+      ],
+      "recommended_action": "review",
+      "allow_registry_proposal": true,
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 8,
+        "trust_score": 92,
+        "flags": [
+          "low-repo-signal"
+        ],
+        "reasons": [],
+        "reviewed_at": "2026-06-04T07:01:18.744Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "RiggdAI/uniqent",
+      "title": "uniqent",
+      "description": "Package an AI agent's brain — persona, MCP stack, skills, memory, config — into one open, signed bundle and install it into any framework (OpenClaw, Hermes, Claude Code) in one click.",
+      "repo_url": "https://github.com/RiggdAI/uniqent",
+      "homepage_url": "https://uniqent.ai",
+      "source_urls": [
+        "https://github.com/RiggdAI/uniqent",
+        "https://uniqent.ai"
+      ],
+      "signal_summary": "Matched GitHub search topic:mcp pushed:>=2026-06-02; pushed 2026-06-04T07:00:57Z; stars 3. Apache-2.0. Needs-review, risk 18/100, trust 82/100.",
+      "why_builders_should_care": "Agent portability / brain bundling concept. Could affect how agents are packaged and shared across frameworks.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "sensitive-permissions",
+        "readme-review-unavailable",
+        "low-repo-signal",
+        "new-repository"
+      ],
+      "recommended_action": "watchlist",
+      "allow_registry_proposal": true,
+      "repository_review": {
+        "verdict": "needs-review",
+        "risk_score": 18,
+        "trust_score": 82,
+        "flags": [
+          "low-repo-signal",
+          "new-repository"
+        ],
+        "reasons": [],
+        "reviewed_at": "2026-06-04T07:01:18.744Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "1001WillsStudio/AuroraCoder",
+      "title": "AuroraCoder",
+      "description": "An autonomous AI coding agent with novel innovations in tool state management and code editing, running in a Docker sandbox with a persistent shell, parallel tools, and a VNC desktop.",
+      "repo_url": "https://github.com/1001WillsStudio/AuroraCoder",
+      "homepage_url": null,
+      "source_urls": [
+        "https://github.com/1001WillsStudio/AuroraCoder"
+      ],
+      "signal_summary": "Matched GitHub search topic:llm-agent pushed:>=2026-06-02; pushed 2026-06-04T06:40:37Z; stars 11, forks 2. MIT. Low-risk, risk 6/100, trust 94/100.",
+      "why_builders_should_care": "New autonomous coding agent with Docker sandbox + VNC. Early stage but MIT licensed.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "readme-review-unavailable",
+        "new-repository"
+      ],
+      "recommended_action": "review",
+      "allow_registry_proposal": true,
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 6,
+        "trust_score": 94,
+        "flags": [
+          "new-repository"
+        ],
+        "reasons": [],
+        "reviewed_at": "2026-06-04T07:01:18.744Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "linny006/llm-agents-radar",
+      "title": "llm-agents-radar",
+      "description": "Live-updating index of LLM agent frameworks shipping on GitHub, refreshed every 15 minutes.",
+      "repo_url": "https://github.com/linny006/llm-agents-radar",
+      "homepage_url": null,
+      "source_urls": [
+        "https://github.com/linny006/llm-agents-radar"
+      ],
+      "signal_summary": "Matched GitHub search topic:ai-agent pushed:>=2026-06-02; pushed 2026-06-04T07:00:19Z; stars 2, forks 1. No license asserted. Needs-review, risk 30/100, trust 70/100.",
+      "why_builders_should_care": "Live radar index of agent frameworks. Could be useful as a meta-discovery tool, but no license and very early stage.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "license-not-asserted",
+        "sensitive-permissions",
+        "readme-review-unavailable",
+        "low-repo-signal",
+        "new-repository"
+      ],
+      "recommended_action": "watchlist",
+      "allow_registry_proposal": false,
+      "repository_review": {
+        "verdict": "needs-review",
+        "risk_score": 30,
+        "trust_score": 70,
+        "flags": [
+          "license-not-asserted",
+          "low-repo-signal",
+          "new-repository"
+        ],
+        "reasons": [],
+        "reviewed_at": "2026-06-04T07:01:18.744Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    }
+  ]
+}
