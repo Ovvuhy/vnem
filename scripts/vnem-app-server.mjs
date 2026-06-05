@@ -9,6 +9,7 @@ import { loadLocalEnv } from "./local-env.mjs";
 import { generateConnectorPreviews } from "./preview-connector-changes.mjs";
 import { prepareGivingBranch, previewGivingBranchPlan } from "./giving-branch.mjs";
 import { applyCandidateClassification, buildBranchCandidateSet, buildReviewQueue, readReviewRecords, writeReviewRecord } from "./candidate-pipeline.mjs";
+import { buildBuilderSessionReport } from "./vnem-builder-session.mjs";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(scriptDir, "..");
@@ -77,7 +78,8 @@ const endpoints = [
   "POST /api/intelligence/triage/refresh",
   "POST /api/intelligence/candidate/:id/review",
   "POST /api/giving/branch/preview",
-  "POST /api/giving/branch/prepare"
+  "POST /api/giving/branch/prepare",
+  "GET /api/builder/session"
 ];
 
 export function getAppServerStatus(options = {}) {
@@ -254,6 +256,12 @@ export function createVnemAppServer(options = {}) {
         await drainRequestBody(request);
         const result = await resolveDispatchReview(dispatchRoute.id, dispatchRoute.action, { repositoryRoot });
         writeJson(response, 200, result);
+        return;
+      }
+
+      if (route === "GET /api/builder/session") {
+        const payload = await buildBuilderSessionReport({ rootDir: repositoryRoot });
+        writeJson(response, 200, payload);
         return;
       }
 

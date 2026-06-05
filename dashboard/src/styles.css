@@ -3527,11 +3527,19 @@ a {
 .timeline-event.critical .timeline-dot { background:#fca5a5; }
 .timeline-event p { margin:.25rem 0; color:var(--muted); }
 .timeline-event em { color:var(--muted); font-size:.8rem; }
+.builder-health-card { background: linear-gradient(135deg, rgba(15, 23, 42, .92), rgba(30, 41, 59, .82)); }
+.builder-health-grid { display:grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap:.65rem; margin:.75rem 0; }
+.builder-health-grid span { border:1px solid rgba(148, 163, 184, .14); border-radius:14px; padding:.65rem; color:var(--muted); background:rgba(2, 6, 23, .22); min-width:0; }
+.builder-health-grid strong { display:block; color:var(--text); font-size:.76rem; text-transform:uppercase; letter-spacing:.07em; margin-bottom:.25rem; }
+.builder-health-grid code { color:#bfdbfe; overflow-wrap:anywhere; }
+.builder-run-summary { border:1px solid rgba(148, 163, 184, .14); border-radius:16px; padding:.75rem; background:rgba(15, 23, 42, .5); }
+.builder-run-summary p { margin:.35rem 0; color:var(--muted); }
+.builder-run-summary em { color:#bfdbfe; }
 @media (max-width: 1180px) {
-  .control-room-kpis, .review-lanes, .compact-lanes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .control-room-kpis, .review-lanes, .compact-lanes, .builder-health-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .control-room-grid, .branch-workbench-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 720px) {
   .control-room-hero { flex-direction: column; }
-  .control-room-kpis, .review-lanes, .compact-lanes { grid-template-columns: 1fr; }
+  .control-room-kpis, .review-lanes, .compact-lanes, .builder-health-grid { grid-template-columns: 1fr; }
 }

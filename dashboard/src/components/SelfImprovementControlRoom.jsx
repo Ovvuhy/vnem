@@ -4,7 +4,7 @@ import { Badge } from "./PipelinePrimitives.jsx";
 
 export function SelfImprovementControlRoom({ controlRoom, onAdvance, onReviewCandidate, onCandidateReviewDecision, onPreviewBranch, onOpenPrepare, busy = false }) {
   const [activeCandidate, setActiveCandidate] = useState(null);
-  const { overview, run, reviewInbox, branchWorkbench, timeline, nextAction } = controlRoom;
+  const { overview, run, reviewInbox, branchWorkbench, builderHealth, timeline, nextAction } = controlRoom;
   const openCandidateDrawer = (candidate) => {
     if (candidate) setActiveCandidate(candidate);
   };
@@ -50,6 +50,7 @@ export function SelfImprovementControlRoom({ controlRoom, onAdvance, onReviewCan
       <ReviewInbox inbox={reviewInbox} onReviewCandidate={openCandidateDrawer} onCandidateReviewDecision={onCandidateReviewDecision} />
       <GivingBranchWorkbench workbench={branchWorkbench} onPreviewBranch={onPreviewBranch} onOpenPrepare={onOpenPrepare} />
       <SelfImprovementTimeline timeline={timeline} />
+      <BuilderHealthCard health={builderHealth} />
       {activeCandidate ? (
         <CandidateReviewDrawer
           candidate={activeCandidate}
@@ -315,6 +316,33 @@ export function SelfImprovementTimeline({ timeline }) {
   );
 }
 
+function BuilderHealthCard({ health }) {
+  if (!health) return null;
+  return (
+    <section className="control-panel builder-health-card" aria-label="Builder Health">
+      <div className="panel-head compact">
+        <div><p className="eyebrow">builder health</p><h2>Session hygiene and run history</h2></div>
+        <Badge tone={health.worktreeState === "clean" ? "ok" : "review"}>{health.source}</Badge>
+      </div>
+      <div className="builder-health-grid">
+        <span><strong>latest commit</strong><code>{shortCommit(health.latestCommit)}</code></span>
+        <span><strong>push status</strong>{health.latestPushStatus}</span>
+        <span><strong>worktree</strong>{health.worktreeState}</span>
+        <span><strong>backend</strong>{health.backendStatus}</span>
+        <span><strong>dashboard ports</strong>{health.dashboardStatus}</span>
+      </div>
+      {health.lastRun ? (
+        <div className="builder-run-summary">
+          <strong>{health.lastRun.title}</strong>
+          <p>{health.lastRun.status} · validation: {health.lastRun.validationStatus} · visual: {health.lastRun.visualStatus}</p>
+          <em>{health.lastRun.nextRecommendedImprovement}</em>
+        </div>
+      ) : <p>Self-improvement run history has no recorded runs yet.</p>}
+      <p className="inline-warning">For live facts, run <code>npm run builder:session</code> and <code>npm run dev:health</code>. The dashboard uses the latest recorded run when live builder-session data is unavailable.</p>
+    </section>
+  );
+}
+
 function laneTone(key) {
   if (key === "branchReady") return "ok";
   if (["blocked", "quarantined"].includes(key)) return key === "blocked" ? "critical" : "warning";
@@ -322,4 +350,5 @@ function laneTone(key) {
   return "review";
 }
 function humanizeKey(key) { return key.replace(/([A-Z])/g, " $1").replace(/^./, (letter) => letter.toUpperCase()); }
+function shortCommit(value) { return value ? String(value).slice(0, 7) : "unknown"; }
 function formatMaybeTime(value) { if (!value) return "not reported"; const date = new Date(value); return Number.isNaN(date.getTime()) ? String(value) : date.toLocaleString(); }

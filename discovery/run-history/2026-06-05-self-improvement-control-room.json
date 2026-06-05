@@ -1,0 +1,57 @@
+{
+  "id": "2026-06-05-self-improvement-control-room",
+  "title": "feat(dashboard): add self-improvement control room",
+  "startedAt": "2026-06-05T10:00:00.000Z",
+  "finishedAt": "2026-06-05T10:58:00.000Z",
+  "status": "pushed",
+  "branch": "main",
+  "commit": "291c647525a07c0c730edf1f107afc8eac904bee",
+  "pushed": true,
+  "changedSurfaces": [
+    "dashboard Self-Improvement Control Room",
+    "control-room status derivation",
+    "dashboard docs",
+    "generated VNEM artifacts"
+  ],
+  "validationRun": {
+    "status": "passed according to completed run output",
+    "commands": [
+      "npm run test:candidate-pipeline",
+      "npm run test:giving-branch",
+      "npm run test:dashboard-branch",
+      "npm run test:dashboard-work-status",
+      "npm run test:dashboard-control-room",
+      "npm run test:dashboard-missions",
+      "npm run test:dashboard-verdicts",
+      "npm run test:dashboard-system",
+      "npm run test:dashboard-telemetry",
+      "npm run test:dashboard-connector",
+      "npm run test:app-server",
+      "npm run dashboard:build",
+      "npm run dashboard:check",
+      "npm run validate",
+      "npm run generate",
+      "npm run test:install-pack"
+    ],
+    "notes": "Validation passed according to the completed run output reported before commit 291c647."
+  },
+  "visualCheck": {
+    "status": "passed",
+    "notes": "Dashboard opened at localhost; Control Room, Active Mission Run, Review Inbox, Giving Branch Workbench, and inline Review candidate details were visible. Browser console had no JS errors."
+  },
+  "generatedArtifacts": {
+    "refreshed": true,
+    "notes": "npm run generate refreshed .vnem, public install/API artifacts, llms-full.txt, and install pack."
+  },
+  "safetyNotes": [
+    "No auto-merge was added.",
+    "No main merge or main push from pipeline was added.",
+    "No discovered repo execution was added.",
+    "No package install from candidates was added.",
+    "Candidate review decisions write local records only."
+  ],
+  "remainingLimitations": [
+    "The old top Review modal path was flaky in-browser; an inline review details fallback was used and visually verified."
+  ],
+  "nextRecommendedImprovement": "Add Builder Reliability and Run History tools so future self-improvement work starts with repo, port, run-history, and push-status facts."
+}

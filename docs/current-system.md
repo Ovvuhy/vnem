@@ -235,6 +235,18 @@ The dashboard should answer these questions without requiring the user to read s
 - What should the user do next?
 - Which features are implemented now vs planned later?
 
+## Builder Reliability and Run History
+
+Builder Reliability + Run History v1 adds small, factual tools for future VNEM self-improvement sessions:
+
+- `npm run dev:health` runs `scripts/vnem-dev-health.mjs` and reports VNEM's common localhost ports: `9099` for the backend/app server and `4174`/`4175` for dashboard dev/preview servers. The default command is read-only. `npm run dev:cleanup-dashboard` may only kill clearly identified dashboard Vite processes on `4174`/`4175`; it does not kill `9099` or unknown listeners.
+- `npm run builder:session` runs `scripts/vnem-builder-session.mjs` and reports branch, local HEAD, origin/main SHA, worktree status, changed/untracked files, generated dispatch files, accidental duplicate path checks, dev port health, and the next safe action.
+- `scripts/vnem-run-history.mjs` records/list/latest self-improvement runs under `discovery/run-history/` as source history, not generated `.vnem` output. The first recorded run is `feat(dashboard): add self-improvement control room` at commit `291c647525a07c0c730edf1f107afc8eac904bee`.
+- The app server exposes a read-only `GET /api/builder/session` endpoint for the same builder-session facts. It does not kill processes or mutate files.
+- The Self-Improvement Control Room includes a compact Builder Health card. When live builder-session data is unavailable in the browser, it shows the latest recorded run and honestly tells the operator to use `npm run builder:session` / `npm run dev:health` for live facts.
+
+This is meant to prevent stale localhost output, repeated context compression, duplicate Vite servers, dirty worktrees, untracked dispatch files, and unclear push status from confusing the Building AI. Planned future work is richer live dashboard wiring and automatic session report snapshots at the start/end of self-improvement runs.
+
 ## Safety notes
 
 - VNEM Core remains protected and read-only.

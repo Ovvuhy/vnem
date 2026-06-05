@@ -130,6 +130,7 @@ try {
   assert.ok(status.endpoints.includes("POST /api/intelligence/candidate/:id/review"));
   assert.ok(status.endpoints.includes("POST /api/giving/branch/preview"));
   assert.ok(status.endpoints.includes("POST /api/giving/branch/prepare"));
+  assert.ok(status.endpoints.includes("GET /api/builder/session"));
   assert.equal(status.intelligence_provider.status, "missing_key");
   assert.equal(status.intelligence_provider.model, "local-fallback");
   assert.equal(
@@ -155,6 +156,14 @@ try {
   assertJsonContentType(connectorStatus);
   assert.equal(connectorStatus.body.scan_metadata.mode, "read-only");
   assert.equal(connectorStatus.body.detected_clients.claude_desktop.installed, true);
+
+  const builderSession = await requestJson(port, "GET", "/api/builder/session");
+  assert.equal(builderSession.statusCode, 200);
+  assertJsonContentType(builderSession);
+  assert.equal(builderSession.body.ok, true);
+  assert.equal(builderSession.body.branch, "main");
+  assert.equal(Array.isArray(builderSession.body.devHealth.ports), true);
+  assert.equal(builderSession.body.devHealth.ports.some((entry) => entry.port === 9099), true);
 
   const telemetryHistory = await requestJson(port, "GET", "/api/telemetry/history");
   assert.equal(telemetryHistory.statusCode, 200);

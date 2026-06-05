@@ -1,4 +1,5 @@
 import { deriveDashboardWorkStatus } from "./dashboardWorkStatus.js";
+import { deriveBuilderHealth } from "./builderHealth.js";
 
 const laneOrder = [
   ["branchReady", "Branch-ready"],
@@ -65,6 +66,7 @@ export function deriveControlRoomStatus({ telemetry = {}, summary = null, execut
       collapsedGroupCount: lanes.duplicateLowSignal.count + lanes.alreadyIndexed.count + lanes.rejected.count
     },
     branchWorkbench,
+    builderHealth: deriveBuilderHealth(),
     timeline,
     nextAction,
     rawTelemetrySecondary: true,
