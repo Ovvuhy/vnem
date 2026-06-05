@@ -1,0 +1,146 @@
+{
+  "generated_at": "2026-06-05T08:00:00.000Z",
+  "mode": "brain",
+  "source_routes": ["github-search"],
+  "lookback_days": 3,
+  "candidates": [
+    {
+      "source_route": "github-search",
+      "name": "Delego-Dev/delego",
+      "title": "delego",
+      "description": "A policy & audit firewall for agent actions — deterministic authorization, action logging, and policy enforcement for AI agent tool calls.",
+      "repo_url": "https://github.com/Delego-Dev/delego",
+      "homepage_url": null,
+      "source_url": "https://github.com/Delego-Dev/delego",
+      "source_urls": ["https://github.com/Delego-Dev/delego"],
+      "signal_summary": "Created 2026-06-03. Matches agent security/policy workflow. 6 stars, pushed recently. No license asserted in API metadata.",
+      "why_builders_should_care": "Addresses the growing need for deterministic authorization and audit trails for agent tool execution — a gap in most agent frameworks.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": ["license-not-asserted", "low-stars", "very-new"],
+      "recommended_action": "review",
+      "allow_registry_proposal": true,
+      "repository_review": {
+        "verdict": "needs-review",
+        "risk_score": 30,
+        "trust_score": 60,
+        "flags": ["license-not-asserted", "very-new-repo"],
+        "reasons": ["Repository created 2026-06-03. License not asserted in GitHub API metadata. Low star count but conceptually relevant to agent security."]
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "stefanoamorelli/inspect-evals-mcptox",
+      "title": "inspect-evals-mcptox",
+      "description": "MCPTox: a Tool Poisoning Attack benchmark for LLM agents, implemented as an Inspect AI eval.",
+      "repo_url": "https://github.com/stefanoamorelli/inspect-evals-mcptox",
+      "homepage_url": null,
+      "source_url": "https://github.com/stefanoamorelli/inspect-evals-mcptox",
+      "source_urls": ["https://github.com/stefanoamorelli/inspect-evals-mcptox"],
+      "signal_summary": "Created 2026-06-04. Implements a benchmark for MCP tool poisoning attacks using Inspect AI framework.",
+      "why_builders_should_care": "First known dedicated benchmark for MCP tool poisoning — directly relevant to agent safety evaluation.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": ["license-not-asserted", "very-new", "zero-stars"],
+      "recommended_action": "review",
+      "allow_registry_proposal": true,
+      "repository_review": {
+        "verdict": "needs-review",
+        "risk_score": 35,
+        "trust_score": 55,
+        "flags": ["license-not-asserted", "very-new-repo"],
+        "reasons": ["Very new repository. No license asserted. Niche security eval that fills a gap in the ecosystem."]
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "ZJU-REAL/ClawGUI",
+      "title": "ClawGUI",
+      "description": "Build, Evaluate, and Deploy GUI Agents — online RL training, standardized benchmarks, and real-device deployment in one framework.",
+      "repo_url": "https://github.com/ZJU-REAL/ClawGUI",
+      "homepage_url": null,
+      "source_url": "https://github.com/ZJU-REAL/ClawGUI",
+      "source_urls": ["https://github.com/ZJU-REAL/ClawGUI"],
+      "signal_summary": "Created 2026-04-07, pushed 2026-06-03. 1275 stars. Topics: agentrl, guiagents, mobile-agent, onlinerl, openclaw.",
+      "why_builders_should_care": "Combines GUI agent training, benchmarking, and deployment — relevant for computer-use agent builders.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": ["license-not-asserted"],
+      "recommended_action": "review",
+      "allow_registry_proposal": true,
+      "repository_review": {
+        "verdict": "needs-review",
+        "risk_score": 25,
+        "trust_score": 70,
+        "flags": ["license-not-asserted"],
+        "reasons": ["Decent star count for age. License not asserted. Covers an important niche in agent evaluation."]
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "trycua/cua",
+      "title": "cua",
+      "description": "Open-source infrastructure for Computer-Use Agents. Sandboxes, SDKs, and benchmarks to train and evaluate AI agents that interact with computers.",
+      "repo_url": "https://github.com/trycua/cua",
+      "homepage_url": null,
+      "source_url": "https://github.com/trycua/cua",
+      "source_urls": ["https://github.com/trycua/cua"],
+      "signal_summary": "Created 2025-01-31, actively maintained. 17661 stars. Topics: agent, ai-agent, apple, computer-use, computer-use-agent.",
+      "why_builders_should_care": "Established computer-use agent infrastructure with sandboxes and benchmarks. High star count signals ecosystem adoption.",
+      "suggested_trust_tier": "unreviewed",
+      "riskflags": ["sensitive-permissions"],
+      "recommended_action": "review",
+      "allow_registry_proposal": true,
+      "repository_review": {
+        "verdict": "needs-review",
+        "risk_score": 20,
+        "trust_score": 80,
+        "flags": ["computer-use-permissions"],
+        "reasons": ["Well-established repo with strong community. Computer-use agents inherently need elevated permissions — not a red flag but worth noting."]
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "internetyev/cross-agent-memory-kit",
+      "title": "cross-agent-memory-kit",
+      "description": "Persistent, self-updating memory for AI coding agents (Claude Code, Codex, Cursor, etc.) with cross-agent memory sharing.",
+      "repo_url": "https://github.com/internetyev/cross-agent-memory-kit",
+      "homepage_url": null,
+      "source_url": "https://github.com/internetyev/cross-agent-memory-kit",
+      "source_urls": ["https://github.com/internetyev/cross-agent-memory-kit"],
+      "signal_summary": "Created 2026-06-03. 3 stars. Addresses cross-agent memory persistence gap.",
+      "why_builders_should_care": "Cross-agent memory sharing is an unsolved problem for multi-agent workflows. This could be an early signal of a useful pattern.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": ["license-not-asserted", "low-stars", "very-new", "sensitive-permissions"],
+      "recommended_action": "watchlist",
+      "allow_registry_proposal": true,
+      "repository_review": {
+        "verdict": "needs-review",
+        "risk_score": 35,
+        "trust_score": 55,
+        "flags": ["license-not-asserted", "very-new-repo"],
+        "reasons": ["Very new. Low adoption. Memory access is a sensitive permission category."]
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "IBM/AssetOpsBench",
+      "title": "AssetOpsBench",
+      "description": "Industry 4.0 unified benchmark for building, orchestrating, and evaluating domain-specific AI agents in physical asset management.",
+      "repo_url": "https://github.com/IBM/AssetOpsBench",
+      "homepage_url": null,
+      "source_url": "https://github.com/IBM/AssetOpsBench",
+      "source_urls": ["https://github.com/IBM/AssetOpsBench"],
+      "signal_summary": "Created 2025-05-01, pushed 2026-06-05. 1708 stars. IBM-backed domain-specific agent benchmark.",
+      "why_builders_should_care": "Enterprise-grade domain-specific agent benchmark from IBM. Shows agent evaluation expanding beyond general coding into industrial domains.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": ["license-not-asserted"],
+      "recommended_action": "review",
+      "allow_registry_proposal": true,
+      "repository_review": {
+        "verdict": "needs-review",
+        "risk_score": 15,
+        "trust_score": 80,
+        "flags": ["license-not-asserted"],
+        "reasons": ["IBM-backed project with solid star count. License not asserted in API metadata but likely Apache-2.0 given IBM patterns."]
+      }
+    }
+  ]
+}
