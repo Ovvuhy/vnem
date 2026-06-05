@@ -23,10 +23,12 @@ import { FindingsMatrix } from "./components/FindingsMatrix.jsx";
 import { ImprovementMissionControl } from "./components/ImprovementMissionControl.jsx";
 import { Badge } from "./components/PipelinePrimitives.jsx";
 import { TargetingConsole } from "./components/TargetingConsole.jsx";
+import { SelfImprovementControlRoom } from "./components/SelfImprovementControlRoom.jsx";
 import { VnemCommandCenter } from "./components/VnemCommandCenter.jsx";
 import { VnemSystemBrief } from "./components/VnemSystemBrief.jsx";
 import { usePipelineExecution } from "./hooks/usePipelineExecution.js";
 import { createVnemApiClient, normalizeRequestError } from "./lib/vnemApiClient.js";
+import { deriveControlRoomStatus } from "./lib/controlRoomStatus.js";
 import { deriveDashboardWorkStatus } from "./lib/dashboardWorkStatus.js";
 import { derivePipelineVerdict } from "./lib/pipelineVerdicts.js";
 import { sampleSummary } from "./sampleSummary.js";
@@ -231,8 +233,13 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
   const [dispatchStatus, setDispatchStatus] = useState("idle");
   const [dispatchError, setDispatchError] = useState(null);
   const [branchPreview, setBranchPreview] = useState(null);
+  const [controlActionStatus, setControlActionStatus] = useState("idle");
+  const [controlActionError, setControlActionError] = useState(null);
+  const [prepareControlOpen, setPrepareControlOpen] = useState(false);
+  const [prepareConfirmText, setPrepareConfirmText] = useState("");
   const pipelineExecution = usePipelineExecution(telemetry, summary);
   const workStatus = useMemo(() => deriveDashboardWorkStatus({ telemetry, summary, execution: pipelineExecution, connector, branchPreview }), [telemetry, summary, pipelineExecution, connector, branchPreview]);
+  const controlRoom = useMemo(() => deriveControlRoomStatus({ telemetry, summary, execution: pipelineExecution, connector, branchPreview, workStatus }), [telemetry, summary, pipelineExecution, connector, branchPreview, workStatus]);
 
   const findings = useMemo(() => {
     const dashboardFindings = (summary?.findings ?? []).map(normalizeFinding);
@@ -295,6 +302,16 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
     setDispatchStatus("ready");
   }, [findings, openDispatchReview]);
 
+  useEffect(() => {
+    function handleCandidateReview(event) {
+      if (event?.detail) {
+        openCandidateReview(event.detail);
+      }
+    }
+    window.addEventListener("vnem:candidate-review", handleCandidateReview);
+    return () => window.removeEventListener("vnem:candidate-review", handleCandidateReview);
+  }, [openCandidateReview]);
+
   const closeDispatchReview = useCallback(() => {
     setSelectedFinding(null);
     setDispatchReview(null);
@@ -354,6 +371,80 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
     }
   }, [apiClient, closeDispatchReview, dispatchReview?.candidateReview?.id, selectedFinding?.id, telemetry]);
 
+  const reviewControlCandidate = useCallback(async (candidate, decision, notes) => {
+    const candidateId = candidate?.id;
+    if (!candidateId) return;
+    setControlActionStatus("reviewing-candidate");
+    setControlActionError(null);
+    try {
+      const result = await apiClient.reviewCandidate(candidateId, {
+        decision,
+        notes,
+        reviewedBy: "manual-owner"
+      });
+      if (result?.ok === false) {
+        setControlActionError(result);
+        setControlActionStatus("idle");
+        return;
+      }
+      await telemetry.refreshTelemetryHistory?.();
+      setControlActionStatus("idle");
+    } catch (cause) {
+      setControlActionError(normalizeRequestError(cause));
+      setControlActionStatus("idle");
+      throw cause;
+    }
+  }, [apiClient, telemetry]);
+
+  const previewControlBranch = useCallback(async () => {
+    if (!controlRoom.branchWorkbench.canPreview || controlActionStatus === "previewing") return;
+    setControlActionStatus("previewing");
+    setControlActionError(null);
+    try {
+      const result = await apiClient.previewGivingBranch({
+        sourceMissionId: controlRoom.run.runId,
+        missionTitle: controlRoom.run.missionTitle,
+        branchName: controlRoom.branchWorkbench.branchName,
+        baseBranch: controlRoom.branchWorkbench.baseBranch,
+        includedCandidates: controlRoom.branchWorkbench.includedCandidates,
+        excludedCandidates: controlRoom.branchWorkbench.excludedCandidates,
+        validationCommands: controlRoom.branchWorkbench.validationCommands
+      });
+      setBranchPreview(result);
+      setControlActionStatus("idle");
+      await telemetry.refreshTelemetryHistory?.();
+    } catch (cause) {
+      setControlActionError(normalizeRequestError(cause));
+      setControlActionStatus("idle");
+    }
+  }, [apiClient, controlActionStatus, controlRoom.branchWorkbench, controlRoom.run, telemetry]);
+
+  const prepareControlBranch = useCallback(async () => {
+    if (prepareConfirmText !== controlRoom.branchWorkbench.branchName && prepareConfirmText !== "prepare-giving-branch") return;
+    setControlActionStatus("preparing");
+    setControlActionError(null);
+    try {
+      const result = await apiClient.prepareGivingBranch({
+        sourceMissionId: controlRoom.run.runId,
+        missionTitle: controlRoom.run.missionTitle,
+        branchName: controlRoom.branchWorkbench.branchName,
+        baseBranch: controlRoom.branchWorkbench.baseBranch,
+        includedCandidates: controlRoom.branchWorkbench.includedCandidates,
+        excludedCandidates: controlRoom.branchWorkbench.excludedCandidates,
+        validationCommands: controlRoom.branchWorkbench.validationCommands,
+        confirm: "prepare-giving-branch"
+      });
+      setBranchPreview(result);
+      setPrepareControlOpen(false);
+      setPrepareConfirmText("");
+      setControlActionStatus("idle");
+      await telemetry.refreshTelemetryHistory?.();
+    } catch (cause) {
+      setControlActionError(normalizeRequestError(cause));
+      setControlActionStatus("idle");
+    }
+  }, [apiClient, controlRoom.branchWorkbench, controlRoom.run, prepareConfirmText, telemetry]);
+
   return (
     <>
       <header className="topbar">
@@ -388,14 +479,16 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
 
       {status === "error" ? <div className="inline-error">{humanize(error)}</div> : null}
 
-      <VnemCommandCenter
-        workStatus={workStatus}
-        telemetry={telemetry}
-        apiClient={apiClient}
-        onBranchPreview={setBranchPreview}
-        onBranchPrepared={setBranchPreview}
+      <SelfImprovementControlRoom
+        controlRoom={controlRoom}
+        onAdvance={() => telemetry.refreshTelemetryHistory?.()}
         onReviewCandidate={openCandidateReview}
+        onCandidateReviewDecision={reviewControlCandidate}
+        onPreviewBranch={previewControlBranch}
+        onOpenPrepare={() => setPrepareControlOpen(true)}
+        busy={["previewing", "preparing", "reviewing-candidate"].includes(controlActionStatus)}
       />
+      {controlActionError ? <div className="inline-error">{controlActionError.message ?? controlActionError.error ?? "Control-room action failed"}</div> : null}
       <AutonomousPipeline telemetry={telemetry} execution={pipelineExecution} />
 
       <section className="candidate-queue panel" aria-label="Top candidate queue">
@@ -411,6 +504,14 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
 
       <details className="details-panel">
         <summary>Mission controls, connectors, logs, and raw telemetry</summary>
+        <VnemCommandCenter
+          workStatus={workStatus}
+          telemetry={telemetry}
+          apiClient={apiClient}
+          onBranchPreview={setBranchPreview}
+          onBranchPrepared={setBranchPreview}
+          onReviewCandidate={openCandidateReview}
+        />
         <VnemSystemBrief telemetry={telemetry} execution={pipelineExecution} summary={summary} connector={connector} />
         <ImprovementMissionControl telemetry={telemetry} summary={summary} apiClient={apiClient} branchPreview={branchPreview} onBranchPreview={setBranchPreview} />
         <TargetingConsole telemetry={telemetry} execution={pipelineExecution} />
@@ -476,6 +577,34 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
           </section>
         </aside>
       </section>
+
+      {prepareControlOpen ? (
+        <div className="modal-backdrop" role="presentation">
+          <div className="review-modal prepare-modal" role="dialog" aria-modal="true" aria-label="Prepare Giving branch confirmation">
+            <button className="icon-button modal-close" type="button" onClick={() => setPrepareControlOpen(false)} aria-label="Close prepare confirmation">×</button>
+            <p className="eyebrow">Giving branch workbench</p>
+            <h2>Prepare Giving branch</h2>
+            <p>This prepares a review branch only. It does not merge to main and it does not auto-approve candidates.</p>
+            <div className="prepare-plan-grid">
+              <span>Branch</span><strong>{controlRoom.branchWorkbench.branchName}</strong>
+              <span>Base</span><strong>{controlRoom.branchWorkbench.baseBranch}</strong>
+              <span>Included</span><strong>{controlRoom.branchWorkbench.includedCandidates.length} candidates</strong>
+              <span>Excluded</span><strong>{controlRoom.branchWorkbench.excludedCandidates.length} candidates</strong>
+            </div>
+            <p className="inline-warning">Exact confirmation is required. Blocked/quarantined candidates and unreviewed needs-review candidates must not be included.</p>
+            <label className="confirm-field">
+              Type exact branch name or prepare-giving-branch
+              <input value={prepareConfirmText} onChange={(event) => setPrepareConfirmText(event.target.value)} placeholder={controlRoom.branchWorkbench.branchName} />
+            </label>
+            <div className="modal-actions">
+              <button type="button" className="secondary-action" onClick={() => setPrepareControlOpen(false)}>Cancel</button>
+              <button type="button" className="primary-action" onClick={prepareControlBranch} disabled={controlActionStatus === "preparing" || (prepareConfirmText !== controlRoom.branchWorkbench.branchName && prepareConfirmText !== "prepare-giving-branch")}>
+                {controlActionStatus === "preparing" ? "Preparing and validating..." : "Prepare Giving branch"}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       <DispatchReviewModal
         finding={selectedFinding}

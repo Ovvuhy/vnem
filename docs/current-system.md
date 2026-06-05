@@ -126,6 +126,49 @@ The top card must say:
 
 Raw findings, maintainer notes, connector details, mission controls, and logs are secondary details. They should not bury the current mission, blocker, candidate queue, or safe branch status.
 
+## Self-Improvement Control Room
+
+The dashboard now leads with a Self-Improvement Control Room that frames VNEM around the operator workflow:
+
+```text
+Research AI -> Protection AI -> Review Queue -> Giving AI -> Safe Branch -> Validation -> Manual Review -> Main
+```
+
+Implemented now:
+
+1. The overview header answers what VNEM is doing, whether the backend is live/offline, whether data is live/sample/fallback/stale, how many candidates were found, how many are branch-ready, how many require review, how many are blocked/quarantined, what the top blocker is, and what the next safe action is.
+2. The Active Mission Run card shows the current mission title, goal, stage, provider state, data mode, backend state, and last update. Offline/sample states are explicitly labeled instead of presented as live autonomy.
+3. The Review Inbox groups candidates into branch-ready, needs-review, missing license, needs primary source, weak source, duplicate/low-signal, already indexed, rejected, quarantined, and blocked lanes. Branch-ready and top-review candidates are shown first; lower-priority or isolated groups are collapsed behind details.
+4. Candidate detail review still uses the review modal. It shows source route/URL, summary, trust/risk score, branch eligibility, Protection verdict, review notes, and local review actions: `approve-for-giving`, `keep-reviewing`, `reject-low-signal`, `quarantine`, and `block`.
+5. The Giving Branch Workbench shows branch name, base branch, included/excluded candidates, exclusion reasons, validation commands, preview state, prepare confirmation state, commit/push state when reported, and the manual review status.
+6. The Manual Branch Review Checklist is UI-visible once branch workflow context exists: inspect changed files, inspect the branch plan, inspect included candidates, confirm no blocked/quarantined candidates, confirm no unreviewed `needs-review` candidates, confirm validation, confirm generated artifacts, confirm rollback notes, and only then merge to main manually.
+7. The Self-Improvement Timeline converts mission/candidate/branch/telemetry events into readable evidence first. Raw telemetry, connector details, older mission controls, and raw findings remain available lower on the page or behind details, but they are secondary.
+8. The next safe action system chooses among start backend, wait for provider backoff, start/refresh research, review top candidate, preview branch, open prepare confirmation, show manual review checklist, or explain that nothing can move forward.
+
+Live actions today:
+
+- Refresh telemetry/history.
+- Start or redeploy a mission through existing backend routes.
+- Review a candidate by writing a local review record.
+- Preview a Giving branch plan without mutating git.
+- Prepare a Giving review branch only after backend preview and exact confirmation.
+
+Disabled / not implemented:
+
+- No auto-merge.
+- No merge to `main`.
+- No PR creation unless separate safe support is added later.
+- No package execution or package install from discovered candidates.
+- No claim that `allow` is a complete safety guarantee.
+
+Honest boundaries:
+
+- Protection is metadata-level unless a deeper scan is explicitly reported.
+- Candidate review writes local records only.
+- Giving branch prepare does not merge `main`.
+- Manual review is still required before `main` changes.
+- `allow` means current checks did not find a blocker; it is not guaranteed safety.
+
 ## Pipeline v2: actionable Research / Protection / Giving queue
 
 Pipeline v2 is implemented as a deterministic metadata-level gating layer for live candidates. It improves the old giant `needs-review` pile without weakening Protection AI.
