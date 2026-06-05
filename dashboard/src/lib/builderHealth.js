@@ -1,40 +1,118 @@
 import runHistoryIndex from "../../../discovery/run-history/index.json" with { type: "json" };
 
-export function deriveBuilderHealth({ builderSession = null, runHistory = runHistoryIndex } = {}) {
+export function deriveBuilderHealth({ builderSession = null, runHistory = runHistoryIndex, source = null, status = null, error = null, lastCheckedAt = null } = {}) {
   const latest = runHistory?.latest ?? null;
-  const ports = builderSession?.devHealth?.ports ?? [];
+  const session = builderSession?.ok === false ? null : builderSession;
+  const ports = session?.devHealth?.ports ?? [];
   const dashboardPorts = ports.filter((entry) => [4174, 4175].includes(Number(entry.port)));
   const backendPort = ports.find((entry) => Number(entry.port) === 9099) ?? null;
-  const dirty = builderSession?.worktree ? !builderSession.worktree.clean : null;
+  const resolvedSource = session ? (source ?? "backend") : "fallback";
+  const changedFiles = session?.worktree?.changedFiles ?? [];
+  const untrackedFiles = session?.worktree?.untrackedFiles ?? [];
+  const worktreeClean = session?.worktree?.clean === true;
+  const generatedDispatchFiles = session?.generatedDispatchFiles ?? [];
+  const accidentalPaths = session?.accidentalPaths ?? [];
+
   return {
     ok: true,
-    source: builderSession ? "live-builder-session" : "run-history-static-fallback",
     title: "Builder Health",
-    localMatchesOriginMain: builderSession?.localMatchesOriginMain ?? null,
-    worktreeState: dirty === null ? "available through npm run builder:session" : dirty ? "dirty" : "clean",
-    latestCommit: builderSession?.localHead ?? latest?.commit ?? null,
-    latestPushStatus: builderSession?.localMatchesOriginMain === true ? "local matches origin/main" : latest?.pushed ? "latest recorded run pushed" : "unknown",
-    backendStatus: backendPort?.listening ? "backend port listening" : backendPort ? "backend port free" : "check with npm run dev:health",
-    dashboardStatus: summarizeDashboardPorts(dashboardPorts),
+    source: resolvedSource,
+    status: session ? (status === "loading" ? "loading" : "live") : (status ?? "offline"),
+    errorMessage: error?.message ?? error?.error ?? null,
+    lastCheckedAt,
+    branch: session?.branch ?? "unknown",
+    localHead: session?.localHead ?? latest?.commit ?? null,
+    remoteHead: session?.originMainSha ?? null,
+    localHeadShort: shortCommit(session?.localHead ?? latest?.commit),
+    remoteHeadShort: shortCommit(session?.originMainSha),
+    matchesRemote: session?.localMatchesOriginMain ?? null,
+    repoSync: summarizeRepoSync(session),
+    worktree: summarizeWorktree({ worktreeClean, changedFiles, untrackedFiles, hasSession: Boolean(session) }),
+    changedFiles,
+    untrackedFiles,
+    generatedDispatch: summarizeGeneratedDispatch(generatedDispatchFiles),
+    generatedDispatchFiles,
+    accidentalPaths: summarizeAccidentalPaths(accidentalPaths, Boolean(session)),
+    ports: summarizePorts({ ports, backendPort, dashboardPorts, hasSession: Boolean(session) }),
+    backendPort: summarizeBackendPort(backendPort, Boolean(session)),
+    dashboardPorts: summarizeDashboardPorts(dashboardPorts, Boolean(session)),
     lastRun: latest ? {
       id: latest.id,
       title: latest.title,
       status: latest.status,
       commit: latest.commit,
+      commitShort: shortCommit(latest.commit),
       pushed: latest.pushed,
       validationStatus: latest.validationRun?.status ?? "not recorded",
       visualStatus: latest.visualCheck?.status ?? "not recorded",
       finishedAt: latest.finishedAt,
       nextRecommendedImprovement: latest.nextRecommendedImprovement
     } : null,
-    nextSafeAction: builderSession?.nextSafeAction ?? "Builder health data is available through npm run builder:session. Live dashboard wiring planned."
+    nextSafeAction: session?.nextSafeAction ?? "Builder health backend offline. Run npm run builder:session and npm run dev:health in the repo for live facts.",
+    liveMessage: session
+      ? "Live builder session loaded from local app server."
+      : "Builder health backend offline. Run npm run builder:session and npm run dev:health in the repo for live facts.",
+    staleOutputGuidance: "Stale Vite output does not mean new repo work exists. Trust git status + builder session over old background logs. Use dev:health to confirm ports.",
+    actions: [
+      { key: "refresh", label: "Refresh builder health", type: "refresh" },
+      { key: "builder-session", label: "Use npm run builder:session", type: "instruction" },
+      { key: "dev-health", label: "Use npm run dev:health", type: "instruction" }
+    ]
   };
 }
 
-function summarizeDashboardPorts(dashboardPorts) {
-  if (dashboardPorts.length === 0) return "check with npm run dev:health";
-  const listening = dashboardPorts.filter((entry) => entry.listening);
-  if (listening.length === 0) return "dashboard ports free";
-  if (listening.length === 1) return `dashboard listening on ${listening[0].port}`;
-  return `multiple dashboard ports listening: ${listening.map((entry) => entry.port).join(", ")}`;
+function summarizeRepoSync(session) {
+  if (!session) return { label: "Builder session unavailable", tone: "review" };
+  if (session.localMatchesOriginMain === true) return { label: session.worktree?.clean === true ? "Clean and synced" : "Local matches origin/main", tone: session.worktree?.clean === true ? "ok" : "review" };
+  if (session.localMatchesOriginMain === false) return { label: "Local/remote mismatch", tone: "review" };
+  return { label: "Repo sync unknown", tone: "review" };
+}
+
+function summarizeWorktree({ worktreeClean, changedFiles, untrackedFiles, hasSession }) {
+  if (!hasSession) return { label: "Builder session unavailable", tone: "review", changedCount: 0, untrackedCount: 0 };
+  const changedCount = changedFiles.length;
+  const untrackedCount = untrackedFiles.length;
+  if (worktreeClean) return { label: "Clean worktree", tone: "ok", changedCount, untrackedCount };
+  return { label: "Dirty worktree", tone: "review", changedCount, untrackedCount };
+}
+
+function summarizeGeneratedDispatch(files) {
+  if (files.length === 0) return { label: "no generated dispatch files", tone: "ok", count: 0 };
+  return { label: `${files.length} generated dispatch ${files.length === 1 ? "file" : "files"}`, tone: "review", count: files.length };
+}
+
+function summarizeAccidentalPaths(paths, hasSession) {
+  if (!hasSession) return { label: "check unavailable", tone: "review", found: [] };
+  const found = paths.filter((entry) => entry.exists);
+  if (found.length === 0) return { label: "no accidental VNEM path", tone: "ok", found };
+  return { label: "Accidental VNEM path found", tone: "critical", found };
+}
+
+function summarizePorts({ ports, backendPort, dashboardPorts, hasSession }) {
+  return {
+    all: ports,
+    backend: summarizeBackendPort(backendPort, hasSession),
+    dashboard: summarizeDashboardPorts(dashboardPorts, hasSession)
+  };
+}
+
+function summarizeBackendPort(backendPort, hasSession) {
+  if (!hasSession) return { label: "backend status unavailable", tone: "review", running: false };
+  if (!backendPort) return { label: "backend port not reported", tone: "review", running: false };
+  if (backendPort.listening && backendPort.looksLikeVnemAppServer) return { label: "Backend app server running", tone: "ok", running: true, port: 9099 };
+  if (backendPort.listening) return { label: "Backend port occupied", tone: "review", running: true, port: 9099 };
+  return { label: "Backend port free", tone: "quiet", running: false, port: 9099 };
+}
+
+function summarizeDashboardPorts(dashboardPorts, hasSession) {
+  if (!hasSession) return { label: "dashboard ports unavailable", tone: "review", runningPorts: [] };
+  const running = dashboardPorts.filter((entry) => entry.listening);
+  const runningPorts = running.map((entry) => Number(entry.port));
+  if (running.length === 0) return { label: "Dashboard ports free", tone: "ok", runningPorts };
+  if (running.some((entry) => entry.looksLikeDashboardDevServer)) return { label: "Dashboard dev server running", tone: "review", runningPorts };
+  return { label: "Dashboard port occupied", tone: "review", runningPorts };
+}
+
+function shortCommit(value) {
+  return value ? String(value).slice(0, 7) : "unknown";
 }

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { AlertTriangle, CheckCircle2, Clock3, ExternalLink, GitBranch, ListChecks, Radio, RefreshCcw, Search, ShieldCheck, X } from "lucide-react";
 import { Badge } from "./PipelinePrimitives.jsx";
 
-export function SelfImprovementControlRoom({ controlRoom, onAdvance, onReviewCandidate, onCandidateReviewDecision, onPreviewBranch, onOpenPrepare, busy = false }) {
+export function SelfImprovementControlRoom({ controlRoom, onAdvance, onReviewCandidate, onCandidateReviewDecision, onPreviewBranch, onOpenPrepare, onRefreshBuilderHealth, busy = false }) {
   const [activeCandidate, setActiveCandidate] = useState(null);
   const { overview, run, reviewInbox, branchWorkbench, builderHealth, timeline, nextAction } = controlRoom;
   const openCandidateDrawer = (candidate) => {
@@ -50,7 +50,7 @@ export function SelfImprovementControlRoom({ controlRoom, onAdvance, onReviewCan
       <ReviewInbox inbox={reviewInbox} onReviewCandidate={openCandidateDrawer} onCandidateReviewDecision={onCandidateReviewDecision} />
       <GivingBranchWorkbench workbench={branchWorkbench} onPreviewBranch={onPreviewBranch} onOpenPrepare={onOpenPrepare} />
       <SelfImprovementTimeline timeline={timeline} />
-      <BuilderHealthCard health={builderHealth} />
+      <BuilderHealthCard health={builderHealth} onRefresh={onRefreshBuilderHealth} />
       {activeCandidate ? (
         <CandidateReviewDrawer
           candidate={activeCandidate}
@@ -316,29 +316,36 @@ export function SelfImprovementTimeline({ timeline }) {
   );
 }
 
-function BuilderHealthCard({ health }) {
+function BuilderHealthCard({ health, onRefresh }) {
   if (!health) return null;
   return (
     <section className="control-panel builder-health-card" aria-label="Builder Health">
       <div className="panel-head compact">
-        <div><p className="eyebrow">builder health</p><h2>Session hygiene and run history</h2></div>
-        <Badge tone={health.worktreeState === "clean" ? "ok" : "review"}>{health.source}</Badge>
+        <div><p className="eyebrow">builder health</p><h2>Live session hygiene and run history</h2></div>
+        <div className="builder-health-actions">
+          <Badge tone={health.source === "backend" ? "ok" : "review"}>{health.source === "backend" ? "live backend" : "fallback"}</Badge>
+          <button type="button" className="secondary-action" onClick={() => onRefresh?.()}><RefreshCcw size={14} /> Refresh builder health</button>
+        </div>
       </div>
-      <div className="builder-health-grid">
-        <span><strong>latest commit</strong><code>{shortCommit(health.latestCommit)}</code></span>
-        <span><strong>push status</strong>{health.latestPushStatus}</span>
-        <span><strong>worktree</strong>{health.worktreeState}</span>
-        <span><strong>backend</strong>{health.backendStatus}</span>
-        <span><strong>dashboard ports</strong>{health.dashboardStatus}</span>
+      <p className={health.source === "backend" ? "inline-success" : "inline-warning"}>{health.liveMessage}</p>
+      <div className="builder-health-grid live-builder-grid">
+        <span><strong>repo sync</strong>{health.repoSync.label}<small>branch {health.branch}</small></span>
+        <span><strong>local / origin</strong><code>{health.localHeadShort}</code><small>origin {health.remoteHeadShort}</small></span>
+        <span><strong>worktree</strong>{health.worktree.label}<small>{health.worktree.changedCount} changed · {health.worktree.untrackedCount} untracked</small></span>
+        <span><strong>dispatch files</strong>{health.generatedDispatch.label}<small>{health.accidentalPaths.label}</small></span>
+        <span><strong>backend 9099</strong>{health.backendPort.label}<small>read-only status</small></span>
+        <span><strong>dashboard ports</strong>{health.dashboardPorts.label}<small>{health.dashboardPorts.runningPorts.length ? `running: ${health.dashboardPorts.runningPorts.join(", ")}` : "4174/4175 clean"}</small></span>
       </div>
       {health.lastRun ? (
         <div className="builder-run-summary">
           <strong>{health.lastRun.title}</strong>
-          <p>{health.lastRun.status} · validation: {health.lastRun.validationStatus} · visual: {health.lastRun.visualStatus}</p>
+          <p>{health.lastRun.status} · commit {health.lastRun.commitShort} · validation: {health.lastRun.validationStatus} · visual: {health.lastRun.visualStatus}</p>
           <em>{health.lastRun.nextRecommendedImprovement}</em>
         </div>
       ) : <p>Self-improvement run history has no recorded runs yet.</p>}
-      <p className="inline-warning">For live facts, run <code>npm run builder:session</code> and <code>npm run dev:health</code>. The dashboard uses the latest recorded run when live builder-session data is unavailable.</p>
+      <p className="inline-warning">{health.staleOutputGuidance}</p>
+      <p className="builder-cli-hint"><code>npm run builder:session</code> <code>npm run dev:health</code> CLI owns cleanup; the dashboard does not kill processes.</p>
+      <p><strong>Next safe action:</strong> {health.nextSafeAction}</p>
     </section>
   );
 }

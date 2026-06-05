@@ -42,6 +42,9 @@ export function createVnemApiClient(options = {}) {
     reviewQueue() {
       return requestJson(fetchImpl, `${baseUrl}/api/intelligence/review-queue`);
     },
+    builderSession() {
+      return requestJson(fetchImpl, `${baseUrl}/api/builder/session`);
+    },
     refreshTriage() {
       return requestJson(fetchImpl, `${baseUrl}/api/intelligence/triage/refresh`, {
         method: "POST"

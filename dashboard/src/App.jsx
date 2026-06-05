@@ -33,6 +33,7 @@ import { deriveDashboardWorkStatus } from "./lib/dashboardWorkStatus.js";
 import { derivePipelineVerdict } from "./lib/pipelineVerdicts.js";
 import { sampleSummary } from "./sampleSummary.js";
 import { useTelemetry } from "./hooks/useTelemetry.js";
+import { useBuilderHealth } from "./hooks/useBuilderHealth.js";
 import { useVnemConnector } from "./hooks/useVnemConnector.js";
 
 const textEncoder = new TextEncoder();
@@ -228,6 +229,7 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
   const [query, setQuery] = useState("");
   const connector = useVnemConnector();
   const apiClient = useMemo(() => createVnemApiClient(), []);
+  const builderHealth = useBuilderHealth(apiClient);
   const [selectedFinding, setSelectedFinding] = useState(null);
   const [dispatchReview, setDispatchReview] = useState(null);
   const [dispatchStatus, setDispatchStatus] = useState("idle");
@@ -239,7 +241,7 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
   const [prepareConfirmText, setPrepareConfirmText] = useState("");
   const pipelineExecution = usePipelineExecution(telemetry, summary);
   const workStatus = useMemo(() => deriveDashboardWorkStatus({ telemetry, summary, execution: pipelineExecution, connector, branchPreview }), [telemetry, summary, pipelineExecution, connector, branchPreview]);
-  const controlRoom = useMemo(() => deriveControlRoomStatus({ telemetry, summary, execution: pipelineExecution, connector, branchPreview, workStatus }), [telemetry, summary, pipelineExecution, connector, branchPreview, workStatus]);
+  const controlRoom = useMemo(() => deriveControlRoomStatus({ telemetry, summary, execution: pipelineExecution, connector, branchPreview, workStatus, builderHealthState: builderHealth }), [telemetry, summary, pipelineExecution, connector, branchPreview, workStatus, builderHealth]);
 
   const findings = useMemo(() => {
     const dashboardFindings = (summary?.findings ?? []).map(normalizeFinding);
@@ -486,6 +488,7 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
         onCandidateReviewDecision={reviewControlCandidate}
         onPreviewBranch={previewControlBranch}
         onOpenPrepare={() => setPrepareControlOpen(true)}
+        onRefreshBuilderHealth={builderHealth.refresh}
         busy={["previewing", "preparing", "reviewing-candidate"].includes(controlActionStatus)}
       />
       {controlActionError ? <div className="inline-error">{controlActionError.message ?? controlActionError.error ?? "Control-room action failed"}</div> : null}

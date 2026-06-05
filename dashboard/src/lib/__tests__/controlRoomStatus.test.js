@@ -111,8 +111,8 @@ test("raw telemetry is secondary, not primary", () => {
 test("builder health exposes latest run history without fake live status", () => {
   const room = deriveControlRoomStatus({ telemetry: { status: "connected", activeIngestions: [] } });
   assert.equal(room.builderHealth.title, "Builder Health");
-  assert.equal(room.builderHealth.source, "run-history-static-fallback");
-  assert.equal(room.builderHealth.latestCommit, "291c647525a07c0c730edf1f107afc8eac904bee");
+  assert.equal(room.builderHealth.source, "fallback");
+  assert.equal(room.builderHealth.localHead, "291c647525a07c0c730edf1f107afc8eac904bee");
   assert.equal(room.builderHealth.lastRun.validationStatus, "passed according to completed run output");
   assert.match(room.builderHealth.nextSafeAction, /npm run builder:session/);
 });

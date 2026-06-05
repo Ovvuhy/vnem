@@ -15,6 +15,15 @@ git log --oneline -5
 
 Do not start implementation until the branch, worktree, remote SHA, generated dispatch files, accidental duplicate paths, and dev ports are understood.
 
+## Live Builder Health
+
+The dashboard Builder Health card reads the local app server's read-only `GET /api/builder/session` endpoint when the backend is running. It can refresh live facts, but it must not kill processes, clean ports, mutate files, commit, push, or fake live data.
+
+- Live card data is useful for branch, local HEAD, origin/main, worktree, dispatch-file, accidental-path, and port state.
+- Backend-offline card data is fallback guidance from source-controlled run history.
+- CLI remains the authority for cleanup: use `npm run dev:cleanup-dashboard` only after confirming port health.
+- If the browser and CLI disagree, trust `npm run builder:session`, `npm run dev:health`, and `git status` first.
+
 ## Do not trust stale background output
 
 Old Vite/server messages can arrive after a task is already committed and pushed. If old localhost output appears:

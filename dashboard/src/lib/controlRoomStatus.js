@@ -14,7 +14,7 @@ const laneOrder = [
   ["blocked", "Blocked"]
 ];
 
-export function deriveControlRoomStatus({ telemetry = {}, summary = null, execution = {}, connector = null, branchPreview = null, workStatus = null, now = Date.now() } = {}) {
+export function deriveControlRoomStatus({ telemetry = {}, summary = null, execution = {}, connector = null, branchPreview = null, workStatus = null, builderHealthState = null, now = Date.now() } = {}) {
   const derivedWorkStatus = workStatus ?? deriveDashboardWorkStatus({ telemetry, summary, execution, connector, branchPreview, now });
   const reviewQueue = telemetry.reviewQueue?.ok ? telemetry.reviewQueue : null;
   const queueCandidates = normalizeQueueCandidates(reviewQueue?.candidates ?? []);
@@ -66,7 +66,13 @@ export function deriveControlRoomStatus({ telemetry = {}, summary = null, execut
       collapsedGroupCount: lanes.duplicateLowSignal.count + lanes.alreadyIndexed.count + lanes.rejected.count
     },
     branchWorkbench,
-    builderHealth: deriveBuilderHealth(),
+    builderHealth: deriveBuilderHealth({
+      builderSession: builderHealthState?.session ?? null,
+      source: builderHealthState?.source,
+      status: builderHealthState?.status,
+      error: builderHealthState?.error,
+      lastCheckedAt: builderHealthState?.lastCheckedAt
+    }),
     timeline,
     nextAction,
     rawTelemetrySecondary: true,
