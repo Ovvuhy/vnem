@@ -20,6 +20,23 @@ const cleanSession = {
   nextSafeAction: "Clean start."
 };
 
+const activeSession = {
+  ...cleanSession,
+  activeRun: {
+    id: "active-1",
+    title: "Automatic Builder Run Snapshots",
+    status: "validating",
+    startedAt: "2026-06-05T20:00:00.000Z",
+    updatedAt: "2026-06-05T20:01:00.000Z",
+    commit: null,
+    pushed: false,
+    validationRun: { status: "running" },
+    visualCheck: { status: "not-run" },
+    nextRecommendedImprovement: "Finish validation."
+  },
+  recoveryStatus: { state: "active-run-interrupted", nextAction: "Active run interrupted before validation. Next action: run validation ladder before commit." }
+};
+
 const latestRun = {
   latest: {
     id: "run-1",
@@ -90,6 +107,22 @@ test("backend offline uses stale fallback guidance", () => {
   assert.equal(health.repoSync.label, "Builder session unavailable");
   assert.match(health.liveMessage, /backend offline/i);
   assert.match(health.staleOutputGuidance, /Stale Vite output does not mean new repo work exists/);
+});
+
+test("active builder run normalizes to recovery snapshot", () => {
+  const health = deriveBuilderHealth({ builderSession: activeSession, runHistory: latestRun, source: "backend" });
+  assert.equal(health.activeRun.title, "Automatic Builder Run Snapshots");
+  assert.equal(health.activeRun.status, "validating");
+  assert.equal(health.activeRun.validationStatus, "running");
+  assert.equal(health.activeRun.visualStatus, "not-run");
+  assert.match(health.recoveryStatus.nextAction, /validation ladder/);
+});
+
+test("dirty session with no active run does not claim clean ready", () => {
+  const session = { ...cleanSession, worktree: { clean: false, changedFiles: ["scripts/a.mjs"], untrackedFiles: [] } };
+  const health = deriveBuilderHealth({ builderSession: session, runHistory: latestRun, source: "backend" });
+  assert.equal(health.runSnapshot.status, "attention-needed-no-active-run");
+  assert.match(health.runSnapshot.nextAction, /worktree is dirty/i);
 });
 
 function test(name, fn) {

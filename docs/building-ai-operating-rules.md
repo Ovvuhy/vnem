@@ -24,6 +24,18 @@ The dashboard Builder Health card reads the local app server's read-only `GET /a
 - CLI remains the authority for cleanup: use `npm run dev:cleanup-dashboard` only after confirming port health.
 - If the browser and CLI disagree, trust `npm run builder:session`, `npm run dev:health`, and `git status` first.
 
+## Builder Run Lifecycle Rules
+
+1. Start a run before major VNEM changes with `npm run builder:run:start -- --title "..."` or `node scripts/vnem-builder-run.mjs start --title "..."`.
+2. Do not start a new feature if `discovery/run-history/active-run.json` exists; run `npm run builder:run:recover` first.
+3. Update run status before validation and before visual checks, for example `npm run builder:run:update -- --status validating`.
+4. Finish the run after commit/push with `npm run builder:run:finish -- --status pushed --commit <sha>` so the active pointer clears.
+5. If context compresses repeatedly, run recovery and trust its active-run/git/dev-port summary over stale chat memory.
+6. If tool limits hit, leave a clear active-run state instead of pretending the run finished.
+7. Stale localhost output is not run state. It is only historical process output until `builder:session`, `builder:run:recover`, and `git status` confirm it.
+8. Trust builder session + active run + git status first; use run history as an audit trail, not as permission to skip validation.
+9. Builder run commands must not kill processes, commit, push, install packages, execute discovered repos, or mutate outside `discovery/run-history/`.
+
 ## Do not trust stale background output
 
 Old Vite/server messages can arrive after a task is already committed and pushed. If old localhost output appears:

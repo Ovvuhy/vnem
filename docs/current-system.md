@@ -246,7 +246,21 @@ Builder Reliability + Run History v1 adds small, factual tools for future VNEM s
 - The Self-Improvement Control Room includes a compact Builder Health card. It now calls `/api/builder/session` through the dashboard API client and `useBuilderHealth` state controller when the local app server is available. The live card shows branch, local HEAD, origin/main SHA, sync status, worktree cleanliness, changed/untracked counts, generated dispatch files, accidental path checks, port health for `9099`/`4174`/`4175`, latest run-history record, and next safe action.
 - If the backend is offline, the card falls back to source-controlled run history and clearly says to run `npm run builder:session` / `npm run dev:health` for live facts. The browser card is read-only: it can refresh `/api/builder/session`, but it cannot clean ports, kill processes, mutate repo files, commit, or push.
 
-This is meant to prevent stale localhost output, repeated context compression, duplicate Vite servers, dirty worktrees, untracked dispatch files, and unclear push status from confusing the Building AI. Stale Vite output does not mean new repo work exists; the trusted checks are git status plus builder-session/dev-health facts. Planned future work is automatic session report snapshots at the start/end of self-improvement runs.
+This is meant to prevent stale localhost output, repeated context compression, duplicate Vite servers, dirty worktrees, untracked dispatch files, and unclear push status from confusing the Building AI. Stale Vite output does not mean new repo work exists; the trusted checks are git status plus builder-session/dev-health facts.
+
+## Automatic Builder Run Snapshots
+
+Automatic Builder Run Snapshots v1 adds a source-controlled lifecycle record for major Building AI runs:
+
+- Records live under `discovery/run-history/` and are normal JSON files, not generated `.vnem` output.
+- `npm run builder:run:start -- --title "..."` creates a run record with start branch, HEAD, origin/main SHA, worktree state, dev health, validation/visual placeholders, changed surfaces, and the next recommended improvement.
+- `discovery/run-history/active-run.json` points at the active run. If it exists, future builders should not stack new work until they update, finish, block, or recover that run.
+- `npm run builder:run:update -- --status validating` updates the active run as work moves through inspecting, editing, validating, visual-checking, ready-to-commit, committed, pushed, blocked, failed, interrupted, or recovered states.
+- `npm run builder:run:finish -- --status pushed --commit <sha>` records end HEAD/origin/main/worktree/dev health, validation, visual check, generated artifacts, safety checks, commit/push state, then clears `active-run.json`.
+- `npm run builder:run:recover` is read-only. It inspects active run state, git status, local/remote SHA, generated dispatch files, dev ports, validation/push status, and returns the next safe action. It does not kill processes, commit, push, or install anything.
+- `npm run builder:session` and `GET /api/builder/session` now include `activeRun`, `latestRun`, `recoveryStatus`, and `runHistorySummary` so the dashboard can show a compact Builder Run Snapshot inside Builder Health.
+
+Live now: lifecycle commands, active-run pointer, recovery summary, builder-session integration, dashboard snapshot display, tests, and docs. Still planned: richer per-command auto-capture for every validation command and optional slow dashboard polling; cleanup remains CLI-only.
 
 ## Safety notes
 

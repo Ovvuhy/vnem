@@ -336,6 +336,11 @@ function BuilderHealthCard({ health, onRefresh }) {
         <span><strong>backend 9099</strong>{health.backendPort.label}<small>read-only status</small></span>
         <span><strong>dashboard ports</strong>{health.dashboardPorts.label}<small>{health.dashboardPorts.runningPorts.length ? `running: ${health.dashboardPorts.runningPorts.join(", ")}` : "4174/4175 clean"}</small></span>
       </div>
+      <div className="builder-run-summary builder-run-snapshot">
+        <strong>{health.runSnapshot.label}: {health.runSnapshot.title}</strong>
+        <p>status: {health.runSnapshot.status} · validation: {health.runSnapshot.validationStatus} · visual: {health.runSnapshot.visualStatus} · push: {health.runSnapshot.pushStatus}</p>
+        <em>{health.runSnapshot.nextAction}</em>
+      </div>
       {health.lastRun ? (
         <div className="builder-run-summary">
           <strong>{health.lastRun.title}</strong>

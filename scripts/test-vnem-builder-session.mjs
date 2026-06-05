@@ -33,6 +33,10 @@ assert.deepEqual(report.worktree.untrackedFiles, ["scratch.txt"], "untracked fil
 assert.equal(report.generatedDispatchFiles.length, 1, "dispatch files should be reported");
 assert.equal(report.accidentalPaths.some((entry) => entry.exists), false, "accidental path checks should be present and false in fake report");
 assert.equal(report.devHealth.ports.length, 3, "dev port health summary should be embedded");
+assert.equal(report.activeRun, null, "builder report should include activeRun field");
+assert.ok(report.latestRun === null || typeof report.latestRun === "object", "builder report should include latestRun field");
+assert.ok(report.recoveryStatus, "builder report should include recoveryStatus");
+assert.ok(report.runHistorySummary, "builder report should include runHistorySummary");
 assert.equal(report.nextSafeAction.includes("Do not start new feature"), true, "dirty worktree should recommend stopping feature work");
 
 const summary = summarizeWorktree(" M docs/current-system.md\n?? scratch.txt\n");

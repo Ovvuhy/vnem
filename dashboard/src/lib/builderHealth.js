@@ -12,6 +12,13 @@ export function deriveBuilderHealth({ builderSession = null, runHistory = runHis
   const worktreeClean = session?.worktree?.clean === true;
   const generatedDispatchFiles = session?.generatedDispatchFiles ?? [];
   const accidentalPaths = session?.accidentalPaths ?? [];
+  const activeRun = normalizeActiveRun(session?.activeRun ?? null);
+  const latestBuilderRun = normalizeActiveRun(session?.latestRun ?? latest ?? null);
+  const recoveryStatus = session?.recoveryStatus ?? (session
+    ? (worktreeClean
+        ? { state: "clean-no-active-run", nextAction: "No active builder run. Worktree is clean and ready." }
+        : { state: "attention-needed-no-active-run", nextAction: "No active builder run, but the worktree is dirty. Inspect, validate, commit/push, or discard intentionally before starting another run." })
+    : { state: "offline", nextAction: "Builder health backend offline. Run npm run builder:run:recover for live recovery facts." });
 
   return {
     ok: true,
@@ -36,6 +43,10 @@ export function deriveBuilderHealth({ builderSession = null, runHistory = runHis
     ports: summarizePorts({ ports, backendPort, dashboardPorts, hasSession: Boolean(session) }),
     backendPort: summarizeBackendPort(backendPort, Boolean(session)),
     dashboardPorts: summarizeDashboardPorts(dashboardPorts, Boolean(session)),
+    activeRun,
+    latestBuilderRun,
+    recoveryStatus,
+    runSnapshot: summarizeRunSnapshot({ activeRun, latestBuilderRun, recoveryStatus, session }),
     lastRun: latest ? {
       id: latest.id,
       title: latest.title,
@@ -111,6 +122,61 @@ function summarizeDashboardPorts(dashboardPorts, hasSession) {
   if (running.length === 0) return { label: "Dashboard ports free", tone: "ok", runningPorts };
   if (running.some((entry) => entry.looksLikeDashboardDevServer)) return { label: "Dashboard dev server running", tone: "review", runningPorts };
   return { label: "Dashboard port occupied", tone: "review", runningPorts };
+}
+
+function normalizeActiveRun(run) {
+  if (!run) return null;
+  return {
+    id: run.id,
+    title: run.title ?? "Untitled builder run",
+    status: run.status ?? "unknown",
+    startedAt: run.startedAt ?? null,
+    updatedAt: run.updatedAt ?? null,
+    finishedAt: run.finishedAt ?? null,
+    commit: run.commit ?? null,
+    commitShort: shortCommit(run.commit),
+    pushed: Boolean(run.pushed),
+    validationStatus: run.validationRun?.status ?? "not-run",
+    visualStatus: run.visualCheck?.status ?? "not-run",
+    nextRecommendedImprovement: run.nextRecommendedImprovement ?? "Run recovery before starting new work."
+  };
+}
+
+function summarizeRunSnapshot({ activeRun, latestBuilderRun, recoveryStatus, session }) {
+  if (activeRun) {
+    return {
+      label: "Active Builder Run",
+      tone: activeRun.status === "interrupted" ? "critical" : "review",
+      title: activeRun.title,
+      status: activeRun.status,
+      validationStatus: activeRun.validationStatus,
+      visualStatus: activeRun.visualStatus,
+      pushStatus: activeRun.pushed ? "pushed" : "not-pushed",
+      nextAction: recoveryStatus?.nextAction ?? "Run npm run builder:run:recover before starting new work."
+    };
+  }
+  if (!session) {
+    return {
+      label: "Builder run state unavailable",
+      tone: "review",
+      title: latestBuilderRun?.title ?? "No live builder session",
+      status: "offline",
+      validationStatus: latestBuilderRun?.validationStatus ?? "unknown",
+      visualStatus: latestBuilderRun?.visualStatus ?? "unknown",
+      pushStatus: latestBuilderRun?.pushed ? "pushed" : "unknown",
+      nextAction: "Builder health backend offline. Run npm run builder:run:recover for live recovery facts."
+    };
+  }
+  return {
+    label: "No active builder run",
+    tone: "ok",
+    title: latestBuilderRun?.title ?? "No active builder run. Worktree is clean and ready.",
+    status: recoveryStatus?.state ?? "clean-no-active-run",
+    validationStatus: latestBuilderRun?.validationStatus ?? "not recorded",
+    visualStatus: latestBuilderRun?.visualStatus ?? "not recorded",
+    pushStatus: latestBuilderRun?.pushed ? "pushed" : "not-pushed",
+    nextAction: recoveryStatus?.nextAction ?? "Safe to start a new run."
+  };
 }
 
 function shortCommit(value) {

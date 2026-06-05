@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const defaultRootDir = path.resolve(scriptDir, "..");
-const allowedStatuses = new Set(["planned", "in-progress", "validated", "pushed", "blocked", "failed"]);
+const allowedStatuses = new Set(["planned", "in-progress", "validated", "pushed", "blocked", "failed", "started", "inspecting", "editing", "validating", "visual-checking", "ready-to-commit", "committed", "interrupted", "recovered"]);
 
 export function runHistoryPaths({ rootDir = defaultRootDir } = {}) {
   const resolvedRoot = path.resolve(rootDir);
@@ -35,7 +35,7 @@ export function parseRunHistoryArgs(argv = process.argv.slice(2)) {
 export async function listRunHistory({ rootDir = defaultRootDir } = {}) {
   const { historyDir } = runHistoryPaths({ rootDir });
   try {
-    const names = (await readdir(historyDir)).filter((name) => name.endsWith(".json") && name !== "index.json").sort();
+    const names = (await readdir(historyDir)).filter((name) => name.endsWith(".json") && !["index.json", "active-run.json"].includes(name)).sort();
     const records = [];
     for (const name of names) {
       const record = JSON.parse(await readFile(path.join(historyDir, name), "utf8"));

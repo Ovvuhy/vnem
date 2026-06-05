@@ -50,8 +50,17 @@ export async function buildBuilderSessionReport(options = {}) {
     generatedDispatchFiles: dispatchFiles,
     accidentalPaths,
     devHealth: summarizeDevHealth(devHealthReport),
+    activeRun: null,
+    latestRun: null,
+    recoveryStatus: null,
+    runHistorySummary: null,
     nextSafeAction: ""
   };
+  const runState = await loadBuilderRunState({ rootDir, report }).catch(() => ({ activeRun: null, latestRun: null, recoveryStatus: { state: "unavailable", nextAction: "Builder run state unavailable; inspect discovery/run-history manually." }, runHistorySummary: { count: 0 } }));
+  report.activeRun = runState.activeRun;
+  report.latestRun = runState.latestRun;
+  report.recoveryStatus = runState.recoveryStatus;
+  report.runHistorySummary = runState.runHistorySummary;
   report.nextSafeAction = recommendNextAction(report);
   return report;
 }
@@ -85,6 +94,9 @@ export function formatBuilderSessionText(report) {
   for (const entry of report.accidentalPaths) lines.push(`${entry.path}: ${entry.exists ? "exists" : "absent"}`);
   lines.push("Dev ports:");
   for (const port of report.devHealth.ports) lines.push(`- ${port.port}: ${port.listening ? "listening" : "free"}${port.pid ? ` pid ${port.pid}` : ""} — ${port.recommendedAction}`);
+  lines.push(`active builder run: ${report.activeRun ? `${report.activeRun.title} (${report.activeRun.status})` : "none"}`);
+  lines.push(`latest builder run: ${report.latestRun ? `${report.latestRun.title} (${report.latestRun.status})` : "none"}`);
+  if (report.recoveryStatus?.nextAction) lines.push(`recovery: ${report.recoveryStatus.nextAction}`);
   lines.push(`Next safe action: ${report.nextSafeAction}`);
   return `${lines.join("\n")}\n`;
 }
@@ -106,6 +118,8 @@ function summarizeDevHealth(devHealthReport) {
 }
 
 function recommendNextAction(report) {
+  if (report.activeRun) return "Active builder run exists. Do not start a new feature; recover, update, finish, or mark the active run blocked first.";
+  if (report.recoveryStatus?.state === "active-run-interrupted") return report.recoveryStatus.nextAction;
   if (!report.worktree.clean) return "Do not start new feature work. Resolve, validate, commit/push, or explicitly discard the dirty worktree first.";
   if (report.generatedDispatchFiles.length) return "Review or remove generated dispatch files before continuing self-improvement work.";
   if (report.accidentalPaths.some((entry) => entry.exists)) return "Stop and remove accidental duplicate VNEM path before editing.";
@@ -113,6 +127,34 @@ function recommendNextAction(report) {
   const dashboardPorts = report.devHealth.ports.filter((entry) => [4174, 4175].includes(entry.port) && entry.listening);
   if (dashboardPorts.length > 1) return "Multiple dashboard dev servers are listening; reuse one or run npm run dev:cleanup-dashboard after visual checks.";
   return "Clean start. It is safe to begin a focused VNEM update after reading the target files.";
+}
+
+async function loadBuilderRunState({ rootDir, report }) {
+  const [{ latestBuilderRun, readActiveBuilderRun }] = await Promise.all([import("./vnem-builder-run.mjs")]);
+  const [activeRun, latestRun] = await Promise.all([readActiveBuilderRun({ rootDir }), latestBuilderRun({ rootDir })]);
+  const dashboardRunning = (report.devHealth?.ports ?? []).filter((port) => [4174, 4175].includes(Number(port.port)) && port.listening);
+  let recoveryStatus;
+  if (activeRun) {
+    recoveryStatus = {
+      state: "active-run-interrupted",
+      nextAction: activeRun.validationRun?.status === "passed"
+        ? "Active builder run exists with validation recorded. Next action: complete visual/diff checks, then finish or mark blocked."
+        : "Active builder run interrupted before validation. Next action: run recovery and validation before commit."
+    };
+  } else if (report.worktree.clean && report.localMatchesOriginMain) {
+    recoveryStatus = { state: "clean-no-active-run", nextAction: "Worktree clean and HEAD matches origin/main. Next action: safe to start a new run." };
+  } else if (dashboardRunning.length) {
+    recoveryStatus = { state: "dashboard-running", nextAction: `Dashboard dev server still running on ${dashboardRunning.map((port) => port.port).join(", ")}. Next action: run npm run dev:cleanup-dashboard if visual check is done.` };
+  } else {
+    recoveryStatus = { state: "attention-needed-no-active-run", nextAction: "Review builder session before starting new work." };
+  }
+  const summarize = (run) => run ? { id: run.id, title: run.title, status: run.status, startedAt: run.startedAt, updatedAt: run.updatedAt, finishedAt: run.finishedAt, commit: run.commit, pushed: run.pushed, validationRun: run.validationRun, visualCheck: run.visualCheck, nextRecommendedImprovement: run.nextRecommendedImprovement } : null;
+  return {
+    activeRun: summarize(activeRun),
+    latestRun: summarize(latestRun),
+    recoveryStatus,
+    runHistorySummary: { hasActiveRun: Boolean(activeRun), latestRunId: latestRun?.id ?? null }
+  };
 }
 
 async function runGit(rootDir, args) {
