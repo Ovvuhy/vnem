@@ -38,6 +38,17 @@ The dashboard Builder Health card reads the local app server's read-only `GET /a
 10. Use auto-capture for major run milestones: `npm run builder:validate` for the validation/generate ladder, `npm run builder:safety` for final diff/safety evidence, `npm run builder:commit -- --message "..."` only after validation+safety pass, and `npm run builder:push` only after a recorded commit.
 11. Auto-capture is evidence capture, not auto-approval. It does not auto-merge, does not execute discovered repos, does not install candidate packages, does not kill processes, and the browser dashboard never commits or pushes.
 
+## ARD operating rules
+
+- ARD means `ARD — AI Research Dashboard`; VNEM remains the whole project.
+- `npm run ard:demo` is the current working deterministic/local path. Do not describe it as live web research.
+- Research AI may collect candidates and first-pass risk hints, but must not execute discovered code, install packages, download/run binaries, or hide suspicious/dangerous items.
+- Protection AI may block/quarantine dangerous candidates and remove them from Giving eligibility. It may only delete unsafe generated files inside ARD-owned temporary/staging workspaces; it must not delete arbitrary user or third-party files.
+- Giving AI receives only allowed or explicitly reviewed candidates. Blocked/quarantined/dangerous items are report-only and excluded from implementable Giving work.
+- ARD research branches use `vnem-research/<run-slug>`. ARD must not push or merge `main`.
+- Static malware/safety review is not antivirus-grade scanning and must be described honestly.
+- Dashboard ARD state must not fake branch push success; show blocked/dry-run/fixture/demo states clearly.
+
 ## Do not trust stale background output
 
 Old Vite/server messages can arrive after a task is already committed and pushed. If old localhost output appears:

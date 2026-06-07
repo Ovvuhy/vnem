@@ -276,6 +276,23 @@ Builder Run Auto-Capture v2 reduces manual run bookkeeping:
 
 Auto-capture is evidence capture, not auto-approval: it does not auto-merge, does not execute discovered repos, does not install candidate packages, does not kill processes, and the browser dashboard displays instructions only.
 
+## ARD — AI Research Dashboard
+
+ARD is the AI Research Dashboard inside VNEM. VNEM remains the full project; ARD is the product surface for Research AI → Protection AI → Giving AI → safe research branch.
+
+Current working path:
+
+- Launch/health: `npm run ard:dev` or `npm run ard:health` prints the backend URL, dashboard URL, port state, and cleanup guidance.
+- Demo pipeline: `npm run ard:demo` runs deterministic demo/local research, not live web research. It creates `discovery/ard-runs/<run-id>/research.json`, `protection.json`, `dangerous-findings.md`, `giving-plan.md`, `branch-summary.md`, and `demo-summary.json`.
+- Research AI: creates candidates from configured deterministic local/demo sources and performs first-pass safety screening for malware, token stealing, shell-pipe installs, postinstall scripts, binary/download hints, destructive commands, hidden persistence, exfiltration hints, weak source, and missing license signals.
+- Protection AI: performs static metadata/declarative evidence review and returns `allow`, `needs-review`, `quarantine`, or `blocked`. `allow` means no blocker was found in current checks; it is not a guarantee of full safety. This is not antivirus-grade malware detection.
+- Dangerous findings: blocked/quarantined candidates stay visible in `dangerous-findings.md` and the dashboard, but are excluded from Giving AI implementable work.
+- Giving AI: includes only `allow` candidates by default, excludes unreviewed `needs-review`, `quarantine`, `blocked`, duplicate/low-signal, and dangerous candidates, then prepares a research branch plan using `vnem-research/<run-slug>`.
+- Demo branch proof: `ard:demo` pushes to a temporary fixture remote so the branch path is real and testable without pushing ARD research output to `main`.
+- Dashboard: the top ARD view is intentionally compact: ARD status, current run, Research AI, Protection AI, Giving AI, Dangerous Findings, and Research Branch. Older raw telemetry, Builder Health, run history, and logs are collapsed/lower.
+
+Still planned: live external source research routes, backend POST endpoints for one-click live ARD runs, and real remote research-branch push after explicit operator confirmation.
+
 ## Safety notes
 
 - VNEM Core remains protected and read-only.

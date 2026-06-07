@@ -453,8 +453,8 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
         <div className="topbar-title">
           <img className="dashboard-logo" src={logoUrl} alt="" />
           <div>
-            <p className="eyebrow">vnem hermes</p>
-            <h1>Owner dashboard</h1>
+            <p className="eyebrow">ARD — AI Research Dashboard</p>
+            <h1>ARD — AI Research Dashboard</h1>
           </div>
         </div>
         <div className="topbar-actions">

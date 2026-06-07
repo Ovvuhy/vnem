@@ -291,7 +291,16 @@ function summarizeRun(run) {
 function summarizeCapture(capture) {
   if (!capture) return { commandCount: 0, lastCommand: null, lastFailedCommand: null };
   const commands = capture.commands ?? [];
-  const lastFailedCommand = [...commands].reverse().find((command) => command.status === "failed") ?? null;
+  const laterPassed = new Set();
+  let lastFailedCommand = null;
+  for (const command of [...commands].reverse()) {
+    const key = command.command ?? command.label;
+    if (command.status === "passed") laterPassed.add(key);
+    if (command.status === "failed" && !laterPassed.has(key)) {
+      lastFailedCommand = command;
+      break;
+    }
+  }
   return { commandCount: commands.length, lastCommand: capture.lastCommand ?? commands.at(-1) ?? null, lastFailedCommand };
 }
 

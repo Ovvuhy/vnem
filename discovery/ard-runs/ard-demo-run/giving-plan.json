@@ -1,0 +1,51 @@
+{
+  "schema": "vnem.ardGivingPlan.v1",
+  "runId": "ard-demo-run",
+  "preparedAt": "2026-06-07T12:45:46.507Z",
+  "branchName": "vnem-research/ard-demo-run",
+  "baseBranch": "main",
+  "includedCandidates": [
+    {
+      "id": "clean-dashboard-launcher",
+      "title": "Simplify ARD launch instructions",
+      "proposedImprovement": "Document and expose ard:dev, ard:health, ard:research, ard:protect, ard:giving, ard:demo, and ard:test scripts.",
+      "filesLikelyAffected": [
+        "package.json",
+        "docs/current-system.md",
+        "docs/building-ai-operating-rules.md"
+      ]
+    }
+  ],
+  "excludedCandidates": [
+    {
+      "id": "missing-license-agent-ui-pattern",
+      "title": "Agent UI pattern with missing license metadata",
+      "reason": "needs-review"
+    },
+    {
+      "id": "token-stealing-postinstall-kit",
+      "title": "Malware-like package claims dashboard automation but steals tokens",
+      "reason": "blocked"
+    },
+    {
+      "id": "duplicate-low-signal-dashboard-tip",
+      "title": "Duplicate low-signal dashboard tip",
+      "reason": "needs-review"
+    }
+  ],
+  "dangerousFindings": [
+    {
+      "candidateId": "token-stealing-postinstall-kit",
+      "verdict": "blocked",
+      "dangerousSignals": [
+        "malware/virus indicator",
+        "credential/token stealing pattern",
+        "shell pipe install pattern",
+        "postinstall script surface",
+        "network exfiltration hint"
+      ]
+    }
+  ],
+  "validationStatus": "reports-only",
+  "nextAction": "Review the pushed research branch reports before implementing any code."
+}

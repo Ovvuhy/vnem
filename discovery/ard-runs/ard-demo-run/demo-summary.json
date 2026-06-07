@@ -1,0 +1,25 @@
+{
+  "schema": "vnem.ardDemo.v1",
+  "runId": "ard-demo-run",
+  "mode": "demo/local research source",
+  "research": {
+    "status": "completed",
+    "candidatesFound": 4
+  },
+  "protection": {
+    "allowed": 1,
+    "needsReview": 2,
+    "quarantined": 0,
+    "blocked": 1,
+    "dangerousFindings": 1
+  },
+  "giving": {
+    "branchName": "vnem-research/ard-demo-run",
+    "commit": "fafbd3064327bc06b16fc1d937d3da730d9cdac4",
+    "pushed": true,
+    "pushMode": "fixture-remote",
+    "included": 1,
+    "excluded": 3
+  },
+  "nextAction": "Review the pushed research branch reports before implementing any code."
+}
