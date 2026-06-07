@@ -29,6 +29,7 @@
     "test:builder-session": "node scripts/test-vnem-builder-session.mjs",
     "test:run-history": "node scripts/test-vnem-run-history.mjs",
     "test:builder-run": "node scripts/test-vnem-builder-run.mjs",
+    "test:builder-capture": "node scripts/test-vnem-builder-capture.mjs",
     "test:candidate-pipeline": "node scripts/test-candidate-pipeline.mjs",
     "test:launch-dev": "node scripts/test-launch-dev.mjs",
     "test:dashboard-connector": "node dashboard/src/hooks/__tests__/useVnemConnector.test.js",
@@ -64,6 +65,12 @@
     "builder:run:finish": "node scripts/vnem-builder-run.mjs finish",
     "builder:run:recover": "node scripts/vnem-builder-run.mjs recover",
     "builder:run:latest": "node scripts/vnem-builder-run.mjs latest",
+    "builder:capture": "node scripts/vnem-builder-capture.mjs",
+    "builder:capture:json": "node scripts/vnem-builder-capture.mjs --json",
+    "builder:validate": "node scripts/vnem-builder-capture.mjs validate",
+    "builder:safety": "node scripts/vnem-builder-capture.mjs safety",
+    "builder:commit": "node scripts/vnem-builder-capture.mjs commit",
+    "builder:push": "node scripts/vnem-builder-capture.mjs push",
     "run-history": "node scripts/vnem-run-history.mjs",
     "dev:all": "node scripts/launch-dev.mjs",
     "test:dashboard": "node scripts/test-dashboard.mjs",
@@ -77,7 +84,7 @@
     "test:mcp": "node scripts/test-mcp-server.mjs",
     "test:hermes-risk": "node scripts/test-hermes-risk-review.mjs",
     "build": "npm run validate && npm run generate && npm run dashboard:build",
-    "test": "npm run validate && npm run generate && npm run dashboard:build && npm run test:install-pack && npm run test:orchestration && npm run test:precision && npm run test:omniscient && npm run test:100x-architecture && npm run test:detect-ai-clients && npm run test:preview-connector && npm run test:apply-connector && npm run test:app-server && npm run test:dev-health && npm run test:builder-session && npm run test:run-history && npm run test:builder-run && npm run test:launch-dev && npm run test:dashboard-connector && npm run test:dashboard-telemetry && npm run test:dashboard-system && npm run test:dashboard-verdicts && npm run test:dashboard-missions && npm run test:dashboard-branch && npm run test:dashboard-work-status && npm run test:dashboard-builder-health && npm run test:dashboard-control-room && npm run test:giving-branch && npm run test:precision-mcp && npm run test:cli && npm run test:mcp && npm run test:dashboard && npm run test:dashboard-api-local && npm run test:hermes-risk && npm run discover:dry-run && npm run digest"
+    "test": "npm run validate && npm run generate && npm run dashboard:build && npm run test:install-pack && npm run test:orchestration && npm run test:precision && npm run test:omniscient && npm run test:100x-architecture && npm run test:detect-ai-clients && npm run test:preview-connector && npm run test:apply-connector && npm run test:app-server && npm run test:dev-health && npm run test:builder-session && npm run test:run-history && npm run test:builder-run && npm run test:builder-capture && npm run test:launch-dev && npm run test:dashboard-connector && npm run test:dashboard-telemetry && npm run test:dashboard-system && npm run test:dashboard-verdicts && npm run test:dashboard-missions && npm run test:dashboard-branch && npm run test:dashboard-work-status && npm run test:dashboard-builder-health && npm run test:dashboard-control-room && npm run test:giving-branch && npm run test:precision-mcp && npm run test:cli && npm run test:mcp && npm run test:dashboard && npm run test:dashboard-api-local && npm run test:hermes-risk && npm run discover:dry-run && npm run digest"
   },
   "dependencies": {
     "@solana/wallet-adapter-base": "^0.9.27",

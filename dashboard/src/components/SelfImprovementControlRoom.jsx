@@ -338,7 +338,8 @@ function BuilderHealthCard({ health, onRefresh }) {
       </div>
       <div className="builder-run-summary builder-run-snapshot">
         <strong>{health.runSnapshot.label}: {health.runSnapshot.title}</strong>
-        <p>status: {health.runSnapshot.status} · validation: {health.runSnapshot.validationStatus} · visual: {health.runSnapshot.visualStatus} · push: {health.runSnapshot.pushStatus}</p>
+        <p>status: {health.runSnapshot.status} · validation: {health.runSnapshot.validationStatus} ({health.runSnapshot.validationCommandCount} commands) · safety: {health.runSnapshot.safetyStatus} · generated: {health.runSnapshot.generatedStatus} · visual: {health.runSnapshot.visualStatus} · push: {health.runSnapshot.pushStatus}</p>
+        <p>last capture: {health.runSnapshot.lastCapturedCommand} · {health.runSnapshot.lastCapturedStatus}{health.runSnapshot.failedCommand ? ` · failed: ${health.runSnapshot.failedCommand}` : ""}</p>
         <em>{health.runSnapshot.nextAction}</em>
       </div>
       {health.lastRun ? (

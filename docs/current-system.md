@@ -260,7 +260,21 @@ Automatic Builder Run Snapshots v1 adds a source-controlled lifecycle record for
 - `npm run builder:run:recover` is read-only. It inspects active run state, git status, local/remote SHA, generated dispatch files, dev ports, validation/push status, and returns the next safe action. It does not kill processes, commit, push, or install anything.
 - `npm run builder:session` and `GET /api/builder/session` now include `activeRun`, `latestRun`, `recoveryStatus`, and `runHistorySummary` so the dashboard can show a compact Builder Run Snapshot inside Builder Health.
 
-Live now: lifecycle commands, active-run pointer, recovery summary, builder-session integration, dashboard snapshot display, tests, and docs. Still planned: richer per-command auto-capture for every validation command and optional slow dashboard polling; cleanup remains CLI-only.
+Live now: lifecycle commands, active-run pointer, recovery summary, builder-session integration, dashboard snapshot display, tests, and docs. Optional slow dashboard polling remains planned; cleanup remains CLI-only.
+
+## Builder Run Auto-Capture
+
+Builder Run Auto-Capture v2 reduces manual run bookkeeping:
+
+- `npm run builder:capture -- run --label "..." -- <command>` wraps a known VNEM repo command, records start/finish time, duration, exit code, pass/fail state, and bounded stdout/stderr tails into the active run, then returns the wrapped command's exit code.
+- `npm run builder:validate` runs the standard VNEM validation/generation ladder through capture, stops on the first failure by default, records the failed command, marks validation `passed` only if all commands pass, and marks generated artifacts refreshed when `npm run generate` succeeds.
+- `npm run builder:safety` captures `git status`, diff stat, changed files, `git diff --check`, and the broad safety grep. It records grep hit count/summary but does not claim grep proves safety.
+- `npm run builder:commit -- --message "..."` requires an active run with validation and safety marked passed, then runs `git add .`, commits, records the commit SHA, and leaves push as a separate step.
+- `npm run builder:push` requires a recorded commit, pushes the current branch to origin, verifies the remote SHA when possible, records final session/dev-health state, and clears the active run only on success.
+- `npm run builder:run:recover` now reads captured commands, validation/safety status, commit status, and push status to recommend where to resume after tool limits or context compression.
+- Builder Health shows compact auto-capture fields: last captured command, validation command count, failed command, safety status, generated-artifact state, commit/push state, and next safe action.
+
+Auto-capture is evidence capture, not auto-approval: it does not auto-merge, does not execute discovered repos, does not install candidate packages, does not kill processes, and the browser dashboard displays instructions only.
 
 ## Safety notes
 

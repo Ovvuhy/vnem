@@ -35,6 +35,8 @@ The dashboard Builder Health card reads the local app server's read-only `GET /a
 7. Stale localhost output is not run state. It is only historical process output until `builder:session`, `builder:run:recover`, and `git status` confirm it.
 8. Trust builder session + active run + git status first; use run history as an audit trail, not as permission to skip validation.
 9. Builder run commands must not kill processes, commit, push, install packages, execute discovered repos, or mutate outside `discovery/run-history/`.
+10. Use auto-capture for major run milestones: `npm run builder:validate` for the validation/generate ladder, `npm run builder:safety` for final diff/safety evidence, `npm run builder:commit -- --message "..."` only after validation+safety pass, and `npm run builder:push` only after a recorded commit.
+11. Auto-capture is evidence capture, not auto-approval. It does not auto-merge, does not execute discovered repos, does not install candidate packages, does not kill processes, and the browser dashboard never commits or pushes.
 
 ## Do not trust stale background output
 

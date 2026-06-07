@@ -130,25 +130,31 @@ function recommendNextAction(report) {
 }
 
 async function loadBuilderRunState({ rootDir, report }) {
-  const [{ latestBuilderRun, readActiveBuilderRun }] = await Promise.all([import("./vnem-builder-run.mjs")]);
-  const [activeRun, latestRun] = await Promise.all([readActiveBuilderRun({ rootDir }), latestBuilderRun({ rootDir })]);
-  const dashboardRunning = (report.devHealth?.ports ?? []).filter((port) => [4174, 4175].includes(Number(port.port)) && port.listening);
-  let recoveryStatus;
-  if (activeRun) {
-    recoveryStatus = {
-      state: "active-run-interrupted",
-      nextAction: activeRun.validationRun?.status === "passed"
-        ? "Active builder run exists with validation recorded. Next action: complete visual/diff checks, then finish or mark blocked."
-        : "Active builder run interrupted before validation. Next action: run recovery and validation before commit."
-    };
-  } else if (report.worktree.clean && report.localMatchesOriginMain) {
-    recoveryStatus = { state: "clean-no-active-run", nextAction: "Worktree clean and HEAD matches origin/main. Next action: safe to start a new run." };
-  } else if (dashboardRunning.length) {
-    recoveryStatus = { state: "dashboard-running", nextAction: `Dashboard dev server still running on ${dashboardRunning.map((port) => port.port).join(", ")}. Next action: run npm run dev:cleanup-dashboard if visual check is done.` };
-  } else {
-    recoveryStatus = { state: "attention-needed-no-active-run", nextAction: "Review builder session before starting new work." };
-  }
-  const summarize = (run) => run ? { id: run.id, title: run.title, status: run.status, startedAt: run.startedAt, updatedAt: run.updatedAt, finishedAt: run.finishedAt, commit: run.commit, pushed: run.pushed, validationRun: run.validationRun, visualCheck: run.visualCheck, nextRecommendedImprovement: run.nextRecommendedImprovement } : null;
+  const [{ latestBuilderRun, readActiveBuilderRun, recoverBuilderRun }] = await Promise.all([import("./vnem-builder-run.mjs")]);
+  const [activeRun, latestRun, recovery] = await Promise.all([readActiveBuilderRun({ rootDir }), latestBuilderRun({ rootDir }), recoverBuilderRun({ rootDir, sessionProvider: async () => report })]);
+  const recoveryStatus = { state: recovery.state, nextAction: recovery.nextAction };
+  const summarizeCapture = (capture) => {
+    const commands = capture?.commands ?? [];
+    const lastFailedCommand = [...commands].reverse().find((command) => command.status === "failed") ?? null;
+    return { commandCount: commands.length, lastCommand: capture?.lastCommand ?? commands.at(-1) ?? null, lastFailedCommand };
+  };
+  const summarize = (run) => run ? {
+    id: run.id,
+    title: run.title,
+    status: run.status,
+    startedAt: run.startedAt,
+    updatedAt: run.updatedAt,
+    finishedAt: run.finishedAt,
+    commit: run.commit,
+    pushed: run.pushed,
+    pushStatus: run.pushStatus,
+    validationRun: run.validationRun,
+    generatedArtifacts: run.generatedArtifacts,
+    visualCheck: run.visualCheck,
+    safetyChecks: run.safetyChecks,
+    capture: summarizeCapture(run.capture),
+    nextRecommendedImprovement: run.nextRecommendedImprovement
+  } : null;
   return {
     activeRun: summarize(activeRun),
     latestRun: summarize(latestRun),

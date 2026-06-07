@@ -1,8 +1,13 @@
 #!/usr/bin/env node
 import { access, mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
+import { execFile } from "node:child_process";
 import path from "node:path";
+import { promisify } from "node:util";
 import { fileURLToPath } from "node:url";
 import { refreshRunHistoryIndex } from "./vnem-run-history.mjs";
+import { inspectVnemDevHealth } from "./vnem-dev-health.mjs";
+
+const execFileAsync = promisify(execFile);
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const defaultRootDir = path.resolve(scriptDir, "..");
@@ -79,6 +84,7 @@ export async function startBuilderRun(options = {}) {
     generatedArtifacts: options.generatedArtifacts ?? { refreshed: false, status: "not-run", notes: "Generated artifacts not checked yet." },
     visualCheck: options.visualCheck ?? { status: "not-run", notes: "Visual check has not run yet." },
     safetyChecks: options.safetyChecks ?? { status: "not-run", notes: "Diff/safety checks have not run yet." },
+    capture: options.capture ?? { schema: "vnem.builderCapture.v1", commands: [], lastCommand: null },
     commit: null,
     pushed: false,
     pushStatus: "not-pushed",
@@ -116,6 +122,10 @@ export async function updateBuilderRun(options = {}) {
     generatedArtifacts: options.generatedArtifacts ?? active.generatedArtifacts,
     visualCheck: options.visualCheck ?? active.visualCheck,
     safetyChecks: options.safetyChecks ?? active.safetyChecks,
+    capture: options.capture ?? active.capture ?? { schema: "vnem.builderCapture.v1", commands: [], lastCommand: null },
+    commit: options.commit ?? active.commit ?? null,
+    pushed: options.pushed ?? active.pushed ?? false,
+    pushStatus: options.pushStatus ?? active.pushStatus ?? "not-pushed",
     staleOutputNotes: options.staleOutputNotes ?? active.staleOutputNotes ?? [],
     remainingLimitations: options.remainingLimitations ?? active.remainingLimitations ?? [],
     nextRecommendedImprovement: options.nextRecommendedImprovement ?? active.nextRecommendedImprovement,
@@ -151,6 +161,7 @@ export async function finishBuilderRun(options = {}) {
     generatedArtifacts: options.generatedArtifacts ?? active.generatedArtifacts,
     visualCheck: options.visualCheck ?? active.visualCheck,
     safetyChecks: options.safetyChecks ?? active.safetyChecks,
+    capture: options.capture ?? active.capture ?? { schema: "vnem.builderCapture.v1", commands: [], lastCommand: null },
     commit: options.commit ?? active.commit ?? session.localHead ?? null,
     pushed: options.pushed ?? status === "pushed",
     pushStatus: options.pushStatus ?? (options.pushed || status === "pushed" ? "pushed" : "not-pushed"),
@@ -224,7 +235,7 @@ export async function clearActiveBuilderRun({ rootDir = defaultRootDir } = {}) {
   await rm(paths.activeRunPath, { force: true });
 }
 
-async function readBuilderRunById({ rootDir, id }) {
+export async function readBuilderRunById({ rootDir, id }) {
   assertSafeId(id);
   const filePath = recordPath({ rootDir, id });
   return JSON.parse(await readFile(filePath, "utf8"));
@@ -258,14 +269,41 @@ function withFilePath(record, rootDir) {
 }
 
 function summarizeRun(run) {
-  return run ? { id: run.id, title: run.title, status: run.status, startedAt: run.startedAt, updatedAt: run.updatedAt, finishedAt: run.finishedAt, commit: run.commit, pushed: run.pushed, nextRecommendedImprovement: run.nextRecommendedImprovement } : null;
+  return run ? {
+    id: run.id,
+    title: run.title,
+    status: run.status,
+    startedAt: run.startedAt,
+    updatedAt: run.updatedAt,
+    finishedAt: run.finishedAt,
+    commit: run.commit,
+    pushed: run.pushed,
+    pushStatus: run.pushStatus,
+    validationRun: run.validationRun,
+    generatedArtifacts: run.generatedArtifacts,
+    visualCheck: run.visualCheck,
+    safetyChecks: run.safetyChecks,
+    capture: summarizeCapture(run.capture),
+    nextRecommendedImprovement: run.nextRecommendedImprovement
+  } : null;
+}
+
+function summarizeCapture(capture) {
+  if (!capture) return { commandCount: 0, lastCommand: null, lastFailedCommand: null };
+  const commands = capture.commands ?? [];
+  const lastFailedCommand = [...commands].reverse().find((command) => command.status === "failed") ?? null;
+  return { commandCount: commands.length, lastCommand: capture.lastCommand ?? commands.at(-1) ?? null, lastFailedCommand };
 }
 
 function recoveryNextAction({ active, session, dashboardRunning }) {
+  const capture = summarizeCapture(active.capture);
+  if (capture.lastFailedCommand) return `Validation failed at ${capture.lastFailedCommand.command}. Next action: fix that failure, then rerun builder:validate.`;
+  if (active.validationRun?.status === "passed" && active.safetyChecks?.status === "passed" && !active.commit) return "Validation passed and safety passed, but no commit exists. Next action: run builder:commit or commit manually.";
+  if (active.commit && !active.pushed) return "Commit exists locally but push is not recorded. Next action: verify remote, then run builder:push or push manually.";
+  if (active.pushed && active.pushStatus && String(active.pushStatus).includes("verified")) return "Pushed and remote verified. Next action: finish run if active pointer remains.";
   if (dashboardRunning.length) return `Dashboard dev server still running on ${dashboardRunning.map((port) => port.port).join(", ")}. Next action: run npm run dev:cleanup-dashboard if visual check is done.`;
-  if (!active.validationRun || ["not-run", "running"].includes(active.validationRun.status)) return "Active run interrupted before validation. Next action: run validation ladder before commit.";
-  if (active.commit && !active.pushed && !session.localMatchesOriginMain) return "Local commit exists but origin/main is behind. Next action: push existing commit if validation is known passed.";
-  if (!session.worktree?.clean) return "Active run has dirty worktree. Next action: inspect diff, validate, then commit or discard intentionally.";
+  if (!active.validationRun || ["not-run", "running"].includes(active.validationRun.status)) return "Active run interrupted before validation. Next action: run builder:validate before commit.";
+  if (!session.worktree?.clean) return "Active run has dirty worktree. Next action: inspect diff, run builder:validate and builder:safety, then commit or discard intentionally.";
   return "Active run needs operator review. Next action: finish or mark blocked with explicit notes.";
 }
 
@@ -290,8 +328,41 @@ function slug(value) {
 }
 
 async function defaultBuilderSession(rootDir) {
-  const { buildBuilderSessionReport } = await import("./vnem-builder-session.mjs");
-  return buildBuilderSessionReport({ rootDir });
+  const [branch, localHead, originMainSha, statusRaw, devHealth] = await Promise.all([
+    runGit(rootDir, ["branch", "--show-current"]),
+    runGit(rootDir, ["rev-parse", "HEAD"]),
+    runGit(rootDir, ["rev-parse", "origin/main"]),
+    runGit(rootDir, ["status", "--short", "--untracked-files=all"]),
+    inspectVnemDevHealth({ rootDir })
+  ]);
+  const worktree = summarizeWorktree(statusRaw);
+  return {
+    branch: branch.trim(),
+    localHead: localHead.trim(),
+    originMainSha: originMainSha.trim(),
+    localMatchesOriginMain: localHead.trim() === originMainSha.trim(),
+    worktree,
+    generatedDispatchFiles: worktree.raw.filter((line) => line.includes(".vnem/approved/dispatch-")).map((line) => line.slice(3).trim()),
+    devHealth,
+    nextSafeAction: worktree.clean ? "Clean start." : "Do not start new feature work. Resolve, validate, commit/push, or explicitly discard the dirty worktree first."
+  };
+}
+
+async function runGit(rootDir, args) {
+  const { stdout } = await execFileAsync("git", args, { cwd: rootDir, windowsHide: true });
+  return stdout;
+}
+
+function summarizeWorktree(statusRaw) {
+  const raw = String(statusRaw ?? "").split(/\r?\n/).filter(Boolean);
+  const changedFiles = [];
+  const untrackedFiles = [];
+  for (const line of raw) {
+    const file = line.slice(3).trim();
+    if (line.startsWith("??")) untrackedFiles.push(file);
+    else changedFiles.push(file);
+  }
+  return { clean: raw.length === 0, raw, changedFiles, untrackedFiles };
 }
 
 function formatRecovery(recovery) {

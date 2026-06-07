@@ -30,7 +30,10 @@ const activeSession = {
     updatedAt: "2026-06-05T20:01:00.000Z",
     commit: null,
     pushed: false,
-    validationRun: { status: "running" },
+    validationRun: { status: "running", commandCount: 3 },
+    generatedArtifacts: { refreshed: true, status: "passed" },
+    safetyChecks: { status: "passed" },
+    capture: { commandCount: 3, lastCommand: { command: "npm run dashboard:build", status: "passed" }, lastFailedCommand: null },
     visualCheck: { status: "not-run" },
     nextRecommendedImprovement: "Finish validation."
   },
@@ -115,6 +118,10 @@ test("active builder run normalizes to recovery snapshot", () => {
   assert.equal(health.activeRun.status, "validating");
   assert.equal(health.activeRun.validationStatus, "running");
   assert.equal(health.activeRun.visualStatus, "not-run");
+  assert.equal(health.runSnapshot.lastCapturedCommand, "npm run dashboard:build");
+  assert.equal(health.runSnapshot.validationCommandCount, 3);
+  assert.equal(health.runSnapshot.safetyStatus, "passed");
+  assert.equal(health.runSnapshot.generatedStatus, "refreshed");
   assert.match(health.recoveryStatus.nextAction, /validation ladder/);
 });
 

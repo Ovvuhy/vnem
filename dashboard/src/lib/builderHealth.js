@@ -136,8 +136,15 @@ function normalizeActiveRun(run) {
     commit: run.commit ?? null,
     commitShort: shortCommit(run.commit),
     pushed: Boolean(run.pushed),
+    pushStatus: run.pushStatus ?? (run.pushed ? "pushed" : "not-pushed"),
     validationStatus: run.validationRun?.status ?? "not-run",
+    validationCommandCount: run.validationRun?.commandCount ?? run.capture?.commandCount ?? 0,
+    failedCommand: run.validationRun?.failedCommand ?? run.capture?.lastFailedCommand?.command ?? null,
     visualStatus: run.visualCheck?.status ?? "not-run",
+    safetyStatus: run.safetyChecks?.status ?? "not-run",
+    generatedStatus: run.generatedArtifacts?.refreshed ? "refreshed" : (run.generatedArtifacts?.status ?? "not-run"),
+    lastCapturedCommand: run.capture?.lastCommand?.command ?? run.capture?.lastCommand?.label ?? null,
+    lastCapturedStatus: run.capture?.lastCommand?.status ?? null,
     nextRecommendedImprovement: run.nextRecommendedImprovement ?? "Run recovery before starting new work."
   };
 }
@@ -150,8 +157,14 @@ function summarizeRunSnapshot({ activeRun, latestBuilderRun, recoveryStatus, ses
       title: activeRun.title,
       status: activeRun.status,
       validationStatus: activeRun.validationStatus,
+      validationCommandCount: activeRun.validationCommandCount,
+      failedCommand: activeRun.failedCommand,
       visualStatus: activeRun.visualStatus,
-      pushStatus: activeRun.pushed ? "pushed" : "not-pushed",
+      safetyStatus: activeRun.safetyStatus,
+      generatedStatus: activeRun.generatedStatus,
+      lastCapturedCommand: activeRun.lastCapturedCommand ?? "none captured yet",
+      lastCapturedStatus: activeRun.lastCapturedStatus ?? "not-run",
+      pushStatus: activeRun.pushStatus,
       nextAction: recoveryStatus?.nextAction ?? "Run npm run builder:run:recover before starting new work."
     };
   }
@@ -162,8 +175,14 @@ function summarizeRunSnapshot({ activeRun, latestBuilderRun, recoveryStatus, ses
       title: latestBuilderRun?.title ?? "No live builder session",
       status: "offline",
       validationStatus: latestBuilderRun?.validationStatus ?? "unknown",
+      validationCommandCount: latestBuilderRun?.validationCommandCount ?? 0,
+      failedCommand: latestBuilderRun?.failedCommand ?? null,
       visualStatus: latestBuilderRun?.visualStatus ?? "unknown",
-      pushStatus: latestBuilderRun?.pushed ? "pushed" : "unknown",
+      safetyStatus: latestBuilderRun?.safetyStatus ?? "unknown",
+      generatedStatus: latestBuilderRun?.generatedStatus ?? "unknown",
+      lastCapturedCommand: latestBuilderRun?.lastCapturedCommand ?? "unavailable",
+      lastCapturedStatus: latestBuilderRun?.lastCapturedStatus ?? "unknown",
+      pushStatus: latestBuilderRun?.pushStatus ?? (latestBuilderRun?.pushed ? "pushed" : "unknown"),
       nextAction: "Builder health backend offline. Run npm run builder:run:recover for live recovery facts."
     };
   }
@@ -173,8 +192,14 @@ function summarizeRunSnapshot({ activeRun, latestBuilderRun, recoveryStatus, ses
     title: latestBuilderRun?.title ?? "No active builder run. Worktree is clean and ready.",
     status: recoveryStatus?.state ?? "clean-no-active-run",
     validationStatus: latestBuilderRun?.validationStatus ?? "not recorded",
+    validationCommandCount: latestBuilderRun?.validationCommandCount ?? 0,
+    failedCommand: latestBuilderRun?.failedCommand ?? null,
     visualStatus: latestBuilderRun?.visualStatus ?? "not recorded",
-    pushStatus: latestBuilderRun?.pushed ? "pushed" : "not-pushed",
+    safetyStatus: latestBuilderRun?.safetyStatus ?? "not recorded",
+    generatedStatus: latestBuilderRun?.generatedStatus ?? "not recorded",
+    lastCapturedCommand: latestBuilderRun?.lastCapturedCommand ?? "none recorded",
+    lastCapturedStatus: latestBuilderRun?.lastCapturedStatus ?? "not recorded",
+    pushStatus: latestBuilderRun?.pushStatus ?? (latestBuilderRun?.pushed ? "pushed" : "not-pushed"),
     nextAction: recoveryStatus?.nextAction ?? "Safe to start a new run."
   };
 }
