@@ -41,6 +41,8 @@ const textDecoder = new TextDecoder();
 const DEMO_MODE = import.meta.env.DEV && new URLSearchParams(window.location.search).has("mock");
 const OFFLINE_MODE = new URLSearchParams(window.location.search).has("offline");
 const SIGN_IN_TIMEOUT_MS = 2500;
+const LOCAL_DEV_ALLOWED_WALLET = import.meta.env?.VITE_DASHBOARD_LOCAL_ALLOWED_WALLET ?? "76ZuJidMzB32EQLLiCL8UPQATQFoY2mrqZa3Kvr8PZhp";
+const LOCAL_BACKEND_URL = import.meta.env?.VITE_VNEM_APP_SERVER_URL ?? "http://127.0.0.1:9099";
 
 export default function App() {
   const wallet = useWallet();
@@ -90,7 +92,7 @@ export default function App() {
   useEffect(() => {
     refreshSession().catch((cause) => {
       setSession({ loading: false, authenticated: false });
-      setError(cause.message);
+      setError(normalizeBackendFetchError(cause));
     });
   }, [refreshSession]);
 
@@ -176,6 +178,8 @@ export default function App() {
           configured={session.configured}
           loading={session.loading || status === "signing"}
           error={error}
+          expectedWallet={LOCAL_DEV_ALLOWED_WALLET}
+          backendUrl={LOCAL_BACKEND_URL}
           onSignIn={signIn}
         />
       </main>
@@ -197,14 +201,14 @@ export default function App() {
   );
 }
 
-function WalletGate({ walletConnected, configured, loading, error, onSignIn }) {
+function WalletGate({ walletConnected, configured, loading, error, expectedWallet, backendUrl, onSignIn }) {
   return (
     <section className="gate-panel" aria-label="vnem Hermes wallet gate">
       <div className="gate-copy">
         <img className="gate-logo" src={logoUrl} alt="" />
         <div className="product-lock"><LockKeyhole size={18} /> owner access</div>
-        <h1>vnem hermes</h1>
-        <p>Connect an allowlisted Solana wallet and sign the dashboard challenge.</p>
+        <h1>ARD — AI Research Dashboard</h1>
+        <p>Connect an allowlisted Solana wallet and sign the dashboard challenge. Local ARD needs the VNEM backend running at {backendUrl}.</p>
       </div>
       <div className="gate-actions">
         <WalletMultiButton />
@@ -217,6 +221,12 @@ function WalletGate({ walletConnected, configured, loading, error, onSignIn }) {
         <span className={walletConnected ? "ok" : ""}>wallet {walletConnected ? "connected" : "required"}</span>
         <span className={configured !== false ? "ok" : "bad"}>{configured === false ? "allowlist not configured" : "allowlist enforced"}</span>
         {error ? <span className="bad">{humanize(error)}</span> : null}
+      </div>
+      <div className="gate-status gate-diagnostics">
+        <span>backend: {backendUrl}</span>
+        <span>local allowlisted wallet: {shortWallet(expectedWallet)}</span>
+        <span>launch: npm run ard:dev</span>
+        {error ? <span>{ownerGateDiagnostic(error, expectedWallet, backendUrl)}</span> : null}
       </div>
     </section>
   );
@@ -1033,10 +1043,26 @@ function withTimeout(promise, timeoutMs, errorMessage) {
 
 function signInError(cause) {
   const message = cause?.message ?? String(cause ?? "wallet-signing-cancelled");
+  if (/Failed to fetch|NetworkError|Load failed|ERR_CONNECTION_REFUSED/i.test(message)) {
+    return "backend-offline";
+  }
   if (/User rejected|rejected|declined|cancel/i.test(message)) {
     return "wallet-signing-cancelled";
   }
   return message;
+}
+
+function normalizeBackendFetchError(cause) {
+  const message = cause?.message ?? String(cause ?? "backend-offline");
+  return /Failed to fetch|NetworkError|Load failed|ERR_CONNECTION_REFUSED/i.test(message) ? "backend-offline" : message;
+}
+
+function ownerGateDiagnostic(error, expectedWallet, backendUrl) {
+  if (error === "backend-offline") return `Backend offline: ${backendUrl} is not reachable. Run npm run ard:dev or npm run ard:backend.`;
+  if (error === "wallet-not-allowlisted") return `Wallet connected but not allowlisted for local dev. Expected ${shortWallet(expectedWallet)}.`;
+  if (error === "wallet-signing-cancelled") return "Wallet request was rejected by the user. Click sign in again and approve the wallet prompt.";
+  if (error === "dashboard-auth-not-configured") return "Dashboard auth is not configured. Local ARD dev should provide a local-only auth secret and allowlist.";
+  return "Check backend status, wallet connection, and the local allowlist before retrying.";
 }
 
 function formatBackoffRemaining(retryUntil, retryAfterMs, now) {

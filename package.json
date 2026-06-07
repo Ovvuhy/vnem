@@ -47,6 +47,8 @@
     "test:ard-giving": "node scripts/test-ard-giving.mjs",
     "test:ard-pipeline": "node scripts/test-ard-pipeline.mjs",
     "test:dashboard-ard": "node dashboard/src/lib/__tests__/ardStatus.test.js",
+    "test:ard-launch": "node scripts/test-ard-launch.mjs",
+    "test:dashboard-auth-local": "node scripts/test-dashboard-auth-local.mjs",
     "benchmark:vnem": "node scripts/benchmark-vnem.mjs",
     "benchmark:visual": "node scripts/benchmark-visual-artifacts.mjs",
     "benchmark:visual:browser": "node scripts/benchmark-visual-browser.mjs",
@@ -60,7 +62,9 @@
     "dashboard:build": "vite build --config dashboard/vite.config.js",
     "dashboard:check": "node --check scripts/hermes-dashboard-api.mjs && node --check scripts/lib/hermes-dashboard-summary.mjs && node --check landing/functions/_shared/auth.js && node --check landing/functions/api/auth/nonce.js && node --check landing/functions/api/auth/verify.js && node --check landing/functions/api/auth/session.js && node --check landing/functions/api/auth/logout.js && node --check landing/functions/api/dashboard/summary.js",
     "dashboard:api": "node scripts/hermes-dashboard-api.mjs",
-    "ard:dev": "node scripts/ard-launch.mjs && npm run dashboard:dev -- --host 127.0.0.1",
+    "ard:dev": "node scripts/ard-dev.mjs",
+    "ard:backend": "node scripts/vnem-app-server.mjs --port 9099",
+    "ard:dashboard": "npm run dashboard:dev -- --host 127.0.0.1",
     "ard:health": "node scripts/ard-launch.mjs",
     "ard:research": "node scripts/ard-research.mjs",
     "ard:protect": "node scripts/ard-protection.mjs",
@@ -96,7 +100,7 @@
     "test:mcp": "node scripts/test-mcp-server.mjs",
     "test:hermes-risk": "node scripts/test-hermes-risk-review.mjs",
     "build": "npm run validate && npm run generate && npm run dashboard:build",
-    "test": "npm run validate && npm run generate && npm run dashboard:build && npm run test:install-pack && npm run test:orchestration && npm run test:precision && npm run test:omniscient && npm run test:100x-architecture && npm run test:detect-ai-clients && npm run test:preview-connector && npm run test:apply-connector && npm run test:app-server && npm run test:dev-health && npm run test:builder-session && npm run test:run-history && npm run test:builder-run && npm run test:builder-capture && npm run test:launch-dev && npm run test:dashboard-connector && npm run test:dashboard-telemetry && npm run test:dashboard-system && npm run test:dashboard-verdicts && npm run test:dashboard-missions && npm run test:dashboard-branch && npm run test:dashboard-work-status && npm run test:dashboard-builder-health && npm run test:dashboard-control-room && npm run test:giving-branch && npm run test:ard-research && npm run test:ard-protection && npm run test:ard-giving && npm run test:ard-pipeline && npm run test:dashboard-ard && npm run test:precision-mcp && npm run test:cli && npm run test:mcp && npm run test:dashboard && npm run test:dashboard-api-local && npm run test:hermes-risk && npm run discover:dry-run && npm run digest"
+    "test": "npm run validate && npm run generate && npm run dashboard:build && npm run test:install-pack && npm run test:orchestration && npm run test:precision && npm run test:omniscient && npm run test:100x-architecture && npm run test:detect-ai-clients && npm run test:preview-connector && npm run test:apply-connector && npm run test:app-server && npm run test:dev-health && npm run test:builder-session && npm run test:run-history && npm run test:builder-run && npm run test:builder-capture && npm run test:launch-dev && npm run test:dashboard-connector && npm run test:dashboard-telemetry && npm run test:dashboard-system && npm run test:dashboard-verdicts && npm run test:dashboard-missions && npm run test:dashboard-branch && npm run test:dashboard-work-status && npm run test:dashboard-builder-health && npm run test:dashboard-control-room && npm run test:giving-branch && npm run test:ard-research && npm run test:ard-protection && npm run test:ard-giving && npm run test:ard-pipeline && npm run test:dashboard-ard && npm run test:ard-launch && npm run test:dashboard-auth-local && npm run test:precision-mcp && npm run test:cli && npm run test:mcp && npm run test:dashboard && npm run test:dashboard-api-local && npm run test:hermes-risk && npm run discover:dry-run && npm run digest"
   },
   "dependencies": {
     "@solana/wallet-adapter-base": "^0.9.27",

@@ -282,7 +282,7 @@ ARD is the AI Research Dashboard inside VNEM. VNEM remains the full project; ARD
 
 Current working path:
 
-- Launch/health: `npm run ard:dev` or `npm run ard:health` prints the backend URL, dashboard URL, port state, and cleanup guidance.
+- Launch/health: `npm run ard:dev` starts the local VNEM backend on `127.0.0.1:9099` when needed and starts/reuses the dashboard on `127.0.0.1:4174`. `npm run ard:health` prints backend URL, dashboard URL, port state, local wallet allowlist guidance, and cleanup guidance. Split commands are available as `npm run ard:backend` and `npm run ard:dashboard`.
 - Demo pipeline: `npm run ard:demo` runs deterministic demo/local research, not live web research. It creates `discovery/ard-runs/<run-id>/research.json`, `protection.json`, `dangerous-findings.md`, `giving-plan.md`, `branch-summary.md`, and `demo-summary.json`.
 - Research AI: creates candidates from configured deterministic local/demo sources and performs first-pass safety screening for malware, token stealing, shell-pipe installs, postinstall scripts, binary/download hints, destructive commands, hidden persistence, exfiltration hints, weak source, and missing license signals.
 - Protection AI: performs static metadata/declarative evidence review and returns `allow`, `needs-review`, `quarantine`, or `blocked`. `allow` means no blocker was found in current checks; it is not a guarantee of full safety. This is not antivirus-grade malware detection.

@@ -2,7 +2,7 @@ import { defineConfig } from "vite";
 import { fileURLToPath } from "node:url";
 import react from "@vitejs/plugin-react";
 
-const hermesApiTarget = process.env.VITE_HERMES_DASHBOARD_API_TARGET ?? "http://127.0.0.1:8788";
+const hermesApiTarget = process.env.VITE_HERMES_DASHBOARD_API_TARGET ?? process.env.VITE_VNEM_APP_SERVER_URL ?? "http://127.0.0.1:9099";
 
 export default defineConfig({
   base: "/dashboard/",

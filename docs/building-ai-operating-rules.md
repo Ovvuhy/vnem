@@ -48,6 +48,7 @@ The dashboard Builder Health card reads the local app server's read-only `GET /a
 - ARD research branches use `vnem-research/<run-slug>`. ARD must not push or merge `main`.
 - Static malware/safety review is not antivirus-grade scanning and must be described honestly.
 - Dashboard ARD state must not fake branch push success; show blocked/dry-run/fixture/demo states clearly.
+- Local ARD owner access uses wallet allowlisting only; never request private keys. `npm run ard:dev` must start or reuse the local backend on `9099` before opening the dashboard, and Vite `/api/*` must proxy to that backend so `/api/auth/nonce` and `/api/telemetry/stream` do not fail from an offline backend. The source-controlled local dev wallet is `76ZuJidMzB32EQLLiCL8UPQATQFoY2mrqZa3Kvr8PZhp`; production deployments must still provide explicit auth secrets and allowlists.
 
 ## Do not trust stale background output
 

@@ -10,6 +10,16 @@ import { generateConnectorPreviews } from "./preview-connector-changes.mjs";
 import { prepareGivingBranch, previewGivingBranchPlan } from "./giving-branch.mjs";
 import { applyCandidateClassification, buildBranchCandidateSet, buildReviewQueue, readReviewRecords, writeReviewRecord } from "./candidate-pipeline.mjs";
 import { buildBuilderSessionReport } from "./vnem-builder-session.mjs";
+import { buildHermesDashboardSummary } from "./lib/hermes-dashboard-summary.mjs";
+import {
+  authErrorResponse,
+  clearSessionCookie,
+  createLoginChallenge,
+  createSessionCookie,
+  dashboardConfigured,
+  readSession,
+  verifySignedLogin
+} from "../landing/functions/_shared/auth.js";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(scriptDir, "..");
@@ -55,6 +65,14 @@ const defaultResearchPollMinMs = 5 * 60 * 1000;
 const defaultResearchPollMaxMs = 10 * 60 * 1000;
 const openRouterChatCompletionsUrl = "https://openrouter.ai/api/v1/chat/completions";
 const openRouterHermesModel = "nousresearch/hermes-3-llama-3.1-405b:free";
+const localDashboardWallet = "76ZuJidMzB32EQLLiCL8UPQATQFoY2mrqZa3Kvr8PZhp";
+const localDashboardAuthSecret = "vnem-local-dashboard-dev-secret";
+function dashboardAuthEnv() {
+  return {
+    DASHBOARD_AUTH_SECRET: process.env.DASHBOARD_AUTH_SECRET ?? localDashboardAuthSecret,
+    DASHBOARD_ALLOWED_WALLETS: process.env.DASHBOARD_ALLOWED_WALLETS ?? localDashboardWallet
+  };
+}
 const intelligenceMission = {
   query: defaultResearchQuery,
   vector: defaultIntelligenceVector,
@@ -70,6 +88,11 @@ const endpoints = [
   "POST /api/connector/rollback",
   "GET /api/telemetry/history",
   "GET /api/telemetry/stream",
+  "GET /api/auth/session",
+  "POST /api/auth/nonce",
+  "POST /api/auth/verify",
+  "POST /api/auth/logout",
+  "GET /api/dashboard/summary",
   "POST /api/intelligence/target",
   "GET /api/intelligence/dispatch/:id",
   "POST /api/intelligence/dispatch/:id/approve",
@@ -166,6 +189,67 @@ export function createVnemAppServer(options = {}) {
     try {
       const url = new URL(request.url || "/", `http://${request.headers.host}`);
       const route = `${request.method || "GET"} ${url.pathname}`;
+
+      if (route === "GET /api/auth/session") {
+        const env = dashboardAuthEnv();
+        const session = await readSession(toWebRequest(request), env);
+        writeJson(response, 200, {
+          ok: true,
+          configured: dashboardConfigured(env),
+          authenticated: Boolean(session),
+          wallet_address: session?.wallet_address ?? null,
+          expires_at: session?.expires_at ?? null,
+          local_dev_wallet: env.DASHBOARD_ALLOWED_WALLETS
+        });
+        return;
+      }
+
+      if (route === "POST /api/auth/logout") {
+        writeJson(response, 200, { ok: true, authenticated: false }, { "set-cookie": localCookie(clearSessionCookie()) });
+        return;
+      }
+
+      if (route === "POST /api/auth/nonce") {
+        const env = dashboardAuthEnv();
+        const body = await readJsonRequest(request, { maxBytes: 8 * 1024 });
+        const challenge = await createLoginChallenge({
+          walletAddress: body.wallet_address,
+          origin: requestOrigin(request)
+        }, env);
+        writeJson(response, 200, { ok: true, ...challenge });
+        return;
+      }
+
+      if (route === "POST /api/auth/verify") {
+        const env = dashboardAuthEnv();
+        const body = await readJsonRequest(request, { maxBytes: 16 * 1024 });
+        const session = await verifySignedLogin({
+          challenge: body.challenge,
+          walletAddress: body.wallet_address,
+          signature: body.signature,
+          message: body.message
+        }, env);
+        const cookie = localCookie(await createSessionCookie(session, env));
+        writeJson(response, 200, {
+          ok: true,
+          authenticated: true,
+          wallet_address: session.wallet_address,
+          expires_at: session.expires_at
+        }, { "set-cookie": cookie });
+        return;
+      }
+
+      if (route === "GET /api/dashboard/summary") {
+        const env = dashboardAuthEnv();
+        const session = await readSession(toWebRequest(request), env);
+        if (!session) {
+          writeJson(response, 401, { ok: false, error: "dashboard-session-required" });
+          return;
+        }
+        const summary = await buildHermesDashboardSummary();
+        writeJson(response, 200, { ok: true, ...summary });
+        return;
+      }
 
       if (route === "GET /api/telemetry/stream") {
         openTelemetryStream(request, response);
@@ -344,6 +428,11 @@ export function createVnemAppServer(options = {}) {
         route
       });
     } catch (error) {
+      if (error?.status) {
+        const authResponse = authErrorResponse(error);
+        writeJson(response, authResponse.status, await authResponse.json());
+        return;
+      }
       const status = Number.isInteger(error?.statusCode) ? error.statusCode : 500;
       writeJson(response, status, {
         ok: false,
@@ -2482,6 +2571,36 @@ function listenOnLoopback(server, config, options = {}) {
   });
 }
 
+function toWebRequest(request) {
+  return new Request(`${requestOrigin(request)}${request.url ?? "/"}`, {
+    headers: headersForWebRequest(request.headers)
+  });
+}
+
+function headersForWebRequest(headers) {
+  const output = new Headers();
+  for (const [key, value] of Object.entries(headers)) {
+    if (Array.isArray(value)) {
+      for (const item of value) output.append(key, item);
+    } else if (value != null) {
+      output.set(key, String(value));
+    }
+  }
+  return output;
+}
+
+function requestOrigin(request) {
+  const origin = request.headers.origin;
+  if (origin) return origin;
+  return `http://${request.headers.host ?? `${loopbackHost}:${defaultPort}`}`;
+}
+
+function localCookie(cookie) {
+  return String(cookie)
+    .replace("; Secure", "")
+    .replace("SameSite=Strict", "SameSite=Lax");
+}
+
 function setBaseHeaders(request, response) {
   response.setHeader("content-type", "application/json; charset=utf-8");
   response.setHeader("cache-control", "no-store");
@@ -2491,6 +2610,7 @@ function setBaseHeaders(request, response) {
   if (isAllowedOrigin(origin)) {
     if (origin && origin !== "null") {
       response.setHeader("access-control-allow-origin", origin);
+      response.setHeader("access-control-allow-credentials", "true");
       response.setHeader("vary", "origin");
     }
     response.setHeader("access-control-allow-methods", "GET, POST, OPTIONS");
@@ -2597,8 +2717,11 @@ function hasPermissionFailure(value, seen = new Set()) {
   return Object.values(value).some((item) => hasPermissionFailure(item, seen));
 }
 
-function writeJson(response, statusCode, payload) {
+function writeJson(response, statusCode, payload, headers = {}) {
   response.statusCode = statusCode;
+  for (const [key, value] of Object.entries(headers)) {
+    response.setHeader(key, value);
+  }
   if (statusCode === 204) {
     response.end();
     return;
