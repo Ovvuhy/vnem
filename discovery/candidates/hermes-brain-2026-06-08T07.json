@@ -1,0 +1,254 @@
+{
+  "generated_at": "2026-06-08T07:15:00.000Z",
+  "mode": "brain-pass",
+  "lookback_days": 2,
+  "source_routes": [
+    "github-search",
+    "npm-search",
+    "hacker-news",
+    "mcp-registry"
+  ],
+  "note": "Brain pass synthesis of dry-run output after GitHub releases route hit rate limits. Candidates selected from signals not already covered in prior VPS hourly reports.",
+  "candidates": [
+    {
+      "source_route": "github-search",
+      "name": "lsdefine/GenericAgent",
+      "title": "GenericAgent",
+      "description": "A general-purpose AI agent framework with 12.6k+ stars, MIT-licensed, Python-based.",
+      "repo_url": "https://github.com/lsdefine/GenericAgent",
+      "homepage_url": null,
+      "source_urls": [
+        "https://github.com/lsdefine/GenericAgent"
+      ],
+      "signal_summary": "Matched GitHub search `topic:llm-agent pushed:>=2026-06-06`; pushed 2026-06-08; stars 12,669; MIT license; Python. Not present in existing registry entries. README review unavailable due to GitHub rate limiting.",
+      "why_builders_should_care": "High-star Python agent framework that may offer patterns or tooling for agent builders. Scale of adoption (12.6k stars) signals community traction.",
+      "suggested_trust_tier": "promising",
+      "risk_flags": [
+        "sensitive-permissions",
+        "readme-review-unavailable"
+      ],
+      "recommended_action": "watchlist",
+      "allow_registry_proposal": true,
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 0,
+        "trust_score": 100,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-06-08T07:15:00.000Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": false,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "regent-vcs/re_gent",
+      "title": "re_gent",
+      "description": "An AI-powered version control system agent. Apache-2.0, Go-based, 676 stars.",
+      "repo_url": "https://github.com/regent-vcs/re_gent",
+      "homepage_url": null,
+      "source_urls": [
+        "https://github.com/regent-vcs/re_gent"
+      ],
+      "signal_summary": "Matched GitHub search `topic:ai-agent pushed:>=2026-06-06`; pushed 2026-06-08; stars 676; Apache-2.0; Go. Not in existing registry. README review unavailable due to rate limiting.",
+      "why_builders_should_care": "Agent-native VCS is an emerging category. Go implementation with strong license and active development.",
+      "suggested_trust_tier": "promising",
+      "risk_flags": [
+        "readme-review-unavailable"
+      ],
+      "recommended_action": "review",
+      "allow_registry_proposal": true,
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 0,
+        "trust_score": 100,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-06-08T07:15:00.000Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": false,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "BlockRunAI/Franklin",
+      "title": "Franklin",
+      "description": "AI agent framework by BlockRunAI. Apache-2.0, TypeScript, 629 stars. Flagged for sensitive permissions.",
+      "repo_url": "https://github.com/BlockRunAI/Franklin",
+      "homepage_url": null,
+      "source_urls": [
+        "https://github.com/BlockRunAI/Franklin"
+      ],
+      "signal_summary": "Matched GitHub search `topic:llm-agent pushed:>=2026-06-06`; pushed 2026-06-08; stars 629; Apache-2.0; TypeScript. Not in existing registry. README review unavailable due to rate limiting.",
+      "why_builders_should_care": "TypeScript agent framework with builder-facing tooling. Sensitive permissions flag warrants review before adoption.",
+      "suggested_trust_tier": "promising",
+      "risk_flags": [
+        "sensitive-permissions",
+        "readme-review-unavailable"
+      ],
+      "recommended_action": "watchlist",
+      "allow_registry_proposal": true,
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 0,
+        "trust_score": 100,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-06-08T07:15:00.000Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": false,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "1ay1/agentty",
+      "title": "agentty",
+      "description": "Blazing-fast Claude in your terminal. 8.8 MB binary, sub-millisecond cold start, sandboxed by default. C++26 alternative to claude-code — no Node, no Python.",
+      "repo_url": "https://github.com/1ay1/agentty",
+      "homepage_url": "https://agentty.org",
+      "source_urls": [
+        "https://github.com/1ay1/agentty",
+        "https://agentty.org"
+      ],
+      "signal_summary": "Matched GitHub search `topic:ai-agent pushed:>=2026-06-06`; pushed 2026-06-08; stars 18; MIT; C++. New candidate not in prior VPS reports.",
+      "why_builders_should_care": "Lightweight C++ Claude Code alternative with sandboxing by default. Interesting architectural approach for agent CLI tooling.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "readme-review-unavailable"
+      ],
+      "recommended_action": "review",
+      "allow_registry_proposal": true,
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 0,
+        "trust_score": 100,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-06-08T07:15:00.000Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": false,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "lidge-jun/cli-jaw",
+      "title": "cli-jaw",
+      "description": "An MCP server for terminal coding agents. MIT, TypeScript, 144 stars.",
+      "repo_url": "https://github.com/lidge-jun/cli-jaw",
+      "homepage_url": null,
+      "source_urls": [
+        "https://github.com/lidge-jun/cli-jaw"
+      ],
+      "signal_summary": "Matched GitHub search `topic:mcp pushed:>=2026-06-06`; pushed 2026-06-08; stars 144; MIT; TypeScript. Not in existing registry.",
+      "why_builders_should_care": "MCP tool for terminal agent workflows with healthy star count for its age.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "readme-review-unavailable"
+      ],
+      "recommended_action": "review",
+      "allow_registry_proposal": true,
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 0,
+        "trust_score": 100,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-06-08T07:15:00.000Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": false,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "writerslogic/scrivener-mcp",
+      "title": "scrivener-mcp",
+      "description": "MCP server for document writing workflows. AGPL-3.0, TypeScript, 26 stars.",
+      "repo_url": "https://github.com/writerslogic/scrivener-mcp",
+      "homepage_url": null,
+      "source_urls": [
+        "https://github.com/writerslogic/scrivener-mcp"
+      ],
+      "signal_summary": "Matched GitHub search `\"model context protocol\" pushed:>=2026-06-06`; pushed 2026-06-08; stars 26; AGPL-3.0; TypeScript. Not in existing registry.",
+      "why_builders_should_care": "Writing-focused MCP server filling a niche not well covered by existing entries.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "sensitive-permissions",
+        "readme-review-unavailable"
+      ],
+      "recommended_action": "watchlist",
+      "allow_registry_proposal": true,
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 0,
+        "trust_score": 100,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-06-08T07:15:00.000Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": false,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "hacker-news",
+      "name": "ninoxAI/nightwatch",
+      "title": "Nightwatch - open-source AI SRE",
+      "description": "Show HN: Nightwatch, an open-source, read-only AI SRE tool.",
+      "repo_url": "https://github.com/ninoxAI/nightwatch",
+      "homepage_url": "https://news.ycombinator.com/item?id=48438180",
+      "source_urls": [
+        "https://github.com/ninoxAI/nightwatch",
+        "https://news.ycombinator.com/item?id=48438180"
+      ],
+      "signal_summary": "Hacker News post 'Show HN: Nightwatch, The open-source, read-only AI SRE'; points 14, comments 6. Lead-generation signal requiring primary source verification.",
+      "why_builders_should_care": "AI SRE is an emerging agent category. Read-only posture aligns with vnem safety principles.",
+      "suggested_trust_tier": "watchlist",
+      "risk_flags": [
+        "social-signal",
+        "needs-primary-source",
+        "license-not-asserted"
+      ],
+      "recommended_action": "watchlist",
+      "allow_registry_proposal": false,
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 8,
+        "trust_score": 92,
+        "flags": [
+          "license-not-asserted"
+        ],
+        "reasons": [],
+        "reviewed_at": "2026-06-08T07:15:00.000Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": false,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    }
+  ]
+}
