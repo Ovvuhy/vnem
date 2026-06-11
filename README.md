@@ -81,6 +81,17 @@ npm run ard:browser-pipeline
 
 That smoke command starts a temporary loopback backend, calls the same `POST /api/ard/pipeline/run` route used by the browser button, prints the Research/Protection/Giving summary, and writes local ARD run artifacts under `discovery/ard-runs/<run-id>/`. It never pushes to `main`.
 
+## Local Testing
+
+For the user-facing ARD browser pipeline test path, see [`docs/local-testing.md`](docs/local-testing.md):
+
+```bash
+cd C:\VNEM\vnem-src
+npm run dev:all
+```
+
+Open `http://127.0.0.1:4174/dashboard/?mock&v=ard`, click `Run ARD pipeline`, and expect Research AI -> Protection AI -> Giving AI results with visible dangerous findings and fixture/dry-run branch proof. For the quick non-browser path, run `npm run ard:browser-pipeline`. For current feature checks, run `npm run test:current`.
+
 ## The VNEM Standard
 
 VNEM is built around one rule: an AI agent should not satisfy one requirement by silently damaging another.

@@ -47,6 +47,7 @@ The top dashboard `Run ARD pipeline` button is now wired to backend routes inste
 ```text
 POST /api/ard/pipeline/run
 GET /api/ard/pipeline/latest
+GET /api/ard/runs/latest
 ```
 
 The run endpoint executes the deterministic local ARD path from the browser:
@@ -323,6 +324,7 @@ Current working path:
 - Launch/health: `npm run ard:dev` starts the local VNEM backend on `127.0.0.1:9099` when needed and starts/reuses the dashboard on `127.0.0.1:4174`. `npm run ard:health` prints backend URL, dashboard URL, port state, local wallet allowlist guidance, and cleanup guidance. Split commands are available as `npm run ard:backend` and `npm run ard:dashboard`.
 - Demo pipeline: `npm run ard:demo` runs deterministic demo/local research, not live web research. It creates `discovery/ard-runs/<run-id>/research.json`, `protection.json`, `dangerous-findings.md`, `giving-plan.md`, `branch-summary.md`, and `demo-summary.json`.
 - Browser smoke path: `npm run ard:browser-pipeline` starts a temporary loopback backend, calls the same `POST /api/ard/pipeline/run` route used by the dashboard button, prints the Research AI -> Protection AI -> Giving AI summary, and writes local ARD run artifacts under `discovery/ard-runs/<run-id>/`. It is the fastest user test when the browser is not needed.
+- Current focused test path: `npm run test:current` runs the ARD browser-pipeline smoke test plus the dedicated dashboard browser-pipeline status test. User-facing local steps live in `docs/local-testing.md`.
 - Research AI: creates candidates from configured deterministic local/demo sources and performs first-pass safety screening for malware, token stealing, shell-pipe installs, postinstall scripts, binary/download hints, destructive commands, hidden persistence, exfiltration hints, weak source, and missing license signals.
 - Protection AI: performs static metadata/declarative evidence review and returns `allow`, `needs-review`, `quarantine`, or `blocked`. `allow` means no blocker was found in current checks; it is not a guarantee of full safety. This is not antivirus-grade malware detection.
 - Dangerous findings: blocked/quarantined candidates stay visible in `dangerous-findings.md` and the dashboard, but are excluded from Giving AI implementable work.

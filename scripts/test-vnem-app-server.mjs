@@ -130,6 +130,7 @@ try {
   assert.ok(status.endpoints.includes("POST /api/intelligence/candidate/:id/review"));
   assert.ok(status.endpoints.includes("POST /api/ard/pipeline/run"));
   assert.ok(status.endpoints.includes("GET /api/ard/pipeline/latest"));
+  assert.ok(status.endpoints.includes("GET /api/ard/runs/latest"));
   assert.ok(status.endpoints.includes("POST /api/giving/branch/preview"));
   assert.ok(status.endpoints.includes("POST /api/giving/branch/prepare"));
   assert.ok(status.endpoints.includes("GET /api/builder/session"));
@@ -216,6 +217,12 @@ try {
   assert.equal(latestBrowserPipeline.statusCode, 200);
   assert.equal(latestBrowserPipeline.body.ok, true);
   assert.equal(latestBrowserPipeline.body.pipeline.runId, "ard-browser-pipeline-test");
+
+  const latestBrowserRunAlias = await requestJson(port, "GET", "/api/ard/runs/latest");
+  assert.equal(latestBrowserRunAlias.statusCode, 200);
+  assert.equal(latestBrowserRunAlias.body.ok, true);
+  assert.equal(latestBrowserRunAlias.body.pipeline.runId, "ard-browser-pipeline-test");
+  assert.equal(latestBrowserRunAlias.body.pipeline.branch.mode, "fixture-remote");
 
   const browserPipelineHistory = await requestJson(port, "GET", "/api/telemetry/history");
   assert.equal(browserPipelineHistory.body.ard_browser_pipeline.runId, "ard-browser-pipeline-test");

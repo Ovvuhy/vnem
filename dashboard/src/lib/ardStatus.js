@@ -4,6 +4,7 @@ export function deriveArdStatus(input = {}) {
   const protection = input.protection ?? demo?.protection ?? {};
   const giving = input.giving ?? demo?.giving ?? {};
   const branchName = giving.branchName ?? input.branchName ?? null;
+  const branchMode = demo?.branch?.mode ?? giving.pushMode ?? input.branchMode ?? "not prepared";
   const branchPushed = Boolean(giving.pushed ?? input.branchPushed ?? false);
   const safeCandidatesCount = Number(giving.included ?? giving.includedCandidates?.length ?? protection.allowed ?? 0);
   const needsReviewCount = Number(protection.needsReview ?? 0);
@@ -28,6 +29,7 @@ export function deriveArdStatus(input = {}) {
     safeCandidatesCount,
     needsReviewCount,
     researchBranch: branchName ?? "not prepared",
+    branchMode,
     branchPushed,
     nextAction,
     rawDetailsCollapsed: true,

@@ -104,6 +104,7 @@ const endpoints = [
   "POST /api/intelligence/candidate/:id/review",
   "POST /api/ard/pipeline/run",
   "GET /api/ard/pipeline/latest",
+  "GET /api/ard/runs/latest",
   "POST /api/giving/branch/preview",
   "POST /api/giving/branch/prepare",
   "GET /api/builder/session"
@@ -312,7 +313,7 @@ export function createVnemAppServer(options = {}) {
         return;
       }
 
-      if (route === "GET /api/ard/pipeline/latest") {
+      if (route === "GET /api/ard/pipeline/latest" || route === "GET /api/ard/runs/latest") {
         writeJson(response, 200, {
           ok: true,
           pipeline: latestArdBrowserPipeline,
