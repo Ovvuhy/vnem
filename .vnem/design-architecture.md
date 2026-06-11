@@ -1,6 +1,6 @@
 # vnem Design Architecture
 
-Generated: 2026-06-07T18:48:28.661Z
+Generated: 2026-06-11T11:56:42.965Z
 
 Source-backed design intelligence for UI, game, visual, dashboard, and conversational-agent work. Use it to make aesthetics a delivery requirement, not a decoration pass.
 

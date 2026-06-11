@@ -22,6 +22,28 @@ It helps a coding agent answer: _what should I use, what is stale, what is risky
 
 Live overview: [vnem.pages.dev](https://vnem.pages.dev)
 
+## Agent Operating Rules
+
+AI agents working inside this repo must start with [`AGENTS.md`](AGENTS.md). The
+long master mindset lives at
+[`docs/agent-rules/VNEM_GLOBAL_RULES.md`](docs/agent-rules/VNEM_GLOBAL_RULES.md),
+and Hermes/Codex setup guidance lives at
+[`docs/hermes-codex-vnem-setup.md`](docs/hermes-codex-vnem-setup.md).
+
+Useful agent-rules commands:
+
+```bash
+npm run test:agents-rules
+npm run agent-rules:dry-run
+npm run agent-rules:hermes
+```
+
+Codex global guidance can be previewed or explicitly applied with
+`scripts/install-vnem-agent-rules.mjs`; it defaults to dry-run and preserves
+unrelated `~/.codex/AGENTS.md` content outside the marked VNEM block. Hermes
+Desktop/CLI/TUI should be opened with the VNEM repo as cwd, for example
+`hermes desktop --cwd C:\VNEM\vnem-src`.
+
 ## Quick Start
 
 Use the read-only pack when you only want repo-local AI guidance inside the current project:

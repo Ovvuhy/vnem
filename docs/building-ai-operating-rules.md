@@ -1,5 +1,15 @@
 # Building AI Operating Rules
 
+VNEM's repo-wide operating rule for AI agents is the root `AGENTS.md`. The long
+master rule document is `docs/agent-rules/VNEM_GLOBAL_RULES.md`, and
+Hermes/Codex setup guidance is `docs/hermes-codex-vnem-setup.md`.
+
+For VNEM work, open Hermes Desktop/CLI/TUI with the VNEM repo as cwd so the root
+`AGENTS.md` loads, for example `hermes desktop --cwd C:\VNEM\vnem-src`. Codex can
+use the repo `AGENTS.md`; optional global Codex guidance is handled by
+`scripts/install-vnem-agent-rules.mjs`, which defaults to dry-run and only writes
+with explicit apply plus backup behavior.
+
 These rules keep VNEM self-improvement work clean, auditable, and less vulnerable to stale process output or compressed context drift.
 
 ## Start every run with facts

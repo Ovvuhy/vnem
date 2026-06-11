@@ -2,6 +2,20 @@
 
 VNEM is being built as an AI-improvement platform, but the repo should stay honest about what exists today.
 
+## Agent-rules system
+
+VNEM now has a persistent repo-level agent-rules system:
+
+- Root `AGENTS.md` is the repo-wide operating rule for agents working inside this checkout.
+- `docs/agent-rules/VNEM_GLOBAL_RULES.md` contains the long VNEM master mindset.
+- `docs/hermes-codex-vnem-setup.md` explains Hermes Desktop/CLI/TUI cwd usage and safe Codex setup.
+- `scripts/install-vnem-agent-rules.mjs` provides dry-run-first Codex global guidance insertion with backups before explicit apply.
+- `docs/agent-rules/HERMES_VNEM_START_PROMPT.md` and `docs/agent-rules/hermes-vnem-rules/SKILL.md` are repo-local Hermes prompt/skill artifacts, not automatic global installs.
+- `npm run test:agents-rules`, `npm run agent-rules:dry-run`, and `npm run agent-rules:hermes` validate and preview this surface.
+
+Future VNEM feature work should follow these rules and must not overclaim demo,
+fixture, local dashboard, or protection behavior.
+
 ## Current implemented / in-progress surfaces
 
 | Surface | Status | What it does now | Boundary |
