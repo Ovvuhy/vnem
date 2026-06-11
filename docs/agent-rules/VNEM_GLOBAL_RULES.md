@@ -245,7 +245,9 @@ Known surface:
 - Giving AI.
 - demo/local research.
 - fixture remote proof.
-- local dashboard wallet: `76ZuJidMzB32EQLLiCL8UPQATQFoY2mrqZa3Kvr8PZhp`.
+- local dashboard wallets:
+  - `76ZuJidMzB32EQLLiCL8UPQATQFoY2mrqZa3Kvr8PZhp`.
+  - `H62Ri1EExddxFKsLMn4nbmbxiCSxNRLtF8igPySLA23B`.
 
 Current boundary:
 
@@ -315,13 +317,14 @@ This historical reference must still be verified against Git in every run.
 
 ## Local Dashboard Wallet
 
-The current local dashboard wallet reference is:
+The current local dashboard wallet allowlist references are:
 
 ```text
 76ZuJidMzB32EQLLiCL8UPQATQFoY2mrqZa3Kvr8PZhp
+H62Ri1EExddxFKsLMn4nbmbxiCSxNRLtF8igPySLA23B
 ```
 
-Treat this as a product/display allowlist reference, not as permission to request
+Treat these as product/display allowlist references, not as permission to request
 private keys, move funds, or make financial claims.
 
 ## Next Direction: ARD Browser Pipeline v1

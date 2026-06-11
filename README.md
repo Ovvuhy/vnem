@@ -90,7 +90,7 @@ cd C:\VNEM\vnem-src
 npm run dev:all
 ```
 
-Open `http://127.0.0.1:4174/dashboard/?mock&v=ard`, click `Run ARD pipeline`, and expect Research AI -> Protection AI -> Giving AI results with visible dangerous findings and fixture/dry-run branch proof. For the quick non-browser path, run `npm run ard:browser-pipeline`. For current feature checks, run `npm run test:current`.
+Open `http://127.0.0.1:4174/dashboard/?mock&v=ard`, connect/sign with either local allowlisted wallet (`76ZuJidMzB32EQLLiCL8UPQATQFoY2mrqZa3Kvr8PZhp` or `H62Ri1EExddxFKsLMn4nbmbxiCSxNRLtF8igPySLA23B`), click `Run ARD pipeline`, and expect Research AI -> Protection AI -> Giving AI results with visible dangerous findings and fixture/dry-run branch proof. For the quick non-browser path, run `npm run ard:browser-pipeline`. For current feature checks, run `npm run test:current`.
 
 ## The VNEM Standard
 

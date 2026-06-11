@@ -4,6 +4,15 @@ Use this page when you want to verify the current local ARD browser pipeline fro
 
 ## Start the local dashboard stack
 
+Local dashboard owner access allows either of these public wallet addresses after wallet signing:
+
+```text
+76ZuJidMzB32EQLLiCL8UPQATQFoY2mrqZa3Kvr8PZhp
+H62Ri1EExddxFKsLMn4nbmbxiCSxNRLtF8igPySLA23B
+```
+
+Do not enter private keys or seed phrases; the dashboard uses a wallet signature challenge.
+
 ```bash
 cd C:\VNEM\vnem-src
 npm run dev:all
@@ -67,6 +76,16 @@ If a dev server was left behind, run:
 ```bash
 npm run dev:cleanup-dashboard
 npm run dev:health
+```
+
+## PowerShell note
+
+If PowerShell blocks `npm.ps1` because script execution is disabled, use `npm.cmd` instead:
+
+```powershell
+npm.cmd run dev:all
+npm.cmd run test:current
+npm.cmd run ard:browser-pipeline
 ```
 
 ## Future major feature rule

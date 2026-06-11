@@ -55,6 +55,7 @@ const agents = readRepoFile('AGENTS.md');
   'never push to main',
   'Run ARD pipeline',
   '76ZuJidMzB32EQLLiCL8UPQATQFoY2mrqZa3Kvr8PZhp',
+  'H62Ri1EExddxFKsLMn4nbmbxiCSxNRLtF8igPySLA23B',
 ].forEach((needle) => assertIncludes(agents, needle));
 
 const globalRules = readRepoFile('docs/agent-rules/VNEM_GLOBAL_RULES.md');

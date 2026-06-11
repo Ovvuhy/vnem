@@ -11,6 +11,9 @@ const rootDir = path.resolve(scriptDir, "..");
 await mkdir(path.join(rootDir, ".tmp"), { recursive: true });
 const tmpRoot = await mkdtemp(path.join(rootDir, ".tmp", "app-server-"));
 const originalEnv = snapshotEnv();
+const oldLocalWallet = "76ZuJidMzB32EQLLiCL8UPQATQFoY2mrqZa3Kvr8PZhp";
+const newLocalWallet = "H62Ri1EExddxFKsLMn4nbmbxiCSxNRLtF8igPySLA23B";
+const unknownLocalWallet = "UnknownWallet111111111111111111111111111111";
 let server;
 
 try {
@@ -153,6 +156,16 @@ try {
   server = started.server;
   const port = started.config.port;
   assert.ok(Number.isInteger(port) && port > 0, "dynamic test port must be assigned");
+
+  for (const wallet of [oldLocalWallet, newLocalWallet]) {
+    const nonce = await requestJson(port, "POST", "/api/auth/nonce", {}, JSON.stringify({ wallet_address: wallet }));
+    assert.equal(nonce.statusCode, 200, `${wallet} must be accepted by the local dashboard allowlist`);
+    assert.equal(nonce.body.ok, true);
+    assert.equal(nonce.body.sign_in_input.address, wallet);
+  }
+  const blockedNonce = await requestJson(port, "POST", "/api/auth/nonce", {}, JSON.stringify({ wallet_address: unknownLocalWallet }));
+  assert.equal(blockedNonce.statusCode, 403, "unknown wallet must still be rejected");
+  assert.equal(blockedNonce.body.error, "wallet-not-allowlisted");
 
   const connectorStatus = await requestJson(port, "GET", "/api/connector/status");
   assert.equal(connectorStatus.statusCode, 200);

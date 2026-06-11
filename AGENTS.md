@@ -213,7 +213,9 @@ Known ARD concepts include:
 - Giving AI.
 - demo/local research.
 - fixture remote proof.
-- local dashboard wallet: `76ZuJidMzB32EQLLiCL8UPQATQFoY2mrqZa3Kvr8PZhp`.
+- local dashboard wallets:
+  - `76ZuJidMzB32EQLLiCL8UPQATQFoY2mrqZa3Kvr8PZhp`.
+  - `H62Ri1EExddxFKsLMn4nbmbxiCSxNRLtF8igPySLA23B`.
 
 Important boundary: VNEM/ARD is not antivirus-grade. Do not imply that
 Protection AI provides endpoint security, malware removal, compliance coverage,

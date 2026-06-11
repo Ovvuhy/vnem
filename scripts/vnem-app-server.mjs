@@ -67,12 +67,15 @@ const defaultResearchPollMinMs = 5 * 60 * 1000;
 const defaultResearchPollMaxMs = 10 * 60 * 1000;
 const openRouterChatCompletionsUrl = "https://openrouter.ai/api/v1/chat/completions";
 const openRouterHermesModel = "nousresearch/hermes-3-llama-3.1-405b:free";
-const localDashboardWallet = "76ZuJidMzB32EQLLiCL8UPQATQFoY2mrqZa3Kvr8PZhp";
+const localDashboardWallets = [
+  "76ZuJidMzB32EQLLiCL8UPQATQFoY2mrqZa3Kvr8PZhp",
+  "H62Ri1EExddxFKsLMn4nbmbxiCSxNRLtF8igPySLA23B"
+].join(",");
 const localDashboardAuthSecret = "vnem-local-dashboard-dev-secret";
 function dashboardAuthEnv() {
   return {
     DASHBOARD_AUTH_SECRET: process.env.DASHBOARD_AUTH_SECRET ?? localDashboardAuthSecret,
-    DASHBOARD_ALLOWED_WALLETS: process.env.DASHBOARD_ALLOWED_WALLETS ?? localDashboardWallet
+    DASHBOARD_ALLOWED_WALLETS: process.env.DASHBOARD_ALLOWED_WALLETS ?? localDashboardWallets
   };
 }
 const intelligenceMission = {
