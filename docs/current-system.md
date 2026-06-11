@@ -40,6 +40,30 @@ The current dashboard should make the pipeline legible:
 6. The dashboard owner approves or rejects the staged markdown.
 7. Approved markdown moves to `.vnem/approved/`; rejected markdown is deleted from `.vnem/staging/`.
 
+## ARD Browser Pipeline v1
+
+The top dashboard `Run ARD pipeline` button is now wired to backend routes instead of acting as a placeholder. With the local app server running, the browser calls:
+
+```text
+POST /api/ard/pipeline/run
+GET /api/ard/pipeline/latest
+```
+
+The run endpoint executes the deterministic local ARD path from the browser:
+
+```text
+Research AI -> Protection AI -> Giving AI
+```
+
+Current honest scope:
+
+- mode is `browser/local pipeline`, not live web research;
+- Giving AI uses `fixture-remote` or explicit `dry-run` branch proof, never a main push;
+- artifacts are written under `discovery/ard-runs/<run-id>/`;
+- dangerous findings remain visible and are excluded from Giving AI implementable work;
+- telemetry history exposes `ard_browser_pipeline` and synthetic ARD browser ingestions for the dashboard;
+- static Protection AI review is metadata/declarative evidence review, not antivirus-grade scanning.
+
 ## Improvement Mission Engine v1
 
 The dashboard now derives one focused VNEM improvement mission from live telemetry when the app server is connected, or from dashboard summary/sample findings when it is offline/demo. The mission engine is a current dashboard/state-derivation layer; it does not pretend that backend git automation is live.
@@ -298,6 +322,7 @@ Current working path:
 
 - Launch/health: `npm run ard:dev` starts the local VNEM backend on `127.0.0.1:9099` when needed and starts/reuses the dashboard on `127.0.0.1:4174`. `npm run ard:health` prints backend URL, dashboard URL, port state, local wallet allowlist guidance, and cleanup guidance. Split commands are available as `npm run ard:backend` and `npm run ard:dashboard`.
 - Demo pipeline: `npm run ard:demo` runs deterministic demo/local research, not live web research. It creates `discovery/ard-runs/<run-id>/research.json`, `protection.json`, `dangerous-findings.md`, `giving-plan.md`, `branch-summary.md`, and `demo-summary.json`.
+- Browser smoke path: `npm run ard:browser-pipeline` starts a temporary loopback backend, calls the same `POST /api/ard/pipeline/run` route used by the dashboard button, prints the Research AI -> Protection AI -> Giving AI summary, and writes local ARD run artifacts under `discovery/ard-runs/<run-id>/`. It is the fastest user test when the browser is not needed.
 - Research AI: creates candidates from configured deterministic local/demo sources and performs first-pass safety screening for malware, token stealing, shell-pipe installs, postinstall scripts, binary/download hints, destructive commands, hidden persistence, exfiltration hints, weak source, and missing license signals.
 - Protection AI: performs static metadata/declarative evidence review and returns `allow`, `needs-review`, `quarantine`, or `blocked`. `allow` means no blocker was found in current checks; it is not a guarantee of full safety. This is not antivirus-grade malware detection.
 - Dangerous findings: blocked/quarantined candidates stay visible in `dangerous-findings.md` and the dashboard, but are excluded from Giving AI implementable work.
@@ -305,7 +330,7 @@ Current working path:
 - Demo branch proof: `ard:demo` pushes to a temporary fixture remote so the branch path is real and testable without pushing ARD research output to `main`.
 - Dashboard: the top ARD view is intentionally compact: ARD status, current run, Research AI, Protection AI, Giving AI, Dangerous Findings, and Research Branch. Older raw telemetry, Builder Health, run history, and logs are collapsed/lower.
 
-Still planned: live external source research routes, backend POST endpoints for one-click live ARD runs, and real remote research-branch push after explicit operator confirmation.
+Delivered in ARD Browser Pipeline v1: the dashboard route `POST /api/ard/pipeline/run`, the status route `GET /api/ard/pipeline/latest`, and the local smoke command `npm run ard:browser-pipeline` are implemented for deterministic/local browser pipeline proof. Still planned: broader live external source research routes and real remote research-branch push after explicit operator confirmation.
 
 ## Safety notes
 

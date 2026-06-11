@@ -3,10 +3,10 @@ import { AlertTriangle, CheckCircle2, Clock3, ExternalLink, GitBranch, ListCheck
 import { Badge } from "./PipelinePrimitives.jsx";
 import { deriveArdStatus } from "../lib/ardStatus.js";
 
-export function SelfImprovementControlRoom({ controlRoom, onAdvance, onReviewCandidate, onCandidateReviewDecision, onPreviewBranch, onOpenPrepare, onRefreshBuilderHealth, busy = false }) {
+export function SelfImprovementControlRoom({ controlRoom, pipelineRun = null, pipelineStatus = "idle", pipelineError = null, onRunPipeline, onAdvance, onReviewCandidate, onCandidateReviewDecision, onPreviewBranch, onOpenPrepare, onRefreshBuilderHealth, busy = false }) {
   const [activeCandidate, setActiveCandidate] = useState(null);
   const { overview, run, reviewInbox, branchWorkbench, builderHealth, timeline, nextAction } = controlRoom;
-  const ardStatus = deriveArdStatus({
+  const ardStatus = deriveArdStatus(pipelineRun ? { pipelineRun } : {
     research: { status: run.currentStage === "research" ? "running" : overview.candidatesFound ? "completed" : "idle", candidatesFound: overview.candidatesFound },
     protection: { allowed: overview.branchReady, needsReview: overview.needsReview, dangerousFindings: overview.isolated, blocked: reviewInbox.summary.blocked ?? 0 },
     giving: { branchName: branchWorkbench.branchName?.replace(/^vnem-giving\//, "vnem-research/"), pushed: branchWorkbench.pushStatus === "pushed", included: overview.branchReady },
@@ -15,13 +15,16 @@ export function SelfImprovementControlRoom({ controlRoom, onAdvance, onReviewCan
   const openCandidateDrawer = (candidate) => {
     if (candidate) setActiveCandidate(candidate);
   };
-  const actionHandler = nextAction.key === "review-candidate"
-    ? () => openCandidateDrawer(nextAction.candidate ?? reviewInbox.topReviewCandidates[0])
-    : nextAction.key === "preview-branch"
-      ? onPreviewBranch
-      : nextAction.key === "open-prepare"
-        ? onOpenPrepare
-        : onAdvance;
+  const pipelineActionEnabled = run.backendStatus === "live" && typeof onRunPipeline === "function";
+  const actionHandler = pipelineActionEnabled
+    ? onRunPipeline
+    : nextAction.key === "review-candidate"
+      ? () => openCandidateDrawer(nextAction.candidate ?? reviewInbox.topReviewCandidates[0])
+      : nextAction.key === "preview-branch"
+        ? onPreviewBranch
+        : nextAction.key === "open-prepare"
+          ? onOpenPrepare
+          : onAdvance;
 
   return (
     <section className="control-room" aria-label="ARD — AI Research Dashboard">
@@ -34,7 +37,7 @@ export function SelfImprovementControlRoom({ controlRoom, onAdvance, onReviewCan
         <div className="control-room-actions">
           <Badge tone={run.backendStatus === "live" ? "ok" : "review"}>{run.backendStatus === "live" ? "backend live" : "backend offline"}</Badge>
           <Badge tone={ardStatus.branchPushed ? "ok" : "review"}>{ardStatus.branchPushed ? "research branch pushed" : "no fake push"}</Badge>
-          <button type="button" className="primary-action" onClick={actionHandler} disabled={!nextAction.enabled || busy}>
+          <button type="button" className="primary-action" onClick={actionHandler} disabled={!pipelineActionEnabled || busy}>
             {busy ? <RefreshCcw size={17} /> : <ShieldCheck size={17} />}
             {busy ? "Working..." : ardStatus.primaryActionLabel}
           </button>
@@ -52,8 +55,9 @@ export function SelfImprovementControlRoom({ controlRoom, onAdvance, onReviewCan
 
       <div className="control-room-grid ard-primary-grid">
         <ArdStatusCard ardStatus={ardStatus} />
-        <DangerousFindingsCard inbox={reviewInbox} count={ardStatus.dangerousFindingsCount} />
-        <ResearchBranchCard ardStatus={ardStatus} />
+        <BrowserPipelineRunCard pipelineRun={pipelineRun} status={pipelineStatus} error={pipelineError} />
+        <DangerousFindingsCard inbox={reviewInbox} count={ardStatus.dangerousFindingsCount} pipelineRun={pipelineRun} />
+        <ResearchBranchCard ardStatus={ardStatus} pipelineRun={pipelineRun} />
       </div>
 
       <details className="control-panel advanced-details">
@@ -103,10 +107,55 @@ function ArdStatusCard({ ardStatus }) {
   );
 }
 
-function DangerousFindingsCard({ inbox, count }) {
+function BrowserPipelineRunCard({ pipelineRun, status, error }) {
+  const stages = pipelineRun?.stages ?? [
+    { key: "research", label: "Research AI", status: "idle" },
+    { key: "protection", label: "Protection AI", status: "idle" },
+    { key: "giving", label: "Giving AI", status: "idle" }
+  ];
+  return (
+    <article className="control-card browser-pipeline-card">
+      <div className="section-title-row"><span>browser pipeline run</span><Badge tone={status === "error" ? "critical" : status === "running" ? "review" : pipelineRun?.status === "completed" ? "ok" : "quiet"}>{status === "idle" && pipelineRun?.status ? pipelineRun.status : status}</Badge></div>
+      <h3>{pipelineRun?.runId ?? "No browser run yet"}</h3>
+      <p>{pipelineRun?.nextAction ?? "Click Run ARD pipeline to call the local backend and run Research AI → Protection AI → Giving AI."}</p>
+      {error ? <p className="inline-warning">{error.message ?? error.error ?? "Browser pipeline failed"}</p> : null}
+      <div className="mission-flow compact-browser-flow" aria-label="Browser ARD pipeline stages">
+        {stages.map((stage) => (
+          <div className={`mission-stage ${stage.status === "complete" ? "complete" : stage.status === "running" ? "active" : stage.status === "blocked" ? "blocked" : "waiting"}`} key={stage.key}>
+            <span>{browserStageIcon(stage.key)}</span>
+            <strong>{stage.label}</strong>
+            <em>{stage.status}</em>
+          </div>
+        ))}
+      </div>
+      <dl className="control-facts">
+        <div><dt>branch mode</dt><dd>{pipelineRun?.branch?.mode ?? pipelineRun?.giving?.pushMode ?? "not run"}</dd></div>
+        <div><dt>included</dt><dd>{pipelineRun?.giving?.included ?? 0}</dd></div>
+        <div><dt>excluded</dt><dd>{pipelineRun?.giving?.excluded ?? 0}</dd></div>
+        <div><dt>dangerous</dt><dd>{pipelineRun?.dangerousFindings?.length ?? pipelineRun?.protection?.dangerousFindings?.length ?? 0}</dd></div>
+      </dl>
+    </article>
+  );
+}
+
+function browserStageIcon(key) {
+  const icons = {
+    research: <Search size={15} />,
+    protection: <ShieldCheck size={15} />,
+    giving: <CheckCircle2 size={15} />
+  };
+  return icons[key] ?? <Radio size={15} />;
+}
+
+function DangerousFindingsCard({ inbox, count, pipelineRun = null }) {
   const blocked = inbox.lanes?.blocked?.items ?? [];
   const quarantined = inbox.lanes?.quarantined?.items ?? [];
-  const findings = [...blocked, ...quarantined].slice(0, 3);
+  const browserFindings = (pipelineRun?.dangerousFindings ?? pipelineRun?.protection?.dangerousFindings ?? []).map((finding) => ({
+    id: finding.candidateId ?? finding.id,
+    title: finding.title ?? finding.candidateId ?? "dangerous browser finding",
+    whyNotBranchEligible: (finding.dangerousSignals ?? []).join(", ") || "Blocked/quarantined by Protection AI and excluded from Giving AI."
+  }));
+  const findings = dedupeFindings([...browserFindings, ...blocked, ...quarantined]).slice(0, 4);
   return (
     <article className="control-card dangerous-findings-card">
       <div className="section-title-row"><span>Dangerous findings</span><Badge tone={count > 0 ? "critical" : "ok"}>{count}</Badge></div>
@@ -116,12 +165,23 @@ function DangerousFindingsCard({ inbox, count }) {
   );
 }
 
-function ResearchBranchCard({ ardStatus }) {
+function dedupeFindings(findings) {
+  const byKey = new Map();
+  for (const finding of findings) {
+    const key = String(finding.title ?? finding.id ?? "").trim().toLowerCase();
+    if (!key || byKey.has(key)) continue;
+    byKey.set(key, finding);
+  }
+  return [...byKey.values()];
+}
+
+function ResearchBranchCard({ ardStatus, pipelineRun = null }) {
+  const branchMode = pipelineRun?.branch?.mode ?? pipelineRun?.giving?.pushMode ?? "not prepared";
   return (
     <article className="control-card research-branch-card">
       <div className="section-title-row"><span>Research branch</span><Badge tone={ardStatus.branchPushed ? "ok" : "review"}>{ardStatus.branchPushed ? "pushed" : "not pushed"}</Badge></div>
       <div className="branch-name"><GitBranch size={16} /><code>{ardStatus.researchBranch}</code></div>
-      <p>{ardStatus.branchPushed ? "A research branch is recorded as pushed." : "No fake push state: run npm run ard:demo to produce fixture-remote branch proof."}</p>
+      <p>{ardStatus.branchPushed ? `A ${branchMode} research branch proof is recorded; main is still protected.` : "No fake push state: run the browser ARD pipeline or npm run ard:demo to produce fixture-remote branch proof."}</p>
     </article>
   );
 }

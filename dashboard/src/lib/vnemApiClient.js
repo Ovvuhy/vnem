@@ -39,6 +39,22 @@ export function createVnemApiClient(options = {}) {
         })
       });
     },
+    runArdPipeline(options = {}) {
+      return requestJson(fetchImpl, `${baseUrl}/api/ard/pipeline/run`, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json"
+        },
+        body: JSON.stringify({
+          run_id: options.runId,
+          mission: options.mission ?? "ARD Browser Pipeline v1",
+          push_mode: options.pushMode ?? "fixture-remote"
+        })
+      });
+    },
+    latestArdPipeline() {
+      return requestJson(fetchImpl, `${baseUrl}/api/ard/pipeline/latest`);
+    },
     reviewQueue() {
       return requestJson(fetchImpl, `${baseUrl}/api/intelligence/review-queue`);
     },

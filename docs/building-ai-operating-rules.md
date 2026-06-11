@@ -51,7 +51,10 @@ The dashboard Builder Health card reads the local app server's read-only `GET /a
 ## ARD operating rules
 
 - ARD means `ARD — AI Research Dashboard`; VNEM remains the whole project.
-- `npm run ard:demo` is the current working deterministic/local path. Do not describe it as live web research.
+- `npm run ard:demo` is the current working deterministic/local CLI path. Do not describe it as live web research.
+- `npm run ard:browser-pipeline` is the quick user smoke path for the browser pipeline backend route. It starts a temporary loopback backend, calls `POST /api/ard/pipeline/run`, prints the Research/Protection/Giving summary, and writes local ARD run artifacts. Do not describe it as live web research or a push to `main`.
+- The browser `Run ARD pipeline` button calls the local app server `POST /api/ard/pipeline/run` and executes the deterministic/local Research AI -> Protection AI -> Giving AI path from the dashboard. Label it `browser/local pipeline`, not live research.
+- Browser ARD runs may record `fixture-remote` proof branches under `vnem-research/<run-slug>`; they must not push or merge `main`.
 - Research AI may collect candidates and first-pass risk hints, but must not execute discovered code, install packages, download/run binaries, or hide suspicious/dangerous items.
 - Protection AI may block/quarantine dangerous candidates and remove them from Giving eligibility. It may only delete unsafe generated files inside ARD-owned temporary/staging workspaces; it must not delete arbitrary user or third-party files.
 - Giving AI receives only allowed or explicitly reviewed candidates. Blocked/quarantined/dangerous items are report-only and excluded from implementable Giving work.

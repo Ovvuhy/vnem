@@ -71,6 +71,16 @@ npm run dev:all
 
 The dashboard exposes explicit review controls. A staged Giving AI dispatch can be opened, inspected as markdown, promoted into `.vnem/approved/`, or rejected and deleted from `.vnem/staging/`. Approval does not commit code, execute scripts, install packages, or touch external systems.
 
+ARD Browser Pipeline v1 wires the top `Run ARD pipeline` button to the local backend. With `npm run ard:dev` running, the browser calls `POST /api/ard/pipeline/run`, runs the deterministic local Research AI -> Protection AI -> Giving AI path, writes `discovery/ard-runs/<run-id>/`, shows dangerous findings, and records a `fixture-remote` research branch proof. This is a real local/browser capability, not live web research and not antivirus-grade protection.
+
+Quick user test path without opening the dashboard:
+
+```bash
+npm run ard:browser-pipeline
+```
+
+That smoke command starts a temporary loopback backend, calls the same `POST /api/ard/pipeline/run` route used by the browser button, prints the Research/Protection/Giving summary, and writes local ARD run artifacts under `discovery/ard-runs/<run-id>/`. It never pushes to `main`.
+
 ## The VNEM Standard
 
 VNEM is built around one rule: an AI agent should not satisfy one requirement by silently damaging another.

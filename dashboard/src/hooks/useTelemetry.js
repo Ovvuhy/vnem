@@ -14,6 +14,7 @@ export const initialTelemetryState = Object.freeze({
   pipeline: null,
   reviewQueue: null,
   branchCandidateSet: null,
+  ardBrowserPipeline: null,
   intelligenceProvider: null,
   targetingStatus: "idle",
   targetingError: null,
@@ -146,6 +147,7 @@ export function createTelemetryReceiver(options = {}) {
         pipeline: history.pipeline ?? null,
         reviewQueue: history.review_queue ?? null,
         branchCandidateSet: history.branch_candidate_set ?? null,
+        ardBrowserPipeline: history.ard_browser_pipeline ?? null,
         intelligenceProvider: history.intelligence_provider ?? null,
         systemError: null
       });
@@ -180,6 +182,7 @@ export function createTelemetryReceiver(options = {}) {
       pipeline: event.pipeline ?? state.pipeline,
       reviewQueue: event.review_queue ?? state.reviewQueue,
       branchCandidateSet: event.branch_candidate_set ?? state.branchCandidateSet,
+      ardBrowserPipeline: event.ard_browser_pipeline ?? state.ardBrowserPipeline,
       intelligenceProvider: event.intelligence_provider ?? event.pipeline?.intelligence_provider ?? state.intelligenceProvider,
       targetingStatus,
       targetingError: shouldClearTargetingError(event) ? null : state.targetingError,

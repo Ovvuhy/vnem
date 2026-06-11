@@ -27,4 +27,30 @@ const empty = deriveArdStatus();
 assert.equal(empty.branchPushed, false, "must not fake pushed state");
 assert.equal(empty.rawDetailsCollapsed, true);
 
+const browserRun = deriveArdStatus({
+  pipelineRun: {
+    mode: "browser/local pipeline",
+    runId: "ard-browser-run-1",
+    research: { status: "completed", candidatesFound: 4 },
+    protection: {
+      allowed: 1,
+      needsReview: 2,
+      dangerousFindings: [
+        { candidateId: "danger-1", title: "blocked token stealer", excludedFromGiving: true }
+      ]
+    },
+    giving: { branchName: "vnem-research/ard-browser-run-1", pushed: true, pushMode: "fixture-remote", included: 1, excluded: 3 },
+    branch: { mode: "fixture-remote", pushed: true },
+    nextAction: "Review the pushed research branch reports before implementing any code."
+  }
+});
+assert.equal(browserRun.mode, "browser/local pipeline");
+assert.equal(browserRun.researchStatus, "completed");
+assert.equal(browserRun.dangerousFindingsCount, 1);
+assert.equal(browserRun.safeCandidatesCount, 1);
+assert.equal(browserRun.givingStatus, "pushed");
+assert.equal(browserRun.researchBranch, "vnem-research/ard-browser-run-1");
+assert.equal(browserRun.primaryActionLabel, "Run ARD pipeline");
+assert.equal(browserRun.nextAction, "Review the pushed research branch reports before implementing any code.");
+
 console.log("dashboard ARD status tests passed");

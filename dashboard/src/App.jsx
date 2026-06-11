@@ -249,6 +249,9 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
   const [controlActionError, setControlActionError] = useState(null);
   const [prepareControlOpen, setPrepareControlOpen] = useState(false);
   const [prepareConfirmText, setPrepareConfirmText] = useState("");
+  const [ardPipelineRun, setArdPipelineRun] = useState(null);
+  const [ardPipelineStatus, setArdPipelineStatus] = useState("idle");
+  const [ardPipelineError, setArdPipelineError] = useState(null);
   const pipelineExecution = usePipelineExecution(telemetry, summary);
   const workStatus = useMemo(() => deriveDashboardWorkStatus({ telemetry, summary, execution: pipelineExecution, connector, branchPreview }), [telemetry, summary, pipelineExecution, connector, branchPreview]);
   const controlRoom = useMemo(() => deriveControlRoomStatus({ telemetry, summary, execution: pipelineExecution, connector, branchPreview, workStatus, builderHealthState: builderHealth }), [telemetry, summary, pipelineExecution, connector, branchPreview, workStatus, builderHealth]);
@@ -277,6 +280,30 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
     connector.refreshStatus();
     connector.fetchPreview();
   }, [connector.refreshStatus, connector.fetchPreview]);
+
+  useEffect(() => {
+    if (telemetry.ardBrowserPipeline) {
+      setArdPipelineRun(telemetry.ardBrowserPipeline);
+    }
+  }, [telemetry.ardBrowserPipeline]);
+
+  const runArdPipelineFromBrowser = useCallback(async () => {
+    if (ardPipelineStatus === "running") return;
+    setArdPipelineStatus("running");
+    setArdPipelineError(null);
+    try {
+      const result = await apiClient.runArdPipeline({
+        mission: "ARD Browser Pipeline v1",
+        pushMode: "fixture-remote"
+      });
+      setArdPipelineRun(result);
+      await telemetry.refreshTelemetryHistory?.();
+      setArdPipelineStatus("completed");
+    } catch (cause) {
+      setArdPipelineError(normalizeRequestError(cause));
+      setArdPipelineStatus("error");
+    }
+  }, [apiClient, ardPipelineStatus, telemetry]);
 
   const openDispatchReview = useCallback(async (finding) => {
     if (!finding?.dispatch?.id || finding.dispatch.status !== "staged_for_review") {
@@ -493,13 +520,17 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
 
       <SelfImprovementControlRoom
         controlRoom={controlRoom}
+        pipelineRun={ardPipelineRun ?? telemetry.ardBrowserPipeline}
+        pipelineStatus={ardPipelineStatus}
+        pipelineError={ardPipelineError}
+        onRunPipeline={runArdPipelineFromBrowser}
         onAdvance={() => telemetry.refreshTelemetryHistory?.()}
         onReviewCandidate={openCandidateReview}
         onCandidateReviewDecision={reviewControlCandidate}
         onPreviewBranch={previewControlBranch}
         onOpenPrepare={() => setPrepareControlOpen(true)}
         onRefreshBuilderHealth={builderHealth.refresh}
-        busy={["previewing", "preparing", "reviewing-candidate"].includes(controlActionStatus)}
+        busy={["previewing", "preparing", "reviewing-candidate"].includes(controlActionStatus) || ardPipelineStatus === "running"}
       />
       {controlActionError ? <div className="inline-error">{controlActionError.message ?? controlActionError.error ?? "Control-room action failed"}</div> : null}
       <AutonomousPipeline telemetry={telemetry} execution={pipelineExecution} />

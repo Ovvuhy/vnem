@@ -8,6 +8,7 @@ import { detectAiClients } from "./detect-ai-clients.mjs";
 import { loadLocalEnv } from "./local-env.mjs";
 import { generateConnectorPreviews } from "./preview-connector-changes.mjs";
 import { prepareGivingBranch, previewGivingBranchPlan } from "./giving-branch.mjs";
+import { createRunId as createArdRunId, runGiving as runArdGiving, runProtection as runArdProtection, runResearch as runArdResearch } from "./ard-pipeline.mjs";
 import { applyCandidateClassification, buildBranchCandidateSet, buildReviewQueue, readReviewRecords, writeReviewRecord } from "./candidate-pipeline.mjs";
 import { buildBuilderSessionReport } from "./vnem-builder-session.mjs";
 import { buildHermesDashboardSummary } from "./lib/hermes-dashboard-summary.mjs";
@@ -47,6 +48,7 @@ let liveIntelligenceRuntime = {
   maxPollIntervalMs: null,
   stageDelayMs: null
 };
+let latestArdBrowserPipeline = null;
 let pipelineSequence = 0;
 const terminalStatuses = new Set(["staged_for_review", "isolated_by_protection", "quarantined_by_protection", "awaiting_manual_review", "review_satisfied", "rejected_low_signal", "research_no_candidate"]);
 const researchCache = {
@@ -100,6 +102,8 @@ const endpoints = [
   "GET /api/intelligence/review-queue",
   "POST /api/intelligence/triage/refresh",
   "POST /api/intelligence/candidate/:id/review",
+  "POST /api/ard/pipeline/run",
+  "GET /api/ard/pipeline/latest",
   "POST /api/giving/branch/preview",
   "POST /api/giving/branch/prepare",
   "GET /api/builder/session"
@@ -301,6 +305,22 @@ export function createVnemAppServer(options = {}) {
         return;
       }
 
+      if (route === "POST /api/ard/pipeline/run") {
+        const payload = await readJsonRequest(request, { maxBytes: 16 * 1024 });
+        const result = await runArdBrowserPipeline(payload, { repositoryRoot });
+        writeJson(response, result.ok ? 200 : 500, result);
+        return;
+      }
+
+      if (route === "GET /api/ard/pipeline/latest") {
+        writeJson(response, 200, {
+          ok: true,
+          pipeline: latestArdBrowserPipeline,
+          message: latestArdBrowserPipeline ? "Latest browser ARD pipeline run loaded." : "No browser ARD pipeline run has completed in this app-server session yet."
+        });
+        return;
+      }
+
       if (route === "POST /api/giving/branch/preview") {
         const payload = await readJsonRequest(request, { maxBytes: 32 * 1024 });
         const result = previewGivingBranchPlan(payload);
@@ -413,6 +433,15 @@ export function createVnemAppServer(options = {}) {
         return;
       }
 
+      if (url.pathname.startsWith("/api/ard/")) {
+        writeJson(response, 405, {
+          ok: false,
+          error: "method-or-endpoint-not-supported",
+          route
+        });
+        return;
+      }
+
       if (url.pathname.startsWith("/api/giving/")) {
         writeJson(response, 405, {
           ok: false,
@@ -475,6 +504,7 @@ export function telemetryHistoryPayload() {
     route_errors: routeErrors.slice(0, 12),
     mission: missionSnapshot(),
     pipeline: pipelineSnapshot(),
+    ard_browser_pipeline: latestArdBrowserPipeline,
     review_queue: reviewQueue,
     branch_candidate_set: buildBranchCandidateSet(activeIngestions, { queue: reviewQueue }),
     intelligence_provider: intelligenceProviderSnapshot()
@@ -561,6 +591,254 @@ export async function resolveCandidateReview(id, payload = {}, options = {}) {
     review_file: result.filePath,
     review_queue: queue
   };
+}
+
+export async function runArdBrowserPipeline(payload = {}, options = {}) {
+  const repositoryRoot = path.resolve(options.repositoryRoot || rootDir);
+  const normalized = normalizeArdBrowserPipelinePayload(payload);
+  const startedAt = new Date().toISOString();
+  latestArdBrowserPipeline = {
+    ok: true,
+    schema: "vnem.ardBrowserPipeline.v1",
+    status: "running",
+    runId: normalized.runId,
+    mode: normalized.mode,
+    startedAt,
+    finishedAt: null,
+    stages: [
+      { key: "research", status: "running", label: "Research AI" },
+      { key: "protection", status: "queued", label: "Protection AI" },
+      { key: "giving", status: "queued", label: "Giving AI" }
+    ],
+    dangerousFindings: [],
+    branch: { mode: normalized.pushMode, pushed: false, branchName: null, commit: null },
+    nextAction: "Research AI is collecting deterministic local candidates."
+  };
+  broadcastArdBrowserPipelineEvent("ard_browser_pipeline_started", "Research AI started from the browser Run ARD pipeline button.", "research");
+
+  const research = await runArdResearch({
+    rootDir: repositoryRoot,
+    runId: normalized.runId,
+    mission: normalized.mission,
+    mode: normalized.mode
+  });
+  latestArdBrowserPipeline = {
+    ...latestArdBrowserPipeline,
+    research: compactArdResearch(research),
+    stages: latestArdBrowserPipeline.stages.map((stage) => stage.key === "research" ? { ...stage, status: "complete" } : stage.key === "protection" ? { ...stage, status: "running" } : stage),
+    nextAction: "Protection AI is reviewing candidates before Giving AI can receive anything."
+  };
+  broadcastArdBrowserPipelineEvent("ard_browser_pipeline_research_complete", `Research AI found ${research.candidatesFound} candidates for ${normalized.mission}.`, "research");
+
+  const protection = await runArdProtection({
+    rootDir: repositoryRoot,
+    runId: research.runId,
+    research
+  });
+  latestArdBrowserPipeline = {
+    ...latestArdBrowserPipeline,
+    protection: compactArdProtection(protection),
+    dangerousFindings: protection.dangerousFindings,
+    stages: latestArdBrowserPipeline.stages.map((stage) => stage.key === "protection" ? { ...stage, status: "complete" } : stage.key === "giving" ? { ...stage, status: "running" } : stage),
+    nextAction: protection.dangerousFindings.length ? "Dangerous findings are visible and excluded from Giving AI." : "No blocked/quarantined findings in Protection AI output."
+  };
+  broadcastArdBrowserPipelineEvent("ard_browser_pipeline_protection_complete", `Protection AI allowed ${protection.allowed}, marked ${protection.needsReview} for review, and isolated ${protection.dangerousFindings.length} dangerous findings.`, "protection");
+
+  const giving = await runArdGiving({
+    rootDir: repositoryRoot,
+    runId: research.runId,
+    research,
+    protection,
+    pushMode: normalized.pushMode
+  });
+  const finishedAt = new Date().toISOString();
+  latestArdBrowserPipeline = {
+    ...latestArdBrowserPipeline,
+    ok: Boolean(giving.ok),
+    status: giving.ok ? "completed" : "blocked",
+    finishedAt,
+    giving: compactArdGiving(giving),
+    branch: {
+      mode: giving.pushMode ?? normalized.pushMode,
+      pushed: Boolean(giving.pushed),
+      branchName: giving.branchName ?? null,
+      baseBranch: giving.baseBranch ?? "main",
+      commit: giving.commit ?? null,
+      remote: giving.remote ?? null
+    },
+    artifacts: ardBrowserArtifacts(repositoryRoot, research.runId),
+    stages: latestArdBrowserPipeline.stages.map((stage) => stage.key === "giving" ? { ...stage, status: giving.ok ? "complete" : "blocked" } : stage),
+    nextAction: giving.nextAction,
+    summary: {
+      schema: "vnem.ardDemo.v1",
+      runId: research.runId,
+      mode: normalized.mode,
+      research: { status: research.status, candidatesFound: research.candidatesFound },
+      protection: { allowed: protection.allowed, needsReview: protection.needsReview, quarantined: protection.quarantined, blocked: protection.blocked, dangerousFindings: protection.dangerousFindings.length },
+      giving: { branchName: giving.branchName, commit: giving.commit, pushed: giving.pushed, pushMode: giving.pushMode, included: giving.includedCandidates.length, excluded: giving.excludedCandidates.length },
+      nextAction: giving.nextAction
+    }
+  };
+  await writeArdBrowserSummary(repositoryRoot, latestArdBrowserPipeline.summary);
+  upsertArdBrowserIngestions(toArdBrowserIngestions({ research, protection, giving, finishedAt }));
+  broadcastArdBrowserPipelineEvent("ard_browser_pipeline_completed", giving.ok ? `Giving AI prepared ${giving.branchName} in ${giving.pushMode} mode.` : `Giving AI blocked the run: ${giving.blocker ?? "unknown blocker"}.`, "giving");
+  return latestArdBrowserPipeline;
+}
+
+function normalizeArdBrowserPipelinePayload(payload = {}) {
+  const runId = String(payload.run_id ?? payload.runId ?? createArdRunId({ prefix: "ard-browser-run" })).trim().toLowerCase().replace(/[^a-z0-9/_-]/g, "-").replace(/-+/g, "-").replace(/^[-/]+|[-/]+$/g, "");
+  const mission = String(payload.mission ?? "ARD Browser Pipeline v1").trim().slice(0, 180) || "ARD Browser Pipeline v1";
+  const pushMode = String(payload.push_mode ?? payload.pushMode ?? "fixture-remote").trim();
+  if (!["fixture-remote", "dry-run"].includes(pushMode)) {
+    throw httpError(400, "ARD_PIPELINE_PUSH_MODE_UNSUPPORTED", "Browser ARD pipeline only supports fixture-remote or dry-run push modes. It never pushes to main.");
+  }
+  return {
+    runId: runId || createArdRunId({ prefix: "ard-browser-run" }),
+    mission,
+    pushMode,
+    mode: "browser/local pipeline"
+  };
+}
+
+function compactArdResearch(research) {
+  return {
+    status: research.status,
+    candidatesFound: research.candidatesFound,
+    sourcesChecked: research.sourcesChecked,
+    finishedAt: research.finishedAt
+  };
+}
+
+function compactArdProtection(protection) {
+  return {
+    reviewedAt: protection.reviewedAt,
+    reviewMode: protection.reviewMode,
+    candidatesReviewed: protection.candidatesReviewed,
+    allowed: protection.allowed,
+    needsReview: protection.needsReview,
+    quarantined: protection.quarantined,
+    blocked: protection.blocked,
+    dangerousFindings: protection.dangerousFindings
+  };
+}
+
+function compactArdGiving(giving) {
+  return {
+    ok: Boolean(giving.ok),
+    branchName: giving.branchName,
+    baseBranch: giving.baseBranch,
+    pushMode: giving.pushMode,
+    pushed: Boolean(giving.pushed),
+    commit: giving.commit ?? null,
+    included: giving.includedCandidates?.length ?? 0,
+    excluded: giving.excludedCandidates?.length ?? 0,
+    includedCandidates: giving.includedCandidates ?? [],
+    excludedCandidates: giving.excludedCandidates ?? [],
+    dangerousFindings: giving.dangerousFindings ?? [],
+    validationStatus: giving.validationStatus,
+    nextAction: giving.nextAction
+  };
+}
+
+function ardBrowserArtifacts(repositoryRoot, runId) {
+  const base = path.join(repositoryRoot, "discovery", "ard-runs", runId);
+  return {
+    runDirectory: base,
+    researchJson: path.join(base, "research.json"),
+    protectionJson: path.join(base, "protection.json"),
+    dangerousFindingsMarkdown: path.join(base, "dangerous-findings.md"),
+    givingPlanMarkdown: path.join(base, "giving-plan.md"),
+    demoSummaryJson: path.join(base, "demo-summary.json")
+  };
+}
+
+async function writeArdBrowserSummary(repositoryRoot, summary) {
+  const dir = path.join(repositoryRoot, "discovery", "ard-runs", summary.runId);
+  await mkdir(dir, { recursive: true });
+  await writeFile(path.join(dir, "demo-summary.json"), `${JSON.stringify(summary, null, 2)}\n`);
+  await writeFile(path.join(repositoryRoot, "discovery", "ard-runs", "latest.json"), `${JSON.stringify({
+    schema: "vnem.ardLatestRun.v1",
+    runId: summary.runId,
+    path: `${summary.runId}/demo-summary.json`,
+    mode: "browser/local pipeline",
+    updatedAt: new Date().toISOString()
+  }, null, 2)}\n`);
+}
+
+function toArdBrowserIngestions({ research, protection, giving, finishedAt }) {
+  const verdicts = new Map(protection.verdicts.map((verdict) => [verdict.candidateId, verdict]));
+  const included = new Set((giving.includedCandidates ?? []).map((candidate) => candidate.id));
+  return research.candidates.map((candidate) => {
+    const verdict = verdicts.get(candidate.id) ?? { verdict: "needs-review", dangerousSignals: [], reasons: [] };
+    const isolated = ["blocked", "quarantine"].includes(verdict.verdict);
+    const safe = verdict.verdict === "allow";
+    const status = isolated ? "isolated_by_protection" : safe ? "staged_for_review" : "awaiting_manual_review";
+    const threatScore = verdict.verdict === "blocked" ? 95 : verdict.verdict === "quarantine" ? 75 : verdict.verdict === "needs-review" ? 45 : 5;
+    const trustScore = safe ? 82 : verdict.verdict === "needs-review" ? 55 : 20;
+    const latestMessage = isolated
+      ? `Protection AI isolated ${candidate.title}; excluded from Giving AI.`
+      : included.has(candidate.id)
+        ? `Giving AI included ${candidate.title} in ${giving.branchName}.`
+        : `Protection AI requires manual review before Giving AI can use ${candidate.title}.`;
+    return {
+      id: `${research.runId}:${candidate.id}`,
+      title: candidate.title,
+      source_url: candidate.sourceUrl,
+      source_route: "ard-browser-pipeline",
+      source_origin: "ARD Browser Pipeline v1",
+      action_dispatch: included.has(candidate.id) ? "Included in browser Giving branch" : isolated ? "Excluded from Giving AI" : "Manual review required",
+      current_agent: isolated ? "protection" : safe ? "complete" : "review",
+      status,
+      pipeline_verdict: verdict.verdict,
+      trust_score: trustScore,
+      threat_score: threatScore,
+      repository: {
+        full_name: candidate.title,
+        html_url: candidate.sourceUrl,
+        description: candidate.summary,
+        language: "metadata",
+        source_route: "ard-browser-pipeline",
+        license: candidate.license
+      },
+      protection_report: {
+        verdict: verdict.verdict,
+        flags: verdict.dangerousSignals ?? [],
+        reasons: verdict.reasons ?? [],
+        review_mode: protection.reviewMode,
+        excluded_from_giving: verdict.excludedFromGiving
+      },
+      latest_event: {
+        agent: isolated ? "protection" : safe ? "giving" : "protection",
+        message: latestMessage,
+        timestamp: finishedAt
+      },
+      timeline: [
+        { agent: "research", status: "completed", message: `Research AI found ${candidate.title}.`, timestamp: research.finishedAt },
+        { agent: "protection", status, message: (verdict.reasons ?? []).join(" ") || "Protection AI reviewed candidate metadata.", timestamp: protection.reviewedAt },
+        { agent: isolated ? "protection" : "giving", status, message: latestMessage, timestamp: finishedAt }
+      ],
+      staged_dispatch: null,
+      approved_dispatch: null,
+      ard_browser_run_id: research.runId
+    };
+  });
+}
+
+function upsertArdBrowserIngestions(ingestions) {
+  for (const ingestion of ingestions) {
+    const index = activeIngestions.findIndex((item) => item.id === ingestion.id);
+    if (index >= 0) activeIngestions.splice(index, 1);
+    activeIngestions.push(ingestion);
+  }
+  activeIngestions.splice(24);
+}
+
+function broadcastArdBrowserPipelineEvent(type, message, agentStage) {
+  broadcastTelemetry(pipelineEvent({
+    type,
+    message,
+    agent_stage: agentStage
+  }));
 }
 
 export async function readDispatchForReview(id, options = {}) {
@@ -1980,6 +2258,7 @@ function pipelineEvent(payload) {
     route_errors: routeErrors.slice(0, 12),
     mission: missionSnapshot(),
     pipeline: pipelineSnapshot(),
+    ard_browser_pipeline: latestArdBrowserPipeline,
     review_queue: reviewQueue,
     branch_candidate_set: buildBranchCandidateSet(activeIngestions, { queue: reviewQueue }),
     intelligence_provider: intelligenceProviderSnapshot()
