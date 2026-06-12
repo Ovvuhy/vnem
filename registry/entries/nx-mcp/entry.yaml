@@ -1,0 +1,60 @@
+schema_version: 1.0.0
+homepage_url: https://nx.dev
+repo_url: https://github.com/nrwl/nx-console
+package_urls:
+  - https://www.npmjs.com/package/nx-mcp
+licenses:
+  - MIT
+copyright_owner: Nrwl
+source_kind: package_registry
+protocols:
+  - mcp
+clients:
+  - MCP
+install:
+  command: npx -y nx-mcp@latest
+  notes: >-
+    MCP server for Nx monorepos. Exposes Nx project graph, task execution, and code generation
+    tools to MCP-compatible agents. Requires an Nx workspace.
+  config_example: null
+permissions:
+  - filesystem
+  - repository
+env_vars: []
+tags:
+  - mcp-server
+  - monorepo
+  - nx
+  - build-system
+use_cases:
+  - Expose Nx project graph and task execution to AI agents
+  - Code generation within Nx monorepos via MCP
+best_for:
+  - Teams using Nx monorepos who want AI agent integration
+  - Agents that need to understand project dependencies and run tasks
+not_for:
+  - Non-Nx projects
+  - Projects that cannot review upstream permissions or data handling
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: high
+maintenance_signals:
+  - Published 2026-04-30 on npm
+  - From established Nrwl organization behind Nx
+risk_flags: []
+recommended_when:
+  - Use when working in an Nx monorepo and want AI agents to understand project structure and run tasks
+trust_tier: promising
+review_status: needs-review
+last_checked: '2026-06-12'
+slug: nx-mcp
+name: nx-mcp
+type: mcp-server
+summary_llm: >-
+  nx-mcp is a Model Context Protocol server for Nx monorepos. It exposes Nx project graph,
+  task execution, and code generation tools to MCP-compatible AI agents.
+source_urls:
+  - https://www.npmjs.com/package/nx-mcp
+  - https://github.com/nrwl/nx-console
+  - https://nx.dev

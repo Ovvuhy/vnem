@@ -1,7 +1,7 @@
 # vnem Full Registry
 
-Generated: 2026-05-28T11:24:56.856Z
-Entries: 228
+Generated: 2026-06-12T07:14:59.796Z
+Entries: 230
 
 ## Agent2Agent Protocol
 
@@ -3963,6 +3963,30 @@ Not Human Search is an MCP server for agentic systems. Search the agentic web. 4
 
 Not Human Search is an MCP server for agentic systems. Search the agentic web. 4,100+ sites, 11 tools incl. check_url + verify_mcp for probe-before-use. ## When To Use Use this when an agent needs extend agents with external tools through a tool surface that can be reviewed and permissioned. ## Review Notes Trust tier:
 
+## nx-mcp
+
+Slug: nx-mcp
+Type: mcp-server
+Trust tier: promising
+Review status: needs-review
+Freshness: current
+Source confidence: high
+Recommendation score: 10
+Protocols: mcp
+Clients: MCP
+Tags: mcp-server, monorepo, nx, build-system
+Use cases: Expose Nx project graph and task execution to AI agents, Code generation within Nx monorepos via MCP
+Best for: Teams using Nx monorepos who want AI agent integration, Agents that need to understand project dependencies and run tasks, Expose Nx project graph and task execution to AI agents, Code generation within Nx monorepos via MCP, mcp-server workflows, monorepo workflows, nx workflows, build-system workflows
+Recommended when: Use when working in an Nx monorepo and want AI agents to understand project structure and run tasks, Use when a project needs expose nx project graph and task execution to ai agents and the upstream source has been reviewed., Treat as promising until a maintainer verifies install and behavior.
+Risk flags: sensitive-permissions
+Homepage: https://nx.dev
+Repository: https://github.com/nrwl/nx-console
+Sources: https://www.npmjs.com/package/nx-mcp, https://github.com/nrwl/nx-console, https://nx.dev
+
+nx-mcp is a Model Context Protocol server for Nx monorepos. It exposes Nx project graph, task execution, and code generation tools to MCP-compatible AI agents.
+
+nx-mcp is a Model Context Protocol server for Nx monorepos. It exposes Nx project graph, task execution, and code generation tools to MCP-compatible AI agents. ## Best For - Teams using Nx monorepos who want AI agent integration - Agents that need to understand project dependencies and run tasks ## Recommended When - U
+
 ## Offer Hopper Shopping Optimizer
 
 Slug: ai-offerhopper-mcp-shopping-optimizer
@@ -4754,6 +4778,30 @@ Sources: https://github.com/github/github-mcp-server
 GitHub MCP Server is GitHub's official MCP server for repository, code search, issue, pull request, workflow, security, and collaboration operations, with toolset controls and read-only mode available.
 
 GitHub MCP Server is GitHub's official MCP server for repository, code search, issue, pull request, workflow, security, and collaboration operations, with toolset controls and read-only mode available. ## Best For - GitHub-native repository workflows with scoped tokens and branch protections ## Recommended When - Use w
+
+## gptme
+
+Slug: gptme
+Type: coding-agent
+Trust tier: promising
+Review status: needs-review
+Freshness: current
+Source confidence: high
+Recommendation score: 8
+Protocols: none recorded
+Clients: Terminal, Git
+Tags: coding-agent, terminal, llm-agent, autonomous-agent
+Use cases: Terminal-based AI agent with local tool execution, Autonomous agent with persistent memory, Web browsing and code generation from the terminal
+Best for: Developers who want a terminal-native agent with local tool access, Persistent autonomous agents with custom memory, Terminal-based AI agent with local tool execution, Autonomous agent with persistent memory, Web browsing and code generation from the terminal, coding-agent workflows, terminal workflows, llm-agent workflows
+Recommended when: Use when you want a terminal-native agent with local tool execution and web browsing, Use when a project needs terminal-based ai agent with local tool execution and the upstream source has been reviewed., Treat as promising until a maintainer verifies install and behavior.
+Risk flags: can-edit-files, terminal-access, sensitive-permissions
+Homepage: https://gptme.org/docs/
+Repository: https://github.com/gptme/gptme
+Sources: https://gptme.org/docs/, https://github.com/gptme/gptme
+
+gptme is a terminal-based AI agent equipped with local tools: writes code, uses the terminal, browses the web. Supports multiple LLM backends and can be extended into a persistent autonomous agent.
+
+gptme is a terminal-based AI agent equipped with local tools: writes code, uses the terminal, browses the web. Supports multiple LLM backends and can be extended into a persistent autonomous agent. ## Best For - Developers who want a terminal-native agent with local tool access - Persistent autonomous agents with custo
 
 ## Graphiti
 

@@ -1,0 +1,264 @@
+{
+  "generated_at": "2026-06-12T08:00:00.000Z",
+  "mode": "brain-synthesis",
+  "lookback_hours": 1,
+  "source_routes": [
+    "github-search"
+  ],
+  "parent_reports": [
+    "hermes-2026-06-12T07.json",
+    "hermes-deep-2026-06-12.json"
+  ],
+  "candidates": [
+    {
+      "source_route": "github-search",
+      "name": "ucsandman/DashClaw",
+      "title": "DashClaw — Agent Governance Runtime",
+      "description": "The governance runtime for AI agents. Intercept actions, enforce guard policies, require approvals, and produce audit-ready decision trails.",
+      "repo_url": "https://github.com/ucsandman/DashClaw",
+      "homepage_url": "https://www.dashclaw.io/",
+      "source_url": "https://github.com/ucsandman/DashClaw",
+      "source_urls": [
+        "https://github.com/ucsandman/DashClaw",
+        "https://www.dashclaw.io/"
+      ],
+      "signal_summary": "Matched GitHub search topic:agent-framework pushed:>=2026-06-10; pushed 2026-06-12T07:04:11Z; stars 274, forks 48. Repo review: needs-review, risk 21/100, trust 79/100. Flagged for download-button pattern.",
+      "why_builders_should_care": "Agent governance and audit-trail runtime — relevant for builders who need policy enforcement and approval gates for autonomous agents. Fits vnem's security-roadmap direction.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "download-button"
+      ],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 274,
+        "forks": 48,
+        "open_issues": 3,
+        "language": "TypeScript",
+        "license": "MIT",
+        "created_at": "2026-02-08T02:34:15Z",
+        "pushed_at": "2026-06-12T07:04:11Z",
+        "repo_risk_score": 21,
+        "repo_trust_score": 79,
+        "repo_verdict": "needs-review"
+      },
+      "repository_review": {
+        "verdict": "needs-review",
+        "risk_score": 21,
+        "trust_score": 79,
+        "flags": [
+          "download-button"
+        ],
+        "reasons": [
+          "README uses consumer-download copy instead of a source-first developer workflow."
+        ],
+        "reviewed_at": "2026-06-12T08:00:00.000Z",
+        "evidence": {
+          "readme_checked": true,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      },
+      "allow_registry_proposal": true
+    },
+    {
+      "source_route": "github-search",
+      "name": "CherryHQ/stella",
+      "title": "Stella — Multi-User Multi-Agent Memory",
+      "description": "AI partners for every person: multi-user, multi-agent memory, trusted tools, schedules, sandboxed workspaces, and chat.",
+      "repo_url": "https://github.com/CherryHQ/stella",
+      "homepage_url": "https://stella.cherryai.com",
+      "source_url": "https://github.com/CherryHQ/stella",
+      "source_urls": [
+        "https://github.com/CherryHQ/stella",
+        "https://stella.cherryai.com"
+      ],
+      "signal_summary": "Matched GitHub search \"agent memory\" pushed:>=2026-06-10; pushed 2026-06-12T06:57:33Z; stars 39, forks 3. Repo review: low-risk, risk 0/100, trust 100/100. AGPL-3.0 license.",
+      "why_builders_should_care": "Multi-user, multi-agent memory system with sandboxed workspaces — directly relevant to vnem's memory-system coverage. AGPL-3.0 may affect adoption.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "sensitive-permissions"
+      ],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 39,
+        "forks": 3,
+        "open_issues": 22,
+        "language": "Go",
+        "license": "AGPL-3.0",
+        "created_at": "2026-03-05T11:22:39Z",
+        "pushed_at": "2026-06-12T06:57:33Z",
+        "repo_risk_score": 0,
+        "repo_trust_score": 100,
+        "repo_verdict": "low-risk"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 0,
+        "trust_score": 100,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-06-12T08:00:00.000Z",
+        "evidence": {
+          "readme_checked": true,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      },
+      "allow_registry_proposal": true
+    },
+    {
+      "source_route": "github-search",
+      "name": "DimitriGeelen/agentic-engineering-framework",
+      "title": "Agentic Engineering Framework — Governance for Coding Agents",
+      "description": "Governance framework for AI coding agents — enforces task traceability, structural gates, session continuity, and audit trails for Claude Code, Cursor, and Copilot.",
+      "repo_url": "https://github.com/DimitriGeelen/agentic-engineering-framework",
+      "homepage_url": null,
+      "source_url": "https://github.com/DimitriGeelen/agentic-engineering-framework",
+      "source_urls": [
+        "https://github.com/DimitriGeelen/agentic-engineering-framework"
+      ],
+      "signal_summary": "Matched GitHub search topic:mcp pushed:>=2026-06-10; pushed 2026-06-12T07:05:15Z; stars 7, forks 4. Repo review: low-risk, risk 0/100, trust 100/100. Apache-2.0.",
+      "why_builders_should_care": "Governance framework with task traceability and audit trails for Claude Code, Cursor, Copilot. Small but aligned with vnem's governance and safety direction.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 7,
+        "forks": 4,
+        "open_issues": 12,
+        "language": "Shell",
+        "license": "Apache-2.0",
+        "created_at": "2026-03-03T20:57:30Z",
+        "pushed_at": "2026-06-12T07:05:15Z",
+        "repo_risk_score": 0,
+        "repo_trust_score": 100,
+        "repo_verdict": "low-risk"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 0,
+        "trust_score": 100,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-06-12T08:00:00.000Z",
+        "evidence": {
+          "readme_checked": true,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      },
+      "allow_registry_proposal": true
+    },
+    {
+      "source_route": "github-search",
+      "name": "KvFxKaido/Push",
+      "title": "Push — Mobile-First AI Coding Agent",
+      "description": "Mobile-first AI coding agent with direct GitHub access. Review PRs, explore codebases, and ship changes from your phone via multi-agent orchestration.",
+      "repo_url": "https://github.com/KvFxKaido/Push",
+      "homepage_url": null,
+      "source_url": "https://github.com/KvFxKaido/Push",
+      "source_urls": [
+        "https://github.com/KvFxKaido/Push"
+      ],
+      "signal_summary": "Matched GitHub search \"coding agent\" pushed:>=2026-06-10; pushed 2026-06-12T07:05:18Z; stars 2. Repo review: low-risk, risk 8/100, trust 92/100. MIT.",
+      "why_builders_should_care": "Mobile-first AI coding agent with GitHub access and multi-agent orchestration — novel surface for agent builders.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "sensitive-permissions",
+        "low-repo-signal"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 2,
+        "forks": 0,
+        "open_issues": 0,
+        "language": "TypeScript",
+        "license": "MIT",
+        "created_at": "2026-01-31T02:45:53Z",
+        "pushed_at": "2026-06-12T07:05:18Z",
+        "repo_risk_score": 8,
+        "repo_trust_score": 92,
+        "repo_verdict": "low-risk"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 8,
+        "trust_score": 92,
+        "flags": [
+          "low-repo-signal"
+        ],
+        "reasons": [],
+        "reviewed_at": "2026-06-12T08:00:00.000Z",
+        "evidence": {
+          "readme_checked": true,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      },
+      "allow_registry_proposal": false
+    },
+    {
+      "source_route": "github-search",
+      "name": "ongridio/ongrid",
+      "title": "Ongrid — Ops AI Agent for Infrastructure",
+      "description": "An ops AI Agent that understands your infrastructure, finds the root cause, and fixes it — right from Slack, Telegram, Lark or DingTalk.",
+      "repo_url": "https://github.com/ongridio/ongrid",
+      "homepage_url": "https://ongrid.cloud",
+      "source_url": "https://github.com/ongridio/ongrid",
+      "source_urls": [
+        "https://github.com/ongridio/ongrid",
+        "https://ongrid.cloud"
+      ],
+      "signal_summary": "Matched GitHub search topic:llm-agent pushed:>=2026-06-10; pushed 2026-06-12T07:04:26Z; stars 226, forks 53. Repo review: suspicious, risk 43/100, trust 57/100. Flagged for external-file-host and new-repository.",
+      "why_builders_should_care": "Ops AI agent with multi-platform integration (Slack, Telegram, Lark, DingTalk) and root-cause analysis. Interesting but flagged — review before recommending.",
+      "suggested_trust_tier": "watchlist",
+      "risk_flags": [
+        "external-file-host",
+        "new-repository"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 226,
+        "forks": 53,
+        "open_issues": 8,
+        "language": "Go",
+        "license": "Apache-2.0",
+        "created_at": "2026-05-23T16:16:44Z",
+        "pushed_at": "2026-06-12T07:04:26Z",
+        "repo_risk_score": 43,
+        "repo_trust_score": 57,
+        "repo_verdict": "suspicious"
+      },
+      "repository_review": {
+        "verdict": "suspicious",
+        "risk_score": 43,
+        "trust_score": 57,
+        "flags": [
+          "external-file-host",
+          "new-repository"
+        ],
+        "reasons": [
+          "README or release text points users to a generic file host or shortener."
+        ],
+        "reviewed_at": "2026-06-12T08:00:00.000Z",
+        "evidence": {
+          "readme_checked": true,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      },
+      "allow_registry_proposal": false
+    }
+  ],
+  "notes": "This report synthesizes new signals from hermes-2026-06-12T07.json that were not already covered in hermes-deep-2026-06-12.json. Candidates already present in the deep report are not duplicated here. See the deep report for the full candidate set including MCP registry entries, npm packages, and HN signals."
+}

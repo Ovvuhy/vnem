@@ -1,0 +1,67 @@
+schema_version: 1.0.0
+homepage_url: https://gptme.org/docs/
+repo_url: https://github.com/gptme/gptme
+package_urls:
+  - https://pypi.org/project/gptme/
+licenses:
+  - MIT
+copyright_owner: gptme
+source_kind: github
+protocols: []
+clients:
+  - Terminal
+  - Git
+install:
+  command: pip install gptme
+  notes: >-
+    Terminal-based agent with local tools: writes code, uses the terminal, browses the web.
+    Supports multiple LLM backends. Make your own persistent autonomous agent on top.
+  config_example: null
+permissions:
+  - filesystem
+  - repository
+  - network
+env_vars:
+  - OPENAI_API_KEY
+  - ANTHROPIC_API_KEY
+tags:
+  - coding-agent
+  - terminal
+  - llm-agent
+  - autonomous-agent
+use_cases:
+  - Terminal-based AI agent with local tool execution
+  - Autonomous agent with persistent memory
+  - Web browsing and code generation from the terminal
+best_for:
+  - Developers who want a terminal-native agent with local tool access
+  - Persistent autonomous agents with custom memory
+not_for:
+  - Projects that cannot review upstream permissions, data handling, or operational risk
+alternatives:
+  - aider
+  - anthropic-claude-code
+supersedes: []
+freshness: current
+source_confidence: high
+maintenance_signals:
+  - Active development, pushed 2026-06-12
+  - 4327 stars, 390 forks on GitHub
+risk_flags:
+  - can-edit-files
+  - terminal-access
+recommended_when:
+  - Use when you want a terminal-native agent with local tool execution and web browsing
+trust_tier: promising
+review_status: needs-review
+last_checked: '2026-06-12'
+slug: gptme
+name: gptme
+type: coding-agent
+summary_llm: >-
+  gptme is a terminal-based AI agent equipped with local tools: writes code, uses the terminal,
+  browses the web. Supports multiple LLM backends and can be extended into a persistent
+  autonomous agent.
+source_urls:
+  - https://gptme.org/docs/
+  - https://github.com/gptme/gptme

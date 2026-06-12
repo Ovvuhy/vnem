@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-05-28T11:24:56.856Z",
+  "generated_at": "2026-06-12T07:14:59.796Z",
   "schema_version": "1.0.0",
   "package_version": "1.0.1",
   "release_version": "1.0.1",
-  "release_date": "2026-05-28",
-  "entry_count": 228,
+  "release_date": "2026-06-12",
+  "entry_count": 230,
   "install_command": "curl -fsSL https://raw.githubusercontent.com/naellisim/vnem/main/public/install.tgz | tar -xz",
   "install_archive": "/install.tgz",
   "install_archive_url": "https://raw.githubusercontent.com/naellisim/vnem/main/public/install.tgz",
@@ -32,6 +32,7 @@
   "protocols": [
     "A2A",
     "JSON-RPC 2.0",
+    "mcp",
     "MCP",
     "SSE",
     "stdio",
@@ -117,12 +118,14 @@
     "authenticated-session",
     "authentication",
     "automation",
+    "autonomous-agent",
     "autonomous-agents",
     "azure",
     "benchmarks",
     "best-practices",
     "browser",
     "browser-game",
+    "build-system",
     "byom",
     "canvas",
     "catalog",
@@ -205,10 +208,12 @@
     "knowledge-graph",
     "kubernetes",
     "libraries",
+    "llm-agent",
     "llmops",
     "logs",
     "long-term-memory",
     "mcp",
+    "mcp-server",
     "mcpx",
     "memgpt",
     "memory",
@@ -217,8 +222,10 @@
     "microsoft",
     "migrations",
     "monitoring",
+    "monorepo",
     "multi-agent",
     "mysql",
+    "nx",
     "observability",
     "opentelemetry",
     "optimization",
@@ -341,6 +348,7 @@
     "Automate browser flows through MCP",
     "Automate issues, pull requests, and workflow triage",
     "Automate research and back-office workflows",
+    "Autonomous agent with persistent memory",
     "Benchmark repository repair workflows",
     "Bootstrap a persistent memory bank for coding agents",
     "Build 3D browser games",
@@ -371,6 +379,7 @@
     "Checkpoint and resume long-running workflows",
     "Choose between workflows and autonomous agents",
     "Choose deterministic or compatibility physics packages when needed",
+    "Code generation within Nx monorepos via MCP",
     "Combine workflows, memory, and MCP tools",
     "Compare governed and vanilla agent benchmark runs",
     "Compare hosted, local, and self-hosted memory modes",
@@ -412,6 +421,7 @@
     "Experiment with custom mode prompts and permissions",
     "Expose carefully gated database access to coding assistants",
     "Expose internal web-app APIs as MCP tools",
+    "Expose Nx project graph and task execution to AI agents",
     "Extend agents with external tools",
     "Fetch current library documentation for agents",
     "Find syntax patterns across codebases",
@@ -508,6 +518,7 @@
     "Target WebGL with WebGPU support paths",
     "Teach or prototype structured 2D game architecture",
     "Teach simple game objects, collisions, and input",
+    "Terminal-based AI agent with local tool execution",
     "Trace agent runs",
     "Trace and evaluate LLM applications",
     "Trace and guardrail agent runs",
@@ -527,7 +538,8 @@
     "Use tools, callbacks, and multi-agent patterns",
     "Use WASM-backed rigid-body simulation",
     "Use WebGL2, WebGPU, WebXR, input, audio, assets, and animation in one engine",
-    "Watch emerging payment flows for AI buyers"
+    "Watch emerging payment flows for AI buyers",
+    "Web browsing and code generation from the terminal"
   ],
   "intent_aliases": {
     "better ui": [
@@ -16986,6 +16998,93 @@
     },
     {
       "schema_version": "1.0.0",
+      "homepage_url": "https://nx.dev",
+      "repo_url": "https://github.com/nrwl/nx-console",
+      "package_urls": [
+        "https://www.npmjs.com/package/nx-mcp"
+      ],
+      "licenses": [
+        "MIT"
+      ],
+      "copyright_owner": "Nrwl",
+      "source_kind": "package_registry",
+      "protocols": [
+        "mcp"
+      ],
+      "clients": [
+        "MCP"
+      ],
+      "install": {
+        "command": "npx -y nx-mcp@latest",
+        "notes": "MCP server for Nx monorepos. Exposes Nx project graph, task execution, and code generation tools to MCP-compatible agents. Requires an Nx workspace.",
+        "config_example": null
+      },
+      "permissions": [
+        "filesystem",
+        "repository"
+      ],
+      "env_vars": [],
+      "tags": [
+        "mcp-server",
+        "monorepo",
+        "nx",
+        "build-system"
+      ],
+      "use_cases": [
+        "Expose Nx project graph and task execution to AI agents",
+        "Code generation within Nx monorepos via MCP"
+      ],
+      "best_for": [
+        "Teams using Nx monorepos who want AI agent integration",
+        "Agents that need to understand project dependencies and run tasks",
+        "Expose Nx project graph and task execution to AI agents",
+        "Code generation within Nx monorepos via MCP",
+        "mcp-server workflows",
+        "monorepo workflows",
+        "nx workflows",
+        "build-system workflows"
+      ],
+      "not_for": [
+        "Non-Nx projects",
+        "Projects that cannot review upstream permissions or data handling"
+      ],
+      "alternatives": [],
+      "supersedes": [],
+      "freshness": "current",
+      "source_confidence": "high",
+      "maintenance_signals": [
+        "Published 2026-04-30 on npm",
+        "From established Nrwl organization behind Nx",
+        "Canonical repository URL recorded"
+      ],
+      "risk_flags": [
+        "sensitive-permissions"
+      ],
+      "recommended_when": [
+        "Use when working in an Nx monorepo and want AI agents to understand project structure and run tasks",
+        "Use when a project needs expose nx project graph and task execution to ai agents and the upstream source has been reviewed.",
+        "Treat as promising until a maintainer verifies install and behavior."
+      ],
+      "trust_tier": "promising",
+      "review_status": "needs-review",
+      "last_checked": "2026-06-12",
+      "slug": "nx-mcp",
+      "name": "nx-mcp",
+      "type": "mcp-server",
+      "summary_llm": "nx-mcp is a Model Context Protocol server for Nx monorepos. It exposes Nx project graph, task execution, and code generation tools to MCP-compatible AI agents.",
+      "source_urls": [
+        "https://www.npmjs.com/package/nx-mcp",
+        "https://github.com/nrwl/nx-console",
+        "https://nx.dev"
+      ],
+      "profile_excerpt": "nx-mcp is a Model Context Protocol server for Nx monorepos. It exposes Nx project graph, task execution, and code generation tools to MCP-compatible AI agents. ## Best For - Teams using Nx monorepos who want AI agent integration - Agents that need to understand project dependencies and run tasks ## Recommended When - U",
+      "entry_path": "registry/entries/nx-mcp/entry.yaml",
+      "profile_path": "registry/entries/nx-mcp/profile.md",
+      "url_path": "/entries/nx-mcp/",
+      "recommendation_score": 10
+    },
+    {
+      "schema_version": "1.0.0",
       "slug": "ai-offerhopper-mcp-shopping-optimizer",
       "name": "Offer Hopper Shopping Optimizer",
       "type": "mcp-server",
@@ -19926,6 +20025,100 @@
       "entry_path": "registry/entries/github-mcp-server/entry.yaml",
       "profile_path": "registry/entries/github-mcp-server/profile.md",
       "url_path": "/entries/github-mcp-server/",
+      "recommendation_score": 8
+    },
+    {
+      "schema_version": "1.0.0",
+      "homepage_url": "https://gptme.org/docs/",
+      "repo_url": "https://github.com/gptme/gptme",
+      "package_urls": [
+        "https://pypi.org/project/gptme/"
+      ],
+      "licenses": [
+        "MIT"
+      ],
+      "copyright_owner": "gptme",
+      "source_kind": "github",
+      "protocols": [],
+      "clients": [
+        "Terminal",
+        "Git"
+      ],
+      "install": {
+        "command": "pip install gptme",
+        "notes": "Terminal-based agent with local tools: writes code, uses the terminal, browses the web. Supports multiple LLM backends. Make your own persistent autonomous agent on top.",
+        "config_example": null
+      },
+      "permissions": [
+        "filesystem",
+        "repository",
+        "network"
+      ],
+      "env_vars": [
+        "OPENAI_API_KEY",
+        "ANTHROPIC_API_KEY"
+      ],
+      "tags": [
+        "coding-agent",
+        "terminal",
+        "llm-agent",
+        "autonomous-agent"
+      ],
+      "use_cases": [
+        "Terminal-based AI agent with local tool execution",
+        "Autonomous agent with persistent memory",
+        "Web browsing and code generation from the terminal"
+      ],
+      "best_for": [
+        "Developers who want a terminal-native agent with local tool access",
+        "Persistent autonomous agents with custom memory",
+        "Terminal-based AI agent with local tool execution",
+        "Autonomous agent with persistent memory",
+        "Web browsing and code generation from the terminal",
+        "coding-agent workflows",
+        "terminal workflows",
+        "llm-agent workflows"
+      ],
+      "not_for": [
+        "Projects that cannot review upstream permissions, data handling, or operational risk"
+      ],
+      "alternatives": [
+        "aider",
+        "anthropic-claude-code"
+      ],
+      "supersedes": [],
+      "freshness": "current",
+      "source_confidence": "high",
+      "maintenance_signals": [
+        "Active development, pushed 2026-06-12",
+        "4327 stars, 390 forks on GitHub",
+        "Canonical repository URL recorded"
+      ],
+      "risk_flags": [
+        "can-edit-files",
+        "terminal-access",
+        "sensitive-permissions"
+      ],
+      "recommended_when": [
+        "Use when you want a terminal-native agent with local tool execution and web browsing",
+        "Use when a project needs terminal-based ai agent with local tool execution and the upstream source has been reviewed.",
+        "Treat as promising until a maintainer verifies install and behavior."
+      ],
+      "trust_tier": "promising",
+      "review_status": "needs-review",
+      "last_checked": "2026-06-12",
+      "slug": "gptme",
+      "name": "gptme",
+      "type": "coding-agent",
+      "summary_llm": "gptme is a terminal-based AI agent equipped with local tools: writes code, uses the terminal, browses the web. Supports multiple LLM backends and can be extended into a persistent autonomous agent.",
+      "source_urls": [
+        "https://gptme.org/docs/",
+        "https://github.com/gptme/gptme"
+      ],
+      "profile_excerpt": "gptme is a terminal-based AI agent equipped with local tools: writes code, uses the terminal, browses the web. Supports multiple LLM backends and can be extended into a persistent autonomous agent. ## Best For - Developers who want a terminal-native agent with local tool access - Persistent autonomous agents with custo",
+      "entry_path": "registry/entries/gptme/entry.yaml",
+      "profile_path": "registry/entries/gptme/profile.md",
+      "url_path": "/entries/gptme/",
       "recommendation_score": 8
     },
     {

@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-05-28T11:24:56.856Z",
+  "generated_at": "2026-06-12T07:14:59.796Z",
   "schema_version": "1.0.0",
   "package_version": "1.0.1",
   "release_version": "1.0.1",
-  "release_date": "2026-05-28",
+  "release_date": "2026-06-12",
   "install_folder": ".vnem",
   "safety": {
     "mode": "read-only-files",
@@ -26818,6 +26818,124 @@
       ]
     },
     {
+      "id": "entry:nx-mcp",
+      "kind": "registry-entry",
+      "title": "nx-mcp",
+      "summary": "nx-mcp is a Model Context Protocol server for Nx monorepos. It exposes Nx project graph, task execution, and code generation tools to MCP-compatible AI agents.",
+      "url_path": "/entries/nx-mcp/",
+      "trust_tier": "promising",
+      "type": "mcp-server",
+      "score": 10,
+      "tags": [
+        "mcp-server",
+        "monorepo",
+        "nx",
+        "build-system"
+      ],
+      "use_cases": [
+        "Expose Nx project graph and task execution to AI agents",
+        "Code generation within Nx monorepos via MCP"
+      ],
+      "best_for": [
+        "Teams using Nx monorepos who want AI agent integration",
+        "Agents that need to understand project dependencies and run tasks",
+        "Expose Nx project graph and task execution to AI agents",
+        "Code generation within Nx monorepos via MCP",
+        "mcp-server workflows",
+        "monorepo workflows",
+        "nx workflows",
+        "build-system workflows"
+      ],
+      "risk_flags": [
+        "sensitive-permissions"
+      ],
+      "source_urls": [
+        "https://www.npmjs.com/package/nx-mcp",
+        "https://github.com/nrwl/nx-console",
+        "https://nx.dev"
+      ],
+      "keywords": [
+        "nx-mcp",
+        "mcp-server",
+        "is",
+        "model",
+        "context",
+        "protocol",
+        "server",
+        "nx",
+        "monorepos.",
+        "it",
+        "exposes",
+        "graph",
+        "task",
+        "execution",
+        "generation",
+        "tools",
+        "to",
+        "mcp-compatible",
+        "ai",
+        "agents.",
+        "https",
+        "//nx.dev",
+        "//github.com/nrwl/nx-console",
+        "promising",
+        "needs-review",
+        "current",
+        "high",
+        "mcp",
+        "//www.npmjs.com/package/nx-mcp",
+        "filesystem",
+        "repository",
+        "monorepo",
+        "build-system",
+        "expose",
+        "agents",
+        "within",
+        "monorepos",
+        "via",
+        "teams",
+        "using",
+        "who",
+        "want",
+        "agent",
+        "integration",
+        "need",
+        "understand",
+        "dependencies",
+        "run",
+        "tasks",
+        "workflows",
+        "non-nx",
+        "cannot",
+        "permissions",
+        "or",
+        "data",
+        "handling",
+        "published",
+        "2026-04-30",
+        "on",
+        "npm",
+        "established",
+        "nrwl",
+        "organization",
+        "behind",
+        "canonical",
+        "sensitive-permissions",
+        "working",
+        "in",
+        "an",
+        "structure",
+        "been",
+        "reviewed.",
+        "as",
+        "until",
+        "maintainer",
+        "verifies",
+        "install",
+        "behavior."
+      ]
+    },
+    {
       "id": "entry:ai-offerhopper-mcp-shopping-optimizer",
       "kind": "registry-entry",
       "title": "Offer Hopper Shopping Optimizer",
@@ -31589,6 +31707,135 @@
       ]
     },
     {
+      "id": "entry:gptme",
+      "kind": "registry-entry",
+      "title": "gptme",
+      "summary": "gptme is a terminal-based AI agent equipped with local tools: writes code, uses the terminal, browses the web. Supports multiple LLM backends and can be extended into a persistent autonomous agent.",
+      "url_path": "/entries/gptme/",
+      "trust_tier": "promising",
+      "type": "coding-agent",
+      "score": 8,
+      "tags": [
+        "coding-agent",
+        "terminal",
+        "llm-agent",
+        "autonomous-agent"
+      ],
+      "use_cases": [
+        "Terminal-based AI agent with local tool execution",
+        "Autonomous agent with persistent memory",
+        "Web browsing and code generation from the terminal"
+      ],
+      "best_for": [
+        "Developers who want a terminal-native agent with local tool access",
+        "Persistent autonomous agents with custom memory",
+        "Terminal-based AI agent with local tool execution",
+        "Autonomous agent with persistent memory",
+        "Web browsing and code generation from the terminal",
+        "coding-agent workflows",
+        "terminal workflows",
+        "llm-agent workflows"
+      ],
+      "risk_flags": [
+        "can-edit-files",
+        "terminal-access",
+        "sensitive-permissions"
+      ],
+      "source_urls": [
+        "https://gptme.org/docs/",
+        "https://github.com/gptme/gptme"
+      ],
+      "keywords": [
+        "gptme",
+        "coding-agent",
+        "is",
+        "terminal-based",
+        "ai",
+        "agent",
+        "equipped",
+        "local",
+        "tools",
+        "writes",
+        "uses",
+        "terminal",
+        "browses",
+        "web.",
+        "supports",
+        "multiple",
+        "llm",
+        "backends",
+        "be",
+        "extended",
+        "persistent",
+        "autonomous",
+        "agent.",
+        "https",
+        "//gptme.org/docs/",
+        "//github.com/gptme/gptme",
+        "promising",
+        "needs-review",
+        "current",
+        "high",
+        "git",
+        "//pypi.org/project/gptme/",
+        "filesystem",
+        "repository",
+        "network",
+        "openai",
+        "api",
+        "key",
+        "anthropic",
+        "llm-agent",
+        "autonomous-agent",
+        "tool",
+        "execution",
+        "memory",
+        "web",
+        "browsing",
+        "generation",
+        "developers",
+        "who",
+        "want",
+        "terminal-native",
+        "access",
+        "agents",
+        "custom",
+        "workflows",
+        "cannot",
+        "permissions",
+        "data",
+        "handling",
+        "or",
+        "operational",
+        "risk",
+        "aider",
+        "anthropic-claude-code",
+        "active",
+        "development",
+        "pushed",
+        "2026-06-12",
+        "4327",
+        "stars",
+        "390",
+        "forks",
+        "on",
+        "github",
+        "canonical",
+        "can-edit-files",
+        "terminal-access",
+        "sensitive-permissions",
+        "you",
+        "been",
+        "reviewed.",
+        "as",
+        "until",
+        "maintainer",
+        "verifies",
+        "install",
+        "behavior."
+      ]
+    },
+    {
       "id": "entry:graphiti",
       "kind": "registry-entry",
       "title": "Graphiti",
@@ -35516,8 +35763,14 @@
     "70": [
       "entry:ai-baselight-baselight"
     ],
+    "390": [
+      "entry:gptme"
+    ],
     "751": [
       "entry:ai-lucasandersen-mlp-tax"
+    ],
+    "4327": [
+      "entry:gptme"
     ],
     "42001": [
       "entry:ai-modulos-demo-booking"
@@ -36105,6 +36358,9 @@
     "//github.com/google/adk-python": [
       "entry:google-agent-development-kit"
     ],
+    "//github.com/gptme/gptme": [
+      "entry:gptme"
+    ],
     "//github.com/haymon-ai/database": [
       "entry:ai-haymon-database"
     ],
@@ -36238,6 +36494,9 @@
     "//github.com/ninar-ctrl/ninar.ai": [
       "entry:ai-ninar-ninar"
     ],
+    "//github.com/nrwl/nx-console": [
+      "entry:nx-mcp"
+    ],
     "//github.com/nudg3-ai/nudg3-mcp": [
       "entry:ai-nudg3-brand-intelligence"
     ],
@@ -36348,6 +36607,9 @@
     "//google.github.io/adk-docs/": [
       "entry:google-agent-development-kit"
     ],
+    "//gptme.org/docs/": [
+      "entry:gptme"
+    ],
     "//helixar.ai/connect": [
       "entry:ai-helixar-mcp"
     ],
@@ -36446,6 +36708,9 @@
     "//nothumansearch.ai": [
       "entry:ai-nothumansearch-search"
     ],
+    "//nx.dev": [
+      "entry:nx-mcp"
+    ],
     "//obris.ai": [
       "entry:ai-obris-mcp"
     ],
@@ -36509,6 +36774,9 @@
     ],
     "//pypi.org/project/google-adk/": [
       "entry:google-agent-development-kit"
+    ],
+    "//pypi.org/project/gptme/": [
+      "entry:gptme"
     ],
     "//pypi.org/project/graphiti-core/": [
       "entry:graphiti"
@@ -37064,6 +37332,9 @@
     "//www.npmjs.com/package/matter-js": [
       "entry:matter-js"
     ],
+    "//www.npmjs.com/package/nx-mcp": [
+      "entry:nx-mcp"
+    ],
     "//www.npmjs.com/package/phaser": [
       "entry:phaser"
     ],
@@ -37146,6 +37417,12 @@
     ],
     "200+": [
       "entry:ai-bluenexus-universal-mcp"
+    ],
+    "2026-04-30": [
+      "entry:nx-mcp"
+    ],
+    "2026-06-12": [
+      "entry:gptme"
     ],
     "26-2": [
       "entry:ai-complyhat-compliance"
@@ -37701,6 +37978,7 @@
       "entry:sentry-mcp",
       "entry:playwright-mcp",
       "entry:github-mcp-server",
+      "entry:gptme",
       "entry:lunar-mcpx",
       "entry:anthropic-claude-code",
       "entry:opentabs",
@@ -37813,6 +38091,7 @@
       "practice:persistent-memory-context-files",
       "practice:security",
       "entry:three-js",
+      "entry:gptme",
       "entry:openai-swarm"
     ],
     "activities": [
@@ -38062,6 +38341,7 @@
       "prompt-pattern:mcp-gateway-evaluation",
       "prompt-pattern:mcp-selection",
       "prompt-pattern:memory-bank-initialization",
+      "entry:nx-mcp",
       "entry:promptfoo",
       "entry:ragas",
       "entry:sentry-mcp",
@@ -38082,6 +38362,7 @@
       "entry:claude-code-memory",
       "entry:claude-code-subagents",
       "entry:github-mcp-server",
+      "entry:gptme",
       "entry:graphiti",
       "entry:jscpd",
       "entry:langsmith",
@@ -38315,7 +38596,8 @@
       "entry:ai-fiber-mcp",
       "entry:ai-myriade-myriade",
       "prompt-pattern:codex-implementation",
-      "entry:ai-gethal-mcp"
+      "entry:ai-gethal-mcp",
+      "entry:gptme"
     ],
     "agent/provider": [
       "practice:model-and-provider-selection"
@@ -38668,6 +38950,7 @@
       "entry:ai-newzai-api-news-mcp",
       "entry:ai-nordax-mcp",
       "entry:ai-nothumansearch-search",
+      "entry:nx-mcp",
       "entry:ai-offerhopper-mcp-shopping-optimizer",
       "entry:ai-com-mcp-openai-tools",
       "entry:ai-openmandate-mcp",
@@ -38688,6 +38971,7 @@
       "entry:claude-code-memory",
       "entry:claude-code-subagents",
       "entry:github-mcp-server",
+      "entry:gptme",
       "entry:graphiti",
       "entry:jscpd",
       "entry:knip",
@@ -38727,7 +39011,8 @@
       "entry:ai-meetlark-mcp-server",
       "entry:ai-openarx-openarx",
       "entry:ai-aarna-atars-mcp",
-      "prompt-pattern:eval-design"
+      "prompt-pattern:eval-design",
+      "entry:nx-mcp"
     ],
     "agents.md": [
       "source:coding-agent-clients",
@@ -38819,11 +39104,13 @@
       "entry:ai-modulos-demo-booking",
       "entry:ai-meacheal-mrc-data",
       "entry:ai-nordax-mcp",
+      "entry:nx-mcp",
       "entry:ai-mino-web-agent",
       "entry:agentops",
       "entry:aider",
       "entry:continue-dev",
       "entry:ai-moxt-mcp-workspace",
+      "entry:gptme",
       "entry:mem0",
       "entry:zep",
       "entry:clude",
@@ -39430,6 +39717,7 @@
     "aider": [
       "practice:coding-agents",
       "entry:aider",
+      "entry:gptme",
       "entry:codebase-memory-mcp"
     ],
     "aldi": [
@@ -39664,6 +39952,7 @@
       "entry:ai-newzai-api-news-mcp",
       "entry:ai-nordax-mcp",
       "entry:ai-nothumansearch-search",
+      "entry:nx-mcp",
       "entry:ai-offerhopper-mcp-shopping-optimizer",
       "entry:ai-com-mcp-openai-tools",
       "entry:ai-openmandate-mcp",
@@ -39808,6 +40097,7 @@
       "entry:promptfoo",
       "entry:aider",
       "entry:continue-dev",
+      "entry:gptme",
       "entry:letta",
       "entry:swe-agent",
       "entry:openhands",
@@ -39822,6 +40112,7 @@
       "entry:covenant-research"
     ],
     "anthropic-claude-code": [
+      "entry:gptme",
       "entry:anthropic-claude-code"
     ],
     "anthropic-multi-agent-research-system": [
@@ -39898,6 +40189,7 @@
       "entry:firecrawl-mcp",
       "entry:ai-com-mcp-linkedin",
       "entry:browserbase-mcp",
+      "entry:gptme",
       "entry:graphiti",
       "entry:langsmith",
       "entry:letta",
@@ -40338,6 +40630,7 @@
       "entry:ai-newzai-api-news-mcp",
       "entry:ai-nordax-mcp",
       "entry:ai-nothumansearch-search",
+      "entry:nx-mcp",
       "entry:ai-offerhopper-mcp-shopping-optimizer",
       "entry:ai-com-mcp-openai-tools",
       "entry:ai-openmandate-mcp",
@@ -40373,6 +40666,7 @@
       "entry:ast-grep",
       "entry:browserbase-mcp",
       "entry:github-mcp-server",
+      "entry:gptme",
       "entry:graphiti",
       "entry:jscpd",
       "entry:knip",
@@ -40667,9 +40961,13 @@
       "prompt-pattern:agent-workspace-architecture",
       "entry:ai-agentrapay-agentra",
       "entry:ai-gethal-mcp",
+      "entry:gptme",
       "entry:swe-agent",
       "entry:openhands",
       "entry:covenant-research"
+    ],
+    "autonomous-agent": [
+      "entry:gptme"
     ],
     "autonomous-agents": [
       "entry:covenant-research"
@@ -40772,6 +41070,9 @@
     "backend.": [
       "practice:model-and-provider-selection"
     ],
+    "backends": [
+      "entry:gptme"
+    ],
     "backlink": [
       "entry:ai-linkguard-linkguard-mcp"
     ],
@@ -40845,6 +41146,7 @@
       "entry:claude-code-memory",
       "entry:claude-code-subagents",
       "entry:github-mcp-server",
+      "entry:gptme",
       "entry:langsmith",
       "entry:letta",
       "entry:github-copilot-coding-agent",
@@ -41030,6 +41332,7 @@
       "entry:ai-newzai-api-news-mcp",
       "entry:ai-nordax-mcp",
       "entry:ai-nothumansearch-search",
+      "entry:nx-mcp",
       "entry:ai-offerhopper-mcp-shopping-optimizer",
       "entry:ai-com-mcp-openai-tools",
       "entry:ai-openmandate-mcp",
@@ -41063,6 +41366,7 @@
       "entry:claude-code-memory",
       "entry:claude-code-subagents",
       "entry:github-mcp-server",
+      "entry:gptme",
       "entry:graphiti",
       "entry:jscpd",
       "entry:knip",
@@ -41449,6 +41753,7 @@
       "entry:ai-newzai-api-news-mcp",
       "entry:ai-nordax-mcp",
       "entry:ai-nothumansearch-search",
+      "entry:nx-mcp",
       "entry:ai-offerhopper-mcp-shopping-optimizer",
       "entry:ai-com-mcp-openai-tools",
       "entry:ai-openmandate-mcp",
@@ -41481,6 +41786,7 @@
       "entry:ast-grep",
       "entry:browserbase-mcp",
       "entry:github-mcp-server",
+      "entry:gptme",
       "entry:graphiti",
       "entry:jscpd",
       "entry:knip",
@@ -41521,6 +41827,7 @@
       "operating-protocol:vnem-operating-loop",
       "practice:coding-agents",
       "practice:mcp-server-selection",
+      "entry:nx-mcp",
       "entry:lunar-mcpx",
       "entry:supabase-mcp"
     ],
@@ -42051,7 +42358,11 @@
       "practice:security",
       "entry:phaser"
     ],
+    "browses": [
+      "entry:gptme"
+    ],
     "browsing": [
+      "entry:gptme",
       "entry:openhands"
     ],
     "budget": [
@@ -42110,6 +42421,9 @@
       "entry:swarms",
       "entry:zep",
       "entry:custom-modes-roo-code"
+    ],
+    "build-system": [
+      "entry:nx-mcp"
     ],
     "build/review/debug": [
       "operating-protocol:vnem-operating-loop"
@@ -42309,6 +42623,7 @@
       "entry:aider",
       "entry:continue-dev",
       "entry:claude-code-subagents",
+      "entry:gptme",
       "entry:openai-codex-cli",
       "entry:swe-agent",
       "entry:openhands",
@@ -42517,6 +42832,7 @@
       "entry:ai-newzai-api-news-mcp",
       "entry:ai-nordax-mcp",
       "entry:ai-nothumansearch-search",
+      "entry:nx-mcp",
       "entry:ai-offerhopper-mcp-shopping-optimizer",
       "entry:ai-com-mcp-openai-tools",
       "entry:ai-openmandate-mcp",
@@ -42540,6 +42856,7 @@
       "entry:claude-code-memory",
       "entry:claude-code-subagents",
       "entry:github-mcp-server",
+      "entry:gptme",
       "entry:graphiti",
       "entry:knip",
       "entry:langsmith",
@@ -42669,6 +42986,7 @@
       "entry:ai-law-lawyer-search",
       "entry:llamaindex-agents",
       "entry:matter-js",
+      "entry:nx-mcp",
       "entry:promptfoo",
       "entry:ragas",
       "entry:sentry-mcp",
@@ -42694,6 +43012,7 @@
       "entry:claude-code-memory",
       "entry:claude-code-subagents",
       "entry:github-mcp-server",
+      "entry:gptme",
       "entry:graphiti",
       "entry:jscpd",
       "entry:knip",
@@ -43612,6 +43931,7 @@
       "entry:vnem-mcp",
       "entry:aider",
       "entry:continue-dev",
+      "entry:gptme",
       "entry:openai-codex-cli",
       "entry:swe-agent",
       "entry:github-copilot-coding-agent",
@@ -44287,6 +44607,7 @@
       "entry:ai-donethat-donethat",
       "prompt-pattern:prompt-enhancement",
       "prompt-pattern:memory-policy",
+      "entry:nx-mcp",
       "entry:sentry-mcp",
       "entry:continue-dev",
       "entry:claude-code-memory",
@@ -44882,6 +45203,7 @@
       "entry:ai-newzai-api-news-mcp",
       "entry:ai-nordax-mcp",
       "entry:ai-nothumansearch-search",
+      "entry:nx-mcp",
       "entry:ai-offerhopper-mcp-shopping-optimizer",
       "entry:ai-com-mcp-openai-tools",
       "entry:ai-openmandate-mcp",
@@ -44917,6 +45239,7 @@
       "entry:claude-code-memory",
       "entry:claude-code-subagents",
       "entry:github-mcp-server",
+      "entry:gptme",
       "entry:graphiti",
       "entry:jscpd",
       "entry:knip",
@@ -45135,6 +45458,7 @@
       "entry:rapier-js",
       "entry:three-js",
       "entry:ast-grep",
+      "entry:gptme",
       "entry:anthropic-claude-code",
       "entry:roo-code",
       "entry:custom-modes-roo-code"
@@ -45367,6 +45691,7 @@
       "entry:ai-newzai-api-news-mcp",
       "entry:ai-nordax-mcp",
       "entry:ai-nothumansearch-search",
+      "entry:nx-mcp",
       "entry:ai-offerhopper-mcp-shopping-optimizer",
       "entry:ai-com-mcp-openai-tools",
       "entry:ai-openmandate-mcp",
@@ -45391,6 +45716,7 @@
       "entry:claude-code-memory",
       "entry:claude-code-subagents",
       "entry:github-mcp-server",
+      "entry:gptme",
       "entry:graphiti",
       "entry:langsmith",
       "entry:letta",
@@ -45723,6 +46049,7 @@
       "entry:vnem-mcp",
       "prompt-pattern:code-simplification",
       "prompt-pattern:codex-implementation",
+      "entry:nx-mcp",
       "entry:knip"
     ],
     "dependencies.": [
@@ -46069,12 +46396,14 @@
       "entry:cline"
     ],
     "developers": [
+      "entry:gptme",
       "entry:cursor-agent"
     ],
     "development": [
       "entry:google-agent-development-kit",
       "practice:observability-and-tracing",
       "entry:agency-lona-trading",
+      "entry:gptme",
       "entry:openhands",
       "entry:supabase-mcp",
       "entry:mcp-server-mysql"
@@ -46970,6 +47299,9 @@
       "design-architecture:vnem-design-architecture",
       "entry:ai-clarid-compliance"
     ],
+    "equipped": [
+      "entry:gptme"
+    ],
     "error": [
       "practice:code-simplification",
       "task-rubric:backend_api",
@@ -46988,7 +47320,8 @@
     ],
     "established": [
       "visual-qa-protocol:vnem-visual-qa-protocol",
-      "practice:frontend"
+      "practice:frontend",
+      "entry:nx-mcp"
     ],
     "estate": [
       "entry:ai-lucasandersen-mlp-tax"
@@ -47201,7 +47534,9 @@
       "practice:zero-trust-agent-gateway",
       "practice:human-approval-and-durability",
       "entry:langgraph",
+      "entry:nx-mcp",
       "prompt-pattern:zero-trust-gateway-roadmap",
+      "entry:gptme",
       "entry:openai-codex-cli",
       "entry:swarms",
       "entry:anthropic-claude-code",
@@ -47353,12 +47688,14 @@
       "practice:backend",
       "practice:data",
       "practice:evals",
+      "entry:nx-mcp",
       "entry:opentabs",
       "entry:mcp-server-mysql"
     ],
     "exposes": [
       "entry:ai-ankimcp-anki-mcp-server-addon",
-      "entry:ai-com-mcp-hapi-mcp"
+      "entry:ai-com-mcp-hapi-mcp",
+      "entry:nx-mcp"
     ],
     "exposing": [
       "task-rubric:security_sensitive",
@@ -47519,6 +47856,9 @@
       "entry:ai-clarid-hmda",
       "entry:ai-com-mcp-linkedin",
       "entry:ai-moxt-mcp-workspace"
+    ],
+    "extended": [
+      "entry:gptme"
     ],
     "extension": [
       "entry:microsoft-autogen",
@@ -48076,6 +48416,7 @@
       "entry:ai-kolens-kolens-mcp",
       "entry:ai-law-lawyer-search",
       "prompt-pattern:mcp-selection",
+      "entry:nx-mcp",
       "entry:ai-artidrop-artidrop",
       "entry:aider",
       "entry:ai-clarid-hmda",
@@ -48088,6 +48429,7 @@
       "entry:ast-grep",
       "entry:claude-code-memory",
       "entry:claude-code-subagents",
+      "entry:gptme",
       "entry:jscpd",
       "entry:knip",
       "entry:openai-codex-cli",
@@ -48341,7 +48683,8 @@
       "entry:matter-js"
     ],
     "forks": [
-      "practice:ide-agent-selection"
+      "practice:ide-agent-selection",
+      "entry:gptme"
     ],
     "form": [
       "practice:frontend"
@@ -48638,8 +48981,10 @@
       "visual-qa-protocol:vnem-visual-qa-protocol",
       "task-rubric:aesthetic_experience",
       "entry:context7-mcp",
+      "entry:nx-mcp",
       "entry:ai-com-mcp-openai-tools",
-      "entry:ragas"
+      "entry:ragas",
+      "entry:gptme"
     ],
     "generation.": [
       "entry:ai-filtrix-mcp-filtrix-ai",
@@ -48662,7 +49007,8 @@
       "entry:ai-gethal-mcp"
     ],
     "git": [
-      "entry:aider"
+      "entry:aider",
+      "entry:gptme"
     ],
     "github": [
       "source:platform-and-data-connectors",
@@ -48680,6 +49026,7 @@
       "entry:ugrep",
       "entry:ast-grep",
       "entry:github-mcp-server",
+      "entry:gptme",
       "entry:jscpd",
       "entry:knip",
       "entry:openai-codex-cli",
@@ -48843,6 +49190,9 @@
     "gpt": [
       "entry:covenant-research"
     ],
+    "gptme": [
+      "entry:gptme"
+    ],
     "gpu-rendering": [
       "entry:babylon-js",
       "entry:pixijs",
@@ -48868,6 +49218,7 @@
       "entry:crewai",
       "entry:langgraph",
       "entry:openai-agents-sdk",
+      "entry:nx-mcp",
       "entry:ripgrep",
       "entry:swarms",
       "entry:zep",
@@ -49007,6 +49358,7 @@
       "entry:arize-phoenix",
       "entry:langfuse",
       "entry:llamaindex-agents",
+      "entry:nx-mcp",
       "entry:promptfoo",
       "entry:ragas",
       "entry:sentry-mcp",
@@ -49020,6 +49372,7 @@
       "entry:claude-code-memory",
       "entry:claude-code-subagents",
       "entry:github-mcp-server",
+      "entry:gptme",
       "entry:graphiti",
       "entry:langsmith",
       "entry:letta",
@@ -49343,6 +49696,7 @@
       "entry:inspect-ai",
       "entry:arize-phoenix",
       "entry:langfuse",
+      "entry:nx-mcp",
       "entry:promptfoo",
       "entry:ragas",
       "entry:agentops",
@@ -49351,6 +49705,7 @@
       "entry:ripgrep",
       "entry:ugrep",
       "entry:ast-grep",
+      "entry:gptme",
       "entry:graphiti",
       "entry:jscpd",
       "entry:knip",
@@ -49675,6 +50030,7 @@
       "entry:ai-newzai-api-news-mcp",
       "entry:ai-nordax-mcp",
       "entry:ai-nothumansearch-search",
+      "entry:nx-mcp",
       "entry:ai-offerhopper-mcp-shopping-optimizer",
       "entry:ai-com-mcp-openai-tools",
       "entry:ai-openmandate-mcp",
@@ -49709,6 +50065,7 @@
       "entry:claude-code-memory",
       "entry:claude-code-subagents",
       "entry:github-mcp-server",
+      "entry:gptme",
       "entry:graphiti",
       "entry:jscpd",
       "entry:knip",
@@ -50091,6 +50448,7 @@
       "entry:ai-newzai-api-news-mcp",
       "entry:ai-nordax-mcp",
       "entry:ai-nothumansearch-search",
+      "entry:nx-mcp",
       "entry:ai-offerhopper-mcp-shopping-optimizer",
       "entry:ai-com-mcp-openai-tools",
       "entry:ai-openmandate-mcp",
@@ -50487,6 +50845,7 @@
       "entry:ai-newzai-api-news-mcp",
       "entry:ai-nordax-mcp",
       "entry:ai-nothumansearch-search",
+      "entry:nx-mcp",
       "entry:ai-offerhopper-mcp-shopping-optimizer",
       "entry:ai-com-mcp-openai-tools",
       "entry:ai-openmandate-mcp",
@@ -50522,6 +50881,7 @@
       "entry:claude-code-memory",
       "entry:claude-code-subagents",
       "entry:github-mcp-server",
+      "entry:gptme",
       "entry:graphiti",
       "entry:jscpd",
       "entry:knip",
@@ -50654,6 +51014,7 @@
       "entry:semantic-kernel",
       "practice:subagents-and-multi-agent",
       "entry:ai-gossiper-shopify-admin-mcp",
+      "entry:nx-mcp",
       "prompt-pattern:research",
       "prompt-pattern:subagent-delegation",
       "entry:continue-dev",
@@ -50986,6 +51347,7 @@
       "entry:ai-newzai-api-news-mcp",
       "entry:ai-nordax-mcp",
       "entry:ai-nothumansearch-search",
+      "entry:nx-mcp",
       "entry:ai-offerhopper-mcp-shopping-optimizer",
       "entry:ai-com-mcp-openai-tools",
       "entry:ai-openmandate-mcp",
@@ -51017,6 +51379,7 @@
       "entry:ugrep",
       "entry:ast-grep",
       "entry:github-mcp-server",
+      "entry:gptme",
       "entry:graphiti",
       "entry:jscpd",
       "entry:knip",
@@ -51089,6 +51452,7 @@
       "practice:deployment",
       "entry:ai-exa-exa",
       "entry:ai-obris-mcp",
+      "entry:nx-mcp",
       "prompt-pattern:source-intake",
       "prompt-pattern:visual-polish-review",
       "entry:ripgrep",
@@ -51250,6 +51614,7 @@
       "entry:continue-dev",
       "entry:firecrawl-mcp",
       "entry:browserbase-mcp",
+      "entry:gptme",
       "entry:graphiti",
       "entry:langsmith",
       "entry:letta",
@@ -52192,7 +52557,11 @@
       "entry:langfuse",
       "entry:promptfoo",
       "entry:ragas",
+      "entry:gptme",
       "entry:langsmith"
+    ],
+    "llm-agent": [
+      "entry:gptme"
     ],
     "llm-oriented": [
       "source:documentation-ingestion"
@@ -52250,6 +52619,7 @@
       "entry:playwright-mcp",
       "entry:ugrep",
       "entry:browserbase-mcp",
+      "entry:gptme",
       "entry:openai-codex-cli",
       "entry:qdrant-mcp-server",
       "entry:clude",
@@ -52570,6 +52940,7 @@
       "entry:ai-newzai-api-news-mcp",
       "entry:ai-nordax-mcp",
       "entry:ai-nothumansearch-search",
+      "entry:nx-mcp",
       "entry:ai-offerhopper-mcp-shopping-optimizer",
       "entry:ai-com-mcp-openai-tools",
       "entry:ai-openmandate-mcp",
@@ -52601,6 +52972,7 @@
       "entry:ast-grep",
       "entry:browserbase-mcp",
       "entry:github-mcp-server",
+      "entry:gptme",
       "entry:graphiti",
       "entry:jscpd",
       "entry:knip",
@@ -53090,6 +53462,7 @@
       "entry:ai-newzai-api-news-mcp",
       "entry:ai-nordax-mcp",
       "entry:ai-nothumansearch-search",
+      "entry:nx-mcp",
       "entry:ai-offerhopper-mcp-shopping-optimizer",
       "entry:ai-com-mcp-openai-tools",
       "entry:ai-openmandate-mcp",
@@ -53123,6 +53496,7 @@
       "entry:mcp-crawl4ai-rag"
     ],
     "mcp-compatible": [
+      "entry:nx-mcp",
       "entry:browserbase-mcp",
       "entry:clude"
     ],
@@ -53279,6 +53653,7 @@
       "entry:ai-newzai-api-news-mcp",
       "entry:ai-nordax-mcp",
       "entry:ai-nothumansearch-search",
+      "entry:nx-mcp",
       "entry:ai-offerhopper-mcp-shopping-optimizer",
       "entry:ai-com-mcp-openai-tools",
       "entry:ai-openmandate-mcp",
@@ -53423,6 +53798,7 @@
       "prompt-pattern:memory-bank-initialization",
       "prompt-pattern:memory-policy",
       "entry:claude-code-memory",
+      "entry:gptme",
       "entry:graphiti",
       "entry:letta",
       "entry:mem0",
@@ -53627,6 +54003,7 @@
       "entry:inspect-ai",
       "entry:model-context-protocol",
       "prompt-pattern:prompt-enhancement",
+      "entry:nx-mcp",
       "entry:continue-dev",
       "entry:qdrant-mcp-server",
       "entry:cline"
@@ -53715,6 +54092,15 @@
       "practice:deployment",
       "entry:ai-agentic-news-mcp",
       "entry:langsmith"
+    ],
+    "monorepo": [
+      "entry:nx-mcp"
+    ],
+    "monorepos": [
+      "entry:nx-mcp"
+    ],
+    "monorepos.": [
+      "entry:nx-mcp"
     ],
     "month-end": [
       "entry:ai-31st-mcp"
@@ -53819,6 +54205,7 @@
       "entry:semantic-kernel",
       "practice:subagents-and-multi-agent",
       "entry:anthropic-multi-agent-research-system",
+      "entry:gptme",
       "entry:lunar-mcpx",
       "entry:opentabs",
       "entry:rules-template-memory-bank"
@@ -53954,6 +54341,7 @@
       "entry:vnem-mcp",
       "entry:matter-js",
       "prompt-pattern:mcp-gateway-evaluation",
+      "entry:nx-mcp",
       "entry:promptfoo",
       "entry:agentops",
       "entry:excalibur-js",
@@ -54000,6 +54388,8 @@
       "visual-qa-protocol:vnem-visual-qa-protocol"
     ],
     "needs-review": [
+      "entry:nx-mcp",
+      "entry:gptme",
       "entry:covenant-research",
       "entry:kaimo"
     ],
@@ -54200,6 +54590,7 @@
       "entry:browserbase-mcp",
       "entry:claude-code-subagents",
       "entry:github-mcp-server",
+      "entry:gptme",
       "entry:graphiti",
       "entry:langsmith",
       "entry:letta",
@@ -54402,6 +54793,9 @@
     "non-javascript": [
       "entry:knip"
     ],
+    "non-nx": [
+      "entry:nx-mcp"
+    ],
     "nonblank": [
       "task-rubric:interactive_canvas"
     ],
@@ -54499,6 +54893,7 @@
     ],
     "npm": [
       "entry:matter-js",
+      "entry:nx-mcp",
       "entry:babylon-js",
       "entry:excalibur-js",
       "entry:kaplay",
@@ -54512,11 +54907,20 @@
       "entry:knip",
       "entry:clude"
     ],
+    "nrwl": [
+      "entry:nx-mcp"
+    ],
     "nudg3": [
       "entry:ai-nudg3-brand-intelligence"
     ],
     "number": [
       "entry:kaplay"
+    ],
+    "nx": [
+      "entry:nx-mcp"
+    ],
+    "nx-mcp": [
+      "entry:nx-mcp"
     ],
     "oauth": [
       "source:coding-agent-clients",
@@ -54646,9 +55050,11 @@
       "entry:ai-filegraph-document-processing",
       "entry:ai-arclan-registry",
       "prompt-pattern:ui-build",
+      "entry:nx-mcp",
       "entry:ragas",
       "entry:microsoft-mcp-gateway",
       "entry:playcanvas-engine",
+      "entry:gptme",
       "entry:github-copilot-coding-agent"
     ],
     "on-brand": [
@@ -54928,6 +55334,7 @@
       "entry:playwright-mcp",
       "entry:browserbase-mcp",
       "entry:github-mcp-server",
+      "entry:gptme",
       "entry:graphiti",
       "entry:letta",
       "entry:mem0",
@@ -55053,6 +55460,7 @@
       "entry:claude-code-memory",
       "entry:claude-code-subagents",
       "entry:github-mcp-server",
+      "entry:gptme",
       "entry:graphiti",
       "entry:langsmith",
       "entry:letta",
@@ -55349,6 +55757,7 @@
       "entry:ai-newzai-api-news-mcp",
       "entry:ai-nordax-mcp",
       "entry:ai-nothumansearch-search",
+      "entry:nx-mcp",
       "entry:ai-offerhopper-mcp-shopping-optimizer",
       "entry:ai-com-mcp-openai-tools",
       "entry:ai-openmandate-mcp",
@@ -55386,6 +55795,7 @@
       "entry:claude-code-memory",
       "entry:claude-code-subagents",
       "entry:github-mcp-server",
+      "entry:gptme",
       "entry:graphiti",
       "entry:jscpd",
       "entry:knip",
@@ -55440,6 +55850,7 @@
       "prompt-pattern:code-review"
     ],
     "organization": [
+      "entry:nx-mcp",
       "entry:kaimo"
     ],
     "organization-approved": [
@@ -56079,6 +56490,7 @@
       "entry:ai-newzai-api-news-mcp",
       "entry:ai-nordax-mcp",
       "entry:ai-nothumansearch-search",
+      "entry:nx-mcp",
       "entry:ai-offerhopper-mcp-shopping-optimizer",
       "entry:ai-com-mcp-openai-tools",
       "entry:ai-openmandate-mcp",
@@ -56103,6 +56515,7 @@
       "entry:claude-code-memory",
       "entry:claude-code-subagents",
       "entry:github-mcp-server",
+      "entry:gptme",
       "entry:graphiti",
       "entry:langsmith",
       "entry:letta",
@@ -56158,6 +56571,7 @@
       "prompt-pattern:agent-workspace-architecture",
       "prompt-pattern:memory-bank-initialization",
       "prompt-pattern:memory-policy",
+      "entry:gptme",
       "entry:letta",
       "entry:codebase-memory-mcp",
       "entry:rules-template-memory-bank"
@@ -57046,6 +57460,7 @@
       "entry:ai-newzai-api-news-mcp",
       "entry:ai-nordax-mcp",
       "entry:ai-nothumansearch-search",
+      "entry:nx-mcp",
       "entry:ai-offerhopper-mcp-shopping-optimizer",
       "entry:ai-com-mcp-openai-tools",
       "entry:ai-openmandate-mcp",
@@ -57077,6 +57492,7 @@
       "entry:ast-grep",
       "entry:browserbase-mcp",
       "entry:github-mcp-server",
+      "entry:gptme",
       "entry:graphiti",
       "entry:jscpd",
       "entry:knip",
@@ -57244,7 +57660,8 @@
       "operating-protocol:vnem-operating-loop",
       "entry:google-agent2agent-protocol",
       "practice:mcp-server-selection",
-      "entry:model-context-protocol"
+      "entry:model-context-protocol",
+      "entry:nx-mcp"
     ],
     "protocol-registry": [
       "source:mcp-core-and-registry"
@@ -57378,7 +57795,8 @@
       "entry:ai-com-mcp-linkedin"
     ],
     "published": [
-      "source:mcp-core-and-registry"
+      "source:mcp-core-and-registry",
+      "entry:nx-mcp"
     ],
     "publishing": [
       "entry:ai-auteng-docs",
@@ -57413,6 +57831,9 @@
     ],
     "purpose": [
       "prompt-pattern:memory-bank-initialization"
+    ],
+    "pushed": [
+      "entry:gptme"
     ],
     "put": [
       "practice:persistent-memory-context-files",
@@ -58319,6 +58740,7 @@
       "entry:matter-js",
       "prompt-pattern:mcp-selection",
       "prompt-pattern:memory-bank-initialization",
+      "entry:nx-mcp",
       "entry:promptfoo",
       "entry:ragas",
       "entry:sentry-mcp",
@@ -58343,6 +58765,7 @@
       "entry:browserbase-mcp",
       "entry:claude-code-subagents",
       "entry:github-mcp-server",
+      "entry:gptme",
       "entry:graphiti",
       "entry:jscpd",
       "entry:knip",
@@ -58882,6 +59305,7 @@
       "entry:ai-newzai-api-news-mcp",
       "entry:ai-nordax-mcp",
       "entry:ai-nothumansearch-search",
+      "entry:nx-mcp",
       "entry:ai-offerhopper-mcp-shopping-optimizer",
       "entry:ai-com-mcp-openai-tools",
       "entry:ai-openmandate-mcp",
@@ -58915,6 +59339,7 @@
       "entry:claude-code-memory",
       "entry:claude-code-subagents",
       "entry:github-mcp-server",
+      "entry:gptme",
       "entry:graphiti",
       "entry:jscpd",
       "entry:knip",
@@ -59030,7 +59455,8 @@
       "prompt-pattern:code-simplification",
       "prompt-pattern:codex-implementation",
       "prompt-pattern:mcp-selection",
-      "prompt-pattern:zero-trust-gateway-roadmap"
+      "prompt-pattern:zero-trust-gateway-roadmap",
+      "entry:gptme"
     ],
     "risk.": [
       "entry:google-agent2agent-protocol",
@@ -59278,6 +59704,7 @@
       "prompt-pattern:codex-implementation",
       "prompt-pattern:bug-debug",
       "entry:ac-inference-sh-mcp",
+      "entry:nx-mcp",
       "entry:promptfoo",
       "entry:ugrep",
       "entry:browserbase-mcp",
@@ -60010,6 +60437,7 @@
       "entry:ai-law-lawyer-search",
       "entry:llamaindex-agents",
       "entry:matter-js",
+      "entry:nx-mcp",
       "entry:ai-artidrop-artidrop",
       "entry:aider",
       "entry:babylon-js",
@@ -60032,6 +60460,7 @@
       "entry:claude-code-memory",
       "entry:claude-code-subagents",
       "entry:github-mcp-server",
+      "entry:gptme",
       "entry:graphiti",
       "entry:jscpd",
       "entry:knip",
@@ -60260,6 +60689,7 @@
       "entry:ai-newzai-api-news-mcp",
       "entry:ai-nordax-mcp",
       "entry:ai-nothumansearch-search",
+      "entry:nx-mcp",
       "entry:ai-offerhopper-mcp-shopping-optimizer",
       "entry:ai-com-mcp-openai-tools",
       "entry:ai-openmandate-mcp",
@@ -60950,6 +61380,9 @@
     "standards": [
       "source:ui-architecture-sources"
     ],
+    "stars": [
+      "entry:gptme"
+    ],
     "start": [
       "practice:mcp-gateway-tool-routing",
       "design-architecture:vnem-design-architecture",
@@ -61171,6 +61604,7 @@
     ],
     "structure": [
       "practice:prompt-engineering",
+      "entry:nx-mcp",
       "entry:excalibur-js",
       "entry:phaser",
       "entry:pixijs"
@@ -61324,6 +61758,7 @@
       "practice:ide-agent-selection",
       "entry:aider",
       "entry:pixijs",
+      "entry:gptme",
       "entry:roo-code"
     ],
     "surface": [
@@ -61643,6 +62078,7 @@
       "prompt-pattern:prompt-enhancement",
       "prompt-pattern:memory-bank-initialization",
       "prompt-pattern:memory-policy",
+      "entry:nx-mcp",
       "prompt-pattern:subagent-delegation",
       "entry:claude-code-memory",
       "entry:swarms"
@@ -61664,6 +62100,7 @@
       "entry:inspect-ai",
       "entry:ai-nexustoken-nexustoken-sdk",
       "entry:ai-gossiper-shopify-admin-mcp",
+      "entry:nx-mcp",
       "entry:aider",
       "entry:claude-code-subagents",
       "entry:openai-codex-cli",
@@ -61726,6 +62163,7 @@
       "entry:openai-prompt-optimizer",
       "entry:arize-phoenix",
       "entry:langfuse",
+      "entry:nx-mcp",
       "entry:continue-dev",
       "entry:microsoft-mcp-gateway",
       "entry:langsmith",
@@ -61773,6 +62211,7 @@
       "entry:codex-agents-md",
       "entry:ai-agenticterminal-directory",
       "entry:aider",
+      "entry:gptme",
       "entry:openai-codex-cli",
       "entry:swe-agent",
       "entry:openhands",
@@ -61780,13 +62219,20 @@
       "entry:cline",
       "entry:cursor-agent"
     ],
+    "terminal-access": [
+      "entry:gptme"
+    ],
     "terminal-backed": [
       "entry:cursor-agent"
+    ],
+    "terminal-based": [
+      "entry:gptme"
     ],
     "terminal-bench": [
       "entry:covenant-research"
     ],
     "terminal-native": [
+      "entry:gptme",
       "entry:openai-codex-cli"
     ],
     "terminal.": [
@@ -62104,6 +62550,7 @@
       "prompt-pattern:mcp-selection",
       "prompt-pattern:memory-policy",
       "entry:ai-namewhisper-ens-tools",
+      "entry:nx-mcp",
       "prompt-pattern:research",
       "source:secure-mcp-distribution",
       "entry:sentry-mcp",
@@ -62195,6 +62642,7 @@
       "entry:aider",
       "entry:ripgrep",
       "entry:claude-code-subagents",
+      "entry:gptme",
       "entry:lunar-mcpx",
       "entry:anthropic-claude-code"
     ],
@@ -62410,6 +62858,7 @@
       "entry:ai-newzai-api-news-mcp",
       "entry:ai-nordax-mcp",
       "entry:ai-nothumansearch-search",
+      "entry:nx-mcp",
       "entry:ai-offerhopper-mcp-shopping-optimizer",
       "entry:ai-com-mcp-openai-tools",
       "entry:ai-openmandate-mcp",
@@ -62422,6 +62871,7 @@
       "entry:ai-moxt-mcp-workspace",
       "entry:ripgrep",
       "entry:github-mcp-server",
+      "entry:gptme",
       "entry:letta",
       "entry:stripe-agent-toolkit",
       "entry:cline",
@@ -62798,6 +63248,7 @@
       "entry:openai-prompt-engineering-guide"
     ],
     "understand": [
+      "entry:nx-mcp",
       "entry:openai-swarm"
     ],
     "understanding": [
@@ -63033,6 +63484,7 @@
       "entry:ai-newzai-api-news-mcp",
       "entry:ai-nordax-mcp",
       "entry:ai-nothumansearch-search",
+      "entry:nx-mcp",
       "entry:ai-offerhopper-mcp-shopping-optimizer",
       "entry:ai-com-mcp-openai-tools",
       "entry:ai-openmandate-mcp",
@@ -63064,6 +63516,7 @@
       "entry:ast-grep",
       "entry:browserbase-mcp",
       "entry:github-mcp-server",
+      "entry:gptme",
       "entry:graphiti",
       "entry:jscpd",
       "entry:knip",
@@ -63244,7 +63697,8 @@
       "entry:vnem-mcp",
       "prompt-pattern:ui-build",
       "prompt-pattern:visual-build",
-      "entry:claude-code-memory"
+      "entry:claude-code-memory",
+      "entry:gptme"
     ],
     "using": [
       "practice:code-simplification",
@@ -63257,6 +63711,7 @@
       "practice:code-review",
       "entry:pydantic-ai",
       "entry:ai-marketcore-mcp",
+      "entry:nx-mcp",
       "prompt-pattern:research",
       "entry:ai-mino-web-agent",
       "entry:kaplay",
@@ -63602,6 +64057,7 @@
       "entry:ai-newzai-api-news-mcp",
       "entry:ai-nordax-mcp",
       "entry:ai-nothumansearch-search",
+      "entry:nx-mcp",
       "entry:ai-offerhopper-mcp-shopping-optimizer",
       "entry:ai-com-mcp-openai-tools",
       "entry:ai-openmandate-mcp",
@@ -63633,6 +64089,7 @@
       "entry:ast-grep",
       "entry:browserbase-mcp",
       "entry:github-mcp-server",
+      "entry:gptme",
       "entry:graphiti",
       "entry:jscpd",
       "entry:knip",
@@ -63728,6 +64185,7 @@
       "entry:ai-fathom-api-mcp",
       "entry:ai-fincontext-fincontext",
       "entry:ai-gossiper-shopify-admin-mcp",
+      "entry:nx-mcp",
       "entry:ai-com-mcp-openai-tools",
       "entry:ai-artidrop-artidrop"
     ],
@@ -64053,7 +64511,9 @@
       "entry:vnem-mcp",
       "entry:arize-phoenix",
       "entry:langfuse",
+      "entry:nx-mcp",
       "entry:continue-dev",
+      "entry:gptme",
       "entry:github-copilot-coding-agent",
       "entry:cursor-agent"
     ],
@@ -64149,6 +64609,7 @@
       "entry:playwright-mcp",
       "entry:three-js",
       "entry:browserbase-mcp",
+      "entry:gptme",
       "entry:openhands",
       "entry:opentabs",
       "entry:mcp-crawl4ai-rag"
@@ -64169,7 +64630,8 @@
     ],
     "web.": [
       "source:platform-and-data-connectors",
-      "entry:ai-nothumansearch-search"
+      "entry:ai-nothumansearch-search",
+      "entry:gptme"
     ],
     "webassembly": [
       "entry:rapier-js"
@@ -64315,7 +64777,9 @@
     ],
     "who": [
       "prompt-pattern:ui-build",
+      "entry:nx-mcp",
       "prompt-pattern:visual-build",
+      "entry:gptme",
       "entry:cursor-agent"
     ],
     "why": [
@@ -64504,7 +64968,8 @@
       "entry:mcp-crawl4ai-rag"
     ],
     "within": [
-      "practice:visual-experience"
+      "practice:visual-experience",
+      "entry:nx-mcp"
     ],
     "without": [
       "design-architecture:vnem-design-architecture",
@@ -64786,6 +65251,7 @@
       "entry:ai-newzai-api-news-mcp",
       "entry:ai-nordax-mcp",
       "entry:ai-nothumansearch-search",
+      "entry:nx-mcp",
       "entry:ai-offerhopper-mcp-shopping-optimizer",
       "entry:ai-com-mcp-openai-tools",
       "entry:ai-openmandate-mcp",
@@ -64819,6 +65285,7 @@
       "entry:claude-code-memory",
       "entry:claude-code-subagents",
       "entry:github-mcp-server",
+      "entry:gptme",
       "entry:graphiti",
       "entry:jscpd",
       "entry:knip",
@@ -64864,6 +65331,7 @@
       "practice:context-engineering",
       "entry:context7-mcp",
       "prompt-pattern:codex-implementation",
+      "entry:nx-mcp",
       "entry:cursor-agent"
     ],
     "works": [
@@ -64941,7 +65409,8 @@
       "source:platform-and-data-connectors",
       "practice:coding-agents",
       "practice:context-engineering",
-      "practice:human-approval-and-durability"
+      "practice:human-approval-and-durability",
+      "entry:gptme"
     ],
     "writes-agent-config": [
       "entry:codebase-memory-mcp"
@@ -64971,7 +65440,8 @@
     "you": [
       "entry:ai-alpic-mcp-alpic-mcp",
       "prompt-pattern:codex-implementation",
-      "prompt-pattern:prompt-enhancement"
+      "prompt-pattern:prompt-enhancement",
+      "entry:gptme"
     ],
     "your": [
       "entry:ai-nudg3-brand-intelligence",
