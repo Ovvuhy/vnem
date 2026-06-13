@@ -1,31 +1,49 @@
 # vnem Daily Signals
 
-Generated: 2026-06-11T06:36:18.662Z
+Generated: 2026-06-13T09:10:00.000Z
 
 Hermes summarizes source-backed agent and LLM ecosystem signals. This digest does not auto-promote entries into the registry.
 
-## New Candidate Signals
+## New Candidate Signals (2026-06-13)
 
+### MCP Registry (official feed)
+- ai.aient/mcp | promising | review | https://registry.modelcontextprotocol.io/v0.1/servers/ai.aient%2Fmcp/versions/latest
+- AlphaCreek SEC Filings MCP | promising | review | https://registry.modelcontextprotocol.io/v0.1/servers/ai.alphacreek%2Falphacreek-mcp/versions/latest
 - Auralogs | promising | review | https://registry.modelcontextprotocol.io/v0.1/servers/ai.auralogs%2Fauralogs/versions/latest
 - Bareun — Korean NLP & Spell/Grammar Checking | promising | review | https://registry.modelcontextprotocol.io/v0.1/servers/ai.bareun%2Fbareun/versions/latest
-- hermes-agent: Hermes Agent v0.16.0 (2026.6.5) — The Surface Release | unreviewed | review | https://github.com/NousResearch/hermes-agent/releases/tag/v2026.6.5
-- claude-code: v2.1.173 | unreviewed | review | https://github.com/anthropics/claude-code/releases/tag/v2.1.173
-- mcp: mcp-server-postgrest: v0.1.1 | unreviewed | review | https://github.com/supabase/mcp/releases/tag/mcp-server-postgrest-v0.1.1
-- multica | promising | review | https://github.com/multica-ai/multica
-- deepchat | promising | review | https://github.com/ThinkInAIXYZ/deepchat
-- agent-eval | unreviewed | watchlist | https://github.com/vercel-labs/agent-eval
-- cligate | unreviewed | review | https://github.com/codeking-ai/cligate
-- semiont | unreviewed | watchlist | https://github.com/The-AI-Alliance/semiont
-- awesome-coding-ai | unreviewed | watchlist | https://github.com/ohong/awesome-coding-ai
-- nanitics | unreviewed | review | https://github.com/nanitics/nanitics
-- agent-eval-harness | unreviewed | watchlist | https://github.com/linny006/agent-eval-harness
-- wemush-skills | watchlist | watchlist | https://github.com/masinu/wemush-skills
-- Keiko | unreviewed | review | https://github.com/oscharko-dev/Keiko
-- scraping-browser | watchlist | blocked | https://github.com/amineeng/scraping-browser
-- chrome-devtools-mcp | watchlist | watchlist | https://www.npmjs.com/package/chrome-devtools-mcp
+- @ui5/mcp-server | unreviewed | review | https://www.npmjs.com/package/@ui5/mcp-server
 - nx-mcp | unreviewed | review | https://www.npmjs.com/package/nx-mcp
-- Show HN: HelixDB – A graph database built on object storage | watchlist | watchlist | https://news.ycombinator.com/item?id=48478148
-- Show HN: Magenta Real-Time Music Generation Locally on iPhone, Without the GPU | watchlist | watchlist | https://news.ycombinator.com/item?id=48483562
+
+### GitHub Search (pushed >= 2026-06-11)
+- instar | unreviewed | watchlist | https://github.com/JKHeadley/instar — Persistent Claude Code agents with scheduling, sessions, memory, and Telegram. 66 stars, MIT.
+- agentclash | unreviewed | review | https://github.com/agentclash/agentclash — Open-source agent eval platform for real-world tasks. 24 stars, MIT.
+- eidetic_engine_cli | unreviewed | watchlist | https://github.com/Dicklesworthstone/eidetic_engine_cli — Durable local-first memory for coding agents in Rust. 24 stars.
+- vibe-editor | unreviewed | review | https://github.com/yusei531642/vibe-editor — Desktop companion for Claude Code. 3 stars, MIT.
+- the-librarian | unreviewed | watchlist | https://github.com/JimJafar/the-librarian — Agentic memory system as an MCP server. 2 stars, Apache-2.0.
+- ComfyUI-PuLID-Flux2 | unreviewed | review | https://github.com/armi10121-png/ComfyUI-PuLID-Flux2 — Identity control for Flux.2 models. 3 stars, MIT.
+- d2l-cli | unreviewed | review | https://github.com/clintonwrong53/d2l-cli — Read-only D2L Brightspace CLI for agents. 1 star, MIT.
+- octopai | unreviewed | watchlist | https://github.com/mriazi1982/octopai — AI agent skills evolution. 1 star, MIT.
+- OpenJarvisDashboard | unreviewed | watchlist | https://github.com/osteodystrophysalmonellatyphimurium635/OpenJarvisDashboard — AI model dashboard with graph execution. 1 star.
+- aionforge-memory | unreviewed | watchlist | https://github.com/Aionforge-Labs/aionforge-memory — Rust agentic memory with bi-temporal knowledge graph. 1 star, Apache-2.0.
+- agent-eval-harness | unreviewed | watchlist | https://github.com/linny006/agent-eval-harness — Live benchmark for AI coding agents on real GitHub issues. 2 stars.
+- ai-arize-agent-evaluation | unreviewed | watchlist | https://github.com/botextractai/ai-arize-agent-evaluation — Agent evaluation with Arize Phoenix. 3 stars.
+
+### Releases
+- hermes-agent: Hermes Agent v0.16.0 (2026.6.5) | unreviewed | review | https://github.com/NousResearch/hermes-agent/releases/tag/v2026.6.5
+- claude-code: v2.1.177 | unreviewed | review | https://github.com/anthropics/claude-code/releases/tag/v2.1.177
+- mcp: mcp-server-postgrest: v0.1.1 | unreviewed | review | https://github.com/supabase/mcp/releases/tag/mcp-server-postgrest-v0.1.1
+
+### Hacker News (watchlist leads — verify against primary sources)
+- Codex for Open Source | watchlist | watchlist | https://news.ycombinator.com/item?id=48497195
+- OpenAI to acquire Ona to expand Codex | watchlist | watchlist | https://news.ycombinator.com/item?id=48491821
+
+### Other
+- VTCode | promising | review | https://github.com/vinhnx/VTCode
+- auto-coding-agent-demo | watchlist | blocked | https://github.com/holygrail5565/auto-coding-agent-demo
+- agent-config | unreviewed | review | https://github.com/event4u-app/agent-config
+- reyn | unreviewed | review | https://github.com/tya5/reyn
+- OpenProgram | unreviewed | review | https://github.com/Fzkuji/OpenProgram
+- Dhakira | watchlist | watchlist | https://github.com/akaxhx-ctrl/Dhakira
 
 ## Watched Primary Sources
 
