@@ -117,9 +117,9 @@ function buildRun({ workStatus, reviewQueue, branchWorkbench, now }) {
   const lastEvent = workStatus.research?.lastEvent;
   const updatedAt = lastEvent?.timestamp ?? new Date(now).toISOString();
   return {
-    runId: mission.id ?? "self-improvement-run",
-    missionTitle: mission.title ?? "VNEM self-improvement mission",
-    goal: mission.goal ?? "Improve VNEM safely through Research, Protection, Review, Giving, branch validation, and manual review.",
+    runId: mission.id ?? "implementation-improvement-run",
+    missionTitle: mission.title ?? "VNEM implementation improvement mission",
+    goal: mission.goal ?? "Improve this VNEM implementation safely through Research, Protection, Review, Giving, branch validation, and manual review.",
     status: controlRoomStatusLabel(workStatus, branchWorkbench),
     startedAt: mission.startedAt ?? null,
     updatedAt,

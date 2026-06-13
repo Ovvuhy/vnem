@@ -1,16 +1,22 @@
 # Building AI Operating Rules
 
-VNEM's repo-wide operating rule for AI agents is the root `AGENTS.md`. The long
-master rule document is `docs/agent-rules/VNEM_GLOBAL_RULES.md`, and
+VNEM is a general AI-improvement system: VNEM improves how AIs work on any user
+task, project, repo, app, mod, workflow, prompt, tool, system, research target,
+or idea. This document is specifically for maintaining the VNEM implementation
+repo. VNEM's repo-wide operating rule for AI agents is the root `AGENTS.md`. The
+long master rule document is `docs/agent-rules/VNEM_GLOBAL_RULES.md`, and
 Hermes/Codex setup guidance is `docs/hermes-codex-vnem-setup.md`.
 
-For VNEM work, open Hermes Desktop/CLI/TUI with the VNEM repo as cwd so the root
-`AGENTS.md` loads, for example `hermes desktop --cwd C:\VNEM\vnem-src`. Codex can
-use the repo `AGENTS.md`; optional global Codex guidance is handled by
-`scripts/install-vnem-agent-rules.mjs`, which defaults to dry-run and only writes
-with explicit apply plus backup behavior.
+For developing VNEM itself, open Hermes Desktop/CLI/TUI with the VNEM repo as
+cwd so the root `AGENTS.md` loads, for example `hermes desktop --cwd
+C:\VNEM\vnem-src`. For another project, adapt VNEM-style rules to that project
+instead. Codex can use the repo `AGENTS.md`; optional global Codex guidance is
+handled by `scripts/install-vnem-agent-rules.mjs`, which defaults to dry-run and
+only writes with explicit apply plus backup behavior.
 
-These rules keep VNEM self-improvement work clean, auditable, and less vulnerable to stale process output or compressed context drift.
+These repo-development rules keep VNEM implementation work clean, auditable, and
+less vulnerable to stale process output or compressed context drift. They do not
+define the whole product mission.
 
 ## Start every run with facts
 

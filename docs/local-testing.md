@@ -1,6 +1,13 @@
 # VNEM Local Testing
 
-Use this page when you want to verify the current local ARD browser pipeline from a real checkout without starting new product work.
+Use this page when you want to verify the current local ARD browser pipeline from
+the VNEM implementation repo without starting new product work.
+
+VNEM's broader mission is general AI improvement: VNEM improves how AIs work on
+any user task, project, repo, app, mod, workflow, prompt, tool, system, research
+target, or idea. This page is local testing guidance for this repo's current
+implementation. The broader VNEM standard is that AI-assisted work should become
+easier for users to verify in any target project.
 
 ## Start the local dashboard stack
 
@@ -90,7 +97,9 @@ npm.cmd run ard:browser-pipeline
 
 ## Future major feature rule
 
-Every future major VNEM feature must include an easy user test path:
+Every future major VNEM capability built in this repo must include an easy user
+test path. VNEM's broader standard is that AI-assisted work should be testable by
+the user whenever possible:
 
 - command
 - URL if UI

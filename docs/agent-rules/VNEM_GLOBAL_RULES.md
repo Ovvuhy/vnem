@@ -6,7 +6,7 @@ repo. This document expands the philosophy, examples, and portability guidance s
 Hermes, Codex, and future agents preserve the same safety and improvement
 standard.
 
-## VNEM Is A Real-Improvement System
+## VNEM Is A General AI-Improvement System
 
 VNEM is not just a repo.
 
@@ -17,8 +17,13 @@ VNEM is not just a dashboard.
 VNEM is not just a folder of scripts, a registry, an install archive, a UI, or a
 set of impressive labels.
 
-VNEM is becoming a self-improving AI booster system. Its purpose is to make AI
-meaningfully, repeatedly, and measurably better.
+VNEM is a general AI-improvement system. VNEM improves how AIs work on any user task, project, repo, app, mod, workflow, prompt, tool, system, research target, or idea.
+
+This repository is the current implementation and testbed where VNEM itself is
+built, tested, and maintained. VNEM is not only for improving VNEM. When the
+task is VNEM itself, these rules help improve VNEM. When the task is another
+project, app, mod, workflow, repo, prompt, tool, system, research target, or
+idea, these same rules help improve that target instead.
 
 Not fake better. Not placebo better. Not "looks better" while the real behavior
 is unchanged. Actually better.
@@ -45,7 +50,7 @@ usability, quality, speed, maintainability, or evidence. It is not enough to
 rename something, add a confidence label, create a shiny dashboard, or say that a
 model is now "enhanced."
 
-Agents working on VNEM should ask:
+Agents applying VNEM should ask:
 
 - What is the user really trying to achieve?
 - What is weak about the current version?
@@ -86,22 +91,36 @@ a system that lies about improvement cannot reliably improve itself.
 
 ## Adaptive Goal Understanding
 
+VNEM improves how AIs work by making them infer the real target before they
+optimize. The same phrase can imply different work in different domains.
+
 The agent must understand the user goal before optimizing the output. The same
 phrase can imply different work in different domains.
 
-For a game mod improvement, "better" may mean more stable load order behavior,
+For a game mod improvement, "better" may mean inspecting game/mod constraints,
+researching community feedback, learning what players love or hate, respecting
+compatibility, save safety, co-op limits, DLC constraints, balance, and more
+stable load order behavior,
 less script lag, better balance, compatibility with popular mod managers, co-op
 implications, DLC/version constraints, save safety, and before/after gameplay or
 player-feedback proof.
 
-For an app-building task, "better" may mean a clearer product goal, a smaller
-MVP, fewer steps, clearer navigation, responsive layout, reliable persistence,
-backend/API correctness, competitor/user pain research, deployment readiness, and
-tests around the main user flow.
+For an app-building task, "better" may mean inferring the real product goal,
+researching similar apps, learning from reviews, complaints, and user
+expectations, choosing a realistic MVP, building a useful vertical slice,
+testing the real user path, avoiding fake UI-only progress, clearer navigation,
+responsive layout, reliable persistence, backend/API correctness, deployment
+readiness, and tests around the main user flow.
 
-For an AI-improvement task, "better" may mean stronger prompts, better MCPs,
-skills, connectors, tool routing, retrieval, evaluation, source grounding, lower
-hallucination, safer boundary handling, repeatable workflows, and measured
+For a repo/code improvement task, "better" may mean inspecting project
+structure, checking logs first, understanding current architecture, patching
+safely, avoiding unrelated changes, validating behavior, and leaving clean
+commits and clear limitations.
+
+For an AI workflow improvement task, "better" may mean stronger prompts, better
+MCP/tool setup, skills, playbooks, connectors, tool routing, retrieval,
+evaluation, source grounding, lower hallucination, safer boundary handling,
+repeatable workflows, better context transfer between agents, and measured
 before/after results.
 
 For a research workflow, "better" may mean primary sources, broader comparison,
@@ -111,6 +130,9 @@ a durable summary that future agents can reuse.
 For a security/protection workflow, "better" may mean a clear threat model,
 conservative verdicts, explicit proof level, reproducible checks, false
 positive/negative awareness, and warnings that do not overstate protection.
+It also means detecting unsafe commands, token-stealing patterns, suspicious
+binaries, dangerous packages, private-key or seed-phrase exposure, and fake
+safety claims.
 
 Slow down enough to infer the intended domain, then proceed with evidence.
 
@@ -327,13 +349,16 @@ H62Ri1EExddxFKsLMn4nbmbxiCSxNRLtF8igPySLA23B
 Treat these as product/display allowlist references, not as permission to request
 private keys, move funds, or make financial claims.
 
-## Next Direction: ARD Browser Pipeline v1
+## Product Direction
 
-The next recommended improvement is ARD Browser Pipeline v1.
+ARD Browser Pipeline v2 remains important, but it is one lane, not the whole
+product. VNEM's direction also includes portable use on other projects,
+research/evidence quality, protection/safety depth, AI workflow improvement,
+user-facing verification, and domain adapters. See `docs/product-direction.md`.
 
-Do not start ARD Browser Pipeline v1 during a setup run for global agent rules.
-Do not add ARD backend endpoints as a side effect. A future run may Run ARD
-pipeline work only when the user explicitly requests that product direction.
+Do not start ARD pipeline work during setup/rules/docs tasks unless the user
+explicitly requests that product direction. Do not add ARD backend endpoints as a
+side effect.
 
 ## Hermes And Codex Persistence
 

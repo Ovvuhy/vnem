@@ -60,7 +60,10 @@ const agents = readRepoFile('AGENTS.md');
 
 const globalRules = readRepoFile('docs/agent-rules/VNEM_GLOBAL_RULES.md');
 [
-  'self-improving AI booster system',
+  'general AI-improvement system',
+  'VNEM improves how AIs work',
+  'any user task',
+  'current implementation and testbed',
   'Broad Research Sources',
   'apps',
   'websites',
@@ -104,6 +107,7 @@ try {
     'hermes --tui',
     'VNEM GLOBAL RULES START',
     'VNEM GLOBAL RULES END',
+    'Apply VNEM principles to the current task/project',
   ].forEach((needle) => assertIncludes(output, needle, `installer output ${needle}`));
 } finally {
   fs.rmSync(tempHome, { recursive: true, force: true });

@@ -1,6 +1,10 @@
 # VNEM Current System Map
 
-VNEM is being built as an AI-improvement platform, but the repo should stay honest about what exists today.
+VNEM is being built as a general AI-improvement system, but the repo should stay
+honest about what exists today. VNEM improves how AIs work on any user task,
+project, repo, app, mod, workflow, prompt, tool, system, research target, or
+idea. This repository is the current implementation and testbed; it is not the
+only target for VNEM principles.
 
 ## Agent-rules system
 
@@ -13,8 +17,8 @@ VNEM now has a persistent repo-level agent-rules system:
 - `docs/agent-rules/HERMES_VNEM_START_PROMPT.md` and `docs/agent-rules/hermes-vnem-rules/SKILL.md` are repo-local Hermes prompt/skill artifacts, not automatic global installs.
 - `npm run test:agents-rules`, `npm run agent-rules:dry-run`, and `npm run agent-rules:hermes` validate and preview this surface.
 
-Future VNEM feature work should follow these rules and must not overclaim demo,
-fixture, local dashboard, or protection behavior.
+Future implementation work in this repo should follow these rules and must not
+overclaim demo, fixture, local dashboard, or protection behavior.
 
 ## Current implemented / in-progress surfaces
 
@@ -165,9 +169,10 @@ The top card must say:
 
 Raw findings, maintainer notes, connector details, mission controls, and logs are secondary details. They should not bury the current mission, blocker, candidate queue, or safe branch status.
 
-## Self-Improvement Control Room
+## Improvement Control Room
 
-The dashboard now leads with a Self-Improvement Control Room that frames VNEM around the operator workflow:
+The dashboard currently leads with an implementation-repo Improvement Control
+Room that frames this repo's ARD/operator workflow:
 
 ```text
 Research AI -> Protection AI -> Review Queue -> Giving AI -> Safe Branch -> Validation -> Manual Review -> Main
@@ -276,16 +281,16 @@ The dashboard should answer these questions without requiring the user to read s
 
 ## Builder Reliability and Run History
 
-Builder Reliability + Run History v1 adds small, factual tools for future VNEM self-improvement sessions:
+Builder Reliability + Run History v1 adds small, factual tools for future VNEM implementation-maintenance sessions:
 
 - `npm run dev:health` runs `scripts/vnem-dev-health.mjs` and reports VNEM's common localhost ports: `9099` for the backend/app server and `4174`/`4175` for dashboard dev/preview servers. The default command is read-only. `npm run dev:cleanup-dashboard` may only kill clearly identified dashboard Vite processes on `4174`/`4175`; it does not kill `9099` or unknown listeners.
 - `npm run builder:session` runs `scripts/vnem-builder-session.mjs` and reports branch, local HEAD, origin/main SHA, worktree status, changed/untracked files, generated dispatch files, accidental duplicate path checks, dev port health, and the next safe action.
-- `scripts/vnem-run-history.mjs` records/list/latest self-improvement runs under `discovery/run-history/` as source history, not generated `.vnem` output. The first recorded run is `feat(dashboard): add self-improvement control room` at commit `291c647525a07c0c730edf1f107afc8eac904bee`.
+- `scripts/vnem-run-history.mjs` records/list/latest implementation-improvement runs under `discovery/run-history/` as source history, not generated `.vnem` output. The first recorded run is `feat(dashboard): add self-improvement control room` at commit `291c647525a07c0c730edf1f107afc8eac904bee`.
 - The app server exposes a read-only `GET /api/builder/session` endpoint for the same builder-session facts. It does not kill processes or mutate files.
-- The Self-Improvement Control Room includes a compact Builder Health card. It now calls `/api/builder/session` through the dashboard API client and `useBuilderHealth` state controller when the local app server is available. The live card shows branch, local HEAD, origin/main SHA, sync status, worktree cleanliness, changed/untracked counts, generated dispatch files, accidental path checks, port health for `9099`/`4174`/`4175`, latest run-history record, and next safe action.
+- The builder health/control-room UI includes a compact Builder Health card. It now calls `/api/builder/session` through the dashboard API client and `useBuilderHealth` state controller when the local app server is available. The live card shows branch, local HEAD, origin/main SHA, sync status, worktree cleanliness, changed/untracked counts, generated dispatch files, accidental path checks, port health for `9099`/`4174`/`4175`, latest run-history record, and next safe action.
 - If the backend is offline, the card falls back to source-controlled run history and clearly says to run `npm run builder:session` / `npm run dev:health` for live facts. The browser card is read-only: it can refresh `/api/builder/session`, but it cannot clean ports, kill processes, mutate repo files, commit, or push.
 
-This is meant to prevent stale localhost output, repeated context compression, duplicate Vite servers, dirty worktrees, untracked dispatch files, and unclear push status from confusing the Building AI. Stale Vite output does not mean new repo work exists; the trusted checks are git status plus builder-session/dev-health facts.
+This is meant to prevent stale localhost output, repeated context compression, duplicate Vite servers, dirty worktrees, untracked dispatch files, and unclear push status from confusing agents maintaining this implementation repo. Stale Vite output does not mean new repo work exists; the trusted checks are git status plus builder-session/dev-health facts.
 
 ## Automatic Builder Run Snapshots
 
@@ -318,6 +323,12 @@ Auto-capture is evidence capture, not auto-approval: it does not auto-merge, doe
 ## ARD — AI Research Dashboard
 
 ARD is the AI Research Dashboard inside VNEM. VNEM remains the full project; ARD is the product surface for Research AI → Protection AI → Giving AI → safe research branch.
+
+ARD Browser Pipeline v2 remains an important future lane, but it is one lane,
+not the whole product. The broader product direction also covers portable VNEM
+usage on other projects, research/evidence quality, protection/safety depth, AI
+workflow improvement, user-facing verification, and domain adapters. See
+`docs/product-direction.md`.
 
 Current working path:
 

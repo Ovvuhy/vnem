@@ -5,20 +5,26 @@
 <h1 align="center">vnem</h1>
 
 <p align="center">
-  <strong>AI-improvement forge for coding agents: protected Core, app dashboard, and reviewable Research -> Protection -> Giving pipeline.</strong>
+  <strong>General AI-improvement system for safer, better work across tasks, projects, repos, apps, mods, workflows, prompts, tools, research, and ideas.</strong>
 </p>
 
 <p align="center">
   <img src="assets/brand/banner.png" alt="vnem banner" width="100%" />
 </p>
 
-vnem is an AI-improvement forge for coding agents. **VNEM Core** is the protected read-only perception layer: it gives agents local guidance so they optimize performance, visuals, playability, safety, and maintainability before touching code.
+vnem is a general AI-improvement system. **VNEM Core** is the protected read-only perception layer: it gives agents local guidance so they understand the user's real goal, research what exists, identify weak points, protect against risky actions, build safer improvements, test the real user path, and prove what changed before touching code.
+
+Product mission: VNEM improves how AIs work on any user task, project, repo, app, mod, workflow, prompt, tool, system, research target, or idea.
+
+Repo development context: this repository is the current implementation and testbed where VNEM itself is built, tested, and maintained. Improving VNEM is one use case, not the product's entire purpose.
 
 The current repo is also growing the **VNEM App** and reviewable **Research AI -> Protection AI -> Giving AI** pipeline. Those app surfaces can stage and review local markdown dispatches, but they must stay explicit, auditable, and honest about what is implemented versus planned.
 
 It also ships an LLM-readable knowledge pack and registry for agentic tools: MCP servers, skills, frameworks, evals, safety utilities, memory systems, payment rails, identity tools, and workflow patterns.
 
 It helps a coding agent answer: _what should I use, what is stale, what is risky, what quality domains matter, and what is the current better option?_ before it edits a repo.
+
+See [`docs/product-direction.md`](docs/product-direction.md) for the maintained direction map. ARD Browser Pipeline v2 remains important, but it is one lane, not the whole product.
 
 Live overview: [vnem.pages.dev](https://vnem.pages.dev)
 
@@ -29,6 +35,10 @@ long master mindset lives at
 [`docs/agent-rules/VNEM_GLOBAL_RULES.md`](docs/agent-rules/VNEM_GLOBAL_RULES.md),
 and Hermes/Codex setup guidance lives at
 [`docs/hermes-codex-vnem-setup.md`](docs/hermes-codex-vnem-setup.md).
+
+If you are applying VNEM to another project, install or adapt the VNEM pack/rules
+there so the AI applies the same improvement loop to that project's goals,
+constraints, risks, and user test path.
 
 Useful agent-rules commands:
 
@@ -83,7 +93,7 @@ That smoke command starts a temporary loopback backend, calls the same `POST /ap
 
 ## Local Testing
 
-For the user-facing ARD browser pipeline test path, see [`docs/local-testing.md`](docs/local-testing.md):
+For the user-facing ARD browser pipeline test path in this implementation repo, see [`docs/local-testing.md`](docs/local-testing.md):
 
 ```bash
 cd C:\VNEM\vnem-src

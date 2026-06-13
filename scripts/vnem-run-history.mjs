@@ -56,7 +56,7 @@ export async function recordRunHistory(input = {}) {
   const { rootDir = defaultRootDir } = input;
   const paths = runHistoryPaths({ rootDir });
   const now = new Date().toISOString();
-  const title = String(input.title ?? "Untitled VNEM self-improvement run");
+  const title = String(input.title ?? "Untitled VNEM implementation-improvement run");
   if (/[\\/]/.test(title) || title.includes("..")) throw new Error("invalid title: path-like values are not allowed");
   const status = input.status ?? "validated";
   if (!allowedStatuses.has(status)) throw new Error(`invalid status: ${status}`);
@@ -104,7 +104,7 @@ export async function refreshRunHistoryIndex({ rootDir = defaultRootDir } = {}) 
 }
 
 export function formatRunHistory(records) {
-  if (!records || (Array.isArray(records) && records.length === 0)) return "No VNEM self-improvement runs recorded.\n";
+  if (!records || (Array.isArray(records) && records.length === 0)) return "No VNEM implementation-improvement runs recorded.\n";
   const list = Array.isArray(records) ? records : [records];
   return `${list.map((record) => [`${record.finishedAt ?? record.startedAt} — ${record.status} — ${record.title}`, `  commit: ${record.commit ?? "none"}`, `  pushed: ${record.pushed ? "yes" : "no"}`, `  next: ${record.nextRecommendedImprovement ?? "not recorded"}`].join("\n")).join("\n")}\n`;
 }

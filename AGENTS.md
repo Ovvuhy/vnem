@@ -4,6 +4,20 @@ These rules apply to the whole VNEM repository unless a future nested `AGENTS.md
 adds stricter local instructions for a subdirectory. Treat this file as an
 operating contract for AI agents working in VNEM, not as marketing copy.
 
+## Product Mission vs Repo Context
+
+Product mission:
+VNEM improves how AIs work on any user task, project, repo, app, mod, workflow,
+prompt, tool, system, research target, or idea.
+
+Repo context:
+This repository is the current implementation and testbed where VNEM itself is
+built, tested, and maintained. Agents working in this repo must follow these
+repo-specific instructions, but the product is not only for improving VNEM.
+
+VNEM principles can improve any task or project. When this repository is the
+task, those same principles help improve VNEM itself.
+
 ## Scope
 
 VNEM work includes product code, research tools, generated install-pack content,
@@ -19,8 +33,8 @@ user's stated constraints and the repo's implemented boundaries.
 ## VNEM Mission
 
 VNEM is not just a repo, a prompt pack, a dashboard, or a collection of scripts.
-VNEM is becoming a self-improving AI booster system whose purpose is to make AI
-meaningfully, repeatedly, and measurably better.
+VNEM is a general AI-improvement system whose purpose is to make AI work
+meaningfully, repeatedly, and measurably better across domains.
 
 Better means the system understands the user's real goal, researches what exists,
 identifies weaknesses, builds an improved version safely, tests it, proves what
@@ -31,7 +45,8 @@ research, tests, fixtures, benchmarks, logs, or other reproducible evidence.
 
 ## Core Mindset
 
-When working on VNEM, use this mindset:
+Future agents use VNEM principles to improve the task in front of them. When the
+task is this repo, that means improving VNEM itself. Use this mindset:
 
 - I understand what you are trying to achieve.
 - I can research what exists.
@@ -229,7 +244,7 @@ coverage.
 
 ## Required Work Loop
 
-For meaningful VNEM work:
+For meaningful work with VNEM principles in this implementation repo:
 
 1. Recover the repo state and inspect current files.
 2. Confirm the user goal and the product surface being changed.
@@ -350,8 +365,11 @@ back up an existing global file and replace only the marked VNEM block:
 
 Default installer behavior must remain dry-run/preview.
 
-## Next Product Direction
+## Product Direction
 
-The next recommended product direction is ARD Browser Pipeline v1. A future run
-may Run ARD pipeline work only when explicitly requested. This setup run must not
-start that pipeline or add backend endpoints.
+VNEM's product direction is intentionally broader than repo self-improvement.
+ARD — AI Research Dashboard and future ARD Browser Pipeline work are important
+lanes, but they are not the whole product. See `docs/product-direction.md` for
+the maintained direction map covering ARD, portable VNEM use on other projects,
+research quality, protection/safety, AI workflow improvement, user-facing
+verification, and domain adapters.
