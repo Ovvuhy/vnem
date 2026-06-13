@@ -4,7 +4,7 @@ import { readFile } from "node:fs/promises";
 
 const oldWallet = "76ZuJidMzB32EQLLiCL8UPQATQFoY2mrqZa3Kvr8PZhp";
 const newWallet = "H62Ri1EExddxFKsLMn4nbmbxiCSxNRLtF8igPySLA23B";
-const requiredWallets = [oldWallet, newWallet];
+const requiredWallets = [newWallet];
 const walletAllowlist = requiredWallets.join(",");
 const [ardDev, ardLaunch, pkg, envExample] = await Promise.all([
   readFile("scripts/ard-dev.mjs", "utf8"),
@@ -26,6 +26,8 @@ for (const wallet of requiredWallets) {
   assert.match(ardDev, new RegExp(wallet), `ARD dev must include local wallet ${wallet}`);
   assert.match(ardLaunch, new RegExp(wallet), `ARD health must print local wallet ${wallet}`);
 }
+assert.doesNotMatch(ardDev, new RegExp(oldWallet), "ARD dev default allowlist must not include the old wallet");
+assert.doesNotMatch(ardLaunch, new RegExp(oldWallet), "ARD health default allowlist must not print the old wallet");
 assert.match(ardLaunch, /npm run ard:backend/, "ARD health must show backend split command");
 assert.match(envExample, new RegExp(`DASHBOARD_ALLOWED_WALLETS=${walletAllowlist}`), "env example must document local wallet allowlist");
 assert.doesNotMatch(ardDev, /taskkill|Stop-Process|execSync|clearDevelopmentPorts/i, "ARD dev must not force-kill existing backend/dashboard processes");

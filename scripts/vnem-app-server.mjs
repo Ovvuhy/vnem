@@ -8,6 +8,7 @@ import { detectAiClients } from "./detect-ai-clients.mjs";
 import { loadLocalEnv } from "./local-env.mjs";
 import { generateConnectorPreviews } from "./preview-connector-changes.mjs";
 import { prepareGivingBranch, previewGivingBranchPlan } from "./giving-branch.mjs";
+import { getArdChangesStatus, prepareArdChanges, previewArdChanges, pushArdChanges } from "./ard-changes-branch.mjs";
 import { createRunId as createArdRunId, runGiving as runArdGiving, runProtection as runArdProtection, runResearch as runArdResearch } from "./ard-pipeline.mjs";
 import { applyCandidateClassification, buildBranchCandidateSet, buildReviewQueue, readReviewRecords, writeReviewRecord } from "./candidate-pipeline.mjs";
 import { buildBuilderSessionReport } from "./vnem-builder-session.mjs";
@@ -68,7 +69,6 @@ const defaultResearchPollMaxMs = 10 * 60 * 1000;
 const openRouterChatCompletionsUrl = "https://openrouter.ai/api/v1/chat/completions";
 const openRouterHermesModel = "nousresearch/hermes-3-llama-3.1-405b:free";
 const localDashboardWallets = [
-  "76ZuJidMzB32EQLLiCL8UPQATQFoY2mrqZa3Kvr8PZhp",
   "H62Ri1EExddxFKsLMn4nbmbxiCSxNRLtF8igPySLA23B"
 ].join(",");
 const localDashboardAuthSecret = "vnem-local-dashboard-dev-secret";
@@ -110,6 +110,10 @@ const endpoints = [
   "GET /api/ard/runs/latest",
   "POST /api/giving/branch/preview",
   "POST /api/giving/branch/prepare",
+  "GET /api/ard/changes/status",
+  "POST /api/ard/changes/preview",
+  "POST /api/ard/changes/prepare",
+  "POST /api/ard/changes/push",
   "GET /api/builder/session"
 ];
 
@@ -321,6 +325,56 @@ export function createVnemAppServer(options = {}) {
           ok: true,
           pipeline: latestArdBrowserPipeline,
           message: latestArdBrowserPipeline ? "Latest browser ARD pipeline run loaded." : "No browser ARD pipeline run has completed in this app-server session yet."
+        });
+        return;
+      }
+
+      if (route === "GET /api/ard/changes/status") {
+        const result = await getArdChangesStatus({ repositoryRoot });
+        writeJson(response, 200, result);
+        return;
+      }
+
+      if (route === "POST /api/ard/changes/preview") {
+        const payload = await readJsonRequest(request, { maxBytes: 16 * 1024 });
+        const result = await previewArdChanges(payload, { repositoryRoot });
+        writeJson(response, result.ok ? 200 : 400, result);
+        broadcastTelemetry({
+          type: "ard_changes_preview",
+          message: result.ok ? `Changes by ARD preview ready: ${result.branchName}` : `Changes by ARD preview blocked: ${result.error_code}`,
+          agent_stage: "giving",
+          branch_name: result.branchName ?? null,
+          ok: result.ok
+        });
+        return;
+      }
+
+      if (route === "POST /api/ard/changes/prepare") {
+        const payload = await readJsonRequest(request, { maxBytes: 16 * 1024 });
+        const result = await prepareArdChanges(payload, { repositoryRoot });
+        writeJson(response, result.ok ? 200 : 400, result);
+        broadcastTelemetry({
+          type: "ard_changes_prepare",
+          message: result.ok ? `Changes by ARD local commit prepared: ${result.commitHash}` : `Changes by ARD prepare blocked: ${result.error_code}`,
+          agent_stage: "giving",
+          branch_name: result.branchName ?? null,
+          commit_hash: result.commitHash ?? null,
+          ok: result.ok
+        });
+        return;
+      }
+
+      if (route === "POST /api/ard/changes/push") {
+        const payload = await readJsonRequest(request, { maxBytes: 16 * 1024 });
+        const result = await pushArdChanges(payload, { repositoryRoot });
+        writeJson(response, result.ok ? 200 : 400, result);
+        broadcastTelemetry({
+          type: "ard_changes_push",
+          message: result.ok ? `Changes by ARD branch pushed: ${result.branchName}` : `Changes by ARD push blocked: ${result.error_code}`,
+          agent_stage: "giving",
+          branch_name: result.branchName ?? null,
+          push_status: result.pushStatus ?? null,
+          ok: result.ok
         });
         return;
       }

@@ -29,7 +29,6 @@ if (!token) {
 // Never put private keys or seed phrases here.
 // ==========================================
 const ALLOWED_WALLETS = [
-  "76ZuJidMzB32EQLLiCL8UPQATQFoY2mrqZa3Kvr8PZhp",
   "H62Ri1EExddxFKsLMn4nbmbxiCSxNRLtF8igPySLA23B"
 ];
 

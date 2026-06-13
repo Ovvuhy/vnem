@@ -1,6 +1,6 @@
 # vnem Operating Protocol
 
-Generated: 2026-06-13T12:12:19.878Z
+Generated: 2026-06-13T12:59:26.759Z
 
 A universal read-only operating protocol for coding agents: sense the repo, route task context, choose the smallest sufficient capability, constrain risk, pass the holistic quality gate, verify with evidence, and report residual uncertainty.
 

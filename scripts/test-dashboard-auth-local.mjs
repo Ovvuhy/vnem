@@ -7,7 +7,8 @@ import { allowedWallets, isWalletAllowed } from "../landing/functions/_shared/au
 const oldWallet = "76ZuJidMzB32EQLLiCL8UPQATQFoY2mrqZa3Kvr8PZhp";
 const newWallet = "H62Ri1EExddxFKsLMn4nbmbxiCSxNRLtF8igPySLA23B";
 const unknownWallet = "UnknownWallet111111111111111111111111111111";
-const requiredWallets = [oldWallet, newWallet];
+const defaultWallets = [newWallet];
+const overrideWallets = [oldWallet, newWallet];
 const [app, vite, appJs, authShared] = await Promise.all([
   readFile("scripts/vnem-app-server.mjs", "utf8"),
   readFile("dashboard/vite.config.js", "utf8"),
@@ -15,17 +16,19 @@ const [app, vite, appJs, authShared] = await Promise.all([
   readFile("landing/functions/_shared/auth.js", "utf8")
 ]);
 
-const env = { DASHBOARD_ALLOWED_WALLETS: requiredWallets.join(",") };
-assert.deepEqual(allowedWallets(env), requiredWallets, "shared auth must parse a comma-separated wallet allowlist");
-assert.equal(isWalletAllowed(oldWallet, env), true, "old wallet must remain allowlisted");
-assert.equal(isWalletAllowed(newWallet, env), true, "new wallet must be allowlisted");
+const env = { DASHBOARD_ALLOWED_WALLETS: overrideWallets.join(",") };
+assert.deepEqual(allowedWallets(env), overrideWallets, "shared auth must parse an explicit comma-separated wallet allowlist override");
+assert.equal(isWalletAllowed(oldWallet, env), true, "old wallet may still be allowed only by explicit external env override");
+assert.equal(isWalletAllowed(newWallet, env), true, "new wallet must be allowlisted by explicit env override");
 assert.equal(isWalletAllowed(unknownWallet, env), false, "unknown wallet must still be rejected");
 assert.equal(isWalletAllowed(oldWallet, { DASHBOARD_ALLOWED_WALLETS: "*" }), false, "wildcard allow-all must not be accepted");
 
-for (const wallet of requiredWallets) {
+for (const wallet of defaultWallets) {
   assert.match(app, new RegExp(wallet), `local app server must include dev wallet fallback ${wallet}`);
   assert.match(appJs, new RegExp(wallet), `owner gate must display local wallet ${wallet}`);
 }
+assert.doesNotMatch(app, new RegExp(oldWallet), "local app server default fallback must not include the old wallet");
+assert.doesNotMatch(appJs, new RegExp(oldWallet), "owner gate default display must not include the old wallet");
 assert.match(app, /process\.env\.DASHBOARD_ALLOWED_WALLETS \?\? localDashboardWallets/, "local fallback must not override explicit production/env allowlist");
 assert.match(authShared, /allowed\.length > 0 && allowed\.includes\(walletAddress\)/, "shared production auth must require a non-empty explicit allowlist");
 assert.doesNotMatch(authShared, /return true;\s*}\s*export function isWalletAllowed/s, "shared auth must not allow every wallet");

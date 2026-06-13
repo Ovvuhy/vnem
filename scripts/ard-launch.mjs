@@ -10,7 +10,6 @@ console.log("Dashboard URL: http://127.0.0.1:4174/dashboard/?mock&v=ard");
 console.log(`Backend status:   ${backend?.listening ? "running" : "not running"}`);
 console.log(`Dashboard status: ${dashboard?.listening ? `running on ${dashboard.port}` : "not running"}`);
 console.log("Local allowed wallets:");
-console.log("  76ZuJidMzB32EQLLiCL8UPQATQFoY2mrqZa3Kvr8PZhp");
 console.log("  H62Ri1EExddxFKsLMn4nbmbxiCSxNRLtF8igPySLA23B");
 console.log("");
 console.log("To launch ARD backend + dashboard:");

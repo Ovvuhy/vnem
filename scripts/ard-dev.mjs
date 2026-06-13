@@ -6,7 +6,6 @@ import { inspectVnemDevHealth } from "./vnem-dev-health.mjs";
 const backendUrl = "http://127.0.0.1:9099";
 const dashboardUrl = "http://127.0.0.1:4174/dashboard/?mock&v=ard";
 const localWallets = [
-  "76ZuJidMzB32EQLLiCL8UPQATQFoY2mrqZa3Kvr8PZhp",
   "H62Ri1EExddxFKsLMn4nbmbxiCSxNRLtF8igPySLA23B"
 ].join(",");
 const localWallet = process.env.DASHBOARD_ALLOWED_WALLETS ?? localWallets;

@@ -228,9 +228,12 @@ Known ARD concepts include:
 - Giving AI.
 - demo/local research.
 - fixture remote proof.
-- local dashboard wallets:
-  - `76ZuJidMzB32EQLLiCL8UPQATQFoY2mrqZa3Kvr8PZhp`.
+- local dashboard wallet:
   - `H62Ri1EExddxFKsLMn4nbmbxiCSxNRLtF8igPySLA23B`.
+- Changes by ARD protected implementation lane:
+  - display name `Changes by ARD`.
+  - Git branch `changes-by-ard`.
+  - preview is dry-run, prepare creates a reviewable branch commit, push requires exact confirmation, and main stays protected.
 
 Important boundary: VNEM/ARD is not antivirus-grade. Do not imply that
 Protection AI provides endpoint security, malware removal, compliance coverage,

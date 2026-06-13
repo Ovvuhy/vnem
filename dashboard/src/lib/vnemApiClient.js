@@ -55,6 +55,36 @@ export function createVnemApiClient(options = {}) {
     latestArdPipeline() {
       return requestJson(fetchImpl, `${baseUrl}/api/ard/pipeline/latest`);
     },
+    ardChangesStatus() {
+      return requestJson(fetchImpl, `${baseUrl}/api/ard/changes/status`);
+    },
+    previewArdChanges(plan = {}) {
+      return requestJson(fetchImpl, `${baseUrl}/api/ard/changes/preview`, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json"
+        },
+        body: JSON.stringify(plan)
+      });
+    },
+    prepareArdChanges(plan = {}) {
+      return requestJson(fetchImpl, `${baseUrl}/api/ard/changes/prepare`, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json"
+        },
+        body: JSON.stringify(plan)
+      });
+    },
+    pushArdChanges(plan = {}) {
+      return requestJson(fetchImpl, `${baseUrl}/api/ard/changes/push`, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json"
+        },
+        body: JSON.stringify(plan)
+      });
+    },
     reviewQueue() {
       return requestJson(fetchImpl, `${baseUrl}/api/intelligence/review-queue`);
     },

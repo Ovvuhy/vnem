@@ -11,6 +11,9 @@ ARD Browser Pipeline v2 remains important, but it is one lane, not the whole pro
 ## Lane 1 — ARD pipeline and branch safety
 
 - ARD Browser Pipeline v2.
+- Changes by ARD protected implementation lane.
+- Display name `Changes by ARD`; Git branch `changes-by-ard`.
+- Preview is dry-run, prepare creates a reviewable local branch commit, and push requires exact confirmation.
 - Live source routes only when explicitly requested and validated.
 - Explicit operator confirmation before branch mutation.
 - Real remote research branch push with protected implementation branches.

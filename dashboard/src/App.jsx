@@ -31,6 +31,7 @@ import { createVnemApiClient, normalizeRequestError } from "./lib/vnemApiClient.
 import { deriveControlRoomStatus } from "./lib/controlRoomStatus.js";
 import { deriveDashboardWorkStatus } from "./lib/dashboardWorkStatus.js";
 import { derivePipelineVerdict } from "./lib/pipelineVerdicts.js";
+import { CHANGES_BY_ARD_CONFIRMATION, deriveArdChangesCard, summarizeArdChangesAction } from "./lib/ardChangesBranch.js";
 import { sampleSummary } from "./sampleSummary.js";
 import { useTelemetry } from "./hooks/useTelemetry.js";
 import { useBuilderHealth } from "./hooks/useBuilderHealth.js";
@@ -41,7 +42,7 @@ const textDecoder = new TextDecoder();
 const DEMO_MODE = import.meta.env.DEV && new URLSearchParams(window.location.search).has("mock");
 const OFFLINE_MODE = new URLSearchParams(window.location.search).has("offline");
 const SIGN_IN_TIMEOUT_MS = 2500;
-const LOCAL_DEV_ALLOWED_WALLETS = import.meta.env?.VITE_DASHBOARD_LOCAL_ALLOWED_WALLET ?? "76ZuJidMzB32EQLLiCL8UPQATQFoY2mrqZa3Kvr8PZhp,H62Ri1EExddxFKsLMn4nbmbxiCSxNRLtF8igPySLA23B";
+const LOCAL_DEV_ALLOWED_WALLETS = import.meta.env?.VITE_DASHBOARD_LOCAL_ALLOWED_WALLET ?? "H62Ri1EExddxFKsLMn4nbmbxiCSxNRLtF8igPySLA23B";
 const LOCAL_BACKEND_URL = import.meta.env?.VITE_VNEM_APP_SERVER_URL ?? "http://127.0.0.1:9099";
 
 export default function App() {
@@ -252,6 +253,12 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
   const [ardPipelineRun, setArdPipelineRun] = useState(null);
   const [ardPipelineStatus, setArdPipelineStatus] = useState("idle");
   const [ardPipelineError, setArdPipelineError] = useState(null);
+  const [ardChangesStatus, setArdChangesStatus] = useState(null);
+  const [ardChangesActionStatus, setArdChangesActionStatus] = useState("idle");
+  const [ardChangesError, setArdChangesError] = useState(null);
+  const [ardChangesConfirmation, setArdChangesConfirmation] = useState("");
+  const ardChangesCard = useMemo(() => deriveArdChangesCard({ status: ardChangesStatus }), [ardChangesStatus]);
+  const ardChangesAction = useMemo(() => summarizeArdChangesAction(ardChangesActionStatus), [ardChangesActionStatus]);
   const pipelineExecution = usePipelineExecution(telemetry, summary);
   const workStatus = useMemo(() => deriveDashboardWorkStatus({ telemetry, summary, execution: pipelineExecution, connector, branchPreview }), [telemetry, summary, pipelineExecution, connector, branchPreview]);
   const controlRoom = useMemo(() => deriveControlRoomStatus({ telemetry, summary, execution: pipelineExecution, connector, branchPreview, workStatus, builderHealthState: builderHealth }), [telemetry, summary, pipelineExecution, connector, branchPreview, workStatus, builderHealth]);
@@ -287,6 +294,21 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
     }
   }, [telemetry.ardBrowserPipeline]);
 
+  const refreshArdChangesStatus = useCallback(async () => {
+    try {
+      const result = await apiClient.ardChangesStatus();
+      setArdChangesStatus(result);
+      return result;
+    } catch (cause) {
+      setArdChangesError(normalizeRequestError(cause));
+      return null;
+    }
+  }, [apiClient]);
+
+  useEffect(() => {
+    void refreshArdChangesStatus();
+  }, [refreshArdChangesStatus]);
+
   const runArdPipelineFromBrowser = useCallback(async () => {
     if (ardPipelineStatus === "running") return;
     setArdPipelineStatus("running");
@@ -304,6 +326,52 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
       setArdPipelineStatus("error");
     }
   }, [apiClient, ardPipelineStatus, telemetry]);
+
+  const previewArdChanges = useCallback(async () => {
+    if (ardChangesActionStatus === "previewing") return;
+    setArdChangesActionStatus("previewing");
+    setArdChangesError(null);
+    try {
+      const result = await apiClient.previewArdChanges({ title: "Changes by ARD dashboard preview" });
+      setArdChangesStatus((current) => ({ ...(current ?? {}), lastPreview: result, mode: result.mode, ok: result.ok, displayName: result.displayName, branchName: result.branchName, branchValid: result.branchValid, mainProtected: result.mainProtected }));
+      setArdChangesActionStatus("idle");
+      await telemetry.refreshTelemetryHistory?.();
+    } catch (cause) {
+      setArdChangesError(normalizeRequestError(cause));
+      setArdChangesActionStatus("error");
+    }
+  }, [apiClient, ardChangesActionStatus, telemetry]);
+
+  const prepareArdChanges = useCallback(async () => {
+    if (ardChangesActionStatus === "preparing") return;
+    setArdChangesActionStatus("preparing");
+    setArdChangesError(null);
+    try {
+      const result = await apiClient.prepareArdChanges({ title: "Changes by ARD dashboard commit" });
+      setArdChangesStatus((current) => ({ ...(current ?? {}), lastPrepared: result, mode: result.mode, ok: result.ok, displayName: result.displayName, branchName: result.branchName, branchValid: result.branchValid, mainProtected: result.mainProtected }));
+      setArdChangesActionStatus("idle");
+      await telemetry.refreshTelemetryHistory?.();
+    } catch (cause) {
+      setArdChangesError(normalizeRequestError(cause));
+      setArdChangesActionStatus("error");
+    }
+  }, [apiClient, ardChangesActionStatus, telemetry]);
+
+  const pushArdChangesBranch = useCallback(async () => {
+    if (ardChangesConfirmation !== CHANGES_BY_ARD_CONFIRMATION || ardChangesActionStatus === "pushing") return;
+    setArdChangesActionStatus("pushing");
+    setArdChangesError(null);
+    try {
+      const result = await apiClient.pushArdChanges({ confirmation: ardChangesConfirmation });
+      setArdChangesStatus((current) => ({ ...(current ?? {}), lastPushed: result, mode: result.mode, ok: result.ok, displayName: result.displayName, branchName: result.branchName, branchValid: result.branchValid, mainProtected: result.mainProtected }));
+      setArdChangesConfirmation("");
+      setArdChangesActionStatus("idle");
+      await telemetry.refreshTelemetryHistory?.();
+    } catch (cause) {
+      setArdChangesError(normalizeRequestError(cause));
+      setArdChangesActionStatus("error");
+    }
+  }, [apiClient, ardChangesActionStatus, ardChangesConfirmation, telemetry]);
 
   const openDispatchReview = useCallback(async (finding) => {
     if (!finding?.dispatch?.id || finding.dispatch.status !== "staged_for_review") {
@@ -533,6 +601,17 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
         busy={["previewing", "preparing", "reviewing-candidate"].includes(controlActionStatus) || ardPipelineStatus === "running"}
       />
       {controlActionError ? <div className="inline-error">{controlActionError.message ?? controlActionError.error ?? "Control-room action failed"}</div> : null}
+      <ArdChangesCard
+        card={ardChangesCard}
+        action={ardChangesAction}
+        error={ardChangesError}
+        confirmation={ardChangesConfirmation}
+        onConfirmationChange={setArdChangesConfirmation}
+        onPreview={previewArdChanges}
+        onPrepare={prepareArdChanges}
+        onPush={pushArdChangesBranch}
+        busy={ardChangesActionStatus}
+      />
       <AutonomousPipeline telemetry={telemetry} execution={pipelineExecution} />
 
       <section className="candidate-queue panel" aria-label="Top candidate queue">
@@ -705,6 +784,50 @@ function CandidateQueue({ candidates, triage, onReviewCandidate }) {
         ))}
       </div>
     </div>
+  );
+}
+
+function ArdChangesCard({ card, action, error, confirmation, onConfirmationChange, onPreview, onPrepare, onPush, busy }) {
+  const pushUnlocked = confirmation === card.requiredConfirmation;
+  return (
+    <section className="panel ard-changes-card" aria-label="Changes by ARD protected branch">
+      <div className="panel-head compact">
+        <div>
+          <p className="eyebrow">protected implementation lane</p>
+          <h2>{card.displayName}</h2>
+        </div>
+        <Badge tone={card.statusLabel === "pushed" ? "ok" : card.statusLabel === "blocked" ? "critical" : "review"}>{card.statusLabel}</Badge>
+      </div>
+      <p className="muted-text">{card.warningCopy}</p>
+      <div className="prepare-plan-grid">
+        <span>Display name</span><strong>{card.displayName}</strong>
+        <span>Git branch</span><strong>{card.branchName}</strong>
+        <span>Main protected</span><strong>{card.mainProtected ? "yes" : "no"}</strong>
+        <span>Mode</span><strong>{card.mode}</strong>
+        <span>Last preview</span><strong>{card.lastPreview?.runId ?? "not prepared"}</strong>
+        <span>Last prepared</span><strong>{card.lastPrepared?.commitHash ? shortHash(card.lastPrepared.commitHash) : "not prepared"}</strong>
+        <span>Last pushed</span><strong>{card.lastPushed?.commitHash ? shortHash(card.lastPushed.commitHash) : "not pushed"}</strong>
+      </div>
+      <div className="control-actions compact-actions">
+        <button type="button" className="secondary-action" onClick={onPreview} disabled={busy === "previewing"}>{busy === "previewing" ? action.label : card.buttonLabels.preview}</button>
+        <button type="button" className="secondary-action" onClick={onPrepare} disabled={busy === "preparing"}>{busy === "preparing" ? action.label : card.buttonLabels.prepare}</button>
+      </div>
+      <label className="field-label" htmlFor="ard-changes-confirmation">Exact push confirmation</label>
+      <textarea
+        id="ard-changes-confirmation"
+        className="review-notes"
+        rows={2}
+        value={confirmation}
+        onChange={(event) => onConfirmationChange(event.target.value)}
+        placeholder={card.requiredConfirmation}
+      />
+      <div className="control-actions compact-actions">
+        <button type="button" className="primary-action" onClick={onPush} disabled={!pushUnlocked || busy === "pushing"}>{busy === "pushing" ? action.label : card.buttonLabels.push}</button>
+        <span className={pushUnlocked ? "ok" : "muted-text"}>{pushUnlocked ? "confirmation matched" : "confirmation required"}</span>
+      </div>
+      {error ? <div className="inline-error">{error.message ?? error.error ?? "Changes by ARD action failed"}</div> : null}
+      <p className="muted-text">No merge is performed here. ARD can push only {card.branchName}; main stays protected.</p>
+    </section>
   );
 }
 
@@ -1148,6 +1271,11 @@ function formatWalletAllowlist(value) {
 function shortWallet(value) {
   if (!value) return "not signed in";
   return `${value.slice(0, 4)}...${value.slice(-4)}`;
+}
+
+function shortHash(value) {
+  if (!value) return "not prepared";
+  return String(value).slice(0, 10);
 }
 
 function normalizeIngestionFinding(ingestion) {

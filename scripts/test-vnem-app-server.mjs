@@ -1,10 +1,12 @@
 #!/usr/bin/env node
 import assert from "node:assert/strict";
 import { existsSync } from "node:fs";
+import { execFile as execFileCallback } from "node:child_process";
 import { mkdir, mkdtemp, readFile, readdir, writeFile } from "node:fs/promises";
 import http from "node:http";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { promisify } from "node:util";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(scriptDir, "..");
@@ -14,6 +16,8 @@ const originalEnv = snapshotEnv();
 const oldLocalWallet = "76ZuJidMzB32EQLLiCL8UPQATQFoY2mrqZa3Kvr8PZhp";
 const newLocalWallet = "H62Ri1EExddxFKsLMn4nbmbxiCSxNRLtF8igPySLA23B";
 const unknownLocalWallet = "UnknownWallet111111111111111111111111111111";
+const changesByArdConfirmation = "I understand ARD will push changes to the Changes by ARD branch, not main.";
+const execFile = promisify(execFileCallback);
 let server;
 
 try {
@@ -49,6 +53,12 @@ try {
     ""
   ].join("\n");
   await writeFile(claudeConfigPath, baseline, "utf8");
+  await git(tmpRoot, ["init", "-b", "main"]);
+  await git(tmpRoot, ["config", "user.name", "VNEM App Server Test"]);
+  await git(tmpRoot, ["config", "user.email", "vnem-app-server-test@example.invalid"]);
+  await git(tmpRoot, ["remote", "add", "origin", "https://github.com/Ovvuhy/vnem.git"]);
+  await git(tmpRoot, ["add", "."]);
+  await git(tmpRoot, ["commit", "-m", "seed app server temp repo"]);
 
   const moduleUrl = `${pathToFileURL(path.join(rootDir, "scripts", "vnem-app-server.mjs")).href}?test=${Date.now()}`;
   const {
@@ -136,6 +146,10 @@ try {
   assert.ok(status.endpoints.includes("GET /api/ard/runs/latest"));
   assert.ok(status.endpoints.includes("POST /api/giving/branch/preview"));
   assert.ok(status.endpoints.includes("POST /api/giving/branch/prepare"));
+  assert.ok(status.endpoints.includes("GET /api/ard/changes/status"));
+  assert.ok(status.endpoints.includes("POST /api/ard/changes/preview"));
+  assert.ok(status.endpoints.includes("POST /api/ard/changes/prepare"));
+  assert.ok(status.endpoints.includes("POST /api/ard/changes/push"));
   assert.ok(status.endpoints.includes("GET /api/builder/session"));
   assert.equal(status.intelligence_provider.status, "missing_key");
   assert.equal(status.intelligence_provider.model, "local-fallback");
@@ -157,12 +171,15 @@ try {
   const port = started.config.port;
   assert.ok(Number.isInteger(port) && port > 0, "dynamic test port must be assigned");
 
-  for (const wallet of [oldLocalWallet, newLocalWallet]) {
+  for (const wallet of [newLocalWallet]) {
     const nonce = await requestJson(port, "POST", "/api/auth/nonce", {}, JSON.stringify({ wallet_address: wallet }));
     assert.equal(nonce.statusCode, 200, `${wallet} must be accepted by the local dashboard allowlist`);
     assert.equal(nonce.body.ok, true);
     assert.equal(nonce.body.sign_in_input.address, wallet);
   }
+  const oldWalletNonce = await requestJson(port, "POST", "/api/auth/nonce", {}, JSON.stringify({ wallet_address: oldLocalWallet }));
+  assert.equal(oldWalletNonce.statusCode, 403, "old wallet must no longer be accepted by the local dashboard default allowlist");
+  assert.equal(oldWalletNonce.body.error, "wallet-not-allowlisted");
   const blockedNonce = await requestJson(port, "POST", "/api/auth/nonce", {}, JSON.stringify({ wallet_address: unknownLocalWallet }));
   assert.equal(blockedNonce.statusCode, 403, "unknown wallet must still be rejected");
   assert.equal(blockedNonce.body.error, "wallet-not-allowlisted");
@@ -180,6 +197,41 @@ try {
   assert.equal(builderSession.body.branch, "main");
   assert.equal(Array.isArray(builderSession.body.devHealth.ports), true);
   assert.equal(builderSession.body.devHealth.ports.some((entry) => entry.port === 9099), true);
+
+  await git(tmpRoot, ["add", "."]);
+  await git(tmpRoot, ["commit", "--allow-empty", "-m", "seed generated app server state"]);
+
+  const changesStatus = await requestJson(port, "GET", "/api/ard/changes/status");
+  assert.equal(changesStatus.statusCode, 200);
+  assert.equal(changesStatus.body.ok, true);
+  assert.equal(changesStatus.body.displayName, "Changes by ARD");
+  assert.equal(changesStatus.body.branchName, "changes-by-ard");
+  assert.equal(changesStatus.body.mainProtected, true);
+  assert.equal(changesStatus.body.needsConfirmation, true);
+
+  const changesPreview = await requestJson(port, "POST", "/api/ard/changes/preview", {}, JSON.stringify({ runId: "app-server-ard-change" }));
+  assert.equal(changesPreview.statusCode, 200);
+  assert.equal(changesPreview.body.ok, true);
+  assert.equal(changesPreview.body.mode, "dry-run");
+  assert.equal(changesPreview.body.wouldCommit, false);
+  assert.equal(changesPreview.body.wouldPush, false);
+  assert.equal(changesPreview.body.changedFiles.includes("discovery/ard-changes/app-server-ard-change/summary.json"), true);
+  assert.equal(existsSync(path.join(tmpRoot, "discovery", "ard-changes", "app-server-ard-change", "summary.json")), false, "preview must not write artifacts on main");
+
+  const changesPrepare = await requestJson(port, "POST", "/api/ard/changes/prepare", {}, JSON.stringify({ runId: "app-server-ard-change", title: "App server ARD change" }));
+  assert.equal(changesPrepare.statusCode, 200);
+  assert.equal(changesPrepare.body.ok, true);
+  assert.equal(changesPrepare.body.mode, "local commit");
+  assert.equal(changesPrepare.body.branchName, "changes-by-ard");
+  assert.equal(changesPrepare.body.pushStatus, "not-pushed");
+  assert.match(changesPrepare.body.commitHash, /^[0-9a-f]{40}$/);
+  assert.equal((await git(tmpRoot, ["branch", "--show-current"])).trim(), "main", "prepare route must return to main");
+  assert.equal((await git(tmpRoot, ["status", "--short"])).trim(), "", "prepare route must leave main worktree clean");
+
+  const changesPushRefused = await requestJson(port, "POST", "/api/ard/changes/push", {}, JSON.stringify({ confirmation: "push it" }));
+  assert.equal(changesPushRefused.statusCode, 400);
+  assert.equal(changesPushRefused.body.error_code, "ARD_CHANGES_CONFIRMATION_REQUIRED");
+  assert.equal(changesPushRefused.body.requiredConfirmation, changesByArdConfirmation);
 
   const telemetryHistory = await requestJson(port, "GET", "/api/telemetry/history");
   assert.equal(telemetryHistory.statusCode, 200);
@@ -975,4 +1027,9 @@ function headerReader(headers) {
       return headers[String(name).toLowerCase()] ?? headers[name] ?? null;
     }
   };
+}
+
+async function git(cwd, args) {
+  const result = await execFile("git", args, { cwd, windowsHide: true, maxBuffer: 1024 * 1024 });
+  return `${result.stdout ?? ""}${result.stderr ?? ""}`;
 }

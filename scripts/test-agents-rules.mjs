@@ -54,7 +54,8 @@ const agents = readRepoFile('AGENTS.md');
   'not antivirus-grade',
   'never push to main',
   'Run ARD pipeline',
-  '76ZuJidMzB32EQLLiCL8UPQATQFoY2mrqZa3Kvr8PZhp',
+  'Changes by ARD',
+  'changes-by-ard',
   'H62Ri1EExddxFKsLMn4nbmbxiCSxNRLtF8igPySLA23B',
 ].forEach((needle) => assertIncludes(agents, needle));
 

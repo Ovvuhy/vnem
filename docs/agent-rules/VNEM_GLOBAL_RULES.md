@@ -267,8 +267,7 @@ Known surface:
 - Giving AI.
 - demo/local research.
 - fixture remote proof.
-- local dashboard wallets:
-  - `76ZuJidMzB32EQLLiCL8UPQATQFoY2mrqZa3Kvr8PZhp`.
+- local dashboard wallet:
   - `H62Ri1EExddxFKsLMn4nbmbxiCSxNRLtF8igPySLA23B`.
 
 Current boundary:
@@ -339,10 +338,9 @@ This historical reference must still be verified against Git in every run.
 
 ## Local Dashboard Wallet
 
-The current local dashboard wallet allowlist references are:
+The current local dashboard wallet allowlist reference is:
 
 ```text
-76ZuJidMzB32EQLLiCL8UPQATQFoY2mrqZa3Kvr8PZhp
 H62Ri1EExddxFKsLMn4nbmbxiCSxNRLtF8igPySLA23B
 ```
 

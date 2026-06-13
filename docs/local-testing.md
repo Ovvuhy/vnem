@@ -11,10 +11,9 @@ easier for users to verify in any target project.
 
 ## Start the local dashboard stack
 
-Local dashboard owner access allows either of these public wallet addresses after wallet signing:
+Local dashboard owner access allows this public wallet address after wallet signing:
 
 ```text
-76ZuJidMzB32EQLLiCL8UPQATQFoY2mrqZa3Kvr8PZhp
 H62Ri1EExddxFKsLMn4nbmbxiCSxNRLtF8igPySLA23B
 ```
 
@@ -37,6 +36,20 @@ Click:
 Run ARD pipeline
 ```
 
+For the protected implementation lane, use the `Changes by ARD` card:
+
+```text
+Preview ARD changes
+Prepare Changes by ARD commit
+Push Changes by ARD branch
+```
+
+Push requires this exact confirmation text:
+
+```text
+I understand ARD will push changes to the Changes by ARD branch, not main.
+```
+
 Expected success:
 
 - Research AI runs.
@@ -44,9 +57,13 @@ Expected success:
 - Giving AI runs.
 - Dangerous findings appear and remain visible.
 - A `fixture-remote` or `dry-run` branch proof appears.
+- The `Changes by ARD` card shows display name `Changes by ARD`, Git branch `changes-by-ard`, and main protected.
+- Preview is dry-run only.
+- Prepare creates a reviewable local `changes-by-ard` commit when the repo is clean.
+- Push targets only `origin changes-by-ard` after exact confirmation.
 - No fake `main` push appears.
 
-Current honest scope: this is a browser/local deterministic pipeline proof. It is not live web research, not antivirus-grade protection, and not a real remote research-branch push.
+Current honest scope: this is a browser/local deterministic pipeline proof plus a protected branch commit proof. It is not live web research, not antivirus-grade protection, not auto-merge, and not a `main` push by ARD.
 
 ## Quick non-browser test
 
@@ -62,7 +79,7 @@ This starts a temporary loopback backend, calls the same `POST /api/ard/pipeline
 npm run test:current
 ```
 
-This runs the ARD browser pipeline smoke test and the focused dashboard browser-pipeline status test.
+This runs the ARD browser pipeline smoke test, the focused dashboard browser-pipeline status test, and the Changes by ARD helper/dashboard tests.
 
 ## Troubleshooting
 
