@@ -342,7 +342,7 @@ Current working path:
 - Dangerous findings: blocked/quarantined candidates stay visible in `dangerous-findings.md` and the dashboard, but are excluded from Giving AI implementable work.
 - Giving AI: includes only `allow` candidates by default, excludes unreviewed `needs-review`, `quarantine`, `blocked`, duplicate/low-signal, and dangerous candidates, then prepares a research branch plan using `vnem-research/<run-slug>`.
 - Demo branch proof: `ard:demo` pushes to a temporary fixture remote so the branch path is real and testable without pushing ARD research output to `main`.
-- Dashboard: the top ARD view is intentionally compact: ARD status, current run, Research AI, Protection AI, Giving AI, Dangerous Findings, and Research Branch. Older raw telemetry, Builder Health, run history, and logs are collapsed/lower.
+- Dashboard: the top ARD view is now a canonical operator console: ARD Mission Header, ARD Control Center, Pipeline Timeline, Changes by ARD Protected Branch, Review Queue, AI Status & Public Decision Log, Findings / Evidence Explorer, System Health, Advanced / Raw Details, and Planned Features. Older raw telemetry, Builder Health, run history, and logs are collapsed under advanced details.
 
 Delivered in ARD Browser Pipeline v1: the dashboard route `POST /api/ard/pipeline/run`, the status route `GET /api/ard/pipeline/latest`, and the local smoke command `npm run ard:browser-pipeline` are implemented for deterministic/local browser pipeline proof. Still planned: broader live external source research routes and real remote research-branch push after explicit operator confirmation.
 

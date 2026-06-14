@@ -8,6 +8,8 @@ Repo development context: this repository is the current implementation and test
 
 ARD Browser Pipeline v2 remains important, but it is one lane, not the whole product. The product should not tunnel-vision on ARD, branch automation, or repo self-improvement at the expense of portable AI-improvement workflows.
 
+Current focused acceleration state is maintained in `docs/BUILDING_AI_STATE.md`, `docs/ARD_ROADMAP.md`, `docs/ARD_PRODUCT_BACKLOG.md`, and `docs/ARD_DECISION_LOG.md`. Future Building AI runs should read those docs before product work so they do not redo shipped work or miss visual verification requirements.
+
 ## Lane 1 — ARD pipeline and branch safety
 
 - ARD Browser Pipeline v2.

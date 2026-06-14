@@ -20,6 +20,13 @@ define the whole product mission.
 
 ## Start every run with facts
 
+Before product work, read the repo-native Building AI memory docs:
+
+- `docs/BUILDING_AI_STATE.md`
+- `docs/ARD_ROADMAP.md`
+- `docs/ARD_PRODUCT_BACKLOG.md`
+- `docs/ARD_DECISION_LOG.md`
+
 Run:
 
 ```bash
@@ -70,6 +77,7 @@ The dashboard Builder Health card reads the local app server's read-only `GET /a
 - Local ARD owner access uses wallet allowlisting only; never request private keys. `npm run ard:dev` must start or reuse the local backend on `9099` before opening the dashboard, and Vite `/api/*` must proxy to that backend so `/api/auth/nonce` and `/api/telemetry/stream` do not fail from an offline backend. The source-controlled local dev wallet is `H62Ri1EExddxFKsLMn4nbmbxiCSxNRLtF8igPySLA23B`; production deployments must still provide explicit auth secrets and allowlists.
 - Changes by ARD is the protected implementation branch lane: display name `Changes by ARD`, Git branch `changes-by-ard`, preview dry-run, prepare local branch commit, push only after exact confirmation, no auto-merge, no main push, no live external research, and no arbitrary external code.
 - Every future major VNEM feature must include an easy user test path: command, URL if UI, button/action, and expected result. Keep it in the feature docs or `docs/local-testing.md` so a human can verify the current capability without reading implementation files.
+- Building AI acceleration standard: Ship a real improvement. Prove it. Commit it. Push it. Leave the next run easier than this one. Update `docs/BUILDING_AI_STATE.md`, `docs/ARD_ROADMAP.md`, `docs/ARD_PRODUCT_BACKLOG.md`, or `docs/ARD_DECISION_LOG.md` when product state, backlog, or decisions change.
 
 ## Do not trust stale background output
 

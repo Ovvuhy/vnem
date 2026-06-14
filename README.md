@@ -76,8 +76,16 @@ node scripts/vnem-cli.mjs mcp-config
 Run the owner dashboard and local app server when you want live Research AI -> Protection AI -> Giving AI dispatch review:
 
 ```bash
-npm run dev:all
+npm run dashboard
 ```
+
+PowerShell users can run:
+
+```powershell
+npm.cmd run dashboard
+```
+
+`npm run dashboard` is the simple alias for `npm run ard:dev`; `npm run dev:all` and `npm run ard:health` remain available for the broader local launcher and health checks.
 
 The dashboard exposes explicit review controls. A staged Giving AI dispatch can be opened, inspected as markdown, promoted into `.vnem/approved/`, or rejected and deleted from `.vnem/staging/`. Approval does not commit code, execute scripts, install packages, or touch external systems.
 
@@ -93,14 +101,14 @@ That smoke command starts a temporary loopback backend, calls the same `POST /ap
 
 ## Local Testing
 
-For the user-facing ARD browser pipeline test path in this implementation repo, see [`docs/local-testing.md`](docs/local-testing.md):
+For the user-facing ARD browser pipeline test path in this implementation repo, see [`docs/local-testing.md`](docs/local-testing.md). Future Building AI runs should also start from [`docs/BUILDING_AI_STATE.md`](docs/BUILDING_AI_STATE.md), [`docs/ARD_PRODUCT_BACKLOG.md`](docs/ARD_PRODUCT_BACKLOG.md), [`docs/ARD_ROADMAP.md`](docs/ARD_ROADMAP.md), and [`docs/ARD_DECISION_LOG.md`](docs/ARD_DECISION_LOG.md):
 
 ```bash
 cd C:\VNEM\vnem-src
-npm run dev:all
+npm.cmd run dashboard
 ```
 
-Open `http://127.0.0.1:4174/dashboard/?mock&v=ard`, connect/sign with the local allowlisted wallet (`H62Ri1EExddxFKsLMn4nbmbxiCSxNRLtF8igPySLA23B`), click `Run ARD pipeline`, and expect Research AI -> Protection AI -> Giving AI results with visible dangerous findings and fixture/dry-run branch proof. The dashboard also includes the `Changes by ARD` protected-branch card: preview is dry-run, prepare creates a reviewable local `changes-by-ard` commit, and push requires exact confirmation before pushing that branch only. For the quick non-browser path, run `npm run ard:browser-pipeline`. For current feature checks, run `npm run test:current`.
+Open `http://127.0.0.1:4174/dashboard/?mock&v=ard`, connect/sign with the local allowlisted wallet (`H62Ri1EExddxFKsLMn4nbmbxiCSxNRLtF8igPySLA23B`), click `Run ARD pipeline`, and expect one ARD operator console with a mission header, control center, pipeline timeline, Changes by ARD protected branch card, review queue, AI status/public decision log, visible dangerous findings, system health, planned features marked planned/future, and advanced/raw details collapsed. For the quick non-browser path, run `npm run ard:browser-pipeline`. For current feature checks, run `npm run test:current`.
 
 ## The VNEM Standard
 

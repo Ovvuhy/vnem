@@ -56,8 +56,10 @@
     "test:dashboard-ard": "node dashboard/src/lib/__tests__/ardStatus.test.js",
     "test:dashboard-ard-browser": "node dashboard/src/lib/__tests__/ardBrowserPipeline.test.js",
     "test:dashboard-ard-changes": "node dashboard/src/lib/__tests__/ardChangesBranch.test.js",
+    "test:dashboard-operator": "node dashboard/src/lib/__tests__/ardOperatorModel.test.js",
     "test:ard-launch": "node scripts/test-ard-launch.mjs",
     "test:dashboard-auth-local": "node scripts/test-dashboard-auth-local.mjs",
+    "test:building-ai-acceleration": "node scripts/test-building-ai-acceleration.mjs",
     "benchmark:vnem": "node scripts/benchmark-vnem.mjs",
     "benchmark:visual": "node scripts/benchmark-visual-artifacts.mjs",
     "benchmark:visual:browser": "node scripts/benchmark-visual-browser.mjs",
@@ -68,6 +70,7 @@
     "hermes:daily": "node scripts/hermes-agent.mjs --mode daily",
     "hermes:dry-run": "node scripts/hermes-agent.mjs --mode hourly --dry-run",
     "dashboard:dev": "vite --config dashboard/vite.config.js",
+    "dashboard": "npm run ard:dev",
     "dashboard:build": "vite build --config dashboard/vite.config.js",
     "dashboard:check": "node --check scripts/hermes-dashboard-api.mjs && node --check scripts/lib/hermes-dashboard-summary.mjs && node --check landing/functions/_shared/auth.js && node --check landing/functions/api/auth/nonce.js && node --check landing/functions/api/auth/verify.js && node --check landing/functions/api/auth/session.js && node --check landing/functions/api/auth/logout.js && node --check landing/functions/api/dashboard/summary.js",
     "dashboard:api": "node scripts/hermes-dashboard-api.mjs",
@@ -81,7 +84,7 @@
     "ard:demo": "node scripts/ard-demo.mjs",
     "ard:browser-pipeline": "node scripts/ard-browser-pipeline-smoke.mjs",
     "ard:test": "npm run test:ard-research && npm run test:ard-protection && npm run test:ard-giving && npm run test:ard-pipeline && npm run test:dashboard-ard && npm run test:ard-browser-pipeline",
-    "test:current": "npm run test:ard-browser-pipeline && npm run test:dashboard-ard-browser && npm run test:ard-changes-branch && npm run test:dashboard-ard-changes",
+    "test:current": "npm run test:ard-browser-pipeline && npm run test:dashboard-ard-browser && npm run test:ard-changes-branch && npm run test:dashboard-ard-changes && npm run test:dashboard-operator && npm run test:building-ai-acceleration",
     "dev:health": "node scripts/vnem-dev-health.mjs",
     "dev:health:json": "node scripts/vnem-dev-health.mjs --json",
     "dev:cleanup-dashboard": "node scripts/vnem-dev-health.mjs --cleanup-dashboard",
@@ -111,7 +114,7 @@
     "test:mcp": "node scripts/test-mcp-server.mjs",
     "test:hermes-risk": "node scripts/test-hermes-risk-review.mjs",
     "build": "npm run validate && npm run generate && npm run dashboard:build",
-    "test": "npm run test:agents-rules && npm run test:vnem-mission-language && npm run validate && npm run generate && npm run dashboard:build && npm run test:install-pack && npm run test:orchestration && npm run test:precision && npm run test:omniscient && npm run test:100x-architecture && npm run test:detect-ai-clients && npm run test:preview-connector && npm run test:apply-connector && npm run test:app-server && npm run test:dev-health && npm run test:builder-session && npm run test:run-history && npm run test:builder-run && npm run test:builder-capture && npm run test:launch-dev && npm run test:dashboard-connector && npm run test:dashboard-telemetry && npm run test:dashboard-system && npm run test:dashboard-verdicts && npm run test:dashboard-missions && npm run test:dashboard-branch && npm run test:dashboard-work-status && npm run test:dashboard-builder-health && npm run test:dashboard-control-room && npm run test:giving-branch && npm run test:ard-research && npm run test:ard-protection && npm run test:ard-giving && npm run test:ard-pipeline && npm run test:ard-browser-pipeline && npm run test:dashboard-ard && npm run test:dashboard-ard-browser && npm run test:ard-changes-branch && npm run test:dashboard-ard-changes && npm run test:ard-launch && npm run test:dashboard-auth-local && npm run test:precision-mcp && npm run test:cli && npm run test:mcp && npm run test:dashboard && npm run test:dashboard-api-local && npm run test:hermes-risk && npm run discover:dry-run && npm run digest"
+    "test": "npm run test:agents-rules && npm run test:vnem-mission-language && npm run validate && npm run generate && npm run dashboard:build && npm run test:install-pack && npm run test:orchestration && npm run test:precision && npm run test:omniscient && npm run test:100x-architecture && npm run test:detect-ai-clients && npm run test:preview-connector && npm run test:apply-connector && npm run test:app-server && npm run test:dev-health && npm run test:builder-session && npm run test:run-history && npm run test:builder-run && npm run test:builder-capture && npm run test:launch-dev && npm run test:dashboard-connector && npm run test:dashboard-telemetry && npm run test:dashboard-system && npm run test:dashboard-verdicts && npm run test:dashboard-missions && npm run test:dashboard-branch && npm run test:dashboard-work-status && npm run test:dashboard-builder-health && npm run test:dashboard-control-room && npm run test:giving-branch && npm run test:ard-research && npm run test:ard-protection && npm run test:ard-giving && npm run test:ard-pipeline && npm run test:ard-browser-pipeline && npm run test:dashboard-ard && npm run test:dashboard-ard-browser && npm run test:ard-changes-branch && npm run test:dashboard-ard-changes && npm run test:ard-launch && npm run test:dashboard-auth-local && npm run test:building-ai-acceleration && npm run test:precision-mcp && npm run test:cli && npm run test:mcp && npm run test:dashboard && npm run test:dashboard-api-local && npm run test:hermes-risk && npm run discover:dry-run && npm run digest"
   },
   "dependencies": {
     "@solana/wallet-adapter-base": "^0.9.27",

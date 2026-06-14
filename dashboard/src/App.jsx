@@ -23,6 +23,7 @@ import { FindingsMatrix } from "./components/FindingsMatrix.jsx";
 import { ImprovementMissionControl } from "./components/ImprovementMissionControl.jsx";
 import { Badge } from "./components/PipelinePrimitives.jsx";
 import { TargetingConsole } from "./components/TargetingConsole.jsx";
+import { ArdOperatorConsole } from "./components/ArdOperatorConsole.jsx";
 import { SelfImprovementControlRoom } from "./components/SelfImprovementControlRoom.jsx";
 import { VnemCommandCenter } from "./components/VnemCommandCenter.jsx";
 import { VnemSystemBrief } from "./components/VnemSystemBrief.jsx";
@@ -32,6 +33,7 @@ import { deriveControlRoomStatus } from "./lib/controlRoomStatus.js";
 import { deriveDashboardWorkStatus } from "./lib/dashboardWorkStatus.js";
 import { derivePipelineVerdict } from "./lib/pipelineVerdicts.js";
 import { CHANGES_BY_ARD_CONFIRMATION, deriveArdChangesCard, summarizeArdChangesAction } from "./lib/ardChangesBranch.js";
+import { deriveArdOperatorModel } from "./lib/ardOperatorModel.js";
 import { sampleSummary } from "./sampleSummary.js";
 import { useTelemetry } from "./hooks/useTelemetry.js";
 import { useBuilderHealth } from "./hooks/useBuilderHealth.js";
@@ -262,6 +264,20 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
   const pipelineExecution = usePipelineExecution(telemetry, summary);
   const workStatus = useMemo(() => deriveDashboardWorkStatus({ telemetry, summary, execution: pipelineExecution, connector, branchPreview }), [telemetry, summary, pipelineExecution, connector, branchPreview]);
   const controlRoom = useMemo(() => deriveControlRoomStatus({ telemetry, summary, execution: pipelineExecution, connector, branchPreview, workStatus, builderHealthState: builderHealth }), [telemetry, summary, pipelineExecution, connector, branchPreview, workStatus, builderHealth]);
+  const currentArdPipelineRun = ardPipelineRun ?? telemetry.ardBrowserPipeline ?? null;
+  const operatorModel = useMemo(() => deriveArdOperatorModel({
+    controlRoom,
+    pipelineRun: currentArdPipelineRun,
+    pipelineStatus: ardPipelineStatus,
+    pipelineError: ardPipelineError,
+    ardChangesCard,
+    ardChangesAction,
+    telemetry,
+    workStatus,
+    summary,
+    builderHealth,
+    branchPreview
+  }), [controlRoom, currentArdPipelineRun, ardPipelineStatus, ardPipelineError, ardChangesCard, ardChangesAction, telemetry, workStatus, summary, builderHealth, branchPreview]);
 
   const findings = useMemo(() => {
     const dashboardFindings = (summary?.findings ?? []).map(normalizeFinding);
@@ -573,133 +589,124 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
         </div>
       </header>
 
-      <section className="status-strip" aria-label="Hermes status">
-        <Kpi icon={Clock3} label="last sync" value={formatCompactDateTime(summary?.generated_at)} />
-        <Kpi icon={Search} label="candidates today" value={summary?.aggregates?.today ?? 0} />
-        <Kpi icon={AlertTriangle} label="watchlist" value={summary?.aggregates?.by_action?.watchlist ?? 0} />
-        <Kpi icon={ShieldCheck} label="blocked" value={summary?.aggregates?.by_action?.blocked ?? 0} tone={(summary?.aggregates?.by_action?.blocked ?? 0) > 0 ? "warn" : "ok"} />
-        <Kpi icon={Route} label="route errors" value={summary?.errors?.length ?? 0} tone={(summary?.errors?.length ?? 0) > 0 ? "warn" : "ok"} />
-        <Kpi icon={Radio} label="telemetry" value={telemetry.status === "connected" ? "live" : humanize(telemetry.status ?? "offline")} tone={telemetry.status === "connected" ? "ok" : "warn"} />
-      </section>
-
-      <IntelligenceProviderDiagnostic provider={telemetry.intelligenceProvider} />
-
       {status === "error" ? <div className="inline-error">{humanize(error)}</div> : null}
 
-      <SelfImprovementControlRoom
-        controlRoom={controlRoom}
-        pipelineRun={ardPipelineRun ?? telemetry.ardBrowserPipeline}
-        pipelineStatus={ardPipelineStatus}
-        pipelineError={ardPipelineError}
+      <ArdOperatorConsole
+        model={operatorModel}
         onRunPipeline={runArdPipelineFromBrowser}
-        onAdvance={() => telemetry.refreshTelemetryHistory?.()}
+        pipelineBusy={ardPipelineStatus === "running"}
+        pipelineError={ardPipelineError}
         onReviewCandidate={openCandidateReview}
-        onCandidateReviewDecision={reviewControlCandidate}
-        onPreviewBranch={previewControlBranch}
-        onOpenPrepare={() => setPrepareControlOpen(true)}
-        onRefreshBuilderHealth={builderHealth.refresh}
-        busy={["previewing", "preparing", "reviewing-candidate"].includes(controlActionStatus) || ardPipelineStatus === "running"}
-      />
-      {controlActionError ? <div className="inline-error">{controlActionError.message ?? controlActionError.error ?? "Control-room action failed"}</div> : null}
-      <ArdChangesCard
-        card={ardChangesCard}
-        action={ardChangesAction}
-        error={ardChangesError}
-        confirmation={ardChangesConfirmation}
-        onConfirmationChange={setArdChangesConfirmation}
-        onPreview={previewArdChanges}
-        onPrepare={prepareArdChanges}
-        onPush={pushArdChangesBranch}
-        busy={ardChangesActionStatus}
-      />
-      <AutonomousPipeline telemetry={telemetry} execution={pipelineExecution} />
-
-      <section className="candidate-queue panel" aria-label="Top candidate queue">
-        <div className="panel-head compact">
-          <div>
-            <p className="eyebrow">candidate queue</p>
-            <h2>Top 5 to review</h2>
-          </div>
-          <Badge tone={workStatus.triage.branchEligible > 0 ? "ok" : "review"}>{workStatus.triage.branchEligible} branch-eligible</Badge>
-        </div>
-        <CandidateQueue candidates={workStatus.topCandidates} triage={workStatus.triage} onReviewCandidate={openCandidateReview} />
-      </section>
-
-      <details className="details-panel">
-        <summary>Mission controls, connectors, logs, and raw telemetry</summary>
-        <VnemCommandCenter
-          workStatus={workStatus}
-          telemetry={telemetry}
-          apiClient={apiClient}
-          onBranchPreview={setBranchPreview}
-          onBranchPrepared={setBranchPreview}
-          onReviewCandidate={openCandidateReview}
-        />
-        <VnemSystemBrief telemetry={telemetry} execution={pipelineExecution} summary={summary} connector={connector} />
-        <ImprovementMissionControl telemetry={telemetry} summary={summary} apiClient={apiClient} branchPreview={branchPreview} onBranchPreview={setBranchPreview} />
-        <TargetingConsole telemetry={telemetry} execution={pipelineExecution} />
-      </details>
-
-      <section className="workspace-grid details-workspace">
-        <div className="main-column">
-          <section className="panel findings-panel" aria-label="Findings">
-            <div className="panel-head">
-              <div>
-                <p className="eyebrow">intelligence matrix</p>
-                <h2>Research findings</h2>
-              </div>
-              <div className="search-box">
-                <Search size={16} />
-                <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="search signals, origins, stages" />
-              </div>
-            </div>
-            <FindingFilters
-              stageFilter={stageFilter}
-              riskFilter={riskFilter}
-              originFilter={originFilter}
-              originOptions={originOptions}
-              onStageFilter={setStageFilter}
-              onRiskFilter={setRiskFilter}
-              onOriginFilter={setOriginFilter}
+        onPreviewChanges={previewArdChanges}
+        onPrepareChanges={prepareArdChanges}
+        onPushChanges={pushArdChangesBranch}
+        changesBusy={ardChangesActionStatus}
+        changesError={ardChangesError}
+        changesConfirmation={ardChangesConfirmation}
+        onChangesConfirmationChange={setArdChangesConfirmation}
+        advancedChildren={
+          <>
+            <IntelligenceProviderDiagnostic provider={telemetry.intelligenceProvider} />
+            <SelfImprovementControlRoom
+              controlRoom={controlRoom}
+              pipelineRun={currentArdPipelineRun}
+              pipelineStatus={ardPipelineStatus}
+              pipelineError={ardPipelineError}
+              onRunPipeline={runArdPipelineFromBrowser}
+              onAdvance={() => telemetry.refreshTelemetryHistory?.()}
+              onReviewCandidate={openCandidateReview}
+              onCandidateReviewDecision={reviewControlCandidate}
+              onPreviewBranch={previewControlBranch}
+              onOpenPrepare={() => setPrepareControlOpen(true)}
+              onRefreshBuilderHealth={builderHealth.refresh}
+              busy={["previewing", "preparing", "reviewing-candidate"].includes(controlActionStatus) || ardPipelineStatus === "running"}
             />
-            <FindingsMatrix findings={filtered} loading={status === "loading"} onReviewFinding={openDispatchReview} />
-          </section>
-
-          <section className="panel timeline-panel" aria-label="Runs">
-            <div className="panel-head">
-              <div>
-                <p className="eyebrow">runs</p>
-                <h2>Scout timeline</h2>
+            {controlActionError ? <div className="inline-error">{controlActionError.message ?? controlActionError.error ?? "Control-room action failed"}</div> : null}
+            <AutonomousPipeline telemetry={telemetry} execution={pipelineExecution} />
+            <section className="candidate-queue panel" aria-label="Top candidate queue">
+              <div className="panel-head compact">
+                <div>
+                  <p className="eyebrow">candidate queue</p>
+                  <h2>Top 5 to review</h2>
+                </div>
+                <Badge tone={workStatus.triage.branchEligible > 0 ? "ok" : "review"}>{workStatus.triage.branchEligible} branch-eligible</Badge>
               </div>
-            </div>
-            <RunTimeline runs={summary?.runs ?? []} />
-          </section>
-        </div>
+              <CandidateQueue candidates={workStatus.topCandidates} triage={workStatus.triage} onReviewCandidate={openCandidateReview} />
+            </section>
+            <VnemCommandCenter
+              workStatus={workStatus}
+              telemetry={telemetry}
+              apiClient={apiClient}
+              onBranchPreview={setBranchPreview}
+              onBranchPrepared={setBranchPreview}
+              onReviewCandidate={openCandidateReview}
+            />
+            <VnemSystemBrief telemetry={telemetry} execution={pipelineExecution} summary={summary} connector={connector} />
+            <ImprovementMissionControl telemetry={telemetry} summary={summary} apiClient={apiClient} branchPreview={branchPreview} onBranchPreview={setBranchPreview} />
+            <TargetingConsole telemetry={telemetry} execution={pipelineExecution} />
+            <section className="workspace-grid details-workspace">
+              <div className="main-column">
+                <section className="panel findings-panel" aria-label="Findings">
+                  <div className="panel-head">
+                    <div>
+                      <p className="eyebrow">intelligence matrix</p>
+                      <h2>Research findings</h2>
+                    </div>
+                    <div className="search-box">
+                      <Search size={16} />
+                      <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="search signals, origins, stages" />
+                    </div>
+                  </div>
+                  <FindingFilters
+                    stageFilter={stageFilter}
+                    riskFilter={riskFilter}
+                    originFilter={originFilter}
+                    originOptions={originOptions}
+                    onStageFilter={setStageFilter}
+                    onRiskFilter={setRiskFilter}
+                    onOriginFilter={setOriginFilter}
+                  />
+                  <FindingsMatrix findings={filtered} loading={status === "loading"} onReviewFinding={openDispatchReview} />
+                </section>
 
-        <aside className="side-column">
-          <ConnectorPanel connector={connector} />
-
-          <section className="panel" aria-label="Source health">
-            <div className="panel-head compact">
-              <div>
-                <p className="eyebrow">routes</p>
-                <h2>Source health</h2>
+                <section className="panel timeline-panel" aria-label="Runs">
+                  <div className="panel-head">
+                    <div>
+                      <p className="eyebrow">runs</p>
+                      <h2>Scout timeline</h2>
+                    </div>
+                  </div>
+                  <RunTimeline runs={summary?.runs ?? []} />
+                </section>
               </div>
-            </div>
-            <SourceHealth sources={summary?.source_health ?? []} />
-          </section>
 
-          <section className="panel digest-panel" aria-label="Digest">
-            <div className="panel-head compact">
-              <div>
-                <p className="eyebrow">digest</p>
-                <h2>Maintainer notes</h2>
-              </div>
-            </div>
-            <MaintainerNotes digest={summary?.digest} />
-          </section>
-        </aside>
-      </section>
+              <aside className="side-column">
+                <ConnectorPanel connector={connector} />
+
+                <section className="panel" aria-label="Source health">
+                  <div className="panel-head compact">
+                    <div>
+                      <p className="eyebrow">routes</p>
+                      <h2>Source health</h2>
+                    </div>
+                  </div>
+                  <SourceHealth sources={summary?.source_health ?? []} />
+                </section>
+
+                <section className="panel digest-panel" aria-label="Digest">
+                  <div className="panel-head compact">
+                    <div>
+                      <p className="eyebrow">digest</p>
+                      <h2>Maintainer notes</h2>
+                    </div>
+                  </div>
+                  <MaintainerNotes digest={summary?.digest} />
+                </section>
+              </aside>
+            </section>
+          </>
+        }
+      />
 
       {prepareControlOpen ? (
         <div className="modal-backdrop" role="presentation">

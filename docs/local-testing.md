@@ -21,8 +21,17 @@ Do not enter private keys or seed phrases; the dashboard uses a wallet signature
 
 ```bash
 cd C:\VNEM\vnem-src
-npm run dev:all
+npm run dashboard
 ```
+
+PowerShell:
+
+```powershell
+npm.cmd run dashboard
+```
+
+`npm run dashboard` aliases `npm run ard:dev`. `npm run dev:all`, `npm run ard:health`, and `npm run test:current` remain available.
+
 
 Then open:
 
@@ -57,7 +66,7 @@ Expected success:
 - Giving AI runs.
 - Dangerous findings appear and remain visible.
 - A `fixture-remote` or `dry-run` branch proof appears.
-- The `Changes by ARD` card shows display name `Changes by ARD`, Git branch `changes-by-ard`, and main protected.
+- The dashboard shows one canonical ARD operator console with mission header, ARD Control Center, pipeline timeline, Changes by ARD, review queue, AI status/public decision log, findings/evidence, system health, advanced/raw details collapsed by default, and planned features labeled planned/future.
 - Preview is dry-run only.
 - Prepare creates a reviewable local `changes-by-ard` commit when the repo is clean.
 - Push targets only `origin changes-by-ard` after exact confirmation.
@@ -107,7 +116,7 @@ npm run dev:health
 If PowerShell blocks `npm.ps1` because script execution is disabled, use `npm.cmd` instead:
 
 ```powershell
-npm.cmd run dev:all
+npm.cmd run dashboard
 npm.cmd run test:current
 npm.cmd run ard:browser-pipeline
 ```

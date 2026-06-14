@@ -368,6 +368,8 @@ back up an existing global file and replace only the marked VNEM block:
 
 Default installer behavior must remain dry-run/preview.
 
+For product/dashboard work, future Building AI runs must also read the repo-native state docs before editing: `docs/BUILDING_AI_STATE.md`, `docs/ARD_ROADMAP.md`, `docs/ARD_PRODUCT_BACKLOG.md`, and `docs/ARD_DECISION_LOG.md`. The standard is: Ship a real improvement. Prove it. Commit it. Push it. Leave the next run easier than this one.
+
 ## Product Direction
 
 VNEM's product direction is intentionally broader than repo self-improvement.
