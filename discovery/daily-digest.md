@@ -1,49 +1,45 @@
 # vnem Daily Signals
 
-Generated: 2026-06-13T09:10:00.000Z
+Generated: 2026-06-14T07:30:00.000Z
 
 Hermes summarizes source-backed agent and LLM ecosystem signals. This digest does not auto-promote entries into the registry.
 
-## New Candidate Signals (2026-06-13)
+## New Candidate Signals
 
 ### MCP Registry (official feed)
+
 - ai.aient/mcp | promising | review | https://registry.modelcontextprotocol.io/v0.1/servers/ai.aient%2Fmcp/versions/latest
 - AlphaCreek SEC Filings MCP | promising | review | https://registry.modelcontextprotocol.io/v0.1/servers/ai.alphacreek%2Falphacreek-mcp/versions/latest
 - Auralogs | promising | review | https://registry.modelcontextprotocol.io/v0.1/servers/ai.auralogs%2Fauralogs/versions/latest
 - Bareun — Korean NLP & Spell/Grammar Checking | promising | review | https://registry.modelcontextprotocol.io/v0.1/servers/ai.bareun%2Fbareun/versions/latest
-- @ui5/mcp-server | unreviewed | review | https://www.npmjs.com/package/@ui5/mcp-server
+
+### GitHub Search (high-signal)
+
+- Awesome-AI-Memory | promising | watchlist | https://github.com/IAAR-Shanghai/Awesome-AI-Memory — 978 stars, Apache-2.0, curated knowledge base on AI memory for LLMs and agents
+- ggui | unreviewed | review | https://github.com/ggui-ai/ggui — 32 stars, Apache-2.0, universal interface layer between AI agents and humans via MCP
+- design-skills | unreviewed | review | https://github.com/justinqwerty/design-skills — 8 stars, MIT, UX and design skills for AI agents (Claude Code, Cursor, Codex)
+- obsidian-skill | unreviewed | review | https://github.com/wizzy15/obsidian-skill — 5 stars, MIT, manage Obsidian vaults with CLI tools
+- CodeGraph-Explorer | unreviewed | watchlist | https://github.com/2cux/CodeGraph-Explorer — 2 stars, no license, local-first MCP code graph backend for AI coding agents
+- superpowers-zh | unreviewed | review | https://github.com/Leodorareluctant259/superpowers-zh — 4 stars, MIT, Chinese translation of Superpowers skills
+- laravel-ai-memory | unreviewed | watchlist | https://github.com/Siren55/laravel-ai-memory — 3 stars, MIT, AI agent memory in Laravel
+- Dhakira | unreviewed | watchlist | https://github.com/akaxhx-ctrl/Dhakira — 2 stars, Apache-2.0, Arabic-first agent memory system
+- mcp-firewall | unreviewed | review | https://github.com/Betoche57/mcp-firewall — 2 stars, MIT, security policies and sandboxing for MCP
+- skillbot | unreviewed | watchlist | https://github.com/Havishjupudi/skillbot — 2 stars, no license, customizable AI assistant via Markdown skills
+- agent-memory-dotnet | unreviewed | watchlist | https://github.com/joslat/agent-memory-dotnet — 2 stars, agent memory for .NET
+- agent-eval-harness | unreviewed | watchlist | https://github.com/linny006/agent-eval-harness — 2 stars, no license, live benchmark for AI coding agents on real GitHub issues
+- spaceship-mcp | unreviewed | review | https://github.com/Naveenkm007/spaceship-mcp — 2 stars, MCP server
+- alphora | unreviewed | review | https://github.com/RONIN511/alphora — 2 stars, agent tooling
+- SREAgents | unreviewed | watchlist | https://github.com/tareksyria/SREAgents — 2 stars, SRE agent framework
+
+### npm Registry
+
 - nx-mcp | unreviewed | review | https://www.npmjs.com/package/nx-mcp
+- mcp-framework | unreviewed | watchlist | https://www.npmjs.com/package/mcp-framework
 
-### GitHub Search (pushed >= 2026-06-11)
-- instar | unreviewed | watchlist | https://github.com/JKHeadley/instar — Persistent Claude Code agents with scheduling, sessions, memory, and Telegram. 66 stars, MIT.
-- agentclash | unreviewed | review | https://github.com/agentclash/agentclash — Open-source agent eval platform for real-world tasks. 24 stars, MIT.
-- eidetic_engine_cli | unreviewed | watchlist | https://github.com/Dicklesworthstone/eidetic_engine_cli — Durable local-first memory for coding agents in Rust. 24 stars.
-- vibe-editor | unreviewed | review | https://github.com/yusei531642/vibe-editor — Desktop companion for Claude Code. 3 stars, MIT.
-- the-librarian | unreviewed | watchlist | https://github.com/JimJafar/the-librarian — Agentic memory system as an MCP server. 2 stars, Apache-2.0.
-- ComfyUI-PuLID-Flux2 | unreviewed | review | https://github.com/armi10121-png/ComfyUI-PuLID-Flux2 — Identity control for Flux.2 models. 3 stars, MIT.
-- d2l-cli | unreviewed | review | https://github.com/clintonwrong53/d2l-cli — Read-only D2L Brightspace CLI for agents. 1 star, MIT.
-- octopai | unreviewed | watchlist | https://github.com/mriazi1982/octopai — AI agent skills evolution. 1 star, MIT.
-- OpenJarvisDashboard | unreviewed | watchlist | https://github.com/osteodystrophysalmonellatyphimurium635/OpenJarvisDashboard — AI model dashboard with graph execution. 1 star.
-- aionforge-memory | unreviewed | watchlist | https://github.com/Aionforge-Labs/aionforge-memory — Rust agentic memory with bi-temporal knowledge graph. 1 star, Apache-2.0.
-- agent-eval-harness | unreviewed | watchlist | https://github.com/linny006/agent-eval-harness — Live benchmark for AI coding agents on real GitHub issues. 2 stars.
-- ai-arize-agent-evaluation | unreviewed | watchlist | https://github.com/botextractai/ai-arize-agent-evaluation — Agent evaluation with Arize Phoenix. 3 stars.
+### Hacker News (watchlist leads)
 
-### Releases
-- hermes-agent: Hermes Agent v0.16.0 (2026.6.5) | unreviewed | review | https://github.com/NousResearch/hermes-agent/releases/tag/v2026.6.5
-- claude-code: v2.1.177 | unreviewed | review | https://github.com/anthropics/claude-code/releases/tag/v2.1.177
-- mcp: mcp-server-postgrest: v0.1.1 | unreviewed | review | https://github.com/supabase/mcp/releases/tag/mcp-server-postgrest-v0.1.1
-
-### Hacker News (watchlist leads — verify against primary sources)
-- Codex for Open Source | watchlist | watchlist | https://news.ycombinator.com/item?id=48497195
-- OpenAI to acquire Ona to expand Codex | watchlist | watchlist | https://news.ycombinator.com/item?id=48491821
-
-### Other
-- VTCode | promising | review | https://github.com/vinhnx/VTCode
-- auto-coding-agent-demo | watchlist | blocked | https://github.com/holygrail5565/auto-coding-agent-demo
-- agent-config | unreviewed | review | https://github.com/event4u-app/agent-config
-- reyn | unreviewed | review | https://github.com/tya5/reyn
-- OpenProgram | unreviewed | review | https://github.com/Fzkuji/OpenProgram
-- Dhakira | watchlist | watchlist | https://github.com/akaxhx-ctrl/Dhakira
+- Codex for open source | watchlist | watchlist | https://news.ycombinator.com/item?id=48497195
+- Is there a name for the type of comments agents add where they leak the prompt? | watchlist | watchlist | https://news.ycombinator.com/item?id=48522763
 
 ## Watched Primary Sources
 
@@ -78,3 +74,4 @@ Hermes summarizes source-backed agent and LLM ecosystem signals. This digest doe
 - Promote candidates only after checking source links, license posture, permissions, and install docs.
 - Keep social ingestion disabled unless official credentials and terms-compliant access are configured.
 - If generated pack files changed, verify `AGENTS.md`, `search-index.json`, `best-practices.md`, and `agent-workspace.md` still describe read-only behavior.
+- **New this cycle:** 4 MCP Registry entries (official feed) and 1 high-signal GitHub project (Awesome-AI-Memory, 978 stars) are candidates for promotion consideration.
