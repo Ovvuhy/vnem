@@ -2,6 +2,21 @@
 
 This log records product/workflow decisions future Building AI runs should preserve unless a later validated sprint changes them.
 
+## 2026-06-14 — ARD v2 becomes a repo/local improvement engine
+
+Decision: ARD must use source-lane research, candidate lifecycle memory, scoring/ranking, Protection safe actions, Giving work packages, and Changes by ARD work-package preview/prepare before it claims progress.
+
+Why: The prior ARD dashboard was useful but could still feel like a deterministic demo. Repeated review candidates and generic needs-review states did not reliably become branchable repo-owned work.
+
+Implemented contract:
+
+- `npm run ard:dogfood` proves the loop against the VNEM repo.
+- Runtime memory is intentional at `discovery/ard-memory/candidate-memory.json`.
+- Dogfood artifacts are intentional under `discovery/ard-runs/<run-id>/`.
+- Dangerous findings remain visible and excluded from Giving AI.
+- External metadata is optional/disabled unless real safe metadata lookup is explicitly enabled.
+- Changes by ARD remains protected; prepare creates `changes-by-ard`, push requires exact confirmation, and main is never pushed by ARD.
+
 ## 2026-06-14 — Productize ARD as an operator console
 
 Decision: ARD's primary dashboard should be one operator console, not a stack of competing telemetry panels.

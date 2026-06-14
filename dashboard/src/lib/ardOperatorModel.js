@@ -30,7 +30,8 @@ export function deriveArdOperatorModel({
   const branchWorkbench = controlRoom.branchWorkbench ?? {};
   const provider = telemetry.intelligenceProvider ?? {};
   const stageRows = normalizeTimelineStages({ pipelineRun, run, ardChangesCard, branchWorkbench, inbox });
-  const reviewQueue = normalizeReviewQueue(inbox);
+  const reviewQueue = normalizeReviewQueue(inbox, { pipelineRun });
+  const researchState = normalizeResearchState({ pipelineRun, reviewQueue });
   const findings = normalizeFindings({ pipelineRun, inbox, summary });
   const aiStatus = normalizeAiStatus({ provider, run, pipelineRun, telemetry, workStatus });
   const publicDecisionLog = normalizeDecisionLog({ telemetry, pipelineRun, controlRoom, ardChangesCard, findings });
@@ -51,6 +52,11 @@ export function deriveArdOperatorModel({
     lastPreview: ardChangesCard.lastPreview ?? null,
     lastPrepared: ardChangesCard.lastPrepared ?? null,
     lastPushed: ardChangesCard.lastPushed ?? null,
+    selectedWorkPackage: ardChangesCard.lastPreview?.selectedWorkPackage ?? pipelineRun?.giving?.workPackages?.[0] ?? null,
+    exactFiles: ardChangesCard.lastPreview?.exactFiles ?? pipelineRun?.giving?.workPackages?.[0]?.filesToChange ?? [],
+    preparedCommit: ardChangesCard.lastPrepared?.commitHash ?? null,
+    pushedCommit: ardChangesCard.lastPushed?.commitHash ?? null,
+    blockedReason: ardChangesCard.lastPreview?.blockedReason ?? null,
     actionLabel: ardChangesAction?.label ?? "Changes by ARD ready",
     mainPushAllowed: false,
     autoMergeAllowed: false
@@ -91,6 +97,7 @@ export function deriveArdOperatorModel({
     pipelineTimeline: stageRows,
     changesByArd,
     reviewQueue,
+    researchState,
     aiStatus,
     publicDecisionLog,
     findings,
@@ -135,7 +142,7 @@ function normalizeTimelineStages({ pipelineRun, run, ardChangesCard, branchWorkb
   ];
 }
 
-function normalizeReviewQueue(inbox = {}) {
+function normalizeReviewQueue(inbox = {}, { pipelineRun } = {}) {
   const lanes = inbox.lanes ?? {};
   const candidates = [
     ...(lanes.branchReady?.items ?? []),
@@ -144,7 +151,8 @@ function normalizeReviewQueue(inbox = {}) {
     ...(lanes.needsPrimarySource?.items ?? []),
     ...(lanes.weakSource?.items ?? [])
   ];
-  const reviewable = candidates.filter((candidate) => !["blocked", "quarantine", "quarantined"].includes(candidate.verdict ?? candidate.action));
+  const workPackageTitles = new Set((pipelineRun?.giving?.workPackages ?? []).map((workPackage) => String(workPackage.title ?? "").toLowerCase()));
+  const reviewable = candidates.filter((candidate) => !["blocked", "quarantine", "quarantined"].includes(candidate.verdict ?? candidate.action) && !workPackageTitles.has(String(candidate.title ?? "").toLowerCase()));
   const deduped = dedupeBy(reviewable, (candidate) => candidate.id ?? candidate.title).slice(0, 6).map((candidate) => ({
     id: String(candidate.id ?? candidate.title),
     title: candidate.title ?? "Untitled candidate",
@@ -153,15 +161,55 @@ function normalizeReviewQueue(inbox = {}) {
     nextAction: candidate.nextAction ?? candidate.whyNotBranchEligible ?? "Review before Giving AI can proceed."
   }));
   const summary = inbox.summary ?? {};
+  const workPackageCount = Number(pipelineRun?.giving?.workPackages?.length ?? 0);
   return {
     total: Number(summary.found ?? deduped.length),
-    branchReadyCount: Number(summary.branchReady ?? lanes.branchReady?.count ?? 0),
+    branchReadyCount: Math.max(Number(summary.branchReady ?? lanes.branchReady?.count ?? 0), workPackageCount),
     needsReviewCount: Number(summary.worthReviewingFirst ?? lanes.needsReview?.count ?? 0),
     blockedCount: Number(summary.blocked ?? lanes.blocked?.count ?? 0),
     quarantinedCount: Number(summary.quarantined ?? lanes.quarantined?.count ?? 0),
     lowSignalHidden: Number(summary.lowSignalHidden ?? 0),
     excludedCount: Number(summary.blocked ?? 0) + Number(summary.quarantined ?? 0) + Number(summary.lowSignalHidden ?? 0),
     items: deduped
+  };
+}
+
+function normalizeResearchState({ pipelineRun, reviewQueue }) {
+  const research = pipelineRun?.research ?? {};
+  const giving = pipelineRun?.giving ?? {};
+  const sourceLanes = (research.sourceLanes ?? []).map((lane) => ({
+    key: lane.key,
+    label: lane.label ?? lane.key,
+    status: lane.status ?? "unknown",
+    candidatesFound: Number(lane.candidatesFound ?? 0)
+  }));
+  const workPackages = (giving.workPackages ?? []).map((workPackage) => ({
+    workPackageId: workPackage.workPackageId,
+    title: workPackage.title,
+    safeAction: workPackage.safeAction,
+    filesToChange: workPackage.filesToChange ?? [],
+    testsToRun: workPackage.testsToRun ?? [],
+    blockedReasons: workPackage.blockedReasons ?? []
+  }));
+  const memory = research.memory ?? {};
+  const categories = research.categories ?? research.categoryDistribution ?? [];
+  return {
+    schema: research.schema ?? "unknown",
+    sourceLanes,
+    sourceLanesUsed: research.sourceLanesUsed ?? sourceLanes.filter((lane) => lane.candidatesFound > 0).map((lane) => lane.key),
+    categories,
+    reviewArtifactOnly: Number(pipelineRun?.protection?.reviewArtifactOnly ?? workPackages.filter((workPackage) => workPackage.safeAction === "review-artifact-only").length),
+    lifecycle: {
+      total: Number(memory.total ?? reviewQueue.total ?? 0),
+      repeated: Number(memory.repeated ?? 0),
+      suppressed: Number(memory.lowSignalCollapsed ?? reviewQueue.lowSignalHidden ?? 0),
+      branchReady: Number(memory.branchReady ?? reviewQueue.branchReadyCount ?? 0),
+      waitingForEvidence: Number(memory.waitingForEvidence ?? 0),
+      dangerous: Number(memory.dangerous ?? reviewQueue.blockedCount ?? 0)
+    },
+    workPackages,
+    branchReadyWorkPackages: workPackages.filter((workPackage) => !workPackage.blockedReasons?.length).length,
+    topRankedCandidates: research.ranking?.topCandidates ?? []
   };
 }
 

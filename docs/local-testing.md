@@ -74,6 +74,20 @@ Expected success:
 
 Current honest scope: this is a browser/local deterministic pipeline proof plus a protected branch commit proof. It is not live web research, not antivirus-grade protection, not auto-merge, and not a `main` push by ARD.
 
+## Dogfood ARD v2 against VNEM
+
+```bash
+npm run ard:dogfood
+```
+
+PowerShell:
+
+```powershell
+npm.cmd run ard:dogfood
+```
+
+Expected success: JSON showing source lanes used, candidates found, repeated/stale candidates, low-signal collapsed count, dangerous findings, Giving work packages, and Changes by ARD preview exact files. The command writes intentional artifacts under `discovery/ard-runs/<run-id>/` and lifecycle memory under `discovery/ard-memory/candidate-memory.json`. It does not push main, auto-merge, install external packages, or execute discovered repos.
+
 ## Quick non-browser test
 
 ```bash

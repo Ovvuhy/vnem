@@ -265,16 +265,18 @@ try {
   assert.equal(browserPipeline.body.schema, "vnem.ardBrowserPipeline.v1");
   assert.equal(browserPipeline.body.runId, "ard-browser-pipeline-test");
   assert.equal(browserPipeline.body.research.status, "completed");
-  assert.equal(browserPipeline.body.research.candidatesFound, 4);
-  assert.equal(browserPipeline.body.protection.allowed, 1);
+  assert.equal(browserPipeline.body.research.candidatesFound >= 7, true);
+  assert.equal(browserPipeline.body.research.sourceLanesUsed.length >= 3, true);
+  assert.equal(browserPipeline.body.protection.allowed >= 1, true);
   assert.equal(browserPipeline.body.protection.dangerousFindings.length >= 1, true, "Dangerous findings must stay visible");
   assert.equal(browserPipeline.body.protection.dangerousFindings.some((finding) => finding.excludedFromGiving === true), true);
   assert.equal(browserPipeline.body.giving.pushMode, "fixture-remote");
   assert.equal(browserPipeline.body.giving.pushed, true);
+  assert.equal(browserPipeline.body.giving.workPackages.length >= 1, true);
   assert.equal(browserPipeline.body.giving.branchName.startsWith("vnem-research/"), true);
   assert.equal(browserPipeline.body.branch.mode, "fixture-remote");
   assert.equal(browserPipeline.body.branch.pushed, true);
-  assert.equal(browserPipeline.body.nextAction.includes("Review"), true);
+  assert.equal(/Review|Preview|Changes by ARD/.test(browserPipeline.body.nextAction), true);
   assert.equal(existsSync(path.join(tmpRoot, "discovery", "ard-runs", "ard-browser-pipeline-test", "demo-summary.json")), true);
   assert.equal(existsSync(path.join(tmpRoot, "discovery", "ard-runs", "ard-browser-pipeline-test", "dangerous-findings.md")), true);
 
@@ -291,8 +293,8 @@ try {
 
   const browserPipelineHistory = await requestJson(port, "GET", "/api/telemetry/history");
   assert.equal(browserPipelineHistory.body.ard_browser_pipeline.runId, "ard-browser-pipeline-test");
-  assert.equal(browserPipelineHistory.body.active_ingestions.some((item) => item.id === "ard-browser-pipeline-test:clean-dashboard-launcher"), true);
-  assert.equal(browserPipelineHistory.body.active_ingestions.some((item) => item.id === "ard-browser-pipeline-test:token-stealing-postinstall-kit" && item.status === "isolated_by_protection"), true);
+  assert.equal(browserPipelineHistory.body.active_ingestions.some((item) => item.id.startsWith("ard-browser-pipeline-test:ard-") && item.status === "staged_for_review"), true);
+  assert.equal(browserPipelineHistory.body.active_ingestions.some((item) => item.id.startsWith("ard-browser-pipeline-test:ard-") && item.status === "isolated_by_protection"), true);
 
   const stagingFiles = await readdir(path.join(tmpRoot, ".vnem", "staging"));
   assert.equal(stagingFiles.length, 1, "Giving AI must stage exactly one dispatch file for the safe mocked repository");

@@ -85,6 +85,15 @@ export function ArdOperatorConsole({
             <div><dt>Mode</dt><dd>{model.changesByArd.mode}</dd></div>
             <div><dt>Auto-merge</dt><dd>{model.safety.autoMergeAllowed ? "allowed" : "not allowed"}</dd></div>
           </dl>
+          {model.changesByArd.selectedWorkPackage ? (
+            <div className="operator-work-package-preview">
+              <p className="eyebrow">selected work package</p>
+              <strong>{model.changesByArd.selectedWorkPackage.title}</strong>
+              <p>{model.changesByArd.selectedWorkPackage.safeAction} · exact files: {model.changesByArd.exactFiles.join(", ") || "not listed"}</p>
+              <p>Prepared commit: {model.changesByArd.preparedCommit ?? "not prepared"} · Pushed commit: {model.changesByArd.pushedCommit ?? "not pushed"}</p>
+              {model.changesByArd.blockedReason ? <p className="inline-warning">Blocked: {model.changesByArd.blockedReason}</p> : null}
+            </div>
+          ) : <p className="muted-text">No ARD v2 work package is selected yet. Run ARD dogfood or the local pipeline to produce one.</p>}
           <div className="control-actions compact-actions">
             <button type="button" className="secondary-action" onClick={onPreviewChanges} disabled={changesBusy === "previewing"}>{changesBusy === "previewing" ? "Previewing..." : model.changesByArd.buttonLabels.preview}</button>
             <button type="button" className="secondary-action" onClick={onPrepareChanges} disabled={changesBusy === "preparing"}>{changesBusy === "preparing" ? "Preparing..." : model.changesByArd.buttonLabels.prepare}</button>
@@ -115,6 +124,35 @@ export function ArdOperatorConsole({
             <span>{model.reviewQueue.needsReviewCount} needs review</span>
             <span>{model.reviewQueue.lowSignalHidden} low-signal collapsed</span>
           </div>
+          <div className="review-metrics-row">
+            <span>{model.researchState.sourceLanesUsed.length} source lanes active</span>
+            <span>{model.researchState.lifecycle.repeated} repeated</span>
+            <span>{model.researchState.lifecycle.waitingForEvidence} waiting for evidence</span>
+            <span>{model.researchState.branchReadyWorkPackages} work packages</span>
+            <span>{model.researchState.reviewArtifactOnly} review artifacts</span>
+          </div>
+          {model.researchState.sourceLanes.length ? (
+            <div className="operator-source-lanes">
+              {model.researchState.sourceLanes.map((lane) => <Badge key={lane.key} tone={lane.candidatesFound ? "ok" : "quiet"}>{lane.key}: {lane.candidatesFound}</Badge>)}
+            </div>
+          ) : null}
+          {model.researchState.categories?.length ? (
+            <div className="operator-source-lanes" aria-label="Research categories">
+              {model.researchState.categories.slice(0, 10).map((category) => <Badge key={category.key} tone={category.key === "roblox-luau" ? "review" : "ok"}>{category.key}: {category.count}</Badge>)}
+            </div>
+          ) : null}
+          {model.researchState.workPackages.length ? (
+            <div className="operator-review-list compact-list">
+              {model.researchState.workPackages.slice(0, 3).map((workPackage) => (
+                <article key={workPackage.workPackageId} className="operator-review-item">
+                  <strong>{workPackage.title}</strong>
+                  <Badge tone="ok">{workPackage.safeAction}</Badge>
+                  <p>Files: {workPackage.filesToChange.join(", ")}</p>
+                  <p>Tests: {workPackage.testsToRun.join(", ")}</p>
+                </article>
+              ))}
+            </div>
+          ) : null}
           <div className="operator-review-list">
             {model.reviewQueue.items.length ? model.reviewQueue.items.map((item) => (
               <article key={item.id} className="operator-review-item">
@@ -123,7 +161,7 @@ export function ArdOperatorConsole({
                 <p>{item.summary}</p>
                 <button type="button" className="secondary-action" onClick={() => onReviewCandidate?.(item)}>Review</button>
               </article>
-            )) : <p className="muted-text">No reviewable candidate is visible yet. Run the local ARD pipeline to populate this queue.</p>}
+            )) : model.researchState.workPackages.length ? <p className="muted-text">Primary queue is collapsed into actionable work packages and review artifacts above; blocked/dangerous items stay in Findings.</p> : <p className="muted-text">No reviewable candidate is visible yet. Run the local ARD pipeline to populate this queue.</p>}
           </div>
         </article>
       </section>

@@ -54,9 +54,27 @@ const model = deriveArdOperatorModel({
       { key: "protection", label: "Protection AI", status: "complete" },
       { key: "giving", label: "Giving AI", status: "complete" }
     ],
+    research: {
+      schema: "vnem.ardResearch.v2",
+      sourceLanes: [
+        { key: "repo-self", label: "Repo Self-Research Lane", status: "completed", candidatesFound: 2 },
+        { key: "docs-drift", label: "Docs Drift Lane", status: "completed", candidatesFound: 1 }
+      ],
+      sourceLanesUsed: ["repo-self", "docs-drift"],
+      categories: [{ key: "repo-automation", label: "Repo Automation", count: 2 }, { key: "roblox-luau", label: "Roblox/Luau", count: 1 }],
+      memory: { total: 3, repeated: 1, lowSignalCollapsed: 1, branchReady: 1, waitingForEvidence: 1, dangerous: 1 },
+      ranking: { topCandidates: [{ candidateId: "safe", title: "Safe candidate", score: 80 }] }
+    },
     dangerousFindings: [{ id: "danger", title: "Dangerous candidate", dangerousSignals: ["token exfiltration pattern"] }],
     branch: { mode: "fixture-remote" },
-    giving: { pushed: true, pushMode: "fixture-remote", included: 1, excluded: 2 }
+    giving: {
+      pushed: true,
+      pushMode: "fixture-remote",
+      included: 1,
+      excluded: 2,
+      workPackages: [{ workPackageId: "wp-safe", title: "Safe work package", safeAction: "docs-only", filesToChange: ["docs/ARD_DOGFOOD_STATUS.md"], testsToRun: ["npm run test:current"], blockedReasons: [] }]
+    },
+    protection: { reviewArtifactOnly: 1 }
   },
   ardChangesCard: {
     displayName: "Changes by ARD",
@@ -95,5 +113,13 @@ assert.ok(model.plannedFeatures.every((feature) => /planned|future/i.test(featur
 assert.equal(new Set(model.reviewQueue.items.map((item) => item.id)).size, model.reviewQueue.items.length, "review queue must be deduped");
 assert.equal(model.reviewQueue.items.some((item) => item.verdict === "blocked"), false, "blocked dangerous findings stay visible in findings, not the primary review queue");
 assert.equal(model.findings.dangerous.length, 1, "dangerous findings must dedupe by visible title across sources");
+assert.equal(model.researchState.sourceLanesUsed.length, 2, "operator model must expose active Research AI v2 source lanes");
+assert.equal(model.researchState.categories.length, 2, "operator model must expose research categories");
+assert.equal(model.researchState.reviewArtifactOnly, 1, "operator model must expose review-artifact-only candidates");
+assert.equal(model.researchState.lifecycle.repeated, 1, "operator model must expose repeated candidate memory");
+assert.equal(model.researchState.lifecycle.suppressed, 1, "operator model must expose suppressed/low-signal candidate count");
+assert.equal(model.researchState.branchReadyWorkPackages, 1, "operator model must expose branch-ready work packages");
+assert.equal(model.changesByArd.selectedWorkPackage.workPackageId, "wp-safe", "Changes by ARD must show selected work package");
+assert.deepEqual(model.changesByArd.exactFiles, ["docs/ARD_DOGFOOD_STATUS.md"], "Changes by ARD must expose exact work package files");
 
 console.log("dashboard operator model tests passed");

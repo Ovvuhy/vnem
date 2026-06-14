@@ -112,6 +112,15 @@ export async function prepareArdChanges(payload = {}, options = {}) {
 
   try {
     await gitRunner(["checkout", "-B", CHANGES_BY_ARD_BRANCH, baseBranch], { cwd: repositoryRoot });
+    for (const relative of preview.workPackageGeneratedFiles ?? []) {
+      const absolute = path.join(repositoryRoot, relative);
+      const content = buildWorkPackageGeneratedFile(preview, summary, relative);
+      if (unsafeTextPattern.test(content)) {
+        return failure("ARD_CHANGES_UNSAFE_WORK_PACKAGE_TEXT", "Generated work package text contained secret-like or unsafe execution text and was not written.", preview, { mode: "local commit" });
+      }
+      await mkdir(path.dirname(absolute), { recursive: true });
+      await writeFile(absolute, content, "utf8");
+    }
     for (const [relative, content] of [
       [files.summary, `${JSON.stringify(summary, null, 2)}\n`],
       [files.changes, changesMarkdown],
@@ -193,6 +202,8 @@ export async function pushArdChanges(payload = {}, options = {}) {
 function buildPlan(payload, now) {
   const runId = normalizeRunId(payload.runId ?? payload.run_id ?? payload.id ?? `ard-change-${now}`);
   const files = artifactFiles(runId);
+  const workPackage = normalizeWorkPackage(payload.workPackage ?? payload.work_package ?? null);
+  const workPackageFiles = safeGeneratedWorkPackageFiles(workPackage);
   const title = sanitizeText(payload.title ?? payload.mission ?? "Changes by ARD v1: safe repo-owned branch commit proof", 160);
   return {
     ok: true,
@@ -203,7 +214,13 @@ function buildPlan(payload, now) {
     runId,
     title,
     generatedAt: now,
-    source: "repo-owned deterministic improvement artifact",
+    source: workPackage ? "repo-owned ARD work package" : "repo-owned deterministic improvement artifact",
+    workPackage,
+    selectedWorkPackage: workPackage,
+    exactFiles: workPackage?.filesToChange ?? [],
+    testsToRun: workPackage?.testsToRun ?? [],
+    blockedReason: workPackage?.blockedReasons?.length ? workPackage.blockedReasons.join("; ") : null,
+    whySafe: workPackage?.riskNotes ?? ["Repo-owned deterministic improvement artifact; no external package install or discovered repo execution."],
     allowedSources: [
       "repo-owned deterministic improvement artifact",
       "approved/staged .vnem dispatch already inside repo",
@@ -220,7 +237,8 @@ function buildPlan(payload, now) {
       "push main",
       "auto-merge"
     ],
-    changedFiles: [files.summary, files.changes, files.latest],
+    changedFiles: [...workPackageFiles, files.summary, files.changes, files.latest],
+    workPackageGeneratedFiles: workPackageFiles,
     artifactDirectory: `${artifactRoot}/${runId}`,
     needsConfirmation: true,
     requiredConfirmation: CHANGES_BY_ARD_CONFIRMATION
@@ -249,6 +267,11 @@ function buildSummary(plan, now, mode) {
     mergeStatus: "not-merged",
     allowedSources: plan.allowedSources,
     forbiddenActions: plan.forbiddenActions,
+    selectedWorkPackage: plan.selectedWorkPackage,
+    exactFiles: plan.exactFiles,
+    testsToRun: plan.testsToRun,
+    whySafe: plan.whySafe,
+    blockedReason: plan.blockedReason,
     changedFiles: plan.changedFiles,
     reviewRequired: true,
     confirmationRequired: true
@@ -270,9 +293,88 @@ function buildChangesMarkdown(plan, summary) {
     `- Run id: ${plan.runId}`,
     `- Title: ${plan.title}`,
     `- Mode: ${summary.mode}`,
+    `- Selected work package: ${plan.selectedWorkPackage?.workPackageId ?? "none"}`,
+    `- Exact files: ${(plan.exactFiles ?? []).join(", ") || "artifact-only"}`,
+    `- Tests to run: ${(plan.testsToRun ?? []).join(", ") || "review artifact only"}`,
     "- Review before merging.",
+    "",
+    "## Why this is safe",
+    "",
+    ...((plan.whySafe ?? []).map((item) => `- ${item}`)),
     ""
   ].join("\n");
+}
+
+function normalizeWorkPackage(workPackage) {
+  if (!workPackage || typeof workPackage !== "object") return null;
+  return {
+    workPackageId: sanitizeText(workPackage.workPackageId ?? workPackage.id ?? "ard-work-package", 120),
+    title: sanitizeText(workPackage.title ?? "ARD work package", 180),
+    candidateId: sanitizeText(workPackage.candidateId ?? "unknown-candidate", 120),
+    safeAction: sanitizeText(workPackage.safeAction ?? "review-only", 80),
+    whyThisImprovesVNEM: sanitizeText(workPackage.whyThisImprovesVNEM ?? "Improves VNEM through repo-owned evidence.", 400),
+    filesToChange: sanitizeStringArray(workPackage.filesToChange).filter(isSafeRelativePath).slice(0, 12),
+    changeType: sanitizeText(workPackage.changeType ?? "repo-owned improvement", 120),
+    expectedDiffSummary: sanitizeText(workPackage.expectedDiffSummary ?? "Prepare repo-owned ARD work package evidence.", 400),
+    testsToRun: sanitizeStringArray(workPackage.testsToRun).slice(0, 12),
+    userVisibleResult: sanitizeText(workPackage.userVisibleResult ?? "Operator can review a concrete ARD work package.", 300),
+    rollbackNotes: sanitizeStringArray(workPackage.rollbackNotes).slice(0, 8),
+    riskNotes: sanitizeStringArray(workPackage.riskNotes).slice(0, 8),
+    blockedReasons: sanitizeStringArray(workPackage.blockedReasons).slice(0, 8)
+  };
+}
+
+function safeGeneratedWorkPackageFiles(workPackage) {
+  if (!workPackage || workPackage.blockedReasons?.length) return [];
+  return workPackage.filesToChange.filter((file) => file === "docs/ARD_DOGFOOD_STATUS.md" || file.startsWith("discovery/ard-changes/"));
+}
+
+function buildWorkPackageGeneratedFile(preview, summary, relative) {
+  const workPackage = preview.selectedWorkPackage;
+  return [
+    "# ARD Dogfood Status",
+    "",
+    `Generated by: ${CHANGES_BY_ARD_DISPLAY_NAME}`,
+    `Branch: ${CHANGES_BY_ARD_BRANCH}`,
+    `Run: ${preview.runId}`,
+    `Work package: ${workPackage?.workPackageId ?? "unknown"}`,
+    `Title: ${workPackage?.title ?? preview.title}`,
+    `Safe action: ${workPackage?.safeAction ?? "review-only"}`,
+    `Change type: ${workPackage?.changeType ?? "repo-owned evidence"}`,
+    "",
+    "## Why this improves VNEM",
+    "",
+    workPackage?.whyThisImprovesVNEM ?? "Records ARD dogfood proof for maintainer review.",
+    "",
+    "## Exact files requested by the work package",
+    "",
+    ...((preview.exactFiles ?? []).length ? preview.exactFiles.map((file) => `- ${file}`) : ["- artifact-only"]),
+    "",
+    "## Tests to run before review",
+    "",
+    ...((preview.testsToRun ?? []).length ? preview.testsToRun.map((command) => `- ${command}`) : ["- npm run test:current"]),
+    "",
+    "## Safety",
+    "",
+    "- Main remains protected.",
+    "- No auto-merge is performed.",
+    "- No external candidate package is installed.",
+    "- No discovered repository code is executed.",
+    "- Dangerous findings remain report-only.",
+    "",
+    `Artifact summary: ${summary.runId}`,
+    `Generated file: ${relative}`,
+    ""
+  ].join("\n");
+}
+
+function sanitizeStringArray(values) {
+  return Array.isArray(values) ? values.map((value) => sanitizeText(value, 240)).filter(Boolean) : [];
+}
+
+function isSafeRelativePath(value) {
+  const text = String(value ?? "");
+  return Boolean(text && !path.isAbsolute(text) && !text.includes("..") && !/[\\\u0000-\u001f]/.test(text));
 }
 
 async function readRepoState(gitRunner, repositoryRoot) {

@@ -65,6 +65,38 @@ await test("preview is dry-run and describes deterministic repo-owned artifact",
   assert.equal(calls.some((args) => args[0] === "commit" || args[0] === "push"), false, "preview must not commit or push");
 });
 
+await test("preview accepts an ARD work package and lists exact files", async () => {
+  const preview = await previewArdChanges({
+    runId: "dogfood-work-package",
+    title: "Dogfood work package",
+    workPackage: {
+      workPackageId: "wp-dogfood",
+      title: "Record ARD dogfood status",
+      candidateId: "candidate-docs",
+      safeAction: "docs-only",
+      whyThisImprovesVNEM: "Shows dogfood proof to operators.",
+      filesToChange: ["docs/ARD_DOGFOOD_STATUS.md"],
+      testsToRun: ["npm run test:current"],
+      riskNotes: ["repo-owned docs only"],
+      blockedReasons: []
+    }
+  }, {
+    repositoryRoot: "/tmp/vnem-preview",
+    gitRunner: async (args) => {
+      if (args.join(" ") === "branch --show-current") return "main\n";
+      if (args.join(" ") === "status --short") return "";
+      if (args.join(" ") === "rev-parse HEAD") return "base123\n";
+      return "";
+    },
+    now: "2026-06-13T12:00:00.000Z"
+  });
+  assert.equal(preview.ok, true);
+  assert.equal(preview.selectedWorkPackage.workPackageId, "wp-dogfood");
+  assert.deepEqual(preview.exactFiles, ["docs/ARD_DOGFOOD_STATUS.md"]);
+  assert.equal(preview.changedFiles.includes("docs/ARD_DOGFOOD_STATUS.md"), true);
+  assert.equal(preview.testsToRun.includes("npm run test:current"), true);
+});
+
 await test("prepare creates a real local commit on changes-by-ard and returns to clean main", async () => {
   const root = await mkdtemp(path.join(os.tmpdir(), "vnem-ard-changes-"));
   try {
@@ -100,6 +132,44 @@ await test("prepare creates a real local commit on changes-by-ard and returns to
     assert.equal(summary.displayName, "Changes by ARD");
     assert.equal(summary.branchName, "changes-by-ard");
     assert.equal(summary.mainProtected, true);
+    await git(root, ["checkout", "main"]);
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
+
+await test("prepare can commit safe work package generated files without touching main", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "vnem-ard-work-package-"));
+  try {
+    await git(root, ["init", "-b", "main"]);
+    await git(root, ["config", "user.name", "VNEM Test"]);
+    await git(root, ["config", "user.email", "vnem-test@example.invalid"]);
+    await git(root, ["remote", "add", "origin", "https://github.com/Ovvuhy/vnem.git"]);
+    await git(root, ["commit", "--allow-empty", "-m", "seed main"]);
+    const mainBefore = (await git(root, ["rev-parse", "HEAD"])).trim();
+    const prepare = await prepareArdChanges({
+      runId: "dogfood-work-package",
+      title: "Dogfood work package",
+      workPackage: {
+        workPackageId: "wp-dogfood",
+        title: "Record ARD dogfood status",
+        candidateId: "candidate-docs",
+        safeAction: "docs-only",
+        whyThisImprovesVNEM: "Shows dogfood proof to operators.",
+        filesToChange: ["docs/ARD_DOGFOOD_STATUS.md"],
+        testsToRun: ["npm run test:current"],
+        riskNotes: ["repo-owned docs only"],
+        blockedReasons: []
+      }
+    }, { repositoryRoot: root, now: "2026-06-13T12:01:30.000Z" });
+    assert.equal(prepare.ok, true);
+    assert.equal((await git(root, ["branch", "--show-current"])).trim(), "main");
+    assert.equal((await git(root, ["rev-parse", "HEAD"])).trim(), mainBefore);
+    await git(root, ["checkout", "changes-by-ard"]);
+    const dogfoodStatus = await readFile(path.join(root, "docs", "ARD_DOGFOOD_STATUS.md"), "utf8");
+    assert.match(dogfoodStatus, /Record ARD dogfood status/);
+    const summary = JSON.parse(await readFile(path.join(root, "discovery", "ard-changes", "dogfood-work-package", "summary.json"), "utf8"));
+    assert.deepEqual(summary.exactFiles, ["docs/ARD_DOGFOOD_STATUS.md"]);
     await git(root, ["checkout", "main"]);
   } finally {
     await rm(root, { recursive: true, force: true });

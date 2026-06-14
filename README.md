@@ -89,7 +89,29 @@ npm.cmd run dashboard
 
 The dashboard exposes explicit review controls. A staged Giving AI dispatch can be opened, inspected as markdown, promoted into `.vnem/approved/`, or rejected and deleted from `.vnem/staging/`. Approval does not commit code, execute scripts, install packages, or touch external systems.
 
-ARD Browser Pipeline v1 wires the top `Run ARD pipeline` button to the local backend. With `npm run ard:dev` running, the browser calls `POST /api/ard/pipeline/run`, runs the deterministic local Research AI -> Protection AI -> Giving AI path, writes `discovery/ard-runs/<run-id>/`, shows dangerous findings, and records a `fixture-remote` research branch proof. This is a real local/browser capability, not live web research and not antivirus-grade protection.
+ARD Browser Pipeline v1 wires the top `Run ARD pipeline` button to the local backend. With `npm run ard:dev` running, the browser calls `POST /api/ard/pipeline/run`, runs the repo/local Research AI v2 -> Protection AI v2 -> Giving AI v2 path, writes `discovery/ard-runs/<run-id>/`, shows dangerous findings, records source lanes/lifecycle/work packages, and records a `fixture-remote` research branch proof. This is a real local/browser capability, not live web research and not antivirus-grade protection.
+
+Dogfood the ARD v2 improvement loop without opening the dashboard:
+
+```bash
+npm run ard:dogfood
+```
+
+PowerShell:
+
+```powershell
+npm.cmd run ard:dogfood
+```
+
+This proves source lanes, candidate memory, scoring/ranking, Protection safe actions, Giving work packages, and Changes by ARD preview exact files. It intentionally writes `discovery/ard-runs/<run-id>/` artifacts and `discovery/ard-memory/candidate-memory.json`; it does not push `main` or auto-merge.
+
+Quick current verification:
+
+```powershell
+npm.cmd run test:current
+```
+
+ARD v2 research categories include AI skills, MCPs, agent frameworks, evals/benchmarks, safety/security, prompting playbooks, repo automation, documentation systems, browser automation, data/memory/retrieval, coding tools, general devtools, and Roblox/Luau as one capped category. Missing-license external repositories are review-artifact-only or waiting-for-evidence; they are not implementable code.
 
 Quick user test path without opening the dashboard:
 

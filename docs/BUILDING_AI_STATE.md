@@ -15,7 +15,24 @@ ARD — AI Research Dashboard is the current dashboard/product surface for this 
 - visible dangerous findings that are excluded from implementable Giving work;
 - fixture/dry-run research branch proof, not a main push;
 - Changes by ARD protected branch lane using `changes-by-ard` with exact confirmation;
-- local backend routes for dashboard status, ARD pipeline runs, review queues, builder health, and protected branch actions.
+- local backend routes for dashboard status, ARD pipeline runs, review queues, builder health, and protected branch actions;
+- ARD v2 repo/local dogfood through `npm run ard:dogfood`.
+
+## Current acceleration state
+
+ARD Capability Expansion v2 turns ARD from a deterministic demo into a repo/local improvement engine:
+
+- Research AI v2 uses source lanes for repo self-research, backlog/roadmap, run-history/failure, dashboard/product weakness, test/validation gaps, docs drift, Changes by ARD opportunities, and optional external metadata.
+- Candidate lifecycle memory lives at `discovery/ard-memory/candidate-memory.json` and tracks first/last seen, times seen, lifecycle state, missing evidence, suppression, safe action, and branch eligibility.
+- Candidate scoring ranks product impact, user-visible impact, actionability, branchability, evidence, source quality, safety/license risk, complexity, testability, novelty, and staleness.
+- Protection AI v2 explains branch eligibility, safe action, missing evidence, why-not-branch-eligible, and whether Giving AI / Changes by ARD can use the candidate.
+- Giving AI v2 emits work packages with exact files, tests, diff summary, rollback notes, risk notes, and blocked reasons.
+- Changes by ARD can preview selected work packages with exact files and prepare a protected branch commit without touching main.
+- The dashboard operator model exposes source lanes, repeated/suppressed counts, work packages, exact files, and prepared/pushed commit status.
+- ARD v2.2 adds a research category taxonomy beyond Roblox/Luau: AI skills, MCPs, agent frameworks, coding tools, research methods, evals/benchmarks, safety/security, prompting playbooks, repo automation, documentation systems, browser automation, data/memory/retrieval, Roblox/Luau, and general devtools.
+- External GitHub repositories with missing or unknown license metadata are auto-triaged as review-artifact-only or waiting-for-evidence. They are not implementable code, are not installed, are not executed, and do not dominate the primary review queue.
+
+Dogfood run `ard-dogfood-continuation` found 26 candidates across 8 source lanes and 14 categories, kept Roblox/Luau to one category, counted 5 review-artifact-only external candidates, kept 1 dangerous finding visible/excluded, produced 24 work packages, and produced a Changes by ARD preview-ready work package with exact files.
 
 ## Recently shipped
 
@@ -34,7 +51,7 @@ ARD — AI Research Dashboard is the current dashboard/product surface for this 
 
 ## Current priority
 
-Productize ARD into a clean operator console while preserving safety: main protected, dangerous findings visible, Changes by ARD protected, public summaries only, no hidden chain-of-thought, no live research claim, and no auto-merge.
+Use ARD v2 to make the Research → Protection → Giving → Changes by ARD loop produce safer, more specific repo-owned work packages. Keep main protected, dangerous findings visible, Changes by ARD protected, public summaries only, no hidden chain-of-thought, no fake live research claim, and no auto-merge.
 
 ## Next 5 high-impact tasks
 

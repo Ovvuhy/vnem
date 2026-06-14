@@ -3716,6 +3716,26 @@ a {
   width: 100%;
   min-height: 92px;
 }
+.operator-work-package-preview,
+.operator-source-lanes {
+  border: 1px solid rgba(245, 238, 232, .12);
+  border-radius: 14px;
+  padding: .75rem;
+  background: rgba(2, 6, 23, .24);
+}
+.operator-source-lanes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .45rem;
+}
+.compact-list {
+  margin: .7rem 0;
+}
+.operator-work-package-preview strong,
+.operator-review-item strong {
+  display: block;
+  overflow-wrap: anywhere;
+}
 .review-metrics-row {
   display: flex;
   gap: .5rem;

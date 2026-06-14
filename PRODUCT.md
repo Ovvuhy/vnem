@@ -9,6 +9,7 @@ Use the current product framing precisely:
 - **Research AI** finds source-backed improvement candidates.
 - **Protection AI** checks risk, provenance, permissions, package/install surface, license concerns, and blocked/quarantine states.
 - **Giving AI** stages approved/reviewable work as local markdown dispatches and reports validation/rollback notes when changes are explicitly requested.
+- **ARD v2** runs a repo/local multi-lane Research → Protection → Giving loop with candidate lifecycle memory, branch eligibility, review-artifact-only handling for unresolved external repositories, Giving work packages, and Changes by ARD protected-branch previews.
 - **VNEM Connectors** are the future-safe local client configuration path: detect, preview, apply, revert, log, and never fake connection state.
 - **VNEM AI** is planned, not currently a trained standalone model: a future customizable AI surface with modes, providers, tools, rules, memory, and app-builder/security workflows.
 
@@ -38,6 +39,8 @@ vnem is currently an open-core knowledge system with four surfaces:
 - **Generated indexes:** `public/api/index.json`, `llms.txt`, and `llms-full.txt` expose compact LLM-readable and API-readable views of the registry.
 
 The public landing page should explain those surfaces. This repository should keep producing the trustworthy data behind them.
+
+ARD research categories are intentionally broader than Roblox/Luau. They include AI skills, MCPs, agent frameworks, coding tools, research methods, evals/benchmarks, safety/security, prompting playbooks, repo automation, documentation systems, browser automation, data/memory/retrieval, general devtools, and Roblox/Luau as one capped category. Live external research remains planned unless a future sprint implements and validates it; current unresolved external GitHub repositories are metadata/review artifacts only and are not implementable code.
 
 ## Primary Users
 

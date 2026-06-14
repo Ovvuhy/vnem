@@ -731,7 +731,7 @@ export async function runArdBrowserPipeline(payload = {}, options = {}) {
       schema: "vnem.ardDemo.v1",
       runId: research.runId,
       mode: normalized.mode,
-      research: { status: research.status, candidatesFound: research.candidatesFound },
+      research: { status: research.status, candidatesFound: research.candidatesFound, categories: research.categories ?? [] },
       protection: { allowed: protection.allowed, needsReview: protection.needsReview, quarantined: protection.quarantined, blocked: protection.blocked, dangerousFindings: protection.dangerousFindings.length },
       giving: { branchName: giving.branchName, commit: giving.commit, pushed: giving.pushed, pushMode: giving.pushMode, included: giving.includedCandidates.length, excluded: giving.excludedCandidates.length },
       nextAction: giving.nextAction
@@ -761,8 +761,15 @@ function normalizeArdBrowserPipelinePayload(payload = {}) {
 function compactArdResearch(research) {
   return {
     status: research.status,
+    schema: research.schema,
     candidatesFound: research.candidatesFound,
     sourcesChecked: research.sourcesChecked,
+    sourceLanes: research.sourceLanes ?? [],
+    sourceLanesUsed: (research.sourceLanes ?? []).filter((lane) => Number(lane.candidatesFound ?? 0) > 0).map((lane) => lane.key),
+    categories: research.categories ?? [],
+    categoryDistribution: research.categories ?? [],
+    memory: research.memory ?? null,
+    ranking: research.ranking ?? null,
     finishedAt: research.finishedAt
   };
 }
@@ -776,13 +783,17 @@ function compactArdProtection(protection) {
     needsReview: protection.needsReview,
     quarantined: protection.quarantined,
     blocked: protection.blocked,
-    dangerousFindings: protection.dangerousFindings
+    branchEligible: protection.branchEligible ?? protection.verdicts?.filter((verdict) => verdict.branchEligible).length ?? 0,
+    reviewArtifactOnly: protection.verdicts?.filter((verdict) => verdict.allowedOutput === "review-artifact-only" || verdict.safeAction === "review-artifact-only").length ?? 0,
+    dangerousFindings: protection.dangerousFindings,
+    verdicts: protection.verdicts ?? []
   };
 }
 
 function compactArdGiving(giving) {
   return {
     ok: Boolean(giving.ok),
+    schema: giving.schema,
     branchName: giving.branchName,
     baseBranch: giving.baseBranch,
     pushMode: giving.pushMode,
@@ -792,6 +803,8 @@ function compactArdGiving(giving) {
     excluded: giving.excludedCandidates?.length ?? 0,
     includedCandidates: giving.includedCandidates ?? [],
     excludedCandidates: giving.excludedCandidates ?? [],
+    workPackages: giving.workPackages ?? giving.givingV2?.workPackages ?? [],
+    lowSignalCollapsedCount: giving.givingV2?.lowSignalCollapsedCount ?? 0,
     dangerousFindings: giving.dangerousFindings ?? [],
     validationStatus: giving.validationStatus,
     nextAction: giving.nextAction
@@ -827,7 +840,8 @@ function toArdBrowserIngestions({ research, protection, giving, finishedAt }) {
   const verdicts = new Map(protection.verdicts.map((verdict) => [verdict.candidateId, verdict]));
   const included = new Set((giving.includedCandidates ?? []).map((candidate) => candidate.id));
   return research.candidates.map((candidate) => {
-    const verdict = verdicts.get(candidate.id) ?? { verdict: "needs-review", dangerousSignals: [], reasons: [] };
+    const candidateId = candidate.id ?? candidate.candidateId;
+    const verdict = verdicts.get(candidateId) ?? { verdict: "needs-review", dangerousSignals: [], reasons: [] };
     const isolated = ["blocked", "quarantine"].includes(verdict.verdict);
     const safe = verdict.verdict === "allow";
     const status = isolated ? "isolated_by_protection" : safe ? "staged_for_review" : "awaiting_manual_review";
@@ -839,12 +853,12 @@ function toArdBrowserIngestions({ research, protection, giving, finishedAt }) {
         ? `Giving AI included ${candidate.title} in ${giving.branchName}.`
         : `Protection AI requires manual review before Giving AI can use ${candidate.title}.`;
     return {
-      id: `${research.runId}:${candidate.id}`,
+      id: `${research.runId}:${candidateId}`,
       title: candidate.title,
-      source_url: candidate.sourceUrl,
+      source_url: candidate.sourceUrl ?? candidate.sourceKey ?? null,
       source_route: "ard-browser-pipeline",
       source_origin: "ARD Browser Pipeline v1",
-      action_dispatch: included.has(candidate.id) ? "Included in browser Giving branch" : isolated ? "Excluded from Giving AI" : "Manual review required",
+      action_dispatch: included.has(candidateId) ? "Included in browser Giving branch" : isolated ? "Excluded from Giving AI" : "Manual review required",
       current_agent: isolated ? "protection" : safe ? "complete" : "review",
       status,
       pipeline_verdict: verdict.verdict,
@@ -852,7 +866,7 @@ function toArdBrowserIngestions({ research, protection, giving, finishedAt }) {
       threat_score: threatScore,
       repository: {
         full_name: candidate.title,
-        html_url: candidate.sourceUrl,
+        html_url: candidate.sourceUrl ?? candidate.sourceKey ?? null,
         description: candidate.summary,
         language: "metadata",
         source_route: "ard-browser-pipeline",

@@ -258,10 +258,11 @@ npm run doctor -- /path/to/project</code></pre>
           <div class="install-grid secondary-install">
             <div>
               <h2>Need dashboard review?</h2>
-              <p>Run the local app server and dashboard together. Use the dashboard to submit a target, watch Research AI / Protection AI / Giving AI telemetry, review staged dispatch markdown, and approve or reject it safely.</p>
+              <p>Run the ARD operator console with the primary dashboard command. Use it to inspect repo/local Research AI v2 lanes, Protection AI v2 branch eligibility, Giving AI work packages, and Changes by ARD protected branch previews. <code>npm run dev:all</code> remains a secondary broad launcher.</p>
             </div>
-            <pre class="code-block"><code>npm run dev:all
-# then open the printed dashboard URL</code></pre>
+            <pre class="code-block"><code>npm.cmd run dashboard
+npm.cmd run ard:dogfood
+npm.cmd run test:current</code></pre>
           </div>
 
           <div class="install-grid secondary-install">

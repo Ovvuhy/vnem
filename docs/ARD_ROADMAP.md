@@ -2,23 +2,20 @@
 
 This roadmap is a practical operator backlog for ARD inside VNEM. It separates real current capability from future work so the dashboard does not become placebo UI.
 
-## Now: ARD operator console
+## Now: ARD v2 improvement engine
 
-Goal: make the dashboard answer, without excessive scrolling:
+Goal: make ARD prove a real repo-owned improvement loop:
 
-- what ARD is doing;
-- what provider/model/mode is active;
-- what Research AI found;
-- what Protection AI decided;
-- what Giving AI prepared;
-- what Changes by ARD can do;
-- what needs review;
-- what is dangerous;
-- what safe action is next.
+- Research AI v2 discovers work from multiple repo/local lanes;
+- candidate memory prevents silent repeated stale review spam;
+- Protection AI v2 explains branch eligibility, safe action, and missing evidence;
+- Giving AI v2 produces work packages, not just reports;
+- Changes by ARD previews selected work packages with exact files and can prepare a protected branch commit;
+- the dashboard shows source lanes, lifecycle state, work packages, dangerous findings, and commit state.
 
-Evidence required: focused dashboard model tests, dashboard build, browser visual check, and no console error flood.
+Evidence required: `npm run ard:dogfood`, focused ARD v2 tests, dashboard build, browser visual check, and safety grep.
 
-## Next: better review and evidence quality
+## Next: work-package validation evidence
 
 Improve candidate review quality before any deeper automation:
 

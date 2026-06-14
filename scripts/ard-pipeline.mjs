@@ -5,6 +5,7 @@ import { promisify } from "node:util";
 import path from "node:path";
 import os from "node:os";
 import { fileURLToPath } from "node:url";
+import { classifyWithProtectionV2, createGivingWorkPackages, rankArdCandidates, runResearchV2 } from "./ard-capability-engine.mjs";
 
 const execFileAsync = promisify(execFile);
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
@@ -95,6 +96,9 @@ export function firstPassSafety(candidate) {
 
 export async function runResearch(options = {}) {
   const { rootDir = defaultRootDir, runId = createRunId(), mission = "ARD deterministic demo research", mode = "demo/local research source", now = () => new Date().toISOString(), candidates = demoCandidates, write = true } = options;
+  if (!options.legacyDemo && !options.candidates) {
+    return runResearchV2({ rootDir, runId, mission, now, write, includeExternal: Boolean(options.includeExternal) });
+  }
   const startedAt = now();
   const enriched = candidates.map((candidate) => ({ ...candidate, ...firstPassSafety(candidate) }));
   const output = {
@@ -158,6 +162,56 @@ export function reviewCandidate(candidate) {
 export async function runProtection(options = {}) {
   const { rootDir = defaultRootDir, runId, research, now = () => new Date().toISOString(), write = true } = options;
   const researchData = research ?? await readJson(path.join(runDir(rootDir, runId), "research.json"));
+  if (researchData.schema === "vnem.ardResearch.v2") {
+    const ranked = rankArdCandidates(researchData.candidates, { memory: researchData.memory });
+    const protection = classifyWithProtectionV2(ranked.candidates);
+    const verdicts = protection.verdicts.map((item) => ({
+      candidateId: item.candidateId,
+      title: item.title,
+      sourceUrl: researchData.candidates.find((candidate) => candidate.candidateId === item.candidateId)?.sourceKey ?? null,
+      verdict: item.verdict === "quarantined" ? "quarantine" : item.verdict,
+      confidence: item.branchEligible ? 0.84 : item.verdict === "blocked" ? 0.9 : 0.72,
+      reasons: [item.whyNotBranchEligible, ...(item.whatWouldMakeItBranchEligible ?? [])].filter(Boolean),
+      evidence: researchData.candidates.find((candidate) => candidate.candidateId === item.candidateId)?.evidence ?? [],
+      dangerousSignals: item.dangerousSignals,
+      requiredManualChecks: item.missingEvidence,
+      missingEvidence: item.missingEvidence,
+      safeAction: item.safeAction,
+      branchEligible: item.branchEligible,
+      canCreateReviewArtifact: item.canCreateReviewArtifact,
+      canFeedGiving: item.canFeedGiving,
+      canFeedChangesByArd: item.canFeedChangesByArd,
+      implementationEligible: item.implementationEligible,
+      allowedOutput: item.allowedOutput,
+      reviewState: item.reviewState,
+      licenseStatus: item.licenseStatus,
+      givingEligible: item.canFeedGiving,
+      excludedFromGiving: !item.canFeedGiving,
+      whyNotBranchEligible: item.whyNotBranchEligible,
+      riskScore: item.riskScore,
+      trustScore: item.trustScore
+    }));
+    const dangerousFindings = verdicts.filter((item) => ["blocked", "quarantine"].includes(item.verdict));
+    const output = {
+      schema: "vnem.ardProtection.v2",
+      runId: researchData.runId,
+      reviewedAt: now(),
+      reviewMode: protection.reviewMode,
+      candidatesReviewed: verdicts.length,
+      allowed: verdicts.filter((item) => item.verdict === "allow").length,
+      needsReview: verdicts.filter((item) => item.verdict === "needs-review").length,
+      quarantined: verdicts.filter((item) => item.verdict === "quarantine").length,
+      blocked: verdicts.filter((item) => item.verdict === "blocked").length,
+      branchEligible: verdicts.filter((item) => item.branchEligible).length,
+      dangerousFindings,
+      verdicts
+    };
+    if (write) {
+      await writeJson(path.join(runDir(rootDir, researchData.runId), "protection.json"), output);
+      await writeFile(path.join(runDir(rootDir, researchData.runId), "dangerous-findings.md"), renderDangerousFindings(researchData, output));
+    }
+    return output;
+  }
   const verdicts = researchData.candidates.map(reviewCandidate);
   const dangerousFindings = verdicts.filter((item) => ["blocked", "quarantine"].includes(item.verdict));
   const output = {
@@ -200,6 +254,45 @@ export async function runGiving(options = {}) {
   const { rootDir = defaultRootDir, runId, research, protection, now = () => new Date().toISOString(), pushMode = "fixture-remote", write = true } = options;
   const researchData = research ?? await readJson(path.join(runDir(rootDir, runId), "research.json"));
   const protectionData = protection ?? await readJson(path.join(runDir(rootDir, researchData.runId), "protection.json"));
+  if (researchData.schema === "vnem.ardResearch.v2") {
+    const ranked = rankArdCandidates(researchData.candidates, { memory: researchData.memory });
+    const protectionV2 = protectionData.schema === "vnem.ardProtection.v2"
+      ? { ...protectionData, verdicts: protectionData.verdicts.map((item) => ({ ...item, canFeedGiving: item.canFeedGiving ?? item.givingEligible, canFeedChangesByArd: item.canFeedChangesByArd ?? item.branchEligible })) }
+      : classifyWithProtectionV2(ranked.candidates);
+    const givingV2 = createGivingWorkPackages(ranked.candidates, protectionV2);
+    const includedCandidates = givingV2.workPackages.map((workPackage) => ({
+      id: workPackage.candidateId,
+      title: workPackage.title,
+      proposedImprovement: workPackage.expectedDiffSummary,
+      filesLikelyAffected: workPackage.filesToChange,
+      workPackageId: workPackage.workPackageId,
+      safeAction: workPackage.safeAction,
+      testsToRun: workPackage.testsToRun
+    }));
+    const branchName = `vnem-research/${slug(researchData.runId)}`;
+    const plan = {
+      schema: "vnem.ardGivingPlan.v2",
+      runId: researchData.runId,
+      preparedAt: now(),
+      branchName,
+      baseBranch: "main",
+      includedCandidates,
+      excludedCandidates: givingV2.excludedCandidates.map((candidate) => ({ id: candidate.candidateId, title: candidate.title, reason: candidate.reason, verdict: candidate.verdict })),
+      workPackages: givingV2.workPackages,
+      dangerousFindings: protectionData.dangerousFindings.map((item) => ({ candidateId: item.candidateId, verdict: item.verdict, dangerousSignals: item.dangerousSignals, excludedFromGiving: true })),
+      validationStatus: "reports-only",
+      nextAction: givingV2.workPackages.length ? "Preview the top safe work package through Changes by ARD." : "Blocked: no safe branch-ready work packages for Giving AI."
+    };
+    if (write) {
+      const dir = runDir(rootDir, researchData.runId);
+      await writeJson(path.join(dir, "giving-plan.json"), plan);
+      await writeFile(path.join(dir, "giving-plan.md"), renderGivingPlan(plan));
+    }
+    const branch = await prepareResearchBranch({ rootDir, runId: researchData.runId, plan, pushMode, write });
+    const output = { ok: branch.ok, ...plan, ...branch, givingV2 };
+    if (write) await writeFile(path.join(runDir(rootDir, researchData.runId), "branch-summary.md"), renderBranchSummary(output));
+    return output;
+  }
   const allowedIds = new Set(protectionData.verdicts.filter((item) => item.givingEligible).map((item) => item.candidateId));
   const includedCandidates = researchData.candidates.filter((candidate) => allowedIds.has(candidate.id));
   const excludedCandidates = researchData.candidates.filter((candidate) => !allowedIds.has(candidate.id)).map((candidate) => ({ id: candidate.id, title: candidate.title, reason: protectionData.verdicts.find((item) => item.candidateId === candidate.id)?.verdict ?? "not-eligible" }));
