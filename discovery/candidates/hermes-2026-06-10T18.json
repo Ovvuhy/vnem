@@ -1,0 +1,1222 @@
+{
+  "generated_at": "2026-06-10T18:01:28.648Z",
+  "mode": "hourly",
+  "lookback_days": 2,
+  "source_routes": [
+    "github-search",
+    "github-releases",
+    "npm-search",
+    "hacker-news",
+    "mcp-registry"
+  ],
+  "candidates": [
+    {
+      "source_route": "mcp-registry",
+      "name": "ai.auralogs/auralogs",
+      "title": "Auralogs",
+      "description": "Read-only access to Auralogs production logs: search logs, inspect errors, review AI analyses.",
+      "version": "0.1.0",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.auralogs%2Fauralogs/versions/latest",
+      "source_urls": [
+        "https://registry.modelcontextprotocol.io/v0.1/servers/ai.auralogs%2Fauralogs/versions/latest",
+        "https://github.com/auralogs-ai/auralogs-mcp"
+      ],
+      "signal_summary": "Listed in the official MCP Registry latest-version feed. Repo review: low-risk, risk 8/100, trust 92/100.",
+      "why_builders_should_care": "May expose a useful MCP capability that coding agents can review and permission.",
+      "suggested_trust_tier": "promising",
+      "risk_flags": [
+        "license-not-asserted"
+      ],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "allow_registry_proposal": false,
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 8,
+        "trust_score": 92,
+        "flags": [
+          "license-not-asserted"
+        ],
+        "reasons": [],
+        "reviewed_at": "2026-06-10T18:01:28.648Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      },
+      "metrics": {
+        "repo_risk_score": 8,
+        "repo_trust_score": 92,
+        "repo_verdict": "low-risk"
+      }
+    },
+    {
+      "source_route": "mcp-registry",
+      "name": "ai.bareun/bareun",
+      "title": "Bareun — Korean NLP & Spell/Grammar Checking",
+      "description": "Korean NLP MCP server: morphological analysis, tokenization, spell & grammar checking (Bareun)",
+      "version": "3.0.0",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.bareun%2Fbareun/versions/latest",
+      "source_urls": [
+        "https://registry.modelcontextprotocol.io/v0.1/servers/ai.bareun%2Fbareun/versions/latest",
+        "https://github.com/gih2yun/bareun-mcp"
+      ],
+      "signal_summary": "Listed in the official MCP Registry latest-version feed. Repo review: low-risk, risk 8/100, trust 92/100.",
+      "why_builders_should_care": "May expose a useful MCP capability that coding agents can review and permission.",
+      "suggested_trust_tier": "promising",
+      "risk_flags": [
+        "license-not-asserted"
+      ],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "allow_registry_proposal": false,
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 8,
+        "trust_score": 92,
+        "flags": [
+          "license-not-asserted"
+        ],
+        "reasons": [],
+        "reviewed_at": "2026-06-10T18:01:28.648Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      },
+      "metrics": {
+        "repo_risk_score": 8,
+        "repo_trust_score": 92,
+        "repo_verdict": "low-risk"
+      }
+    },
+    {
+      "source_route": "github-releases",
+      "name": "NousResearch/hermes-agent",
+      "title": "hermes-agent: Hermes Agent v0.16.0 (2026.6.5) — The Surface Release",
+      "description": "The agent that grows with you",
+      "repo_url": "https://github.com/NousResearch/hermes-agent",
+      "homepage_url": "https://hermes-agent.nousresearch.com",
+      "source_url": "https://github.com/NousResearch/hermes-agent/releases/tag/v2026.6.5",
+      "source_urls": [
+        "https://github.com/NousResearch/hermes-agent/releases/tag/v2026.6.5",
+        "https://github.com/NousResearch/hermes-agent",
+        "https://hermes-agent.nousresearch.com"
+      ],
+      "signal_summary": "Latest GitHub release for watched repository `NousResearch/hermes-agent`; published 2026-06-06T00:55:58Z. Repo review: needs-review, risk 36/100, trust 64/100.",
+      "why_builders_should_care": "May be a useful new capability or signal for agent builders to review.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "sensitive-permissions",
+        "binary-download",
+        "binary-first"
+      ],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "allow_registry_proposal": false,
+      "metrics": {
+        "stars": 189753,
+        "forks": 32852,
+        "open_issues": 19744,
+        "language": "Python",
+        "license": "MIT",
+        "created_at": "2025-07-22T22:22:28Z",
+        "pushed_at": "2026-06-10T17:23:20Z",
+        "release_tag": "v2026.6.5",
+        "release_published_at": "2026-06-06T00:55:58Z",
+        "release_assets": [
+          "hermes_agent-0.16.0-py3-none-any.whl.sigstore.json",
+          "hermes_agent-0.16.0.tar.gz.sigstore.json"
+        ],
+        "topics": [
+          "ai",
+          "ai-agent",
+          "ai-agents",
+          "anthropic",
+          "chatgpt",
+          "claude",
+          "claude-code",
+          "clawdbot",
+          "codex",
+          "hermes",
+          "hermes-agent",
+          "llm",
+          "moltbot",
+          "nous-research",
+          "openai",
+          "openclaw"
+        ],
+        "repo_risk_score": 36,
+        "repo_trust_score": 64,
+        "repo_verdict": "needs-review"
+      },
+      "repository_review": {
+        "verdict": "needs-review",
+        "risk_score": 36,
+        "trust_score": 64,
+        "flags": [
+          "binary-download",
+          "binary-first"
+        ],
+        "reasons": [
+          "README or release text tells users to download/run an executable or installer.",
+          "Project positioning emphasizes installer download over inspectable source."
+        ],
+        "reviewed_at": "2026-06-10T18:01:28.648Z",
+        "evidence": {
+          "readme_checked": true,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-releases",
+      "name": "anthropics/claude-code",
+      "title": "claude-code: v2.1.170",
+      "description": "Claude Code is an agentic coding tool that lives in your terminal, understands your codebase, and helps you code faster by executing routine tasks, explaining complex code, and handling git workflows - all through natural language commands.",
+      "repo_url": "https://github.com/anthropics/claude-code",
+      "homepage_url": "https://code.claude.com/docs/en/overview",
+      "source_url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.170",
+      "source_urls": [
+        "https://github.com/anthropics/claude-code/releases/tag/v2.1.170",
+        "https://github.com/anthropics/claude-code",
+        "https://code.claude.com/docs/en/overview"
+      ],
+      "signal_summary": "Latest GitHub release for watched repository `anthropics/claude-code`; published 2026-06-09T17:23:09Z. Repo review: low-risk, risk 8/100, trust 92/100.",
+      "why_builders_should_care": "May affect how builders compose, deploy, or observe agent workflows.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "license-not-asserted"
+      ],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "allow_registry_proposal": false,
+      "metrics": {
+        "stars": 131533,
+        "forks": 21321,
+        "open_issues": 8956,
+        "language": "Python",
+        "license": null,
+        "created_at": "2025-02-22T17:41:21Z",
+        "pushed_at": "2026-06-09T22:14:37Z",
+        "release_tag": "v2.1.170",
+        "release_published_at": "2026-06-09T17:23:09Z",
+        "release_assets": [
+          "claude-darwin-arm64.tar.gz",
+          "claude-darwin-x64.tar.gz",
+          "claude-linux-arm64-musl.tar.gz",
+          "claude-linux-arm64.tar.gz",
+          "claude-linux-x64-musl.tar.gz",
+          "claude-linux-x64.tar.gz",
+          "claude-win32-arm64.zip",
+          "claude-win32-x64.zip",
+          "SHASUMS256.txt",
+          "SHASUMS256.txt.sig"
+        ],
+        "topics": [],
+        "repo_risk_score": 8,
+        "repo_trust_score": 92,
+        "repo_verdict": "low-risk"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 8,
+        "trust_score": 92,
+        "flags": [
+          "license-not-asserted"
+        ],
+        "reasons": [],
+        "reviewed_at": "2026-06-10T18:01:28.648Z",
+        "evidence": {
+          "readme_checked": true,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-releases",
+      "name": "supabase/mcp",
+      "title": "mcp: mcp-server-postgrest: v0.1.1",
+      "description": "Connect Supabase to your AI assistants",
+      "repo_url": "https://github.com/supabase/mcp",
+      "homepage_url": "https://supabase.com/mcp",
+      "source_url": "https://github.com/supabase/mcp/releases/tag/mcp-server-postgrest-v0.1.1",
+      "source_urls": [
+        "https://github.com/supabase/mcp/releases/tag/mcp-server-postgrest-v0.1.1",
+        "https://github.com/supabase/mcp",
+        "https://supabase.com/mcp"
+      ],
+      "signal_summary": "Latest GitHub release for watched repository `supabase-community/supabase-mcp`; published 2026-06-08T16:05:31Z. Repo review: low-risk, risk 0/100, trust 100/100.",
+      "why_builders_should_care": "May expose a useful permissioned tool surface for coding agents.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "sensitive-permissions"
+      ],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "allow_registry_proposal": false,
+      "metrics": {
+        "stars": 2730,
+        "forks": 365,
+        "open_issues": 93,
+        "language": "TypeScript",
+        "license": "Apache-2.0",
+        "created_at": "2024-12-20T23:52:42Z",
+        "pushed_at": "2026-06-10T03:09:28Z",
+        "release_tag": "mcp-server-postgrest-v0.1.1",
+        "release_published_at": "2026-06-08T16:05:31Z",
+        "release_assets": [],
+        "topics": [],
+        "repo_risk_score": 0,
+        "repo_trust_score": 100,
+        "repo_verdict": "low-risk"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 0,
+        "trust_score": 100,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-06-10T18:01:28.648Z",
+        "evidence": {
+          "readme_checked": true,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "clawwork-ai/ClawWork",
+      "title": "ClawWork",
+      "description": "Client for OpenClaw — Connect ClawWork to your own OpenClaw and unlock 10x multi-session productivity.",
+      "repo_url": "https://github.com/clawwork-ai/ClawWork",
+      "homepage_url": "https://clawwork-ai.github.io/ClawWork/",
+      "source_url": "https://github.com/clawwork-ai/ClawWork",
+      "source_urls": [
+        "https://github.com/clawwork-ai/ClawWork",
+        "https://clawwork-ai.github.io/ClawWork/"
+      ],
+      "signal_summary": "Matched GitHub search `topic:ai-agent pushed:>=2026-06-08`; pushed 2026-06-10T18:01:08Z; stars 520. Repo review: low-risk, risk 0/100, trust 100/100.",
+      "why_builders_should_care": "May be a useful new capability or signal for agent builders to review.",
+      "suggested_trust_tier": "promising",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 520,
+        "forks": 65,
+        "open_issues": 48,
+        "language": "TypeScript",
+        "license": "Apache-2.0",
+        "created_at": "2026-03-12T06:11:44Z",
+        "pushed_at": "2026-06-10T18:01:08Z",
+        "topics": [
+          "ai-agent",
+          "ai-tools",
+          "desktop-app",
+          "developer-tools",
+          "electron",
+          "git",
+          "llm",
+          "macos",
+          "openclaw",
+          "openclaw-alternative",
+          "react",
+          "sqlite",
+          "tailwindcss",
+          "task-management",
+          "typescript",
+          "zustand"
+        ],
+        "repo_risk_score": 0,
+        "repo_trust_score": 100,
+        "repo_verdict": "low-risk"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 0,
+        "trust_score": 100,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-06-10T18:01:28.648Z",
+        "evidence": {
+          "readme_checked": true,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "mixpeek/amux",
+      "title": "amux",
+      "description": "Open-source Claude Code agent multiplexer — run dozens of parallel AI coding agents unattended via tmux",
+      "repo_url": "https://github.com/mixpeek/amux",
+      "homepage_url": "https://amux.io",
+      "source_url": "https://github.com/mixpeek/amux",
+      "source_urls": [
+        "https://github.com/mixpeek/amux",
+        "https://amux.io"
+      ],
+      "signal_summary": "Matched GitHub search `\"coding agent\" pushed:>=2026-06-08`; pushed 2026-06-10T18:01:17Z; stars 232. Repo review: low-risk, risk 0/100, trust 100/100.",
+      "why_builders_should_care": "May be a useful new capability or signal for agent builders to review.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 232,
+        "forks": 25,
+        "open_issues": 0,
+        "language": "HTML",
+        "license": "NOASSERTION",
+        "created_at": "2026-02-18T14:30:56Z",
+        "pushed_at": "2026-06-10T18:01:17Z",
+        "topics": [
+          "agent-orchestration",
+          "ai-agents",
+          "automation",
+          "claude",
+          "claude-code",
+          "developer-tools",
+          "llm",
+          "parallel-processing",
+          "python",
+          "tmux"
+        ],
+        "repo_risk_score": 0,
+        "repo_trust_score": 100,
+        "repo_verdict": "low-risk"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 0,
+        "trust_score": 100,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-06-10T18:01:28.648Z",
+        "evidence": {
+          "readme_checked": true,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "Patdolitse/piia-engram",
+      "title": "piia-engram",
+      "description": "Local-first AI memory you can see, edit, and override — portable across Claude Code, Codex, Cursor, Windsurf, and other MCP coding tools.",
+      "repo_url": "https://github.com/Patdolitse/piia-engram",
+      "homepage_url": "https://pypi.org/project/piia-engram/",
+      "source_url": "https://github.com/Patdolitse/piia-engram",
+      "source_urls": [
+        "https://github.com/Patdolitse/piia-engram",
+        "https://pypi.org/project/piia-engram/"
+      ],
+      "signal_summary": "Matched GitHub search `topic:mcp pushed:>=2026-06-08`; pushed 2026-06-10T18:01:18Z; stars 164. Repo review: needs-review, risk 23/100, trust 77/100.",
+      "why_builders_should_care": "May expose a useful permissioned tool surface for coding agents.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "sensitive-permissions",
+        "binary-first",
+        "new-repository"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 164,
+        "forks": 9,
+        "open_issues": 1,
+        "language": "Python",
+        "license": "AGPL-3.0",
+        "created_at": "2026-05-18T15:38:43Z",
+        "pushed_at": "2026-06-10T18:01:18Z",
+        "topics": [
+          "agent-memory",
+          "ai-agent",
+          "ai-identity",
+          "ai-memory",
+          "anthropic",
+          "claude-code",
+          "claude-desktop",
+          "codex",
+          "context-management",
+          "cursor",
+          "llm-tools",
+          "local-first",
+          "long-term-memory",
+          "mcp",
+          "mcp-server",
+          "memory",
+          "model-context-protocol",
+          "python",
+          "vibe-coding",
+          "windsurf"
+        ],
+        "repo_risk_score": 23,
+        "repo_trust_score": 77,
+        "repo_verdict": "needs-review"
+      },
+      "repository_review": {
+        "verdict": "needs-review",
+        "risk_score": 23,
+        "trust_score": 77,
+        "flags": [
+          "binary-first",
+          "new-repository"
+        ],
+        "reasons": [
+          "Project positioning emphasizes installer download over inspectable source."
+        ],
+        "reviewed_at": "2026-06-10T18:01:28.648Z",
+        "evidence": {
+          "readme_checked": true,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "TwelveTake-Studios/reaper-mcp",
+      "title": "reaper-mcp",
+      "description": "MCP server to control REAPER DAW with AI — 135 tools for mixing, mastering, MIDI composition, and full music production.",
+      "repo_url": "https://github.com/TwelveTake-Studios/reaper-mcp",
+      "homepage_url": "https://twelvetake.com",
+      "source_url": "https://github.com/TwelveTake-Studios/reaper-mcp",
+      "source_urls": [
+        "https://github.com/TwelveTake-Studios/reaper-mcp",
+        "https://twelvetake.com"
+      ],
+      "signal_summary": "Matched GitHub search `topic:mcp pushed:>=2026-06-08`; pushed 2026-06-10T18:01:23Z; stars 15. Repo review: low-risk, risk 0/100, trust 100/100.",
+      "why_builders_should_care": "May expose a useful permissioned tool surface for coding agents.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 15,
+        "forks": 9,
+        "open_issues": 4,
+        "language": "Lua",
+        "license": "MIT",
+        "created_at": "2025-12-11T14:22:29Z",
+        "pushed_at": "2026-06-10T18:01:23Z",
+        "topics": [
+          "ai",
+          "claude",
+          "daw",
+          "mastering",
+          "mcp",
+          "midi",
+          "mixing",
+          "model-context-protocol",
+          "music-production",
+          "reaper"
+        ],
+        "repo_risk_score": 0,
+        "repo_trust_score": 100,
+        "repo_verdict": "low-risk"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 0,
+        "trust_score": 100,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-06-10T18:01:28.648Z",
+        "evidence": {
+          "readme_checked": true,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "giantswarm/mcp-oauth",
+      "title": "mcp-oauth",
+      "description": "OAuth 2.1 Authorization Server library for Model Context Protocol (MCP) servers",
+      "repo_url": "https://github.com/giantswarm/mcp-oauth",
+      "homepage_url": "https://pkg.go.dev/github.com/giantswarm/mcp-oauth",
+      "source_url": "https://github.com/giantswarm/mcp-oauth",
+      "source_urls": [
+        "https://github.com/giantswarm/mcp-oauth",
+        "https://pkg.go.dev/github.com/giantswarm/mcp-oauth"
+      ],
+      "signal_summary": "Matched GitHub search `\"model context protocol\" pushed:>=2026-06-08`; pushed 2026-06-10T17:58:37Z; stars 7. Repo review: low-risk, risk 0/100, trust 100/100.",
+      "why_builders_should_care": "May expose a useful permissioned tool surface for coding agents.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 7,
+        "forks": 3,
+        "open_issues": 3,
+        "language": "Go",
+        "license": "Apache-2.0",
+        "created_at": "2025-11-23T20:01:54Z",
+        "pushed_at": "2026-06-10T17:58:37Z",
+        "topics": [],
+        "repo_risk_score": 0,
+        "repo_trust_score": 100,
+        "repo_verdict": "low-risk"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 0,
+        "trust_score": 100,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-06-10T18:01:28.648Z",
+        "evidence": {
+          "readme_checked": true,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "runlegion/legion",
+      "title": "legion",
+      "description": "Agent memory for one engineer's craft. Local Rust CLI that stores and retrieves agent reflections for Claude Code.",
+      "repo_url": "https://github.com/runlegion/legion",
+      "homepage_url": "https://runlegion.dev",
+      "source_url": "https://github.com/runlegion/legion",
+      "source_urls": [
+        "https://github.com/runlegion/legion",
+        "https://runlegion.dev"
+      ],
+      "signal_summary": "Matched GitHub search `\"agent memory\" pushed:>=2026-06-08`; pushed 2026-06-10T18:01:32Z; stars 4. Repo review: low-risk, risk 8/100, trust 92/100.",
+      "why_builders_should_care": "May improve agent context persistence, search, or retrieval workflows.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "sensitive-permissions",
+        "low-repo-signal"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 4,
+        "forks": 0,
+        "open_issues": 105,
+        "language": "Rust",
+        "license": "MIT",
+        "created_at": "2026-03-05T08:22:54Z",
+        "pushed_at": "2026-06-10T18:01:32Z",
+        "topics": [
+          "agent-memory",
+          "ai-agents",
+          "bm25",
+          "claude-code",
+          "cli",
+          "rust",
+          "sqlite",
+          "tantivy"
+        ],
+        "repo_risk_score": 8,
+        "repo_trust_score": 92,
+        "repo_verdict": "low-risk"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 8,
+        "trust_score": 92,
+        "flags": [
+          "low-repo-signal"
+        ],
+        "reasons": [],
+        "reviewed_at": "2026-06-10T18:01:28.648Z",
+        "evidence": {
+          "readme_checked": true,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "armi10121-png/ComfyUI-PuLID-Flux2",
+      "title": "ComfyUI-PuLID-Flux2",
+      "description": "Add consistent identity control to Flux.2 models using PuLID with improved face recognition and native Klein weights integration.",
+      "repo_url": "https://github.com/armi10121-png/ComfyUI-PuLID-Flux2",
+      "homepage_url": null,
+      "source_url": "https://github.com/armi10121-png/ComfyUI-PuLID-Flux2",
+      "source_urls": [
+        "https://github.com/armi10121-png/ComfyUI-PuLID-Flux2"
+      ],
+      "signal_summary": "Matched GitHub search `topic:llm-agent pushed:>=2026-06-08`; pushed 2026-06-10T18:00:27Z; stars 3. Repo review: blocked, risk 100/100, trust 0/100.",
+      "why_builders_should_care": "May be a useful new capability or signal for agent builders to review.",
+      "suggested_trust_tier": "watchlist",
+      "risk_flags": [
+        "binary-download",
+        "download-button",
+        "low-repo-signal",
+        "windows-installer-flow"
+      ],
+      "recommended_action": "blocked",
+      "reason": "blocked",
+      "metrics": {
+        "stars": 3,
+        "forks": 0,
+        "open_issues": 0,
+        "language": "Python",
+        "license": "MIT",
+        "created_at": "2026-03-28T21:44:41Z",
+        "pushed_at": "2026-06-10T18:00:27Z",
+        "topics": [
+          "ai",
+          "comfy",
+          "comfy-ui",
+          "comfyui",
+          "comfyui-nodes",
+          "consistent-characters",
+          "cpp",
+          "emulation",
+          "emulator",
+          "flux",
+          "gitops",
+          "image-to-video",
+          "llm-agent",
+          "machine-learning",
+          "nintendo"
+        ],
+        "repo_risk_score": 100,
+        "repo_trust_score": 0,
+        "repo_verdict": "blocked"
+      },
+      "repository_review": {
+        "verdict": "blocked",
+        "risk_score": 100,
+        "trust_score": 0,
+        "flags": [
+          "binary-download",
+          "download-button",
+          "low-repo-signal",
+          "windows-installer-flow"
+        ],
+        "reasons": [
+          "README or release text tells users to download/run an executable or installer.",
+          "README uses consumer-download copy instead of a source-first developer workflow.",
+          "README resembles a Windows installer funnel, which is unusual for source-backed agent tooling."
+        ],
+        "reviewed_at": "2026-06-10T18:01:28.648Z",
+        "evidence": {
+          "readme_checked": true,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      },
+      "allow_registry_proposal": false
+    },
+    {
+      "source_route": "github-search",
+      "name": "linny006/agent-eval-harness",
+      "title": "agent-eval-harness",
+      "description": "Live, open-source benchmark for comparing AI coding agents on real GitHub issues",
+      "repo_url": "https://github.com/linny006/agent-eval-harness",
+      "homepage_url": null,
+      "source_url": "https://github.com/linny006/agent-eval-harness",
+      "source_urls": [
+        "https://github.com/linny006/agent-eval-harness"
+      ],
+      "signal_summary": "Matched GitHub search `\"agent eval\" pushed:>=2026-06-08`; pushed 2026-06-10T18:00:40Z; stars 2. Repo review: needs-review, risk 30/100, trust 70/100.",
+      "why_builders_should_care": "May help builders verify agent behavior, regressions, or model/tool quality.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "license-not-asserted",
+        "sensitive-permissions",
+        "low-repo-signal",
+        "new-repository"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 2,
+        "forks": 1,
+        "open_issues": 4,
+        "language": "Python",
+        "license": null,
+        "created_at": "2026-05-24T01:08:04Z",
+        "pushed_at": "2026-06-10T18:00:40Z",
+        "topics": [
+          "agent-eval",
+          "agent-evaluation",
+          "ai-benchmarks",
+          "ai-coding-agent-benchmark",
+          "ai-engineering",
+          "ai-evaluation",
+          "ai-research",
+          "ai-tools",
+          "auto-updated",
+          "awesome-list",
+          "benchmark",
+          "codex-vs-opencode",
+          "coding-agent-benchmark",
+          "dev-tools",
+          "developer-tools",
+          "live-data",
+          "llm-benchmarks",
+          "llm-testing",
+          "machine-learning",
+          "swe-bench"
+        ],
+        "repo_risk_score": 30,
+        "repo_trust_score": 70,
+        "repo_verdict": "needs-review"
+      },
+      "repository_review": {
+        "verdict": "needs-review",
+        "risk_score": 30,
+        "trust_score": 70,
+        "flags": [
+          "license-not-asserted",
+          "low-repo-signal",
+          "new-repository"
+        ],
+        "reasons": [],
+        "reviewed_at": "2026-06-10T18:01:28.648Z",
+        "evidence": {
+          "readme_checked": true,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "yhlyblys66-art/moltstream",
+      "title": "moltstream",
+      "description": "Deploy autonomous AI streamers on Kick with one command, automating chat, voice, avatar, and OBS streaming setup in under a minute.",
+      "repo_url": "https://github.com/yhlyblys66-art/moltstream",
+      "homepage_url": null,
+      "source_url": "https://github.com/yhlyblys66-art/moltstream",
+      "source_urls": [
+        "https://github.com/yhlyblys66-art/moltstream"
+      ],
+      "signal_summary": "Matched GitHub search `topic:agent-framework pushed:>=2026-06-08`; pushed 2026-06-10T18:00:35Z; stars 2. Repo review: suspicious, risk 64/100, trust 36/100.",
+      "why_builders_should_care": "May affect how builders compose, deploy, or observe agent workflows.",
+      "suggested_trust_tier": "watchlist",
+      "risk_flags": [
+        "download-button",
+        "low-repo-signal",
+        "windows-installer-flow"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 2,
+        "forks": 0,
+        "open_issues": 0,
+        "language": "TypeScript",
+        "license": "MIT",
+        "created_at": "2026-02-11T15:24:57Z",
+        "pushed_at": "2026-06-10T18:00:35Z",
+        "topics": [
+          "agent-framework",
+          "ai",
+          "ai-agents",
+          "autonomous-agents",
+          "live-streaming",
+          "llm",
+          "machine-learning",
+          "real-time",
+          "streaming",
+          "twitch"
+        ],
+        "repo_risk_score": 64,
+        "repo_trust_score": 36,
+        "repo_verdict": "suspicious"
+      },
+      "repository_review": {
+        "verdict": "suspicious",
+        "risk_score": 64,
+        "trust_score": 36,
+        "flags": [
+          "download-button",
+          "low-repo-signal",
+          "windows-installer-flow"
+        ],
+        "reasons": [
+          "README uses consumer-download copy instead of a source-first developer workflow.",
+          "README resembles a Windows installer funnel, which is unusual for source-backed agent tooling."
+        ],
+        "reviewed_at": "2026-06-10T18:01:28.648Z",
+        "evidence": {
+          "readme_checked": true,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      },
+      "allow_registry_proposal": false
+    },
+    {
+      "source_route": "github-search",
+      "name": "andrkelemen/wmem",
+      "title": "wmem",
+      "description": "Agent memory substrate — hybrid SQLite FTS5 + vector retrieval. Dual-mode MCP server (library or multi-agent service).",
+      "repo_url": "https://github.com/andrkelemen/wmem",
+      "homepage_url": null,
+      "source_url": "https://github.com/andrkelemen/wmem",
+      "source_urls": [
+        "https://github.com/andrkelemen/wmem"
+      ],
+      "signal_summary": "Matched GitHub search `\"agent memory\" pushed:>=2026-06-08`; pushed 2026-06-10T18:00:14Z; stars 0. Repo review: low-risk, risk 8/100, trust 92/100.",
+      "why_builders_should_care": "May help builders verify agent behavior, regressions, or model/tool quality.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "sensitive-permissions",
+        "low-repo-signal"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 0,
+        "forks": 0,
+        "open_issues": 0,
+        "language": "JavaScript",
+        "license": "MIT",
+        "created_at": "2026-04-19T13:18:09Z",
+        "pushed_at": "2026-06-10T18:00:14Z",
+        "topics": [],
+        "repo_risk_score": 8,
+        "repo_trust_score": 92,
+        "repo_verdict": "low-risk"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 8,
+        "trust_score": 92,
+        "flags": [
+          "low-repo-signal"
+        ],
+        "reasons": [],
+        "reviewed_at": "2026-06-10T18:01:28.648Z",
+        "evidence": {
+          "readme_checked": true,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "fergusalveolar205/Generative-UI-MCP",
+      "title": "Generative-UI-MCP",
+      "description": "Build interactive charts, diagrams, mockups, and widgets with an MCP server for on-demand UI generation guidelines",
+      "repo_url": "https://github.com/fergusalveolar205/Generative-UI-MCP",
+      "homepage_url": null,
+      "source_url": "https://github.com/fergusalveolar205/Generative-UI-MCP",
+      "source_urls": [
+        "https://github.com/fergusalveolar205/Generative-UI-MCP"
+      ],
+      "signal_summary": "Matched GitHub search `topic:ai-agent pushed:>=2026-06-08`; pushed 2026-06-10T18:01:04Z; stars 0. Repo review: blocked, risk 100/100, trust 0/100.",
+      "why_builders_should_care": "May expose a useful permissioned tool surface for coding agents.",
+      "suggested_trust_tier": "watchlist",
+      "risk_flags": [
+        "license-not-asserted",
+        "binary-download",
+        "download-button",
+        "low-repo-signal",
+        "windows-installer-flow"
+      ],
+      "recommended_action": "blocked",
+      "reason": "blocked",
+      "metrics": {
+        "stars": 0,
+        "forks": 1,
+        "open_issues": 0,
+        "language": "TypeScript",
+        "license": null,
+        "created_at": "2026-03-30T00:57:01Z",
+        "pushed_at": "2026-06-10T18:01:04Z",
+        "topics": [
+          "a2ui",
+          "ag-ui",
+          "agentic-ai",
+          "ai-agent",
+          "claude",
+          "code-generation",
+          "cybersecurity",
+          "ecommerce-website",
+          "mcp-apps",
+          "model-context-protocol",
+          "neondb",
+          "prisma",
+          "security",
+          "svg",
+          "visualization",
+          "website-analyzer"
+        ],
+        "repo_risk_score": 100,
+        "repo_trust_score": 0,
+        "repo_verdict": "blocked"
+      },
+      "repository_review": {
+        "verdict": "blocked",
+        "risk_score": 100,
+        "trust_score": 0,
+        "flags": [
+          "binary-download",
+          "download-button",
+          "license-not-asserted",
+          "low-repo-signal",
+          "windows-installer-flow"
+        ],
+        "reasons": [
+          "README or release text tells users to download/run an executable or installer.",
+          "README uses consumer-download copy instead of a source-first developer workflow.",
+          "README resembles a Windows installer funnel, which is unusual for source-backed agent tooling."
+        ],
+        "reviewed_at": "2026-06-10T18:01:28.648Z",
+        "evidence": {
+          "readme_checked": true,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      },
+      "allow_registry_proposal": false
+    },
+    {
+      "source_route": "npm-search",
+      "name": "chrome-devtools-mcp",
+      "title": "chrome-devtools-mcp",
+      "description": "MCP server for Chrome DevTools",
+      "repo_url": "https://github.com/ChromeDevTools/chrome-devtools-mcp",
+      "homepage_url": "https://github.com/ChromeDevTools/chrome-devtools-mcp#readme",
+      "package_url": "https://www.npmjs.com/package/chrome-devtools-mcp",
+      "source_url": "https://www.npmjs.com/package/chrome-devtools-mcp",
+      "source_urls": [
+        "https://www.npmjs.com/package/chrome-devtools-mcp",
+        "https://github.com/ChromeDevTools/chrome-devtools-mcp",
+        "https://github.com/ChromeDevTools/chrome-devtools-mcp#readme",
+        "https://github.com/ChromeDevTools/chrome-devtools-mcp/issues"
+      ],
+      "signal_summary": "Matched npm search `mcp server`; package updated 2026-06-08T17:00:03.440Z. Repo review: suspicious, risk 52/100, trust 48/100.",
+      "why_builders_should_care": "May expose a useful permissioned tool surface for coding agents.",
+      "suggested_trust_tier": "watchlist",
+      "risk_flags": [
+        "download-button",
+        "windows-installer-flow"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "npm_score": 392.46002,
+        "quality": 1,
+        "popularity": 1,
+        "maintenance": 1,
+        "license": "Apache-2.0",
+        "version": "1.2.0",
+        "updated_at": "2026-06-08T17:00:03.440Z",
+        "topics": [],
+        "repo_risk_score": 52,
+        "repo_trust_score": 48,
+        "repo_verdict": "suspicious"
+      },
+      "repository_review": {
+        "verdict": "suspicious",
+        "risk_score": 52,
+        "trust_score": 48,
+        "flags": [
+          "download-button",
+          "windows-installer-flow"
+        ],
+        "reasons": [
+          "README uses consumer-download copy instead of a source-first developer workflow.",
+          "README resembles a Windows installer funnel, which is unusual for source-backed agent tooling."
+        ],
+        "reviewed_at": "2026-06-10T18:01:28.648Z",
+        "evidence": {
+          "readme_checked": true,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      },
+      "allow_registry_proposal": false
+    },
+    {
+      "source_route": "npm-search",
+      "name": "nx-mcp",
+      "title": "nx-mcp",
+      "description": "A Model Context Protocol server implementation for Nx",
+      "repo_url": "https://github.com/nrwl/nx-console",
+      "homepage_url": "https://nx.dev",
+      "package_url": "https://www.npmjs.com/package/nx-mcp",
+      "source_url": "https://www.npmjs.com/package/nx-mcp",
+      "source_urls": [
+        "https://www.npmjs.com/package/nx-mcp",
+        "https://github.com/nrwl/nx-console",
+        "https://nx.dev",
+        "https://github.com/nrwl/nx-console/issues"
+      ],
+      "signal_summary": "Matched npm search `keywords:model context protocol`; package updated 2026-04-30T11:38:28.620Z. Repo review: low-risk, risk 0/100, trust 100/100.",
+      "why_builders_should_care": "May expose a useful permissioned tool surface for coding agents.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "npm_score": 388.5723,
+        "quality": 1,
+        "popularity": 1,
+        "maintenance": 1,
+        "license": "MIT",
+        "version": "0.25.0",
+        "updated_at": "2026-04-30T11:38:28.620Z",
+        "topics": [
+          "nx",
+          "monorepo",
+          "ai",
+          "mcp",
+          "model",
+          "context",
+          "protocol"
+        ],
+        "repo_risk_score": 0,
+        "repo_trust_score": 100,
+        "repo_verdict": "low-risk"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 0,
+        "trust_score": 100,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-06-10T18:01:28.648Z",
+        "evidence": {
+          "readme_checked": true,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "hacker-news",
+      "name": "hn-48478148",
+      "title": "Show HN: HelixDB – A graph database built on object storage",
+      "description": "Hacker News discussion surfaced this as an ecosystem lead. Verify against primary sources before promotion.",
+      "repo_url": "https://github.com/HelixDB/helix-db/tree/main",
+      "homepage_url": "https://github.com/HelixDB/helix-db/tree/main",
+      "source_url": "https://news.ycombinator.com/item?id=48478148",
+      "source_urls": [
+        "https://news.ycombinator.com/item?id=48478148",
+        "https://github.com/HelixDB/helix-db/tree/main"
+      ],
+      "signal_summary": "Matched Hacker News query `coding agent`; created 2026-06-10T15:47:31Z; points 15; comments 13. README review unavailable: 403 rate limit exceeded. Repo review: low-risk, risk 8/100, trust 92/100.",
+      "why_builders_should_care": "May indicate fast-moving builder interest; treat as a lead until backed by an official repo, release, docs page, or paper.",
+      "suggested_trust_tier": "watchlist",
+      "risk_flags": [
+        "social-signal",
+        "needs-primary-source",
+        "readme-review-unavailable",
+        "license-not-asserted"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "allow_registry_proposal": false,
+      "metrics": {
+        "points": 15,
+        "comments": 13,
+        "created_at": "2026-06-10T15:47:31Z",
+        "query": "coding agent",
+        "repo_risk_score": 8,
+        "repo_trust_score": 92,
+        "repo_verdict": "low-risk"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 8,
+        "trust_score": 92,
+        "flags": [
+          "license-not-asserted"
+        ],
+        "reasons": [],
+        "reviewed_at": "2026-06-10T18:01:28.648Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "hacker-news",
+      "name": "hn-48479452",
+      "title": "Claude Desktop spins up a VM without no way of stopping it",
+      "description": "Hacker News discussion surfaced this as an ecosystem lead. Verify against primary sources before promotion.",
+      "repo_url": "https://github.com/anthropics/claude-code/issues/29045",
+      "homepage_url": "https://github.com/anthropics/claude-code/issues/29045",
+      "source_url": "https://news.ycombinator.com/item?id=48479452",
+      "source_urls": [
+        "https://news.ycombinator.com/item?id=48479452",
+        "https://github.com/anthropics/claude-code/issues/29045"
+      ],
+      "signal_summary": "Matched Hacker News query `Claude Code`; created 2026-06-10T17:11:56Z; points 10; comments 4. Repo review: low-risk, risk 8/100, trust 92/100.",
+      "why_builders_should_care": "May indicate fast-moving builder interest; treat as a lead until backed by an official repo, release, docs page, or paper.",
+      "suggested_trust_tier": "watchlist",
+      "risk_flags": [
+        "social-signal",
+        "needs-primary-source",
+        "license-not-asserted"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "allow_registry_proposal": false,
+      "metrics": {
+        "points": 10,
+        "comments": 4,
+        "created_at": "2026-06-10T17:11:56Z",
+        "query": "Claude Code",
+        "repo_risk_score": 8,
+        "repo_trust_score": 92,
+        "repo_verdict": "low-risk"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 8,
+        "trust_score": 92,
+        "flags": [
+          "license-not-asserted"
+        ],
+        "reasons": [],
+        "reviewed_at": "2026-06-10T18:01:28.648Z",
+        "evidence": {
+          "readme_checked": true,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    }
+  ],
+  "watched_sources": [],
+  "errors": []
+}

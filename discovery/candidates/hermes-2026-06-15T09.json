@@ -1,0 +1,1226 @@
+{
+  "generated_at": "2026-06-15T09:01:18.119Z",
+  "mode": "hourly",
+  "lookback_days": 2,
+  "source_routes": [
+    "github-search",
+    "github-releases",
+    "npm-search",
+    "hacker-news",
+    "mcp-registry"
+  ],
+  "candidates": [
+    {
+      "source_route": "mcp-registry",
+      "name": "ai.aient/mcp",
+      "title": "ai.aient/mcp",
+      "description": "MCP-native AI SRE: ask what's broken in production, get a reviewed GitHub fix PR.",
+      "version": "0.1.0",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.aient%2Fmcp/versions/latest",
+      "source_urls": [
+        "https://registry.modelcontextprotocol.io/v0.1/servers/ai.aient%2Fmcp/versions/latest",
+        "https://github.com/haf/glimt"
+      ],
+      "signal_summary": "Listed in the official MCP Registry latest-version feed. Repo review: low-risk, risk 8/100, trust 92/100.",
+      "why_builders_should_care": "May expose a useful MCP capability that coding agents can review and permission.",
+      "suggested_trust_tier": "promising",
+      "risk_flags": [
+        "license-not-asserted",
+        "sensitive-permissions"
+      ],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "allow_registry_proposal": false,
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 8,
+        "trust_score": 92,
+        "flags": [
+          "license-not-asserted"
+        ],
+        "reasons": [],
+        "reviewed_at": "2026-06-15T09:01:18.119Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      },
+      "metrics": {
+        "repo_risk_score": 8,
+        "repo_trust_score": 92,
+        "repo_verdict": "low-risk"
+      }
+    },
+    {
+      "source_route": "mcp-registry",
+      "name": "ai.alphacreek/alphacreek-mcp",
+      "title": "AlphaCreek SEC Filings MCP",
+      "description": "Access SEC filings efficiently (10-K, 10-Q, etc), save time and tokens, and get cited answers.",
+      "version": "1.0.1",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.alphacreek%2Falphacreek-mcp/versions/latest",
+      "source_urls": [
+        "https://registry.modelcontextprotocol.io/v0.1/servers/ai.alphacreek%2Falphacreek-mcp/versions/latest"
+      ],
+      "signal_summary": "Listed in the official MCP Registry latest-version feed. Repo review: low-risk, risk 8/100, trust 92/100.",
+      "why_builders_should_care": "May expose a useful MCP capability that coding agents can review and permission.",
+      "suggested_trust_tier": "promising",
+      "risk_flags": [
+        "license-not-asserted",
+        "early-stage"
+      ],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "allow_registry_proposal": false,
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 8,
+        "trust_score": 92,
+        "flags": [
+          "license-not-asserted"
+        ],
+        "reasons": [],
+        "reviewed_at": "2026-06-15T09:01:18.119Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      },
+      "metrics": {
+        "repo_risk_score": 8,
+        "repo_trust_score": 92,
+        "repo_verdict": "low-risk"
+      }
+    },
+    {
+      "source_route": "mcp-registry",
+      "name": "ai.auralogs/auralogs",
+      "title": "Auralogs",
+      "description": "Read-only access to Auralogs production logs: search logs, inspect errors, review AI analyses.",
+      "version": "0.1.0",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.auralogs%2Fauralogs/versions/latest",
+      "source_urls": [
+        "https://registry.modelcontextprotocol.io/v0.1/servers/ai.auralogs%2Fauralogs/versions/latest",
+        "https://github.com/auralogs-ai/auralogs-mcp"
+      ],
+      "signal_summary": "Listed in the official MCP Registry latest-version feed. Repo review: low-risk, risk 8/100, trust 92/100.",
+      "why_builders_should_care": "May expose a useful MCP capability that coding agents can review and permission.",
+      "suggested_trust_tier": "promising",
+      "risk_flags": [
+        "license-not-asserted"
+      ],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "allow_registry_proposal": false,
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 8,
+        "trust_score": 92,
+        "flags": [
+          "license-not-asserted"
+        ],
+        "reasons": [],
+        "reviewed_at": "2026-06-15T09:01:18.119Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      },
+      "metrics": {
+        "repo_risk_score": 8,
+        "repo_trust_score": 92,
+        "repo_verdict": "low-risk"
+      }
+    },
+    {
+      "source_route": "mcp-registry",
+      "name": "ai.bareun/bareun",
+      "title": "Bareun — Korean NLP & Spell/Grammar Checking",
+      "description": "Korean NLP MCP server: morphological analysis, tokenization, spell & grammar checking (Bareun)",
+      "version": "3.0.0",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.bareun%2Fbareun/versions/latest",
+      "source_urls": [
+        "https://registry.modelcontextprotocol.io/v0.1/servers/ai.bareun%2Fbareun/versions/latest",
+        "https://github.com/gih2yun/bareun-mcp"
+      ],
+      "signal_summary": "Listed in the official MCP Registry latest-version feed. Repo review: low-risk, risk 8/100, trust 92/100.",
+      "why_builders_should_care": "May expose a useful MCP capability that coding agents can review and permission.",
+      "suggested_trust_tier": "promising",
+      "risk_flags": [
+        "license-not-asserted"
+      ],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "allow_registry_proposal": false,
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 8,
+        "trust_score": 92,
+        "flags": [
+          "license-not-asserted"
+        ],
+        "reasons": [],
+        "reviewed_at": "2026-06-15T09:01:18.119Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      },
+      "metrics": {
+        "repo_risk_score": 8,
+        "repo_trust_score": 92,
+        "repo_verdict": "low-risk"
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "tomcounsell/ai",
+      "title": "ai",
+      "description": "A productive AI coworker that learns, self-improves, and ships work.",
+      "repo_url": "https://github.com/tomcounsell/ai",
+      "homepage_url": null,
+      "source_url": "https://github.com/tomcounsell/ai",
+      "source_urls": [
+        "https://github.com/tomcounsell/ai"
+      ],
+      "signal_summary": "Matched GitHub search `topic:llm-agent pushed:>=2026-06-13`; pushed 2026-06-15T08:59:33Z; stars 15. README review unavailable: 403 rate limit exceeded. Repo review: low-risk, risk 0/100, trust 100/100.",
+      "why_builders_should_care": "May expose a useful permissioned tool surface for coding agents.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "readme-review-unavailable"
+      ],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 15,
+        "forks": 9,
+        "open_issues": 52,
+        "language": "Python",
+        "license": "GPL-3.0",
+        "created_at": "2020-09-08T05:05:28Z",
+        "pushed_at": "2026-06-15T08:59:33Z",
+        "topics": [
+          "agent-harness",
+          "agentic-workflows",
+          "ai",
+          "ai-agent",
+          "autonomous-agent",
+          "claude-code",
+          "llm-agent",
+          "mcp",
+          "telegram"
+        ],
+        "repo_risk_score": 0,
+        "repo_trust_score": 100,
+        "repo_verdict": "low-risk"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 0,
+        "trust_score": 100,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-06-15T09:01:18.119Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "alexobiwan-creator/zotero-mcp-lite",
+      "title": "zotero-mcp-lite",
+      "description": "🚀 Run a high-performance MCP server for Zotero, enabling customizable workflows without cloud dependency or API keys.",
+      "repo_url": "https://github.com/alexobiwan-creator/zotero-mcp-lite",
+      "homepage_url": "https://alexobiwan-creator.github.io",
+      "source_url": "https://github.com/alexobiwan-creator/zotero-mcp-lite",
+      "source_urls": [
+        "https://github.com/alexobiwan-creator/zotero-mcp-lite",
+        "https://alexobiwan-creator.github.io"
+      ],
+      "signal_summary": "Matched GitHub search `topic:mcp pushed:>=2026-06-13`; pushed 2026-06-15T09:01:01Z; stars 6. README review unavailable: 403 rate limit exceeded. Repo review: low-risk, risk 0/100, trust 100/100.",
+      "why_builders_should_care": "May expose a useful permissioned tool surface for coding agents.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "readme-review-unavailable"
+      ],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 6,
+        "forks": 2,
+        "open_issues": 1,
+        "language": "Python",
+        "license": "MIT",
+        "created_at": "2026-02-01T16:11:04Z",
+        "pushed_at": "2026-06-15T09:01:01Z",
+        "topics": [
+          "ai",
+          "ai-agent",
+          "ai-agents",
+          "claude-code",
+          "gemini-cli",
+          "literature-review",
+          "mcp",
+          "mcp-server",
+          "model-context-protocol",
+          "python",
+          "sqlite",
+          "zotero",
+          "zotero-api"
+        ],
+        "repo_risk_score": 0,
+        "repo_trust_score": 100,
+        "repo_verdict": "low-risk"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 0,
+        "trust_score": 100,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-06-15T09:01:18.119Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "cuteecarrot/AgentHub",
+      "title": "AgentHub",
+      "description": "🤖 Orchestrate AI agents for seamless teamwork in software development, enabling efficient collaboration through dependable messaging protocols.",
+      "repo_url": "https://github.com/cuteecarrot/AgentHub",
+      "homepage_url": "https://cuteecarrot.github.io",
+      "source_url": "https://github.com/cuteecarrot/AgentHub",
+      "source_urls": [
+        "https://github.com/cuteecarrot/AgentHub",
+        "https://cuteecarrot.github.io"
+      ],
+      "signal_summary": "Matched GitHub search `topic:agent-framework pushed:>=2026-06-13`; pushed 2026-06-15T08:59:56Z; stars 4. README review unavailable: 403 rate limit exceeded. Repo review: low-risk, risk 8/100, trust 92/100.",
+      "why_builders_should_care": "May affect how builders compose, deploy, or observe agent workflows.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "readme-review-unavailable",
+        "low-repo-signal"
+      ],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 4,
+        "forks": 0,
+        "open_issues": 0,
+        "language": "Python",
+        "license": "MIT",
+        "created_at": "2026-01-30T17:37:18Z",
+        "pushed_at": "2026-06-15T08:59:56Z",
+        "topics": [
+          "agent-framework",
+          "agent-orchestration",
+          "ai",
+          "ai-collaboration",
+          "ai-team",
+          "anthropic",
+          "claude",
+          "claude-code",
+          "codex",
+          "collaboration",
+          "gemini",
+          "google",
+          "gpt",
+          "llm",
+          "multi-agent",
+          "openai",
+          "python"
+        ],
+        "repo_risk_score": 8,
+        "repo_trust_score": 92,
+        "repo_verdict": "low-risk"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 8,
+        "trust_score": 92,
+        "flags": [
+          "low-repo-signal"
+        ],
+        "reasons": [],
+        "reviewed_at": "2026-06-15T09:01:18.119Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "Qbandev/infura-mcp-server",
+      "title": "infura-mcp-server",
+      "description": "Infura MCP server! This project provides a ready-to-use Model Context Protocol (MCP) server that exposes the Infura JSON-RPC API as a set of tools for Large Language Models like Claude and Cursor.",
+      "repo_url": "https://github.com/Qbandev/infura-mcp-server",
+      "homepage_url": null,
+      "source_url": "https://github.com/Qbandev/infura-mcp-server",
+      "source_urls": [
+        "https://github.com/Qbandev/infura-mcp-server"
+      ],
+      "signal_summary": "Matched GitHub search `\"model context protocol\" pushed:>=2026-06-13`; pushed 2026-06-15T09:01:13Z; stars 4. README review unavailable: 403 rate limit exceeded. Repo review: low-risk, risk 8/100, trust 92/100.",
+      "why_builders_should_care": "May expose a useful permissioned tool surface for coding agents.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "readme-review-unavailable",
+        "low-repo-signal"
+      ],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 4,
+        "forks": 2,
+        "open_issues": 4,
+        "language": "JavaScript",
+        "license": "MIT",
+        "created_at": "2025-06-09T17:14:27Z",
+        "pushed_at": "2026-06-15T09:01:13Z",
+        "topics": [
+          "claude",
+          "claude-code",
+          "cursor",
+          "infura",
+          "mcp-server",
+          "vscode"
+        ],
+        "repo_risk_score": 8,
+        "repo_trust_score": 92,
+        "repo_verdict": "low-risk"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 8,
+        "trust_score": 92,
+        "flags": [
+          "low-repo-signal"
+        ],
+        "reasons": [],
+        "reviewed_at": "2026-06-15T09:01:18.119Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "DomingosNgongo/walmart-mcp",
+      "title": "walmart-mcp",
+      "description": "🛒 Connect AI agents to Walmart's ecosystem using the Model Context Protocol for real-time data access and enhanced product search capabilities.",
+      "repo_url": "https://github.com/DomingosNgongo/walmart-mcp",
+      "homepage_url": "https://domingosngongo.github.io",
+      "source_url": "https://github.com/DomingosNgongo/walmart-mcp",
+      "source_urls": [
+        "https://github.com/DomingosNgongo/walmart-mcp",
+        "https://domingosngongo.github.io"
+      ],
+      "signal_summary": "Matched GitHub search `\"model context protocol\" pushed:>=2026-06-13`; pushed 2026-06-15T09:00:30Z; stars 3. README review unavailable: 403 rate limit exceeded. Repo review: low-risk, risk 8/100, trust 92/100.",
+      "why_builders_should_care": "May expose a useful permissioned tool surface for coding agents.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "readme-review-unavailable",
+        "low-repo-signal"
+      ],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 3,
+        "forks": 1,
+        "open_issues": 1,
+        "language": null,
+        "license": "NOASSERTION",
+        "created_at": "2026-02-01T03:17:37Z",
+        "pushed_at": "2026-06-15T09:00:30Z",
+        "topics": [
+          "affiliate-api",
+          "ai-agents",
+          "antigravity-ide",
+          "claude-desktop",
+          "cursor-ai",
+          "ecommerce-api",
+          "llm",
+          "market-analysis",
+          "mcp",
+          "model-context-protocol",
+          "nodejs",
+          "product-search",
+          "roo-code",
+          "shopping-assistant",
+          "typescript",
+          "walmart",
+          "windsurf-ai"
+        ],
+        "repo_risk_score": 8,
+        "repo_trust_score": 92,
+        "repo_verdict": "low-risk"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 8,
+        "trust_score": 92,
+        "flags": [
+          "low-repo-signal"
+        ],
+        "reasons": [],
+        "reviewed_at": "2026-06-15T09:01:18.119Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "linny006/agent-eval-harness",
+      "title": "agent-eval-harness",
+      "description": "Live, open-source benchmark for comparing AI coding agents on real GitHub issues",
+      "repo_url": "https://github.com/linny006/agent-eval-harness",
+      "homepage_url": null,
+      "source_url": "https://github.com/linny006/agent-eval-harness",
+      "source_urls": [
+        "https://github.com/linny006/agent-eval-harness"
+      ],
+      "signal_summary": "Matched GitHub search `\"agent eval\" pushed:>=2026-06-13`; pushed 2026-06-15T09:00:42Z; stars 3. README review unavailable: 403 rate limit exceeded. Repo review: needs-review, risk 30/100, trust 70/100.",
+      "why_builders_should_care": "May help builders verify agent behavior, regressions, or model/tool quality.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "license-not-asserted",
+        "sensitive-permissions",
+        "readme-review-unavailable",
+        "low-repo-signal",
+        "new-repository"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 3,
+        "forks": 1,
+        "open_issues": 4,
+        "language": "Python",
+        "license": null,
+        "created_at": "2026-05-24T01:08:04Z",
+        "pushed_at": "2026-06-15T09:00:42Z",
+        "topics": [
+          "agent-eval",
+          "agent-evaluation",
+          "ai-benchmarks",
+          "ai-coding-agent-benchmark",
+          "ai-engineering",
+          "ai-evaluation",
+          "ai-research",
+          "ai-tools",
+          "auto-updated",
+          "awesome-list",
+          "benchmark",
+          "codex-vs-opencode",
+          "coding-agent-benchmark",
+          "dev-tools",
+          "developer-tools",
+          "live-data",
+          "llm-benchmarks",
+          "llm-testing",
+          "machine-learning",
+          "swe-bench"
+        ],
+        "repo_risk_score": 30,
+        "repo_trust_score": 70,
+        "repo_verdict": "needs-review"
+      },
+      "repository_review": {
+        "verdict": "needs-review",
+        "risk_score": 30,
+        "trust_score": 70,
+        "flags": [
+          "license-not-asserted",
+          "low-repo-signal",
+          "new-repository"
+        ],
+        "reasons": [],
+        "reviewed_at": "2026-06-15T09:01:18.119Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "Scaffoldic/agentforge-py",
+      "title": "agentforge-py",
+      "description": "Production-grade, contracts-first framework for AI agents in Python — vendor-neutral, audit-ready.",
+      "repo_url": "https://github.com/Scaffoldic/agentforge-py",
+      "homepage_url": "https://pypi.org/project/agentforge-py/",
+      "source_url": "https://github.com/Scaffoldic/agentforge-py",
+      "source_urls": [
+        "https://github.com/Scaffoldic/agentforge-py",
+        "https://pypi.org/project/agentforge-py/"
+      ],
+      "signal_summary": "Matched GitHub search `topic:agent-framework pushed:>=2026-06-13`; pushed 2026-06-15T09:00:51Z; stars 2. README review unavailable: 403 rate limit exceeded. Repo review: low-risk, risk 8/100, trust 92/100.",
+      "why_builders_should_care": "May expose a useful permissioned tool surface for coding agents.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "readme-review-unavailable",
+        "low-repo-signal"
+      ],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 2,
+        "forks": 0,
+        "open_issues": 1,
+        "language": "Python",
+        "license": "Apache-2.0",
+        "created_at": "2026-05-09T09:21:30Z",
+        "pushed_at": "2026-06-15T09:00:51Z",
+        "topics": [
+          "agent-framework",
+          "agentic-ai",
+          "ai-agents",
+          "anthropic",
+          "bedrock",
+          "llm",
+          "mcp",
+          "ollama",
+          "openai",
+          "opentelemetry",
+          "python",
+          "rag"
+        ],
+        "repo_risk_score": 8,
+        "repo_trust_score": 92,
+        "repo_verdict": "low-risk"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 8,
+        "trust_score": 92,
+        "flags": [
+          "low-repo-signal"
+        ],
+        "reasons": [],
+        "reviewed_at": "2026-06-15T09:01:18.119Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "Yandatini/mcp-agent-framework",
+      "title": "mcp-agent-framework",
+      "description": "🤖 Orchestrate AI agents at scale using the MCP framework, enabling seamless context sharing, communication, and integration for enhanced collaboration.",
+      "repo_url": "https://github.com/Yandatini/mcp-agent-framework",
+      "homepage_url": "https://yandatini.github.io",
+      "source_url": "https://github.com/Yandatini/mcp-agent-framework",
+      "source_urls": [
+        "https://github.com/Yandatini/mcp-agent-framework",
+        "https://yandatini.github.io"
+      ],
+      "signal_summary": "Matched GitHub search `topic:ai-agent pushed:>=2026-06-13`; pushed 2026-06-15T09:00:50Z; stars 2. README review unavailable: 403 rate limit exceeded. Repo review: low-risk, risk 8/100, trust 92/100.",
+      "why_builders_should_care": "May expose a useful permissioned tool surface for coding agents.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "readme-review-unavailable",
+        "low-repo-signal"
+      ],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 2,
+        "forks": 1,
+        "open_issues": 1,
+        "language": "Python",
+        "license": "MIT",
+        "created_at": "2026-02-01T11:43:33Z",
+        "pushed_at": "2026-06-15T09:00:50Z",
+        "topics": [
+          "agentic-rag",
+          "ai",
+          "ai-agent",
+          "ai-agents",
+          "ai-assistant",
+          "ai-tools",
+          "authentication",
+          "authorization",
+          "autonomous-agents",
+          "codex",
+          "java",
+          "llamaindex",
+          "mcp-server",
+          "model-context-protocol",
+          "multi-agent",
+          "ollama",
+          "pydantic-ai"
+        ],
+        "repo_risk_score": 8,
+        "repo_trust_score": 92,
+        "repo_verdict": "low-risk"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 8,
+        "trust_score": 92,
+        "flags": [
+          "low-repo-signal"
+        ],
+        "reasons": [],
+        "reviewed_at": "2026-06-15T09:01:18.119Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "artyomsv/quil",
+      "title": "quil",
+      "description": "Reboot-proof terminal multiplexer for AI-native devs — a tmux alternative that persists your whole workspace across reboots and auto-resumes Claude Code & OpenCode sessions. Ships an MCP server so AI agents can drive your panes. Go, cross-platform (Linux/macOS/Windows). MIT.",
+      "repo_url": "https://github.com/artyomsv/quil",
+      "homepage_url": "https://quil.cc/",
+      "source_url": "https://github.com/artyomsv/quil",
+      "source_urls": [
+        "https://github.com/artyomsv/quil",
+        "https://quil.cc/"
+      ],
+      "signal_summary": "Matched GitHub search `topic:mcp pushed:>=2026-06-13`; pushed 2026-06-15T09:01:05Z; stars 1. README review unavailable: 403 rate limit exceeded. Repo review: low-risk, risk 8/100, trust 92/100.",
+      "why_builders_should_care": "May expose a useful permissioned tool surface for coding agents.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "readme-review-unavailable",
+        "low-repo-signal"
+      ],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 1,
+        "forks": 0,
+        "open_issues": 0,
+        "language": "Go",
+        "license": "MIT",
+        "created_at": "2026-03-10T10:05:19Z",
+        "pushed_at": "2026-06-15T09:01:05Z",
+        "topics": [
+          "ai",
+          "ai-agents",
+          "bubbletea",
+          "claude-code",
+          "cli",
+          "conpty",
+          "cross-platform",
+          "developer-tools",
+          "go",
+          "golang",
+          "mcp",
+          "model-context-protocol",
+          "multiplexer",
+          "opencode",
+          "session-manager",
+          "terminal",
+          "terminal-multiplexer",
+          "tmux",
+          "tmux-alternative",
+          "tui"
+        ],
+        "repo_risk_score": 8,
+        "repo_trust_score": 92,
+        "repo_verdict": "low-risk"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 8,
+        "trust_score": 92,
+        "flags": [
+          "low-repo-signal"
+        ],
+        "reasons": [],
+        "reviewed_at": "2026-06-15T09:01:18.119Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "carlosmen5551/swift-streamable-actors",
+      "title": "swift-streamable-actors",
+      "description": "🌊 Stream reactive property changes across isolation boundaries in Swift Actors with a lightweight library that simplifies concurrency and ensures memory safety.",
+      "repo_url": "https://github.com/carlosmen5551/swift-streamable-actors",
+      "homepage_url": "https://carlosmen5551.github.io",
+      "source_url": "https://github.com/carlosmen5551/swift-streamable-actors",
+      "source_urls": [
+        "https://github.com/carlosmen5551/swift-streamable-actors",
+        "https://carlosmen5551.github.io"
+      ],
+      "signal_summary": "Matched GitHub search `topic:mcp pushed:>=2026-06-13`; pushed 2026-06-15T09:01:02Z; stars 1. README review unavailable: 403 rate limit exceeded. Repo review: low-risk, risk 8/100, trust 92/100.",
+      "why_builders_should_care": "May expose a useful permissioned tool surface for coding agents.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "sensitive-permissions",
+        "readme-review-unavailable",
+        "low-repo-signal"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 1,
+        "forks": 0,
+        "open_issues": 0,
+        "language": "Swift",
+        "license": "MIT",
+        "created_at": "2026-02-01T18:22:40Z",
+        "pushed_at": "2026-06-15T09:01:02Z",
+        "topics": [
+          "actor-model",
+          "actors",
+          "akka",
+          "cocoapods",
+          "concurrency",
+          "hacktoberfest",
+          "json",
+          "macos",
+          "mcp",
+          "open-source",
+          "streaming",
+          "swift-extensions",
+          "swift-library",
+          "swift-package-manager",
+          "swift-programming-language",
+          "swiftyjson",
+          "xcode"
+        ],
+        "repo_risk_score": 8,
+        "repo_trust_score": 92,
+        "repo_verdict": "low-risk"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 8,
+        "trust_score": 92,
+        "flags": [
+          "low-repo-signal"
+        ],
+        "reasons": [],
+        "reviewed_at": "2026-06-15T09:01:18.119Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "chatgarypt-cpu/OpenNOVA_EvalHarnessSystem",
+      "title": "OpenNOVA_EvalHarnessSystem",
+      "description": "agent eval harness工作流系统，实现从hermess到codex,claude code之间的通讯",
+      "repo_url": "https://github.com/chatgarypt-cpu/OpenNOVA_EvalHarnessSystem",
+      "homepage_url": null,
+      "source_url": "https://github.com/chatgarypt-cpu/OpenNOVA_EvalHarnessSystem",
+      "source_urls": [
+        "https://github.com/chatgarypt-cpu/OpenNOVA_EvalHarnessSystem"
+      ],
+      "signal_summary": "Matched GitHub search `\"agent eval\" pushed:>=2026-06-13`; pushed 2026-06-15T08:59:41Z; stars 1. README review unavailable: 403 rate limit exceeded. Repo review: needs-review, risk 30/100, trust 70/100.",
+      "why_builders_should_care": "May help builders verify agent behavior, regressions, or model/tool quality.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "license-not-asserted",
+        "readme-review-unavailable",
+        "low-repo-signal",
+        "new-repository"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 1,
+        "forks": 0,
+        "open_issues": 0,
+        "language": "Python",
+        "license": null,
+        "created_at": "2026-06-15T08:45:07Z",
+        "pushed_at": "2026-06-15T08:59:41Z",
+        "topics": [],
+        "repo_risk_score": 30,
+        "repo_trust_score": 70,
+        "repo_verdict": "needs-review"
+      },
+      "repository_review": {
+        "verdict": "needs-review",
+        "risk_score": 30,
+        "trust_score": 70,
+        "flags": [
+          "license-not-asserted",
+          "low-repo-signal",
+          "new-repository"
+        ],
+        "reasons": [],
+        "reviewed_at": "2026-06-15T09:01:18.119Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "KC23br/n8n-ai-calendar-agent-chat",
+      "title": "n8n-ai-calendar-agent-chat",
+      "description": "📅 Streamline scheduling with an AI assistant that checks availability, retrieves contacts, and books appointments through natural conversation.",
+      "repo_url": "https://github.com/KC23br/n8n-ai-calendar-agent-chat",
+      "homepage_url": "https://kc23br.github.io",
+      "source_url": "https://github.com/KC23br/n8n-ai-calendar-agent-chat",
+      "source_urls": [
+        "https://github.com/KC23br/n8n-ai-calendar-agent-chat",
+        "https://kc23br.github.io"
+      ],
+      "signal_summary": "Matched GitHub search `topic:ai-agent pushed:>=2026-06-13`; pushed 2026-06-15T09:01:11Z; stars 1. README review unavailable: 403 rate limit exceeded. Repo review: low-risk, risk 8/100, trust 92/100.",
+      "why_builders_should_care": "May affect how builders compose, deploy, or observe agent workflows.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "readme-review-unavailable",
+        "low-repo-signal"
+      ],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 1,
+        "forks": 0,
+        "open_issues": 0,
+        "language": null,
+        "license": "MIT",
+        "created_at": "2026-02-02T18:07:41Z",
+        "pushed_at": "2026-06-15T09:01:11Z",
+        "topics": [
+          "ai",
+          "ai-agent",
+          "ai-agents",
+          "ai-assistant",
+          "chatbot",
+          "conversational-ai",
+          "google-calendar",
+          "n8n",
+          "n8n-automation",
+          "n8n-workflow",
+          "no-code",
+          "scheduling-assistant",
+          "workflow-automation"
+        ],
+        "repo_risk_score": 8,
+        "repo_trust_score": 92,
+        "repo_verdict": "low-risk"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 8,
+        "trust_score": 92,
+        "flags": [
+          "low-repo-signal"
+        ],
+        "reasons": [],
+        "reviewed_at": "2026-06-15T09:01:18.119Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "npm-search",
+      "name": "nx-mcp",
+      "title": "nx-mcp",
+      "description": "A Model Context Protocol server implementation for Nx",
+      "repo_url": "https://github.com/nrwl/nx-console",
+      "homepage_url": "https://nx.dev",
+      "package_url": "https://www.npmjs.com/package/nx-mcp",
+      "source_url": "https://www.npmjs.com/package/nx-mcp",
+      "source_urls": [
+        "https://www.npmjs.com/package/nx-mcp",
+        "https://github.com/nrwl/nx-console",
+        "https://nx.dev",
+        "https://github.com/nrwl/nx-console/issues"
+      ],
+      "signal_summary": "Matched npm search `keywords:model context protocol`; package updated 2026-04-30T11:38:28.620Z. README review unavailable: 403 rate limit exceeded. Repo review: low-risk, risk 0/100, trust 100/100.",
+      "why_builders_should_care": "May expose a useful permissioned tool surface for coding agents.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "readme-review-unavailable"
+      ],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "npm_score": 375.51608,
+        "quality": 1,
+        "popularity": 1,
+        "maintenance": 1,
+        "license": "MIT",
+        "version": "0.25.0",
+        "updated_at": "2026-04-30T11:38:28.620Z",
+        "topics": [
+          "nx",
+          "monorepo",
+          "ai",
+          "mcp",
+          "model",
+          "context",
+          "protocol"
+        ],
+        "repo_risk_score": 0,
+        "repo_trust_score": 100,
+        "repo_verdict": "low-risk"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 0,
+        "trust_score": 100,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-06-15T09:01:18.119Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "npm-search",
+      "name": "chrome-devtools-mcp",
+      "title": "chrome-devtools-mcp",
+      "description": "MCP server for Chrome DevTools",
+      "repo_url": "https://github.com/ChromeDevTools/chrome-devtools-mcp",
+      "homepage_url": "https://github.com/ChromeDevTools/chrome-devtools-mcp#readme",
+      "package_url": "https://www.npmjs.com/package/chrome-devtools-mcp",
+      "source_url": "https://www.npmjs.com/package/chrome-devtools-mcp",
+      "source_urls": [
+        "https://www.npmjs.com/package/chrome-devtools-mcp",
+        "https://github.com/ChromeDevTools/chrome-devtools-mcp",
+        "https://github.com/ChromeDevTools/chrome-devtools-mcp#readme",
+        "https://github.com/ChromeDevTools/chrome-devtools-mcp/issues"
+      ],
+      "signal_summary": "Matched npm search `mcp server`; package updated 2026-06-08T17:00:03.440Z. README review unavailable: 403 rate limit exceeded. Repo review: low-risk, risk 0/100, trust 100/100.",
+      "why_builders_should_care": "May expose a useful permissioned tool surface for coding agents.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "readme-review-unavailable"
+      ],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "npm_score": 374.2945,
+        "quality": 1,
+        "popularity": 1,
+        "maintenance": 1,
+        "license": "Apache-2.0",
+        "version": "1.2.0",
+        "updated_at": "2026-06-08T17:00:03.440Z",
+        "topics": [],
+        "repo_risk_score": 0,
+        "repo_trust_score": 100,
+        "repo_verdict": "low-risk"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 0,
+        "trust_score": 100,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-06-15T09:01:18.119Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "hacker-news",
+      "name": "hn-48522763",
+      "title": "Is there a name for the type of comments agents add where they leak the prompt?",
+      "description": "Hacker News discussion surfaced this as an ecosystem lead. Verify against primary sources before promotion.",
+      "repo_url": null,
+      "homepage_url": null,
+      "source_url": "https://news.ycombinator.com/item?id=48522763",
+      "source_urls": [
+        "https://news.ycombinator.com/item?id=48522763"
+      ],
+      "signal_summary": "Matched Hacker News query `agent eval`; created 2026-06-14T00:04:51Z; points 17; comments 8. Repo review: low-risk, risk 8/100, trust 92/100.",
+      "why_builders_should_care": "May indicate fast-moving builder interest; treat as a lead until backed by an official repo, release, docs page, or paper.",
+      "suggested_trust_tier": "watchlist",
+      "risk_flags": [
+        "social-signal",
+        "needs-primary-source",
+        "license-not-asserted"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "allow_registry_proposal": false,
+      "metrics": {
+        "points": 17,
+        "comments": 8,
+        "created_at": "2026-06-14T00:04:51Z",
+        "query": "agent eval",
+        "repo_risk_score": 8,
+        "repo_trust_score": 92,
+        "repo_verdict": "low-risk"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 8,
+        "trust_score": 92,
+        "flags": [
+          "license-not-asserted"
+        ],
+        "reasons": [],
+        "reviewed_at": "2026-06-15T09:01:18.119Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "hacker-news",
+      "name": "hn-48520757",
+      "title": "Show HN: I am running 3 coding agents non-stop over the last 3 days. Here is how",
+      "description": "Hacker News discussion surfaced this as an ecosystem lead. Verify against primary sources before promotion.",
+      "repo_url": null,
+      "homepage_url": null,
+      "source_url": "https://news.ycombinator.com/item?id=48520757",
+      "source_urls": [
+        "https://news.ycombinator.com/item?id=48520757"
+      ],
+      "signal_summary": "Matched Hacker News query `agent eval`; created 2026-06-13T19:48:31Z; points 8; comments 3. Repo review: low-risk, risk 8/100, trust 92/100.",
+      "why_builders_should_care": "May indicate fast-moving builder interest; treat as a lead until backed by an official repo, release, docs page, or paper.",
+      "suggested_trust_tier": "watchlist",
+      "risk_flags": [
+        "social-signal",
+        "needs-primary-source",
+        "license-not-asserted"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "allow_registry_proposal": false,
+      "metrics": {
+        "points": 8,
+        "comments": 3,
+        "created_at": "2026-06-13T19:48:31Z",
+        "query": "agent eval",
+        "repo_risk_score": 8,
+        "repo_trust_score": 92,
+        "repo_verdict": "low-risk"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 8,
+        "trust_score": 92,
+        "flags": [
+          "license-not-asserted"
+        ],
+        "reasons": [],
+        "reviewed_at": "2026-06-15T09:01:18.119Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    }
+  ],
+  "watched_sources": [],
+  "errors": [
+    {
+      "route": "github-releases",
+      "repo": "modelcontextprotocol/modelcontextprotocol",
+      "error": "403 rate limit exceeded: {\"message\":\"API rate limit exceeded for 152.53.130.107. (But here's the good news: Authenticated requests get a higher rate limit. Check out the documentation for more details.)\",\"documentation_url\":\""
+    },
+    {
+      "route": "github-releases",
+      "repo": "github/github-mcp-server",
+      "error": "403 rate limit exceeded: {\"message\":\"API rate limit exceeded for 152.53.130.107. (But here's the good news: Authenticated requests get a higher rate limit. Check out the documentation for more details.)\",\"documentation_url\":\""
+    },
+    {
+      "route": "github-releases",
+      "repo": "supabase-community/supabase-mcp",
+      "error": "403 rate limit exceeded: {\"message\":\"API rate limit exceeded for 152.53.130.107. (But here's the good news: Authenticated requests get a higher rate limit. Check out the documentation for more details.)\",\"documentation_url\":\""
+    },
+    {
+      "route": "github-releases",
+      "repo": "qdrant/mcp-server-qdrant",
+      "error": "403 rate limit exceeded: {\"message\":\"API rate limit exceeded for 152.53.130.107. (But here's the good news: Authenticated requests get a higher rate limit. Check out the documentation for more details.)\",\"documentation_url\":\""
+    },
+    {
+      "route": "github-releases",
+      "repo": "NousResearch/hermes-agent",
+      "error": "403 rate limit exceeded: {\"message\":\"API rate limit exceeded for 152.53.130.107. (But here's the good news: Authenticated requests get a higher rate limit. Check out the documentation for more details.)\",\"documentation_url\":\""
+    },
+    {
+      "route": "github-releases",
+      "repo": "cline/cline",
+      "error": "403 rate limit exceeded: {\"message\":\"API rate limit exceeded for 152.53.130.107. (But here's the good news: Authenticated requests get a higher rate limit. Check out the documentation for more details.)\",\"documentation_url\":\""
+    },
+    {
+      "route": "github-releases",
+      "repo": "RooVetGit/Roo-Code",
+      "error": "403 rate limit exceeded: {\"message\":\"API rate limit exceeded for 152.53.130.107. (But here's the good news: Authenticated requests get a higher rate limit. Check out the documentation for more details.)\",\"documentation_url\":\""
+    },
+    {
+      "route": "github-releases",
+      "repo": "anthropics/claude-code",
+      "error": "403 rate limit exceeded: {\"message\":\"API rate limit exceeded for 152.53.130.107. (But here's the good news: Authenticated requests get a higher rate limit. Check out the documentation for more details.)\",\"documentation_url\":\""
+    },
+    {
+      "route": "github-releases",
+      "repo": "microsoft/mcp-gateway",
+      "error": "403 rate limit exceeded: {\"message\":\"API rate limit exceeded for 152.53.130.107. (But here's the good news: Authenticated requests get a higher rate limit. Check out the documentation for more details.)\",\"documentation_url\":\""
+    },
+    {
+      "route": "github-releases",
+      "repo": "TheLunarCompany/lunar",
+      "error": "403 rate limit exceeded: {\"message\":\"API rate limit exceeded for 152.53.130.107. (But here's the good news: Authenticated requests get a higher rate limit. Check out the documentation for more details.)\",\"documentation_url\":\""
+    }
+  ]
+}

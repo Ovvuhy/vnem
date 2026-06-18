@@ -1,39 +1,31 @@
 # vnem Daily Signals
 
-Generated: 2026-06-16T09:05:00.000Z
+Generated: 2026-06-18T06:30:30.100Z
 
 Hermes summarizes source-backed agent and LLM ecosystem signals. This digest does not auto-promote entries into the registry.
 
-## New Candidate Signals (2026-06-16)
+## New Candidate Signals
 
-### High-Signal Additions (new to reports since last digest)
-
-- microsoft/mcp-for-beginners | promising | review | https://github.com/microsoft/mcp-for-beginners | 16.5k stars, MIT — official cross-language MCP curriculum (.NET, Java, TS, JS, Rust, Python)
-- dyoshikawa/rulesync | promising | review | https://github.com/dyoshikawa/rulesync | 1.2k stars, MIT — CLI utility for AI coding agents; rules + skills workflow
-- stablyai/orca | promising | review | https://github.com/stablyai/orca | 5k stars, MIT — ADE for parallel agent fleets; desktop + mobile
-- SUNNATBEE/sunnatbeeCLI | unreviewed | review | https://github.com/SUNNATBEE/sunnatbeeCLI | 19 stars, MIT — interactive launcher for 28+ terminal AI CLIs (Claude Code, Codex, Gemini, Aider…)
-- Clare-Nie/EvoEmbedding | unreviewed | watchlist | https://github.com/Clare-Nie/EvoEmbedding | 1 star — evolvable embedding research for long-context retrieval and agentic memory
-- hn-48548381 (Claude Code for Visual Studio) | watchlist | watchlist | https://github.com/firish/claude_code_vs | HN lead (18 pts, 6 comments) — needs primary source verification
-
-### Active Signals From Earlier Ingest (still no registry entry)
-
+- ai.agentberg/agentberg | promising | review | https://registry.modelcontextprotocol.io/v0.1/servers/ai.agentberg%2Fagentberg/versions/latest
 - ai.aient/mcp | promising | review | https://registry.modelcontextprotocol.io/v0.1/servers/ai.aient%2Fmcp/versions/latest
+- AirShelf Catalog | promising | review | https://registry.modelcontextprotocol.io/v0.1/servers/ai.airshelf%2Fcatalog/versions/latest
 - AlphaCreek SEC Filings MCP | promising | review | https://registry.modelcontextprotocol.io/v0.1/servers/ai.alphacreek%2Falphacreek-mcp/versions/latest
 - Auralogs | promising | review | https://registry.modelcontextprotocol.io/v0.1/servers/ai.auralogs%2Fauralogs/versions/latest
-- Bareun — Korean NLP & Spell/Grammar Checking | promising | review | https://registry.modelcontextprotocol.io/v0.1/servers/ai.bareun%2Fbareun/versions/latest
-- hermes-agent v0.16.0 | unreviewed | review | https://github.com/NousResearch/hermes-agent/releases/tag/v2026.6.5 | 194k stars, MIT
-- claude-code v2.1.178 | unreviewed | review | https://github.com/anthropics/claude-code/releases/tag/v2.1.178 | 132k stars
-- supabase/mcp (mcp-server-postgrest v0.1.1) | unreviewed | review | https://github.com/supabase/mcp/releases/tag/mcp-server-postgrest-v0.1.1 | Apache-2.0
-- agent-eval-harness | unreviewed | watchlist | https://github.com/linny006/agent-eval-harness | live benchmark for coding agents on real GitHub issues
-- three.ws | unreviewed | watchlist | https://github.com/nirholas/three.ws | 3D AI agent framework, GLB/glTF avatars with LLM brains
-- stella | unreviewed | watchlist | https://github.com/CherryHQ/stella | multi-user, multi-agent memory + sandboxed workspaces
-- flet-mcp-server | unreviewed | review | https://github.com/Nwokike/flet-mcp-server | MCP server for Flet framework resources
-- verity-harness | unreviewed | review | https://github.com/FutronPrime/verity-harness | zero-dependency LLM verification harness
-- AgentRegistry | unreviewed | review | https://github.com/Tethral-Inc/AgentRegistry | agent monitoring + behavioral analytics
-- ClinVerdict-Physician-Curated-Clinical-AI-Evals-Suite | unreviewed | review | https://github.com/sharifalzaber/ClinVerdict-Physician-Curated-Clinical-AI-Evals-Suite | adversarial clinical AI evals
-- nx-mcp | unreviewed | review | https://www.npmjs.com/package/nx-mcp | MCP server for Nx monorepo tooling
-- chrome-devtools-mcp | watchlist | watchlist | https://www.npmjs.com/package/chrome-devtools-mcp | MCP server for Chrome DevTools (suspicious review flags)
-- Show HN: Macro – unified system for email, chat, tasks, docs, agents | watchlist | watchlist | https://news.ycombinator.com/item?id=48546561 | HN lead — needs primary source verification
+- GenericAgent | promising | watchlist | https://github.com/lsdefine/GenericAgent
+- skillhub | promising | review | https://github.com/iflytek/skillhub
+- openacme | unreviewed | review | https://github.com/sandydasari/openacme
+- ai | unreviewed | review | https://github.com/tomcounsell/ai
+- remem | unreviewed | watchlist | https://github.com/majiayu000/remem
+- jambo-api | unreviewed | watchlist | https://github.com/jambostack/jambo-api
+- agent-eval-harness | unreviewed | watchlist | https://github.com/linny006/agent-eval-harness
+- llm-agents-radar | unreviewed | watchlist | https://github.com/linny006/llm-agents-radar
+- neuralbridge-sdk | unreviewed | review | https://github.com/neuralbridge-sdk/neuralbridge-sdk
+- ai-arize-agent-evaluation | unreviewed | watchlist | https://github.com/botextractai/ai-arize-agent-evaluation
+- agent-memory-contracts | unreviewed | watchlist | https://github.com/eoniclife/agent-memory-contracts
+- nx-mcp | unreviewed | review | https://www.npmjs.com/package/nx-mcp
+- mcp-framework | unreviewed | watchlist | https://www.npmjs.com/package/mcp-framework
+- Launch HN: Adam (YC W25) – Open-Source AI CAD | watchlist | watchlist | https://news.ycombinator.com/item?id=48572553
+- Show HN: Claude Code for Visual Studio (native diff with accept/reject) | watchlist | watchlist | https://news.ycombinator.com/item?id=48548381
 
 ## Watched Primary Sources
 
@@ -68,4 +60,3 @@ Hermes summarizes source-backed agent and LLM ecosystem signals. This digest doe
 - Promote candidates only after checking source links, license posture, permissions, and install docs.
 - Keep social ingestion disabled unless official credentials and terms-compliant access are configured.
 - If generated pack files changed, verify `AGENTS.md`, `search-index.json`, `best-practices.md`, and `agent-workspace.md` still describe read-only behavior.
-- **2026-06-16 note:** microsoft/mcp-for-beginners and stablyai/orca have strong source backing and community traction — consider for registry promotion if they align with vnem's scope.

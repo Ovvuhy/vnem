@@ -1,0 +1,129 @@
+{
+  "generated_at": "2026-06-17T07:16:46.107Z",
+  "mode": "hourly",
+  "lookback_days": 2,
+  "source_routes": [
+    "github-search",
+    "github-releases",
+    "npm-search",
+    "hacker-news",
+    "mcp-registry"
+  ],
+  "new_candidates": [
+    {
+      "source_route": "github-search",
+      "name": "anombyte93/prd-taskmaster",
+      "title": "prd-taskmaster",
+      "description": "Zero-config goal-to-tasks engine for Claude Code. Graded PRD validation, dependency-ordered task graph, evidence-gated execution.",
+      "repo_url": "https://github.com/anombyte93/prd-taskmaster",
+      "homepage_url": null,
+      "source_url": "https://github.com/anombyte93/prd-taskmaster",
+      "source_urls": ["https://github.com/anombyte93/prd-taskmaster"],
+      "signal_summary": "Matched GitHub search `topic:mcp pushed:>=2026-06-15`; pushed 2026-06-17; stars 514, MIT license.",
+      "why_builders_should_care": "Agent-native PRD validation and task decomposition tool surfaced actively maintained MCP-tagged repo.",
+      "suggested_trust_tier": "promising",
+      "risk_flags": ["readme-review-unavailable"],
+      "recommended_action": "review",
+      "metrics": {
+        "stars": 514,
+        "forks": 52,
+        "open_issues": 7,
+        "language": "Python",
+        "license": "MIT"
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "eddmpython/dartlab",
+      "title": "dartlab",
+      "description": "Korean DART + SEC EDGAR filings as structured Python data for company analysis.",
+      "repo_url": "https://github.com/eddmpython/dartlab",
+      "homepage_url": "https://eddmpython.github.io/dartlab",
+      "source_url": "https://github.com/eddmpython/dartlab",
+      "source_urls": ["https://github.com/eddmpython/dartlab", "https://eddmpython.github.io/dartlab"],
+      "signal_summary": "Matched GitHub search `topic:mcp pushed:>=2026-06-15`; pushed 2026-06-17; stars 168, Apache-2.0.",
+      "why_builders_should_care": "Structured financial filings data MCP for agent consumption — complements AlphaCreek SEC Filings MCP.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": ["readme-review-unavailable"],
+      "recommended_action": "review",
+      "metrics": {
+        "stars": 168,
+        "forks": 35,
+        "open_issues": 2,
+        "language": "Python",
+        "license": "Apache-2.0"
+      }
+    },
+    {
+      "source_route": "npm-search",
+      "name": "chrome-devtools-mcp",
+      "title": "chrome-devtools-mcp",
+      "description": "MCP server for Chrome DevTools, published by ChromeDevTools org on GitHub.",
+      "repo_url": "https://github.com/ChromeDevTools/chrome-devtools-mcp",
+      "homepage_url": "https://github.com/ChromeDevTools/chrome-devtools-mcp",
+      "source_url": "https://www.npmjs.com/package/chrome-devtools-mcp",
+      "source_urls": ["https://www.npmjs.com/package/chrome-devtools-mcp", "https://github.com/ChromeDevTools/chrome-devtools-mcp"],
+      "signal_summary": "npm search `mcp server`; v1.2.0, updated 2026-06-08; Apache-2.0.",
+      "why_builders_should_care": "Official Chrome DevTools MCP server — high-signal browser automation tool for agents.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": ["readme-review-unavailable"],
+      "recommended_action": "review",
+      "metrics": {
+        "license": "Apache-2.0",
+        "version": "1.2.0",
+        "repo_risk_score": 0,
+        "repo_trust_score": 100,
+        "repo_verdict": "low-risk"
+      }
+    },
+    {
+      "source_route": "npm-search",
+      "name": "nx-mcp",
+      "title": "nx-mcp",
+      "description": "MCP server for Nx monorepo tooling, published by nrwl org.",
+      "repo_url": "https://github.com/nrwl/nx-console",
+      "homepage_url": "https://nx.dev",
+      "source_url": "https://www.npmjs.com/package/nx-mcp",
+      "source_urls": ["https://www.npmjs.com/package/nx-mcp", "https://github.com/nrwl/nx-console"],
+      "signal_summary": "npm search `keywords:model context protocol`; v0.25.0, updated 2026-04-30; MIT.",
+      "why_builders_should_care": "Brings Nx monorepo awareness to coding agents via MCP.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": ["readme-review-unavailable"],
+      "recommended_action": "review",
+      "metrics": {
+        "license": "MIT",
+        "version": "0.25.0",
+        "repo_risk_score": 0,
+        "repo_trust_score": 100,
+        "repo_verdict": "low-risk"
+      }
+    },
+    {
+      "source_route": "npm-search",
+      "name": "mcp-framework",
+      "title": "mcp-framework",
+      "description": "Framework for building Model Context Protocol servers in TypeScript.",
+      "repo_url": "https://github.com/QuantGeekDev/mcp-framework",
+      "homepage_url": "https://github.com/QuantGeekDev/mcp-framework",
+      "source_url": "https://www.npmjs.com/package/mcp-framework",
+      "source_urls": ["https://www.npmjs.com/package/mcp-framework", "https://github.com/QuantGeekDev/mcp-framework"],
+      "signal_summary": "npm search `keywords:model context protocol`; v0.2.22, updated 2026-04-16; license not asserted.",
+      "why_builders_should_care": "TypeScript SDK for building MCP servers — infrastructure-level tooling.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": ["license-not-asserted", "readme-review-unavailable"],
+      "recommended_action": "watchlist",
+      "metrics": {
+        "license": null,
+        "version": "0.2.22",
+        "repo_risk_score": 8,
+        "repo_trust_score": 92,
+        "repo_verdict": "low-risk"
+      }
+    }
+  ],
+  "rate_limit_errors": {
+    "github_search_queries": 6,
+    "github_releases_repos": 11,
+    "note": "All GitHub API routes returned 403 rate limit errors. Authenticated GH token needed."
+  }
+}
