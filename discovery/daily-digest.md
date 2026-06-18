@@ -1,6 +1,6 @@
 # vnem Daily Signals
 
-Generated: 2026-06-18T06:30:30.100Z
+Generated: 2026-06-18T07:08:31.000Z
 
 Hermes summarizes source-backed agent and LLM ecosystem signals. This digest does not auto-promote entries into the registry.
 
@@ -25,7 +25,12 @@ Hermes summarizes source-backed agent and LLM ecosystem signals. This digest doe
 - nx-mcp | unreviewed | review | https://www.npmjs.com/package/nx-mcp
 - mcp-framework | unreviewed | watchlist | https://www.npmjs.com/package/mcp-framework
 - Launch HN: Adam (YC W25) – Open-Source AI CAD | watchlist | watchlist | https://news.ycombinator.com/item?id=48572553
-- Show HN: Claude Code for Visual Studio (native diff with accept/reject) | watchlist | watchlist | https://news.ycombinator.com/item?id=48548381
+- Show HN: Mira – Open-source and self-hosted AI code reviewer | watchlist | watchlist | https://news.ycombinator.com/item?id=48570197
+- omnigent | promising | review | https://github.com/omnigent-ai/omnigent
+- vm0 | promising | review | https://github.com/vm0-ai/vm0
+- CodexFlow | unreviewed | watchlist | https://github.com/lulu-sk/CodexFlow
+- imap-mcp-server | unreviewed | review | https://github.com/nikolausm/imap-mcp-server
+- eidetic_engine_cli | unreviewed | watchlist | https://github.com/Dicklesworthstone/eidetic_engine_cli
 
 ## Watched Primary Sources
 
@@ -53,6 +58,7 @@ Hermes summarizes source-backed agent and LLM ecosystem signals. This digest doe
 - [ai.imboard/dossier](/entries/ai-imboard-dossier/) | mcp-server | promising | license-not-asserted
 - [ai.inflowpay.app/inflow](/entries/ai-inflowpay-app-inflow/) | mcp-server | promising | license-not-asserted
 - [ai.klavis/strata](/entries/ai-klavis-strata/) | mcp-server | promising | license-not-asserted
+- ongridio/ongrid | watchlist | suspicious | external-file-host | https://github.com/ongridio/ongrid
 
 ## Maintainer Actions
 
@@ -60,3 +66,4 @@ Hermes summarizes source-backed agent and LLM ecosystem signals. This digest doe
 - Promote candidates only after checking source links, license posture, permissions, and install docs.
 - Keep social ingestion disabled unless official credentials and terms-compliant access are configured.
 - If generated pack files changed, verify `AGENTS.md`, `search-index.json`, `best-practices.md`, and `agent-workspace.md` still describe read-only behavior.
+- High-signal new candidates for review: omnigent (agent framework, 3615 stars, Apache-2.0), vm0 (AI agent runtime/sandbox, 1129 stars).
