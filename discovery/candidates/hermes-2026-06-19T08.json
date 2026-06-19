@@ -1,0 +1,376 @@
+{
+  "generated_at": "2026-06-19T08:00:00.000Z",
+  "mode": "hourly",
+  "lookback_days": 2,
+  "source_routes": [
+    "github-search",
+    "hacker-news"
+  ],
+  "candidates": [
+    {
+      "source_route": "github-search",
+      "name": "vectorize-io/hindsight",
+      "title": "Hindsight: Agent Memory That Learns",
+      "description": "Open-source agent memory system with 16.6K stars. Learns from agent interactions to improve retrieval and context over time.",
+      "repo_url": "https://github.com/vectorize-io/hindsight",
+      "homepage_url": "https://vectorize.io",
+      "source_urls": [
+        "https://github.com/vectorize-io/hindsight"
+      ],
+      "signal_summary": "Matched GitHub search `\"agent memory\" pushed:>=2026-06-17`; pushed 2026-06-19T04:32:21Z; stars 16632. High-traffic memory system directly relevant to vnem's memory category.",
+      "why_builders_should_care": "One of the most-starred dedicated agent memory projects. Relevant for coding agents that need persistent, improving context across sessions.",
+      "suggested_trust_tier": "promising",
+      "risk_flags": [
+        "readme-review-unavailable",
+        "sensitive-permissions"
+      ],
+      "recommended_action": "review",
+      "allow_registry_proposal": true,
+      "repository_review": {
+        "verdict": "needs-review",
+        "risk_score": 22,
+        "trust_score": 78,
+        "flags": [
+          "readme-review-unavailable",
+          "sensitive-permissions"
+        ],
+        "reasons": [
+          "GitHub API rate limit prevented README inspection.",
+          "Memory systems inherently involve sensitive data permissions."
+        ],
+        "reviewed_at": "2026-06-19T08:00:00.000Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": false,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      },
+      "metrics": {
+        "repo_risk_score": 22,
+        "repo_trust_score": 78,
+        "repo_verdict": "needs-review"
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "TencentCloud/TencentDB-Agent-Memory",
+      "title": "TencentDB Agent Memory",
+      "description": "Fully local long-term memory for AI Agents via a 4-tier progressive retrieval system. TypeScript implementation from Tencent Cloud.",
+      "repo_url": "https://github.com/TencentCloud/TencentDB-Agent-Memory",
+      "homepage_url": null,
+      "source_urls": [
+        "https://github.com/TencentCloud/TencentDB-Agent-Memory"
+      ],
+      "signal_summary": "Matched GitHub search `\"agent memory\" pushed:>=2026-06-17`; pushed 2026-06-17T09:01:08Z; stars 5900. Major cloud vendor entering agent memory space.",
+      "why_builders_should_care": "First-party agent memory from Tencent Cloud signals enterprise demand for local-first agent memory. Multi-tier architecture is a useful reference pattern.",
+      "suggested_trust_tier": "promising",
+      "risk_flags": [
+        "readme-review-unavailable",
+        "sensitive-permissions",
+        "early-stage"
+      ],
+      "recommended_action": "review",
+      "allow_registry_proposal": true,
+      "repository_review": {
+        "verdict": "needs-review",
+        "risk_score": 28,
+        "trust_score": 72,
+        "flags": [
+          "readme-review-unavailable",
+          "sensitive-permissions",
+          "early-stage"
+        ],
+        "reasons": [
+          "GitHub API rate limit prevented README inspection.",
+          "Early-stage project with limited community track record."
+        ],
+        "reviewed_at": "2026-06-19T08:00:00.000Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": false,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      },
+      "metrics": {
+        "repo_risk_score": 28,
+        "repo_trust_score": 72,
+        "repo_verdict": "needs-review"
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "pydantic/pydantic-ai",
+      "title": "PydanticAI: AI Agent Framework, the Pydantic way",
+      "description": "Type-safe AI agent framework from the Pydantic team. Python-first with structured outputs, dependency injection, and production-grade validation.",
+      "repo_url": "https://github.com/pydantic/pydantic-ai",
+      "homepage_url": "https://ai.pydantic.dev",
+      "source_urls": [
+        "https://github.com/pydantic/pydantic-ai",
+        "https://ai.pydantic.dev"
+      ],
+      "signal_summary": "Matched GitHub search `\"agent framework\" pushed:>=2026-06-17`; pushed 2026-06-18T21:32:25Z; stars 17848. Backed by the widely-used Pydantic library.",
+      "why_builders_should_care": "From the Pydantic team, this brings type safety and structured validation to agent frameworks. Strong existing community trust via Pydantic's 200M+ monthly downloads.",
+      "suggested_trust_tier": "promising",
+      "risk_flags": [
+        "readme-review-unavailable"
+      ],
+      "recommended_action": "review",
+      "allow_registry_proposal": true,
+      "repository_review": {
+        "verdict": "needs-review",
+        "risk_score": 18,
+        "trust_score": 82,
+        "flags": [
+          "readme-review-unavailable"
+        ],
+        "reasons": [
+          "GitHub API rate limit prevented README inspection."
+        ],
+        "reviewed_at": "2026-06-19T08:00:00.000Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": false,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      },
+      "metrics": {
+        "repo_risk_score": 18,
+        "repo_trust_score": 82,
+        "repo_verdict": "needs-review"
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "HKUDS/nanobot",
+      "title": "Nanobot: Lightweight AI Agent",
+      "description": "Lightweight, open-source AI agent for your tools, chats, and workflows. 44K+ stars, Python.",
+      "repo_url": "https://github.com/HKUDS/nanobot",
+      "homepage_url": null,
+      "source_urls": [
+        "https://github.com/HKUDS/nanobot"
+      ],
+      "signal_summary": "Matched GitHub search `topic:ai-agent pushed:>=2026-06-18`; pushed 2026-06-19T06:59:51Z; stars 44445. Rapidly growing lightweight agent.",
+      "why_builders_should_care": "High star count and active development signal strong builder interest in lightweight, tool-integrated agents.",
+      "suggested_trust_tier": "promising",
+      "risk_flags": [
+        "readme-review-unavailable"
+      ],
+      "recommended_action": "review",
+      "allow_registry_proposal": true,
+      "repository_review": {
+        "verdict": "needs-review",
+        "risk_score": 18,
+        "trust_score": 82,
+        "flags": [
+          "readme-review-unavailable"
+        ],
+        "reasons": [
+          "GitHub API rate limit prevented README inspection."
+        ],
+        "reviewed_at": "2026-06-19T08:00:00.000Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": false,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      },
+      "metrics": {
+        "repo_risk_score": 18,
+        "repo_trust_score": 82,
+        "repo_verdict": "needs-review"
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "CopilotKit/CopilotKit",
+      "title": "CopilotKit: The Frontend Stack for Agents",
+      "description": "React, Angular, Mobile, and Slack components for building agentic generative UI. 35K+ stars, MIT licensed.",
+      "repo_url": "https://github.com/CopilotKit/CopilotKit",
+      "homepage_url": "https://copilotkit.ai",
+      "source_urls": [
+        "https://github.com/CopilotKit/CopilotKit",
+        "https://copilotkit.ai"
+      ],
+      "signal_summary": "Matched GitHub search `topic:ai-agent pushed:>=2026-06-18`; pushed 2026-06-19T04:33:27Z; stars 35302. Frontend-focused agent infrastructure.",
+      "why_builders_should_care": "Provides the UI layer for agent systems — React components, generative UI patterns, and multi-platform support. Complements backend agent frameworks.",
+      "suggested_trust_tier": "promising",
+      "risk_flags": [
+        "readme-review-unavailable"
+      ],
+      "recommended_action": "review",
+      "allow_registry_proposal": true,
+      "repository_review": {
+        "verdict": "needs-review",
+        "risk_score": 18,
+        "trust_score": 82,
+        "flags": [
+          "readme-review-unavailable"
+        ],
+        "reasons": [
+          "GitHub API rate limit prevented README inspection."
+        ],
+        "reviewed_at": "2026-06-19T08:00:00.000Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": false,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      },
+      "metrics": {
+        "repo_risk_score": 18,
+        "repo_trust_score": 82,
+        "repo_verdict": "needs-review"
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "aresyn/codex-control-plane-mcp",
+      "title": "Codex Control Plane MCP",
+      "description": "Durable MCP control plane for long-running Codex Desktop tasks. Manage, monitor, and resume agent sessions.",
+      "repo_url": "https://github.com/aresyn/codex-control-plane-mcp",
+      "homepage_url": null,
+      "source_urls": [
+        "https://github.com/aresyn/codex-control-plane-mcp"
+      ],
+      "signal_summary": "Matched GitHub search `topic:mcp created:>=2026-06-17`; created 2026-06-17T10:02:02Z; stars 202. New MCP server for Codex Desktop orchestration.",
+      "why_builders_should_care": "Addresses a key gap: durable control planes for long-running coding agent sessions. Relevant as Codex Desktop adoption grows.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "readme-review-unavailable",
+        "new-repository",
+        "sensitive-permissions"
+      ],
+      "recommended_action": "watchlist",
+      "allow_registry_proposal": true,
+      "repository_review": {
+        "verdict": "needs-review",
+        "risk_score": 32,
+        "trust_score": 68,
+        "flags": [
+          "readme-review-unavailable",
+          "new-repository",
+          "sensitive-permissions"
+        ],
+        "reasons": [
+          "GitHub API rate limit prevented README inspection.",
+          "Newly created repository with limited track record.",
+          "Control plane for agent sessions involves sensitive permissions."
+        ],
+        "reviewed_at": "2026-06-19T08:00:00.000Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": false,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      },
+      "metrics": {
+        "repo_risk_score": 32,
+        "repo_trust_score": 68,
+        "repo_verdict": "needs-review"
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "zhangfengcdt/memoir",
+      "title": "Memoir: Hierarchical Agent Memory with Git-Like Version Control",
+      "description": "Hierarchical agent memory system with git-like version control. Branch, merge, and diff agent memories.",
+      "repo_url": "https://github.com/zhangfengcdt/memoir",
+      "homepage_url": null,
+      "source_urls": [
+        "https://github.com/zhangfengcdt/memoir"
+      ],
+      "signal_summary": "Matched GitHub search `\"agent memory\" pushed:>=2026-06-17`; pushed 2026-06-17T17:27:56Z; stars 580. Novel approach using git semantics for memory.",
+      "why_builders_should_care": "Unique git-like version control model for agent memory could inspire new patterns for memory management in coding agents.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "readme-review-unavailable",
+        "sensitive-permissions"
+      ],
+      "recommended_action": "watchlist",
+      "allow_registry_proposal": true,
+      "repository_review": {
+        "verdict": "needs-review",
+        "risk_score": 28,
+        "trust_score": 72,
+        "flags": [
+          "readme-review-unavailable",
+          "sensitive-permissions"
+        ],
+        "reasons": [
+          "GitHub API rate limit prevented README inspection."
+        ],
+        "reviewed_at": "2026-06-19T08:00:00.000Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": false,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      },
+      "metrics": {
+        "repo_risk_score": 28,
+        "repo_trust_score": 72,
+        "repo_verdict": "needs-review"
+      }
+    },
+    {
+      "source_route": "hacker-news",
+      "name": "hn-48583928",
+      "title": "I found 10k GitHub repositories distributing Trojan malware",
+      "description": "Hacker News discussion (762 points, 192 comments) about widespread Trojan malware distribution through GitHub repositories. Critical security signal for agent tooling ecosystem.",
+      "repo_url": null,
+      "homepage_url": "https://news.ycombinator.com/item?id=48583928",
+      "source_urls": [
+        "https://news.ycombinator.com/item?id=48583928"
+      ],
+      "signal_summary": "Top HN story (762 points, 192 comments) on 2026-06-19. Researcher found 10k GitHub repos distributing Trojan malware. Directly relevant to repository trust review processes.",
+      "why_builders_should_care": "Reinforces the importance of Hermes' repository trust review system. Builders should be aware that GitHub repository popularity alone is not a safety signal.",
+      "suggested_trust_tier": "watchlist",
+      "risk_flags": [
+        "social-signal",
+        "needs-primary-source"
+      ],
+      "recommended_action": "watchlist",
+      "allow_registry_proposal": false,
+      "metrics": {
+        "points": 762,
+        "comments": 192,
+        "created_at": "2026-06-18T20:00:00.000Z",
+        "query": "security"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 8,
+        "trust_score": 92,
+        "flags": [
+          "social-signal",
+          "needs-primary-source"
+        ],
+        "reasons": [
+          "Social signal only; no specific repository to review.",
+          "Important security awareness signal for the ecosystem."
+        ],
+        "reviewed_at": "2026-06-19T08:00:00.000Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": false,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    }
+  ],
+  "watched_sources": [],
+  "errors": [
+    {
+      "route": "github-api",
+      "error": "403 rate limit exceeded for individual repo lookups. Search API results used instead."
+    }
+  ]
+}
