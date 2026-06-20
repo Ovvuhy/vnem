@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { Component, useCallback, useEffect, useMemo, useState } from "react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { useWallet } from "@solana/wallet-adapter-react";
 import bs58 from "bs58";
@@ -43,6 +43,7 @@ const textEncoder = new TextEncoder();
 const textDecoder = new TextDecoder();
 const DEMO_MODE = import.meta.env.DEV && new URLSearchParams(window.location.search).has("mock");
 const OFFLINE_MODE = new URLSearchParams(window.location.search).has("offline");
+const REAL_LOCAL_ARD_MODE = import.meta.env.DEV && !DEMO_MODE && new URLSearchParams(window.location.search).get("v") === "ard" && ["127.0.0.1", "localhost"].includes(window.location.hostname);
 const SIGN_IN_TIMEOUT_MS = 2500;
 const LOCAL_DEV_ALLOWED_WALLETS = import.meta.env?.VITE_DASHBOARD_LOCAL_ALLOWED_WALLET ?? "H62Ri1EExddxFKsLMn4nbmbxiCSxNRLtF8igPySLA23B";
 const LOCAL_BACKEND_URL = import.meta.env?.VITE_VNEM_APP_SERVER_URL ?? "http://127.0.0.1:9099";
@@ -58,6 +59,10 @@ export default function App() {
   const refreshSession = useCallback(async () => {
     if (DEMO_MODE) {
       setSession({ loading: false, authenticated: true, wallet_address: "DemoWallet111111111111111111111111111111111" });
+      return;
+    }
+    if (REAL_LOCAL_ARD_MODE) {
+      setSession({ loading: false, configured: true, authenticated: true, wallet_address: "LocalRealDashboard111111111111111111111111111" });
       return;
     }
     if (OFFLINE_MODE) {
@@ -81,7 +86,7 @@ export default function App() {
     }
     setStatus("loading");
     setError(null);
-    const response = await fetch("/api/dashboard/summary", { credentials: "include" });
+    const response = await fetch("/api/dashboard/summary", { credentials: "include", headers: REAL_LOCAL_ARD_MODE ? { "x-vnem-local-dashboard": "real" } : {} });
     const body = await response.json().catch(() => ({}));
     if (!response.ok) {
       setStatus("error");
@@ -191,17 +196,41 @@ export default function App() {
 
   return (
     <main className="dashboard">
-      <DashboardShell
-        summary={summary}
-        status={status}
-        error={error}
-        telemetry={telemetry}
-        walletAddress={session.wallet_address}
-        onRefresh={refreshSummary}
-        onLogout={logout}
-      />
+      <DashboardErrorBoundary>
+        <DashboardShell
+          summary={summary}
+          status={status}
+          error={error}
+          telemetry={telemetry}
+          walletAddress={session.wallet_address}
+          onRefresh={refreshSummary}
+          onLogout={logout}
+        />
+      </DashboardErrorBoundary>
     </main>
   );
+}
+
+class DashboardErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { error: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { error };
+  }
+
+  componentDidCatch(error, info) {
+    console.error("VNEM dashboard render error", error, info?.componentStack);
+  }
+
+  render() {
+    if (this.state.error) {
+      return <section className="panel"><div className="inline-error">Dashboard render error: {this.state.error.message ?? String(this.state.error)}</div></section>;
+    }
+    return this.props.children;
+  }
 }
 
 function WalletGate({ walletConnected, configured, loading, error, expectedWallets, backendUrl, onSignIn }) {
@@ -259,10 +288,12 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
   const [ardChangesActionStatus, setArdChangesActionStatus] = useState("idle");
   const [ardChangesError, setArdChangesError] = useState(null);
   const [ardChangesConfirmation, setArdChangesConfirmation] = useState("");
+  const [selectedArdWorkPackageId, setSelectedArdWorkPackageId] = useState(null);
   const ardChangesCard = useMemo(() => deriveArdChangesCard({ status: ardChangesStatus }), [ardChangesStatus]);
   const ardChangesAction = useMemo(() => summarizeArdChangesAction(ardChangesActionStatus), [ardChangesActionStatus]);
   const pipelineExecution = usePipelineExecution(telemetry, summary);
-  const workStatus = useMemo(() => deriveDashboardWorkStatus({ telemetry, summary, execution: pipelineExecution, connector, branchPreview }), [telemetry, summary, pipelineExecution, connector, branchPreview]);
+  const rawWorkStatus = useMemo(() => deriveDashboardWorkStatus({ telemetry, summary, execution: pipelineExecution, connector, branchPreview }), [telemetry, summary, pipelineExecution, connector, branchPreview]);
+  const workStatus = useMemo(() => normalizeDashboardWorkStatus(rawWorkStatus), [rawWorkStatus]);
   const controlRoom = useMemo(() => deriveControlRoomStatus({ telemetry, summary, execution: pipelineExecution, connector, branchPreview, workStatus, builderHealthState: builderHealth }), [telemetry, summary, pipelineExecution, connector, branchPreview, workStatus, builderHealth]);
   const currentArdPipelineRun = ardPipelineRun ?? telemetry.ardBrowserPipeline ?? null;
   const operatorModel = useMemo(() => deriveArdOperatorModel({
@@ -276,8 +307,9 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
     workStatus,
     summary,
     builderHealth,
-    branchPreview
-  }), [controlRoom, currentArdPipelineRun, ardPipelineStatus, ardPipelineError, ardChangesCard, ardChangesAction, telemetry, workStatus, summary, builderHealth, branchPreview]);
+    branchPreview,
+    selectedWorkPackageId: selectedArdWorkPackageId
+  }), [controlRoom, currentArdPipelineRun, ardPipelineStatus, ardPipelineError, ardChangesCard, ardChangesAction, telemetry, workStatus, summary, builderHealth, branchPreview, selectedArdWorkPackageId]);
 
   const findings = useMemo(() => {
     const dashboardFindings = (summary?.findings ?? []).map(normalizeFinding);
@@ -325,6 +357,16 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
     void refreshArdChangesStatus();
   }, [refreshArdChangesStatus]);
 
+  useEffect(() => {
+    if (!DEMO_MODE && currentArdPipelineRun === null) {
+      apiClient.latestArdPipeline()
+        .then((result) => {
+          if (result?.pipeline) setArdPipelineRun(result.pipeline);
+        })
+        .catch(() => null);
+    }
+  }, [apiClient, currentArdPipelineRun]);
+
   const runArdPipelineFromBrowser = useCallback(async () => {
     if (ardPipelineStatus === "running") return;
     setArdPipelineStatus("running");
@@ -348,7 +390,7 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
     setArdChangesActionStatus("previewing");
     setArdChangesError(null);
     try {
-      const result = await apiClient.previewArdChanges({ title: "Changes by ARD dashboard preview" });
+      const result = await apiClient.previewArdChanges({ title: "Changes by ARD dashboard preview", runId: `${currentArdPipelineRun?.runId ?? "dashboard"}-preview`, workPackage: operatorModel.changesByArd.selectedWorkPackage });
       setArdChangesStatus((current) => ({ ...(current ?? {}), lastPreview: result, mode: result.mode, ok: result.ok, displayName: result.displayName, branchName: result.branchName, branchValid: result.branchValid, mainProtected: result.mainProtected }));
       setArdChangesActionStatus("idle");
       await telemetry.refreshTelemetryHistory?.();
@@ -356,14 +398,14 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
       setArdChangesError(normalizeRequestError(cause));
       setArdChangesActionStatus("error");
     }
-  }, [apiClient, ardChangesActionStatus, telemetry]);
+  }, [apiClient, ardChangesActionStatus, telemetry, currentArdPipelineRun?.runId, operatorModel.changesByArd.selectedWorkPackage]);
 
   const prepareArdChanges = useCallback(async () => {
     if (ardChangesActionStatus === "preparing") return;
     setArdChangesActionStatus("preparing");
     setArdChangesError(null);
     try {
-      const result = await apiClient.prepareArdChanges({ title: "Changes by ARD dashboard commit" });
+      const result = await apiClient.prepareArdChanges({ title: "Changes by ARD dashboard commit", runId: `${currentArdPipelineRun?.runId ?? "dashboard"}-prepare`, workPackage: operatorModel.changesByArd.selectedWorkPackage });
       setArdChangesStatus((current) => ({ ...(current ?? {}), lastPrepared: result, mode: result.mode, ok: result.ok, displayName: result.displayName, branchName: result.branchName, branchValid: result.branchValid, mainProtected: result.mainProtected }));
       setArdChangesActionStatus("idle");
       await telemetry.refreshTelemetryHistory?.();
@@ -371,7 +413,7 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
       setArdChangesError(normalizeRequestError(cause));
       setArdChangesActionStatus("error");
     }
-  }, [apiClient, ardChangesActionStatus, telemetry]);
+  }, [apiClient, ardChangesActionStatus, telemetry, currentArdPipelineRun?.runId, operatorModel.changesByArd.selectedWorkPackage]);
 
   const pushArdChangesBranch = useCallback(async () => {
     if (ardChangesConfirmation !== CHANGES_BY_ARD_CONFIRMATION || ardChangesActionStatus === "pushing") return;
@@ -597,6 +639,8 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
         pipelineBusy={ardPipelineStatus === "running"}
         pipelineError={ardPipelineError}
         onReviewCandidate={openCandidateReview}
+        selectedWorkPackageId={selectedArdWorkPackageId}
+        onSelectWorkPackage={setSelectedArdWorkPackageId}
         onPreviewChanges={previewArdChanges}
         onPrepareChanges={prepareArdChanges}
         onPushChanges={pushArdChangesBranch}
@@ -606,42 +650,42 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
         onChangesConfirmationChange={setArdChangesConfirmation}
         advancedChildren={
           <>
-            <IntelligenceProviderDiagnostic provider={telemetry.intelligenceProvider} />
-            <SelfImprovementControlRoom
-              controlRoom={controlRoom}
-              pipelineRun={currentArdPipelineRun}
-              pipelineStatus={ardPipelineStatus}
-              pipelineError={ardPipelineError}
-              onRunPipeline={runArdPipelineFromBrowser}
-              onAdvance={() => telemetry.refreshTelemetryHistory?.()}
-              onReviewCandidate={openCandidateReview}
-              onCandidateReviewDecision={reviewControlCandidate}
-              onPreviewBranch={previewControlBranch}
-              onOpenPrepare={() => setPrepareControlOpen(true)}
-              onRefreshBuilderHealth={builderHealth.refresh}
-              busy={["previewing", "preparing", "reviewing-candidate"].includes(controlActionStatus) || ardPipelineStatus === "running"}
-            />
-            {controlActionError ? <div className="inline-error">{controlActionError.message ?? controlActionError.error ?? "Control-room action failed"}</div> : null}
-            <AutonomousPipeline telemetry={telemetry} execution={pipelineExecution} />
-            <section className="candidate-queue panel" aria-label="Top candidate queue">
-              <div className="panel-head compact">
-                <div>
-                  <p className="eyebrow">candidate queue</p>
-                  <h2>Top 5 to review</h2>
+            <DashboardErrorBoundary label="Advanced dashboard panels">
+              <IntelligenceProviderDiagnostic provider={telemetry.intelligenceProvider} />
+              <SelfImprovementControlRoom
+                controlRoom={controlRoom}
+                pipelineRun={currentArdPipelineRun}
+                pipelineStatus={ardPipelineStatus}
+                pipelineError={ardPipelineError}
+                onRunPipeline={runArdPipelineFromBrowser}
+                onAdvance={() => telemetry.refreshTelemetryHistory?.()}
+                onReviewCandidate={openCandidateReview}
+                onCandidateReviewDecision={reviewControlCandidate}
+                onPreviewBranch={previewControlBranch}
+                onOpenPrepare={() => setPrepareControlOpen(true)}
+                onRefreshBuilderHealth={builderHealth.refresh}
+                busy={["previewing", "preparing", "reviewing-candidate"].includes(controlActionStatus) || ardPipelineStatus === "running"}
+              />
+              {controlActionError ? <div className="inline-error">{controlActionError.message ?? controlActionError.error ?? "Control-room action failed"}</div> : null}
+              <AutonomousPipeline telemetry={telemetry} execution={pipelineExecution} />
+              <section className="candidate-queue panel" aria-label="Top candidate queue">
+                <div className="panel-head compact">
+                  <div>
+                    <p className="eyebrow">candidate queue</p>
+                    <h2>Top 5 to review</h2>
+                  </div>
+                  <Badge tone={workStatus.triage.branchEligible > 0 ? "ok" : "review"}>{workStatus.triage.branchEligible} branch-eligible</Badge>
                 </div>
-                <Badge tone={workStatus.triage.branchEligible > 0 ? "ok" : "review"}>{workStatus.triage.branchEligible} branch-eligible</Badge>
-              </div>
-              <CandidateQueue candidates={workStatus.topCandidates} triage={workStatus.triage} onReviewCandidate={openCandidateReview} />
-            </section>
-            <VnemCommandCenter
-              workStatus={workStatus}
-              telemetry={telemetry}
-              apiClient={apiClient}
-              onBranchPreview={setBranchPreview}
-              onBranchPrepared={setBranchPreview}
-              onReviewCandidate={openCandidateReview}
-            />
-            <VnemSystemBrief telemetry={telemetry} execution={pipelineExecution} summary={summary} connector={connector} />
+                <CandidateQueue candidates={workStatus.topCandidates} triage={workStatus.triage} onReviewCandidate={openCandidateReview} />
+              </section>
+              <VnemCommandCenter
+                workStatus={workStatus}
+                telemetry={telemetry}
+                apiClient={apiClient}
+                onBranchPreview={setBranchPreview}
+                onBranchPrepared={setBranchPreview}
+                onReviewCandidate={openCandidateReview}
+              />
             <ImprovementMissionControl telemetry={telemetry} summary={summary} apiClient={apiClient} branchPreview={branchPreview} onBranchPreview={setBranchPreview} />
             <TargetingConsole telemetry={telemetry} execution={pipelineExecution} />
             <section className="workspace-grid details-workspace">
@@ -704,6 +748,7 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
                 </section>
               </aside>
             </section>
+            </DashboardErrorBoundary>
           </>
         }
       />
@@ -750,21 +795,33 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
   );
 }
 
-function CandidateQueue({ candidates, triage, onReviewCandidate }) {
+function CandidateQueue({ candidates, triage = {}, onReviewCandidate }) {
+  const safeTriage = {
+    total: 0,
+    alreadyIndexed: 0,
+    missingLicense: 0,
+    weakSource: 0,
+    duplicateOrLowSignal: 0,
+    needsPrimarySource: 0,
+    suspiciousPackage: 0,
+    blocked: 0,
+    quarantined: 0,
+    ...triage
+  };
   if (candidates.length === 0) {
     return <div className="empty-state">No candidates yet. Start or redeploy a focused mission to give Research AI real work.</div>;
   }
   return (
     <div className="candidate-queue-grid">
       <div className="triage-summary">
-        <span><strong>{triage.total}</strong> total</span>
-        <span><strong>{triage.alreadyIndexed}</strong> already indexed</span>
-        <span><strong>{triage.missingLicense}</strong> missing license</span>
-        <span><strong>{triage.weakSource}</strong> weak source</span>
-        <span><strong>{triage.duplicateOrLowSignal}</strong> duplicate/low signal</span>
-        <span><strong>{triage.needsPrimarySource}</strong> needs primary source</span>
-        <span><strong>{triage.suspiciousPackage}</strong> suspicious package</span>
-        <span><strong>{triage.blocked + triage.quarantined}</strong> isolated</span>
+        <span><strong>{safeTriage.total}</strong> total</span>
+        <span><strong>{safeTriage.alreadyIndexed}</strong> already indexed</span>
+        <span><strong>{safeTriage.missingLicense}</strong> missing license</span>
+        <span><strong>{safeTriage.weakSource}</strong> weak source</span>
+        <span><strong>{safeTriage.duplicateOrLowSignal}</strong> duplicate/low signal</span>
+        <span><strong>{safeTriage.needsPrimarySource}</strong> needs primary source</span>
+        <span><strong>{safeTriage.suspiciousPackage}</strong> suspicious package</span>
+        <span><strong>{safeTriage.blocked + safeTriage.quarantined}</strong> isolated</span>
       </div>
       <div className="top-candidate-list">
         {candidates.map((candidate, index) => (
@@ -792,6 +849,46 @@ function CandidateQueue({ candidates, triage, onReviewCandidate }) {
       </div>
     </div>
   );
+}
+
+function normalizeDashboardWorkStatus(status = {}) {
+  const triage = {
+    total: 0,
+    branchEligible: 0,
+    alreadyIndexed: 0,
+    missingLicense: 0,
+    weakSource: 0,
+    duplicateOrLowSignal: 0,
+    needsPrimarySource: 0,
+    suspiciousPackage: 0,
+    blocked: 0,
+    quarantined: 0,
+    counts: { total: 0, needsReview: 0 },
+    ...(status.triage ?? {})
+  };
+  triage.counts = { total: 0, needsReview: 0, ...(triage.counts ?? {}) };
+  return {
+    topCandidates: [],
+    dataMode: "unknown",
+    activeStage: "idle",
+    providerStatus: "unknown",
+    providerLabel: "unknown provider state",
+    backendLive: false,
+    mission: { title: "No real ARD state loaded", goal: "Connect the local VNEM backend or run ARD dogfood.", query: "", givingBranch: { requestPayload: { branchName: "changes-by-ard", baseBranch: "main", includedCandidates: [], excludedCandidates: [], validationCommands: [] } } },
+    blocker: { reason: "Real ARD state is not loaded yet." },
+    nextAction: "Run the local backend/dogfood flow, then reload the real dashboard.",
+    research: { state: "unknown", lastEventAgeLabel: "no real research event yet", currentRoute: "unknown" },
+    protection: { state: "unknown" },
+    giving: { branchStatus: "not prepared", branchName: "changes-by-ard", branchEligible: 0, previewStatus: "not ready", pushStatus: "not pushed", previewAvailable: false, prepareEnabled: false, prepareDisabledReason: "Preview Changes by ARD first." },
+    ...status,
+    status: { key: "start-research", label: "Start research", detail: "No current work status yet.", tone: "review", ...(status.status ?? {}) },
+    mission: { title: "No real ARD state loaded", goal: "Connect the local VNEM backend or run ARD dogfood.", query: "", givingBranch: { requestPayload: { branchName: "changes-by-ard", baseBranch: "main", includedCandidates: [], excludedCandidates: [], validationCommands: [] } }, ...(status.mission ?? {}) },
+    blocker: { reason: "Real ARD state is not loaded yet.", ...(status.blocker ?? {}) },
+    research: { state: "unknown", lastEventAgeLabel: "no real research event yet", currentRoute: "unknown", ...(status.research ?? {}) },
+    protection: { state: "unknown", ...(status.protection ?? {}) },
+    giving: { branchStatus: "not prepared", branchName: "changes-by-ard", branchEligible: 0, previewStatus: "not ready", pushStatus: "not pushed", previewAvailable: false, prepareEnabled: false, prepareDisabledReason: "Preview Changes by ARD first.", ...(status.giving ?? {}) },
+    triage
+  };
 }
 
 function ArdChangesCard({ card, action, error, confirmation, onConfirmationChange, onPreview, onPrepare, onPush, busy }) {

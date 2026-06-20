@@ -254,7 +254,7 @@ export function createVnemAppServer(options = {}) {
       if (route === "GET /api/dashboard/summary") {
         const env = dashboardAuthEnv();
         const session = await readSession(toWebRequest(request), env);
-        if (!session) {
+        if (!session && !isLocalRealDashboardRequest(request)) {
           writeJson(response, 401, { ok: false, error: "dashboard-session-required" });
           return;
         }
@@ -269,7 +269,7 @@ export function createVnemAppServer(options = {}) {
       }
 
       if (route === "GET /api/telemetry/history") {
-        writeJson(response, 200, telemetryHistoryPayload());
+        writeJson(response, 200, await telemetryHistoryPayload({ repositoryRoot }));
         return;
       }
 
@@ -321,11 +321,8 @@ export function createVnemAppServer(options = {}) {
       }
 
       if (route === "GET /api/ard/pipeline/latest" || route === "GET /api/ard/runs/latest") {
-        writeJson(response, 200, {
-          ok: true,
-          pipeline: latestArdBrowserPipeline,
-          message: latestArdBrowserPipeline ? "Latest browser ARD pipeline run loaded." : "No browser ARD pipeline run has completed in this app-server session yet."
-        });
+        const latest = latestArdBrowserPipeline ? { ok: true, pipeline: latestArdBrowserPipeline, message: "Latest in-memory browser ARD pipeline run loaded." } : await loadLatestArdRunForDashboard(repositoryRoot);
+        writeJson(response, 200, latest);
         return;
       }
 
@@ -552,8 +549,10 @@ export function broadcastTelemetry(payload) {
   };
 }
 
-export function telemetryHistoryPayload() {
+export async function telemetryHistoryPayload(options = {}) {
+  const repositoryRoot = path.resolve(options.repositoryRoot || rootDir);
   const reviewQueue = buildReviewQueue(activeIngestions);
+  const diskLatest = latestArdBrowserPipeline ? null : await loadLatestArdRunForDashboard(repositoryRoot).catch(() => null);
   return {
     ok: true,
     service: "vnem-app-server",
@@ -562,7 +561,7 @@ export function telemetryHistoryPayload() {
     route_errors: routeErrors.slice(0, 12),
     mission: missionSnapshot(),
     pipeline: pipelineSnapshot(),
-    ard_browser_pipeline: latestArdBrowserPipeline,
+    ard_browser_pipeline: latestArdBrowserPipeline ?? diskLatest?.pipeline ?? null,
     review_queue: reviewQueue,
     branch_candidate_set: buildBranchCandidateSet(activeIngestions, { queue: reviewQueue }),
     intelligence_provider: intelligenceProviderSnapshot()
@@ -649,6 +648,87 @@ export async function resolveCandidateReview(id, payload = {}, options = {}) {
     review_file: result.filePath,
     review_queue: queue
   };
+}
+
+
+export async function loadLatestArdRunForDashboard(repositoryRoot = rootDir) {
+  const root = path.resolve(repositoryRoot || rootDir);
+  const latestPath = path.join(root, "discovery", "ard-runs", "latest.json");
+  let latest;
+  try {
+    latest = JSON.parse(await readFile(latestPath, "utf8"));
+  } catch {
+    return { ok: true, pipeline: null, message: "No real ARD run artifact is available yet." };
+  }
+  const runId = latest.run_id ?? latest.runId;
+  const artifact = latest.artifact ?? latest.summary_artifact ?? "dogfood-summary.json";
+  if (!runId) return { ok: true, pipeline: null, message: "Latest ARD run marker did not include a run id." };
+  const artifactPath = path.join(root, "discovery", "ard-runs", runId, artifact);
+  let body;
+  try {
+    body = JSON.parse(await readFile(artifactPath, "utf8"));
+  } catch {
+    return { ok: true, pipeline: null, message: `Latest ARD run artifact could not be loaded: ${runId}/${artifact}` };
+  }
+  if (body.schema === "vnem.ardDogfood.v1") {
+    return { ok: true, pipeline: dogfoodSummaryToDashboardPipeline(body), message: "Latest real ARD dogfood run loaded from local repository state." };
+  }
+  return { ok: true, pipeline: body, message: "Latest real ARD run loaded from local repository state." };
+}
+
+function dogfoodSummaryToDashboardPipeline(summary) {
+  return {
+    ok: Boolean(summary.ok),
+    schema: "vnem.ardBrowserPipeline.v1",
+    status: summary.ok ? "completed" : "blocked",
+    runId: summary.runId,
+    mode: "repo/local dogfood",
+    realLocalBackend: true,
+    mockMode: false,
+    startedAt: summary.generatedAt ?? null,
+    finishedAt: summary.generatedAt ?? null,
+    stages: [
+      { key: "research", status: "complete", label: "Research AI" },
+      { key: "protection", status: "complete", label: "Protection AI" },
+      { key: "giving", status: summary.giving?.workPackages?.length ? "complete" : "blocked", label: "Giving AI" }
+    ],
+    research: {
+      schema: "vnem.ardResearch.v2",
+      candidatesFound: Number(summary.research?.candidatesFound ?? 0),
+      sourceLanes: (summary.research?.sourceLanesUsed ?? []).map((key) => ({ key, label: key, status: "completed", candidatesFound: 1 })),
+      sourceLanesUsed: summary.research?.sourceLanesUsed ?? [],
+      categories: summary.research?.categories ?? [],
+      categoryDistribution: summary.research?.categories ?? [],
+      memory: {
+        total: Number(summary.research?.candidatesFound ?? 0),
+        repeated: Number(summary.research?.repeatedCandidates ?? 0),
+        lowSignalCollapsed: Number(summary.research?.lowSignalCollapsed ?? 0),
+        branchReady: Number(summary.protection?.branchEligible ?? 0),
+        waitingForEvidence: Number(summary.protection?.waitingForEvidence ?? 0),
+        dangerous: Number(summary.protection?.dangerousFindings ?? 0)
+      }
+    },
+    protection: {
+      branchEligible: Number(summary.protection?.branchEligible ?? 0),
+      reviewArtifactOnly: Number(summary.protection?.reviewArtifactOnly ?? 0),
+      dangerousFindings: Number(summary.protection?.dangerousFindings ?? 0),
+      verdicts: summary.protection?.verdicts ?? []
+    },
+    dangerousFindings: (summary.protection?.verdicts ?? []).filter((verdict) => verdict.dangerous || verdict.verdict === "blocked").slice(0, 8),
+    giving: {
+      included: Number(summary.giving?.included ?? summary.giving?.workPackages?.length ?? 0),
+      excluded: Number(summary.giving?.excluded ?? 0),
+      workPackages: summary.giving?.workPackages ?? []
+    },
+    changesByArd: summary.changesByArd ?? null,
+    branch: { mode: "local-dogfood", pushed: false, branchName: "changes-by-ard", commit: null },
+    nextAction: summary.changesByArd?.result === "prepared" ? "Review the local changes-by-ard commit." : "Select a work package and preview Changes by ARD."
+  };
+}
+
+function isLocalRealDashboardRequest(request) {
+  const host = String(request.headers.host ?? "").split(":")[0];
+  return request.headers["x-vnem-local-dashboard"] === "real" && ["127.0.0.1", "localhost", "::1"].includes(host);
 }
 
 export async function runArdBrowserPipeline(payload = {}, options = {}) {

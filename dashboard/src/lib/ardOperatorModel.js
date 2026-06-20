@@ -22,7 +22,8 @@ export function deriveArdOperatorModel({
   workStatus = {},
   summary = null,
   builderHealth = null,
-  branchPreview = null
+  branchPreview = null,
+  selectedWorkPackageId = null
 } = {}) {
   const run = controlRoom.run ?? {};
   const overview = controlRoom.overview ?? {};
@@ -30,8 +31,8 @@ export function deriveArdOperatorModel({
   const branchWorkbench = controlRoom.branchWorkbench ?? {};
   const provider = telemetry.intelligenceProvider ?? {};
   const stageRows = normalizeTimelineStages({ pipelineRun, run, ardChangesCard, branchWorkbench, inbox });
-  const reviewQueue = normalizeReviewQueue(inbox, { pipelineRun });
-  const researchState = normalizeResearchState({ pipelineRun, reviewQueue });
+  const researchState = normalizeResearchState({ pipelineRun });
+  const reviewQueue = normalizeReviewQueue(inbox, { pipelineRun, researchState });
   const findings = normalizeFindings({ pipelineRun, inbox, summary });
   const aiStatus = normalizeAiStatus({ provider, run, pipelineRun, telemetry, workStatus });
   const publicDecisionLog = normalizeDecisionLog({ telemetry, pipelineRun, controlRoom, ardChangesCard, findings });
@@ -52,11 +53,13 @@ export function deriveArdOperatorModel({
     lastPreview: ardChangesCard.lastPreview ?? null,
     lastPrepared: ardChangesCard.lastPrepared ?? null,
     lastPushed: ardChangesCard.lastPushed ?? null,
-    selectedWorkPackage: ardChangesCard.lastPreview?.selectedWorkPackage ?? pipelineRun?.giving?.workPackages?.[0] ?? null,
-    exactFiles: ardChangesCard.lastPreview?.exactFiles ?? pipelineRun?.giving?.workPackages?.[0]?.filesToChange ?? [],
+    selectedWorkPackage: selectWorkPackage({ workPackages: researchState.workPackages, selectedWorkPackageId, lastPreview: ardChangesCard.lastPreview }),
+    exactFiles: (ardChangesCard.lastPreview?.selectedWorkPackage?.workPackageId === (selectedWorkPackageId ?? ardChangesCard.lastPreview?.selectedWorkPackage?.workPackageId) ? ardChangesCard.lastPreview?.exactFiles : null) ?? selectWorkPackage({ workPackages: researchState.workPackages, selectedWorkPackageId, lastPreview: ardChangesCard.lastPreview })?.filesToChange ?? [],
     preparedCommit: ardChangesCard.lastPrepared?.commitHash ?? null,
     pushedCommit: ardChangesCard.lastPushed?.commitHash ?? null,
     blockedReason: ardChangesCard.lastPreview?.blockedReason ?? null,
+    message: ardChangesCard.message ?? null,
+    worktreeDiagnostics: ardChangesCard.worktreeDiagnostics ?? null,
     actionLabel: ardChangesAction?.label ?? "Changes by ARD ready",
     mainPushAllowed: false,
     autoMergeAllowed: false
@@ -142,7 +145,7 @@ function normalizeTimelineStages({ pipelineRun, run, ardChangesCard, branchWorkb
   ];
 }
 
-function normalizeReviewQueue(inbox = {}, { pipelineRun } = {}) {
+function normalizeReviewQueue(inbox = {}, { pipelineRun, researchState } = {}) {
   const lanes = inbox.lanes ?? {};
   const candidates = [
     ...(lanes.branchReady?.items ?? []),
@@ -161,10 +164,15 @@ function normalizeReviewQueue(inbox = {}, { pipelineRun } = {}) {
     nextAction: candidate.nextAction ?? candidate.whyNotBranchEligible ?? "Review before Giving AI can proceed."
   }));
   const summary = inbox.summary ?? {};
-  const workPackageCount = Number(pipelineRun?.giving?.workPackages?.length ?? 0);
+  const implementationReadyCount = Number(researchState?.workPackageGroups?.implementationReady?.items?.length ?? 0);
+  const reviewArtifactCount = Number(researchState?.workPackageGroups?.reviewArtifacts?.items?.length ?? 0);
+  const waitingForEvidenceCount = Number(researchState?.workPackageGroups?.waitingForEvidence?.items?.length ?? 0);
   return {
     total: Number(summary.found ?? deduped.length),
-    branchReadyCount: Math.max(Number(summary.branchReady ?? lanes.branchReady?.count ?? 0), workPackageCount),
+    branchReadyCount: implementationReadyCount || Number(summary.branchReady ?? lanes.branchReady?.count ?? 0),
+    implementationReadyCount,
+    reviewArtifactCount,
+    waitingForEvidenceCount,
     needsReviewCount: Number(summary.worthReviewingFirst ?? lanes.needsReview?.count ?? 0),
     blockedCount: Number(summary.blocked ?? lanes.blocked?.count ?? 0),
     quarantinedCount: Number(summary.quarantined ?? lanes.quarantined?.count ?? 0),
@@ -174,7 +182,7 @@ function normalizeReviewQueue(inbox = {}, { pipelineRun } = {}) {
   };
 }
 
-function normalizeResearchState({ pipelineRun, reviewQueue }) {
+function normalizeResearchState({ pipelineRun, reviewQueue = {} }) {
   const research = pipelineRun?.research ?? {};
   const giving = pipelineRun?.giving ?? {};
   const sourceLanes = (research.sourceLanes ?? []).map((lane) => ({
@@ -183,14 +191,14 @@ function normalizeResearchState({ pipelineRun, reviewQueue }) {
     status: lane.status ?? "unknown",
     candidatesFound: Number(lane.candidatesFound ?? 0)
   }));
-  const workPackages = (giving.workPackages ?? []).map((workPackage) => ({
-    workPackageId: workPackage.workPackageId,
-    title: workPackage.title,
-    safeAction: workPackage.safeAction,
-    filesToChange: workPackage.filesToChange ?? [],
-    testsToRun: workPackage.testsToRun ?? [],
-    blockedReasons: workPackage.blockedReasons ?? []
-  }));
+  const workPackages = (giving.workPackages ?? []).map(normalizeWorkPackageForOperator);
+  const workPackageGroups = groupWorkPackages(workPackages);
+  const visibleWorkPackages = {
+    defaultLimit: 5,
+    defaultItems: workPackages.slice(0, 5),
+    hiddenCount: Math.max(0, workPackages.length - 5),
+    allCount: workPackages.length
+  };
   const memory = research.memory ?? {};
   const categories = research.categories ?? research.categoryDistribution ?? [];
   return {
@@ -200,17 +208,86 @@ function normalizeResearchState({ pipelineRun, reviewQueue }) {
     categories,
     reviewArtifactOnly: Number(pipelineRun?.protection?.reviewArtifactOnly ?? workPackages.filter((workPackage) => workPackage.safeAction === "review-artifact-only").length),
     lifecycle: {
-      total: Number(memory.total ?? reviewQueue.total ?? 0),
+      total: Number(memory.total ?? reviewQueue?.total ?? 0),
       repeated: Number(memory.repeated ?? 0),
-      suppressed: Number(memory.lowSignalCollapsed ?? reviewQueue.lowSignalHidden ?? 0),
-      branchReady: Number(memory.branchReady ?? reviewQueue.branchReadyCount ?? 0),
+      suppressed: Number(memory.lowSignalCollapsed ?? reviewQueue?.lowSignalHidden ?? 0),
+      branchReady: Number(memory.branchReady ?? reviewQueue?.branchReadyCount ?? 0),
       waitingForEvidence: Number(memory.waitingForEvidence ?? 0),
-      dangerous: Number(memory.dangerous ?? reviewQueue.blockedCount ?? 0)
+      dangerous: Number(memory.dangerous ?? reviewQueue?.blockedCount ?? 0)
     },
     workPackages,
-    branchReadyWorkPackages: workPackages.filter((workPackage) => !workPackage.blockedReasons?.length).length,
+    visibleWorkPackages,
+    workPackageGroups,
+    branchReadyWorkPackages: workPackageGroups.implementationReady.items.length,
     topRankedCandidates: research.ranking?.topCandidates ?? []
   };
+}
+
+
+function normalizeWorkPackageForOperator(workPackage = {}) {
+  const safeAction = workPackage.safeAction ?? "review-only";
+  const blockedReasons = workPackage.blockedReasons ?? [];
+  const state = workPackage.state ?? stateForWorkPackage({ safeAction, blockedReasons, branchability: workPackage.branchability, external: workPackage.external });
+  return {
+    workPackageId: workPackage.workPackageId ?? workPackage.id ?? workPackage.title,
+    title: workPackage.title ?? "Untitled work package",
+    safeAction,
+    category: workPackage.category ?? "uncategorized",
+    sourceLane: workPackage.sourceLane ?? "unknown",
+    state,
+    branchability: workPackage.branchability ?? (state === "waiting-for-evidence" ? "waiting-for-evidence" : "branch-ready"),
+    reviewArtifactOnly: safeAction === "review-artifact-only" || state === "review-artifact-ready",
+    external: Boolean(workPackage.external),
+    repoOwned: workPackage.repoOwned !== false && !workPackage.external,
+    filesToChange: workPackage.filesToChange ?? [],
+    testsToRun: workPackage.testsToRun ?? [],
+    whyThisImprovesVNEM: workPackage.whyThisImprovesVNEM ?? workPackage.summary ?? "Review this package for a concrete VNEM improvement.",
+    summary: workPackage.summary ?? workPackage.whyThisImprovesVNEM ?? "Review this package for a concrete VNEM improvement.",
+    riskNotes: workPackage.riskNotes ?? [],
+    blockedReasons
+  };
+}
+
+function stateForWorkPackage({ safeAction, blockedReasons, branchability, external }) {
+  if (blockedReasons?.length || safeAction === "wait-for-evidence" || branchability === "waiting-for-evidence") return "waiting-for-evidence";
+  if (safeAction === "review-artifact-only") return "review-artifact-ready";
+  if (["blocked-report", "quarantine-report"].includes(safeAction)) return "blocked-dangerous";
+  if (external && safeAction !== "review-artifact-only") return "needs-review";
+  return "implementation-ready";
+}
+
+function groupWorkPackages(workPackages) {
+  const groups = {
+    implementationReady: { key: "implementation-ready", label: "Branch-ready implementation work", items: [] },
+    docsTestOnly: { key: "docs-test-only", label: "Docs/test-only work", items: [] },
+    changesByArdEvidence: { key: "changes-by-ard-evidence", label: "Changes by ARD evidence work", items: [] },
+    reviewArtifacts: { key: "review-artifacts", label: "Review artifacts", items: [] },
+    waitingForEvidence: { key: "waiting-for-evidence", label: "Waiting for evidence", items: [] },
+    needsReview: { key: "needs-review", label: "Needs review", items: [] },
+    lowSignalCollapsed: { key: "low-signal-collapsed", label: "Low-signal collapsed", items: [] },
+    blockedDangerous: { key: "blocked-dangerous", label: "Blocked/dangerous", items: [] }
+  };
+  for (const workPackage of workPackages) {
+    if (workPackage.state === "review-artifact-ready" || workPackage.reviewArtifactOnly) groups.reviewArtifacts.items.push(workPackage);
+    else if (workPackage.state === "waiting-for-evidence" || workPackage.safeAction === "wait-for-evidence") groups.waitingForEvidence.items.push(workPackage);
+    else if (workPackage.state === "blocked-dangerous" || /blocked|quarantine|danger/i.test(workPackage.safeAction)) groups.blockedDangerous.items.push(workPackage);
+    else if (workPackage.state === "low-signal-collapsed") groups.lowSignalCollapsed.items.push(workPackage);
+    else if (workPackage.safeAction === "changes-by-ard-evidence") { groups.changesByArdEvidence.items.push(workPackage); groups.implementationReady.items.push(workPackage); }
+    else if (["docs-only", "test-only"].includes(workPackage.safeAction)) { groups.docsTestOnly.items.push(workPackage); groups.implementationReady.items.push(workPackage); }
+    else if (workPackage.state === "needs-review") groups.needsReview.items.push(workPackage);
+    else groups.implementationReady.items.push(workPackage);
+  }
+  return groups;
+}
+
+function selectWorkPackage({ workPackages = [], selectedWorkPackageId = null, lastPreview = null }) {
+  const desired = selectedWorkPackageId ?? lastPreview?.selectedWorkPackage?.workPackageId ?? null;
+  if (desired) {
+    const found = workPackages.find((workPackage) => String(workPackage.workPackageId) === String(desired));
+    if (found) return found;
+  }
+  if (lastPreview?.selectedWorkPackage) return normalizeWorkPackageForOperator(lastPreview.selectedWorkPackage);
+  return workPackages[0] ?? null;
 }
 
 function normalizeFindings({ pipelineRun, inbox, summary }) {

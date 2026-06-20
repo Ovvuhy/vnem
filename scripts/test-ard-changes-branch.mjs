@@ -10,6 +10,7 @@ import {
   CHANGES_BY_ARD_BRANCH,
   CHANGES_BY_ARD_CONFIRMATION,
   CHANGES_BY_ARD_DISPLAY_NAME,
+  classifyWorktreeStatus,
   prepareArdChanges,
   previewArdChanges,
   pushArdChanges,
@@ -174,6 +175,43 @@ await test("prepare can commit safe work package generated files without touchin
   } finally {
     await rm(root, { recursive: true, force: true });
   }
+});
+
+await test("worktree diagnostics classify runtime and source dirty files", async () => {
+  const diagnostics = classifyWorktreeStatus([
+    " M discovery/ard-runs/latest.json",
+    "?? discovery/ard-runs/ard-dogfood-real/dogfood-summary.json",
+    "?? discovery/ard-memory/candidate-memory.json",
+    " M scripts/ard-capability-engine.mjs",
+    "?? docs/new-notes.md"
+  ]);
+  assert.equal(diagnostics.worktreeClean, false);
+  assert.equal(diagnostics.safeRuntimeCleanupAvailable, true);
+  assert.equal(diagnostics.blocksPrepare, true, "source/docs dirty files must block prepare");
+  assert.deepEqual(diagnostics.dirtySummary.runtime.sort(), ["discovery/ard-memory/candidate-memory.json", "discovery/ard-runs/ard-dogfood-real/dogfood-summary.json", "discovery/ard-runs/latest.json"].sort());
+  assert.deepEqual(diagnostics.dirtySummary.source, ["scripts/ard-capability-engine.mjs"]);
+  assert.deepEqual(diagnostics.dirtySummary.docs, ["docs/new-notes.md"]);
+  assert.match(diagnostics.recommendedFix, /runtime cleanup/i);
+  assert.match(diagnostics.recommendedFix, /review source\/docs/i);
+});
+
+await test("dirty-worktree preview reports exact files and classifications", async () => {
+  const preview = await previewArdChanges({ runId: "dirty-demo" }, {
+    repositoryRoot: "/tmp/vnem-preview",
+    gitRunner: async (args) => {
+      if (args.join(" ") === "branch --show-current") return "main\n";
+      if (args.join(" ") === "status --short") return " M scripts/ard-capability-engine.mjs\n?? discovery/ard-runs/ard-dogfood-real/dogfood-summary.json\n";
+      if (args.join(" ") === "rev-parse HEAD") return "base123\n";
+      return "";
+    },
+    now: "2026-06-13T12:00:00.000Z"
+  });
+  assert.equal(preview.ok, false);
+  assert.equal(preview.error_code, "ARD_CHANGES_DIRTY_WORKTREE");
+  assert.equal(preview.worktreeDiagnostics.blocksPrepare, true);
+  assert.equal(preview.worktreeDiagnostics.dirtyFiles.some((file) => file.path === "scripts/ard-capability-engine.mjs" && file.type === "source"), true);
+  assert.equal(preview.worktreeDiagnostics.dirtyFiles.some((file) => file.path === "discovery/ard-runs/ard-dogfood-real/dogfood-summary.json" && file.type === "runtime"), true);
+  assert.match(preview.message, /scripts\/ard-capability-engine\.mjs/);
 });
 
 await test("push refuses without exact confirmation and only targets changes-by-ard", async () => {

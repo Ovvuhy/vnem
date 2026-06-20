@@ -69,6 +69,34 @@ Current honest scope:
 - telemetry history exposes `ard_browser_pipeline` and synthetic ARD browser ingestions for the dashboard;
 - static Protection AI review is metadata/declarative evidence review, not antivirus-grade scanning.
 
+## Real ARD dashboard work package loop
+
+The accepted local dashboard path is:
+
+```text
+http://127.0.0.1:4174/dashboard/?v=ard
+```
+
+Mock/fixture URLs are regression aids only. The real dashboard must render from
+the local app server and repo state. The ARD operator console now makes the
+branch-ready loop reviewable instead of hiding most results:
+
+1. `npm run ard:dogfood` writes a real local run with source lanes, categories,
+   lifecycle counts, dangerous findings, Giving work packages, and Changes by
+   ARD preview metadata.
+2. The dashboard candidate explorer shows the compact count and hidden count,
+   then expands to all work packages.
+3. Package filters distinguish implementation-ready, docs/test-only, Changes by
+   ARD evidence, review-artifact-only, waiting-for-evidence, needs-review,
+   low-signal collapsed, and blocked/dangerous items.
+4. `Use in Changes by ARD` selects a package and updates the protected branch
+   card with that package title, safe action, exact files, and tests.
+5. Preview/prepare blocks on dirty worktrees with exact dirty file paths,
+   source/docs/test/generated/runtime classification, and safe cleanup guidance
+   instead of a vague clean-worktree warning.
+6. Review-artifact-only external candidates can produce metadata/review markdown
+   only. Waiting-for-evidence items are not implementation-ready. Dangerous or
+   blocked findings remain visible and never enter implementable Giving work.
 ## Improvement Mission Engine v1
 
 The dashboard now derives one focused VNEM improvement mission from live telemetry when the app server is connected, or from dashboard summary/sample findings when it is offline/demo. The mission engine is a current dashboard/state-derivation layer; it does not pretend that backend git automation is live.

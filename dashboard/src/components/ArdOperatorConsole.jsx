@@ -1,3 +1,4 @@
+import { useMemo, useState } from "react";
 import { AlertTriangle, CheckCircle2, Clock3, GitBranch, ListChecks, LockKeyhole, Radio, RefreshCcw, Search, ShieldCheck, Sparkles } from "lucide-react";
 import { Badge } from "./PipelinePrimitives.jsx";
 
@@ -7,6 +8,8 @@ export function ArdOperatorConsole({
   pipelineBusy = false,
   pipelineError = null,
   onReviewCandidate,
+  selectedWorkPackageId = null,
+  onSelectWorkPackage,
   onPreviewChanges,
   onPrepareChanges,
   onPushChanges,
@@ -17,6 +20,23 @@ export function ArdOperatorConsole({
   advancedChildren = null
 }) {
   const pushUnlocked = changesConfirmation === model.changesByArd.requiredConfirmation;
+  const [showAllWorkPackages, setShowAllWorkPackages] = useState(false);
+  const [workPackageGroup, setWorkPackageGroup] = useState("all");
+  const workPackageGroups = model.researchState.workPackageGroups ?? {};
+  const groupOptions = useMemo(() => [
+    ["all", "All work packages", model.researchState.workPackages.length],
+    ["implementationReady", "Implementation-ready", workPackageGroups.implementationReady?.items?.length ?? 0],
+    ["docsTestOnly", "Docs/test-only", workPackageGroups.docsTestOnly?.items?.length ?? 0],
+    ["changesByArdEvidence", "Changes by ARD evidence", workPackageGroups.changesByArdEvidence?.items?.length ?? 0],
+    ["reviewArtifacts", "Review artifacts", workPackageGroups.reviewArtifacts?.items?.length ?? 0],
+    ["waitingForEvidence", "Waiting for evidence", workPackageGroups.waitingForEvidence?.items?.length ?? 0],
+    ["needsReview", "Needs review", workPackageGroups.needsReview?.items?.length ?? 0],
+    ["lowSignalCollapsed", "Low-signal collapsed", workPackageGroups.lowSignalCollapsed?.items?.length ?? 0],
+    ["blockedDangerous", "Blocked/dangerous", workPackageGroups.blockedDangerous?.items?.length ?? 0]
+  ].filter(([, , count]) => count > 0 || workPackageGroup === "all"), [model.researchState.workPackages.length, workPackageGroup, workPackageGroups]);
+  const filteredWorkPackages = workPackageGroup === "all" ? model.researchState.workPackages : workPackageGroups[workPackageGroup]?.items ?? [];
+  const visibleWorkPackages = showAllWorkPackages ? filteredWorkPackages : filteredWorkPackages.slice(0, 5);
+  const hiddenWorkPackageCount = Math.max(0, filteredWorkPackages.length - visibleWorkPackages.length);
   return (
     <section className="ard-operator-console" aria-label="ARD operator console">
       <header className="ard-mission-header">
@@ -92,6 +112,19 @@ export function ArdOperatorConsole({
               <p>{model.changesByArd.selectedWorkPackage.safeAction} · exact files: {model.changesByArd.exactFiles.join(", ") || "not listed"}</p>
               <p>Prepared commit: {model.changesByArd.preparedCommit ?? "not prepared"} · Pushed commit: {model.changesByArd.pushedCommit ?? "not pushed"}</p>
               {model.changesByArd.blockedReason ? <p className="inline-warning">Blocked: {model.changesByArd.blockedReason}</p> : null}
+              {model.changesByArd.message ? <p className="inline-warning">Status: {model.changesByArd.message}</p> : null}
+              {model.changesByArd.worktreeDiagnostics?.dirtyFiles?.length ? (
+                <div className="worktree-diagnostics">
+                  <p className="eyebrow">worktree blocker details</p>
+                  <ul>
+                    {model.changesByArd.worktreeDiagnostics.dirtyFiles.slice(0, 8).map((file) => (
+                      <li key={`${file.status}-${file.path}`}>{file.path} · {file.type} · {file.blockingLevel}</li>
+                    ))}
+                  </ul>
+                  <p>{model.changesByArd.worktreeDiagnostics.recommendedFix}</p>
+                  {model.changesByArd.worktreeDiagnostics.safeRuntimeCleanupCommands?.length ? <code>{model.changesByArd.worktreeDiagnostics.safeRuntimeCleanupCommands.join(" && ")}</code> : null}
+                </div>
+              ) : null}
             </div>
           ) : <p className="muted-text">No ARD v2 work package is selected yet. Run ARD dogfood or the local pipeline to produce one.</p>}
           <div className="control-actions compact-actions">
@@ -117,7 +150,7 @@ export function ArdOperatorConsole({
         <article className="operator-panel" aria-label="Review Queue">
           <div className="operator-section-head">
             <div><p className="eyebrow">review queue</p><h3>Best next reviews</h3></div>
-            <Badge tone={model.reviewQueue.branchReadyCount ? "ok" : "review"}>{model.reviewQueue.branchReadyCount} branch-ready</Badge>
+            <Badge tone={model.reviewQueue.implementationReadyCount ? "ok" : "review"}>{model.reviewQueue.implementationReadyCount} implementation-ready</Badge>
           </div>
           <div className="review-metrics-row">
             <span>{model.reviewQueue.total} total</span>
@@ -128,7 +161,8 @@ export function ArdOperatorConsole({
             <span>{model.researchState.sourceLanesUsed.length} source lanes active</span>
             <span>{model.researchState.lifecycle.repeated} repeated</span>
             <span>{model.researchState.lifecycle.waitingForEvidence} waiting for evidence</span>
-            <span>{model.researchState.branchReadyWorkPackages} work packages</span>
+            <span>{model.researchState.workPackages.length} work packages</span>
+            <span>{model.reviewQueue.implementationReadyCount} implementation-ready</span>
             <span>{model.researchState.reviewArtifactOnly} review artifacts</span>
           </div>
           {model.researchState.sourceLanes.length ? (
@@ -142,15 +176,51 @@ export function ArdOperatorConsole({
             </div>
           ) : null}
           {model.researchState.workPackages.length ? (
-            <div className="operator-review-list compact-list">
-              {model.researchState.workPackages.slice(0, 3).map((workPackage) => (
-                <article key={workPackage.workPackageId} className="operator-review-item">
-                  <strong>{workPackage.title}</strong>
-                  <Badge tone="ok">{workPackage.safeAction}</Badge>
-                  <p>Files: {workPackage.filesToChange.join(", ")}</p>
-                  <p>Tests: {workPackage.testsToRun.join(", ")}</p>
-                </article>
-              ))}
+            <div className="operator-work-package-explorer" aria-label="Work package explorer">
+              <div className="operator-section-head compact-head">
+                <div>
+                  <p className="eyebrow">candidate explorer</p>
+                  <h4>{visibleWorkPackages.length} shown of {filteredWorkPackages.length} in this group · {model.researchState.workPackages.length} total</h4>
+                </div>
+                <button type="button" className="secondary-action" onClick={() => setShowAllWorkPackages((value) => !value)}>
+                  {showAllWorkPackages ? "Collapse" : `Show all ${filteredWorkPackages.length}`}
+                </button>
+              </div>
+              <div className="operator-filter-row" aria-label="Work package groups">
+                {groupOptions.map(([key, label, count]) => (
+                  <button key={key} type="button" className={workPackageGroup === key ? "filter-chip active" : "filter-chip"} onClick={() => { setWorkPackageGroup(key); setShowAllWorkPackages(false); }}>
+                    {label} · {count}
+                  </button>
+                ))}
+              </div>
+              {hiddenWorkPackageCount ? <p className="muted-text">{hiddenWorkPackageCount} hidden in compact view. Use Show all or a group filter to inspect every package.</p> : null}
+              <div className={showAllWorkPackages ? "operator-review-list work-package-list expanded" : "operator-review-list work-package-list"}>
+                {visibleWorkPackages.map((workPackage) => {
+                  const selected = String(selectedWorkPackageId ?? model.changesByArd.selectedWorkPackage?.workPackageId ?? "") === String(workPackage.workPackageId);
+                  return (
+                    <article key={workPackage.workPackageId} className={selected ? "operator-review-item selected" : "operator-review-item"}>
+                      <div className="operator-section-head compact-head">
+                        <strong>{workPackage.title}</strong>
+                        <Badge tone={toneForWorkPackage(workPackage)}>{labelForWorkPackageState(workPackage)}</Badge>
+                      </div>
+                      <div className="review-metrics-row">
+                        <span>{workPackage.safeAction}</span>
+                        <span>{workPackage.category}</span>
+                        <span>{workPackage.sourceLane}</span>
+                        <span>{workPackage.external ? "external" : "repo-owned"}</span>
+                      </div>
+                      <p>{workPackage.whyThisImprovesVNEM ?? workPackage.summary}</p>
+                      <p>Files: {workPackage.filesToChange.join(", ") || "not listed"}</p>
+                      <p>Tests: {workPackage.testsToRun.join(", ") || "not listed"}</p>
+                      {workPackage.blockedReasons?.length ? <p className="inline-warning">Blocked reason: {workPackage.blockedReasons.join("; ")}</p> : null}
+                      <div className="control-actions compact-actions">
+                        <button type="button" className="secondary-action" onClick={() => onSelectWorkPackage?.(workPackage.workPackageId)}>{selected ? "Selected for Changes by ARD" : "Use in Changes by ARD"}</button>
+                        {workPackage.reviewArtifactOnly ? <Badge tone="review">review artifact only</Badge> : null}
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
             </div>
           ) : null}
           <div className="operator-review-list">
@@ -232,6 +302,20 @@ export function ArdOperatorConsole({
       </details>
     </section>
   );
+}
+
+function labelForWorkPackageState(workPackage) {
+  if (workPackage.reviewArtifactOnly) return "review-artifact-ready";
+  if (workPackage.state === "waiting-for-evidence") return "waiting-for-evidence";
+  if (workPackage.state === "blocked-dangerous") return "blocked/dangerous";
+  if (workPackage.state === "needs-review") return "needs-review";
+  return "implementation-ready";
+}
+
+function toneForWorkPackage(workPackage) {
+  if (workPackage.state === "blocked-dangerous") return "critical";
+  if (workPackage.state === "waiting-for-evidence" || workPackage.reviewArtifactOnly || workPackage.state === "needs-review") return "review";
+  return "ok";
 }
 
 function OperatorKpi({ label, value, tone = "" }) {

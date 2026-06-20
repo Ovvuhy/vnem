@@ -29,6 +29,8 @@ export function deriveArdChangesCard({ status = null } = {}) {
     fakePushed: Boolean(lastPushed) && !pushedIsReal,
     mainPushAllowed: false,
     errorCode: status?.error_code ?? null,
+    message: status?.message ?? lastPreview?.message ?? lastPrepared?.message ?? null,
+    worktreeDiagnostics: status?.worktreeDiagnostics ?? lastPreview?.worktreeDiagnostics ?? lastPrepared?.worktreeDiagnostics ?? null,
     nextAction: status?.nextAction ?? "Preview ARD changes before preparing a protected branch commit."
   };
 }

@@ -11,9 +11,9 @@ Goal: make ARD prove a real repo-owned improvement loop:
 - Protection AI v2 explains branch eligibility, safe action, and missing evidence;
 - Giving AI v2 produces work packages, not just reports;
 - Changes by ARD previews selected work packages with exact files and can prepare a protected branch commit;
-- the dashboard shows source lanes, lifecycle state, work packages, dangerous findings, and commit state.
+- the real dashboard shows source lanes, lifecycle state, all work packages through an expandable/filterable explorer, dangerous findings, selected-package exact files/tests, worktree blockers, and commit state.
 
-Evidence required: `npm run ard:dogfood`, focused ARD v2 tests, dashboard build, browser visual check, and safety grep.
+Evidence required: `npm run ard:dogfood`, focused ARD v2 tests including `test:ard-real-dashboard`, dashboard build, non-mock browser visual check at `http://127.0.0.1:4174/dashboard/?v=ard`, and safety grep.
 
 ## Next: work-package validation evidence
 
@@ -22,6 +22,8 @@ Improve candidate review quality before any deeper automation:
 - show source, license, risk, trust, and reason in fewer repeated places;
 - improve dedupe and latest-event ordering;
 - show branch eligibility and exclusion reasons more clearly;
+- keep the work package explorer reachable from the main operator console with hidden counts and group filters;
+- keep worktree blockers exact: dirty file, type, blocking level, and recommended fix;
 - keep blocked/quarantined items visible but report-only;
 - make manual review checklist easier to follow.
 

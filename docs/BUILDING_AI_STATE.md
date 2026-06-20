@@ -28,11 +28,11 @@ ARD Capability Expansion v2 turns ARD from a deterministic demo into a repo/loca
 - Protection AI v2 explains branch eligibility, safe action, missing evidence, why-not-branch-eligible, and whether Giving AI / Changes by ARD can use the candidate.
 - Giving AI v2 emits work packages with exact files, tests, diff summary, rollback notes, risk notes, and blocked reasons.
 - Changes by ARD can preview selected work packages with exact files and prepare a protected branch commit without touching main.
-- The dashboard operator model exposes source lanes, repeated/suppressed counts, work packages, exact files, and prepared/pushed commit status.
+- The real dashboard at `http://127.0.0.1:4174/dashboard/?v=ard` exposes source lanes, repeated/suppressed counts, all work packages through the candidate explorer, selected package exact files/tests, exact worktree blockers, and prepared/pushed commit status.
 - ARD v2.2 adds a research category taxonomy beyond Roblox/Luau: AI skills, MCPs, agent frameworks, coding tools, research methods, evals/benchmarks, safety/security, prompting playbooks, repo automation, documentation systems, browser automation, data/memory/retrieval, Roblox/Luau, and general devtools.
 - External GitHub repositories with missing or unknown license metadata are auto-triaged as review-artifact-only or waiting-for-evidence. They are not implementable code, are not installed, are not executed, and do not dominate the primary review queue.
 
-Dogfood run `ard-dogfood-continuation` found 26 candidates across 8 source lanes and 14 categories, kept Roblox/Luau to one category, counted 5 review-artifact-only external candidates, kept 1 dangerous finding visible/excluded, produced 24 work packages, and produced a Changes by ARD preview-ready work package with exact files.
+Dogfood run `ard-reality-fix-final` found 27 candidates across 8 source lanes and 14 categories, kept Roblox/Luau to one category, counted 5 review-artifact-only external candidates, kept 1 dangerous finding visible/excluded, produced 25 work packages, and produced a Changes by ARD preview-ready work package with exact files. The dashboard candidate explorer can expand from compact view to all 25 packages, and selecting `Use in Changes by ARD` updates the protected branch preview card.
 
 ## Recently shipped
 

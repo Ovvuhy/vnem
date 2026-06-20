@@ -36,8 +36,11 @@ npm.cmd run dashboard
 Then open:
 
 ```text
-http://127.0.0.1:4174/dashboard/?mock&v=ard
+http://127.0.0.1:4174/dashboard/?v=ard
 ```
+
+The real dashboard path must load the local app server state. Fixture/mock mode is
+only for isolated regression checks and is not acceptance proof.
 
 Click:
 
@@ -65,10 +68,11 @@ Expected success:
 - Protection AI runs.
 - Giving AI runs.
 - Dangerous findings appear and remain visible.
-- A `fixture-remote` or `dry-run` branch proof appears.
-- The dashboard shows one canonical ARD operator console with mission header, ARD Control Center, pipeline timeline, Changes by ARD, review queue, AI status/public decision log, findings/evidence, system health, advanced/raw details collapsed by default, and planned features labeled planned/future.
-- Preview is dry-run only.
-- Prepare creates a reviewable local `changes-by-ard` commit when the repo is clean.
+- The dashboard shows one canonical ARD operator console with mission header, ARD Control Center, pipeline timeline, Changes by ARD, review queue, work package explorer, AI status/public decision log, findings/evidence, system health, advanced/raw details collapsed by default, and planned features labeled planned/future.
+- The work package explorer shows how many packages are visible/hidden, supports showing all packages, and separates implementation-ready, docs/test-only, Changes by ARD evidence, review artifacts, waiting-for-evidence, needs-review, low-signal, and blocked/dangerous groups.
+- Selecting `Use in Changes by ARD` updates the protected branch card with that package title, safe action, exact files, and tests.
+- Preview is dry-run only and reports exact dirty worktree files when prepare/preview is blocked.
+- Prepare creates a reviewable local `changes-by-ard` commit only when the repo is clean or only safe runtime cleanup is needed.
 - Push targets only `origin changes-by-ard` after exact confirmation.
 - No fake `main` push appears.
 
@@ -86,7 +90,7 @@ PowerShell:
 npm.cmd run ard:dogfood
 ```
 
-Expected success: JSON showing source lanes used, candidates found, repeated/stale candidates, low-signal collapsed count, dangerous findings, Giving work packages, and Changes by ARD preview exact files. The command writes intentional artifacts under `discovery/ard-runs/<run-id>/` and lifecycle memory under `discovery/ard-memory/candidate-memory.json`. It does not push main, auto-merge, install external packages, or execute discovered repos.
+Expected success: JSON showing source lanes used, categories, candidates found, repeated/stale candidates, low-signal collapsed count, dangerous findings, Giving work packages, and Changes by ARD preview exact files. The command writes runtime artifacts under `discovery/ard-runs/<run-id>/` and lifecycle memory under `discovery/ard-memory/candidate-memory.json`. It does not push main, auto-merge, install external packages, or execute discovered repos. Review-artifact-only packages may write metadata/review markdown only; waiting-for-evidence packages are not implementation-ready.
 
 ## Quick non-browser test
 
@@ -102,7 +106,7 @@ This starts a temporary loopback backend, calls the same `POST /api/ard/pipeline
 npm run test:current
 ```
 
-This runs the ARD browser pipeline smoke test, the focused dashboard browser-pipeline status test, and the Changes by ARD helper/dashboard tests.
+This runs the ARD capability/dogfood tests, the real-dashboard loader test, the ARD browser pipeline smoke test, the focused dashboard browser-pipeline status test, Changes by ARD helper/dashboard tests, dashboard operator tests, acceleration tests, and public repo hygiene checks.
 
 ## Troubleshooting
 

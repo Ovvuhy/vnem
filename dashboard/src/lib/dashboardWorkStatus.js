@@ -12,7 +12,7 @@ export function deriveDashboardWorkStatus({ telemetry = {}, summary = null, exec
   const lastResearch = lastResearchEvent({ telemetry, candidates, summary });
   const lastResearchAgeMs = lastResearch?.timestamp ? Math.max(0, now - Date.parse(lastResearch.timestamp)) : null;
   const staleTelemetry = Boolean(lastResearchAgeMs && lastResearchAgeMs > staleAfterMs);
-  const triage = mergeBackendReviewQueue(deriveCandidateTriage(candidates), telemetry.reviewQueue);
+  const triage = normalizeTriageShape(mergeBackendReviewQueue(deriveCandidateTriage(candidates), telemetry.reviewQueue));
   const blocker = deriveBlocker({ backendLive, provider, routeErrors, mission, triage, branchPreview, staleTelemetry, dataMode });
   const status = deriveRealStatus({ backendLive, provider, mission, triage, branchPreview, blocker, dataMode });
 
@@ -125,6 +125,7 @@ export function deriveCandidateTriage(candidates = []) {
 }
 
 function mergeBackendReviewQueue(localTriage, reviewQueue) {
+  localTriage = normalizeTriageShape(localTriage);
   if (!reviewQueue?.ok) return localTriage;
   const topReview = normalizeQueueCandidates(reviewQueue.topReviewCandidates ?? []);
   const topBranch = normalizeQueueCandidates(reviewQueue.topBranchCandidates ?? [], true);
@@ -163,6 +164,40 @@ function mergeBackendReviewQueue(localTriage, reviewQueue) {
       : reviewQueue.recommendedAction === "review-top-candidates"
         ? `${reviewQueue.totalFound} candidates exist; review the top ${topReview.length || 5} first while VNEM groups the rest.`
         : reviewQueue.reason ?? localTriage.nextAction
+  };
+}
+
+function normalizeTriageShape(triage = {}) {
+  const counts = {
+    total: 0,
+    allow: 0,
+    needsReview: 0,
+    quarantine: 0,
+    blocked: 0,
+    branchEligible: 0,
+    ...(triage.counts ?? {})
+  };
+  return {
+    total: Number(triage.total ?? counts.total ?? 0),
+    branchEligible: Number(triage.branchEligible ?? counts.branchEligible ?? 0),
+    topReviewCandidates: Number(triage.topReviewCandidates ?? 0),
+    counts,
+    alreadyIndexed: Number(triage.alreadyIndexed ?? 0),
+    missingLicense: Number(triage.missingLicense ?? 0),
+    weakSource: Number(triage.weakSource ?? 0),
+    duplicateOrLowSignal: Number(triage.duplicateOrLowSignal ?? 0),
+    needsPrimarySource: Number(triage.needsPrimarySource ?? 0),
+    suspiciousPackage: Number(triage.suspiciousPackage ?? 0),
+    blocked: Number(triage.blocked ?? counts.blocked ?? 0),
+    quarantined: Number(triage.quarantined ?? counts.quarantine ?? 0),
+    hiddenLowSignal: Number(triage.hiddenLowSignal ?? 0),
+    duplicateCandidates: Number(triage.duplicateCandidates ?? 0),
+    rejected: Number(triage.rejected ?? 0),
+    topCandidates: Array.isArray(triage.topCandidates) ? triage.topCandidates : [],
+    branchReadyCandidates: Array.isArray(triage.branchReadyCandidates) ? triage.branchReadyCandidates : [],
+    recommendedAction: triage.recommendedAction ?? null,
+    reason: triage.reason ?? null,
+    nextAction: triage.nextAction ?? "Start a focused research mission to produce candidates."
   };
 }
 

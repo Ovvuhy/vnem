@@ -84,7 +84,7 @@
     "ard:demo": "node scripts/ard-demo.mjs",
     "ard:browser-pipeline": "node scripts/ard-browser-pipeline-smoke.mjs",
     "ard:test": "npm run test:ard-research && npm run test:ard-protection && npm run test:ard-giving && npm run test:ard-pipeline && npm run test:dashboard-ard && npm run test:ard-browser-pipeline",
-    "test:current": "npm run test:ard-capability-engine && npm run test:ard-dogfood && npm run test:ard-browser-pipeline && npm run test:dashboard-ard-browser && npm run test:ard-changes-branch && npm run test:dashboard-ard-changes && npm run test:dashboard-operator && npm run test:building-ai-acceleration && npm run test:public-repo-hygiene",
+    "test:current": "npm run test:ard-capability-engine && npm run test:ard-dogfood && npm run test:ard-real-dashboard && npm run test:ard-browser-pipeline && npm run test:dashboard-ard-browser && npm run test:ard-changes-branch && npm run test:dashboard-ard-changes && npm run test:dashboard-operator && npm run test:building-ai-acceleration && npm run test:public-repo-hygiene",
     "dev:health": "node scripts/vnem-dev-health.mjs",
     "dev:health:json": "node scripts/vnem-dev-health.mjs --json",
     "dev:cleanup-dashboard": "node scripts/vnem-dev-health.mjs --cleanup-dashboard",
@@ -118,7 +118,8 @@
     "test:ard-capability-engine": "node scripts/test-ard-capability-engine.mjs",
     "test:ard-dogfood": "node scripts/test-ard-dogfood.mjs",
     "ard:dogfood": "node scripts/ard-dogfood.mjs",
-    "test:public-repo-hygiene": "node scripts/test-public-repo-hygiene.mjs"
+    "test:public-repo-hygiene": "node scripts/test-public-repo-hygiene.mjs",
+    "test:ard-real-dashboard": "node scripts/test-ard-real-dashboard.mjs"
   },
   "dependencies": {
     "@solana/wallet-adapter-base": "^0.9.27",

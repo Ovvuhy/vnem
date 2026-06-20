@@ -53,3 +53,11 @@ Why: branch mutation must stay reviewable, recoverable, and explicit.
 Decision: blocked/quarantined/dangerous findings stay visible in the dashboard and generated artifacts, but are excluded from implementable Giving work.
 
 Why: hiding dangerous findings creates false confidence; applying them would violate the protection boundary.
+
+## 2026-06-20 — Real dashboard acceptance must use real mode
+
+Decision: ARD dashboard acceptance uses `http://127.0.0.1:4174/dashboard/?v=ard`, not mock/fixture mode. The operator console must render from local app-server/repo state, expose all Giving work packages through a reachable explorer, and show selected package exact files/tests in Changes by ARD.
+
+Why: a mock dashboard can prove a fixture regression, but it cannot prove the real ARD product loop. Users must be able to see all work, select a package, preview exact files, and receive exact worktree blockers from the real website.
+
+Preserved safety: review-artifact-only external packages remain metadata/review markdown only; waiting-for-evidence packages are not implementation-ready; dangerous/blocked findings stay visible and excluded; ARD still cannot push or merge `main`.

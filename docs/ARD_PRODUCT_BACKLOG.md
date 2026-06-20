@@ -17,6 +17,8 @@ Make ARD produce branchable repo-owned work, not only dashboard status:
 
 Build and maintain a clean operator console with one information hierarchy, one primary control center, a clear timeline, readable Changes by ARD controls, and raw/advanced details collapsed by default.
 
+Reality-fix acceptance for this item is the real URL `http://127.0.0.1:4174/dashboard/?v=ard`: it must render without a crash, show the real local dogfood/backend state, expose all work packages through a reachable explorer, and update Changes by ARD when the user selects a package.
+
 ## P0 — Research → Protection → Giving visibility
 
 Make the stage handoff understandable:
@@ -56,6 +58,8 @@ Every major feature needs:
 ## P1 — Better review queue
 
 Reduce repeated candidate cards, dedupe visible candidates, show latest meaningful event first, and group low-signal/noisy entries without hiding dangerous findings.
+
+Current requirement: the review queue must not dead-end at only a few visible cards. It needs a visible show-all/scroll/explorer path, hidden count, and groups for implementation-ready, docs/test-only, Changes by ARD evidence, review artifacts, waiting-for-evidence, needs-review, low-signal, and blocked/dangerous items.
 
 ## P2 — Better pipeline quality/efficiency
 

@@ -89,6 +89,8 @@ npm.cmd run dashboard
 
 The dashboard exposes explicit review controls. A staged Giving AI dispatch can be opened, inspected as markdown, promoted into `.vnem/approved/`, or rejected and deleted from `.vnem/staging/`. Approval does not commit code, execute scripts, install packages, or touch external systems.
 
+For ARD v2 work packages, open the real dashboard at `http://127.0.0.1:4174/dashboard/?v=ard`. The operator console shows source lanes, categories, dangerous findings, all work packages through the candidate explorer, and how many packages are hidden in compact view. `Use in Changes by ARD` selects a package and updates the protected branch card with the selected title, safe action, exact files, tests, and worktree blockers. Fixture/mock dashboard mode is for regression fixtures only, not final acceptance proof.
+
 ARD Browser Pipeline v1 wires the top `Run ARD pipeline` button to the local backend. With `npm run ard:dev` running, the browser calls `POST /api/ard/pipeline/run`, runs the repo/local Research AI v2 -> Protection AI v2 -> Giving AI v2 path, writes `discovery/ard-runs/<run-id>/`, shows dangerous findings, records source lanes/lifecycle/work packages, and records a `fixture-remote` research branch proof. This is a real local/browser capability, not live web research and not antivirus-grade protection.
 
 Dogfood the ARD v2 improvement loop without opening the dashboard:
@@ -103,7 +105,7 @@ PowerShell:
 npm.cmd run ard:dogfood
 ```
 
-This proves source lanes, candidate memory, scoring/ranking, Protection safe actions, Giving work packages, and Changes by ARD preview exact files. It intentionally writes `discovery/ard-runs/<run-id>/` artifacts and `discovery/ard-memory/candidate-memory.json`; it does not push `main` or auto-merge.
+This proves source lanes, categories, candidate memory, scoring/ranking, Protection safe actions, Giving work packages, and Changes by ARD preview exact files. It writes runtime `discovery/ard-runs/<run-id>/` artifacts and `discovery/ard-memory/candidate-memory.json`; it does not push `main`, auto-merge, install external candidate packages, or execute discovered repos. Review-artifact-only external candidates are metadata/review markdown only, and waiting-for-evidence candidates are not implementation-ready.
 
 Quick current verification:
 
@@ -130,7 +132,7 @@ cd C:\VNEM\vnem-src
 npm.cmd run dashboard
 ```
 
-Open `http://127.0.0.1:4174/dashboard/?mock&v=ard`, connect/sign with the local allowlisted wallet (`H62Ri1EExddxFKsLMn4nbmbxiCSxNRLtF8igPySLA23B`), click `Run ARD pipeline`, and expect one ARD operator console with a mission header, control center, pipeline timeline, Changes by ARD protected branch card, review queue, AI status/public decision log, visible dangerous findings, system health, planned features marked planned/future, and advanced/raw details collapsed. For the quick non-browser path, run `npm run ard:browser-pipeline`. For current feature checks, run `npm run test:current`.
+Open `http://127.0.0.1:4174/dashboard/?v=ard`, connect/sign with the local allowlisted wallet (`H62Ri1EExddxFKsLMn4nbmbxiCSxNRLtF8igPySLA23B`), click `Run ARD pipeline` or run `npm.cmd run ard:dogfood`, and expect one ARD operator console with a mission header, control center, pipeline timeline, Changes by ARD protected branch card, work package explorer, review queue, AI status/public decision log, visible dangerous findings, system health, planned features marked planned/future, and advanced/raw details collapsed. For current feature checks, run `npm run test:current`.
 
 ## The VNEM Standard
 
