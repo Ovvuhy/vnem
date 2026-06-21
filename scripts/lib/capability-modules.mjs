@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { recommendApis, recommendSkills, reviewCapability } from "./super-library.mjs";
 import { getAgentProfile } from "./agent-profiles.mjs";
+import { buildDomainQualityContracts, detectMissingContext } from "./quality-contracts.mjs";
 
 const TOKEN_BUDGETS = new Set(["compact", "normal", "expanded"]);
 
@@ -155,6 +156,22 @@ export function composeCapabilityContract(library, agentProfiles, options = {}) 
   const profile = getAgentProfile(agentProfiles, { agent_client: options.agent_client || "unknown", model_family: options.model_family, task: options.task, token_budget: "compact" });
   const needsApi = required.task_types.includes("api_integration") || /api|weather|oauth|cors|integration/i.test(options.task || "");
   const api_plan = needsApi ? buildApiIntegrationPlan(library, { task: options.task, app_type: inferAppType(options.project_context), frontend_only: /frontend|browser|next|react/i.test(`${options.task} ${options.project_context}`), token_budget: tokenBudget }) : null;
+  const missing_context = detectMissingContext({ task: options.task, project_context: options.project_context, token_budget: tokenBudget });
+  const domain_quality_contracts = buildDomainQualityContracts({ task: options.task, project_context: options.project_context, token_budget: tokenBudget });
+  const completion_audit_expectations = {
+    required_evidence: unique([
+      ...required.required_modules.flatMap((module) => module.required_evidence || []),
+      ...domain_quality_contracts.flatMap((contract) => contract.required_evidence || [])
+    ]).slice(0, tokenBudget === "expanded" ? 10 : 6),
+    audit_tool: "vnem_completion_audit",
+    incomplete_if: ["required evidence is missing", "required capability modules are skipped without waiver", "claims exceed proof"]
+  };
+  const protection_review_triggers = unique([
+    "before filesystem/terminal/browser/GitHub/package actions",
+    "before skill installation or script execution",
+    "before API integration involving secrets/auth/CORS/network",
+    "before game/modding file changes or external tool use"
+  ]).slice(0, 6);
   return {
     task_summary: String(options.task || "").slice(0, 240),
     agent_profile_summary: {
@@ -167,9 +184,13 @@ export function composeCapabilityContract(library, agentProfiles, options = {}) 
     required_capability_modules: required.required_modules,
     compact_instructions: required.required_modules.flatMap((module) => module.compact_instructions || []).slice(0, instructionLimit(tokenBudget)),
     api_plan,
+    missing_context,
+    domain_quality_contracts,
     risks: unique(required.required_modules.flatMap((module) => module.risks || [])).slice(0, 8),
     verification: unique(required.required_modules.flatMap((module) => module.verification_requirements || [])).slice(0, 8),
-    final_report_requirements: ["capability_ids_used", "evidence_per_required_module", "checks_run", "skipped_items_with_reason", "remaining_risks"],
+    completion_audit_expectations,
+    protection_review_triggers,
+    final_report_requirements: ["capability_ids_used", "evidence_per_required_module", "missing_context_answers_or_assumptions", "domain_quality_contracts_satisfied", "checks_run", "skipped_items_with_reason", "remaining_risks"],
     token_budget: tokenBudget,
     token_budget_estimate: tokenBudget === "compact" ? "compact: selected modules only; no full library/profile dump" : "selected details only; fetch full records by id if needed",
     deeper_lookup_ids: required.deeper_lookup_ids,
@@ -220,6 +241,63 @@ function selectWorkflowModules(taskTypes, task, tokenBudget) {
       verification_requirements: ["Prove API keys are server-only; mock failure states."],
       token_budget_guidance: "compact",
       full_detail_uri: "vnem://capabilities/apis"
+    });
+  }
+  if (taskTypes.includes("research_quality")) {
+    add({
+      id: "module:workflow:research-source-quality",
+      kind: "workflow",
+      name: "Research/source-quality workflow",
+      task_types: ["research_quality", "claim_verification"],
+      supported_agents: ["all"],
+      compact_instructions: ["Use current/high-quality sources when claims can change.", "Prefer official/primary sources and separate verified facts from assumptions.", "Ask critical missing-context questions when the answer would otherwise be generic."],
+      when_to_use: ["Research, recommendations, current facts, game/build advice, docs-dependent answers."],
+      when_not_to_use: ["Purely local deterministic task with no external facts."],
+      required_evidence: ["Sources used, freshness/version relevance, assumptions/limits."],
+      compatibility: ["vnem_sources", "vnem_completion_audit"],
+      avoid_with: ["fake certainty", "outdated generic advice"],
+      risks: ["outdated facts", "weak source quality", "missing assumptions"],
+      verification_requirements: ["Cite or list high-quality/current sources and state uncertainty."],
+      token_budget_guidance: "compact",
+      full_detail_uri: "vnem://install/source-radar"
+    });
+  }
+  if (taskTypes.includes("game_build_research")) {
+    add({
+      id: "module:workflow:game-build-recommendation",
+      kind: "workflow",
+      name: "Game/build recommendation workflow",
+      task_types: ["game_build_research", "research_quality"],
+      supported_agents: ["all"],
+      compact_instructions: ["Clarify PvE/PvP, DLC, progression, skill level, armor/poise, and item availability.", "Check patch/source freshness before best/OP claims.", "Give alternatives when items are unavailable."],
+      when_to_use: ["Game builds/loadouts/recommendations such as Elden Ring builds."],
+      when_not_to_use: ["Non-game research."],
+      required_evidence: ["Clarifying answers or assumptions plus source/freshness check."],
+      compatibility: ["vnem_completion_audit", "research-source-quality"],
+      avoid_with: ["best build claims without context"],
+      risks: ["PvE/PvP mismatch", "DLC unavailable", "outdated patch advice"],
+      verification_requirements: ["State mode/DLC/progression assumptions and source-quality basis."],
+      token_budget_guidance: "compact",
+      full_detail_uri: "vnem://contracts/game-build"
+    });
+  }
+  if (taskTypes.includes("game_modding_workflow")) {
+    add({
+      id: "module:workflow:modding-safety-research",
+      kind: "workflow",
+      name: "Game/modding safety workflow",
+      task_types: ["game_modding_workflow", "research_quality"],
+      supported_agents: ["all"],
+      compact_instructions: ["Research the specific game, file formats, tools, and compatibility issues first.", "Require backups/isolation before mutation in future Tools/Precision work.", "Define local verification/restore plan."],
+      when_to_use: ["Modding, game files, load orders, save/regulation/assets workflows."],
+      when_not_to_use: ["General app work."],
+      required_evidence: ["Game/tool/file-format research, backup/isolation plan, test/restore plan."],
+      compatibility: ["vnem_protection_review", "vnem_completion_audit"],
+      avoid_with: ["patching original files before understanding pipeline"],
+      risks: ["save/file corruption", "tool incompatibility", "broken mod load order"],
+      verification_requirements: ["Prove tool pipeline and backups before any mutation."],
+      token_budget_guidance: "compact",
+      full_detail_uri: "vnem://contracts/modding-safety"
     });
   }
   if (taskTypes.includes("debugging")) {
@@ -408,6 +486,10 @@ function inferCoreTaskTypes(task, context = "") {
   const text = normalize(`${task} ${context}`);
   const types = new Set();
   if (/next|react|website|frontend|ui|ux|design|accessibility|css|visual/.test(text)) types.add("website_ui"), types.add("frontend_ui");
+  if (/backend|database|server route|api route|storage|endpoint/.test(text)) types.add("backend_integration"), types.add("testing");
+  if (/research|current|latest|best|recommend|source|citation|docs|patch|version/.test(text)) types.add("research_quality");
+  if (/elden ring|game build|build recommendation|pve|pvp|dlc|rune level|talismans|armor/.test(text)) types.add("game_build_research"), types.add("research_quality");
+  if (/modding|mod workflow|game mod|mods?|file format|regulation\.bin|bnd|dcx|pak|load order|save file/.test(text)) types.add("game_modding_workflow"), types.add("research_quality");
   if (/api|weather|forecast|oauth|cors|integration|endpoint|webhook/.test(text)) types.add("api_integration");
   if (/debug|failing|failure|bug|regression|broken|fix|ci|test/.test(text)) types.add("debugging"), types.add("testing");
   if (/prompt|instruction|agent behavior|system prompt|rewrite/.test(text)) types.add("prompt_improvement");

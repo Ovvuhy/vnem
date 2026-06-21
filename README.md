@@ -445,6 +445,8 @@ Read-only MCP tools:
 - `vnem_build_api_integration_plan`: build a safe API plan with auth/HTTPS/CORS, frontend/backend decision, backend proxy/secret rules, tests, and evidence. It does not call the API.
 - `vnem_get_agent_profile`: return only the relevant Codex/Claude/Gemini/DeepSeek/Hermes/Qwen/generic/unknown profile so one AI does not receive another AI's irrelevant instructions.
 - `vnem_compose_capability_contract`: combine routing, selected capability modules, one agent profile, skill/API plan when relevant, risks, verification, and final-report requirements into one compact contract.
+- `vnem_completion_audit`: audit an AI's final answer, plan, or work summary against the original task and VNEM contract. It flags fake completion, missing evidence, skipped modules, weak research, missing visual/UI proof, backend-without-UI exposure, unsafe API claims, game/build context gaps, and modding pipeline gaps.
+- `vnem_protection_review`: review a proposed risky plan/action before proceeding. It identifies filesystem, terminal, browser, GitHub, package install, skill/MCP, API-key, frontend/backend, research, UI, and game/modding risks; it produces a specific human-readable permission prompt but performs no action.
 
 Capability modules:
 
@@ -452,6 +454,10 @@ Capability modules:
 - Core MCP can activate/apply guidance as a contract, but it cannot install, execute, mutate, or call external APIs.
 - Non-VNEM user tasks must stay focused on the user's deliverable. VNEM repo self-improvement guidance is selected only when the task explicitly asks to build/fix VNEM.
 - Token efficiency uses progressive disclosure: bootstrap summary, selected module IDs, compact required instructions, and deeper IDs/URIs only when needed. Normal outputs do not dump all skills, APIs, or model profiles.
+- Research quality contracts require current/source-quality research when facts can change, direct/official sources where possible, explicit assumptions, and no fake certainty.
+- UI/frontend/backend contracts treat UI as part of the deliverable: backend work is incomplete when the user cannot see/use it, and UI polish claims need screenshots/browser/visual evidence.
+- Game/build/modding contracts require game/version/tool/file-format research, PvE/PvP/DLC/progression assumptions for build advice, backups/isolation for modding, and no patching before the pipeline is understood.
+- Missing-context detection recommends clarifying questions only when missing answers would materially change quality or safety; otherwise the AI may proceed with explicit assumptions.
 
 Safety boundary:
 
@@ -468,16 +474,21 @@ Recommended agent flow:
 1. Call `vnem_bootstrap`.
 2. Use returned required rules/resources.
 3. For capability needs, call `vnem_compose_capability_contract`, `vnem_get_required_capabilities`, `vnem_library_status`, `vnem_recommend_skills`, `vnem_recommend_apis`, and `vnem_review_skill_or_api` as relevant.
-4. Use `vnem_get_agent_profile` to fetch only the relevant AI/client profile instead of dumping every model-specific instruction.
-5. Do not install skills or call APIs blindly.
-6. Run `vnem_quality_gate` and task-specific verification.
-7. Report evidence, skipped checks, and remaining risk.
+4. Before risky filesystem/terminal/browser/GitHub/package/API/skill/modding actions, call `vnem_protection_review` and get explicit user approval outside Core MCP.
+5. Before final response, call or apply `vnem_completion_audit` expectations; do not claim done without evidence.
+6. Use `vnem_get_agent_profile` to fetch only the relevant AI/client profile instead of dumping every model-specific instruction.
+7. Do not install skills or call APIs blindly.
+8. Run `vnem_quality_gate` and task-specific verification.
+9. Report evidence, skipped checks, assumptions, limitations, and remaining risk.
 
 Examples:
 
-- Next.js UI task: call `vnem_bootstrap`, then `vnem_compose_capability_contract` with `token_budget=compact`; apply the frontend/UI quality module and report build plus visual/responsive/accessibility evidence.
-- Weather API integration: call `vnem_build_api_integration_plan`; compare auth/HTTPS/CORS, use a backend proxy for secret-bearing or CORS-unsafe APIs, never expose frontend keys, and provide success/error/loading/rate-limit tests.
+- Next.js UI task: call `vnem_bootstrap`, then `vnem_compose_capability_contract` with `token_budget=compact`; apply the frontend/UI quality module and report build plus visual/responsive/accessibility evidence. `vnem_completion_audit` should revise if no screenshot/browser/visual proof exists.
+- Weather API integration: call `vnem_build_api_integration_plan`; compare auth/HTTPS/CORS, use a backend proxy for secret-bearing or CORS-unsafe APIs, never expose frontend keys, and provide success/error/loading/rate-limit tests. `vnem_protection_review` should block/revise frontend API-key exposure.
 - Debugging task: call `vnem_get_required_capabilities`; apply the systematic debugging module, reproduce the failure, identify root cause, fix, and show red/green or equivalent proof.
+- Elden Ring build research: ask or state assumptions for PvE/PvP, Shadow of the Erdtree DLC ownership, rune level/progression, armor/poise relevance, weapon/spell/stat preference, solo/co-op, and skill level; use current/source-quality research and avoid generic outdated "best build" claims.
+- Game/modding task: research the specific game, file formats, tools, compatibility issues, backups/isolation, and verification plan before any future Precision/Tools mutation.
+- Risky Tools/Giga MCP permission preview: `vnem_protection_review` returns a prompt with exact action/scope, danger level, why it is needed, what can go wrong, safeguards, rollback/recovery, and what the AI will do after approval. Core MCP never runs the action.
 - Prompt-improvement task: apply the prompt-improvement module, show the target behavior, before/after prompt, and examples/evaluation proving behavior changed.
 - Non-VNEM task: use VNEM only to improve the user's task contract; do not redirect the agent into improving VNEM itself.
 
@@ -518,6 +529,7 @@ The pack is guidance and search data. The default server does not run the tools 
 | `scripts/` | Validation, generation, curated knowledge upserts, discovery, digest, and install-pack tests. |
 | `scripts/lib/super-library.mjs` | Loader/search/recommend/review helpers for skill/API capability records. |
 | `scripts/lib/capability-modules.mjs` | Read-only capability-module selection, activation contracts, skill guidance, API plans, and composed task contracts. |
+| `scripts/lib/quality-contracts.mjs` | Read-only completion audits, protection reviews, missing-context detection, and research/UI/API/game/modding domain quality contracts. |
 | `scripts/lib/agent-profiles.mjs` | Loader and compact profile selection for one relevant AI/client. |
 | `public/api/index.json` | Static API generated from registry data. |
 | `public/install/*` | Hosted read-only install-pack files. |

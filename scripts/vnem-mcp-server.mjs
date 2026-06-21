@@ -17,6 +17,12 @@ import {
 } from "./lib/capability-modules.mjs";
 import { getAgentProfile, loadAgentProfiles } from "./lib/agent-profiles.mjs";
 import {
+  buildDomainQualityContracts,
+  completionAudit,
+  detectMissingContext,
+  protectionReview
+} from "./lib/quality-contracts.mjs";
+import {
   buildLibraryStatus,
   loadSuperLibrary,
   recommendApis,
@@ -81,6 +87,8 @@ const DEFAULT_MCP_TOOLS = [
   "vnem_build_api_integration_plan",
   "vnem_get_agent_profile",
   "vnem_compose_capability_contract",
+  "vnem_completion_audit",
+  "vnem_protection_review",
   "vnem_status",
   "vnem_overview",
   "vnem_route_intent",
@@ -471,6 +479,64 @@ function registerTools(mcpServer) {
     async (args) => {
       const result = composeCapabilityContract(superLibrary, agentProfiles, args);
       return toolResult(formatComposedContract(result), result);
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_completion_audit",
+    {
+      title: "Audit VNEM Completion Claim",
+      description:
+        "Read-only audit of an AI final answer/plan/work summary against the task and VNEM contract. Detects fake done claims, missing evidence, weak research, UI/API/modding gaps, and unsafe certainty.",
+      inputSchema: {
+        task: z.string().min(1),
+        agent_client: z.string().optional(),
+        model_family: z.string().optional(),
+        capability_contract: z.any().optional(),
+        activation_id: z.string().optional(),
+        claimed_result: z.string().min(1),
+        evidence: z.any().optional(),
+        changed_files: z.array(z.string()).default([]),
+        commands_run: z.array(z.string()).default([]),
+        sources_used: z.array(z.any()).default([]),
+        screenshots_or_visual_evidence: z.array(z.any()).default([]),
+        risk_tolerance: z.enum(["low", "normal", "high"]).default("normal"),
+        strictness: z.enum(["lenient", "normal", "strict"]).default("normal"),
+        task_domain: z.string().optional(),
+        token_budget: z.enum(["compact", "normal", "expanded"]).default("compact")
+      },
+      annotations: READ_ONLY
+    },
+    async (args) => {
+      const result = completionAudit(args);
+      return toolResult(formatCompletionAudit(result), result);
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_protection_review",
+    {
+      title: "Review VNEM Protection Risk",
+      description:
+        "Read-only preflight review for risky plans/actions: filesystem, terminal, browser, GitHub, package install, API, skill, MCP, research, UI, or game/modding. Core MCP reviews only and never performs the action.",
+      inputSchema: {
+        task: z.string().min(1),
+        plan_or_action: z.string().min(1),
+        target_type: z.enum(["general", "code_change", "api_integration", "skill_use", "mcp_server", "package_install", "filesystem_action", "terminal_command", "browser_automation", "github_action", "game_modding", "research_answer", "ui_change"]),
+        agent_client: z.string().optional(),
+        risk_tolerance: z.enum(["low", "normal", "high"]).default("low"),
+        available_tools: z.array(z.string()).default([]),
+        requires_secrets: z.boolean().default(false),
+        touches_user_files: z.boolean().default(false),
+        touches_network: z.boolean().default(false),
+        touches_auth: z.boolean().default(false),
+        token_budget: z.enum(["compact", "normal", "expanded"]).default("compact")
+      },
+      annotations: READ_ONLY
+    },
+    async (args) => {
+      const result = protectionReview(args);
+      return toolResult(formatProtectionReview(result), result);
     }
   );
 
@@ -1294,6 +1360,8 @@ function buildBootstrap(args = {}) {
     max_modules: 5,
     token_budget: "compact"
   });
+  const missingContext = detectMissingContext({ task, project_context: args.project_context || "", token_budget: "compact" });
+  const domainQualityContracts = buildDomainQualityContracts({ task, project_context: args.project_context || "", token_budget: "compact" });
   const activationId = createHash("sha256")
     .update(JSON.stringify({
       tool: "vnem_bootstrap",
@@ -1355,6 +1423,8 @@ function buildBootstrap(args = {}) {
     },
     required_rules: requiredRules,
     recommended_vnem_calls: recommendedCalls,
+    missing_context: missingContext,
+    domain_quality_contracts: domainQualityContracts,
     capability_slots: buildBootstrapCapabilitySlots(),
     protection_needs: protectionNeeds,
     verification_contract: verificationContract,
@@ -1531,6 +1601,16 @@ function buildBootstrapNextCalls(taskAnalysis, routeAvailable, registryMatchCoun
       tool: "vnem_quality_gate",
       arguments: { task: taskAnalysis.original_task },
       when: "Before implementation and before final response to catch silent trade-offs and evidence gaps."
+    },
+    {
+      tool: "vnem_protection_review",
+      arguments: { task: taskAnalysis.original_task, plan_or_action: "<proposed risky action or plan>", target_type: "general", token_budget: "compact" },
+      when: "Before risky actions such as filesystem, terminal, browser, GitHub, package install, skill use, MCP server, API integration, or game/modding changes."
+    },
+    {
+      tool: "vnem_completion_audit",
+      arguments: { task: taskAnalysis.original_task, claimed_result: "<final answer or work summary>", token_budget: "compact" },
+      when: "Before final response to audit claims, evidence, missing context, research quality, UI/API/modding proof, and anti-placebo completion."
     }
   ];
 
@@ -3079,8 +3159,29 @@ function formatComposedContract(contract) {
     `VNEM capability contract: ${contract.task_summary}`,
     `profile: ${contract.agent_profile_summary?.profile_id}`,
     `modules: ${(contract.required_capability_modules || []).map((module) => module.id).join(", ")}`,
+    `missing context: ${(contract.missing_context?.recommended_clarifying_questions || []).slice(0, 2).join("; ") || "none critical"}`,
+    `domain contracts: ${(contract.domain_quality_contracts || []).map((item) => item.id).join(", ")}`,
     `verification: ${(contract.verification || []).slice(0, 3).join("; ")}`,
     contract.self_focus_policy
+  ].join("\n");
+}
+
+function formatCompletionAudit(audit) {
+  return [
+    `VNEM completion audit: ${audit.verdict} (${audit.score}/100)`,
+    ...(audit.missing_evidence || []).slice(0, 3).map((item) => `missing evidence: ${item}`),
+    ...(audit.unverified_claims || []).slice(0, 2).map((item) => `unverified: ${item}`),
+    ...(audit.required_next_actions || []).slice(0, 4).map((item) => `next: ${item}`),
+    `anti-placebo: ${audit.anti_placebo_result}`
+  ].join("\n");
+}
+
+function formatProtectionReview(review) {
+  return [
+    `VNEM protection review: ${review.verdict} (${review.risk_level})`,
+    ...(review.risks || []).slice(0, 4).map((item) => `risk: ${item}`),
+    ...(review.required_safeguards || []).slice(0, 3).map((item) => `safeguard: ${item}`),
+    review.permission_prompt || "Core MCP reviews only; it does not perform the action."
   ].join("\n");
 }
 

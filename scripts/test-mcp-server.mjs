@@ -51,6 +51,8 @@ try {
     "vnem_build_api_integration_plan",
     "vnem_get_agent_profile",
     "vnem_compose_capability_contract",
+    "vnem_completion_audit",
+    "vnem_protection_review",
     "vnem_status",
     "vnem_overview",
     "vnem_route_intent",
@@ -236,6 +238,153 @@ try {
   assert.ok(JSON.stringify(composedContract.structuredContent).length < 12000, "compact composed contract should stay small");
   assert.notEqual(composedContract.structuredContent?.library_dump_count, 80, "contract must not dump all skills");
   assert.notEqual(composedContract.structuredContent?.api_dump_count, 700, "contract must not dump all APIs");
+
+  assert.ok(composedContract.structuredContent?.missing_context?.recommended_clarifying_questions?.length >= 0, "composed contract should include missing-context section");
+  assert.ok(composedContract.structuredContent?.domain_quality_contracts?.length > 0, "composed contract should include domain quality contracts");
+  assert.ok(composedContract.structuredContent?.completion_audit_expectations?.required_evidence?.length > 0, "composed contract should include audit expectations");
+  assert.ok(composedContract.structuredContent?.protection_review_triggers?.length > 0, "composed contract should include protection review triggers");
+
+  const uiAudit = await client.callTool({
+    name: "vnem_completion_audit",
+    arguments: {
+      task: "Improve a Next.js dashboard UI",
+      claimed_result: "Done, I polished the dashboard UI.",
+      evidence: ["npm test passed"],
+      commands_run: ["npm test"],
+      token_budget: "compact"
+    }
+  });
+  assert.equal(uiAudit.isError, undefined);
+  assert.ok(["revise", "insufficient_evidence"].includes(uiAudit.structuredContent?.verdict), "UI audit without visual evidence should request revision");
+  assert.ok(uiAudit.structuredContent?.ui_quality_findings?.some((item) => /visual|screenshot|UI/i.test(item)), "UI audit should require visual proof");
+  assert.ok(JSON.stringify(uiAudit.structuredContent).length < 9000, "completion audit compact output should stay small");
+
+  const backendAudit = await client.callTool({
+    name: "vnem_completion_audit",
+    arguments: {
+      task: "Build a usable web app feature with backend storage and UI",
+      claimed_result: "Implemented the backend database model and API route.",
+      evidence: ["backend tests passed"],
+      commands_run: ["npm test"],
+      changed_files: ["server/routes/items.js"],
+      token_budget: "compact"
+    }
+  });
+  assert.ok(["revise", "insufficient_evidence"].includes(backendAudit.structuredContent?.verdict), "backend feature with no UI exposure should request revision");
+  assert.ok(backendAudit.structuredContent?.ui_quality_findings?.some((item) => /UI|expose|route|button|form/i.test(item)), "backend audit should require UI exposure proof");
+
+  const apiAudit = await client.callTool({
+    name: "vnem_completion_audit",
+    arguments: {
+      task: "Add a weather API integration to a frontend app",
+      claimed_result: "Done, I call the weather API from the browser.",
+      evidence: ["component renders"],
+      sources_used: [],
+      token_budget: "compact"
+    }
+  });
+  assert.ok(["revise", "blocked", "insufficient_evidence"].includes(apiAudit.structuredContent?.verdict), "API audit without secret/CORS/backend handling should fail/revise");
+  assert.ok(apiAudit.structuredContent?.api_safety_findings?.some((item) => /CORS|secret|backend|key/i.test(item)), "API audit should catch secret/CORS/backend safety gaps");
+
+  const researchAudit = await client.callTool({
+    name: "vnem_completion_audit",
+    arguments: {
+      task: "Research the best current Elden Ring build",
+      claimed_result: "The best build is a bleed build, trust me.",
+      evidence: [],
+      sources_used: [],
+      token_budget: "compact"
+    }
+  });
+  assert.ok(["revise", "insufficient_evidence"].includes(researchAudit.structuredContent?.verdict), "research audit with no current sources should revise");
+  assert.ok(researchAudit.structuredContent?.research_quality_findings?.some((item) => /source|current|patch|fresh/i.test(item)), "research audit should require current/source-quality evidence");
+  assert.ok(researchAudit.structuredContent?.game_or_modding_findings?.some((item) => /PvE|PvP|DLC|progression|armor|skill/i.test(item)), "game build audit should flag missing PvE/PvP/DLC/progression context");
+
+  const moddingAudit = await client.callTool({
+    name: "vnem_completion_audit",
+    arguments: {
+      task: "Patch an Elden Ring modding workflow",
+      claimed_result: "Done, changed the mod files.",
+      evidence: ["edited files"],
+      token_budget: "compact"
+    }
+  });
+  assert.ok(["revise", "blocked", "insufficient_evidence"].includes(moddingAudit.structuredContent?.verdict), "modding audit without game/tool/file-format research should revise/block");
+  assert.ok(moddingAudit.structuredContent?.game_or_modding_findings?.some((item) => /file format|tool|backup|specific game|pipeline/i.test(item)), "modding audit should require game-specific research");
+
+  const goodAudit = await client.callTool({
+    name: "vnem_completion_audit",
+    arguments: {
+      task: "Fix a failing CLI test",
+      capability_contract: { required_capability_modules: [{ id: "module:workflow:systematic-debugging-proof" }] },
+      claimed_result: "Fixed the failing CLI test after reproducing the failure and rerunning the suite.",
+      evidence: ["Reproduced failure with npm run test:cli", "Fixed root cause", "npm run test:cli passed", "npm test passed"],
+      commands_run: ["npm run test:cli", "npm test"],
+      token_budget: "compact"
+    }
+  });
+  assert.ok(["pass", "revise"].includes(goodAudit.structuredContent?.verdict), "well-evidenced audit should not block");
+  assert.ok(goodAudit.structuredContent?.score >= 70, "well-evidenced audit should score high");
+
+  const terminalReview = await client.callTool({
+    name: "vnem_protection_review",
+    arguments: {
+      task: "Reproduce CI locally",
+      plan_or_action: "Run npm install inside C:/VNEM/vnem-src and then run tests",
+      target_type: "terminal_command",
+      touches_user_files: true,
+      touches_network: true,
+      risk_tolerance: "low",
+      token_budget: "compact"
+    }
+  });
+  assert.equal(terminalReview.isError, undefined);
+  assert.ok(["needs_user_approval", "revise", "block"].includes(terminalReview.structuredContent?.verdict), "risky terminal/package action should need review/approval");
+  assert.ok(/Permission requested:/i.test(terminalReview.structuredContent?.permission_prompt || ""), "permission prompt must be explicit");
+  assert.ok(/Danger level:/i.test(terminalReview.structuredContent?.permission_prompt || ""), "permission prompt must include risk level");
+  assert.ok(terminalReview.structuredContent?.permission_prompt?.includes("C:/VNEM/vnem-src"), "permission prompt must include scope");
+  assert.ok(terminalReview.structuredContent?.required_safeguards?.length > 0);
+  assert.ok(terminalReview.structuredContent?.rollback_or_recovery?.length > 0);
+  assert.ok(JSON.stringify(terminalReview.structuredContent).length < 7000, "protection review compact output should stay small");
+
+  const frontendKeyReview = await client.callTool({
+    name: "vnem_protection_review",
+    arguments: {
+      task: "Add a weather API integration",
+      plan_or_action: "Put the API key in NEXT_PUBLIC_WEATHER_KEY and call the provider directly from React",
+      target_type: "api_integration",
+      requires_secrets: true,
+      touches_network: true,
+      token_budget: "compact"
+    }
+  });
+  assert.ok(["revise", "block", "needs_user_approval"].includes(frontendKeyReview.structuredContent?.verdict));
+  assert.ok(frontendKeyReview.structuredContent?.risks?.some((item) => /frontend|API key|secret/i.test(item)), "API protection review should catch frontend key exposure");
+
+  const skillReview = await client.callTool({
+    name: "vnem_protection_review",
+    arguments: {
+      task: "Use an external AI skill",
+      plan_or_action: "Install and run a third-party SKILL.md script without reading it",
+      target_type: "skill_use",
+      touches_network: true,
+      token_budget: "compact"
+    }
+  });
+  assert.ok(["revise", "block", "needs_user_approval"].includes(skillReview.structuredContent?.verdict));
+  assert.ok(skillReview.structuredContent?.risks?.some((item) => /prompt-injection|manual review|skill/i.test(item)), "skill protection review should catch prompt-injection/manual-review risk");
+
+  const gameContract = await client.callTool({
+    name: "vnem_compose_capability_contract",
+    arguments: { task: "Research and give me a really good Elden Ring build", agent_client: "codex", token_budget: "compact", max_modules: 5 }
+  });
+  assert.ok(gameContract.structuredContent?.missing_context?.recommended_clarifying_questions?.some((q) => /PvE|PvP/i.test(q)), "Elden Ring contract should ask PvE/PvP");
+  assert.ok(gameContract.structuredContent?.missing_context?.recommended_clarifying_questions?.some((q) => /DLC|Shadow/i.test(q)), "Elden Ring contract should ask DLC ownership");
+  assert.ok(gameContract.structuredContent?.missing_context?.recommended_clarifying_questions?.some((q) => /progression|Rune level/i.test(q)), "Elden Ring contract should ask progression/rune level");
+  assert.ok(gameContract.structuredContent?.missing_context?.recommended_clarifying_questions?.some((q) => /armor/i.test(q)), "Elden Ring contract should ask armor relevance");
+  assert.ok(gameContract.structuredContent?.missing_context?.recommended_clarifying_questions?.some((q) => /skill|beginner/i.test(q)), "Elden Ring contract should ask skill level");
+  assert.ok(gameContract.structuredContent?.domain_quality_contracts?.some((contract) => /game|build/i.test(`${contract.id} ${contract.name}`)), "game contract should include game/build research quality");
+  assert.ok(gameContract.structuredContent?.self_focus_policy?.includes("not improve VNEM"));
 
   const limitedSkillSearch = await client.callTool({
     name: "vnem_search_skills",

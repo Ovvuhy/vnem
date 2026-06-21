@@ -1,6 +1,6 @@
 # vnem Orchestration Protocol
 
-Generated: 2026-06-21T19:18:58.554Z
+Generated: 2026-06-21T23:20:00.150Z
 
 A deterministic, model-agnostic routing and multi-agent coordination protocol for choosing Single Agent, Orchestrator-Worker, Split-and-Merge, and Generator/Evaluator reflection patterns before complex work consumes context.
 
