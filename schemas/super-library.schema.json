@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "VNEM Super MCP Capability Library",
+  "type": "object",
+  "required": ["schema_version", "generated_at", "sources", "skills", "apis"],
+  "properties": {
+    "schema_version": { "type": "string" },
+    "generated_at": { "type": "string" },
+    "sources": { "type": "array", "items": { "type": "object" } },
+    "limitations": { "type": "array", "items": { "type": "string" } },
+    "skills": { "type": "array", "items": { "$ref": "#/$defs/skill" } },
+    "apis": { "type": "array", "items": { "$ref": "#/$defs/api" } }
+  },
+  "$defs": {
+    "stringArray": { "type": "array", "items": { "type": "string" } },
+    "skill": {
+      "type": "object",
+      "required": ["id", "name", "source", "source_url", "imported_from", "description", "task_types", "supported_agents", "risk_flags", "review_status", "trust_level", "last_checked"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^skill:" },
+        "name": { "type": "string" },
+        "source": { "type": "string" },
+        "source_url": { "type": "string" },
+        "repository_url": { "type": "string" },
+        "imported_from": { "type": "string" },
+        "description": { "type": "string" },
+        "categories": { "$ref": "#/$defs/stringArray" },
+        "task_types": { "$ref": "#/$defs/stringArray" },
+        "supported_agents": { "$ref": "#/$defs/stringArray" },
+        "install_method": { "type": "string" },
+        "install_command": { "type": "string" },
+        "files_added": { "$ref": "#/$defs/stringArray" },
+        "activation_instructions": { "$ref": "#/$defs/stringArray" },
+        "when_to_use": { "$ref": "#/$defs/stringArray" },
+        "when_not_to_use": { "$ref": "#/$defs/stringArray" },
+        "example_queries": { "$ref": "#/$defs/stringArray" },
+        "compatible_with": { "$ref": "#/$defs/stringArray" },
+        "avoid_with": { "$ref": "#/$defs/stringArray" },
+        "recommended_combinations": { "$ref": "#/$defs/stringArray" },
+        "related_skills": { "$ref": "#/$defs/stringArray" },
+        "vnem_usage_notes": { "$ref": "#/$defs/stringArray" },
+        "trust_level": { "enum": ["official", "community", "unknown", "risky"] },
+        "review_status": { "enum": ["metadata_only", "needs_review", "reviewed", "blocked"] },
+        "audit_status": { "enum": ["unknown", "listed_audit", "no_audit_found"] },
+        "risk_flags": { "$ref": "#/$defs/stringArray" },
+        "manual_review_required": { "type": "boolean" },
+        "last_checked": { "type": "string" }
+      }
+    },
+    "api": {
+      "type": "object",
+      "required": ["id", "name", "source", "source_url", "imported_from", "category", "description", "auth_type", "https", "cors", "frontend_safe", "backend_required", "secret_risk", "risk_flags", "review_status", "trust_level", "last_checked"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^api:" },
+        "name": { "type": "string" },
+        "source": { "type": "string" },
+        "source_url": { "type": "string" },
+        "imported_from": { "type": "string" },
+        "category": { "type": "string" },
+        "description": { "type": "string" },
+        "auth_type": { "enum": ["none", "apiKey", "OAuth", "unknown"] },
+        "https": { "enum": ["yes", "no", "unknown"] },
+        "cors": { "enum": ["yes", "no", "unknown"] },
+        "frontend_safe": { "type": "boolean" },
+        "backend_required": { "type": "boolean" },
+        "secret_risk": { "type": "boolean" },
+        "rate_limit_notes": { "type": "string" },
+        "integration_notes": { "$ref": "#/$defs/stringArray" },
+        "example_use_cases": { "$ref": "#/$defs/stringArray" },
+        "task_types": { "$ref": "#/$defs/stringArray" },
+        "compatible_with": { "$ref": "#/$defs/stringArray" },
+        "avoid_with": { "$ref": "#/$defs/stringArray" },
+        "recommended_stack_usage": { "type": "string" },
+        "vnem_usage_notes": { "$ref": "#/$defs/stringArray" },
+        "trust_level": { "enum": ["official", "community", "unknown", "risky"] },
+        "review_status": { "enum": ["metadata_only", "needs_review", "reviewed", "blocked"] },
+        "risk_flags": { "$ref": "#/$defs/stringArray" },
+        "manual_review_required": { "type": "boolean" },
+        "last_checked": { "type": "string" }
+      }
+    }
+  }
+}

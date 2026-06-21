@@ -38,6 +38,13 @@ try {
   const tools = await client.listTools();
   const toolNames = new Set(tools.tools.map((tool) => tool.name));
   for (const name of [
+    "vnem_bootstrap",
+    "vnem_library_status",
+    "vnem_search_skills",
+    "vnem_recommend_skills",
+    "vnem_search_apis",
+    "vnem_recommend_apis",
+    "vnem_review_skill_or_api",
     "vnem_status",
     "vnem_overview",
     "vnem_route_intent",
@@ -63,6 +70,161 @@ try {
     assert.equal(tool.annotations?.destructiveHint, false, `expected ${tool.name} to be annotated non-destructive`);
   }
 
+  const libraryStatus = await client.callTool({
+    name: "vnem_library_status",
+    arguments: {}
+  });
+  assert.equal(libraryStatus.isError, undefined);
+  assert.ok(libraryStatus.structuredContent?.skills?.count >= 30, "expected nonzero skill capability count");
+  assert.ok(libraryStatus.structuredContent?.apis?.count >= 100, "expected nonzero API capability count");
+  assert.equal(libraryStatus.structuredContent?.safety_boundaries?.installs_skills, false);
+  assert.equal(libraryStatus.structuredContent?.safety_boundaries?.calls_apis, false);
+  assert.equal(libraryStatus.structuredContent?.records_are_vnem_normalized, true);
+
+  const skillSearch = await client.callTool({
+    name: "vnem_search_skills",
+    arguments: { query: "react next", agent_client: "codex", limit: 8 }
+  });
+  assert.equal(skillSearch.isError, undefined);
+  assert.ok(skillSearch.structuredContent?.matches?.length > 0, "expected skill search matches");
+  assert.ok(skillSearch.structuredContent.matches.some((match) => /react|next/i.test(`${match.name} ${match.description} ${match.task_types?.join(" ")}`)), "expected React/Next skill match");
+  assert.ok(skillSearch.structuredContent.matches.every((match) => match.source && match.source_url && match.imported_from), "skill matches need provenance");
+  assert.ok(skillSearch.structuredContent.matches.every((match) => Array.isArray(match.compatible_with) && Array.isArray(match.avoid_with)), "skill matches need compatibility fields");
+  assert.ok(skillSearch.structuredContent.warning.includes("review"));
+
+  const skillRecommendation = await client.callTool({
+    name: "vnem_recommend_skills",
+    arguments: { task: "Improve a Next.js website UI", agent_client: "codex", risk_tolerance: "low", limit: 6 }
+  });
+  assert.equal(skillRecommendation.isError, undefined);
+  assert.ok(skillRecommendation.structuredContent?.recommendations?.length > 0, "expected skill recommendations");
+  assert.ok(skillRecommendation.structuredContent.recommendations.some((item) => item.task_types.includes("frontend_ui") || item.task_types.includes("website_ui")), "expected UI/frontend skill recommendation");
+  assert.ok(skillRecommendation.structuredContent.recommendations.every((item) => item.when_to_use?.length && item.when_not_to_use?.length), "skill recommendations need use/avoid guidance");
+  assert.ok(skillRecommendation.structuredContent.recommendations.every((item) => item.manual_review_required === true), "skill recommendations should require review before install/use");
+  assert.ok(skillRecommendation.structuredContent.recommendations.every((item) => item.risk_flags?.includes("prompt_injection_surface")), "external skills should be prompt-injection surfaces");
+  assert.ok(skillRecommendation.structuredContent.warning.includes("Do not install"));
+
+  const apiSearch = await client.callTool({
+    name: "vnem_search_apis",
+    arguments: { query: "weather", require_https: true, limit: 8 }
+  });
+  assert.equal(apiSearch.isError, undefined);
+  assert.ok(apiSearch.structuredContent?.matches?.length > 0, "expected API search matches");
+  assert.ok(apiSearch.structuredContent.matches.some((match) => /weather/i.test(`${match.name} ${match.category} ${match.description}`)), "expected weather API match");
+  assert.ok(apiSearch.structuredContent.matches.every((match) => match.auth_type && match.https && match.cors && match.source_url && match.imported_from), "API matches need auth/HTTPS/CORS/provenance");
+
+  const apiRecommendation = await client.callTool({
+    name: "vnem_recommend_apis",
+    arguments: { task: "Add a weather API integration", app_type: "frontend", frontend_only: true, allow_api_keys: false, allow_oauth: false, risk_tolerance: "low", limit: 8 }
+  });
+  assert.equal(apiRecommendation.isError, undefined);
+  assert.ok(apiRecommendation.structuredContent?.recommendations?.length > 0, "expected API recommendations");
+  assert.ok(apiRecommendation.structuredContent.recommendations.every((item) => item.frontend_safe !== true || item.secret_risk === false), "frontend-safe API recommendations must not have secret risk");
+  assert.ok(apiRecommendation.structuredContent.recommendations.every((item) => !(item.secret_risk && item.frontend_safety_decision === "frontend_safe")), "secret-bearing APIs cannot be marked frontend-safe");
+  assert.ok(apiRecommendation.structuredContent.recommendations.some((item) => item.risk_flags.includes("cors_unknown") || item.risk_flags.includes("cors_no") || item.risk_flags.includes("https_no") || item.frontend_safe === true), "expected CORS/HTTPS risk flag or safe browser candidate");
+  assert.ok(apiRecommendation.structuredContent.warning.includes("Do not expose API keys in frontend code"));
+
+  const financeApis = await client.callTool({
+    name: "vnem_search_apis",
+    arguments: { query: "finance", include_secret_risk: true, require_https: false, limit: 12 }
+  });
+  assert.equal(financeApis.isError, undefined);
+  assert.ok(financeApis.structuredContent.matches.some((match) => /finance|currency|exchange/i.test(`${match.name} ${match.category} ${match.description}`)), "expected finance/currency API match");
+  assert.ok(financeApis.structuredContent.matches.some((match) => match.risk_flags.includes("cors_unknown") || match.risk_flags.includes("cors_no") || match.risk_flags.includes("https_no") || match.risk_flags.includes("api_key_required") || match.risk_flags.includes("oauth_required")), "expected API risk flags");
+
+  const reviewedApi = await client.callTool({
+    name: "vnem_review_skill_or_api",
+    arguments: { id: apiRecommendation.structuredContent.recommendations[0].id, kind: "api", task: "Add a weather API integration", frontend_only: true, risk_tolerance: "low" }
+  });
+  assert.equal(reviewedApi.isError, undefined);
+  assert.ok(["allow_metadata_reference", "needs_review", "avoid", "unknown"].includes(reviewedApi.structuredContent?.verdict));
+  assert.ok(reviewedApi.structuredContent?.reasons?.length > 0);
+  assert.ok(reviewedApi.structuredContent?.next_safety_checks?.length > 0);
+
+  const reviewedSkill = await client.callTool({
+    name: "vnem_review_skill_or_api",
+    arguments: { id: skillRecommendation.structuredContent.recommendations[0].id, kind: "skill", task: "Improve a Next.js website UI", risk_tolerance: "low" }
+  });
+  assert.equal(reviewedSkill.isError, undefined);
+  assert.ok(reviewedSkill.structuredContent?.risk_flags?.includes("prompt_injection_surface"));
+  assert.ok(reviewedSkill.structuredContent?.next_safety_checks?.some((item) => item.includes("SKILL.md")));
+
+  const habitBootstrap = await client.callTool({
+    name: "vnem_bootstrap",
+    arguments: {
+      task: "Build a private habit tracker app",
+      agent_client: "codex",
+      project_context: "New private/internal web app with user data.",
+      available_tools: ["terminal", "browser"],
+      risk_tolerance: "low",
+      desired_output: "working private app",
+      include_resources: true,
+      include_next_calls: true
+    }
+  });
+  assert.equal(habitBootstrap.isError, undefined);
+  assert.equal(habitBootstrap.structuredContent?.activation?.status, "active");
+  assert.equal(habitBootstrap.structuredContent?.activation?.tool, "vnem_bootstrap");
+  assert.equal(habitBootstrap.structuredContent?.activation?.read_only, true);
+  assert.equal(habitBootstrap.structuredContent?.activation?.precision_tools_exposed, false);
+  assert.ok(habitBootstrap.structuredContent?.activation?.activation_id, "expected activation proof token");
+  assert.equal(habitBootstrap.structuredContent?.activation?.vnem_version, packageJson.version);
+  assert.ok(habitBootstrap.structuredContent?.repo_or_core_status?.registry_entry_count >= 200);
+  assert.ok(habitBootstrap.structuredContent?.repo_or_core_status?.available_mcp_tool_count >= 13);
+  assert.equal(habitBootstrap.structuredContent?.capability_slots?.mcp_registry_available, true);
+  assert.equal(habitBootstrap.structuredContent?.capability_slots?.skill_recommendations_available, true);
+  assert.equal(habitBootstrap.structuredContent?.capability_slots?.api_registry_available, true);
+  assert.ok(habitBootstrap.structuredContent?.capability_slots?.skill_entry_count >= 30);
+  assert.ok(habitBootstrap.structuredContent?.capability_slots?.api_entry_count >= 100);
+  assert.ok(habitBootstrap.structuredContent?.recommended_vnem_calls?.some((call) => call.tool === "vnem_library_status"));
+  assert.ok(habitBootstrap.structuredContent?.capability_slots?.future_skill_fields_reserved?.includes("supported_agents"));
+  assert.ok(habitBootstrap.structuredContent?.capability_slots?.future_api_fields_reserved?.includes("auth_type"));
+  assert.ok(habitBootstrap.structuredContent?.task_analysis?.primary_task_type?.includes("app"));
+  assert.ok(habitBootstrap.structuredContent?.task_analysis?.secondary_task_types?.includes("private_internal_tool"));
+  assert.ok(habitBootstrap.structuredContent?.protection_needs?.human_approval_requirements?.length > 0);
+  assert.ok(habitBootstrap.structuredContent?.verification_contract?.evidence_required?.length > 0);
+  assert.ok(habitBootstrap.structuredContent?.completion_audit_expectations?.commands_run);
+  assert.ok(habitBootstrap.structuredContent?.anti_placebo_checks?.how_this_task_could_be_faked?.length > 0);
+  assert.ok(habitBootstrap.structuredContent?.recommended_vnem_calls?.some((call) => call.tool === "vnem_route_intent"));
+  assert.ok(habitBootstrap.structuredContent?.recommended_vnem_calls?.some((call) => call.tool === "vnem_quality_gate"));
+  assert.ok(habitBootstrap.structuredContent?.required_rules?.some((rule) => rule.resource_uri === "vnem://install/operating-protocol"));
+  assert.ok(habitBootstrap.structuredContent?.required_rules?.some((rule) => rule.resource_uri === "vnem://install/quality-contract"));
+
+  const uiBootstrap = await bootstrap("Improve a Next.js website UI");
+  assert.equal(uiBootstrap.task_analysis.primary_task_type, "website_ui");
+  assert.ok(uiBootstrap.task_analysis.secondary_task_types.includes("frontend_ui"));
+  assert.ok(uiBootstrap.recommended_vnem_calls.some((call) => call.tool === "vnem_recommend_skills"));
+  assert.ok(uiBootstrap.recommended_vnem_calls.some((call) => call.tool === "vnem_search_skills"));
+  assert.equal(uiBootstrap.verification_contract.ui_visual_evidence_required, true);
+  assert.ok(uiBootstrap.verification_contract.evidence_required.some((item) => item.includes("desktop")));
+  assert.equal(uiBootstrap.protection_needs.modding_compatibility_required, false);
+
+  const apiBootstrap = await bootstrap("Add a weather API integration");
+  assert.equal(apiBootstrap.task_analysis.primary_task_type, "api_integration");
+  assert.equal(apiBootstrap.capability_slots.api_registry_available, true);
+  assert.ok(apiBootstrap.recommended_vnem_calls.some((call) => call.tool === "vnem_recommend_apis"));
+  assert.ok(apiBootstrap.recommended_vnem_calls.some((call) => call.tool === "vnem_search_apis"));
+  assert.ok(apiBootstrap.recommended_vnem_calls.some((call) => call.tool === "vnem_review_skill_or_api"));
+  assert.ok(apiBootstrap.protection_needs.secret_api_key_risk);
+  assert.ok(apiBootstrap.protection_needs.frontend_backend_safety_warnings.some((warning) => warning.includes("Do not expose API keys in frontend code")));
+  assert.ok(apiBootstrap.protection_needs.api_safety_warnings.some((warning) => warning.includes("CORS")));
+
+  const debugBootstrap = await bootstrap("Debug a broken project");
+  assert.equal(debugBootstrap.task_analysis.primary_task_type, "debugging");
+  assert.ok(debugBootstrap.verification_contract.evidence_required.some((item) => item.includes("reproduce")));
+  assert.ok(debugBootstrap.anti_placebo_checks.claims_not_to_make_without_proof.some((claim) => claim.includes("root cause")));
+
+  const moddingBootstrap = await bootstrap("Improve an Elden Ring modding workflow");
+  assert.equal(moddingBootstrap.task_analysis.primary_task_type, "game_modding_workflow");
+  assert.equal(moddingBootstrap.protection_needs.modding_compatibility_required, true);
+  assert.ok(moddingBootstrap.protection_needs.modding_safety_warnings.some((warning) => warning.includes("backup")));
+  assert.ok(moddingBootstrap.verification_contract.evidence_required.some((item) => item.includes("local game/modding test")));
+
+  const promptBootstrap = await bootstrap("Improve a prompt for a coding AI");
+  assert.equal(promptBootstrap.task_analysis.primary_task_type, "prompt_improvement");
+  assert.ok(promptBootstrap.verification_contract.evidence_required.some((item) => item.includes("before/after prompt")));
+  assert.ok(promptBootstrap.protection_needs.human_approval_requirements.some((item) => item.includes("Do not edit code")));
+
   const status = await client.callTool({
     name: "vnem_status",
     arguments: {}
@@ -70,6 +232,7 @@ try {
   assert.equal(status.isError, undefined);
   assert.equal(status.structuredContent?.safety?.installs_packages, false);
   assert.ok(status.structuredContent?.counts?.registry_entries >= 200, "expected vnem_status registry count");
+  assert.ok(status.structuredContent?.mcp?.tools?.includes("vnem_bootstrap"), "expected vnem_status to list bootstrap tool");
   assert.ok(status.structuredContent?.mcp?.tools?.includes("vnem_route_intent"), "expected vnem_status to list route tool");
   assert.ok(status.structuredContent?.mcp?.tools?.includes("vnem_quality_gate"), "expected vnem_status to list quality gate tool");
   assert.ok(status.structuredContent?.mcp?.tools?.includes("vnem_orchestrate"), "expected vnem_status to list orchestration tool");
@@ -507,7 +670,7 @@ try {
   });
   assert.ok(installGuide.contents[0]?.text?.includes("vnem Install And MCP Guide"));
   assert.ok(installGuide.contents[0]?.text?.includes("mcp-config"));
-  assert.ok(installGuide.contents[0]?.text?.includes("vnem_status"));
+  assert.ok(installGuide.contents[0]?.text?.includes("vnem_bootstrap"));
 
   const qualityContract = await client.readResource({
     uri: "vnem://install/quality-contract"
@@ -617,4 +780,25 @@ try {
   throw error;
 } finally {
   await client.close().catch(() => {});
+}
+
+async function bootstrap(task, extra = {}) {
+  const result = await client.callTool({
+    name: "vnem_bootstrap",
+    arguments: {
+      task,
+      include_resources: true,
+      include_next_calls: true,
+      ...extra
+    }
+  });
+  assert.equal(result.isError, undefined, `expected vnem_bootstrap for ${task} to succeed`);
+  assert.equal(result.structuredContent?.activation?.read_only, true, `expected bootstrap for ${task} to stay read-only`);
+  assert.equal(result.structuredContent?.activation?.precision_tools_exposed, false, `expected bootstrap for ${task} to keep precision tools separate`);
+  assert.ok(result.structuredContent?.required_rules?.length > 0, `expected bootstrap for ${task} to include required rules`);
+  assert.ok(result.structuredContent?.recommended_vnem_calls?.length > 0, `expected bootstrap for ${task} to include next calls`);
+  assert.ok(result.structuredContent?.verification_contract?.evidence_required?.length > 0, `expected bootstrap for ${task} to include verification evidence`);
+  assert.ok(result.structuredContent?.completion_audit_expectations?.mcp_tools_used, `expected bootstrap for ${task} to include completion audit expectations`);
+  assert.ok(result.structuredContent?.anti_placebo_checks?.evidence_that_proves_not_fake?.length > 0, `expected bootstrap for ${task} to include anti-placebo proof`);
+  return result.structuredContent;
 }

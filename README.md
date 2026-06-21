@@ -328,6 +328,7 @@ For Claude Code, the server-object form from `node scripts/vnem-cli.mjs mcp-conf
 
 Main tools:
 
+- `vnem_bootstrap`: activate VNEM for a specific task. It returns structured `activation`, `repo_or_core_status`, `task_analysis`, `required_rules`, `recommended_vnem_calls`, `capability_slots`, `protection_needs`, `verification_contract`, `completion_audit_expectations`, and `anti_placebo_checks`. It is read-only and does not expose precision/mutation tools.
 - `vnem_status`: show loaded data paths, generated timestamps, counts, MCP tools/resources/prompts, and read-only safety posture.
 - `vnem_overview`: explain the usable vnem surfaces for newcomers, maintainers, or agents.
 - `vnem_route_intent`: resolve a task or phrase into intent routing, read-first guidance, comparison options, rubrics, approval gates, and verification criteria.
@@ -378,7 +379,84 @@ Main resources:
 - `vnem://repo/contributing`
 - `vnem://entries/{slug}`
 
-The quickest way to understand a running vnem MCP server is to call `vnem_status`, then `vnem_overview`, then `vnem_route_intent` for the task you care about.
+The quickest way to activate VNEM in a running MCP client is:
+
+1. Call `vnem_bootstrap` with the real user task, optional `agent_client`, optional `project_context`, optional `available_tools`, optional `risk_tolerance`, optional `desired_output`, and `include_resources` / `include_next_calls` booleans.
+2. Call the returned `recommended_vnem_calls`, usually `vnem_route_intent`, `vnem_recommend`, `vnem_quality_gate`, `vnem_orchestrate`, `vnem_search`, `vnem_best_practices`, or `vnem_sources` depending on the task.
+3. Use the returned `required_rules` / `vnem://...` resources as the task's read-first contract.
+4. Run the returned verification contract before claiming success.
+5. In the final report, include the `activation_id`, MCP tools used, rules used, changed files, commands/checks run, skipped checks, remaining risks, and evidence.
+
+Example `vnem_bootstrap` arguments:
+
+```json
+{
+  "task": "Add a weather API integration",
+  "agent_client": "codex",
+  "project_context": "Existing Next.js app",
+  "available_tools": ["terminal", "browser"],
+  "risk_tolerance": "low",
+  "desired_output": "secret-safe working integration",
+  "include_resources": true,
+  "include_next_calls": true
+}
+```
+
+Example output shape, shortened:
+
+```json
+{
+  "activation": { "status": "active", "tool": "vnem_bootstrap", "read_only": true, "precision_tools_exposed": false },
+  "task_analysis": { "primary_task_type": "api_integration", "risk_level": "elevated" },
+  "required_rules": [{ "resource_uri": "vnem://install/quality-contract", "priority": "mandatory" }],
+  "recommended_vnem_calls": [{ "tool": "vnem_route_intent" }, { "tool": "vnem_quality_gate" }],
+  "capability_slots": { "mcp_registry_available": true, "skill_recommendations_available": true, "api_registry_available": true },
+  "protection_needs": { "secret_api_key_risk": true },
+  "verification_contract": { "do_not_claim_done_without_evidence": true },
+  "completion_audit_expectations": { "changed_files": "List all changed files..." },
+  "anti_placebo_checks": { "evidence_that_proves_not_fake": ["..."] }
+}
+```
+
+Current limits: `vnem_bootstrap` now reports the Super MCP capability library when `capabilities/super-library.json` is present. It can recommend read-only skill/API library calls, but VNEM is still not a standalone trained AI model. The default MCP server remains read-only; precision tools remain in `scripts/vnem-precision-mcp-server.mjs` only.
+
+## Super MCP capability library
+
+VNEM now includes a first Super MCP library foundation in `capabilities/super-library.json`. It is a VNEM-normalized capability registry, not a raw list and not an execution layer.
+
+The current library contains:
+
+- AI-agent skill/capability-pack records imported from `https://www.skills.sh/` and cross-referenced with `https://github.com/vercel-labs/agent-skills` where available.
+- Public API/integration records imported from `https://raw.githubusercontent.com/public-apis/public-apis/master/README.md`.
+- Safety and compatibility enrichment fields such as task types, supported-agent status, install/use notes, activation instructions, when-to-use / when-not-to-use guidance, compatible/avoid/recommended-combination fields, trust level, review status, audit status, frontend/backend API safety, secret risk, CORS/HTTPS risk, and manual-review requirements.
+
+Read-only MCP tools:
+
+- `vnem_library_status`: report skill/API counts, sources, schema version, generated timestamp, limitations, and no-install/no-runtime-call boundaries.
+- `vnem_search_skills`: search skill capability records by query, task type, agent client, category, trust level, and risk filter.
+- `vnem_recommend_skills`: recommend skills for a user task with why-it-applies, compatibility, avoid-with, review, and risk guidance.
+- `vnem_search_apis`: search API records by query/category/auth/HTTPS/CORS/frontend constraints.
+- `vnem_recommend_apis`: recommend APIs for a task with auth, HTTPS, CORS, frontend/backend safety decision, secret/API-key warning, integration pattern, provenance, and manual-review warning.
+- `vnem_review_skill_or_api`: review one skill/API record by id and return a metadata-reference verdict, risk flags, missing fields, compatibility notes, and next safety checks.
+
+Safety boundary:
+
+- Skills are not installed automatically.
+- Skill scripts are not executed.
+- APIs are not called automatically.
+- API keys are not requested, stored, or exposed.
+- Do not expose API keys in frontend code.
+- Entries are provenance/enrichment records, not guarantees of safety or freshness.
+- Community skills and public API rows require manual source review before use.
+
+Recommended agent flow:
+
+1. Call `vnem_bootstrap`.
+2. Use returned required rules/resources.
+3. For capability needs, call `vnem_library_status`, `vnem_recommend_skills`, `vnem_recommend_apis`, and `vnem_review_skill_or_api` as relevant.
+4. Do not install skills or call APIs blindly.
+5. Run `vnem_quality_gate` and task-specific verification.
+6. Report evidence, skipped checks, and remaining risk.
 
 You can also install the bundled Codex skill from this checkout:
 

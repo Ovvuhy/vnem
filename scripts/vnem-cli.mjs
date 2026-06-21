@@ -102,6 +102,7 @@ async function installCommand(rawArgs) {
 async function doctorCommand(rawArgs) {
   const targetDir = path.resolve(firstPositional(rawArgs) || process.cwd());
   const checks = [];
+  const sourceRepoMode = await isVnemSourceRepo(targetDir);
 
   for (const fileName of packFiles) {
     const filePath = path.join(targetDir, ".vnem", fileName);
@@ -112,8 +113,8 @@ async function doctorCommand(rawArgs) {
   }
 
   checks.push({
-    label: "AGENTS.md vnem pointer",
-    ok: await fileContains(path.join(targetDir, "AGENTS.md"), blockStart)
+    label: sourceRepoMode ? "AGENTS.md VNEM source repo rules" : "AGENTS.md vnem pointer",
+    ok: sourceRepoMode || await fileContains(path.join(targetDir, "AGENTS.md"), blockStart)
   });
 
   const jsonChecks = packFiles
@@ -128,6 +129,9 @@ async function doctorCommand(rawArgs) {
 
   for (const check of checks) {
     console.log(`${check.ok ? "ok" : "missing"} ${check.label}`);
+  }
+  if (sourceRepoMode) {
+    console.log("ok VNEM source repo detected; managed install pointer not required");
   }
 
   if (checks.some((check) => !check.ok)) {
@@ -228,6 +232,21 @@ async function parsesJson(filePath) {
   } catch {
     return false;
   }
+}
+
+async function isVnemSourceRepo(targetDir) {
+  if (path.resolve(targetDir) !== rootDir) {
+    return false;
+  }
+  if (!existsSync(path.join(targetDir, "package.json")) || !existsSync(path.join(targetDir, "scripts", "vnem-cli.mjs"))) {
+    return false;
+  }
+  const agentsPath = path.join(targetDir, "AGENTS.md");
+  if (!existsSync(agentsPath)) {
+    return false;
+  }
+  const agents = await readFile(agentsPath, "utf8");
+  return agents.includes("VNEM Agent Operating Rules") && agents.includes("Product Mission vs Repo Context");
 }
 
 function defaultSkillInstallPath() {

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import assert from "node:assert/strict";
 import { existsSync } from "node:fs";
-import { mkdir, mkdtemp, readFile, rm } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
@@ -61,6 +61,17 @@ try {
 
   runCli(["doctor", projectDir]);
 
+  const sourceDoctor = runCli(["doctor", rootDir]);
+  assert.ok(sourceDoctor.stdout.includes("VNEM source repo detected"), "source repo doctor should explain source-repo mode");
+  assert.ok(sourceDoctor.stdout.includes("managed install pointer not required"), "source repo doctor should not require managed pointer");
+
+  const brokenDir = path.join(tmpRoot, "broken-project");
+  await mkdir(brokenDir, { recursive: true });
+  await writeFile(path.join(brokenDir, "AGENTS.md"), "# Broken project\n", "utf8");
+  const brokenDoctor = runCliFailure(["doctor", brokenDir]);
+  assert.ok(brokenDoctor.stdout.includes("missing .vnem/AGENTS.md"), "broken install should still report missing pack files");
+  assert.ok(brokenDoctor.stderr.includes("vnem is not fully installed"), "broken install should still fail doctor");
+
   const noAgentsDir = path.join(tmpRoot, "no-agents-project");
   runCli(["install", noAgentsDir, "--no-agents"]);
   assert.equal(existsSync(path.join(noAgentsDir, ".vnem", "AGENTS.md")), true);
@@ -109,5 +120,14 @@ function runCli(args) {
     console.error(result.stderr);
   }
   assert.equal(result.status, 0, `vnem ${args.join(" ")} should succeed`);
+  return result;
+}
+
+function runCliFailure(args) {
+  const result = spawnSync(process.execPath, [cliPath, ...args], {
+    cwd: rootDir,
+    encoding: "utf8"
+  });
+  assert.notEqual(result.status, 0, `vnem ${args.join(" ")} should fail`);
   return result;
 }
