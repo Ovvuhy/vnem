@@ -280,6 +280,10 @@ try {
   assert.ok(habitBootstrap.structuredContent?.capability_slots?.api_entry_count >= 100);
   assert.ok(habitBootstrap.structuredContent?.recommended_vnem_calls?.some((call) => call.tool === "vnem_library_status"));
   assert.ok(habitBootstrap.structuredContent?.recommended_vnem_calls?.some((call) => call.tool === "vnem_compose_capability_contract"), "bootstrap should recommend composing a compact capability contract");
+  assert.ok(habitBootstrap.structuredContent?.compact_startup_contract?.required_capability_module_count > 0, "bootstrap should include a compact startup capability count");
+  assert.ok(JSON.stringify(habitBootstrap.structuredContent).length < 25000, "bootstrap output should stay compact enough for normal task startup");
+  assert.notEqual(habitBootstrap.structuredContent?.compact_startup_contract?.required_capability_module_count, 80, "bootstrap must not dump all skills as required modules");
+  assert.notEqual(habitBootstrap.structuredContent?.compact_startup_contract?.required_capability_module_count, 700, "bootstrap must not dump all APIs as required modules");
   assert.ok(habitBootstrap.structuredContent?.capability_slots?.future_skill_fields_reserved?.includes("supported_agents"));
   assert.ok(habitBootstrap.structuredContent?.capability_slots?.future_api_fields_reserved?.includes("auth_type"));
   assert.ok(habitBootstrap.structuredContent?.task_analysis?.primary_task_type?.includes("app"));
