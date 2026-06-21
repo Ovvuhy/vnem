@@ -409,7 +409,8 @@ Example output shape, shortened:
   "activation": { "status": "active", "tool": "vnem_bootstrap", "read_only": true, "precision_tools_exposed": false },
   "task_analysis": { "primary_task_type": "api_integration", "risk_level": "elevated" },
   "required_rules": [{ "resource_uri": "vnem://install/quality-contract", "priority": "mandatory" }],
-  "recommended_vnem_calls": [{ "tool": "vnem_route_intent" }, { "tool": "vnem_quality_gate" }],
+  "compact_startup_contract": { "token_budget": "compact", "required_capability_ids": ["module:workflow:api-safety-integration"] },
+  "recommended_vnem_calls": [{ "tool": "vnem_compose_capability_contract" }, { "tool": "vnem_route_intent" }, { "tool": "vnem_quality_gate" }],
   "capability_slots": { "mcp_registry_available": true, "skill_recommendations_available": true, "api_registry_available": true },
   "protection_needs": { "secret_api_key_risk": true },
   "verification_contract": { "do_not_claim_done_without_evidence": true },
@@ -438,6 +439,19 @@ Read-only MCP tools:
 - `vnem_search_apis`: search API records by query/category/auth/HTTPS/CORS/frontend constraints.
 - `vnem_recommend_apis`: recommend APIs for a task with auth, HTTPS, CORS, frontend/backend safety decision, secret/API-key warning, integration pattern, provenance, and manual-review warning.
 - `vnem_review_skill_or_api`: review one skill/API record by id and return a metadata-reference verdict, risk flags, missing fields, compatibility notes, and next safety checks.
+- `vnem_get_required_capabilities`: select the few required/strongly recommended capability modules for a task and return compact instructions, risks, evidence requirements, and deeper lookup IDs.
+- `vnem_activate_capability_pack`: create a task-specific activation contract with required instructions, usage-proof fields, incomplete-if-skipped rules, and safety boundaries.
+- `vnem_apply_skill_guidance`: apply one selected skill's compact guidance to the current task without installing the skill or executing scripts.
+- `vnem_build_api_integration_plan`: build a safe API plan with auth/HTTPS/CORS, frontend/backend decision, backend proxy/secret rules, tests, and evidence. It does not call the API.
+- `vnem_get_agent_profile`: return only the relevant Codex/Claude/Gemini/DeepSeek/Hermes/Qwen/generic/unknown profile so one AI does not receive another AI's irrelevant instructions.
+- `vnem_compose_capability_contract`: combine routing, selected capability modules, one agent profile, skill/API plan when relevant, risks, verification, and final-report requirements into one compact contract.
+
+Capability modules:
+
+- A VNEM capability module is an actionable read-only unit with id, kind, task types, supported agents/clients, compact instructions, required evidence, compatibility, avoid-with/conflicts, risks, verification requirements, token-budget guidance, and full-detail lookup URI.
+- Core MCP can activate/apply guidance as a contract, but it cannot install, execute, mutate, or call external APIs.
+- Non-VNEM user tasks must stay focused on the user's deliverable. VNEM repo self-improvement guidance is selected only when the task explicitly asks to build/fix VNEM.
+- Token efficiency uses progressive disclosure: bootstrap summary, selected module IDs, compact required instructions, and deeper IDs/URIs only when needed. Normal outputs do not dump all skills, APIs, or model profiles.
 
 Safety boundary:
 
@@ -453,10 +467,19 @@ Recommended agent flow:
 
 1. Call `vnem_bootstrap`.
 2. Use returned required rules/resources.
-3. For capability needs, call `vnem_library_status`, `vnem_recommend_skills`, `vnem_recommend_apis`, and `vnem_review_skill_or_api` as relevant.
-4. Do not install skills or call APIs blindly.
-5. Run `vnem_quality_gate` and task-specific verification.
-6. Report evidence, skipped checks, and remaining risk.
+3. For capability needs, call `vnem_compose_capability_contract`, `vnem_get_required_capabilities`, `vnem_library_status`, `vnem_recommend_skills`, `vnem_recommend_apis`, and `vnem_review_skill_or_api` as relevant.
+4. Use `vnem_get_agent_profile` to fetch only the relevant AI/client profile instead of dumping every model-specific instruction.
+5. Do not install skills or call APIs blindly.
+6. Run `vnem_quality_gate` and task-specific verification.
+7. Report evidence, skipped checks, and remaining risk.
+
+Examples:
+
+- Next.js UI task: call `vnem_bootstrap`, then `vnem_compose_capability_contract` with `token_budget=compact`; apply the frontend/UI quality module and report build plus visual/responsive/accessibility evidence.
+- Weather API integration: call `vnem_build_api_integration_plan`; compare auth/HTTPS/CORS, use a backend proxy for secret-bearing or CORS-unsafe APIs, never expose frontend keys, and provide success/error/loading/rate-limit tests.
+- Debugging task: call `vnem_get_required_capabilities`; apply the systematic debugging module, reproduce the failure, identify root cause, fix, and show red/green or equivalent proof.
+- Prompt-improvement task: apply the prompt-improvement module, show the target behavior, before/after prompt, and examples/evaluation proving behavior changed.
+- Non-VNEM task: use VNEM only to improve the user's task contract; do not redirect the agent into improving VNEM itself.
 
 You can also install the bundled Codex skill from this checkout:
 
@@ -488,7 +511,14 @@ The pack is guidance and search data. The default server does not run the tools 
 | `registry/entries/{slug}/entry.yaml` | Canonical machine-readable registry entry. |
 | `registry/entries/{slug}/profile.md` | Short human/LLM-readable profile. |
 | `schemas/entry.schema.json` | Entry schema used by validation. |
+| `capabilities/super-library.json` | VNEM-normalized skill/API capability records used by Core MCP recommendations and contracts. |
+| `capabilities/agent-profiles.json` | Compact Codex/Claude/Gemini/DeepSeek/Hermes/Qwen/generic/unknown client profiles used to avoid irrelevant instruction dumps. |
+| `schemas/super-library.schema.json` | Schema for the Super MCP skill/API capability library. |
+| `schemas/agent-profiles.schema.json` | Schema for compact agent/model profile records. |
 | `scripts/` | Validation, generation, curated knowledge upserts, discovery, digest, and install-pack tests. |
+| `scripts/lib/super-library.mjs` | Loader/search/recommend/review helpers for skill/API capability records. |
+| `scripts/lib/capability-modules.mjs` | Read-only capability-module selection, activation contracts, skill guidance, API plans, and composed task contracts. |
+| `scripts/lib/agent-profiles.mjs` | Loader and compact profile selection for one relevant AI/client. |
 | `public/api/index.json` | Static API generated from registry data. |
 | `public/install/*` | Hosted read-only install-pack files. |
 | `public/install.tgz` | Tiny archive used by the one-line install command. |

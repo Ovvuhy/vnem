@@ -276,7 +276,8 @@ assert(installGuide.includes("Fastest Pack Install"), "install-guide.md must inc
 assert(installGuide.includes("Existing Repo Install"), "install-guide.md must include existing repo guidance.");
 assert(installGuide.includes("MCP Setup From A Checkout"), "install-guide.md must include MCP setup guidance.");
 assert(installGuide.includes("mcp-config"), "install-guide.md must mention mcp-config.");
-assert(installGuide.includes("vnem_status"), "install-guide.md must explain MCP verification.");
+assert(installGuide.includes("vnem_bootstrap"), "install-guide.md must explain Core MCP activation verification.");
+assert(installGuide.includes("vnem_library_status"), "install-guide.md must explain Core MCP capability-library verification.");
 assert(qualityContract.includes("vnem Quality Contract"), "quality-contract.md must include the quality contract title.");
 assert(qualityContract.includes("Holistic Excellence"), "quality contract must include Holistic Excellence.");
 assert(qualityContract.includes("Proactive Enhancement"), "quality contract must include Proactive Enhancement.");

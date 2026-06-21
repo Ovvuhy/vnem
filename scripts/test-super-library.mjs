@@ -1,8 +1,16 @@
 #!/usr/bin/env node
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import Ajv2020 from "ajv/dist/2020.js";
 
 const library = JSON.parse(await readFile("capabilities/super-library.json", "utf8"));
+const librarySchema = JSON.parse(await readFile("schemas/super-library.schema.json", "utf8"));
+const agentProfiles = JSON.parse(await readFile("capabilities/agent-profiles.json", "utf8"));
+const agentProfilesSchema = JSON.parse(await readFile("schemas/agent-profiles.schema.json", "utf8"));
+const ajv = new Ajv2020({ allErrors: true });
+
+assert.equal(ajv.validate(librarySchema, library), true, `super-library schema validation failed: ${ajv.errorsText()}`);
+assert.equal(ajv.validate(agentProfilesSchema, agentProfiles), true, `agent-profiles schema validation failed: ${ajv.errorsText()}`);
 
 assert.equal(library.schema_version, "vnem-super-library/v0.1");
 assert.ok(library.sources.some((source) => source.url === "https://www.skills.sh/"));

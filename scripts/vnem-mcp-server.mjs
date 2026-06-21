@@ -9,6 +9,14 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { z } from "zod";
 import { buildOrchestrationPlan } from "./lib/orchestration-framework.mjs";
 import {
+  activateCapabilityPack,
+  applySkillGuidance,
+  buildApiIntegrationPlan,
+  composeCapabilityContract,
+  getRequiredCapabilities
+} from "./lib/capability-modules.mjs";
+import { getAgentProfile, loadAgentProfiles } from "./lib/agent-profiles.mjs";
+import {
   buildLibraryStatus,
   loadSuperLibrary,
   recommendApis,
@@ -67,6 +75,12 @@ const DEFAULT_MCP_TOOLS = [
   "vnem_search_apis",
   "vnem_recommend_apis",
   "vnem_review_skill_or_api",
+  "vnem_get_required_capabilities",
+  "vnem_activate_capability_pack",
+  "vnem_apply_skill_guidance",
+  "vnem_build_api_integration_plan",
+  "vnem_get_agent_profile",
+  "vnem_compose_capability_contract",
   "vnem_status",
   "vnem_overview",
   "vnem_route_intent",
@@ -117,6 +131,7 @@ const apiIndexPath = firstExisting(["public/api/index.json"]);
 const searchIndex = await readJsonRequired(searchIndexPath, "search index");
 const apiIndex = apiIndexPath ? await readJsonOptional(apiIndexPath) : null;
 const superLibrary = await loadSuperLibrary(rootDir);
+const agentProfiles = await loadAgentProfiles(rootDir);
 const entries = Array.isArray(apiIndex?.entries) ? apiIndex.entries : [];
 const documents = Array.isArray(searchIndex.documents) ? searchIndex.documents : [];
 const sourceRadar = Array.isArray(searchIndex.source_radar) ? searchIndex.source_radar : [];
@@ -325,6 +340,137 @@ function registerTools(mcpServer) {
     async (args) => {
       const review = reviewCapability(superLibrary, args);
       return toolResult(formatCapabilityReview(review), review);
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_get_required_capabilities",
+    {
+      title: "Get Required VNEM Capability Modules",
+      description:
+        "Select the few required/strongly recommended read-only VNEM capability modules for a real user task. Returns compact instructions, risks, and evidence requirements without dumping the whole library.",
+      inputSchema: {
+        task: z.string().min(1),
+        agent_client: z.string().optional(),
+        model_family: z.string().optional(),
+        project_context: z.string().optional(),
+        max_modules: z.number().int().min(1).max(8).default(5),
+        token_budget: z.enum(["compact", "normal", "expanded"]).default("compact"),
+        include_optional: z.boolean().default(false)
+      },
+      annotations: READ_ONLY
+    },
+    async (args) => {
+      const result = getRequiredCapabilities(superLibrary, agentProfiles, args);
+      return toolResult(formatCapabilityModules("VNEM required capabilities", result.required_modules), result);
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_activate_capability_pack",
+    {
+      title: "Activate VNEM Capability Pack",
+      description:
+        "Create a compact task-specific Core MCP activation contract from selected capability modules. Forces instructions, evidence, and incomplete-if-skipped rules without installing skills or mutating files.",
+      inputSchema: {
+        task: z.string().min(1),
+        agent_client: z.string().optional(),
+        model_family: z.string().optional(),
+        selected_capability_ids: z.array(z.string()).default([]),
+        risk_tolerance: z.enum(["low", "normal", "high"]).default("normal"),
+        token_budget: z.enum(["compact", "normal", "expanded"]).default("compact"),
+        include_full_instructions: z.boolean().default(false)
+      },
+      annotations: READ_ONLY
+    },
+    async (args) => {
+      const result = activateCapabilityPack(superLibrary, agentProfiles, args);
+      return toolResult(formatActivationPack(result), result);
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_apply_skill_guidance",
+    {
+      title: "Apply VNEM Skill Guidance",
+      description:
+        "Return compact task-specific guidance from one selected skill/capability record. Core MCP applies instructions only; it never installs skills or executes scripts.",
+      inputSchema: {
+        skill_id: z.string().min(1),
+        task: z.string().min(1),
+        agent_client: z.string().optional(),
+        token_budget: z.enum(["compact", "normal", "expanded"]).default("compact")
+      },
+      annotations: READ_ONLY
+    },
+    async (args) => {
+      const result = applySkillGuidance(superLibrary, args);
+      return toolResult(formatSkillGuidance(result), result);
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_build_api_integration_plan",
+    {
+      title: "Build VNEM API Integration Plan",
+      description:
+        "Build a safe read-only API integration plan: candidates, auth/HTTPS/CORS, frontend/backend boundary, secret handling, tests, and evidence. Does not call APIs.",
+      inputSchema: {
+        task: z.string().min(1),
+        api_id: z.string().optional(),
+        app_type: z.enum(["frontend", "backend", "fullstack", "cli", "unknown"]).default("unknown"),
+        frontend_only: z.boolean().default(false),
+        allow_api_keys: z.boolean().default(false),
+        allow_oauth: z.boolean().default(false),
+        token_budget: z.enum(["compact", "normal", "expanded"]).default("compact")
+      },
+      annotations: READ_ONLY
+    },
+    async (args) => {
+      const result = buildApiIntegrationPlan(superLibrary, args);
+      return toolResult(formatApiPlan(result), result);
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_get_agent_profile",
+    {
+      title: "Get VNEM Agent Profile",
+      description:
+        "Return one compact client/model profile for the current agent. Avoids dumping irrelevant Claude/Codex/Gemini/DeepSeek/Hermes/Qwen guidance into the wrong AI.",
+      inputSchema: {
+        agent_client: z.string().min(1),
+        model_family: z.string().optional(),
+        task: z.string().optional(),
+        token_budget: z.enum(["compact", "normal", "expanded"]).default("compact")
+      },
+      annotations: READ_ONLY
+    },
+    async (args) => {
+      const result = getAgentProfile(agentProfiles, args);
+      return toolResult(formatAgentProfile(result), result);
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_compose_capability_contract",
+    {
+      title: "Compose VNEM Capability Contract",
+      description:
+        "Compose task routing, required capabilities, one relevant agent profile, API/skill guidance, risks, verification, and final-report requirements into one compact Core MCP contract.",
+      inputSchema: {
+        task: z.string().min(1),
+        agent_client: z.string().optional(),
+        model_family: z.string().optional(),
+        project_context: z.string().optional(),
+        token_budget: z.enum(["compact", "normal", "expanded"]).default("compact"),
+        max_modules: z.number().int().min(1).max(8).default(5)
+      },
+      annotations: READ_ONLY
+    },
+    async (args) => {
+      const result = composeCapabilityContract(superLibrary, agentProfiles, args);
+      return toolResult(formatComposedContract(result), result);
     }
   );
 
@@ -1136,6 +1282,18 @@ function buildBootstrap(args = {}) {
   const verificationContract = buildBootstrapVerificationContract(taskAnalysis, taskContract, args.available_tools || []);
   const completionAuditExpectations = buildBootstrapCompletionAuditExpectations(taskAnalysis);
   const antiPlaceboChecks = buildBootstrapAntiPlacebo(taskAnalysis);
+  const agentProfile = getAgentProfile(agentProfiles, {
+    agent_client: args.agent_client || "unknown",
+    task,
+    token_budget: "compact"
+  });
+  const requiredCapabilities = getRequiredCapabilities(superLibrary, agentProfiles, {
+    task,
+    agent_client: args.agent_client || "unknown",
+    project_context: args.project_context || "",
+    max_modules: 5,
+    token_budget: "compact"
+  });
   const activationId = createHash("sha256")
     .update(JSON.stringify({
       tool: "vnem_bootstrap",
@@ -1181,6 +1339,20 @@ function buildBootstrap(args = {}) {
       warnings: bootstrapStatusWarnings(status)
     },
     task_analysis: taskAnalysis,
+    compact_startup_contract: {
+      token_budget: "compact",
+      self_focus_policy: requiredCapabilities.self_focus_policy,
+      required_capability_module_count: requiredCapabilities.required_modules.length,
+      required_capability_ids: requiredCapabilities.required_modules.map((module) => module.id),
+      compact_required_instructions: requiredCapabilities.required_modules.flatMap((module) => module.compact_instructions || []).slice(0, 6),
+      evidence_required: verificationContract.evidence_required?.slice(0, 5) || []
+    },
+    relevant_agent_profile: {
+      profile_id: agentProfile.profile_id,
+      display_name: agentProfile.display_name,
+      known_mcp_support_status: agentProfile.known_mcp_support_status,
+      confidence: agentProfile.confidence
+    },
     required_rules: requiredRules,
     recommended_vnem_calls: recommendedCalls,
     capability_slots: buildBootstrapCapabilitySlots(),
@@ -1341,6 +1513,16 @@ function buildBootstrapNextCalls(taskAnalysis, routeAvailable, registryMatchCoun
       when: "Use once after bootstrap when the task may need external skills, APIs, MCP/tool choices, or capability-library status."
     },
     {
+      tool: "vnem_compose_capability_contract",
+      arguments: { task: taskAnalysis.original_task, token_budget: "compact", max_modules: 5 },
+      when: "Use after bootstrap to convert routing and capability matches into a compact task-specific contract with evidence requirements."
+    },
+    {
+      tool: "vnem_get_required_capabilities",
+      arguments: { task: taskAnalysis.original_task, max_modules: 5, token_budget: "compact" },
+      when: "Use when the agent needs only the selected capability modules and compact instructions, not full search results."
+    },
+    {
       tool: "vnem_route_intent",
       arguments: { intent: taskAnalysis.original_task, include_matches: true },
       when: "Immediately after bootstrap when the agent needs the exact route/read-first context and rubric details."
@@ -1390,6 +1572,11 @@ function buildBootstrapNextCalls(taskAnalysis, routeAvailable, registryMatchCoun
   }
 
   if (taskAnalysis.primary_task_type === "api_integration" || taskAnalysis.secondary_task_types.includes("security_data")) {
+    calls.push({
+      tool: "vnem_build_api_integration_plan",
+      arguments: { task: taskAnalysis.original_task, app_type: "unknown", allow_api_keys: false, allow_oauth: false, token_budget: "compact" },
+      when: "Use to create the safe API integration contract: auth, HTTPS, CORS, frontend/backend boundary, tests, and evidence."
+    });
     calls.push({
       tool: "vnem_recommend_apis",
       arguments: { task: taskAnalysis.original_task, app_type: "unknown", allow_api_keys: false, allow_oauth: false, limit: 6 },
@@ -2841,6 +3028,60 @@ function formatSourceRadar(result) {
 
   lines.push("", `Safety: ${result.safety}`);
   return lines.join("\n");
+}
+
+function formatCapabilityModules(title, modules = []) {
+  return [
+    title,
+    ...modules.map((module, index) => `${index + 1}. ${module.id} — ${(module.compact_instructions || []).slice(0, 2).join(" ")}`),
+    "Core MCP is read-only: no skill installs, API calls, file writes, or terminal execution."
+  ].join("\n");
+}
+
+function formatActivationPack(pack) {
+  return [
+    `activation: ${pack.activation_id}`,
+    `modules: ${(pack.selected_capability_modules || []).map((module) => module.id).join(", ")}`,
+    `required evidence: ${(pack.evidence_requirements || []).slice(0, 3).join("; ")}`,
+    "If required module evidence is skipped, mark the task incomplete."
+  ].join("\n");
+}
+
+function formatSkillGuidance(result) {
+  if (!result.found) return `No skill guidance found for ${result.skill_id}.`;
+  return [
+    `skill guidance: ${result.skill_id}`,
+    ...(result.compact_applicable_instructions || []).map((item) => `- ${item}`),
+    "Core MCP applies guidance only; installation/execution requires separate approval/tools."
+  ].join("\n");
+}
+
+function formatApiPlan(plan) {
+  return [
+    `API integration plan: ${plan.task}`,
+    ...(plan.selected_api_candidates || []).map((api) => `- ${api.id}: auth=${api.auth_type} https=${api.https} cors=${api.cors} frontend_safe=${api.frontend_safe}`),
+    `backend proxy required: ${plan.backend_proxy_requirement}`,
+    "Do not expose API keys in frontend code. Core MCP does not call APIs."
+  ].join("\n");
+}
+
+function formatAgentProfile(profile) {
+  return [
+    `agent profile: ${profile.profile_id} (${profile.display_name})`,
+    `MCP support: ${profile.known_mcp_support_status}`,
+    `confidence: ${profile.confidence}`,
+    ...(profile.token_efficiency_tips || []).map((item) => `token: ${item}`)
+  ].join("\n");
+}
+
+function formatComposedContract(contract) {
+  return [
+    `VNEM capability contract: ${contract.task_summary}`,
+    `profile: ${contract.agent_profile_summary?.profile_id}`,
+    `modules: ${(contract.required_capability_modules || []).map((module) => module.id).join(", ")}`,
+    `verification: ${(contract.verification || []).slice(0, 3).join("; ")}`,
+    contract.self_focus_policy
+  ].join("\n");
 }
 
 function formatLibraryStatus(status) {

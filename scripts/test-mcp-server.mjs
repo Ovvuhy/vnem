@@ -45,6 +45,12 @@ try {
     "vnem_search_apis",
     "vnem_recommend_apis",
     "vnem_review_skill_or_api",
+    "vnem_get_required_capabilities",
+    "vnem_activate_capability_pack",
+    "vnem_apply_skill_guidance",
+    "vnem_build_api_integration_plan",
+    "vnem_get_agent_profile",
+    "vnem_compose_capability_contract",
     "vnem_status",
     "vnem_overview",
     "vnem_route_intent",
@@ -149,6 +155,102 @@ try {
   assert.ok(reviewedSkill.structuredContent?.risk_flags?.includes("prompt_injection_surface"));
   assert.ok(reviewedSkill.structuredContent?.next_safety_checks?.some((item) => item.includes("SKILL.md")));
 
+  const requiredCaps = await client.callTool({
+    name: "vnem_get_required_capabilities",
+    arguments: { task: "Improve a Next.js website UI", agent_client: "codex", model_family: "gpt", max_modules: 4, token_budget: "compact" }
+  });
+  assert.equal(requiredCaps.isError, undefined);
+  assert.ok(requiredCaps.structuredContent?.required_modules?.length > 0, "expected required capability modules");
+  assert.ok(requiredCaps.structuredContent.required_modules.length <= 4, "required capabilities must respect max_modules");
+  assert.ok(JSON.stringify(requiredCaps.structuredContent).length < 9000, "compact required capabilities output should stay small");
+  assert.ok(requiredCaps.structuredContent.required_modules.some((module) => /ui|frontend|visual|accessibility|test/i.test(`${module.id} ${module.name} ${module.task_types?.join(" ")} ${module.compact_instructions?.join(" ")}`)), "UI tasks need UI/frontend/visual/accessibility/testing modules");
+  assert.ok(requiredCaps.structuredContent.required_modules.every((module) => module.compact_instructions?.length && module.required_evidence?.length), "modules need compact instructions and evidence");
+  assert.ok(requiredCaps.structuredContent.self_focus_policy.includes("user task"), "non-VNEM tasks must stay focused on the user's task");
+
+  const capabilityPack = await client.callTool({
+    name: "vnem_activate_capability_pack",
+    arguments: { task: "Improve a Next.js website UI", agent_client: "codex", risk_tolerance: "low", token_budget: "compact" }
+  });
+  assert.equal(capabilityPack.isError, undefined);
+  assert.ok(capabilityPack.structuredContent?.activation_id?.startsWith("vnem-cap-"));
+  assert.ok(capabilityPack.structuredContent?.compact_required_instructions?.length > 0, "activation pack needs compact instructions");
+  assert.ok(capabilityPack.structuredContent?.if_skipped_mark_incomplete?.length > 0, "activation pack must fail completion if modules are skipped");
+  assert.ok(capabilityPack.structuredContent?.usage_proof_fields?.includes("capability_ids_used"));
+  assert.equal(capabilityPack.structuredContent?.safety_boundaries?.core_mcp_installs_skills, false);
+
+  const skillGuidance = await client.callTool({
+    name: "vnem_apply_skill_guidance",
+    arguments: { skill_id: skillRecommendation.structuredContent.recommendations[0].id, task: "Improve a Next.js website UI", agent_client: "codex", token_budget: "compact" }
+  });
+  assert.equal(skillGuidance.isError, undefined);
+  assert.equal(skillGuidance.structuredContent?.core_mcp_can_apply_guidance, true);
+  assert.equal(skillGuidance.structuredContent?.precision_tools_required_for_install_or_execution, true);
+  assert.ok(skillGuidance.structuredContent?.compact_applicable_instructions?.length > 0, "skill guidance should apply compact instructions");
+  assert.ok(skillGuidance.structuredContent?.manual_review_warning?.includes("does not install"));
+
+  const apiPlan = await client.callTool({
+    name: "vnem_build_api_integration_plan",
+    arguments: { task: "Add a weather API integration", app_type: "frontend", frontend_only: true, allow_api_keys: false, allow_oauth: false, token_budget: "compact" }
+  });
+  assert.equal(apiPlan.isError, undefined);
+  assert.ok(apiPlan.structuredContent?.selected_api_candidates?.length > 0, "API plan needs selected candidates");
+  assert.ok(apiPlan.structuredContent.selected_api_candidates.every((api) => api.auth_type && api.https && api.cors), "API plan candidates need auth/HTTPS/CORS");
+  assert.ok(apiPlan.structuredContent?.secret_handling_rules?.some((rule) => rule.includes("Do not expose API keys in frontend code")));
+  assert.equal(apiPlan.structuredContent?.core_mcp_calls_api, false);
+  assert.ok(apiPlan.structuredContent?.test_plan?.length > 0 && apiPlan.structuredContent?.evidence_requirements?.length > 0);
+
+  const codexProfile = await client.callTool({
+    name: "vnem_get_agent_profile",
+    arguments: { agent_client: "codex", model_family: "gpt", task: "Improve a Next.js website UI", token_budget: "compact" }
+  });
+  assert.equal(codexProfile.isError, undefined);
+  assert.equal(codexProfile.structuredContent?.profile_id, "codex");
+  assert.notEqual(codexProfile.structuredContent?.profile_id, "claude");
+  assert.ok(JSON.stringify(codexProfile.structuredContent).length < 5000, "profile output should stay compact");
+
+  const claudeProfile = await client.callTool({
+    name: "vnem_get_agent_profile",
+    arguments: { agent_client: "claude", token_budget: "compact" }
+  });
+  assert.equal(claudeProfile.isError, undefined);
+  assert.equal(claudeProfile.structuredContent?.profile_id, "claude");
+  assert.notEqual(claudeProfile.structuredContent?.profile_id, "codex");
+
+  const unknownProfile = await client.callTool({
+    name: "vnem_get_agent_profile",
+    arguments: { agent_client: "unknown-new-client", token_budget: "compact" }
+  });
+  assert.equal(unknownProfile.isError, undefined);
+  assert.equal(unknownProfile.structuredContent?.profile_id, "unknown");
+  assert.ok(unknownProfile.structuredContent?.confidence === "low" || unknownProfile.structuredContent?.known_mcp_support_status === "unknown");
+
+  const composedContract = await client.callTool({
+    name: "vnem_compose_capability_contract",
+    arguments: { task: "Build a recipe app for a friend", agent_client: "codex", project_context: "Small Next.js side app", token_budget: "compact", max_modules: 5 }
+  });
+  assert.equal(composedContract.isError, undefined);
+  assert.ok(composedContract.structuredContent?.required_capability_modules?.length > 0);
+  assert.ok(composedContract.structuredContent.required_capability_modules.length <= 5);
+  assert.ok(composedContract.structuredContent?.self_focus_policy?.includes("not improve VNEM"), "non-VNEM tasks must not redirect into VNEM self-improvement");
+  assert.ok(composedContract.structuredContent?.final_report_requirements?.length > 0);
+  assert.ok(JSON.stringify(composedContract.structuredContent).length < 12000, "compact composed contract should stay small");
+  assert.notEqual(composedContract.structuredContent?.library_dump_count, 80, "contract must not dump all skills");
+  assert.notEqual(composedContract.structuredContent?.api_dump_count, 700, "contract must not dump all APIs");
+
+  const limitedSkillSearch = await client.callTool({
+    name: "vnem_search_skills",
+    arguments: { query: "react", limit: 2 }
+  });
+  assert.equal(limitedSkillSearch.structuredContent.matches.length <= 2, true, "skill search must respect limit");
+
+  const limitedApiSearch = await client.callTool({
+    name: "vnem_search_apis",
+    arguments: { query: "weather", limit: 2 }
+  });
+  assert.equal(limitedApiSearch.structuredContent.matches.length <= 2, true, "API search must respect limit");
+
+  const reviewSkillId = skillRecommendation.structuredContent.recommendations[0].id;
+
   const habitBootstrap = await client.callTool({
     name: "vnem_bootstrap",
     arguments: {
@@ -177,6 +279,7 @@ try {
   assert.ok(habitBootstrap.structuredContent?.capability_slots?.skill_entry_count >= 30);
   assert.ok(habitBootstrap.structuredContent?.capability_slots?.api_entry_count >= 100);
   assert.ok(habitBootstrap.structuredContent?.recommended_vnem_calls?.some((call) => call.tool === "vnem_library_status"));
+  assert.ok(habitBootstrap.structuredContent?.recommended_vnem_calls?.some((call) => call.tool === "vnem_compose_capability_contract"), "bootstrap should recommend composing a compact capability contract");
   assert.ok(habitBootstrap.structuredContent?.capability_slots?.future_skill_fields_reserved?.includes("supported_agents"));
   assert.ok(habitBootstrap.structuredContent?.capability_slots?.future_api_fields_reserved?.includes("auth_type"));
   assert.ok(habitBootstrap.structuredContent?.task_analysis?.primary_task_type?.includes("app"));
