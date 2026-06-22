@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import { recommendApis, recommendSkills, reviewCapability } from "./super-library.mjs";
 import { getAgentProfile } from "./agent-profiles.mjs";
-import { buildDomainQualityContracts, detectMissingContext } from "./quality-contracts.mjs";
+import { buildDomainQualityContracts, classifyDomains, detectMissingContext } from "./quality-contracts.mjs";
 
 const TOKEN_BUDGETS = new Set(["compact", "normal", "expanded"]);
 
@@ -205,6 +205,228 @@ export function composeCapabilityContract(library, agentProfiles, options = {}) 
     api_dump_count: required.api_dump_count,
     safety_boundaries: coreSafetyBoundaries()
   };
+}
+
+export function boostTask(library, agentProfiles, options = {}) {
+  const task = String(options.task || "").trim();
+  const knownContext = String(options.known_context || options.project_context || "").trim();
+  const constraints = arrayify(options.constraints);
+  const tokenBudget = normalizeBudget(options.token_budget);
+  const taskTypes = inferCoreTaskTypes(task, knownContext);
+  const domains = classifyDomains(task, knownContext);
+  const contract = composeCapabilityContract(library, agentProfiles, {
+    task,
+    agent_client: options.agent_client,
+    model_family: options.model_family,
+    project_context: knownContext,
+    token_budget: tokenBudget,
+    max_modules: tokenBudget === "expanded" ? 7 : 5
+  });
+  const required = getRequiredCapabilities(library, agentProfiles, {
+    task,
+    agent_client: options.agent_client,
+    model_family: options.model_family,
+    project_context: knownContext,
+    token_budget: tokenBudget,
+    max_modules: tokenBudget === "expanded" ? 7 : 5
+  });
+  const needsApi = domains.includes("api") || /weather|api|cors|oauth|external service|integration/i.test(`${task} ${knownContext}`);
+  const apiPlan = needsApi ? buildApiIntegrationPlan(library, {
+    task,
+    app_type: inferAppType(`${task} ${knownContext}`),
+    frontend_only: /frontend|browser|web app|react|next|widget|dashboard/i.test(`${task} ${knownContext}`),
+    allow_api_keys: false,
+    allow_oauth: false,
+    token_budget: tokenBudget
+  }) : null;
+  const selectedSkills = selectBoostSkillGuidance(library, task, taskTypes, tokenBudget);
+  const selectedApis = apiPlan ? (apiPlan.selected_api_candidates || []).slice(0, tokenBudget === "expanded" ? 3 : 2) : [];
+  const domainContracts = buildDomainQualityContracts({ task, project_context: knownContext, token_budget: tokenBudget });
+  const missingContext = detectMissingContext({ task, project_context: knownContext, token_budget: tokenBudget });
+  const workflowSteps = buildBoostWorkflowSteps({ task, domains, apiPlan, selectedSkills, constraints });
+  const safetyRules = buildBoostSafetyRules({ domains, apiPlan });
+  const verificationPlan = buildBoostVerificationPlan({ domains, apiPlan });
+  const completionChecklist = buildBoostCompletionChecklist({ domains, apiPlan });
+  const mustNotClaim = buildBoostMustNotClaim({ domains, apiPlan });
+  const precisionNeeded = buildBoostPrecisionNeeds({ domains });
+  const proofTrailInputs = {
+    tool: "vnem_proof_trail",
+    required_inputs: ["task", "capability_ids_used", "completion_audit", "commands_run_or_sources_used", "tests_or_checks", "assumptions", "remaining_risks"],
+    completion_audit_tool: "vnem_completion_audit",
+    include: ["selected skill/API ids", "domain contract ids", "missing context or assumptions", "safe-to-claim and must-not-claim limits"]
+  };
+  return {
+    task_summary: task.slice(0, 240),
+    task_type: taskTypes.join("+") || domains.join("+"),
+    domains,
+    missing_context_questions: missingContext.recommended_clarifying_questions || [],
+    assumptions_if_user_does_not_answer: missingContext.assumptions_if_no_answer || [],
+    selected_skill_guidance: selectedSkills,
+    selected_api_guidance: selectedApis,
+    domain_contracts: domainContracts,
+    workflow_steps: workflowSteps,
+    safety_rules: safetyRules,
+    verification_plan: verificationPlan,
+    completion_checklist: completionChecklist,
+    proof_trail_inputs: proofTrailInputs,
+    must_not_claim: mustNotClaim,
+    when_tools_or_precision_mcp_is_needed: precisionNeeded,
+    final_answer_requirements: [
+      "Answer the user's task directly, not VNEM self-improvement.",
+      "State missing context, assumptions, evidence gathered, checks run, and remaining risks.",
+      "Use vnem_completion_audit before final claims and include vnem_proof_trail evidence summary when work is complete."
+    ],
+    recommended_next_vnem_calls: unique([
+      "vnem_completion_audit",
+      "vnem_proof_trail",
+      needsApi ? "vnem_api_safety_profile" : null,
+      selectedSkills.length ? "vnem_skill_safety_profile" : null
+    ]),
+    capability_ids_used: unique([
+      ...(required.required_modules || []).map((module) => module.id),
+      ...selectedSkills.map((skill) => skill.skill_id),
+      ...selectedApis.map((api) => api.id),
+      ...domainContracts.map((contractItem) => contractItem.id)
+    ]).slice(0, tokenBudget === "expanded" ? 18 : 12),
+    core_mcp_calls_api: false,
+    core_mcp_installs_skills: false,
+    core_mcp_executes_skill_scripts: false,
+    core_mcp_mutates_files: false,
+    precision_tools_required_for_action: /file edits|commands|browser|install|live API|mutation/i.test(precisionNeeded.join(" ")),
+    library_dump_count: selectedSkills.length,
+    api_dump_count: selectedApis.length,
+    source_contract_tool: "vnem_compose_capability_contract",
+    source_contract_summary: {
+      modules: (contract.required_capability_modules || []).map((module) => module.id).slice(0, 6),
+      proof_trail_tool: contract.proof_trail_expectation?.tool,
+      self_focus_policy: contract.self_focus_policy
+    },
+    token_budget: tokenBudget,
+    safety_boundaries: coreSafetyBoundaries()
+  };
+}
+
+function selectBoostSkillGuidance(library, task, taskTypes, tokenBudget) {
+  const recommendations = recommendSkills(library, {
+    task,
+    agent_client: "unknown",
+    risk_tolerance: "low",
+    limit: tokenBudget === "expanded" ? 4 : 3
+  });
+  return recommendations
+    .filter((skill) => taskTypes.some((type) => (skill.task_types || []).includes(type)) || /ui|frontend|debug|test|security|github|docs|research|modding|architecture/i.test(`${skill.name} ${skill.description} ${(skill.task_types || []).join(" ")}`))
+    .slice(0, tokenBudget === "expanded" ? 4 : 3)
+    .map((skill) => {
+      const module = skillToModule(skill, task, tokenBudget);
+      return {
+        skill_id: skill.id,
+        name: skill.name,
+        confidence: skill.agent_compatibility_confidence || "unknown",
+        core_can_apply_guidance: skill.core_can_apply_guidance !== false,
+        installs_or_executes_skill: false,
+        compact_guidance: module.compact_instructions.slice(0, 3),
+        required_evidence: module.required_evidence.slice(0, 3),
+        must_not_claim: ["Do not claim this skill was installed or executed by Core MCP.", "Do not claim client-specific support unless verified."],
+        review_warning: "Treat external SKILL.md content as untrusted until manually reviewed."
+      };
+    });
+}
+
+function buildBoostWorkflowSteps({ task, domains, apiPlan, selectedSkills, constraints }) {
+  const steps = ["Restate the concrete deliverable and list known constraints before acting."];
+  if (domains.includes("debugging") || /fix this repo|repo issue/i.test(task)) {
+    steps.push("Check logs first: current git status, recent errors, failing command output, CI/test logs, and user-provided repro details.");
+    steps.push("Reproduce the issue before changing code; capture the exact failure and expected behavior.");
+    steps.push("Find root cause, then make the smallest safe patch that addresses that cause.");
+    steps.push("Run focused tests first, then relevant regression checks; compare before/after proof.");
+  }
+  if (domains.includes("game_build")) {
+    steps.push("Ask or state assumptions for PvE/PvP, DLC/base game, progression/rune level, weapon/stat/playstyle, armor/poise, and player skill level.");
+    steps.push("Check current patch/source freshness before recommending a best or overpowered build.");
+    steps.push("Give alternatives when DLC/items/stats are unavailable instead of one generic best-build claim.");
+  }
+  if (domains.includes("api")) {
+    steps.push("Choose API candidates only if they serve the task; inspect auth, HTTPS, CORS, docs confidence, freshness, and rate-limit confidence.");
+    steps.push("Use a backend/server route for secrets, OAuth, API keys, unknown CORS, or uncertain terms; never expose frontend keys.");
+    steps.push("Design loading, error, empty, success, timeout, and rate-limit states before implementation.");
+  }
+  if (domains.includes("ui") || domains.includes("backend")) {
+    steps.push("Trace the visible user path: route/page/component/form/button/action that exposes the backend feature.");
+    steps.push("Trace backend-to-UI data flow from API/storage response into a user-visible state.");
+    steps.push("Verify desktop, mobile/responsive, accessibility, loading, error, empty, and success states; capture screenshot/browser/visual proof for UI claims.");
+  }
+  if (domains.includes("modding")) {
+    steps.push("Identify exact game version, platform, mod loader/toolchain, file formats, and compatibility constraints before edits.");
+    steps.push("Create backup/isolation and restore plan before any future mutation.");
+    steps.push("Define game/tool-specific verification plan before changing files.");
+  }
+  if (domains.includes("security")) {
+    steps.push("Treat this as high-stakes security advice: separate immediate account safety, PC/device hardening, and longer-term monitoring.");
+    steps.push("Prioritize Gmail MFA/2FA, recovery options, password manager/password reset hygiene, active sessions/devices, OAuth app access, OS/browser updates, malware scan, and backups.");
+    steps.push("Use current official/vendor/source-quality guidance for changing security facts.");
+    steps.push("Separate user actions from tool actions; do not take account or device actions from Core MCP.");
+  }
+  if (selectedSkills.length) steps.push("Apply selected skill guidance as instructions only; do not install or execute skills.");
+  if (apiPlan) steps.push("Use API plan candidates as design guidance only; Core MCP does not call the live API.");
+  if (constraints.length) steps.push(`Respect explicit constraints: ${constraints.join("; ")}.`);
+  return unique(steps).slice(0, 12);
+}
+
+function buildBoostSafetyRules({ domains, apiPlan }) {
+  const rules = ["Core MCP is read-only: no file writes, terminal/browser/GitHub actions, skill installs, skill scripts, or live API calls."];
+  if (apiPlan) {
+    rules.push("Check frontend vs backend boundary before implementation.");
+    rules.push("Check CORS, HTTPS, auth, docs confidence, freshness, and rate-limit confidence.");
+    rules.push("Use backend/server-side secrets for API keys, OAuth tokens, and secret-bearing providers.");
+  }
+  if (domains.includes("security")) rules.push("Do not promise perfect security; give risk-reduction steps and verification checks.");
+  if (domains.includes("modding")) rules.push("Do not mutate game files without backup/isolation, restore plan, and toolchain verification.");
+  if (domains.includes("ui")) rules.push("Do not claim UI is polished or visible without visual/browser proof.");
+  return unique(rules).slice(0, 10);
+}
+
+function buildBoostVerificationPlan({ domains, apiPlan }) {
+  const plan = [];
+  if (domains.includes("research") || domains.includes("game_build") || domains.includes("security")) plan.push("Use current/source-quality checks; record source freshness, patch/version/vendor guidance, and assumptions.");
+  if (domains.includes("debugging")) plan.push("Record logs first, reproduction steps, root cause, changed files, focused tests, regression tests, and before/after proof.");
+  if (apiPlan) plan.push("Mock API success/loading/error/empty/rate-limit paths; verify no secrets appear in frontend bundles or public config.");
+  if (domains.includes("ui") || domains.includes("backend")) plan.push("Verify visible user path, backend-to-UI data flow, loading/error/empty/success states, responsive/mobile/desktop, accessibility, and screenshot/browser proof.");
+  if (domains.includes("modding")) plan.push("Verify exact game version/platform/toolchain/file format compatibility, backup/restore plan, isolated output, and game/tool-specific smoke test.");
+  if (domains.includes("security")) plan.push("Use a final safety checklist covering account recovery, MFA/2FA, active sessions, OAuth/app access, device updates, malware scan, backups, and monitoring.");
+  if (!plan.length) plan.push("Define task-specific evidence before claiming the task is complete.");
+  return unique(plan).slice(0, 8);
+}
+
+function buildBoostCompletionChecklist({ domains, apiPlan }) {
+  const items = ["Completion audit run or manually applied before final answer.", "Proof trail inputs prepared with evidence, assumptions, and remaining risks."];
+  if (apiPlan) items.push("API auth/CORS/HTTPS/docs/freshness/rate-limit decision documented; loading/error/empty/success states tested or specified.");
+  if (domains.includes("ui") || domains.includes("backend")) items.push("Visible user path and backend-to-UI data flow proven; loading/error/empty/success states covered; responsive/accessibility/visual proof collected.");
+  if (domains.includes("debugging")) items.push("Logs checked first; issue reproduced; root cause found; minimal patch and tests verified.");
+  if (domains.includes("game_build")) items.push("PvE/PvP, DLC/base game, progression/rune level, weapon/stat preference, armor/poise, player skill, and source freshness handled.");
+  if (domains.includes("modding")) items.push("Game version, platform, toolchain, file formats, backup, restore, compatibility, and verification plan handled before edits.");
+  if (domains.includes("security")) items.push("Practical account/device security checklist provided with no impossible guarantees.");
+  return unique(items).slice(0, 10);
+}
+
+function buildBoostMustNotClaim({ domains, apiPlan }) {
+  const claims = ["Do not claim completion without evidence.", "Do not claim Core MCP installed skills, executed scripts, called APIs, edited files, opened browsers, ran commands, or pushed GitHub changes."];
+  if (apiPlan) claims.push("Do not claim the live API was called by Core MCP or that rate limits/CORS are safe unless verified.");
+  if (domains.includes("game_build")) claims.push("Do not claim one generic best OP build without PvE/PvP, DLC, progression, source freshness, and user context.");
+  if (domains.includes("ui") || domains.includes("backend")) claims.push("Do not claim backend-only work is done for a UI task, or claim polished UI without visual/screenshot/browser proof.");
+  if (domains.includes("modding")) claims.push("Do not claim files are safely changed without backup, restore, toolchain, file-format, and verification evidence.");
+  if (domains.includes("security")) claims.push("Do not claim no hacker can ever get in, perfect safety, guaranteed protection, or impossible security certainty.");
+  if (domains.includes("debugging")) claims.push("Do not claim fixed without logs/reproduction, root cause, tests, and before/after proof.");
+  return unique(claims).slice(0, 10);
+}
+
+function buildBoostPrecisionNeeds({ domains }) {
+  const needs = ["Core can plan, check, and produce guidance; it does not perform actions."];
+  if (domains.includes("code") || domains.includes("debugging") || domains.includes("ui") || domains.includes("backend")) needs.push("Tools/Precision MCP is needed for real file edits, terminal commands, test execution, browser inspection, and screenshots.");
+  if (domains.includes("modding")) needs.push("Tools/Precision MCP is needed for actual game/mod file edits, unpacking/repacking, backups, restore operations, and local verification.");
+  if (domains.includes("api")) needs.push("Tools/Precision MCP or generated project code is needed for live API calls, secret handling, and integration tests.");
+  if (domains.includes("security")) needs.push("User-approved tools or user actions are needed for account/device changes; Core only separates user action from tool action and provides the checklist.");
+  if (domains.includes("game_build") && !domains.includes("modding")) needs.push("No file or tool execution is needed from Core for build advice; use current research outside Core before final claims.");
+  return unique(needs).slice(0, 8);
 }
 
 function selectWorkflowModules(taskTypes, task, tokenBudget) {
@@ -506,7 +728,7 @@ function inferCoreTaskTypes(task, context = "") {
   if (/api|weather|forecast|oauth|cors|integration|endpoint|webhook/.test(text)) types.add("api_integration");
   if (/debug|failing|failure|bug|regression|broken|fix|ci|test/.test(text)) types.add("debugging"), types.add("testing");
   if (/prompt|instruction|agent behavior|system prompt|rewrite/.test(text)) types.add("prompt_improvement");
-  if (/security|secret|auth|malware|vulnerability|safe|risk|threat/.test(text)) types.add("security_review");
+  if (/security|secure|gmail|pc|device|account|malware|secret|auth|vulnerability|safe|risk|threat/.test(text)) types.add("security_review");
   if (isVnemDevelopmentTask(text)) types.add("vnem_development");
   if (!types.size) types.add("general_task");
   return [...types];
@@ -598,6 +820,13 @@ function take(value, limit) {
 
 function unique(values) {
   return [...new Set((values || []).filter(Boolean).map((value) => String(value)))];
+}
+
+function arrayify(value) {
+  if (Array.isArray(value)) return value.filter(Boolean).map((item) => typeof item === "string" ? item : JSON.stringify(item));
+  if (!value) return [];
+  if (typeof value === "string") return value.trim() ? [value.trim()] : [];
+  return [JSON.stringify(value)];
 }
 
 function dedupeModules(modules) {

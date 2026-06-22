@@ -382,10 +382,11 @@ Main resources:
 The quickest way to activate VNEM in a running MCP client is:
 
 1. Call `vnem_bootstrap` with the real user task, optional `agent_client`, optional `project_context`, optional `available_tools`, optional `risk_tolerance`, optional `desired_output`, and `include_resources` / `include_next_calls` booleans.
-2. Call the returned `recommended_vnem_calls`, usually `vnem_route_intent`, `vnem_recommend`, `vnem_quality_gate`, `vnem_orchestrate`, `vnem_search`, `vnem_best_practices`, or `vnem_sources` depending on the task.
-3. Use the returned `required_rules` / `vnem://...` resources as the task's read-first contract.
-4. Run the returned verification contract before claiming success.
-5. In the final report, include the `activation_id`, MCP tools used, rules used, changed files, commands/checks run, skipped checks, remaining risks, and evidence.
+2. For real user tasks, call `vnem_boost_task` next to get the concrete workflow, questions, selected skill/API guidance, verification, proof requirements, and Core-vs-Tools/Precision boundary.
+3. Call the returned lower-level `recommended_vnem_calls`, usually `vnem_route_intent`, `vnem_recommend`, `vnem_quality_gate`, `vnem_orchestrate`, `vnem_search`, `vnem_best_practices`, or `vnem_sources` depending on the task.
+4. Use the returned `required_rules` / `vnem://...` resources as the task's read-first contract.
+5. Run the returned verification contract before claiming success.
+6. In the final report, include the `activation_id`, MCP tools used, rules used, changed files, commands/checks run, skipped checks, remaining risks, and evidence.
 
 Example `vnem_bootstrap` arguments:
 
@@ -444,6 +445,7 @@ Read-only MCP tools:
 - `vnem_get_required_capabilities`: select the few required/strongly recommended capability modules for a task and return compact instructions, risks, evidence requirements, and deeper lookup IDs.
 - `vnem_activate_capability_pack`: create a task-specific activation contract with required instructions, usage-proof fields, incomplete-if-skipped rules, and safety boundaries.
 - `vnem_apply_skill_guidance`: apply one selected skill's compact guidance to the current task without installing the skill or executing scripts.
+- `vnem_boost_task`: single real-task entry point that selects useful skill guidance, API guidance only when relevant, domain contracts, missing questions, workflow steps, safety rules, verification/proof requirements, must-not-claim limits, and Core-vs-Tools/Precision boundaries.
 - `vnem_build_api_integration_plan`: build a safe API plan with auth/HTTPS/CORS, frontend/backend decision, backend proxy/secret rules, tests, and evidence. It does not call the API.
 - `vnem_get_agent_profile`: return only the relevant Codex/Claude/Gemini/DeepSeek/Hermes/Qwen/generic/unknown profile so one AI does not receive another AI's irrelevant instructions.
 - `vnem_compose_capability_contract`: combine routing, selected capability modules, one agent profile, skill/API plan when relevant, risks, verification, and final-report requirements into one compact contract.
@@ -475,22 +477,70 @@ Safety boundary:
 Recommended agent flow:
 
 1. Call `vnem_bootstrap`.
-2. Call `vnem_compose_capability_contract` for the compact task contract and required capability IDs.
-3. Use returned required rules/resources and task-specific checks/evidence requirements.
-4. Before risky filesystem/terminal/browser/GitHub/package/API/skill/modding actions, call `vnem_protection_review` and get explicit user approval outside Core MCP.
-5. Run task-specific verification and evidence collection: commands/checks, sources, screenshots/visual proof, changed files, assumptions, and skipped items.
-6. Before final response, call or apply `vnem_completion_audit`; do not claim done without evidence.
-7. Call `vnem_proof_trail` with bootstrap id, capability IDs, protection review(s), completion audit, evidence, assumptions, skipped items, and remaining risks.
-8. Include the compact proof trail / evidence summary in the final answer.
-9. Use `vnem_get_agent_profile` when needed to fetch only the relevant AI/client profile instead of dumping every model-specific instruction.
-10. Do not install skills or call APIs blindly.
+2. Call `vnem_boost_task` for the concrete task workflow. It is the easiest single entry point for real user tasks.
+3. If you need lower-level details, call `vnem_compose_capability_contract` for required capability IDs or `vnem_build_api_integration_plan` / safety-profile tools for API-specific work.
+4. Use returned required rules/resources and task-specific checks/evidence requirements.
+5. Before risky filesystem/terminal/browser/GitHub/package/API/skill/modding actions, call `vnem_protection_review` and get explicit user approval outside Core MCP.
+6. Run task-specific verification and evidence collection: commands/checks, sources, screenshots/visual proof, changed files, assumptions, and skipped items.
+7. Call/apply `vnem_completion_audit`, then call `vnem_proof_trail` and include its compact proof/evidence summary in the final response.
 
 Examples:
 
-- Next.js UI task: call `vnem_bootstrap`, then `vnem_compose_capability_contract` with `token_budget=compact`; apply the frontend/UI quality module and report build plus backend-to-UI data flow, visual/responsive/accessibility, loading/error/empty/success-state evidence. `vnem_completion_audit` should revise if no screenshot/browser/visual proof exists.
-- Weather/API integration: call `vnem_recommend_apis`, then `vnem_api_safety_profile` for the selected API, then `vnem_build_api_integration_plan`; compare auth/HTTPS/CORS, docs/freshness/rate-limit confidence, use a backend proxy for secret-bearing or CORS-unsafe APIs, never expose frontend keys, and provide success/error/loading/rate-limit tests. `vnem_protection_review` should block/revise frontend API-key exposure.
+- Elden Ring build request:
+  - User task: "Give me the best overpowered Elden Ring build."
+  - VNEM Core detects: game/build research plus changing/current patch facts.
+  - Applies: game-build research contract and source-quality contract.
+  - Questions: PvE or PvP, DLC/base game, rune level/progression, weapon/stat/playstyle preference, armor/poise importance, and player skill level.
+  - Proof required: current patch/source freshness, stated assumptions, alternatives when DLC/items/stats are unavailable.
+  - Core stops at: guidance and proof requirements; no file/tool execution is needed from Core.
+  - Tools/Precision MCP: not needed for answering build advice unless the AI must browse/fetch current sources outside Core.
+- Weather widget/API integration:
+  - User task: "Build a weather widget for my web app."
+  - VNEM Core detects: API integration plus visible frontend/UI work.
+  - Applies: API integration safety contract, UI/frontend/backend contract, API safety/profile fields, and selected weather API guidance such as Open-Meteo when useful.
+  - Questions: frontend-only or backend route, location input, units, auth/CORS/rate-limit constraints, and whether live API testing is approved.
+  - Proof required: auth/HTTPS/CORS/frontend-vs-backend decision, no frontend secrets, loading/error/empty/success/rate-limit states, mocked API tests or approved live tests.
+  - Core stops at: read-only API planning; it does not call the weather API.
+  - Tools/Precision MCP: needed for file edits, test execution, browser proof, and live API calls.
+- UI/frontend/backend improvement:
+  - User task: "Improve my dashboard UI and make sure the backend feature is actually visible."
+  - VNEM Core detects: UI/frontend/backend integration.
+  - Applies: frontend/UI skill guidance and UI/backend quality contract.
+  - Questions: target route, backend feature, user action path, desktop/mobile states, accessibility bar, and screenshot/browser proof expectations.
+  - Proof required: visible user path, backend-to-UI data flow, form/action path when relevant, loading/error/empty/success states, responsive/mobile/desktop and accessibility proof, screenshot/browser/visual proof.
+  - Core stops at: guidance and verification requirements; it does not inspect the browser or edit code.
+  - Tools/Precision MCP: needed for actual UI changes, browser screenshots, and test commands.
+- Modding task:
+  - User task: "Improve this Elden Ring mod and make real file changes."
+  - VNEM Core detects: high-risk game/modding workflow.
+  - Applies: modding safety contract, game-build context contract, and protection review triggers.
+  - Questions: exact game version, platform, mod loader/toolchain, file formats, target files, backup/isolation, restore plan, compatibility constraints.
+  - Proof required: toolchain/file-format research, backup and restore plan, isolated workspace, compatibility check, and game/tool-specific verification plan.
+  - Core stops at: planning/check guidance; it cannot edit mod files.
+  - Tools/Precision MCP: required for actual file edits, unpack/repack, backups/restores, and local verification.
+- Security hardening:
+  - User task: "Help me make my Gmail and PC as secure as possible."
+  - VNEM Core detects: high-stakes account/device security advice.
+  - Applies: security/protection workflow and source-quality contract.
+  - Questions: account access status, device OS, threat level, recovery options, MFA status, password manager use, suspicious sessions/apps, backup status.
+  - Proof required: current official/vendor guidance where facts change, immediate account-safety checklist, user-action vs tool-action separation, final safety checklist.
+  - Core stops at: advice/checklist; it does not change Gmail, PC settings, sessions, passwords, or devices.
+  - Tools/Precision MCP: only with user approval for local checks or browser/account actions.
+- Repo debugging:
+  - User task: "Fix this repo issue and prove it works."
+  - VNEM Core detects: coding/debugging/testing workflow.
+  - Applies: systematic debugging proof workflow and code/debug verification contract.
+  - Questions: failing command, logs, repro steps, expected vs actual behavior, test scope, safe patch constraints.
+  - Proof required: logs first, reproduction, root cause, minimal patch, focused tests, regression checks, before/after proof.
+  - Core stops at: workflow and proof contract; it does not mutate files or run commands.
+  - Tools/Precision MCP: needed for file edits, terminal commands, tests, and GitHub actions.
+
+Older lower-level examples:
+
+- Next.js UI task: call `vnem_bootstrap`, then `vnem_boost_task` or `vnem_compose_capability_contract` with `token_budget=compact`; apply the frontend/UI quality module and report build plus backend-to-UI data flow, visual/responsive/accessibility, loading/error/empty/success-state evidence. `vnem_completion_audit` should revise if no screenshot/browser/visual proof exists.
+- Weather/API integration: call `vnem_boost_task`; if deeper API detail is needed, call `vnem_recommend_apis`, then `vnem_api_safety_profile` for the selected API, then `vnem_build_api_integration_plan`; compare auth/HTTPS/CORS, docs/freshness/rate-limit confidence, use a backend proxy for secret-bearing or CORS-unsafe APIs, never expose frontend keys, and provide success/error/loading/rate-limit tests. `vnem_protection_review` should block/revise frontend API-key exposure.
 - Skill/capability use: call `vnem_recommend_skills`, then `vnem_skill_safety_profile`; Core MCP may apply safe guidance summaries, but installation/execution remains Precision/Tools-only after manual SKILL.md/scripts/references review.
-- Debugging task: call `vnem_get_required_capabilities`; apply the systematic debugging module, reproduce the failure, identify root cause, fix, and show red/green or equivalent proof.
+- Debugging task: call `vnem_boost_task` or `vnem_get_required_capabilities`; apply the systematic debugging module, reproduce the failure, identify root cause, fix, and show red/green or equivalent proof.
 - Elden Ring build research: ask or state assumptions for PvE/PvP, Shadow of the Erdtree DLC ownership, rune level/progression, armor/poise relevance, weapon/spell/stat preference, solo/co-op, and skill level; use current/source-quality research and avoid generic outdated "best build" claims.
 - Game/modding task: research the specific game, file formats, tools, compatibility issues, backups/isolation, and verification plan before any future Precision/Tools mutation.
 - Risky Tools/Giga MCP permission preview: `vnem_protection_review` returns a prompt with exact action/scope, danger level, why it is needed, what can go wrong, safeguards, rollback/recovery, what the AI will do after approval, and what it will not do. Core MCP never runs the action.

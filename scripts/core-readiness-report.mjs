@@ -21,6 +21,7 @@ const git = (...args) => {
 
 const library = await json("capabilities/super-library.json");
 const serverSource = await text("scripts/vnem-mcp-server.mjs");
+const mcpTestSource = await text("scripts/test-mcp-server.mjs");
 const readme = await text("README.md");
 const installGuide = await text(".vnem/install-guide.md");
 const packageJson = await json("package.json");
@@ -56,6 +57,22 @@ const domainCoverage = {
   modding_pipeline: /file-format|file format|backup|restore|toolchain|modding/i.test(serverSource + readme),
   api_secret_cors_boundary: /CORS|secret|backend proxy|API-key/i.test(serverSource + readme)
 };
+const realTaskExamplesTested = [
+  { id: "elden_ring_build", tested: /Give me the best overpowered Elden Ring build/i.test(mcpTestSource) },
+  { id: "weather_widget_api", tested: /Build a weather widget for my web app/i.test(mcpTestSource) },
+  { id: "ui_backend_visibility", tested: /backend feature is actually visible/i.test(mcpTestSource) },
+  { id: "elden_ring_modding", tested: /Improve this Elden Ring mod and make real file changes/i.test(mcpTestSource) },
+  { id: "gmail_pc_security", tested: /Gmail and PC as secure as possible/i.test(mcpTestSource) },
+  { id: "repo_debugging", tested: /Fix this repo issue and prove it works/i.test(mcpTestSource) }
+];
+const taskBoostingStatus = {
+  vnem_boost_task_exists: toolInventory.includes("vnem_boost_task"),
+  uses_skill_guidance: /selected_skill_guidance|selectBoostSkillGuidance/i.test(serverSource),
+  uses_api_guidance_when_relevant: /selected_api_guidance|buildApiIntegrationPlan/i.test(serverSource),
+  includes_workflow_and_proof: /workflow_steps|proof_trail_inputs|completion_checklist/i.test(serverSource),
+  real_task_examples_tested: realTaskExamplesTested.filter((item) => item.tested).map((item) => item.id),
+  all_required_examples_tested: realTaskExamplesTested.every((item) => item.tested)
+};
 
 assert.ok(toolInventory.includes("vnem_api_safety_profile"), "Core MCP API safety profile tool is missing");
 assert.ok(toolInventory.includes("vnem_skill_safety_profile"), "Core MCP skill safety profile tool is missing");
@@ -64,6 +81,8 @@ assert.ok((library.skills || []).length > 0, "skill library is empty");
 assert.ok((library.apis || []).length > 0, "API library is empty");
 assert.ok(Object.values(fixtureCoverage).every(Boolean), "fixture importer coverage is incomplete");
 assert.ok(Object.values(proofAuditProtection).every(Boolean), "proof/audit/protection tool coverage is incomplete");
+assert.ok(taskBoostingStatus.vnem_boost_task_exists, "task boosting tool is missing");
+assert.ok(taskBoostingStatus.all_required_examples_tested, "real task boosting examples are not fully tested");
 assert.ok(packageJson.scripts?.["core:readiness"], "package script core:readiness is missing");
 
 const blockers = [];
@@ -91,6 +110,7 @@ const report = {
     forbidden_core_tool_names: forbiddenCoreTools
   },
   proof_trail_completion_audit_protection_review_status: proofAuditProtection,
+  task_boosting_status: taskBoostingStatus,
   api_library_counts: apiCounts,
   skill_library_counts: skillCounts,
   fixture_importer_test_coverage: fixtureCoverage,
@@ -100,7 +120,8 @@ const report = {
     "Default Core MCP tool inventory is read-only by tool name/annotations and does not expose terminal/browser/filesystem/GitHub mutation tools.",
     "Proof trail, completion audit, and protection review tools are present.",
     "Fixture importer coverage includes API verification and SKILL.md parsing cases.",
-    "Curated API records carry explicit docs/rate-limit confidence instead of guessed certainty."
+    "Curated API records carry explicit docs/rate-limit confidence instead of guessed certainty.",
+    "Task boosting entry point exists and is covered by six real-task examples."
   ],
   not_ready: [
     "Most API docs, rate limits, CORS values, and freshness statuses remain metadata-level or unknown.",
@@ -170,6 +191,8 @@ function formatReport(report) {
   lines.push(`core_tools: ${report.tool_inventory.count}`);
   lines.push(`read_only_status: ${report.tool_inventory.read_only_status}`);
   lines.push(`proof_audit_protection: ${status(report.proof_trail_completion_audit_protection_review_status)}`);
+  lines.push(`task_boosting_status: exists=${report.task_boosting_status.vnem_boost_task_exists ? "yes" : "no"}, skill_guidance=${report.task_boosting_status.uses_skill_guidance ? "yes" : "no"}, api_guidance_when_relevant=${report.task_boosting_status.uses_api_guidance_when_relevant ? "yes" : "no"}, workflow_and_proof=${report.task_boosting_status.includes_workflow_and_proof ? "yes" : "no"}`);
+  lines.push(`real_task_examples_tested: ${report.task_boosting_status.real_task_examples_tested.join(", ")}`);
   lines.push(`api_counts: total=${report.api_library_counts.total_apis}, docs_verified=${report.api_library_counts.docs_verified_count}, docs_unknown=${report.api_library_counts.docs_unknown_count}, rate_limit_verified=${report.api_library_counts.rate_limit_verified_count}, rate_limit_unknown=${report.api_library_counts.rate_limit_unknown_count}, cors_unknown=${report.api_library_counts.cors_unknown_count}, frontend_safe=${report.api_library_counts.frontend_safe_count}, backend_required=${report.api_library_counts.backend_required_count}`);
   lines.push(`skill_counts: total=${report.skill_library_counts.total_skills}, parsed_summaries=${report.skill_library_counts.parsed_summaries_count}, verified_client_compat=${report.skill_library_counts.verified_client_compatibility_count}, likely_client_compat=${report.skill_library_counts.likely_client_compatibility_count}, unknown_client_compat=${report.skill_library_counts.unknown_client_compatibility_count}, manual_review_required=${report.skill_library_counts.manual_review_required_count}, core_guidance_capable=${report.skill_library_counts.core_guidance_capable_count}, install_precision_required=${report.skill_library_counts.install_precision_required_count}`);
   lines.push(`fixture_coverage: ${status(report.fixture_importer_test_coverage)}`);

@@ -50,6 +50,7 @@ try {
     "vnem_get_required_capabilities",
     "vnem_activate_capability_pack",
     "vnem_apply_skill_guidance",
+    "vnem_boost_task",
     "vnem_build_api_integration_plan",
     "vnem_get_agent_profile",
     "vnem_compose_capability_contract",
@@ -292,6 +293,91 @@ try {
   assert.ok(composedContract.structuredContent?.protection_review_triggers?.length > 0, "composed contract should include protection review triggers");
   assert.equal(composedContract.structuredContent?.proof_trail_expectation?.tool, "vnem_proof_trail", "composed contract should include proof-trail expectation");
   assert.ok(composedContract.structuredContent?.final_report_requirements?.includes("proof_trail_id"), "final report should be compatible with proof trail");
+
+  const boostText = (value) => JSON.stringify(value);
+  const boostToolName = "vnem_boost_task";
+
+  const gameBoost = await client.callTool({
+    name: boostToolName,
+    arguments: { task: "Give me the best overpowered Elden Ring build.", agent_client: "codex", token_budget: "compact" }
+  });
+  assert.equal(gameBoost.isError, undefined);
+  assert.ok(/game_build|research/i.test(gameBoost.structuredContent?.task_type || ""), "Elden Ring boost should classify game/build research");
+  assert.ok(/PvE|PvP/.test(boostText(gameBoost.structuredContent?.missing_context_questions)), "Elden Ring boost should ask PvE/PvP");
+  assert.ok(/DLC|Shadow|base game/i.test(boostText(gameBoost.structuredContent?.missing_context_questions)), "Elden Ring boost should ask DLC/base game");
+  assert.ok(/progression|rune level|level/i.test(boostText(gameBoost.structuredContent?.missing_context_questions)), "Elden Ring boost should ask progression/rune level");
+  assert.ok(/weapon|stat|playstyle/i.test(boostText(gameBoost.structuredContent)), "Elden Ring boost should ask weapon/stat preference");
+  assert.ok(/armor|poise/i.test(boostText(gameBoost.structuredContent)), "Elden Ring boost should include armor/poise relevance");
+  assert.ok(/skill|beginner|advanced/i.test(boostText(gameBoost.structuredContent)), "Elden Ring boost should include player skill level");
+  assert.ok(/current|patch|source/i.test(boostText(gameBoost.structuredContent?.verification_plan)), "Elden Ring boost should require source freshness");
+  assert.ok(/generic|best|OP|context/i.test(boostText(gameBoost.structuredContent?.must_not_claim)), "Elden Ring boost should reject generic best-build claims");
+  assert.ok(/Core can plan|no file|tool execution/i.test(boostText(gameBoost.structuredContent?.when_tools_or_precision_mcp_is_needed)), "Elden Ring boost should say Core needs no file/tool execution");
+
+  const weatherBoost = await client.callTool({
+    name: boostToolName,
+    arguments: { task: "Build a weather widget for my web app.", agent_client: "codex", known_context: "React frontend", token_budget: "compact" }
+  });
+  assert.equal(weatherBoost.isError, undefined);
+  assert.ok(/api_integration|website_ui/i.test(weatherBoost.structuredContent?.task_type || ""), "Weather boost should classify API/UI integration");
+  assert.ok(weatherBoost.structuredContent?.selected_api_guidance?.length > 0, "Weather boost should select API guidance");
+  assert.equal(weatherBoost.structuredContent?.core_mcp_calls_api, false, "Boost task must not call live APIs");
+  assert.ok(/Open-Meteo|weather/i.test(boostText(weatherBoost.structuredContent?.selected_api_guidance)), "Weather boost should reference useful weather API guidance");
+  assert.ok(/frontend|backend|CORS|secret|API key|rate/i.test(boostText(weatherBoost.structuredContent?.safety_rules)), "Weather boost should include frontend/backend/CORS/secret/rate safety");
+  assert.ok(/loading|error|empty|success|mock/i.test(boostText(weatherBoost.structuredContent?.verification_plan)), "Weather boost should require UI states and mocked/integration tests");
+  assert.ok(/vnem_completion_audit|vnem_proof_trail/i.test(boostText(weatherBoost.structuredContent?.proof_trail_inputs)), "Weather boost should include audit/proof inputs");
+
+  const uiBoost = await client.callTool({
+    name: boostToolName,
+    arguments: { task: "Improve my dashboard UI and make sure the backend feature is actually visible.", agent_client: "codex", token_budget: "compact" }
+  });
+  assert.equal(uiBoost.isError, undefined);
+  assert.ok(uiBoost.structuredContent?.selected_skill_guidance?.length > 0, "UI boost should select skill guidance");
+  assert.ok(/visible user path|backend-to-UI|data flow|component|form|action/i.test(boostText(uiBoost.structuredContent)), "UI boost should require visible backend-to-UI path");
+  assert.ok(/loading|error|empty|success/i.test(boostText(uiBoost.structuredContent?.completion_checklist)), "UI boost should require state coverage");
+  assert.ok(/responsive|mobile|desktop|accessibility|screenshot|visual/i.test(boostText(uiBoost.structuredContent?.verification_plan)), "UI boost should require responsive/a11y/visual proof");
+  assert.ok(/backend-only|without visual|without screenshot/i.test(boostText(uiBoost.structuredContent?.must_not_claim)), "UI boost should reject backend-only done claims");
+
+  const moddingBoost = await client.callTool({
+    name: boostToolName,
+    arguments: { task: "Improve this Elden Ring mod and make real file changes.", agent_client: "codex", token_budget: "compact" }
+  });
+  assert.equal(moddingBoost.isError, undefined);
+  assert.ok(/game version|platform|toolchain|mod loader|file format|backup|restore|compatibility|verification/i.test(boostText(moddingBoost.structuredContent)), "Modding boost should require version/platform/toolchain/file formats/backup/restore/verification");
+  assert.ok(/Tools|Precision MCP|file edits|mutate/i.test(boostText(moddingBoost.structuredContent?.when_tools_or_precision_mcp_is_needed)), "Modding boost should require Tools/Precision MCP for file edits");
+
+  const securityBoost = await client.callTool({
+    name: boostToolName,
+    arguments: { task: "Help me make my Gmail and PC as secure as possible.", agent_client: "codex", token_budget: "compact" }
+  });
+  assert.equal(securityBoost.isError, undefined);
+  assert.ok(/security|account/i.test(securityBoost.structuredContent?.task_type || ""), "Security boost should classify high-stakes security task");
+  assert.ok(/current|source|official|changing/i.test(boostText(securityBoost.structuredContent?.verification_plan)), "Security boost should require current/source-quality checks");
+  assert.ok(/MFA|2FA|recovery|password|device|updates|backup/i.test(boostText(securityBoost.structuredContent?.workflow_steps)), "Security boost should prioritize practical account/device actions");
+  assert.ok(/guarantee|no hacker|impossible|ever/i.test(boostText(securityBoost.structuredContent?.must_not_claim)), "Security boost should forbid impossible guarantees");
+  assert.ok(/user action|tool action|final safety checklist/i.test(boostText(securityBoost.structuredContent)), "Security boost should separate user/tool actions and require checklist");
+
+  const debugBoost = await client.callTool({
+    name: boostToolName,
+    arguments: { task: "Fix this repo issue and prove it works.", agent_client: "codex", token_budget: "compact" }
+  });
+  assert.equal(debugBoost.isError, undefined);
+  assert.ok(/debugging|code/i.test(debugBoost.structuredContent?.task_type || ""), "Debug boost should classify coding/debugging");
+  assert.ok(/logs first|check logs|diagnostic logs/i.test(boostText(debugBoost.structuredContent?.workflow_steps)), "Debug boost should require logs first");
+  assert.ok(/reproduce|root cause|minimal.*patch|tests|before\/after|proof/i.test(boostText(debugBoost.structuredContent)), "Debug boost should require repro/root cause/minimal patch/tests/proof");
+  assert.ok(/Tools|Precision MCP|file edits|commands/i.test(boostText(debugBoost.structuredContent?.when_tools_or_precision_mcp_is_needed)), "Debug boost should require Tools/Precision MCP for edits/commands");
+  assert.equal(debugBoost.structuredContent?.selected_api_guidance?.length, 0, "Debug boost should not select API guidance when APIs are not useful");
+
+  for (const boosted of [gameBoost, weatherBoost, uiBoost, moddingBoost, securityBoost, debugBoost]) {
+    assert.ok(boosted.structuredContent?.workflow_steps?.length >= 4, "Boost output needs concrete workflow steps");
+    assert.ok(boosted.structuredContent?.completion_checklist?.length > 0, "Boost output needs completion checklist");
+    assert.ok(boosted.structuredContent?.must_not_claim?.length > 0, "Boost output needs must-not-claim limits");
+    assert.ok(boosted.structuredContent?.proof_trail_inputs, "Boost output needs proof-trail inputs");
+    assert.ok(JSON.stringify(boosted.structuredContent).length < 16000, "compact boost output should stay compact");
+    assert.notEqual(boosted.structuredContent?.library_dump_count, 80, "Boost output must not dump all skills");
+    assert.notEqual(boosted.structuredContent?.api_dump_count, 700, "Boost output must not dump all APIs");
+    assert.equal(boosted.structuredContent?.core_mcp_installs_skills, false, "Boost output must not install skills");
+    assert.equal(boosted.structuredContent?.core_mcp_executes_skill_scripts, false, "Boost output must not execute skill scripts");
+  }
 
   const uiAudit = await client.callTool({
     name: "vnem_completion_audit",

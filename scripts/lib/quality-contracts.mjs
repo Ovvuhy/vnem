@@ -492,7 +492,7 @@ export function classifyDomains(task = "", context = "") {
   if (/api|cors|oauth|webhook|api key|token|external service|weather|integration/.test(text)) domains.add("api"), domains.add("code");
   if (/debug|bug|failing|failure|error|stack trace|regression|root cause|ci/.test(text)) domains.add("debugging"), domains.add("code");
   if (/code|test|lint|build|cli|package|refactor|implement|fix/.test(text)) domains.add("code");
-  if (/security|secret|auth|privacy|safe|risk|threat|permission/.test(text)) domains.add("security");
+  if (/security|secure|gmail|pc|device|account|malware|secret|auth|privacy|safe|risk|threat|permission/.test(text)) domains.add("security");
   if (/prompt|instruction|agent behavior|system prompt/.test(text)) domains.add("prompt");
   if (/\bvnem\b|core mcp|precision mcp|capability library/.test(text)) domains.add("vnem_development");
   if (!domains.size) domains.add("general");

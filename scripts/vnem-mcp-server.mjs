@@ -12,6 +12,7 @@ import {
   activateCapabilityPack,
   applySkillGuidance,
   buildApiIntegrationPlan,
+  boostTask,
   composeCapabilityContract,
   getRequiredCapabilities
 } from "./lib/capability-modules.mjs";
@@ -89,6 +90,7 @@ const DEFAULT_MCP_TOOLS = [
   "vnem_get_required_capabilities",
   "vnem_activate_capability_pack",
   "vnem_apply_skill_guidance",
+  "vnem_boost_task",
   "vnem_build_api_integration_plan",
   "vnem_get_agent_profile",
   "vnem_compose_capability_contract",
@@ -460,6 +462,28 @@ function registerTools(mcpServer) {
     async (args) => {
       const result = applySkillGuidance(superLibrary, args);
       return toolResult(formatSkillGuidance(result), result);
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_boost_task",
+    {
+      title: "Boost A Real User Task With VNEM Core",
+      description:
+        "Return one concrete task-specific workflow using selected skill guidance, API guidance when useful, domain contracts, missing questions, verification, proof requirements, and Core/Precision boundaries. Core MCP stays read-only.",
+      inputSchema: {
+        task: z.string().min(1),
+        agent_client: z.string().optional(),
+        model_family: z.string().optional(),
+        known_context: z.string().optional(),
+        constraints: z.array(z.string()).default([]),
+        token_budget: z.enum(["compact", "normal", "expanded"]).default("compact")
+      },
+      annotations: READ_ONLY
+    },
+    async (args) => {
+      const result = boostTask(superLibrary, agentProfiles, args);
+      return toolResult(formatBoostTask(result), result);
     }
   );
 
@@ -3218,6 +3242,21 @@ function formatSkillGuidance(result) {
     `skill guidance: ${result.skill_id}`,
     ...(result.compact_applicable_instructions || []).map((item) => `- ${item}`),
     "Core MCP applies guidance only; installation/execution requires separate approval/tools."
+  ].join("\n");
+}
+
+function formatBoostTask(boost) {
+  return [
+    `VNEM task boost: ${boost.task_summary}`,
+    `task type: ${boost.task_type}`,
+    `questions: ${(boost.missing_context_questions || []).slice(0, 3).join("; ") || "none critical"}`,
+    `skills: ${(boost.selected_skill_guidance || []).map((skill) => skill.skill_id).join(", ") || "none"}`,
+    `apis: ${(boost.selected_api_guidance || []).map((api) => api.id).join(", ") || "none"}`,
+    `workflow: ${(boost.workflow_steps || []).slice(0, 3).join(" | ")}`,
+    `verify: ${(boost.verification_plan || []).slice(0, 3).join(" | ")}`,
+    `must not claim: ${(boost.must_not_claim || []).slice(0, 2).join(" | ")}`,
+    `precision/tools: ${(boost.when_tools_or_precision_mcp_is_needed || []).slice(0, 2).join(" | ")}`,
+    "Core MCP is read-only: guidance only, no skill installs, live API calls, file edits, browser actions, terminal commands, or GitHub actions."
   ].join("\n");
 }
 
