@@ -1,0 +1,445 @@
+{
+  "generated_at": "2026-06-22T08:00:00.000Z",
+  "mode": "hourly",
+  "lookback_days": 2,
+  "source_routes": [
+    "github-search",
+    "npm-search"
+  ],
+  "candidates": [
+    {
+      "source_route": "github-search",
+      "name": "Forward-Future/DeployBot",
+      "title": "DeployBot",
+      "description": "Agent-managed GitHub merge queue for Codex, Claude Code, Cursor, and MCP clients.",
+      "repo_url": "https://github.com/Forward-Future/DeployBot",
+      "homepage_url": null,
+      "source_url": "https://github.com/Forward-Future/DeployBot",
+      "source_urls": [
+        "https://github.com/Forward-Future/DeployBot"
+      ],
+      "signal_summary": "New MCP server (created 2026-06-20, 38 stars) that manages GitHub merge queues for AI coding agents. Pushed actively on 2026-06-22. MIT licensed, Python.",
+      "why_builders_should_care": "Addresses a real orchestration gap: coordinating merge/PR workflows across multiple AI coding agents (Codex, Claude Code, Cursor) without human bottleneck.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "new-repository"
+      ],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 38,
+        "language": "Python",
+        "license": "MIT",
+        "created_at": "2026-06-20",
+        "pushed_at": "2026-06-22"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 8,
+        "trust_score": 92,
+        "flags": [
+          "new-repository"
+        ],
+        "reasons": [],
+        "reviewed_at": "2026-06-22T08:00:00.000Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": false,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      },
+      "allow_registry_proposal": true
+    },
+    {
+      "source_route": "github-search",
+      "name": "pranjalbhatia710/descartes-mcp",
+      "title": "Descartes MCP",
+      "description": "An MCP server that recursively doubts every plan decision — grills agent reasoning before execution.",
+      "repo_url": "https://github.com/pranjalbhatia710/descartes-mcp",
+      "homepage_url": null,
+      "source_url": "https://github.com/pranjalbhatia710/descartes-mcp",
+      "source_urls": [
+        "https://github.com/pranjalbhatia710/descartes-mcp"
+      ],
+      "signal_summary": "New MCP server (created 2026-06-21, 22 stars) implementing adversarial reasoning as a tool. MIT licensed, Python.",
+      "why_builders_should_care": "Novel safety/reliability pattern: an MCP tool that stress-tests agent plans before execution. Could reduce hallucination-driven failures.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "new-repository"
+      ],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 22,
+        "language": "Python",
+        "license": "MIT",
+        "created_at": "2026-06-21",
+        "pushed_at": "2026-06-21"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 8,
+        "trust_score": 92,
+        "flags": [
+          "new-repository"
+        ],
+        "reasons": [],
+        "reviewed_at": "2026-06-22T08:00:00.000Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": false,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      },
+      "allow_registry_proposal": true
+    },
+    {
+      "source_route": "github-search",
+      "name": "vornicx/Midas",
+      "title": "Midas",
+      "description": "Local-first, eval-first memory for long-horizon AI agents — no LLM at ingest. Python SDK + MCP server.",
+      "repo_url": "https://github.com/vornicx/Midas",
+      "homepage_url": null,
+      "source_url": "https://github.com/vornicx/Midas",
+      "source_urls": [
+        "https://github.com/vornicx/Midas"
+      ],
+      "signal_summary": "Memory system for long-horizon agents (11 stars, created 2026-06-04). Apache-2.0, Python. Pushed 2026-06-22. Emphasizes eval-first and local-first design.",
+      "why_builders_should_care": "Addresses a key agent reliability problem: memory quality for long-running tasks. The 'no LLM at ingest' design reduces cost and hallucination in memory formation.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "new-repository"
+      ],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 11,
+        "language": "Python",
+        "license": "Apache-2.0",
+        "created_at": "2026-06-04",
+        "pushed_at": "2026-06-22"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 8,
+        "trust_score": 92,
+        "flags": [
+          "new-repository"
+        ],
+        "reasons": [],
+        "reviewed_at": "2026-06-22T08:00:00.000Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": false,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      },
+      "allow_registry_proposal": true
+    },
+    {
+      "source_route": "github-search",
+      "name": "aryaminus/controlkeel",
+      "title": "ControlKeel",
+      "description": "Agent control plane for governed AI coding: validate changes, enforce policy gates, track findings, and audit agent actions.",
+      "repo_url": "https://github.com/aryaminus/controlkeel",
+      "homepage_url": null,
+      "source_url": "https://github.com/aryaminus/controlkeel",
+      "source_urls": [
+        "https://github.com/aryaminus/controlkeel"
+      ],
+      "signal_summary": "Agent governance/control plane (8 stars, created 2026-03-18). Elixir. Pushed 2026-06-20. License unclear (NOASSERTION).",
+      "why_builders_should_care": "Policy enforcement layer for AI coding agents — validates changes before they land. Relevant for teams deploying agents in regulated or high-stakes environments.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "license-not-asserted"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 8,
+        "language": "Elixir",
+        "license": "NOASSERTION",
+        "created_at": "2026-03-18",
+        "pushed_at": "2026-06-20"
+      },
+      "repository_review": {
+        "verdict": "needs-review",
+        "risk_score": 18,
+        "trust_score": 82,
+        "flags": [
+          "license-not-asserted"
+        ],
+        "reasons": [],
+        "reviewed_at": "2026-06-22T08:00:00.000Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": false,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      },
+      "allow_registry_proposal": true
+    },
+    {
+      "source_route": "github-search",
+      "name": "natea/harness-eval",
+      "title": "Harness Eval",
+      "description": "Eval framework that ranks agentic coding frameworks (Superpowers, Compound Engineering, Agent Skills) head-to-head.",
+      "repo_url": "https://github.com/natea/harness-eval",
+      "homepage_url": null,
+      "source_url": "https://github.com/natea/harness-eval",
+      "source_urls": [
+        "https://github.com/natea/harness-eval"
+      ],
+      "signal_summary": "Eval framework for comparing agentic coding frameworks (6 stars, created 2026-06-10). TypeScript. Pushed 2026-06-21. License not asserted.",
+      "why_builders_should_care": "Head-to-head comparison data for agent frameworks helps builders make informed stack choices. Fills a gap in the ecosystem.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "license-not-asserted",
+        "new-repository"
+      ],
+      "recommended_action": "watchlist",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 6,
+        "language": "TypeScript",
+        "license": null,
+        "created_at": "2026-06-10",
+        "pushed_at": "2026-06-21"
+      },
+      "repository_review": {
+        "verdict": "needs-review",
+        "risk_score": 18,
+        "trust_score": 82,
+        "flags": [
+          "license-not-asserted",
+          "new-repository"
+        ],
+        "reasons": [],
+        "reviewed_at": "2026-06-22T08:00:00.000Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": false,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      },
+      "allow_registry_proposal": true
+    },
+    {
+      "source_route": "github-search",
+      "name": "TerryCM/vibegroup",
+      "title": "VibeGroup",
+      "description": "Let your team's Claude Code agents talk to each other, end-to-end: ask what a teammate is building, share context, coordinate work.",
+      "repo_url": "https://github.com/TerryCM/vibegroup",
+      "homepage_url": null,
+      "source_url": "https://github.com/TerryCM/vibegroup",
+      "source_urls": [
+        "https://github.com/TerryCM/vibegroup"
+      ],
+      "signal_summary": "Multi-agent coordination tool (7 stars, created 2026-06-21). TypeScript, MIT. Pushed 2026-06-22. Enables Claude Code agents to share context and coordinate.",
+      "why_builders_should_care": "Multi-agent collaboration is a growing pain point. This gives Claude Code agents a shared communication channel without custom orchestration.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "new-repository"
+      ],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 7,
+        "language": "TypeScript",
+        "license": "MIT",
+        "created_at": "2026-06-21",
+        "pushed_at": "2026-06-22"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 8,
+        "trust_score": 92,
+        "flags": [
+          "new-repository"
+        ],
+        "reasons": [],
+        "reviewed_at": "2026-06-22T08:00:00.000Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": false,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      },
+      "allow_registry_proposal": true
+    },
+    {
+      "source_route": "github-search",
+      "name": "timo-reymann/mealie-mcp-server",
+      "title": "Mealie MCP Server",
+      "description": "MCP server for Mealie recipe management. Exposes tools and prompts for recipe search, meal planning, and ingredient management.",
+      "repo_url": "https://github.com/timo-reymann/mealie-mcp-server",
+      "homepage_url": null,
+      "source_url": "https://github.com/timo-reymann/mealie-mcp-server",
+      "source_urls": [
+        "https://github.com/timo-reymann/mealie-mcp-server"
+      ],
+      "signal_summary": "Niche MCP server for Mealie recipe manager (4 stars, created 2026-06-20). TypeScript, MIT. Shows MCP ecosystem expanding into consumer/home-use domains.",
+      "why_builders_should_care": "Illustrates MCP's expansion beyond dev tools into consumer applications. Low risk, well-scoped.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "new-repository"
+      ],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "stars": 4,
+        "language": "TypeScript",
+        "license": "MIT",
+        "created_at": "2026-06-20",
+        "pushed_at": "2026-06-20"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 8,
+        "trust_score": 92,
+        "flags": [
+          "new-repository"
+        ],
+        "reasons": [],
+        "reviewed_at": "2026-06-22T08:00:00.000Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": false,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      },
+      "allow_registry_proposal": true
+    },
+    {
+      "source_route": "npm-search",
+      "name": "mcp-fit",
+      "title": "mcp-fit",
+      "description": "MCP server agent-usability scorer — scores and auto-fixes tool descriptions for better agent comprehension.",
+      "repo_url": null,
+      "homepage_url": "https://www.npmjs.com/package/mcp-fit",
+      "package_url": "https://www.npmjs.com/package/mcp-fit",
+      "source_url": "https://www.npmjs.com/package/mcp-fit",
+      "source_urls": [
+        "https://www.npmjs.com/package/mcp-fit"
+      ],
+      "signal_summary": "npm package (v0.1.1, score 157.8) that scores and auto-fixes MCP tool descriptions for agent usability. Addresses a real quality problem in the MCP ecosystem.",
+      "why_builders_should_care": "Poor tool descriptions are a common MCP pain point. This package could improve agent reliability across any MCP server by optimizing descriptions.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "early-stage"
+      ],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "npm_score": 157.8,
+        "version": "0.1.1"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 8,
+        "trust_score": 92,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-06-22T08:00:00.000Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": false,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      },
+      "allow_registry_proposal": true
+    },
+    {
+      "source_route": "npm-search",
+      "name": "@gork-labs/secondbrain-mcp",
+      "title": "Second Brain MCP",
+      "description": "Second Brain MCP Server - Agent team orchestration with dynamic tool discovery.",
+      "repo_url": null,
+      "homepage_url": "https://www.npmjs.com/package/@gork-labs/secondbrain-mcp",
+      "package_url": "https://www.npmjs.com/package/@gork-labs/secondbrain-mcp",
+      "source_url": "https://www.npmjs.com/package/@gork-labs/secondbrain-mcp",
+      "source_urls": [
+        "https://www.npmjs.com/package/@gork-labs/secondbrain-mcp"
+      ],
+      "signal_summary": "npm package (v0.23.0, score 148.1) for agent team orchestration with dynamic tool discovery. Higher version number suggests active development.",
+      "why_builders_should_care": "Dynamic tool discovery is a key pattern for multi-agent systems. This package could simplify orchestration setup.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "early-stage"
+      ],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "npm_score": 148.1,
+        "version": "0.23.0"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 8,
+        "trust_score": 92,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-06-22T08:00:00.000Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": false,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      },
+      "allow_registry_proposal": true
+    },
+    {
+      "source_route": "npm-search",
+      "name": "@openhorizon/workflows",
+      "title": "OpenHorizon Workflows",
+      "description": "Deterministic multi-agent workflow orchestration as an MCP server — agent(), parallel(), pipeline() primitives.",
+      "repo_url": null,
+      "homepage_url": "https://www.npmjs.com/package/@openhorizon/workflows",
+      "package_url": "https://www.npmjs.com/package/@openhorizon/workflows",
+      "source_url": "https://www.npmjs.com/package/@openhorizon/workflows",
+      "source_urls": [
+        "https://www.npmjs.com/package/@openhorizon/workflows"
+      ],
+      "signal_summary": "npm package (v0.1.5, score 141.0) providing deterministic multi-agent workflow primitives (agent/parallel/pipeline) as MCP tools.",
+      "why_builders_should_care": "Deterministic workflow orchestration is a key need for production agent systems. Having these primitives as MCP tools is a clean design.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "early-stage"
+      ],
+      "recommended_action": "review",
+      "reason": "candidate",
+      "metrics": {
+        "npm_score": 141.0,
+        "version": "0.1.5"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 8,
+        "trust_score": 92,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-06-22T08:00:00.000Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": false,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      },
+      "allow_registry_proposal": true
+    }
+  ],
+  "watched_sources": [],
+  "errors": [
+    "GitHub API rate limit exhausted during scout — some repo detail fetches returned null. Core data from search results is intact."
+  ]
+}
