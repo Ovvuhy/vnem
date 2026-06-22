@@ -487,6 +487,7 @@ function apiPlanCandidate(entry) {
     official_docs_url: entry.official_docs_url || "unknown",
     freshness_status: entry.freshness_status || "unknown; verify current docs",
     rate_limit_notes: entry.rate_limit_notes || "unknown; verify official docs",
+    rate_limit_confidence: entry.rate_limit_confidence || "unknown",
     documentation_confidence: entry.documentation_confidence || "unknown",
     verification_source_urls: entry.verification_source_urls || [],
     integration_test_requirements: entry.integration_test_requirements || [],

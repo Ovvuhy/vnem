@@ -65,6 +65,175 @@ const PRIORITY_API_CATEGORIES = new Set([
 
 const DOCS_LIKE_URL_RE = /(?:docs?|documentation|developers?|api|reference|swagger|openapi|readthedocs|developer|dev|manual)/i;
 
+const DEFAULT_API_VERIFICATION_RECORDS = [
+  {
+    id: "api:weather:open-meteo",
+    verification_status: "verified",
+    official_docs_url: "https://open-meteo.com/en/docs",
+    verification_source_urls: ["https://open-meteo.com/en/docs"],
+    documentation_confidence: "official_docs_verified",
+    freshness_status: "verified official docs URL and non-commercial usage note in this batch; endpoint behavior still needs implementation-time review",
+    rate_limit_notes: "Official docs state non-commercial free usage is limited to less than 10,000 daily API calls; commercial use requires an API key.",
+    rate_limit_confidence: "official_docs_numeric_limit_verified",
+    cors_confidence: "metadata_cors_yes_not_live_retested",
+    frontend_safe: true,
+    backend_required: false,
+    secret_risk: false,
+    recommended_stack_usage: "Frontend weather widget candidate for non-commercial/no-secret usage after terms review; use backend for commercial API-key usage or caching."
+  },
+  {
+    id: "api:anti-malware:abuseipdb",
+    verification_status: "verified",
+    official_docs_url: "https://docs.abuseipdb.com/",
+    verification_source_urls: ["https://docs.abuseipdb.com/"],
+    documentation_confidence: "official_docs_verified",
+    freshness_status: "verified official AbuseIPDB APIv2 docs in this batch; account plan/rate limits still need implementation-time review",
+    rate_limit_notes: "Exact account quota not verified in this batch; API-key usage and account plan must be checked before implementation.",
+    rate_limit_confidence: "unknown_exact_quota",
+    frontend_safe: false,
+    backend_required: true,
+    secret_risk: true,
+    recommended_stack_usage: "Backend/server-side threat lookup only; keep AbuseIPDB API key in server-side secret storage.",
+    avoid_with: ["frontend-only-without-proxy", "client-exposed-secrets", "automated blocking without human review"]
+  },
+  {
+    id: "api:games-comics:cheapshark",
+    verification_status: "verified",
+    official_docs_url: "https://www.cheapshark.com/api",
+    verification_source_urls: ["https://www.cheapshark.com/api"],
+    documentation_confidence: "official_docs_verified",
+    freshness_status: "verified official CheapShark API docs in this batch; endpoint behavior still needs implementation-time testing",
+    rate_limit_notes: "Official docs say the API is public/no-key, returns 429 with Retry-After when temporarily blocked, and does not publish a fixed quota.",
+    rate_limit_confidence: "official_docs_limit_behavior_verified_no_numeric_quota",
+    cors_confidence: "official_docs_cors_supported",
+    frontend_safe: true,
+    backend_required: false,
+    secret_risk: false,
+    recommended_stack_usage: "Frontend/browser game-price lookup candidate with descriptive User-Agent, 429 handling, and no bulk catalog scraping.",
+    avoid_with: ["bulk scraping", "cached catalog harvesting", "missing Retry-After handling"]
+  },
+  {
+    id: "api:development:github",
+    verification_status: "verified",
+    official_docs_url: "https://docs.github.com/en/rest",
+    verification_source_urls: ["https://docs.github.com/en/rest", "https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api"],
+    documentation_confidence: "official_docs_verified",
+    freshness_status: "verified official GitHub REST docs and rate-limit docs in this batch; endpoint scopes still need implementation-time review",
+    rate_limit_notes: "Official docs state unauthenticated REST requests are 60/hour and standard authenticated user requests are 5,000/hour; secondary limits also apply.",
+    rate_limit_confidence: "official_docs_numeric_limit_verified",
+    frontend_safe: false,
+    backend_required: true,
+    secret_risk: true,
+    recommended_stack_usage: "Backend/server-side OAuth/PAT integration; avoid browser token exposure and handle primary/secondary rate limits.",
+    avoid_with: ["client-exposed-oauth-token", "polling without backoff", "search-heavy UI without quota controls"]
+  },
+  {
+    id: "api:development:gitlab",
+    verification_status: "verified",
+    official_docs_url: "https://docs.gitlab.com/api/rest/",
+    verification_source_urls: ["https://docs.gitlab.com/api/rest/"],
+    documentation_confidence: "official_docs_verified",
+    freshness_status: "verified official GitLab REST docs in this batch; instance-specific limits still need review",
+    rate_limit_notes: "Official docs say REST requests are subject to rate limits; exact limits vary by GitLab instance/plan and were not numerically verified.",
+    rate_limit_confidence: "official_docs_general_rate_limit_verified_no_numeric_quota",
+    frontend_safe: false,
+    backend_required: true,
+    secret_risk: true,
+    recommended_stack_usage: "Backend/server-side GitLab integration with token scopes, rate-limit handling, and URL-encoded path tests.",
+    avoid_with: ["client-exposed-token", "assuming gitlab.com and self-managed limits are identical"]
+  },
+  {
+    id: "api:development:ipinfo",
+    verification_status: "verified",
+    official_docs_url: "https://ipinfo.io/developers",
+    verification_source_urls: ["https://ipinfo.io/developers"],
+    documentation_confidence: "official_docs_verified",
+    freshness_status: "verified official IPinfo developer docs in this batch; product tier and token use still need review",
+    rate_limit_notes: "Official docs say IPinfo Lite has no API request quota restrictions; paid plans use monthly request limits and can return 429.",
+    rate_limit_confidence: "official_docs_tiered_limit_verified",
+    frontend_safe: false,
+    backend_required: true,
+    secret_risk: true,
+    recommended_stack_usage: "Prefer backend route for token-bearing IP enrichment; frontend only after confirming public Lite/token/CORS/terms requirements.",
+    avoid_with: ["client-exposed-token", "assuming all IPinfo products are no-quota"]
+  },
+  {
+    id: "api:development:onesignal",
+    verification_status: "verified",
+    official_docs_url: "https://documentation.onesignal.com/reference/rest-api-overview",
+    verification_source_urls: ["https://documentation.onesignal.com/reference/rest-api-overview"],
+    documentation_confidence: "official_docs_verified",
+    freshness_status: "verified official OneSignal REST docs in this batch; endpoint-specific limits still need review",
+    rate_limit_notes: "Exact numeric rate limit not verified in this batch; REST API uses HTTPS/TLS requirements and endpoint-specific behavior must be checked.",
+    rate_limit_confidence: "unknown_exact_quota",
+    frontend_safe: false,
+    backend_required: true,
+    secret_risk: true,
+    recommended_stack_usage: "Backend/server-side messaging integration; keep REST API keys server-side and test throttling/error paths.",
+    avoid_with: ["frontend-rest-api-key", "unreviewed messaging blast", "missing unsubscribe/consent checks"]
+  },
+  {
+    id: "api:anti-malware:urlhaus",
+    verification_status: "verified",
+    official_docs_url: "https://urlhaus-api.abuse.ch/",
+    verification_source_urls: ["https://urlhaus-api.abuse.ch/"],
+    documentation_confidence: "official_docs_verified",
+    freshness_status: "verified official URLhaus docs in this batch; endpoint limits still need review",
+    rate_limit_notes: "Exact numeric rate limit not verified in this batch; Auth-Key is required by official docs.",
+    rate_limit_confidence: "unknown_exact_quota",
+    frontend_safe: false,
+    backend_required: true,
+    secret_risk: true,
+    recommended_stack_usage: "Backend/server-side malware URL lookup; keep Auth-Key server-side and avoid automated enforcement without review.",
+    avoid_with: ["client-exposed-auth-key", "automatic malware enforcement without human review"]
+  },
+  {
+    id: "api:anti-malware:google-safe-browsing",
+    verification_status: "verified",
+    official_docs_url: "https://developers.google.com/safe-browsing/",
+    verification_source_urls: ["https://developers.google.com/safe-browsing/"],
+    documentation_confidence: "official_docs_verified_from_source_url",
+    freshness_status: "verified docs-like Google Developers source URL from seed; current endpoint behavior still needs official-doc review",
+    rate_limit_notes: "unknown; numeric quota not verified in this batch",
+    rate_limit_confidence: "unknown",
+    frontend_safe: false,
+    backend_required: true,
+    secret_risk: true,
+    recommended_stack_usage: "Backend/server-side URL reputation checks; do not expose API keys in frontend bundles.",
+    avoid_with: ["client-exposed-api-key", "guaranteed-safe/security-certainty claims"]
+  },
+  {
+    id: "api:finance:iex-cloud",
+    verification_status: "verification_failed",
+    official_docs_url: "https://iexcloud.io/docs/api/",
+    verification_source_urls: ["https://iexcloud.io/docs/api/"],
+    documentation_confidence: "verification_failed_or_provider_status_unclear",
+    freshness_status: "failed_to_verify_current_docs_in_this_batch; keep as unknown before implementation",
+    rate_limit_notes: "unknown; do not use without current provider/status verification",
+    rate_limit_confidence: "unknown",
+    frontend_safe: false,
+    backend_required: true,
+    secret_risk: true,
+    recommended_stack_usage: "Avoid new integrations until provider status/current docs are verified; choose another finance API if verification remains unclear.",
+    avoid_with: ["production finance app without fresh provider verification", "frontend token exposure"]
+  }
+];
+
+const SKILL_COMPATIBILITY_PROFILE_IDS = new Set([
+  "skill:anthropics/skills/frontend-design",
+  "skill:vercel-labs/agent-skills/vercel-react-best-practices",
+  "skill:vercel-labs/agent-skills/web-design-guidelines",
+  "skill:mattpocock/skills/grill-me",
+  "skill:mattpocock/skills/improve-codebase-architecture",
+  "skill:mattpocock/skills/grill-with-docs",
+  "skill:mattpocock/skills/tdd",
+  "skill:mattpocock/skills/diagnose",
+  "skill:mattpocock/skills/triage",
+  "skill:xixu-me/skills/github-actions-docs",
+  "skill:xixu-me/skills/openclaw-secure-linux-cloud",
+  "skill:supabase/agent-skills/supabase-postgres-best-practices"
+]);
+
 async function main() {
   const html = await fetchText(SOURCES.skillsHome);
   const publicApisMarkdown = await fetchText(SOURCES.publicApisReadme);
@@ -75,8 +244,8 @@ async function main() {
     agentSkillsTree = null;
   }
 
-  const skills = buildSkillCapabilities(html, agentSkillsTree).slice(0, 80);
-  const apis = buildApiCapabilities(publicApisMarkdown, 700);
+  const skills = applySkillCompatibilityProfiles(buildSkillCapabilities(html, agentSkillsTree).slice(0, 80));
+  const apis = applyApiVerificationRecords(buildApiCapabilities(publicApisMarkdown, 700));
 
   const output = {
     schema_version: "vnem-super-library/v0.1",
@@ -174,6 +343,7 @@ export function buildSkillCapabilities(pageHtml, tree) {
       supported_agents: ["unknown"],
       verified_instruction_summary: parsedSummary || (knownSkillFile ? `SKILL.md detected at skills/${knownSkillFile}/SKILL.md; summary remains metadata-only until source content review.` : "unknown; source SKILL.md was not parsed by importer fixture/live refresh"),
       agent_compatibility_confidence: parsedSummary ? "low" : "unknown",
+      client_compatibility_notes: "No client-specific compatibility has been verified; treat as generic external skill metadata until SKILL.md/source review.",
       supported_clients_verified: [],
       requires_install: true,
       core_can_apply_guidance: true,
@@ -262,6 +432,7 @@ export function buildApiCapabilities(markdown, limit = 700) {
       freshness_checked_at: generatedAt,
       freshness_status: "unknown; metadata imported from public-apis, not live official-doc verification",
       rate_limit_notes: "unknown; not verified from official docs",
+      rate_limit_confidence: "unknown",
       cors_confidence: cors === "unknown" ? "unknown" : "metadata_seed_only",
       frontend_safety_reason: frontendSafe ? "No auth listed and HTTPS/CORS yes in metadata seed; verify current official docs, terms, and rate limits before browser use." : "Not browser-safe from metadata seed; use backend proxy unless current official docs prove otherwise.",
       backend_proxy_reason: backendRequired ? "Backend/server proxy recommended because auth, HTTPS, CORS, or secret safety is not fully safe for direct browser use." : "Metadata seed does not require backend, but docs/terms/rate limits still need review.",
@@ -298,6 +469,71 @@ export function buildApiCapabilities(markdown, limit = 700) {
     .sort((a, b) => (categoryOrder.get(a.category) ?? 999) - (categoryOrder.get(b.category) ?? 999));
   const otherRows = parsedRows.filter((row) => !TARGET_API_CATEGORIES.has(row.category));
   return [...targetRows, ...otherRows].slice(0, limit);
+}
+
+export function applyApiVerificationRecords(apis, records = DEFAULT_API_VERIFICATION_RECORDS, checkedAt = generatedAt) {
+  const overrides = new Map((records || []).map((record) => [record.id, record]));
+  return apis.map((api) => {
+    const record = overrides.get(api.id);
+    if (!record) return api;
+    const frontendSafe = record.frontend_safe === true && api.auth_type === "none" && api.https === "yes" && (api.cors === "yes" || record.cors_confidence === "official_docs_cors_supported") && record.secret_risk !== true;
+    const backendRequired = record.backend_required === true || !frontendSafe;
+    const secretRisk = record.secret_risk === true || api.secret_risk === true || api.auth_type === "apiKey" || api.auth_type === "OAuth";
+    const riskFlags = inferApiRiskFlags(api.auth_type, api.https, api.cors, secretRisk, frontendSafe, backendRequired);
+    if (record.verification_status === "verification_failed") riskFlags.push("verification_failed");
+    return {
+      ...api,
+      ...record,
+      source_url: api.source_url,
+      imported_from: api.imported_from,
+      source: api.source,
+      category: api.category,
+      description: api.description,
+      auth_type: api.auth_type,
+      https: api.https,
+      cors: api.cors,
+      freshness_checked_at: checkedAt,
+      frontend_safe: frontendSafe,
+      backend_required: backendRequired,
+      secret_risk: secretRisk,
+      cors_confidence: record.cors_confidence || api.cors_confidence,
+      frontend_safety_reason: frontendSafe
+        ? "Verified docs/provenance make this a frontend candidate, but implementation still needs terms, rate-limit, loading/error, and proof-trail checks."
+        : "Backend/server route required or recommended because auth, secrets, CORS, HTTPS, verification failure, or rate-limit risk is not fully browser-safe.",
+      backend_proxy_reason: backendRequired
+        ? "Use backend/server proxy unless current official docs prove browser use is safe and no credentials/secrets are exposed."
+        : "Backend proxy not required by current metadata/fixture, but caching/backoff may still be useful.",
+      secret_handling_pattern: secretRisk
+        ? "Server-side environment variable or approved secret storage; never expose in frontend bundles."
+        : "No secret-bearing auth verified for this use; still check terms and commercial API-key modes.",
+      risk_flags: unique(riskFlags),
+      avoid_with: unique([...(api.avoid_with || []), ...(record.avoid_with || [])]),
+      recommended_combinations: unique([...(api.recommended_combinations || []), ...(record.recommended_combinations || []), "vnem_api_safety_profile", "vnem_build_api_integration_plan", "vnem_completion_audit"]),
+      vnem_usage_notes: unique([...(api.vnem_usage_notes || []), "Curated verification record added; use only fields with explicit confidence and keep unknowns unknown."])
+    };
+  });
+}
+
+export function applySkillCompatibilityProfiles(skills) {
+  return skills.map((skill) => {
+    if (!SKILL_COMPATIBILITY_PROFILE_IDS.has(skill.id)) return skill;
+    const profileNote = "Likely usable as untrusted SKILL.md-style guidance by generic skill-capable agents after manual review; Codex/Claude Code/Cursor/Windsurf/Hermes/Gemini compatibility is not verified here.";
+    return {
+      ...skill,
+      agent_compatibility_confidence: "likely",
+      supported_agents: ["unknown"],
+      supported_clients_verified: [],
+      client_compatibility_notes: profileNote,
+      required_evidence: unique([...(skill.required_evidence || []), "Record the exact skill id/profile reviewed, client compatibility uncertainty, and evidence that only guidance (not scripts/installers) was used."]),
+      when_not_to_use: unique([...(skill.when_not_to_use || []), "Do not claim client-specific compatibility unless that client was tested or documented by the skill source."]),
+      recommended_combinations: unique([...(skill.recommended_combinations || []), "vnem_skill_safety_profile + vnem_completion_audit + vnem_proof_trail"]),
+      vnem_usage_notes: unique([...(skill.vnem_usage_notes || []), "Compatibility is likely/generic, not verified for a named client; Core MCP may summarize guidance but not install or run it."])
+    };
+  });
+}
+
+function unique(values) {
+  return [...new Set((values || []).filter(Boolean))];
 }
 
 function inferSkillTaskTypes(name, owner, repo) {

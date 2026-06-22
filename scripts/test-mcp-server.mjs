@@ -170,6 +170,7 @@ try {
   assert.equal(apiSafetyProfile.structuredContent?.backend_required, true, "secret-bearing API should require backend proxy");
   assert.ok(apiSafetyProfile.structuredContent?.secret_handling_pattern?.includes("Server-side"), "profile should explain server-side secret handling");
   assert.ok(apiSafetyProfile.structuredContent?.backend_proxy_reason?.toLowerCase().includes("backend"), "profile should explain backend proxy reason");
+  assert.equal(apiSafetyProfile.structuredContent?.rate_limit_confidence, "unknown_exact_quota", "profile should expose exact quota uncertainty instead of guessing");
   assert.ok(apiSafetyProfile.structuredContent?.unknowns?.some((item) => /rate|freshness|cors/i.test(item)), "profile should list remaining unknowns instead of guessing");
   assert.ok(apiSafetyProfile.structuredContent?.integration_test_requirements?.some((item) => /secret|cors|rate|error/i.test(item)), "profile should include integration test requirements");
   assert.ok(JSON.stringify(apiSafetyProfile.structuredContent).length < 7000, "API safety profile compact output should stay small");
@@ -182,6 +183,8 @@ try {
   assert.equal(openMeteoProfile.structuredContent?.auth_type, "none");
   assert.equal(openMeteoProfile.structuredContent?.frontend_safe, true, "no-auth HTTPS/CORS yes API can be a frontend candidate after docs review");
   assert.ok(openMeteoProfile.structuredContent?.documentation_confidence, "profile should include documentation confidence");
+  assert.equal(openMeteoProfile.structuredContent?.rate_limit_confidence, "official_docs_numeric_limit_verified", "profile should include sourced rate-limit confidence");
+  assert.ok(openMeteoProfile.structuredContent?.rate_limit_notes?.includes("10,000"), "profile should include sourced non-commercial limit note");
   assert.ok(openMeteoProfile.structuredContent?.safe_patterns?.some((item) => /docs|terms|rate|review/i.test(item)), "frontend candidate still needs docs/terms/rate review");
 
   const skillSafetyProfile = await client.callTool({
@@ -192,6 +195,9 @@ try {
   assert.equal(skillSafetyProfile.structuredContent?.core_can_apply_guidance, true, "Core MCP can apply safe guidance summaries");
   assert.equal(skillSafetyProfile.structuredContent?.installs_or_executes_skill, false, "Core MCP must not install or execute skills");
   assert.equal(skillSafetyProfile.structuredContent?.precision_required_for_install, true, "install/execution stays Precision/Tools-only");
+  assert.ok(["likely", "unknown", "low"].includes(skillSafetyProfile.structuredContent?.agent_compatibility_confidence), "skill profile must expose non-verified compatibility confidence");
+  assert.equal(Array.isArray(skillSafetyProfile.structuredContent?.supported_clients_verified), true, "skill profile should list verified clients separately");
+  assert.ok(/not verified|unknown|manual review|SKILL\.md/i.test(skillSafetyProfile.structuredContent?.client_compatibility_notes || ""), "skill profile should preserve compatibility uncertainty");
   assert.ok(skillSafetyProfile.structuredContent?.prompt_injection_risk, "external SKILL.md should be treated as prompt-injection surface");
   assert.ok(skillSafetyProfile.structuredContent?.required_manual_review?.some((item) => /SKILL.md|scripts|references/i.test(item)), "profile should require source review");
   assert.ok(skillSafetyProfile.structuredContent?.must_not_claim?.some((item) => /installed|executed|safe/i.test(item)), "profile should say what must not be claimed");
@@ -237,6 +243,7 @@ try {
   assert.equal(apiPlan.isError, undefined);
   assert.ok(apiPlan.structuredContent?.selected_api_candidates?.length > 0, "API plan needs selected candidates");
   assert.ok(apiPlan.structuredContent.selected_api_candidates.every((api) => api.auth_type && api.https && api.cors), "API plan candidates need auth/HTTPS/CORS");
+  assert.ok(apiPlan.structuredContent.selected_api_candidates.every((api) => api.official_docs_url && api.freshness_status && api.rate_limit_notes && api.rate_limit_confidence), "API plan candidates need docs/freshness/rate-limit fields");
   assert.ok(apiPlan.structuredContent?.secret_handling_rules?.some((rule) => rule.includes("Do not expose API keys in frontend code")));
   assert.equal(apiPlan.structuredContent?.core_mcp_calls_api, false);
   assert.ok(apiPlan.structuredContent?.test_plan?.length > 0 && apiPlan.structuredContent?.evidence_requirements?.length > 0);
