@@ -164,6 +164,32 @@ For coding and app/game work, the Magentic Coding Workflow assigns a Lead Archit
 
 This is still read-only guidance. The MCP server returns orchestration plans, prompts, shared-state contracts, and JSON schemas through `vnem_orchestrate`; it does not spawn hidden model workers, edit files, install dependencies, or bypass the connected agent client's permissions.
 
+## Tools MCP Foundation
+
+VNEM now also has a separate `vnem-tools` MCP foundation. Core MCP decides what should happen, chooses usable skills/APIs, creates proof requirements, and prepares a Tools handoff. Tools MCP gives the connected AI safe hands for approved actions.
+
+Tools MCP is safeguard-first, not Giga MCP:
+
+| Action class | Tools MCP foundation behavior |
+| --- | --- |
+| Status/planning | Reports allowed roots, blocked paths, command allowlist, network policy, secret policy, evidence location, and Core handoff support. |
+| Permission prompts | Produces normal-user approval text with exact action, risk, scope, dry-run option, rollback/restore plan, and evidence collected. |
+| File reads/lists/search | Confined to allowed roots; blocks `.env`, secret, token, key, credential paths; skips `.git`, `node_modules`, and build outputs; redacts obvious secrets. |
+| Patches | Dry-run by default; real apply requires `dry_run=false`, `approved=true`, and a non-empty approval note; patches are path-limited and can create backups/restore info. |
+| Commands | Dry-run by default; real execution requires approval; only safe allowlisted commands such as `node --check`, `npm test`, `npm run <safe-script>`, `git status`, `git diff`, `git log`, and `git ls-files` are allowed. |
+| API requests | Dry-run by default; real requests require approval; first batch allows only GET/HEAD, blocks raw secrets in headers/body, validates URLs against usable API pack context or explicit localhost test mode, and caps timeout/output. |
+| Evidence | Writes structured redacted JSON evidence under `.vnem/tool-runs/` (or configured evidence root) so final reports can say only what was actually proven. |
+
+Run it only for a workspace that should allow these bounded capabilities:
+
+```bash
+npm run tools:mcp
+npm run test:tools-mcp
+npm run tools:readiness
+```
+
+Not in this foundation batch: browser screenshots, GitHub mutation, package installs, arbitrary shell, unrestricted API calls, and Giga MCP orchestration. Future Tools/Giga MCP work can add those only after this safety base stays stable.
+
 ## Precision Execution Layer
 
 VNEM now has a separate opt-in precision MCP server for teams that explicitly want mutation-capable execution under tighter rules. The default `vnem` MCP server stays read-only. The precision server is for workspace-scoped edits and verification only.
@@ -351,6 +377,19 @@ Precision MCP tools, available only from `scripts/vnem-precision-mcp-server.mjs`
 - `mcp_run_verification_tests`: bounded red/green/check verification loop for test-first proof and self-healing.
 - `mcp_execute_ephemeral_script`: temporary Node/Python helper execution in a sandbox with cleanup and dangerous API blocking.
 
+Tools MCP foundation tools, available only from `scripts/vnem-tools-mcp-server.mjs` / `npm run tools:mcp`:
+
+- `vnem_tools_status`: report Tools MCP safety policy, allowed roots, dry-run/approval defaults, blocked paths, command/network/secret policy, and evidence location.
+- `vnem_tools_prepare_action_plan`: consume a Core handoff-like object and produce a cautious action plan with supported actions, blocked unsupported actions, permissions, rollback, and evidence.
+- `vnem_tools_permission_prompt`: generate normal-user approval text for exact action, scope, risk, dry-run option, rollback/restore plan, and evidence logging.
+- `vnem_tools_read_file`, `vnem_tools_list_files`, `vnem_tools_search_files`: bounded allowed-root file inspection with secret-path blocking and redaction.
+- `vnem_tools_apply_patch`: dry-run-first approved text patching with path checks, approval gate, optional backups, restore info, and evidence logs.
+- `vnem_tools_run_command`: dry-run-first approved allowlisted commands only; no arbitrary shell, pushes, resets, publish, install, or destructive commands.
+- `vnem_tools_api_request`: dry-run-first approved GET/HEAD API requests only; raw secrets blocked; no untrusted URL calls by default.
+- `vnem_tools_collect_evidence`: write redacted structured evidence for final proof trails.
+
+Not in Tools MCP foundation: browser screenshots, GitHub mutation, package installs, arbitrary shell, unrestricted API calls, or Giga MCP orchestration.
+
 Main resources:
 
 - `vnem://install/search-index`
@@ -490,7 +529,8 @@ Core/Tools boundary:
 
 - Core MCP chooses useful APIs/skills, applies safe guidance, creates concrete workflows, asks missing questions, says what proof is required, and prepares a future Tools/Precision MCP handoff.
 - Core MCP does not execute actions: no file edits, terminal commands, browser/screenshot work, package installs, GitHub mutations, live API calls, local mod edits, or account/device changes.
-- Future Tools MCP or Tools/Precision MCP once connected performs approved actions using Core's handoff: permissions, dry-run-first checks, rollback/restore plan, logs/evidence, and must-not-claim limits.
+- Tools MCP foundation performs approved bounded actions using Core's handoff: dry-run first, permission prompts, path-limited reads/search/patches, allowlisted commands, approved GET/HEAD API requests, rollback/restore info, logs/evidence, and must-not-claim limits.
+- Not in this foundation batch: browser screenshots, GitHub mutation, package installs, arbitrary shell, unrestricted API calls, and Giga MCP orchestration. Future Tools/Giga MCP work.
 - Raw discovered APIs/skills are not counted as usable packs; usable packs are a curated subset with docs/source, safety boundaries, test plans, and handoff needs.
 
 Examples:
@@ -629,6 +669,8 @@ The pack is guidance and search data. The default server does not run the tools 
 | `scripts/lib/precision-execution-layer.mjs` | Backend library for exact patching, documentation ingestion, and stateful terminal execution. |
 | `scripts/lib/omniscient-self-healing-layer.mjs` | Backend library for local semantic indexing, verification-loop tracking, and temporary script execution. |
 | `scripts/vnem-precision-mcp-server.mjs` | Separate opt-in mutation-capable precision MCP server. |
+| `scripts/vnem-tools-mcp-server.mjs` | Separate safe Tools MCP foundation: dry-run-first approved patches, commands, API requests, and evidence. |
+| `scripts/test-tools-mcp-server.mjs` | Smoke/safety tests for the Tools MCP foundation. |
 | `landing/` | Static public landing page and blog bundle for the website. |
 | `dashboard/` | Vite/React source for the Hermes owner dashboard surface. |
 | `PRODUCT.md` | Product direction, public-site clarity goals, and non-regression bar. |

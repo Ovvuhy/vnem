@@ -7,7 +7,8 @@
   "bin": {
     "vnem": "scripts/vnem-cli.mjs",
     "vnem-mcp": "scripts/vnem-mcp-server.mjs",
-    "vnem-precision-mcp": "scripts/vnem-precision-mcp-server.mjs"
+    "vnem-precision-mcp": "scripts/vnem-precision-mcp-server.mjs",
+    "vnem-tools-mcp": "scripts/vnem-tools-mcp-server.mjs"
   },
   "scripts": {
     "seed": "node scripts/seed-registry.mjs --limit 150",
@@ -23,6 +24,9 @@
     "test:install-pack": "node scripts/test-install-pack.mjs",
     "test:orchestration": "node scripts/test-orchestration-framework.mjs",
     "test:precision": "node scripts/test-precision-execution-layer.mjs",
+    "tools:mcp": "node scripts/vnem-tools-mcp-server.mjs",
+    "test:tools-mcp": "node scripts/test-tools-mcp-server.mjs",
+    "tools:readiness": "node scripts/tools-readiness-report.mjs",
     "test:precision-mcp": "node scripts/test-precision-mcp-server.mjs",
     "test:omniscient": "node scripts/test-omniscient-self-healing-layer.mjs",
     "test:100x-architecture": "node scripts/test-100x-architecture.mjs",
@@ -117,7 +121,7 @@
     "core:readiness": "node scripts/core-readiness-report.mjs",
     "test:hermes-risk": "node scripts/test-hermes-risk-review.mjs",
     "build": "npm run validate && npm run generate && npm run dashboard:build",
-    "test": "npm run test:agents-rules && npm run test:vnem-mission-language && npm run validate && npm run test:super-library && npm run test:super-library-importer && npm run generate && npm run dashboard:build && npm run test:install-pack && npm run test:orchestration && npm run test:precision && npm run test:omniscient && npm run test:100x-architecture && npm run test:detect-ai-clients && npm run test:preview-connector && npm run test:apply-connector && npm run test:app-server && npm run test:dev-health && npm run test:builder-session && npm run test:run-history && npm run test:builder-run && npm run test:builder-capture && npm run test:launch-dev && npm run test:dashboard-connector && npm run test:dashboard-telemetry && npm run test:dashboard-system && npm run test:dashboard-verdicts && npm run test:dashboard-missions && npm run test:dashboard-branch && npm run test:dashboard-work-status && npm run test:dashboard-builder-health && npm run test:dashboard-control-room && npm run test:giving-branch && npm run test:ard-research && npm run test:ard-protection && npm run test:ard-giving && npm run test:ard-pipeline && npm run test:ard-capability-engine && npm run test:ard-dogfood && npm run test:ard-browser-pipeline && npm run test:dashboard-ard && npm run test:dashboard-ard-browser && npm run test:ard-changes-branch && npm run test:dashboard-ard-changes && npm run test:ard-launch && npm run test:dashboard-auth-local && npm run test:building-ai-acceleration && npm run test:public-repo-hygiene && npm run test:precision-mcp && npm run test:cli && npm run test:mcp && npm run test:dashboard && npm run test:dashboard-api-local && npm run test:hermes-risk && npm run discover:dry-run && npm run digest",
+    "test": "npm run test:agents-rules && npm run test:vnem-mission-language && npm run validate && npm run test:super-library && npm run test:super-library-importer && npm run generate && npm run dashboard:build && npm run test:install-pack && npm run test:orchestration && npm run test:precision && npm run test:tools-mcp && npm run test:omniscient && npm run test:100x-architecture && npm run test:detect-ai-clients && npm run test:preview-connector && npm run test:apply-connector && npm run test:app-server && npm run test:dev-health && npm run test:builder-session && npm run test:run-history && npm run test:builder-run && npm run test:builder-capture && npm run test:launch-dev && npm run test:dashboard-connector && npm run test:dashboard-telemetry && npm run test:dashboard-system && npm run test:dashboard-verdicts && npm run test:dashboard-missions && npm run test:dashboard-branch && npm run test:dashboard-work-status && npm run test:dashboard-builder-health && npm run test:dashboard-control-room && npm run test:giving-branch && npm run test:ard-research && npm run test:ard-protection && npm run test:ard-giving && npm run test:ard-pipeline && npm run test:ard-capability-engine && npm run test:ard-dogfood && npm run test:ard-browser-pipeline && npm run test:dashboard-ard && npm run test:dashboard-ard-browser && npm run test:ard-changes-branch && npm run test:dashboard-ard-changes && npm run test:ard-launch && npm run test:dashboard-auth-local && npm run test:building-ai-acceleration && npm run test:public-repo-hygiene && npm run test:precision-mcp && npm run test:cli && npm run test:mcp && npm run test:dashboard && npm run test:dashboard-api-local && npm run test:hermes-risk && npm run discover:dry-run && npm run digest",
     "test:ard-capability-engine": "node scripts/test-ard-capability-engine.mjs",
     "test:ard-dogfood": "node scripts/test-ard-dogfood.mjs",
     "ard:dogfood": "node scripts/ard-dogfood.mjs",
