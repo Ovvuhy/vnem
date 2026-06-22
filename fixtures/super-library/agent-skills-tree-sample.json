@@ -1,0 +1,7 @@
+{
+  "tree": [
+    { "path": "skills/react-best-practices/SKILL.md", "type": "blob" },
+    { "path": "skills/web-design-guidelines/SKILL.md", "type": "blob" },
+    { "path": "README.md", "type": "blob" }
+  ]
+}

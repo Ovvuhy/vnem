@@ -1,6 +1,6 @@
 # vnem Coding Protocol
 
-Generated: 2026-06-21T23:20:00.150Z
+Generated: 2026-06-22T09:21:05.066Z
 
 A read-only coding execution protocol for making agents better at apps, web apps, features, debugging, refactors, and reviews through repo sensing, plan-first work, small diffs, and verifiable outcomes.
 

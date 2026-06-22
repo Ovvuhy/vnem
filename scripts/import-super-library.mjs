@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(scriptDir, "..");
@@ -48,53 +48,59 @@ const TARGET_API_CATEGORIES = new Set([
   "Open Data"
 ]);
 
-const html = await fetchText(SOURCES.skillsHome);
-const publicApisMarkdown = await fetchText(SOURCES.publicApisReadme);
-let agentSkillsTree = null;
-try {
-  agentSkillsTree = JSON.parse(await fetchText(SOURCES.agentSkillsTree));
-} catch {
-  agentSkillsTree = null;
+async function main() {
+  const html = await fetchText(SOURCES.skillsHome);
+  const publicApisMarkdown = await fetchText(SOURCES.publicApisReadme);
+  let agentSkillsTree = null;
+  try {
+    agentSkillsTree = JSON.parse(await fetchText(SOURCES.agentSkillsTree));
+  } catch {
+    agentSkillsTree = null;
+  }
+
+  const skills = buildSkillCapabilities(html, agentSkillsTree).slice(0, 80);
+  const apis = buildApiCapabilities(publicApisMarkdown, 700);
+
+  const output = {
+    schema_version: "vnem-super-library/v0.1",
+    generated_at: generatedAt,
+    sources: [
+      {
+        name: "skills.sh",
+        url: SOURCES.skillsHome,
+        docs_url: SOURCES.skillsDocs,
+        cli_docs_url: SOURCES.skillsCli,
+        imported_as: "AI-agent skill/capability-pack metadata and VNEM-normalized safety/compatibility records"
+      },
+      {
+        name: "vercel-labs/agent-skills",
+        url: SOURCES.agentSkillsRepo,
+        imported_as: "Official Vercel agent-skill source/provenance signal; SKILL.md file paths are used when present"
+      },
+      {
+        name: "public-apis/public-apis",
+        url: SOURCES.publicApisReadme,
+        imported_as: "Public API seed rows enriched into VNEM integration-safety records"
+      }
+    ],
+    limitations: [
+      "Entries are provenance/enrichment records, not safety guarantees.",
+      "VNEM does not install skills or execute skill scripts from this library.",
+      "VNEM does not call APIs, request API keys, or verify live API freshness from the default MCP server.",
+      "Unknown fields remain unknown instead of being guessed."
+    ],
+    skills,
+    apis
+  };
+
+  await mkdir(path.join(rootDir, "capabilities"), { recursive: true });
+  await writeFile(path.join(rootDir, "capabilities", "super-library.json"), `${JSON.stringify(output, null, 2)}\n`);
+  console.log(`Imported ${skills.length} skill capabilities and ${apis.length} API capabilities into capabilities/super-library.json`);
 }
 
-const skills = buildSkillCapabilities(html, agentSkillsTree).slice(0, 80);
-const apis = buildApiCapabilities(publicApisMarkdown, 700);
-
-const output = {
-  schema_version: "vnem-super-library/v0.1",
-  generated_at: generatedAt,
-  sources: [
-    {
-      name: "skills.sh",
-      url: SOURCES.skillsHome,
-      docs_url: SOURCES.skillsDocs,
-      cli_docs_url: SOURCES.skillsCli,
-      imported_as: "AI-agent skill/capability-pack metadata and VNEM-normalized safety/compatibility records"
-    },
-    {
-      name: "vercel-labs/agent-skills",
-      url: SOURCES.agentSkillsRepo,
-      imported_as: "Official Vercel agent-skill source/provenance signal; SKILL.md file paths are used when present"
-    },
-    {
-      name: "public-apis/public-apis",
-      url: SOURCES.publicApisReadme,
-      imported_as: "Public API seed rows enriched into VNEM integration-safety records"
-    }
-  ],
-  limitations: [
-    "Entries are provenance/enrichment records, not safety guarantees.",
-    "VNEM does not install skills or execute skill scripts from this library.",
-    "VNEM does not call APIs, request API keys, or verify live API freshness from the default MCP server.",
-    "Unknown fields remain unknown instead of being guessed."
-  ],
-  skills,
-  apis
-};
-
-await mkdir(path.join(rootDir, "capabilities"), { recursive: true });
-await writeFile(path.join(rootDir, "capabilities", "super-library.json"), `${JSON.stringify(output, null, 2)}\n`);
-console.log(`Imported ${skills.length} skill capabilities and ${apis.length} API capabilities into capabilities/super-library.json`);
+if (isMainModule()) {
+  await main();
+}
 
 async function fetchText(url) {
   const response = await fetch(url, {
@@ -108,7 +114,7 @@ async function fetchText(url) {
   return response.text();
 }
 
-function buildSkillCapabilities(pageHtml, tree) {
+export function buildSkillCapabilities(pageHtml, tree) {
   const seen = new Set();
   const rows = [];
   const skillFiles = new Set((tree?.tree || []).map((item) => item.path).filter((item) => item.endsWith("/SKILL.md")));
@@ -145,6 +151,12 @@ function buildSkillCapabilities(pageHtml, tree) {
       categories,
       task_types: taskTypes,
       supported_agents: ["unknown"],
+      verified_instruction_summary: knownSkillFile ? `SKILL.md detected at skills/${knownSkillFile}/SKILL.md; summary remains metadata-only until source content review.` : "unknown; source SKILL.md was not parsed by importer fixture/live refresh",
+      agent_compatibility_confidence: "unknown",
+      supported_clients_verified: [],
+      requires_install: true,
+      core_can_apply_guidance: true,
+      precision_required_for_install: true,
       supported_agents_reference: SUPPORTED_AGENT_REFERENCE,
       install_method: "skills CLI or repository-specific install flow; manual review required before use",
       install_command: "unknown",
@@ -177,7 +189,7 @@ function buildSkillCapabilities(pageHtml, tree) {
   return rows;
 }
 
-function buildApiCapabilities(markdown, limit) {
+export function buildApiCapabilities(markdown, limit = 700) {
   const parsedRows = [];
   let category = null;
   for (const line of markdown.split(/\r?\n/)) {
@@ -217,7 +229,15 @@ function buildApiCapabilities(markdown, limit) {
       frontend_safe: frontendSafe,
       backend_required: backendRequired,
       secret_risk: secretRisk,
+      official_docs_url: "unknown",
+      freshness_checked_at: generatedAt,
+      freshness_status: "unknown; public-apis row imported as metadata seed, not current verification",
       rate_limit_notes: "unknown",
+      cors_confidence: cors === "unknown" ? "unknown" : "metadata_seed_only",
+      frontend_safety_reason: frontendSafe ? "No auth listed and HTTPS/CORS yes in metadata seed; verify current docs before browser use." : "Not browser-safe from metadata seed; use backend proxy unless official docs prove otherwise.",
+      backend_proxy_reason: backendRequired ? "Backend/server proxy recommended because auth, HTTPS, CORS, or secret safety is not fully safe for direct browser use." : "Metadata seed does not require backend, but docs/terms/rate limits still need review.",
+      secret_handling_pattern: secretRisk ? "Server-side environment variable or approved secret storage; never expose in frontend bundles." : "No secret-bearing auth listed; still verify current docs and terms.",
+      integration_test_requirements: ["success path", "loading state", "error path", "rate-limit/unavailable path", "secret/CORS/backend boundary proof"],
       integration_notes: buildApiIntegrationNotes(authType, https, cors, frontendSafe, backendRequired),
       example_use_cases: apiUseCases(category, name, description),
       task_types: taskTypes,
@@ -430,6 +450,10 @@ function avoidApiTags(authType, https, cors, frontendSafe) {
   if (https !== "yes") tags.push("sensitive-data-over-unverified-transport");
   if (cors !== "yes") tags.push("browser-direct-call-assumption");
   return [...new Set(tags)];
+}
+
+function isMainModule() {
+  return process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href;
 }
 
 function slugify(value) {

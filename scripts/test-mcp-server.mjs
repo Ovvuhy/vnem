@@ -53,6 +53,7 @@ try {
     "vnem_compose_capability_contract",
     "vnem_completion_audit",
     "vnem_protection_review",
+    "vnem_proof_trail",
     "vnem_status",
     "vnem_overview",
     "vnem_route_intent",
@@ -243,6 +244,8 @@ try {
   assert.ok(composedContract.structuredContent?.domain_quality_contracts?.length > 0, "composed contract should include domain quality contracts");
   assert.ok(composedContract.structuredContent?.completion_audit_expectations?.required_evidence?.length > 0, "composed contract should include audit expectations");
   assert.ok(composedContract.structuredContent?.protection_review_triggers?.length > 0, "composed contract should include protection review triggers");
+  assert.equal(composedContract.structuredContent?.proof_trail_expectation?.tool, "vnem_proof_trail", "composed contract should include proof-trail expectation");
+  assert.ok(composedContract.structuredContent?.final_report_requirements?.includes("proof_trail_id"), "final report should be compatible with proof trail");
 
   const uiAudit = await client.callTool({
     name: "vnem_completion_audit",
@@ -300,6 +303,47 @@ try {
   assert.ok(researchAudit.structuredContent?.research_quality_findings?.some((item) => /source|current|patch|fresh/i.test(item)), "research audit should require current/source-quality evidence");
   assert.ok(researchAudit.structuredContent?.game_or_modding_findings?.some((item) => /PvE|PvP|DLC|progression|armor|skill/i.test(item)), "game build audit should flag missing PvE/PvP/DLC/progression context");
 
+  const sourcedResearchAudit = await client.callTool({
+    name: "vnem_completion_audit",
+    arguments: {
+      task: "Research the best current Elden Ring PvE build for Shadow of the Erdtree at rune level 150",
+      claimed_result: "For PvE with DLC at RL150, I recommend a bleed/arcane setup; assumptions and alternatives are stated.",
+      evidence: ["Stated PvE, DLC, rune level, armor/poise assumptions, and item alternatives"],
+      sources_used: ["official Bandai Namco patch notes current version", "Elden Ring wiki weapon/talisman source with patch/version context"],
+      token_budget: "compact"
+    }
+  });
+  assert.ok(sourcedResearchAudit.structuredContent?.score > researchAudit.structuredContent?.score, "source-backed/current research should score higher than generic unsourced advice");
+  assert.notEqual(sourcedResearchAudit.structuredContent?.verdict, "blocked", "source-backed game research should not block");
+
+  const assumptionsNoSourcesAudit = await client.callTool({
+    name: "vnem_completion_audit",
+    arguments: {
+      task: "Research a good Elden Ring build",
+      claimed_result: "Assuming PvE, base game, mid-game, medium armor, and beginner skill level, I would suggest a forgiving strength build.",
+      evidence: ["Assumptions stated"],
+      sources_used: [],
+      token_budget: "compact"
+    }
+  });
+  assert.ok(assumptionsNoSourcesAudit.structuredContent?.research_quality_findings?.some((item) => /limited|no sources/i.test(item)), "assumptions without sources should be limited, not fully verified");
+  assert.ok(assumptionsNoSourcesAudit.structuredContent?.score < sourcedResearchAudit.structuredContent?.score, "assumptions-only answer should score below sourced answer");
+
+  const connectedUiAudit = await client.callTool({
+    name: "vnem_completion_audit",
+    arguments: {
+      task: "Build a usable web app feature with backend storage and UI",
+      claimed_result: "Connected the UI form/component/page button to the backend API route and verified loading, error, empty, success, mobile responsive, desktop, and accessibility states.",
+      evidence: ["UI form submits to API route", "loading/error/empty/success states verified", "desktop/mobile/a11y checks completed"],
+      commands_run: ["npm test", "npm run dashboard:build"],
+      changed_files: ["app/items/page.tsx", "app/api/items/route.ts"],
+      screenshots_or_visual_evidence: ["desktop screenshot", "mobile screenshot", "error-state screenshot"],
+      token_budget: "compact"
+    }
+  });
+  assert.ok(connectedUiAudit.structuredContent?.score > backendAudit.structuredContent?.score, "connected UI/backend task with visual evidence should score higher than backend-only task");
+  assert.ok(["pass", "revise"].includes(connectedUiAudit.structuredContent?.verdict), "well-evidenced UI/backend task should not block");
+
   const moddingAudit = await client.callTool({
     name: "vnem_completion_audit",
     arguments: {
@@ -312,13 +356,26 @@ try {
   assert.ok(["revise", "blocked", "insufficient_evidence"].includes(moddingAudit.structuredContent?.verdict), "modding audit without game/tool/file-format research should revise/block");
   assert.ok(moddingAudit.structuredContent?.game_or_modding_findings?.some((item) => /file format|tool|backup|specific game|pipeline/i.test(item)), "modding audit should require game-specific research");
 
+  const researchedModdingAudit = await client.callTool({
+    name: "vnem_completion_audit",
+    arguments: {
+      task: "Patch an Elden Ring modding workflow",
+      claimed_result: "Researched Elden Ring game version, regulation.bin, DCX/BND tooling, compatibility issues, isolated output workspace, backup/restore plan, and verification plan before proposing changes.",
+      evidence: ["specific game/version researched", "regulation.bin/DCX/BND toolchain documented", "backup/isolation/restore plan", "verification plan"],
+      sources_used: ["tool docs for Smithbox/WitchyBND", "Elden Ring regulation.bin/DCX/BND modding references"],
+      token_budget: "compact"
+    }
+  });
+  assert.ok(researchedModdingAudit.structuredContent?.score > moddingAudit.structuredContent?.score, "researched/backup/isolation modding plan should score higher than generic changed-files claim");
+  assert.notEqual(researchedModdingAudit.structuredContent?.verdict, "blocked", "researched modding plan should not be blocked");
+
   const goodAudit = await client.callTool({
     name: "vnem_completion_audit",
     arguments: {
       task: "Fix a failing CLI test",
       capability_contract: { required_capability_modules: [{ id: "module:workflow:systematic-debugging-proof" }] },
       claimed_result: "Fixed the failing CLI test after reproducing the failure and rerunning the suite.",
-      evidence: ["Reproduced failure with npm run test:cli", "Fixed root cause", "npm run test:cli passed", "npm test passed"],
+      evidence: ["module:workflow:systematic-debugging-proof used", "Reproduced failure with npm run test:cli", "Fixed root cause", "npm run test:cli passed", "npm test passed"],
       commands_run: ["npm run test:cli", "npm test"],
       token_budget: "compact"
     }
@@ -341,7 +398,14 @@ try {
   assert.equal(terminalReview.isError, undefined);
   assert.ok(["needs_user_approval", "revise", "block"].includes(terminalReview.structuredContent?.verdict), "risky terminal/package action should need review/approval");
   assert.ok(/Permission requested:/i.test(terminalReview.structuredContent?.permission_prompt || ""), "permission prompt must be explicit");
+  assert.ok(/Exact action:/i.test(terminalReview.structuredContent?.permission_prompt || ""), "permission prompt must include exact action");
   assert.ok(/Danger level:/i.test(terminalReview.structuredContent?.permission_prompt || ""), "permission prompt must include risk level");
+  assert.ok(/What can go wrong:/i.test(terminalReview.structuredContent?.permission_prompt || ""), "permission prompt must include danger details");
+  assert.ok(/Scope:/i.test(terminalReview.structuredContent?.permission_prompt || ""), "permission prompt must include scope");
+  assert.ok(/Safeguards:/i.test(terminalReview.structuredContent?.permission_prompt || ""), "permission prompt must include safeguards");
+  assert.ok(/Rollback\/recovery:/i.test(terminalReview.structuredContent?.permission_prompt || ""), "permission prompt must include rollback");
+  assert.ok(/After approval:/i.test(terminalReview.structuredContent?.permission_prompt || ""), "permission prompt must include post-approval plan");
+  assert.ok(/Will not do:/i.test(terminalReview.structuredContent?.permission_prompt || ""), "permission prompt must state what it will not do");
   assert.ok(terminalReview.structuredContent?.permission_prompt?.includes("C:/VNEM/vnem-src"), "permission prompt must include scope");
   assert.ok(terminalReview.structuredContent?.required_safeguards?.length > 0);
   assert.ok(terminalReview.structuredContent?.rollback_or_recovery?.length > 0);
@@ -373,6 +437,85 @@ try {
   });
   assert.ok(["revise", "block", "needs_user_approval"].includes(skillReview.structuredContent?.verdict));
   assert.ok(skillReview.structuredContent?.risks?.some((item) => /prompt-injection|manual review|skill/i.test(item)), "skill protection review should catch prompt-injection/manual-review risk");
+
+  for (const target_type of ["filesystem_action", "browser_automation", "github_action", "package_install", "api_integration"]) {
+    const review = await client.callTool({
+      name: "vnem_protection_review",
+      arguments: {
+        task: `Review risky ${target_type}`,
+        plan_or_action: target_type === "api_integration" ? "Call an external API with a secret token" : `Perform ${target_type} inside C:/VNEM/vnem-src`,
+        target_type,
+        touches_user_files: target_type === "filesystem_action" || target_type === "package_install",
+        touches_network: target_type !== "filesystem_action",
+        requires_secrets: target_type === "api_integration",
+        token_budget: "compact"
+      }
+    });
+    assert.ok(["needs_user_approval", "revise", "block"].includes(review.structuredContent?.verdict), `${target_type} should not be silently allowed`);
+    assert.ok(/Permission requested:|Danger level:|Scope:|Safeguards:|Rollback\/recovery:|After approval:/is.test(review.structuredContent?.permission_prompt || ""), `${target_type} needs clear permission prompt`);
+  }
+
+  const missingProofTrail = await client.callTool({
+    name: "vnem_proof_trail",
+    arguments: {
+      task: "Improve a Next.js dashboard UI",
+      capability_ids_used: [],
+      completion_audit: uiAudit.structuredContent,
+      final_claim: "The UI is polished and done.",
+      token_budget: "compact"
+    }
+  });
+  assert.equal(missingProofTrail.isError, undefined);
+  assert.ok(["revise", "insufficient_evidence"].includes(missingProofTrail.structuredContent?.final_verdict), "proof trail should flag missing evidence");
+  assert.equal(missingProofTrail.structuredContent?.vnem_used, true, "completion audit input should count as VNEM use");
+  assert.ok(missingProofTrail.structuredContent?.missing_evidence?.some((item) => /bootstrap|capability|visual/i.test(item)), "proof trail should list missing proof fields");
+  assert.ok(missingProofTrail.structuredContent?.must_not_claim?.some((item) => /UI|done|fully/i.test(item)), "proof trail should state must-not-claim limits");
+  assert.ok(JSON.stringify(missingProofTrail.structuredContent).length < 8000, "proof trail compact output should stay small");
+
+  const goodProofTrail = await client.callTool({
+    name: "vnem_proof_trail",
+    arguments: {
+      task: "Build a usable web app feature with backend storage and UI",
+      bootstrap_activation_id: "vnem-boot-test-123",
+      capability_contract: composedContract.structuredContent,
+      capability_ids_used: ["module:workflow:frontend-ui-quality", "module:workflow:systematic-debugging-proof"],
+      protection_reviews: [terminalReview.structuredContent],
+      completion_audit: connectedUiAudit.structuredContent,
+      commands_run: ["npm test", "npm run dashboard:build"],
+      tests_or_checks: ["loading/error/empty/success states checked", "desktop/mobile accessibility reviewed"],
+      changed_files: ["app/items/page.tsx", "app/api/items/route.ts"],
+      visual_evidence: ["desktop screenshot", "mobile screenshot"],
+      assumptions: ["internal app only"],
+      remaining_risks: ["manual UX review still useful"],
+      final_claim: "UI and backend are connected with visual evidence and tests.",
+      token_budget: "compact"
+    }
+  });
+  assert.equal(goodProofTrail.isError, undefined);
+  assert.ok(["pass", "revise"].includes(goodProofTrail.structuredContent?.final_verdict), "well-evidenced proof trail should not block");
+  assert.equal(goodProofTrail.structuredContent?.bootstrap_activation_id, "vnem-boot-test-123");
+  assert.ok(goodProofTrail.structuredContent?.capability_ids_used?.includes("module:workflow:frontend-ui-quality"));
+  assert.ok(goodProofTrail.structuredContent?.protection_review_summary?.provided, "proof trail should summarize protection review");
+  assert.ok(goodProofTrail.structuredContent?.completion_audit_summary?.provided, "proof trail should summarize completion audit");
+  assert.ok(goodProofTrail.structuredContent?.evidence_summary?.visual_evidence?.length > 0, "proof trail should include visual evidence status");
+  assert.ok(goodProofTrail.structuredContent?.safe_to_claim?.length > 0);
+  assert.ok(goodProofTrail.structuredContent?.compact_final_report_block?.includes("VNEM proof trail"));
+
+  const gameProofTrail = await client.callTool({
+    name: "vnem_proof_trail",
+    arguments: {
+      task: "Research an Elden Ring build",
+      bootstrap_activation_id: "vnem-boot-game",
+      capability_ids_used: ["module:workflow:game-build-recommendation", "module:workflow:research-source-quality"],
+      completion_audit: sourcedResearchAudit.structuredContent,
+      sources_used: ["official patch notes", "current build source"],
+      assumptions: ["PvE", "Shadow of the Erdtree DLC", "RL150", "medium armor/poise", "beginner-friendly"],
+      final_claim: "Build advice is scoped to PvE DLC RL150 with source freshness noted.",
+      token_budget: "compact"
+    }
+  });
+  assert.ok(gameProofTrail.structuredContent?.evidence_summary?.domain_evidence_status?.research_sources_present, "game proof trail should show source freshness evidence");
+  assert.ok(gameProofTrail.structuredContent?.evidence_summary?.domain_evidence_status?.game_context_present, "game proof trail should show PvE/PvP/DLC/progression assumptions");
 
   const gameContract = await client.callTool({
     name: "vnem_compose_capability_contract",
@@ -443,6 +586,8 @@ try {
   assert.ok(habitBootstrap.structuredContent?.anti_placebo_checks?.how_this_task_could_be_faked?.length > 0);
   assert.ok(habitBootstrap.structuredContent?.recommended_vnem_calls?.some((call) => call.tool === "vnem_route_intent"));
   assert.ok(habitBootstrap.structuredContent?.recommended_vnem_calls?.some((call) => call.tool === "vnem_quality_gate"));
+  assert.ok(habitBootstrap.structuredContent?.recommended_vnem_calls?.some((call) => call.tool === "vnem_completion_audit"));
+  assert.ok(habitBootstrap.structuredContent?.recommended_vnem_calls?.some((call) => call.tool === "vnem_proof_trail"), "bootstrap should recommend proof trail near final workflow");
   assert.ok(habitBootstrap.structuredContent?.required_rules?.some((rule) => rule.resource_uri === "vnem://install/operating-protocol"));
   assert.ok(habitBootstrap.structuredContent?.required_rules?.some((rule) => rule.resource_uri === "vnem://install/quality-contract"));
 

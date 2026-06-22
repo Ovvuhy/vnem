@@ -410,7 +410,7 @@ Example output shape, shortened:
   "task_analysis": { "primary_task_type": "api_integration", "risk_level": "elevated" },
   "required_rules": [{ "resource_uri": "vnem://install/quality-contract", "priority": "mandatory" }],
   "compact_startup_contract": { "token_budget": "compact", "required_capability_ids": ["module:workflow:api-safety-integration"] },
-  "recommended_vnem_calls": [{ "tool": "vnem_compose_capability_contract" }, { "tool": "vnem_route_intent" }, { "tool": "vnem_quality_gate" }],
+  "recommended_vnem_calls": [{ "tool": "vnem_compose_capability_contract" }, { "tool": "vnem_protection_review" }, { "tool": "vnem_completion_audit" }, { "tool": "vnem_proof_trail" }],
   "capability_slots": { "mcp_registry_available": true, "skill_recommendations_available": true, "api_registry_available": true },
   "protection_needs": { "secret_api_key_risk": true },
   "verification_contract": { "do_not_claim_done_without_evidence": true },
@@ -429,7 +429,7 @@ The current library contains:
 
 - AI-agent skill/capability-pack records imported from `https://www.skills.sh/` and cross-referenced with `https://github.com/vercel-labs/agent-skills` where available.
 - Public API/integration records imported from `https://raw.githubusercontent.com/public-apis/public-apis/master/README.md`.
-- Safety and compatibility enrichment fields such as task types, supported-agent status, install/use notes, activation instructions, when-to-use / when-not-to-use guidance, compatible/avoid/recommended-combination fields, trust level, review status, audit status, frontend/backend API safety, secret risk, CORS/HTTPS risk, and manual-review requirements.
+- Safety and compatibility enrichment fields such as task types, supported-agent status, verified-instruction summary, agent-compatibility confidence, core-guidance-vs-Precision-install boundary, install/use notes, activation instructions, when-to-use / when-not-to-use guidance, compatible/avoid/recommended-combination fields, trust level, review status, audit status, official-docs/freshness placeholders, frontend/backend API safety, secret-handling pattern, CORS/HTTPS risk, integration-test requirements, and manual-review requirements.
 
 Read-only MCP tools:
 
@@ -447,6 +447,7 @@ Read-only MCP tools:
 - `vnem_compose_capability_contract`: combine routing, selected capability modules, one agent profile, skill/API plan when relevant, risks, verification, and final-report requirements into one compact contract.
 - `vnem_completion_audit`: audit an AI's final answer, plan, or work summary against the original task and VNEM contract. It flags fake completion, missing evidence, skipped modules, weak research, missing visual/UI proof, backend-without-UI exposure, unsafe API claims, game/build context gaps, and modding pipeline gaps.
 - `vnem_protection_review`: review a proposed risky plan/action before proceeding. It identifies filesystem, terminal, browser, GitHub, package install, skill/MCP, API-key, frontend/backend, research, UI, and game/modding risks; it produces a specific human-readable permission prompt but performs no action.
+- `vnem_proof_trail`: produce a compact final proof trail showing bootstrap id, capability IDs used, contract/protection/audit summaries, evidence counts, missing evidence, assumptions, remaining risks, safe claims, must-not-claim warnings, and final verdict. It is for final reporting only and does not execute anything.
 
 Capability modules:
 
@@ -472,14 +473,15 @@ Safety boundary:
 Recommended agent flow:
 
 1. Call `vnem_bootstrap`.
-2. Use returned required rules/resources.
-3. For capability needs, call `vnem_compose_capability_contract`, `vnem_get_required_capabilities`, `vnem_library_status`, `vnem_recommend_skills`, `vnem_recommend_apis`, and `vnem_review_skill_or_api` as relevant.
+2. Call `vnem_compose_capability_contract` for the compact task contract and required capability IDs.
+3. Use returned required rules/resources and task-specific checks/evidence requirements.
 4. Before risky filesystem/terminal/browser/GitHub/package/API/skill/modding actions, call `vnem_protection_review` and get explicit user approval outside Core MCP.
-5. Before final response, call or apply `vnem_completion_audit` expectations; do not claim done without evidence.
-6. Use `vnem_get_agent_profile` to fetch only the relevant AI/client profile instead of dumping every model-specific instruction.
-7. Do not install skills or call APIs blindly.
-8. Run `vnem_quality_gate` and task-specific verification.
-9. Report evidence, skipped checks, assumptions, limitations, and remaining risk.
+5. Run task-specific verification and evidence collection: commands/checks, sources, screenshots/visual proof, changed files, assumptions, and skipped items.
+6. Before final response, call or apply `vnem_completion_audit`; do not claim done without evidence.
+7. Call `vnem_proof_trail` with bootstrap id, capability IDs, protection review(s), completion audit, evidence, assumptions, skipped items, and remaining risks.
+8. Include the compact proof trail / evidence summary in the final answer.
+9. Use `vnem_get_agent_profile` when needed to fetch only the relevant AI/client profile instead of dumping every model-specific instruction.
+10. Do not install skills or call APIs blindly.
 
 Examples:
 
@@ -488,7 +490,8 @@ Examples:
 - Debugging task: call `vnem_get_required_capabilities`; apply the systematic debugging module, reproduce the failure, identify root cause, fix, and show red/green or equivalent proof.
 - Elden Ring build research: ask or state assumptions for PvE/PvP, Shadow of the Erdtree DLC ownership, rune level/progression, armor/poise relevance, weapon/spell/stat preference, solo/co-op, and skill level; use current/source-quality research and avoid generic outdated "best build" claims.
 - Game/modding task: research the specific game, file formats, tools, compatibility issues, backups/isolation, and verification plan before any future Precision/Tools mutation.
-- Risky Tools/Giga MCP permission preview: `vnem_protection_review` returns a prompt with exact action/scope, danger level, why it is needed, what can go wrong, safeguards, rollback/recovery, and what the AI will do after approval. Core MCP never runs the action.
+- Risky Tools/Giga MCP permission preview: `vnem_protection_review` returns a prompt with exact action/scope, danger level, why it is needed, what can go wrong, safeguards, rollback/recovery, what the AI will do after approval, and what it will not do. Core MCP never runs the action.
+- Final proof trail: call `vnem_proof_trail` after `vnem_completion_audit` to show VNEM was actually used, which capabilities were used, what evidence exists, what is missing, safe claims, and must-not-claim limits.
 - Prompt-improvement task: apply the prompt-improvement module, show the target behavior, before/after prompt, and examples/evaluation proving behavior changed.
 - Non-VNEM task: use VNEM only to improve the user's task contract; do not redirect the agent into improving VNEM itself.
 
@@ -526,6 +529,7 @@ The pack is guidance and search data. The default server does not run the tools 
 | `capabilities/agent-profiles.json` | Compact Codex/Claude/Gemini/DeepSeek/Hermes/Qwen/generic/unknown client profiles used to avoid irrelevant instruction dumps. |
 | `schemas/super-library.schema.json` | Schema for the Super MCP skill/API capability library. |
 | `schemas/agent-profiles.schema.json` | Schema for compact agent/model profile records. |
+| `fixtures/super-library/` | Deterministic sample inputs for skill/API importer tests; avoids relying only on live website layouts. |
 | `scripts/` | Validation, generation, curated knowledge upserts, discovery, digest, and install-pack tests. |
 | `scripts/lib/super-library.mjs` | Loader/search/recommend/review helpers for skill/API capability records. |
 | `scripts/lib/capability-modules.mjs` | Read-only capability-module selection, activation contracts, skill guidance, API plans, and composed task contracts. |

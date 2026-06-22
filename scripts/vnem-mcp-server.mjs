@@ -20,6 +20,7 @@ import {
   buildDomainQualityContracts,
   completionAudit,
   detectMissingContext,
+  proofTrail,
   protectionReview
 } from "./lib/quality-contracts.mjs";
 import {
@@ -89,6 +90,7 @@ const DEFAULT_MCP_TOOLS = [
   "vnem_compose_capability_contract",
   "vnem_completion_audit",
   "vnem_protection_review",
+  "vnem_proof_trail",
   "vnem_status",
   "vnem_overview",
   "vnem_route_intent",
@@ -537,6 +539,40 @@ function registerTools(mcpServer) {
     async (args) => {
       const result = protectionReview(args);
       return toolResult(formatProtectionReview(result), result);
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_proof_trail",
+    {
+      title: "Build VNEM Proof Trail",
+      description:
+        "Create a compact read-only proof trail showing VNEM was actually used: bootstrap id, capability IDs, protection/audit summaries, evidence, safe claims, must-not-claim warnings, and final verdict.",
+      inputSchema: {
+        task: z.string().min(1),
+        agent_client: z.string().optional(),
+        model_family: z.string().optional(),
+        bootstrap_activation_id: z.string().optional(),
+        capability_contract: z.any().optional(),
+        capability_ids_used: z.array(z.string()).default([]),
+        protection_reviews: z.any().optional(),
+        completion_audit: z.any().optional(),
+        commands_run: z.array(z.string()).default([]),
+        sources_used: z.array(z.any()).default([]),
+        changed_files: z.array(z.string()).default([]),
+        visual_evidence: z.array(z.any()).default([]),
+        tests_or_checks: z.array(z.string()).default([]),
+        assumptions: z.array(z.string()).default([]),
+        skipped_items: z.array(z.string()).default([]),
+        remaining_risks: z.array(z.string()).default([]),
+        final_claim: z.string().optional(),
+        token_budget: z.enum(["compact", "normal", "expanded"]).default("compact")
+      },
+      annotations: READ_ONLY
+    },
+    async (args) => {
+      const result = proofTrail(args);
+      return toolResult(formatProofTrail(result), result);
     }
   );
 
@@ -1611,6 +1647,11 @@ function buildBootstrapNextCalls(taskAnalysis, routeAvailable, registryMatchCoun
       tool: "vnem_completion_audit",
       arguments: { task: taskAnalysis.original_task, claimed_result: "<final answer or work summary>", token_budget: "compact" },
       when: "Before final response to audit claims, evidence, missing context, research quality, UI/API/modding proof, and anti-placebo completion."
+    },
+    {
+      tool: "vnem_proof_trail",
+      arguments: { task: taskAnalysis.original_task, bootstrap_activation_id: "<activation_id>", capability_ids_used: ["<capability_id>"], token_budget: "compact" },
+      when: "Near the end of the workflow, after protection review and completion audit, to produce a compact proof that VNEM was actually used."
     }
   ];
 
@@ -3162,6 +3203,7 @@ function formatComposedContract(contract) {
     `missing context: ${(contract.missing_context?.recommended_clarifying_questions || []).slice(0, 2).join("; ") || "none critical"}`,
     `domain contracts: ${(contract.domain_quality_contracts || []).map((item) => item.id).join(", ")}`,
     `verification: ${(contract.verification || []).slice(0, 3).join("; ")}`,
+    `proof trail: ${contract.proof_trail_expectation?.tool || "vnem_proof_trail"}`,
     contract.self_focus_policy
   ].join("\n");
 }
@@ -3182,6 +3224,19 @@ function formatProtectionReview(review) {
     ...(review.risks || []).slice(0, 4).map((item) => `risk: ${item}`),
     ...(review.required_safeguards || []).slice(0, 3).map((item) => `safeguard: ${item}`),
     review.permission_prompt || "Core MCP reviews only; it does not perform the action."
+  ].join("\n");
+}
+
+function formatProofTrail(report) {
+  return [
+    `VNEM proof trail: ${report.proof_trail_id}`,
+    `verdict: ${report.final_verdict}`,
+    `vnem used: ${report.vnem_used}`,
+    `bootstrap: ${report.bootstrap_activation_id || "missing"}`,
+    `capabilities: ${(report.capability_ids_used || []).join(", ") || "none provided"}`,
+    `evidence: commands=${report.evidence_summary?.commands_run?.length || 0}, tests=${report.evidence_summary?.tests_or_checks?.length || 0}, sources=${report.evidence_summary?.sources_used?.length || 0}, visual=${report.evidence_summary?.visual_evidence?.length || 0}`,
+    ...(report.missing_evidence || []).slice(0, 4).map((item) => `missing: ${item}`),
+    ...(report.must_not_claim || []).slice(0, 3).map((item) => `must not claim: ${item}`)
   ].join("\n");
 }
 

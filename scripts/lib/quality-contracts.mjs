@@ -173,6 +173,13 @@ export function completionAudit(options = {}) {
     uiFindings.push("UI quality claim lacks screenshot/visual/browser/responsive/accessibility evidence.");
     missingEvidence.push("Visual evidence for UI claim is missing.");
   }
+  if (domains.includes("ui") && /polish|dashboard|ui|frontend|component/.test(combined)) {
+    if (!/(loading|spinner|pending)/.test(combined)) uiFindings.push("UI evidence does not mention loading/pending state coverage.");
+    if (!/(error|failure|invalid)/.test(combined)) uiFindings.push("UI evidence does not mention error-state coverage.");
+    if (!/(empty|no data|zero state)/.test(combined)) uiFindings.push("UI evidence does not mention empty-state coverage.");
+    if (!/(mobile|responsive|desktop)/.test(combined)) uiFindings.push("UI evidence does not mention responsive desktop/mobile coverage.");
+    if (!/(accessibility|a11y|keyboard|aria|contrast)/.test(combined)) uiFindings.push("UI evidence does not mention accessibility coverage.");
+  }
   if ((domains.includes("backend") || /backend|database|api route|server route/.test(combined)) && domains.includes("ui") && !/(component|page|route|button|form|screen|visible|ui exposed|user can|browser)/.test(combined)) {
     uiFindings.push("Backend work is not proven usable: no UI route/component/form/button/state exposes it.");
     missingEvidence.push("UI/backend integration proof is missing.");
@@ -186,9 +193,17 @@ export function completionAudit(options = {}) {
     unsafeClaims.push("Do not claim API integration is safe while frontend secret exposure is unresolved.");
   }
   const evidenceText = normalize([evidence, commands, sources, visuals].flat().join(" "));
+  const hasCurrentSourceEvidence = sources.length > 0 && /(official|docs|changelog|patch|version|current|release|source|http|https|wiki|fextralife|github)/.test(evidenceText);
+  const hasAssumptions = /(assum|assuming|if you|for pve|for pvp|base game|dlc|progression|rune level)/.test(combined);
   if (domains.includes("research") && !sources.length && !/(source|official|docs|citation|url|patch|version|current)/.test(evidenceText)) {
     researchFindings.push("Research/current-fact answer has no source-quality/current verification evidence.");
     missingEvidence.push("Current/high-quality sources are missing.");
+  } else if (domains.includes("research") && sources.length && !hasCurrentSourceEvidence) {
+    researchFindings.push("Sources were provided but freshness/official/current quality is unclear.");
+    unverifiedClaims.push("Research is partially sourced but not fully current/official." );
+  }
+  if (domains.includes("research") && hasAssumptions && !sources.length) {
+    researchFindings.push("Assumptions were stated, but no sources were provided; answer is limited rather than fully verified.");
   }
   if (domains.includes("game_build")) {
     const gameMissing = missingContext.critical_missing_context || [];
@@ -232,6 +247,11 @@ export function completionAudit(options = {}) {
   score -= unsafeClaims.length * 12;
   if (commands.length) score += 5;
   if (evidence.length >= 3) score += 5;
+  if (domains.includes("research") && hasCurrentSourceEvidence) score += 12;
+  if (domains.includes("ui") && visuals.length && /(loading|error|empty|mobile|responsive|accessibility|a11y)/.test(combined)) score += 10;
+  if (domains.includes("api") && /(cors|https|auth|secret|backend|server|proxy|rate limit)/.test(combined)) score += 8;
+  if (domains.includes("game_build") && /(pve|pvp|dlc|shadow|progression|rune|armor|poise|skill|patch|source)/.test(combined)) score += 10;
+  if (domains.includes("modding") && /(game|version|tool|file format|regulation|bnd|dcx|pak|backup|isolation|restore|compatibility|verification)/.test(combined)) score += 12;
   score = clamp(score, 0, 100);
 
   let verdict = "pass";
@@ -360,13 +380,107 @@ export function protectionReview(options = {}) {
   }, tokenBudget);
 }
 
+export function proofTrail(options = {}) {
+  const task = String(options.task || "").trim();
+  const tokenBudget = normalizeBudget(options.token_budget);
+  const capabilityIds = unique(arrayify(options.capability_ids_used));
+  const commands = arrayify(options.commands_run);
+  const sources = arrayify(options.sources_used);
+  const changedFiles = arrayify(options.changed_files);
+  const visuals = arrayify(options.visual_evidence || options.screenshots_or_visual_evidence);
+  const tests = arrayify(options.tests_or_checks);
+  const assumptions = arrayify(options.assumptions);
+  const skippedItems = arrayify(options.skipped_items);
+  const remainingRisks = arrayify(options.remaining_risks);
+  const protectionReviews = arrayify(options.protection_reviews);
+  const completion = normalizeObject(options.completion_audit);
+  const contract = normalizeObject(options.capability_contract);
+  const finalClaim = String(options.final_claim || "").trim();
+  const domains = classifyDomains(task, finalClaim || JSON.stringify(contract || {}));
+  const proofId = `vnem-proof-${stableHash([task, options.bootstrap_activation_id, capabilityIds.join(","), finalClaim].join("|"))}`;
+  const missingEvidence = [];
+
+  if (!options.bootstrap_activation_id) missingEvidence.push("bootstrap_activation_id missing; cannot prove bootstrap was used.");
+  if (!capabilityIds.length) missingEvidence.push("capability_ids_used missing; cannot prove selected capabilities were applied.");
+  if (domains.includes("ui") && !visuals.length) missingEvidence.push("UI visual evidence missing.");
+  if (domains.includes("api") && !hasAnyText([completion, contract, protectionReviews, sources], /(cors|secret|api key|auth|https|backend|proxy|server)/i)) missingEvidence.push("API secret/CORS/backend safety proof missing.");
+  if (domains.includes("research") && !sources.length) missingEvidence.push("Research/source freshness evidence missing.");
+  if (domains.includes("game_build") && !hasAnyText([assumptions, sources, finalClaim, completion], /(pve|pvp|dlc|shadow|progression|rune|armor|poise|skill|patch|source)/i)) missingEvidence.push("Game/build assumptions and source freshness missing.");
+  if (domains.includes("modding") && !hasAnyText([assumptions, sources, finalClaim, completion], /(game|version|tool|file format|regulation|bnd|dcx|pak|backup|isolation|restore|compatibility|verification)/i)) missingEvidence.push("Modding game/tool/file-format/backup proof missing.");
+  if (completion?.missing_evidence?.length) missingEvidence.push(...arrayify(completion.missing_evidence).map((item) => `Completion audit: ${item}`));
+  if (skippedItems.length) missingEvidence.push(...skippedItems.map((item) => `Skipped: ${item}`));
+
+  const completionVerdict = completion?.verdict || "unknown";
+  const protectionSummary = summarizeProtection(protectionReviews);
+  const evidenceSummary = {
+    commands_run: commands.slice(0, 6),
+    tests_or_checks: tests.slice(0, 6),
+    sources_used: sources.slice(0, 6),
+    changed_files: changedFiles.slice(0, 8),
+    visual_evidence: visuals.slice(0, 5),
+    domain_evidence_status: {
+      ui_visual_evidence_present: !domains.includes("ui") || visuals.length > 0,
+      api_safety_evidence_present: !domains.includes("api") || !missingEvidence.some((item) => /API secret/.test(item)),
+      research_sources_present: !domains.includes("research") || sources.length > 0,
+      game_context_present: !domains.includes("game_build") || !missingEvidence.some((item) => /Game\/build/.test(item)),
+      modding_pipeline_present: !domains.includes("modding") || !missingEvidence.some((item) => /Modding/.test(item))
+    }
+  };
+  let finalVerdict = "pass";
+  if (completionVerdict === "blocked" || protectionSummary.blocking_reviews > 0) finalVerdict = "blocked";
+  else if (missingEvidence.length && !commands.length && !sources.length && !visuals.length && !tests.length) finalVerdict = "insufficient_evidence";
+  else if (missingEvidence.length || completionVerdict === "revise" || completionVerdict === "insufficient_evidence") finalVerdict = "revise";
+
+  const safeToClaim = finalVerdict === "pass"
+    ? ["VNEM was used for task routing/contracting/audit/proof reporting.", "Claim only outcomes backed by listed evidence."]
+    : ["Claim partial progress only; include missing evidence and remaining risks."];
+  const mustNotClaim = unique([
+    missingEvidence.length ? "Do not claim the task is fully done until missing evidence is resolved." : null,
+    domains.includes("ui") && !visuals.length ? "Do not claim UI polish/quality without visual evidence." : null,
+    domains.includes("api") ? "Do not claim API safety without auth/CORS/secret/backend evidence." : null,
+    domains.includes("research") && !sources.length ? "Do not claim current/source-backed research without sources." : null,
+    domains.includes("modding") ? "Do not claim modding safety without game/tool/file-format/backups verification." : null
+  ]);
+
+  const compactBlock = [
+    `VNEM proof trail: ${proofId}`,
+    `Verdict: ${finalVerdict}`,
+    `Capabilities used: ${capabilityIds.join(", ") || "not provided"}`,
+    `Evidence: commands=${commands.length}, tests=${tests.length}, sources=${sources.length}, visual=${visuals.length}, files=${changedFiles.length}`,
+    missingEvidence.length ? `Missing: ${missingEvidence.slice(0, 4).join("; ")}` : "Missing: none detected in provided proof fields",
+    remainingRisks.length ? `Remaining risks: ${remainingRisks.slice(0, 3).join("; ")}` : "Remaining risks: none provided"
+  ].join("\n");
+
+  return compactForBudget({
+    proof_trail_id: proofId,
+    task_summary: task.slice(0, 240),
+    task_domain: domains,
+    vnem_used: Boolean(options.bootstrap_activation_id || capabilityIds.length || contract || completion || protectionReviews.length),
+    bootstrap_activation_id: options.bootstrap_activation_id || null,
+    capability_ids_used: capabilityIds,
+    contract_summary: summarizeContract(contract),
+    protection_review_summary: protectionSummary,
+    completion_audit_summary: summarizeCompletion(completion),
+    evidence_summary: evidenceSummary,
+    missing_evidence: unique(missingEvidence).slice(0, tokenBudget === "expanded" ? 12 : 7),
+    assumptions: assumptions.slice(0, 6),
+    skipped_items: skippedItems.slice(0, 6),
+    remaining_risks: remainingRisks.slice(0, 6),
+    safe_to_claim: safeToClaim,
+    must_not_claim: mustNotClaim,
+    final_verdict: finalVerdict,
+    compact_final_report_block: compactBlock,
+    token_budget_used: tokenBudget
+  }, tokenBudget);
+}
+
 export function classifyDomains(task = "", context = "") {
   const text = normalize(`${task} ${context}`);
   const domains = new Set();
   if (/research|current|latest|best|compare|recommend|source|citation|fact|news|docs|patch/.test(text)) domains.add("research");
   if (/elden ring|build|loadout|pve|pvp|dlc|rune level|weapon|armor|talismans|skill level/.test(text)) domains.add("game_build"), domains.add("research");
   if (/modding|mod workflow|game mod|mods?|file format|regulation\.bin|bnd|dcx|pak|load order|save file/.test(text)) domains.add("modding"), domains.add("game_build");
-  if (/next|react|website|frontend|ui|ux|dashboard|component|responsive|accessibility|visual|screen|form|button/.test(text)) domains.add("ui"), domains.add("code");
+  if (/next|react|website|frontend|\bui\b|ux|dashboard|component|responsive|accessibility|visual|screen|form|button/.test(text)) domains.add("ui"), domains.add("code");
   if (/backend|database|server|api route|storage|endpoint/.test(text)) domains.add("backend"), domains.add("code");
   if (/api|cors|oauth|webhook|api key|token|external service|weather|integration/.test(text)) domains.add("api"), domains.add("code");
   if (/debug|bug|failing|failure|error|stack trace|regression|root cause|ci/.test(text)) domains.add("debugging"), domains.add("code");
@@ -398,14 +512,18 @@ function skippedCapabilities(contract, evidence, claimed) {
 }
 
 function buildPermissionPrompt({ action, target, task, riskLevel, risks, safeguards, recovery, verdict }) {
+  const scopedAction = action || `review/perform ${target} for: ${task}`;
   return [
-    `Permission requested: ${action || `review/perform ${target} for: ${task}`}`,
+    `Permission requested: ${scopedAction}`,
+    `Exact action: ${scopedAction}`,
     `Danger level: ${capitalize(riskLevel)}.`,
-    `Why: ${risks[0] || "Action may affect the user task or environment."}`,
-    `What can go wrong: ${risks.slice(0, 3).join("; ")}`,
+    `Why it is needed: ${task || "advance the requested task while preserving safety boundaries."}`,
+    `What can go wrong: ${risks.slice(0, 3).join("; ") || "unexpected side effects or unverifiable claims"}`,
+    `Scope: only the explicit path/account/repository/action named above; no unrelated files, accounts, or secrets.`,
     `Safeguards: ${(safeguards.length ? safeguards : ["Limit scope, record evidence, and stop on unexpected changes."]).slice(0, 3).join("; ")}`,
     `Rollback/recovery: ${(recovery.length ? recovery : ["Inspect state after action and revert/restore if results are unexpected."]).slice(0, 2).join("; ")}`,
     `After approval: perform only the scoped action, report exact output/evidence, and stop if new risk appears.`,
+    `Will not do: access unrelated paths, store or print secrets, escalate privileges, or perform extra actions not approved.`,
     `Core MCP verdict: ${verdict}; Core MCP does not perform this action.`
   ].join("\n");
 }
@@ -435,6 +553,65 @@ function mustNotClaim(missingEvidence, unsafeClaims, domains) {
     domains.includes("api") ? "Do not claim API integration is safe without auth/CORS/secret/backend proof." : null,
     domains.includes("research") ? "Do not claim current/best facts without current/source-quality evidence." : null
   ]);
+}
+
+function summarizeContract(contract) {
+  if (!contract) return { provided: false };
+  return compactObject({
+    provided: true,
+    task_summary: contract.task_summary,
+    capability_count: Array.isArray(contract.required_capability_modules) ? contract.required_capability_modules.length : undefined,
+    capability_ids: Array.isArray(contract.required_capability_modules) ? contract.required_capability_modules.map((module) => typeof module === "string" ? module : module.id).filter(Boolean).slice(0, 8) : undefined,
+    proof_trail_expected: contract.proof_trail_expectation?.tool || contract.proof_trail_expectation || undefined,
+    final_report_requirements: Array.isArray(contract.final_report_requirements) ? contract.final_report_requirements.slice(0, 6) : undefined
+  });
+}
+
+function summarizeCompletion(completion) {
+  if (!completion) return { provided: false };
+  return compactObject({
+    provided: true,
+    verdict: completion.verdict,
+    score: completion.score,
+    missing_evidence_count: arrayify(completion.missing_evidence).length,
+    unverified_claims_count: arrayify(completion.unverified_claims).length,
+    safe_claims: arrayify(completion.what_can_be_claimed_safely).slice(0, 3),
+    must_not_claim: arrayify(completion.what_must_not_be_claimed).slice(0, 3)
+  });
+}
+
+function summarizeProtection(reviews) {
+  const parsed = reviews.map((item) => normalizeObject(item) || { raw: String(item) });
+  return {
+    provided: parsed.length > 0,
+    count: parsed.length,
+    blocking_reviews: parsed.filter((review) => review.verdict === "block" || review.verdict === "blocked").length,
+    approval_required_reviews: parsed.filter((review) => review.verdict === "needs_user_approval").length,
+    highest_risk: parsed.reduce((risk, review) => maxRisk(risk, review.risk_level || "low"), "low"),
+    summaries: parsed.slice(0, 4).map((review) => compactObject({ verdict: review.verdict, risk_level: review.risk_level, first_risk: arrayify(review.risks)[0] || review.raw }))
+  };
+}
+
+function normalizeObject(value) {
+  if (!value) return null;
+  if (typeof value === "object") return value;
+  if (typeof value === "string") {
+    try { return JSON.parse(value); } catch { return { raw: value }; }
+  }
+  return null;
+}
+
+function hasAnyText(values, regex) {
+  return regex.test(values.map((value) => typeof value === "string" ? value : JSON.stringify(value || "")).join(" "));
+}
+
+function stableHash(value) {
+  let hash = 2166136261;
+  for (const char of String(value || "")) {
+    hash ^= char.charCodeAt(0);
+    hash = Math.imul(hash, 16777619);
+  }
+  return (hash >>> 0).toString(16).padStart(8, "0").slice(0, 10);
 }
 
 function compactForBudget(value, budget = "compact") {

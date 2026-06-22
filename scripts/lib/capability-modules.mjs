@@ -172,6 +172,11 @@ export function composeCapabilityContract(library, agentProfiles, options = {}) 
     "before API integration involving secrets/auth/CORS/network",
     "before game/modding file changes or external tool use"
   ]).slice(0, 6);
+  const proof_trail_expectation = {
+    tool: "vnem_proof_trail",
+    required_fields: ["bootstrap_activation_id", "capability_ids_used", "completion_audit", "evidence_summary"],
+    use_when: "After completion audit, before final answer."
+  };
   return {
     task_summary: String(options.task || "").slice(0, 240),
     agent_profile_summary: {
@@ -190,7 +195,8 @@ export function composeCapabilityContract(library, agentProfiles, options = {}) 
     verification: unique(required.required_modules.flatMap((module) => module.verification_requirements || [])).slice(0, 8),
     completion_audit_expectations,
     protection_review_triggers,
-    final_report_requirements: ["capability_ids_used", "evidence_per_required_module", "missing_context_answers_or_assumptions", "domain_quality_contracts_satisfied", "checks_run", "skipped_items_with_reason", "remaining_risks"],
+    proof_trail_expectation,
+    final_report_requirements: ["bootstrap_activation_id", "capability_ids_used", "proof_trail_id", "evidence_per_module", "missing_context_or_assumptions", "checks_run", "remaining_risks"],
     token_budget: tokenBudget,
     token_budget_estimate: tokenBudget === "compact" ? "compact: selected modules only; no full library/profile dump" : "selected details only; fetch full records by id if needed",
     deeper_lookup_ids: required.deeper_lookup_ids,
