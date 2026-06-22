@@ -11,7 +11,12 @@ const fixtureDir = path.join(rootDir, "fixtures", "super-library");
 
 const skillsHtml = await readFile(path.join(fixtureDir, "skills-sh-sample.html"), "utf8");
 const tree = JSON.parse(await readFile(path.join(fixtureDir, "agent-skills-tree-sample.json"), "utf8"));
+const skillMarkdownSample = await readFile(path.join(fixtureDir, "skill-md-sample.md"), "utf8");
 const publicApisMarkdown = await readFile(path.join(fixtureDir, "public-apis-sample.md"), "utf8");
+tree.skill_markdown_summaries = {
+  ...(tree.skill_markdown_summaries || {}),
+  "react-best-practices": skillMarkdownSample
+};
 
 const skills = buildSkillCapabilities(skillsHtml, tree);
 const apis = buildApiCapabilities(publicApisMarkdown, 20);
@@ -28,10 +33,14 @@ assert.ok(reactSkill.task_types.includes("frontend_ui"), "skill should normalize
 assert.ok(reactSkill.risk_flags.includes("prompt_injection_surface"), "skill should carry risk flags");
 assert.equal(reactSkill.manual_review_required, true, "skill should require manual review");
 assert.equal(reactSkill.review_status, "metadata_only", "fixture must not falsely mark skills reviewed/safe");
+assert.equal(reactSkill.source_review_status, "skill_md_summary_parsed_untrusted", "SKILL.md-derived summary should be marked parsed but untrusted");
+assert.equal(reactSkill.skill_content_confidence, "medium", "parsed fixture summary should raise content confidence without becoming trusted");
+assert.ok(reactSkill.verified_instruction_summary.includes("React") && reactSkill.verified_instruction_summary.includes("visual evidence"), "fixture summary should improve skill guidance");
+assert.ok(reactSkill.required_evidence.some((item) => /visual|accessibility|test/i.test(item)), "skill should include required evidence from parsed summary/domain");
 assert.equal(reactSkill.core_can_apply_guidance, true, "Core MCP can apply guidance from metadata");
 assert.equal(reactSkill.precision_required_for_install, true, "install/execution stays Precision/Tools-only");
 assert.equal(typeof reactSkill.verified_instruction_summary, "string");
-assert.equal(reactSkill.agent_compatibility_confidence, "unknown");
+assert.equal(reactSkill.agent_compatibility_confidence, "low");
 
 const openMeteo = apis.find((api) => /open-meteo/i.test(api.name));
 const secretWeather = apis.find((api) => /secret-weather/i.test(api.id));
@@ -48,11 +57,17 @@ for (const api of [openMeteo, secretWeather]) {
   assert.equal(api.review_status, "metadata_only", "fixture must not falsely mark APIs reviewed/safe");
   assert.equal(api.manual_review_required, true, "API should require manual review");
   assert.ok(api.task_types.includes("api_integration"), "API should normalize task types");
-  assert.equal(api.official_docs_url, "unknown", "official docs remain unknown unless verified");
+  assert.ok(api.official_docs_url === "unknown" || api.official_docs_url === api.source_url, "official docs are only set from docs-like fixture/source URLs");
   assert.ok(api.freshness_status.includes("unknown"), "freshness should remain unknown, not guessed current");
   assert.ok(api.integration_test_requirements.includes("error path"), "API should include integration test requirements");
+  assert.notEqual(api.rate_limit_notes, "unlimited", "fixture importer must not invent unlimited rate limits");
+  assert.ok(Array.isArray(api.verification_source_urls), "API should include verification source URL array");
+  assert.ok(api.documentation_confidence === "source_url_is_docs_like" || api.documentation_confidence === "unknown", "documentation confidence should be explicit");
 }
+assert.equal(openMeteo.official_docs_url, "https://open-meteo.com/en/docs", "docs-like source URL can populate official_docs_url");
+assert.ok(openMeteo.verification_source_urls.includes("https://open-meteo.com/en/docs"), "Open-Meteo should preserve docs verification source");
 assert.equal(openMeteo.frontend_safe, true, "no-auth HTTPS/CORS yes API can be a browser candidate after docs review");
+assert.equal(secretWeather.cors, "unknown", "CORS unknown should remain unknown");
 assert.equal(secretWeather.secret_risk, true, "apiKey row should have secret risk");
 assert.equal(secretWeather.frontend_safe, false, "secret-bearing API cannot be frontend-safe");
 assert.equal(secretWeather.backend_required, true, "secret-bearing API should require backend proxy");

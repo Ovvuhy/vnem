@@ -31,6 +31,10 @@ for (const skill of library.skills) {
   assert.equal(typeof skill.requires_install, "boolean", `skill ${skill.id} missing requires_install`);
   assert.equal(typeof skill.core_can_apply_guidance, "boolean", `skill ${skill.id} missing core_can_apply_guidance`);
   assert.equal(typeof skill.precision_required_for_install, "boolean", `skill ${skill.id} missing precision_required_for_install`);
+  assert.equal(typeof skill.source_review_status, "string", `skill ${skill.id} missing source_review_status`);
+  assert.equal(typeof skill.skill_content_confidence, "string", `skill ${skill.id} missing skill_content_confidence`);
+  assert.ok(Array.isArray(skill.required_evidence), `skill ${skill.id} missing required_evidence`);
+  assert.ok(Array.isArray(skill.skill_safety_profile_fields), `skill ${skill.id} missing skill_safety_profile_fields`);
   assert.equal(skill.core_can_apply_guidance, true, `skill ${skill.id} should allow Core MCP guidance use`);
   assert.equal(skill.precision_required_for_install, true, `skill ${skill.id} install should require Precision/Tools`);
   assert.ok(Array.isArray(skill.compatible_with), `skill ${skill.id} missing compatible_with`);
@@ -57,6 +61,10 @@ for (const api of library.apis) {
   assert.equal(typeof api.frontend_safety_reason, "string", `api ${api.id} missing frontend_safety_reason`);
   assert.equal(typeof api.backend_proxy_reason, "string", `api ${api.id} missing backend_proxy_reason`);
   assert.equal(typeof api.secret_handling_pattern, "string", `api ${api.id} missing secret_handling_pattern`);
+  assert.ok(Array.isArray(api.verification_source_urls), `api ${api.id} missing verification_source_urls`);
+  assert.equal(typeof api.documentation_confidence, "string", `api ${api.id} missing documentation_confidence`);
+  assert.ok(Array.isArray(api.recommended_combinations), `api ${api.id} missing recommended_combinations`);
+  assert.ok(Array.isArray(api.api_safety_profile_fields), `api ${api.id} missing api_safety_profile_fields`);
   assert.ok(Array.isArray(api.integration_test_requirements), `api ${api.id} missing integration_test_requirements`);
   assert.ok(api.freshness_status.includes("unknown") || api.freshness_status.includes("current") || api.freshness_status.includes("verified"), `api ${api.id} freshness must be explicit`);
   assert.equal(typeof api.frontend_safe, "boolean", `api ${api.id} missing frontend_safe`);
@@ -79,5 +87,14 @@ for (const api of library.apis) {
 assert.ok(library.skills.some((skill) => /react|next|web-design|frontend/i.test(skill.name)), "expected React/Next/UI skill seed");
 assert.ok(library.apis.some((api) => /weather|forecast/i.test(`${api.name} ${api.category} ${api.description}`)), "expected weather API seed");
 assert.ok(library.apis.some((api) => /finance|currency|exchange/i.test(`${api.name} ${api.category} ${api.description}`)), "expected finance/currency API seed");
+const openMeteoRecord = library.apis.find((api) => api.id === "api:weather:open-meteo");
+assert.ok(openMeteoRecord, "expected Open-Meteo priority API record");
+assert.ok(openMeteoRecord.official_docs_url === "https://open-meteo.com/en/docs" || openMeteoRecord.official_docs_url === "unknown", "official docs URL should be sourced or unknown");
+assert.notEqual(openMeteoRecord.rate_limit_notes, "unlimited", "rate limits must not be invented");
+const abuseIpDbRecord = library.apis.find((api) => api.id === "api:anti-malware:abuseipdb");
+assert.ok(abuseIpDbRecord, "expected security priority API record");
+assert.equal(abuseIpDbRecord.frontend_safe, false, "secret-bearing security API must not be frontend-safe");
+assert.ok(abuseIpDbRecord.backend_proxy_reason.toLowerCase().includes("backend"), "secret-bearing API should explain backend proxy need");
+assert.ok(library.skills.some((skill) => skill.source_review_status === "skill_md_detected_metadata_only" || skill.source_review_status === "skill_md_summary_parsed_untrusted"), "expected at least one SKILL.md-enriched skill record");
 
 console.log("VNEM Super MCP library data tests passed");

@@ -484,6 +484,12 @@ function apiPlanCandidate(entry) {
     source_url: entry.source_url,
     imported_from: entry.imported_from,
     recommended_stack_usage: entry.recommended_stack_usage,
+    official_docs_url: entry.official_docs_url || "unknown",
+    freshness_status: entry.freshness_status || "unknown; verify current docs",
+    rate_limit_notes: entry.rate_limit_notes || "unknown; verify official docs",
+    documentation_confidence: entry.documentation_confidence || "unknown",
+    verification_source_urls: entry.verification_source_urls || [],
+    integration_test_requirements: entry.integration_test_requirements || [],
     integration_decision: entry.frontend_safe === true ? "frontend_possible_after_docs_review" : entry.secret_risk ? "backend_required_secret_risk" : "backend_or_review_required"
   };
 }

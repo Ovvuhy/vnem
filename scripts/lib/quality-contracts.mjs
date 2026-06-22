@@ -81,9 +81,9 @@ export function buildDomainQualityContracts(options = {}) {
       id: "contract:ui-frontend-backend-quality",
       name: "UI/frontend/backend integration contract",
       applies_to: ["UI", "frontend", "web app", "backend feature"],
-      compact_instructions: ["Backend work is incomplete unless a user can see/use it when the task expects an app feature.", "Verify loading, error, empty, responsive, and accessibility states where relevant.", "Do not claim polished UI without visual evidence."],
-      required_evidence: ["screenshot/visual or browser evidence for UI claims", "route/component/form/button/state exposing backend feature", "build/test evidence"],
-      fail_if_missing: ["UI claims with no visual proof", "backend feature with no UI exposure", "hidden or broken user path"]
+      compact_instructions: ["Backend work is incomplete unless a user can see/use it when the task expects an app feature.", "Trace data flow from backend/API to UI component/form/action path.", "Verify loading, error, empty, success, responsive, and accessibility states where relevant.", "Do not claim polished UI without visual evidence."],
+      required_evidence: ["screenshot/visual or browser evidence for UI claims", "route/component/form/button/state exposing backend feature", "data-flow proof from backend/API response into user-visible UI", "loading/error/empty/success state evidence", "build/test evidence"],
+      fail_if_missing: ["UI claims with no visual proof", "backend feature with no UI exposure", "UI component not connected to real backend/data", "hidden or broken user path"]
     });
   }
   if (domains.includes("api")) {
@@ -173,16 +173,23 @@ export function completionAudit(options = {}) {
     uiFindings.push("UI quality claim lacks screenshot/visual/browser/responsive/accessibility evidence.");
     missingEvidence.push("Visual evidence for UI claim is missing.");
   }
-  if (domains.includes("ui") && /polish|dashboard|ui|frontend|component/.test(combined)) {
+  if (domains.includes("ui") && /polish|dashboard|ui|frontend|component|form|app feature/.test(combined)) {
     if (!/(loading|spinner|pending)/.test(combined)) uiFindings.push("UI evidence does not mention loading/pending state coverage.");
     if (!/(error|failure|invalid)/.test(combined)) uiFindings.push("UI evidence does not mention error-state coverage.");
     if (!/(empty|no data|zero state)/.test(combined)) uiFindings.push("UI evidence does not mention empty-state coverage.");
+    if (!/(success|saved|submitted|confirmed)/.test(combined)) uiFindings.push("UI evidence does not mention success-state coverage.");
     if (!/(mobile|responsive|desktop)/.test(combined)) uiFindings.push("UI evidence does not mention responsive desktop/mobile coverage.");
     if (!/(accessibility|a11y|keyboard|aria|contrast)/.test(combined)) uiFindings.push("UI evidence does not mention accessibility coverage.");
   }
-  if ((domains.includes("backend") || /backend|database|api route|server route/.test(combined)) && domains.includes("ui") && !/(component|page|route|button|form|screen|visible|ui exposed|user can|browser)/.test(combined)) {
-    uiFindings.push("Backend work is not proven usable: no UI route/component/form/button/state exposes it.");
-    missingEvidence.push("UI/backend integration proof is missing.");
+  if ((domains.includes("backend") || /backend|database|api route|server route/.test(combined)) && domains.includes("ui")) {
+    if (!/(component|page|route|button|form|screen|visible|ui exposed|user can|browser)/.test(combined)) {
+      uiFindings.push("Backend work is not proven usable: no UI route/component/form/button/state exposes it.");
+      missingEvidence.push("UI/backend integration proof is missing.");
+    }
+    if (!/(connect|wired|fetch|submit|posts? to|gets? from|data flow|api response|real backend|server action)/.test(combined)) {
+      uiFindings.push("UI/backend data flow is not proven: no evidence that UI reads from or writes to the real backend/API.");
+      missingEvidence.push("Backend-to-UI data-flow proof is missing.");
+    }
   }
   if (domains.includes("api") && !/(cors|https|auth|api key|secret|backend|server|proxy|rate limit|env)/.test(combined)) {
     apiFindings.push("API integration lacks auth/CORS/HTTPS/frontend-backend/secret-handling evidence.");

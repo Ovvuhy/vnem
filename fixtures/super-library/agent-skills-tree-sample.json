@@ -3,5 +3,8 @@
     { "path": "skills/react-best-practices/SKILL.md", "type": "blob" },
     { "path": "skills/web-design-guidelines/SKILL.md", "type": "blob" },
     { "path": "README.md", "type": "blob" }
-  ]
+  ],
+  "skill_markdown_summaries": {
+    "react-best-practices": "Use for React and Next.js UI work. Verify components with tests, accessibility checks, loading/error states, and visual evidence. Do not run scripts automatically."
+  }
 }

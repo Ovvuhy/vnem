@@ -24,13 +24,15 @@ import {
   protectionReview
 } from "./lib/quality-contracts.mjs";
 import {
+  apiSafetyProfile,
   buildLibraryStatus,
   loadSuperLibrary,
   recommendApis,
   recommendSkills,
   reviewCapability,
   searchApis,
-  searchSkills
+  searchSkills,
+  skillSafetyProfile
 } from "./lib/super-library.mjs";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
@@ -82,6 +84,8 @@ const DEFAULT_MCP_TOOLS = [
   "vnem_search_apis",
   "vnem_recommend_apis",
   "vnem_review_skill_or_api",
+  "vnem_api_safety_profile",
+  "vnem_skill_safety_profile",
   "vnem_get_required_capabilities",
   "vnem_activate_capability_pack",
   "vnem_apply_skill_guidance",
@@ -350,6 +354,46 @@ function registerTools(mcpServer) {
     async (args) => {
       const review = reviewCapability(superLibrary, args);
       return toolResult(formatCapabilityReview(review), review);
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_api_safety_profile",
+    {
+      title: "VNEM API Safety Profile",
+      description:
+        "Return a compact read-only frontend/backend/API safety profile for one API capability record: auth, CORS, HTTPS, secret risk, backend proxy need, docs/freshness confidence, tests, unsafe patterns, and unknowns. Does not call APIs.",
+      inputSchema: {
+        id: z.string().min(1),
+        task: z.string().optional(),
+        frontend_only: z.boolean().default(false),
+        token_budget: z.enum(["compact", "normal", "expanded"]).default("compact")
+      },
+      annotations: READ_ONLY
+    },
+    async (args) => {
+      const profile = apiSafetyProfile(superLibrary, args);
+      return toolResult(formatApiSafetyProfile(profile), profile);
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_skill_safety_profile",
+    {
+      title: "VNEM Skill Safety Profile",
+      description:
+        "Return a compact read-only skill safety/usefulness profile: purpose, Core guidance boundary, install/execution boundary, compatibility confidence, prompt-injection/manual-review risk, usage evidence, and must-not-claim limits. Does not install or execute skills.",
+      inputSchema: {
+        id: z.string().min(1),
+        task: z.string().optional(),
+        agent_client: z.string().optional(),
+        token_budget: z.enum(["compact", "normal", "expanded"]).default("compact")
+      },
+      annotations: READ_ONLY
+    },
+    async (args) => {
+      const profile = skillSafetyProfile(superLibrary, args);
+      return toolResult(formatSkillSafetyProfile(profile), profile);
     }
   );
 
@@ -3280,6 +3324,31 @@ function formatApiResults(title, result) {
   }
   if (result.warning) lines.push("", `Warning: ${result.warning}`);
   return lines.join("\n");
+}
+
+function formatApiSafetyProfile(profile) {
+  if (!profile.found) return `No API safety profile found for ${profile.id}. Core MCP did not call any API.`;
+  return [
+    `API safety profile: ${profile.name}`,
+    `verdict: ${profile.verdict}`,
+    `auth=${profile.auth_type} https=${profile.https} cors=${profile.cors} frontend_safe=${profile.frontend_safe}`,
+    `backend required: ${profile.backend_required}`,
+    `docs confidence: ${profile.documentation_confidence}`,
+    ...(profile.unknowns || []).slice(0, 4).map((item) => `unknown: ${item}`),
+    "Core MCP does not call APIs or request/store secrets."
+  ].join("\n");
+}
+
+function formatSkillSafetyProfile(profile) {
+  if (!profile.found) return `No skill safety profile found for ${profile.id}. Core MCP did not install or execute anything.`;
+  return [
+    `skill safety profile: ${profile.name}`,
+    `source review: ${profile.source_review_status}`,
+    `content confidence: ${profile.skill_content_confidence}`,
+    `core guidance: ${profile.core_can_apply_guidance}; installs/executes: ${profile.installs_or_executes_skill}`,
+    `prompt injection risk: ${profile.prompt_injection_risk}`,
+    ...(profile.must_not_claim || []).slice(0, 3).map((item) => `must not claim: ${item}`)
+  ].join("\n");
 }
 
 function formatCapabilityReview(review) {

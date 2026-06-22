@@ -36,6 +36,7 @@ const TARGET_API_CATEGORIES = new Set([
   "Finance",
   "Currency Exchange",
   "Documents & Productivity",
+  "Email",
   "Geocoding",
   "Weather",
   "Environment",
@@ -47,6 +48,22 @@ const TARGET_API_CATEGORIES = new Set([
   "Programming",
   "Open Data"
 ]);
+
+const PRIORITY_API_CATEGORIES = new Set([
+  "Anti-Malware",
+  "Authentication & Authorization",
+  "Currency Exchange",
+  "Development",
+  "Finance",
+  "Email",
+  "Geocoding",
+  "Games & Comics",
+  "Open Data",
+  "Security",
+  "Weather"
+]);
+
+const DOCS_LIKE_URL_RE = /(?:docs?|documentation|developers?|api|reference|swagger|openapi|readthedocs|developer|dev|manual)/i;
 
 async function main() {
   const html = await fetchText(SOURCES.skillsHome);
@@ -139,6 +156,10 @@ export function buildSkillCapabilities(pageHtml, tree) {
     const knownSkillFile = owner === "vercel-labs" && repo === "agent-skills"
       ? [...skillFolderNames].find((folder) => folder === name || `vercel-${folder}` === name)
       : null;
+    const parsedSummary = knownSkillFile ? normalizeSkillSummary(tree?.skill_markdown_summaries?.[knownSkillFile]) : null;
+    const sourceReviewStatus = parsedSummary ? "skill_md_summary_parsed_untrusted" : knownSkillFile ? "skill_md_detected_metadata_only" : "metadata_only_no_skill_md";
+    const skillContentConfidence = parsedSummary ? "medium" : knownSkillFile ? "low" : "unknown";
+    const requiredEvidence = skillRequiredEvidence(taskTypes, parsedSummary);
 
     rows.push({
       id,
@@ -151,12 +172,16 @@ export function buildSkillCapabilities(pageHtml, tree) {
       categories,
       task_types: taskTypes,
       supported_agents: ["unknown"],
-      verified_instruction_summary: knownSkillFile ? `SKILL.md detected at skills/${knownSkillFile}/SKILL.md; summary remains metadata-only until source content review.` : "unknown; source SKILL.md was not parsed by importer fixture/live refresh",
-      agent_compatibility_confidence: "unknown",
+      verified_instruction_summary: parsedSummary || (knownSkillFile ? `SKILL.md detected at skills/${knownSkillFile}/SKILL.md; summary remains metadata-only until source content review.` : "unknown; source SKILL.md was not parsed by importer fixture/live refresh"),
+      agent_compatibility_confidence: parsedSummary ? "low" : "unknown",
       supported_clients_verified: [],
       requires_install: true,
       core_can_apply_guidance: true,
       precision_required_for_install: true,
+      source_review_status: sourceReviewStatus,
+      skill_content_confidence: skillContentConfidence,
+      required_evidence: requiredEvidence,
+      skill_safety_profile_fields: ["purpose", "core_guidance_boundary", "install_execution_boundary", "prompt_injection_risk", "manual_review", "usage_evidence", "must_not_claim"],
       supported_agents_reference: SUPPORTED_AGENT_REFERENCE,
       install_method: "skills CLI or repository-specific install flow; manual review required before use",
       install_command: "unknown",
@@ -214,6 +239,10 @@ export function buildApiCapabilities(markdown, limit = 700) {
     const backendRequired = secretRisk || https !== "yes" || cors !== "yes";
     const riskFlags = inferApiRiskFlags(authType, https, cors, secretRisk, frontendSafe, backendRequired);
     const taskTypes = inferApiTaskTypes(category, name, description);
+    const officialDocsUrl = docsLikeUrl(sourceUrl) ? sourceUrl : "unknown";
+    const verificationSourceUrls = officialDocsUrl !== "unknown" ? [officialDocsUrl] : [];
+    const documentationConfidence = officialDocsUrl !== "unknown" ? "source_url_is_docs_like" : "unknown";
+    const priorityEnrichment = PRIORITY_API_CATEGORIES.has(category);
     const id = `api:${slugify(category)}:${slugify(name)}`;
     parsedRows.push({
       id,
@@ -229,15 +258,20 @@ export function buildApiCapabilities(markdown, limit = 700) {
       frontend_safe: frontendSafe,
       backend_required: backendRequired,
       secret_risk: secretRisk,
-      official_docs_url: "unknown",
+      official_docs_url: officialDocsUrl,
       freshness_checked_at: generatedAt,
-      freshness_status: "unknown; public-apis row imported as metadata seed, not current verification",
-      rate_limit_notes: "unknown",
+      freshness_status: "unknown; metadata imported from public-apis, not live official-doc verification",
+      rate_limit_notes: "unknown; not verified from official docs",
       cors_confidence: cors === "unknown" ? "unknown" : "metadata_seed_only",
-      frontend_safety_reason: frontendSafe ? "No auth listed and HTTPS/CORS yes in metadata seed; verify current docs before browser use." : "Not browser-safe from metadata seed; use backend proxy unless official docs prove otherwise.",
+      frontend_safety_reason: frontendSafe ? "No auth listed and HTTPS/CORS yes in metadata seed; verify current official docs, terms, and rate limits before browser use." : "Not browser-safe from metadata seed; use backend proxy unless current official docs prove otherwise.",
       backend_proxy_reason: backendRequired ? "Backend/server proxy recommended because auth, HTTPS, CORS, or secret safety is not fully safe for direct browser use." : "Metadata seed does not require backend, but docs/terms/rate limits still need review.",
       secret_handling_pattern: secretRisk ? "Server-side environment variable or approved secret storage; never expose in frontend bundles." : "No secret-bearing auth listed; still verify current docs and terms.",
       integration_test_requirements: ["success path", "loading state", "error path", "rate-limit/unavailable path", "secret/CORS/backend boundary proof"],
+      verification_source_urls: verificationSourceUrls,
+      documentation_confidence: documentationConfidence,
+      recommended_combinations: apiRecommendedCombinations(taskTypes, frontendSafe, backendRequired),
+      api_safety_profile_fields: ["auth_type", "cors", "https", "secret_risk", "backend_proxy_need", "rate_limit_notes", "freshness_status", "documentation_confidence", "unknowns"],
+      priority_enrichment_category: priorityEnrichment,
       integration_notes: buildApiIntegrationNotes(authType, https, cors, frontendSafe, backendRequired),
       example_use_cases: apiUseCases(category, name, description),
       task_types: taskTypes,
@@ -367,6 +401,37 @@ function relatedSkillNames(taskTypes) {
   if (taskTypes.includes("deployment_cloud")) related.push("deploy-to-vercel", "vercel-optimize", "azure-cost-optimization");
   if (taskTypes.includes("docs_productivity")) related.push("writing-guidelines", "to-prd", "lark-doc");
   return related;
+}
+
+function normalizeSkillSummary(summary) {
+  let text = String(summary || "").replace(/^---[\s\S]*?---/m, " ");
+  text = text.replace(/^#+\s+/gm, " ").replace(/\s+/g, " ").trim();
+  if (!text) return null;
+  return text.length > 360 ? `${text.slice(0, 357)}...` : text;
+}
+
+function skillRequiredEvidence(taskTypes, parsedSummary) {
+  const evidence = ["Record skill id reviewed and why it applies.", "State source-review status and manual-review limits."];
+  if (taskTypes.includes("frontend_ui") || /visual|accessibility|loading|error/i.test(parsedSummary || "")) {
+    evidence.push("UI/build test evidence plus visual/accessibility/loading/error-state proof.");
+  }
+  if (taskTypes.includes("agentic_coding")) evidence.push("Commands/checks proving the coding workflow result.");
+  if (taskTypes.includes("deployment_cloud")) evidence.push("Account/secret/scope/rollback evidence before any future execution.");
+  return [...new Set(evidence)];
+}
+
+function docsLikeUrl(url) {
+  return DOCS_LIKE_URL_RE.test(String(url || ""));
+}
+
+function apiRecommendedCombinations(taskTypes, frontendSafe, backendRequired) {
+  const combos = ["vnem_api_safety_profile + vnem_build_api_integration_plan + vnem_completion_audit"];
+  if (backendRequired) combos.push("backend/server route + secret review + mocked API tests");
+  if (frontendSafe) combos.push("frontend fetch wrapper + loading/error/rate-limit UI states + docs/terms review");
+  if (taskTypes.includes("weather_environment")) combos.push("weather UI contract + source freshness check");
+  if (taskTypes.includes("finance_data")) combos.push("finance/currency accuracy review + rate-limit/backoff handling");
+  if (taskTypes.includes("security_safety")) combos.push("security review + backend-only secret handling + audit log caution");
+  return [...new Set(combos)];
 }
 
 function normalizeAuth(raw) {

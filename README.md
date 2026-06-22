@@ -429,7 +429,7 @@ The current library contains:
 
 - AI-agent skill/capability-pack records imported from `https://www.skills.sh/` and cross-referenced with `https://github.com/vercel-labs/agent-skills` where available.
 - Public API/integration records imported from `https://raw.githubusercontent.com/public-apis/public-apis/master/README.md`.
-- Safety and compatibility enrichment fields such as task types, supported-agent status, verified-instruction summary, agent-compatibility confidence, core-guidance-vs-Precision-install boundary, install/use notes, activation instructions, when-to-use / when-not-to-use guidance, compatible/avoid/recommended-combination fields, trust level, review status, audit status, official-docs/freshness placeholders, frontend/backend API safety, secret-handling pattern, CORS/HTTPS risk, integration-test requirements, and manual-review requirements.
+- Safety and compatibility enrichment fields such as task types, supported-agent status, verified-instruction summary, source-review status, skill-content confidence, agent-compatibility confidence, Core-guidance-vs-Precision-install boundary, install/use notes, activation instructions, required evidence, when-to-use / when-not-to-use guidance, compatible/avoid/recommended-combination fields, trust level, review status, audit status, official-docs/freshness/rate-limit confidence, verification source URLs, frontend/backend API safety, secret-handling pattern, CORS/HTTPS risk, integration-test requirements, and manual-review requirements.
 
 Read-only MCP tools:
 
@@ -439,6 +439,8 @@ Read-only MCP tools:
 - `vnem_search_apis`: search API records by query/category/auth/HTTPS/CORS/frontend constraints.
 - `vnem_recommend_apis`: recommend APIs for a task with auth, HTTPS, CORS, frontend/backend safety decision, secret/API-key warning, integration pattern, provenance, and manual-review warning.
 - `vnem_review_skill_or_api`: review one skill/API record by id and return a metadata-reference verdict, risk flags, missing fields, compatibility notes, and next safety checks.
+- `vnem_api_safety_profile`: answer whether a selected API can be used safely from frontend/backend contexts, including auth, CORS, HTTPS, secret risk, backend proxy need, docs/freshness confidence, rate-limit unknowns, test requirements, and unsafe patterns to avoid. It does not call the API.
+- `vnem_skill_safety_profile`: explain what a skill is for, whether Core MCP can safely apply guidance, whether install/execution is needed, compatibility confidence, prompt-injection/manual-review risk, evidence that proves use, compatible modules, and must-not-claim limits. It does not install or execute the skill.
 - `vnem_get_required_capabilities`: select the few required/strongly recommended capability modules for a task and return compact instructions, risks, evidence requirements, and deeper lookup IDs.
 - `vnem_activate_capability_pack`: create a task-specific activation contract with required instructions, usage-proof fields, incomplete-if-skipped rules, and safety boundaries.
 - `vnem_apply_skill_guidance`: apply one selected skill's compact guidance to the current task without installing the skill or executing scripts.
@@ -485,8 +487,9 @@ Recommended agent flow:
 
 Examples:
 
-- Next.js UI task: call `vnem_bootstrap`, then `vnem_compose_capability_contract` with `token_budget=compact`; apply the frontend/UI quality module and report build plus visual/responsive/accessibility evidence. `vnem_completion_audit` should revise if no screenshot/browser/visual proof exists.
-- Weather API integration: call `vnem_build_api_integration_plan`; compare auth/HTTPS/CORS, use a backend proxy for secret-bearing or CORS-unsafe APIs, never expose frontend keys, and provide success/error/loading/rate-limit tests. `vnem_protection_review` should block/revise frontend API-key exposure.
+- Next.js UI task: call `vnem_bootstrap`, then `vnem_compose_capability_contract` with `token_budget=compact`; apply the frontend/UI quality module and report build plus backend-to-UI data flow, visual/responsive/accessibility, loading/error/empty/success-state evidence. `vnem_completion_audit` should revise if no screenshot/browser/visual proof exists.
+- Weather/API integration: call `vnem_recommend_apis`, then `vnem_api_safety_profile` for the selected API, then `vnem_build_api_integration_plan`; compare auth/HTTPS/CORS, docs/freshness/rate-limit confidence, use a backend proxy for secret-bearing or CORS-unsafe APIs, never expose frontend keys, and provide success/error/loading/rate-limit tests. `vnem_protection_review` should block/revise frontend API-key exposure.
+- Skill/capability use: call `vnem_recommend_skills`, then `vnem_skill_safety_profile`; Core MCP may apply safe guidance summaries, but installation/execution remains Precision/Tools-only after manual SKILL.md/scripts/references review.
 - Debugging task: call `vnem_get_required_capabilities`; apply the systematic debugging module, reproduce the failure, identify root cause, fix, and show red/green or equivalent proof.
 - Elden Ring build research: ask or state assumptions for PvE/PvP, Shadow of the Erdtree DLC ownership, rune level/progression, armor/poise relevance, weapon/spell/stat preference, solo/co-op, and skill level; use current/source-quality research and avoid generic outdated "best build" claims.
 - Game/modding task: research the specific game, file formats, tools, compatibility issues, backups/isolation, and verification plan before any future Precision/Tools mutation.

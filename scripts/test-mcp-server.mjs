@@ -45,6 +45,8 @@ try {
     "vnem_search_apis",
     "vnem_recommend_apis",
     "vnem_review_skill_or_api",
+    "vnem_api_safety_profile",
+    "vnem_skill_safety_profile",
     "vnem_get_required_capabilities",
     "vnem_activate_capability_pack",
     "vnem_apply_skill_guidance",
@@ -157,6 +159,43 @@ try {
   assert.equal(reviewedSkill.isError, undefined);
   assert.ok(reviewedSkill.structuredContent?.risk_flags?.includes("prompt_injection_surface"));
   assert.ok(reviewedSkill.structuredContent?.next_safety_checks?.some((item) => item.includes("SKILL.md")));
+
+  const apiSafetyProfile = await client.callTool({
+    name: "vnem_api_safety_profile",
+    arguments: { id: "api:anti-malware:abuseipdb", task: "Use AbuseIPDB from a browser UI", frontend_only: true, token_budget: "compact" }
+  });
+  assert.equal(apiSafetyProfile.isError, undefined);
+  assert.equal(apiSafetyProfile.structuredContent?.core_mcp_calls_api, false, "API safety profile must be read-only");
+  assert.equal(apiSafetyProfile.structuredContent?.frontend_safe, false, "secret-bearing API must not be frontend safe");
+  assert.equal(apiSafetyProfile.structuredContent?.backend_required, true, "secret-bearing API should require backend proxy");
+  assert.ok(apiSafetyProfile.structuredContent?.secret_handling_pattern?.includes("Server-side"), "profile should explain server-side secret handling");
+  assert.ok(apiSafetyProfile.structuredContent?.backend_proxy_reason?.toLowerCase().includes("backend"), "profile should explain backend proxy reason");
+  assert.ok(apiSafetyProfile.structuredContent?.unknowns?.some((item) => /rate|freshness|cors/i.test(item)), "profile should list remaining unknowns instead of guessing");
+  assert.ok(apiSafetyProfile.structuredContent?.integration_test_requirements?.some((item) => /secret|cors|rate|error/i.test(item)), "profile should include integration test requirements");
+  assert.ok(JSON.stringify(apiSafetyProfile.structuredContent).length < 7000, "API safety profile compact output should stay small");
+
+  const openMeteoProfile = await client.callTool({
+    name: "vnem_api_safety_profile",
+    arguments: { id: "api:weather:open-meteo", task: "Use Open-Meteo in a frontend weather widget", frontend_only: true, token_budget: "compact" }
+  });
+  assert.equal(openMeteoProfile.isError, undefined);
+  assert.equal(openMeteoProfile.structuredContent?.auth_type, "none");
+  assert.equal(openMeteoProfile.structuredContent?.frontend_safe, true, "no-auth HTTPS/CORS yes API can be a frontend candidate after docs review");
+  assert.ok(openMeteoProfile.structuredContent?.documentation_confidence, "profile should include documentation confidence");
+  assert.ok(openMeteoProfile.structuredContent?.safe_patterns?.some((item) => /docs|terms|rate|review/i.test(item)), "frontend candidate still needs docs/terms/rate review");
+
+  const skillSafetyProfile = await client.callTool({
+    name: "vnem_skill_safety_profile",
+    arguments: { id: skillRecommendation.structuredContent.recommendations[0].id, task: "Improve a Next.js website UI", agent_client: "codex", token_budget: "compact" }
+  });
+  assert.equal(skillSafetyProfile.isError, undefined);
+  assert.equal(skillSafetyProfile.structuredContent?.core_can_apply_guidance, true, "Core MCP can apply safe guidance summaries");
+  assert.equal(skillSafetyProfile.structuredContent?.installs_or_executes_skill, false, "Core MCP must not install or execute skills");
+  assert.equal(skillSafetyProfile.structuredContent?.precision_required_for_install, true, "install/execution stays Precision/Tools-only");
+  assert.ok(skillSafetyProfile.structuredContent?.prompt_injection_risk, "external SKILL.md should be treated as prompt-injection surface");
+  assert.ok(skillSafetyProfile.structuredContent?.required_manual_review?.some((item) => /SKILL.md|scripts|references/i.test(item)), "profile should require source review");
+  assert.ok(skillSafetyProfile.structuredContent?.must_not_claim?.some((item) => /installed|executed|safe/i.test(item)), "profile should say what must not be claimed");
+  assert.ok(JSON.stringify(skillSafetyProfile.structuredContent).length < 7000, "skill profile compact output should stay small");
 
   const requiredCaps = await client.callTool({
     name: "vnem_get_required_capabilities",
