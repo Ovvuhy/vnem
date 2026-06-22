@@ -1,0 +1,2668 @@
+{
+  "schema_version": "vnem-usable-capability-packs/v0.1",
+  "generated_at": "2026-06-22T00:00:00.000Z",
+  "minimums": {
+    "usable_api_packs": 20,
+    "usable_skill_packs": 15
+  },
+  "limitations": [
+    "Usable means Core can safely plan and hand off; it does not mean Core called APIs, installed skills, or verified live behavior.",
+    "Rate limits marked unknown require implementation-time docs review and cautious backoff."
+  ],
+  "apis": [
+    {
+      "id": "api:weather:open-meteo",
+      "name": "Open-Meteo",
+      "category": "weather",
+      "usable_status": "usable",
+      "official_docs_url": "https://open-meteo.com/en/docs",
+      "verification_source_urls": [
+        "https://open-meteo.com/en/docs"
+      ],
+      "auth_type": "none",
+      "cors_confidence": "official_docs_cors_supported",
+      "rate_limit_confidence": "official_docs_numeric_limit_verified",
+      "frontend_safe": true,
+      "backend_required": false,
+      "secret_risk": false,
+      "rate_limit_notes": "Official docs state non-commercial use below 10,000 daily API calls; commercial use requires review/API key.",
+      "safe_use_cases": [
+        "Non-commercial weather widgets and forecast UI prototypes below documented usage limits."
+      ],
+      "unsafe_use_cases": [
+        "Commercial/high-volume weather service without license/API-key review."
+      ],
+      "recommended_task_triggers": [
+        "weather widget",
+        "forecast",
+        "weather dashboard"
+      ],
+      "integration_test_requirements": [
+        "Mock forecast response parsing",
+        "loading/error/empty/success UI states",
+        "rate-limit/backoff branch"
+      ],
+      "mock_test_strategy": "Mock success, validation failure, provider error, timeout, and quota/rate-limit responses before any approved live call.",
+      "error_handling_requirements": [
+        "Handle missing coordinates, provider timeout, malformed weather data, and quota/backoff."
+      ],
+      "tools_mcp_handoff": {
+        "required_tools": [
+          "project HTTP client or fetch wrapper",
+          "test runner",
+          "mock server/fixture support",
+          "browser/screenshot proof for UI integrations"
+        ],
+        "permissions_needed": [
+          "approval before live API calls"
+        ],
+        "dry_run": [
+          "use mocked provider response first",
+          "test error/rate-limit states before live calls"
+        ],
+        "rollback": [
+          "disable API feature flag or route if integration fails",
+          "remove test env vars and scrub logs of secrets"
+        ],
+        "logs_evidence": [
+          "selected endpoint and docs URL",
+          "mocked test output",
+          "status codes/headers from approved live test if run",
+          "proof no secrets are exposed in frontend bundles or logs"
+        ]
+      },
+      "must_not_claim": [
+        "Core MCP called this API live.",
+        "The integration is verified without mocked/live test evidence.",
+        "Secrets are safe unless no frontend/log exposure proof exists."
+      ]
+    },
+    {
+      "id": "api:geocoding:nominatim",
+      "name": "Nominatim",
+      "category": "maps/geocoding",
+      "usable_status": "usable",
+      "official_docs_url": "https://nominatim.org/release-docs/latest/api/Overview/",
+      "verification_source_urls": [
+        "https://nominatim.org/release-docs/latest/api/Overview/"
+      ],
+      "auth_type": "none",
+      "cors_confidence": "official_docs_browser_use_possible_policy_review_required",
+      "rate_limit_confidence": "official_docs_usage_policy_review_required",
+      "frontend_safe": true,
+      "backend_required": false,
+      "secret_risk": false,
+      "rate_limit_notes": "unknown; verify current docs before live use",
+      "safe_use_cases": [
+        "Human-triggered address search and reverse geocoding with attribution/policy review."
+      ],
+      "unsafe_use_cases": [
+        "Bulk geocoding, autocomplete, or high-volume scraping."
+      ],
+      "recommended_task_triggers": [
+        "map search",
+        "geocoding",
+        "address lookup"
+      ],
+      "integration_test_requirements": [
+        "Mock search/reverse responses",
+        "no-result/error states",
+        "policy/attribution checklist"
+      ],
+      "mock_test_strategy": "Mock success, validation failure, provider error, timeout, and quota/rate-limit responses before any approved live call.",
+      "error_handling_requirements": [
+        "Handle no match, ambiguous match, timeout, and policy throttling."
+      ],
+      "tools_mcp_handoff": {
+        "required_tools": [
+          "project HTTP client or fetch wrapper",
+          "test runner",
+          "mock server/fixture support",
+          "browser/screenshot proof for UI integrations"
+        ],
+        "permissions_needed": [
+          "approval before live API calls"
+        ],
+        "dry_run": [
+          "use mocked provider response first",
+          "test error/rate-limit states before live calls"
+        ],
+        "rollback": [
+          "disable API feature flag or route if integration fails",
+          "remove test env vars and scrub logs of secrets"
+        ],
+        "logs_evidence": [
+          "selected endpoint and docs URL",
+          "mocked test output",
+          "status codes/headers from approved live test if run",
+          "proof no secrets are exposed in frontend bundles or logs"
+        ]
+      },
+      "must_not_claim": [
+        "Core MCP called this API live.",
+        "The integration is verified without mocked/live test evidence.",
+        "Secrets are safe unless no frontend/log exposure proof exists."
+      ]
+    },
+    {
+      "id": "api:geocoding:rest-countries",
+      "name": "REST Countries",
+      "category": "countries/public data",
+      "usable_status": "usable",
+      "official_docs_url": "https://restcountries.com/docs",
+      "verification_source_urls": [
+        "https://restcountries.com/docs"
+      ],
+      "auth_type": "apiKey",
+      "cors_confidence": "official_site_examples_browser_fetch_but_secret_required_for_key",
+      "rate_limit_confidence": "unknown_exact_quota",
+      "frontend_safe": false,
+      "backend_required": true,
+      "secret_risk": true,
+      "rate_limit_notes": "unknown; verify current docs before live use",
+      "safe_use_cases": [
+        "Country metadata lookup through backend route with key/config hidden."
+      ],
+      "unsafe_use_cases": [
+        "Embedding bearer/demo keys in frontend or treating political data as immutable."
+      ],
+      "recommended_task_triggers": [
+        "country selector",
+        "country metadata",
+        "flags currencies languages"
+      ],
+      "integration_test_requirements": [
+        "Mock country lookup and field-filter response",
+        "unknown country and 429/error state tests"
+      ],
+      "mock_test_strategy": "Mock success, validation failure, provider error, timeout, and quota/rate-limit responses before any approved live call.",
+      "error_handling_requirements": [
+        "Handle missing country, stale political data, quota/auth failure."
+      ],
+      "tools_mcp_handoff": {
+        "required_tools": [
+          "project HTTP client or fetch wrapper",
+          "test runner",
+          "mock server/fixture support",
+          "secret storage/env var support",
+          "backend/server route"
+        ],
+        "permissions_needed": [
+          "approval before live API calls",
+          "approval before creating/storing API keys, OAuth tokens, or env vars"
+        ],
+        "dry_run": [
+          "use mocked provider response first",
+          "test error/rate-limit states before live calls"
+        ],
+        "rollback": [
+          "disable API feature flag or route if integration fails",
+          "remove test env vars and scrub logs of secrets"
+        ],
+        "logs_evidence": [
+          "selected endpoint and docs URL",
+          "mocked test output",
+          "status codes/headers from approved live test if run",
+          "proof no secrets are exposed in frontend bundles or logs"
+        ]
+      },
+      "must_not_claim": [
+        "Core MCP called this API live.",
+        "The integration is verified without mocked/live test evidence.",
+        "Secrets are safe unless no frontend/log exposure proof exists."
+      ]
+    },
+    {
+      "id": "api:currency-exchange:exchangerate-api",
+      "name": "ExchangeRate-API",
+      "category": "currency/exchange",
+      "usable_status": "usable",
+      "official_docs_url": "https://www.exchangerate-api.com/docs/overview",
+      "verification_source_urls": [
+        "https://www.exchangerate-api.com/docs/overview"
+      ],
+      "auth_type": "apiKey",
+      "cors_confidence": "metadata_cors_yes_not_live_retested",
+      "rate_limit_confidence": "official_docs_quota_endpoint_available_plan_specific",
+      "frontend_safe": false,
+      "backend_required": true,
+      "secret_risk": true,
+      "rate_limit_notes": "unknown; verify current docs before live use",
+      "safe_use_cases": [
+        "Currency converter using backend-held key and cached rates."
+      ],
+      "unsafe_use_cases": [
+        "Financial advice/trading decisions or frontend key exposure."
+      ],
+      "recommended_task_triggers": [
+        "currency converter",
+        "exchange rate",
+        "fx conversion"
+      ],
+      "integration_test_requirements": [
+        "Mock pair conversion response",
+        "stale-rate warning test",
+        "quota/backoff test"
+      ],
+      "mock_test_strategy": "Mock success, validation failure, provider error, timeout, and quota/rate-limit responses before any approved live call.",
+      "error_handling_requirements": [
+        "Handle unsupported currency, stale data, provider 429, and network timeout."
+      ],
+      "tools_mcp_handoff": {
+        "required_tools": [
+          "project HTTP client or fetch wrapper",
+          "test runner",
+          "mock server/fixture support",
+          "secret storage/env var support",
+          "backend/server route"
+        ],
+        "permissions_needed": [
+          "approval before live API calls",
+          "approval before creating/storing API keys, OAuth tokens, or env vars"
+        ],
+        "dry_run": [
+          "use mocked provider response first",
+          "test error/rate-limit states before live calls"
+        ],
+        "rollback": [
+          "disable API feature flag or route if integration fails",
+          "remove test env vars and scrub logs of secrets"
+        ],
+        "logs_evidence": [
+          "selected endpoint and docs URL",
+          "mocked test output",
+          "status codes/headers from approved live test if run",
+          "proof no secrets are exposed in frontend bundles or logs"
+        ]
+      },
+      "must_not_claim": [
+        "Core MCP called this API live.",
+        "The integration is verified without mocked/live test evidence.",
+        "Secrets are safe unless no frontend/log exposure proof exists."
+      ]
+    },
+    {
+      "id": "api:development:github",
+      "name": "GitHub REST API",
+      "category": "GitHub/dev workflow",
+      "usable_status": "usable",
+      "official_docs_url": "https://docs.github.com/en/rest",
+      "verification_source_urls": [
+        "https://docs.github.com/en/rest"
+      ],
+      "auth_type": "OAuth",
+      "cors_confidence": "official_docs_cors_supported_but_oauth_backend_required",
+      "rate_limit_confidence": "official_docs_numeric_limit_verified",
+      "frontend_safe": false,
+      "backend_required": true,
+      "secret_risk": true,
+      "rate_limit_notes": "Official docs include 60/hour unauthenticated and 5,000/hour standard authenticated REST limits; secondary limits apply.",
+      "safe_use_cases": [
+        "Repo issue triage helper using backend OAuth/PAT and least-privilege scopes."
+      ],
+      "unsafe_use_cases": [
+        "Committing, mutating repos, or exposing PATs from Core/frontend."
+      ],
+      "recommended_task_triggers": [
+        "GitHub repo helper",
+        "issue triage",
+        "PR helper",
+        "repository dashboard"
+      ],
+      "integration_test_requirements": [
+        "Mock issues/search response",
+        "rate-limit/secondary-limit handling",
+        "scope/no-secret exposure test"
+      ],
+      "mock_test_strategy": "Mock success, validation failure, provider error, timeout, and quota/rate-limit responses before any approved live call.",
+      "error_handling_requirements": [
+        "Handle 401/403/404, secondary rate limits, pagination, and permission errors."
+      ],
+      "tools_mcp_handoff": {
+        "required_tools": [
+          "project HTTP client or fetch wrapper",
+          "test runner",
+          "mock server/fixture support",
+          "secret storage/env var support",
+          "backend/server route"
+        ],
+        "permissions_needed": [
+          "approval before live API calls",
+          "approval before creating/storing API keys, OAuth tokens, or env vars"
+        ],
+        "dry_run": [
+          "use mocked provider response first",
+          "test error/rate-limit states before live calls"
+        ],
+        "rollback": [
+          "disable API feature flag or route if integration fails",
+          "remove test env vars and scrub logs of secrets"
+        ],
+        "logs_evidence": [
+          "selected endpoint and docs URL",
+          "mocked test output",
+          "status codes/headers from approved live test if run",
+          "proof no secrets are exposed in frontend bundles or logs"
+        ]
+      },
+      "must_not_claim": [
+        "Core MCP called this API live.",
+        "The integration is verified without mocked/live test evidence.",
+        "Secrets are safe unless no frontend/log exposure proof exists."
+      ]
+    },
+    {
+      "id": "api:development:gitlab",
+      "name": "GitLab REST API",
+      "category": "GitLab/dev workflow",
+      "usable_status": "usable",
+      "official_docs_url": "https://docs.gitlab.com/api/rest/",
+      "verification_source_urls": [
+        "https://docs.gitlab.com/api/rest/"
+      ],
+      "auth_type": "OAuth",
+      "cors_confidence": "unknown",
+      "rate_limit_confidence": "official_docs_general_rate_limit_verified_no_numeric_quota",
+      "frontend_safe": false,
+      "backend_required": true,
+      "secret_risk": true,
+      "rate_limit_notes": "unknown; verify current docs before live use",
+      "safe_use_cases": [
+        "GitLab issue/MR triage using backend token and instance-aware endpoint."
+      ],
+      "unsafe_use_cases": [
+        "Assuming GitLab.com limits apply to self-managed instances or exposing private token."
+      ],
+      "recommended_task_triggers": [
+        "GitLab issue helper",
+        "merge request dashboard",
+        "CI helper"
+      ],
+      "integration_test_requirements": [
+        "Mock project/issues/MR response",
+        "instance URL encoding test",
+        "rate-limit/error test"
+      ],
+      "mock_test_strategy": "Mock success, validation failure, provider error, timeout, and quota/rate-limit responses before any approved live call.",
+      "error_handling_requirements": [
+        "Handle 401/403/404, instance-specific limits, pagination, and URL-encoded path errors."
+      ],
+      "tools_mcp_handoff": {
+        "required_tools": [
+          "project HTTP client or fetch wrapper",
+          "test runner",
+          "mock server/fixture support",
+          "secret storage/env var support",
+          "backend/server route"
+        ],
+        "permissions_needed": [
+          "approval before live API calls",
+          "approval before creating/storing API keys, OAuth tokens, or env vars"
+        ],
+        "dry_run": [
+          "use mocked provider response first",
+          "test error/rate-limit states before live calls"
+        ],
+        "rollback": [
+          "disable API feature flag or route if integration fails",
+          "remove test env vars and scrub logs of secrets"
+        ],
+        "logs_evidence": [
+          "selected endpoint and docs URL",
+          "mocked test output",
+          "status codes/headers from approved live test if run",
+          "proof no secrets are exposed in frontend bundles or logs"
+        ]
+      },
+      "must_not_claim": [
+        "Core MCP called this API live.",
+        "The integration is verified without mocked/live test evidence.",
+        "Secrets are safe unless no frontend/log exposure proof exists."
+      ]
+    },
+    {
+      "id": "api:anti-malware:abuseipdb",
+      "name": "AbuseIPDB",
+      "category": "security/threat checks",
+      "usable_status": "usable",
+      "official_docs_url": "https://docs.abuseipdb.com/",
+      "verification_source_urls": [
+        "https://docs.abuseipdb.com/"
+      ],
+      "auth_type": "apiKey",
+      "cors_confidence": "unknown",
+      "rate_limit_confidence": "unknown_exact_quota",
+      "frontend_safe": false,
+      "backend_required": true,
+      "secret_risk": true,
+      "rate_limit_notes": "unknown; verify current docs before live use",
+      "safe_use_cases": [
+        "Backend-only IP reputation lookup with human review before action."
+      ],
+      "unsafe_use_cases": [
+        "Automated blocking solely from one score or query-string API key logging."
+      ],
+      "recommended_task_triggers": [
+        "suspicious IP",
+        "abuse score",
+        "threat reputation"
+      ],
+      "integration_test_requirements": [
+        "Mock check endpoint response",
+        "confidence threshold test",
+        "human-review branch"
+      ],
+      "mock_test_strategy": "Mock success, validation failure, provider error, timeout, and quota/rate-limit responses before any approved live call.",
+      "error_handling_requirements": [
+        "Handle private/reserved IPs, 401/429, stale reports, and conflicting signals."
+      ],
+      "tools_mcp_handoff": {
+        "required_tools": [
+          "project HTTP client or fetch wrapper",
+          "test runner",
+          "mock server/fixture support",
+          "secret storage/env var support",
+          "backend/server route"
+        ],
+        "permissions_needed": [
+          "approval before live API calls",
+          "approval before creating/storing API keys, OAuth tokens, or env vars"
+        ],
+        "dry_run": [
+          "use mocked provider response first",
+          "test error/rate-limit states before live calls"
+        ],
+        "rollback": [
+          "disable API feature flag or route if integration fails",
+          "remove test env vars and scrub logs of secrets"
+        ],
+        "logs_evidence": [
+          "selected endpoint and docs URL",
+          "mocked test output",
+          "status codes/headers from approved live test if run",
+          "proof no secrets are exposed in frontend bundles or logs"
+        ]
+      },
+      "must_not_claim": [
+        "Core MCP called this API live.",
+        "The integration is verified without mocked/live test evidence.",
+        "Secrets are safe unless no frontend/log exposure proof exists."
+      ]
+    },
+    {
+      "id": "api:anti-malware:virustotal",
+      "name": "VirusTotal",
+      "category": "security/threat checks",
+      "usable_status": "usable",
+      "official_docs_url": "https://docs.virustotal.com/reference/overview",
+      "verification_source_urls": [
+        "https://docs.virustotal.com/reference/overview"
+      ],
+      "auth_type": "apiKey",
+      "cors_confidence": "unknown",
+      "rate_limit_confidence": "plan_quota_required_before_use",
+      "frontend_safe": false,
+      "backend_required": true,
+      "secret_risk": true,
+      "rate_limit_notes": "unknown; verify current docs before live use",
+      "safe_use_cases": [
+        "Backend-only IoC enrichment for domain/IP/URL/hash review."
+      ],
+      "unsafe_use_cases": [
+        "Uploading sensitive files or treating detections as final truth without context."
+      ],
+      "recommended_task_triggers": [
+        "suspicious domain",
+        "suspicious URL",
+        "file hash reputation"
+      ],
+      "integration_test_requirements": [
+        "Mock domain/IP/file report",
+        "quota branch",
+        "human-review decision path"
+      ],
+      "mock_test_strategy": "Mock success, validation failure, provider error, timeout, and quota/rate-limit responses before any approved live call.",
+      "error_handling_requirements": [
+        "Handle quota exhaustion, 404/no data, false positives, and sensitive-sample restrictions."
+      ],
+      "tools_mcp_handoff": {
+        "required_tools": [
+          "project HTTP client or fetch wrapper",
+          "test runner",
+          "mock server/fixture support",
+          "secret storage/env var support",
+          "backend/server route"
+        ],
+        "permissions_needed": [
+          "approval before live API calls",
+          "approval before creating/storing API keys, OAuth tokens, or env vars"
+        ],
+        "dry_run": [
+          "use mocked provider response first",
+          "test error/rate-limit states before live calls"
+        ],
+        "rollback": [
+          "disable API feature flag or route if integration fails",
+          "remove test env vars and scrub logs of secrets"
+        ],
+        "logs_evidence": [
+          "selected endpoint and docs URL",
+          "mocked test output",
+          "status codes/headers from approved live test if run",
+          "proof no secrets are exposed in frontend bundles or logs"
+        ]
+      },
+      "must_not_claim": [
+        "Core MCP called this API live.",
+        "The integration is verified without mocked/live test evidence.",
+        "Secrets are safe unless no frontend/log exposure proof exists."
+      ]
+    },
+    {
+      "id": "api:security:haveibeenpwned",
+      "name": "Have I Been Pwned",
+      "category": "breach/password/account-safety",
+      "usable_status": "usable",
+      "official_docs_url": "https://haveibeenpwned.com/API/v3",
+      "verification_source_urls": [
+        "https://haveibeenpwned.com/API/v3"
+      ],
+      "auth_type": "apiKey",
+      "cors_confidence": "unknown",
+      "rate_limit_confidence": "official_docs_endpoint_specific_limits_review_required",
+      "frontend_safe": false,
+      "backend_required": true,
+      "secret_risk": true,
+      "rate_limit_notes": "unknown; verify current docs before live use",
+      "safe_use_cases": [
+        "User-approved breach/account safety checks with privacy warning; Pwned Passwords can use k-anonymity."
+      ],
+      "unsafe_use_cases": [
+        "Sending emails/passwords without explicit consent or storing breach results unnecessarily."
+      ],
+      "recommended_task_triggers": [
+        "breach check",
+        "password exposure",
+        "account safety"
+      ],
+      "integration_test_requirements": [
+        "Mock breached/no-breach responses",
+        "privacy-consent branch",
+        "429/backoff handling"
+      ],
+      "mock_test_strategy": "Mock success, validation failure, provider error, timeout, and quota/rate-limit responses before any approved live call.",
+      "error_handling_requirements": [
+        "Handle 404 no breach, 403 user-agent/key errors, 429, and privacy-sensitive output."
+      ],
+      "tools_mcp_handoff": {
+        "required_tools": [
+          "project HTTP client or fetch wrapper",
+          "test runner",
+          "mock server/fixture support",
+          "secret storage/env var support",
+          "backend/server route"
+        ],
+        "permissions_needed": [
+          "approval before live API calls",
+          "approval before creating/storing API keys, OAuth tokens, or env vars"
+        ],
+        "dry_run": [
+          "use mocked provider response first",
+          "test error/rate-limit states before live calls"
+        ],
+        "rollback": [
+          "disable API feature flag or route if integration fails",
+          "remove test env vars and scrub logs of secrets"
+        ],
+        "logs_evidence": [
+          "selected endpoint and docs URL",
+          "mocked test output",
+          "status codes/headers from approved live test if run",
+          "proof no secrets are exposed in frontend bundles or logs"
+        ]
+      },
+      "must_not_claim": [
+        "Core MCP called this API live.",
+        "The integration is verified without mocked/live test evidence.",
+        "Secrets are safe unless no frontend/log exposure proof exists."
+      ]
+    },
+    {
+      "id": "api:development:ipify",
+      "name": "ipify",
+      "category": "IP/domain lookup",
+      "usable_status": "usable",
+      "official_docs_url": "https://www.ipify.org/",
+      "verification_source_urls": [
+        "https://www.ipify.org/"
+      ],
+      "auth_type": "none",
+      "cors_confidence": "jsonp_supported_browser_possible",
+      "rate_limit_confidence": "official_site_unlimited_claim_verified",
+      "frontend_safe": true,
+      "backend_required": false,
+      "secret_risk": false,
+      "rate_limit_notes": "Official site describes unlimited usage and no visitor information logging.",
+      "safe_use_cases": [
+        "Simple public IP display or diagnostics where caller IP disclosure is acceptable."
+      ],
+      "unsafe_use_cases": [
+        "Geolocation/security reputation checks; ipify only returns public IP."
+      ],
+      "recommended_task_triggers": [
+        "public IP",
+        "network diagnostics",
+        "what is my IP"
+      ],
+      "integration_test_requirements": [
+        "Mock JSON/text responses",
+        "IPv4/IPv6 endpoint tests"
+      ],
+      "mock_test_strategy": "Mock success, validation failure, provider error, timeout, and quota/rate-limit responses before any approved live call.",
+      "error_handling_requirements": [
+        "Handle IPv6 unavailable, timeout, and privacy disclosure."
+      ],
+      "tools_mcp_handoff": {
+        "required_tools": [
+          "project HTTP client or fetch wrapper",
+          "test runner",
+          "mock server/fixture support",
+          "browser/screenshot proof for UI integrations"
+        ],
+        "permissions_needed": [
+          "approval before live API calls"
+        ],
+        "dry_run": [
+          "use mocked provider response first",
+          "test error/rate-limit states before live calls"
+        ],
+        "rollback": [
+          "disable API feature flag or route if integration fails",
+          "remove test env vars and scrub logs of secrets"
+        ],
+        "logs_evidence": [
+          "selected endpoint and docs URL",
+          "mocked test output",
+          "status codes/headers from approved live test if run",
+          "proof no secrets are exposed in frontend bundles or logs"
+        ]
+      },
+      "must_not_claim": [
+        "Core MCP called this API live.",
+        "The integration is verified without mocked/live test evidence.",
+        "Secrets are safe unless no frontend/log exposure proof exists."
+      ]
+    },
+    {
+      "id": "api:geocoding:ip-api",
+      "name": "ip-api",
+      "category": "IP/domain lookup",
+      "usable_status": "usable",
+      "official_docs_url": "https://ip-api.com/docs",
+      "verification_source_urls": [
+        "https://ip-api.com/docs"
+      ],
+      "auth_type": "none",
+      "cors_confidence": "official_docs_browser_or_server_possible",
+      "rate_limit_confidence": "free_tier_limits_need_plan_review",
+      "frontend_safe": true,
+      "backend_required": false,
+      "secret_risk": false,
+      "rate_limit_notes": "unknown; verify current docs before live use",
+      "safe_use_cases": [
+        "Approximate IP geolocation for non-security UX hints with user/privacy notice."
+      ],
+      "unsafe_use_cases": [
+        "Security decisions, exact location claims, or high-volume commercial use without plan review."
+      ],
+      "recommended_task_triggers": [
+        "IP geolocation",
+        "network diagnostics",
+        "visitor location estimate"
+      ],
+      "integration_test_requirements": [
+        "Mock geolocation response",
+        "unknown/private IP response",
+        "rate-limit branch"
+      ],
+      "mock_test_strategy": "Mock success, validation failure, provider error, timeout, and quota/rate-limit responses before any approved live call.",
+      "error_handling_requirements": [
+        "Handle private IPs, inaccurate geolocation, timeout, and quota/plan limits."
+      ],
+      "tools_mcp_handoff": {
+        "required_tools": [
+          "project HTTP client or fetch wrapper",
+          "test runner",
+          "mock server/fixture support",
+          "browser/screenshot proof for UI integrations"
+        ],
+        "permissions_needed": [
+          "approval before live API calls"
+        ],
+        "dry_run": [
+          "use mocked provider response first",
+          "test error/rate-limit states before live calls"
+        ],
+        "rollback": [
+          "disable API feature flag or route if integration fails",
+          "remove test env vars and scrub logs of secrets"
+        ],
+        "logs_evidence": [
+          "selected endpoint and docs URL",
+          "mocked test output",
+          "status codes/headers from approved live test if run",
+          "proof no secrets are exposed in frontend bundles or logs"
+        ]
+      },
+      "must_not_claim": [
+        "Core MCP called this API live.",
+        "The integration is verified without mocked/live test evidence.",
+        "Secrets are safe unless no frontend/log exposure proof exists."
+      ]
+    },
+    {
+      "id": "api:development:ipinfo",
+      "name": "IPinfo",
+      "category": "IP/domain lookup",
+      "usable_status": "usable",
+      "official_docs_url": "https://ipinfo.io/developers",
+      "verification_source_urls": [
+        "https://ipinfo.io/developers"
+      ],
+      "auth_type": "apiKey",
+      "cors_confidence": "unknown",
+      "rate_limit_confidence": "official_docs_tiered_limit_verified",
+      "frontend_safe": false,
+      "backend_required": true,
+      "secret_risk": true,
+      "rate_limit_notes": "IPinfo docs say Lite has no request quota restrictions; paid plans use monthly limits and may return 429.",
+      "safe_use_cases": [
+        "Backend IP enrichment with token hidden; Lite/Core fields selected per need."
+      ],
+      "unsafe_use_cases": [
+        "Frontend token exposure or treating IP location as exact identity."
+      ],
+      "recommended_task_triggers": [
+        "IP lookup",
+        "ASN",
+        "country by IP",
+        "proxy signal"
+      ],
+      "integration_test_requirements": [
+        "Mock Lite/Core response",
+        "token missing/429 branch",
+        "field-filter tests"
+      ],
+      "mock_test_strategy": "Mock success, validation failure, provider error, timeout, and quota/rate-limit responses before any approved live call.",
+      "error_handling_requirements": [
+        "Handle token/auth errors, monthly quota 429, private IPs, and imprecise location."
+      ],
+      "tools_mcp_handoff": {
+        "required_tools": [
+          "project HTTP client or fetch wrapper",
+          "test runner",
+          "mock server/fixture support",
+          "secret storage/env var support",
+          "backend/server route"
+        ],
+        "permissions_needed": [
+          "approval before live API calls",
+          "approval before creating/storing API keys, OAuth tokens, or env vars"
+        ],
+        "dry_run": [
+          "use mocked provider response first",
+          "test error/rate-limit states before live calls"
+        ],
+        "rollback": [
+          "disable API feature flag or route if integration fails",
+          "remove test env vars and scrub logs of secrets"
+        ],
+        "logs_evidence": [
+          "selected endpoint and docs URL",
+          "mocked test output",
+          "status codes/headers from approved live test if run",
+          "proof no secrets are exposed in frontend bundles or logs"
+        ]
+      },
+      "must_not_claim": [
+        "Core MCP called this API live.",
+        "The integration is verified without mocked/live test evidence.",
+        "Secrets are safe unless no frontend/log exposure proof exists."
+      ]
+    },
+    {
+      "id": "api:anti-malware:urlhaus",
+      "name": "URLhaus",
+      "category": "security/threat checks",
+      "usable_status": "usable",
+      "official_docs_url": "https://urlhaus.abuse.ch/api/",
+      "verification_source_urls": [
+        "https://urlhaus.abuse.ch/api/"
+      ],
+      "auth_type": "apiKey",
+      "cors_confidence": "unknown",
+      "rate_limit_confidence": "official_docs_update_frequency_verified_no_numeric_quota",
+      "frontend_safe": false,
+      "backend_required": true,
+      "secret_risk": true,
+      "rate_limit_notes": "unknown; verify current docs before live use",
+      "safe_use_cases": [
+        "Backend malware URL/feed lookup with fair-use and Auth-Key handling."
+      ],
+      "unsafe_use_cases": [
+        "Automated blocking without corroboration or fetching feeds more often than documented intervals."
+      ],
+      "recommended_task_triggers": [
+        "malware URL",
+        "suspicious URL",
+        "domain threat feed"
+      ],
+      "integration_test_requirements": [
+        "Mock URL lookup/feed response",
+        "Auth-Key missing branch",
+        "human-review branch"
+      ],
+      "mock_test_strategy": "Mock success, validation failure, provider error, timeout, and quota/rate-limit responses before any approved live call.",
+      "error_handling_requirements": [
+        "Handle stale feed, auth failure, false positives, and fair-use limits."
+      ],
+      "tools_mcp_handoff": {
+        "required_tools": [
+          "project HTTP client or fetch wrapper",
+          "test runner",
+          "mock server/fixture support",
+          "secret storage/env var support",
+          "backend/server route"
+        ],
+        "permissions_needed": [
+          "approval before live API calls",
+          "approval before creating/storing API keys, OAuth tokens, or env vars"
+        ],
+        "dry_run": [
+          "use mocked provider response first",
+          "test error/rate-limit states before live calls"
+        ],
+        "rollback": [
+          "disable API feature flag or route if integration fails",
+          "remove test env vars and scrub logs of secrets"
+        ],
+        "logs_evidence": [
+          "selected endpoint and docs URL",
+          "mocked test output",
+          "status codes/headers from approved live test if run",
+          "proof no secrets are exposed in frontend bundles or logs"
+        ]
+      },
+      "must_not_claim": [
+        "Core MCP called this API live.",
+        "The integration is verified without mocked/live test evidence.",
+        "Secrets are safe unless no frontend/log exposure proof exists."
+      ]
+    },
+    {
+      "id": "api:games-comics:cheapshark",
+      "name": "CheapShark",
+      "category": "games/prices/game info",
+      "usable_status": "usable",
+      "official_docs_url": "https://www.cheapshark.com/api",
+      "verification_source_urls": [
+        "https://www.cheapshark.com/api"
+      ],
+      "auth_type": "none",
+      "cors_confidence": "official_docs_cors_supported",
+      "rate_limit_confidence": "official_docs_limit_behavior_verified_no_numeric_quota",
+      "frontend_safe": true,
+      "backend_required": false,
+      "secret_risk": false,
+      "rate_limit_notes": "unknown; verify current docs before live use",
+      "safe_use_cases": [
+        "User-triggered PC game deal search with CheapShark attribution/links."
+      ],
+      "unsafe_use_cases": [
+        "Bulk catalog scraping or ignoring Retry-After/429."
+      ],
+      "recommended_task_triggers": [
+        "game price search",
+        "deal finder",
+        "PC game deals"
+      ],
+      "integration_test_requirements": [
+        "Mock deal search response",
+        "429 Retry-After branch",
+        "no deals state"
+      ],
+      "mock_test_strategy": "Mock success, validation failure, provider error, timeout, and quota/rate-limit responses before any approved live call.",
+      "error_handling_requirements": [
+        "Handle no deals, store links, 429 Retry-After, and stale prices."
+      ],
+      "tools_mcp_handoff": {
+        "required_tools": [
+          "project HTTP client or fetch wrapper",
+          "test runner",
+          "mock server/fixture support",
+          "browser/screenshot proof for UI integrations"
+        ],
+        "permissions_needed": [
+          "approval before live API calls"
+        ],
+        "dry_run": [
+          "use mocked provider response first",
+          "test error/rate-limit states before live calls"
+        ],
+        "rollback": [
+          "disable API feature flag or route if integration fails",
+          "remove test env vars and scrub logs of secrets"
+        ],
+        "logs_evidence": [
+          "selected endpoint and docs URL",
+          "mocked test output",
+          "status codes/headers from approved live test if run",
+          "proof no secrets are exposed in frontend bundles or logs"
+        ]
+      },
+      "must_not_claim": [
+        "Core MCP called this API live.",
+        "The integration is verified without mocked/live test evidence.",
+        "Secrets are safe unless no frontend/log exposure proof exists."
+      ]
+    },
+    {
+      "id": "api:open-data:wikipedia",
+      "name": "Wikipedia / MediaWiki Action API",
+      "category": "docs/search/reference",
+      "usable_status": "usable",
+      "official_docs_url": "https://www.mediawiki.org/wiki/API:Main_page",
+      "verification_source_urls": [
+        "https://www.mediawiki.org/wiki/API:Main_page"
+      ],
+      "auth_type": "none",
+      "cors_confidence": "wikimedia_cors_policy_review_required",
+      "rate_limit_confidence": "usage_policy_review_required",
+      "frontend_safe": true,
+      "backend_required": false,
+      "secret_risk": false,
+      "rate_limit_notes": "unknown; verify current docs before live use",
+      "safe_use_cases": [
+        "Read-only article/search/reference lookups with attribution/source links."
+      ],
+      "unsafe_use_cases": [
+        "Unsourced factual certainty, editing pages, or high-volume scraping."
+      ],
+      "recommended_task_triggers": [
+        "wiki search",
+        "reference lookup",
+        "encyclopedic data"
+      ],
+      "integration_test_requirements": [
+        "Mock search/parse response",
+        "no-result and disambiguation states",
+        "source citation proof"
+      ],
+      "mock_test_strategy": "Mock success, validation failure, provider error, timeout, and quota/rate-limit responses before any approved live call.",
+      "error_handling_requirements": [
+        "Handle disambiguation, stale pages, API warnings, and usage-policy limits."
+      ],
+      "tools_mcp_handoff": {
+        "required_tools": [
+          "project HTTP client or fetch wrapper",
+          "test runner",
+          "mock server/fixture support",
+          "browser/screenshot proof for UI integrations"
+        ],
+        "permissions_needed": [
+          "approval before live API calls"
+        ],
+        "dry_run": [
+          "use mocked provider response first",
+          "test error/rate-limit states before live calls"
+        ],
+        "rollback": [
+          "disable API feature flag or route if integration fails",
+          "remove test env vars and scrub logs of secrets"
+        ],
+        "logs_evidence": [
+          "selected endpoint and docs URL",
+          "mocked test output",
+          "status codes/headers from approved live test if run",
+          "proof no secrets are exposed in frontend bundles or logs"
+        ]
+      },
+      "must_not_claim": [
+        "Core MCP called this API live.",
+        "The integration is verified without mocked/live test evidence.",
+        "Secrets are safe unless no frontend/log exposure proof exists."
+      ]
+    },
+    {
+      "id": "api:development:stackexchange",
+      "name": "Stack Exchange API",
+      "category": "docs/search/reference",
+      "usable_status": "usable",
+      "official_docs_url": "https://api.stackexchange.com/docs",
+      "verification_source_urls": [
+        "https://api.stackexchange.com/docs"
+      ],
+      "auth_type": "OAuth",
+      "cors_confidence": "official_docs_jsonp_supported_cors_review_required",
+      "rate_limit_confidence": "official_docs_throttles_verified",
+      "frontend_safe": false,
+      "backend_required": true,
+      "secret_risk": true,
+      "rate_limit_notes": "unknown; verify current docs before live use",
+      "safe_use_cases": [
+        "Backend/keyed developer Q&A search with sparse polling and attribution."
+      ],
+      "unsafe_use_cases": [
+        "Polling identical requests faster than once per minute or using answers as current official docs."
+      ],
+      "recommended_task_triggers": [
+        "developer Q&A search",
+        "Stack Overflow helper",
+        "reference lookup"
+      ],
+      "integration_test_requirements": [
+        "Mock question/search response",
+        "quota/throttle branch",
+        "pagination test"
+      ],
+      "mock_test_strategy": "Mock success, validation failure, provider error, timeout, and quota/rate-limit responses before any approved live call.",
+      "error_handling_requirements": [
+        "Handle throttles, cached responses, missing bodies, pagination, and stale accepted answers."
+      ],
+      "tools_mcp_handoff": {
+        "required_tools": [
+          "project HTTP client or fetch wrapper",
+          "test runner",
+          "mock server/fixture support",
+          "secret storage/env var support",
+          "backend/server route"
+        ],
+        "permissions_needed": [
+          "approval before live API calls",
+          "approval before creating/storing API keys, OAuth tokens, or env vars"
+        ],
+        "dry_run": [
+          "use mocked provider response first",
+          "test error/rate-limit states before live calls"
+        ],
+        "rollback": [
+          "disable API feature flag or route if integration fails",
+          "remove test env vars and scrub logs of secrets"
+        ],
+        "logs_evidence": [
+          "selected endpoint and docs URL",
+          "mocked test output",
+          "status codes/headers from approved live test if run",
+          "proof no secrets are exposed in frontend bundles or logs"
+        ]
+      },
+      "must_not_claim": [
+        "Core MCP called this API live.",
+        "The integration is verified without mocked/live test evidence.",
+        "Secrets are safe unless no frontend/log exposure proof exists."
+      ]
+    },
+    {
+      "id": "api:science-math:nasa",
+      "name": "NASA Open APIs",
+      "category": "open data",
+      "usable_status": "usable",
+      "official_docs_url": "https://api.nasa.gov/",
+      "verification_source_urls": [
+        "https://api.nasa.gov/"
+      ],
+      "auth_type": "apiKey",
+      "cors_confidence": "metadata_cors_no_backend_recommended",
+      "rate_limit_confidence": "official_docs_numeric_limit_verified",
+      "frontend_safe": false,
+      "backend_required": true,
+      "secret_risk": true,
+      "rate_limit_notes": "NASA docs state DEMO_KEY 30/hour and 50/day; registered key 1,000/hour across api.nasa.gov.",
+      "safe_use_cases": [
+        "Space/open-data features through backend key or demo-key-safe prototype."
+      ],
+      "unsafe_use_cases": [
+        "High-volume polling with DEMO_KEY or archived NASA endpoints."
+      ],
+      "recommended_task_triggers": [
+        "NASA images",
+        "space data",
+        "APOD",
+        "asteroids"
+      ],
+      "integration_test_requirements": [
+        "Mock APOD/NeoWs response",
+        "DEMO_KEY quota branch",
+        "archived endpoint guard"
+      ],
+      "mock_test_strategy": "Mock success, validation failure, provider error, timeout, and quota/rate-limit responses before any approved live call.",
+      "error_handling_requirements": [
+        "Handle archived APIs, quota headers, missing media, and temporary block."
+      ],
+      "tools_mcp_handoff": {
+        "required_tools": [
+          "project HTTP client or fetch wrapper",
+          "test runner",
+          "mock server/fixture support",
+          "secret storage/env var support",
+          "backend/server route"
+        ],
+        "permissions_needed": [
+          "approval before live API calls",
+          "approval before creating/storing API keys, OAuth tokens, or env vars"
+        ],
+        "dry_run": [
+          "use mocked provider response first",
+          "test error/rate-limit states before live calls"
+        ],
+        "rollback": [
+          "disable API feature flag or route if integration fails",
+          "remove test env vars and scrub logs of secrets"
+        ],
+        "logs_evidence": [
+          "selected endpoint and docs URL",
+          "mocked test output",
+          "status codes/headers from approved live test if run",
+          "proof no secrets are exposed in frontend bundles or logs"
+        ]
+      },
+      "must_not_claim": [
+        "Core MCP called this API live.",
+        "The integration is verified without mocked/live test evidence.",
+        "Secrets are safe unless no frontend/log exposure proof exists."
+      ]
+    },
+    {
+      "id": "api:environment:openaq",
+      "name": "OpenAQ",
+      "category": "open data",
+      "usable_status": "usable",
+      "official_docs_url": "https://docs.openaq.org/",
+      "verification_source_urls": [
+        "https://docs.openaq.org/"
+      ],
+      "auth_type": "apiKey",
+      "cors_confidence": "unknown",
+      "rate_limit_confidence": "unknown_exact_quota",
+      "frontend_safe": false,
+      "backend_required": true,
+      "secret_risk": true,
+      "rate_limit_notes": "unknown; verify current docs before live use",
+      "safe_use_cases": [
+        "Air-quality dashboard using documented filters, pagination, and terms review."
+      ],
+      "unsafe_use_cases": [
+        "Health-critical claims without source/date/context or ignoring third-party data terms."
+      ],
+      "recommended_task_triggers": [
+        "air quality",
+        "environment dashboard",
+        "pollution data"
+      ],
+      "integration_test_requirements": [
+        "Mock measurements response",
+        "pagination/filter tests",
+        "empty region state"
+      ],
+      "mock_test_strategy": "Mock success, validation failure, provider error, timeout, and quota/rate-limit responses before any approved live call.",
+      "error_handling_requirements": [
+        "Handle no stations, stale measurements, pagination, API-key errors, and terms caveats."
+      ],
+      "tools_mcp_handoff": {
+        "required_tools": [
+          "project HTTP client or fetch wrapper",
+          "test runner",
+          "mock server/fixture support",
+          "secret storage/env var support",
+          "backend/server route"
+        ],
+        "permissions_needed": [
+          "approval before live API calls",
+          "approval before creating/storing API keys, OAuth tokens, or env vars"
+        ],
+        "dry_run": [
+          "use mocked provider response first",
+          "test error/rate-limit states before live calls"
+        ],
+        "rollback": [
+          "disable API feature flag or route if integration fails",
+          "remove test env vars and scrub logs of secrets"
+        ],
+        "logs_evidence": [
+          "selected endpoint and docs URL",
+          "mocked test output",
+          "status codes/headers from approved live test if run",
+          "proof no secrets are exposed in frontend bundles or logs"
+        ]
+      },
+      "must_not_claim": [
+        "Core MCP called this API live.",
+        "The integration is verified without mocked/live test evidence.",
+        "Secrets are safe unless no frontend/log exposure proof exists."
+      ]
+    },
+    {
+      "id": "api:science-math:world-bank",
+      "name": "World Bank Indicators API",
+      "category": "open data",
+      "usable_status": "usable",
+      "official_docs_url": "https://datahelpdesk.worldbank.org/knowledgebase/articles/889392-about-the-indicators-api-documentation",
+      "verification_source_urls": [
+        "https://datahelpdesk.worldbank.org/knowledgebase/articles/889392-about-the-indicators-api-documentation"
+      ],
+      "auth_type": "none",
+      "cors_confidence": "metadata_cors_no_backend_recommended",
+      "rate_limit_confidence": "unknown_exact_quota",
+      "frontend_safe": false,
+      "backend_required": true,
+      "secret_risk": false,
+      "rate_limit_notes": "unknown; verify current docs before live use",
+      "safe_use_cases": [
+        "Open-data country/indicator charts with versioned v2 endpoints and source citation."
+      ],
+      "unsafe_use_cases": [
+        "Using retired v1 endpoints or presenting indicators without date/source context."
+      ],
+      "recommended_task_triggers": [
+        "World Bank indicator",
+        "country statistics",
+        "economic open data"
+      ],
+      "integration_test_requirements": [
+        "Mock indicator response",
+        "no-data country/indicator test",
+        "pagination/date handling"
+      ],
+      "mock_test_strategy": "Mock success, validation failure, provider error, timeout, and quota/rate-limit responses before any approved live call.",
+      "error_handling_requirements": [
+        "Handle missing indicators, retired endpoints, pagination, stale data, and citation needs."
+      ],
+      "tools_mcp_handoff": {
+        "required_tools": [
+          "project HTTP client or fetch wrapper",
+          "test runner",
+          "mock server/fixture support",
+          "secret storage/env var support",
+          "backend/server route"
+        ],
+        "permissions_needed": [
+          "approval before live API calls"
+        ],
+        "dry_run": [
+          "use mocked provider response first",
+          "test error/rate-limit states before live calls"
+        ],
+        "rollback": [
+          "disable API feature flag or route if integration fails",
+          "remove test env vars and scrub logs of secrets"
+        ],
+        "logs_evidence": [
+          "selected endpoint and docs URL",
+          "mocked test output",
+          "status codes/headers from approved live test if run",
+          "proof no secrets are exposed in frontend bundles or logs"
+        ]
+      },
+      "must_not_claim": [
+        "Core MCP called this API live.",
+        "The integration is verified without mocked/live test evidence.",
+        "Secrets are safe unless no frontend/log exposure proof exists."
+      ]
+    },
+    {
+      "id": "api:development:apis-guru",
+      "name": "APIs.guru",
+      "category": "docs/search/reference",
+      "usable_status": "usable",
+      "official_docs_url": "https://api.apis.guru/v2/specs/apis.guru/2.2.0/openapi.json",
+      "verification_source_urls": [
+        "https://api.apis.guru/v2/specs/apis.guru/2.2.0/openapi.json"
+      ],
+      "auth_type": "none",
+      "cors_confidence": "unknown",
+      "rate_limit_confidence": "unknown_exact_quota",
+      "frontend_safe": false,
+      "backend_required": true,
+      "secret_risk": false,
+      "rate_limit_notes": "unknown; verify current docs before live use",
+      "safe_use_cases": [
+        "Discover OpenAPI specs/providers as a docs/reference aid."
+      ],
+      "unsafe_use_cases": [
+        "Treating catalog metadata as proof an API is safe/current/usable."
+      ],
+      "recommended_task_triggers": [
+        "API catalog",
+        "OpenAPI search",
+        "developer docs discovery"
+      ],
+      "integration_test_requirements": [
+        "Mock list/providers/spec response",
+        "missing provider/spec test"
+      ],
+      "mock_test_strategy": "Mock success, validation failure, provider error, timeout, and quota/rate-limit responses before any approved live call.",
+      "error_handling_requirements": [
+        "Handle missing specs, stale definitions, provider rename, and large catalog responses."
+      ],
+      "tools_mcp_handoff": {
+        "required_tools": [
+          "project HTTP client or fetch wrapper",
+          "test runner",
+          "mock server/fixture support",
+          "secret storage/env var support",
+          "backend/server route"
+        ],
+        "permissions_needed": [
+          "approval before live API calls"
+        ],
+        "dry_run": [
+          "use mocked provider response first",
+          "test error/rate-limit states before live calls"
+        ],
+        "rollback": [
+          "disable API feature flag or route if integration fails",
+          "remove test env vars and scrub logs of secrets"
+        ],
+        "logs_evidence": [
+          "selected endpoint and docs URL",
+          "mocked test output",
+          "status codes/headers from approved live test if run",
+          "proof no secrets are exposed in frontend bundles or logs"
+        ]
+      },
+      "must_not_claim": [
+        "Core MCP called this API live.",
+        "The integration is verified without mocked/live test evidence.",
+        "Secrets are safe unless no frontend/log exposure proof exists."
+      ]
+    },
+    {
+      "id": "api:development:onesignal",
+      "name": "OneSignal REST API",
+      "category": "email/communication validation",
+      "usable_status": "usable",
+      "official_docs_url": "https://documentation.onesignal.com/reference/rest-api-overview",
+      "verification_source_urls": [
+        "https://documentation.onesignal.com/reference/rest-api-overview"
+      ],
+      "auth_type": "apiKey",
+      "cors_confidence": "unknown",
+      "rate_limit_confidence": "unknown_exact_quota",
+      "frontend_safe": false,
+      "backend_required": true,
+      "secret_risk": true,
+      "rate_limit_notes": "unknown; verify current docs before live use",
+      "safe_use_cases": [
+        "Backend messaging workflow planning with app/rest keys protected."
+      ],
+      "unsafe_use_cases": [
+        "Sending messages from Core/frontend or using production keys without approval."
+      ],
+      "recommended_task_triggers": [
+        "push notifications",
+        "email/SMS messaging",
+        "subscription export"
+      ],
+      "integration_test_requirements": [
+        "Mock create-message response",
+        "auth/429/error branch",
+        "dry-run recipient segment test"
+      ],
+      "mock_test_strategy": "Mock success, validation failure, provider error, timeout, and quota/rate-limit responses before any approved live call.",
+      "error_handling_requirements": [
+        "Handle invalid recipients, rate/plan limits, network/DNS notes, and key exposure."
+      ],
+      "tools_mcp_handoff": {
+        "required_tools": [
+          "project HTTP client or fetch wrapper",
+          "test runner",
+          "mock server/fixture support",
+          "secret storage/env var support",
+          "backend/server route"
+        ],
+        "permissions_needed": [
+          "approval before live API calls",
+          "approval before creating/storing API keys, OAuth tokens, or env vars"
+        ],
+        "dry_run": [
+          "use mocked provider response first",
+          "test error/rate-limit states before live calls"
+        ],
+        "rollback": [
+          "disable API feature flag or route if integration fails",
+          "remove test env vars and scrub logs of secrets"
+        ],
+        "logs_evidence": [
+          "selected endpoint and docs URL",
+          "mocked test output",
+          "status codes/headers from approved live test if run",
+          "proof no secrets are exposed in frontend bundles or logs"
+        ]
+      },
+      "must_not_claim": [
+        "Core MCP called this API live.",
+        "The integration is verified without mocked/live test evidence.",
+        "Secrets are safe unless no frontend/log exposure proof exists."
+      ]
+    },
+    {
+      "id": "api:anti-malware:google-safe-browsing",
+      "name": "Google Safe Browsing",
+      "category": "security/threat checks",
+      "usable_status": "usable",
+      "official_docs_url": "https://developers.google.com/safe-browsing",
+      "verification_source_urls": [
+        "https://developers.google.com/safe-browsing"
+      ],
+      "auth_type": "apiKey",
+      "cors_confidence": "unknown",
+      "rate_limit_confidence": "quota_plan_review_required",
+      "frontend_safe": false,
+      "backend_required": true,
+      "secret_risk": true,
+      "rate_limit_notes": "unknown; verify current docs before live use",
+      "safe_use_cases": [
+        "Backend URL safety check for user-warning flows with non-commercial/API terms review."
+      ],
+      "unsafe_use_cases": [
+        "Commercial threat detection without Web Risk review or automated blocking without evidence."
+      ],
+      "recommended_task_triggers": [
+        "unsafe URL check",
+        "phishing warning",
+        "malware URL"
+      ],
+      "integration_test_requirements": [
+        "Mock safe/unsafe URL response",
+        "quota/key error branch",
+        "human-warning branch"
+      ],
+      "mock_test_strategy": "Mock success, validation failure, provider error, timeout, and quota/rate-limit responses before any approved live call.",
+      "error_handling_requirements": [
+        "Handle key errors, false positives, no-match safe result, and non-commercial terms."
+      ],
+      "tools_mcp_handoff": {
+        "required_tools": [
+          "project HTTP client or fetch wrapper",
+          "test runner",
+          "mock server/fixture support",
+          "secret storage/env var support",
+          "backend/server route"
+        ],
+        "permissions_needed": [
+          "approval before live API calls",
+          "approval before creating/storing API keys, OAuth tokens, or env vars"
+        ],
+        "dry_run": [
+          "use mocked provider response first",
+          "test error/rate-limit states before live calls"
+        ],
+        "rollback": [
+          "disable API feature flag or route if integration fails",
+          "remove test env vars and scrub logs of secrets"
+        ],
+        "logs_evidence": [
+          "selected endpoint and docs URL",
+          "mocked test output",
+          "status codes/headers from approved live test if run",
+          "proof no secrets are exposed in frontend bundles or logs"
+        ]
+      },
+      "must_not_claim": [
+        "Core MCP called this API live.",
+        "The integration is verified without mocked/live test evidence.",
+        "Secrets are safe unless no frontend/log exposure proof exists."
+      ]
+    }
+  ],
+  "skills": [
+    {
+      "id": "skill:anthropics/skills/frontend-design",
+      "name": "frontend-design",
+      "category": "UI/frontend quality",
+      "usable_status": "usable",
+      "source_review_status": "core_pack_reviewed_from_metadata_or_core_contract",
+      "skill_content_confidence": "medium_core_summary_not_client_verified",
+      "core_can_apply_guidance": true,
+      "requires_install": true,
+      "precision_required_for_install": true,
+      "recommended_task_triggers": [
+        "dashboard UI",
+        "landing page polish",
+        "frontend redesign"
+      ],
+      "safe_guidance_summary": "Apply visual hierarchy, spacing, typography, and interaction polish as guidance only.",
+      "workflow_steps": [
+        "Identify the user-visible path and screen states.",
+        "Name the ugliest visible issue and fix it first when tools are available.",
+        "Require screenshot/browser proof before UI completion."
+      ],
+      "required_evidence": [
+        "before/after screenshot or visual proof",
+        "responsive and accessibility checks",
+        "state coverage"
+      ],
+      "tools_mcp_handoff": {
+        "required_tools": [
+          "filesystem edits",
+          "browser/screenshot tool",
+          "test runner"
+        ],
+        "permissions_needed": [
+          "approve file edits before mutation",
+          "approve command/browser/GitHub execution before use"
+        ],
+        "dry_run": [
+          "inspect affected context first",
+          "produce plan/patch/test outline before applying"
+        ],
+        "rollback": [
+          "preserve git diff or backups before mutation",
+          "restore changed files or disable feature flag if verification fails"
+        ],
+        "logs_evidence": [
+          "changed files if any",
+          "commands/tests run",
+          "before/after proof",
+          "skipped checks and remaining risks"
+        ]
+      },
+      "must_not_claim": [
+        "Core MCP installed or executed this skill.",
+        "The skill is client-compatible or fully safe without manual review/proof.",
+        "Work is complete without the required evidence."
+      ],
+      "when_not_to_use": [
+        "Do not use for backend-only tasks with no user-visible surface."
+      ],
+      "task_test_examples": [
+        "dashboard UI",
+        "landing page polish"
+      ]
+    },
+    {
+      "id": "skill:vercel-labs/agent-skills/vercel-react-best-practices",
+      "name": "vercel-react-best-practices",
+      "category": "UI/frontend quality",
+      "usable_status": "usable",
+      "source_review_status": "core_pack_reviewed_from_metadata_or_core_contract",
+      "skill_content_confidence": "medium_core_summary_not_client_verified",
+      "core_can_apply_guidance": true,
+      "requires_install": true,
+      "precision_required_for_install": true,
+      "recommended_task_triggers": [
+        "React feature",
+        "Next.js dashboard",
+        "frontend state"
+      ],
+      "safe_guidance_summary": "Use React/Next.js component/data-flow hygiene guidance.",
+      "workflow_steps": [
+        "Trace props/state/data flow.",
+        "Keep components small and visible behavior tested.",
+        "Verify loading/error/empty/success UI states."
+      ],
+      "required_evidence": [
+        "component path",
+        "state tests or browser proof",
+        "no backend-only claim"
+      ],
+      "tools_mcp_handoff": {
+        "required_tools": [
+          "filesystem edits",
+          "test runner",
+          "browser proof"
+        ],
+        "permissions_needed": [
+          "approve file edits before mutation",
+          "approve command/browser/GitHub execution before use"
+        ],
+        "dry_run": [
+          "inspect affected context first",
+          "produce plan/patch/test outline before applying"
+        ],
+        "rollback": [
+          "preserve git diff or backups before mutation",
+          "restore changed files or disable feature flag if verification fails"
+        ],
+        "logs_evidence": [
+          "changed files if any",
+          "commands/tests run",
+          "before/after proof",
+          "skipped checks and remaining risks"
+        ]
+      },
+      "must_not_claim": [
+        "Core MCP installed or executed this skill.",
+        "The skill is client-compatible or fully safe without manual review/proof.",
+        "Work is complete without the required evidence."
+      ],
+      "when_not_to_use": [
+        "Do not use for non-React stacks unless patterns are adapted explicitly."
+      ],
+      "task_test_examples": [
+        "React feature",
+        "Next.js dashboard"
+      ]
+    },
+    {
+      "id": "skill:vercel-labs/agent-skills/web-design-guidelines",
+      "name": "web-design-guidelines",
+      "category": "UI/frontend quality",
+      "usable_status": "usable",
+      "source_review_status": "core_pack_reviewed_from_metadata_or_core_contract",
+      "skill_content_confidence": "medium_core_summary_not_client_verified",
+      "core_can_apply_guidance": true,
+      "requires_install": true,
+      "precision_required_for_install": true,
+      "recommended_task_triggers": [
+        "web design",
+        "dashboard polish",
+        "marketing page"
+      ],
+      "safe_guidance_summary": "Apply broad web design quality guidance.",
+      "workflow_steps": [
+        "Clarify audience and primary action.",
+        "Check layout, contrast, spacing, responsiveness.",
+        "Capture visual evidence."
+      ],
+      "required_evidence": [
+        "desktop/mobile proof",
+        "accessibility/contrast notes",
+        "before/after artifact"
+      ],
+      "tools_mcp_handoff": {
+        "required_tools": [
+          "browser/screenshot tool",
+          "filesystem edits",
+          "accessibility checker"
+        ],
+        "permissions_needed": [
+          "approve file edits before mutation",
+          "approve command/browser/GitHub execution before use"
+        ],
+        "dry_run": [
+          "inspect affected context first",
+          "produce plan/patch/test outline before applying"
+        ],
+        "rollback": [
+          "preserve git diff or backups before mutation",
+          "restore changed files or disable feature flag if verification fails"
+        ],
+        "logs_evidence": [
+          "changed files if any",
+          "commands/tests run",
+          "before/after proof",
+          "skipped checks and remaining risks"
+        ]
+      },
+      "must_not_claim": [
+        "Core MCP installed or executed this skill.",
+        "The skill is client-compatible or fully safe without manual review/proof.",
+        "Work is complete without the required evidence."
+      ],
+      "when_not_to_use": [
+        "Do not claim visual quality without viewing the rendered result."
+      ],
+      "task_test_examples": [
+        "web design",
+        "dashboard polish"
+      ]
+    },
+    {
+      "id": "skill:nextlevelbuilder/ui-ux-pro-max-skill/ui-ux-pro-max",
+      "name": "ui-ux-pro-max",
+      "category": "UI/frontend quality",
+      "usable_status": "usable",
+      "source_review_status": "core_pack_reviewed_from_metadata_or_core_contract",
+      "skill_content_confidence": "medium_core_summary_not_client_verified",
+      "core_can_apply_guidance": true,
+      "requires_install": true,
+      "precision_required_for_install": true,
+      "recommended_task_triggers": [
+        "UX review",
+        "app usability",
+        "dashboard workflow"
+      ],
+      "safe_guidance_summary": "Use UX review guidance for flows, affordances, and friction.",
+      "workflow_steps": [
+        "Map the user journey.",
+        "Find broken or hidden actions.",
+        "Verify feedback after each action."
+      ],
+      "required_evidence": [
+        "user path proof",
+        "interaction states",
+        "screenshot/browser proof"
+      ],
+      "tools_mcp_handoff": {
+        "required_tools": [
+          "browser tool",
+          "filesystem edits",
+          "test runner"
+        ],
+        "permissions_needed": [
+          "approve file edits before mutation",
+          "approve command/browser/GitHub execution before use"
+        ],
+        "dry_run": [
+          "inspect affected context first",
+          "produce plan/patch/test outline before applying"
+        ],
+        "rollback": [
+          "preserve git diff or backups before mutation",
+          "restore changed files or disable feature flag if verification fails"
+        ],
+        "logs_evidence": [
+          "changed files if any",
+          "commands/tests run",
+          "before/after proof",
+          "skipped checks and remaining risks"
+        ]
+      },
+      "must_not_claim": [
+        "Core MCP installed or executed this skill.",
+        "The skill is client-compatible or fully safe without manual review/proof.",
+        "Work is complete without the required evidence."
+      ],
+      "when_not_to_use": [
+        "Do not use as a substitute for user research or accessibility proof."
+      ],
+      "task_test_examples": [
+        "UX review",
+        "app usability"
+      ]
+    },
+    {
+      "id": "skill:leonxlnx/taste-skill/design-taste-frontend",
+      "name": "design-taste-frontend",
+      "category": "UI/frontend quality",
+      "usable_status": "usable",
+      "source_review_status": "core_pack_reviewed_from_metadata_or_core_contract",
+      "skill_content_confidence": "medium_core_summary_not_client_verified",
+      "core_can_apply_guidance": true,
+      "requires_install": true,
+      "precision_required_for_install": true,
+      "recommended_task_triggers": [
+        "frontend taste",
+        "visual polish",
+        "design cleanup"
+      ],
+      "safe_guidance_summary": "Apply taste/polish guidance conservatively after functional path is known.",
+      "workflow_steps": [
+        "Fix one visible issue at a time.",
+        "Balance aesthetics with clarity/performance.",
+        "Prove visible result."
+      ],
+      "required_evidence": [
+        "visual diff or screenshots",
+        "no regression in function",
+        "responsive check"
+      ],
+      "tools_mcp_handoff": {
+        "required_tools": [
+          "browser/screenshot tool",
+          "filesystem edits"
+        ],
+        "permissions_needed": [
+          "approve file edits before mutation",
+          "approve command/browser/GitHub execution before use"
+        ],
+        "dry_run": [
+          "inspect affected context first",
+          "produce plan/patch/test outline before applying"
+        ],
+        "rollback": [
+          "preserve git diff or backups before mutation",
+          "restore changed files or disable feature flag if verification fails"
+        ],
+        "logs_evidence": [
+          "changed files if any",
+          "commands/tests run",
+          "before/after proof",
+          "skipped checks and remaining risks"
+        ]
+      },
+      "must_not_claim": [
+        "Core MCP installed or executed this skill.",
+        "The skill is client-compatible or fully safe without manual review/proof.",
+        "Work is complete without the required evidence."
+      ],
+      "when_not_to_use": [
+        "Do not prioritize polish before the feature is visible and functional."
+      ],
+      "task_test_examples": [
+        "frontend taste",
+        "visual polish"
+      ]
+    },
+    {
+      "id": "skill:shadcn/ui/shadcn",
+      "name": "shadcn",
+      "category": "UI/frontend implementation",
+      "usable_status": "usable",
+      "source_review_status": "core_pack_reviewed_from_metadata_or_core_contract",
+      "skill_content_confidence": "medium_core_summary_not_client_verified",
+      "core_can_apply_guidance": true,
+      "requires_install": true,
+      "precision_required_for_install": true,
+      "recommended_task_triggers": [
+        "shadcn component",
+        "React UI component",
+        "accessible component"
+      ],
+      "safe_guidance_summary": "Use shadcn-style component guidance only after stack compatibility is confirmed.",
+      "workflow_steps": [
+        "Check project UI library conventions.",
+        "Use accessible primitives and consistent variants.",
+        "Test keyboard/focus states."
+      ],
+      "required_evidence": [
+        "component path",
+        "keyboard/accessibility proof",
+        "visual proof"
+      ],
+      "tools_mcp_handoff": {
+        "required_tools": [
+          "filesystem edits",
+          "package/install tool if dependency missing",
+          "browser proof"
+        ],
+        "permissions_needed": [
+          "approve file edits before mutation",
+          "approve command/browser/GitHub execution before use"
+        ],
+        "dry_run": [
+          "inspect affected context first",
+          "produce plan/patch/test outline before applying"
+        ],
+        "rollback": [
+          "preserve git diff or backups before mutation",
+          "restore changed files or disable feature flag if verification fails"
+        ],
+        "logs_evidence": [
+          "changed files if any",
+          "commands/tests run",
+          "before/after proof",
+          "skipped checks and remaining risks"
+        ]
+      },
+      "must_not_claim": [
+        "Core MCP installed or executed this skill.",
+        "The skill is client-compatible or fully safe without manual review/proof.",
+        "Work is complete without the required evidence."
+      ],
+      "when_not_to_use": [
+        "Do not install packages or overwrite design system from Core."
+      ],
+      "task_test_examples": [
+        "shadcn component",
+        "React UI component"
+      ]
+    },
+    {
+      "id": "skill:mattpocock/skills/tdd",
+      "name": "tdd",
+      "category": "debugging/testing",
+      "usable_status": "usable",
+      "source_review_status": "core_pack_reviewed_from_metadata_or_core_contract",
+      "skill_content_confidence": "medium_core_summary_not_client_verified",
+      "core_can_apply_guidance": true,
+      "requires_install": true,
+      "precision_required_for_install": true,
+      "recommended_task_triggers": [
+        "fix failing repo",
+        "new feature with tests",
+        "currency converter tests"
+      ],
+      "safe_guidance_summary": "Require red/green/refactor behavior and proof before claiming fixed.",
+      "workflow_steps": [
+        "Write or identify failing test first.",
+        "Make minimal change.",
+        "Run focused then regression tests."
+      ],
+      "required_evidence": [
+        "failing-before evidence",
+        "passing-after test output",
+        "changed files"
+      ],
+      "tools_mcp_handoff": {
+        "required_tools": [
+          "filesystem edits",
+          "terminal test runner"
+        ],
+        "permissions_needed": [
+          "approve file edits before mutation",
+          "approve command/browser/GitHub execution before use"
+        ],
+        "dry_run": [
+          "inspect affected context first",
+          "produce plan/patch/test outline before applying"
+        ],
+        "rollback": [
+          "preserve git diff or backups before mutation",
+          "restore changed files or disable feature flag if verification fails"
+        ],
+        "logs_evidence": [
+          "changed files if any",
+          "commands/tests run",
+          "before/after proof",
+          "skipped checks and remaining risks"
+        ]
+      },
+      "must_not_claim": [
+        "Core MCP installed or executed this skill.",
+        "The skill is client-compatible or fully safe without manual review/proof.",
+        "Work is complete without the required evidence."
+      ],
+      "when_not_to_use": [
+        "Do not use where user explicitly requested no tests/prototype only without saying risk."
+      ],
+      "task_test_examples": [
+        "fix failing repo",
+        "new feature with tests"
+      ]
+    },
+    {
+      "id": "skill:mattpocock/skills/diagnose",
+      "name": "diagnose",
+      "category": "debugging/testing",
+      "usable_status": "usable",
+      "source_review_status": "core_pack_reviewed_from_metadata_or_core_contract",
+      "skill_content_confidence": "medium_core_summary_not_client_verified",
+      "core_can_apply_guidance": true,
+      "requires_install": true,
+      "precision_required_for_install": true,
+      "recommended_task_triggers": [
+        "debugging",
+        "fix repo issue",
+        "root cause"
+      ],
+      "safe_guidance_summary": "Use root-cause diagnosis guidance before patching.",
+      "workflow_steps": [
+        "Read logs/errors first.",
+        "Reproduce exact symptom.",
+        "Trace cause before patch."
+      ],
+      "required_evidence": [
+        "logs/error output",
+        "repro command",
+        "root-cause note"
+      ],
+      "tools_mcp_handoff": {
+        "required_tools": [
+          "terminal",
+          "filesystem edits",
+          "test runner"
+        ],
+        "permissions_needed": [
+          "approve file edits before mutation",
+          "approve command/browser/GitHub execution before use"
+        ],
+        "dry_run": [
+          "inspect affected context first",
+          "produce plan/patch/test outline before applying"
+        ],
+        "rollback": [
+          "preserve git diff or backups before mutation",
+          "restore changed files or disable feature flag if verification fails"
+        ],
+        "logs_evidence": [
+          "changed files if any",
+          "commands/tests run",
+          "before/after proof",
+          "skipped checks and remaining risks"
+        ]
+      },
+      "must_not_claim": [
+        "Core MCP installed or executed this skill.",
+        "The skill is client-compatible or fully safe without manual review/proof.",
+        "Work is complete without the required evidence."
+      ],
+      "when_not_to_use": [
+        "Do not patch based only on guesses."
+      ],
+      "task_test_examples": [
+        "debugging",
+        "fix repo issue"
+      ]
+    },
+    {
+      "id": "skill:mattpocock/skills/triage",
+      "name": "triage",
+      "category": "debugging/testing",
+      "usable_status": "usable",
+      "source_review_status": "core_pack_reviewed_from_metadata_or_core_contract",
+      "skill_content_confidence": "medium_core_summary_not_client_verified",
+      "core_can_apply_guidance": true,
+      "requires_install": true,
+      "precision_required_for_install": true,
+      "recommended_task_triggers": [
+        "issue triage",
+        "bug queue",
+        "repo issue helper"
+      ],
+      "safe_guidance_summary": "Prioritize and classify issues before implementation.",
+      "workflow_steps": [
+        "Group symptoms by user impact.",
+        "Identify missing repro/context.",
+        "Choose smallest safe next action."
+      ],
+      "required_evidence": [
+        "triage categories",
+        "missing questions",
+        "chosen first fix"
+      ],
+      "tools_mcp_handoff": {
+        "required_tools": [
+          "GitHub tool if connected",
+          "filesystem edits if fixing",
+          "test runner"
+        ],
+        "permissions_needed": [
+          "approve file edits before mutation",
+          "approve command/browser/GitHub execution before use"
+        ],
+        "dry_run": [
+          "inspect affected context first",
+          "produce plan/patch/test outline before applying"
+        ],
+        "rollback": [
+          "preserve git diff or backups before mutation",
+          "restore changed files or disable feature flag if verification fails"
+        ],
+        "logs_evidence": [
+          "changed files if any",
+          "commands/tests run",
+          "before/after proof",
+          "skipped checks and remaining risks"
+        ]
+      },
+      "must_not_claim": [
+        "Core MCP installed or executed this skill.",
+        "The skill is client-compatible or fully safe without manual review/proof.",
+        "Work is complete without the required evidence."
+      ],
+      "when_not_to_use": [
+        "Do not close/modify issues from Core."
+      ],
+      "task_test_examples": [
+        "issue triage",
+        "bug queue"
+      ]
+    },
+    {
+      "id": "skill:mattpocock/skills/improve-codebase-architecture",
+      "name": "improve-codebase-architecture",
+      "category": "code quality",
+      "usable_status": "usable",
+      "source_review_status": "core_pack_reviewed_from_metadata_or_core_contract",
+      "skill_content_confidence": "medium_core_summary_not_client_verified",
+      "core_can_apply_guidance": true,
+      "requires_install": true,
+      "precision_required_for_install": true,
+      "recommended_task_triggers": [
+        "architecture cleanup",
+        "technical debt",
+        "large refactor"
+      ],
+      "safe_guidance_summary": "Use architecture guidance to avoid scattered changes.",
+      "workflow_steps": [
+        "Locate existing patterns.",
+        "Make smallest coherent diff.",
+        "Protect public interfaces with tests."
+      ],
+      "required_evidence": [
+        "pattern references",
+        "risk list",
+        "regression tests"
+      ],
+      "tools_mcp_handoff": {
+        "required_tools": [
+          "filesystem edits",
+          "test runner",
+          "static analysis"
+        ],
+        "permissions_needed": [
+          "approve file edits before mutation",
+          "approve command/browser/GitHub execution before use"
+        ],
+        "dry_run": [
+          "inspect affected context first",
+          "produce plan/patch/test outline before applying"
+        ],
+        "rollback": [
+          "preserve git diff or backups before mutation",
+          "restore changed files or disable feature flag if verification fails"
+        ],
+        "logs_evidence": [
+          "changed files if any",
+          "commands/tests run",
+          "before/after proof",
+          "skipped checks and remaining risks"
+        ]
+      },
+      "must_not_claim": [
+        "Core MCP installed or executed this skill.",
+        "The skill is client-compatible or fully safe without manual review/proof.",
+        "Work is complete without the required evidence."
+      ],
+      "when_not_to_use": [
+        "Do not refactor broadly without tests and user scope."
+      ],
+      "task_test_examples": [
+        "architecture cleanup",
+        "technical debt"
+      ]
+    },
+    {
+      "id": "skill:xixu-me/skills/github-actions-docs",
+      "name": "github-actions-docs",
+      "category": "GitHub/dev workflow",
+      "usable_status": "usable",
+      "source_review_status": "core_pack_reviewed_from_metadata_or_core_contract",
+      "skill_content_confidence": "medium_core_summary_not_client_verified",
+      "core_can_apply_guidance": true,
+      "requires_install": true,
+      "precision_required_for_install": true,
+      "recommended_task_triggers": [
+        "GitHub Actions failure",
+        "CI config",
+        "repo automation"
+      ],
+      "safe_guidance_summary": "Use GitHub Actions documentation guidance for CI fixes.",
+      "workflow_steps": [
+        "Read failing job logs.",
+        "Inspect workflow token/permissions.",
+        "Reproduce workflow command locally if possible."
+      ],
+      "required_evidence": [
+        "workflow file path",
+        "failed log excerpt",
+        "local repro/check"
+      ],
+      "tools_mcp_handoff": {
+        "required_tools": [
+          "GitHub API/gh if connected",
+          "filesystem edits",
+          "terminal"
+        ],
+        "permissions_needed": [
+          "approve file edits before mutation",
+          "approve command/browser/GitHub execution before use"
+        ],
+        "dry_run": [
+          "inspect affected context first",
+          "produce plan/patch/test outline before applying"
+        ],
+        "rollback": [
+          "preserve git diff or backups before mutation",
+          "restore changed files or disable feature flag if verification fails"
+        ],
+        "logs_evidence": [
+          "changed files if any",
+          "commands/tests run",
+          "before/after proof",
+          "skipped checks and remaining risks"
+        ]
+      },
+      "must_not_claim": [
+        "Core MCP installed or executed this skill.",
+        "The skill is client-compatible or fully safe without manual review/proof.",
+        "Work is complete without the required evidence."
+      ],
+      "when_not_to_use": [
+        "Do not claim CI is green without checking exact pushed SHA."
+      ],
+      "task_test_examples": [
+        "GitHub Actions failure",
+        "CI config"
+      ]
+    },
+    {
+      "id": "skill:mattpocock/skills/grill-with-docs",
+      "name": "grill-with-docs",
+      "category": "docs/source research",
+      "usable_status": "usable",
+      "source_review_status": "core_pack_reviewed_from_metadata_or_core_contract",
+      "skill_content_confidence": "medium_core_summary_not_client_verified",
+      "core_can_apply_guidance": true,
+      "requires_install": true,
+      "precision_required_for_install": true,
+      "recommended_task_triggers": [
+        "current docs",
+        "framework API",
+        "source-backed answer"
+      ],
+      "safe_guidance_summary": "Use docs-first critique for tasks where facts can change.",
+      "workflow_steps": [
+        "Fetch current official docs.",
+        "Compare claim against source.",
+        "Cite uncertainty and version."
+      ],
+      "required_evidence": [
+        "source URLs",
+        "date/version checked",
+        "claim-source mapping"
+      ],
+      "tools_mcp_handoff": {
+        "required_tools": [
+          "web/docs fetcher",
+          "browser if needed"
+        ],
+        "permissions_needed": [
+          "approve file edits before mutation",
+          "approve command/browser/GitHub execution before use"
+        ],
+        "dry_run": [
+          "inspect affected context first",
+          "produce plan/patch/test outline before applying"
+        ],
+        "rollback": [
+          "preserve git diff or backups before mutation",
+          "restore changed files or disable feature flag if verification fails"
+        ],
+        "logs_evidence": [
+          "changed files if any",
+          "commands/tests run",
+          "before/after proof",
+          "skipped checks and remaining risks"
+        ]
+      },
+      "must_not_claim": [
+        "Core MCP installed or executed this skill.",
+        "The skill is client-compatible or fully safe without manual review/proof.",
+        "Work is complete without the required evidence."
+      ],
+      "when_not_to_use": [
+        "Do not use stale memory as proof for changing APIs/frameworks."
+      ],
+      "task_test_examples": [
+        "current docs",
+        "framework API"
+      ]
+    },
+    {
+      "id": "skill:xixu-me/skills/openclaw-secure-linux-cloud",
+      "name": "openclaw-secure-linux-cloud",
+      "category": "security review",
+      "usable_status": "usable",
+      "source_review_status": "core_pack_reviewed_from_metadata_or_core_contract",
+      "skill_content_confidence": "medium_core_summary_not_client_verified",
+      "core_can_apply_guidance": true,
+      "requires_install": true,
+      "precision_required_for_install": true,
+      "recommended_task_triggers": [
+        "secure PC",
+        "server hardening",
+        "Linux cloud security"
+      ],
+      "safe_guidance_summary": "Use security hardening checklist guidance with current sources and least privilege.",
+      "workflow_steps": [
+        "Prioritize account/access recovery and MFA.",
+        "Patch/update before tuning.",
+        "Separate user actions from tool actions."
+      ],
+      "required_evidence": [
+        "security checklist",
+        "current source references",
+        "remaining risk"
+      ],
+      "tools_mcp_handoff": {
+        "required_tools": [
+          "browser/docs fetcher",
+          "terminal only with approval",
+          "filesystem edits only with approval"
+        ],
+        "permissions_needed": [
+          "approve file edits before mutation",
+          "approve command/browser/GitHub execution before use"
+        ],
+        "dry_run": [
+          "inspect affected context first",
+          "produce plan/patch/test outline before applying"
+        ],
+        "rollback": [
+          "preserve git diff or backups before mutation",
+          "restore changed files or disable feature flag if verification fails"
+        ],
+        "logs_evidence": [
+          "changed files if any",
+          "commands/tests run",
+          "before/after proof",
+          "skipped checks and remaining risks"
+        ]
+      },
+      "must_not_claim": [
+        "Core MCP installed or executed this skill.",
+        "The skill is client-compatible or fully safe without manual review/proof.",
+        "Work is complete without the required evidence."
+      ],
+      "when_not_to_use": [
+        "Do not guarantee impossible safety or run invasive commands from Core."
+      ],
+      "task_test_examples": [
+        "secure PC",
+        "server hardening"
+      ]
+    },
+    {
+      "id": "skill:xixu-me/skills/secure-linux-web-hosting",
+      "name": "secure-linux-web-hosting",
+      "category": "security review",
+      "usable_status": "usable",
+      "source_review_status": "core_pack_reviewed_from_metadata_or_core_contract",
+      "skill_content_confidence": "medium_core_summary_not_client_verified",
+      "core_can_apply_guidance": true,
+      "requires_install": true,
+      "precision_required_for_install": true,
+      "recommended_task_triggers": [
+        "web hosting security",
+        "secure dashboard",
+        "app hardening"
+      ],
+      "safe_guidance_summary": "Use web-hosting hardening guidance for deployed app/server risks.",
+      "workflow_steps": [
+        "Check secrets, TLS, auth, logging.",
+        "Prefer least privilege and backups.",
+        "Verify observable security controls."
+      ],
+      "required_evidence": [
+        "config paths if edited",
+        "test/security check output",
+        "rollback plan"
+      ],
+      "tools_mcp_handoff": {
+        "required_tools": [
+          "terminal",
+          "filesystem edits",
+          "deployment/GitHub tools if approved"
+        ],
+        "permissions_needed": [
+          "approve file edits before mutation",
+          "approve command/browser/GitHub execution before use"
+        ],
+        "dry_run": [
+          "inspect affected context first",
+          "produce plan/patch/test outline before applying"
+        ],
+        "rollback": [
+          "preserve git diff or backups before mutation",
+          "restore changed files or disable feature flag if verification fails"
+        ],
+        "logs_evidence": [
+          "changed files if any",
+          "commands/tests run",
+          "before/after proof",
+          "skipped checks and remaining risks"
+        ]
+      },
+      "must_not_claim": [
+        "Core MCP installed or executed this skill.",
+        "The skill is client-compatible or fully safe without manual review/proof.",
+        "Work is complete without the required evidence."
+      ],
+      "when_not_to_use": [
+        "Do not change production security posture without explicit approval."
+      ],
+      "task_test_examples": [
+        "web hosting security",
+        "secure dashboard"
+      ]
+    },
+    {
+      "id": "skill:supabase/agent-skills/supabase-postgres-best-practices",
+      "name": "supabase-postgres-best-practices",
+      "category": "database/API integration",
+      "usable_status": "usable",
+      "source_review_status": "core_pack_reviewed_from_metadata_or_core_contract",
+      "skill_content_confidence": "medium_core_summary_not_client_verified",
+      "core_can_apply_guidance": true,
+      "requires_install": true,
+      "precision_required_for_install": true,
+      "recommended_task_triggers": [
+        "database feature",
+        "Supabase",
+        "Postgres backend"
+      ],
+      "safe_guidance_summary": "Use database/backend best-practice guidance with RLS/migration caution.",
+      "workflow_steps": [
+        "Identify schema and access path.",
+        "Plan migration and rollback.",
+        "Test data visibility through UI/API."
+      ],
+      "required_evidence": [
+        "migration/test evidence",
+        "RLS/auth notes",
+        "backend-to-UI proof"
+      ],
+      "tools_mcp_handoff": {
+        "required_tools": [
+          "database CLI if connected",
+          "filesystem edits",
+          "test runner"
+        ],
+        "permissions_needed": [
+          "approve file edits before mutation",
+          "approve command/browser/GitHub execution before use"
+        ],
+        "dry_run": [
+          "inspect affected context first",
+          "produce plan/patch/test outline before applying"
+        ],
+        "rollback": [
+          "preserve git diff or backups before mutation",
+          "restore changed files or disable feature flag if verification fails"
+        ],
+        "logs_evidence": [
+          "changed files if any",
+          "commands/tests run",
+          "before/after proof",
+          "skipped checks and remaining risks"
+        ]
+      },
+      "must_not_claim": [
+        "Core MCP installed or executed this skill.",
+        "The skill is client-compatible or fully safe without manual review/proof.",
+        "Work is complete without the required evidence."
+      ],
+      "when_not_to_use": [
+        "Do not run migrations from Core or without backup/approval."
+      ],
+      "task_test_examples": [
+        "database feature",
+        "Supabase"
+      ]
+    },
+    {
+      "id": "skill:vnem/core/api-integration-safety",
+      "name": "api-integration-safety",
+      "category": "API integration",
+      "usable_status": "usable",
+      "source_review_status": "core_pack_reviewed_from_metadata_or_core_contract",
+      "skill_content_confidence": "medium_core_summary_not_client_verified",
+      "core_can_apply_guidance": true,
+      "requires_install": false,
+      "precision_required_for_install": false,
+      "recommended_task_triggers": [
+        "weather widget",
+        "currency converter",
+        "API integration",
+        "GitHub helper"
+      ],
+      "safe_guidance_summary": "Core-authored pack for safe API integration planning and handoff.",
+      "workflow_steps": [
+        "Select a usable API pack only if it fits the task.",
+        "Use backend route for secrets/OAuth/unknown CORS.",
+        "Mock success/error/rate-limit states before live calls."
+      ],
+      "required_evidence": [
+        "selected API pack id",
+        "frontend/backend boundary",
+        "mock/live test evidence"
+      ],
+      "tools_mcp_handoff": {
+        "required_tools": [
+          "filesystem edits",
+          "terminal test runner",
+          "HTTP client",
+          "browser proof"
+        ],
+        "permissions_needed": [
+          "no install needed for Core guidance; approve execution only if Tools MCP acts"
+        ],
+        "dry_run": [
+          "inspect affected context first",
+          "produce plan/patch/test outline before applying"
+        ],
+        "rollback": [
+          "preserve git diff or backups before mutation",
+          "restore changed files or disable feature flag if verification fails"
+        ],
+        "logs_evidence": [
+          "changed files if any",
+          "commands/tests run",
+          "before/after proof",
+          "skipped checks and remaining risks"
+        ]
+      },
+      "must_not_claim": [
+        "Core MCP installed or executed this skill.",
+        "The skill is client-compatible or fully safe without manual review/proof.",
+        "Work is complete without the required evidence."
+      ],
+      "when_not_to_use": [
+        "Do not use when the task does not need any external API."
+      ],
+      "task_test_examples": [
+        "weather widget",
+        "currency converter"
+      ]
+    },
+    {
+      "id": "skill:vnem/core/game-file-safety",
+      "name": "game-file-safety",
+      "category": "modding/game-file safety",
+      "usable_status": "usable",
+      "source_review_status": "core_pack_reviewed_from_metadata_or_core_contract",
+      "skill_content_confidence": "medium_core_summary_not_client_verified",
+      "core_can_apply_guidance": true,
+      "requires_install": false,
+      "precision_required_for_install": false,
+      "recommended_task_triggers": [
+        "Elden Ring mod",
+        "game file patch",
+        "modding"
+      ],
+      "safe_guidance_summary": "Core-authored pack for safe game/mod file changes.",
+      "workflow_steps": [
+        "Identify game version/platform/mod loader/toolchain/file formats.",
+        "Create backup/isolation and restore plan.",
+        "Verify compatibility before and after edits."
+      ],
+      "required_evidence": [
+        "version/platform/toolchain noted",
+        "backup path/restore plan",
+        "verification output"
+      ],
+      "tools_mcp_handoff": {
+        "required_tools": [
+          "filesystem edits",
+          "modding toolchain",
+          "backup/restore utilities",
+          "test/launch verifier"
+        ],
+        "permissions_needed": [
+          "no install needed for Core guidance; approve execution only if Tools MCP acts"
+        ],
+        "dry_run": [
+          "inspect affected context first",
+          "produce plan/patch/test outline before applying"
+        ],
+        "rollback": [
+          "preserve git diff or backups before mutation",
+          "restore changed files or disable feature flag if verification fails"
+        ],
+        "logs_evidence": [
+          "changed files if any",
+          "commands/tests run",
+          "before/after proof",
+          "skipped checks and remaining risks"
+        ]
+      },
+      "must_not_claim": [
+        "Core MCP installed or executed this skill.",
+        "The skill is client-compatible or fully safe without manual review/proof.",
+        "Work is complete without the required evidence."
+      ],
+      "when_not_to_use": [
+        "Do not edit active mod/game files without isolation, backup, and restore plan."
+      ],
+      "task_test_examples": [
+        "Elden Ring mod",
+        "game file patch"
+      ]
+    },
+    {
+      "id": "skill:mattpocock/skills/handoff",
+      "name": "handoff",
+      "category": "planning/handoff",
+      "usable_status": "usable",
+      "source_review_status": "core_pack_reviewed_from_metadata_or_core_contract",
+      "skill_content_confidence": "medium_core_summary_not_client_verified",
+      "core_can_apply_guidance": true,
+      "requires_install": false,
+      "precision_required_for_install": false,
+      "recommended_task_triggers": [
+        "handoff",
+        "technical handoff",
+        "Tools MCP plan"
+      ],
+      "safe_guidance_summary": "Use handoff guidance to preserve decisions, risks, proof, and next actions.",
+      "workflow_steps": [
+        "Summarize selected packs and blocked actions.",
+        "List permissions and evidence needs.",
+        "Separate Core guidance from Tools execution."
+      ],
+      "required_evidence": [
+        "handoff object",
+        "required permissions",
+        "remaining blockers"
+      ],
+      "tools_mcp_handoff": {
+        "required_tools": [
+          "none for Core",
+          "Tools MCP later"
+        ],
+        "permissions_needed": [
+          "no install needed for Core guidance; approve execution only if Tools MCP acts"
+        ],
+        "dry_run": [
+          "inspect affected context first",
+          "produce plan/patch/test outline before applying"
+        ],
+        "rollback": [
+          "preserve git diff or backups before mutation",
+          "restore changed files or disable feature flag if verification fails"
+        ],
+        "logs_evidence": [
+          "changed files if any",
+          "commands/tests run",
+          "before/after proof",
+          "skipped checks and remaining risks"
+        ]
+      },
+      "must_not_claim": [
+        "Core MCP installed or executed this skill.",
+        "The skill is client-compatible or fully safe without manual review/proof.",
+        "Work is complete without the required evidence."
+      ],
+      "when_not_to_use": [
+        "Do not imply future Tools MCP already executed the handoff."
+      ],
+      "task_test_examples": [
+        "handoff",
+        "technical handoff"
+      ]
+    }
+  ]
+}

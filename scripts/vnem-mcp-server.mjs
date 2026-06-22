@@ -14,7 +14,8 @@ import {
   buildApiIntegrationPlan,
   boostTask,
   composeCapabilityContract,
-  getRequiredCapabilities
+  getRequiredCapabilities,
+  prepareToolsHandoff
 } from "./lib/capability-modules.mjs";
 import { getAgentProfile, loadAgentProfiles } from "./lib/agent-profiles.mjs";
 import {
@@ -91,6 +92,7 @@ const DEFAULT_MCP_TOOLS = [
   "vnem_activate_capability_pack",
   "vnem_apply_skill_guidance",
   "vnem_boost_task",
+  "vnem_prepare_tools_handoff",
   "vnem_build_api_integration_plan",
   "vnem_get_agent_profile",
   "vnem_compose_capability_contract",
@@ -484,6 +486,28 @@ function registerTools(mcpServer) {
     async (args) => {
       const result = boostTask(superLibrary, agentProfiles, args);
       return toolResult(formatBoostTask(result), result);
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_prepare_tools_handoff",
+    {
+      title: "Prepare VNEM Tools MCP Handoff",
+      description:
+        "Prepare a read-only Core-to-future-Tools handoff: selected usable packs, required tools, permissions, dry-run, rollback, evidence, blocked actions, and must-not-claim limits. Does not execute actions.",
+      inputSchema: {
+        task: z.string().min(1),
+        agent_client: z.string().optional(),
+        model_family: z.string().optional(),
+        known_context: z.string().optional(),
+        project_context: z.string().optional(),
+        token_budget: z.enum(["compact", "normal", "expanded"]).default("compact")
+      },
+      annotations: READ_ONLY
+    },
+    async (args) => {
+      const result = prepareToolsHandoff(superLibrary, agentProfiles, args);
+      return toolResult(formatToolsHandoff(result), result);
     }
   );
 
@@ -3250,13 +3274,28 @@ function formatBoostTask(boost) {
     `VNEM task boost: ${boost.task_summary}`,
     `task type: ${boost.task_type}`,
     `questions: ${(boost.missing_context_questions || []).slice(0, 3).join("; ") || "none critical"}`,
-    `skills: ${(boost.selected_skill_guidance || []).map((skill) => skill.skill_id).join(", ") || "none"}`,
-    `apis: ${(boost.selected_api_guidance || []).map((api) => api.id).join(", ") || "none"}`,
+    `usable skills: ${(boost.selected_usable_skill_packs || []).map((skill) => skill.id).join(", ") || "none"}`,
+    `usable APIs: ${(boost.selected_usable_api_packs || []).map((api) => api.id).join(", ") || "none"}`,
     `workflow: ${(boost.workflow_steps || []).slice(0, 3).join(" | ")}`,
+    `handoff risk: ${boost.tools_mcp_handoff?.risk_level || boost.tools_handoff?.risk_level || "none"}`,
     `verify: ${(boost.verification_plan || []).slice(0, 3).join(" | ")}`,
     `must not claim: ${(boost.must_not_claim || []).slice(0, 2).join(" | ")}`,
     `precision/tools: ${(boost.when_tools_or_precision_mcp_is_needed || []).slice(0, 2).join(" | ")}`,
     "Core MCP is read-only: guidance only, no skill installs, live API calls, file edits, browser actions, terminal commands, or GitHub actions."
+  ].join("\n");
+}
+
+function formatToolsHandoff(handoff) {
+  return [
+    `VNEM Tools MCP handoff: ${handoff.task_summary}`,
+    `risk: ${handoff.risk_level}`,
+    `usable APIs: ${(handoff.selected_usable_api_packs || []).map((pack) => pack.id).join(", ") || "none"}`,
+    `usable skills: ${(handoff.selected_usable_skill_packs || []).map((pack) => pack.id).join(", ") || "none"}`,
+    `tools needed: ${(handoff.required_tool_capabilities || []).slice(0, 4).join(" | ") || "none"}`,
+    `permissions: ${(handoff.required_permissions || []).slice(0, 4).join(" | ") || "none"}`,
+    `dry run: ${(handoff.dry_run_first || []).slice(0, 3).join(" | ") || "none"}`,
+    `blocked until Tools/Precision MCP: ${(handoff.blocked_until_tools_mcp || []).slice(0, 3).join(" | ") || "none"}`,
+    "Core MCP prepares this handoff only; it does not execute the handoff."
   ].join("\n");
 }
 

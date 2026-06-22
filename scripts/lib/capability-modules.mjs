@@ -230,7 +230,8 @@ export function boostTask(library, agentProfiles, options = {}) {
     token_budget: tokenBudget,
     max_modules: tokenBudget === "expanded" ? 7 : 5
   });
-  const needsApi = domains.includes("api") || /weather|api|cors|oauth|external service|integration/i.test(`${task} ${knownContext}`);
+  const needsApi = taskNeedsApi(task, knownContext, domains);
+  const selectedUsableApis = needsApi ? selectUsableApiPacks(library, task, domains, tokenBudget) : [];
   const apiPlan = needsApi ? buildApiIntegrationPlan(library, {
     task,
     app_type: inferAppType(`${task} ${knownContext}`),
@@ -239,16 +240,18 @@ export function boostTask(library, agentProfiles, options = {}) {
     allow_oauth: false,
     token_budget: tokenBudget
   }) : null;
-  const selectedSkills = selectBoostSkillGuidance(library, task, taskTypes, tokenBudget);
-  const selectedApis = apiPlan ? (apiPlan.selected_api_candidates || []).slice(0, tokenBudget === "expanded" ? 3 : 2) : [];
+  const selectedUsableSkills = selectUsableSkillPacks(library, task, domains, taskTypes, tokenBudget);
+  const selectedSkills = selectedUsableSkills.map((pack) => usableSkillGuidance(pack));
+  const selectedApis = selectedUsableApis.map((pack) => usableApiGuidance(pack));
   const domainContracts = buildDomainQualityContracts({ task, project_context: knownContext, token_budget: tokenBudget });
   const missingContext = detectMissingContext({ task, project_context: knownContext, token_budget: tokenBudget });
-  const workflowSteps = buildBoostWorkflowSteps({ task, domains, apiPlan, selectedSkills, constraints });
-  const safetyRules = buildBoostSafetyRules({ domains, apiPlan });
-  const verificationPlan = buildBoostVerificationPlan({ domains, apiPlan });
-  const completionChecklist = buildBoostCompletionChecklist({ domains, apiPlan });
-  const mustNotClaim = buildBoostMustNotClaim({ domains, apiPlan });
-  const precisionNeeded = buildBoostPrecisionNeeds({ domains });
+  const toolsHandoff = buildToolsHandoff({ task, domains, selectedUsableApis, selectedUsableSkills, tokenBudget });
+  const workflowSteps = buildBoostWorkflowSteps({ task, domains, apiPlan, selectedSkills, constraints, selectedUsableApis, selectedUsableSkills });
+  const safetyRules = buildBoostSafetyRules({ domains, apiPlan, selectedUsableApis });
+  const verificationPlan = buildBoostVerificationPlan({ domains, apiPlan, selectedUsableApis });
+  const completionChecklist = buildBoostCompletionChecklist({ domains, apiPlan, selectedUsableApis, selectedUsableSkills });
+  const mustNotClaim = unique([...buildBoostMustNotClaim({ domains, apiPlan }), ...(toolsHandoff.must_not_claim || [])]).slice(0, 12);
+  const precisionNeeded = unique([...buildBoostPrecisionNeeds({ domains }), ...(toolsHandoff.blocked_until_tools_mcp || [])]).slice(0, 12);
   const proofTrailInputs = {
     tool: "vnem_proof_trail",
     required_inputs: ["task", "capability_ids_used", "completion_audit", "commands_run_or_sources_used", "tests_or_checks", "assumptions", "remaining_risks"],
@@ -263,7 +266,11 @@ export function boostTask(library, agentProfiles, options = {}) {
     assumptions_if_user_does_not_answer: missingContext.assumptions_if_no_answer || [],
     selected_skill_guidance: selectedSkills,
     selected_api_guidance: selectedApis,
-    domain_contracts: domainContracts,
+    selected_usable_skill_packs: selectedUsableSkills.map(compactUsableSkillPack),
+    selected_usable_api_packs: selectedUsableApis.map(compactUsableApiPack),
+    tools_handoff: compactToolsHandoff(toolsHandoff),
+    tools_mcp_handoff: compactToolsHandoff(toolsHandoff),
+    domain_contracts: domainContracts.map(compactDomainContract),
     workflow_steps: workflowSteps,
     safety_rules: safetyRules,
     verification_plan: verificationPlan,
@@ -280,12 +287,15 @@ export function boostTask(library, agentProfiles, options = {}) {
       "vnem_completion_audit",
       "vnem_proof_trail",
       needsApi ? "vnem_api_safety_profile" : null,
-      selectedSkills.length ? "vnem_skill_safety_profile" : null
+      selectedSkills.length ? "vnem_skill_safety_profile" : null,
+      "vnem_prepare_tools_handoff"
     ]),
     capability_ids_used: unique([
       ...(required.required_modules || []).map((module) => module.id),
       ...selectedSkills.map((skill) => skill.skill_id),
+      ...selectedUsableSkills.map((skill) => skill.id),
       ...selectedApis.map((api) => api.id),
+      ...selectedUsableApis.map((api) => api.id),
       ...domainContracts.map((contractItem) => contractItem.id)
     ]).slice(0, tokenBudget === "expanded" ? 18 : 12),
     core_mcp_calls_api: false,
@@ -303,6 +313,247 @@ export function boostTask(library, agentProfiles, options = {}) {
     },
     token_budget: tokenBudget,
     safety_boundaries: coreSafetyBoundaries()
+  };
+}
+
+export function prepareToolsHandoff(library, agentProfiles, options = {}) {
+  const task = String(options.task || "").trim();
+  const knownContext = String(options.known_context || options.project_context || "").trim();
+  const tokenBudget = normalizeBudget(options.token_budget);
+  const domains = classifyDomains(task, knownContext);
+  const needsApi = taskNeedsApi(task, knownContext, domains);
+  const selectedUsableApis = needsApi ? selectUsableApiPacks(library, task, domains, tokenBudget) : [];
+  const selectedUsableSkills = selectUsableSkillPacks(library, task, domains, inferCoreTaskTypes(task, knownContext), tokenBudget);
+  return buildToolsHandoff({ task, domains, selectedUsableApis, selectedUsableSkills, tokenBudget });
+}
+
+function taskNeedsApi(task, context, domains) {
+  const text = normalize(`${task} ${context}`);
+  if (domains.includes("api")) return true;
+  return /\b(weather|forecast|currency|exchange|fx|github repo|issue triage|gitlab|oauth|cors|external service|integration|suspicious|domain|ip address|ip lookup|threat|breach|password exposure|geocod|map|country|countries|open data|nasa|wikipedia|stack overflow|notification|push)\b/.test(text);
+}
+
+function usableApiPacks(library) {
+  return (library.usable_capability_packs?.apis || []).filter((pack) => pack.usable_status === "usable");
+}
+
+function usableSkillPacks(library) {
+  return (library.usable_capability_packs?.skills || []).filter((pack) => pack.usable_status === "usable");
+}
+
+function selectUsableApiPacks(library, task, domains, tokenBudget) {
+  const text = normalize(`${task} ${domains.join(" ")}`);
+  const limit = tokenBudget === "expanded" ? 4 : tokenBudget === "normal" ? 3 : 2;
+  const scored = usableApiPacks(library).map((pack) => {
+    const haystack = normalize([pack.id, pack.name, pack.category, ...(pack.recommended_task_triggers || []), ...(pack.safe_use_cases || [])].join(" "));
+    let score = 0;
+    for (const term of normalize(task).split(" ").filter(Boolean)) {
+      if (haystack.includes(term)) score += pack.name.toLowerCase().includes(term) ? 12 : 5;
+    }
+    if (/weather|forecast/.test(text) && /open-meteo|weather/.test(haystack)) score += 80;
+    if (/currency|exchange|fx|converter/.test(text) && /exchange|currency/.test(haystack)) score += 80;
+    if (/github|repo issue triage|issue triage/.test(text) && /github/.test(haystack)) score += 90;
+    if (/gitlab|merge request/.test(text) && /gitlab/.test(haystack)) score += 80;
+    if (/suspicious|threat|malware|domain|ip address|risky|risk/.test(text) && /abuseipdb|virustotal|urlhaus|safe browsing|ipinfo|haveibeenpwned|ip-api/.test(haystack)) score += 75;
+    if (/geocod|map|address/.test(text) && /nominatim|geocoding/.test(haystack)) score += 70;
+    if (/country|countries/.test(text) && /rest countries|country/.test(haystack)) score += 70;
+    if (/game|price|deal/.test(text) && /cheapshark|game/.test(haystack)) score += 70;
+    if (/wiki|reference|encyclopedic/.test(text) && /wikipedia|mediawiki/.test(haystack)) score += 70;
+    if (/stack overflow|developer q/.test(text) && /stack exchange/.test(haystack)) score += 70;
+    if (/nasa|space|asteroid/.test(text) && /nasa/.test(haystack)) score += 70;
+    if (/air quality|pollution/.test(text) && /openaq/.test(haystack)) score += 70;
+    return { pack, score };
+  }).filter((item) => item.score > 0).sort((a, b) => b.score - a.score || a.pack.name.localeCompare(b.pack.name));
+  return scored.slice(0, limit).map((item) => item.pack);
+}
+
+function selectUsableSkillPacks(library, task, domains, taskTypes, tokenBudget) {
+  const text = normalize(`${task} ${domains.join(" ")} ${taskTypes.join(" ")}`);
+  const limit = tokenBudget === "expanded" ? 5 : tokenBudget === "normal" ? 3 : 2;
+  const scored = usableSkillPacks(library).map((pack) => {
+    const haystack = normalize([pack.id, pack.name, pack.category, pack.safe_guidance_summary, ...(pack.recommended_task_triggers || [])].join(" "));
+    let score = 0;
+    for (const term of normalize(task).split(" ").filter(Boolean)) if (haystack.includes(term)) score += 5;
+    if (/weather|currency|api|integration|github helper|repo issue triage|external service/.test(text) && /api-integration-safety/.test(haystack)) score += 85;
+    if (/ui|dashboard|frontend|visible|web app/.test(text) && /frontend|react|web design|ui-ux|shadcn|design/.test(haystack)) score += 75;
+    if (/mod|elden ring|game file/.test(text) && /game-file-safety|modding/.test(haystack)) score += 95;
+    if (/debug|fix failing|fix this repo|repo issue|prove/.test(text) && /diagnose|tdd|triage|github-actions|architecture/.test(haystack)) score += 80;
+    if (/security|secure|gmail|pc|domain|ip|threat|hardening/.test(text) && /security|secure|openclaw/.test(haystack)) score += 80;
+    if (/docs|source|current|research/.test(text) && /docs|grill-with-docs/.test(haystack)) score += 65;
+    if (/handoff|tools mcp|technical handoff/.test(text) && /handoff/.test(haystack)) score += 60;
+    return { pack, score };
+  }).filter((item) => item.score > 0).sort((a, b) => b.score - a.score || a.pack.name.localeCompare(b.pack.name));
+  return scored.slice(0, limit).map((item) => item.pack);
+}
+
+function usableApiGuidance(pack) {
+  return {
+    id: pack.id,
+    name: pack.name,
+    category: pack.category,
+    usable_status: pack.usable_status,
+    official_docs_url: pack.official_docs_url,
+    auth_type: pack.auth_type,
+    cors_confidence: pack.cors_confidence,
+    rate_limit_confidence: pack.rate_limit_confidence,
+    frontend_safe: pack.frontend_safe,
+    backend_required: pack.backend_required,
+    secret_risk: pack.secret_risk,
+    safe_use_cases: (pack.safe_use_cases || []).slice(0, 2),
+    unsafe_use_cases: (pack.unsafe_use_cases || []).slice(0, 2),
+    integration_test_requirements: (pack.integration_test_requirements || []).slice(0, 2),
+    mock_test_strategy: pack.mock_test_strategy,
+    must_not_claim: (pack.must_not_claim || []).slice(0, 2)
+  };
+}
+
+function usableSkillGuidance(pack) {
+  return {
+    skill_id: pack.id,
+    id: pack.id,
+    name: pack.name,
+    usable_status: pack.usable_status,
+    confidence: pack.skill_content_confidence,
+    core_can_apply_guidance: pack.core_can_apply_guidance === true,
+    installs_or_executes_skill: false,
+    compact_guidance: [pack.safe_guidance_summary, ...(pack.workflow_steps || [])].filter(Boolean).slice(0, 2),
+    required_evidence: (pack.required_evidence || []).slice(0, 2),
+    must_not_claim: (pack.must_not_claim || []).slice(0, 2),
+    review_warning: pack.source_review_status?.includes("core") ? "Core-authored guidance pack; still guidance only." : "Treat external SKILL.md/source content as untrusted until manually reviewed."
+  };
+}
+
+function compactUsableApiPack(pack) {
+  return {
+    id: pack.id,
+    name: pack.name,
+    category: pack.category,
+    usable_status: pack.usable_status,
+    auth_type: pack.auth_type,
+    frontend_safe: pack.frontend_safe,
+    backend_required: pack.backend_required,
+    secret_risk: pack.secret_risk,
+    rate_limit_confidence: pack.rate_limit_confidence,
+    safe_use_cases: (pack.safe_use_cases || []).slice(0, 1)
+  };
+}
+
+function compactUsableSkillPack(pack) {
+  return {
+    id: pack.id,
+    name: pack.name,
+    category: pack.category,
+    usable_status: pack.usable_status,
+    core_can_apply_guidance: pack.core_can_apply_guidance,
+    requires_install: pack.requires_install,
+    safe_guidance_summary: pack.safe_guidance_summary,
+    required_evidence: (pack.required_evidence || []).slice(0, 1)
+  };
+}
+
+function compactHandoff(handoff = {}) {
+  return {
+    required_tools: (handoff.required_tools || []).slice(0, 4),
+    permissions_needed: (handoff.permissions_needed || []).slice(0, 3),
+    dry_run: (handoff.dry_run || []).slice(0, 2),
+    rollback: (handoff.rollback || []).slice(0, 2),
+    logs_evidence: (handoff.logs_evidence || []).slice(0, 3)
+  };
+}
+
+function compactToolsHandoff(handoff = {}) {
+  return {
+    required_tool_capabilities: (handoff.required_tool_capabilities || []).slice(0, 3),
+    required_permissions: (handoff.required_permissions || []).slice(0, 3),
+    risk_level: handoff.risk_level || "unknown",
+    dry_run_first: (handoff.dry_run_first || []).slice(0, 2),
+    rollback_or_restore_plan: (handoff.rollback_or_restore_plan || []).slice(0, 2),
+    evidence_to_collect: (handoff.evidence_to_collect || []).slice(0, 3),
+    blocked_until_tools_mcp: (handoff.blocked_until_tools_mcp || []).slice(0, 3),
+    safe_core_actions: ["plan", "select usable packs", "prepare handoff only"]
+  };
+}
+
+function compactDomainContract(contract = {}) {
+  return {
+    id: contract.id,
+    domain: contract.domain,
+    required_evidence: (contract.required_evidence || []).slice(0, 2),
+    must_not_claim: (contract.must_not_claim || contract.what_not_to_claim || []).slice(0, 2)
+  };
+}
+
+function summarizePackHandoff(handoff = {}) {
+  return unique([...(handoff.required_tools || []), ...(handoff.permissions_needed || [])]).slice(0, 4);
+}
+
+function buildToolsHandoff({ task, domains, selectedUsableApis, selectedUsableSkills, tokenBudget }) {
+  const apiHandoffs = selectedUsableApis.flatMap((pack) => pack.tools_mcp_handoff ? [pack.tools_mcp_handoff] : []);
+  const skillHandoffs = selectedUsableSkills.flatMap((pack) => pack.tools_mcp_handoff ? [pack.tools_mcp_handoff] : []);
+  const allHandoffs = [...apiHandoffs, ...skillHandoffs];
+  const requiredToolCapabilities = unique([
+    ...allHandoffs.flatMap((handoff) => handoff.required_tools || []),
+    domains.includes("ui") ? "browser/screenshot proof" : null,
+    domains.includes("debugging") ? "terminal test runner" : null,
+    domains.includes("modding") ? "filesystem edits with backup/restore and modding toolchain" : null
+  ]).slice(0, tokenBudget === "expanded" ? 12 : 8);
+  const requiredPermissions = unique([
+    ...allHandoffs.flatMap((handoff) => handoff.permissions_needed || []),
+    selectedUsableApis.length ? "approval before live API calls" : null,
+    selectedUsableApis.some((pack) => pack.secret_risk) ? "approval before handling secrets/API keys/OAuth/PAT tokens" : null,
+    /github/i.test(task) ? "approval before GitHub mutations" : null,
+    domains.includes("modding") ? "approval before game/mod file edits" : null,
+    domains.includes("ui") || domains.includes("debugging") ? "approve file edits and command execution" : null
+  ]).slice(0, 10);
+  const blocked = unique([
+    selectedUsableApis.length ? "live API calls and secret handling must wait for Tools/Precision MCP or project code with approval" : null,
+    selectedUsableSkills.some((pack) => pack.requires_install) ? "skill installation or script execution must wait for Tools/Precision MCP and manual review" : null,
+    domains.includes("ui") ? "file edits, browser actions, screenshots, and test commands must wait for Tools/Precision MCP" : null,
+    domains.includes("debugging") ? "repo file edits, terminal commands, and test execution must wait for Tools/Precision MCP" : null,
+    domains.includes("modding") ? "mod file edits, game-file conversion, backup/restore, and verification launches must wait for Tools/Precision MCP" : null,
+    /github/i.test(task) ? "GitHub issue/PR mutations must wait for approved Tools MCP/GitHub tool actions" : null
+  ]).slice(0, 10);
+  const riskLevel = domains.includes("security") || domains.includes("modding") || selectedUsableApis.some((pack) => pack.secret_risk) ? "high" : blocked.length ? "medium" : "low";
+  return {
+    task_summary: String(task || "").slice(0, 240),
+    selected_usable_api_packs: selectedUsableApis.map(compactUsableApiPack),
+    selected_usable_skill_packs: selectedUsableSkills.map(compactUsableSkillPack),
+    required_tool_capabilities: requiredToolCapabilities,
+    required_permissions: requiredPermissions,
+    risk_level: riskLevel,
+    dry_run_first: unique([
+      ...allHandoffs.flatMap((handoff) => handoff.dry_run || []),
+      selectedUsableApis.length ? "mock API responses before approved live calls" : null,
+      domains.includes("ui") ? "inspect affected files and produce UI proof plan before edits" : null,
+      domains.includes("modding") ? "copy files into isolated backup workspace before patching" : null
+    ]).slice(0, 8),
+    rollback_or_restore_plan: unique([
+      ...allHandoffs.flatMap((handoff) => handoff.rollback || []),
+      domains.includes("ui") || domains.includes("debugging") ? "use git diff/checkout or feature flag rollback if verification fails" : null,
+      domains.includes("modding") ? "restore original mod/game files from backup if verification fails" : null
+    ]).slice(0, 8),
+    evidence_to_collect: unique([
+      ...allHandoffs.flatMap((handoff) => handoff.logs_evidence || []),
+      selectedUsableApis.length ? "endpoint/docs used, mocked/live status codes, and no-secret-exposure proof" : null,
+      domains.includes("ui") ? "screenshots/browser proof, responsive/accessibility/state proof" : null,
+      domains.includes("debugging") ? "logs-first evidence, reproduction, root cause, tests, before/after proof" : null,
+      domains.includes("modding") ? "game version, platform, toolchain, file formats, backup path, restore plan, compatibility check" : null
+    ]).slice(0, 10),
+    blocked_until_tools_mcp: blocked,
+    safe_core_actions: [
+      "select usable packs",
+      "plan workflow and safety checks",
+      "prepare permission/dry-run/rollback/proof handoff",
+      "state must-not-claim limits"
+    ],
+    must_not_claim: unique([
+      "Core MCP executed this handoff.",
+      "Core MCP edited files, opened browsers, ran commands, called live APIs, installed skills, or used GitHub actions.",
+      selectedUsableApis.length ? "A live API integration works without mocked/approved-live evidence." : null,
+      selectedUsableApis.some((pack) => pack.secret_risk) ? "Secrets/API keys/OAuth/PAT tokens are safe without no-exposure proof." : null,
+      domains.includes("security") ? "Do not automatically block a domain/IP or guarantee safety without corroborating evidence and human review." : null,
+      domains.includes("modding") ? "Do not claim mod files were patched safely without backup/restore/toolchain/verification evidence." : null
+    ]).slice(0, 10)
   };
 }
 
@@ -332,7 +583,7 @@ function selectBoostSkillGuidance(library, task, taskTypes, tokenBudget) {
     });
 }
 
-function buildBoostWorkflowSteps({ task, domains, apiPlan, selectedSkills, constraints }) {
+function buildBoostWorkflowSteps({ task, domains, apiPlan, selectedSkills, constraints, selectedUsableApis = [], selectedUsableSkills = [] }) {
   const steps = ["Restate the concrete deliverable and list known constraints before acting."];
   if (domains.includes("debugging") || /fix this repo|repo issue/i.test(task)) {
     steps.push("Check logs first: current git status, recent errors, failing command output, CI/test logs, and user-provided repro details.");
@@ -345,8 +596,8 @@ function buildBoostWorkflowSteps({ task, domains, apiPlan, selectedSkills, const
     steps.push("Check current patch/source freshness before recommending a best or overpowered build.");
     steps.push("Give alternatives when DLC/items/stats are unavailable instead of one generic best-build claim.");
   }
-  if (domains.includes("api")) {
-    steps.push("Choose API candidates only if they serve the task; inspect auth, HTTPS, CORS, docs confidence, freshness, and rate-limit confidence.");
+  if (domains.includes("api") || selectedUsableApis.length) {
+    steps.push("Use selected usable API pack(s), not random API records; inspect auth, HTTPS, CORS, docs confidence, freshness, and rate-limit confidence.");
     steps.push("Use a backend/server route for secrets, OAuth, API keys, unknown CORS, or uncertain terms; never expose frontend keys.");
     steps.push("Design loading, error, empty, success, timeout, and rate-limit states before implementation.");
   }
@@ -366,15 +617,16 @@ function buildBoostWorkflowSteps({ task, domains, apiPlan, selectedSkills, const
     steps.push("Use current official/vendor/source-quality guidance for changing security facts.");
     steps.push("Separate user actions from tool actions; do not take account or device actions from Core MCP.");
   }
+  if (selectedUsableSkills.length) steps.push("Use selected usable skill pack(s) as guidance, not random skill names; do not install or execute skills.");
   if (selectedSkills.length) steps.push("Apply selected skill guidance as instructions only; do not install or execute skills.");
   if (apiPlan) steps.push("Use API plan candidates as design guidance only; Core MCP does not call the live API.");
   if (constraints.length) steps.push(`Respect explicit constraints: ${constraints.join("; ")}.`);
   return unique(steps).slice(0, 12);
 }
 
-function buildBoostSafetyRules({ domains, apiPlan }) {
+function buildBoostSafetyRules({ domains, apiPlan, selectedUsableApis = [] }) {
   const rules = ["Core MCP is read-only: no file writes, terminal/browser/GitHub actions, skill installs, skill scripts, or live API calls."];
-  if (apiPlan) {
+  if (apiPlan || selectedUsableApis.length) {
     rules.push("Check frontend vs backend boundary before implementation.");
     rules.push("Check CORS, HTTPS, auth, docs confidence, freshness, and rate-limit confidence.");
     rules.push("Use backend/server-side secrets for API keys, OAuth tokens, and secret-bearing providers.");
@@ -385,11 +637,11 @@ function buildBoostSafetyRules({ domains, apiPlan }) {
   return unique(rules).slice(0, 10);
 }
 
-function buildBoostVerificationPlan({ domains, apiPlan }) {
+function buildBoostVerificationPlan({ domains, apiPlan, selectedUsableApis = [] }) {
   const plan = [];
   if (domains.includes("research") || domains.includes("game_build") || domains.includes("security")) plan.push("Use current/source-quality checks; record source freshness, patch/version/vendor guidance, and assumptions.");
   if (domains.includes("debugging")) plan.push("Record logs first, reproduction steps, root cause, changed files, focused tests, regression tests, and before/after proof.");
-  if (apiPlan) plan.push("Mock API success/loading/error/empty/rate-limit paths; verify no secrets appear in frontend bundles or public config.");
+  if (apiPlan || selectedUsableApis.length) plan.push("Use selected usable API pack test plan: mock API success/loading/error/empty/rate-limit paths; verify no secrets appear in frontend bundles or public config.");
   if (domains.includes("ui") || domains.includes("backend")) plan.push("Verify visible user path, backend-to-UI data flow, loading/error/empty/success states, responsive/mobile/desktop, accessibility, and screenshot/browser proof.");
   if (domains.includes("modding")) plan.push("Verify exact game version/platform/toolchain/file format compatibility, backup/restore plan, isolated output, and game/tool-specific smoke test.");
   if (domains.includes("security")) plan.push("Use a final safety checklist covering account recovery, MFA/2FA, active sessions, OAuth/app access, device updates, malware scan, backups, and monitoring.");
@@ -397,9 +649,10 @@ function buildBoostVerificationPlan({ domains, apiPlan }) {
   return unique(plan).slice(0, 8);
 }
 
-function buildBoostCompletionChecklist({ domains, apiPlan }) {
+function buildBoostCompletionChecklist({ domains, apiPlan, selectedUsableApis = [], selectedUsableSkills = [] }) {
   const items = ["Completion audit run or manually applied before final answer.", "Proof trail inputs prepared with evidence, assumptions, and remaining risks."];
-  if (apiPlan) items.push("API auth/CORS/HTTPS/docs/freshness/rate-limit decision documented; loading/error/empty/success states tested or specified.");
+  if (apiPlan || selectedUsableApis.length) items.push("Usable API pack selected only if useful; auth/CORS/HTTPS/docs/freshness/rate-limit decision documented; loading/error/empty/success states tested or specified.");
+  if (selectedUsableSkills.length) items.push("Usable skill packs applied as guidance only; required evidence captured and install/execution claims avoided.");
   if (domains.includes("ui") || domains.includes("backend")) items.push("Visible user path and backend-to-UI data flow proven; loading/error/empty/success states covered; responsive/accessibility/visual proof collected.");
   if (domains.includes("debugging")) items.push("Logs checked first; issue reproduced; root cause found; minimal patch and tests verified.");
   if (domains.includes("game_build")) items.push("PvE/PvP, DLC/base game, progression/rune level, weapon/stat preference, armor/poise, player skill, and source freshness handled.");
@@ -725,7 +978,7 @@ function inferCoreTaskTypes(task, context = "") {
   if (/research|current|latest|best|recommend|source|citation|docs|patch|version/.test(text)) types.add("research_quality");
   if (/elden ring|game build|build recommendation|pve|pvp|dlc|rune level|talismans|armor/.test(text)) types.add("game_build_research"), types.add("research_quality");
   if (/modding|mod workflow|game mod|mods?|file format|regulation\.bin|bnd|dcx|pak|load order|save file/.test(text)) types.add("game_modding_workflow"), types.add("research_quality");
-  if (/api|weather|forecast|oauth|cors|integration|endpoint|webhook/.test(text)) types.add("api_integration");
+  if (/api|weather|forecast|currency|exchange|github|gitlab|oauth|cors|integration|endpoint|webhook|suspicious domain|domain or ip|ip lookup|threat api/.test(text)) types.add("api_integration");
   if (/debug|failing|failure|bug|regression|broken|fix|ci|test/.test(text)) types.add("debugging"), types.add("testing");
   if (/prompt|instruction|agent behavior|system prompt|rewrite/.test(text)) types.add("prompt_improvement");
   if (/security|secure|gmail|pc|device|account|malware|secret|auth|vulnerability|safe|risk|threat/.test(text)) types.add("security_review");

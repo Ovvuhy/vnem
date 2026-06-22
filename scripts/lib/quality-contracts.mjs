@@ -489,7 +489,7 @@ export function classifyDomains(task = "", context = "") {
   if (/modding|mod workflow|game mod|mods?|file format|regulation\.bin|bnd|dcx|pak|load order|save file/.test(text)) domains.add("modding"), domains.add("game_build");
   if (/next|react|website|frontend|\bui\b|ux|dashboard|component|responsive|accessibility|visual|screen|form|button/.test(text)) domains.add("ui"), domains.add("code");
   if (/backend|database|server|api route|storage|endpoint/.test(text)) domains.add("backend"), domains.add("code");
-  if (/api|cors|oauth|webhook|api key|token|external service|weather|integration/.test(text)) domains.add("api"), domains.add("code");
+  if (/api|cors|oauth|webhook|api key|token|external service|weather|forecast|currency|exchange|github|gitlab|suspicious domain|domain or ip|ip lookup|threat api|integration/.test(text)) domains.add("api"), domains.add("code");
   if (/debug|bug|failing|failure|error|stack trace|regression|root cause|ci/.test(text)) domains.add("debugging"), domains.add("code");
   if (/code|test|lint|build|cli|package|refactor|implement|fix/.test(text)) domains.add("code");
   if (/security|secure|gmail|pc|device|account|malware|secret|auth|privacy|safe|risk|threat|permission/.test(text)) domains.add("security");

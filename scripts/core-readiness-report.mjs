@@ -20,6 +20,7 @@ const git = (...args) => {
 };
 
 const library = await json("capabilities/super-library.json");
+const usablePacks = await json("capabilities/usable-capability-packs.json");
 const serverSource = await text("scripts/vnem-mcp-server.mjs");
 const mcpTestSource = await text("scripts/test-mcp-server.mjs");
 const readme = await text("README.md");
@@ -44,6 +45,7 @@ const docsGeneratedArtifacts = {
   install_api_profile: installGuide.includes("vnem_api_safety_profile"),
   install_skill_profile: installGuide.includes("vnem_skill_safety_profile"),
   generated_install_tgz: existsSync(rel("public/install.tgz")) && statSync(rel("public/install.tgz")).size > 0,
+  install_usable_pack_handoff: /usable API\/skill packs|vnem_prepare_tools_handoff|future Tools MCP|currency converters|suspicious domain\/IP/i.test(installGuide),
   landing_install_tgz: existsSync(rel("landing/install.tgz")) && statSync(rel("landing/install.tgz")).size > 0
 };
 const proofAuditProtection = {
@@ -60,18 +62,30 @@ const domainCoverage = {
 const realTaskExamplesTested = [
   { id: "elden_ring_build", tested: /Give me the best overpowered Elden Ring build/i.test(mcpTestSource) },
   { id: "weather_widget_api", tested: /Build a weather widget for my web app/i.test(mcpTestSource) },
-  { id: "ui_backend_visibility", tested: /backend feature is actually visible/i.test(mcpTestSource) },
+  { id: "currency_converter_api", tested: /Build a currency converter feature/i.test(mcpTestSource) },
+  { id: "github_repo_helper", tested: /Build a repo issue triage helper/i.test(mcpTestSource) },
+  { id: "suspicious_domain_ip", tested: /suspicious domain or IP/i.test(mcpTestSource) },
+  { id: "ui_backend_visibility", tested: /backend feature is actually visible|dashboard UI and prove/i.test(mcpTestSource) },
   { id: "elden_ring_modding", tested: /Improve this Elden Ring mod and make real file changes/i.test(mcpTestSource) },
   { id: "gmail_pc_security", tested: /Gmail and PC as secure as possible/i.test(mcpTestSource) },
   { id: "repo_debugging", tested: /Fix this repo issue and prove it works/i.test(mcpTestSource) }
 ];
 const taskBoostingStatus = {
   vnem_boost_task_exists: toolInventory.includes("vnem_boost_task"),
-  uses_skill_guidance: /selected_skill_guidance|selectBoostSkillGuidance/i.test(serverSource),
-  uses_api_guidance_when_relevant: /selected_api_guidance|buildApiIntegrationPlan/i.test(serverSource),
+  uses_skill_guidance: /selected_skill_guidance|selected_usable_skill_packs|selectUsableSkillPacks/i.test(serverSource),
+  uses_api_guidance_when_relevant: /selected_api_guidance|selected_usable_api_packs|selectUsableApiPacks/i.test(serverSource),
   includes_workflow_and_proof: /workflow_steps|proof_trail_inputs|completion_checklist/i.test(serverSource),
   real_task_examples_tested: realTaskExamplesTested.filter((item) => item.tested).map((item) => item.id),
   all_required_examples_tested: realTaskExamplesTested.every((item) => item.tested)
+};
+const usablePackStatus = {
+  usable_api_pack_count: Array.isArray(usablePacks.apis) ? usablePacks.apis.filter((pack) => pack.usable_status === "usable").length : 0,
+  usable_skill_pack_count: Array.isArray(usablePacks.skills) ? usablePacks.skills.filter((pack) => pack.usable_status === "usable").length : 0,
+  api_minimum_met: (usablePacks.apis || []).filter((pack) => pack.usable_status === "usable").length >= (usablePacks.minimums?.usable_api_packs || 20),
+  skill_minimum_met: (usablePacks.skills || []).filter((pack) => pack.usable_status === "usable").length >= (usablePacks.minimums?.usable_skill_packs || 15),
+  tools_handoff_status: toolInventory.includes("vnem_prepare_tools_handoff") && /required_tool_capabilities|blocked_until_tools_mcp|safe_core_actions/i.test(serverSource + mcpTestSource),
+  boost_task_uses_usable_packs: /selected_usable_api_packs|selected_usable_skill_packs/i.test(serverSource + mcpTestSource),
+  raw_records_not_counted_as_usable: (usablePacks.apis || []).length < (library.apis || []).length && (usablePacks.skills || []).length < (library.skills || []).length
 };
 
 assert.ok(toolInventory.includes("vnem_api_safety_profile"), "Core MCP API safety profile tool is missing");
@@ -82,10 +96,19 @@ assert.ok((library.apis || []).length > 0, "API library is empty");
 assert.ok(Object.values(fixtureCoverage).every(Boolean), "fixture importer coverage is incomplete");
 assert.ok(Object.values(proofAuditProtection).every(Boolean), "proof/audit/protection tool coverage is incomplete");
 assert.ok(taskBoostingStatus.vnem_boost_task_exists, "task boosting tool is missing");
+assert.ok(usablePackStatus.api_minimum_met, "usable API pack count is below minimum");
+assert.ok(usablePackStatus.skill_minimum_met, "usable skill pack count is below minimum");
+assert.ok(usablePackStatus.tools_handoff_status, "Tools handoff status is incomplete");
+assert.ok(usablePackStatus.boost_task_uses_usable_packs, "boost task does not use usable packs");
+assert.ok(usablePackStatus.raw_records_not_counted_as_usable, "raw discovered records appear to be counted as usable");
 assert.ok(taskBoostingStatus.all_required_examples_tested, "real task boosting examples are not fully tested");
 assert.ok(packageJson.scripts?.["core:readiness"], "package script core:readiness is missing");
 
 const blockers = [];
+if (!usablePackStatus.api_minimum_met) blockers.push("usable API pack count below minimum");
+if (!usablePackStatus.skill_minimum_met) blockers.push("usable skill pack count below minimum");
+if (!usablePackStatus.tools_handoff_status) blockers.push("Tools handoff status incomplete");
+if (!usablePackStatus.boost_task_uses_usable_packs) blockers.push("boost task is not using usable packs");
 if (apiCounts.docs_unknown_count > 0) blockers.push("some official API docs URLs remain unknown");
 if (apiCounts.rate_limit_unknown_count > 0) blockers.push("some API rate limits remain unknown");
 if (apiCounts.cors_unknown_count > 0) blockers.push("some API CORS values remain unknown");
@@ -110,6 +133,7 @@ const report = {
     forbidden_core_tool_names: forbiddenCoreTools
   },
   proof_trail_completion_audit_protection_review_status: proofAuditProtection,
+  usable_pack_status: usablePackStatus,
   task_boosting_status: taskBoostingStatus,
   api_library_counts: apiCounts,
   skill_library_counts: skillCounts,
@@ -121,7 +145,8 @@ const report = {
     "Proof trail, completion audit, and protection review tools are present.",
     "Fixture importer coverage includes API verification and SKILL.md parsing cases.",
     "Curated API records carry explicit docs/rate-limit confidence instead of guessed certainty.",
-    "Task boosting entry point exists and is covered by six real-task examples."
+    "Task boosting entry point exists and is covered by real-task examples across build advice, API features, UI, modding, security, and debugging.",
+    "Usable API/skill pack minimums are enforced and Core-to-Tools handoff status is tested."
   ],
   not_ready: [
     "Most API docs, rate limits, CORS values, and freshness statuses remain metadata-level or unknown.",
@@ -191,6 +216,7 @@ function formatReport(report) {
   lines.push(`core_tools: ${report.tool_inventory.count}`);
   lines.push(`read_only_status: ${report.tool_inventory.read_only_status}`);
   lines.push(`proof_audit_protection: ${status(report.proof_trail_completion_audit_protection_review_status)}`);
+  lines.push(`usable_packs: apis=${report.usable_pack_status.usable_api_pack_count}, skills=${report.usable_pack_status.usable_skill_pack_count}, api_minimum=${report.usable_pack_status.api_minimum_met ? "yes" : "no"}, skill_minimum=${report.usable_pack_status.skill_minimum_met ? "yes" : "no"}, tools_handoff=${report.usable_pack_status.tools_handoff_status ? "yes" : "no"}, boost_uses_packs=${report.usable_pack_status.boost_task_uses_usable_packs ? "yes" : "no"}`);
   lines.push(`task_boosting_status: exists=${report.task_boosting_status.vnem_boost_task_exists ? "yes" : "no"}, skill_guidance=${report.task_boosting_status.uses_skill_guidance ? "yes" : "no"}, api_guidance_when_relevant=${report.task_boosting_status.uses_api_guidance_when_relevant ? "yes" : "no"}, workflow_and_proof=${report.task_boosting_status.includes_workflow_and_proof ? "yes" : "no"}`);
   lines.push(`real_task_examples_tested: ${report.task_boosting_status.real_task_examples_tested.join(", ")}`);
   lines.push(`api_counts: total=${report.api_library_counts.total_apis}, docs_verified=${report.api_library_counts.docs_verified_count}, docs_unknown=${report.api_library_counts.docs_unknown_count}, rate_limit_verified=${report.api_library_counts.rate_limit_verified_count}, rate_limit_unknown=${report.api_library_counts.rate_limit_unknown_count}, cors_unknown=${report.api_library_counts.cors_unknown_count}, frontend_safe=${report.api_library_counts.frontend_safe_count}, backend_required=${report.api_library_counts.backend_required_count}`);

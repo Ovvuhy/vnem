@@ -6,6 +6,7 @@ import Ajv2020 from "ajv/dist/2020.js";
 const library = JSON.parse(await readFile("capabilities/super-library.json", "utf8"));
 const librarySchema = JSON.parse(await readFile("schemas/super-library.schema.json", "utf8"));
 const agentProfiles = JSON.parse(await readFile("capabilities/agent-profiles.json", "utf8"));
+const usablePacks = JSON.parse(await readFile("capabilities/usable-capability-packs.json", "utf8"));
 const agentProfilesSchema = JSON.parse(await readFile("schemas/agent-profiles.schema.json", "utf8"));
 const ajv = new Ajv2020({ allErrors: true });
 
@@ -116,5 +117,56 @@ const likelySkills = library.skills.filter((skill) => skill.agent_compatibility_
 assert.ok(likelySkills.length >= 8, "expected selected important skills to have likely-but-not-verified compatibility notes");
 assert.ok(likelySkills.every((skill) => skill.supported_clients_verified.length === 0), "likely compatibility must not be mislabeled as client-verified");
 assert.ok(likelySkills.every((skill) => /not verified|manual review|SKILL\.md/i.test(skill.client_compatibility_notes)), "likely compatibility notes must preserve uncertainty/manual review");
+
+
+assert.equal(usablePacks.schema_version, "vnem-usable-capability-packs/v0.1");
+assert.ok(Array.isArray(usablePacks.apis), "usable API packs missing");
+assert.ok(Array.isArray(usablePacks.skills), "usable skill packs missing");
+assert.ok(usablePacks.apis.length >= 20, "expected at least 20 usable API packs");
+assert.ok(usablePacks.skills.length >= 15, "expected at least 15 usable skill packs");
+assert.notEqual(usablePacks.apis.length, library.apis.length, "raw discovered APIs must not be counted as usable packs");
+assert.notEqual(usablePacks.skills.length, library.skills.length, "raw discovered skills must not be counted as usable packs");
+const libraryApiIds = new Set(library.apis.map((api) => api.id));
+const librarySkillIds = new Set(library.skills.map((skill) => skill.id));
+for (const pack of usablePacks.apis) {
+  assert.equal(pack.usable_status, "usable", `API pack ${pack.id} must be explicitly usable`);
+  assert.ok(libraryApiIds.has(pack.id), `API pack ${pack.id} must map to a library API record`);
+  assert.ok(pack.official_docs_url && pack.official_docs_url !== "unknown", `API pack ${pack.id} needs docs/source`);
+  assert.ok(["none", "apiKey", "OAuth"].includes(pack.auth_type), `API pack ${pack.id} needs known auth mode`);
+  assert.equal(typeof pack.frontend_safe, "boolean", `API pack ${pack.id} needs frontend decision`);
+  assert.equal(typeof pack.backend_required, "boolean", `API pack ${pack.id} needs backend decision`);
+  assert.equal(typeof pack.secret_risk, "boolean", `API pack ${pack.id} needs secret decision`);
+  assert.ok(pack.cors_confidence, `API pack ${pack.id} needs CORS confidence`);
+  assert.ok(pack.rate_limit_confidence, `API pack ${pack.id} needs rate-limit confidence`);
+  assert.ok(Array.isArray(pack.verification_source_urls) && pack.verification_source_urls.length > 0, `API pack ${pack.id} needs verification source URLs`);
+  assert.ok(Array.isArray(pack.safe_use_cases) && pack.safe_use_cases.length > 0, `API pack ${pack.id} needs safe use cases`);
+  assert.ok(Array.isArray(pack.unsafe_use_cases) && pack.unsafe_use_cases.length > 0, `API pack ${pack.id} needs unsafe use cases`);
+  assert.ok(Array.isArray(pack.recommended_task_triggers) && pack.recommended_task_triggers.length > 0, `API pack ${pack.id} needs task triggers`);
+  assert.ok(Array.isArray(pack.integration_test_requirements) && pack.integration_test_requirements.length > 0, `API pack ${pack.id} needs integration tests`);
+  assert.ok(Array.isArray(pack.error_handling_requirements) && pack.error_handling_requirements.length > 0, `API pack ${pack.id} needs error handling`);
+  assert.ok(pack.mock_test_strategy, `API pack ${pack.id} needs mock strategy`);
+  assert.ok(pack.tools_mcp_handoff?.required_tools?.length, `API pack ${pack.id} needs Tools handoff tools`);
+  assert.ok(pack.tools_mcp_handoff?.permissions_needed?.length, `API pack ${pack.id} needs Tools handoff permissions`);
+  assert.ok(pack.tools_mcp_handoff?.dry_run?.length, `API pack ${pack.id} needs dry run`);
+  assert.ok(pack.tools_mcp_handoff?.rollback?.length, `API pack ${pack.id} needs rollback`);
+  assert.ok(pack.tools_mcp_handoff?.logs_evidence?.length, `API pack ${pack.id} needs evidence`);
+  assert.ok(Array.isArray(pack.must_not_claim) && pack.must_not_claim.some((claim) => /Core|called|live|verified/i.test(claim)), `API pack ${pack.id} needs must-not-claim limits`);
+}
+for (const pack of usablePacks.skills) {
+  assert.equal(pack.usable_status, "usable", `skill pack ${pack.id} must be explicitly usable`);
+  assert.ok(librarySkillIds.has(pack.id) || pack.id.startsWith("skill:vnem/core/"), `skill pack ${pack.id} must map to a library skill or Core-authored skill pack`);
+  assert.ok(pack.source_review_status && pack.skill_content_confidence, `skill pack ${pack.id} needs review/confidence fields`);
+  assert.equal(pack.core_can_apply_guidance, true, `skill pack ${pack.id} should be Core guidance-capable`);
+  assert.equal(typeof pack.requires_install, "boolean", `skill pack ${pack.id} needs install boundary`);
+  assert.equal(typeof pack.precision_required_for_install, "boolean", `skill pack ${pack.id} needs Precision boundary`);
+  assert.ok(Array.isArray(pack.recommended_task_triggers) && pack.recommended_task_triggers.length > 0, `skill pack ${pack.id} needs triggers`);
+  assert.ok(pack.safe_guidance_summary, `skill pack ${pack.id} needs safe guidance summary`);
+  assert.ok(Array.isArray(pack.workflow_steps) && pack.workflow_steps.length > 0, `skill pack ${pack.id} needs workflow steps`);
+  assert.ok(Array.isArray(pack.required_evidence) && pack.required_evidence.length > 0, `skill pack ${pack.id} needs evidence`);
+  assert.ok(pack.tools_mcp_handoff?.required_tools?.length, `skill pack ${pack.id} needs Tools handoff tools`);
+  assert.ok(pack.tools_mcp_handoff?.permissions_needed?.length, `skill pack ${pack.id} needs permissions`);
+  assert.ok(Array.isArray(pack.must_not_claim) && pack.must_not_claim.some((claim) => /Core|installed|executed|proof/i.test(claim)), `skill pack ${pack.id} needs must-not-claim limits`);
+  assert.ok(Array.isArray(pack.when_not_to_use) && pack.when_not_to_use.length > 0, `skill pack ${pack.id} needs when-not-to-use`);
+}
 
 console.log("VNEM Super MCP library data tests passed");

@@ -7,6 +7,7 @@ const DEFAULT_LIBRARY = {
   generated_at: null,
   sources: [],
   limitations: ["Super MCP library data file was not loaded."],
+  usable_capability_packs: { schema_version: "missing", apis: [], skills: [] },
   skills: [],
   apis: []
 };
@@ -17,8 +18,12 @@ const STOPWORDS = new Set([
 
 export async function loadSuperLibrary(rootDir) {
   const filePath = path.join(rootDir, "capabilities", "super-library.json");
+  const usablePacksPath = path.join(rootDir, "capabilities", "usable-capability-packs.json");
+  const usableCapabilityPacks = existsSync(usablePacksPath)
+    ? JSON.parse(await readFile(usablePacksPath, "utf8"))
+    : { schema_version: "missing", apis: [], skills: [] };
   if (!existsSync(filePath)) {
-    return { ...DEFAULT_LIBRARY, file_path: filePath, loaded: false };
+    return { ...DEFAULT_LIBRARY, file_path: filePath, loaded: false, usable_capability_packs: usableCapabilityPacks };
   }
   const data = JSON.parse(await readFile(filePath, "utf8"));
   return {
@@ -27,7 +32,14 @@ export async function loadSuperLibrary(rootDir) {
     file_path: filePath,
     loaded: true,
     skills: Array.isArray(data.skills) ? data.skills : [],
-    apis: Array.isArray(data.apis) ? data.apis : []
+    apis: Array.isArray(data.apis) ? data.apis : [],
+    usable_capability_packs: {
+      schema_version: usableCapabilityPacks.schema_version || "unknown",
+      generated_at: usableCapabilityPacks.generated_at || null,
+      limitations: Array.isArray(usableCapabilityPacks.limitations) ? usableCapabilityPacks.limitations : [],
+      apis: Array.isArray(usableCapabilityPacks.apis) ? usableCapabilityPacks.apis : [],
+      skills: Array.isArray(usableCapabilityPacks.skills) ? usableCapabilityPacks.skills : []
+    }
   };
 }
 
@@ -54,6 +66,12 @@ export function buildLibraryStatus(library) {
       search_index_available: library.apis.length > 0
     },
     source_names: library.sources.map((source) => source.name),
+    usable_capability_packs: {
+      schema_version: library.usable_capability_packs?.schema_version || "missing",
+      api_count: library.usable_capability_packs?.apis?.length || 0,
+      skill_count: library.usable_capability_packs?.skills?.length || 0,
+      data_boundary: "curated Core guidance and future Tools MCP handoff; still not execution"
+    },
     sources: library.sources,
     current_limitations: library.limitations,
     data_boundary: "metadata/enrichment only; not execution-capable from the default MCP server",

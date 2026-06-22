@@ -51,6 +51,7 @@ try {
     "vnem_activate_capability_pack",
     "vnem_apply_skill_guidance",
     "vnem_boost_task",
+    "vnem_prepare_tools_handoff",
     "vnem_build_api_integration_plan",
     "vnem_get_agent_profile",
     "vnem_compose_capability_contract",
@@ -92,6 +93,8 @@ try {
   assert.equal(libraryStatus.structuredContent?.safety_boundaries?.installs_skills, false);
   assert.equal(libraryStatus.structuredContent?.safety_boundaries?.calls_apis, false);
   assert.equal(libraryStatus.structuredContent?.records_are_vnem_normalized, true);
+  assert.ok(libraryStatus.structuredContent?.usable_capability_packs?.api_count >= 20, "library status should expose usable API pack count");
+  assert.ok(libraryStatus.structuredContent?.usable_capability_packs?.skill_count >= 15, "library status should expose usable skill pack count");
 
   const skillSearch = await client.callTool({
     name: "vnem_search_skills",
@@ -325,6 +328,33 @@ try {
   assert.ok(/frontend|backend|CORS|secret|API key|rate/i.test(boostText(weatherBoost.structuredContent?.safety_rules)), "Weather boost should include frontend/backend/CORS/secret/rate safety");
   assert.ok(/loading|error|empty|success|mock/i.test(boostText(weatherBoost.structuredContent?.verification_plan)), "Weather boost should require UI states and mocked/integration tests");
   assert.ok(/vnem_completion_audit|vnem_proof_trail/i.test(boostText(weatherBoost.structuredContent?.proof_trail_inputs)), "Weather boost should include audit/proof inputs");
+  assert.ok(weatherBoost.structuredContent?.selected_usable_api_packs?.some((pack) => pack.id === "api:weather:open-meteo"), "Weather boost should select usable Open-Meteo pack");
+  assert.ok(/required_tool_capabilities|permissions|dry_run|rollback|evidence/i.test(boostText(weatherBoost.structuredContent?.tools_handoff)), "Weather boost should include Tools handoff object");
+
+  const currencyBoost = await client.callTool({
+    name: boostToolName,
+    arguments: { task: "Build a currency converter feature.", agent_client: "codex", known_context: "web app", token_budget: "compact" }
+  });
+  assert.equal(currencyBoost.isError, undefined);
+  assert.ok(currencyBoost.structuredContent?.selected_usable_api_packs?.some((pack) => /exchange|currency/i.test(`${pack.id} ${pack.name}`)), "Currency boost should select usable currency/exchange API pack");
+  assert.ok(/rate|backoff|mock|exchange/i.test(boostText(currencyBoost.structuredContent)), "Currency boost should require rate-limit/backoff and mocked exchange response tests");
+
+  const githubHelperBoost = await client.callTool({
+    name: boostToolName,
+    arguments: { task: "Build a repo issue triage helper.", agent_client: "codex", known_context: "GitHub repository dashboard", token_budget: "compact" }
+  });
+  assert.equal(githubHelperBoost.isError, undefined);
+  assert.ok(githubHelperBoost.structuredContent?.selected_usable_api_packs?.some((pack) => pack.id === "api:development:github"), "GitHub helper should select usable GitHub API pack");
+  assert.ok(/OAuth|PAT|backend|rate|GitHub/i.test(boostText(githubHelperBoost.structuredContent)), "GitHub helper should include backend OAuth/PAT and rate-limit guidance");
+  assert.ok(/Tools|GitHub|file edit|approved/i.test(boostText(githubHelperBoost.structuredContent?.tools_handoff)), "GitHub helper should hand off GitHub/file actions to Tools MCP");
+
+  const domainRiskBoost = await client.callTool({
+    name: boostToolName,
+    arguments: { task: "Check whether a suspicious domain or IP is risky.", agent_client: "codex", token_budget: "compact" }
+  });
+  assert.equal(domainRiskBoost.isError, undefined);
+  assert.ok(domainRiskBoost.structuredContent?.selected_usable_api_packs?.some((pack) => /abuse|virus|urlhaus|safe browsing|ipinfo|haveibeenpwned/i.test(`${pack.id} ${pack.name}`)), "Domain/IP risk boost should select security/threat API pack");
+  assert.ok(/backend|API key|human review|do not automatically block|proof/i.test(boostText(domainRiskBoost.structuredContent)), "Domain/IP risk boost should require backend key handling and human review");
 
   const uiBoost = await client.callTool({
     name: boostToolName,
@@ -336,6 +366,8 @@ try {
   assert.ok(/loading|error|empty|success/i.test(boostText(uiBoost.structuredContent?.completion_checklist)), "UI boost should require state coverage");
   assert.ok(/responsive|mobile|desktop|accessibility|screenshot|visual/i.test(boostText(uiBoost.structuredContent?.verification_plan)), "UI boost should require responsive/a11y/visual proof");
   assert.ok(/backend-only|without visual|without screenshot/i.test(boostText(uiBoost.structuredContent?.must_not_claim)), "UI boost should reject backend-only done claims");
+  assert.ok(uiBoost.structuredContent?.selected_usable_skill_packs?.some((pack) => /frontend|design|ui|react/i.test(`${pack.id} ${pack.name}`)), "UI boost should select usable UI/frontend skill pack");
+  assert.ok(/browser|screenshot|accessibility|responsive/i.test(boostText(uiBoost.structuredContent?.tools_handoff)), "UI boost should hand off browser/visual proof to Tools MCP");
 
   const moddingBoost = await client.callTool({
     name: boostToolName,
@@ -344,6 +376,8 @@ try {
   assert.equal(moddingBoost.isError, undefined);
   assert.ok(/game version|platform|toolchain|mod loader|file format|backup|restore|compatibility|verification/i.test(boostText(moddingBoost.structuredContent)), "Modding boost should require version/platform/toolchain/file formats/backup/restore/verification");
   assert.ok(/Tools|Precision MCP|file edits|mutate/i.test(boostText(moddingBoost.structuredContent?.when_tools_or_precision_mcp_is_needed)), "Modding boost should require Tools/Precision MCP for file edits");
+  assert.ok(moddingBoost.structuredContent?.selected_usable_skill_packs?.some((pack) => /mod|game-file|safety/i.test(`${pack.id} ${pack.name}`)), "Modding boost should select usable game-file safety skill pack");
+  assert.ok(/backup|restore|toolchain|file format/i.test(boostText(moddingBoost.structuredContent?.tools_handoff)), "Modding handoff should require backup/restore/toolchain/file-format proof");
 
   const securityBoost = await client.callTool({
     name: boostToolName,
@@ -366,8 +400,10 @@ try {
   assert.ok(/reproduce|root cause|minimal.*patch|tests|before\/after|proof/i.test(boostText(debugBoost.structuredContent)), "Debug boost should require repro/root cause/minimal patch/tests/proof");
   assert.ok(/Tools|Precision MCP|file edits|commands/i.test(boostText(debugBoost.structuredContent?.when_tools_or_precision_mcp_is_needed)), "Debug boost should require Tools/Precision MCP for edits/commands");
   assert.equal(debugBoost.structuredContent?.selected_api_guidance?.length, 0, "Debug boost should not select API guidance when APIs are not useful");
+  assert.ok(debugBoost.structuredContent?.selected_usable_skill_packs?.some((pack) => /diagnose|tdd|triage|github/i.test(`${pack.id} ${pack.name}`)), "Debug boost should select usable debugging/testing skill packs");
+  assert.equal(debugBoost.structuredContent?.selected_usable_api_packs?.length, 0, "Debug boost should not select usable API packs when APIs are not useful");
 
-  for (const boosted of [gameBoost, weatherBoost, uiBoost, moddingBoost, securityBoost, debugBoost]) {
+  for (const boosted of [gameBoost, weatherBoost, currencyBoost, githubHelperBoost, domainRiskBoost, uiBoost, moddingBoost, securityBoost, debugBoost]) {
     assert.ok(boosted.structuredContent?.workflow_steps?.length >= 4, "Boost output needs concrete workflow steps");
     assert.ok(boosted.structuredContent?.completion_checklist?.length > 0, "Boost output needs completion checklist");
     assert.ok(boosted.structuredContent?.must_not_claim?.length > 0, "Boost output needs must-not-claim limits");
@@ -378,6 +414,41 @@ try {
     assert.equal(boosted.structuredContent?.core_mcp_installs_skills, false, "Boost output must not install skills");
     assert.equal(boosted.structuredContent?.core_mcp_executes_skill_scripts, false, "Boost output must not execute skill scripts");
   }
+
+
+  const apiHandoff = await client.callTool({
+    name: "vnem_prepare_tools_handoff",
+    arguments: { task: "Build a weather widget for my web app.", agent_client: "codex", known_context: "React frontend", token_budget: "compact" }
+  });
+  assert.equal(apiHandoff.isError, undefined);
+  assert.ok(apiHandoff.structuredContent?.selected_usable_api_packs?.some((pack) => pack.id === "api:weather:open-meteo"), "API handoff should include selected usable weather API pack");
+  assert.ok(/http client|test runner|browser|mock/i.test(boostText(apiHandoff.structuredContent?.required_tool_capabilities)), "API handoff should include HTTP/test/browser capabilities");
+  assert.ok(/live API|secret|approval/i.test(boostText(apiHandoff.structuredContent?.required_permissions)), "API handoff should require permissions");
+  assert.ok(/mock|dry/i.test(boostText(apiHandoff.structuredContent?.dry_run_first)), "API handoff should start with mock/dry run");
+  assert.ok(/status|mocked|live|secret/i.test(boostText(apiHandoff.structuredContent?.evidence_to_collect)), "API handoff should require status/test/no-secret evidence");
+  assert.equal(apiHandoff.structuredContent?.safe_core_actions?.some((item) => /execute|edit|call live/i.test(item)), false, "Core-safe actions must not include execution");
+
+  const uiHandoff = await client.callTool({
+    name: "vnem_prepare_tools_handoff",
+    arguments: { task: "Improve my dashboard UI and prove it actually works.", agent_client: "codex", token_budget: "compact" }
+  });
+  assert.ok(/filesystem|browser|screenshot|test runner/i.test(boostText(uiHandoff.structuredContent?.required_tool_capabilities)), "UI handoff should need file/browser/test tools");
+  assert.ok(/approve file edits|command execution/i.test(boostText(uiHandoff.structuredContent?.required_permissions)), "UI handoff should require edit/command permissions");
+  assert.ok(/rollback|restore|git/i.test(boostText(uiHandoff.structuredContent?.rollback_or_restore_plan)), "UI handoff should include rollback/restore");
+
+  const securityHandoff = await client.callTool({
+    name: "vnem_prepare_tools_handoff",
+    arguments: { task: "Check whether a suspicious domain or IP is risky.", agent_client: "codex", token_budget: "compact" }
+  });
+  assert.ok(/backend|API key|secret/i.test(boostText(securityHandoff.structuredContent)), "Security/API-key handoff should use backend secret handling");
+  assert.ok(/human review|do not automatically block|automated blocking/i.test(boostText(securityHandoff.structuredContent?.must_not_claim)), "Security handoff should forbid automated blocking without proof");
+
+  const moddingHandoff = await client.callTool({
+    name: "vnem_prepare_tools_handoff",
+    arguments: { task: "Patch this Elden Ring mod safely.", agent_client: "codex", token_budget: "compact" }
+  });
+  assert.ok(/backup|restore|isolation|toolchain|file format/i.test(boostText(moddingHandoff.structuredContent)), "Modding handoff should include backup/restore/toolchain/file-format requirements");
+  assert.ok(moddingHandoff.structuredContent?.blocked_until_tools_mcp?.some((item) => /file edits|mod file/i.test(item)), "Modding handoff should block actual edits until Tools/Precision MCP");
 
   const uiAudit = await client.callTool({
     name: "vnem_completion_audit",

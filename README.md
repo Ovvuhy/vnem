@@ -445,7 +445,8 @@ Read-only MCP tools:
 - `vnem_get_required_capabilities`: select the few required/strongly recommended capability modules for a task and return compact instructions, risks, evidence requirements, and deeper lookup IDs.
 - `vnem_activate_capability_pack`: create a task-specific activation contract with required instructions, usage-proof fields, incomplete-if-skipped rules, and safety boundaries.
 - `vnem_apply_skill_guidance`: apply one selected skill's compact guidance to the current task without installing the skill or executing scripts.
-- `vnem_boost_task`: single real-task entry point that selects useful skill guidance, API guidance only when relevant, domain contracts, missing questions, workflow steps, safety rules, verification/proof requirements, must-not-claim limits, and Core-vs-Tools/Precision boundaries.
+- `vnem_boost_task`: single real-task entry point that selects usable skill packs, usable API packs only when relevant, domain contracts, missing questions, workflow steps, safety rules, verification/proof requirements, must-not-claim limits, and Core-vs-Tools/Precision boundaries.
+- `vnem_prepare_tools_handoff`: prepare a read-only handoff for future Tools/Precision MCP: selected usable packs, required tool capabilities, permissions, dry-run-first plan, rollback/restore plan, evidence to collect, blocked actions, safe Core actions, and must-not-claim limits.
 - `vnem_build_api_integration_plan`: build a safe API plan with auth/HTTPS/CORS, frontend/backend decision, backend proxy/secret rules, tests, and evidence. It does not call the API.
 - `vnem_get_agent_profile`: return only the relevant Codex/Claude/Gemini/DeepSeek/Hermes/Qwen/generic/unknown profile so one AI does not receive another AI's irrelevant instructions.
 - `vnem_compose_capability_contract`: combine routing, selected capability modules, one agent profile, skill/API plan when relevant, risks, verification, and final-report requirements into one compact contract.
@@ -477,12 +478,20 @@ Safety boundary:
 Recommended agent flow:
 
 1. Call `vnem_bootstrap`.
-2. Call `vnem_boost_task` for the concrete task workflow. It is the easiest single entry point for real user tasks.
-3. If you need lower-level details, call `vnem_compose_capability_contract` for required capability IDs or `vnem_build_api_integration_plan` / safety-profile tools for API-specific work.
-4. Use returned required rules/resources and task-specific checks/evidence requirements.
-5. Before risky filesystem/terminal/browser/GitHub/package/API/skill/modding actions, call `vnem_protection_review` and get explicit user approval outside Core MCP.
-6. Run task-specific verification and evidence collection: commands/checks, sources, screenshots/visual proof, changed files, assumptions, and skipped items.
-7. Call/apply `vnem_completion_audit`, then call `vnem_proof_trail` and include its compact proof/evidence summary in the final response.
+2. Call `vnem_boost_task` for the concrete task workflow. It selects usable API/skill packs rather than raw discovered records, and includes a compact `tools_mcp_handoff` summary.
+3. If you need a standalone future Tools MCP handoff, call `vnem_prepare_tools_handoff` for selected usable packs, required tools, permissions, dry-run-first plan, rollback/restore, evidence, blocked actions, and must-not-claim limits.
+4. If you need lower-level details, call `vnem_compose_capability_contract` for required capability IDs or `vnem_build_api_integration_plan` / safety-profile tools for API-specific work.
+5. Use returned required rules/resources and task-specific checks/evidence requirements.
+6. Before risky filesystem/terminal/browser/GitHub/package/API/skill/modding actions, call `vnem_protection_review` and get explicit user approval outside Core MCP.
+7. Run task-specific verification and evidence collection: commands/checks, sources, screenshots/visual proof, changed files, assumptions, and skipped items.
+8. Call/apply `vnem_completion_audit`, then call `vnem_proof_trail` and include its compact proof/evidence summary in the final response.
+
+Core/Tools boundary:
+
+- Core MCP chooses useful APIs/skills, applies safe guidance, creates concrete workflows, asks missing questions, says what proof is required, and prepares a future Tools/Precision MCP handoff.
+- Core MCP does not execute actions: no file edits, terminal commands, browser/screenshot work, package installs, GitHub mutations, live API calls, local mod edits, or account/device changes.
+- Future Tools MCP or Tools/Precision MCP once connected performs approved actions using Core's handoff: permissions, dry-run-first checks, rollback/restore plan, logs/evidence, and must-not-claim limits.
+- Raw discovered APIs/skills are not counted as usable packs; usable packs are a curated subset with docs/source, safety boundaries, test plans, and handoff needs.
 
 Examples:
 
@@ -502,6 +511,27 @@ Examples:
   - Proof required: auth/HTTPS/CORS/frontend-vs-backend decision, no frontend secrets, loading/error/empty/success/rate-limit states, mocked API tests or approved live tests.
   - Core stops at: read-only API planning; it does not call the weather API.
   - Tools/Precision MCP: needed for file edits, test execution, browser proof, and live API calls.
+- Currency converter/API integration:
+  - User task: "Build a currency converter feature."
+  - VNEM Core detects: currency/exchange API integration plus frontend or backend feature work.
+  - Applies: usable exchange-rate API pack when available, API integration safety pack, rate-limit/backoff guidance, and mocked exchange-response tests.
+  - Proof required: selected exchange API docs/source, no frontend secret exposure, mocked rate conversion/error/429 tests, stale-rate handling.
+  - Core stops at: read-only API planning and handoff.
+  - Future Tools/Precision MCP: needed for file edits, command/test execution, secret storage, and approved live calls.
+- GitHub repo helper:
+  - User task: "Build a repo issue triage helper."
+  - VNEM Core detects: GitHub/dev API integration plus workflow/triage guidance.
+  - Applies: usable GitHub REST API pack, backend OAuth/PAT handling, rate-limit guidance, and issue-triage skill guidance.
+  - Proof required: mock issue/search responses, pagination/rate-limit tests, least-privilege token boundary, no PAT in frontend/logs.
+  - Core stops at: guidance and handoff; it never mutates GitHub.
+  - Future Tools/Precision MCP: needed for GitHub actions, file edits, terminal tests, and approved live API calls.
+- Suspicious domain/IP check:
+  - User task: "Check whether a suspicious domain or IP is risky."
+  - VNEM Core detects: security/threat API task.
+  - Applies: usable threat/reputation API pack such as AbuseIPDB, VirusTotal, URLHaus, Safe Browsing, IPinfo, or ip-api when appropriate.
+  - Proof required: backend/API-key handling, mocked reputation response, human-review warning, corroboration if action is proposed.
+  - Core stops at: risk-enrichment plan; it does not call threat APIs or block anything.
+  - Future Tools/Precision MCP: needed for approved live lookups, secret handling, logs/evidence, and any enforcement action.
 - UI/frontend/backend improvement:
   - User task: "Improve my dashboard UI and make sure the backend feature is actually visible."
   - VNEM Core detects: UI/frontend/backend integration.
