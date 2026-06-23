@@ -2,9 +2,9 @@
 import { spawn } from "node:child_process";
 import { createHash, randomUUID } from "node:crypto";
 import { existsSync } from "node:fs";
-import { copyFile, mkdir, readdir, readFile, realpath, stat, writeFile } from "node:fs/promises";
+import { copyFile, mkdir, readdir, readFile, realpath, rm, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
@@ -23,7 +23,8 @@ const REQUIRED_TOOL_NAMES = [
   "vnem_tools_run_command",
   "vnem_tools_api_request",
   "vnem_tools_collect_evidence",
-  "vnem_tools_restore_backup"
+  "vnem_tools_restore_backup",
+  "vnem_tools_browser_capture"
 ];
 const READ_ONLY_LOCAL = { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false };
 const ACTION_TOOL = { readOnlyHint: false, destructiveHint: true, idempotentHint: false, openWorldHint: false };
@@ -34,6 +35,13 @@ const MAX_COMMAND_TIMEOUT_MS = 60000;
 const MAX_COMMAND_OUTPUT_BYTES = 64 * 1024;
 const MAX_API_TIMEOUT_MS = 30000;
 const MAX_API_RESPONSE_BYTES = 64 * 1024;
+const MAX_BROWSER_WAIT_MS = 5000;
+const MAX_BROWSER_SCREENSHOT_BYTES = 10 * 1024 * 1024;
+const MAX_VIEWPORT_WIDTH = 3840;
+const MAX_VIEWPORT_HEIGHT = 2160;
+const BROWSER_CANDIDATES = process.env.VNEM_TOOLS_BROWSER_COMMAND
+  ? [process.env.VNEM_TOOLS_BROWSER_COMMAND]
+  : ["chromium", "chromium-browser", "google-chrome", "google-chrome-stable", "chrome", "msedge", "microsoft-edge"];
 const SKIPPED_DIRS = new Set([".git", "node_modules", "dist", "build", "coverage", ".next", ".turbo", ".cache"]);
 const SAFE_PACKAGE_SCRIPT_PATTERN = /^(test|test:[a-z0-9:_-]+|validate|build|generate|check:links|dashboard:build|dashboard:check|core:readiness|tools:readiness|discover:dry-run|digest)$/i;
 const SECRET_HEADER_PATTERN = /^(authorization|x-api-key|api-key|x-auth-token|cookie|set-cookie)$/i;
@@ -49,9 +57,9 @@ const server = new McpServer(
   {
     instructions: [
       "VNEM Tools MCP is a safeguard-first action server for approved project work after VNEM Core has planned the task.",
-      "Tools MCP is not Core MCP and is not Giga MCP. It can read, search, dry-run patches, apply approved patches, run approved allowlisted commands, prepare/perform approved limited API requests, and collect evidence.",
-      "Dry-run is the default for mutation/execution/network actions. Real changes require dry_run=false, approved=true, and a non-empty approval_note.",
-      "Browser screenshots, GitHub mutations, package installs, arbitrary shell, and broad automation are not implemented in this foundation batch."
+      "Tools MCP is not Core MCP and is not Giga MCP. It can read, search, dry-run patches, apply approved patches, run approved allowlisted commands, prepare/perform approved limited API requests, capture approved local browser screenshots, and collect evidence.",
+      "Dry-run is the default for mutation/execution/network/browser actions. Real changes require dry_run=false, approved=true, and a non-empty approval_note.",
+      "GitHub mutations, package installs, arbitrary shell, broad browser automation, account login automation, cookie extraction, CAPTCHA bypass, and broad web scraping are not implemented."
     ].join(" ")
   }
 );
@@ -249,6 +257,33 @@ function registerTools(mcpServer) {
   );
 
   mcpServer.registerTool(
+    "vnem_tools_browser_capture",
+    {
+      title: "Capture Local Browser Screenshot Evidence",
+      description: "Dry-run or capture an approved local browser screenshot for visual proof. Localhost/file-under-allowed-roots only; no login, cookies, CAPTCHA, credential capture, scraping, or external browsing by default.",
+      inputSchema: {
+        url: z.string().optional(),
+        file_path: z.string().optional(),
+        workspace_root: z.string().default("."),
+        dry_run: z.boolean().default(true),
+        approved: z.boolean().default(false),
+        approval_note: z.string().default(""),
+        viewport_width: z.number().int().min(320).max(MAX_VIEWPORT_WIDTH).default(1280),
+        viewport_height: z.number().int().min(240).max(MAX_VIEWPORT_HEIGHT).default(720),
+        wait_ms: z.number().int().min(0).max(MAX_BROWSER_WAIT_MS).default(500),
+        selector: z.string().optional(),
+        full_page: z.boolean().default(true),
+        max_screenshot_bytes: z.number().int().min(1024).max(MAX_BROWSER_SCREENSHOT_BYTES).default(2 * 1024 * 1024)
+      },
+      annotations: NETWORK_ACTION
+    },
+    async (args) => withToolErrors(async () => {
+      const capture = await safeBrowserCapture(args);
+      return toolResult(formatBrowserCapture(capture), { browser_capture: capture });
+    })
+  );
+
+  mcpServer.registerTool(
     "vnem_tools_collect_evidence",
     {
       title: "Collect Tools Evidence",
@@ -261,6 +296,8 @@ function registerTools(mcpServer) {
         api_requests: z.array(z.string()).default([]),
         test_results: z.array(z.string()).default([]),
         screenshots: z.array(z.string()).default([]),
+        visual_checks: z.array(z.string()).default([]),
+        browser_captures: z.array(z.any()).default([]),
         notes: z.string().default("")
       },
       annotations: ACTION_TOOL
@@ -351,7 +388,19 @@ function statusObject() {
       live_requests_require_approval: true,
       localhost_allowed_when_env_enabled: process.env.VNEM_TOOLS_ALLOW_LOCALHOST === "1",
       unknown_untrusted_urls_blocked: true,
-      no_browser_github_or_installs: true
+      no_github_or_installs: true
+    },
+    browser_policy: {
+      tool: "vnem_tools_browser_capture",
+      local_url_only: true,
+      local_file_under_allowed_roots_only: true,
+      external_url_default_block: true,
+      approval_required: true,
+      dry_run_default: true,
+      screenshot_evidence_location: path.join(evidenceRoot, "screenshots"),
+      browser_runtime_status: "checked_on_capture",
+      no_persistent_browser_profile: true,
+      unsupported_browser_actions: ["login automation", "cookie extraction", "session persistence", "external browsing by default", "CAPTCHA bypass", "web scraping", "credential capture"]
     },
     secret_policy: {
       secret_like_paths_blocked: true,
@@ -368,7 +417,7 @@ function statusObject() {
     },
     evidence_log_location: evidenceRoot,
     core_handoff_supported: true,
-    unsupported_in_foundation_batch: ["browser_screenshot", "github_mutation", "package_install", "arbitrary_shell", "unrestricted_api_calls"]
+    unsupported_in_foundation_batch: ["github_mutation", "package_install", "arbitrary_shell", "unrestricted_api_calls", "login_automation", "cookie_extraction", "captcha_bypass"]
   };
 }
 
@@ -378,8 +427,9 @@ function formatStatus() {
     `VNEM Tools MCP ${status.version}`,
     "Tools MCP can perform actions only through safeguards.",
     `Allowed roots: ${status.allowed_roots.join(", ")}`,
-    "Dry-run is default; real mutation/execution/live API requests require approved=true and an approval_note.",
-    "Browser, GitHub mutation, package install, and unrestricted shell/API support are not implemented in this foundation batch. Future Tools/Giga MCP work."
+    "Dry-run is default; real mutation/execution/live API/browser screenshot requests require approved=true and an approval_note.",
+    `Browser proof: local files/localhost only, screenshots under ${status.browser_policy.screenshot_evidence_location}, runtime ${status.browser_policy.browser_runtime_status}.`,
+    "GitHub mutation, package install, arbitrary shell/API, login automation, cookie extraction, CAPTCHA bypass, and broad scraping are not implemented."
   ].join("\n");
 }
 
@@ -391,7 +441,7 @@ function buildActionPlan(args = {}) {
   const actions = capabilities.filter((capability) => isSupportedCapability(capability)).map((capability) => ({
     action: capability,
     dry_run_first: true,
-    requires_approval: ["file_edit", "test_runner", "command", "api_request", "restore"].some((term) => String(capability).includes(term)),
+    requires_approval: ["file_edit", "test_runner", "command", "api_request", "restore", "browser", "screenshot"].some((term) => String(capability).includes(term)),
     status: "available_with_safeguards"
   }));
   const blocked = [...new Set([...capabilities, ...requested])]
@@ -408,19 +458,18 @@ function buildActionPlan(args = {}) {
     rollback_or_restore_plan: arrayify(handoff.rollback_or_restore_plan).length ? arrayify(handoff.rollback_or_restore_plan) : ["keep patch diff", "create backups before file writes", "stop if tests fail"],
     evidence_to_collect: arrayify(handoff.evidence_to_collect).length ? arrayify(handoff.evidence_to_collect) : ["changed files", "commands run", "test output", "tool run ids"],
     blocked_actions: blocked,
-    safe_next_step: actions.length ? "Run the first action in dry-run mode, then ask for explicit approval before applying." : "Ask for a narrower supported Tools MCP action.",
-    must_not_claim: [...arrayify(handoff.must_not_claim), "Tools MCP performed unsupported browser/GitHub/install work."].filter(Boolean)
+    safe_next_step: actions.length ? "Run the first action in dry-run mode, then ask for explicit approval before applying/capturing." : "Ask for a narrower supported Tools MCP action.",
+    must_not_claim: [...arrayify(handoff.must_not_claim), "Tools MCP performed unsupported GitHub/install/login/CAPTCHA work."].filter(Boolean)
   };
 }
 
 function isSupportedCapability(capability) {
   const text = String(capability || "").toLowerCase();
-  return /file_edit|patch|restore|test_runner|command|api_request|read_file|list_files|search_files|evidence/.test(text);
+  return /file_edit|patch|restore|test_runner|command|api_request|read_file|list_files|search_files|evidence|browser|screenshot|visual/.test(text);
 }
 
 function unsupportedReason(capability) {
   const text = String(capability || "").toLowerCase();
-  if (text.includes("browser") || text.includes("screenshot")) return "Browser/screenshot support is not in this foundation batch.";
   if (text.includes("github")) return "GitHub mutation support is not in this foundation batch.";
   if (text.includes("install") || text.includes("package")) return "Package install support is not in this foundation batch.";
   return "Unsupported by the safe Tools MCP foundation allowlist.";
@@ -431,12 +480,13 @@ function inferPermissions(actions) {
   if (actions.some((item) => /file_edit|patch|restore/.test(item.action))) permissions.push("approve file edits/restores under allowed roots");
   if (actions.some((item) => /test_runner|command/.test(item.action))) permissions.push("approve allowlisted commands");
   if (actions.some((item) => /api_request/.test(item.action))) permissions.push("approve live API requests if not mocked");
+  if (actions.some((item) => /browser|screenshot|visual/.test(item.action))) permissions.push("approve local browser screenshot capture");
   return permissions;
 }
 
 function inferRisk(actions, blocked) {
   if (blocked.length) return "medium";
-  if (actions.some((item) => /file_edit|api_request|command/.test(item.action))) return "medium";
+  if (actions.some((item) => /file_edit|api_request|command|browser|screenshot/.test(item.action))) return "medium";
   return "low";
 }
 
@@ -782,6 +832,150 @@ function isTrustedApiUrl(url, apiPackId) {
   return sourceHosts.some((sourceHost) => host === sourceHost || host.endsWith(`.${sourceHost}`));
 }
 
+async function safeBrowserCapture(args) {
+  const dryRun = args.dry_run !== false;
+  const target = await buildBrowserTarget(args);
+  const viewport = {
+    width: Math.min(args.viewport_width || 1280, MAX_VIEWPORT_WIDTH),
+    height: Math.min(args.viewport_height || 720, MAX_VIEWPORT_HEIGHT)
+  };
+  const waitMs = Math.min(args.wait_ms || 500, MAX_BROWSER_WAIT_MS);
+  const maxBytes = Math.min(args.max_screenshot_bytes || 2 * 1024 * 1024, MAX_BROWSER_SCREENSHOT_BYTES);
+  const planned = {
+    status: dryRun ? "dry_run" : "planned",
+    dry_run: dryRun,
+    approved: args.approved === true,
+    captured: false,
+    url: redactUrl(target.url),
+    source_type: target.source_type,
+    file_path: target.file_path || null,
+    viewport,
+    wait_ms: waitMs,
+    selector: args.selector || null,
+    full_page: args.full_page !== false,
+    screenshot_path: null,
+    screenshot_sha256: null,
+    screenshot_bytes: 0,
+    browser_runtime_status: "not_checked_in_dry_run",
+    safe_to_claim: [],
+    must_not_claim: ["Browser screenshot evidence was captured.", "Visual proof was collected."]
+  };
+  if (dryRun) return planned;
+  enforceApproval(args);
+  const browser = await discoverBrowserRuntime();
+  if (!browser) {
+    const unavailable = {
+      ...planned,
+      status: "browser_unavailable",
+      dry_run: false,
+      browser_runtime_status: "unavailable",
+      safe_to_claim: ["Browser screenshot capture was requested with approval but no browser runtime was available."],
+      must_not_claim: ["Browser screenshot evidence was captured.", "Visual proof was collected.", "The page was visually verified in a browser."]
+    };
+    const log = await writeEvidenceLog("browser_capture", unavailable);
+    return { ...unavailable, evidence_log_id: log.evidence_log_id };
+  }
+  const screenshotsDir = path.join(evidenceRoot, "screenshots");
+  await mkdir(screenshotsDir, { recursive: true });
+  const captureId = logId("browser-capture");
+  const screenshotPath = path.join(screenshotsDir, `${captureId}.png`);
+  const profileDir = path.join(evidenceRoot, "browser-profiles", captureId);
+  await mkdir(profileDir, { recursive: true });
+  const browserArgs = [
+    "--headless=new",
+    "--disable-gpu",
+    "--no-sandbox",
+    "--disable-dev-shm-usage",
+    "--hide-scrollbars",
+    `--user-data-dir=${profileDir}`,
+    `--window-size=${viewport.width},${viewport.height}`,
+    `--screenshot=${screenshotPath}`,
+    `--virtual-time-budget=${Math.max(waitMs, 1)}`,
+    target.url.toString()
+  ];
+  const execution = await runProcess(browser.command, browserArgs, { cwd: target.root || allowedRoots[0], timeoutMs: Math.min(waitMs + 15000, 20000), maxOutputBytes: 4000 });
+  await rm(profileDir, { recursive: true, force: true }).catch(() => {});
+  if (!execution.ok || !existsSync(screenshotPath)) {
+    const unavailable = {
+      ...planned,
+      status: "browser_unavailable",
+      dry_run: false,
+      browser_runtime_status: "command_failed_or_no_screenshot",
+      browser_command: browser.command,
+      browser_error_summary: truncate(`${execution.stderr || ""}\n${execution.stdout || ""}`.trim(), 500),
+      safe_to_claim: ["Browser screenshot capture was attempted but no screenshot evidence was produced."],
+      must_not_claim: ["Browser screenshot evidence was captured.", "Visual proof was collected.", "The page was visually verified in a browser."]
+    };
+    const log = await writeEvidenceLog("browser_capture", unavailable);
+    return { ...unavailable, evidence_log_id: log.evidence_log_id };
+  }
+  const info = await stat(screenshotPath);
+  if (info.size > maxBytes) {
+    await rm(screenshotPath, { force: true }).catch(() => {});
+    throw new ToolsError("Screenshot exceeded max_screenshot_bytes.", "screenshot_too_large", { bytes: info.size, max_screenshot_bytes: maxBytes });
+  }
+  const bytes = await readFile(screenshotPath);
+  const result = {
+    ...planned,
+    status: "captured",
+    dry_run: false,
+    captured: true,
+    screenshot_path: screenshotPath,
+    screenshot_sha256: sha256(bytes),
+    screenshot_bytes: info.size,
+    browser_runtime_status: "available",
+    browser_command: browser.command,
+    safe_to_claim: ["Approved local browser screenshot evidence was captured.", `Screenshot saved to ${screenshotPath}.`],
+    must_not_claim: ["External browsing was performed.", "Login/session/cookie/CAPTCHA automation was performed.", "Unlisted pages were visually verified."]
+  };
+  const log = await writeEvidenceLog("browser_capture", result, captureId);
+  return { ...result, evidence_log_id: log.evidence_log_id };
+}
+
+async function buildBrowserTarget(args) {
+  const hasUrl = typeof args.url === "string" && args.url.trim();
+  const hasFile = typeof args.file_path === "string" && args.file_path.trim();
+  if ((hasUrl && hasFile) || (!hasUrl && !hasFile)) throw new ToolsError("Provide exactly one of url or file_path.", "browser_target_required");
+  if (hasFile) {
+    const workspaceRoot = await resolveAllowedRoot(args.workspace_root || ".");
+    const raw = String(args.file_path).trim();
+    const target = await resolveAllowedFile(path.isAbsolute(raw) ? raw : path.join(workspaceRoot.absolutePath, raw), { mustExist: true, blockSecrets: true });
+    return { url: pathToFileURL(target.absolutePath), source_type: "file", file_path: target.relativePath, root: target.root };
+  }
+  const rawUrl = String(args.url).trim();
+  if (containsRawSecret(rawUrl)) throw new ToolsError("Raw token/secret-like values are blocked in browser URLs.", "raw_secret_blocked");
+  let url;
+  try { url = new URL(rawUrl); } catch { throw new ToolsError("Invalid browser URL.", "invalid_url"); }
+  if (["data:", "javascript:"].includes(url.protocol)) throw new ToolsError("data: and javascript: browser URLs are blocked.", "unsafe_browser_url_blocked");
+  if (url.username || url.password) throw new ToolsError("Credentialed browser URLs are blocked.", "credentialed_url_blocked");
+  if (url.protocol === "file:") {
+    const target = await resolveAllowedFile(fileURLToPath(url), { mustExist: true, blockSecrets: true });
+    return { url: pathToFileURL(target.absolutePath), source_type: "file", file_path: target.relativePath, root: target.root };
+  }
+  if (!["http:", "https:"].includes(url.protocol)) throw new ToolsError("Only local http(s) and file URLs are allowed.", "unsafe_browser_url_blocked");
+  if (!["127.0.0.1", "localhost", "::1"].includes(url.hostname)) throw new ToolsError("External browser URLs are blocked by default.", "external_url_blocked", { host: url.host });
+  return { url, source_type: "local_url", file_path: null, root: allowedRoots[0] };
+}
+
+async function discoverBrowserRuntime() {
+  for (const command of BROWSER_CANDIDATES) {
+    const version = await runProcess(command, ["--version"], { cwd: allowedRoots[0], timeoutMs: 3000, maxOutputBytes: 2000 });
+    if (version.ok) return { command, version: truncate(version.stdout || version.stderr, 200) };
+  }
+  return null;
+}
+
+function formatBrowserCapture(capture) {
+  return [
+    `vnem_tools_browser_capture: ${capture.status}`,
+    `target: ${capture.url}`,
+    `viewport: ${capture.viewport.width}x${capture.viewport.height}`,
+    capture.screenshot_path ? `screenshot: ${capture.screenshot_path}` : "screenshot: none",
+    capture.screenshot_sha256 ? `sha256: ${capture.screenshot_sha256}` : "",
+    `evidence: ${capture.evidence_log_id || "not written"}`
+  ].filter(Boolean).join("\n");
+}
+
 function isSecretRef(value) {
   if (value && typeof value === "object" && typeof value.secret_ref === "string" && value.secret_ref.trim()) return true;
   return typeof value === "string" && /^secret_ref:[a-z0-9_.:/-]+$/i.test(value.trim());
@@ -801,7 +995,14 @@ async function collectEvidence(args) {
   const commandsRun = arrayify(args.commands_run);
   const apiRequests = arrayify(args.api_requests).map(redactSecrets);
   const tests = arrayify(args.test_results);
-  const screenshots = arrayify(args.screenshots);
+  const screenshots = arrayify(args.screenshots).map(redactSecrets);
+  const visualChecks = arrayify(args.visual_checks).map(redactSecrets);
+  const browserCaptures = arrayify(args.browser_captures).map(normalizeBrowserEvidence);
+  const capturedBrowser = browserCaptures.filter((item) => item.status === "captured" && item.screenshot_path);
+  const blockedBrowser = browserCaptures.filter((item) => item.status && item.status !== "captured");
+  const screenshotPaths = [...new Set([...screenshots, ...capturedBrowser.map((item) => item.screenshot_path)].filter(Boolean))];
+  const screenshotHashes = [...new Set(capturedBrowser.map((item) => item.screenshot_sha256).filter(Boolean))];
+  const visualEvidencePresent = screenshotPaths.length > 0 || capturedBrowser.length > 0;
   const evidenceId = logId("evidence");
   const safeToClaim = [
     "Approved Tools MCP actions were run with evidence logs.",
@@ -809,11 +1010,14 @@ async function collectEvidence(args) {
     commandsRun.length ? `Verification command(s) were run: ${commandsRun.join(", ")}.` : null,
     tests.length ? `Verification result(s) were recorded: ${tests.join("; ")}.` : null,
     apiRequests.length ? `Approved API request evidence was collected for: ${apiRequests.join(", ")}.` : null,
+    visualEvidencePresent ? "Approved local browser screenshot evidence was captured." : null,
+    visualChecks.length ? `Visual check note(s) were recorded: ${visualChecks.join("; ")}.` : null,
     "Secrets were redacted from Tools MCP evidence output."
   ].filter(Boolean);
   const mustNotClaim = [
-    screenshots.length ? null : "Browser screenshots were captured.",
-    screenshots.length ? null : "Visual/browser verification was performed.",
+    visualEvidencePresent ? null : "Browser screenshots were captured.",
+    visualEvidencePresent ? null : "Visual/browser verification was performed.",
+    blockedBrowser.length ? "Browser screenshot capture succeeded when it was unavailable or blocked." : null,
     apiRequests.length ? null : "Live API calls were performed.",
     "GitHub changes were pushed.",
     "Package installs were performed.",
@@ -821,15 +1025,15 @@ async function collectEvidence(args) {
   ].filter(Boolean);
   const remainingRisks = [
     "Only claims backed by listed evidence should be made.",
-    screenshots.length ? null : "No browser visual proof was collected in this Tools MCP foundation run.",
+    visualEvidencePresent ? null : blockedBrowser.length ? "Browser screenshot proof was requested but unavailable/blocked; do not claim visual proof." : "No browser visual proof was collected in this Tools MCP run.",
     apiRequests.length ? null : "No live API call evidence was collected in this run.",
-    "Unsupported browser/GitHub/install actions remain future work."
+    "Unsupported GitHub/install/secret-backed API/Giga actions remain future work."
   ].filter(Boolean);
   const recommendedLines = [
     changedFiles.length ? `Patch applied to: ${changedFiles.join(", ")}.` : "No file changes were recorded.",
     commandsRun.length ? `Verification command passed/recorded: ${commandsRun.join(", ")}.` : "No verification command was recorded.",
     `Evidence collected: ${evidenceId}.`,
-    screenshots.length ? `Visual evidence recorded: ${screenshots.join(", ")}.` : "No browser visual proof was performed; do not claim visual verification.",
+    visualEvidencePresent ? `Browser screenshot evidence captured: ${screenshotPaths.join(", ")}.` : blockedBrowser.length ? "Browser proof was requested but browser capture was unavailable or blocked; do not claim visual verification." : "No browser visual proof was performed; do not claim visual verification.",
     apiRequests.length ? `API request evidence recorded: ${apiRequests.join(", ")}.` : "No live API call was performed; do not claim live API verification."
   ];
   const proofBridge = {
@@ -841,7 +1045,11 @@ async function collectEvidence(args) {
     commands_run: commandsRun,
     api_requests: apiRequests,
     tests,
-    blocked_actions: screenshots.length ? [] : ["browser_screenshot_not_collected"],
+    visual_evidence: visualChecks,
+    browser_evidence: browserCaptures,
+    screenshot_paths: screenshotPaths,
+    screenshot_hashes: screenshotHashes,
+    blocked_actions: visualEvidencePresent ? [] : ["browser_screenshot_not_collected"],
     remaining_risks: remainingRisks,
     recommended_final_report_lines: recommendedLines,
     recommended_core_proof_trail_inputs: {
@@ -850,7 +1058,7 @@ async function collectEvidence(args) {
       changed_files: changedFiles,
       commands_run: commandsRun,
       tests_or_checks: tests,
-      visual_evidence: screenshots,
+      visual_evidence: screenshotPaths.length ? screenshotPaths : visualChecks,
       remaining_risks: remainingRisks,
       final_claim: recommendedLines.join(" ")
     }
@@ -865,7 +1073,10 @@ async function collectEvidence(args) {
     commands_run: commandsRun,
     api_requests: apiRequests,
     tests,
-    screenshots,
+    screenshots: screenshotPaths,
+    visual_checks: visualChecks,
+    browser_captures: browserCaptures,
+    screenshot_hashes: screenshotHashes,
     blocked_actions: proofBridge.blocked_actions,
     remaining_risks: remainingRisks,
     safe_to_claim: safeToClaim,
@@ -875,6 +1086,26 @@ async function collectEvidence(args) {
   };
   const log = await writeEvidenceLog("evidence", evidence, evidence.evidence_id);
   return { ...evidence, evidence_path: log.path };
+}
+
+function normalizeBrowserEvidence(item) {
+  if (typeof item === "string") {
+    return { status: "captured", screenshot_path: redactSecrets(item), screenshot_sha256: null, source: "screenshot_path" };
+  }
+  const raw = item && typeof item === "object" ? item : {};
+  return {
+    status: raw.status || (raw.screenshot_path ? "captured" : "unknown"),
+    captured: raw.captured === true,
+    screenshot_path: raw.screenshot_path ? redactSecrets(raw.screenshot_path) : null,
+    screenshot_sha256: raw.screenshot_sha256 || null,
+    screenshot_bytes: raw.screenshot_bytes || 0,
+    url: raw.url ? redactSecrets(raw.url) : null,
+    file_path: raw.file_path ? redactSecrets(raw.file_path) : null,
+    selector: raw.selector || null,
+    viewport: raw.viewport || null,
+    evidence_log_id: raw.evidence_log_id || null,
+    browser_runtime_status: raw.browser_runtime_status || null
+  };
 }
 
 async function writeEvidenceLog(kind, payload, existingId) {

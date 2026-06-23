@@ -71,7 +71,8 @@ try {
     "vnem_tools_run_command",
     "vnem_tools_api_request",
     "vnem_tools_collect_evidence",
-    "vnem_tools_restore_backup"
+    "vnem_tools_restore_backup",
+    "vnem_tools_browser_capture"
   ];
   for (const name of requiredTools) assert.equal(toolNames.has(name), true, `missing ${name}`);
   assert.equal(toolNames.has("vnem_boost_task"), false, "Tools MCP must stay separate from Core MCP tools");
@@ -85,7 +86,9 @@ try {
   assert.equal(status.structuredContent?.tools_status?.approval_required_for_mutation, true);
   assert.ok(status.structuredContent?.tools_status?.allowed_roots?.includes(projectDir));
   assert.ok(status.structuredContent?.tools_status?.command_allowlist?.some((item) => item.includes("node --check")));
-  assert.match(status.content[0].text, /browser.*not.*implemented/i);
+  assert.equal(status.structuredContent?.tools_status?.browser_policy?.local_url_only, true);
+  assert.equal(status.structuredContent?.tools_status?.browser_policy?.external_url_default_block, true);
+  assert.equal(status.structuredContent?.tools_status?.browser_policy?.approval_required, true);
 
   const coreHandoff = {
     task_summary: "Build a weather widget for my web app.",
@@ -110,7 +113,8 @@ try {
   assert.deepEqual(plan.structuredContent?.action_plan?.selected_usable_skill_packs, ["skill:ui-frontend-quality"]);
   assert.equal(plan.structuredContent?.action_plan?.dry_run_first, true);
   assert.ok(plan.structuredContent?.action_plan?.required_permissions?.includes("approve file edits"));
-  assert.ok(plan.structuredContent?.action_plan?.blocked_actions?.some((item) => /browser_screenshot/.test(item.action)));
+  assert.ok(plan.structuredContent?.action_plan?.actions?.some((item) => /browser_screenshot/.test(item.action)));
+  assert.equal(plan.structuredContent?.action_plan?.blocked_actions?.some((item) => /browser_screenshot/.test(item.action)), false);
 
   const prompt = await client.callTool({
     name: "vnem_tools_permission_prompt",

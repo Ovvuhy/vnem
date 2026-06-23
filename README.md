@@ -178,6 +178,7 @@ Tools MCP is safeguard-first, not Giga MCP:
 | Patches | Dry-run by default; real apply requires `dry_run=false`, `approved=true`, and a non-empty approval note; patches are path-limited and can create backups/restore info. |
 | Commands | Dry-run by default; real execution requires approval; only safe allowlisted commands such as `node --check`, `npm test`, `npm run <safe-script>`, `git status`, `git diff`, `git log`, and `git ls-files` are allowed. |
 | API requests | Dry-run by default; real requests require approval; first batch allows only GET/HEAD, blocks raw secrets in headers/body, validates URLs against usable API pack context or explicit localhost test mode, and caps timeout/output. |
+| Browser proof | Captures approved local screenshot evidence from `file://` files under allowed roots or localhost/127.0.0.1 pages; dry-run default; external URLs, data/javascript/credentialed URLs, secret-like files, login/cookie/session/CAPTCHA/credential automation, and broad scraping are blocked. |
 | Restore | Restores a previous Tools MCP backup only inside allowed roots; dry-run default, approval required, secret-like targets blocked, evidence logged. |
 | Evidence | Writes structured redacted JSON evidence under `.vnem/tool-runs/` (or configured evidence root) plus a `proof_trail_compatible_summary` so final reports can say only what was actually proven. |
 
@@ -187,6 +188,7 @@ Run it only for a workspace that should allow these bounded capabilities:
 node scripts/vnem-cli.mjs mcp-config --core --tools --workspace /path/to/project
 npm run tools:mcp
 npm run test:tools-mcp
+npm run test:tools-browser
 npm run test:core-tools-e2e
 npm run tools:readiness
 ```
@@ -198,13 +200,13 @@ Actual Core → Tools use path:
 3. Ask Core `vnem_boost_task` to boost the real task.
 4. Pass Core's `tools_mcp_handoff` to `vnem_tools_prepare_action_plan`.
 5. Tools creates an action plan and marks unsupported work as blocked.
-6. Tools dry-runs the patch/command/API action first.
+6. Tools dry-runs the patch/command/API/browser action first.
 7. User approves the exact action with scope and rollback/restore plan.
-8. Tools applies the approved patch, runs the allowed command, or performs the approved limited API request.
+8. Tools applies the approved patch, runs the allowed command, performs the approved limited API request, or captures an approved local browser screenshot.
 9. Tools collects redacted evidence with `vnem_tools_collect_evidence`.
-10. Final response maps `proof_trail_compatible_summary` into Core `vnem_completion_audit` / `vnem_proof_trail` inputs and does not overclaim unverified browser visual proof or live API proof.
+10. Final response maps `proof_trail_compatible_summary` into Core `vnem_completion_audit` / `vnem_proof_trail` inputs and says whether browser visual proof was actually captured; do not claim visual/live API proof without evidence.
 
-Not in this foundation batch: browser screenshots, GitHub mutation, package installs, arbitrary shell, unrestricted API calls, secret-manager-backed live API calls, and Giga MCP orchestration. Future Tools/Giga MCP work can add those only after this safety base stays stable.
+Not in this foundation batch: GitHub mutation, package installs, arbitrary shell, unrestricted API calls, secret-manager-backed live API calls, unrestricted browser automation, login/session/cookie/CAPTCHA/credential automation, broad web scraping, and Giga MCP orchestration. Future Tools/Giga MCP work can add those only after this safety base stays stable.
 
 ## Precision Execution Layer
 
@@ -402,10 +404,11 @@ Tools MCP foundation tools, available only from `scripts/vnem-tools-mcp-server.m
 - `vnem_tools_apply_patch`: dry-run-first approved text patching with path checks, approval gate, optional backups, restore info, and evidence logs.
 - `vnem_tools_run_command`: dry-run-first approved allowlisted commands only; no arbitrary shell, pushes, resets, publish, install, or destructive commands.
 - `vnem_tools_api_request`: dry-run-first approved GET/HEAD API requests only; raw secrets blocked; no untrusted URL calls by default.
+- `vnem_tools_browser_capture`: dry-run-first approved local browser screenshot proof for allowed-root files or localhost pages; external/data/javascript/credentialed URLs, secret files, login/session/cookie/CAPTCHA/credential automation, and broad scraping are blocked.
 - `vnem_tools_restore_backup`: dry-run-first approved restore from a Tools MCP backup path to an allowed target file.
-- `vnem_tools_collect_evidence`: write redacted structured evidence and `proof_trail_compatible_summary` for final proof trails.
+- `vnem_tools_collect_evidence`: write redacted structured evidence and `proof_trail_compatible_summary`, including screenshot paths/hashes when browser proof exists, for final proof trails.
 
-Not in Tools MCP foundation: browser screenshots, GitHub mutation, package installs, arbitrary shell, unrestricted API calls, or Giga MCP orchestration.
+Not in Tools MCP foundation: GitHub mutation, package installs, arbitrary shell, unrestricted API calls, secret-manager-backed live API calls, unrestricted browser automation, login/session/cookie/CAPTCHA/credential automation, broad scraping, or Giga MCP orchestration.
 
 Main resources:
 
@@ -546,8 +549,8 @@ Core/Tools boundary:
 
 - Core MCP chooses useful APIs/skills, applies safe guidance, creates concrete workflows, asks missing questions, says what proof is required, and prepares a Tools MCP handoff.
 - Core MCP does not execute actions: no file edits, terminal commands, browser/screenshot work, package installs, GitHub mutations, live API calls, local mod edits, or account/device changes.
-- Tools MCP foundation performs approved bounded actions using Core's handoff: dry-run first, permission prompts, path-limited reads/search/patches, allowlisted commands, approved GET/HEAD API requests, rollback/restore info, logs/evidence, and must-not-claim limits.
-- Not in this foundation batch: browser screenshots, GitHub mutation, package installs, arbitrary shell, unrestricted API calls, and Giga MCP orchestration. Future Tools/Giga MCP work.
+- Tools MCP foundation performs approved bounded actions using Core's handoff: dry-run first, permission prompts, path-limited reads/search/patches, allowlisted commands, approved GET/HEAD API requests, approved local browser screenshot capture, rollback/restore info, logs/evidence, and must-not-claim limits.
+- Not in this foundation batch: GitHub mutation, package installs, arbitrary shell, unrestricted API calls, secret-manager-backed live API calls, unrestricted browser automation, login/session/cookie/CAPTCHA/credential automation, broad scraping, and Giga MCP orchestration. Future Tools/Giga MCP work.
 - Raw discovered APIs/skills are not counted as usable packs; usable packs are a curated subset with docs/source, safety boundaries, test plans, and handoff needs.
 
 Examples:

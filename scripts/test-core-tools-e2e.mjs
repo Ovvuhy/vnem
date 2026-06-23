@@ -20,6 +20,7 @@ await writeFile(path.join(workspace, "package.json"), JSON.stringify({
 }, null, 2), "utf8");
 await writeFile(path.join(workspace, "src", "widget.js"), "export function weatherWidget() {\n  return 'old placeholder';\n}\n", "utf8");
 await writeFile(path.join(workspace, "src", "widget.test.js"), "import { weatherWidget } from './widget.js';\nif (!weatherWidget().includes('placeholder')) throw new Error('missing placeholder');\n", "utf8");
+await writeFile(path.join(workspace, "src", "widget.html"), "<!doctype html><html><body><main id=\"widget\"><h1>Weather widget placeholder ready</h1><p>Local visual proof target.</p></main></body></html>\n", "utf8");
 
 const core = createClient("vnem-core-e2e", path.join(scriptDir, "vnem-mcp-server.mjs"), { VNEM_ROOT: rootDir });
 const tools = createClient("vnem-tools-e2e", path.join(scriptDir, "vnem-tools-mcp-server.mjs"), {
@@ -38,6 +39,7 @@ try {
   assert.equal(coreTools.has("vnem_tools_apply_patch"), false, "Core MCP must not expose Tools mutation tools");
   assert.equal(toolsTools.has("vnem_tools_apply_patch"), true, "Tools MCP should expose patch tool");
   assert.equal(toolsTools.has("vnem_tools_restore_backup"), true, "Tools MCP should expose restore tool");
+  assert.equal(toolsTools.has("vnem_tools_browser_capture"), true, "Tools MCP should expose browser capture tool");
   assert.equal(toolsTools.has("vnem_boost_task"), false, "Tools MCP must stay separate from Core MCP");
 
   const task = "Build a weather widget placeholder and prove it works.";
@@ -62,7 +64,8 @@ try {
   assert.ok(actionPlan?.actions?.some((item) => /evidence/.test(item.action)), "Tools plan should include evidence collection capability");
   assert.equal(actionPlan?.dry_run_first, true, "Tools plan should require dry-run first");
   assert.ok(actionPlan?.rollback_or_restore_plan?.length > 0, "Tools plan should include rollback/restore plan");
-  assert.ok(actionPlan?.blocked_actions?.some((item) => /browser_screenshot/.test(item.action)), "Unsupported browser screenshot should be blocked honestly");
+  assert.ok(actionPlan?.actions?.some((item) => /browser_screenshot/.test(item.action)), "Tools plan should include browser screenshot capability");
+  assert.equal(actionPlan?.blocked_actions?.some((item) => /browser_screenshot/.test(item.action)), false, "browser screenshot should be supported by Tools browser proof tool");
 
   const permission = await tools.client.callTool({
     name: "vnem_tools_permission_prompt",
@@ -110,6 +113,30 @@ try {
   assert.equal(command.structuredContent?.command?.executed, true);
   assert.equal(command.structuredContent?.command?.exit_code, 0);
 
+  const dryBrowser = await tools.client.callTool({ name: "vnem_tools_browser_capture", arguments: { file_path: "src/widget.html" } });
+  assert.equal(dryBrowser.isError, undefined);
+  assert.equal(dryBrowser.structuredContent?.browser_capture?.dry_run, true);
+  assert.equal(dryBrowser.structuredContent?.browser_capture?.screenshot_path, null);
+  const blockedBrowser = await tools.client.callTool({ name: "vnem_tools_browser_capture", arguments: { file_path: "src/widget.html", dry_run: false } });
+  assert.equal(blockedBrowser.isError, true);
+  assert.equal(blockedBrowser.structuredContent?.code, "approval_required");
+  const externalBrowser = await tools.client.callTool({ name: "vnem_tools_browser_capture", arguments: { url: "https://example.com", dry_run: false, approved: true, approval_note: "E2E should not browse external sites" } });
+  assert.equal(externalBrowser.isError, true);
+  assert.equal(externalBrowser.structuredContent?.code, "external_url_blocked");
+  const browserCaptureResult = await tools.client.callTool({
+    name: "vnem_tools_browser_capture",
+    arguments: { file_path: "src/widget.html", dry_run: false, approved: true, approval_note: "E2E test approval: capture only local temp workspace HTML screenshot", selector: "#widget", wait_ms: 50, max_screenshot_bytes: 2_000_000 }
+  });
+  assert.equal(browserCaptureResult.isError, undefined);
+  const browserCapture = browserCaptureResult.structuredContent?.browser_capture;
+  assert.ok(["captured", "browser_unavailable"].includes(browserCapture?.status));
+  if (browserCapture.status === "captured") {
+    assert.ok((await stat(browserCapture.screenshot_path)).isFile());
+    assert.match(browserCapture.screenshot_sha256, /^[a-f0-9]{64}$/);
+  } else {
+    assert.ok(browserCapture.must_not_claim?.some((item) => /Visual proof|screenshot/i.test(item)));
+  }
+
   const evidence = await tools.client.callTool({
     name: "vnem_tools_collect_evidence",
     arguments: {
@@ -119,8 +146,10 @@ try {
       commands_run: ["node --check src/widget.js"],
       api_requests: [],
       test_results: ["node --check src/widget.js passed"],
-      screenshots: [],
-      notes: "No browser visual proof and no live API call were performed. TOKEN=sample-sensitive-value must be redacted."
+      screenshots: browserCapture.screenshot_path ? [browserCapture.screenshot_path] : [],
+      browser_captures: [browserCapture],
+      visual_checks: [browserCapture.status === "captured" ? "local browser screenshot captured" : "browser unavailable; screenshot not collected"],
+      notes: "No live API call was performed. TOKEN=sample-sensitive-value must be redacted."
     }
   });
   assert.equal(evidence.isError, undefined);
@@ -130,9 +159,15 @@ try {
   assert.doesNotMatch(JSON.stringify(evidenceBody), /sample-sensitive-value/);
   assert.ok(evidenceBody.safe_to_claim?.some((item) => /patch|changed|approved|Tools/i.test(item)), "evidence should say patch/action can be claimed");
   assert.ok(evidenceBody.safe_to_claim?.some((item) => /command|check|passed/i.test(item)), "evidence should say verification command passed");
-  assert.ok(evidenceBody.must_not_claim?.some((item) => /browser|visual|screenshot/i.test(item)), "evidence should forbid visual proof overclaim");
+  if (browserCapture.status === "captured") {
+    assert.ok(evidenceBody.safe_to_claim?.some((item) => /browser screenshot evidence/i.test(item)), "evidence should allow visual proof claim only when screenshot exists");
+    assert.equal(evidenceBody.must_not_claim?.some((item) => /Visual\/browser verification was performed/i.test(item)), false);
+    assert.ok(evidenceBody.proof_trail_compatible_summary?.screenshot_paths?.includes(browserCapture.screenshot_path));
+  } else {
+    assert.ok(evidenceBody.must_not_claim?.some((item) => /browser|visual|screenshot/i.test(item)), "evidence should forbid visual proof overclaim when unavailable");
+    assert.ok(evidenceBody.proof_trail_compatible_summary?.recommended_final_report_lines?.some((line) => /browser proof.*unavailable|No browser visual proof/i.test(line)), "proof bridge should recommend honest visual limitation line");
+  }
   assert.ok(evidenceBody.must_not_claim?.some((item) => /live API|API call/i.test(item)), "evidence should forbid live API overclaim");
-  assert.ok(evidenceBody.proof_trail_compatible_summary?.recommended_final_report_lines?.some((line) => /no browser visual proof/i.test(line)), "proof bridge should recommend honest visual limitation line");
   assert.ok(evidenceBody.proof_trail_compatible_summary?.recommended_core_proof_trail_inputs?.tests_or_checks?.includes("node --check src/widget.js passed"));
 
   const audit = await core.client.callTool({
@@ -166,7 +201,11 @@ try {
   assert.equal(proof.isError, undefined);
   const proofText = JSON.stringify(proof.structuredContent);
   assert.match(proofText, /proof|evidence|VNEM/i);
-  assert.doesNotMatch(evidenceBody.proof_trail_compatible_summary.recommended_final_report_lines.join("\n"), /browser screenshot captured|live API call succeeded/i);
+  if (browserCapture.status === "captured") {
+    assert.match(evidenceBody.proof_trail_compatible_summary.recommended_final_report_lines.join("\n"), /Browser screenshot evidence captured/i);
+  } else {
+    assert.doesNotMatch(evidenceBody.proof_trail_compatible_summary.recommended_final_report_lines.join("\n"), /browser screenshot evidence captured|live API call succeeded/i);
+  }
 
   console.log("VNEM Core→Tools end-to-end workflow test passed");
 } finally {
