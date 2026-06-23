@@ -26,7 +26,8 @@ const core = createClient("vnem-core-e2e", path.join(scriptDir, "vnem-mcp-server
 const tools = createClient("vnem-tools-e2e", path.join(scriptDir, "vnem-tools-mcp-server.mjs"), {
   VNEM_TOOLS_ALLOWED_ROOTS: workspace,
   VNEM_TOOLS_EVIDENCE_ROOT: path.join(workspace, ".vnem", "tool-runs"),
-  VNEM_TOOLS_ALLOW_LOCALHOST: "1"
+  VNEM_TOOLS_ALLOW_LOCALHOST: "1",
+  VNEM_TOOLS_BROWSER_COMMAND: "__vnem_missing_browser_for_deterministic_test__"
 });
 
 try {
