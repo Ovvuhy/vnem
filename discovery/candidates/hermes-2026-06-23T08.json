@@ -1,0 +1,440 @@
+{
+  "generated_at": "2026-06-23T08:00:00.000Z",
+  "mode": "hourly",
+  "lookback_days": 2,
+  "source_routes": [
+    "github-search",
+    "npm-search",
+    "hacker-news"
+  ],
+  "candidates": [
+    {
+      "source_route": "github-search",
+      "name": "microsoft/agent-governance-toolkit",
+      "title": "Microsoft Agent Governance Toolkit",
+      "description": "AI Agent Governance Toolkit — Policy enforcement, zero-trust identity, execution sandboxing, and reliability engineering for autonomous AI agents. Covers 10/10 OWASP Agentic Top 10.",
+      "repo_url": "https://github.com/microsoft/agent-governance-toolkit",
+      "homepage_url": null,
+      "source_urls": [
+        "https://github.com/microsoft/agent-governance-toolkit"
+      ],
+      "signal_summary": "Matched GitHub search `topic:ai-safety pushed:>=2026-06-21`; pushed 2026-06-22T23:49:47Z; stars 4462. Microsoft-backed governance toolkit covering full OWASP Agentic Top 10.",
+      "why_builders_should_care": "First major vendor-backed open-source toolkit that maps directly to OWASP Agentic Top 10 risks. Relevant for any team building production agents who need policy enforcement, identity, and sandboxing primitives.",
+      "suggested_trust_tier": "promising",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "allow_registry_proposal": true,
+      "metrics": {
+        "stars": 4462,
+        "language": "Python",
+        "license": "MIT",
+        "pushed_at": "2026-06-22T23:49:47Z"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 4,
+        "trust_score": 96,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-06-23T08:00:00.000Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": false,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "vectorize-io/hindsight",
+      "title": "Hindsight — Agent Memory That Learns",
+      "description": "Hindsight: Agent Memory That Learns. Persistent, self-improving memory for AI agents.",
+      "repo_url": "https://github.com/vectorize-io/hindsight",
+      "homepage_url": null,
+      "source_urls": [
+        "https://github.com/vectorize-io/hindsight"
+      ],
+      "signal_summary": "Matched GitHub search `\"agent memory\" pushed:>=2026-06-21`; pushed 2026-06-22T17:32:15Z; stars 16968. High-velocity memory system with learning capabilities.",
+      "why_builders_should_care": "Addresses one of the hardest problems in agent engineering: memory that improves over time. High star count and active development signal strong builder interest.",
+      "suggested_trust_tier": "promising",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "allow_registry_proposal": true,
+      "metrics": {
+        "stars": 16968,
+        "language": null,
+        "license": "MIT",
+        "pushed_at": "2026-06-22T17:32:15Z"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 4,
+        "trust_score": 96,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-06-23T08:00:00.000Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": false,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "NevaMind-AI/memU",
+      "title": "memU — From Workspace to Agent Memory",
+      "description": "From workspace to agent memory. Proactive agent memory system with MCP support.",
+      "repo_url": "https://github.com/NevaMind-AI/memU",
+      "homepage_url": null,
+      "source_urls": [
+        "https://github.com/NevaMind-AI/memU"
+      ],
+      "signal_summary": "Matched GitHub search `\"agent memory\" pushed:>=2026-06-21`; pushed 2026-06-22T17:52:11Z; stars 13904. Proactive memory system with Claude/OpenClaw skills and MCP integration.",
+      "why_builders_should_care": "Another high-velocity memory project with native MCP and skills support. Competitive alternative to hindsight and mem0 for agent memory.",
+      "suggested_trust_tier": "promising",
+      "risk_flags": [
+        "license-not-asserted"
+      ],
+      "recommended_action": "review",
+      "allow_registry_proposal": true,
+      "metrics": {
+        "stars": 13904,
+        "language": null,
+        "license": null,
+        "pushed_at": "2026-06-22T17:52:11Z"
+      },
+      "repository_review": {
+        "verdict": "needs-review",
+        "risk_score": 12,
+        "trust_score": 88,
+        "flags": [
+          "license-not-asserted"
+        ],
+        "reasons": [
+          "Repository has no detected license metadata."
+        ],
+        "reviewed_at": "2026-06-23T08:00:00.000Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": false,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "AVIDS2/memorix",
+      "title": "memorix — Cross-Agent Memory Layer via MCP",
+      "description": "Open-source cross-agent memory layer for coding agents via MCP. Compatible with Cursor, Claude Code, Codex, Windsurf, Gemini CLI, GitHub Copilot, and more.",
+      "repo_url": "https://github.com/AVIDS2/memorix",
+      "homepage_url": null,
+      "source_urls": [
+        "https://github.com/AVIDS2/memorix"
+      ],
+      "signal_summary": "Matched GitHub search `\"agent memory\" pushed:>=2026-06-21`; pushed 2026-06-23T02:38:19Z; stars 514. Cross-agent memory layer compatible with 10+ coding agents.",
+      "why_builders_should_care": "Solves the fragmented memory problem across coding agents. MCP-native approach means it can be adopted without vendor lock-in.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "allow_registry_proposal": true,
+      "metrics": {
+        "stars": 514,
+        "language": "TypeScript",
+        "license": "Apache-2.0",
+        "pushed_at": "2026-06-23T02:38:19Z"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 8,
+        "trust_score": 92,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-06-23T08:00:00.000Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": false,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "zhangfengcdt/memoir",
+      "title": "memoir — Hierarchical Agent Memory with Git-Like Version Control",
+      "description": "Hierarchical Agent Memory with Git-Like Version Control.",
+      "repo_url": "https://github.com/zhangfengcdt/memoir",
+      "homepage_url": null,
+      "source_urls": [
+        "https://github.com/zhangfengcdt/memoir"
+      ],
+      "signal_summary": "Matched GitHub search `\"agent memory\" pushed:>=2026-06-21`; pushed 2026-06-22T23:45:53Z; stars 582. Novel approach using git-like versioning for agent memory.",
+      "why_builders_should_care": "Unique take on agent memory using familiar git semantics. Could appeal to teams wanting auditable, versioned memory for agents.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "allow_registry_proposal": true,
+      "metrics": {
+        "stars": 582,
+        "language": null,
+        "license": "Apache-2.0",
+        "pushed_at": "2026-06-22T23:45:53Z"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 8,
+        "trust_score": 92,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-06-23T08:00:00.000Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": false,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "cordum-io/cordum",
+      "title": "Cordum — Open Agent Control Plane",
+      "description": "The open agent control plane. Govern autonomous AI agents with pre-execution policy enforcement, approval gates, and audit trails. Works with LangChain, CrewAI, MCP, and any framework.",
+      "repo_url": "https://github.com/cordum-io/cordum",
+      "homepage_url": null,
+      "source_urls": [
+        "https://github.com/cordum-io/cordum"
+      ],
+      "signal_summary": "Matched GitHub search `topic:ai-safety pushed:>=2026-06-21`; pushed 2026-06-23T07:05:32Z; stars 483. Framework-agnostic agent control plane with policy enforcement and audit trails.",
+      "why_builders_should_care": "Pre-execution policy enforcement and approval gates are critical for production agent deployments. Framework-agnostic design increases adoption potential.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "license-not-asserted"
+      ],
+      "recommended_action": "review",
+      "allow_registry_proposal": true,
+      "metrics": {
+        "stars": 483,
+        "language": null,
+        "license": null,
+        "pushed_at": "2026-06-23T07:05:32Z"
+      },
+      "repository_review": {
+        "verdict": "needs-review",
+        "risk_score": 16,
+        "trust_score": 84,
+        "flags": [
+          "license-not-asserted"
+        ],
+        "reasons": [
+          "Repository has no detected license metadata."
+        ],
+        "reviewed_at": "2026-06-23T08:00:00.000Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": false,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "Justin0504/Aegis",
+      "title": "Aegis — Runtime Policy Enforcement for AI Agents",
+      "description": "Runtime policy enforcement for AI agents. Cryptographic audit trail, human-in-the-loop approvals, kill switch. Zero code changes.",
+      "repo_url": "https://github.com/Justin0504/Aegis",
+      "homepage_url": null,
+      "source_urls": [
+        "https://github.com/Justin0504/Aegis"
+      ],
+      "signal_summary": "Matched GitHub search `topic:ai-safety pushed:>=2026-06-21`; pushed 2026-06-22T19:51:22Z; stars 358. Zero-code-change runtime policy enforcement with kill switch.",
+      "why_builders_should_care": "Drop-in runtime policy enforcement without code changes is a compelling model for teams that need safety guardrails without refactoring existing agents.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "allow_registry_proposal": true,
+      "metrics": {
+        "stars": 358,
+        "language": null,
+        "license": "MIT",
+        "pushed_at": "2026-06-22T19:51:22Z"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 8,
+        "trust_score": 92,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-06-23T08:00:00.000Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": false,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "ifixai-ai/iFixAi",
+      "title": "iFixAi — AI Evaluation and Governance",
+      "description": "Catch your AI's mistakes and blind spots before your customers or regulators do. iFixAi runs 45 inspections, 32 graded core plus 13 extended for frontier risks like sabotage, sandbagging, and oversight evasion. Returns a letter grade in under 5 minutes.",
+      "repo_url": "https://github.com/ifixai-ai/iFixAi",
+      "homepage_url": null,
+      "source_urls": [
+        "https://github.com/ifixai-ai/iFixAi"
+      ],
+      "signal_summary": "Matched GitHub search `topic:ai-safety pushed:>=2026-06-21`; pushed 2026-06-22T16:25:47Z; stars 563. Covers NIST AI RMF, EU AI Act, ISO 42001, OWASP LLM. 45 inspections including frontier risks.",
+      "why_builders_should_care": "Regulatory-compliant AI evaluation covering major frameworks (NIST, EU AI Act, ISO 42001). Frontier risk inspections (sabotage, sandbagging) are ahead of most tooling.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "allow_registry_proposal": true,
+      "metrics": {
+        "stars": 563,
+        "language": "Python",
+        "license": "Apache-2.0",
+        "pushed_at": "2026-06-22T16:25:47Z"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 8,
+        "trust_score": 92,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-06-23T08:00:00.000Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": false,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "eigent-ai/eigent",
+      "title": "Eigent — Open Source Multi-Agent Desktop Cowork",
+      "description": "Eigent: The Open Source Cowork Desktop to Unlock Your Exceptional Productivity. Local and Free Alternative to Claude Cowork.",
+      "repo_url": "https://github.com/eigent-ai/eigent",
+      "homepage_url": null,
+      "source_urls": [
+        "https://github.com/eigent-ai/eigent"
+      ],
+      "signal_summary": "Matched GitHub search `topic:agent-framework pushed:>=2026-06-21`; pushed 2026-06-23T07:04:54Z; stars 14357. Multi-agent desktop framework positioned as open-source Claude Cowork alternative.",
+      "why_builders_should_care": "High-velocity open-source multi-agent desktop tool. Directly competitive with Claude Cowork. Apache-2.0 license makes it adoptable.",
+      "suggested_trust_tier": "promising",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "allow_registry_proposal": true,
+      "metrics": {
+        "stars": 14357,
+        "language": null,
+        "license": "Apache-2.0",
+        "pushed_at": "2026-06-23T07:04:54Z"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 4,
+        "trust_score": 96,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-06-23T08:00:00.000Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": false,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "github-search",
+      "name": "affaan-m/ECC",
+      "title": "ECC — Agent Harness Performance Optimization System",
+      "description": "The agent harness performance optimization system. Skills, instincts, memory, security, and research-first development for Claude Code, Codex, Opencode, Cursor and beyond.",
+      "repo_url": "https://github.com/affaan-m/ECC",
+      "homepage_url": null,
+      "source_urls": [
+        "https://github.com/affaan-m/ECC"
+      ],
+      "signal_summary": "Matched GitHub search `topic:mcp pushed:>=2026-06-21`; pushed 2026-06-22T04:55:54Z; stars 220077. Massive community-driven agent harness optimization repo.",
+      "why_builders_should_care": "One of the most-starred agent tooling repositories. Community-driven approach to optimizing agent harnesses across Claude Code, Codex, Opencode, Cursor.",
+      "suggested_trust_tier": "promising",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "allow_registry_proposal": true,
+      "metrics": {
+        "stars": 220077,
+        "language": null,
+        "license": "MIT",
+        "pushed_at": "2026-06-22T04:55:54Z"
+      },
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 4,
+        "trust_score": 96,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-06-23T08:00:00.000Z",
+        "evidence": {
+          "readme_checked": false,
+          "release_text_checked": false,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      }
+    },
+    {
+      "source_route": "npm-search",
+      "name": "mcp-fit",
+      "title": "mcp-fit — MCP Server Agent-Usability Scorer",
+      "description": "MCP server agent-usability scorer — scores and auto-fixes tool descriptions for better agent usability.",
+      "repo_url": "https://www.npmjs.com/package/mcp-fit",
+      "homepage_url": null,
+      "source_urls": [
+        "https://www.npmjs.com/package/mcp-fit"
+      ],
+      "signal_summary": "npm package `mcp-fit` v0.1.1, score 155.9. Auto-scores and fixes MCP tool descriptions for agent usability.",
+      "why_builders_should_care": "Addresses MCP tool description quality, which directly impacts agent reliability. Auto-fix capability reduces manual curation burden.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "early-stage"
+      ],
+      "recommended_action": "watchlist",
+      "allow_registry_proposal": false,
+      "metrics": {
+        "version": "0.1.1",
+        "npm_score": 155.9
+      }
+    },
+    {
+      "source_route": "npm-search",
+      "name": "@openhorizon/workflows",
+      "title": "@openhorizon/workflows — Deterministic Multi-Agent Workflow Orchestration via MCP",
+      "description": "Deterministic multi-agent workflow orchestration as an MCP server — agent()/parallel()/pipeline() scripts in a hardened container.",
+      "repo_url": "https://www.npmjs.com/package/@openhorizon/workflows",
+      "homepage_url": null,
+      "source_urls": [
+        "https://www.npmjs.com/package/@openhorizon/workflows"
+      ],
+      "signal_summary": "npm package `@openhorizon/workflows` v0.1.5, score 138.7. Deterministic multi-agent workflow primitives exposed as MCP server.",
+      "why_builders_should_care": "Deterministic workflow orchestration via MCP is a pattern many teams need. The agent/parallel/pipeline primitives cover common multi-agent patterns.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "early-stage"
+      ],
+      "recommended_action": "watchlist",
+      "allow_registry_proposal": false,
+      "metrics": {
+        "version": "0.1.5",
+        "npm_score": 138.7
+      }
+    }
+  ]
+}
