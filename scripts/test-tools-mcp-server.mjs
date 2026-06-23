@@ -72,7 +72,19 @@ try {
     "vnem_tools_api_request",
     "vnem_tools_collect_evidence",
     "vnem_tools_restore_backup",
-    "vnem_tools_browser_capture"
+    "vnem_tools_browser_capture",
+    "vnem_tools_apply_patch_batch",
+    "vnem_tools_restore_batch",
+    "vnem_tools_project_scan",
+    "vnem_tools_run_project_task",
+    "vnem_tools_start_dev_server",
+    "vnem_tools_stop_dev_server",
+    "vnem_tools_list_dev_servers",
+    "vnem_tools_start_session",
+    "vnem_tools_finish_session",
+    "vnem_tools_git_status",
+    "vnem_tools_git_diff_summary",
+    "vnem_tools_git_commit"
   ];
   for (const name of requiredTools) assert.equal(toolNames.has(name), true, `missing ${name}`);
   assert.equal(toolNames.has("vnem_boost_task"), false, "Tools MCP must stay separate from Core MCP tools");
@@ -89,6 +101,12 @@ try {
   assert.equal(status.structuredContent?.tools_status?.browser_policy?.local_url_only, true);
   assert.equal(status.structuredContent?.tools_status?.browser_policy?.external_url_default_block, true);
   assert.equal(status.structuredContent?.tools_status?.browser_policy?.approval_required, true);
+  assert.equal(status.structuredContent?.tools_status?.patch_batch_policy?.no_partial_apply_by_default, true);
+  assert.equal(status.structuredContent?.tools_status?.project_scan_policy?.skips_secrets, true);
+  assert.equal(status.structuredContent?.tools_status?.project_task_policy?.package_install_publish_deploy_blocked, true);
+  assert.equal(status.structuredContent?.tools_status?.dev_server_policy?.local_host_only, true);
+  assert.equal(status.structuredContent?.tools_status?.session_evidence_policy?.writes_single_json_proof_pack, true);
+  assert.equal(status.structuredContent?.tools_status?.local_git_policy?.git_push_blocked, true);
 
   const coreHandoff = {
     task_summary: "Build a weather widget for my web app.",

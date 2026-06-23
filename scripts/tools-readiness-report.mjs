@@ -11,12 +11,16 @@ const serverPath = rel("scripts/vnem-tools-mcp-server.mjs");
 const testPath = rel("scripts/test-tools-mcp-server.mjs");
 const e2eTestPath = rel("scripts/test-core-tools-e2e.mjs");
 const browserTestPath = rel("scripts/test-tools-browser-capture.mjs");
+const projectActionsTestPath = rel("scripts/test-tools-project-actions.mjs");
+const gitSessionTestPath = rel("scripts/test-tools-git-session.mjs");
 const cliPath = rel("scripts/vnem-cli.mjs");
 const pkg = JSON.parse(readFileSync(rel("package.json"), "utf8"));
 const server = existsSync(serverPath) ? readFileSync(serverPath, "utf8") : "";
 const test = existsSync(testPath) ? readFileSync(testPath, "utf8") : "";
 const e2eTest = existsSync(e2eTestPath) ? readFileSync(e2eTestPath, "utf8") : "";
 const browserTest = existsSync(browserTestPath) ? readFileSync(browserTestPath, "utf8") : "";
+const projectActionsTest = existsSync(projectActionsTestPath) ? readFileSync(projectActionsTestPath, "utf8") : "";
+const gitSessionTest = existsSync(gitSessionTestPath) ? readFileSync(gitSessionTestPath, "utf8") : "";
 const cli = existsSync(cliPath) ? readFileSync(cliPath, "utf8") : "";
 const requiredTools = [
   "vnem_tools_status",
@@ -30,7 +34,19 @@ const requiredTools = [
   "vnem_tools_api_request",
   "vnem_tools_collect_evidence",
   "vnem_tools_restore_backup",
-  "vnem_tools_browser_capture"
+  "vnem_tools_browser_capture",
+  "vnem_tools_apply_patch_batch",
+  "vnem_tools_restore_batch",
+  "vnem_tools_project_scan",
+  "vnem_tools_run_project_task",
+  "vnem_tools_start_dev_server",
+  "vnem_tools_stop_dev_server",
+  "vnem_tools_list_dev_servers",
+  "vnem_tools_start_session",
+  "vnem_tools_finish_session",
+  "vnem_tools_git_status",
+  "vnem_tools_git_diff_summary",
+  "vnem_tools_git_commit"
 ];
 
 const report = {
@@ -38,11 +54,15 @@ const report = {
   test_file_exists: existsSync(testPath),
   core_tools_e2e_test_exists: existsSync(e2eTestPath),
   browser_capture_test_exists: existsSync(browserTestPath),
+  project_actions_test_exists: existsSync(projectActionsTestPath),
+  git_session_test_exists: existsSync(gitSessionTestPath),
   core_tools_e2e_script_exists: pkg.scripts?.["test:core-tools-e2e"] === "node scripts/test-core-tools-e2e.mjs",
   package_scripts: {
     tools_mcp: pkg.scripts?.["tools:mcp"] === "node scripts/vnem-tools-mcp-server.mjs",
     test_tools_mcp: pkg.scripts?.["test:tools-mcp"] === "node scripts/test-tools-mcp-server.mjs",
-    test_tools_browser: pkg.scripts?.["test:tools-browser"] === "node scripts/test-tools-browser-capture.mjs"
+    test_tools_browser: pkg.scripts?.["test:tools-browser"] === "node scripts/test-tools-browser-capture.mjs",
+    test_tools_project_actions: pkg.scripts?.["test:tools-project-actions"] === "node scripts/test-tools-project-actions.mjs",
+    test_tools_git_session: pkg.scripts?.["test:tools-git-session"] === "node scripts/test-tools-git-session.mjs"
   },
   required_tools_present: Object.fromEntries(requiredTools.map((name) => [name, server.includes(`"${name}"`)])),
   mcp_config_tools_support: /--tools/.test(cli) && /VNEM_TOOLS_ALLOWED_ROOTS/.test(cli) && /VNEM_TOOLS_EVIDENCE_ROOT/.test(cli) && /vnem-tools-mcp-server/.test(cli),
@@ -53,6 +73,16 @@ const report = {
   external_url_blocked: /external_url_blocked/.test(server) && /external_url_blocked/.test(browserTest),
   secret_file_browser_blocked: /vnem_tools_browser_capture/.test(browserTest) && /secret_path_blocked/.test(browserTest),
   screenshot_evidence_status: /screenshots/.test(server) && /screenshot_sha256/.test(server) && /proof_trail_compatible_summary/.test(server) && /screenshot_paths/.test(server),
+  patch_batch_status: /vnem_tools_apply_patch_batch/.test(server) && /safeApplyPatchBatch/.test(server) && /partialFailure/.test(projectActionsTest) && /explicit_delete_required/.test(projectActionsTest),
+  restore_batch_status: /vnem_tools_restore_batch/.test(server) && /safeRestoreBatch/.test(server) && /restoreSecret/.test(projectActionsTest),
+  project_scan_status: /vnem_tools_project_scan/.test(server) && /safeProjectScan/.test(server) && /likely_frameworks/.test(server) && /blocked_or_skipped_paths/.test(projectActionsTest),
+  project_task_status: /vnem_tools_run_project_task/.test(server) && /safeRunProjectTask/.test(server) && /unsafe_script_blocked/.test(projectActionsTest),
+  dev_server_status: /vnem_tools_start_dev_server/.test(server) && /vnem_tools_stop_dev_server/.test(server) && /dev_server_not_found/.test(projectActionsTest),
+  session_evidence_status: /vnem_tools_start_session/.test(server) && /vnem_tools_finish_session/.test(server) && /blocked_actions/.test(gitSessionTest),
+  local_git_status: /vnem_tools_git_status/.test(server) && /vnem_tools_git_diff_summary/.test(server) && /vnem_tools_git_commit/.test(server) && /git push/.test(gitSessionTest),
+  remote_github_still_blocked: /git\\s\+push/.test(server) && /remote_github_mutation/.test(server),
+  package_install_still_blocked: /UNSAFE_PACKAGE_SCRIPT_PATTERN/.test(server) && /package_install/.test(server),
+  giga_still_not_built: /giga_mcp/.test(server),
   evidence_proof_bridge_status: /proof_trail_compatible_summary/.test(server) && /recommended_core_proof_trail_inputs/.test(server) && /recommended_final_report_lines/.test(server),
   safe_action_loop_status: /vnem_boost_task/.test(e2eTest) && /vnem_tools_prepare_action_plan/.test(e2eTest) && /dry_run: true/.test(e2eTest) && /approved: false/.test(e2eTest) && /vnem_tools_run_command/.test(e2eTest) && /vnem_tools_collect_evidence/.test(e2eTest),
   dry_run_default: /dry_run:\s*z\.boolean\(\)\.default\(true\)/.test(server),
@@ -89,10 +119,14 @@ assert.equal(report.server_file_exists, true, "Tools MCP server file is missing"
 assert.equal(report.test_file_exists, true, "Tools MCP test file is missing");
 assert.equal(report.core_tools_e2e_test_exists, true, "Core→Tools e2e test file is missing");
 assert.equal(report.browser_capture_test_exists, true, "browser capture test file is missing");
+assert.equal(report.project_actions_test_exists, true, "project actions test file is missing");
+assert.equal(report.git_session_test_exists, true, "git/session test file is missing");
 assert.equal(report.core_tools_e2e_script_exists, true, "test:core-tools-e2e package script is missing");
 assert.equal(report.package_scripts.tools_mcp, true, "tools:mcp package script is missing");
 assert.equal(report.package_scripts.test_tools_mcp, true, "test:tools-mcp package script is missing");
 assert.equal(report.package_scripts.test_tools_browser, true, "test:tools-browser package script is missing");
+assert.equal(report.package_scripts.test_tools_project_actions, true, "test:tools-project-actions package script is missing");
+assert.equal(report.package_scripts.test_tools_git_session, true, "test:tools-git-session package script is missing");
 for (const [name, present] of Object.entries(report.required_tools_present)) assert.equal(present, true, `missing required tool ${name}`);
 assert.equal(report.dry_run_default, true, "dry-run defaults are missing");
 assert.equal(report.mcp_config_tools_support, true, "MCP config Tools support is missing");
@@ -103,6 +137,16 @@ assert.equal(report.browser_approval_required, true, "browser capture approval g
 assert.equal(report.external_url_blocked, true, "external browser URL blocking is missing");
 assert.equal(report.secret_file_browser_blocked, true, "secret-file browser blocking is missing");
 assert.equal(report.screenshot_evidence_status, true, "screenshot evidence bridge is missing");
+assert.equal(report.patch_batch_status, true, "patch batch support/test coverage is missing");
+assert.equal(report.restore_batch_status, true, "restore batch support/test coverage is missing");
+assert.equal(report.project_scan_status, true, "project scan support/test coverage is missing");
+assert.equal(report.project_task_status, true, "project task support/test coverage is missing");
+assert.equal(report.dev_server_status, true, "dev server support/test coverage is missing");
+assert.equal(report.session_evidence_status, true, "session evidence support/test coverage is missing");
+assert.equal(report.local_git_status, true, "local git support/test coverage is missing");
+assert.equal(report.remote_github_still_blocked, true, "remote git/GitHub mutation blocking is missing");
+assert.equal(report.package_install_still_blocked, true, "package install/publish blocking is missing");
+assert.equal(report.giga_still_not_built, true, "Giga MCP unsupported marker is missing");
 assert.equal(report.evidence_proof_bridge_status, true, "evidence proof bridge is missing");
 assert.equal(report.safe_action_loop_status, true, "Core→Tools safe action loop test coverage is missing");
 assert.equal(report.approval_required, true, "approval-required policy is missing");
@@ -117,6 +161,8 @@ console.log(`server_file_exists: ${yes(report.server_file_exists)}`);
 console.log(`test_file_exists: ${yes(report.test_file_exists)}`);
 console.log(`core_tools_e2e_test_exists: ${yes(report.core_tools_e2e_test_exists)}`);
 console.log(`browser_capture_test_exists: ${yes(report.browser_capture_test_exists)}`);
+console.log(`project_actions_test_exists: ${yes(report.project_actions_test_exists)}`);
+console.log(`git_session_test_exists: ${yes(report.git_session_test_exists)}`);
 console.log(`core_tools_e2e_script_exists: ${yes(report.core_tools_e2e_script_exists)}`);
 console.log(`required_tools_present: ${Object.values(report.required_tools_present).filter(Boolean).length}/${requiredTools.length}`);
 console.log(`mcp_config_tools_support: ${yes(report.mcp_config_tools_support)}`);
@@ -127,6 +173,16 @@ console.log(`browser_approval_required: ${yes(report.browser_approval_required)}
 console.log(`external_url_blocked: ${yes(report.external_url_blocked)}`);
 console.log(`secret_file_browser_blocked: ${yes(report.secret_file_browser_blocked)}`);
 console.log(`screenshot_evidence_status: ${yes(report.screenshot_evidence_status)}`);
+console.log(`patch_batch_status: ${yes(report.patch_batch_status)}`);
+console.log(`restore_batch_status: ${yes(report.restore_batch_status)}`);
+console.log(`project_scan_status: ${yes(report.project_scan_status)}`);
+console.log(`project_task_status: ${yes(report.project_task_status)}`);
+console.log(`dev_server_status: ${yes(report.dev_server_status)}`);
+console.log(`session_evidence_status: ${yes(report.session_evidence_status)}`);
+console.log(`local_git_status: ${yes(report.local_git_status)}`);
+console.log(`remote_github_still_blocked: ${yes(report.remote_github_still_blocked)}`);
+console.log(`package_install_still_blocked: ${yes(report.package_install_still_blocked)}`);
+console.log(`giga_still_not_built: ${yes(report.giga_still_not_built)}`);
 console.log(`evidence_proof_bridge_status: ${yes(report.evidence_proof_bridge_status)}`);
 console.log(`safe_action_loop_status: ${yes(report.safe_action_loop_status)}`);
 console.log(`dry_run_default: ${yes(report.dry_run_default)}`);

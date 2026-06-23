@@ -24,7 +24,19 @@ const REQUIRED_TOOL_NAMES = [
   "vnem_tools_api_request",
   "vnem_tools_collect_evidence",
   "vnem_tools_restore_backup",
-  "vnem_tools_browser_capture"
+  "vnem_tools_browser_capture",
+  "vnem_tools_apply_patch_batch",
+  "vnem_tools_restore_batch",
+  "vnem_tools_project_scan",
+  "vnem_tools_run_project_task",
+  "vnem_tools_start_dev_server",
+  "vnem_tools_stop_dev_server",
+  "vnem_tools_list_dev_servers",
+  "vnem_tools_start_session",
+  "vnem_tools_finish_session",
+  "vnem_tools_git_status",
+  "vnem_tools_git_diff_summary",
+  "vnem_tools_git_commit"
 ];
 const READ_ONLY_LOCAL = { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false };
 const ACTION_TOOL = { readOnlyHint: false, destructiveHint: true, idempotentHint: false, openWorldHint: false };
@@ -47,6 +59,11 @@ const SAFE_PACKAGE_SCRIPT_PATTERN = /^(test|test:[a-z0-9:_-]+|validate|build|gen
 const SECRET_HEADER_PATTERN = /^(authorization|x-api-key|api-key|x-auth-token|cookie|set-cookie)$/i;
 const DANGEROUS_COMMAND_PATTERN = /\b(rm\s+-rf|del\s+\/s|format\b|mkfs\b|diskpart\b|curl\b.*\|\s*(sh|bash)|wget\b.*\|\s*(sh|bash)|invoke-webrequest\b.*\|\s*iex|powershell\b.*-encodedcommand|pwsh\b.*-encodedcommand|npm\s+publish|git\s+push|git\s+reset\s+--hard|sudo\b|su\b|chmod\s+-R|chown\s+-R)\b/i;
 const CONTROL_OPERATOR_PATTERN = /(\|\||&&|;|`|\$\(|>|<|\|)/;
+const UNSAFE_PACKAGE_SCRIPT_PATTERN = /(^|[\s:_-])(install|publish|deploy|release|push|reset|clean:all|postinstall|preinstall)([\s:_-]|$)|git\s+push|npm\s+publish|pnpm\s+publish|yarn\s+publish|rm\s+-rf/i;
+const DEV_SERVER_SCRIPT_PATTERN = /^(dev|start|preview)$/;
+const PROJECT_TASKS = new Set(["test", "build", "validate", "lint", "typecheck", "doctor", "custom_script"]);
+const devServers = new Map();
+const sessions = new Map();
 
 const allowedRoots = await computeAllowedRoots();
 const evidenceRoot = await computeEvidenceRoot();
@@ -210,6 +227,167 @@ function registerTools(mcpServer) {
   );
 
   mcpServer.registerTool(
+    "vnem_tools_apply_patch_batch",
+    {
+      title: "Apply Safe Multi-file Patch Batch",
+      description: "Dry-run or apply approved multi-file text operations under allowed roots with backups, no partial apply by default, restore plan, and evidence logging.",
+      inputSchema: {
+        operations: z.array(z.record(z.any())).min(1),
+        target_root: z.string().default("."),
+        dry_run: z.boolean().default(true),
+        approved: z.boolean().default(false),
+        approval_note: z.string().default(""),
+        allow_partial: z.boolean().default(false),
+        session_id: z.string().optional()
+      },
+      annotations: ACTION_TOOL
+    },
+    async (args) => withToolErrors(async () => {
+      const patchBatch = await safeApplyPatchBatch(args);
+      return toolResult(formatPatchBatch(patchBatch), { patch_batch: patchBatch });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_restore_batch",
+    {
+      title: "Restore Batch From Tools Backups",
+      description: "Dry-run or restore multiple backed-up files from a Tools MCP restore plan. Approval required for real restore.",
+      inputSchema: {
+        restore_plan: z.array(z.record(z.any())).min(1),
+        dry_run: z.boolean().default(true),
+        approved: z.boolean().default(false),
+        approval_note: z.string().default(""),
+        session_id: z.string().optional()
+      },
+      annotations: ACTION_TOOL
+    },
+    async (args) => withToolErrors(async () => {
+      const restoreBatch = await safeRestoreBatch(args);
+      return toolResult(formatRestoreBatch(restoreBatch), { restore_batch: restoreBatch });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_project_scan",
+    {
+      title: "Scan Local Project Safely",
+      description: "Summarize allowed local project structure, package scripts, likely frameworks, and safe commands without reading secrets.",
+      inputSchema: { root: z.string().default("."), max_files: z.number().int().min(1).max(1000).default(200), include_scripts: z.boolean().default(true), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const scan = await safeProjectScan(args);
+      return toolResult(formatProjectScan(scan), { project_scan: scan });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_run_project_task",
+    {
+      title: "Run Safe Project Task",
+      description: "Dry-run or run a project-known safe package task from package.json. No install/publish/deploy/arbitrary shell.",
+      inputSchema: { task: z.enum(["test", "build", "validate", "lint", "typecheck", "doctor", "custom_script"]), script: z.string().optional(), root: z.string().default("."), dry_run: z.boolean().default(true), approved: z.boolean().default(false), approval_note: z.string().default(""), timeout_ms: z.number().int().min(1000).default(30000), max_output_bytes: z.number().int().min(256).default(16000), session_id: z.string().optional() },
+      annotations: ACTION_TOOL
+    },
+    async (args) => {
+      try {
+        const task = await safeRunProjectTask(args);
+        return toolResult(formatProjectTask(task), { project_task: task });
+      } catch (error) {
+        recordToolError(args.session_id, "vnem_tools_run_project_task", error);
+        if (error instanceof ToolsError) return errorResult(error.message, error.code, error.details);
+        return errorResult(error.message || String(error), "tools_unexpected_error");
+      }
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_start_dev_server",
+    {
+      title: "Start Safe Local Dev Server",
+      description: "Dry-run or start an approved local dev/start/preview package script on localhost for proof. In-memory session registry only.",
+      inputSchema: { root: z.string().default("."), script: z.string().default("dev"), port: z.number().int().min(3000).max(9999).default(3000), host: z.string().default("127.0.0.1"), dry_run: z.boolean().default(true), approved: z.boolean().default(false), approval_note: z.string().default(""), wait_ms: z.number().int().min(0).max(5000).default(1000), timeout_ms: z.number().int().min(1000).default(60000), max_output_bytes: z.number().int().min(256).default(8000), session_id: z.string().optional() },
+      annotations: ACTION_TOOL
+    },
+    async (args) => withToolErrors(async () => {
+      const devServer = await safeStartDevServer(args);
+      return toolResult(formatDevServer(devServer), { dev_server: devServer });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_stop_dev_server",
+    {
+      title: "Stop Tools-started Dev Server",
+      description: "Stop a local dev server previously started by this Tools MCP process. Does not stop arbitrary processes.",
+      inputSchema: { server_id: z.string().min(1), approved: z.boolean().default(false), approval_note: z.string().default(""), session_id: z.string().optional() },
+      annotations: ACTION_TOOL
+    },
+    async (args) => withToolErrors(async () => {
+      const stopped = await safeStopDevServer(args);
+      return toolResult(formatDevServerStop(stopped), { dev_server_stop: stopped });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_list_dev_servers",
+    { title: "List Tools-started Dev Servers", description: "List local dev servers started by this Tools MCP process.", inputSchema: {}, annotations: READ_ONLY_LOCAL },
+    async () => toolResult(formatDevServerList(), { dev_servers: listDevServers() })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_start_session",
+    {
+      title: "Start Tools Evidence Session",
+      description: "Start a session-level evidence pack for a local project workflow.",
+      inputSchema: { task: z.string().min(1), actions_planned: z.array(z.string()).default([]) },
+      annotations: ACTION_TOOL
+    },
+    async (args) => withToolErrors(async () => {
+      const session = await startEvidenceSession(args);
+      return toolResult(`vnem_tools_start_session: ${session.session_id}`, { session });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_finish_session",
+    {
+      title: "Finish Tools Evidence Session",
+      description: "Write one coherent redacted proof pack for a Tools MCP session.",
+      inputSchema: { session_id: z.string().min(1), test_results: z.array(z.string()).default([]), notes: z.string().default("") },
+      annotations: ACTION_TOOL
+    },
+    async (args) => withToolErrors(async () => {
+      const pack = await finishEvidenceSession(args);
+      return toolResult(formatSessionEvidence(pack), { session_evidence: pack });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_git_status",
+    { title: "Local Git Status", description: "Read-only git status for an allowed local repo.", inputSchema: { root: z.string().default("."), max_output_bytes: z.number().int().min(256).default(12000) }, annotations: READ_ONLY_LOCAL },
+    async (args) => withToolErrors(async () => { const status = await safeGitStatus(args); return toolResult(formatGitStatus(status), { git_status: status }); })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_git_diff_summary",
+    { title: "Local Git Diff Summary", description: "Read-only capped git diff summary for an allowed local repo.", inputSchema: { root: z.string().default("."), max_bytes: z.number().int().min(256).default(16000) }, annotations: READ_ONLY_LOCAL },
+    async (args) => withToolErrors(async () => { const diff = await safeGitDiffSummary(args); return toolResult(formatGitDiff(diff), { git_diff: diff }); })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_git_commit",
+    {
+      title: "Approved Local Git Commit",
+      description: "Dry-run or create a local git commit from an explicit safe file list. No push/reset/remote mutation.",
+      inputSchema: { root: z.string().default("."), files: z.array(z.string()).min(1), message: z.string().min(1), dry_run: z.boolean().default(true), approved: z.boolean().default(false), approval_note: z.string().default(""), session_id: z.string().optional() },
+      annotations: ACTION_TOOL
+    },
+    async (args) => withToolErrors(async () => { const commit = await safeGitCommit(args); return toolResult(formatGitCommit(commit), { git_commit: commit }); })
+  );
+
+  mcpServer.registerTool(
     "vnem_tools_run_command",
     {
       title: "Run Safe Command",
@@ -265,6 +443,7 @@ function registerTools(mcpServer) {
         url: z.string().optional(),
         file_path: z.string().optional(),
         workspace_root: z.string().default("."),
+        session_id: z.string().optional(),
         dry_run: z.boolean().default(true),
         approved: z.boolean().default(false),
         approval_note: z.string().default(""),
@@ -382,6 +561,12 @@ function statusObject() {
     allowed_roots: allowedRoots,
     blocked_paths: [".env*", "*secret*", "*token*", "*credential*", "*key*", ".git", "node_modules", "dist", "build"],
     command_allowlist: ["node --check <file>", "npm test", "npm run <safe-script>", "git status", "git diff", "git log", "git ls-files"],
+    patch_batch_policy: { tool: "vnem_tools_apply_patch_batch", dry_run_default: true, approval_required: true, operations: ["replace", "create", "delete", "append"], no_partial_apply_by_default: true, backups_per_changed_file: true },
+    project_scan_policy: { tool: "vnem_tools_project_scan", allowed_roots_only: true, skips_secrets: true, reads_package_json_only_for_scripts_and_frameworks: true },
+    project_task_policy: { tool: "vnem_tools_run_project_task", dry_run_default: true, approval_required: true, package_json_scripts_only: true, package_install_publish_deploy_blocked: true },
+    dev_server_policy: { tools: ["vnem_tools_start_dev_server", "vnem_tools_stop_dev_server", "vnem_tools_list_dev_servers"], dry_run_default: true, approval_required: true, local_host_only: true, port_range: "3000-9999", registry: "in-memory per MCP process" },
+    session_evidence_policy: { tools: ["vnem_tools_start_session", "vnem_tools_finish_session"], writes_single_json_proof_pack: true, secrets_redacted: true },
+    local_git_policy: { tools: ["vnem_tools_git_status", "vnem_tools_git_diff_summary", "vnem_tools_git_commit"], status_and_diff_read_only: true, commit_requires_approval_and_explicit_files: true, git_push_blocked: true, destructive_git_blocked: true },
     network_policy: {
       dry_run_default: true,
       methods: ["GET", "HEAD"],
@@ -417,7 +602,8 @@ function statusObject() {
     },
     evidence_log_location: evidenceRoot,
     core_handoff_supported: true,
-    unsupported_in_foundation_batch: ["github_mutation", "package_install", "arbitrary_shell", "unrestricted_api_calls", "login_automation", "cookie_extraction", "captcha_bypass"]
+    remaining_unsupported_actions: ["remote_github_mutation", "git_push", "package_install", "package_publish", "deployment", "arbitrary_shell", "unrestricted_api_calls", "secret_manager_backed_live_api", "external_browser_browsing_by_default", "login_automation", "cookie_extraction", "session_extraction", "captcha_bypass", "giga_mcp"],
+    unsupported_in_foundation_batch: ["remote_github_mutation", "git_push", "package_install", "package_publish", "deployment", "arbitrary_shell", "unrestricted_api_calls", "secret_manager_backed_live_api", "login_automation", "cookie_extraction", "captcha_bypass", "giga_mcp"]
   };
 }
 
@@ -427,7 +613,8 @@ function formatStatus() {
     `VNEM Tools MCP ${status.version}`,
     "Tools MCP can perform actions only through safeguards.",
     `Allowed roots: ${status.allowed_roots.join(", ")}`,
-    "Dry-run is default; real mutation/execution/live API/browser screenshot requests require approved=true and an approval_note.",
+    "Dry-run is default; real mutation/execution/live API/browser screenshot/project task/dev server/git commit requests require approved=true and an approval_note.",
+    "Local project actions include project scan, patch batch, restore batch, safe package tasks, local dev servers, session proof packs, and approved local git commits.",
     `Browser proof: local files/localhost only, screenshots under ${status.browser_policy.screenshot_evidence_location}, runtime ${status.browser_policy.browser_runtime_status}.`,
     "GitHub mutation, package install, arbitrary shell/API, login automation, cookie extraction, CAPTCHA bypass, and broad scraping are not implemented."
   ].join("\n");
@@ -465,7 +652,7 @@ function buildActionPlan(args = {}) {
 
 function isSupportedCapability(capability) {
   const text = String(capability || "").toLowerCase();
-  return /file_edit|patch|restore|test_runner|command|api_request|read_file|list_files|search_files|evidence|browser|screenshot|visual/.test(text);
+  return /file_edit|patch|restore|test_runner|command|api_request|read_file|list_files|search_files|evidence|browser|screenshot|visual|project_scan|project_task|dev_server|local_git|git_status|git_diff|git_commit|session/.test(text);
 }
 
 function unsupportedReason(capability) {
@@ -728,9 +915,17 @@ function splitCommand(command) {
   return tokens;
 }
 
+function spawnCommandName(command) {
+  return command;
+}
+
+function shouldUseShellForCommand(command) {
+  return process.platform === "win32" && /^(npm|npx|pnpm|yarn)$/.test(command);
+}
+
 async function runProcess(command, args, options) {
   return await new Promise((resolve) => {
-    const child = spawn(command, args, { cwd: options.cwd, shell: false, windowsHide: true });
+    const child = spawn(spawnCommandName(command), args, { cwd: options.cwd, shell: shouldUseShellForCommand(command), windowsHide: true });
     let stdout = "";
     let stderr = "";
     let timedOut = false;
@@ -754,6 +949,364 @@ async function runProcess(command, args, options) {
       resolve({ ok: code === 0 && !timedOut, exit_code: code, signal, timed_out: timedOut, stdout: redactSecrets(stdout), stderr: redactSecrets(stderr) });
     });
   });
+}
+
+async function safeApplyPatchBatch(args) {
+  const dryRun = args.dry_run !== false;
+  const root = await resolveAllowedRoot(args.target_root || ".");
+  const plans = [];
+  const working = new Map();
+  for (const [index, rawOp] of arrayify(args.operations).entries()) {
+    const op = normalizePatchOperation(rawOp, index);
+    const target = await resolveAllowedFile(path.isAbsolute(op.path) ? op.path : path.join(root.absolutePath, op.path), { mustExist: op.op === "create" ? false : true, blockSecrets: true });
+    if (op.op === "create" && existsSync(target.absolutePath)) throw new ToolsError("Create operation target already exists.", "target_exists", { path: target.relativePath });
+    let original = working.has(target.absolutePath) ? working.get(target.absolutePath) : null;
+    if (op.op !== "create") original = original ?? await readTextFileForMutation(target.absolutePath, target.relativePath);
+    let next;
+    if (op.op === "replace") {
+      if (!original.includes(op.search)) throw new ToolsError("Patch batch search content was not found.", "patch_search_not_found", { path: target.relativePath, operation_index: index });
+      if (countOccurrences(original, op.search) !== 1) throw new ToolsError("Patch batch search content must match exactly once.", "patch_search_not_unique", { path: target.relativePath, operation_index: index });
+      next = original.replace(op.search, op.replace);
+    } else if (op.op === "append") next = original + op.content;
+    else if (op.op === "create") next = op.content;
+    else if (op.op === "delete") {
+      if (op.explicit_delete !== true) throw new ToolsError("Delete operations require explicit_delete=true.", "explicit_delete_required", { path: target.relativePath });
+      next = null;
+    } else throw new ToolsError("Unsupported patch batch operation.", "unsupported_patch_operation", { op: op.op });
+    plans.push({ ...op, target, before_text: original, after_text: next, operation_index: index });
+    if (next === null) working.delete(target.absolutePath);
+    else working.set(target.absolutePath, next);
+  }
+  if (!dryRun) enforceApproval(args);
+  const backups = [];
+  const changedFiles = [...new Set(plans.map((plan) => plan.target.relativePath))];
+  const createdFiles = [...new Set(plans.filter((plan) => plan.op === "create").map((plan) => plan.target.relativePath))];
+  const deletedFiles = [...new Set(plans.filter((plan) => plan.op === "delete").map((plan) => plan.target.relativePath))];
+  const backupRoot = path.join(evidenceRoot, "backups", logId("patch-batch"));
+  if (!dryRun) {
+    for (const plan of plans) {
+      if (plan.op !== "create" && !backups.some((item) => item.target_path === plan.target.relativePath)) {
+        const backupPath = path.join(backupRoot, plan.target.relativePath);
+        await mkdir(path.dirname(backupPath), { recursive: true });
+        await writeFile(backupPath, plan.before_text ?? "", "utf8");
+        backups.push({ target_path: plan.target.relativePath, backup_path: backupPath, action: "restore_file" });
+      }
+    }
+    for (const [absolute, text] of working.entries()) {
+      await mkdir(path.dirname(absolute), { recursive: true });
+      await writeFile(absolute, text, "utf8");
+    }
+    for (const plan of plans.filter((item) => item.op === "delete")) await rm(plan.target.absolutePath, { force: true });
+  } else {
+    for (const plan of plans.filter((item) => item.op !== "create")) backups.push({ target_path: plan.target.relativePath, backup_path: null, action: "would_backup" });
+  }
+  const restorePlan = backups.map((item) => ({ backup_path: item.backup_path, target_path: item.target_path, action: item.action === "would_backup" ? "would_restore_file" : "restore_file" }));
+  for (const file of createdFiles) restorePlan.push({ target_path: file, action: "delete_created_file" });
+  const result = {
+    dry_run: dryRun,
+    applied: !dryRun,
+    partial_apply_allowed: args.allow_partial === true,
+    changed_files: changedFiles,
+    created_files: createdFiles,
+    deleted_files: deletedFiles,
+    backups,
+    restore_plan: restorePlan,
+    diff_summary: plans.map((plan) => `${plan.target.relativePath}: ${plan.op}`),
+    operations: plans.map((plan) => ({ op: plan.op, path: plan.target.relativePath, before_sha256: plan.before_text === null ? null : sha256(plan.before_text ?? ""), after_sha256: plan.after_text === null ? null : sha256(plan.after_text) }))
+  };
+  const log = await writeEvidenceLog("patch_batch", result);
+  const withLog = { ...result, evidence_log_id: log.evidence_log_id };
+  recordSession(args.session_id, "patches_applied", withLog);
+  return withLog;
+}
+
+function normalizePatchOperation(raw, index) {
+  const op = String(raw.op || raw.type || "").trim().toLowerCase();
+  const filePath = String(raw.path || raw.file_path || "").trim();
+  if (!filePath) throw new ToolsError("Patch batch operation path is required.", "path_required", { operation_index: index });
+  if (["replace", "append", "create"].includes(op) && containsRawSecret(raw.content || raw.replace || "")) throw new ToolsError("Raw secret-like values are blocked in patch batch content.", "raw_secret_blocked", { path: filePath });
+  return { op, path: filePath, search: String(raw.search ?? raw.old_text ?? ""), replace: String(raw.replace ?? raw.new_text ?? ""), content: String(raw.content ?? ""), explicit_delete: raw.explicit_delete === true };
+}
+
+async function readTextFileForMutation(absolutePath, relativePath) {
+  const info = await stat(absolutePath);
+  if (!info.isFile()) throw new ToolsError("Mutation target must be a regular file.", "not_a_file", { path: relativePath });
+  const bytes = await readFile(absolutePath);
+  if (bytes.includes(0)) throw new ToolsError("Binary mutation targets are blocked.", "binary_file_blocked", { path: relativePath });
+  return bytes.toString("utf8");
+}
+
+async function safeRestoreBatch(args) {
+  const dryRun = args.dry_run !== false;
+  const items = [];
+  for (const [index, raw] of arrayify(args.restore_plan).entries()) {
+    const action = String(raw.action || "restore_file");
+    const target = await resolveAllowedFile(raw.target_path, { mustExist: action === "delete_created_file", blockSecrets: true });
+    if (action === "delete_created_file") {
+      items.push({ action, target_path: target.relativePath, target });
+      continue;
+    }
+    if (!raw.backup_path) throw new ToolsError("Restore plan entry requires backup_path.", "backup_path_required", { operation_index: index });
+    const backup = await resolveAllowedFile(raw.backup_path, { mustExist: true, blockSecrets: true });
+    const text = await readTextFileForMutation(backup.absolutePath, backup.relativePath);
+    items.push({ action: "restore_file", backup_path: backup.absolutePath, target_path: target.relativePath, target, restore_text: text });
+  }
+  if (!dryRun) enforceApproval(args);
+  if (!dryRun) {
+    for (const item of items) {
+      if (item.action === "delete_created_file") await rm(item.target.absolutePath, { force: true });
+      else await writeFile(item.target.absolutePath, item.restore_text, "utf8");
+    }
+  }
+  const result = { dry_run: dryRun, restored: !dryRun, restored_files: items.filter((item) => item.action === "restore_file").map((item) => item.target_path), deleted_created_files: items.filter((item) => item.action === "delete_created_file").map((item) => item.target_path), restore_count: items.length };
+  const log = await writeEvidenceLog("restore_batch", result);
+  const withLog = { ...result, evidence_log_id: log.evidence_log_id };
+  recordSession(args.session_id, "restores", withLog);
+  return withLog;
+}
+
+async function safeProjectScan(args) {
+  const root = await resolveAllowedRoot(args.root || ".");
+  const files = [];
+  await walkFiles(root.absolutePath, root.absolutePath, files, { maxResults: args.max_files || 200 });
+  const packageJsonPath = path.join(root.absolutePath, "package.json");
+  let pkg = null;
+  if (existsSync(packageJsonPath)) pkg = JSON.parse(await readFile(packageJsonPath, "utf8"));
+  const scripts = args.include_scripts === false ? {} : Object.fromEntries(Object.entries(pkg?.scripts || {}).map(([k, v]) => [k, redactSecrets(v)]));
+  const likelyFrameworks = detectFrameworks(pkg, files);
+  const safeCommands = suggestSafeCommands(scripts);
+  const result = {
+    project_root: root.absolutePath,
+    detected_package_manager: existsSync(path.join(root.absolutePath, "pnpm-lock.yaml")) ? "pnpm" : existsSync(path.join(root.absolutePath, "yarn.lock")) ? "yarn" : pkg ? "npm" : "unknown",
+    package_json_present: Boolean(pkg),
+    scripts,
+    likely_frameworks: likelyFrameworks,
+    source_dirs: commonDirs(files, ["src", "app", "pages", "lib"]),
+    test_dirs: commonDirs(files, ["test", "tests", "__tests__", "spec"]),
+    config_files: files.map((f) => f.path).filter((f) => /(^|\/)(vite|next|astro|tsconfig|eslint|package)\.(config\.)?(json|js|mjs|ts)$|package\.json$/.test(f)).slice(0, 50),
+    build_outputs: ["dist", "build", ".next", "coverage"].filter((dir) => existsSync(path.join(root.absolutePath, dir))),
+    safe_commands_suggested: safeCommands,
+    blocked_or_skipped_paths: [".git", "node_modules", "dist/build outputs", ...findImmediateSecretPaths(root.absolutePath)],
+    warnings: [pkg ? null : "package.json not found", safeCommands.length ? null : "No safe package scripts detected"].filter(Boolean),
+    evidence_log_id: null
+  };
+  const log = await writeEvidenceLog("project_scan", result);
+  result.evidence_log_id = log.evidence_log_id;
+  recordSession(args.session_id, "project_scans", result);
+  return result;
+}
+
+function detectFrameworks(pkg, files) {
+  const text = JSON.stringify({ scripts: pkg?.scripts || {}, deps: { ...(pkg?.dependencies || {}), ...(pkg?.devDependencies || {}) }, files: files.map((f) => f.path).slice(0, 200) }).toLowerCase();
+  const found = [];
+  if (/vite/.test(text)) found.push("Vite");
+  if (/react/.test(text)) found.push("React");
+  if (/next/.test(text)) found.push("Next");
+  if (/astro/.test(text)) found.push("Astro");
+  if (/express/.test(text)) found.push("Express");
+  if (/bin|node --check|node /.test(text) || pkg?.bin) found.push("Node CLI");
+  if (!found.length && files.some((f) => /\.html$/.test(f.path))) found.push("plain static");
+  return [...new Set(found)];
+}
+
+function suggestSafeCommands(scripts) {
+  const out = [];
+  for (const name of Object.keys(scripts || {})) {
+    if (name === "test") out.push("npm test");
+    else if (/^test:[a-z0-9:_-]+$/i.test(name)) out.push(`npm run ${name}`);
+    else if (["build", "validate"].includes(name)) out.push(`npm run ${name}`);
+    else if (name === "dev") out.push("npm run dev (via vnem_tools_start_dev_server only)");
+  }
+  return out;
+}
+
+function commonDirs(files, names) {
+  const set = new Set();
+  for (const file of files) {
+    const parts = file.path.split("/");
+    if (names.includes(parts[0])) set.add(parts[0]);
+    const nested = parts.find((part) => names.includes(part));
+    if (nested) set.add(nested);
+  }
+  return [...set].filter(Boolean).sort();
+}
+
+function findImmediateSecretPaths(root) {
+  const out = [];
+  for (const name of [".env", ".env.local", "secrets", "tokens", "credentials"]) if (existsSync(path.join(root, name))) out.push(name);
+  return out;
+}
+
+async function safeRunProjectTask(args) {
+  const dryRun = args.dry_run !== false;
+  const root = await resolveAllowedRoot(args.root || ".");
+  const { scripts } = await readPackageScripts(root.absolutePath);
+  const scriptName = selectProjectScript(args, scripts);
+  validateSafePackageScript(scriptName, scripts[scriptName]);
+  const timeoutMs = Math.min(args.timeout_ms || 30000, MAX_COMMAND_TIMEOUT_MS);
+  const maxOutputBytes = Math.min(args.max_output_bytes || 16000, MAX_COMMAND_OUTPUT_BYTES);
+  const planned = { task: args.task, script: scriptName, command: `npm run ${scriptName}`, cwd: root.absolutePath, dry_run: dryRun, executed: false, timeout_ms: timeoutMs, max_output_bytes: maxOutputBytes };
+  if (dryRun) return planned;
+  enforceApproval(args);
+  const execution = await runProcess("npm", ["run", scriptName], { cwd: root.absolutePath, timeoutMs, maxOutputBytes });
+  const result = { ...planned, dry_run: false, executed: true, ...execution };
+  const log = await writeEvidenceLog("project_task", result);
+  const withLog = { ...result, evidence_log_id: log.evidence_log_id };
+  recordSession(args.session_id, "commands_run", withLog);
+  return withLog;
+}
+
+async function readPackageScripts(root) {
+  const packageJson = path.join(root, "package.json");
+  if (!existsSync(packageJson)) throw new ToolsError("package.json not found for project task.", "package_json_missing");
+  const pkg = JSON.parse(await readFile(packageJson, "utf8"));
+  return { pkg, scripts: pkg.scripts || {} };
+}
+
+function selectProjectScript(args, scripts) {
+  if (!PROJECT_TASKS.has(args.task)) throw new ToolsError("Unknown project task.", "unknown_project_task");
+  const script = args.task === "custom_script" ? String(args.script || "") : args.task;
+  if (!script || !Object.hasOwn(scripts, script)) throw new ToolsError("Requested package script was not found.", "script_not_found", { script });
+  return script;
+}
+
+function validateSafePackageScript(name, body) {
+  if (UNSAFE_PACKAGE_SCRIPT_PATTERN.test(name) || UNSAFE_PACKAGE_SCRIPT_PATTERN.test(String(body || ""))) throw new ToolsError("Unsafe package script blocked.", "unsafe_script_blocked", { script: name });
+  if (CONTROL_OPERATOR_PATTERN.test(String(body || ""))) throw new ToolsError("Package script shell control operators are blocked.", "shell_operator_blocked", { script: name });
+}
+
+async function safeStartDevServer(args) {
+  const dryRun = args.dry_run !== false;
+  const root = await resolveAllowedRoot(args.root || ".");
+  const script = String(args.script || "dev");
+  if (!DEV_SERVER_SCRIPT_PATTERN.test(script)) throw new ToolsError("Only dev/start/preview scripts may be used for dev servers.", "unsafe_script_blocked", { script });
+  const { scripts } = await readPackageScripts(root.absolutePath);
+  if (!Object.hasOwn(scripts, script)) throw new ToolsError("Requested dev server script was not found.", "script_not_found", { script });
+  validateSafePackageScript(script, scripts[script]);
+  const port = Number(args.port || 3000);
+  if (port < 3000 || port > 9999) throw new ToolsError("Dev server port must be in 3000-9999.", "port_blocked", { port });
+  const host = String(args.host || "127.0.0.1");
+  if (!["127.0.0.1", "localhost"].includes(host)) throw new ToolsError("Dev servers must bind/check localhost only.", "host_blocked", { host });
+  const planned = { dry_run: dryRun, started: false, script, command: `npm run ${script} -- --host ${host} --port ${port}`, cwd: root.absolutePath, host, port, url: `http://${host}:${port}/`, registry: "in-memory per MCP process" };
+  if (dryRun) return planned;
+  enforceApproval(args);
+  const child = spawn(spawnCommandName("npm"), ["run", script, "--", "--host", host, "--port", String(port)], { cwd: root.absolutePath, shell: shouldUseShellForCommand("npm"), windowsHide: true });
+  const serverId = logId("dev-server");
+  const record = { ...planned, dry_run: false, started: true, server_id: serverId, pid: child.pid, stdout: "", stderr: "", started_at: new Date().toISOString() };
+  const collect = (field, chunk) => { record[field] = truncate(redactSecrets(record[field] + chunk.toString()), args.max_output_bytes || 8000); };
+  child.stdout.on("data", (chunk) => collect("stdout", chunk));
+  child.stderr.on("data", (chunk) => collect("stderr", chunk));
+  child.on("exit", (code, signal) => { record.exit_code = code; record.signal = signal; record.running = false; });
+  record.running = true;
+  devServers.set(serverId, { child, record });
+  await new Promise((resolve) => setTimeout(resolve, Math.min(args.wait_ms || 1000, 5000)));
+  const log = await writeEvidenceLog("dev_server_start", record, serverId);
+  const withLog = { ...record, evidence_log_id: log.evidence_log_id };
+  recordSession(args.session_id, "dev_servers_started", withLog);
+  return withLog;
+}
+
+async function safeStopDevServer(args) {
+  const entry = devServers.get(args.server_id);
+  if (!entry) throw new ToolsError("Dev server id was not started by this Tools MCP process.", "dev_server_not_found", { server_id: args.server_id });
+  enforceApproval(args);
+  if (process.platform === "win32") await runProcess("taskkill", ["/PID", String(entry.record.pid), "/T", "/F"], { cwd: allowedRoots[0], timeoutMs: 5000, maxOutputBytes: 4000 });
+  else entry.child.kill("SIGTERM");
+  await new Promise((resolve) => setTimeout(resolve, 250));
+  if (process.platform !== "win32" && !entry.child.killed) entry.child.kill("SIGKILL");
+  devServers.delete(args.server_id);
+  const result = { server_id: args.server_id, stopped: true, pid: entry.record.pid, url: entry.record.url };
+  const log = await writeEvidenceLog("dev_server_stop", result);
+  const withLog = { ...result, evidence_log_id: log.evidence_log_id };
+  recordSession(args.session_id, "dev_servers_stopped", withLog);
+  return withLog;
+}
+
+function listDevServers() {
+  return { servers: [...devServers.values()].map(({ record }) => ({ server_id: record.server_id, pid: record.pid, script: record.script, url: record.url, running: record.running !== false, started_at: record.started_at })) };
+}
+
+async function startEvidenceSession(args) {
+  const session = { session_id: logId("session"), task: args.task, started_at: new Date().toISOString(), actions_planned: arrayify(args.actions_planned), project_scans: [], patches_applied: [], commands_run: [], dev_servers_started: [], dev_servers_stopped: [], browser_captures: [], api_requests: [], restores: [], blocked_actions: [], git_commits: [] };
+  sessions.set(session.session_id, session);
+  const log = await writeEvidenceLog("session_start", session, session.session_id);
+  return { ...session, evidence_log_id: log.evidence_log_id };
+}
+
+async function finishEvidenceSession(args) {
+  const session = sessions.get(args.session_id);
+  if (!session) throw new ToolsError("Session id not found.", "session_not_found", { session_id: args.session_id });
+  const browserBlocked = session.browser_captures.some((item) => item.status && item.status !== "captured");
+  const pack = {
+    ...session,
+    finished_at: new Date().toISOString(),
+    test_results: arrayify(args.test_results).map(redactSecrets),
+    safe_to_claim: ["Tools MCP session actions were evidence logged with secret redaction.", session.patches_applied.length ? "Patch batch changes were applied under allowed roots." : null, session.commands_run.length ? "Safe project task(s) were run." : null, session.git_commits.length ? "Approved local git commit(s) were created." : null].filter(Boolean),
+    must_not_claim: [browserBlocked ? "Browser visual verification succeeded when capture was unavailable." : null, "Remote GitHub mutation or git push was performed.", "Package install/publish/deploy was performed.", "Secrets were read or exposed."].filter(Boolean),
+    remaining_risks: ["Review generated diff and evidence before making final claims.", browserBlocked ? "Browser proof unavailable/blocked; do not claim visual proof." : null].filter(Boolean),
+    recommended_final_report_lines: [
+      `Tools session ${session.session_id} completed for: ${session.task}.`,
+      session.patches_applied.length ? `Patch batches: ${session.patches_applied.length}.` : "No patch batch recorded.",
+      session.commands_run.length ? `Project tasks run: ${session.commands_run.map((item) => item.command || item.script).join(", ")}.` : "No project task recorded.",
+      session.browser_captures.length ? `Browser captures: ${session.browser_captures.map((item) => item.status).join(", ")}.` : "No browser capture recorded.",
+      session.git_commits.length ? `Local git commits: ${session.git_commits.map((item) => item.commit_sha).filter(Boolean).join(", ")}.` : "No local git commit recorded."
+    ],
+    notes: redactSecrets(args.notes || "")
+  };
+  const log = await writeEvidenceLog("session_evidence", pack, session.session_id);
+  return { ...pack, evidence_path: log.path, evidence_log_id: log.evidence_log_id };
+}
+
+function recordSession(sessionId, bucket, payload) {
+  if (!sessionId || !sessions.has(sessionId)) return;
+  const session = sessions.get(sessionId);
+  if (!Array.isArray(session[bucket])) session[bucket] = [];
+  session[bucket].push(JSON.parse(redactSecrets(JSON.stringify(payload))));
+}
+
+function recordToolError(sessionId, tool, error) {
+  if (!sessionId || !sessions.has(sessionId)) return;
+  recordSession(sessionId, "blocked_actions", { tool, code: error instanceof ToolsError ? error.code : "tools_unexpected_error", error: error.message || String(error) });
+}
+
+async function safeGitStatus(args) {
+  const root = await resolveAllowedRoot(args.root || ".");
+  const execution = await runProcess("git", ["status", "--short"], { cwd: root.absolutePath, timeoutMs: 10000, maxOutputBytes: args.max_output_bytes || 12000 });
+  const changed = execution.stdout.split(/\r?\n/).filter(Boolean).map((line) => ({ status: line.slice(0, 2).trim(), path: line.slice(3).trim() })).filter((item) => !isSecretLikePath(item.path));
+  return { root: root.absolutePath, ok: execution.ok, changed_files: changed, raw_status: redactSecrets(execution.stdout), stderr: execution.stderr };
+}
+
+async function safeGitDiffSummary(args) {
+  const root = await resolveAllowedRoot(args.root || ".");
+  const maxBytes = Math.min(args.max_bytes || 16000, MAX_COMMAND_OUTPUT_BYTES);
+  const statExec = await runProcess("git", ["diff", "--stat"], { cwd: root.absolutePath, timeoutMs: 10000, maxOutputBytes: maxBytes });
+  const nameExec = await runProcess("git", ["diff", "--name-only"], { cwd: root.absolutePath, timeoutMs: 10000, maxOutputBytes: maxBytes });
+  const files = nameExec.stdout.split(/\r?\n/).filter(Boolean).filter((file) => !isSecretLikePath(file));
+  return { root: root.absolutePath, ok: statExec.ok && nameExec.ok, changed_files: files, summary: redactSecrets(statExec.stdout), truncated: statExec.stdout.length >= maxBytes };
+}
+
+async function safeGitCommit(args) {
+  const dryRun = args.dry_run !== false;
+  const root = await resolveAllowedRoot(args.root || ".");
+  const files = [];
+  for (const file of arrayify(args.files)) {
+    const target = await resolveAllowedFile(path.join(root.absolutePath, file), { mustExist: true, blockSecrets: true });
+    if (shouldSkipRelative(target.relativePath) || /(^|\/)\.tmp(\/|$)|\.log$/i.test(target.relativePath)) throw new ToolsError("Unsafe file blocked from git staging.", "unsafe_git_stage_path", { path: target.relativePath });
+    files.push(target.relativePath);
+  }
+  if (/\b(push|reset --hard|deploy|publish)\b/i.test(args.message)) throw new ToolsError("Unsafe git commit message/action blocked.", "unsafe_git_action_blocked");
+  const planned = { dry_run: dryRun, committed: false, root: root.absolutePath, files, message: redactSecrets(args.message), remote_mutation: false };
+  if (dryRun) return planned;
+  enforceApproval(args);
+  await runProcess("git", ["add", "--", ...files], { cwd: root.absolutePath, timeoutMs: 10000, maxOutputBytes: 12000 });
+  const commitExec = await runProcess("git", ["commit", "-m", args.message], { cwd: root.absolutePath, timeoutMs: 20000, maxOutputBytes: 20000 });
+  if (!commitExec.ok) throw new ToolsError("git commit failed.", "git_commit_failed", { stderr: commitExec.stderr, stdout: commitExec.stdout });
+  const shaExec = await runProcess("git", ["rev-parse", "HEAD"], { cwd: root.absolutePath, timeoutMs: 10000, maxOutputBytes: 2000 });
+  const result = { ...planned, dry_run: false, committed: true, commit_sha: shaExec.stdout.trim(), stdout: commitExec.stdout, stderr: commitExec.stderr };
+  const log = await writeEvidenceLog("git_commit", result);
+  const withLog = { ...result, evidence_log_id: log.evidence_log_id };
+  recordSession(args.session_id, "git_commits", withLog);
+  return withLog;
 }
 
 async function safeApiRequest(args) {
@@ -873,7 +1426,9 @@ async function safeBrowserCapture(args) {
       must_not_claim: ["Browser screenshot evidence was captured.", "Visual proof was collected.", "The page was visually verified in a browser."]
     };
     const log = await writeEvidenceLog("browser_capture", unavailable);
-    return { ...unavailable, evidence_log_id: log.evidence_log_id };
+    const withLog = { ...unavailable, evidence_log_id: log.evidence_log_id };
+    recordSession(args.session_id, "browser_captures", withLog);
+    return withLog;
   }
   const screenshotsDir = path.join(evidenceRoot, "screenshots");
   await mkdir(screenshotsDir, { recursive: true });
@@ -907,7 +1462,9 @@ async function safeBrowserCapture(args) {
       must_not_claim: ["Browser screenshot evidence was captured.", "Visual proof was collected.", "The page was visually verified in a browser."]
     };
     const log = await writeEvidenceLog("browser_capture", unavailable);
-    return { ...unavailable, evidence_log_id: log.evidence_log_id };
+    const withLog = { ...unavailable, evidence_log_id: log.evidence_log_id };
+    recordSession(args.session_id, "browser_captures", withLog);
+    return withLog;
   }
   const info = await stat(screenshotPath);
   if (info.size > maxBytes) {
@@ -929,7 +1486,9 @@ async function safeBrowserCapture(args) {
     must_not_claim: ["External browsing was performed.", "Login/session/cookie/CAPTCHA automation was performed.", "Unlisted pages were visually verified."]
   };
   const log = await writeEvidenceLog("browser_capture", result, captureId);
-  return { ...result, evidence_log_id: log.evidence_log_id };
+  const withLog = { ...result, evidence_log_id: log.evidence_log_id };
+  recordSession(args.session_id, "browser_captures", withLog);
+  return withLog;
 }
 
 async function buildBrowserTarget(args) {
@@ -1230,6 +1789,51 @@ function formatApiRequest(result) {
 
 function formatEvidence(evidence) {
   return [`vnem_tools_collect_evidence: ${evidence.evidence_id}`, evidence.summary, `Changed files: ${evidence.changed_files.join(", ") || "none"}`, `Commands: ${evidence.commands_run.join(", ") || "none"}`, `API requests: ${evidence.api_requests.length}`, `Must not claim: ${evidence.must_not_claim.join("; ")}`].join("\n");
+}
+
+function formatPatchBatch(result) {
+  return [`vnem_tools_apply_patch_batch: ${result.applied ? "applied" : "dry-run planned"}`, `Changed files: ${result.changed_files.join(", ") || "none"}`, `Created: ${result.created_files.join(", ") || "none"}`, `Deleted: ${result.deleted_files.join(", ") || "none"}`, `Evidence: ${result.evidence_log_id || "not written"}`].join("\n");
+}
+
+function formatRestoreBatch(result) {
+  return [`vnem_tools_restore_batch: ${result.restored ? "restored" : "dry-run planned"}`, `Restored files: ${result.restored_files.join(", ") || "none"}`, `Deleted created files: ${result.deleted_created_files.join(", ") || "none"}`, `Evidence: ${result.evidence_log_id || "not written"}`].join("\n");
+}
+
+function formatProjectScan(scan) {
+  return [`vnem_tools_project_scan: ${scan.project_root}`, `Package manager: ${scan.detected_package_manager}`, `Frameworks: ${scan.likely_frameworks.join(", ") || "unknown"}`, `Safe commands: ${scan.safe_commands_suggested.join(", ") || "none"}`].join("\n");
+}
+
+function formatProjectTask(task) {
+  return [`vnem_tools_run_project_task: ${task.executed ? "executed" : "dry-run planned"}`, `Command: ${task.command}`, task.executed ? `Exit: ${task.exit_code}` : "No task executed because dry_run=true.", task.stdout ? `stdout:\n${task.stdout}` : "", task.stderr ? `stderr:\n${task.stderr}` : ""].filter(Boolean).join("\n");
+}
+
+function formatDevServer(server) {
+  return [`vnem_tools_start_dev_server: ${server.started ? "started" : "dry-run planned"}`, `URL: ${server.url}`, `Server id: ${server.server_id || "not started"}`].join("\n");
+}
+
+function formatDevServerStop(stop) {
+  return [`vnem_tools_stop_dev_server: ${stop.stopped ? "stopped" : "not stopped"}`, `Server id: ${stop.server_id}`, `Evidence: ${stop.evidence_log_id || "not written"}`].join("\n");
+}
+
+function formatDevServerList() {
+  const list = listDevServers();
+  return `vnem_tools_list_dev_servers: ${list.servers.length} server(s)`;
+}
+
+function formatSessionEvidence(pack) {
+  return [`vnem_tools_finish_session: ${pack.session_id}`, `Patches: ${pack.patches_applied.length}`, `Commands: ${pack.commands_run.length}`, `Browser captures: ${pack.browser_captures.length}`, `Evidence: ${pack.evidence_path}`].join("\n");
+}
+
+function formatGitStatus(status) {
+  return [`vnem_tools_git_status: ${status.changed_files.length} changed file(s)`, ...status.changed_files.map((item) => `${item.status} ${item.path}`)].join("\n");
+}
+
+function formatGitDiff(diff) {
+  return [`vnem_tools_git_diff_summary: ${diff.changed_files.length} file(s)`, diff.summary || "No diff."].join("\n");
+}
+
+function formatGitCommit(commit) {
+  return [`vnem_tools_git_commit: ${commit.committed ? "committed" : "dry-run planned"}`, `Files: ${commit.files.join(", ")}`, commit.commit_sha ? `Commit: ${commit.commit_sha}` : "No commit created."].join("\n");
 }
 
 async function withToolErrors(fn) {
