@@ -58,6 +58,8 @@ try {
     await mcpConfigCommand(args);
   } else if (command === "precision-mcp") {
     await import(pathToFileURL(path.join(scriptDir, "vnem-precision-mcp-server.mjs")).href);
+  } else if (command === "tools-mcp") {
+    await import(pathToFileURL(path.join(scriptDir, "vnem-tools-mcp-server.mjs")).href);
   } else if (command === "mcp") {
     await import(pathToFileURL(path.join(scriptDir, "vnem-mcp-server.mjs")).href);
   } else if (command === "help" || command === "--help" || command === "-h") {
@@ -151,28 +153,55 @@ async function installSkillCommand(rawArgs) {
 }
 
 async function mcpConfigCommand(rawArgs) {
+  const explicitCore = rawArgs.includes("--core");
   const precision = rawArgs.includes("--precision");
-  const workspace = valueAfter(rawArgs, "--workspace") || process.cwd();
-  const server = {
-    command: "node",
-    args: [path.join(scriptDir, precision ? "vnem-precision-mcp-server.mjs" : "vnem-mcp-server.mjs")],
-    env: precision
-      ? {
-          VNEM_PRECISION_ROOT: path.resolve(workspace)
-        }
-      : {
-          VNEM_ROOT: rootDir
-        }
-  };
-  const output = rawArgs.includes("--server-json") || rawArgs.includes("--server")
-    ? server
-    : {
-        mcpServers: {
-          [precision ? "vnem-precision" : "vnem"]: server
-        }
-      };
+  const tools = rawArgs.includes("--tools");
+  const workspaceArg = valueAfter(rawArgs, "--workspace");
+  const wantsOnlyLegacyPrecision = precision && !tools && !explicitCore;
+  const includeCore = explicitCore || (!precision && !tools);
+  const includePrecision = precision;
+  const includeTools = tools;
+  if (includeTools && !workspaceArg) {
+    throw new Error("--workspace is required when generating Tools MCP config.");
+  }
+  const workspace = path.resolve(workspaceArg || process.cwd());
+  const servers = {};
+  if (includeCore) servers.vnem = coreMcpServerConfig();
+  if (includePrecision) servers["vnem-precision"] = precisionMcpServerConfig(workspace);
+  if (includeTools) servers["vnem-tools"] = toolsMcpServerConfig(workspace);
+  const selected = Object.values(servers);
+  const output = (rawArgs.includes("--server-json") || rawArgs.includes("--server")) && selected.length === 1
+    ? selected[0]
+    : { mcpServers: wantsOnlyLegacyPrecision ? { "vnem-precision": servers["vnem-precision"] } : servers };
 
   console.log(JSON.stringify(output, null, 2));
+}
+
+function coreMcpServerConfig() {
+  return {
+    command: "node",
+    args: [path.join(scriptDir, "vnem-mcp-server.mjs")],
+    env: { VNEM_ROOT: rootDir }
+  };
+}
+
+function precisionMcpServerConfig(workspace) {
+  return {
+    command: "node",
+    args: [path.join(scriptDir, "vnem-precision-mcp-server.mjs")],
+    env: { VNEM_PRECISION_ROOT: workspace }
+  };
+}
+
+function toolsMcpServerConfig(workspace) {
+  return {
+    command: "node",
+    args: [path.join(scriptDir, "vnem-tools-mcp-server.mjs")],
+    env: {
+      VNEM_TOOLS_ALLOWED_ROOTS: workspace,
+      VNEM_TOOLS_EVIDENCE_ROOT: path.join(workspace, ".vnem", "tool-runs")
+    }
+  };
 }
 
 async function upsertManagedBlock(filePath, block) {
@@ -265,8 +294,9 @@ Usage:
   vnem install [project-dir] [--no-agents] [--claude]
   vnem doctor [project-dir]
   vnem install-skill [skill-dir]
-  vnem mcp-config [--server-json] [--precision --workspace /path/to/project]
+  vnem mcp-config [--server-json] [--core] [--tools --workspace /path/to/project] [--precision --workspace /path/to/project]
   vnem mcp
+  vnem tools-mcp
   vnem precision-mcp
 
 Examples:
@@ -276,7 +306,11 @@ Examples:
   vnem mcp-config
   vnem mcp-config --server-json
   vnem mcp-config --precision --workspace ~/code/my-app
+  vnem mcp-config --tools --workspace ~/code/my-app
+  vnem mcp-config --core --tools --workspace ~/code/my-app
+  vnem mcp-config --core --tools --precision --workspace ~/code/my-app
   vnem mcp
+  vnem tools-mcp
   vnem precision-mcp
 `);
 }

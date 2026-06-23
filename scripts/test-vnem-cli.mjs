@@ -105,6 +105,28 @@ try {
   assert.ok(parsedPrecisionConfig.mcpServers?.["vnem-precision"]?.args?.[0]?.endsWith("vnem-precision-mcp-server.mjs"));
   assert.equal(parsedPrecisionConfig.mcpServers?.["vnem-precision"]?.env?.VNEM_PRECISION_ROOT, projectDir);
 
+  const toolsMissingWorkspace = runCliFailure(["mcp-config", "--tools"]);
+  assert.match(toolsMissingWorkspace.stderr, /--workspace is required/i);
+
+  const toolsConfig = runCli(["mcp-config", "--tools", "--workspace", projectDir]);
+  const parsedToolsConfig = JSON.parse(toolsConfig.stdout);
+  assert.equal(parsedToolsConfig.mcpServers?.["vnem-tools"]?.command, "node");
+  assert.ok(parsedToolsConfig.mcpServers?.["vnem-tools"]?.args?.[0]?.endsWith("vnem-tools-mcp-server.mjs"));
+  assert.equal(parsedToolsConfig.mcpServers?.["vnem-tools"]?.env?.VNEM_TOOLS_ALLOWED_ROOTS, projectDir);
+  assert.equal(parsedToolsConfig.mcpServers?.["vnem-tools"]?.env?.VNEM_TOOLS_EVIDENCE_ROOT, path.join(projectDir, ".vnem", "tool-runs"));
+  assert.doesNotMatch(toolsConfig.stdout, /browser|github|install|giga/i, "Tools config should not claim browser/GitHub/install/Giga support");
+
+  const coreToolsConfig = runCli(["mcp-config", "--core", "--tools", "--workspace", projectDir]);
+  const parsedCoreToolsConfig = JSON.parse(coreToolsConfig.stdout);
+  assert.ok(parsedCoreToolsConfig.mcpServers?.vnem?.args?.[0]?.endsWith("vnem-mcp-server.mjs"));
+  assert.ok(parsedCoreToolsConfig.mcpServers?.["vnem-tools"]?.args?.[0]?.endsWith("vnem-tools-mcp-server.mjs"));
+
+  const fullConfig = runCli(["mcp-config", "--core", "--tools", "--precision", "--workspace", projectDir]);
+  const parsedFullConfig = JSON.parse(fullConfig.stdout);
+  assert.ok(parsedFullConfig.mcpServers?.vnem);
+  assert.ok(parsedFullConfig.mcpServers?.["vnem-tools"]);
+  assert.ok(parsedFullConfig.mcpServers?.["vnem-precision"]);
+
   console.log("vnem CLI tests passed");
 } finally {
   await rm(tmpRoot, { recursive: true, force: true });

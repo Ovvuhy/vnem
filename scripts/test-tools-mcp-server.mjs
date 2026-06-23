@@ -70,7 +70,8 @@ try {
     "vnem_tools_apply_patch",
     "vnem_tools_run_command",
     "vnem_tools_api_request",
-    "vnem_tools_collect_evidence"
+    "vnem_tools_collect_evidence",
+    "vnem_tools_restore_backup"
   ];
   for (const name of requiredTools) assert.equal(toolNames.has(name), true, `missing ${name}`);
   assert.equal(toolNames.has("vnem_boost_task"), false, "Tools MCP must stay separate from Core MCP tools");
@@ -189,6 +190,47 @@ try {
   assert.ok(appliedPatch.structuredContent?.patch?.evidence_log_id);
   assert.equal(await readFile(path.join(projectDir, "src", "app.txt"), "utf8"), "weather widget says new\n");
 
+  const restoreDryRun = await client.callTool({
+    name: "vnem_tools_restore_backup",
+    arguments: { backup_path: appliedPatch.structuredContent?.patch?.backup_path, target_path: "src/app.txt" }
+  });
+  assert.equal(restoreDryRun.isError, undefined);
+  assert.equal(restoreDryRun.structuredContent?.restore?.dry_run, true);
+  assert.equal(await readFile(path.join(projectDir, "src", "app.txt"), "utf8"), "weather widget says new\n");
+  const unapprovedRestore = await client.callTool({
+    name: "vnem_tools_restore_backup",
+    arguments: { backup_path: appliedPatch.structuredContent?.patch?.backup_path, target_path: "src/app.txt", dry_run: false }
+  });
+  assert.equal(unapprovedRestore.isError, true);
+  assert.equal(unapprovedRestore.structuredContent?.code, "approval_required");
+  const outsideRestore = await client.callTool({
+    name: "vnem_tools_restore_backup",
+    arguments: { backup_path: path.join(outsideDir, "outside.txt"), target_path: "src/app.txt" }
+  });
+  assert.equal(outsideRestore.isError, true);
+  assert.equal(outsideRestore.structuredContent?.code, "path_outside_allowed_roots");
+  const secretRestore = await client.callTool({
+    name: "vnem_tools_restore_backup",
+    arguments: { backup_path: appliedPatch.structuredContent?.patch?.backup_path, target_path: ".env" }
+  });
+  assert.equal(secretRestore.isError, true);
+  assert.equal(secretRestore.structuredContent?.code, "secret_path_blocked");
+  const approvedRestore = await client.callTool({
+    name: "vnem_tools_restore_backup",
+    arguments: { backup_path: appliedPatch.structuredContent?.patch?.backup_path, target_path: "src/app.txt", dry_run: false, approved: true, approval_note: "User approved test restore" }
+  });
+  assert.equal(approvedRestore.isError, undefined);
+  assert.equal(approvedRestore.structuredContent?.restore?.restored, true);
+  assert.ok(approvedRestore.structuredContent?.restore?.evidence_log_id);
+  assert.equal(await readFile(path.join(projectDir, "src", "app.txt"), "utf8"), "weather widget says old\n");
+
+  const reappliedPatch = await client.callTool({
+    name: "vnem_tools_apply_patch",
+    arguments: { patch: patchText, target_root: ".", dry_run: false, approved: true, approval_note: "User approved reapply after restore", backup: true }
+  });
+  assert.equal(reappliedPatch.isError, undefined);
+  assert.equal(await readFile(path.join(projectDir, "src", "app.txt"), "utf8"), "weather widget says new\n");
+
   const dryCommand = await client.callTool({ name: "vnem_tools_run_command", arguments: { command: "node --check src/test-ok.js", cwd: "." } });
   assert.equal(dryCommand.isError, undefined);
   assert.equal(dryCommand.structuredContent?.command?.dry_run, true);
@@ -247,6 +289,8 @@ try {
   assert.ok(evidence.structuredContent?.evidence?.evidence_id);
   assert.equal(evidence.structuredContent?.evidence?.safe_to_claim?.includes("Approved Tools MCP actions were run with evidence logs."), true);
   assert.equal(evidence.structuredContent?.evidence?.must_not_claim?.includes("Browser screenshots were captured."), true);
+  assert.ok(evidence.structuredContent?.evidence?.proof_trail_compatible_summary?.recommended_final_report_lines?.length > 0);
+  assert.ok(evidence.structuredContent?.evidence?.proof_trail_compatible_summary?.recommended_core_proof_trail_inputs?.tests_or_checks?.includes("syntax check passed"));
   assert.doesNotMatch(JSON.stringify(evidence.structuredContent), /sample-sensitive-value/);
   const evidencePath = evidence.structuredContent?.evidence?.evidence_path;
   assert.ok((await stat(evidencePath)).isFile());

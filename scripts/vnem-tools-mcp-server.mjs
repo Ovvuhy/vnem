@@ -22,7 +22,8 @@ const REQUIRED_TOOL_NAMES = [
   "vnem_tools_apply_patch",
   "vnem_tools_run_command",
   "vnem_tools_api_request",
-  "vnem_tools_collect_evidence"
+  "vnem_tools_collect_evidence",
+  "vnem_tools_restore_backup"
 ];
 const READ_ONLY_LOCAL = { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false };
 const ACTION_TOOL = { readOnlyHint: false, destructiveHint: true, idempotentHint: false, openWorldHint: false };
@@ -269,6 +270,26 @@ function registerTools(mcpServer) {
       return toolResult(formatEvidence(evidence), { evidence });
     })
   );
+
+  mcpServer.registerTool(
+    "vnem_tools_restore_backup",
+    {
+      title: "Restore Tools Backup",
+      description: "Dry-run or restore a previous Tools MCP backup to an allowed target path. Real restore requires explicit approval and evidence logging.",
+      inputSchema: {
+        backup_path: z.string().min(1),
+        target_path: z.string().min(1),
+        dry_run: z.boolean().default(true),
+        approved: z.boolean().default(false),
+        approval_note: z.string().default("")
+      },
+      annotations: ACTION_TOOL
+    },
+    async (args) => withToolErrors(async () => {
+      const restore = await safeRestoreBackup(args);
+      return toolResult(formatRestore(restore), { restore });
+    })
+  );
 }
 
 class ToolsError extends Error {
@@ -338,6 +359,13 @@ function statusObject() {
       secret_ref_only_for_future_auth: true,
       output_redaction_enabled: true
     },
+    restore_support: {
+      executable_restore_tool: "vnem_tools_restore_backup",
+      dry_run_default: true,
+      approval_required: true,
+      allowed_roots_only: true,
+      secret_paths_blocked: true
+    },
     evidence_log_location: evidenceRoot,
     core_handoff_supported: true,
     unsupported_in_foundation_batch: ["browser_screenshot", "github_mutation", "package_install", "arbitrary_shell", "unrestricted_api_calls"]
@@ -358,11 +386,12 @@ function formatStatus() {
 function buildActionPlan(args = {}) {
   const handoff = args.core_handoff || {};
   const requested = arrayify(args.requested_actions);
-  const capabilities = arrayify(handoff.required_tool_capabilities).length ? arrayify(handoff.required_tool_capabilities) : requested;
+  const handoffCapabilities = arrayify(handoff.required_tool_capabilities);
+  const capabilities = [...new Set([...(handoffCapabilities.length ? handoffCapabilities : []), ...requested])];
   const actions = capabilities.filter((capability) => isSupportedCapability(capability)).map((capability) => ({
     action: capability,
     dry_run_first: true,
-    requires_approval: ["file_edit", "test_runner", "command", "api_request"].some((term) => String(capability).includes(term)),
+    requires_approval: ["file_edit", "test_runner", "command", "api_request", "restore"].some((term) => String(capability).includes(term)),
     status: "available_with_safeguards"
   }));
   const blocked = [...new Set([...capabilities, ...requested])]
@@ -386,7 +415,7 @@ function buildActionPlan(args = {}) {
 
 function isSupportedCapability(capability) {
   const text = String(capability || "").toLowerCase();
-  return /file_edit|patch|test_runner|command|api_request|read_file|list_files|search_files|evidence/.test(text);
+  return /file_edit|patch|restore|test_runner|command|api_request|read_file|list_files|search_files|evidence/.test(text);
 }
 
 function unsupportedReason(capability) {
@@ -399,7 +428,7 @@ function unsupportedReason(capability) {
 
 function inferPermissions(actions) {
   const permissions = [];
-  if (actions.some((item) => /file_edit|patch/.test(item.action))) permissions.push("approve file edits under allowed roots");
+  if (actions.some((item) => /file_edit|patch|restore/.test(item.action))) permissions.push("approve file edits/restores under allowed roots");
   if (actions.some((item) => /test_runner|command/.test(item.action))) permissions.push("approve allowlisted commands");
   if (actions.some((item) => /api_request/.test(item.action))) permissions.push("approve live API requests if not mocked");
   return permissions;
@@ -556,6 +585,43 @@ async function safeApplyPatch(args) {
   };
   const log = await writeEvidenceLog("patch", result);
   return { ...result, evidence_log_id: log.evidence_log_id };
+}
+
+async function safeRestoreBackup(args) {
+  const dryRun = args.dry_run !== false;
+  const backup = await resolveAllowedFile(args.backup_path, { mustExist: true, blockSecrets: true });
+  const target = await resolveAllowedFile(args.target_path, { mustExist: true, blockSecrets: true });
+  if (!dryRun) enforceApproval(args);
+  const backupInfo = await stat(backup.absolutePath);
+  const targetInfo = await stat(target.absolutePath);
+  if (!backupInfo.isFile() || !targetInfo.isFile()) throw new ToolsError("Backup and target must be regular files.", "not_a_file", { backup_path: backup.relativePath, target_path: target.relativePath });
+  const backupBytes = await readFile(backup.absolutePath);
+  const targetBytes = await readFile(target.absolutePath);
+  if (backupBytes.includes(0) || targetBytes.includes(0)) throw new ToolsError("Binary restore targets are blocked.", "binary_file_blocked", { backup_path: backup.relativePath, target_path: target.relativePath });
+  const before = targetBytes.toString("utf8");
+  const restoreText = backupBytes.toString("utf8");
+  if (!dryRun) await writeFile(target.absolutePath, restoreText, "utf8");
+  const result = {
+    dry_run: dryRun,
+    restored: !dryRun,
+    backup_path: backup.absolutePath,
+    target_path: target.relativePath,
+    changed_files: [target.relativePath],
+    before_sha256: sha256(before),
+    restored_sha256: sha256(restoreText),
+    restore_summary: dryRun ? `Dry-run restore ${backup.relativePath} -> ${target.relativePath}` : `Restored ${target.relativePath} from ${backup.relativePath}`
+  };
+  const log = await writeEvidenceLog("restore", result);
+  return { ...result, evidence_log_id: log.evidence_log_id };
+}
+
+function formatRestore(restore) {
+  return [
+    `vnem_tools_restore_backup: ${restore.dry_run ? "dry-run" : "restored"}`,
+    `target: ${restore.target_path}`,
+    `backup: ${restore.backup_path}`,
+    `evidence: ${restore.evidence_log_id}`
+  ].join("\n");
 }
 
 function parseVnemPatch(patchText) {
@@ -731,21 +797,80 @@ function scrubHeadersForRequest(headers) {
 }
 
 async function collectEvidence(args) {
+  const changedFiles = arrayify(args.changed_files);
+  const commandsRun = arrayify(args.commands_run);
+  const apiRequests = arrayify(args.api_requests).map(redactSecrets);
+  const tests = arrayify(args.test_results);
+  const screenshots = arrayify(args.screenshots);
+  const evidenceId = logId("evidence");
+  const safeToClaim = [
+    "Approved Tools MCP actions were run with evidence logs.",
+    changedFiles.length ? `Patch/file changes were applied only to listed file(s): ${changedFiles.join(", ")}.` : null,
+    commandsRun.length ? `Verification command(s) were run: ${commandsRun.join(", ")}.` : null,
+    tests.length ? `Verification result(s) were recorded: ${tests.join("; ")}.` : null,
+    apiRequests.length ? `Approved API request evidence was collected for: ${apiRequests.join(", ")}.` : null,
+    "Secrets were redacted from Tools MCP evidence output."
+  ].filter(Boolean);
+  const mustNotClaim = [
+    screenshots.length ? null : "Browser screenshots were captured.",
+    screenshots.length ? null : "Visual/browser verification was performed.",
+    apiRequests.length ? null : "Live API calls were performed.",
+    "GitHub changes were pushed.",
+    "Package installs were performed.",
+    "Unlisted files were changed."
+  ].filter(Boolean);
+  const remainingRisks = [
+    "Only claims backed by listed evidence should be made.",
+    screenshots.length ? null : "No browser visual proof was collected in this Tools MCP foundation run.",
+    apiRequests.length ? null : "No live API call evidence was collected in this run.",
+    "Unsupported browser/GitHub/install actions remain future work."
+  ].filter(Boolean);
+  const recommendedLines = [
+    changedFiles.length ? `Patch applied to: ${changedFiles.join(", ")}.` : "No file changes were recorded.",
+    commandsRun.length ? `Verification command passed/recorded: ${commandsRun.join(", ")}.` : "No verification command was recorded.",
+    `Evidence collected: ${evidenceId}.`,
+    screenshots.length ? `Visual evidence recorded: ${screenshots.join(", ")}.` : "No browser visual proof was performed; do not claim visual verification.",
+    apiRequests.length ? `API request evidence recorded: ${apiRequests.join(", ")}.` : "No live API call was performed; do not claim live API verification."
+  ];
+  const proofBridge = {
+    evidence_id: evidenceId,
+    task: args.task,
+    safe_to_claim: safeToClaim,
+    must_not_claim: mustNotClaim,
+    changed_files: changedFiles,
+    commands_run: commandsRun,
+    api_requests: apiRequests,
+    tests,
+    blocked_actions: screenshots.length ? [] : ["browser_screenshot_not_collected"],
+    remaining_risks: remainingRisks,
+    recommended_final_report_lines: recommendedLines,
+    recommended_core_proof_trail_inputs: {
+      task: args.task,
+      capability_ids_used: ["vnem_tools_collect_evidence"],
+      changed_files: changedFiles,
+      commands_run: commandsRun,
+      tests_or_checks: tests,
+      visual_evidence: screenshots,
+      remaining_risks: remainingRisks,
+      final_claim: recommendedLines.join(" ")
+    }
+  };
   const evidence = {
-    evidence_id: logId("evidence"),
+    evidence_id: evidenceId,
     generated_at: new Date().toISOString(),
     task: args.task,
-    summary: `Evidence for ${args.task}: ${arrayify(args.changed_files).length} changed file(s), ${arrayify(args.commands_run).length} command(s), ${arrayify(args.api_requests).length} API request(s).`,
+    summary: `Evidence for ${args.task}: ${changedFiles.length} changed file(s), ${commandsRun.length} command(s), ${apiRequests.length} API request(s).`,
     tool_run_ids: arrayify(args.tool_run_ids),
-    changed_files: arrayify(args.changed_files),
-    commands_run: arrayify(args.commands_run),
-    api_requests: arrayify(args.api_requests).map(redactSecrets),
-    tests: arrayify(args.test_results),
-    screenshots: arrayify(args.screenshots),
-    blocked_actions: arrayify(args.screenshots).length ? [] : ["browser_screenshot_not_collected"],
-    remaining_risks: ["Only claims backed by listed evidence should be made.", "Unsupported browser/GitHub/install actions remain future work."],
-    safe_to_claim: ["Approved Tools MCP actions were run with evidence logs.", "Secrets were redacted from Tools MCP evidence output."],
-    must_not_claim: ["Browser screenshots were captured.", "GitHub changes were pushed.", "Package installs were performed.", "Unlisted files were changed."],
+    changed_files: changedFiles,
+    commands_run: commandsRun,
+    api_requests: apiRequests,
+    tests,
+    screenshots,
+    blocked_actions: proofBridge.blocked_actions,
+    remaining_risks: remainingRisks,
+    safe_to_claim: safeToClaim,
+    must_not_claim: mustNotClaim,
+    proof_trail_compatible_summary: proofBridge,
     notes: redactSecrets(args.notes || "")
   };
   const log = await writeEvidenceLog("evidence", evidence, evidence.evidence_id);
