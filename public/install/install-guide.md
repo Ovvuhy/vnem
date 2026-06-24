@@ -1,6 +1,6 @@
 # vnem Install And MCP Guide
 
-Generated: 2026-06-24T14:00:20.040Z
+Generated: 2026-06-24T15:09:56.037Z
 
 A compact setup guide for downloading the read-only vnem pack, installing it into an existing repo without overwriting local agent instructions, and connecting the local stdio MCP server with generated JSON config.
 
@@ -73,7 +73,7 @@ node scripts/vnem-cli.mjs mcp-config --precision --workspace /path/to/project
 node scripts/vnem-cli.mjs mcp-config --precision --workspace /path/to/project --server-json
 ```
 
-Opt-in Tools MCP foundation for a project that should allow bounded approved manifest/catalog discovery, workspace maps, read-many/code-search/reference/dependency intelligence, safe source-quality/research-brief/research-pack helpers, safe static page inspection/readability/link-map/DOM-search/accessibility/snapshot-comparison helpers, safe project scans, dry-run-first single/multi-file patches, batch restore/rollback, safe package tasks, local dev servers, approved GET/HEAD API requests, approved local browser screenshots, optional approved local git commits, and proof-compatible evidence/session logs:
+Opt-in Tools MCP foundation for a project that should allow bounded approved manifest/catalog discovery, workspace maps, read-many/code-search/reference/dependency intelligence, safe source-quality/research-brief/research-pack helpers, provider-search query/build/run/rank tools, URL reputation/redirect/CAPTCHA/download risk checks, claim/source matrices, research gap detection, safe static page inspection/readability/link-map/DOM-search/accessibility/snapshot-comparison helpers, safe project scans, dry-run-first single/multi-file patches, batch restore/rollback, safe package tasks, local dev servers, approved GET/HEAD API requests, approved local browser screenshots, optional approved local git commits, and proof-compatible evidence/session logs:
 
 ```bash
 node scripts/vnem-cli.mjs mcp-config --core --tools --workspace /path/to/project
@@ -86,16 +86,23 @@ npm run test:tools-intelligence
 npm run test:tools-research
 npm run test:tools-browser-intelligence
 npm run test:tools-browser-research-pack
+npm run test:tools-search-power
+npm run test:tools-risk-captcha
 npm run test:core-tool-selection
 npm run test:core-tools-ecosystem
 npm run test:core-browser-research-planning
+npm run test:core-search-planning
+npm run test:mcp-user-smoke
 npm run test:core-tools-e2e
 npm run tools:readiness
+npm run core:readiness
 ```
 
-Tools MCP is separate from Core MCP and is not Giga MCP: no Giga MCP, unrestricted filesystem, arbitrary shell, git push / remote GitHub mutation, package installs, package publishing, deployment, external browser browsing by default, search-engine scraping, broad crawling, login/session/cookie/CAPTCHA automation, credential capture, secret-backed live API execution, and unrestricted API calls remain unsupported.
+Tools MCP is separate from Core MCP and is not Giga MCP: no Giga MCP, unrestricted filesystem, arbitrary shell, git push / remote GitHub mutation, package installs, package publishing, deployment, unrestricted external browser browsing by default, search-engine result page scraping by default, automatic CAPTCHA bypass, unrestricted crawling, login/session/cookie automation, credential capture, automatic downloads/installers, secret-backed live API execution, and unrestricted API calls remain unsupported. Real provider search works only when configured and approved; otherwise Tools returns honest unavailable/unconfigured status.
 
-Actual Core → Tools use path: start/connect Core MCP; start/connect Tools MCP for a specific workspace; ask Core `vnem_select_tools_for_task`, `vnem_build_tools_plan`, `vnem_build_browser_research_plan`, `vnem_explain_tools_chain`, or `vnem_boost_task` to select tool capabilities and build a plan-only handoff; use `vnem_tools_manifest` for catalog discovery; dry-run first; ask the user for exact approval; map/read/search the project, inspect dependencies without installing, evaluate direct/provided/local sources, inspect page structure, extract readability, map links without following them, search DOM-like content, run static accessibility checks, compare page snapshots, apply approved patch batches/restores, run safe project tasks, start/stop local dev servers, perform approved API/browser proof, optionally make an approved local git commit, and collect `vnem_tools_collect_evidence` or `vnem_tools_finish_session`; use `proof_trail_compatible_summary` with `vnem_completion_audit` / `vnem_proof_trail`; do not claim visual/live API/search proof unless those evidence fields exist.
+Actual Core → Tools use path: start/connect Core MCP; start/connect Tools MCP for a specific workspace; ask Core `vnem_select_tools_for_task`, `vnem_build_tools_plan`, `vnem_assess_research_need`, `vnem_build_search_plan`, `vnem_build_browsing_plan`, `vnem_build_browser_research_plan`, `vnem_explain_tools_chain`, or `vnem_boost_task` to select tool capabilities and build a plan-only handoff; use `vnem_tools_manifest` for catalog discovery; dry-run first; ask the user for exact approval; map/read/search the project, inspect dependencies without installing, build search queries, run configured/approved provider search or return honest unavailable status, rank search results, evaluate direct/provided/local sources, inspect page structure, extract readability, map links without following them, search DOM-like content, detect CAPTCHA/access blocks, check URL/redirect/download risk, build claim/source matrices, detect research gaps, run static accessibility checks, compare page snapshots, apply approved patch batches/restores, run safe project tasks, start/stop local dev servers, perform approved API/browser proof, optionally make an approved local git commit, and collect `vnem_tools_collect_evidence` or `vnem_tools_finish_session`; use `proof_trail_compatible_summary` with `vnem_completion_audit` / `vnem_proof_trail`; do not claim visual/live API/search proof unless those evidence fields exist.
+
+How to test Core + Tools MCP locally without external internet: `npm run test:mcp-user-smoke`, `npm run tools:readiness`, and `npm run core:readiness`. Public Tools MCP can build search queries, run configured/approved provider search, rank results, inspect sources/pages, detect CAPTCHA/access blocks, check URL/reputation/download risk, build claim/source matrices, and detect research gaps. It does not automatically bypass CAPTCHA, scrape search engine result pages by default, perform login/session/cookie automation, run arbitrary downloads/installers, or claim live/current search happened when a provider is unavailable.
 
 Generic `.mcp.json` shape:
 

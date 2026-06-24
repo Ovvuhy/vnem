@@ -182,8 +182,9 @@ Tools MCP is safeguard-first, not Giga MCP:
 | Dev servers | Starts approved local `dev`/`start`/`preview` scripts only on localhost ports 3000-9999; tracks Tools-started servers in-memory and stops only those servers. |
 | Local git | Read-only local status/diff plus approved local commit of explicit safe files only; no git push, reset, branch deletion, or remote mutation. |
 | API requests | Dry-run by default; real requests require approval; first batch allows only GET/HEAD, blocks raw secrets in headers/body, validates URLs against usable API pack context or explicit localhost test mode, and caps timeout/output. |
-| Source/browser intelligence | `vnem_tools_fetch_url_text`, `vnem_tools_source_quality_check`, `vnem_tools_research_brief`, and `vnem_tools_browser_research_pack` evaluate direct/provided/local sources without pretending broad web search happened; external fetches are dry-run first and approved, search-engine scraping and login/session/cookie use are blocked. |
+| Source/search/browser intelligence | `vnem_tools_search_provider_manifest`, `vnem_tools_search_query_builder`, `vnem_tools_web_search`, `vnem_tools_search_result_ranker`, `vnem_tools_fetch_url_text`, `vnem_tools_source_quality_check`, `vnem_tools_research_brief`, `vnem_tools_browser_research_pack`, `vnem_tools_claim_source_matrix`, and `vnem_tools_research_gap_detector` build strong queries, run configured/approved provider search or honestly return unavailable, rank results, evaluate direct/provided/local sources, map claims to evidence, and detect research gaps without pretending unsupported search happened. |
 | Browser page understanding | `vnem_tools_browser_page_inspect`, `vnem_tools_browser_readability_extract`, `vnem_tools_browser_link_map`, `vnem_tools_browser_dom_search`, `vnem_tools_browser_accessibility_audit`, and `vnem_tools_browser_compare_snapshots` provide safe static page/source understanding for direct URLs, localhost, allowed local HTML files, provided HTML/text, and evidence-backed source snippets. They do not execute JavaScript, follow links, crawl, certify accessibility, or claim visual proof. |
+| Browsing risk/CAPTCHA/download safety | `vnem_tools_redirect_chain_check`, `vnem_tools_url_reputation_check`, `vnem_tools_captcha_detector`, and `vnem_tools_download_safety_check` flag suspicious redirects, phishing/scam/download bait, credential traps, CAPTCHA/access-block pages, and risky download links. CAPTCHA handling is user-assisted only; no automatic bypass or download/install execution is implemented. |
 | Browser proof | Captures approved local screenshot evidence from `file://` files under allowed roots or localhost/127.0.0.1 pages; dry-run default; external URLs, data/javascript/credentialed URLs, secret-like files, login/cookie/session/CAPTCHA/credential automation, and broad scraping are blocked. |
 | Session evidence | Groups scan/patch/task/dev-server/browser/API/restore/git actions into one redacted JSON proof pack with safe-to-claim, must-not-claim, remaining-risk, and final-report lines. |
 | Evidence | Writes structured redacted JSON evidence under `.vnem/tool-runs/` (or configured evidence root) plus a `proof_trail_compatible_summary` so final reports can say only what was actually proven. |
@@ -201,27 +202,48 @@ npm run test:tools-intelligence
 npm run test:tools-research
 npm run test:tools-browser-intelligence
 npm run test:tools-browser-research-pack
+npm run test:tools-search-power
+npm run test:tools-risk-captcha
 npm run test:core-tool-selection
 npm run test:core-tools-ecosystem
 npm run test:core-browser-research-planning
+npm run test:core-search-planning
+npm run test:mcp-user-smoke
 npm run test:core-tools-e2e
 npm run tools:readiness
+npm run core:readiness
 ```
 
 Actual Core → Tools use path:
 
 1. Start/connect Core MCP.
 2. Start/connect Tools MCP for a specific workspace.
-3. Ask Core `vnem_select_tools_for_task`, `vnem_build_tools_plan`, `vnem_build_browser_research_plan`, `vnem_explain_tools_chain`, or `vnem_boost_task` to classify the task, choose Tools capabilities, define dry-runs/approvals/evidence, distinguish direct-source vs website-understanding vs local-UI vs current-research work, and produce a plan-only Core→Tools handoff.
+3. Ask Core `vnem_select_tools_for_task`, `vnem_build_tools_plan`, `vnem_assess_research_need`, `vnem_build_search_plan`, `vnem_build_browsing_plan`, `vnem_build_browser_research_plan`, `vnem_explain_tools_chain`, or `vnem_boost_task` to classify the task, choose Tools capabilities, define dry-runs/approvals/evidence, detect freshness/search needs, handle CAPTCHA/download/redirect risk in plan form, and produce a plan-only Core→Tools handoff.
 4. Pass Core's `tools_mcp_handoff` to `vnem_tools_prepare_action_plan`.
 5. Tools creates an action plan and marks unsupported work as blocked.
 6. Tools dry-runs the catalog/project/source scan/patch batch/restore/task/dev-server/API/browser/local-git action first.
 7. User approves the exact action with scope and rollback/restore plan.
-8. Tools performs only the approved allowed-root/localhost/direct-source action, can map workspaces, read bounded safe file sets, search code, inspect dependencies without installing, run safe project checks, start/stop a Tools-started local dev server, evaluate provided/direct sources, inspect page structure, extract readable content, map links without following them, search DOM-like content, run static accessibility checks, compare snapshots, capture local browser proof when useful, restore/rollback batches, and optionally make an approved local git commit of explicit safe files.
+8. Tools performs only the approved allowed-root/localhost/direct-source/provider-search action, can map workspaces, read bounded safe file sets, search code, inspect dependencies without installing, build search queries, run configured/approved provider search or return honest unavailable status, rank results, evaluate provided/direct sources, inspect page structure, extract readable content, map links without following them, search DOM-like content, detect CAPTCHA/access blocks, check URL/redirect/download risk, build claim/source matrices, detect research gaps, run static accessibility checks, compare snapshots, capture local browser proof when useful, restore/rollback batches, and optionally make an approved local git commit of explicit safe files.
 9. Tools collects redacted action/session evidence with `vnem_tools_collect_evidence` or `vnem_tools_finish_session`.
 10. Final response maps `proof_trail_compatible_summary` into Core `vnem_completion_audit` / `vnem_proof_trail` inputs and says whether browser visual proof was actually captured; do not claim visual/live API proof without evidence.
 
-Not in this foundation batch: no Giga MCP, unrestricted filesystem, arbitrary shell, git push / remote GitHub mutation, package installs, package publishing, deployment, external browser browsing by default, search-engine scraping, broad crawling, secret-backed live API execution, login/cookie/session/CAPTCHA automation, credential capture, or unrestricted API calls. Future work can add more only after this safety base stays stable.
+Not in this foundation batch: no Giga MCP, unrestricted filesystem, arbitrary shell, git push / remote GitHub mutation, package installs, package publishing, deployment, unrestricted external browser browsing by default, search-engine result page scraping by default, automatic CAPTCHA bypass, unrestricted crawling, secret-backed live API execution, login/cookie/session automation, credential capture, automatic downloads/installers, or unrestricted API calls. Real provider search works only when a provider is configured and the user approves it; unavailable providers return structured unavailable results, not fake search results. Future work can add more only after this safety base stays stable.
+
+## How to test Core + Tools MCP locally
+
+Use the deterministic smoke path first; it requires no external internet:
+
+```bash
+npm run test:mcp-user-smoke
+npm run tools:readiness
+npm run core:readiness
+```
+
+The smoke test proves Core can build search/browsing plans, Tools exposes the new search/browser safety tools, query building and result ranking work with fixtures, CAPTCHA/access-block and suspicious download/redirect signals are detected, claim/source matrices are built, and research gaps are reported without live web access.
+
+Public Tools MCP can build strong search queries, run provider-backed search when configured and approved, rank search results, inspect sources/pages, detect CAPTCHA/access blocks, check URL/reputation/download risk, build claim/source matrices, and detect research gaps.
+
+Public Tools MCP does not automatically bypass CAPTCHA, scrape search engine result pages by default, perform login/session/cookie automation, run arbitrary downloads/installers, or claim live/current search happened when a provider is unavailable.
 
 ## Precision Execution Layer
 
@@ -423,12 +445,15 @@ Tools MCP foundation tools, available only from `scripts/vnem-tools-mcp-server.m
 - `vnem_tools_start_dev_server`, `vnem_tools_list_dev_servers`, `vnem_tools_stop_dev_server`: approved localhost dev/start/preview script lifecycle for Tools-started processes only.
 - `vnem_tools_api_request`: dry-run-first approved GET/HEAD API requests only; raw secrets blocked; no untrusted URL calls by default.
 - `vnem_tools_fetch_url_text`, `vnem_tools_source_quality_check`, `vnem_tools_research_brief`, `vnem_tools_browser_research_pack`: safe source intelligence for direct/provided/local sources; external URL fetch is dry-run-first and approved, search-engine scraping is blocked, and research packs separate supported/unsupported/conflicting claims without faking web search.
+- `vnem_tools_search_provider_manifest`, `vnem_tools_search_query_builder`, `vnem_tools_web_search`, `vnem_tools_search_result_ranker`: public search-provider framework. It reports configured/unconfigured providers without exposing API key values, builds strong search queries, runs approved configured provider search or deterministic local fixture search for tests, returns provider_unconfigured/provider_unavailable honestly, and ranks results by relevance, credibility, freshness, duplicates, and risk.
+- `vnem_tools_claim_source_matrix`, `vnem_tools_research_gap_detector`: claim/source support matrix and gap analysis for unsupported/conflicting claims, missing current search, missing primary/counter sources, and missing dates/versions.
+- `vnem_tools_redirect_chain_check`, `vnem_tools_url_reputation_check`, `vnem_tools_captcha_detector`, `vnem_tools_download_safety_check`: safer browsing risk tools for suspicious redirects, phishing/scam/download bait, credential traps, CAPTCHA/access blocks, and risky download links. They do not bypass CAPTCHA, use cookies/sessions/login, download files, or run installers.
 - `vnem_tools_browser_page_inspect`, `vnem_tools_browser_readability_extract`, `vnem_tools_browser_link_map`, `vnem_tools_browser_dom_search`, `vnem_tools_browser_accessibility_audit`, `vnem_tools_browser_compare_snapshots`: safe static browser/page understanding for direct URLs, localhost, allowed local HTML files, provided HTML/text, or previous evidence. They inspect page structure, readable content, links, DOM-like content, accessibility heuristics, and before/after snapshots without JavaScript execution, crawling, accessibility certification, or visual overclaims.
 - `vnem_tools_browser_capture`: dry-run-first approved local browser screenshot proof for allowed-root files or localhost pages; external/data/javascript/credentialed URLs, secret files, login/session/cookie/CAPTCHA/credential automation, and broad scraping are blocked.
 - `vnem_tools_start_session`, `vnem_tools_finish_session`, `vnem_tools_collect_evidence`: write redacted structured action/session evidence and `proof_trail_compatible_summary`, including screenshot paths/hashes when browser proof exists, for final proof trails.
 - `vnem_tools_git_status`, `vnem_tools_git_diff_summary`, `vnem_tools_git_commit`: read-only local git status/diff plus approved local commits of explicit safe files; no git push or remote mutation.
 
-Not in Tools MCP foundation: no Giga MCP, unrestricted filesystem, arbitrary shell, git push / remote GitHub mutation, package installs, package publishing, deployment, external browser browsing by default, search-engine scraping, broad crawling, secret-backed live API execution, login/cookie/session/CAPTCHA automation, credential capture, or unrestricted API calls.
+Not in Tools MCP foundation: no Giga MCP, unrestricted filesystem, arbitrary shell, git push / remote GitHub mutation, package installs, package publishing, deployment, unrestricted external browser browsing by default, search-engine result page scraping by default, automatic CAPTCHA bypass, unrestricted crawling, secret-backed live API execution, login/cookie/session automation, credential capture, automatic downloads/installers, or unrestricted API calls. Real provider search only works when a provider is configured and approved; otherwise Tools returns honest unavailable/unconfigured status.
 
 Main resources:
 
@@ -567,10 +592,10 @@ Recommended agent flow:
 
 Core/Tools boundary:
 
-- Core MCP chooses useful APIs/skills, selects Tools MCP capabilities with `vnem_select_tools_for_task`, builds plan-only Core→Tools sequences with `vnem_build_tools_plan`, builds browser/source research plans with `vnem_build_browser_research_plan`, explains Tools chains with `vnem_explain_tools_chain`, creates concrete workflows, asks missing questions, says what proof is required, and prepares a Tools MCP handoff.
+- Core MCP chooses useful APIs/skills, selects Tools MCP capabilities with `vnem_select_tools_for_task`, assesses research need with `vnem_assess_research_need`, builds provider-search plans with `vnem_build_search_plan`, builds browsing risk plans with `vnem_build_browsing_plan`, builds general plan-only Core→Tools sequences with `vnem_build_tools_plan`, builds browser/source research plans with `vnem_build_browser_research_plan`, explains Tools chains with `vnem_explain_tools_chain`, creates concrete workflows, asks missing questions, says what proof is required, and prepares a Tools MCP handoff.
 - Core MCP does not execute actions: no file edits, terminal commands, browser/screenshot work, package installs, GitHub mutations, live API calls, local mod edits, account/device changes, or claims that Tools actions happened.
-- Tools MCP foundation performs approved bounded actions using Core's handoff: manifest/catalog discovery, dry-run first, permission prompts, path-limited reads/search/workspace maps/read-many/reference/dependency scans, source-quality/research-brief/research-pack helpers for direct/provided/local sources, safe static page inspection/readability/link-map/DOM-search/accessibility/snapshot-comparison helpers, project scans/patch batches/restores, safe project tasks, local dev server lifecycle, approved GET/HEAD API requests, approved local browser screenshot capture, optional approved local git commits, session evidence, and proof handoffs.
-- Not in this foundation batch: no Giga MCP, unrestricted filesystem, arbitrary shell, git push / remote GitHub mutation, package installs, package publishing, deployment, external browser browsing by default, search-engine scraping, broad crawling, secret-backed live API execution, login/cookie/session/CAPTCHA automation, credential capture, or unrestricted API calls.
+- Tools MCP foundation performs approved bounded actions using Core's handoff: manifest/catalog discovery, dry-run first, permission prompts, path-limited reads/search/workspace maps/read-many/reference/dependency scans, source-quality/research-brief/research-pack helpers for direct/provided/local sources, provider-search query/build/run/rank helpers, URL reputation/redirect/CAPTCHA/download risk checks, claim/source matrices, research gap detection, safe static page inspection/readability/link-map/DOM-search/accessibility/snapshot-comparison helpers, project scans/patch batches/restores, safe project tasks, local dev server lifecycle, approved GET/HEAD API requests, approved local browser screenshot capture, optional approved local git commits, session evidence, and proof handoffs.
+- Not in this foundation batch: no Giga MCP, unrestricted filesystem, arbitrary shell, git push / remote GitHub mutation, package installs, package publishing, deployment, unrestricted external browser browsing by default, search-engine result page scraping by default, automatic CAPTCHA bypass, unrestricted crawling, secret-backed live API execution, login/cookie/session automation, credential capture, automatic downloads/installers, or unrestricted API calls. Real provider search only works when configured and approved; otherwise Tools returns honest unavailable/unconfigured status.
 - Raw discovered APIs/skills are not counted as usable packs; usable packs are a curated subset with docs/source, safety boundaries, test plans, and handoff needs.
 
 Examples:

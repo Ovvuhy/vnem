@@ -17,6 +17,10 @@ const intelligenceTestPath = rel("scripts/test-tools-intelligence.mjs");
 const researchTestPath = rel("scripts/test-tools-research.mjs");
 const browserIntelligenceTestPath = rel("scripts/test-tools-browser-intelligence.mjs");
 const browserResearchPackTestPath = rel("scripts/test-tools-browser-research-pack.mjs");
+const toolsSearchPowerTestPath = rel("scripts/test-tools-search-power.mjs");
+const toolsRiskCaptchaTestPath = rel("scripts/test-tools-risk-captcha.mjs");
+const mcpUserSmokeTestPath = rel("scripts/test-mcp-user-smoke.mjs");
+const coreSearchPlanningTestPath = rel("scripts/test-core-search-planning.mjs");
 const coreBrowserPlanningTestPath = rel("scripts/test-core-browser-research-planning.mjs");
 const coreSelectionTestPath = rel("scripts/test-core-tool-selection.mjs");
 const coreEcosystemTestPath = rel("scripts/test-core-tools-tool-ecosystem.mjs");
@@ -33,6 +37,10 @@ const intelligenceTest = existsSync(intelligenceTestPath) ? readFileSync(intelli
 const researchTest = existsSync(researchTestPath) ? readFileSync(researchTestPath, "utf8") : "";
 const browserIntelligenceTest = existsSync(browserIntelligenceTestPath) ? readFileSync(browserIntelligenceTestPath, "utf8") : "";
 const browserResearchPackTest = existsSync(browserResearchPackTestPath) ? readFileSync(browserResearchPackTestPath, "utf8") : "";
+const toolsSearchPowerTest = existsSync(toolsSearchPowerTestPath) ? readFileSync(toolsSearchPowerTestPath, "utf8") : "";
+const toolsRiskCaptchaTest = existsSync(toolsRiskCaptchaTestPath) ? readFileSync(toolsRiskCaptchaTestPath, "utf8") : "";
+const mcpUserSmokeTest = existsSync(mcpUserSmokeTestPath) ? readFileSync(mcpUserSmokeTestPath, "utf8") : "";
+const coreSearchPlanningTest = existsSync(coreSearchPlanningTestPath) ? readFileSync(coreSearchPlanningTestPath, "utf8") : "";
 const coreBrowserPlanningTest = existsSync(coreBrowserPlanningTestPath) ? readFileSync(coreBrowserPlanningTestPath, "utf8") : "";
 const coreSelectionTest = existsSync(coreSelectionTestPath) ? readFileSync(coreSelectionTestPath, "utf8") : "";
 const coreEcosystemTest = existsSync(coreEcosystemTestPath) ? readFileSync(coreEcosystemTestPath, "utf8") : "";
@@ -67,6 +75,16 @@ const requiredTools = [
   "vnem_tools_browser_accessibility_audit",
   "vnem_tools_browser_compare_snapshots",
   "vnem_tools_browser_research_pack",
+  "vnem_tools_search_provider_manifest",
+  "vnem_tools_search_query_builder",
+  "vnem_tools_web_search",
+  "vnem_tools_search_result_ranker",
+  "vnem_tools_redirect_chain_check",
+  "vnem_tools_url_reputation_check",
+  "vnem_tools_captcha_detector",
+  "vnem_tools_download_safety_check",
+  "vnem_tools_claim_source_matrix",
+  "vnem_tools_research_gap_detector",
   "vnem_tools_apply_patch_batch",
   "vnem_tools_restore_batch",
   "vnem_tools_project_scan",
@@ -92,6 +110,10 @@ const report = {
   research_test_exists: existsSync(researchTestPath),
   browser_intelligence_test_exists: existsSync(browserIntelligenceTestPath),
   browser_research_pack_test_exists: existsSync(browserResearchPackTestPath),
+  tools_search_power_test_exists: existsSync(toolsSearchPowerTestPath),
+  tools_risk_captcha_test_exists: existsSync(toolsRiskCaptchaTestPath),
+  mcp_user_smoke_test_exists: existsSync(mcpUserSmokeTestPath),
+  core_search_planning_test_exists: existsSync(coreSearchPlanningTestPath),
   core_browser_planning_test_exists: existsSync(coreBrowserPlanningTestPath),
   core_selection_test_exists: existsSync(coreSelectionTestPath),
   core_ecosystem_test_exists: existsSync(coreEcosystemTestPath),
@@ -106,6 +128,10 @@ const report = {
     test_tools_research: pkg.scripts?.["test:tools-research"] === "node scripts/test-tools-research.mjs",
     test_tools_browser_intelligence: pkg.scripts?.["test:tools-browser-intelligence"] === "node scripts/test-tools-browser-intelligence.mjs",
     test_tools_browser_research_pack: pkg.scripts?.["test:tools-browser-research-pack"] === "node scripts/test-tools-browser-research-pack.mjs",
+    test_tools_search_power: pkg.scripts?.["test:tools-search-power"] === "node scripts/test-tools-search-power.mjs",
+    test_tools_risk_captcha: pkg.scripts?.["test:tools-risk-captcha"] === "node scripts/test-tools-risk-captcha.mjs",
+    test_core_search_planning: pkg.scripts?.["test:core-search-planning"] === "node scripts/test-core-search-planning.mjs",
+    test_mcp_user_smoke: pkg.scripts?.["test:mcp-user-smoke"] === "node scripts/test-mcp-user-smoke.mjs",
     test_core_browser_research_planning: pkg.scripts?.["test:core-browser-research-planning"] === "node scripts/test-core-browser-research-planning.mjs",
     test_core_tool_selection: pkg.scripts?.["test:core-tool-selection"] === "node scripts/test-core-tool-selection.mjs",
     test_core_tools_ecosystem: pkg.scripts?.["test:core-tools-ecosystem"] === "node scripts/test-core-tools-tool-ecosystem.mjs"
@@ -141,6 +167,20 @@ const report = {
   browser_intelligence_safety_status: /browserUnderstandingMustNotClaim/.test(server) && /search_engine_scraping_blocked/.test(browserIntelligenceTest) && /secret_path_blocked/.test(browserIntelligenceTest),
   browser_search_engine_scraping_still_blocked: /search_engine_scraping_blocked/.test(server) && /search_engine_scraping_blocked/.test(browserIntelligenceTest + researchTest),
   browser_fake_search_claims_blocked: /A broad web search happened|A web search happened/.test(server) && /web search/.test(browserResearchPackTest + coreBrowserPlanningTest),
+
+  search_provider_manifest_status: /vnem_tools_search_provider_manifest/.test(server) && /safeSearchProviderManifest/.test(server) && /configured_providers/.test(server) && /api_key_value_exposed/.test(server) && /local_fixture/.test(toolsSearchPowerTest),
+  search_query_builder_status: /vnem_tools_search_query_builder/.test(server) && /safeSearchQueryBuilder/.test(server) && /official_source_targets/.test(server) && /gaming|modding|security|API/.test(toolsSearchPowerTest + server),
+  web_search_status: /vnem_tools_web_search/.test(server) && /safeWebSearch/.test(server) && /provider_unconfigured/.test(server) && /no fake results returned/.test(server),
+  search_result_ranker_status: /vnem_tools_search_result_ranker/.test(server) && /safeSearchResultRanker/.test(server) && /risky_sources/.test(toolsSearchPowerTest + server) && /duplicate_clusters/.test(server),
+  redirect_chain_check_status: /vnem_tools_redirect_chain_check/.test(server) && /safeRedirectChainCheck/.test(server) && /cross_domain_redirects/.test(server) && /redirect_chain/.test(toolsRiskCaptchaTest),
+  url_reputation_check_status: /vnem_tools_url_reputation_check/.test(server) && /safeUrlReputationCheck/.test(server) && /punycode_or_homograph_risk|phishing_scam/.test(server + toolsRiskCaptchaTest),
+  captcha_detector_status: /vnem_tools_captcha_detector/.test(server) && /safeCaptchaDetector/.test(server) && /No automatic CAPTCHA bypass was attempted or provided/.test(server + toolsRiskCaptchaTest),
+  download_safety_check_status: /vnem_tools_download_safety_check/.test(server) && /safeDownloadSafetyCheck/.test(server) && /The file was downloaded/.test(server) && /requires_manual_review/.test(toolsRiskCaptchaTest),
+  claim_source_matrix_status: /vnem_tools_claim_source_matrix/.test(server) && /safeClaimSourceMatrix/.test(server) && /supported_claims/.test(toolsSearchPowerTest + server) && /unsupported_claims/.test(server),
+  research_gap_detector_status: /vnem_tools_research_gap_detector/.test(server) && /safeResearchGapDetector/.test(server) && /missing_current_search/.test(toolsSearchPowerTest + mcpUserSmokeTest),
+  browser_search_safety_policy: /no_search_engine_result_page_scraping/.test(server) && /no_fake_search_results/.test(server) && /automatic CAPTCHA bypass/.test(server),
+  provider_unconfigured_honesty: /provider_unconfigured/.test(server) && /no fake results returned/.test(server) && /provider_unavailable|provider_unconfigured/.test(server + toolsSearchPowerTest),
+  no_captcha_bypass_public_policy: /No automatic CAPTCHA bypass was attempted or provided/.test(server + toolsRiskCaptchaTest) && /automatic CAPTCHA bypass/.test(server),
   patch_batch_status: /vnem_tools_apply_patch_batch/.test(server) && /safeApplyPatchBatch/.test(server) && /partialFailure/.test(projectActionsTest) && /explicit_delete_required/.test(projectActionsTest),
   restore_batch_status: /vnem_tools_restore_batch/.test(server) && /safeRestoreBatch/.test(server) && /restoreSecret/.test(projectActionsTest),
   project_scan_status: /vnem_tools_project_scan/.test(server) && /safeProjectScan/.test(server) && /likely_frameworks/.test(server) && /blocked_or_skipped_paths/.test(projectActionsTest),
@@ -175,6 +215,8 @@ const report = {
     "unrestricted API calls",
     "secret-manager-backed live API calls",
     "search-engine scraping",
+    "automatic CAPTCHA bypass",
+    "unrestricted crawling",
     "Giga MCP orchestration"
   ],
   browser_known_limitations: [
@@ -204,6 +246,14 @@ assert.equal(report.intelligence_test_exists, true, "tools intelligence test fil
 assert.equal(report.research_test_exists, true, "tools research test file is missing");
 assert.equal(report.browser_intelligence_test_exists, true, "browser intelligence test file is missing");
 assert.equal(report.browser_research_pack_test_exists, true, "browser research pack test file is missing");
+assert.equal(report.tools_search_power_test_exists, true, "tools search power test file is missing");
+assert.equal(report.tools_risk_captcha_test_exists, true, "tools risk/CAPTCHA test file is missing");
+assert.equal(report.mcp_user_smoke_test_exists, true, "MCP user smoke test file is missing");
+assert.equal(report.core_search_planning_test_exists, true, "core search planning test file is missing");
+assert.equal(report.package_scripts.test_tools_search_power, true, "test:tools-search-power package script is missing");
+assert.equal(report.package_scripts.test_tools_risk_captcha, true, "test:tools-risk-captcha package script is missing");
+assert.equal(report.package_scripts.test_core_search_planning, true, "test:core-search-planning package script is missing");
+assert.equal(report.package_scripts.test_mcp_user_smoke, true, "test:mcp-user-smoke package script is missing");
 assert.equal(report.core_browser_planning_test_exists, true, "core browser planning test file is missing");
 assert.equal(report.package_scripts.test_tools_browser_intelligence, true, "test:tools-browser-intelligence package script is missing");
 assert.equal(report.package_scripts.test_tools_browser_research_pack, true, "test:tools-browser-research-pack package script is missing");
@@ -232,6 +282,19 @@ assert.equal(report.browser_approval_required, true, "browser capture approval g
 assert.equal(report.external_url_blocked, true, "external browser URL blocking is missing");
 assert.equal(report.secret_file_browser_blocked, true, "secret-file browser blocking is missing");
 assert.equal(report.screenshot_evidence_status, true, "screenshot evidence bridge is missing");
+assert.equal(report.search_provider_manifest_status, true, "search provider manifest readiness missing");
+assert.equal(report.search_query_builder_status, true, "search query builder readiness missing");
+assert.equal(report.web_search_status, true, "web search readiness missing");
+assert.equal(report.search_result_ranker_status, true, "search result ranker readiness missing");
+assert.equal(report.redirect_chain_check_status, true, "redirect chain check readiness missing");
+assert.equal(report.url_reputation_check_status, true, "URL reputation readiness missing");
+assert.equal(report.captcha_detector_status, true, "CAPTCHA detector readiness missing");
+assert.equal(report.download_safety_check_status, true, "download safety readiness missing");
+assert.equal(report.claim_source_matrix_status, true, "claim/source matrix readiness missing");
+assert.equal(report.research_gap_detector_status, true, "research gap detector readiness missing");
+assert.equal(report.browser_search_safety_policy, true, "browser/search safety policy missing");
+assert.equal(report.provider_unconfigured_honesty, true, "provider unconfigured honesty missing");
+assert.equal(report.no_captcha_bypass_public_policy, true, "no-CAPTCHA-bypass public policy missing");
 assert.equal(report.patch_batch_status, true, "patch batch support/test coverage is missing");
 assert.equal(report.restore_batch_status, true, "restore batch support/test coverage is missing");
 assert.equal(report.project_scan_status, true, "project scan support/test coverage is missing");
@@ -262,6 +325,11 @@ console.log(`intelligence_test_exists: ${yes(report.intelligence_test_exists)}`)
 console.log(`research_test_exists: ${yes(report.research_test_exists)}`);
 console.log(`browser_intelligence_test_exists: ${yes(report.browser_intelligence_test_exists)}`);
 console.log(`browser_research_pack_test_exists: ${yes(report.browser_research_pack_test_exists)}`);
+console.log(`tools_search_power_test_exists: ${yes(report.tools_search_power_test_exists)}`);
+console.log(`tools_risk_captcha_test_exists: ${yes(report.tools_risk_captcha_test_exists)}`);
+console.log(`mcp_user_smoke_test_exists: ${yes(report.mcp_user_smoke_test_exists)}`);
+console.log(`core_search_planning_test_exists: ${yes(report.core_search_planning_test_exists)}`);
+
 console.log(`core_browser_planning_test_exists: ${yes(report.core_browser_planning_test_exists)}`);
 console.log(`core_selection_test_exists: ${yes(report.core_selection_test_exists)}`);
 console.log(`core_ecosystem_test_exists: ${yes(report.core_ecosystem_test_exists)}`);
@@ -297,6 +365,19 @@ console.log(`browser_research_pack_status: ${yes(report.browser_research_pack_st
 console.log(`browser_intelligence_safety_status: ${yes(report.browser_intelligence_safety_status)}`);
 console.log(`browser_search_engine_scraping_still_blocked: ${yes(report.browser_search_engine_scraping_still_blocked)}`);
 console.log(`browser_fake_search_claims_blocked: ${yes(report.browser_fake_search_claims_blocked)}`);
+console.log(`search_provider_manifest_status: ${yes(report.search_provider_manifest_status)}`);
+console.log(`search_query_builder_status: ${yes(report.search_query_builder_status)}`);
+console.log(`web_search_status: ${yes(report.web_search_status)}`);
+console.log(`search_result_ranker_status: ${yes(report.search_result_ranker_status)}`);
+console.log(`redirect_chain_check_status: ${yes(report.redirect_chain_check_status)}`);
+console.log(`url_reputation_check_status: ${yes(report.url_reputation_check_status)}`);
+console.log(`captcha_detector_status: ${yes(report.captcha_detector_status)}`);
+console.log(`download_safety_check_status: ${yes(report.download_safety_check_status)}`);
+console.log(`claim_source_matrix_status: ${yes(report.claim_source_matrix_status)}`);
+console.log(`research_gap_detector_status: ${yes(report.research_gap_detector_status)}`);
+console.log(`browser_search_safety_policy: ${yes(report.browser_search_safety_policy)}`);
+console.log(`provider_unconfigured_honesty: ${yes(report.provider_unconfigured_honesty)}`);
+console.log(`no_captcha_bypass_public_policy: ${yes(report.no_captcha_bypass_public_policy)}`);
 console.log(`patch_batch_status: ${yes(report.patch_batch_status)}`);
 console.log(`restore_batch_status: ${yes(report.restore_batch_status)}`);
 console.log(`project_scan_status: ${yes(report.project_scan_status)}`);

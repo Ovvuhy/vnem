@@ -41,6 +41,16 @@ const REQUIRED_TOOL_NAMES = [
   "vnem_tools_browser_accessibility_audit",
   "vnem_tools_browser_compare_snapshots",
   "vnem_tools_browser_research_pack",
+  "vnem_tools_search_provider_manifest",
+  "vnem_tools_search_query_builder",
+  "vnem_tools_web_search",
+  "vnem_tools_search_result_ranker",
+  "vnem_tools_redirect_chain_check",
+  "vnem_tools_url_reputation_check",
+  "vnem_tools_captcha_detector",
+  "vnem_tools_download_safety_check",
+  "vnem_tools_claim_source_matrix",
+  "vnem_tools_research_gap_detector",
   "vnem_tools_apply_patch_batch",
   "vnem_tools_restore_batch",
   "vnem_tools_project_scan",
@@ -628,6 +638,132 @@ function registerTools(mcpServer) {
   );
 
   mcpServer.registerTool(
+    "vnem_tools_search_provider_manifest",
+    {
+      title: "VNEM Search Provider Manifest",
+      description: "Read-only manifest of configured/unconfigured search providers without exposing API key values.",
+      inputSchema: {},
+      annotations: READ_ONLY_LOCAL
+    },
+    async () => withToolErrors(async () => { const result = safeSearchProviderManifest(); return toolResult(formatSearchProviderManifest(result), { search_provider_manifest: result }); })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_search_query_builder",
+    {
+      title: "VNEM Search Query Builder",
+      description: "Build strong search queries for current facts, docs, code, gaming/modding, security, product/API research, and source discovery.",
+      inputSchema: {
+        task: z.string().min(1),
+        domain_hint: z.string().default(""),
+        freshness_required: z.boolean().default(false),
+        source_types_needed: z.array(z.string()).default([]),
+        known_context: z.string().default("")
+      },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => { const result = await safeSearchQueryBuilder(args); return toolResult(formatSearchQueryBuilder(result), { search_query_builder: result }); })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_web_search",
+    {
+      title: "VNEM Provider Web Search",
+      description: "Dry-run-first provider-backed search. Executes only configured providers or deterministic local_fixture; no search-engine scraping or CAPTCHA bypass.",
+      inputSchema: {
+        provider: z.string().default("local_fixture"),
+        query: z.string().min(1),
+        dry_run: z.boolean().default(true),
+        approved: z.boolean().default(false),
+        approval_note: z.string().default(""),
+        max_results: z.number().int().min(1).max(20).default(10),
+        safe_search: z.boolean().default(true),
+        session_id: z.string().optional()
+      },
+      annotations: NETWORK_ACTION
+    },
+    async (args) => withToolErrors(async () => { const result = await safeWebSearch(args); return toolResult(formatWebSearch(result), { web_search: result }); })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_search_result_ranker",
+    {
+      title: "VNEM Search Result Ranker",
+      description: "Rank search results by credibility, relevance, freshness, duplicates, and risk.",
+      inputSchema: { task: z.string().min(1), results: z.array(z.record(z.any())).default([]), freshness_required: z.boolean().default(false), preferred_source_types: z.array(z.string()).default([]), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => { const result = await safeSearchResultRanker(args); return toolResult(formatSearchResultRanker(result), { search_result_ranker: result }); })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_redirect_chain_check",
+    {
+      title: "VNEM Redirect Chain Check",
+      description: "Dry-run-first safe redirect chain check using HEAD/manual redirects where possible; no cookies, login, or blind following.",
+      inputSchema: { url: z.string().min(1), dry_run: z.boolean().default(true), approved: z.boolean().default(false), approval_note: z.string().default(""), max_redirects: z.number().int().min(1).max(10).default(5), session_id: z.string().optional() },
+      annotations: NETWORK_ACTION
+    },
+    async (args) => withToolErrors(async () => { const result = await safeRedirectChainCheck(args); return toolResult(formatRedirectChain(result), { redirect_chain_check: result }); })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_url_reputation_check",
+    {
+      title: "VNEM URL Reputation Check",
+      description: "Heuristic URL/domain risk assessment. Not antivirus and not a browsing verdict.",
+      inputSchema: { url: z.string().min(1), redirect_chain: z.array(z.record(z.any())).default([]), known_official_domains: z.array(z.string()).default([]), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => { const result = await safeUrlReputationCheck(args); return toolResult(formatUrlReputation(result), { url_reputation_check: result }); })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_captcha_detector",
+    {
+      title: "VNEM CAPTCHA / Access Block Detector",
+      description: "Detect CAPTCHA/anti-bot/access-block pages from provided URL, HTML, text, screenshot metadata, or page inspection. No bypass.",
+      inputSchema: { url: z.string().optional(), html: z.string().optional(), text: z.string().optional(), screenshot_metadata: z.record(z.any()).optional(), page_inspection: z.record(z.any()).optional(), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => { const result = await safeCaptchaDetector(args); return toolResult(formatCaptchaDetector(result), { captcha_detector: result }); })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_download_safety_check",
+    {
+      title: "VNEM Download Safety Check",
+      description: "Assess a download link before following/downloading. No actual download; optional approved HEAD metadata only.",
+      inputSchema: { download_url: z.string().min(1), source_page_url: z.string().optional(), source_quality_score: z.number().optional(), dry_run: z.boolean().default(true), approved: z.boolean().default(false), approval_note: z.string().default(""), session_id: z.string().optional() },
+      annotations: NETWORK_ACTION
+    },
+    async (args) => withToolErrors(async () => { const result = await safeDownloadSafetyCheck(args); return toolResult(formatDownloadSafety(result), { download_safety_check: result }); })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_claim_source_matrix",
+    {
+      title: "VNEM Claim Source Matrix",
+      description: "Build claim-by-source support/conflict matrix to prevent fake confidence.",
+      inputSchema: { claims: z.array(z.string()).default([]), sources: z.array(z.record(z.any())).default([]), task: z.string().default(""), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => { const result = await safeClaimSourceMatrix(args); return toolResult(formatClaimSourceMatrix(result), { claim_source_matrix: result }); })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_research_gap_detector",
+    {
+      title: "VNEM Research Gap Detector",
+      description: "Identify missing source types, current search, primary/counter sources, dates/versions, and confidence blockers.",
+      inputSchema: { task: z.string().min(1), sources: z.array(z.record(z.any())).default([]), claims: z.array(z.string()).default([]), freshness_required: z.boolean().default(false), domain: z.string().default(""), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => { const result = await safeResearchGapDetector(args); return toolResult(formatResearchGapDetector(result), { research_gap_detector: result }); })
+  );
+
+
+  mcpServer.registerTool(
     "vnem_tools_fetch_url_text",
     {
       title: "Fetch Direct URL Text Safely",
@@ -761,7 +897,9 @@ function statusObject() {
     command_allowlist: ["node --check <file>", "npm test", "npm run <safe-script>", "git status", "git diff", "git log", "git ls-files"],
     tool_catalog_policy: { tool: "vnem_tools_manifest", capability_groups: TOOL_CAPABILITY_GROUPS, safety_metadata_required: true, core_handoff_compatible: true },
     filesystem_intelligence_policy: { tools: ["vnem_tools_workspace_map", "vnem_tools_read_many_files", "vnem_tools_code_search", "vnem_tools_find_references", "vnem_tools_dependency_scan"], allowed_roots_only: true, secret_paths_blocked: true, generated_build_cache_skipped: true, evidence_logged: true },
-    research_sources_policy: { tools: ["vnem_tools_fetch_url_text", "vnem_tools_source_quality_check", "vnem_tools_research_brief"], no_search_engine_scraping: true, external_fetch_dry_run_default: true, approval_required_for_real_external_fetch: true, no_login_cookie_session_use: true },
+    research_sources_policy: { tools: ["vnem_tools_fetch_url_text", "vnem_tools_source_quality_check", "vnem_tools_research_brief", "vnem_tools_browser_research_pack", "vnem_tools_claim_source_matrix", "vnem_tools_research_gap_detector"], no_search_engine_scraping: true, external_fetch_dry_run_default: true, approval_required_for_real_external_fetch: true, no_login_cookie_session_use: true },
+    search_provider_policy: { tools: ["vnem_tools_search_provider_manifest", "vnem_tools_search_query_builder", "vnem_tools_web_search", "vnem_tools_search_result_ranker"], local_fixture_available_for_tests: true, provider_keys_detected_by_presence_only: true, provider_unavailable_returns_structured_status: true, no_search_engine_result_page_scraping: true, no_fake_search_results: true },
+    browser_risk_policy: { tools: ["vnem_tools_redirect_chain_check", "vnem_tools_url_reputation_check", "vnem_tools_captcha_detector", "vnem_tools_download_safety_check"], no_captcha_bypass: true, user_assisted_captcha_handoff: true, suspicious_redirect_download_phishing_detection: true, no_auto_download_or_installer_execution: true },
     patch_batch_policy: { tool: "vnem_tools_apply_patch_batch", dry_run_default: true, approval_required: true, operations: ["replace", "create", "delete", "append"], no_partial_apply_by_default: true, backups_per_changed_file: true },
     project_scan_policy: { tool: "vnem_tools_project_scan", allowed_roots_only: true, skips_secrets: true, reads_package_json_only_for_scripts_and_frameworks: true },
     project_task_policy: { tool: "vnem_tools_run_project_task", dry_run_default: true, approval_required: true, package_json_scripts_only: true, package_install_publish_deploy_blocked: true },
@@ -803,7 +941,7 @@ function statusObject() {
     },
     evidence_log_location: evidenceRoot,
     core_handoff_supported: true,
-    remaining_unsupported_actions: ["remote_github_mutation", "git_push", "package_install", "package_publish", "deployment", "arbitrary_shell", "unrestricted_api_calls", "secret_manager_backed_live_api", "search_engine_scraping", "external_browser_browsing_by_default", "login_automation", "cookie_extraction", "session_extraction", "captcha_bypass", "giga_mcp"],
+    remaining_unsupported_actions: ["remote_github_mutation", "git_push", "package_install", "package_publish", "deployment", "arbitrary_shell", "unrestricted_api_calls", "secret_manager_backed_live_api", "search_engine_scraping", "automatic_captcha_bypass", "broad_crawling", "external_browser_browsing_by_default", "login_automation", "cookie_extraction", "session_extraction", "captcha_bypass", "giga_mcp"],
     unsupported_in_foundation_batch: ["remote_github_mutation", "git_push", "package_install", "package_publish", "deployment", "arbitrary_shell", "unrestricted_api_calls", "secret_manager_backed_live_api", "login_automation", "cookie_extraction", "captcha_bypass", "giga_mcp"]
   };
 }
@@ -985,12 +1123,13 @@ async function searchAllowedFiles(args) {
   return { root: root.relativePath || ".", query: args.query, results, skipped_policy: skippedPolicy() };
 }
 
-const TOOL_CAPABILITY_GROUPS = ["filesystem", "project_intelligence", "patching", "rollback", "commands", "project_tasks", "dev_server", "browser_proof", "browser_intelligence", "api_request", "research_sources", "source_quality", "session_evidence", "local_git", "status_readiness"];
+const TOOL_CAPABILITY_GROUPS = ["filesystem", "project_intelligence", "patching", "rollback", "commands", "project_tasks", "dev_server", "browser_proof", "browser_intelligence", "api_request", "search", "research_sources", "source_quality", "browsing_risk", "research_matrix", "session_evidence", "local_git", "status_readiness"];
 
 function buildToolCatalog() {
   const commonUnsafe = ["secret reading/dumping", "outside-root access", "arbitrary shell", "package installs", "git push", "deployment", "Giga MCP"];
   const mk = (name, group, opts = {}) => ({
     tool_name: name,
+    name,
     capability_group: group,
     description: opts.description || `${name} VNEM-improved safe tool`,
     read_only: opts.read_only ?? true,
@@ -1040,6 +1179,17 @@ function buildToolCatalog() {
     mk("vnem_tools_browser_accessibility_audit", "browser_intelligence", { read_only: false, network: true, requires_approval: true, dry_run_default: true, description: "Static heuristic accessibility/UI audit, not certification.", typical_use_cases: ["flag missing alt text/forms/link text/heading issues"], related_tools: ["vnem_tools_browser_page_inspect"] }),
     mk("vnem_tools_browser_compare_snapshots", "browser_intelligence", { read_only: false, network: true, requires_approval: true, dry_run_default: true, description: "Compare two page/source snapshots without claiming full visual proof.", typical_use_cases: ["before/after UI content comparison"], related_tools: ["vnem_tools_browser_page_inspect", "vnem_tools_browser_capture"] }),
     mk("vnem_tools_browser_research_pack", "research_sources", { description: "Evidence-bounded multi-source page/source research pack.", typical_use_cases: ["supported/unsupported/conflicting claims across sources"], related_tools: ["vnem_tools_source_quality_check", "vnem_tools_research_brief", "vnem_tools_browser_page_inspect"], unsafe_actions_blocked: [...commonUnsafe, "fake web search claims", "search-engine scraping", "broad crawling"] }),
+
+    mk("vnem_tools_search_provider_manifest", "search", { description: "Describe available/configured search providers without leaking API key values.", evidence_logged: false, allowed_roots_required: false, typical_use_cases: ["search provider discovery", "provider capability planning"], unsafe_actions_blocked: [...commonUnsafe, "API key disclosure", "fake provider availability claims"] }),
+    mk("vnem_tools_search_query_builder", "search", { description: "Build high-quality search queries for current facts, docs, code, gaming/modding, security, product, and API/library research.", allowed_roots_required: false, typical_use_cases: ["research query planning", "source discovery planning"], related_tools: ["vnem_tools_search_provider_manifest", "vnem_tools_web_search"] }),
+    mk("vnem_tools_web_search", "search", { read_only: false, network: true, requires_approval: true, dry_run_default: true, allowed_roots_required: false, description: "Run approved provider-backed search when configured, or return honest unavailable/unconfigured status.", typical_use_cases: ["current source discovery", "configured provider search"], related_tools: ["vnem_tools_search_result_ranker", "vnem_tools_source_quality_check"], unsafe_actions_blocked: [...commonUnsafe, "search-engine scraping", "automatic CAPTCHA bypass", "login/cookie/session use", "fake results"] }),
+    mk("vnem_tools_search_result_ranker", "search", { description: "Rank search results by credibility, relevance, freshness, duplicates, and risk.", allowed_roots_required: false, typical_use_cases: ["choose best sources", "filter risky/spammy results"], related_tools: ["vnem_tools_url_reputation_check", "vnem_tools_claim_source_matrix"] }),
+    mk("vnem_tools_redirect_chain_check", "browsing_risk", { read_only: false, network: true, requires_approval: true, dry_run_default: true, allowed_roots_required: false, description: "Check redirect chain safely with capped HEAD/manual redirects and no cookies/session/login.", typical_use_cases: ["detect suspicious redirects", "preflight URL risk"], unsafe_actions_blocked: [...commonUnsafe, "blind redirect following", "cookies/session/login", "private page scraping"] }),
+    mk("vnem_tools_url_reputation_check", "browsing_risk", { description: "Heuristic URL/domain risk assessment, not antivirus verdict.", allowed_roots_required: false, typical_use_cases: ["phishing/scam/download risk triage"] }),
+    mk("vnem_tools_captcha_detector", "browsing_risk", { description: "Detect CAPTCHA/anti-bot/access-block signals and produce safe user-assisted handoff; no bypass.", allowed_roots_required: false, typical_use_cases: ["detect access blocks", "safe CAPTCHA handoff"], unsafe_actions_blocked: [...commonUnsafe, "automatic CAPTCHA bypass", "anti-bot evasion"] }),
+    mk("vnem_tools_download_safety_check", "browsing_risk", { read_only: false, network: true, requires_approval: true, dry_run_default: true, allowed_roots_required: false, description: "Assess download link risk before following/downloading; optional approved HEAD only, no download.", typical_use_cases: ["fake download/installer risk", "pre-download review"], unsafe_actions_blocked: [...commonUnsafe, "automatic downloads", "installer execution", "malware scanning overclaim"] }),
+    mk("vnem_tools_claim_source_matrix", "research_matrix", { description: "Build claim/source support matrix with supported, unsupported, conflicting claims and citation plan.", allowed_roots_required: false, typical_use_cases: ["citation planning", "avoid fake confidence"], related_tools: ["vnem_tools_research_gap_detector", "vnem_tools_browser_research_pack"] }),
+    mk("vnem_tools_research_gap_detector", "research_matrix", { description: "Detect missing current search, primary/counter sources, dates/versions, and confidence blockers.", allowed_roots_required: false, typical_use_cases: ["research completeness review", "next query/tool planning"], related_tools: ["vnem_tools_search_query_builder", "vnem_tools_web_search", "vnem_tools_claim_source_matrix"] }),
     mk("vnem_tools_start_session", "session_evidence", { read_only: false, mutation: true, description: "Start session proof pack.", typical_use_cases: ["group local workflow evidence"] }),
     mk("vnem_tools_finish_session", "session_evidence", { read_only: false, mutation: true, description: "Write session proof pack.", typical_use_cases: ["final evidence summary"] }),
     mk("vnem_tools_collect_evidence", "session_evidence", { read_only: false, mutation: true, description: "Write proof-trail-compatible evidence summary.", typical_use_cases: ["final report support"] }),
@@ -1232,6 +1382,336 @@ async function safeDependencyScan(args) {
   recordSession(args.session_id, "dependency_scans", result);
   return result;
 }
+
+const SEARCH_PROVIDER_DEFINITIONS = [
+  { name: "local_fixture", env: null, supports_current_web: false, supports_news: false, supports_code_search: false, supports_docs_search: true, supports_safe_search: true, requires_api_key: false, requires_approval: false, rate_limit_notes: "deterministic local CI/test fixture", privacy_notes: "no external network" },
+  { name: "direct_url", env: null, supports_current_web: false, supports_news: false, supports_code_search: false, supports_docs_search: true, supports_safe_search: true, requires_api_key: false, requires_approval: true, rate_limit_notes: "not search; inspect provided direct URLs only", privacy_notes: "direct source URLs may be logged in redacted evidence" },
+  { name: "brave_search_api", env: "BRAVE_SEARCH_API_KEY", supports_current_web: true, supports_news: true, supports_code_search: false, supports_docs_search: true, supports_safe_search: true, requires_api_key: true, requires_approval: true, rate_limit_notes: "provider rate limits apply", privacy_notes: "query sent to Brave if configured and approved" },
+  { name: "serpapi", env: "SERPAPI_API_KEY", supports_current_web: true, supports_news: true, supports_code_search: false, supports_docs_search: true, supports_safe_search: true, requires_api_key: true, requires_approval: true, rate_limit_notes: "provider rate limits apply", privacy_notes: "query sent to SerpAPI if configured and approved" },
+  { name: "tavily", env: "TAVILY_API_KEY", supports_current_web: true, supports_news: true, supports_code_search: false, supports_docs_search: true, supports_safe_search: true, requires_api_key: true, requires_approval: true, rate_limit_notes: "provider rate limits apply", privacy_notes: "query sent to Tavily if configured and approved" },
+  { name: "exa", env: "EXA_API_KEY", supports_current_web: true, supports_news: false, supports_code_search: false, supports_docs_search: true, supports_safe_search: true, requires_api_key: true, requires_approval: true, rate_limit_notes: "provider rate limits apply", privacy_notes: "query sent to Exa if configured and approved" },
+  { name: "github_search_api", env: "GITHUB_TOKEN", supports_current_web: true, supports_news: false, supports_code_search: true, supports_docs_search: false, supports_safe_search: true, requires_api_key: true, requires_approval: true, rate_limit_notes: "GitHub API rate limits apply", privacy_notes: "query sent to GitHub if configured and approved" },
+  { name: "npm_registry", env: null, supports_current_web: true, supports_news: false, supports_code_search: false, supports_docs_search: false, supports_safe_search: true, requires_api_key: false, requires_approval: true, rate_limit_notes: "npm registry fair-use applies", privacy_notes: "query sent to npm registry if implemented/approved" },
+  { name: "docs_site_search", env: "VNEM_DOCS_SEARCH_ENDPOINT", supports_current_web: false, supports_news: false, supports_code_search: false, supports_docs_search: true, supports_safe_search: true, requires_api_key: false, requires_approval: true, rate_limit_notes: "custom endpoint rate limits apply", privacy_notes: "query sent to configured docs endpoint" },
+  { name: "custom_provider", env: "VNEM_SEARCH_PROVIDER_ENDPOINT", supports_current_web: true, supports_news: true, supports_code_search: false, supports_docs_search: true, supports_safe_search: true, requires_api_key: false, requires_approval: true, rate_limit_notes: "custom provider limits apply", privacy_notes: "query sent to configured provider endpoint" }
+];
+
+function safeSearchProviderManifest() {
+  const providers = SEARCH_PROVIDER_DEFINITIONS.map((provider) => ({
+    ...provider,
+    configured: provider.env ? Boolean(process.env[provider.env]) : provider.name === "local_fixture" || provider.name === "direct_url" || provider.name === "npm_registry",
+    configured_by: provider.env ? (process.env[provider.env] ? `${provider.env}_present` : `${provider.env}_missing`) : "no_key_required",
+    env_var_name: provider.env,
+    api_key_value_exposed: false
+  }));
+  return {
+    providers,
+    configured_providers: providers.filter((p) => p.configured).map((p) => p.name),
+    unconfigured_providers: providers.filter((p) => !p.configured).map((p) => p.name),
+    supports_current_web: providers.some((p) => p.configured && p.supports_current_web),
+    supports_news: providers.some((p) => p.configured && p.supports_news),
+    supports_code_search: providers.some((p) => p.configured && p.supports_code_search),
+    supports_docs_search: providers.some((p) => p.configured && p.supports_docs_search),
+    supports_safe_search: providers.some((p) => p.configured && p.supports_safe_search),
+    requires_api_key: providers.filter((p) => p.requires_api_key).map((p) => p.name),
+    requires_approval: providers.filter((p) => p.requires_approval).map((p) => p.name),
+    rate_limit_notes: Object.fromEntries(providers.map((p) => [p.name, p.rate_limit_notes])),
+    privacy_notes: Object.fromEntries(providers.map((p) => [p.name, p.privacy_notes])),
+    unsupported_behaviors: ["search-engine result page scraping by default", "automatic CAPTCHA bypass", "login/cookie/session use", "private/account page scraping without approval", "fake current-search claims when provider is unavailable", "broad crawling"],
+    evidence_log_id: null
+  };
+}
+
+async function safeSearchQueryBuilder(args) {
+  const task = String(args.task || "");
+  const hay = `${task} ${args.domain_hint || ""} ${args.known_context || ""}`.toLowerCase();
+  const sourceTypes = [...new Set(arrayify(args.source_types_needed).map(String))];
+  const queries = [];
+  const intents = [];
+  const add = (query, intent) => { if (query && !queries.includes(query)) { queries.push(query); intents.push({ query, intent }); } };
+  const base = task.replace(/https?:\/\/\S+/g, "").replace(/["']/g, "").trim();
+  if (/security|malware|phishing|download|scam|cve|advisory/.test(hay)) {
+    add(`${base} official security advisory`, "primary security/advisory source");
+    add(`${base} CVE advisory vulnerability`, "vulnerability/current security source");
+    add(`${base} phishing scam malware download risk`, "risk corroboration");
+  }
+  if (/docs|library|api|software|javascript|mcp|package|npm/.test(hay)) {
+    add(`${base} official docs`, "official documentation");
+    add(`${base} site:github.com`, "repository/source code");
+    add(`${base} changelog release notes`, "version/freshness evidence");
+  }
+  if (/github|repo|code|issue|pull request/.test(hay)) add(`${base} site:github.com issues OR discussions`, "GitHub issue/repo research");
+  if (/game|gaming|elden ring|meta|build|pvp|pve/.test(hay)) {
+    add(`${base} official patch notes`, "official game version source");
+    add(`${base} current meta community discussion`, "community meta source");
+  }
+  if (/mod|modding|nexus|toolchain/.test(hay)) {
+    add(`${base} official modding docs toolchain`, "modding documentation");
+    add(`${base} compatibility version changelog`, "mod/version compatibility");
+  }
+  if (/compare|best|alternative|product|tool/.test(hay)) {
+    add(`${base} official pricing docs comparison`, "primary product details");
+    add(`${base} independent review limitations`, "secondary comparison/counter-source");
+  }
+  if (args.freshness_required || /latest|current|today|2026|recent|this week|now/.test(hay)) {
+    add(`${base} latest current ${new Date().getUTCFullYear()}`, "fresh/current source discovery");
+    add(`${base} after:${new Date().getUTCFullYear() - 1}-01-01`, "freshness-filtered search");
+  }
+  add(`${base} official source`, "primary/official source fallback");
+  add(`${base} source quality`, "quality/corroboration fallback");
+  const result = {
+    task: redactSecrets(task),
+    queries: queries.slice(0, 12),
+    query_intents: intents.slice(0, 12),
+    must_have_source_types: [...new Set([...(sourceTypes.length ? sourceTypes : inferNeededSourceTypes(hay)), args.freshness_required ? "fresh_current_source" : null].filter(Boolean))],
+    avoid_source_types: ["SEO farms", "AI-generated listicles", "fake download pages", "credential-harvesting pages", "private/account pages without approval", "search result pages scraped as sources"],
+    freshness_requirement: { required: Boolean(args.freshness_required || /latest|current|today|recent|this week|now/.test(hay)), reason: args.freshness_required ? "freshness_required input" : "inferred from task wording" },
+    official_source_targets: inferOfficialSourceTargets(hay),
+    secondary_source_targets: inferSecondarySourceTargets(hay),
+    risk_notes: ["Search query planning does not execute a search.", "Use source quality, CAPTCHA detection, URL reputation, and claim/source matrix before final claims."],
+    must_not_claim: ["A search happened.", "Search results were fetched.", "Sources were read or verified.", "Currentness was established."]
+  };
+  return result;
+}
+
+async function safeWebSearch(args) {
+  const provider = String(args.provider || "local_fixture");
+  const query = redactSecrets(String(args.query || ""));
+  const max = Math.min(args.max_results || 10, 20);
+  const manifest = safeSearchProviderManifest();
+  const providerInfo = manifest.providers.find((p) => p.name === provider);
+  const dryRun = args.dry_run !== false;
+  const base = { provider, query, executed: false, dry_run: dryRun, results: [], result_count: 0, provider_status: "unknown", blocked_or_unavailable_reason: "", freshness_notes: [], safe_to_claim: [], must_not_claim: ["A web search happened.", "Search results were fetched.", "Search result pages were scraped.", "CAPTCHA was bypassed.", "Sources were read beyond search result snippets."], evidence_log_id: null };
+  if (!providerInfo) return { ...base, provider_status: "provider_unknown", blocked_or_unavailable_reason: "Provider is not in VNEM search provider manifest." };
+  if (dryRun) return { ...base, provider_status: providerInfo.configured ? "dry_run_planned_configured_provider" : "dry_run_planned_provider_unconfigured", blocked_or_unavailable_reason: providerInfo.configured ? "Dry-run only; no provider was contacted." : "Provider is not configured.", safe_to_claim: ["Search was planned only; no provider was contacted."] };
+  if (providerInfo.requires_approval) enforceApproval(args);
+  if (!providerInfo.configured) {
+    const result = { ...base, dry_run: false, provider_status: "provider_unconfigured", blocked_or_unavailable_reason: `${provider} is not configured; no fake results returned.`, must_not_claim: ["Provider search executed.", "Search results were fetched.", "Current web research is complete."] };
+    const log = await writeEvidenceLog("web_search", result);
+    return { ...result, evidence_log_id: log.evidence_log_id };
+  }
+  let results = [];
+  let providerStatus = "executed_local_fixture";
+  let freshness = [];
+  if (provider === "local_fixture") {
+    results = localFixtureSearch(query).slice(0, max);
+    freshness = ["Deterministic local fixture results; not current live web."];
+  } else if (provider === "direct_url") {
+    results = extractUrlsFromText(query).map((url, i) => ({ title: `Direct URL ${i + 1}`, url: redactUrlString(url), snippet: "Direct URL supplied in query/task; not a search result.", source_type: "direct_url", date: null, provider: "direct_url" })).slice(0, max);
+    providerStatus = results.length ? "executed_direct_url_extraction" : "no_direct_url_found";
+  } else {
+    providerStatus = "provider_configured_but_not_implemented";
+    const result = { ...base, dry_run: false, provider_status: providerStatus, blocked_or_unavailable_reason: `${provider} architecture exists but live adapter is not implemented/tested in this build; no fake results returned.`, must_not_claim: ["Provider search executed.", "Search results were fetched.", "Current web research is complete."] };
+    const log = await writeEvidenceLog("web_search", result);
+    return { ...result, evidence_log_id: log.evidence_log_id };
+  }
+  const result = { ...base, dry_run: false, executed: results.length > 0, results: results.map(normalizeSearchResult), result_count: results.length, provider_status: providerStatus, freshness_notes: freshness, safe_to_claim: [`${provider} returned ${results.length} result(s).`, provider === "local_fixture" ? "Search results came from deterministic local fixture data, not live web." : "Provider-backed result metadata was returned."], must_not_claim: [provider === "local_fixture" ? "Live/current web search happened." : "Search result pages were scraped.", "Sources were fully read beyond result snippets.", "CAPTCHA was bypassed."] };
+  const log = await writeEvidenceLog("web_search", result);
+  const withLog = { ...result, evidence_log_id: log.evidence_log_id };
+  recordSession(args.session_id, "web_searches", withLog);
+  return withLog;
+}
+
+async function safeSearchResultRanker(args) {
+  const preferred = arrayify(args.preferred_source_types).map((x) => String(x).toLowerCase());
+  const normalized = arrayify(args.results).map(normalizeSearchResult);
+  const scored = normalized.map((result) => ({ ...result, score: scoreSearchResult(result, String(args.task || ""), preferred, args.freshness_required), risk_flags: urlRiskFlags(result.url, `${result.title} ${result.snippet}`), trust_flags: urlTrustFlags(result.url, result.source_type) }));
+  scored.sort((a, b) => b.score - a.score);
+  const duplicates = duplicateClusters(scored);
+  const risky = scored.filter((r) => r.risk_flags.length || r.score < 30);
+  const best = scored.filter((r) => r.score >= 65 && !r.risk_flags.some((f) => /download|credential|malware|phishing/i.test(f))).slice(0, 5);
+  const weak = scored.filter((r) => r.score < 50 && !risky.includes(r)).slice(0, 5);
+  const missing = preferred.filter((type) => !scored.some((r) => String(r.source_type).toLowerCase().includes(type)));
+  const result = { task: redactSecrets(args.task || ""), ranked_results: scored, best_sources: best, weak_sources: weak, risky_sources: risky, duplicate_clusters: duplicates, missing_source_types: missing, recommended_next_queries: missing.map((type) => `${args.task} ${type} official`).slice(0, 5), must_not_claim: ["Ranking proves factual correctness.", "Risky sources are safe to visit/download.", "Fresh/current evidence exists unless dates/providers show it."], evidence_log_id: null };
+  const log = await writeEvidenceLog("search_result_ranker", result);
+  result.evidence_log_id = log.evidence_log_id;
+  recordSession(args.session_id, "search_result_rankings", result);
+  return result;
+}
+
+async function safeRedirectChainCheck(args) {
+  const url = parseSafeResearchUrl(args.url);
+  const dryRun = args.dry_run !== false;
+  const planned = { url: redactUrl(url), redirect_chain: [], final_url: redactUrl(url), same_domain: true, cross_domain_redirects: [], suspicious_redirects: [], blocked_reason: "", dry_run: dryRun, executed: false, safe_to_claim: [], must_not_claim: ["A redirect chain was checked.", "The final page was visited/read.", "Cookies/session/login were used."], evidence_log_id: null };
+  if (dryRun) return planned;
+  enforceApproval(args);
+  const chain = [];
+  let current = url;
+  let blocked = "";
+  for (let i = 0; i < Math.min(args.max_redirects || 5, 10); i++) {
+    let response;
+    try { response = await fetch(current, { method: "HEAD", redirect: "manual", signal: AbortSignal.timeout(Math.min(args.timeout_ms || 8000, MAX_API_TIMEOUT_MS)) }); }
+    catch (error) { blocked = `request_failed: ${error.message}`; break; }
+    const location = response.headers.get("location");
+    const item = { url: redactUrl(current), status: response.status, method: "HEAD", location: location ? redactUrlString(new URL(location, current).toString()) : null };
+    chain.push(item);
+    if (![301, 302, 303, 307, 308].includes(response.status) || !location) break;
+    const next = new URL(location, current);
+    if (next.username || next.password || containsRawSecret(next.toString())) { blocked = "credentialed_or_secret_redirect_blocked"; break; }
+    if (!["http:", "https:"].includes(next.protocol)) { blocked = "unsafe_redirect_scheme_blocked"; break; }
+    current = next;
+    if (current.protocol === "http:" && !isLocalHostname(current.hostname)) { chain.push({ url: redactUrl(current), status: null, method: "not_fetched", location: null }); break; }
+  }
+  const hosts = chain.map((c) => { try { return new URL(c.url).hostname.replace(/^www\./, ""); } catch { return ""; } }).filter(Boolean);
+  const startHost = hosts[0] || url.hostname;
+  const cross = chain.filter((c) => { try { return new URL(c.url).hostname.replace(/^www\./, "") !== startHost; } catch { return false; } });
+  const suspicious = chain.map((c) => ({ ...c, reason: redirectSuspicionReason(c, startHost) })).filter((c) => c.reason);
+  const result = { ...planned, redirect_chain: chain, final_url: chain.at(-1)?.url || redactUrl(current), same_domain: cross.length === 0, cross_domain_redirects: cross, suspicious_redirects: suspicious, blocked_reason: blocked, dry_run: false, executed: true, safe_to_claim: ["Redirect metadata was checked with Tools MCP safeguards."], must_not_claim: ["Final page content was read.", "The URL is safe or trustworthy.", "Cookies/session/login were used."] };
+  const log = await writeEvidenceLog("redirect_chain_check", result);
+  const withLog = { ...result, evidence_log_id: log.evidence_log_id };
+  recordSession(args.session_id, "redirect_chain_checks", withLog);
+  return withLog;
+}
+
+async function safeUrlReputationCheck(args) {
+  const flags = urlRiskFlags(args.url, args.url);
+  const trust = urlTrustFlags(args.url, "");
+  for (const item of arrayify(args.redirect_chain)) {
+    const reason = redirectSuspicionReason(item, safeOptionalUrl(args.url).hostname.replace(/^www\./, ""));
+    if (reason) flags.push(`redirect_${reason}`);
+  }
+  for (const domain of arrayify(args.known_official_domains)) if (String(args.url).includes(String(domain))) trust.push("matches_known_official_domain");
+  const uniqueFlags = [...new Set(flags)];
+  const risk = uniqueFlags.some((f) => /credential|executable|phishing|malware|scam|shortener|redirect/.test(f)) ? "high" : uniqueFlags.length >= 2 ? "medium" : "low";
+  const result = { risk_level: risk, risk_flags: uniqueFlags, trust_flags: [...new Set(trust)], recommended_action: risk === "high" ? "Do not enter credentials, do not download, inspect source via safe tools and ask user before visiting." : risk === "medium" ? "Proceed only with source-quality checks and user confirmation." : "Low heuristic risk; still verify source quality before trusting.", safe_to_visit: risk !== "high", safe_to_download: false, requires_user_confirmation: risk !== "low", must_not_claim: ["This is an antivirus verdict.", "The URL is definitely safe.", "Downloads from this URL are safe to run."], evidence_log_id: null };
+  const log = await writeEvidenceLog("url_reputation_check", result);
+  result.evidence_log_id = log.evidence_log_id;
+  recordSession(args.session_id, "url_reputation_checks", result);
+  return result;
+}
+
+async function safeCaptchaDetector(args) {
+  const text = `${args.url || ""} ${args.html || ""} ${args.text || ""} ${JSON.stringify(args.screenshot_metadata || {})} ${JSON.stringify(args.page_inspection || {})}`;
+  const signals = [];
+  if (/captcha|g-recaptcha|hcaptcha|cf-turnstile|data-sitekey|challenge/i.test(text)) signals.push("captcha_challenge_marker");
+  if (/verify you are human|are you a robot|unusual traffic|bot detection|automated access/i.test(text)) signals.push("human_verification_text");
+  if (/cloudflare ray id|access denied|akamai|perimeterx|datadome|incapsula|blocked/i.test(text)) signals.push("anti_bot_or_access_block_vendor_text");
+  const detected = signals.length > 0;
+  const result = { captcha_or_block_detected: detected, block_type: detected ? (signals.some((s) => /captcha/.test(s)) ? "captcha_or_anti_bot_challenge" : "access_block_or_anti_bot") : "none_detected", signals, recommended_safe_next_steps: detected ? ["Ask the user to solve the CAPTCHA manually only if they own or are allowed to access the page.", "Ask the user to paste page text after access instead of bypassing anti-bot systems.", "Use official API/docs/source or another official mirror/source when available.", "Stop and report that access is blocked if no allowed path exists."] : ["No CAPTCHA/block signals detected in provided content; continue with normal source quality checks."], user_assisted_handoff_required: detected, alternative_research_paths: ["official docs/API", "provider search through configured approved provider", "direct source URL supplied by user", "cached local docs or repository source"], must_not_claim: ["No automatic CAPTCHA bypass was attempted or provided.", "CAPTCHA/access block was solved automatically.", "Blocked/private content was accessed."], evidence_log_id: null };
+  const log = await writeEvidenceLog("captcha_detector", result);
+  result.evidence_log_id = log.evidence_log_id;
+  recordSession(args.session_id, "captcha_detections", result);
+  return result;
+}
+
+async function safeDownloadSafetyCheck(args) {
+  const url = parseSafeResearchUrl(args.download_url);
+  const flags = urlRiskFlags(url.toString(), `${args.download_url} ${args.source_page_url || ""}`);
+  const ext = fileTypeGuess(url.pathname);
+  if (/executable|archive|script/.test(ext)) flags.push(`${ext}_download_type`);
+  if (Number(args.source_quality_score ?? 60) < 40) flags.push("low_source_quality_score");
+  const dryRun = args.dry_run !== false;
+  let executedHead = false;
+  let contentType = null;
+  let length = null;
+  if (!dryRun) {
+    enforceApproval(args);
+    try {
+      const response = await fetch(url, { method: "HEAD", redirect: "manual", signal: AbortSignal.timeout(8000) });
+      executedHead = true;
+      contentType = response.headers.get("content-type");
+      length = response.headers.get("content-length");
+    } catch (error) { flags.push(`head_request_failed:${error.message}`); }
+  }
+  const unique = [...new Set(flags)];
+  const risk = unique.some((f) => /executable|script|fake|phishing|credential|low_source|suspicious|shortener/.test(f)) ? "high" : unique.some((f) => /archive|download/.test(f)) ? "medium" : "low";
+  const result = { download_url: redactUrl(url), file_type_guess: ext, source_domain: safeOptionalUrl(args.source_page_url || url.toString()).hostname, risk_level: risk, risk_flags: unique, recommended_action: risk === "high" ? "Do not download or run. Use official source, checksums/signatures, and manual review." : "Do not auto-download; verify official source, checksum/signature, and user approval first.", requires_manual_review: true, executed_head_request: executedHead, content_type: contentType, content_length: length, must_not_claim: ["The file was downloaded.", "The file is safe to run.", "Antivirus scanning was performed.", "Installer/download authenticity was proven."], evidence_log_id: null };
+  const log = await writeEvidenceLog("download_safety_check", result);
+  result.evidence_log_id = log.evidence_log_id;
+  recordSession(args.session_id, "download_safety_checks", result);
+  return result;
+}
+
+async function safeClaimSourceMatrix(args) {
+  const sources = arrayify(args.sources).map((s, i) => normalizeMatrixSource(s, i));
+  const claims = arrayify(args.claims).map(String);
+  const matrix = [];
+  const supported = [];
+  const unsupported = [];
+  const conflicting = [];
+  for (const claim of claims) {
+    const rows = sources.map((source) => assessClaimAgainstSource(claim, source));
+    matrix.push({ claim, source_results: rows });
+    const supportRows = rows.filter((r) => r.support === "supports");
+    const conflictRows = rows.filter((r) => r.support === "conflicts");
+    if (conflictRows.length || (/captcha.*bypass|bypass.*captcha/i.test(claim) && !supportRows.some((r) => r.source_quality_score >= 80))) conflicting.push({ claim, supporting_sources: supportRows.map((r) => r.source_id), conflicting_sources: conflictRows.map((r) => r.source_id), reason: "Conflicting or safety-critical claim requires high-quality corroboration." });
+    else if (supportRows.length) supported.push({ claim, supporting_sources: supportRows.map((r) => r.source_id), confidence: supportRows.some((r) => r.source_quality_score >= 80) ? "medium_high" : "low" });
+    else unsupported.push({ claim, reason: "No provided source clearly supports this claim." });
+  }
+  const result = { claims, sources, matrix, supported_claims: supported, unsupported_claims: unsupported, conflicting_claims: conflicting, source_quality_notes: sources.map((s) => ({ source_id: s.id, title: s.title, quality_score: s.source_quality_score, notes: s.source_quality_score >= 80 ? "strong source" : s.source_quality_score < 50 ? "weak source" : "medium source" })), citation_plan: supported.map((s) => `${s.claim}: cite ${s.supporting_sources.join(", ")}`).slice(0, 12), must_not_claim: ["All claims are supported.", "Unsupported/conflicting claims are proven.", "Source quality was externally verified beyond provided metadata."], evidence_log_id: null };
+  const log = await writeEvidenceLog("claim_source_matrix", result);
+  result.evidence_log_id = log.evidence_log_id;
+  recordSession(args.session_id, "claim_source_matrices", result);
+  return result;
+}
+
+async function safeResearchGapDetector(args) {
+  const task = String(args.task || "");
+  const hay = `${task} ${args.domain || ""}`.toLowerCase();
+  const sources = arrayify(args.sources).map((s, i) => normalizeMatrixSource(s, i));
+  const hasOfficial = sources.some((s) => /official|docs|primary|vendor|github/.test(`${s.source_type} ${s.title}`.toLowerCase()) || s.source_quality_score >= 85);
+  const hasCommunity = sources.some((s) => /community|forum|reddit|discussion/.test(`${s.source_type} ${s.title}`.toLowerCase()));
+  const hasCounter = sources.length > 1 && arrayify(args.claims).length > 0;
+  const freshness = Boolean(args.freshness_required || /latest|current|today|recent|now|this week|meta/.test(hay));
+  const missing = [];
+  if (!hasOfficial) missing.push("official_or_primary_source");
+  if (/game|meta|community|mod/.test(hay) && !hasCommunity) missing.push("community_source");
+  if (/security|malware|phishing|download|cve/.test(hay)) missing.push("security_advisory_or_reputation_source");
+  const blockers = [];
+  if (freshness) blockers.push("current/fresh search evidence is missing");
+  if (!hasOfficial) blockers.push("primary/official source is missing");
+  if (!hasCounter) blockers.push("counter-source/conflict check is missing");
+  if (sources.some((s) => !s.published_at)) blockers.push("dates or versions are missing for at least one source");
+  const result = { missing_source_types: [...new Set(missing)], missing_current_search: freshness, missing_primary_sources: hasOfficial ? [] : ["official docs/API/vendor/source repository/patch notes"], missing_counter_sources: hasCounter ? [] : ["independent corroborating or counter-source"], missing_dates_or_versions: sources.filter((s) => !s.published_at).map((s) => s.id || s.title), confidence_blockers: blockers, recommended_next_queries: (await safeSearchQueryBuilder({ task, freshness_required: freshness, source_types_needed: missing })).queries.slice(0, 6), recommended_next_tools: ["vnem_tools_search_provider_manifest", "vnem_tools_search_query_builder", "vnem_tools_web_search", "vnem_tools_search_result_ranker", "vnem_tools_source_quality_check", "vnem_tools_claim_source_matrix"], must_not_claim: ["A confident final answer is justified before gaps are closed.", "Current/latest facts are verified without current search evidence.", "Primary sources were checked if they are missing."], evidence_log_id: null };
+  const log = await writeEvidenceLog("research_gap_detector", result);
+  result.evidence_log_id = log.evidence_log_id;
+  recordSession(args.session_id, "research_gap_detections", result);
+  return result;
+}
+
+function inferNeededSourceTypes(text) {
+  const out = ["official_docs"];
+  if (/current|latest|news|today|recent/.test(text)) out.push("current_web");
+  if (/security|malware|phishing|cve/.test(text)) out.push("security_advisory");
+  if (/github|repo|code/.test(text)) out.push("github_repo");
+  if (/game|meta|mod/.test(text)) out.push("community_source");
+  return out;
+}
+function inferOfficialSourceTargets(text) { return [/github|repo|code/.test(text) ? "GitHub repository/releases/issues" : null, /npm|javascript|library/.test(text) ? "official docs/npm package/changelog" : null, /security|cve/.test(text) ? "vendor advisory/CVE/NVD" : null, /game|elden|meta/.test(text) ? "official patch notes" : null, "vendor/project official documentation"].filter(Boolean); }
+function inferSecondarySourceTargets(text) { return [/game|meta|mod/.test(text) ? "community forums/reddit/wiki with lower authority" : null, /product|compare|best/.test(text) ? "independent reviews and limitation reports" : null, /security|malware|phishing/.test(text) ? "reputation/security databases" : null, "credible secondary analysis"].filter(Boolean); }
+function localFixtureSearch(query) {
+  const q = String(query || "");
+  return [
+    { title: "Official Browser MCP Security Docs", url: "https://docs.example.com/browser-mcp/security", snippet: `Official docs matching ${q}. Updated 2026.`, source_type: "official_docs", date: "2026-06-01", provider: "local_fixture" },
+    { title: "GitHub browser MCP repository", url: "https://github.com/example/browser-mcp", snippet: "Repository, releases, and issues for source verification.", source_type: "github_repo", date: "2026-05-20", provider: "local_fixture" },
+    { title: "Security advisory for browser automation tools", url: "https://security.example.org/advisories/browser-mcp", snippet: "Advisory-style fixture for phishing/download risk.", source_type: "security_advisory", date: "2026-04-10", provider: "local_fixture" },
+    { title: "Community discussion of browser MCP tools", url: "https://reddit.com/r/mcp/comments/browser-tools", snippet: "Community discussion; useful but lower authority.", source_type: "community", date: "2026-03-01", provider: "local_fixture" },
+    { title: "Download NOW free browser MCP installer!!!", url: "https://free-download-example.xyz/setup.exe", snippet: "Spammy fake download result fixture.", source_type: "download", date: null, provider: "local_fixture" }
+  ];
+}
+function normalizeSearchResult(result) { return { title: truncate(redactSecrets(result.title || "Untitled"), 200), url: redactUrlString(result.url || ""), snippet: truncate(redactSecrets(result.snippet || result.description || ""), 500), source_type: String(result.source_type || inferSourceTypeFromUrl(result.url || "", result.title || "")).toLowerCase(), date: result.date || result.published_at || null, provider: result.provider || null }; }
+function inferSourceTypeFromUrl(url, title = "") { const hay = `${url} ${title}`.toLowerCase(); if (/github\.com/.test(hay)) return "github_repo"; if (/docs|documentation|developer|api/.test(hay)) return "official_docs"; if (/reddit|forum|discussion/.test(hay)) return "community"; if (/download|\.exe|\.msi|\.zip/.test(hay)) return "download"; if (/security|advisory|cve/.test(hay)) return "security_advisory"; return "web"; }
+function scoreSearchResult(result, task, preferred, freshnessRequired) { let score = 35; const hay = `${result.title} ${result.snippet} ${result.url}`.toLowerCase(); const terms = significantTerms(task); score += Math.min(25, terms.filter((term) => hay.includes(term)).length * 4); if (/official|docs|documentation|vendor|github\.com/.test(hay) || /official_docs|github_repo|security_advisory/.test(result.source_type)) score += 25; if (preferred.includes(String(result.source_type).toLowerCase())) score += 15; if (result.date) score += freshnessRequired ? 15 : 5; if (/reddit|forum|community/.test(result.source_type)) score -= preferred.includes("community") ? 0 : 8; for (const flag of urlRiskFlags(result.url, hay)) score -= /download|credential|phishing|malware/.test(flag) ? 35 : 12; return Math.max(0, Math.min(100, score)); }
+function duplicateClusters(results) { const map = new Map(); for (const r of results) { const key = `${r.title}`.toLowerCase().replace(/\butm\b|copy|\W+/g, " ").trim().slice(0, 60); if (!map.has(key)) map.set(key, []); map.get(key).push(r); } return [...map.values()].filter((items) => items.length > 1).map((items) => items.map((item) => item.url)); }
+function urlRiskFlags(urlValue, text = "") { const flags = []; const raw = String(urlValue || ""); const hay = `${raw} ${text}`.toLowerCase(); let url; try { url = new URL(raw, "https://local.invalid/"); } catch { flags.push("invalid_url"); return flags; } if (url.username || url.password || /:\/\/[^/\s]+:[^@/\s]+@/.test(raw)) flags.push("credentialed_url"); if (containsRawSecret(raw)) flags.push("secret_like_url_parameter"); if (/xn--/.test(url.hostname)) flags.push("punycode_or_homograph_risk"); if (/\.(xyz|top|click|zip|mov|tk|ru)$/i.test(url.hostname)) flags.push("suspicious_tld_or_domain_pattern"); if (/bit\.ly|tinyurl|t\.co|goo\.gl|ow\.ly|is\.gd/.test(url.hostname)) flags.push("url_shortener"); if (/free|download now|crack|keygen|urgent|verify|wallet|airdrop|login|password|phishing|malware|scam/.test(hay)) flags.push("phishing_scam_or_download_bait_words"); if (/\.(exe|msi|dmg|pkg|scr|bat|cmd|ps1|sh)(\?|#|$)/i.test(url.pathname)) flags.push("executable_or_script_download"); if (/\.(zip|7z|rar|tar|gz)(\?|#|$)/i.test(url.pathname)) flags.push("archive_download"); return [...new Set(flags)]; }
+function urlTrustFlags(urlValue, sourceType = "") { const flags = []; let url; try { url = new URL(String(urlValue || ""), "https://local.invalid/"); } catch { return flags; } if (/official|docs|security_advisory|github_repo/.test(String(sourceType))) flags.push("source_type_claims_higher_authority"); if (/github\.com|docs\.|developer\.|mozilla\.org|microsoft\.com|google\.com|npmjs\.com|nvd\.nist\.gov/.test(url.hostname)) flags.push("known_official_or_developer_domain_pattern"); if (url.protocol === "https:") flags.push("https_url"); return flags; }
+function extractUrlsFromText(text) { return [...String(text || "").matchAll(/https?:\/\/[^\s)]+/g)].map((m) => m[0]); }
+function isLocalHostname(hostname) { return ["127.0.0.1", "localhost", "::1"].includes(String(hostname).toLowerCase()); }
+function redirectSuspicionReason(item, startHost) { const url = String(item.url || ""); const hay = `${url} ${item.location || ""}`.toLowerCase(); try { const host = new URL(url).hostname.replace(/^www\./, ""); if (host && startHost && host !== startHost) return "cross-domain redirect"; } catch {} if (/\.(exe|msi|dmg|pkg|scr|bat|cmd|ps1|zip|rar|7z)(\?|#|$)/i.test(hay)) return "download or executable redirect"; if (/login|verify|password|wallet|free|download/.test(hay)) return "suspicious redirect wording"; return ""; }
+function fileTypeGuess(pathname) { if (/\.(exe|msi|dmg|pkg|scr)$/i.test(pathname)) return "executable_installer"; if (/\.(bat|cmd|ps1|sh)$/i.test(pathname)) return "script"; if (/\.(zip|7z|rar|tar|gz)$/i.test(pathname)) return "archive"; if (/\.(pdf)$/i.test(pathname)) return "document"; return "unknown"; }
+function normalizeMatrixSource(source, index) { return { id: String(source.id || `source_${index + 1}`), title: redactSecrets(source.title || `Source ${index + 1}`), url: source.url ? redactUrlString(source.url) : null, source_type: String(source.source_type || "unknown"), source_quality_score: Number(source.source_quality_score ?? source.quality_score ?? 50), text_excerpt: redactSecrets(String(source.text_excerpt || source.snippet || source.text || "")), published_at: source.published_at || source.date || null }; }
+function assessClaimAgainstSource(claim, source) { const claimTerms = significantTerms(claim); const text = source.text_excerpt.toLowerCase(); const hits = claimTerms.filter((term) => text.includes(term)); const support = hits.length >= Math.max(1, Math.ceil(claimTerms.length * 0.6)); const negates = /\b(no|not|never|without|blocked|unsupported|does not|cannot)\b/i.test(text) && hits.length >= 1; const dangerousCaptcha = /captcha.*bypass|bypass.*captcha/i.test(claim); return { source_id: source.id, title: source.title, source_quality_score: source.source_quality_score, support: support && !(negates && !dangerousCaptcha) ? "supports" : negates || (dangerousCaptcha && /no automatic captcha bypass|captcha bypass.*not|not.*captcha bypass/i.test(text)) ? "conflicts" : "not_found", matched_terms: hits.slice(0, 10), note: support ? "claim terms found in source excerpt" : "claim terms not sufficiently present" }; }
+function formatSearchProviderManifest(result) { return `vnem_tools_search_provider_manifest: configured=${result.configured_providers.join(", ")} unconfigured=${result.unconfigured_providers.join(", ")}`; }
+function formatSearchQueryBuilder(result) { return [`vnem_tools_search_query_builder: ${result.queries.length} queries`, ...result.queries.slice(0, 5).map((q) => `- ${q}`)].join("\n"); }
+function formatWebSearch(result) { return `vnem_tools_web_search: ${result.provider_status} executed=${result.executed} results=${result.result_count}`; }
+function formatSearchResultRanker(result) { return `vnem_tools_search_result_ranker: ranked=${result.ranked_results.length} best=${result.best_sources.length} risky=${result.risky_sources.length}`; }
+function formatRedirectChain(result) { return `vnem_tools_redirect_chain_check: redirects=${result.redirect_chain.length} final=${result.final_url}`; }
+function formatUrlReputation(result) { return `vnem_tools_url_reputation_check: ${result.risk_level} flags=${result.risk_flags.join(",")}`; }
+function formatCaptchaDetector(result) { return `vnem_tools_captcha_detector: detected=${result.captcha_or_block_detected} type=${result.block_type}`; }
+function formatDownloadSafety(result) { return `vnem_tools_download_safety_check: ${result.risk_level} type=${result.file_type_guess}`; }
+function formatClaimSourceMatrix(result) { return `vnem_tools_claim_source_matrix: claims=${result.claims.length} supported=${result.supported_claims.length} unsupported=${result.unsupported_claims.length} conflicting=${result.conflicting_claims.length}`; }
+function formatResearchGapDetector(result) { return `vnem_tools_research_gap_detector: blockers=${result.confidence_blockers.length} missing_current_search=${result.missing_current_search}`; }
+
 
 async function safeFetchUrlText(args) {
   if (!["GET", "HEAD"].includes(args.method || "GET")) throw new ToolsError("Only GET/HEAD are allowed.", "method_blocked");

@@ -95,6 +95,9 @@ const DEFAULT_MCP_TOOLS = [
   "vnem_select_tools_for_task",
   "vnem_build_tools_plan",
   "vnem_build_browser_research_plan",
+  "vnem_assess_research_need",
+  "vnem_build_search_plan",
+  "vnem_build_browsing_plan",
   "vnem_explain_tools_chain",
   "vnem_prepare_tools_handoff",
   "vnem_build_api_integration_plan",
@@ -561,6 +564,49 @@ function registerTools(mcpServer) {
       return toolResult(formatBrowserResearchPlan(plan), { browser_research_plan: plan });
     }
   );
+
+  mcpServer.registerTool(
+    "vnem_assess_research_need",
+    {
+      title: "Assess VNEM Research Need",
+      description: "Read-only assessment of whether a task needs current search, direct sources, official/community sources, risk checks, CAPTCHA/download handling, or UI proof. Does not execute Tools.",
+      inputSchema: { task: z.string().min(1), known_context: z.string().optional(), domain_hint: z.string().optional(), freshness_required: z.boolean().optional() },
+      annotations: READ_ONLY
+    },
+    async (args) => {
+      const assessment = assessResearchNeed(args);
+      return toolResult(formatResearchNeedAssessment(assessment), { research_need_assessment: assessment });
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_build_search_plan",
+    {
+      title: "Build VNEM Search Plan",
+      description: "Read-only Core plan for provider search, result ranking, source quality, claim/source matrix, research gaps, and risk checks. Does not search the web.",
+      inputSchema: { task: z.string().min(1), domain_hint: z.string().optional(), known_context: z.string().optional(), freshness_required: z.boolean().optional(), token_budget: z.enum(["compact", "normal", "expanded"]).default("normal") },
+      annotations: READ_ONLY
+    },
+    async (args) => {
+      const plan = buildSearchPlan(args);
+      return toolResult(formatSearchPlan(plan), { search_plan: plan });
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_build_browsing_plan",
+    {
+      title: "Build VNEM Browsing Risk Plan",
+      description: "Read-only Core plan for page/source inspection, redirect, URL reputation, CAPTCHA/access-block, download safety, and evidence collection. Does not browse.",
+      inputSchema: { task: z.string().min(1), known_context: z.string().optional(), url: z.string().optional(), token_budget: z.enum(["compact", "normal", "expanded"]).default("normal") },
+      annotations: READ_ONLY
+    },
+    async (args) => {
+      const plan = buildBrowsingPlan(args);
+      return toolResult(formatBrowsingPlan(plan), { browsing_plan: plan });
+    }
+  );
+
 
   mcpServer.registerTool(
     "vnem_explain_tools_chain",
@@ -1561,16 +1607,18 @@ function selectToolsForTask(args = {}) {
   if (["coding", "ui_web", "debugging", "local_project_modification"].includes(type)) add("vnem_tools_apply_patch_batch", "vnem_tools_run_project_task", "vnem_tools_collect_evidence", "vnem_tools_git_status", "vnem_tools_git_diff_summary");
   if (type === "ui_web") add("vnem_tools_start_dev_server", "vnem_tools_browser_capture", "vnem_tools_browser_page_inspect", "vnem_tools_browser_accessibility_audit", "vnem_tools_browser_compare_snapshots", "vnem_tools_stop_dev_server");
   if (type === "debugging") add("vnem_tools_code_search", "vnem_tools_read_many_files", "vnem_tools_run_project_task", "vnem_tools_apply_patch_batch");
-  if (["research", "direct_url_source", "current_research", "website_understanding"].includes(type)) add("vnem_tools_source_quality_check", "vnem_tools_research_brief", "vnem_tools_browser_research_pack");
-  if (["direct_url_source", "website_understanding"].includes(type)) add("vnem_tools_fetch_url_text", "vnem_tools_browser_page_inspect");
+  if (["research", "direct_url_source", "current_research", "website_understanding"].includes(type)) add("vnem_tools_source_quality_check", "vnem_tools_research_brief", "vnem_tools_browser_research_pack", "vnem_tools_claim_source_matrix", "vnem_tools_research_gap_detector");
+  if (["research", "current_research"].includes(type)) add("vnem_tools_search_provider_manifest", "vnem_tools_search_query_builder", "vnem_tools_web_search", "vnem_tools_search_result_ranker");
+  if (["direct_url_source", "website_understanding"].includes(type)) add("vnem_tools_fetch_url_text", "vnem_tools_browser_page_inspect", "vnem_tools_url_reputation_check", "vnem_tools_captcha_detector");
   if (type === "website_understanding") add("vnem_tools_browser_readability_extract", "vnem_tools_browser_link_map", "vnem_tools_browser_dom_search");
   if (type === "direct_url_source") add("vnem_tools_browser_readability_extract", "vnem_tools_browser_link_map");
   if (type === "research" && directUrlPresent(task + " " + context)) add("vnem_tools_fetch_url_text", "vnem_tools_browser_page_inspect", "vnem_tools_browser_research_pack");
   if (type === "file_investigation") add("vnem_tools_find_references");
-  if (type === "security_sensitive") add("vnem_tools_dependency_scan", "vnem_tools_source_quality_check");
+  if (type === "security_sensitive") add("vnem_tools_dependency_scan", "vnem_tools_source_quality_check", "vnem_tools_redirect_chain_check", "vnem_tools_url_reputation_check", "vnem_tools_captcha_detector", "vnem_tools_download_safety_check", "vnem_tools_claim_source_matrix", "vnem_tools_research_gap_detector");
+  if (/download|installer|redirect|captcha|phishing|malware|scam|credential|suspicious/i.test(task + " " + context)) add("vnem_tools_redirect_chain_check", "vnem_tools_url_reputation_check", "vnem_tools_captcha_detector", "vnem_tools_download_safety_check");
   const selectedTools = [...selected];
-  const dryRunSteps = selectedTools.filter((tool) => /apply_patch|run_project_task|start_dev_server|browser_capture|browser_page|browser_readability|browser_link|browser_dom|browser_accessibility|browser_compare|fetch_url_text|git_commit|api_request|restore/.test(tool)).map((tool) => `${tool}: dry-run first before approval or real action when network/mutation/source fetching is involved`);
-  const approvalSteps = selectedTools.filter((tool) => /apply_patch|run_project_task|start_dev_server|stop_dev_server|browser_capture|browser_page|browser_readability|browser_link|browser_dom|browser_accessibility|browser_compare|fetch_url_text|git_commit|api_request|restore/.test(tool)).map((tool) => `${tool}: requires explicit approval for real external/network/mutation action`);
+  const dryRunSteps = selectedTools.filter((tool) => /apply_patch|run_project_task|start_dev_server|browser_capture|browser_page|browser_readability|browser_link|browser_dom|browser_accessibility|browser_compare|web_search|redirect_chain|download_safety|fetch_url_text|git_commit|api_request|restore/.test(tool)).map((tool) => `${tool}: dry-run first before approval or real action when network/mutation/source fetching is involved`);
+  const approvalSteps = selectedTools.filter((tool) => /apply_patch|run_project_task|start_dev_server|stop_dev_server|browser_capture|browser_page|browser_readability|browser_link|browser_dom|browser_accessibility|browser_compare|web_search|redirect_chain|download_safety|fetch_url_text|git_commit|api_request|restore/.test(tool)).map((tool) => `${tool}: requires explicit approval for real external/network/mutation action`);
   const currentSearchRequired = currentResearchRequired(type, `${task} ${context}`);
   return {
     task,
@@ -1613,6 +1661,10 @@ function buildCoreToolsPlan(args = {}) {
   push("vnem_tools_code_search", "find relevant implementation sites");
   push("vnem_tools_find_references", "trace symbols/config names");
   push("vnem_tools_read_many_files", "load bounded relevant context");
+  push("vnem_tools_search_provider_manifest", "inspect configured/unconfigured provider capabilities without exposing keys");
+  push("vnem_tools_search_query_builder", "build strong source-discovery queries without executing search");
+  push("vnem_tools_web_search", "dry-run then run approved configured provider search or return honest unavailable status", true, true);
+  push("vnem_tools_search_result_ranker", "rank provider/search results by credibility, freshness, duplicates, and risk");
   push("vnem_tools_fetch_url_text", "dry-run then fetch direct approved URL text only; no search scraping", true, true);
   push("vnem_tools_browser_page_inspect", "inspect direct/local/provided page structure statically", true, true);
   push("vnem_tools_browser_readability_extract", "extract heuristic readable main content", true, true);
@@ -1623,6 +1675,12 @@ function buildCoreToolsPlan(args = {}) {
   push("vnem_tools_source_quality_check", "evaluate provided/direct source quality");
   push("vnem_tools_research_brief", "summarize supported/unsupported claims from provided sources");
   push("vnem_tools_browser_research_pack", "combine source/page evidence into supported/unsupported/conflicting claim pack");
+  push("vnem_tools_redirect_chain_check", "dry-run then check redirect chain safely with no cookies/session/login", true, true);
+  push("vnem_tools_url_reputation_check", "heuristically flag phishing/scam/download/credential URL risks");
+  push("vnem_tools_captcha_detector", "detect CAPTCHA/access-block pages and propose safe user-assisted handoff; no bypass");
+  push("vnem_tools_download_safety_check", "preflight download link risk; no actual download or installer execution", true, true);
+  push("vnem_tools_claim_source_matrix", "build claim/source support matrix");
+  push("vnem_tools_research_gap_detector", "identify missing current/primary/counter/date/version evidence");
   push("vnem_tools_apply_patch_batch", "dry-run then apply approved coherent multi-file patch", true, true);
   push("vnem_tools_run_project_task", "dry-run then run approved safe project task/check", true, true);
   push("vnem_tools_start_dev_server", "dry-run then start approved localhost dev server for UI proof", true, true);
@@ -1659,8 +1717,8 @@ function buildBrowserResearchPlan(args = {}) {
   return {
     task: plan.task,
     task_type: plan.task_type,
-    selected_tools: plan.selected_tools,
-    tool_sequence: plan.tool_sequence,
+    selected_tools: [...new Set([...plan.selected_tools, ...researchPlanningToolsForText(`${plan.task} ${plan.task_type}`)])],
+    tool_sequence: [...plan.tool_sequence, ...researchPlanningToolsForText(`${plan.task} ${plan.task_type}`).filter((tool) => !plan.tool_sequence.some((step) => step.tool === tool)).map((tool) => ({ tool, purpose: purposeForTool(tool, plan.task_type), dry_run_first: /web_search|redirect|download/.test(tool), requires_approval: /web_search|redirect|download/.test(tool), expected_evidence: expectedEvidenceForTool(tool) }))],
     what_each_tool_is_for: plan.what_each_tool_is_for,
     dry_run_steps: plan.dry_run_steps,
     approval_required_steps: plan.approval_required_steps,
@@ -1774,6 +1832,16 @@ function purposeForTool(tool, type) {
     vnem_tools_source_quality_check: "score/flag source quality and citation limits",
     vnem_tools_research_brief: "summarize supported and unsupported claims from source excerpts",
     vnem_tools_browser_research_pack: "combine multiple source/page summaries into a claim evidence pack",
+    vnem_tools_search_provider_manifest: "show available/configured search providers without exposing API keys",
+    vnem_tools_search_query_builder: "build strong search queries before approved provider search",
+    vnem_tools_web_search: "run approved provider search if configured, or return honest unavailable status",
+    vnem_tools_search_result_ranker: "rank result usefulness, freshness, credibility, duplicate clusters, and risk",
+    vnem_tools_redirect_chain_check: "check redirects safely without cookies/session/login or blind following",
+    vnem_tools_url_reputation_check: "detect phishing/scam/download/credential URL risk heuristically",
+    vnem_tools_captcha_detector: "detect CAPTCHA/access-block pages and require safe user-assisted handoff; no bypass",
+    vnem_tools_download_safety_check: "assess download link risk before following/downloading; no installer execution",
+    vnem_tools_claim_source_matrix: "map claims to supporting/conflicting/missing source evidence",
+    vnem_tools_research_gap_detector: "find missing current/primary/counter/date/version evidence before confident answer",
     vnem_tools_apply_patch_batch: "dry-run/apply approved local file changes",
     vnem_tools_run_project_task: "run approved safe project checks",
     vnem_tools_start_dev_server: "start approved localhost dev server for proof",
@@ -1796,6 +1864,16 @@ function expectedEvidenceForTool(tool) {
   if (/browser_accessibility/.test(tool)) return ["static a11y score", "issues/warnings/passes", "not certification"];
   if (/browser_compare/.test(tool)) return ["changed headings/text/links/forms", "no visual overclaim"];
   if (/browser_research_pack/.test(tool)) return ["source summaries", "supported/unsupported/conflicting claims", "citation plan"];
+  if (/search_provider_manifest/.test(tool)) return ["configured/unconfigured providers", "no key values exposed"];
+  if (/search_query_builder/.test(tool)) return ["queries", "source type targets", "must-not-claim no search executed"];
+  if (/web_search/.test(tool)) return ["provider status", "executed flag", "results or unavailable reason", "evidence log"];
+  if (/search_result_ranker/.test(tool)) return ["ranked/best/weak/risky sources", "duplicate clusters", "next queries"];
+  if (/redirect_chain/.test(tool)) return ["redirect chain", "cross-domain/suspicious redirects", "blocked reason"];
+  if (/url_reputation/.test(tool)) return ["risk flags", "trust flags", "recommended action"];
+  if (/captcha_detector/.test(tool)) return ["captcha/block signals", "safe user-assisted handoff", "no-bypass statement"];
+  if (/download_safety/.test(tool)) return ["file type guess", "download risk flags", "manual review recommendation"];
+  if (/claim_source_matrix/.test(tool)) return ["claim/source matrix", "supported/unsupported/conflicting claims", "citation plan"];
+  if (/research_gap/.test(tool)) return ["missing source types", "current/primary/counter/date blockers", "next tools/queries"];
   if (/patch/.test(tool)) return ["changed files", "diff summary", "backups", "restore plan"];
   if (/run_project_task/.test(tool)) return ["command", "exit code", "redacted output"];
   if (/browser_capture/.test(tool)) return ["screenshot path/hash or browser_unavailable"];
@@ -1803,6 +1881,121 @@ function expectedEvidenceForTool(tool) {
   if (/session/.test(tool)) return ["session evidence pack"];
   return ["structured result"];
 }
+
+
+function assessResearchNeed(args = {}) {
+  const task = String(args.task || "");
+  const context = String(args.known_context || "");
+  const domain = String(args.domain_hint || "");
+  const hay = `${task} ${context} ${domain}`.toLowerCase();
+  const freshness = Boolean(args.freshness_required || /\b(latest|current|today|this week|recent|now|news|meta|2026)\b/.test(hay));
+  const directSourceEnough = /https?:\/\/\S+/.test(hay) && !freshness && !/compare|best|latest|current|news/.test(hay);
+  const securityRisk = /security|malware|phishing|download|installer|scam|credential|cve|advisory/.test(hay);
+  const captchaLikely = /captcha|cloudflare|access block|verify human|anti-bot|blocked/.test(hay);
+  const uiVisual = /ui|visual|screenshot|browser proof|localhost|rendered|dashboard/.test(hay);
+  const sourceTypes = [];
+  if (/docs|library|api|software|mcp|package/.test(hay)) sourceTypes.push("official_source", "official_docs", "github_repo", "changelog_or_release_notes");
+  if (/game|meta|build|pvp|pve|modding|mod/.test(hay)) sourceTypes.push("official_source", "community_source", "version_or_patch_notes");
+  if (securityRisk) sourceTypes.push("official_source", "security_advisory", "url_reputation_or_malware_context");
+  if (/compare|best|product|recommend/.test(hay)) sourceTypes.push("official_source", "independent_secondary_source", "counter_source");
+  if (!sourceTypes.length) sourceTypes.push("official_source", "credible_secondary_source");
+  const level = freshness || securityRisk ? "high" : directSourceEnough ? "medium" : "medium";
+  return {
+    task,
+    research_need_level: level,
+    freshness_requirement: { required: freshness, reason: freshness ? "Task asks for latest/current/recent or explicit freshness." : "No explicit currentness detected." },
+    current_info_required: freshness,
+    direct_source_enough: directSourceEnough,
+    external_search_required: freshness || /find|research|compare|best|recommend|discover/.test(hay),
+    official_source_required: true,
+    community_source_useful: /game|meta|mod|community|reddit|forum/.test(hay),
+    source_quality_risk: /medical|legal|financial|security|malware|download|best|current/.test(hay),
+    malware_phishing_download_risk: securityRisk,
+    captcha_access_block_likely: captchaLikely,
+    ui_visual_proof_required: uiVisual,
+    source_types_needed: [...new Set(sourceTypes)],
+    selected_tools: researchPlanningToolsForText(hay),
+    evidence_to_collect: ["provider manifest/configured provider status", "search query plan", freshness ? "provider-backed search evidence or unavailable reason" : null, "ranked sources", "source quality checks", "claim/source matrix", "research gaps", securityRisk ? "URL/reputation/download/redirect risk checks" : null, captchaLikely ? "CAPTCHA/access-block detection and user-assisted handoff" : null].filter(Boolean),
+    must_not_claim: ["Core executed Tools.", "A web search happened before provider evidence exists.", "Current/latest facts are verified without current provider/search evidence.", "CAPTCHA was bypassed automatically.", "Downloads/installers were run or proven safe."],
+    core_executes_tools: false,
+    web_search_executed: false
+  };
+}
+
+function buildSearchPlan(args = {}) {
+  const assessment = assessResearchNeed(args);
+  const queryPlan = buildCoreSearchQueries(args.task || "", args.domain_hint || "", assessment.freshness_requirement.required, assessment.source_types_needed, args.known_context || "");
+  const selected = [...new Set(["vnem_tools_search_provider_manifest", "vnem_tools_search_query_builder", "vnem_tools_web_search", "vnem_tools_search_result_ranker", "vnem_tools_source_quality_check", "vnem_tools_claim_source_matrix", "vnem_tools_research_gap_detector", ...(assessment.malware_phishing_download_risk ? ["vnem_tools_url_reputation_check", "vnem_tools_redirect_chain_check", "vnem_tools_download_safety_check", "vnem_tools_captcha_detector"] : [])])];
+  return {
+    task: args.task,
+    research_need_level: assessment.research_need_level,
+    freshness_requirement: assessment.freshness_requirement,
+    selected_tools: selected,
+    tool_sequence: selected.map((tool) => ({ tool, purpose: purposeForTool(tool, "research"), dry_run_first: /web_search|redirect|download/.test(tool), requires_approval: /web_search|redirect|download/.test(tool), expected_evidence: expectedEvidenceForTool(tool) })),
+    search_queries: queryPlan.queries,
+    query_intents: queryPlan.query_intents,
+    source_types_needed: assessment.source_types_needed,
+    approval_required_steps: ["vnem_tools_web_search: real provider search requires configured provider plus explicit approval.", "vnem_tools_redirect_chain_check/vnem_tools_download_safety_check: real HEAD/network preflight requires approval."],
+    captcha_handling_plan: captchaHandlingPlan(),
+    download_safety_plan: downloadSafetyPlan(),
+    evidence_to_collect: assessment.evidence_to_collect,
+    must_not_claim: assessment.must_not_claim,
+    done_definition: ["Provider status is known; unavailable providers are reported honestly.", "Search results are ranked before source reading.", "Claims are mapped to sources with unsupported/conflicting claims listed.", "Research gaps are closed or explicitly reported."],
+    fallbacks_if_search_or_browser_unavailable: ["Use direct URLs/provided source text from the user.", "Use official docs/API/repository supplied by user.", "Say provider_unconfigured/provider_unavailable; do not invent results."],
+    core_executes_tools: false,
+    web_search_executed: false
+  };
+}
+
+function buildBrowsingPlan(args = {}) {
+  const assessment = assessResearchNeed({ ...args, domain_hint: `${args.known_context || ""} browsing risk` });
+  const selected = [...new Set(["vnem_tools_redirect_chain_check", "vnem_tools_url_reputation_check", "vnem_tools_captcha_detector", "vnem_tools_download_safety_check", "vnem_tools_fetch_url_text", "vnem_tools_browser_page_inspect", "vnem_tools_browser_readability_extract", "vnem_tools_browser_link_map", "vnem_tools_source_quality_check", "vnem_tools_claim_source_matrix", "vnem_tools_research_gap_detector"] )];
+  return {
+    task: args.task,
+    research_need_level: assessment.research_need_level,
+    freshness_requirement: assessment.freshness_requirement,
+    selected_tools: selected,
+    tool_sequence: selected.map((tool) => ({ tool, purpose: purposeForTool(tool, "browsing_risk"), dry_run_first: /redirect|download|fetch|browser_page|browser_readability|browser_link/.test(tool), requires_approval: /redirect|download|fetch|browser_page|browser_readability|browser_link/.test(tool), expected_evidence: expectedEvidenceForTool(tool) })),
+    search_queries: buildCoreSearchQueries(args.task || "", "browsing safety", assessment.freshness_requirement.required, assessment.source_types_needed, args.known_context || "").queries,
+    source_types_needed: assessment.source_types_needed,
+    approval_required_steps: ["Direct external fetch/page inspection/redirect/download HEAD requires explicit approval.", "Do not access private/account pages unless the user confirms authorization and provides safe content/access path."],
+    captcha_handling_plan: captchaHandlingPlan(),
+    download_safety_plan: downloadSafetyPlan(),
+    evidence_to_collect: ["redirect chain/blocked reason", "URL reputation flags", "CAPTCHA/access-block signals", "download safety risk flags", "page/source inspection evidence", "source quality and claim/source matrix"],
+    must_not_claim: ["Core executed Tools.", "A page was visually verified when only static HTML/source was inspected.", "A web search happened before provider evidence exists.", "CAPTCHA was bypassed automatically.", "A file was downloaded or installer was run.", "A suspicious URL/download is safe without review."],
+    done_definition: ["Redirect/download/CAPTCHA risks are explicitly classified.", "Suspicious pages are not treated as normal trustworthy sources.", "If blocked by CAPTCHA/access control, safe user-assisted handoff or alternate sources are listed."],
+    fallbacks_if_search_or_browser_unavailable: ["Ask the user to paste page text after access.", "Use official docs/API/repository mirrors.", "Stop and report access blocked; do not bypass CAPTCHA."],
+    core_executes_tools: false,
+    web_search_executed: false
+  };
+}
+
+function buildCoreSearchQueries(task, domainHint, freshnessRequired, sourceTypes, context) {
+  const hay = `${task} ${domainHint} ${context}`.toLowerCase();
+  const base = String(task || "research task").replace(/https?:\/\/\S+/g, "").trim();
+  const queries = [];
+  const intents = [];
+  const add = (q, intent) => { if (q && !queries.includes(q)) { queries.push(q); intents.push({ query: q, intent }); } };
+  add(`${base} official docs`, "official source");
+  if (freshnessRequired) add(`${base} latest current ${new Date().getUTCFullYear()}`, "fresh/current source");
+  if (/security|malware|phishing|download|cve|advisory/.test(hay)) add(`${base} security advisory CVE phishing malware`, "security/reputation source");
+  if (/github|repo|code|mcp|library|api/.test(hay)) add(`${base} site:github.com releases issues`, "repository/release source");
+  if (/game|meta|mod/.test(hay)) add(`${base} official patch notes current meta community`, "game/modding current source");
+  add(`${base} limitations risks`, "counter-source / limitations");
+  return { queries: queries.slice(0, 8), query_intents: intents.slice(0, 8), source_types_needed: sourceTypes };
+}
+
+function researchPlanningToolsForText(hay) {
+  const tools = ["vnem_tools_search_provider_manifest", "vnem_tools_search_query_builder", "vnem_tools_web_search", "vnem_tools_search_result_ranker", "vnem_tools_source_quality_check", "vnem_tools_claim_source_matrix", "vnem_tools_research_gap_detector"];
+  if (/download|installer|redirect|captcha|phishing|malware|scam|credential|security/.test(hay)) tools.push("vnem_tools_redirect_chain_check", "vnem_tools_url_reputation_check", "vnem_tools_captcha_detector", "vnem_tools_download_safety_check");
+  if (/page|url|website|source|docs/.test(hay)) tools.push("vnem_tools_fetch_url_text", "vnem_tools_browser_page_inspect", "vnem_tools_browser_research_pack");
+  return [...new Set(tools)];
+}
+function captchaHandlingPlan() { return ["Detect CAPTCHA/access-block pages with vnem_tools_captcha_detector.", "No automatic CAPTCHA bypass was attempted or provided.", "Ask user to solve CAPTCHA manually only if authorized, then paste page text/source or provide allowed access evidence.", "Use official API/docs/source or alternate official mirror when available.", "Stop and report blocked access when no allowed path exists."]; }
+function downloadSafetyPlan() { return ["Do not download or run installers automatically.", "Use vnem_tools_download_safety_check before following download links.", "Use approved HEAD metadata only when needed.", "Require manual review, official source, checksum/signature, and user confirmation for risky downloads."]; }
+function formatResearchNeedAssessment(a) { return `vnem_assess_research_need: ${a.research_need_level} current=${a.current_info_required} external_search=${a.external_search_required}`; }
+function formatSearchPlan(plan) { return `vnem_build_search_plan: tools=${plan.selected_tools.join(", ")} queries=${plan.search_queries.length} core_executes_tools=false`; }
+function formatBrowsingPlan(plan) { return `vnem_build_browsing_plan: tools=${plan.selected_tools.join(", ")} core_executes_tools=false`; }
 
 function formatBrowserResearchPlan(plan) {
   return [`vnem_build_browser_research_plan: ${plan.task_type}`, `Tools: ${plan.selected_tools.join(", ")}`, `External current search required: ${plan.when_external_web_search_is_required.length ? "yes" : "no"}`, "Core executes tools: false"].join("\n");

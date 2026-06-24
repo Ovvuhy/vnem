@@ -26,11 +26,13 @@ const mcpTestSource = await text("scripts/test-mcp-server.mjs");
 const coreToolSelectionTestSource = await text("scripts/test-core-tool-selection.mjs");
 const coreToolsEcosystemTestSource = await text("scripts/test-core-tools-tool-ecosystem.mjs");
 const coreBrowserPlanningTestSource = await text("scripts/test-core-browser-research-planning.mjs");
+const coreSearchPlanningTestSource = await text("scripts/test-core-search-planning.mjs");
+const mcpUserSmokeTestSource = await text("scripts/test-mcp-user-smoke.mjs");
 const readme = await text("README.md");
 const installGuide = await text(".vnem/install-guide.md");
 const packageJson = await json("package.json");
 const toolInventory = parseDefaultTools(serverSource);
-const forbiddenCoreTools = toolInventory.filter((tool) => tool !== "vnem_build_browser_research_plan" && /terminal|browser|filesystem|file_write|apply_diff|patch_file|github|exec|execute|shell|api_call|live_call|install_skill|run_skill/i.test(tool));
+const forbiddenCoreTools = toolInventory.filter((tool) => !(["vnem_build_browser_research_plan", "vnem_build_browsing_plan"].includes(tool)) && /terminal|browser|filesystem|file_write|apply_diff|patch_file|github|exec|execute|shell|api_call|live_call|install_skill|run_skill/i.test(tool));
 const apiCounts = countApis(library.apis || []);
 const skillCounts = countSkills(library.skills || []);
 const fixtureCoverage = {
@@ -100,6 +102,17 @@ const browserResearchPlanningStatus = {
   core_browser_plan_only_status: /Core must remain plan-only/.test(coreBrowserPlanningTestSource) && /core_executes_tools:\s*false/.test(serverSource)
 };
 
+
+const searchPlanningStatus = {
+  research_need_assessment_status: toolInventory.includes("vnem_assess_research_need") && /assessResearchNeed/.test(serverSource) && /current_info_required/.test(coreSearchPlanningTestSource),
+  search_plan_status: toolInventory.includes("vnem_build_search_plan") && /buildSearchPlan/.test(serverSource) && /vnem_tools_web_search/.test(coreSearchPlanningTestSource) && /provider evidence|provider status|provider-backed/i.test(serverSource + coreSearchPlanningTestSource),
+  browsing_plan_status: toolInventory.includes("vnem_build_browsing_plan") && /buildBrowsingPlan/.test(serverSource) && /vnem_tools_redirect_chain_check/.test(coreSearchPlanningTestSource) && /vnem_tools_url_reputation_check/.test(coreSearchPlanningTestSource),
+  captcha_handling_plan_status: /captchaHandlingPlan/.test(serverSource) && /No automatic CAPTCHA bypass was attempted or provided/.test(serverSource + coreSearchPlanningTestSource),
+  download_safety_plan_status: /downloadSafetyPlan/.test(serverSource) && /Do not download or run installers automatically/.test(serverSource + coreSearchPlanningTestSource),
+  freshness_detection_status: /freshness_requirement/.test(serverSource) && /latest current/.test(coreSearchPlanningTestSource + serverSource),
+  core_plan_only_status: /core_executes_tools:\s*false/.test(serverSource) && /web_search_executed:\s*false/.test(serverSource) && /Core must not expose Tools directly/.test(coreSearchPlanningTestSource) && /Core executed Tools/.test(serverSource + coreSearchPlanningTestSource)
+};
+
 const usablePackStatus = {
   usable_api_pack_count: Array.isArray(usablePacks.apis) ? usablePacks.apis.filter((pack) => pack.usable_status === "usable").length : 0,
   usable_skill_pack_count: Array.isArray(usablePacks.skills) ? usablePacks.skills.filter((pack) => pack.usable_status === "usable").length : 0,
@@ -126,7 +139,10 @@ assert.ok(usablePackStatus.raw_records_not_counted_as_usable, "raw discovered re
 assert.ok(taskBoostingStatus.all_required_examples_tested, "real task boosting examples are not fully tested");
 assert.ok(Object.values(toolSelectionStatus).every(Boolean), "Core tool-selection/tools-plan readiness is incomplete");
 assert.ok(Object.values(browserResearchPlanningStatus).every(Boolean), "Core browser/research planning readiness is incomplete");
+assert.ok(Object.values(searchPlanningStatus).every(Boolean), "Core search/browsing planner readiness is incomplete");
 assert.ok(packageJson.scripts?.["test:core-browser-research-planning"] === "node scripts/test-core-browser-research-planning.mjs", "test:core-browser-research-planning package script is missing");
+assert.ok(packageJson.scripts?.["test:core-search-planning"] === "node scripts/test-core-search-planning.mjs", "test:core-search-planning package script is missing");
+assert.ok(packageJson.scripts?.["test:mcp-user-smoke"] === "node scripts/test-mcp-user-smoke.mjs", "test:mcp-user-smoke package script is missing");
 assert.ok(packageJson.scripts?.["test:core-tool-selection"] === "node scripts/test-core-tool-selection.mjs", "test:core-tool-selection package script is missing");
 assert.ok(packageJson.scripts?.["test:core-tools-ecosystem"] === "node scripts/test-core-tools-tool-ecosystem.mjs", "test:core-tools-ecosystem package script is missing");
 assert.ok(packageJson.scripts?.["core:readiness"], "package script core:readiness is missing");
@@ -164,6 +180,7 @@ const report = {
   task_boosting_status: taskBoostingStatus,
   tool_selection_status: toolSelectionStatus,
   browser_research_planning_status: browserResearchPlanningStatus,
+  search_planning_status: searchPlanningStatus,
   core_tools_ecosystem_test_status: /vnem_build_tools_plan/.test(coreToolsEcosystemTestSource) && /vnem_tools_finish_session/.test(coreToolsEcosystemTestSource),
   api_library_counts: apiCounts,
   skill_library_counts: skillCounts,
@@ -178,7 +195,8 @@ const report = {
     "Task boosting entry point exists and is covered by real-task examples across build advice, API features, UI, modding, security, and debugging.",
     "Usable API/skill pack minimums are enforced and Core-to-Tools handoff status is tested.",
     "Core tool selection and Core→Tools planning are available, tested, and explicitly plan-only.",
-    "Core browser/research planning distinguishes local UI proof, direct-source analysis, website understanding, and current-search needs without executing Tools."
+    "Core browser/research planning distinguishes local UI proof, direct-source analysis, website understanding, and current-search needs without executing Tools.",
+    "Core search/browsing planning now assesses research need, builds provider-search plans, handles CAPTCHA/access-block and download risk, and remains plan-only."
   ],
   not_ready: [
     "Most API docs, rate limits, CORS values, and freshness statuses remain metadata-level or unknown.",
@@ -252,6 +270,7 @@ function formatReport(report) {
   lines.push(`task_boosting_status: exists=${report.task_boosting_status.vnem_boost_task_exists ? "yes" : "no"}, skill_guidance=${report.task_boosting_status.uses_skill_guidance ? "yes" : "no"}, api_guidance_when_relevant=${report.task_boosting_status.uses_api_guidance_when_relevant ? "yes" : "no"}, workflow_and_proof=${report.task_boosting_status.includes_workflow_and_proof ? "yes" : "no"}`);
   lines.push(`tool_selection_status: ${status(report.tool_selection_status)}`);
   lines.push(`browser_research_planning_status: ${status(report.browser_research_planning_status)}`);
+  lines.push(`search_planning_status: ${status(report.search_planning_status)}`);
   lines.push(`core_tools_ecosystem_test_status: ${report.core_tools_ecosystem_test_status ? "yes" : "no"}`);
   lines.push(`real_task_examples_tested: ${report.task_boosting_status.real_task_examples_tested.join(", ")}`);
   lines.push(`api_counts: total=${report.api_library_counts.total_apis}, docs_verified=${report.api_library_counts.docs_verified_count}, docs_unknown=${report.api_library_counts.docs_unknown_count}, rate_limit_verified=${report.api_library_counts.rate_limit_verified_count}, rate_limit_unknown=${report.api_library_counts.rate_limit_unknown_count}, cors_unknown=${report.api_library_counts.cors_unknown_count}, frontend_safe=${report.api_library_counts.frontend_safe_count}, backend_required=${report.api_library_counts.backend_required_count}`);
