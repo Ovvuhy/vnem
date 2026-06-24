@@ -15,6 +15,9 @@ const projectActionsTestPath = rel("scripts/test-tools-project-actions.mjs");
 const gitSessionTestPath = rel("scripts/test-tools-git-session.mjs");
 const intelligenceTestPath = rel("scripts/test-tools-intelligence.mjs");
 const researchTestPath = rel("scripts/test-tools-research.mjs");
+const browserIntelligenceTestPath = rel("scripts/test-tools-browser-intelligence.mjs");
+const browserResearchPackTestPath = rel("scripts/test-tools-browser-research-pack.mjs");
+const coreBrowserPlanningTestPath = rel("scripts/test-core-browser-research-planning.mjs");
 const coreSelectionTestPath = rel("scripts/test-core-tool-selection.mjs");
 const coreEcosystemTestPath = rel("scripts/test-core-tools-tool-ecosystem.mjs");
 const coreServerPath = rel("scripts/vnem-mcp-server.mjs");
@@ -28,6 +31,9 @@ const projectActionsTest = existsSync(projectActionsTestPath) ? readFileSync(pro
 const gitSessionTest = existsSync(gitSessionTestPath) ? readFileSync(gitSessionTestPath, "utf8") : "";
 const intelligenceTest = existsSync(intelligenceTestPath) ? readFileSync(intelligenceTestPath, "utf8") : "";
 const researchTest = existsSync(researchTestPath) ? readFileSync(researchTestPath, "utf8") : "";
+const browserIntelligenceTest = existsSync(browserIntelligenceTestPath) ? readFileSync(browserIntelligenceTestPath, "utf8") : "";
+const browserResearchPackTest = existsSync(browserResearchPackTestPath) ? readFileSync(browserResearchPackTestPath, "utf8") : "";
+const coreBrowserPlanningTest = existsSync(coreBrowserPlanningTestPath) ? readFileSync(coreBrowserPlanningTestPath, "utf8") : "";
 const coreSelectionTest = existsSync(coreSelectionTestPath) ? readFileSync(coreSelectionTestPath, "utf8") : "";
 const coreEcosystemTest = existsSync(coreEcosystemTestPath) ? readFileSync(coreEcosystemTestPath, "utf8") : "";
 const coreServer = existsSync(coreServerPath) ? readFileSync(coreServerPath, "utf8") : "";
@@ -54,6 +60,13 @@ const requiredTools = [
   "vnem_tools_collect_evidence",
   "vnem_tools_restore_backup",
   "vnem_tools_browser_capture",
+  "vnem_tools_browser_page_inspect",
+  "vnem_tools_browser_readability_extract",
+  "vnem_tools_browser_link_map",
+  "vnem_tools_browser_dom_search",
+  "vnem_tools_browser_accessibility_audit",
+  "vnem_tools_browser_compare_snapshots",
+  "vnem_tools_browser_research_pack",
   "vnem_tools_apply_patch_batch",
   "vnem_tools_restore_batch",
   "vnem_tools_project_scan",
@@ -77,6 +90,9 @@ const report = {
   git_session_test_exists: existsSync(gitSessionTestPath),
   intelligence_test_exists: existsSync(intelligenceTestPath),
   research_test_exists: existsSync(researchTestPath),
+  browser_intelligence_test_exists: existsSync(browserIntelligenceTestPath),
+  browser_research_pack_test_exists: existsSync(browserResearchPackTestPath),
+  core_browser_planning_test_exists: existsSync(coreBrowserPlanningTestPath),
   core_selection_test_exists: existsSync(coreSelectionTestPath),
   core_ecosystem_test_exists: existsSync(coreEcosystemTestPath),
   core_tools_e2e_script_exists: pkg.scripts?.["test:core-tools-e2e"] === "node scripts/test-core-tools-e2e.mjs",
@@ -88,6 +104,9 @@ const report = {
     test_tools_git_session: pkg.scripts?.["test:tools-git-session"] === "node scripts/test-tools-git-session.mjs",
     test_tools_intelligence: pkg.scripts?.["test:tools-intelligence"] === "node scripts/test-tools-intelligence.mjs",
     test_tools_research: pkg.scripts?.["test:tools-research"] === "node scripts/test-tools-research.mjs",
+    test_tools_browser_intelligence: pkg.scripts?.["test:tools-browser-intelligence"] === "node scripts/test-tools-browser-intelligence.mjs",
+    test_tools_browser_research_pack: pkg.scripts?.["test:tools-browser-research-pack"] === "node scripts/test-tools-browser-research-pack.mjs",
+    test_core_browser_research_planning: pkg.scripts?.["test:core-browser-research-planning"] === "node scripts/test-core-browser-research-planning.mjs",
     test_core_tool_selection: pkg.scripts?.["test:core-tool-selection"] === "node scripts/test-core-tool-selection.mjs",
     test_core_tools_ecosystem: pkg.scripts?.["test:core-tools-ecosystem"] === "node scripts/test-core-tools-tool-ecosystem.mjs"
   },
@@ -112,6 +131,16 @@ const report = {
   external_url_blocked: /external_url_blocked/.test(server) && /external_url_blocked/.test(browserTest),
   secret_file_browser_blocked: /vnem_tools_browser_capture/.test(browserTest) && /secret_path_blocked/.test(browserTest),
   screenshot_evidence_status: /screenshots/.test(server) && /screenshot_sha256/.test(server) && /proof_trail_compatible_summary/.test(server) && /screenshot_paths/.test(server),
+  browser_page_inspect_status: /vnem_tools_browser_page_inspect/.test(server) && /safeBrowserPageInspect/.test(server) && /main_text_excerpt/.test(browserIntelligenceTest) && /secret_path_blocked/.test(browserIntelligenceTest),
+  browser_readability_status: /vnem_tools_browser_readability_extract/.test(server) && /safeBrowserReadabilityExtract/.test(server) && /heuristic/.test(browserIntelligenceTest),
+  browser_link_map_status: /vnem_tools_browser_link_map/.test(server) && /safeBrowserLinkMap/.test(server) && /download_like_links/.test(browserIntelligenceTest),
+  browser_dom_search_status: /vnem_tools_browser_dom_search/.test(server) && /safeBrowserDomSearch/.test(server) && /mode: "heading"/.test(browserIntelligenceTest),
+  browser_accessibility_audit_status: /vnem_tools_browser_accessibility_audit/.test(server) && /safeBrowserAccessibilityAudit/.test(server) && /missing alt/i.test(browserIntelligenceTest),
+  browser_compare_snapshots_status: /vnem_tools_browser_compare_snapshots/.test(server) && /safeBrowserCompareSnapshots/.test(server) && /changed_headings/.test(browserIntelligenceTest),
+  browser_research_pack_status: /vnem_tools_browser_research_pack/.test(server) && /safeBrowserResearchPack/.test(server) && /conflicting_claims/.test(browserResearchPackTest),
+  browser_intelligence_safety_status: /browserUnderstandingMustNotClaim/.test(server) && /search_engine_scraping_blocked/.test(browserIntelligenceTest) && /secret_path_blocked/.test(browserIntelligenceTest),
+  browser_search_engine_scraping_still_blocked: /search_engine_scraping_blocked/.test(server) && /search_engine_scraping_blocked/.test(browserIntelligenceTest + researchTest),
+  browser_fake_search_claims_blocked: /A broad web search happened|A web search happened/.test(server) && /web search/.test(browserResearchPackTest + coreBrowserPlanningTest),
   patch_batch_status: /vnem_tools_apply_patch_batch/.test(server) && /safeApplyPatchBatch/.test(server) && /partialFailure/.test(projectActionsTest) && /explicit_delete_required/.test(projectActionsTest),
   restore_batch_status: /vnem_tools_restore_batch/.test(server) && /safeRestoreBatch/.test(server) && /restoreSecret/.test(projectActionsTest),
   project_scan_status: /vnem_tools_project_scan/.test(server) && /safeProjectScan/.test(server) && /likely_frameworks/.test(server) && /blocked_or_skipped_paths/.test(projectActionsTest),
@@ -173,6 +202,12 @@ assert.equal(report.package_scripts.test_core_tool_selection, true, "test:core-t
 assert.equal(report.package_scripts.test_core_tools_ecosystem, true, "test:core-tools-ecosystem package script is missing");
 assert.equal(report.intelligence_test_exists, true, "tools intelligence test file is missing");
 assert.equal(report.research_test_exists, true, "tools research test file is missing");
+assert.equal(report.browser_intelligence_test_exists, true, "browser intelligence test file is missing");
+assert.equal(report.browser_research_pack_test_exists, true, "browser research pack test file is missing");
+assert.equal(report.core_browser_planning_test_exists, true, "core browser planning test file is missing");
+assert.equal(report.package_scripts.test_tools_browser_intelligence, true, "test:tools-browser-intelligence package script is missing");
+assert.equal(report.package_scripts.test_tools_browser_research_pack, true, "test:tools-browser-research-pack package script is missing");
+assert.equal(report.package_scripts.test_core_browser_research_planning, true, "test:core-browser-research-planning package script is missing");
 assert.equal(report.core_selection_test_exists, true, "core tool selection test file is missing");
 assert.equal(report.core_ecosystem_test_exists, true, "core tools ecosystem test file is missing");
 for (const [name, present] of Object.entries(report.required_tools_present)) assert.equal(present, true, `missing required tool ${name}`);
@@ -225,6 +260,9 @@ console.log(`project_actions_test_exists: ${yes(report.project_actions_test_exis
 console.log(`git_session_test_exists: ${yes(report.git_session_test_exists)}`);
 console.log(`intelligence_test_exists: ${yes(report.intelligence_test_exists)}`);
 console.log(`research_test_exists: ${yes(report.research_test_exists)}`);
+console.log(`browser_intelligence_test_exists: ${yes(report.browser_intelligence_test_exists)}`);
+console.log(`browser_research_pack_test_exists: ${yes(report.browser_research_pack_test_exists)}`);
+console.log(`core_browser_planning_test_exists: ${yes(report.core_browser_planning_test_exists)}`);
 console.log(`core_selection_test_exists: ${yes(report.core_selection_test_exists)}`);
 console.log(`core_ecosystem_test_exists: ${yes(report.core_ecosystem_test_exists)}`);
 console.log(`core_tools_e2e_script_exists: ${yes(report.core_tools_e2e_script_exists)}`);
@@ -249,6 +287,16 @@ console.log(`browser_approval_required: ${yes(report.browser_approval_required)}
 console.log(`external_url_blocked: ${yes(report.external_url_blocked)}`);
 console.log(`secret_file_browser_blocked: ${yes(report.secret_file_browser_blocked)}`);
 console.log(`screenshot_evidence_status: ${yes(report.screenshot_evidence_status)}`);
+console.log(`browser_page_inspect_status: ${yes(report.browser_page_inspect_status)}`);
+console.log(`browser_readability_status: ${yes(report.browser_readability_status)}`);
+console.log(`browser_link_map_status: ${yes(report.browser_link_map_status)}`);
+console.log(`browser_dom_search_status: ${yes(report.browser_dom_search_status)}`);
+console.log(`browser_accessibility_audit_status: ${yes(report.browser_accessibility_audit_status)}`);
+console.log(`browser_compare_snapshots_status: ${yes(report.browser_compare_snapshots_status)}`);
+console.log(`browser_research_pack_status: ${yes(report.browser_research_pack_status)}`);
+console.log(`browser_intelligence_safety_status: ${yes(report.browser_intelligence_safety_status)}`);
+console.log(`browser_search_engine_scraping_still_blocked: ${yes(report.browser_search_engine_scraping_still_blocked)}`);
+console.log(`browser_fake_search_claims_blocked: ${yes(report.browser_fake_search_claims_blocked)}`);
 console.log(`patch_batch_status: ${yes(report.patch_batch_status)}`);
 console.log(`restore_batch_status: ${yes(report.restore_batch_status)}`);
 console.log(`project_scan_status: ${yes(report.project_scan_status)}`);

@@ -94,6 +94,8 @@ const DEFAULT_MCP_TOOLS = [
   "vnem_boost_task",
   "vnem_select_tools_for_task",
   "vnem_build_tools_plan",
+  "vnem_build_browser_research_plan",
+  "vnem_explain_tools_chain",
   "vnem_prepare_tools_handoff",
   "vnem_build_api_integration_plan",
   "vnem_get_agent_profile",
@@ -539,6 +541,47 @@ function registerTools(mcpServer) {
       return toolResult(formatCoreToolsPlan(plan), { tools_plan: plan });
     }
   );
+
+  mcpServer.registerTool(
+    "vnem_build_browser_research_plan",
+    {
+      title: "Build VNEM Browser Research Plan",
+      description: "Read-only Core plan for direct URL/source, website understanding, local UI browser proof, and current research tasks. Does not execute Tools or search the web.",
+      inputSchema: {
+        task: z.string().min(1),
+        task_type_hint: z.string().optional(),
+        known_context: z.string().optional(),
+        available_tools: z.array(z.string()).default([]),
+        token_budget: z.enum(["compact", "normal", "expanded"]).default("normal")
+      },
+      annotations: READ_ONLY
+    },
+    async (args) => {
+      const plan = buildBrowserResearchPlan(args);
+      return toolResult(formatBrowserResearchPlan(plan), { browser_research_plan: plan });
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_explain_tools_chain",
+    {
+      title: "Explain VNEM Tools Chain",
+      description: "Explain what each selected Tools MCP tool is for, approval/evidence boundaries, and must-not-claim limits. Does not execute Tools.",
+      inputSchema: {
+        task: z.string().min(1),
+        task_type_hint: z.string().optional(),
+        known_context: z.string().optional(),
+        selected_tools: z.array(z.string()).default([]),
+        token_budget: z.enum(["compact", "normal", "expanded"]).default("normal")
+      },
+      annotations: READ_ONLY
+    },
+    async (args) => {
+      const chain = explainToolsChain(args);
+      return toolResult(formatToolsChain(chain), { tools_chain: chain });
+    }
+  );
+
 
   mcpServer.registerTool(
     "vnem_prepare_tools_handoff",
@@ -1516,31 +1559,42 @@ function selectToolsForTask(args = {}) {
     add("vnem_tools_workspace_map", "vnem_tools_code_search", "vnem_tools_read_many_files", "vnem_tools_project_scan", "vnem_tools_dependency_scan");
   }
   if (["coding", "ui_web", "debugging", "local_project_modification"].includes(type)) add("vnem_tools_apply_patch_batch", "vnem_tools_run_project_task", "vnem_tools_collect_evidence", "vnem_tools_git_status", "vnem_tools_git_diff_summary");
-  if (type === "ui_web") add("vnem_tools_start_dev_server", "vnem_tools_browser_capture", "vnem_tools_stop_dev_server");
+  if (type === "ui_web") add("vnem_tools_start_dev_server", "vnem_tools_browser_capture", "vnem_tools_browser_page_inspect", "vnem_tools_browser_accessibility_audit", "vnem_tools_browser_compare_snapshots", "vnem_tools_stop_dev_server");
   if (type === "debugging") add("vnem_tools_code_search", "vnem_tools_read_many_files", "vnem_tools_run_project_task", "vnem_tools_apply_patch_batch");
-  if (type === "research") add("vnem_tools_source_quality_check", "vnem_tools_research_brief", directUrlPresent(task + " " + context) ? "vnem_tools_fetch_url_text" : null);
+  if (["research", "direct_url_source", "current_research", "website_understanding"].includes(type)) add("vnem_tools_source_quality_check", "vnem_tools_research_brief", "vnem_tools_browser_research_pack");
+  if (["direct_url_source", "website_understanding"].includes(type)) add("vnem_tools_fetch_url_text", "vnem_tools_browser_page_inspect");
+  if (type === "website_understanding") add("vnem_tools_browser_readability_extract", "vnem_tools_browser_link_map", "vnem_tools_browser_dom_search");
+  if (type === "direct_url_source") add("vnem_tools_browser_readability_extract", "vnem_tools_browser_link_map");
+  if (type === "research" && directUrlPresent(task + " " + context)) add("vnem_tools_fetch_url_text", "vnem_tools_browser_page_inspect", "vnem_tools_browser_research_pack");
   if (type === "file_investigation") add("vnem_tools_find_references");
   if (type === "security_sensitive") add("vnem_tools_dependency_scan", "vnem_tools_source_quality_check");
   const selectedTools = [...selected];
-  const dryRunSteps = selectedTools.filter((tool) => /apply_patch|run_project_task|start_dev_server|browser_capture|fetch_url_text|git_commit|api_request|restore/.test(tool)).map((tool) => `${tool}: dry-run first before approval or real action`);
-  const approvalSteps = selectedTools.filter((tool) => /apply_patch|run_project_task|start_dev_server|stop_dev_server|browser_capture|fetch_url_text|git_commit|api_request|restore/.test(tool)).map((tool) => `${tool}: requires explicit approval for real action`);
+  const dryRunSteps = selectedTools.filter((tool) => /apply_patch|run_project_task|start_dev_server|browser_capture|browser_page|browser_readability|browser_link|browser_dom|browser_accessibility|browser_compare|fetch_url_text|git_commit|api_request|restore/.test(tool)).map((tool) => `${tool}: dry-run first before approval or real action when network/mutation/source fetching is involved`);
+  const approvalSteps = selectedTools.filter((tool) => /apply_patch|run_project_task|start_dev_server|stop_dev_server|browser_capture|browser_page|browser_readability|browser_link|browser_dom|browser_accessibility|browser_compare|fetch_url_text|git_commit|api_request|restore/.test(tool)).map((tool) => `${tool}: requires explicit approval for real external/network/mutation action`);
+  const currentSearchRequired = currentResearchRequired(type, `${task} ${context}`);
   return {
     task,
     task_type: type,
     missing_context_questions: missingToolPlanQuestions(type, task),
     selected_tools: selectedTools,
+    tool_sequence_preview: selectedTools.map((tool) => ({ tool, what_for: purposeForTool(tool, type) })),
+    what_each_tool_is_for: Object.fromEntries(selectedTools.map((tool) => [tool, purposeForTool(tool, type)])),
     dry_run_steps: dryRunSteps,
     approval_required_steps: approvalSteps,
-    evidence_to_collect: ["workspace/project map", "files/code searched or read", "patch diff/backup/restore plan", "commands/tasks and exit codes", type === "ui_web" ? "browser screenshot or honest browser_unavailable" : null, type === "research" ? "source quality flags and supported/unsupported claims" : null, "session evidence pack", "must-not-claim list"].filter(Boolean),
+    evidence_to_collect: ["workspace/project map", "files/code searched or read", "patch diff/backup/restore plan", "commands/tasks and exit codes", type === "ui_web" ? "browser screenshot or honest browser_unavailable plus static page/a11y/snapshot evidence" : null, ["research", "direct_url_source", "current_research", "website_understanding"].includes(type) ? "source/page quality flags, inspected source excerpts, and supported/unsupported/conflicting claims" : null, "session evidence pack", "must-not-claim list"].filter(Boolean),
+    source_quality_requirements: sourceQualityRequirements(type),
+    browser_understanding_limits: browserUnderstandingLimits(type),
+    when_external_web_search_is_required: currentSearchRequired,
     verification_plan: verificationForType(type),
-    fallbacks_if_tool_unavailable: ["If Tools MCP is unavailable, Core should produce a plan only and ask the agent to use equivalent local tools with the same safety/evidence rules.", "If browser proof is unavailable, report browser_unavailable and do not claim visual proof.", "If direct URL fetch is blocked/unavailable, use provided text summaries or ask for a source; do not fake search."],
-    must_not_claim: ["Core executed Tools MCP actions.", "Files were edited, commands ran, browser proof was captured, commits were made, or URLs were fetched before Tools evidence exists.", "A web search happened inside Tools MCP.", "Unsupported git push/package install/deployment/Giga MCP work was done."],
+    fallbacks_if_tool_unavailable: ["If Tools MCP is unavailable, Core should produce a plan only and ask the agent to use equivalent local tools with the same safety/evidence rules.", "If browser proof is unavailable, report browser_unavailable and do not claim visual proof.", "If direct URL fetch is blocked/unavailable, use provided text summaries or ask for a source; do not fake search.", "For latest/current research, use an approved external search path outside Tools MCP until a safe search provider exists."],
+    must_not_claim: ["Core executed Tools MCP actions.", "Files were edited, commands ran, browser proof was captured, commits were made, or URLs were fetched before Tools evidence exists.", "A web search happened inside Tools MCP.", "Current/latest web research is complete without external current search evidence.", "Unsupported git push/package install/deployment/Giga MCP work was done."],
     done_definition: doneDefinitionForType(type),
     efficiency_guidance: efficiencyForType(type),
     core_executes_tools: false,
     core_mcp_mutates_files: false,
     core_mcp_runs_commands: false,
-    core_mcp_uses_browser: false
+    core_mcp_uses_browser: false,
+    web_search_executed: false
   };
 }
 
@@ -1559,9 +1613,16 @@ function buildCoreToolsPlan(args = {}) {
   push("vnem_tools_code_search", "find relevant implementation sites");
   push("vnem_tools_find_references", "trace symbols/config names");
   push("vnem_tools_read_many_files", "load bounded relevant context");
+  push("vnem_tools_fetch_url_text", "dry-run then fetch direct approved URL text only; no search scraping", true, true);
+  push("vnem_tools_browser_page_inspect", "inspect direct/local/provided page structure statically", true, true);
+  push("vnem_tools_browser_readability_extract", "extract heuristic readable main content", true, true);
+  push("vnem_tools_browser_link_map", "map links found in a page without following/crawling", true, true);
+  push("vnem_tools_browser_dom_search", "search headings/links/forms/buttons/text statically", true, true);
+  push("vnem_tools_browser_accessibility_audit", "run static heuristic accessibility audit", true, true);
+  push("vnem_tools_browser_compare_snapshots", "compare before/after page snapshots without visual overclaims", true, true);
   push("vnem_tools_source_quality_check", "evaluate provided/direct source quality");
-  push("vnem_tools_fetch_url_text", "fetch direct approved URL text only", true, true);
   push("vnem_tools_research_brief", "summarize supported/unsupported claims from provided sources");
+  push("vnem_tools_browser_research_pack", "combine source/page evidence into supported/unsupported/conflicting claim pack");
   push("vnem_tools_apply_patch_batch", "dry-run then apply approved coherent multi-file patch", true, true);
   push("vnem_tools_run_project_task", "dry-run then run approved safe project task/check", true, true);
   push("vnem_tools_start_dev_server", "dry-run then start approved localhost dev server for UI proof", true, true);
@@ -1579,21 +1640,65 @@ function buildCoreToolsPlan(args = {}) {
       required_permissions: selection.approval_required_steps,
       dry_run_first: selection.dry_run_steps,
       evidence_to_collect: selection.evidence_to_collect,
+      source_quality_requirements: selection.source_quality_requirements,
+      browser_understanding_limits: selection.browser_understanding_limits,
+      when_external_web_search_is_required: selection.when_external_web_search_is_required,
       rollback_or_restore_plan: ["patch_batch returns backups and restore_plan", "use restore_batch for rollback when needed", "commit only after evidence and explicit approval"],
       must_not_claim: selection.must_not_claim,
       safe_core_actions: ["plan", "select tools", "prepare handoff only"]
     },
     core_executes_tools: false,
-    core_claims_actions_happened: false
+    core_claims_actions_happened: false,
+    web_search_executed: false
   };
   return plan;
 }
 
+function buildBrowserResearchPlan(args = {}) {
+  const plan = buildCoreToolsPlan(args);
+  return {
+    task: plan.task,
+    task_type: plan.task_type,
+    selected_tools: plan.selected_tools,
+    tool_sequence: plan.tool_sequence,
+    what_each_tool_is_for: plan.what_each_tool_is_for,
+    dry_run_steps: plan.dry_run_steps,
+    approval_required_steps: plan.approval_required_steps,
+    evidence_to_collect: plan.evidence_to_collect,
+    source_quality_requirements: plan.source_quality_requirements,
+    browser_understanding_limits: plan.browser_understanding_limits,
+    must_not_claim: plan.must_not_claim,
+    when_external_web_search_is_required: plan.when_external_web_search_is_required,
+    fallbacks_if_browser_unavailable: plan.fallbacks_if_tool_unavailable,
+    done_definition: plan.done_definition,
+    efficiency_guidance: plan.efficiency_guidance,
+    core_executes_tools: false,
+    web_search_executed: false
+  };
+}
+
+function explainToolsChain(args = {}) {
+  const plan = buildCoreToolsPlan({ task: args.task, task_type_hint: args.task_type_hint, known_context: args.known_context, token_budget: args.token_budget });
+  const selectedList = Array.isArray(args.selected_tools) ? args.selected_tools : [];
+  const chosen = selectedList.length ? selectedList : plan.selected_tools;
+  return {
+    task: args.task,
+    task_type: plan.task_type,
+    chain: chosen.map((tool) => ({ tool, what_for: purposeForTool(tool, plan.task_type), evidence_expected: expectedEvidenceForTool(tool), requires_approval_if_real_action: /apply_patch|run_project_task|start_dev_server|browser|fetch_url_text|git_commit|api_request|restore/.test(tool) })),
+    must_not_claim: plan.must_not_claim,
+    core_executes_tools: false,
+    web_search_executed: false
+  };
+}
+
 function inferCoreToolTaskType(text) {
   const t = String(text || "").toLowerCase();
+  if (/\b(latest|current|today|this week|news|recent|now)\b.*\b(research|find|compare|what|which|source|browser|mcp)\b|\b(research|find)\b.*\b(latest|current|today|this week|news|recent|now)\b/.test(t)) return "current_research";
+  if (/https?:\/\/[^\s]+/.test(t) && /research|source|claim|citation|analy[sz]e|summarize|docs|url|page/.test(t)) return "direct_url_source";
+  if (/website|web page|page structure|browser tools|understand.+page|links|forms|headings|dom|readability/.test(t) && !/local|dashboard|ui|frontend|improve|fix/.test(t)) return "website_understanding";
   if (/research|source|claim|citation|paper|docs url|provided source|summarize.+source/.test(t)) return "research";
   if (/debug|bug|failing|stack trace|error|root cause|regression/.test(t)) return "debugging";
-  if (/ui|frontend|browser|visual|page|dashboard|rendered|web app/.test(t)) return "ui_web";
+  if (/ui|frontend|browser|visual|page|dashboard|rendered|web app|accessibility|snapshot/.test(t)) return "ui_web";
   if (/investigate|inspect|find references|where is|file investigation|understand/.test(t)) return "file_investigation";
   if (/security|secret|credential|risk|safety|audit/.test(t)) return "security_sensitive";
   if (/modify|patch|edit|local project|repo|code|test|build|implement|improve|fix/.test(t)) return "coding";
@@ -1605,40 +1710,106 @@ function directUrlPresent(text) {
 }
 
 function missingToolPlanQuestions(type, task) {
-  if (type === "research") return ["Which direct source URLs or source excerpts should be evaluated?", "Does the answer require broad current web search outside Tools MCP?"];
-  if (type === "ui_web") return ["Which local dev command and URL should be used for visual proof?", "Which page/state proves the change?"];
+  if (["research", "direct_url_source", "website_understanding"].includes(type)) return ["Which direct source URLs, local files, or source excerpts should be evaluated?", "Does the answer require broad current web search outside Tools MCP?"];
+  if (type === "current_research") return ["Which approved external current-search path should be used outside Tools MCP?", "Which direct sources should be inspected after discovery?"];
+  if (type === "ui_web") return ["Which local dev command and URL should be used for visual/static page proof?", "Which page/state proves the change?"];
   if (type === "debugging") return ["What exact command/log/error reproduces the failure?", "What is the smallest targeted check for the fix?"];
   return ["What is the project root?", "Which checks define done?", "Should Tools create a local commit after approval?"];
 }
 
 function verificationForType(type) {
-  if (type === "research") return ["Evaluate source quality for each source.", "Separate supported from unsupported claims.", "State missing sources and do not claim a web search happened unless done outside Tools MCP."];
+  if (["research", "direct_url_source", "website_understanding", "current_research"].includes(type)) return ["Evaluate source quality for each source.", "Separate supported, unsupported, and conflicting claims.", "State missing sources and do not claim a web search happened unless done outside Tools MCP with evidence."];
   if (type === "debugging") return ["Capture failing output first.", "Run targeted failing check after patch.", "Run only broader checks near final."];
-  if (type === "ui_web") return ["Run safe project tests/build.", "Start local dev server if needed.", "Capture localhost/file browser proof or report browser_unavailable honestly."];
+  if (type === "ui_web") return ["Run safe project tests/build.", "Start local dev server if needed.", "Use page inspect/a11y/snapshot comparison and capture localhost/file browser proof or report browser_unavailable honestly."];
   return ["Run safe project task checks from package.json.", "Review git diff summary.", "Finish session evidence with safe-to-claim/must-not-claim."];
 }
 
 function doneDefinitionForType(type) {
-  if (type === "research") return ["Brief cites provided/direct sources", "unsupported claims are listed", "must-not-claim prevents fake search/currentness"];
+  if (["research", "direct_url_source", "website_understanding", "current_research"].includes(type)) return ["Brief cites provided/direct sources", "unsupported/conflicting claims are listed", "must-not-claim prevents fake search/currentness", "external current search need is explicit when latest/current info is required"];
+  if (type === "ui_web") return ["Relevant UI files inspected", "static page/a11y/snapshot evidence collected", "browser screenshot proof captured or browser_unavailable stated", "targeted checks pass"];
   return ["Relevant files inspected", "approved patch/evidence exists if mutation happened", "targeted checks pass", "session evidence supports final claims"];
 }
 
 function efficiencyForType(type) {
   const base = ["Use workspace_map/project_scan before broad file reads.", "Search first, then read bounded relevant files.", "Run targeted checks during development; broad checks only near final."];
-  if (type === "research") base.push("Use fetch_url_text only for direct approved URLs; use external search outside Tools MCP when broad discovery is required.");
+  if (["research", "direct_url_source", "website_understanding"].includes(type)) base.push("Use direct approved URLs/provided HTML/text first; build source packs instead of dumping entire pages.");
+  if (type === "current_research") base.push("Do not burn tokens on stale provided sources for latest/current questions; use approved external current search outside Tools MCP, then inspect direct sources.");
+  if (type === "ui_web") base.push("Use static page inspect/a11y/snapshot comparison before optional screenshot proof to reduce browser/runtime cost without losing evidence.");
   return base;
+}
+
+function sourceQualityRequirements(type) {
+  if (!["research", "direct_url_source", "website_understanding", "current_research"].includes(type)) return [];
+  return ["Prefer official/primary sources when available.", "Track whether each source was actually fetched/read or only provided as metadata.", "Separate supported, unsupported, and conflicting claims.", "Do not claim currentness without current search evidence."];
+}
+
+function browserUnderstandingLimits(type) {
+  if (!["ui_web", "direct_url_source", "website_understanding", "current_research", "research"].includes(type)) return [];
+  return ["Static page intelligence is not full unrestricted browser automation.", "DOM/search/readability/link/a11y tools do not execute JavaScript or certify visual behavior.", "Link map does not follow links or crawl.", "Browser capture is local file/localhost proof only by default and may return browser_unavailable."];
+}
+
+function currentResearchRequired(type, text) {
+  if (type === "current_research") return ["The task asks for latest/current/recent information; external current web search is required outside Tools MCP until a safe approved search provider exists."];
+  if (/\b(latest|current|today|this week|news|recent|now)\b/i.test(text) && ["research", "direct_url_source", "website_understanding"].includes(type)) return ["Currentness is requested; use external current search outside Tools MCP before final claims."];
+  return [];
+}
+
+function purposeForTool(tool, type) {
+  const map = {
+    vnem_tools_manifest: "discover available Tools MCP capabilities and safety metadata",
+    vnem_tools_start_session: "start one evidence pack",
+    vnem_tools_finish_session: "finish one evidence pack with safe-to-claim and must-not-claim lines",
+    vnem_tools_workspace_map: "understand local project structure safely",
+    vnem_tools_code_search: "find relevant code without broad file reads",
+    vnem_tools_read_many_files: "load bounded relevant file context",
+    vnem_tools_project_scan: "inspect scripts/frameworks/safe commands",
+    vnem_tools_dependency_scan: "inspect dependencies and risky scripts without installs",
+    vnem_tools_fetch_url_text: "fetch one approved direct URL text/source, not search results",
+    vnem_tools_browser_page_inspect: "browser/page source intelligence: turn direct/local/provided page content into structured understanding",
+    vnem_tools_browser_readability_extract: "browser/page readability: extract heuristic readable article/docs/main content",
+    vnem_tools_browser_link_map: "browser/page link mapping: map links without following or crawling",
+    vnem_tools_browser_dom_search: "browser/page DOM search: search page headings/forms/buttons/links/text statically",
+    vnem_tools_browser_accessibility_audit: "run static heuristic accessibility/UI audit",
+    vnem_tools_browser_compare_snapshots: "compare before/after page snapshots without visual overclaims",
+    vnem_tools_source_quality_check: "score/flag source quality and citation limits",
+    vnem_tools_research_brief: "summarize supported and unsupported claims from source excerpts",
+    vnem_tools_browser_research_pack: "combine multiple source/page summaries into a claim evidence pack",
+    vnem_tools_apply_patch_batch: "dry-run/apply approved local file changes",
+    vnem_tools_run_project_task: "run approved safe project checks",
+    vnem_tools_start_dev_server: "start approved localhost dev server for proof",
+    vnem_tools_browser_capture: "capture approved local/localhost screenshot proof when available",
+    vnem_tools_stop_dev_server: "stop only Tools-started dev servers",
+    vnem_tools_git_status: "read local git status",
+    vnem_tools_git_diff_summary: "summarize final local diff"
+  };
+  return map[tool] || `support ${type} workflow`;
 }
 
 function expectedEvidenceForTool(tool) {
   if (/workspace_map/.test(tool)) return ["tree summary", "skipped secret/build paths"];
   if (/read_many|code_search|find_references/.test(tool)) return ["file paths", "redacted snippets", "caps/skips"];
   if (/dependency_scan/.test(tool)) return ["manifest scripts", "risky script flags", "no install"];
+  if (/browser_page_inspect/.test(tool)) return ["title/headings/counts", "main text excerpt", "risk/quality flags", "evidence log"];
+  if (/browser_readability/.test(tool)) return ["heuristic readable excerpt", "content counts", "truncation flag"];
+  if (/browser_link_map/.test(tool)) return ["internal/external/anchor/download/suspicious links", "must-not-claim no crawling"];
+  if (/browser_dom_search/.test(tool)) return ["matches", "mode", "truncation flag"];
+  if (/browser_accessibility/.test(tool)) return ["static a11y score", "issues/warnings/passes", "not certification"];
+  if (/browser_compare/.test(tool)) return ["changed headings/text/links/forms", "no visual overclaim"];
+  if (/browser_research_pack/.test(tool)) return ["source summaries", "supported/unsupported/conflicting claims", "citation plan"];
   if (/patch/.test(tool)) return ["changed files", "diff summary", "backups", "restore plan"];
   if (/run_project_task/.test(tool)) return ["command", "exit code", "redacted output"];
-  if (/browser/.test(tool)) return ["screenshot path/hash or browser_unavailable"];
+  if (/browser_capture/.test(tool)) return ["screenshot path/hash or browser_unavailable"];
   if (/research|source|fetch/.test(tool)) return ["source quality", "text hash/excerpt", "must-not-claim"];
   if (/session/.test(tool)) return ["session evidence pack"];
   return ["structured result"];
+}
+
+function formatBrowserResearchPlan(plan) {
+  return [`vnem_build_browser_research_plan: ${plan.task_type}`, `Tools: ${plan.selected_tools.join(", ")}`, `External current search required: ${plan.when_external_web_search_is_required.length ? "yes" : "no"}`, "Core executes tools: false"].join("\n");
+}
+
+function formatToolsChain(chain) {
+  return [`vnem_explain_tools_chain: ${chain.task_type}`, `Steps: ${chain.chain.map((step) => step.tool).join(" -> ")}`, "Core executes tools: false"].join("\n");
 }
 
 function compactCoreToolsPlan(plan) {
