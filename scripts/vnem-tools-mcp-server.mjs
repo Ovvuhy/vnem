@@ -16,12 +16,21 @@ const REQUIRED_TOOL_NAMES = [
   "vnem_tools_status",
   "vnem_tools_prepare_action_plan",
   "vnem_tools_permission_prompt",
+  "vnem_tools_manifest",
   "vnem_tools_read_file",
   "vnem_tools_list_files",
   "vnem_tools_search_files",
+  "vnem_tools_workspace_map",
+  "vnem_tools_read_many_files",
+  "vnem_tools_code_search",
+  "vnem_tools_find_references",
+  "vnem_tools_dependency_scan",
   "vnem_tools_apply_patch",
   "vnem_tools_run_command",
   "vnem_tools_api_request",
+  "vnem_tools_fetch_url_text",
+  "vnem_tools_source_quality_check",
+  "vnem_tools_research_brief",
   "vnem_tools_collect_evidence",
   "vnem_tools_restore_backup",
   "vnem_tools_browser_capture",
@@ -54,7 +63,7 @@ const MAX_VIEWPORT_HEIGHT = 2160;
 const BROWSER_CANDIDATES = process.env.VNEM_TOOLS_BROWSER_COMMAND
   ? [process.env.VNEM_TOOLS_BROWSER_COMMAND]
   : ["chromium", "chromium-browser", "google-chrome", "google-chrome-stable", "chrome", "msedge", "microsoft-edge"];
-const SKIPPED_DIRS = new Set([".git", "node_modules", "dist", "build", "coverage", ".next", ".turbo", ".cache"]);
+const SKIPPED_DIRS = new Set([".git", ".vnem", "node_modules", "dist", "build", "coverage", ".next", ".turbo", ".cache"]);
 const SAFE_PACKAGE_SCRIPT_PATTERN = /^(test|test:[a-z0-9:_-]+|validate|build|generate|check:links|dashboard:build|dashboard:check|core:readiness|tools:readiness|discover:dry-run|digest)$/i;
 const SECRET_HEADER_PATTERN = /^(authorization|x-api-key|api-key|x-auth-token|cookie|set-cookie)$/i;
 const DANGEROUS_COMMAND_PATTERN = /\b(rm\s+-rf|del\s+\/s|format\b|mkfs\b|diskpart\b|curl\b.*\|\s*(sh|bash)|wget\b.*\|\s*(sh|bash)|invoke-webrequest\b.*\|\s*iex|powershell\b.*-encodedcommand|pwsh\b.*-encodedcommand|npm\s+publish|git\s+push|git\s+reset\s+--hard|sudo\b|su\b|chmod\s+-R|chown\s+-R)\b/i;
@@ -62,6 +71,9 @@ const CONTROL_OPERATOR_PATTERN = /(\|\||&&|;|`|\$\(|>|<|\|)/;
 const UNSAFE_PACKAGE_SCRIPT_PATTERN = /(^|[\s:_-])(install|publish|deploy|release|push|reset|clean:all|postinstall|preinstall)([\s:_-]|$)|git\s+push|npm\s+publish|pnpm\s+publish|yarn\s+publish|rm\s+-rf/i;
 const DEV_SERVER_SCRIPT_PATTERN = /^(dev|start|preview)$/;
 const PROJECT_TASKS = new Set(["test", "build", "validate", "lint", "typecheck", "doctor", "custom_script"]);
+const LARGE_FILE_BYTES = 1024 * 1024;
+const MAX_READ_MANY_TOTAL_BYTES = 128 * 1024;
+const MAX_FETCH_TEXT_BYTES = 64 * 1024;
 const devServers = new Map();
 const sessions = new Map();
 
@@ -94,6 +106,20 @@ function registerTools(mcpServer) {
       annotations: READ_ONLY_LOCAL
     },
     async () => toolResult(formatStatus(), { tools_status: statusObject() })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_manifest",
+    {
+      title: "VNEM Tools Manifest",
+      description: "Return a structured catalog of Tools MCP tools, capability groups, safety metadata, evidence behavior, Core handoff compatibility, and blocked unsafe actions.",
+      inputSchema: { capability_group: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => {
+      const manifest = buildToolsManifest(args.capability_group);
+      return toolResult(formatManifest(manifest), { manifest });
+    }
   );
 
   mcpServer.registerTool(
@@ -203,6 +229,61 @@ function registerTools(mcpServer) {
       const result = await searchAllowedFiles(args);
       return toolResult(`vnem_tools_search_files: ${result.results.length} match(es) for ${JSON.stringify(args.query)}`, { search: result });
     })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_workspace_map",
+    {
+      title: "Map Workspace Safely",
+      description: "Create a bounded allowed-root workspace map with important dirs, entrypoints, config/docs/test files, large files, skipped paths, and evidence.",
+      inputSchema: { root: z.string().default("."), max_depth: z.number().int().min(1).max(8).default(4), max_files: z.number().int().min(1).max(2000).default(300), include_hidden: z.boolean().default(false), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => { const map = await safeWorkspaceMap(args); return toolResult(formatWorkspaceMap(map), { workspace_map: map }); })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_read_many_files",
+    {
+      title: "Read Many Safe Files",
+      description: "Read a bounded set of allowed text files for AI context with secret, binary, generated-output, per-file, total-byte, redaction, and evidence controls.",
+      inputSchema: { root: z.string().default("."), paths: z.array(z.string()).min(1).max(40), max_file_bytes: z.number().int().min(1).max(DEFAULT_MAX_READ_BYTES).default(16000), max_total_bytes: z.number().int().min(1).max(MAX_READ_MANY_TOTAL_BYTES).default(64000), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => { const result = await safeReadManyFiles(args); return toolResult(formatReadManyFiles(result), { read_many_files: result }); })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_code_search",
+    {
+      title: "VNEM Code Search",
+      description: "Search allowed project files with secret/generated skips, context lines, capped redacted snippets, and evidence logging.",
+      inputSchema: { root: z.string().default("."), query: z.string().min(1), file_globs: z.array(z.string()).default([]), max_results: z.number().int().min(1).max(300).default(50), context_lines: z.number().int().min(0).max(5).default(0), case_sensitive: z.boolean().default(false), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => { const result = await safeCodeSearch(args); return toolResult(formatCodeSearch(result), { code_search: result }); })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_find_references",
+    {
+      title: "Find Symbol References",
+      description: "Find likely references/definitions for a symbol across allowed project text files with boundary-aware snippets and evidence.",
+      inputSchema: { root: z.string().default("."), symbol: z.string().min(1), max_results: z.number().int().min(1).max(300).default(50), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => { const result = await safeFindReferences(args); return toolResult(formatFindReferences(result), { references: result }); })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_dependency_scan",
+    {
+      title: "Dependency And Script Risk Scan",
+      description: "Analyze package manifests, scripts, lockfiles, likely frameworks, and suspicious package scripts without installing or using network audit.",
+      inputSchema: { root: z.string().default("."), include_scripts: z.boolean().default(true), include_lockfiles: z.boolean().default(true), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => { const result = await safeDependencyScan(args); return toolResult(formatDependencyScan(result), { dependency_scan: result }); })
   );
 
   mcpServer.registerTool(
@@ -463,6 +544,39 @@ function registerTools(mcpServer) {
   );
 
   mcpServer.registerTool(
+    "vnem_tools_fetch_url_text",
+    {
+      title: "Fetch Direct URL Text Safely",
+      description: "Dry-run or approved GET/HEAD text extraction from a direct URL. Blocks search-engine scraping, credentialed/raw-secret URLs, unsafe schemes, login/cookies, and caps/redacts output.",
+      inputSchema: { url: z.string().min(1), method: z.enum(["GET", "HEAD"]).default("GET"), headers: z.record(z.any()).default({}), dry_run: z.boolean().default(true), approved: z.boolean().default(false), approval_note: z.string().default(""), timeout_ms: z.number().int().min(1000).max(MAX_API_TIMEOUT_MS).default(10000), max_response_bytes: z.number().int().min(256).max(MAX_FETCH_TEXT_BYTES).default(16000), session_id: z.string().optional() },
+      annotations: NETWORK_ACTION
+    },
+    async (args) => withToolErrors(async () => { const fetched = await safeFetchUrlText(args); return toolResult(formatFetchUrlText(fetched), { fetch_url_text: fetched }); })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_source_quality_check",
+    {
+      title: "Check Source Quality",
+      description: "Evaluate quality, risk, recency, primary-source likelihood, citation recommendation, and must-not-claim limits from provided/fetched source metadata.",
+      inputSchema: { url: z.string().optional(), title: z.string().default(""), text_excerpt: z.string().default(""), source_type: z.string().default("unknown"), published_at: z.string().optional(), retrieved_at: z.string().optional(), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => { const quality = await safeSourceQualityCheck(args); return toolResult(formatSourceQuality(quality), { source_quality: quality }); })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_research_brief",
+    {
+      title: "Build Research Brief From Sources",
+      description: "Create a compact, evidence-bounded research brief from provided source summaries and claims; does not pretend web search happened.",
+      inputSchema: { task: z.string().min(1), sources: z.array(z.record(z.any())).default([]), claims_to_check: z.array(z.string()).default([]), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => { const brief = await safeResearchBrief(args); return toolResult(formatResearchBrief(brief), { research_brief: brief }); })
+  );
+
+  mcpServer.registerTool(
     "vnem_tools_collect_evidence",
     {
       title: "Collect Tools Evidence",
@@ -561,6 +675,9 @@ function statusObject() {
     allowed_roots: allowedRoots,
     blocked_paths: [".env*", "*secret*", "*token*", "*credential*", "*key*", ".git", "node_modules", "dist", "build"],
     command_allowlist: ["node --check <file>", "npm test", "npm run <safe-script>", "git status", "git diff", "git log", "git ls-files"],
+    tool_catalog_policy: { tool: "vnem_tools_manifest", capability_groups: TOOL_CAPABILITY_GROUPS, safety_metadata_required: true, core_handoff_compatible: true },
+    filesystem_intelligence_policy: { tools: ["vnem_tools_workspace_map", "vnem_tools_read_many_files", "vnem_tools_code_search", "vnem_tools_find_references", "vnem_tools_dependency_scan"], allowed_roots_only: true, secret_paths_blocked: true, generated_build_cache_skipped: true, evidence_logged: true },
+    research_sources_policy: { tools: ["vnem_tools_fetch_url_text", "vnem_tools_source_quality_check", "vnem_tools_research_brief"], no_search_engine_scraping: true, external_fetch_dry_run_default: true, approval_required_for_real_external_fetch: true, no_login_cookie_session_use: true },
     patch_batch_policy: { tool: "vnem_tools_apply_patch_batch", dry_run_default: true, approval_required: true, operations: ["replace", "create", "delete", "append"], no_partial_apply_by_default: true, backups_per_changed_file: true },
     project_scan_policy: { tool: "vnem_tools_project_scan", allowed_roots_only: true, skips_secrets: true, reads_package_json_only_for_scripts_and_frameworks: true },
     project_task_policy: { tool: "vnem_tools_run_project_task", dry_run_default: true, approval_required: true, package_json_scripts_only: true, package_install_publish_deploy_blocked: true },
@@ -602,7 +719,7 @@ function statusObject() {
     },
     evidence_log_location: evidenceRoot,
     core_handoff_supported: true,
-    remaining_unsupported_actions: ["remote_github_mutation", "git_push", "package_install", "package_publish", "deployment", "arbitrary_shell", "unrestricted_api_calls", "secret_manager_backed_live_api", "external_browser_browsing_by_default", "login_automation", "cookie_extraction", "session_extraction", "captcha_bypass", "giga_mcp"],
+    remaining_unsupported_actions: ["remote_github_mutation", "git_push", "package_install", "package_publish", "deployment", "arbitrary_shell", "unrestricted_api_calls", "secret_manager_backed_live_api", "search_engine_scraping", "external_browser_browsing_by_default", "login_automation", "cookie_extraction", "session_extraction", "captcha_bypass", "giga_mcp"],
     unsupported_in_foundation_batch: ["remote_github_mutation", "git_push", "package_install", "package_publish", "deployment", "arbitrary_shell", "unrestricted_api_calls", "secret_manager_backed_live_api", "login_automation", "cookie_extraction", "captcha_bypass", "giga_mcp"]
   };
 }
@@ -614,7 +731,7 @@ function formatStatus() {
     "Tools MCP can perform actions only through safeguards.",
     `Allowed roots: ${status.allowed_roots.join(", ")}`,
     "Dry-run is default; real mutation/execution/live API/browser screenshot/project task/dev server/git commit requests require approved=true and an approval_note.",
-    "Local project actions include project scan, patch batch, restore batch, safe package tasks, local dev servers, session proof packs, and approved local git commits.",
+    "Local project actions include a manifest/catalog, workspace map, read-many, code search, references, dependency scan, project scan, patch batch, restore batch, safe package tasks, local dev servers, session proof packs, research/source helpers, and approved local git commits.",
     `Browser proof: local files/localhost only, screenshots under ${status.browser_policy.screenshot_evidence_location}, runtime ${status.browser_policy.browser_runtime_status}.`,
     "GitHub mutation, package install, arbitrary shell/API, login automation, cookie extraction, CAPTCHA bypass, and broad scraping are not implemented."
   ].join("\n");
@@ -782,6 +899,384 @@ async function searchAllowedFiles(args) {
     }
   }
   return { root: root.relativePath || ".", query: args.query, results, skipped_policy: skippedPolicy() };
+}
+
+const TOOL_CAPABILITY_GROUPS = ["filesystem", "project_intelligence", "patching", "rollback", "commands", "project_tasks", "dev_server", "browser_proof", "api_request", "research_sources", "session_evidence", "local_git", "status_readiness"];
+
+function buildToolCatalog() {
+  const commonUnsafe = ["secret reading/dumping", "outside-root access", "arbitrary shell", "package installs", "git push", "deployment", "Giga MCP"];
+  const mk = (name, group, opts = {}) => ({
+    tool_name: name,
+    capability_group: group,
+    description: opts.description || `${name} VNEM-improved safe tool`,
+    read_only: opts.read_only ?? true,
+    mutation: opts.mutation ?? false,
+    network: opts.network ?? false,
+    requires_approval: opts.requires_approval ?? false,
+    dry_run_default: opts.dry_run_default ?? false,
+    allowed_roots_required: opts.allowed_roots_required ?? true,
+    secret_policy: opts.secret_policy || "Blocks secret-like paths and redacts secret-like output.",
+    evidence_logged: opts.evidence_logged ?? true,
+    core_handoff_compatible: true,
+    typical_use_cases: opts.typical_use_cases || [],
+    unsafe_actions_blocked: opts.unsafe_actions_blocked || commonUnsafe,
+    related_tools: opts.related_tools || []
+  });
+  return [
+    mk("vnem_tools_status", "status_readiness", { description: "Report Tools MCP policy/readiness.", evidence_logged: false, typical_use_cases: ["preflight safety status"] }),
+    mk("vnem_tools_manifest", "status_readiness", { description: "Structured catalog of Tools MCP tools and safety metadata.", evidence_logged: false, typical_use_cases: ["AI tool discovery", "Core handoff planning"] }),
+    mk("vnem_tools_prepare_action_plan", "status_readiness", { description: "Convert Core handoff into a dry-run-first Tools plan.", evidence_logged: false, typical_use_cases: ["Core→Tools planning"] }),
+    mk("vnem_tools_permission_prompt", "status_readiness", { description: "Generate approval prompt for a risky action.", evidence_logged: false, typical_use_cases: ["human approval wording"] }),
+    mk("vnem_tools_read_file", "filesystem", { description: "Read one allowed text file safely.", typical_use_cases: ["inspect a small source/config/doc file"] }),
+    mk("vnem_tools_list_files", "filesystem", { description: "List allowed files while skipping secrets/build outputs.", typical_use_cases: ["quick workspace inventory"] }),
+    mk("vnem_tools_search_files", "filesystem", { description: "Basic safe text search across allowed files.", typical_use_cases: ["small grep-like search"] }),
+    mk("vnem_tools_workspace_map", "project_intelligence", { description: "Build a bounded workspace map with entrypoints/config/docs/tests/large/skipped paths.", typical_use_cases: ["understand project structure before editing"] }),
+    mk("vnem_tools_read_many_files", "filesystem", { description: "Read a bounded set of safe text files for AI context.", typical_use_cases: ["load relevant source files after search"] }),
+    mk("vnem_tools_code_search", "project_intelligence", { description: "VNEM-improved code search with context, caps, skips, and evidence.", typical_use_cases: ["find implementation sites"] }),
+    mk("vnem_tools_find_references", "project_intelligence", { description: "Find likely references/definitions for a symbol.", typical_use_cases: ["trace components/functions/config names"] }),
+    mk("vnem_tools_dependency_scan", "project_intelligence", { description: "Analyze package manifests/scripts/lockfiles without installing.", typical_use_cases: ["understand dependencies and script risk"] }),
+    mk("vnem_tools_apply_patch", "patching", { read_only: false, mutation: true, requires_approval: true, dry_run_default: true, description: "Apply one approved surgical patch with backup/evidence.", typical_use_cases: ["single-file fix"] }),
+    mk("vnem_tools_apply_patch_batch", "patching", { read_only: false, mutation: true, requires_approval: true, dry_run_default: true, description: "Apply approved multi-file replace/create/append/delete batch with restore plan.", typical_use_cases: ["coherent local project change"] }),
+    mk("vnem_tools_restore_backup", "rollback", { read_only: false, mutation: true, requires_approval: true, dry_run_default: true, description: "Restore one backup file.", typical_use_cases: ["rollback one changed file"] }),
+    mk("vnem_tools_restore_batch", "rollback", { read_only: false, mutation: true, requires_approval: true, dry_run_default: true, description: "Restore multiple files from a restore plan.", typical_use_cases: ["rollback patch batch"] }),
+    mk("vnem_tools_run_command", "commands", { read_only: false, mutation: true, requires_approval: true, dry_run_default: true, description: "Run one allowlisted verification command.", typical_use_cases: ["node --check", "npm test"], unsafe_actions_blocked: [...commonUnsafe, "shell chains", "destructive git", "publish/deploy"] }),
+    mk("vnem_tools_run_project_task", "project_tasks", { read_only: false, mutation: true, requires_approval: true, dry_run_default: true, description: "Run known safe package.json tasks only.", typical_use_cases: ["test/build/validate/lint/typecheck"] }),
+    mk("vnem_tools_start_dev_server", "dev_server", { read_only: false, mutation: true, network: true, requires_approval: true, dry_run_default: true, description: "Start approved local dev/start/preview server.", typical_use_cases: ["local browser proof target"] }),
+    mk("vnem_tools_stop_dev_server", "dev_server", { read_only: false, mutation: true, requires_approval: true, description: "Stop only Tools-started dev servers.", typical_use_cases: ["cleanup dev proof server"] }),
+    mk("vnem_tools_list_dev_servers", "dev_server", { description: "List Tools-started dev servers.", typical_use_cases: ["check local proof server registry"] }),
+    mk("vnem_tools_api_request", "api_request", { read_only: false, network: true, requires_approval: true, dry_run_default: true, description: "Approved GET/HEAD usable-pack/localhost API request only.", typical_use_cases: ["limited API proof"] }),
+    mk("vnem_tools_fetch_url_text", "research_sources", { read_only: false, network: true, requires_approval: true, dry_run_default: true, description: "Approved direct URL text extraction, no search scraping/login/cookies.", typical_use_cases: ["analyze a provided docs/source URL"], unsafe_actions_blocked: [...commonUnsafe, "search-engine scraping", "credentialed URLs", "login/session/cookie use"] }),
+    mk("vnem_tools_source_quality_check", "research_sources", { description: "Score and flag source quality from provided/fetched metadata.", typical_use_cases: ["citation quality review"] }),
+    mk("vnem_tools_research_brief", "research_sources", { description: "Build evidence-bounded brief from supplied source summaries.", typical_use_cases: ["claim support summary"] }),
+    mk("vnem_tools_browser_capture", "browser_proof", { read_only: false, network: true, requires_approval: true, dry_run_default: true, description: "Approved local file/localhost screenshot proof only.", typical_use_cases: ["UI proof"], unsafe_actions_blocked: [...commonUnsafe, "external browsing by default", "login/cookie/session/CAPTCHA automation", "credential capture"] }),
+    mk("vnem_tools_start_session", "session_evidence", { read_only: false, mutation: true, description: "Start session proof pack.", typical_use_cases: ["group local workflow evidence"] }),
+    mk("vnem_tools_finish_session", "session_evidence", { read_only: false, mutation: true, description: "Write session proof pack.", typical_use_cases: ["final evidence summary"] }),
+    mk("vnem_tools_collect_evidence", "session_evidence", { read_only: false, mutation: true, description: "Write proof-trail-compatible evidence summary.", typical_use_cases: ["final report support"] }),
+    mk("vnem_tools_git_status", "local_git", { description: "Read local git status.", typical_use_cases: ["pre/post change report"] }),
+    mk("vnem_tools_git_diff_summary", "local_git", { description: "Read capped local git diff summary.", typical_use_cases: ["change summary"] }),
+    mk("vnem_tools_git_commit", "local_git", { read_only: false, mutation: true, requires_approval: true, dry_run_default: true, description: "Create approved local commit of explicit safe files only; no push.", typical_use_cases: ["local handoff commit"], unsafe_actions_blocked: [...commonUnsafe, "git push", "git reset --hard", "remote GitHub mutation"] })
+  ];
+}
+
+function buildToolsManifest(group) {
+  const tools = buildToolCatalog().filter((tool) => !group || tool.capability_group === group);
+  return {
+    server_name: "vnem-tools",
+    version: SERVER_VERSION,
+    capability_groups: TOOL_CAPABILITY_GROUPS,
+    tools,
+    unsafe_actions_not_supported: statusObject().remaining_unsupported_actions,
+    catalog_safety_summary: "Every action/mutation/network tool declares approval behavior, dry-run status where applicable, evidence behavior, secret policy, and Core handoff compatibility."
+  };
+}
+
+async function safeWorkspaceMap(args) {
+  const root = await resolveAllowedRoot(args.root || ".");
+  const entries = [];
+  const skipped = [];
+  await walkWorkspace(root.absolutePath, root.absolutePath, entries, skipped, { maxDepth: args.max_depth || 4, maxFiles: args.max_files || 300, includeHidden: args.include_hidden === true });
+  const files = entries.filter((item) => item.type === "file");
+  const dirs = entries.filter((item) => item.type === "directory");
+  const importantDirs = {
+    source: dirs.map((d) => d.path).filter((p) => /(^|\/)(src|app|pages|lib|components)$/.test(p)).slice(0, 40),
+    tests: dirs.map((d) => d.path).filter((p) => /(^|\/)(test|tests|__tests__|spec)$/.test(p)).slice(0, 40),
+    config: dirs.map((d) => d.path).filter((p) => /(^|\/)(config|configs)$/.test(p)).slice(0, 20),
+    docs: dirs.map((d) => d.path).filter((p) => /(^|\/)(docs|doc)$/.test(p)).slice(0, 20),
+    public: dirs.map((d) => d.path).filter((p) => /(^|\/)(public|static|assets)$/.test(p)).slice(0, 20)
+  };
+  const result = {
+    workspace_root: root.absolutePath,
+    tree_summary: entries.slice(0, args.max_files || 300).map((item) => `${item.type === "directory" ? "[dir]" : "[file]"} ${item.path}${item.bytes ? ` (${item.bytes} bytes)` : ""}`),
+    important_dirs: importantDirs,
+    likely_entrypoints: files.map((f) => f.path).filter((p) => /(^|\/)(index|main|app|server|cli)\.(js|mjs|ts|tsx|jsx|html)$|package\.json$/.test(p)).slice(0, 40),
+    config_files: files.map((f) => f.path).filter((p) => /(^|\/)(package\.json|vite\.config\.[cm]?[jt]s|next\.config\.[cm]?[jt]s|astro\.config\.[cm]?[jt]s|tsconfig\.json|eslint\.config\.[cm]?[jt]s)$/.test(p)).slice(0, 50),
+    test_files: files.map((f) => f.path).filter((p) => /(^|\/)(test|tests|__tests__)\/|\.(test|spec)\.[cm]?[jt]sx?$/.test(p)).slice(0, 80),
+    docs_files: files.map((f) => f.path).filter((p) => /(^|\/)(README|CHANGELOG|CONTRIBUTING|LICENSE)\.md$|(^|\/)docs\//i.test(p)).slice(0, 80),
+    large_files: files.filter((f) => f.bytes >= 1024).map((f) => ({ path: f.path, bytes: f.bytes })).slice(0, 40),
+    skipped_paths: skipped,
+    warnings: entries.length >= (args.max_files || 300) ? ["workspace map truncated by max_files"] : [],
+    evidence_log_id: null
+  };
+  const log = await writeEvidenceLog("workspace_map", result);
+  result.evidence_log_id = log.evidence_log_id;
+  recordSession(args.session_id, "workspace_maps", result);
+  return result;
+}
+
+async function walkWorkspace(current, base, entries, skipped, options, depth = 0) {
+  if (entries.length >= options.maxFiles || depth > options.maxDepth) return;
+  const list = await readdir(current, { withFileTypes: true });
+  for (const entry of list) {
+    if (entries.length >= options.maxFiles) return;
+    if (!options.includeHidden && entry.name.startsWith(".") && entry.name !== ".vnem") { skipped.push(normalizePath(path.relative(base, path.join(current, entry.name)))); continue; }
+    const absolute = path.join(current, entry.name);
+    const rel = normalizePath(path.relative(base, absolute));
+    if (isSecretLikePath(absolute)) { skipped.push(rel); continue; }
+    if (entry.isDirectory()) {
+      if (SKIPPED_DIRS.has(entry.name)) { skipped.push(rel); continue; }
+      entries.push({ type: "directory", path: rel });
+      await walkWorkspace(absolute, base, entries, skipped, options, depth + 1);
+    } else if (entry.isFile()) {
+      const info = await stat(absolute);
+      entries.push({ type: "file", path: rel, bytes: info.size, large: info.size >= LARGE_FILE_BYTES });
+    }
+  }
+}
+
+async function safeReadManyFiles(args) {
+  const root = await resolveAllowedRoot(args.root || ".");
+  const files = [];
+  const blocked = [];
+  const truncated = [];
+  let total = 0;
+  const maxTotal = Math.min(args.max_total_bytes || 64000, MAX_READ_MANY_TOTAL_BYTES);
+  const maxFile = Math.min(args.max_file_bytes || 16000, DEFAULT_MAX_READ_BYTES);
+  for (const raw of arrayify(args.paths)) {
+    const relInput = normalizePath(raw);
+    try {
+      const target = await resolveAllowedFile(path.isAbsolute(raw) ? raw : path.join(root.absolutePath, raw), { mustExist: true, blockSecrets: true });
+      if (shouldSkipRelative(target.relativePath)) throw new ToolsError("Generated/build/cache paths are skipped by default.", "generated_path_skipped", { path: target.relativePath });
+      const info = await stat(target.absolutePath);
+      if (!info.isFile()) throw new ToolsError("Target is not a regular file.", "not_a_file", { path: target.relativePath });
+      const bytes = await readFile(target.absolutePath);
+      if (bytes.includes(0) || looksBinary(bytes)) throw new ToolsError("Binary files are blocked.", "binary_file_blocked", { path: target.relativePath });
+      const remaining = maxTotal - total;
+      if (remaining <= 0) { blocked.push({ path: target.relativePath, code: "total_bytes_exceeded" }); continue; }
+      const take = Math.min(bytes.length, maxFile, remaining);
+      const content = redactSecrets(bytes.subarray(0, take).toString("utf8"));
+      if (take < bytes.length) truncated.push(target.relativePath);
+      files.push({ path: target.relativePath, bytes_total: bytes.length, bytes_read: take, truncated: take < bytes.length, content });
+      total += take;
+    } catch (error) {
+      blocked.push({ path: relInput, code: error instanceof ToolsError ? error.code : "read_failed", reason: error.message });
+    }
+  }
+  const result = { files, blocked_files: blocked, truncated_files: truncated, total_bytes: total, evidence_log_id: null };
+  const log = await writeEvidenceLog("read_many_files", result);
+  result.evidence_log_id = log.evidence_log_id;
+  recordSession(args.session_id, "files_read", result);
+  return result;
+}
+
+async function safeCodeSearch(args) {
+  const root = await resolveAllowedRoot(args.root || ".");
+  const allFiles = [];
+  const skipped = [];
+  await walkWorkspace(root.absolutePath, root.absolutePath, allFiles, skipped, { maxDepth: 12, maxFiles: 2000, includeHidden: false });
+  const files = allFiles.filter((item) => item.type === "file" && !shouldSkipRelative(item.path) && globsMatch(item.path, args.file_globs));
+  const matches = [];
+  const query = String(args.query || "");
+  const needle = args.case_sensitive ? query : query.toLowerCase();
+  for (const file of files) {
+    if (matches.length >= (args.max_results || 50)) break;
+    try {
+      const target = await resolveAllowedFile(path.join(root.absolutePath, file.path), { mustExist: true, blockSecrets: true });
+      const info = await stat(target.absolutePath);
+      if (info.size > 512000) { skipped.push(target.relativePath); continue; }
+      const buffer = await readFile(target.absolutePath);
+      if (buffer.includes(0) || looksBinary(buffer)) { skipped.push(target.relativePath); continue; }
+      const lines = buffer.toString("utf8").split(/\r?\n/);
+      for (let i = 0; i < lines.length && matches.length < (args.max_results || 50); i++) {
+        const hay = args.case_sensitive ? lines[i] : lines[i].toLowerCase();
+        if (hay.includes(needle)) {
+          const start = Math.max(0, i - (args.context_lines || 0));
+          const end = Math.min(lines.length, i + (args.context_lines || 0) + 1);
+          matches.push({ path: target.relativePath, line_number: i + 1, snippet: truncate(redactSecrets(lines.slice(start, end).join("\n")), 500) });
+        }
+      }
+    } catch (error) { skipped.push(`${file.path}:${error.code || "search_failed"}`); }
+  }
+  const result = { root: root.absolutePath, query, matches, result_count: matches.length, truncated: matches.length >= (args.max_results || 50), skipped_paths: [...new Set(skipped)].slice(0, 80), evidence_log_id: null };
+  const log = await writeEvidenceLog("code_search", result);
+  result.evidence_log_id = log.evidence_log_id;
+  recordSession(args.session_id, "code_searches", result);
+  return result;
+}
+
+async function safeFindReferences(args) {
+  const symbol = String(args.symbol || "").trim();
+  const escaped = symbol.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const search = await safeCodeSearch({ root: args.root || ".", query: symbol, max_results: args.max_results || 50, context_lines: 0, case_sensitive: true, file_globs: [], session_id: args.session_id });
+  const boundary = new RegExp(`(^|[^A-Za-z0-9_$])${escaped}([^A-Za-z0-9_$]|$)`);
+  const references = search.matches.filter((match) => boundary.test(match.snippet));
+  let likely = references.filter((match) => [`function ${symbol}`, `const ${symbol}`, `class ${symbol}`, `let ${symbol}`, `var ${symbol}`, `export function ${symbol}`, `export const ${symbol}`].some((needle) => match.snippet.includes(needle))).map((match) => match.path);
+  if (!likely.length && references.length) likely = references.map((match) => match.path).filter((file) => /(^|\/)(src|lib|app|components)\//.test(file)).slice(0, 3);
+  const result = { symbol, references, result_count: references.length, likely_definition_files: [...new Set(likely)], evidence_log_id: null };
+  const log = await writeEvidenceLog("find_references", result);
+  result.evidence_log_id = log.evidence_log_id;
+  return result;
+}
+
+async function safeDependencyScan(args) {
+  const root = await resolveAllowedRoot(args.root || ".");
+  const manifests = [];
+  const packageFile = path.join(root.absolutePath, "package.json");
+  let pkg = null;
+  if (existsSync(packageFile)) { pkg = JSON.parse(await readFile(packageFile, "utf8")); manifests.push("package.json"); }
+  const scripts = pkg?.scripts || {};
+  const safeScripts = [];
+  const riskyScripts = [];
+  for (const [name, body] of Object.entries(scripts)) {
+    const item = { name, command: redactSecrets(String(body)) };
+    if (UNSAFE_PACKAGE_SCRIPT_PATTERN.test(name) || UNSAFE_PACKAGE_SCRIPT_PATTERN.test(String(body)) || CONTROL_OPERATOR_PATTERN.test(String(body))) riskyScripts.push({ ...item, risk: "unsafe package/deploy/install/publish/shell-control pattern" });
+    else if (SAFE_PACKAGE_SCRIPT_PATTERN.test(name) || DEV_SERVER_SCRIPT_PATTERN.test(name)) safeScripts.push(item);
+  }
+  const deps = Object.keys(pkg?.dependencies || {});
+  const devDeps = Object.keys(pkg?.devDependencies || {});
+  const lockfiles = args.include_lockfiles === false ? [] : ["package-lock.json", "npm-shrinkwrap.json", "pnpm-lock.yaml", "yarn.lock", "bun.lockb"].filter((name) => existsSync(path.join(root.absolutePath, name)));
+  const result = {
+    package_manager: lockfiles.includes("pnpm-lock.yaml") ? "pnpm" : lockfiles.includes("yarn.lock") ? "yarn" : lockfiles.includes("bun.lockb") ? "bun" : pkg ? "npm" : "unknown",
+    manifest_files: manifests,
+    dependencies_summary: { dependencies: deps, devDependencies: devDeps, dependency_count: deps.length, dev_dependency_count: devDeps.length },
+    scripts_summary: args.include_scripts === false ? {} : Object.fromEntries(Object.entries(scripts).map(([k, v]) => [k, redactSecrets(v)])),
+    safe_scripts: safeScripts,
+    risky_scripts: riskyScripts,
+    lockfiles,
+    likely_frameworks: detectFrameworks(pkg, []),
+    warnings: [pkg ? null : "package.json not found", "No installs or network audit were performed."].filter(Boolean),
+    evidence_log_id: null
+  };
+  const log = await writeEvidenceLog("dependency_scan", result);
+  result.evidence_log_id = log.evidence_log_id;
+  recordSession(args.session_id, "dependency_scans", result);
+  return result;
+}
+
+async function safeFetchUrlText(args) {
+  if (!["GET", "HEAD"].includes(args.method || "GET")) throw new ToolsError("Only GET/HEAD are allowed.", "method_blocked");
+  for (const [key, value] of Object.entries(args.headers || {})) {
+    if (SECRET_HEADER_PATTERN.test(key) || containsRawSecret(value)) throw new ToolsError("Raw secret headers are blocked.", "raw_secret_blocked", { header: key });
+  }
+  const url = parseSafeResearchUrl(args.url);
+  const dryRun = args.dry_run !== false;
+  const planned = { url: redactUrl(url), method: args.method || "GET", dry_run: dryRun, executed: false, status: null, content_type: null, text_excerpt: "", title_if_found: "", links_count: 0, sha256: null, truncated: false, evidence_log_id: null, safe_to_claim: [], must_not_claim: ["Direct URL content was fetched.", "A web search happened.", "Search engine results were scraped."] };
+  if (dryRun) return planned;
+  enforceApproval(args);
+  let raw;
+  let status = 200;
+  let contentType = "text/plain";
+  if (url.protocol === "file:") {
+    const target = await resolveAllowedFile(fileURLToPath(url), { mustExist: true, blockSecrets: true });
+    raw = await readFile(target.absolutePath);
+  } else {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), Math.min(args.timeout_ms || 10000, MAX_API_TIMEOUT_MS));
+    try {
+      const response = await fetch(url, { method: args.method || "GET", headers: scrubHeadersForRequest(args.headers || {}), signal: controller.signal });
+      status = response.status;
+      contentType = response.headers.get("content-type") || "unknown";
+      raw = Buffer.from(await response.arrayBuffer());
+    } finally { clearTimeout(timer); }
+  }
+  const maxBytes = Math.min(args.max_response_bytes || 16000, MAX_FETCH_TEXT_BYTES);
+  const text = redactSecrets(extractText(raw.subarray(0, maxBytes).toString("utf8")));
+  const result = { ...planned, dry_run: false, executed: true, status, content_type: contentType, text_excerpt: truncate(text, 2000), title_if_found: extractTitle(raw.toString("utf8")), links_count: countLinks(raw.toString("utf8")), sha256: sha256(raw), truncated: raw.length > maxBytes, safe_to_claim: ["Text was fetched from a direct URL with Tools MCP safeguards."], must_not_claim: ["A web search happened.", "Search engine result pages were scraped.", "Login/session/cookie/CAPTCHA automation was used.", "The source's factual claims were independently verified by this fetch alone."] };
+  const log = await writeEvidenceLog("fetch_url_text", result);
+  const withLog = { ...result, evidence_log_id: log.evidence_log_id };
+  recordSession(args.session_id, "research_sources", withLog);
+  return withLog;
+}
+
+function parseSafeResearchUrl(input) {
+  if (containsRawSecret(input)) throw new ToolsError("Raw secret-like values are blocked in URLs.", "raw_secret_blocked");
+  let url;
+  try { url = new URL(String(input)); } catch { throw new ToolsError("Invalid URL.", "invalid_url"); }
+  if (url.username || url.password) throw new ToolsError("Credentialed URLs are blocked.", "credentialed_url_blocked");
+  if (["data:", "javascript:"].includes(url.protocol)) throw new ToolsError("Unsafe URL scheme blocked.", "unsafe_url_scheme_blocked");
+  if (isSearchEngineUrl(url)) throw new ToolsError("Search-engine scraping is blocked by default.", "search_engine_scraping_blocked", { host: url.hostname });
+  if (url.protocol === "file:") return url;
+  if (!["http:", "https:"].includes(url.protocol)) throw new ToolsError("Only http(s) and safe file URLs are allowed.", "unsafe_url_scheme_blocked");
+  if (url.protocol === "http:" && !["127.0.0.1", "localhost", "::1"].includes(url.hostname)) throw new ToolsError("External plaintext HTTP is blocked; use HTTPS or localhost.", "insecure_external_http_blocked");
+  return url;
+}
+
+function isSearchEngineUrl(url) {
+  const host = url.hostname.replace(/^www\./, "").toLowerCase();
+  return ["google.com", "bing.com", "duckduckgo.com", "search.yahoo.com", "yandex.com", "baidu.com"].some((domain) => host === domain || host.endsWith(`.${domain}`)) && /(^|\/)search|q=/.test(`${url.pathname}${url.search}`);
+}
+
+async function safeSourceQualityCheck(args) {
+  const text = String(args.text_excerpt || "");
+  const sourceType = String(args.source_type || "unknown").toLowerCase();
+  let score = 40;
+  const qualityFlags = [];
+  const riskFlags = [];
+  if (args.url) { score += 10; qualityFlags.push("direct_url_provided"); }
+  if (/official|docs|primary|spec|standard/.test(sourceType) || /official|docs|documentation|specification/i.test(args.title || "")) { score += 25; qualityFlags.push("likely_primary_or_official_source"); }
+  if (args.published_at || args.retrieved_at) { score += 10; qualityFlags.push("date_metadata_present"); }
+  if (text.length > 80) { score += 10; qualityFlags.push("substantive_excerpt_present"); }
+  if (!args.url) riskFlags.push("no_url_provided");
+  if (!args.published_at) riskFlags.push("published_date_unknown");
+  if (text.length < 80) riskFlags.push("thin_excerpt");
+  score = Math.max(0, Math.min(100, score));
+  return {
+    url: args.url || null,
+    title: redactSecrets(args.title || ""),
+    source_quality_score: score,
+    quality_flags: qualityFlags,
+    risk_flags: riskFlags,
+    recency_notes: args.published_at || args.retrieved_at ? `published_at=${args.published_at || "unknown"}; retrieved_at=${args.retrieved_at || "unknown"}` : "No date metadata supplied; recency unknown.",
+    primary_source_likelihood: qualityFlags.includes("likely_primary_or_official_source") ? "medium_high" : "unknown",
+    citation_recommendation: score >= 70 ? "usable_with_citation_and_scope_limits" : "use_only_with_corroboration",
+    must_not_claim: ["Verified factual correctness beyond the provided source text.", "No better or conflicting sources exist.", "Current web search was performed by this tool."]
+  };
+}
+
+async function safeResearchBrief(args) {
+  const sources = arrayify(args.sources).map((source) => ({ url: source.url || null, title: redactSecrets(source.title || "untitled"), text_excerpt: redactSecrets(source.text_excerpt || source.summary || ""), source_quality_score: source.source_quality_score || source.quality_score || null }));
+  const supported = [];
+  const unsupported = [];
+  for (const claim of arrayify(args.claims_to_check)) {
+    const claimText = String(claim);
+    const terms = claimText.toLowerCase().split(/\W+/).filter((term) => term.length > 3);
+    const hits = sources.filter((source) => terms.length ? terms.every((term) => source.text_excerpt.toLowerCase().includes(term)) : false);
+    if (hits.length) supported.push({ claim: claimText, supporting_sources: hits.map((source) => source.title).slice(0, 3), support_level: "mentioned_by_provided_sources" });
+    else unsupported.push({ claim: claimText, reason: "Not supported by provided source excerpts." });
+  }
+  const brief = {
+    task: args.task,
+    research_brief: sources.length ? `Reviewed ${sources.length} provided/direct source summary item(s) for: ${args.task}.` : `No sources supplied for: ${args.task}.`,
+    supported_claims: supported,
+    unsupported_claims: unsupported,
+    conflicts: [],
+    missing_sources: sources.length ? [] : ["At least one direct source or source summary is needed."],
+    recommended_next_sources: ["Use current external search outside Tools MCP if the task requires broad discovery.", "Prefer official docs/specs/primary sources and corroborating independent sources."],
+    must_not_claim: ["A broad web search happened.", "Search-engine results were scraped.", "Unsupported claims are verified.", "Provided source excerpts prove facts beyond their text."],
+    evidence_log_id: null
+  };
+  const log = await writeEvidenceLog("research_brief", brief);
+  brief.evidence_log_id = log.evidence_log_id;
+  recordSession(args.session_id, "research_briefs", brief);
+  return brief;
+}
+
+function globsMatch(rel, globs = []) {
+  const list = arrayify(globs).filter(Boolean);
+  if (!list.length) return true;
+  return list.some((glob) => matchesSimpleFilter(rel, glob));
+}
+
+function looksBinary(buffer) {
+  if (!buffer?.length) return false;
+  let suspicious = 0;
+  const sample = buffer.subarray(0, Math.min(buffer.length, 512));
+  for (const byte of sample) if (byte === 0 || (byte < 7 && ![9, 10, 13].includes(byte))) suspicious += 1;
+  return suspicious > 0;
+}
+
+function extractText(html) {
+  return String(html || "").replace(/<script[\s\S]*?<\/script>/gi, " ").replace(/<style[\s\S]*?<\/style>/gi, " ").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function extractTitle(textOrHtml) {
+  const raw = String(textOrHtml || "");
+  const htmlTitle = raw.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1];
+  if (htmlTitle) return truncate(redactSecrets(extractText(htmlTitle)), 200);
+  return truncate(raw.split(/[\n.]/).find(Boolean) || "", 120);
+}
+
+function countLinks(html) {
+  return (String(html || "").match(/<a\s+/gi) || []).length;
 }
 
 async function safeApplyPatch(args) {
@@ -1773,6 +2268,42 @@ function arrayify(value) {
 
 function logId(prefix) {
   return `${prefix}-${Date.now()}-${randomUUID().slice(0, 8)}`;
+}
+
+function formatManifest(manifest) {
+  return [`vnem_tools_manifest: ${manifest.tools.length} tool(s)`, `Groups: ${manifest.capability_groups.join(", ")}`, `Unsafe unsupported: ${manifest.unsafe_actions_not_supported.join(", ")}`].join("\n");
+}
+
+function formatWorkspaceMap(map) {
+  return [`vnem_tools_workspace_map: ${map.workspace_root}`, `Entries: ${map.tree_summary.length}`, `Entrypoints: ${map.likely_entrypoints.join(", ") || "none"}`, `Evidence: ${map.evidence_log_id}`].join("\n");
+}
+
+function formatReadManyFiles(result) {
+  return [`vnem_tools_read_many_files: ${result.files.length} file(s) read`, `Blocked: ${result.blocked_files.length}`, `Bytes: ${result.total_bytes}`, `Evidence: ${result.evidence_log_id}`].join("\n");
+}
+
+function formatCodeSearch(result) {
+  return [`vnem_tools_code_search: ${result.result_count} match(es)`, `Query: ${result.query}`, `Evidence: ${result.evidence_log_id}`].join("\n");
+}
+
+function formatFindReferences(result) {
+  return [`vnem_tools_find_references: ${result.symbol}`, `References: ${result.result_count}`, `Likely definitions: ${result.likely_definition_files.join(", ") || "none"}`].join("\n");
+}
+
+function formatDependencyScan(result) {
+  return [`vnem_tools_dependency_scan: ${result.package_manager}`, `Manifests: ${result.manifest_files.join(", ") || "none"}`, `Safe scripts: ${result.safe_scripts.map((item) => item.name).join(", ") || "none"}`, `Risky scripts: ${result.risky_scripts.map((item) => item.name).join(", ") || "none"}`].join("\n");
+}
+
+function formatFetchUrlText(result) {
+  return [`vnem_tools_fetch_url_text: ${result.executed ? result.status : "dry-run"}`, `URL: ${result.url}`, result.title_if_found ? `Title: ${result.title_if_found}` : "", `Evidence: ${result.evidence_log_id || "not written"}`].filter(Boolean).join("\n");
+}
+
+function formatSourceQuality(result) {
+  return [`vnem_tools_source_quality_check: ${result.source_quality_score}/100`, `Flags: ${result.quality_flags.join(", ") || "none"}`, `Risks: ${result.risk_flags.join(", ") || "none"}`].join("\n");
+}
+
+function formatResearchBrief(result) {
+  return [`vnem_tools_research_brief: ${result.task}`, `Supported: ${result.supported_claims.length}`, `Unsupported: ${result.unsupported_claims.length}`, `Evidence: ${result.evidence_log_id || "not written"}`].join("\n");
 }
 
 function formatPatch(result) {

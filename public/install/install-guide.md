@@ -1,6 +1,6 @@
 # vnem Install And MCP Guide
 
-Generated: 2026-06-23T21:20:33.014Z
+Generated: 2026-06-24T09:41:44.740Z
 
 A compact setup guide for downloading the read-only vnem pack, installing it into an existing repo without overwriting local agent instructions, and connecting the local stdio MCP server with generated JSON config.
 
@@ -73,7 +73,7 @@ node scripts/vnem-cli.mjs mcp-config --precision --workspace /path/to/project
 node scripts/vnem-cli.mjs mcp-config --precision --workspace /path/to/project --server-json
 ```
 
-Opt-in Tools MCP foundation for a project that should allow bounded approved file reads/searches, safe project scans, dry-run-first single/multi-file patches, batch restore/rollback, safe package tasks, local dev servers, approved GET/HEAD API requests, approved local browser screenshots, optional approved local git commits, and proof-compatible evidence/session logs:
+Opt-in Tools MCP foundation for a project that should allow bounded approved manifest/catalog discovery, workspace maps, read-many/code-search/reference/dependency intelligence, safe source-quality/research-brief helpers, safe project scans, dry-run-first single/multi-file patches, batch restore/rollback, safe package tasks, local dev servers, approved GET/HEAD API requests, approved local browser screenshots, optional approved local git commits, and proof-compatible evidence/session logs:
 
 ```bash
 node scripts/vnem-cli.mjs mcp-config --core --tools --workspace /path/to/project
@@ -82,13 +82,17 @@ npm run test:tools-mcp
 npm run test:tools-browser
 npm run test:tools-project-actions
 npm run test:tools-git-session
+npm run test:tools-intelligence
+npm run test:tools-research
+npm run test:core-tool-selection
+npm run test:core-tools-ecosystem
 npm run test:core-tools-e2e
 npm run tools:readiness
 ```
 
-Tools MCP is separate from Core MCP and is not Giga MCP: remote GitHub mutation, git push, package installs, package publishing, deployment, arbitrary shell, unrestricted API calls, secret-manager-backed live API calls, unrestricted browser automation, login/session/cookie/CAPTCHA/credential automation, and broad web scraping are not in this foundation batch.
+Tools MCP is separate from Core MCP and is not Giga MCP: Giga MCP, unrestricted filesystem, arbitrary shell, git push / remote GitHub mutation, package installs, package publishing, deployment, external browser browsing by default, search-engine scraping, secret-backed live API execution, login/cookie/session/CAPTCHA automation, and unrestricted API calls remain unsupported in this foundation batch.
 
-Actual Core → Tools use path: start/connect Core MCP; start/connect Tools MCP for a specific workspace; ask Core `vnem_boost_task` to boost the task; pass `tools_mcp_handoff` to `vnem_tools_prepare_action_plan`; dry-run first; ask the user for exact approval; scan the project, apply approved patch batches/restores, run safe project tasks, start/stop local dev servers, perform approved API/browser proof, optionally make an approved local git commit, and collect `vnem_tools_collect_evidence` or `vnem_tools_finish_session`; use `proof_trail_compatible_summary` with `vnem_completion_audit` / `vnem_proof_trail`; say whether browser visual proof was actually captured; do not claim visual/live API proof unless those evidence fields exist.
+Actual Core → Tools use path: start/connect Core MCP; start/connect Tools MCP for a specific workspace; ask Core `vnem_select_tools_for_task`, `vnem_build_tools_plan`, or `vnem_boost_task` to select tool capabilities and build a plan-only handoff; use `vnem_tools_manifest` for catalog discovery; dry-run first; ask the user for exact approval; map/read/search the project, inspect dependencies without installing, evaluate direct/provided sources, apply approved patch batches/restores, run safe project tasks, start/stop local dev servers, perform approved API/browser proof, optionally make an approved local git commit, and collect `vnem_tools_collect_evidence` or `vnem_tools_finish_session`; use `proof_trail_compatible_summary` with `vnem_completion_audit` / `vnem_proof_trail`; do not claim visual/live API/search proof unless those evidence fields exist.
 
 Generic `.mcp.json` shape:
 

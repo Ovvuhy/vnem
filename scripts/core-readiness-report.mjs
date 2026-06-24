@@ -23,6 +23,8 @@ const library = await json("capabilities/super-library.json");
 const usablePacks = await json("capabilities/usable-capability-packs.json");
 const serverSource = await text("scripts/vnem-mcp-server.mjs");
 const mcpTestSource = await text("scripts/test-mcp-server.mjs");
+const coreToolSelectionTestSource = await text("scripts/test-core-tool-selection.mjs");
+const coreToolsEcosystemTestSource = await text("scripts/test-core-tools-tool-ecosystem.mjs");
 const readme = await text("README.md");
 const installGuide = await text(".vnem/install-guide.md");
 const packageJson = await json("package.json");
@@ -78,6 +80,16 @@ const taskBoostingStatus = {
   real_task_examples_tested: realTaskExamplesTested.filter((item) => item.tested).map((item) => item.id),
   all_required_examples_tested: realTaskExamplesTested.every((item) => item.tested)
 };
+const toolSelectionStatus = {
+  tool_selection_available: toolInventory.includes("vnem_select_tools_for_task") && /selectToolsForTask/.test(serverSource),
+  tools_plan_available: toolInventory.includes("vnem_build_tools_plan") && /buildCoreToolsPlan/.test(serverSource),
+  coding_task_tool_plan: /vnem_tools_workspace_map/.test(coreToolSelectionTestSource) && /vnem_tools_apply_patch_batch/.test(coreToolSelectionTestSource) && /vnem_tools_run_project_task/.test(coreToolSelectionTestSource),
+  research_task_tool_plan: /vnem_tools_source_quality_check/.test(coreToolSelectionTestSource) && /vnem_tools_research_brief/.test(coreToolSelectionTestSource) && /does not fake web search|web search happened/i.test(coreToolSelectionTestSource),
+  debugging_logs_first_plan: /logs first/i.test(coreToolSelectionTestSource + serverSource),
+  must_not_claim_present: /must_not_claim/.test(serverSource) && /must_not_claim/.test(coreToolSelectionTestSource),
+  core_does_not_execute_tools: /core_executes_tools:\s*false/.test(serverSource) && /Core must not expose Tools mutation tools directly/.test(coreToolSelectionTestSource) && /Core executed Tools MCP actions/.test(serverSource)
+};
+
 const usablePackStatus = {
   usable_api_pack_count: Array.isArray(usablePacks.apis) ? usablePacks.apis.filter((pack) => pack.usable_status === "usable").length : 0,
   usable_skill_pack_count: Array.isArray(usablePacks.skills) ? usablePacks.skills.filter((pack) => pack.usable_status === "usable").length : 0,
@@ -102,6 +114,9 @@ assert.ok(usablePackStatus.tools_handoff_status, "Tools handoff status is incomp
 assert.ok(usablePackStatus.boost_task_uses_usable_packs, "boost task does not use usable packs");
 assert.ok(usablePackStatus.raw_records_not_counted_as_usable, "raw discovered records appear to be counted as usable");
 assert.ok(taskBoostingStatus.all_required_examples_tested, "real task boosting examples are not fully tested");
+assert.ok(Object.values(toolSelectionStatus).every(Boolean), "Core tool-selection/tools-plan readiness is incomplete");
+assert.ok(packageJson.scripts?.["test:core-tool-selection"] === "node scripts/test-core-tool-selection.mjs", "test:core-tool-selection package script is missing");
+assert.ok(packageJson.scripts?.["test:core-tools-ecosystem"] === "node scripts/test-core-tools-tool-ecosystem.mjs", "test:core-tools-ecosystem package script is missing");
 assert.ok(packageJson.scripts?.["core:readiness"], "package script core:readiness is missing");
 
 const blockers = [];
@@ -135,6 +150,8 @@ const report = {
   proof_trail_completion_audit_protection_review_status: proofAuditProtection,
   usable_pack_status: usablePackStatus,
   task_boosting_status: taskBoostingStatus,
+  tool_selection_status: toolSelectionStatus,
+  core_tools_ecosystem_test_status: /vnem_build_tools_plan/.test(coreToolsEcosystemTestSource) && /vnem_tools_finish_session/.test(coreToolsEcosystemTestSource),
   api_library_counts: apiCounts,
   skill_library_counts: skillCounts,
   fixture_importer_test_coverage: fixtureCoverage,
@@ -146,7 +163,8 @@ const report = {
     "Fixture importer coverage includes API verification and SKILL.md parsing cases.",
     "Curated API records carry explicit docs/rate-limit confidence instead of guessed certainty.",
     "Task boosting entry point exists and is covered by real-task examples across build advice, API features, UI, modding, security, and debugging.",
-    "Usable API/skill pack minimums are enforced and Core-to-Tools handoff status is tested."
+    "Usable API/skill pack minimums are enforced and Core-to-Tools handoff status is tested.",
+    "Core tool selection and Core→Tools planning are available, tested, and explicitly plan-only."
   ],
   not_ready: [
     "Most API docs, rate limits, CORS values, and freshness statuses remain metadata-level or unknown.",
@@ -218,6 +236,8 @@ function formatReport(report) {
   lines.push(`proof_audit_protection: ${status(report.proof_trail_completion_audit_protection_review_status)}`);
   lines.push(`usable_packs: apis=${report.usable_pack_status.usable_api_pack_count}, skills=${report.usable_pack_status.usable_skill_pack_count}, api_minimum=${report.usable_pack_status.api_minimum_met ? "yes" : "no"}, skill_minimum=${report.usable_pack_status.skill_minimum_met ? "yes" : "no"}, tools_handoff=${report.usable_pack_status.tools_handoff_status ? "yes" : "no"}, boost_uses_packs=${report.usable_pack_status.boost_task_uses_usable_packs ? "yes" : "no"}`);
   lines.push(`task_boosting_status: exists=${report.task_boosting_status.vnem_boost_task_exists ? "yes" : "no"}, skill_guidance=${report.task_boosting_status.uses_skill_guidance ? "yes" : "no"}, api_guidance_when_relevant=${report.task_boosting_status.uses_api_guidance_when_relevant ? "yes" : "no"}, workflow_and_proof=${report.task_boosting_status.includes_workflow_and_proof ? "yes" : "no"}`);
+  lines.push(`tool_selection_status: ${status(report.tool_selection_status)}`);
+  lines.push(`core_tools_ecosystem_test_status: ${report.core_tools_ecosystem_test_status ? "yes" : "no"}`);
   lines.push(`real_task_examples_tested: ${report.task_boosting_status.real_task_examples_tested.join(", ")}`);
   lines.push(`api_counts: total=${report.api_library_counts.total_apis}, docs_verified=${report.api_library_counts.docs_verified_count}, docs_unknown=${report.api_library_counts.docs_unknown_count}, rate_limit_verified=${report.api_library_counts.rate_limit_verified_count}, rate_limit_unknown=${report.api_library_counts.rate_limit_unknown_count}, cors_unknown=${report.api_library_counts.cors_unknown_count}, frontend_safe=${report.api_library_counts.frontend_safe_count}, backend_required=${report.api_library_counts.backend_required_count}`);
   lines.push(`skill_counts: total=${report.skill_library_counts.total_skills}, parsed_summaries=${report.skill_library_counts.parsed_summaries_count}, verified_client_compat=${report.skill_library_counts.verified_client_compatibility_count}, likely_client_compat=${report.skill_library_counts.likely_client_compatibility_count}, unknown_client_compat=${report.skill_library_counts.unknown_client_compatibility_count}, manual_review_required=${report.skill_library_counts.manual_review_required_count}, core_guidance_capable=${report.skill_library_counts.core_guidance_capable_count}, install_precision_required=${report.skill_library_counts.install_precision_required_count}`);

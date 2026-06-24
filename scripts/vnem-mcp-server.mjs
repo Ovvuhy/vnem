@@ -92,6 +92,8 @@ const DEFAULT_MCP_TOOLS = [
   "vnem_activate_capability_pack",
   "vnem_apply_skill_guidance",
   "vnem_boost_task",
+  "vnem_select_tools_for_task",
+  "vnem_build_tools_plan",
   "vnem_prepare_tools_handoff",
   "vnem_build_api_integration_plan",
   "vnem_get_agent_profile",
@@ -485,7 +487,56 @@ function registerTools(mcpServer) {
     },
     async (args) => {
       const result = boostTask(superLibrary, agentProfiles, args);
-      return toolResult(formatBoostTask(result), result);
+      if (args.token_budget === "compact") return toolResult(formatBoostTask(result), result);
+      const toolSelectionPlan = compactCoreToolsPlan(buildCoreToolsPlan(args));
+      const enhanced = {
+        ...result,
+        tool_selection_plan: toolSelectionPlan,
+        tools_plan: toolSelectionPlan,
+        tools_mcp_handoff: { ...(result.tools_mcp_handoff || result.tools_handoff || {}), ...toolSelectionPlan.core_tools_handoff },
+        core_executes_tools: false
+      };
+      return toolResult(formatBoostTask(enhanced), enhanced);
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_select_tools_for_task",
+    {
+      title: "Select VNEM Tools For Task",
+      description: "Read-only Core brain tool that selects safe Tools MCP tools for coding, UI, research, file investigation, debugging, local modification, and safety-sensitive tasks. Does not execute Tools.",
+      inputSchema: {
+        task: z.string().min(1),
+        task_type_hint: z.string().optional(),
+        known_context: z.string().optional(),
+        available_tools: z.array(z.string()).default([]),
+        token_budget: z.enum(["compact", "normal", "expanded"]).default("normal")
+      },
+      annotations: READ_ONLY
+    },
+    async (args) => {
+      const selection = selectToolsForTask(args);
+      return toolResult(formatCoreToolSelection(selection), { tool_selection: selection });
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_build_tools_plan",
+    {
+      title: "Build VNEM Core→Tools Plan",
+      description: "Build a read-only Core→Tools execution plan with sequence, dry-runs, approvals, evidence, verification, fallbacks, must-not-claim, and done definition. Does not execute Tools.",
+      inputSchema: {
+        task: z.string().min(1),
+        task_type_hint: z.string().optional(),
+        known_context: z.string().optional(),
+        available_tools: z.array(z.string()).default([]),
+        token_budget: z.enum(["compact", "normal", "expanded"]).default("normal")
+      },
+      annotations: READ_ONLY
+    },
+    async (args) => {
+      const plan = buildCoreToolsPlan(args);
+      return toolResult(formatCoreToolsPlan(plan), { tools_plan: plan });
     }
   );
 
@@ -1452,6 +1503,167 @@ function sourceRadarResults(intent, category, limit) {
     .filter((source) => source.rank_score > 0)
     .sort((a, b) => b.rank_score - a.rank_score || String(a.title).localeCompare(String(b.title)))
     .slice(0, limit);
+}
+
+function selectToolsForTask(args = {}) {
+  const task = String(args.task || "");
+  const context = String(args.known_context || "");
+  const hint = String(args.task_type_hint || "");
+  const type = inferCoreToolTaskType(`${hint} ${task} ${context}`);
+  const selected = new Set(["vnem_tools_manifest", "vnem_tools_start_session", "vnem_tools_finish_session"]);
+  const add = (...tools) => tools.filter(Boolean).forEach((tool) => selected.add(tool));
+  if (["coding", "ui_web", "debugging", "file_investigation", "local_project_modification", "security_sensitive"].includes(type)) {
+    add("vnem_tools_workspace_map", "vnem_tools_code_search", "vnem_tools_read_many_files", "vnem_tools_project_scan", "vnem_tools_dependency_scan");
+  }
+  if (["coding", "ui_web", "debugging", "local_project_modification"].includes(type)) add("vnem_tools_apply_patch_batch", "vnem_tools_run_project_task", "vnem_tools_collect_evidence", "vnem_tools_git_status", "vnem_tools_git_diff_summary");
+  if (type === "ui_web") add("vnem_tools_start_dev_server", "vnem_tools_browser_capture", "vnem_tools_stop_dev_server");
+  if (type === "debugging") add("vnem_tools_code_search", "vnem_tools_read_many_files", "vnem_tools_run_project_task", "vnem_tools_apply_patch_batch");
+  if (type === "research") add("vnem_tools_source_quality_check", "vnem_tools_research_brief", directUrlPresent(task + " " + context) ? "vnem_tools_fetch_url_text" : null);
+  if (type === "file_investigation") add("vnem_tools_find_references");
+  if (type === "security_sensitive") add("vnem_tools_dependency_scan", "vnem_tools_source_quality_check");
+  const selectedTools = [...selected];
+  const dryRunSteps = selectedTools.filter((tool) => /apply_patch|run_project_task|start_dev_server|browser_capture|fetch_url_text|git_commit|api_request|restore/.test(tool)).map((tool) => `${tool}: dry-run first before approval or real action`);
+  const approvalSteps = selectedTools.filter((tool) => /apply_patch|run_project_task|start_dev_server|stop_dev_server|browser_capture|fetch_url_text|git_commit|api_request|restore/.test(tool)).map((tool) => `${tool}: requires explicit approval for real action`);
+  return {
+    task,
+    task_type: type,
+    missing_context_questions: missingToolPlanQuestions(type, task),
+    selected_tools: selectedTools,
+    dry_run_steps: dryRunSteps,
+    approval_required_steps: approvalSteps,
+    evidence_to_collect: ["workspace/project map", "files/code searched or read", "patch diff/backup/restore plan", "commands/tasks and exit codes", type === "ui_web" ? "browser screenshot or honest browser_unavailable" : null, type === "research" ? "source quality flags and supported/unsupported claims" : null, "session evidence pack", "must-not-claim list"].filter(Boolean),
+    verification_plan: verificationForType(type),
+    fallbacks_if_tool_unavailable: ["If Tools MCP is unavailable, Core should produce a plan only and ask the agent to use equivalent local tools with the same safety/evidence rules.", "If browser proof is unavailable, report browser_unavailable and do not claim visual proof.", "If direct URL fetch is blocked/unavailable, use provided text summaries or ask for a source; do not fake search."],
+    must_not_claim: ["Core executed Tools MCP actions.", "Files were edited, commands ran, browser proof was captured, commits were made, or URLs were fetched before Tools evidence exists.", "A web search happened inside Tools MCP.", "Unsupported git push/package install/deployment/Giga MCP work was done."],
+    done_definition: doneDefinitionForType(type),
+    efficiency_guidance: efficiencyForType(type),
+    core_executes_tools: false,
+    core_mcp_mutates_files: false,
+    core_mcp_runs_commands: false,
+    core_mcp_uses_browser: false
+  };
+}
+
+function buildCoreToolsPlan(args = {}) {
+  const selection = selectToolsForTask(args);
+  const sequence = [];
+  const push = (tool, purpose, requiresApproval = false, dryRunFirst = false) => {
+    if (selection.selected_tools.includes(tool)) sequence.push({ tool, purpose, dry_run_first: dryRunFirst, requires_approval: requiresApproval, expected_evidence: expectedEvidenceForTool(tool) });
+  };
+  if (selection.task_type === "debugging") sequence.push({ tool: "external/input", purpose: "logs first: collect failing command output, stack trace, reproduction, or error message before changing files", dry_run_first: false, requires_approval: false, expected_evidence: ["failure output"] });
+  push("vnem_tools_manifest", "inspect Tools catalog and safety metadata");
+  push("vnem_tools_start_session", "start one coherent evidence pack");
+  push("vnem_tools_workspace_map", "map project structure safely");
+  push("vnem_tools_project_scan", "detect package scripts/frameworks/safe commands");
+  push("vnem_tools_dependency_scan", "inspect dependencies/scripts without installing");
+  push("vnem_tools_code_search", "find relevant implementation sites");
+  push("vnem_tools_find_references", "trace symbols/config names");
+  push("vnem_tools_read_many_files", "load bounded relevant context");
+  push("vnem_tools_source_quality_check", "evaluate provided/direct source quality");
+  push("vnem_tools_fetch_url_text", "fetch direct approved URL text only", true, true);
+  push("vnem_tools_research_brief", "summarize supported/unsupported claims from provided sources");
+  push("vnem_tools_apply_patch_batch", "dry-run then apply approved coherent multi-file patch", true, true);
+  push("vnem_tools_run_project_task", "dry-run then run approved safe project task/check", true, true);
+  push("vnem_tools_start_dev_server", "dry-run then start approved localhost dev server for UI proof", true, true);
+  push("vnem_tools_browser_capture", "dry-run then capture approved local browser proof if useful", true, true);
+  push("vnem_tools_stop_dev_server", "stop only Tools-started server", true, false);
+  push("vnem_tools_git_status", "summarize local git state");
+  push("vnem_tools_git_diff_summary", "summarize final diff");
+  push("vnem_tools_finish_session", "write final session evidence pack");
+  const plan = {
+    ...selection,
+    tool_sequence: sequence,
+    core_tools_handoff: {
+      task_summary: selection.task.slice(0, 240),
+      required_tool_capabilities: selection.selected_tools,
+      required_permissions: selection.approval_required_steps,
+      dry_run_first: selection.dry_run_steps,
+      evidence_to_collect: selection.evidence_to_collect,
+      rollback_or_restore_plan: ["patch_batch returns backups and restore_plan", "use restore_batch for rollback when needed", "commit only after evidence and explicit approval"],
+      must_not_claim: selection.must_not_claim,
+      safe_core_actions: ["plan", "select tools", "prepare handoff only"]
+    },
+    core_executes_tools: false,
+    core_claims_actions_happened: false
+  };
+  return plan;
+}
+
+function inferCoreToolTaskType(text) {
+  const t = String(text || "").toLowerCase();
+  if (/research|source|claim|citation|paper|docs url|provided source|summarize.+source/.test(t)) return "research";
+  if (/debug|bug|failing|stack trace|error|root cause|regression/.test(t)) return "debugging";
+  if (/ui|frontend|browser|visual|page|dashboard|rendered|web app/.test(t)) return "ui_web";
+  if (/investigate|inspect|find references|where is|file investigation|understand/.test(t)) return "file_investigation";
+  if (/security|secret|credential|risk|safety|audit/.test(t)) return "security_sensitive";
+  if (/modify|patch|edit|local project|repo|code|test|build|implement|improve|fix/.test(t)) return "coding";
+  return "coding";
+}
+
+function directUrlPresent(text) {
+  return /https?:\/\/[^\s]+/i.test(text);
+}
+
+function missingToolPlanQuestions(type, task) {
+  if (type === "research") return ["Which direct source URLs or source excerpts should be evaluated?", "Does the answer require broad current web search outside Tools MCP?"];
+  if (type === "ui_web") return ["Which local dev command and URL should be used for visual proof?", "Which page/state proves the change?"];
+  if (type === "debugging") return ["What exact command/log/error reproduces the failure?", "What is the smallest targeted check for the fix?"];
+  return ["What is the project root?", "Which checks define done?", "Should Tools create a local commit after approval?"];
+}
+
+function verificationForType(type) {
+  if (type === "research") return ["Evaluate source quality for each source.", "Separate supported from unsupported claims.", "State missing sources and do not claim a web search happened unless done outside Tools MCP."];
+  if (type === "debugging") return ["Capture failing output first.", "Run targeted failing check after patch.", "Run only broader checks near final."];
+  if (type === "ui_web") return ["Run safe project tests/build.", "Start local dev server if needed.", "Capture localhost/file browser proof or report browser_unavailable honestly."];
+  return ["Run safe project task checks from package.json.", "Review git diff summary.", "Finish session evidence with safe-to-claim/must-not-claim."];
+}
+
+function doneDefinitionForType(type) {
+  if (type === "research") return ["Brief cites provided/direct sources", "unsupported claims are listed", "must-not-claim prevents fake search/currentness"];
+  return ["Relevant files inspected", "approved patch/evidence exists if mutation happened", "targeted checks pass", "session evidence supports final claims"];
+}
+
+function efficiencyForType(type) {
+  const base = ["Use workspace_map/project_scan before broad file reads.", "Search first, then read bounded relevant files.", "Run targeted checks during development; broad checks only near final."];
+  if (type === "research") base.push("Use fetch_url_text only for direct approved URLs; use external search outside Tools MCP when broad discovery is required.");
+  return base;
+}
+
+function expectedEvidenceForTool(tool) {
+  if (/workspace_map/.test(tool)) return ["tree summary", "skipped secret/build paths"];
+  if (/read_many|code_search|find_references/.test(tool)) return ["file paths", "redacted snippets", "caps/skips"];
+  if (/dependency_scan/.test(tool)) return ["manifest scripts", "risky script flags", "no install"];
+  if (/patch/.test(tool)) return ["changed files", "diff summary", "backups", "restore plan"];
+  if (/run_project_task/.test(tool)) return ["command", "exit code", "redacted output"];
+  if (/browser/.test(tool)) return ["screenshot path/hash or browser_unavailable"];
+  if (/research|source|fetch/.test(tool)) return ["source quality", "text hash/excerpt", "must-not-claim"];
+  if (/session/.test(tool)) return ["session evidence pack"];
+  return ["structured result"];
+}
+
+function compactCoreToolsPlan(plan) {
+  return {
+    task_type: plan.task_type,
+    selected_tools: plan.selected_tools.slice(0, 12),
+    tool_sequence: plan.tool_sequence.slice(0, 8).map((step) => ({ tool: step.tool, purpose: step.purpose, dry_run_first: step.dry_run_first, requires_approval: step.requires_approval })),
+    dry_run_steps: plan.dry_run_steps.slice(0, 6),
+    approval_required_steps: plan.approval_required_steps.slice(0, 6),
+    evidence_to_collect: plan.evidence_to_collect.slice(0, 8),
+    verification_plan: plan.verification_plan.slice(0, 5),
+    must_not_claim: plan.must_not_claim.slice(0, 6),
+    done_definition: plan.done_definition.slice(0, 5),
+    efficiency_guidance: plan.efficiency_guidance.slice(0, 5),
+    core_tools_handoff: plan.core_tools_handoff,
+    core_executes_tools: false
+  };
+}
+
+function formatCoreToolSelection(selection) {
+  return [`vnem_select_tools_for_task: ${selection.task_type}`, `Tools: ${selection.selected_tools.join(", ")}`, `Core executes tools: ${selection.core_executes_tools}`].join("\n");
+}
+
+function formatCoreToolsPlan(plan) {
+  return [`vnem_build_tools_plan: ${plan.task_type}`, `Steps: ${plan.tool_sequence.map((step) => step.tool).join(" -> ")}`, "Core executes tools: false"].join("\n");
 }
 
 function buildBootstrap(args = {}) {
