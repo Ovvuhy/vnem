@@ -22,3 +22,5 @@ Nunito.zip
 .vnem-runtime/
 .vnem/staging/
 discovery/candidates/link-report.json
+
+.vnem/tool-runs/
