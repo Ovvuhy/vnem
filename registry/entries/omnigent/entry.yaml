@@ -1,0 +1,68 @@
+schema_version: 1.0.0
+homepage_url: https://omnigent.ai
+repo_url: https://github.com/omnigent-ai/omnigent
+package_urls: []
+licenses:
+  - Apache-2.0
+copyright_owner: Omnigent
+source_kind: github
+protocols: []
+clients:
+  - Claude Code
+  - Codex
+  - Cursor
+  - MCP
+install:
+  command: null
+  notes: >-
+    Review the upstream docs, permissions, environment variables, and transport before
+    installing. Omnigent is a meta-harness — it orchestrates other coding agents rather than
+    replacing them.
+  config_example: null
+permissions:
+  - filesystem
+  - repository
+  - shell
+  - network
+env_vars: []
+tags:
+  - agent-framework
+  - multi-agent
+  - orchestration
+  - sandbox
+  - policy
+use_cases:
+  - Orchestrate multiple coding agents (Claude Code, Codex, Cursor) under a unified policy layer
+  - Enforce sandboxing and governance across agent workflows
+  - Collaborate on agent task execution from any device
+best_for:
+  - Teams composing multi-agent workflows with policy and sandbox requirements
+not_for:
+  - Projects that need a single opinionated coding agent (use the underlying agent directly)
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: high
+maintenance_signals:
+  - Curated from canonical GitHub repository and official homepage
+risk_flags:
+  - can-orchestrate-agents
+  - can-enforce-policies
+  - network-access
+recommended_when:
+  - >-
+    Use when a project needs to orchestrate multiple coding agents with unified policy,
+    sandboxing, and cross-harness coordination.
+trust_tier: promising
+review_status: bot-reviewed
+last_checked: '2026-06-26'
+slug: omnigent
+name: Omnigent
+type: agent-framework
+summary_llm: >-
+  Omnigent is an open-source AI agent meta-harness that orchestrates Claude Code, Codex,
+  Cursor, and custom agents under a unified policy and sandboxing layer, with real-time
+  multi-device collaboration.
+source_urls:
+  - https://github.com/omnigent-ai/omnigent
+  - https://omnigent.ai

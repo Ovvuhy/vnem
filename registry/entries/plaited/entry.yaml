@@ -1,0 +1,60 @@
+schema_version: 1.0.0
+homepage_url: null
+repo_url: https://github.com/plaited/plaited
+package_urls: []
+licenses:
+  - ISC
+copyright_owner: plaited
+source_kind: github
+protocols: []
+clients: []
+install:
+  command: null
+  notes: >-
+    Review the upstream docs, permissions, environment variables, and transport before
+    installing. plaited focuses on sovereign agent nodes and A2A modnets rather than
+    mainstream coding-agent workflows.
+  config_example: null
+permissions:
+  - filesystem
+  - network
+env_vars: []
+tags:
+  - agent-framework
+  - a2a
+  - generative-ui
+  - behavioral-programming
+  - sovereign-agents
+use_cases:
+  - Build sovereign agent nodes with behavioral runtime provenance
+  - Compose A2A modnets for personal assistant frameworks
+  - Experiment with generative UI patterns driven by agent state
+best_for:
+  - Research-oriented agent projects exploring A2A, modnets, and behavioral provenance
+not_for:
+  - Production coding-agent workflows that need stable MCP or CLI integrations
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: medium
+maintenance_signals:
+  - Curated from canonical GitHub repository
+risk_flags:
+  - can-edit-files
+  - network-access
+  - early-stage
+recommended_when:
+  - >-
+    Use when a project explores sovereign agent nodes, A2A modnets, or behavioral runtime
+    provenance patterns.
+trust_tier: promising
+review_status: bot-reviewed
+last_checked: '2026-06-26'
+slug: plaited
+name: plaited
+type: agent-framework
+summary_llm: >-
+  plaited is a framework for sovereign agent nodes, A2A modnets, generative UI, and
+  behavioral runtime provenance, built for TypeScript/Bun environments.
+source_urls:
+  - https://github.com/plaited/plaited
