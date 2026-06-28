@@ -1,7 +1,7 @@
 # vnem Full Registry
 
-Generated: 2026-05-28T11:24:56.856Z
-Entries: 228
+Generated: 2026-06-28T07:19:52.903Z
+Entries: 230
 
 ## Agent2Agent Protocol
 
@@ -4251,6 +4251,30 @@ Babylon.js is a full-featured browser 3D engine for WebGL/WebGPU games and inter
 
 Babylon.js is a full-featured 3D browser engine for WebGL/WebGPU games and interactive applications. It is heavier than a focused renderer, but gives agents engine-level primitives for scenes, materials, assets, GUI, XR, and physics-oriented workflows. ## Best For - 3D browser games that benefit from a full engine inst
 
+## Chrome DevTools MCP
+
+Slug: chrome-devtools-mcp
+Type: mcp-server
+Trust tier: promising
+Review status: bot-reviewed
+Freshness: current
+Source confidence: official
+Recommendation score: 9
+Protocols: MCP
+Clients: Claude Desktop, Claude Code, Cursor, VS Code
+Tags: mcp, browser, devtools, debugging, chrome
+Use cases: Let agents inspect and debug live web pages via Chrome DevTools Protocol, Automate browser debugging sessions through MCP, Capture screenshots, console logs, and network requests from a running browser
+Best for: Browser debugging via agent tooling, frontend QA, headless inspection, Let agents inspect and debug live web pages via Chrome DevTools Protocol, Automate browser debugging sessions through MCP, Capture screenshots, console logs, and network requests from a running browser, mcp workflows, browser workflows, devtools workflows, debugging workflows
+Recommended when: Use when an agent needs to control a real browser for inspection or debugging., Use when a project needs let agents inspect and debug live web pages via chrome devtools protocol and the upstream source has been reviewed., Treat as promising until a maintainer verifies install and behavior.
+Risk flags: browser-access, can-access-authenticated-pages, sensitive-permissions
+Homepage: https://github.com/ChromeDevTools/chrome-devtools-mcp
+Repository: https://github.com/ChromeDevTools/chrome-devtools-mcp
+Sources: https://github.com/ChromeDevTools/chrome-devtools-mcp, https://www.npmjs.com/package/chrome-devtools-mcp
+
+Chrome DevTools MCP is Google's browser automation MCP server for giving coding agents structured access to live browser sessions, DevTools inspection, and DOM/network control.
+
+MCP server for Chrome DevTools Protocol. - **Repository:** https://github.com/ChromeDevTools/chrome-devtools-mcp - **Package:** https://www.npmjs.com/package/chrome-devtools-mcp - **License:** Apache-2.0 - **Trust Tier:** promising ## What it does Exposes Chrome DevTools Protocol (CDP) capabilities to coding agents thr
+
 ## Clarid HMDA Validator
 
 Slug: ai-clarid-hmda
@@ -4922,6 +4946,30 @@ Sources: https://docs.mem0.ai/, https://github.com/mem0ai/mem0
 Mem0 is an agent memory layer for extracting, storing, searching, and updating long-term user or application memory across AI assistants and agent workflows.
 
 Mem0 is an agent memory layer for extracting, storing, searching, and updating long-term user or application memory across AI assistants and agent workflows. ## Best For - Assistants that need personalization over repeated sessions ## Recommended When - Use when memory improves repeated work and users can inspect or de
+
+## Nx MCP
+
+Slug: nx-mcp
+Type: mcp-server
+Trust tier: promising
+Review status: bot-reviewed
+Freshness: current
+Source confidence: high
+Recommendation score: 8
+Protocols: MCP
+Clients: Claude Desktop, Claude Code, Cursor, VS Code
+Tags: mcp, monorepo, nx, build-tooling, workspace
+Use cases: Let agents navigate Nx workspace structure and dependencies, Let agents determine affected projects to run targeted tests after a change, Expose workspace task graph and project configurations
+Best for: Coding agents working in Nx monorepos that benefit from workspace graph awareness, Targeted test execution using Nx affected graphs, Let agents navigate Nx workspace structure and dependencies, Let agents determine affected projects to run targeted tests after a change, Expose workspace task graph and project configurations, mcp workflows, monorepo workflows, nx workflows
+Recommended when: Use when an agent works in an Nx monorepo and benefits from workspace-graph awareness before editing or running tasks., Use when a project needs let agents navigate nx workspace structure and dependencies and the upstream source has been reviewed., Treat as promising until a maintainer verifies install and behavior.
+Risk flags: command-execution, monorepo-awareness, sensitive-permissions
+Homepage: https://nx.dev
+Repository: https://github.com/nrwl/nx
+Sources: https://github.com/nrwl/nx, https://www.npmjs.com/package/nx-mcp
+
+Nx MCP is Nrwl's monorepo MCP server for giving coding agents workspace graph navigation, affected-graph analysis, task discovery, and project configuration access in Nx monorepos.
+
+MCP server for Nx monorepo workspace management. - **Repository:** https://github.com/nrwl/nx - **Package:** https://www.npmjs.com/package/nx-mcp - **License:** MIT - **Trust Tier:** promising ## What it does Exposes Nx monorepo capabilities to coding agents through MCP. Provides: - Workspace graph navigation (projects
 
 ## OpenAI Codex CLI
 

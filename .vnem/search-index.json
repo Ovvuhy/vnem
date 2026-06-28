@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-05-28T11:24:56.856Z",
+  "generated_at": "2026-06-28T07:19:52.903Z",
   "schema_version": "1.0.0",
   "package_version": "1.0.1",
   "release_version": "1.0.1",
-  "release_date": "2026-05-28",
+  "release_date": "2026-06-28",
   "install_folder": ".vnem",
   "safety": {
     "mode": "read-only-files",
@@ -28914,6 +28914,136 @@
       ]
     },
     {
+      "id": "entry:chrome-devtools-mcp",
+      "kind": "registry-entry",
+      "title": "Chrome DevTools MCP",
+      "summary": "Chrome DevTools MCP is Google's browser automation MCP server for giving coding agents structured access to live browser sessions, DevTools inspection, and DOM/network control.",
+      "url_path": "/entries/chrome-devtools-mcp/",
+      "trust_tier": "promising",
+      "type": "mcp-server",
+      "score": 9,
+      "tags": [
+        "mcp",
+        "browser",
+        "devtools",
+        "debugging",
+        "chrome"
+      ],
+      "use_cases": [
+        "Let agents inspect and debug live web pages via Chrome DevTools Protocol",
+        "Automate browser debugging sessions through MCP",
+        "Capture screenshots, console logs, and network requests from a running browser"
+      ],
+      "best_for": [
+        "Browser debugging via agent tooling, frontend QA, headless inspection",
+        "Let agents inspect and debug live web pages via Chrome DevTools Protocol",
+        "Automate browser debugging sessions through MCP",
+        "Capture screenshots, console logs, and network requests from a running browser",
+        "mcp workflows",
+        "browser workflows",
+        "devtools workflows",
+        "debugging workflows"
+      ],
+      "risk_flags": [
+        "browser-access",
+        "can-access-authenticated-pages",
+        "sensitive-permissions"
+      ],
+      "source_urls": [
+        "https://github.com/ChromeDevTools/chrome-devtools-mcp",
+        "https://www.npmjs.com/package/chrome-devtools-mcp"
+      ],
+      "keywords": [
+        "chrome",
+        "devtools",
+        "mcp",
+        "chrome-devtools-mcp",
+        "mcp-server",
+        "is",
+        "google",
+        "browser",
+        "automation",
+        "server",
+        "giving",
+        "coding",
+        "agents",
+        "structured",
+        "access",
+        "to",
+        "live",
+        "sessions",
+        "inspection",
+        "dom/network",
+        "control.",
+        "https",
+        "//github.com/chromedevtools/chrome-devtools-mcp",
+        "promising",
+        "bot-reviewed",
+        "current",
+        "claude",
+        "desktop",
+        "cursor",
+        "vs",
+        "//www.npmjs.com/package/chrome-devtools-mcp",
+        "network",
+        "filesystem",
+        "debugging",
+        "let",
+        "inspect",
+        "debug",
+        "web",
+        "pages",
+        "via",
+        "protocol",
+        "automate",
+        "through",
+        "capture",
+        "screenshots",
+        "console",
+        "logs",
+        "requests",
+        "running",
+        "agent",
+        "tooling",
+        "frontend",
+        "qa",
+        "headless",
+        "workflows",
+        "unable",
+        "expose",
+        "or",
+        "authenticated",
+        "playwright-mcp",
+        "maintained",
+        "by",
+        "team",
+        "at",
+        "56",
+        "published",
+        "versions",
+        "latest",
+        "released",
+        "2026-06-23",
+        "canonical",
+        "repository",
+        "browser-access",
+        "can-access-authenticated-pages",
+        "sensitive-permissions",
+        "an",
+        "control",
+        "real",
+        "debugging.",
+        "been",
+        "reviewed.",
+        "as",
+        "until",
+        "maintainer",
+        "verifies",
+        "install",
+        "behavior."
+      ]
+    },
+    {
       "id": "entry:ai-clarid-hmda",
       "kind": "registry-entry",
       "title": "Clarid HMDA Validator",
@@ -32448,6 +32578,142 @@
       ]
     },
     {
+      "id": "entry:nx-mcp",
+      "kind": "registry-entry",
+      "title": "Nx MCP",
+      "summary": "Nx MCP is Nrwl's monorepo MCP server for giving coding agents workspace graph navigation, affected-graph analysis, task discovery, and project configuration access in Nx monorepos.",
+      "url_path": "/entries/nx-mcp/",
+      "trust_tier": "promising",
+      "type": "mcp-server",
+      "score": 8,
+      "tags": [
+        "mcp",
+        "monorepo",
+        "nx",
+        "build-tooling",
+        "workspace"
+      ],
+      "use_cases": [
+        "Let agents navigate Nx workspace structure and dependencies",
+        "Let agents determine affected projects to run targeted tests after a change",
+        "Expose workspace task graph and project configurations"
+      ],
+      "best_for": [
+        "Coding agents working in Nx monorepos that benefit from workspace graph awareness",
+        "Targeted test execution using Nx affected graphs",
+        "Let agents navigate Nx workspace structure and dependencies",
+        "Let agents determine affected projects to run targeted tests after a change",
+        "Expose workspace task graph and project configurations",
+        "mcp workflows",
+        "monorepo workflows",
+        "nx workflows"
+      ],
+      "risk_flags": [
+        "command-execution",
+        "monorepo-awareness",
+        "sensitive-permissions"
+      ],
+      "source_urls": [
+        "https://github.com/nrwl/nx",
+        "https://www.npmjs.com/package/nx-mcp"
+      ],
+      "keywords": [
+        "nx",
+        "mcp",
+        "nx-mcp",
+        "mcp-server",
+        "is",
+        "nrwl",
+        "monorepo",
+        "server",
+        "giving",
+        "coding",
+        "agents",
+        "workspace",
+        "graph",
+        "navigation",
+        "affected-graph",
+        "analysis",
+        "task",
+        "discovery",
+        "configuration",
+        "access",
+        "in",
+        "monorepos.",
+        "https",
+        "//nx.dev",
+        "//github.com/nrwl/nx",
+        "promising",
+        "bot-reviewed",
+        "current",
+        "high",
+        "claude",
+        "desktop",
+        "cursor",
+        "vs",
+        "//www.npmjs.com/package/nx-mcp",
+        "command-execution",
+        "filesystem",
+        "network",
+        "build-tooling",
+        "let",
+        "navigate",
+        "structure",
+        "dependencies",
+        "determine",
+        "affected",
+        "to",
+        "run",
+        "targeted",
+        "tests",
+        "after",
+        "change",
+        "expose",
+        "configurations",
+        "working",
+        "monorepos",
+        "benefit",
+        "awareness",
+        "test",
+        "execution",
+        "using",
+        "graphs",
+        "workflows",
+        "single-package",
+        "or",
+        "non-nx",
+        "maintained",
+        "by",
+        "creators",
+        "50",
+        "published",
+        "versions",
+        "latest",
+        "released",
+        "2026-04-30",
+        "canonical",
+        "repository",
+        "monorepo-awareness",
+        "sensitive-permissions",
+        "an",
+        "agent",
+        "works",
+        "benefits",
+        "workspace-graph",
+        "editing",
+        "running",
+        "tasks.",
+        "been",
+        "reviewed.",
+        "as",
+        "until",
+        "maintainer",
+        "verifies",
+        "install",
+        "behavior."
+      ]
+    },
+    {
       "id": "entry:openai-codex-cli",
       "kind": "registry-entry",
       "title": "OpenAI Codex CLI",
@@ -35511,7 +35777,11 @@
       "entry:ai-bringyour-bringyour"
     ],
     "50": [
-      "entry:ai-gavelin-mcp"
+      "entry:ai-gavelin-mcp",
+      "entry:nx-mcp"
+    ],
+    "56": [
+      "entry:chrome-devtools-mcp"
     ],
     "70": [
       "entry:ai-baselight-baselight"
@@ -35994,6 +36264,9 @@
     "//github.com/ccromp/marcora-mcp": [
       "entry:ai-marketcore-mcp"
     ],
+    "//github.com/chromedevtools/chrome-devtools-mcp": [
+      "entry:chrome-devtools-mcp"
+    ],
     "//github.com/cirra-ai/mcp-server": [
       "entry:ai-cirra-salesforce-mcp"
     ],
@@ -36238,6 +36511,9 @@
     "//github.com/ninar-ctrl/ninar.ai": [
       "entry:ai-ninar-ninar"
     ],
+    "//github.com/nrwl/nx": [
+      "entry:nx-mcp"
+    ],
     "//github.com/nudg3-ai/nudg3-mcp": [
       "entry:ai-nudg3-brand-intelligence"
     ],
@@ -36445,6 +36721,9 @@
     ],
     "//nothumansearch.ai": [
       "entry:ai-nothumansearch-search"
+    ],
+    "//nx.dev": [
+      "entry:nx-mcp"
     ],
     "//obris.ai": [
       "entry:ai-obris-mcp"
@@ -37049,6 +37328,9 @@
       "entry:ast-grep",
       "entry:clude"
     ],
+    "//www.npmjs.com/package/chrome-devtools-mcp": [
+      "entry:chrome-devtools-mcp"
+    ],
     "//www.npmjs.com/package/excalibur": [
       "entry:excalibur-js"
     ],
@@ -37063,6 +37345,9 @@
     ],
     "//www.npmjs.com/package/matter-js": [
       "entry:matter-js"
+    ],
+    "//www.npmjs.com/package/nx-mcp": [
+      "entry:nx-mcp"
     ],
     "//www.npmjs.com/package/phaser": [
       "entry:phaser"
@@ -37146,6 +37431,12 @@
     ],
     "200+": [
       "entry:ai-bluenexus-universal-mcp"
+    ],
+    "2026-04-30": [
+      "entry:nx-mcp"
+    ],
+    "2026-06-23": [
+      "entry:chrome-devtools-mcp"
     ],
     "26-2": [
       "entry:ai-complyhat-compliance"
@@ -37699,9 +37990,11 @@
       "entry:ai-nothumansearch-search",
       "source:secure-mcp-distribution",
       "entry:sentry-mcp",
+      "entry:chrome-devtools-mcp",
       "entry:playwright-mcp",
       "entry:github-mcp-server",
       "entry:lunar-mcpx",
+      "entry:nx-mcp",
       "entry:anthropic-claude-code",
       "entry:opentabs",
       "entry:supabase-mcp",
@@ -37947,7 +38240,11 @@
       "prompt-pattern:visual-build"
     ],
     "affected": [
+      "entry:nx-mcp",
       "entry:codebase-memory-mcp"
+    ],
+    "affected-graph": [
+      "entry:nx-mcp"
     ],
     "affiliate-ready": [
       "entry:ai-buywhere-buywhere-mcp"
@@ -37960,6 +38257,7 @@
       "practice:observability-and-tracing",
       "prompt-pattern:eval-design",
       "prompt-pattern:ui-build",
+      "entry:nx-mcp",
       "entry:opentabs",
       "entry:roo-code",
       "entry:kaimo"
@@ -38072,6 +38370,7 @@
       "prompt-pattern:visual-polish-review",
       "entry:agentops",
       "entry:babylon-js",
+      "entry:chrome-devtools-mcp",
       "entry:continue-dev",
       "entry:kaplay",
       "entry:microsoft-mcp-gateway",
@@ -38087,6 +38386,7 @@
       "entry:langsmith",
       "entry:lunar-mcpx",
       "entry:mem0",
+      "entry:nx-mcp",
       "entry:openai-codex-cli",
       "entry:qdrant-mcp-server",
       "entry:stripe-agent-toolkit",
@@ -38677,6 +38977,7 @@
       "entry:ai-mino-web-agent",
       "entry:agentops",
       "entry:ai-artidrop-artidrop",
+      "entry:chrome-devtools-mcp",
       "entry:ai-clarid-hmda",
       "entry:firecrawl-mcp",
       "entry:ai-com-mcp-linkedin",
@@ -38693,6 +38994,7 @@
       "entry:knip",
       "entry:letta",
       "entry:mem0",
+      "entry:nx-mcp",
       "entry:openai-codex-cli",
       "entry:qdrant-mcp-server",
       "entry:stripe-agent-toolkit",
@@ -39679,6 +39981,7 @@
       "entry:ai-artidrop-artidrop",
       "entry:aider",
       "entry:babylon-js",
+      "entry:chrome-devtools-mcp",
       "entry:ai-clarid-hmda",
       "entry:continue-dev",
       "entry:kaplay",
@@ -39693,6 +39996,7 @@
       "entry:letta",
       "entry:lunar-mcpx",
       "entry:mem0",
+      "entry:nx-mcp",
       "entry:openai-codex-cli",
       "entry:swe-agent",
       "entry:github-copilot-coding-agent",
@@ -39710,7 +40014,8 @@
       "entry:agency-lona-trading",
       "entry:ai-complyme-mcp-mcp",
       "entry:ai-aarna-atars-mcp",
-      "prompt-pattern:zero-trust-gateway-roadmap"
+      "prompt-pattern:zero-trust-gateway-roadmap",
+      "entry:nx-mcp"
     ],
     "analyst": [
       "entry:ai-myriade-myriade"
@@ -40354,6 +40659,7 @@
       "entry:ai-artidrop-artidrop",
       "entry:aider",
       "entry:babylon-js",
+      "entry:chrome-devtools-mcp",
       "entry:ai-clarid-hmda",
       "entry:continue-dev",
       "entry:excalibur-js",
@@ -40380,6 +40686,7 @@
       "entry:letta",
       "entry:lunar-mcpx",
       "entry:mem0",
+      "entry:nx-mcp",
       "entry:openai-codex-cli",
       "entry:qdrant-mcp-server",
       "entry:stripe-agent-toolkit",
@@ -40521,7 +40828,8 @@
       "practice:mcp-gateway-tool-routing",
       "practice:zero-trust-agent-gateway",
       "entry:ai-klavis-strata",
-      "prompt-pattern:visual-build"
+      "prompt-pattern:visual-build",
+      "entry:chrome-devtools-mcp"
     ],
     "atars": [
       "entry:ai-aarna-atars-mcp"
@@ -40613,6 +40921,7 @@
       "entry:lunar-mcpx"
     ],
     "authenticated": [
+      "entry:chrome-devtools-mcp",
       "entry:opentabs"
     ],
     "authenticated-browser-session": [
@@ -40634,6 +40943,7 @@
     ],
     "automate": [
       "entry:crewai",
+      "entry:chrome-devtools-mcp",
       "entry:playwright-mcp",
       "entry:github-mcp-server"
     ],
@@ -40648,6 +40958,7 @@
     "automation": [
       "source:browser-and-ui-verification",
       "entry:ai-imboard-dossier",
+      "entry:chrome-devtools-mcp",
       "entry:playwright-mcp",
       "entry:browserbase-mcp",
       "entry:openai-codex-cli"
@@ -40714,7 +41025,8 @@
       "prompt-pattern:memory-policy"
     ],
     "awareness": [
-      "entry:ai-nefesh-human-state"
+      "entry:ai-nefesh-human-state",
+      "entry:nx-mcp"
     ],
     "awkward": [
       "visual-qa-protocol:vnem-visual-qa-protocol"
@@ -41042,6 +41354,7 @@
       "entry:ai-artidrop-artidrop",
       "entry:aider",
       "entry:babylon-js",
+      "entry:chrome-devtools-mcp",
       "entry:ai-clarid-hmda",
       "entry:continue-dev",
       "entry:excalibur-js",
@@ -41070,6 +41383,7 @@
       "entry:letta",
       "entry:lunar-mcpx",
       "entry:mem0",
+      "entry:nx-mcp",
       "entry:openai-codex-cli",
       "entry:qdrant-mcp-server",
       "entry:stripe-agent-toolkit",
@@ -41462,6 +41776,7 @@
       "entry:ai-artidrop-artidrop",
       "entry:aider",
       "entry:babylon-js",
+      "entry:chrome-devtools-mcp",
       "entry:ai-clarid-hmda",
       "entry:continue-dev",
       "entry:excalibur-js",
@@ -41488,6 +41803,7 @@
       "entry:letta",
       "entry:lunar-mcpx",
       "entry:mem0",
+      "entry:nx-mcp",
       "entry:openai-codex-cli",
       "entry:qdrant-mcp-server",
       "entry:stripe-agent-toolkit",
@@ -41556,12 +41872,14 @@
       "entry:babylon-js",
       "entry:excalibur-js",
       "entry:playcanvas-engine",
+      "entry:nx-mcp",
       "entry:anthropic-claude-code"
     ],
     "benefits": [
       "entry:anthropic-multi-agent-research-system",
       "prompt-pattern:subagent-delegation",
-      "entry:graphiti"
+      "entry:graphiti",
+      "entry:nx-mcp"
     ],
     "bento": [
       "practice:visual-experience",
@@ -41858,9 +42176,11 @@
       "entry:ai-com-mcp-petstore",
       "entry:ai-mino-web-agent",
       "entry:ai-artidrop-artidrop",
+      "entry:chrome-devtools-mcp",
       "entry:ai-clarid-hmda",
       "entry:ai-com-mcp-linkedin",
-      "entry:ai-moxt-mcp-workspace"
+      "entry:ai-moxt-mcp-workspace",
+      "entry:nx-mcp"
     ],
     "boundaries": [
       "practice:model-and-provider-selection",
@@ -41964,6 +42284,7 @@
       "prompt-pattern:mcp-selection",
       "prompt-pattern:visual-build",
       "entry:babylon-js",
+      "entry:chrome-devtools-mcp",
       "entry:excalibur-js",
       "entry:kaplay",
       "entry:phaser",
@@ -41980,6 +42301,7 @@
       "entry:custom-modes-roo-code"
     ],
     "browser-access": [
+      "entry:chrome-devtools-mcp",
       "entry:playwright-mcp",
       "entry:browserbase-mcp",
       "entry:openhands",
@@ -42111,6 +42433,9 @@
       "entry:zep",
       "entry:custom-modes-roo-code"
     ],
+    "build-tooling": [
+      "entry:nx-mcp"
+    ],
     "build/review/debug": [
       "operating-protocol:vnem-operating-loop"
     ],
@@ -42203,9 +42528,11 @@
       "entry:ai-com-mcp-strava",
       "prompt-pattern:mcp-selection",
       "entry:ai-com-mcp-petstore",
+      "entry:chrome-devtools-mcp",
       "entry:ai-com-mcp-linkedin",
       "entry:phaser",
       "entry:lunar-mcpx",
+      "entry:nx-mcp",
       "entry:qdrant-mcp-server"
     ],
     "byom": [
@@ -42296,6 +42623,7 @@
       "entry:ai-adramp-google-ads"
     ],
     "can-access-authenticated-pages": [
+      "entry:chrome-devtools-mcp",
       "entry:playwright-mcp",
       "entry:browserbase-mcp"
     ],
@@ -42676,6 +43004,7 @@
       "entry:agentops",
       "entry:aider",
       "entry:babylon-js",
+      "entry:chrome-devtools-mcp",
       "entry:continue-dev",
       "entry:excalibur-js",
       "entry:firecrawl-mcp",
@@ -42701,6 +43030,7 @@
       "entry:letta",
       "entry:lunar-mcpx",
       "entry:mem0",
+      "entry:nx-mcp",
       "entry:openai-codex-cli",
       "entry:qdrant-mcp-server",
       "entry:stripe-agent-toolkit",
@@ -42780,7 +43110,8 @@
       "task-rubric:frontend_ui",
       "practice:research-source-intake",
       "practice:observability-and-tracing",
-      "prompt-pattern:visual-build"
+      "prompt-pattern:visual-build",
+      "entry:chrome-devtools-mcp"
     ],
     "captures": [
       "entry:ast-grep"
@@ -42872,7 +43203,8 @@
       "task-rubric:docs_prompt",
       "prompt-pattern:code-simplification",
       "prompt-pattern:codex-implementation",
-      "prompt-pattern:prompt-enhancement"
+      "prompt-pattern:prompt-enhancement",
+      "entry:nx-mcp"
     ],
     "change.": [
       "practice:code-simplification",
@@ -43067,7 +43399,11 @@
       "task-rubric:interactive_canvas"
     ],
     "chrome": [
+      "entry:chrome-devtools-mcp",
       "entry:opentabs"
+    ],
+    "chrome-devtools-mcp": [
+      "entry:chrome-devtools-mcp"
     ],
     "chrome-extension": [
       "entry:opentabs"
@@ -43305,6 +43641,7 @@
       "entry:sentry-mcp",
       "entry:ai-mino-web-agent",
       "entry:ai-artidrop-artidrop",
+      "entry:chrome-devtools-mcp",
       "entry:ai-clarid-hmda",
       "entry:firecrawl-mcp",
       "entry:ai-com-mcp-linkedin",
@@ -43315,6 +43652,7 @@
       "entry:claude-code-subagents",
       "entry:github-mcp-server",
       "entry:lunar-mcpx",
+      "entry:nx-mcp",
       "entry:qdrant-mcp-server",
       "entry:stripe-agent-toolkit",
       "entry:anthropic-claude-code",
@@ -43586,11 +43924,13 @@
       "prompt-pattern:prompt-enhancement",
       "entry:sentry-mcp",
       "entry:aider",
+      "entry:chrome-devtools-mcp",
       "entry:continue-dev",
       "entry:playwright-mcp",
       "entry:ripgrep",
       "entry:claude-code-memory",
       "entry:claude-code-subagents",
+      "entry:nx-mcp",
       "entry:openai-codex-cli",
       "entry:swe-agent",
       "entry:github-copilot-coding-agent",
@@ -43705,6 +44045,9 @@
       "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:openai-codex-cli",
       "entry:anthropic-claude-code"
+    ],
+    "command-execution": [
+      "entry:nx-mcp"
     ],
     "command-line": [
       "entry:ripgrep"
@@ -44104,12 +44447,14 @@
     "configuration": [
       "source:coding-agent-clients",
       "entry:continue-dev",
-      "entry:lunar-mcpx"
+      "entry:lunar-mcpx",
+      "entry:nx-mcp"
     ],
     "configuration.": [
       "entry:roo-code"
     ],
     "configurations": [
+      "entry:nx-mcp",
       "entry:custom-modes-roo-code",
       "entry:covenant-research"
     ],
@@ -44178,6 +44523,9 @@
     ],
     "considered": [
       "task-rubric:security_sensitive"
+    ],
+    "console": [
+      "entry:chrome-devtools-mcp"
     ],
     "consolidating": [
       "entry:clude"
@@ -44361,7 +44709,11 @@
       "prompt-pattern:code-simplification",
       "entry:ai-gossiper-shopify-admin-mcp",
       "entry:aider",
+      "entry:chrome-devtools-mcp",
       "entry:cline"
+    ],
+    "control.": [
+      "entry:chrome-devtools-mcp"
     ],
     "controlled": [
       "entry:swe-agent"
@@ -44552,6 +44904,9 @@
     ],
     "creatives": [
       "entry:ai-adweave-meta-ads-mcp"
+    ],
+    "creators": [
+      "entry:nx-mcp"
     ],
     "creators.": [
       "entry:ai-com-mcp-lenny-rachitsky-podcast"
@@ -44896,6 +45251,7 @@
       "entry:ai-artidrop-artidrop",
       "entry:aider",
       "entry:babylon-js",
+      "entry:chrome-devtools-mcp",
       "entry:ai-clarid-hmda",
       "entry:continue-dev",
       "entry:excalibur-js",
@@ -44924,6 +45280,7 @@
       "entry:letta",
       "entry:lunar-mcpx",
       "entry:mem0",
+      "entry:nx-mcp",
       "entry:openai-codex-cli",
       "entry:qdrant-mcp-server",
       "entry:stripe-agent-toolkit",
@@ -45104,6 +45461,7 @@
       "entry:sentry-mcp",
       "entry:ai-mino-web-agent",
       "entry:ai-artidrop-artidrop",
+      "entry:chrome-devtools-mcp",
       "entry:ai-clarid-hmda",
       "entry:firecrawl-mcp",
       "entry:ai-com-mcp-linkedin",
@@ -45112,6 +45470,7 @@
       "entry:browserbase-mcp",
       "entry:github-mcp-server",
       "entry:lunar-mcpx",
+      "entry:nx-mcp",
       "entry:clude",
       "entry:codebase-memory-mcp",
       "entry:cursor-agent",
@@ -45529,6 +45888,7 @@
       "entry:arize-phoenix",
       "prompt-pattern:bug-debug",
       "entry:agentops",
+      "entry:chrome-devtools-mcp",
       "entry:openhands",
       "entry:roo-code"
     ],
@@ -45537,9 +45897,13 @@
       "entry:arize-phoenix",
       "prompt-pattern:bug-debug",
       "entry:sentry-mcp",
+      "entry:chrome-devtools-mcp",
       "entry:playwright-mcp",
       "entry:langsmith",
       "entry:roo-code"
+    ],
+    "debugging.": [
+      "entry:chrome-devtools-mcp"
     ],
     "decaying": [
       "entry:clude"
@@ -45723,7 +46087,8 @@
       "entry:vnem-mcp",
       "prompt-pattern:code-simplification",
       "prompt-pattern:codex-implementation",
-      "entry:knip"
+      "entry:knip",
+      "entry:nx-mcp"
     ],
     "dependencies.": [
       "visual-qa-protocol:vnem-visual-qa-protocol"
@@ -46002,6 +46367,7 @@
       "entry:ai-mino-web-agent",
       "prompt-pattern:visual-build",
       "entry:ai-artidrop-artidrop",
+      "entry:chrome-devtools-mcp",
       "entry:ai-clarid-hmda",
       "entry:firecrawl-mcp",
       "entry:ai-com-mcp-linkedin",
@@ -46011,6 +46377,7 @@
       "entry:browserbase-mcp",
       "entry:github-mcp-server",
       "entry:lunar-mcpx",
+      "entry:nx-mcp",
       "entry:qdrant-mcp-server",
       "entry:stripe-agent-toolkit",
       "entry:clude",
@@ -46048,7 +46415,8 @@
       "entry:jscpd"
     ],
     "determine": [
-      "entry:openai-prompt-engineering-guide"
+      "entry:openai-prompt-engineering-guide",
+      "entry:nx-mcp"
     ],
     "determinism": [
       "practice:browser-games"
@@ -46081,6 +46449,9 @@
     ],
     "device/performance/polish": [
       "task-rubric:interactive_canvas"
+    ],
+    "devtools": [
+      "entry:chrome-devtools-mcp"
     ],
     "diagnose": [
       "task-rubric:backend_api"
@@ -46329,6 +46700,7 @@
       "entry:graphiti",
       "entry:lunar-mcpx",
       "entry:mem0",
+      "entry:nx-mcp",
       "entry:swe-agent",
       "entry:github-copilot-coding-agent",
       "entry:openhands"
@@ -46521,6 +46893,9 @@
       "prompt-pattern:mcp-gateway-evaluation",
       "prompt-pattern:source-intake"
     ],
+    "dom/network": [
+      "entry:chrome-devtools-mcp"
+    ],
     "domain": [
       "entry:jscpd",
       "entry:custom-modes-roo-code"
@@ -46695,6 +47070,7 @@
       "practice:model-and-provider-selection",
       "task-rubric:agent_tooling",
       "practice:code-review",
+      "entry:nx-mcp",
       "entry:openai-codex-cli",
       "entry:swe-agent",
       "entry:openhands"
@@ -47202,6 +47578,7 @@
       "practice:human-approval-and-durability",
       "entry:langgraph",
       "prompt-pattern:zero-trust-gateway-roadmap",
+      "entry:nx-mcp",
       "entry:openai-codex-cli",
       "entry:swarms",
       "entry:anthropic-claude-code",
@@ -47353,6 +47730,8 @@
       "practice:backend",
       "practice:data",
       "practice:evals",
+      "entry:chrome-devtools-mcp",
+      "entry:nx-mcp",
       "entry:opentabs",
       "entry:mcp-server-mysql"
     ],
@@ -48078,6 +48457,7 @@
       "prompt-pattern:mcp-selection",
       "entry:ai-artidrop-artidrop",
       "entry:aider",
+      "entry:chrome-devtools-mcp",
       "entry:ai-clarid-hmda",
       "entry:continue-dev",
       "entry:ai-com-mcp-linkedin",
@@ -48090,6 +48470,7 @@
       "entry:claude-code-subagents",
       "entry:jscpd",
       "entry:knip",
+      "entry:nx-mcp",
       "entry:openai-codex-cli",
       "entry:swe-agent",
       "entry:openhands",
@@ -48425,6 +48806,7 @@
       "task-rubric:frontend_ui",
       "practice:frontend",
       "prompt-pattern:ui-build",
+      "entry:chrome-devtools-mcp",
       "entry:playwright-mcp"
     ],
     "frontend-heavy": [
@@ -48759,8 +49141,10 @@
     ],
     "giving": [
       "task-rubric:agent_tooling",
+      "entry:chrome-devtools-mcp",
       "entry:playwright-mcp",
-      "entry:jscpd"
+      "entry:jscpd",
+      "entry:nx-mcp"
     ],
     "glass/depth": [
       "source:ui-architecture-sources"
@@ -48808,7 +49192,8 @@
       "entry:google-agent-development-kit",
       "entry:ai-calendarmcp-server",
       "entry:ai-adramp-google-ads",
-      "entry:ai-linkguard-linkguard-mcp"
+      "entry:ai-linkguard-linkguard-mcp",
+      "entry:chrome-devtools-mcp"
     ],
     "google-agent-development-kit": [
       "entry:google-agent-development-kit"
@@ -48869,6 +49254,7 @@
       "entry:langgraph",
       "entry:openai-agents-sdk",
       "entry:ripgrep",
+      "entry:nx-mcp",
       "entry:swarms",
       "entry:zep",
       "entry:codebase-memory-mcp"
@@ -48891,6 +49277,7 @@
     "graphs": [
       "entry:ai-fodda-mcp-server",
       "entry:graphiti",
+      "entry:nx-mcp",
       "entry:zep"
     ],
     "grayscale": [
@@ -49256,6 +49643,9 @@
     "hdp": [
       "entry:ai-helixar-mcp"
     ],
+    "headless": [
+      "entry:chrome-devtools-mcp"
+    ],
     "headlines": [
       "entry:ai-newzai-api-newzai",
       "entry:ai-newzai-api-news-mcp"
@@ -49357,6 +49747,7 @@
       "entry:letta",
       "entry:lunar-mcpx",
       "entry:mem0",
+      "entry:nx-mcp",
       "entry:openai-codex-cli",
       "entry:swe-agent",
       "entry:openhands",
@@ -49688,6 +50079,7 @@
       "entry:ai-artidrop-artidrop",
       "entry:aider",
       "entry:babylon-js",
+      "entry:chrome-devtools-mcp",
       "entry:ai-clarid-hmda",
       "entry:continue-dev",
       "entry:excalibur-js",
@@ -49716,6 +50108,7 @@
       "entry:letta",
       "entry:lunar-mcpx",
       "entry:mem0",
+      "entry:nx-mcp",
       "entry:openai-codex-cli",
       "entry:qdrant-mcp-server",
       "entry:stripe-agent-toolkit",
@@ -50109,6 +50502,7 @@
       "entry:three-js",
       "entry:jscpd",
       "entry:letta",
+      "entry:nx-mcp",
       "entry:qdrant-mcp-server",
       "entry:swe-agent",
       "entry:github-copilot-coding-agent",
@@ -50284,6 +50678,7 @@
       "prompt-pattern:bug-debug",
       "prompt-pattern:visual-build",
       "prompt-pattern:visual-polish-review",
+      "entry:chrome-devtools-mcp",
       "entry:playwright-mcp",
       "entry:browserbase-mcp",
       "entry:github-mcp-server",
@@ -50309,6 +50704,7 @@
     ],
     "inspection": [
       "visual-qa-protocol:vnem-visual-qa-protocol",
+      "entry:chrome-devtools-mcp",
       "entry:playwright-mcp",
       "entry:supabase-mcp"
     ],
@@ -50501,6 +50897,7 @@
       "entry:ai-artidrop-artidrop",
       "entry:aider",
       "entry:babylon-js",
+      "entry:chrome-devtools-mcp",
       "entry:ai-clarid-hmda",
       "entry:continue-dev",
       "entry:excalibur-js",
@@ -50529,6 +50926,7 @@
       "entry:letta",
       "entry:lunar-mcpx",
       "entry:mem0",
+      "entry:nx-mcp",
       "entry:openai-codex-cli",
       "entry:qdrant-mcp-server",
       "entry:stripe-agent-toolkit",
@@ -51000,6 +51398,7 @@
       "entry:ai-artidrop-artidrop",
       "entry:aider",
       "entry:babylon-js",
+      "entry:chrome-devtools-mcp",
       "entry:ai-clarid-hmda",
       "entry:continue-dev",
       "entry:excalibur-js",
@@ -51024,6 +51423,7 @@
       "entry:letta",
       "entry:lunar-mcpx",
       "entry:mem0",
+      "entry:nx-mcp",
       "entry:openai-codex-cli",
       "entry:qdrant-mcp-server",
       "entry:stripe-agent-toolkit",
@@ -51445,6 +51845,10 @@
     "later": [
       "practice:search"
     ],
+    "latest": [
+      "entry:chrome-devtools-mcp",
+      "entry:nx-mcp"
+    ],
     "latest-version": [
       "entry:ai-abmeter-abmeter",
       "entry:ac-tandem-docs-mcp",
@@ -51683,6 +52087,7 @@
       "entry:ai-law-lawyer-search",
       "entry:sentry-mcp",
       "entry:ai-artidrop-artidrop",
+      "entry:chrome-devtools-mcp",
       "entry:ai-clarid-hmda",
       "entry:firecrawl-mcp",
       "entry:ai-com-mcp-linkedin",
@@ -51690,6 +52095,7 @@
       "entry:playwright-mcp",
       "entry:browserbase-mcp",
       "entry:github-mcp-server",
+      "entry:nx-mcp",
       "entry:openai-codex-cli",
       "entry:stripe-agent-toolkit",
       "entry:anthropic-claude-code",
@@ -52173,7 +52579,8 @@
       "entry:ai-arclan-registry",
       "entry:ai-boolsai-scan",
       "entry:ai-agenticshelf-graffeo",
-      "entry:langfuse"
+      "entry:langfuse",
+      "entry:chrome-devtools-mcp"
     ],
     "llama": [
       "entry:ai-auxen-auxen"
@@ -52300,6 +52707,7 @@
       "practice:deployment",
       "entry:inspect-ai",
       "prompt-pattern:mcp-gateway-evaluation",
+      "entry:chrome-devtools-mcp",
       "entry:opentabs",
       "entry:supabase-mcp"
     ],
@@ -52407,7 +52815,9 @@
     ],
     "maintained": [
       "practice:research-source-intake",
+      "entry:chrome-devtools-mcp",
       "entry:phaser",
+      "entry:nx-mcp",
       "entry:openai-swarm"
     ],
     "maintainer": [
@@ -52582,6 +52992,7 @@
       "entry:ai-artidrop-artidrop",
       "entry:aider",
       "entry:babylon-js",
+      "entry:chrome-devtools-mcp",
       "entry:ai-clarid-hmda",
       "entry:continue-dev",
       "entry:excalibur-js",
@@ -52608,6 +53019,7 @@
       "entry:letta",
       "entry:lunar-mcpx",
       "entry:mem0",
+      "entry:nx-mcp",
       "entry:openai-codex-cli",
       "entry:qdrant-mcp-server",
       "entry:stripe-agent-toolkit",
@@ -53100,6 +53512,7 @@
       "entry:ai-mino-web-agent",
       "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:ai-artidrop-artidrop",
+      "entry:chrome-devtools-mcp",
       "entry:ai-clarid-hmda",
       "entry:firecrawl-mcp",
       "entry:ai-com-mcp-linkedin",
@@ -53109,6 +53522,7 @@
       "entry:browserbase-mcp",
       "entry:github-mcp-server",
       "entry:lunar-mcpx",
+      "entry:nx-mcp",
       "entry:qdrant-mcp-server",
       "entry:stripe-agent-toolkit",
       "entry:swarms",
@@ -53286,6 +53700,7 @@
       "entry:sentry-mcp",
       "entry:ai-mino-web-agent",
       "entry:ai-artidrop-artidrop",
+      "entry:chrome-devtools-mcp",
       "entry:ai-clarid-hmda",
       "entry:firecrawl-mcp",
       "entry:ai-com-mcp-linkedin",
@@ -53293,6 +53708,7 @@
       "entry:playwright-mcp",
       "entry:browserbase-mcp",
       "entry:github-mcp-server",
+      "entry:nx-mcp",
       "entry:qdrant-mcp-server",
       "entry:codebase-memory-mcp",
       "entry:opentabs",
@@ -53716,6 +54132,18 @@
       "entry:ai-agentic-news-mcp",
       "entry:langsmith"
     ],
+    "monorepo": [
+      "entry:nx-mcp"
+    ],
+    "monorepo-awareness": [
+      "entry:nx-mcp"
+    ],
+    "monorepos": [
+      "entry:nx-mcp"
+    ],
+    "monorepos.": [
+      "entry:nx-mcp"
+    ],
     "month-end": [
       "entry:ai-31st-mcp"
     ],
@@ -53920,13 +54348,15 @@
       "entry:ai-kubit-mcp-server"
     ],
     "navigate": [
-      "entry:ai-mino-web-agent"
+      "entry:ai-mino-web-agent",
+      "entry:nx-mcp"
     ],
     "navigating": [
       "entry:cursor-agent"
     ],
     "navigation": [
-      "entry:browserbase-mcp"
+      "entry:browserbase-mcp",
+      "entry:nx-mcp"
     ],
     "ncua": [
       "entry:ai-clarid-compliance"
@@ -54190,6 +54620,7 @@
       "entry:agentops",
       "entry:ai-artidrop-artidrop",
       "entry:aider",
+      "entry:chrome-devtools-mcp",
       "entry:ai-clarid-hmda",
       "entry:continue-dev",
       "entry:firecrawl-mcp",
@@ -54205,6 +54636,7 @@
       "entry:letta",
       "entry:lunar-mcpx",
       "entry:mem0",
+      "entry:nx-mcp",
       "entry:openai-codex-cli",
       "entry:qdrant-mcp-server",
       "entry:stripe-agent-toolkit",
@@ -54402,6 +54834,9 @@
     "non-javascript": [
       "entry:knip"
     ],
+    "non-nx": [
+      "entry:nx-mcp"
+    ],
     "nonblank": [
       "task-rubric:interactive_canvas"
     ],
@@ -54512,11 +54947,20 @@
       "entry:knip",
       "entry:clude"
     ],
+    "nrwl": [
+      "entry:nx-mcp"
+    ],
     "nudg3": [
       "entry:ai-nudg3-brand-intelligence"
     ],
     "number": [
       "entry:kaplay"
+    ],
+    "nx": [
+      "entry:nx-mcp"
+    ],
+    "nx-mcp": [
+      "entry:nx-mcp"
     ],
     "oauth": [
       "source:coding-agent-clients",
@@ -55367,6 +55811,7 @@
       "entry:ai-artidrop-artidrop",
       "entry:aider",
       "entry:babylon-js",
+      "entry:chrome-devtools-mcp",
       "entry:ai-clarid-hmda",
       "entry:continue-dev",
       "entry:excalibur-js",
@@ -55393,6 +55838,7 @@
       "entry:letta",
       "entry:lunar-mcpx",
       "entry:mem0",
+      "entry:nx-mcp",
       "entry:openai-codex-cli",
       "entry:qdrant-mcp-server",
       "entry:stripe-agent-toolkit",
@@ -55655,6 +56101,7 @@
     ],
     "pages": [
       "source:browser-and-ui-verification",
+      "entry:chrome-devtools-mcp",
       "entry:playwright-mcp"
     ],
     "paid": [
@@ -56386,6 +56833,7 @@
       "entry:browserbase-mcp"
     ],
     "playwright-mcp": [
+      "entry:chrome-devtools-mcp",
       "entry:playwright-mcp"
     ],
     "pleasant": [
@@ -57058,6 +57506,7 @@
       "entry:ai-artidrop-artidrop",
       "entry:aider",
       "entry:babylon-js",
+      "entry:chrome-devtools-mcp",
       "entry:ai-clarid-hmda",
       "entry:continue-dev",
       "entry:excalibur-js",
@@ -57084,6 +57533,7 @@
       "entry:letta",
       "entry:lunar-mcpx",
       "entry:mem0",
+      "entry:nx-mcp",
       "entry:openai-codex-cli",
       "entry:qdrant-mcp-server",
       "entry:stripe-agent-toolkit",
@@ -57244,7 +57694,8 @@
       "operating-protocol:vnem-operating-loop",
       "entry:google-agent2agent-protocol",
       "practice:mcp-server-selection",
-      "entry:model-context-protocol"
+      "entry:model-context-protocol",
+      "entry:chrome-devtools-mcp"
     ],
     "protocol-registry": [
       "source:mcp-core-and-registry"
@@ -57378,7 +57829,9 @@
       "entry:ai-com-mcp-linkedin"
     ],
     "published": [
-      "source:mcp-core-and-registry"
+      "source:mcp-core-and-registry",
+      "entry:chrome-devtools-mcp",
+      "entry:nx-mcp"
     ],
     "publishing": [
       "entry:ai-auteng-docs",
@@ -57460,6 +57913,7 @@
     ],
     "qa": [
       "visual-qa-protocol:vnem-visual-qa-protocol",
+      "entry:chrome-devtools-mcp",
       "entry:playwright-mcp",
       "entry:browserbase-mcp"
     ],
@@ -57700,6 +58154,7 @@
       "practice:evals",
       "entry:ai-fathom-api-mcp",
       "prompt-pattern:code-review",
+      "entry:chrome-devtools-mcp",
       "entry:playwright-mcp"
     ],
     "real-browser": [
@@ -57955,6 +58410,10 @@
       "entry:kaplay",
       "entry:pixijs",
       "entry:codebase-memory-mcp"
+    ],
+    "released": [
+      "entry:chrome-devtools-mcp",
+      "entry:nx-mcp"
     ],
     "releases.": [
       "entry:ai-helixar-mcp",
@@ -58326,6 +58785,7 @@
       "entry:agentops",
       "entry:aider",
       "entry:babylon-js",
+      "entry:chrome-devtools-mcp",
       "entry:continue-dev",
       "entry:excalibur-js",
       "entry:firecrawl-mcp",
@@ -58349,6 +58809,7 @@
       "entry:letta",
       "entry:lunar-mcpx",
       "entry:mem0",
+      "entry:nx-mcp",
       "entry:openai-codex-cli",
       "entry:qdrant-mcp-server",
       "entry:stripe-agent-toolkit",
@@ -58417,6 +58878,7 @@
     ],
     "requests": [
       "practice:coding-agents",
+      "entry:chrome-devtools-mcp",
       "entry:github-mcp-server",
       "entry:github-copilot-coding-agent"
     ],
@@ -58894,6 +59356,7 @@
       "entry:ai-artidrop-artidrop",
       "entry:aider",
       "entry:babylon-js",
+      "entry:chrome-devtools-mcp",
       "entry:ai-clarid-hmda",
       "entry:continue-dev",
       "entry:excalibur-js",
@@ -58922,6 +59385,7 @@
       "entry:letta",
       "entry:lunar-mcpx",
       "entry:mem0",
+      "entry:nx-mcp",
       "entry:openai-codex-cli",
       "entry:qdrant-mcp-server",
       "entry:stripe-agent-toolkit",
@@ -59281,6 +59745,7 @@
       "entry:promptfoo",
       "entry:ugrep",
       "entry:browserbase-mcp",
+      "entry:nx-mcp",
       "entry:openai-codex-cli",
       "entry:openhands",
       "entry:cline",
@@ -59292,6 +59757,8 @@
     ],
     "running": [
       "entry:vnem-mcp",
+      "entry:chrome-devtools-mcp",
+      "entry:nx-mcp",
       "entry:openai-codex-cli",
       "entry:cursor-agent"
     ],
@@ -59583,6 +60050,7 @@
       "practice:evals",
       "prompt-pattern:ui-build",
       "prompt-pattern:visual-polish-review",
+      "entry:chrome-devtools-mcp",
       "entry:browserbase-mcp"
     ],
     "screenshots.": [
@@ -60013,6 +60481,7 @@
       "entry:ai-artidrop-artidrop",
       "entry:aider",
       "entry:babylon-js",
+      "entry:chrome-devtools-mcp",
       "entry:ai-clarid-hmda",
       "entry:continue-dev",
       "entry:excalibur-js",
@@ -60037,6 +60506,7 @@
       "entry:knip",
       "entry:letta",
       "entry:mem0",
+      "entry:nx-mcp",
       "entry:openai-codex-cli",
       "entry:qdrant-mcp-server",
       "entry:stripe-agent-toolkit",
@@ -60268,6 +60738,7 @@
       "prompt-pattern:source-intake",
       "entry:ai-mino-web-agent",
       "entry:ai-artidrop-artidrop",
+      "entry:chrome-devtools-mcp",
       "entry:ai-clarid-hmda",
       "entry:ai-com-mcp-linkedin",
       "entry:microsoft-mcp-gateway",
@@ -60276,6 +60747,7 @@
       "entry:github-mcp-server",
       "entry:letta",
       "entry:lunar-mcpx",
+      "entry:nx-mcp",
       "entry:qdrant-mcp-server",
       "entry:clude",
       "entry:codebase-memory-mcp",
@@ -60349,6 +60821,7 @@
       "entry:ai-meminal-meminal",
       "entry:ai-donethat-donethat",
       "entry:agentops",
+      "entry:chrome-devtools-mcp",
       "entry:browserbase-mcp",
       "entry:claude-code-memory",
       "entry:mem0",
@@ -60614,6 +61087,9 @@
     "single-agent": [
       "practice:observability-and-tracing",
       "entry:swarms"
+    ],
+    "single-package": [
+      "entry:nx-mcp"
     ],
     "site": [
       "entry:ai-boolsai-directory",
@@ -61173,7 +61649,8 @@
       "practice:prompt-engineering",
       "entry:excalibur-js",
       "entry:phaser",
-      "entry:pixijs"
+      "entry:pixijs",
+      "entry:nx-mcp"
     ],
     "structure.": [
       "entry:excalibur-js"
@@ -61189,6 +61666,7 @@
       "entry:ai-haymon-database",
       "entry:ai-haymon-dbmcp",
       "entry:ai-com-mcp-lenny-rachitsky-podcast",
+      "entry:chrome-devtools-mcp",
       "entry:excalibur-js",
       "entry:firecrawl-mcp",
       "entry:phaser",
@@ -61626,6 +62104,7 @@
       "entry:babylon-js"
     ],
     "targeted": [
+      "entry:nx-mcp",
       "entry:codebase-memory-mcp"
     ],
     "task": [
@@ -61645,6 +62124,7 @@
       "prompt-pattern:memory-policy",
       "prompt-pattern:subagent-delegation",
       "entry:claude-code-memory",
+      "entry:nx-mcp",
       "entry:swarms"
     ],
     "task-scoped": [
@@ -61678,7 +62158,8 @@
     "tasks.": [
       "entry:anthropic-multi-agent-research-system",
       "entry:inspect-ai",
-      "entry:claude-code-subagents"
+      "entry:claude-code-subagents",
+      "entry:nx-mcp"
     ],
     "taste": [
       "task-rubric:aesthetic_experience"
@@ -61699,6 +62180,7 @@
       "practice:subagents-and-multi-agent",
       "prompt-pattern:mcp-gateway-evaluation",
       "source:secure-mcp-distribution",
+      "entry:chrome-devtools-mcp",
       "entry:continue-dev",
       "entry:swarms",
       "entry:anthropic-claude-code",
@@ -61809,7 +62291,8 @@
       "entry:matter-js",
       "prompt-pattern:source-intake",
       "entry:playwright-mcp",
-      "entry:claude-code-subagents"
+      "entry:claude-code-subagents",
+      "entry:nx-mcp"
     ],
     "test-mode": [
       "entry:stripe-agent-toolkit"
@@ -61858,6 +62341,7 @@
       "prompt-pattern:codex-implementation",
       "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:jscpd",
+      "entry:nx-mcp",
       "entry:openai-codex-cli"
     ],
     "tests.": [
@@ -61992,6 +62476,7 @@
       "entry:vnem-mcp",
       "entry:ai-myriade-myriade",
       "prompt-pattern:visual-build",
+      "entry:chrome-devtools-mcp",
       "entry:firecrawl-mcp",
       "entry:microsoft-mcp-gateway",
       "entry:playwright-mcp",
@@ -62113,6 +62598,7 @@
       "prompt-pattern:visual-polish-review",
       "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:aider",
+      "entry:chrome-devtools-mcp",
       "entry:ai-com-mcp-linkedin",
       "entry:playcanvas-engine",
       "entry:playwright-mcp",
@@ -62120,6 +62606,7 @@
       "entry:three-js",
       "entry:ast-grep",
       "entry:claude-code-memory",
+      "entry:nx-mcp",
       "entry:qdrant-mcp-server",
       "entry:github-copilot-coding-agent",
       "entry:swarms",
@@ -62238,6 +62725,7 @@
     "tooling": [
       "task-rubric:agent_tooling",
       "practice:agent-tooling",
+      "entry:chrome-devtools-mcp",
       "entry:kaplay",
       "entry:microsoft-mcp-gateway"
     ],
@@ -62777,6 +63265,9 @@
     "ultra": [
       "entry:ai-gossiper-shopify-admin-mcp"
     ],
+    "unable": [
+      "entry:chrome-devtools-mcp"
+    ],
     "unbounded": [
       "practice:data"
     ],
@@ -63045,6 +63536,7 @@
       "entry:ai-artidrop-artidrop",
       "entry:aider",
       "entry:babylon-js",
+      "entry:chrome-devtools-mcp",
       "entry:ai-clarid-hmda",
       "entry:continue-dev",
       "entry:excalibur-js",
@@ -63071,6 +63563,7 @@
       "entry:letta",
       "entry:lunar-mcpx",
       "entry:mem0",
+      "entry:nx-mcp",
       "entry:openai-codex-cli",
       "entry:qdrant-mcp-server",
       "entry:stripe-agent-toolkit",
@@ -63262,6 +63755,7 @@
       "entry:kaplay",
       "entry:pixijs",
       "entry:rapier-js",
+      "entry:nx-mcp",
       "entry:qdrant-mcp-server",
       "entry:cursor-agent",
       "entry:kaimo"
@@ -63614,6 +64108,7 @@
       "entry:ai-artidrop-artidrop",
       "entry:aider",
       "entry:babylon-js",
+      "entry:chrome-devtools-mcp",
       "entry:ai-clarid-hmda",
       "entry:continue-dev",
       "entry:excalibur-js",
@@ -63640,6 +64135,7 @@
       "entry:letta",
       "entry:lunar-mcpx",
       "entry:mem0",
+      "entry:nx-mcp",
       "entry:openai-codex-cli",
       "entry:qdrant-mcp-server",
       "entry:stripe-agent-toolkit",
@@ -63702,7 +64198,9 @@
     ],
     "versions": [
       "source:mcp-core-and-registry",
-      "entry:langfuse"
+      "entry:langfuse",
+      "entry:chrome-devtools-mcp",
+      "entry:nx-mcp"
     ],
     "versions.": [
       "practice:observability-and-tracing"
@@ -63729,7 +64227,8 @@
       "entry:ai-fincontext-fincontext",
       "entry:ai-gossiper-shopify-admin-mcp",
       "entry:ai-com-mcp-openai-tools",
-      "entry:ai-artidrop-artidrop"
+      "entry:ai-artidrop-artidrop",
+      "entry:chrome-devtools-mcp"
     ],
     "vibes.": [
       "entry:openai-prompt-optimizer"
@@ -64012,6 +64511,7 @@
       "entry:sentry-mcp",
       "entry:ai-mino-web-agent",
       "entry:ai-artidrop-artidrop",
+      "entry:chrome-devtools-mcp",
       "entry:ai-clarid-hmda",
       "entry:continue-dev",
       "entry:firecrawl-mcp",
@@ -64022,6 +64522,7 @@
       "entry:browserbase-mcp",
       "entry:github-mcp-server",
       "entry:lunar-mcpx",
+      "entry:nx-mcp",
       "entry:cline",
       "entry:codebase-memory-mcp",
       "entry:cursor-agent",
@@ -64144,6 +64645,7 @@
       "entry:ai-mino-web-agent",
       "prompt-pattern:visual-build",
       "entry:babylon-js",
+      "entry:chrome-devtools-mcp",
       "entry:firecrawl-mcp",
       "entry:kaplay",
       "entry:playwright-mcp",
@@ -64798,6 +65300,7 @@
       "entry:ai-artidrop-artidrop",
       "entry:aider",
       "entry:babylon-js",
+      "entry:chrome-devtools-mcp",
       "entry:ai-clarid-hmda",
       "entry:continue-dev",
       "entry:excalibur-js",
@@ -64826,6 +65329,7 @@
       "entry:letta",
       "entry:lunar-mcpx",
       "entry:mem0",
+      "entry:nx-mcp",
       "entry:openai-codex-cli",
       "entry:qdrant-mcp-server",
       "entry:stripe-agent-toolkit",
@@ -64864,12 +65368,14 @@
       "practice:context-engineering",
       "entry:context7-mcp",
       "prompt-pattern:codex-implementation",
+      "entry:nx-mcp",
       "entry:cursor-agent"
     ],
     "works": [
       "design-architecture:vnem-design-architecture",
       "task-rubric:interactive_canvas",
-      "entry:aider"
+      "entry:aider",
+      "entry:nx-mcp"
     ],
     "works.": [
       "prompt-pattern:code-simplification"
@@ -64881,7 +65387,11 @@
       "practice:zero-trust-agent-gateway",
       "prompt-pattern:agent-workspace-architecture",
       "entry:ai-moxt-mcp-workspace",
+      "entry:nx-mcp",
       "entry:swarms"
+    ],
+    "workspace-graph": [
+      "entry:nx-mcp"
     ],
     "workspace.": [
       "prompt-pattern:mcp-gateway-evaluation"

@@ -1,0 +1,66 @@
+schema_version: 1.0.0
+homepage_url: https://github.com/ChromeDevTools/chrome-devtools-mcp
+repo_url: https://github.com/ChromeDevTools/chrome-devtools-mcp
+package_urls:
+  - https://www.npmjs.com/package/chrome-devtools-mcp
+licenses:
+  - Apache-2.0
+copyright_owner: Google LLC
+source_kind: package_registry
+protocols:
+  - MCP
+clients:
+  - Claude Desktop
+  - Claude Code
+  - Cursor
+  - VS Code
+install:
+  command: npx chrome-devtools-mcp
+  notes: >-
+    Exposes Chrome DevTools Protocol capabilities to coding agents for browser inspection,
+    debugging, and automation. Requires a running Chromium-based browser.
+  config_example: null
+permissions:
+  - browser
+  - network
+  - filesystem
+env_vars: []
+tags:
+  - mcp
+  - browser
+  - devtools
+  - debugging
+  - chrome
+use_cases:
+  - Let agents inspect and debug live web pages via Chrome DevTools Protocol
+  - Automate browser debugging sessions through MCP
+  - Capture screenshots, console logs, and network requests from a running browser
+best_for:
+  - Browser debugging via agent tooling, frontend QA, headless inspection
+not_for:
+  - Projects unable to expose browser sessions or authenticated pages to agent tooling
+alternatives:
+  - playwright-mcp
+supersedes: []
+freshness: current
+source_confidence: official
+maintenance_signals:
+  - Maintained by Chrome DevTools team at Google
+  - 56 published versions, latest released 2026-06-23
+risk_flags:
+  - browser-access
+  - can-access-authenticated-pages
+recommended_when:
+  - Use when an agent needs to control a real browser for inspection or debugging.
+trust_tier: promising
+review_status: bot-reviewed
+last_checked: '2026-06-28'
+slug: chrome-devtools-mcp
+name: Chrome DevTools MCP
+type: mcp-server
+summary_llm: >-
+  Chrome DevTools MCP is Google's browser automation MCP server for giving coding agents structured
+  access to live browser sessions, DevTools inspection, and DOM/network control.
+source_urls:
+  - https://github.com/ChromeDevTools/chrome-devtools-mcp
+  - https://www.npmjs.com/package/chrome-devtools-mcp

@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-05-28T11:24:56.856Z",
+  "generated_at": "2026-06-28T07:19:52.903Z",
   "schema_version": "1.0.0",
   "package_version": "1.0.1",
   "release_version": "1.0.1",
-  "release_date": "2026-05-28",
-  "entry_count": 228,
+  "release_date": "2026-06-28",
+  "entry_count": 230,
   "install_command": "curl -fsSL https://raw.githubusercontent.com/naellisim/vnem/main/public/install.tgz | tar -xz",
   "install_archive": "/install.tgz",
   "install_archive_url": "https://raw.githubusercontent.com/naellisim/vnem/main/public/install.tgz",
@@ -123,11 +123,13 @@
     "best-practices",
     "browser",
     "browser-game",
+    "build-tooling",
     "byom",
     "canvas",
     "catalog",
     "checkout",
     "checkpoints",
+    "chrome",
     "chrome-extension",
     "ci",
     "claude-code",
@@ -162,6 +164,7 @@
     "dependency-analysis",
     "deployment",
     "deprecated",
+    "devtools",
     "docs",
     "docs-search",
     "documentation",
@@ -217,8 +220,10 @@
     "microsoft",
     "migrations",
     "monitoring",
+    "monorepo",
     "multi-agent",
     "mysql",
+    "nx",
     "observability",
     "opentelemetry",
     "optimization",
@@ -326,6 +331,7 @@
     "webxr",
     "windsurf",
     "workflows",
+    "workspace",
     "x402"
   ],
   "use_cases": [
@@ -338,6 +344,7 @@
     "Add MCP memory recall and storage tools",
     "Apply reviewable edits to Git repositories",
     "Assign repository issues to an agent",
+    "Automate browser debugging sessions through MCP",
     "Automate browser flows through MCP",
     "Automate issues, pull requests, and workflow triage",
     "Automate research and back-office workflows",
@@ -366,6 +373,7 @@
     "Build type-safe agents",
     "Build TypeScript agent applications",
     "Build TypeScript-first 2D browser games",
+    "Capture screenshots, console logs, and network requests from a running browser",
     "Centralize authentication, routing, and audit controls",
     "Centralize session-aware MCP server lifecycle management",
     "Checkpoint and resume long-running workflows",
@@ -412,6 +420,7 @@
     "Experiment with custom mode prompts and permissions",
     "Expose carefully gated database access to coding assistants",
     "Expose internal web-app APIs as MCP tools",
+    "Expose workspace task graph and project configurations",
     "Extend agents with external tools",
     "Fetch current library documentation for agents",
     "Find syntax patterns across codebases",
@@ -432,6 +441,8 @@
     "Improve code generation against live docs",
     "Improve rough prompts into precise instructions",
     "Let agents crawl and extract web content",
+    "Let agents determine affected projects to run targeted tests after a change",
+    "Let agents inspect and debug live web pages via Chrome DevTools Protocol",
     "Let agents inspect and edit code repositories",
     "Let agents inspect and test web UIs",
     "Let agents inspect GitHub repositories and code",
@@ -440,6 +451,7 @@
     "Let agents inspect websites and web apps",
     "Let agents interact with web apps through an existing browser session",
     "Let agents investigate production errors",
+    "Let agents navigate Nx workspace structure and dependencies",
     "Let agents work with scoped files",
     "Let agents work with Stripe APIs",
     "Limit visible GitHub tools with explicit toolsets",
@@ -17993,6 +18005,101 @@
     },
     {
       "schema_version": "1.0.0",
+      "homepage_url": "https://github.com/ChromeDevTools/chrome-devtools-mcp",
+      "repo_url": "https://github.com/ChromeDevTools/chrome-devtools-mcp",
+      "package_urls": [
+        "https://www.npmjs.com/package/chrome-devtools-mcp"
+      ],
+      "licenses": [
+        "Apache-2.0"
+      ],
+      "copyright_owner": "Google LLC",
+      "source_kind": "package_registry",
+      "protocols": [
+        "MCP"
+      ],
+      "clients": [
+        "Claude Desktop",
+        "Claude Code",
+        "Cursor",
+        "VS Code"
+      ],
+      "install": {
+        "command": "npx chrome-devtools-mcp",
+        "notes": "Exposes Chrome DevTools Protocol capabilities to coding agents for browser inspection, debugging, and automation. Requires a running Chromium-based browser.",
+        "config_example": null
+      },
+      "permissions": [
+        "browser",
+        "network",
+        "filesystem"
+      ],
+      "env_vars": [],
+      "tags": [
+        "mcp",
+        "browser",
+        "devtools",
+        "debugging",
+        "chrome"
+      ],
+      "use_cases": [
+        "Let agents inspect and debug live web pages via Chrome DevTools Protocol",
+        "Automate browser debugging sessions through MCP",
+        "Capture screenshots, console logs, and network requests from a running browser"
+      ],
+      "best_for": [
+        "Browser debugging via agent tooling, frontend QA, headless inspection",
+        "Let agents inspect and debug live web pages via Chrome DevTools Protocol",
+        "Automate browser debugging sessions through MCP",
+        "Capture screenshots, console logs, and network requests from a running browser",
+        "mcp workflows",
+        "browser workflows",
+        "devtools workflows",
+        "debugging workflows"
+      ],
+      "not_for": [
+        "Projects unable to expose browser sessions or authenticated pages to agent tooling"
+      ],
+      "alternatives": [
+        "playwright-mcp"
+      ],
+      "supersedes": [],
+      "freshness": "current",
+      "source_confidence": "official",
+      "maintenance_signals": [
+        "Maintained by Chrome DevTools team at Google",
+        "56 published versions, latest released 2026-06-23",
+        "Canonical repository URL recorded"
+      ],
+      "risk_flags": [
+        "browser-access",
+        "can-access-authenticated-pages",
+        "sensitive-permissions"
+      ],
+      "recommended_when": [
+        "Use when an agent needs to control a real browser for inspection or debugging.",
+        "Use when a project needs let agents inspect and debug live web pages via chrome devtools protocol and the upstream source has been reviewed.",
+        "Treat as promising until a maintainer verifies install and behavior."
+      ],
+      "trust_tier": "promising",
+      "review_status": "bot-reviewed",
+      "last_checked": "2026-06-28",
+      "slug": "chrome-devtools-mcp",
+      "name": "Chrome DevTools MCP",
+      "type": "mcp-server",
+      "summary_llm": "Chrome DevTools MCP is Google's browser automation MCP server for giving coding agents structured access to live browser sessions, DevTools inspection, and DOM/network control.",
+      "source_urls": [
+        "https://github.com/ChromeDevTools/chrome-devtools-mcp",
+        "https://www.npmjs.com/package/chrome-devtools-mcp"
+      ],
+      "profile_excerpt": "MCP server for Chrome DevTools Protocol. - **Repository:** https://github.com/ChromeDevTools/chrome-devtools-mcp - **Package:** https://www.npmjs.com/package/chrome-devtools-mcp - **License:** Apache-2.0 - **Trust Tier:** promising ## What it does Exposes Chrome DevTools Protocol (CDP) capabilities to coding agents thr",
+      "entry_path": "registry/entries/chrome-devtools-mcp/entry.yaml",
+      "profile_path": "registry/entries/chrome-devtools-mcp/profile.md",
+      "url_path": "/entries/chrome-devtools-mcp/",
+      "recommendation_score": 9
+    },
+    {
+      "schema_version": "1.0.0",
       "slug": "ai-clarid-hmda",
       "name": "Clarid HMDA Validator",
       "type": "mcp-server",
@@ -20551,6 +20658,99 @@
       "entry_path": "registry/entries/mem0/entry.yaml",
       "profile_path": "registry/entries/mem0/profile.md",
       "url_path": "/entries/mem0/",
+      "recommendation_score": 8
+    },
+    {
+      "schema_version": "1.0.0",
+      "homepage_url": "https://nx.dev",
+      "repo_url": "https://github.com/nrwl/nx",
+      "package_urls": [
+        "https://www.npmjs.com/package/nx-mcp"
+      ],
+      "licenses": [
+        "MIT"
+      ],
+      "copyright_owner": "Nrwl (Narwhal Technologies)",
+      "source_kind": "package_registry",
+      "protocols": [
+        "MCP"
+      ],
+      "clients": [
+        "Claude Desktop",
+        "Claude Code",
+        "Cursor",
+        "VS Code"
+      ],
+      "install": {
+        "command": "npx nx-mcp",
+        "notes": "Exposes Nx monorepo workspace capabilities to coding agents: project graph navigation, affected-graph analysis, task discovery, and workspace configuration reading.",
+        "config_example": null
+      },
+      "permissions": [
+        "command-execution",
+        "filesystem",
+        "network"
+      ],
+      "env_vars": [],
+      "tags": [
+        "mcp",
+        "monorepo",
+        "nx",
+        "build-tooling",
+        "workspace"
+      ],
+      "use_cases": [
+        "Let agents navigate Nx workspace structure and dependencies",
+        "Let agents determine affected projects to run targeted tests after a change",
+        "Expose workspace task graph and project configurations"
+      ],
+      "best_for": [
+        "Coding agents working in Nx monorepos that benefit from workspace graph awareness",
+        "Targeted test execution using Nx affected graphs",
+        "Let agents navigate Nx workspace structure and dependencies",
+        "Let agents determine affected projects to run targeted tests after a change",
+        "Expose workspace task graph and project configurations",
+        "mcp workflows",
+        "monorepo workflows",
+        "nx workflows"
+      ],
+      "not_for": [
+        "Single-package projects or non-Nx monorepos"
+      ],
+      "alternatives": [],
+      "supersedes": [],
+      "freshness": "current",
+      "source_confidence": "high",
+      "maintenance_signals": [
+        "Maintained by Nrwl (Nx creators)",
+        "50 published versions, latest released 2026-04-30",
+        "Canonical repository URL recorded"
+      ],
+      "risk_flags": [
+        "command-execution",
+        "monorepo-awareness",
+        "sensitive-permissions"
+      ],
+      "recommended_when": [
+        "Use when an agent works in an Nx monorepo and benefits from workspace-graph awareness before editing or running tasks.",
+        "Use when a project needs let agents navigate nx workspace structure and dependencies and the upstream source has been reviewed.",
+        "Treat as promising until a maintainer verifies install and behavior."
+      ],
+      "trust_tier": "promising",
+      "review_status": "bot-reviewed",
+      "last_checked": "2026-06-28",
+      "slug": "nx-mcp",
+      "name": "Nx MCP",
+      "type": "mcp-server",
+      "summary_llm": "Nx MCP is Nrwl's monorepo MCP server for giving coding agents workspace graph navigation, affected-graph analysis, task discovery, and project configuration access in Nx monorepos.",
+      "source_urls": [
+        "https://github.com/nrwl/nx",
+        "https://www.npmjs.com/package/nx-mcp"
+      ],
+      "profile_excerpt": "MCP server for Nx monorepo workspace management. - **Repository:** https://github.com/nrwl/nx - **Package:** https://www.npmjs.com/package/nx-mcp - **License:** MIT - **Trust Tier:** promising ## What it does Exposes Nx monorepo capabilities to coding agents through MCP. Provides: - Workspace graph navigation (projects",
+      "entry_path": "registry/entries/nx-mcp/entry.yaml",
+      "profile_path": "registry/entries/nx-mcp/profile.md",
+      "url_path": "/entries/nx-mcp/",
       "recommendation_score": 8
     },
     {

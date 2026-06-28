@@ -1,0 +1,66 @@
+schema_version: 1.0.0
+homepage_url: https://nx.dev
+repo_url: https://github.com/nrwl/nx
+package_urls:
+  - https://www.npmjs.com/package/nx-mcp
+licenses:
+  - MIT
+copyright_owner: Nrwl (Narwhal Technologies)
+source_kind: package_registry
+protocols:
+  - MCP
+clients:
+  - Claude Desktop
+  - Claude Code
+  - Cursor
+  - VS Code
+install:
+  command: npx nx-mcp
+  notes: >-
+    Exposes Nx monorepo workspace capabilities to coding agents: project graph navigation,
+    affected-graph analysis, task discovery, and workspace configuration reading.
+  config_example: null
+permissions:
+  - command-execution
+  - filesystem
+  - network
+env_vars: []
+tags:
+  - mcp
+  - monorepo
+  - nx
+  - build-tooling
+  - workspace
+use_cases:
+  - Let agents navigate Nx workspace structure and dependencies
+  - Let agents determine affected projects to run targeted tests after a change
+  - Expose workspace task graph and project configurations
+best_for:
+  - Coding agents working in Nx monorepos that benefit from workspace graph awareness
+  - Targeted test execution using Nx affected graphs
+not_for:
+  - Single-package projects or non-Nx monorepos
+alternatives: []
+supersedes: []
+freshness: current
+source_confidence: high
+maintenance_signals:
+  - Maintained by Nrwl (Nx creators)
+  - 50 published versions, latest released 2026-04-30
+risk_flags:
+  - command-execution
+  - monorepo-awareness
+recommended_when:
+  - Use when an agent works in an Nx monorepo and benefits from workspace-graph awareness before editing or running tasks.
+trust_tier: promising
+review_status: bot-reviewed
+last_checked: '2026-06-28'
+slug: nx-mcp
+name: Nx MCP
+type: mcp-server
+summary_llm: >-
+  Nx MCP is Nrwl's monorepo MCP server for giving coding agents workspace graph navigation,
+  affected-graph analysis, task discovery, and project configuration access in Nx monorepos.
+source_urls:
+  - https://github.com/nrwl/nx
+  - https://www.npmjs.com/package/nx-mcp
