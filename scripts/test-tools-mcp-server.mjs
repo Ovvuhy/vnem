@@ -46,6 +46,7 @@ const transport = new StdioClientTransport({
   env: {
     ...process.env,
     VNEM_TOOLS_ALLOWED_ROOTS: projectDir,
+    VNEM_TOOLS_PERMISSION_PROFILE: "creator-power",
     VNEM_TOOLS_EVIDENCE_ROOT: path.join(projectDir, ".vnem", "tool-runs"),
     VNEM_TOOLS_ALLOW_LOCALHOST: "1"
   },

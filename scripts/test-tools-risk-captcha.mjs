@@ -30,7 +30,7 @@ await new Promise((resolve) => redirectServer.listen(0, "127.0.0.1", resolve));
 const redirectUrl = `http://127.0.0.1:${redirectServer.address().port}/start`;
 
 const client = new Client({ name: "vnem-tools-risk-captcha-test", version: "1.0.1" }, { capabilities: {} });
-const transport = new StdioClientTransport({ command: process.execPath, args: [path.join(scriptDir, "vnem-tools-mcp-server.mjs")], cwd: rootDir, env: { ...process.env, VNEM_TOOLS_ALLOWED_ROOTS: workspace, VNEM_TOOLS_EVIDENCE_ROOT: path.join(workspace, ".vnem", "tool-runs"), VNEM_TOOLS_ALLOW_LOCALHOST: "1" }, stderr: "pipe" });
+const transport = new StdioClientTransport({ command: process.execPath, args: [path.join(scriptDir, "vnem-tools-mcp-server.mjs")], cwd: rootDir, env: { ...process.env, VNEM_TOOLS_ALLOWED_ROOTS: workspace, VNEM_TOOLS_PERMISSION_PROFILE: "safe-local-dev", VNEM_TOOLS_EVIDENCE_ROOT: path.join(workspace, ".vnem", "tool-runs"), VNEM_TOOLS_ALLOW_LOCALHOST: "1" }, stderr: "pipe" });
 let stderr = "";
 transport.stderr?.on("data", (chunk) => { stderr += chunk.toString(); });
 

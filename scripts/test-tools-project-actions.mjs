@@ -53,6 +53,7 @@ const transport = new StdioClientTransport({
   env: {
     ...process.env,
     VNEM_TOOLS_ALLOWED_ROOTS: projectDir,
+    VNEM_TOOLS_PERMISSION_PROFILE: "approved-writes",
     VNEM_TOOLS_EVIDENCE_ROOT: path.join(projectDir, ".vnem", "tool-runs"),
     VNEM_TOOLS_ALLOW_LOCALHOST: "1",
     VNEM_TOOLS_BROWSER_COMMAND: "__vnem_missing_browser_for_deterministic_test__"

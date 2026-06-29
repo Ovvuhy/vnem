@@ -33,7 +33,7 @@ const transport = new StdioClientTransport({
   command: process.execPath,
   args: [path.join(scriptDir, "vnem-tools-mcp-server.mjs")],
   cwd: rootDir,
-  env: { ...process.env, VNEM_TOOLS_ALLOWED_ROOTS: workspace, VNEM_TOOLS_EVIDENCE_ROOT: path.join(workspace, ".vnem", "tool-runs"), VNEM_TOOLS_ALLOW_LOCALHOST: "1" },
+  env: { ...process.env, VNEM_TOOLS_ALLOWED_ROOTS: workspace, VNEM_TOOLS_PERMISSION_PROFILE: "safe-local-dev", VNEM_TOOLS_EVIDENCE_ROOT: path.join(workspace, ".vnem", "tool-runs"), VNEM_TOOLS_ALLOW_LOCALHOST: "1" },
   stderr: "pipe"
 });
 let stderr = "";

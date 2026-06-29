@@ -22,7 +22,7 @@ await writeFile(path.join(workspace, "src", "app.test.js"), "import { message } 
 await writeFile(path.join(workspace, "src", "index.html"), "<main>old app</main>\n", "utf8");
 
 const core = createClient("vnem-core-ecosystem", path.join(scriptDir, "vnem-mcp-server.mjs"), { VNEM_ROOT: rootDir });
-const tools = createClient("vnem-tools-ecosystem", path.join(scriptDir, "vnem-tools-mcp-server.mjs"), { VNEM_TOOLS_ALLOWED_ROOTS: workspace, VNEM_TOOLS_EVIDENCE_ROOT: path.join(workspace, ".vnem", "tool-runs"), VNEM_TOOLS_BROWSER_COMMAND: "__vnem_missing_browser_for_deterministic_test__" });
+const tools = createClient("vnem-tools-ecosystem", path.join(scriptDir, "vnem-tools-mcp-server.mjs"), { VNEM_TOOLS_ALLOWED_ROOTS: workspace, VNEM_TOOLS_PERMISSION_PROFILE: "approved-writes", VNEM_TOOLS_EVIDENCE_ROOT: path.join(workspace, ".vnem", "tool-runs"), VNEM_TOOLS_BROWSER_COMMAND: "__vnem_missing_browser_for_deterministic_test__" });
 try {
   await core.client.connect(core.transport);
   await tools.client.connect(tools.transport);

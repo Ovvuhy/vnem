@@ -172,9 +172,10 @@ Tools MCP is safeguard-first, not Giga MCP:
 
 | Action class | Tools MCP foundation behavior |
 | --- | --- |
-| Status/catalog/planning | Reports allowed roots, blocked paths, command allowlist, network policy, secret policy, evidence location, Core handoff support, and `vnem_tools_manifest` capability metadata for all Tools MCP tools. |
+| Status/catalog/planning | Reports active permission profile, allowed roots, workspace/evidence-root status, broad-root warnings, blocked paths/categories, command/network/secret policies, Core handoff support, and `vnem_tools_manifest` capability metadata for all Tools MCP tools. |
+| Permission profiles/trust boundaries | First-class profiles (`safe-readonly` default, `safe-local-dev`, `approved-writes`, `approved-installs`, `approved-github`, `creator-power`, `dangerous-disabled`) gate Tools actions. `vnem_tools_permission_profiles`, `vnem_tools_permission_status`, `vnem_tools_action_policy_preview`, and `vnem_tools_trust_boundary_classify` explain what is allowed, approval-gated, blocked, preview-only, and hard-dangerous before execution. |
 | Permission prompts | Produces normal-user approval text with exact action, risk, scope, dry-run option, rollback/restore plan, and evidence collected. |
-| File reads/lists/search | Confined to allowed roots; blocks `.env`, secret, token, key, credential paths; skips `.git`, `node_modules`, and build outputs; redacts obvious secrets. |
+| File reads/lists/search | Confined to allowed roots; blocks `.env`, `.env.local`, `*.pem`, `*.key`, `id_rsa`, tokens, credentials, cookies, sessions, browser profiles, and password-manager-like paths; skips `.git`, `node_modules`, and build outputs; redacts obvious secrets. |
 | Project intelligence | `vnem_tools_workspace_map`, `vnem_tools_read_many_files`, `vnem_tools_code_search`, `vnem_tools_find_references`, and `vnem_tools_dependency_scan` help AIs inspect projects without reading secrets, generated outputs, caches, binary files, or unbounded context. |
 | Patches | Dry-run by default; real apply requires `dry_run=false`, `approved=true`, and a non-empty approval note; supports single-file patches plus multi-file replace/create/append/explicit-delete batches with backups, restore plans, and no partial apply by default. |
 | Restore | Restores a previous Tools MCP backup or batch restore plan only inside allowed roots; dry-run default, approval required, secret-like targets blocked, evidence logged. |
@@ -204,6 +205,10 @@ npm run test:tools-browser-intelligence
 npm run test:tools-browser-research-pack
 npm run test:tools-search-power
 npm run test:tools-risk-captcha
+npm run test:tools-permission-profiles
+npm run test:tools-trust-boundary
+npm run test:tools-secret-blocking
+npm run test:core-permission-planning
 npm run test:core-tool-selection
 npm run test:core-tools-ecosystem
 npm run test:core-browser-research-planning
@@ -220,13 +225,13 @@ npm run core:readiness
 Actual Core → Tools use path:
 
 1. Start/connect Core MCP.
-2. Start/connect Tools MCP for a specific workspace.
+2. Start/connect Tools MCP for a specific workspace. By default it uses `VNEM_TOOLS_PERMISSION_PROFILE=safe-readonly`; set a stronger explicit profile such as `safe-local-dev`, `approved-writes`, or `creator-power` only for scoped local testing that needs it.
 3. Ask Core `vnem_route_task`, `vnem_output_quality_plan`, `vnem_anti_stagnation_check`, `vnem_select_tools_for_task`, `vnem_build_tools_plan`, `vnem_assess_research_need`, `vnem_build_search_plan`, `vnem_build_browsing_plan`, `vnem_build_browser_research_plan`, `vnem_explain_tools_chain`, or `vnem_boost_task` to classify the task, choose Tools capabilities, classify relevant/ignored memory, decide whether missing context materially requires asking the user, define dry-runs/approvals/evidence, detect freshness/search needs, handle CAPTCHA/download/redirect risk in plan form, prevent repeated finished work, and produce a compact-first output/final-report contract.
-4. Pass Core's `tools_mcp_handoff` to `vnem_tools_prepare_action_plan`.
+4. Pass Core's `tools_mcp_handoff` to `vnem_tools_prepare_action_plan`; call `vnem_tools_permission_status` and `vnem_tools_action_policy_preview` before real mutation/network/browser/git actions.
 5. Tools creates an action plan and marks unsupported work as blocked.
 6. Tools dry-runs the catalog/project/source scan/patch batch/restore/task/dev-server/API/browser/local-git action first.
-7. User approves the exact action with scope and rollback/restore plan.
-8. Tools performs only the approved allowed-root/localhost/direct-source/provider-search action, can map workspaces, read bounded safe file sets, search code, inspect dependencies without installing, build search queries, run configured/approved provider search or return honest unavailable status, rank results, evaluate provided/direct sources, inspect page structure, extract readable content, map links without following them, search DOM-like content, detect CAPTCHA/access blocks, check URL/redirect/download risk, build claim/source matrices, detect research gaps, run static accessibility checks, compare snapshots, capture local browser proof when useful, restore/rollback batches, and optionally make an approved local git commit of explicit safe files.
+7. User approves the exact action with scope, active/required permission profile, trust-boundary level, rollback/restore plan, and evidence expectations.
+8. Tools performs only the permission-allowed approved allowed-root/localhost/direct-source/provider-search action, can map workspaces, read bounded safe file sets, search code, inspect dependencies without installing, build search queries, run configured/approved provider search or return honest unavailable status, rank results, evaluate provided/direct sources, inspect page structure, extract readable content, map links without following them, search DOM-like content, detect CAPTCHA/access blocks, check URL/redirect/download risk, build claim/source matrices, detect research gaps, run static accessibility checks, compare snapshots, capture local browser proof when useful, restore/rollback batches, and optionally make an approved local git commit of explicit safe files.
 9. Tools collects redacted action/session evidence with `vnem_tools_collect_evidence` or `vnem_tools_finish_session`.
 10. Final response maps `proof_trail_compatible_summary` into Core `vnem_completion_audit` / `vnem_proof_trail` inputs and says whether browser visual proof was actually captured; do not claim visual/live API proof without evidence.
 
@@ -437,8 +442,9 @@ Precision MCP tools, available only from `scripts/vnem-precision-mcp-server.mjs`
 
 Tools MCP foundation tools, available only from `scripts/vnem-tools-mcp-server.mjs` / `npm run tools:mcp`:
 
-- `vnem_tools_status`, `vnem_tools_manifest`: report Tools MCP safety policy plus a structured catalog of every tool, capability group, safety metadata, evidence behavior, and Core handoff compatibility.
-- `vnem_tools_prepare_action_plan`: consume a Core handoff-like object and produce a cautious action plan with supported actions, blocked unsupported actions, permissions, rollback, and evidence.
+- `vnem_tools_status`, `vnem_tools_manifest`: report Tools MCP safety policy, active permission profile, allowed-root/workspace/evidence-root status, root warnings, plus a structured catalog of every tool, capability group, safety metadata, evidence behavior, and Core handoff compatibility.
+- `vnem_tools_permission_profiles`, `vnem_tools_permission_status`, `vnem_tools_action_policy_preview`, `vnem_tools_trust_boundary_classify`: expose permission profiles, profile/root/provider status, per-action allow/block/approval previews, and trust-boundary levels (`0_public_information` through `6_blocked_dangerous_action`) without exposing secrets.
+- `vnem_tools_prepare_action_plan`: consume a Core handoff-like object and produce a cautious action plan with supported actions, blocked unsupported actions, required permission profile, approval gates, rollback, and evidence.
 - `vnem_tools_permission_prompt`: generate normal-user approval text for exact action, scope, risk, dry-run option, rollback/restore plan, and evidence logging.
 - `vnem_tools_read_file`, `vnem_tools_list_files`, `vnem_tools_search_files`, `vnem_tools_workspace_map`, `vnem_tools_read_many_files`, `vnem_tools_code_search`, `vnem_tools_find_references`, `vnem_tools_dependency_scan`: bounded allowed-root project intelligence with secret-path blocking, generated-output/cache skips, redaction, output caps, dependency/script risk flags, and no package installs.
 - `vnem_tools_apply_patch`, `vnem_tools_apply_patch_batch`: dry-run-first approved single/multi-file text patching with path checks, approval gate, backups, restore plans, and no partial batch apply by default.
@@ -553,10 +559,10 @@ Read-only MCP tools:
 - `vnem_activate_capability_pack`: create a task-specific activation contract with required instructions, usage-proof fields, incomplete-if-skipped rules, and safety boundaries.
 - `vnem_apply_skill_guidance`: apply one selected skill's compact guidance to the current task without installing the skill or executing scripts.
 - `vnem_boost_task`: single real-task entry point that selects usable skill packs, usable API packs only when relevant, domain contracts, routing record, missing questions, output-quality plan, workflow steps, safety rules, verification/proof requirements, must-not-claim limits, and Core-vs-Tools/Precision boundaries.
-- `vnem_route_task`: produce a structured Core routing record for serious tasks: task categories, relevant/ignored/outdated/conflicting/unverified/verified memory, material missing-context ask/no-ask decision, needed capabilities, Tools/current-research needs, compatibility/safety risks, evidence, next action, and must-not-claim limits.
+- `vnem_route_task`: produce a structured Core routing record for serious tasks: task categories, relevant/ignored/outdated/conflicting/unverified/verified memory, material missing-context ask/no-ask decision, needed capabilities, Tools/current-research needs, Tools permission profile/trust-boundary planning, compatibility/safety risks, evidence, next action, and must-not-claim limits.
 - `vnem_output_quality_plan`: produce compact-first output/report contracts for AI work review, blocker report, user command handoff, Building AI prompt handoff, and technical final report, with evidence labels (`proven`, `tested`, `supported`, `likely`, `assumed`, `unknown`, `blocked`, `failed`, `not_attempted`, `preparation_only`).
 - `vnem_anti_stagnation_check`: flag docs-only fake progress, repeated finished areas, broad-scan loops, full-test-suite loops, same-next-step renames, and polishing finished areas while higher-value work waits.
-- `vnem_prepare_tools_handoff`: prepare a read-only handoff for future Tools/Precision MCP: selected usable packs, required tool capabilities, permissions, dry-run-first plan, rollback/restore plan, evidence to collect, blocked actions, safe Core actions, and must-not-claim limits.
+- `vnem_prepare_tools_handoff`: prepare a read-only handoff for future Tools/Precision MCP: selected usable packs, required tool capabilities, permission-profile plan, trust-boundary level, approval-required actions, dry-run-first plan, rollback/restore plan, evidence to collect, blocked actions, safe Core actions, and must-not-claim limits.
 - `vnem_build_api_integration_plan`: build a safe API plan with auth/HTTPS/CORS, frontend/backend decision, backend proxy/secret rules, tests, and evidence. It does not call the API.
 - `vnem_get_agent_profile`: return only the relevant Codex/Claude/Gemini/DeepSeek/Hermes/Qwen/generic/unknown profile so one AI does not receive another AI's irrelevant instructions.
 - `vnem_compose_capability_contract`: combine routing, selected capability modules, one agent profile, skill/API plan when relevant, risks, verification, and final-report requirements into one compact contract.

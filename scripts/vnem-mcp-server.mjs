@@ -814,7 +814,7 @@ function registerTools(mcpServer) {
       annotations: READ_ONLY
     },
     async (args) => {
-      const result = completionAudit(args);
+      const result = augmentCompletionAuditForPermissions(completionAudit(args), args);
       return toolResult(formatCompletionAudit(result), result);
     }
   );
@@ -1694,6 +1694,7 @@ function buildCoreRoutingRecord(args = {}) {
   const missing = buildMaterialMissingContext(task, known, categories);
   const anti = buildAntiStagnationCheck({ task, completed_areas: args.completed_areas || [], proposed_next_step: task, recent_actions: [] });
   const selection = selectToolsForTask({ task, known_context: known, available_tools: args.available_tools || [] });
+  const toolsPermissionPlanning = buildCorePermissionProfilePlan(task, known, selection.selected_tools);
   const research = assessResearchNeed({ task, known_context: known });
   const criticalQuestions = missing.filter((item) => item.ask_now);
   const needTools = categories.includes("documentation-only") && !/inspect|workspace|repo|local files|browser|source|security|fix|implement|debug|dashboard|git|package/.test(hay)
@@ -1724,6 +1725,7 @@ function buildCoreRoutingRecord(args = {}) {
     needed_capabilities: selection.selected_tools,
     need_tools_mcp: needTools,
     need_current_research: Boolean(research.current_info_required || research.external_search_required),
+    tools_permission_planning: toolsPermissionPlanning,
     compatibility_risks: compatRisks,
     safety_risks: safetyRisks,
     required_evidence: requiredEvidence,
@@ -1733,7 +1735,8 @@ function buildCoreRoutingRecord(args = {}) {
       "Core executed Tools MCP actions.",
       "Current/live research, files, tests, browser proof, or visual verification happened without evidence.",
       "Relevant memory was used if it was ignored as irrelevant, outdated, conflicting, or unverified.",
-      "The task is done/compatible/safe without required evidence."
+      "The task is done/compatible/safe without required evidence.",
+      "Tools MCP actions were allowed by the active permission profile, approved, or executed without Tools permission/evidence output."
     ],
     core_executes_tools: false,
     core_plan_only: true
@@ -1953,7 +1956,7 @@ function auditOutputText(outputText, type, evidence, blockers, commands) {
 }
 
 function formatCoreRoutingRecord(record) { return [`vnem_route_task: ${record.task_categories.join(", ")}`, `must_ask_user=${record.must_ask_user}`, `need_tools_mcp=${record.need_tools_mcp}`, `next=${record.next_best_action}`].join("\n"); }
-function compactRoutingRecord(record) { return { task_categories: record.task_categories.slice(0, 5), must_ask_user: record.must_ask_user, need_tools_mcp: record.need_tools_mcp, need_current_research: record.need_current_research, core_plan_only: true }; }
+function compactRoutingRecord(record) { const permission = record.tools_permission_planning || {}; return { task_categories: record.task_categories.slice(0, 5), must_ask_user: record.must_ask_user, need_tools_mcp: record.need_tools_mcp, need_current_research: record.need_current_research, tools_permission_planning: { required_profile: permission.required_permission_profile, trust_boundary: permission.trust_boundary_level, approval_count: (permission.actions_requiring_approval || []).length, blocked_count: (permission.blocked_or_preview_only_actions || []).length }, core_plan_only: true }; }
 function compactOutputQualityPlan(plan) { return { output_type: plan.output_type, core_plan_only: true }; }
 function formatOutputQualityPlan(plan) { return [`vnem_output_quality_plan: ${plan.output_type}`, `sections=${plan.required_sections.join(", ")}`, `audit_flags=${plan.audit_flags.length}`].join("\n"); }
 function formatAntiStagnationCheck(check) { return [`vnem_anti_stagnation_check: flags=${check.stagnation_risk_flags.join(", ") || "none"}`, `continue=${check.should_continue_same_area}`, `next=${check.recommended_next_action}`].join("\n"); }
@@ -1969,7 +1972,7 @@ function selectToolsForTask(args = {}) {
   const context = String(args.known_context || "");
   const hint = String(args.task_type_hint || "");
   const type = inferCoreToolTaskType(`${hint} ${task} ${context}`);
-  const selected = new Set(["vnem_tools_manifest", "vnem_tools_start_session", "vnem_tools_finish_session"]);
+  const selected = new Set(["vnem_tools_manifest", "vnem_tools_permission_status", "vnem_tools_action_policy_preview", "vnem_tools_trust_boundary_classify", "vnem_tools_start_session", "vnem_tools_finish_session"]);
   const add = (...tools) => tools.filter(Boolean).forEach((tool) => selected.add(tool));
   if (["coding", "ui_web", "debugging", "file_investigation", "local_project_modification", "security_sensitive"].includes(type)) {
     add("vnem_tools_workspace_map", "vnem_tools_code_search", "vnem_tools_read_many_files", "vnem_tools_project_scan", "vnem_tools_dependency_scan");
@@ -1995,6 +1998,7 @@ function selectToolsForTask(args = {}) {
     task_type: type,
     missing_context_questions: missingToolPlanQuestions(type, task),
     selected_tools: selectedTools,
+    permission_profile_plan: buildCorePermissionProfilePlan(task, context, selectedTools),
     tool_sequence_preview: selectedTools.map((tool) => ({ tool, what_for: purposeForTool(tool, type) })),
     what_each_tool_is_for: Object.fromEntries(selectedTools.map((tool) => [tool, purposeForTool(tool, type)])),
     dry_run_steps: dryRunSteps,
@@ -2004,8 +2008,8 @@ function selectToolsForTask(args = {}) {
     browser_understanding_limits: browserUnderstandingLimits(type),
     when_external_web_search_is_required: currentSearchRequired,
     verification_plan: verificationForType(type),
-    fallbacks_if_tool_unavailable: ["If Tools MCP is unavailable, Core should produce a plan only and ask the agent to use equivalent local tools with the same safety/evidence rules.", "If browser proof is unavailable, report browser_unavailable and do not claim visual proof.", "If direct URL fetch is blocked/unavailable, use provided text summaries or ask for a source; do not fake search.", "For latest/current research, use an approved external search path outside Tools MCP until a safe search provider exists."],
-    must_not_claim: ["Core executed Tools MCP actions.", "Files were edited, commands ran, browser proof was captured, commits were made, or URLs were fetched before Tools evidence exists.", "A web search happened inside Tools MCP.", "Current/latest web research is complete without external current search evidence.", "Unsupported git push/package install/deployment/Giga MCP work was done."],
+    fallbacks_if_tool_unavailable: ["If Tools MCP is unavailable, Core should produce a plan only and ask the agent to use equivalent local tools with the same safety/evidence rules.", "If active Tools profile is safe-readonly, use permission preview and ask for the exact stronger profile/approval instead of attempting mutation.", "If browser proof is unavailable, report browser_unavailable and do not claim visual proof.", "If direct URL fetch is blocked/unavailable, use provided text summaries or ask for a source; do not fake search.", "For latest/current research, use an approved external search path outside Tools MCP until a safe search provider exists."],
+    must_not_claim: ["Core executed Tools MCP actions.", "The active Tools permission profile allowed a risky action without vnem_tools_permission_status/action_policy_preview evidence.", "Files were edited, commands ran, browser proof was captured, commits were made, or URLs were fetched before Tools evidence exists.", "A web search happened inside Tools MCP.", "Current/latest web research is complete without external current search evidence.", "Unsupported git push/package install/deployment/Giga MCP work was done."],
     done_definition: doneDefinitionForType(type),
     efficiency_guidance: efficiencyForType(type),
     core_executes_tools: false,
@@ -2024,6 +2028,9 @@ function buildCoreToolsPlan(args = {}) {
   };
   if (selection.task_type === "debugging") sequence.push({ tool: "external/input", purpose: "logs first: collect failing command output, stack trace, reproduction, or error message before changing files", dry_run_first: false, requires_approval: false, expected_evidence: ["failure output"] });
   push("vnem_tools_manifest", "inspect Tools catalog and safety metadata");
+  push("vnem_tools_permission_status", "inspect active Tools permission profile and allowed-root status");
+  push("vnem_tools_action_policy_preview", "preview risky actions against active Tools permission profile before approval");
+  push("vnem_tools_trust_boundary_classify", "classify trust boundary for sources/actions/data before risky handling");
   push("vnem_tools_start_session", "start one coherent evidence pack");
   push("vnem_tools_workspace_map", "map project structure safely");
   push("vnem_tools_project_scan", "detect package scripts/frameworks/safe commands");
@@ -2062,10 +2069,17 @@ function buildCoreToolsPlan(args = {}) {
   const plan = {
     ...selection,
     tool_sequence: sequence,
+    permission_profile_plan: selection.permission_profile_plan,
     core_tools_handoff: {
       task_summary: selection.task.slice(0, 240),
       required_tool_capabilities: selection.selected_tools,
       required_permissions: selection.approval_required_steps,
+      permission_profile_plan: selection.permission_profile_plan,
+      active_or_required_permission_profile: selection.permission_profile_plan.required_permission_profile,
+      actions_requiring_approval: selection.permission_profile_plan.actions_requiring_approval,
+      actions_blocked_by_current_profile: selection.permission_profile_plan.actions_blocked_by_current_profile,
+      trust_boundary_level: selection.permission_profile_plan.trust_boundary_level,
+      safe_alternative: selection.permission_profile_plan.safe_alternative,
       dry_run_first: selection.dry_run_steps,
       evidence_to_collect: selection.evidence_to_collect,
       source_quality_requirements: selection.source_quality_requirements,
@@ -2116,6 +2130,76 @@ function explainToolsChain(args = {}) {
     must_not_claim: plan.must_not_claim,
     core_executes_tools: false,
     web_search_executed: false
+  };
+}
+
+
+function buildCorePermissionProfilePlan(task, known = "", selectedTools = []) {
+  const text = normalize(`${task} ${known} ${selectedTools.join(" ")}`);
+  const actionMap = [
+    [/apply_patch|patch|edit|write|create file|delete file/, "apply_patch"],
+    [/restore/, "restore_backup"],
+    [/run_project_task|\btest\b|validate|lint|typecheck|command/, "run_test"],
+    [/\bbuild\b|dashboard:build/, "run_build"],
+    [/start_dev_server|dev server|localhost|preview/, "start_dev_server"],
+    [/browser_capture|screenshot|visual proof|browser proof/, "browser_capture"],
+    [/git_commit|commit/, "local_commit"],
+    [/install|audit fix|package install|npm install|pnpm add|yarn add/, "package_install"],
+    [/github|pull request|\bpr\b|issue|release/, "github_pr"],
+    [/api_request|api call|external service/, "api_call"],
+    [/fetch_url_text|web_search|external fetch|current search|url text/, "external_fetch"],
+    [/download_safety|download/, "download_check"],
+    [/secret|credential|\.env|api key|token/, "secret_read"],
+    [/cookie|session|browser profile/, "cookie_session_access"],
+    [/captcha|anti-bot bypass/, "captcha_bypass"],
+    [/rm -rf|reset --hard|format|destructive shell/, "destructive_shell"],
+    [/crawl|scrape all|whole pc/, "unrestricted_crawl"]
+  ];
+  const actions = [...new Set(actionMap.filter(([re]) => re.test(text)).map(([, action]) => action))];
+  if (!actions.length && selectedTools.some((tool) => /workspace|read_many|code_search|dependency_scan/.test(tool))) actions.push("inspect_workspace");
+  const blockedDangerous = actions.filter((a) => ["secret_read", "cookie_session_access", "captcha_bypass", "destructive_shell", "unrestricted_crawl"].includes(a));
+  const writeActions = actions.filter((a) => ["apply_patch", "restore_backup", "local_commit"].includes(a));
+  const devActions = actions.filter((a) => ["run_test", "run_build", "start_dev_server", "browser_capture", "api_call", "external_fetch", "download_check"].includes(a));
+  const previewOnly = actions.filter((a) => ["package_install", "github_pr", "github_issue", "github_release"].includes(a));
+  const requiredProfiles = new Set(["safe-readonly"]);
+  if (devActions.length) requiredProfiles.add("safe-local-dev");
+  if (writeActions.length) requiredProfiles.add("approved-writes");
+  if (previewOnly.includes("package_install")) requiredProfiles.add("approved-installs");
+  if (previewOnly.some((a) => a.startsWith("github"))) requiredProfiles.add("approved-github");
+  const trustBoundaryLevel = blockedDangerous.length ? "6_blocked_dangerous_action" : previewOnly.some((a) => a.startsWith("github")) ? "4_external_account_action" : /secret|credential|token|\.env/.test(text) ? "3_sensitive_local_information" : writeActions.length || devActions.length ? "2_local_project_information" : "0_public_information";
+  const approval = [...writeActions, ...devActions].map((action) => ({ action, approval_required: true, permission_profile_needed: writeActions.includes(action) ? "approved-writes" : "safe-local-dev or stronger" }));
+  const blockedByDefault = [
+    ...writeActions.map((action) => ({ action, blocked_under_default_profile: "safe-readonly", safe_alternative: "run dry-run/action-policy preview, then ask for approved-writes with explicit approval" })),
+    ...devActions.map((action) => ({ action, blocked_under_default_profile: "safe-readonly", safe_alternative: "run permission preview, then ask for safe-local-dev or stronger with explicit approval" })),
+    ...previewOnly.map((action) => ({ action, blocked_under_current_build: true, safe_alternative: "preview/planned only; do not claim package install or GitHub mutation occurred" })),
+    ...blockedDangerous.map((action) => ({ action, hard_blocked: true, safe_alternative: "do not perform; use redacted user-provided excerpts or public/source-safe alternatives" }))
+  ];
+  return {
+    active_profile_expected_default: "safe-readonly",
+    required_permission_profile: requiredProfiles.has("approved-writes") ? "approved-writes" : requiredProfiles.has("safe-local-dev") ? "safe-local-dev" : "safe-readonly",
+    required_profiles: [...requiredProfiles],
+    trust_boundary_level: trustBoundaryLevel,
+    actions_requiring_approval: approval,
+    actions_blocked_by_current_profile: blockedByDefault,
+    blocked_or_preview_only_actions: [...previewOnly, ...blockedDangerous],
+    safe_alternative: blockedByDefault.length ? "Use vnem_tools_permission_status and vnem_tools_action_policy_preview first; ask for exact profile/approval; keep package/GitHub/destructive/secret actions blocked or preview-only." : "Use safe-readonly inspection first and collect evidence before claiming action results.",
+    must_not_claim: ["Tools actions were allowed or executed without permission status/policy preview evidence.", "Package installs or GitHub mutation happened unless an implemented Tools tool proves it.", "Secrets/cookies/sessions/CAPTCHA/destructive shell were accessed or bypassed."]
+  };
+}
+
+function augmentCompletionAuditForPermissions(result, args = {}) {
+  const text = normalize(`${args.task || ""} ${args.claimed_result || ""} ${JSON.stringify(args.evidence || "")}`);
+  const plan = buildCorePermissionProfilePlan(args.task || "", `${args.claimed_result || ""} ${JSON.stringify(args.evidence || "")}`, []);
+  const flags = [];
+  if (/install|npm install|pnpm add|yarn add/.test(text) && !/(npm install|pnpm add|yarn add).*(exit|passed|evidence)|installed.*evidence/.test(text)) flags.push("package install claim needs implemented Tools/evidence; current Tools support is preview/blocked only");
+  if (/github|pull request|\bpr\b|issue|release/.test(text) && !/(gh |github api|pull request url|issue url|run id|evidence)/.test(text)) flags.push("GitHub mutation claim needs explicit external evidence; Tools MCP does not silently mutate GitHub");
+  if (/permission|approved|safe|allowed/.test(text) && !/(permission_status|action_policy_preview|approval_note|approved=true)/.test(text)) flags.push("permission/approval claim lacks Tools permission-status or action-policy-preview evidence");
+  if (!flags.length && plan.blocked_or_preview_only_actions.length) flags.push("review blocked/preview-only permission actions before final claim");
+  return {
+    ...result,
+    permission_audit: { permission_profile_plan: plan, audit_flags: flags, core_still_plan_only: true },
+    must_not_claim: [...new Set([...(result.must_not_claim || []), ...plan.must_not_claim])],
+    missing_evidence: [...new Set([...(result.missing_evidence || []), ...flags])]
   };
 }
 

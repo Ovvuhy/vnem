@@ -19,6 +19,10 @@ const browserIntelligenceTestPath = rel("scripts/test-tools-browser-intelligence
 const browserResearchPackTestPath = rel("scripts/test-tools-browser-research-pack.mjs");
 const toolsSearchPowerTestPath = rel("scripts/test-tools-search-power.mjs");
 const toolsRiskCaptchaTestPath = rel("scripts/test-tools-risk-captcha.mjs");
+const toolsPermissionProfilesTestPath = rel("scripts/test-tools-permission-profiles.mjs");
+const toolsTrustBoundaryTestPath = rel("scripts/test-tools-trust-boundary.mjs");
+const toolsSecretBlockingTestPath = rel("scripts/test-tools-secret-blocking.mjs");
+const corePermissionPlanningTestPath = rel("scripts/test-core-permission-planning.mjs");
 const mcpUserSmokeTestPath = rel("scripts/test-mcp-user-smoke.mjs");
 const coreSearchPlanningTestPath = rel("scripts/test-core-search-planning.mjs");
 const coreBrowserPlanningTestPath = rel("scripts/test-core-browser-research-planning.mjs");
@@ -39,6 +43,10 @@ const browserIntelligenceTest = existsSync(browserIntelligenceTestPath) ? readFi
 const browserResearchPackTest = existsSync(browserResearchPackTestPath) ? readFileSync(browserResearchPackTestPath, "utf8") : "";
 const toolsSearchPowerTest = existsSync(toolsSearchPowerTestPath) ? readFileSync(toolsSearchPowerTestPath, "utf8") : "";
 const toolsRiskCaptchaTest = existsSync(toolsRiskCaptchaTestPath) ? readFileSync(toolsRiskCaptchaTestPath, "utf8") : "";
+const toolsPermissionProfilesTest = existsSync(toolsPermissionProfilesTestPath) ? readFileSync(toolsPermissionProfilesTestPath, "utf8") : "";
+const toolsTrustBoundaryTest = existsSync(toolsTrustBoundaryTestPath) ? readFileSync(toolsTrustBoundaryTestPath, "utf8") : "";
+const toolsSecretBlockingTest = existsSync(toolsSecretBlockingTestPath) ? readFileSync(toolsSecretBlockingTestPath, "utf8") : "";
+const corePermissionPlanningTest = existsSync(corePermissionPlanningTestPath) ? readFileSync(corePermissionPlanningTestPath, "utf8") : "";
 const mcpUserSmokeTest = existsSync(mcpUserSmokeTestPath) ? readFileSync(mcpUserSmokeTestPath, "utf8") : "";
 const coreSearchPlanningTest = existsSync(coreSearchPlanningTestPath) ? readFileSync(coreSearchPlanningTestPath, "utf8") : "";
 const coreBrowserPlanningTest = existsSync(coreBrowserPlanningTestPath) ? readFileSync(coreBrowserPlanningTestPath, "utf8") : "";
@@ -48,6 +56,10 @@ const coreServer = existsSync(coreServerPath) ? readFileSync(coreServerPath, "ut
 const cli = existsSync(cliPath) ? readFileSync(cliPath, "utf8") : "";
 const requiredTools = [
   "vnem_tools_status",
+  "vnem_tools_permission_profiles",
+  "vnem_tools_permission_status",
+  "vnem_tools_action_policy_preview",
+  "vnem_tools_trust_boundary_classify",
   "vnem_tools_prepare_action_plan",
   "vnem_tools_permission_prompt",
   "vnem_tools_manifest",
@@ -112,6 +124,10 @@ const report = {
   browser_research_pack_test_exists: existsSync(browserResearchPackTestPath),
   tools_search_power_test_exists: existsSync(toolsSearchPowerTestPath),
   tools_risk_captcha_test_exists: existsSync(toolsRiskCaptchaTestPath),
+  tools_permission_profiles_test_exists: existsSync(toolsPermissionProfilesTestPath),
+  tools_trust_boundary_test_exists: existsSync(toolsTrustBoundaryTestPath),
+  tools_secret_blocking_test_exists: existsSync(toolsSecretBlockingTestPath),
+  core_permission_planning_test_exists: existsSync(corePermissionPlanningTestPath),
   mcp_user_smoke_test_exists: existsSync(mcpUserSmokeTestPath),
   core_search_planning_test_exists: existsSync(coreSearchPlanningTestPath),
   core_browser_planning_test_exists: existsSync(coreBrowserPlanningTestPath),
@@ -130,6 +146,10 @@ const report = {
     test_tools_browser_research_pack: pkg.scripts?.["test:tools-browser-research-pack"] === "node scripts/test-tools-browser-research-pack.mjs",
     test_tools_search_power: pkg.scripts?.["test:tools-search-power"] === "node scripts/test-tools-search-power.mjs",
     test_tools_risk_captcha: pkg.scripts?.["test:tools-risk-captcha"] === "node scripts/test-tools-risk-captcha.mjs",
+    test_tools_permission_profiles: pkg.scripts?.["test:tools-permission-profiles"] === "node scripts/test-tools-permission-profiles.mjs",
+    test_tools_trust_boundary: pkg.scripts?.["test:tools-trust-boundary"] === "node scripts/test-tools-trust-boundary.mjs",
+    test_tools_secret_blocking: pkg.scripts?.["test:tools-secret-blocking"] === "node scripts/test-tools-secret-blocking.mjs",
+    test_core_permission_planning: pkg.scripts?.["test:core-permission-planning"] === "node scripts/test-core-permission-planning.mjs",
     test_core_search_planning: pkg.scripts?.["test:core-search-planning"] === "node scripts/test-core-search-planning.mjs",
     test_mcp_user_smoke: pkg.scripts?.["test:mcp-user-smoke"] === "node scripts/test-mcp-user-smoke.mjs",
     test_core_browser_research_planning: pkg.scripts?.["test:core-browser-research-planning"] === "node scripts/test-core-browser-research-planning.mjs",
@@ -181,6 +201,20 @@ const report = {
   browser_search_safety_policy: /no_search_engine_result_page_scraping/.test(server) && /no_fake_search_results/.test(server) && /automatic CAPTCHA bypass/.test(server),
   provider_unconfigured_honesty: /provider_unconfigured/.test(server) && /no fake results returned/.test(server) && /provider_unavailable|provider_unconfigured/.test(server + toolsSearchPowerTest),
   no_captcha_bypass_public_policy: /No automatic CAPTCHA bypass was attempted or provided/.test(server + toolsRiskCaptchaTest) && /automatic CAPTCHA bypass/.test(server),
+
+  permission_profiles_status: /PERMISSION_PROFILE_NAMES/.test(server) && /safe-readonly/.test(server) && /creator-power/.test(server) && /dangerous-disabled/.test(toolsPermissionProfilesTest + server),
+  permission_status_tool: /vnem_tools_permission_status/.test(server) && /permissionStatusObject/.test(server) && /workspace_allowed/.test(toolsPermissionProfilesTest + server),
+  action_policy_preview_status: /vnem_tools_action_policy_preview/.test(server) && /actionPolicyPreview/.test(server) && /required_user_approval_text/.test(server),
+  trust_boundary_classifier_status: /vnem_tools_trust_boundary_classify/.test(server) && /trustBoundaryClassify/.test(server) && /6_blocked_dangerous_action/.test(toolsTrustBoundaryTest + server),
+  safe_readonly_blocks_writes: /safe-readonly/.test(server) && /permission_profile_blocked/.test(toolsPermissionProfilesTest),
+  approved_writes_requires_approval: /approved-writes/.test(server) && /approval_required/.test(toolsPermissionProfilesTest),
+  package_install_still_not_silent: /approved-installs/.test(server) && /package_install/.test(toolsPermissionProfilesTest) && /preview\/planned\/blocked/.test(server),
+  github_mutation_still_not_silent: /approved-github/.test(server) && /github_pr/.test(toolsPermissionProfilesTest) && /never silently mutates GitHub|preview\/planned\/blocked/.test(server),
+  secret_read_blocked_by_default: /secret_read/.test(server) && /secret_path_blocked/.test(toolsSecretBlockingTest) && /raw_secret_blocked/.test(toolsSecretBlockingTest),
+  dangerous_disabled_policy: /dangerous-disabled/.test(server) && /captcha_bypass/.test(toolsTrustBoundaryTest) && /destructive_shell/.test(toolsTrustBoundaryTest),
+  allowed_root_status_reporting: /allowed_roots/.test(server) && /how_to_add_more_roots/.test(server) && /workspace_fix_suggestion/.test(toolsPermissionProfilesTest + server),
+  broad_root_warning_status: /broad_root_warnings/.test(server) && /too broad/.test(toolsPermissionProfilesTest + server),
+  permission_manifest_integration: /permission_manifest_integration/.test(server) && /permission_profile/.test(server) && /vnem_tools_permission_status/.test(server),
   patch_batch_status: /vnem_tools_apply_patch_batch/.test(server) && /safeApplyPatchBatch/.test(server) && /partialFailure/.test(projectActionsTest) && /explicit_delete_required/.test(projectActionsTest),
   restore_batch_status: /vnem_tools_restore_batch/.test(server) && /safeRestoreBatch/.test(server) && /restoreSecret/.test(projectActionsTest),
   project_scan_status: /vnem_tools_project_scan/.test(server) && /safeProjectScan/.test(server) && /likely_frameworks/.test(server) && /blocked_or_skipped_paths/.test(projectActionsTest),
@@ -252,12 +286,21 @@ assert.equal(report.mcp_user_smoke_test_exists, true, "MCP user smoke test file 
 assert.equal(report.core_search_planning_test_exists, true, "core search planning test file is missing");
 assert.equal(report.package_scripts.test_tools_search_power, true, "test:tools-search-power package script is missing");
 assert.equal(report.package_scripts.test_tools_risk_captcha, true, "test:tools-risk-captcha package script is missing");
+assert.equal(report.tools_permission_profiles_test_exists, true, "tools permission profiles test file is missing");
+assert.equal(report.tools_trust_boundary_test_exists, true, "tools trust-boundary test file is missing");
+assert.equal(report.tools_secret_blocking_test_exists, true, "tools secret blocking test file is missing");
+assert.equal(report.core_permission_planning_test_exists, true, "core permission planning test file is missing");
+assert.equal(report.package_scripts.test_tools_permission_profiles, true, "test:tools-permission-profiles package script is missing");
+assert.equal(report.package_scripts.test_tools_trust_boundary, true, "test:tools-trust-boundary package script is missing");
+assert.equal(report.package_scripts.test_tools_secret_blocking, true, "test:tools-secret-blocking package script is missing");
+assert.equal(report.package_scripts.test_core_permission_planning, true, "test:core-permission-planning package script is missing");
 assert.equal(report.package_scripts.test_core_search_planning, true, "test:core-search-planning package script is missing");
 assert.equal(report.package_scripts.test_mcp_user_smoke, true, "test:mcp-user-smoke package script is missing");
 assert.equal(report.core_browser_planning_test_exists, true, "core browser planning test file is missing");
 assert.equal(report.package_scripts.test_tools_browser_intelligence, true, "test:tools-browser-intelligence package script is missing");
 assert.equal(report.package_scripts.test_tools_browser_research_pack, true, "test:tools-browser-research-pack package script is missing");
 assert.equal(report.package_scripts.test_core_browser_research_planning, true, "test:core-browser-research-planning package script is missing");
+for (const [key, value] of Object.entries({ permission_profiles_status: report.permission_profiles_status, permission_status_tool: report.permission_status_tool, action_policy_preview_status: report.action_policy_preview_status, trust_boundary_classifier_status: report.trust_boundary_classifier_status, safe_readonly_blocks_writes: report.safe_readonly_blocks_writes, approved_writes_requires_approval: report.approved_writes_requires_approval, package_install_still_not_silent: report.package_install_still_not_silent, github_mutation_still_not_silent: report.github_mutation_still_not_silent, secret_read_blocked_by_default: report.secret_read_blocked_by_default, dangerous_disabled_policy: report.dangerous_disabled_policy, allowed_root_status_reporting: report.allowed_root_status_reporting, broad_root_warning_status: report.broad_root_warning_status, permission_manifest_integration: report.permission_manifest_integration })) assert.equal(value, true, `${key} is incomplete`);
 assert.equal(report.core_selection_test_exists, true, "core tool selection test file is missing");
 assert.equal(report.core_ecosystem_test_exists, true, "core tools ecosystem test file is missing");
 for (const [name, present] of Object.entries(report.required_tools_present)) assert.equal(present, true, `missing required tool ${name}`);
@@ -378,6 +421,19 @@ console.log(`research_gap_detector_status: ${yes(report.research_gap_detector_st
 console.log(`browser_search_safety_policy: ${yes(report.browser_search_safety_policy)}`);
 console.log(`provider_unconfigured_honesty: ${yes(report.provider_unconfigured_honesty)}`);
 console.log(`no_captcha_bypass_public_policy: ${yes(report.no_captcha_bypass_public_policy)}`);
+console.log(`permission_profiles_status: ${yes(report.permission_profiles_status)}`);
+console.log(`permission_status_tool: ${yes(report.permission_status_tool)}`);
+console.log(`action_policy_preview_status: ${yes(report.action_policy_preview_status)}`);
+console.log(`trust_boundary_classifier_status: ${yes(report.trust_boundary_classifier_status)}`);
+console.log(`safe_readonly_blocks_writes: ${yes(report.safe_readonly_blocks_writes)}`);
+console.log(`approved_writes_requires_approval: ${yes(report.approved_writes_requires_approval)}`);
+console.log(`package_install_still_not_silent: ${yes(report.package_install_still_not_silent)}`);
+console.log(`github_mutation_still_not_silent: ${yes(report.github_mutation_still_not_silent)}`);
+console.log(`secret_read_blocked_by_default: ${yes(report.secret_read_blocked_by_default)}`);
+console.log(`dangerous_disabled_policy: ${yes(report.dangerous_disabled_policy)}`);
+console.log(`allowed_root_status_reporting: ${yes(report.allowed_root_status_reporting)}`);
+console.log(`broad_root_warning_status: ${yes(report.broad_root_warning_status)}`);
+console.log(`permission_manifest_integration: ${yes(report.permission_manifest_integration)}`);
 console.log(`patch_batch_status: ${yes(report.patch_batch_status)}`);
 console.log(`restore_batch_status: ${yes(report.restore_batch_status)}`);
 console.log(`project_scan_status: ${yes(report.project_scan_status)}`);

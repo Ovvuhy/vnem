@@ -14,7 +14,7 @@ const workspace = path.join(tmpRoot, "workspace");
 await mkdir(workspace, { recursive: true });
 
 const client = new Client({ name: "vnem-tools-search-power-test", version: "1.0.1" }, { capabilities: {} });
-const transport = new StdioClientTransport({ command: process.execPath, args: [path.join(scriptDir, "vnem-tools-mcp-server.mjs")], cwd: rootDir, env: { ...process.env, VNEM_TOOLS_ALLOWED_ROOTS: workspace, VNEM_TOOLS_EVIDENCE_ROOT: path.join(workspace, ".vnem", "tool-runs") }, stderr: "pipe" });
+const transport = new StdioClientTransport({ command: process.execPath, args: [path.join(scriptDir, "vnem-tools-mcp-server.mjs")], cwd: rootDir, env: { ...process.env, VNEM_TOOLS_ALLOWED_ROOTS: workspace, VNEM_TOOLS_PERMISSION_PROFILE: "safe-local-dev", VNEM_TOOLS_EVIDENCE_ROOT: path.join(workspace, ".vnem", "tool-runs") }, stderr: "pipe" });
 let stderr = "";
 transport.stderr?.on("data", (chunk) => { stderr += chunk.toString(); });
 

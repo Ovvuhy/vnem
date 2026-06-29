@@ -14,6 +14,10 @@ const repoRoot = path.resolve(scriptDir, "..");
 const SERVER_VERSION = "1.0.1";
 const REQUIRED_TOOL_NAMES = [
   "vnem_tools_status",
+  "vnem_tools_permission_profiles",
+  "vnem_tools_permission_status",
+  "vnem_tools_action_policy_preview",
+  "vnem_tools_trust_boundary_classify",
   "vnem_tools_prepare_action_plan",
   "vnem_tools_permission_prompt",
   "vnem_tools_manifest",
@@ -96,6 +100,7 @@ const sessions = new Map();
 
 const allowedRoots = await computeAllowedRoots();
 const evidenceRoot = await computeEvidenceRoot();
+const activePermissionProfile = getActivePermissionProfile();
 const usablePacks = await loadUsablePacks();
 
 const server = new McpServer(
@@ -105,7 +110,7 @@ const server = new McpServer(
       "VNEM Tools MCP is a safeguard-first action server for approved project work after VNEM Core has planned the task.",
       "Tools MCP is not Core MCP and is not Giga MCP. It can read, search, dry-run patches, apply approved patches, run approved allowlisted commands, prepare/perform approved limited API requests, capture approved local browser screenshots, and collect evidence.",
       "Dry-run is the default for mutation/execution/network/browser actions. Real changes require dry_run=false, approved=true, and a non-empty approval_note.",
-      "GitHub mutations, package installs, arbitrary shell, broad browser automation, account login automation, cookie extraction, CAPTCHA bypass, and broad web scraping are not implemented."
+      "The active Tools permission profile gates real actions. Default is safe-readonly; mutation/network/dev-server/git actions require an explicit stronger profile plus approval, evidence, and rollback where applicable. GitHub mutations, package installs, arbitrary shell, broad browser automation, account login automation, cookie extraction, CAPTCHA bypass, and broad web scraping are not implemented."
     ].join(" ")
   }
 );
@@ -123,6 +128,67 @@ function registerTools(mcpServer) {
       annotations: READ_ONLY_LOCAL
     },
     async () => toolResult(formatStatus(), { tools_status: statusObject() })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_permission_profiles",
+    {
+      title: "VNEM Tools Permission Profiles",
+      description: "Read-only list of Tools MCP permission profiles and their allow/block/approval policies.",
+      inputSchema: {},
+      annotations: READ_ONLY_LOCAL
+    },
+    async () => {
+      const profiles = permissionProfilesObject();
+      return toolResult(formatPermissionProfiles(profiles), { permission_profiles: profiles });
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_permission_status",
+    {
+      title: "VNEM Tools Permission Status",
+      description: "Report active Tools permission profile, allowed roots, evidence root, localhost/search-provider status by presence only, and blocked categories without exposing secrets.",
+      inputSchema: {},
+      annotations: READ_ONLY_LOCAL
+    },
+    async () => {
+      const status = permissionStatusObject();
+      return toolResult(formatPermissionStatus(status), { permission_status: status });
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_action_policy_preview",
+    {
+      title: "VNEM Tools Action Policy Preview",
+      description: "Classify a proposed Tools action against the active permission profile before any execution.",
+      inputSchema: {
+        proposed_action: z.string().min(1),
+        action_type: z.string().optional(),
+        target_path: z.string().optional(),
+        source_description: z.string().optional()
+      },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => {
+      const preview = actionPolicyPreview(args);
+      return toolResult(formatActionPolicyPreview(preview), { action_policy_preview: preview });
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_trust_boundary_classify",
+    {
+      title: "VNEM Tools Trust Boundary Classifier",
+      description: "Classify data/action/source descriptions into trust-boundary levels and safe next actions.",
+      inputSchema: { description: z.string().min(1) },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => {
+      const trust = trustBoundaryClassify(args.description);
+      return toolResult(formatTrustBoundary(trust), { trust_boundary: trust });
+    }
   );
 
   mcpServer.registerTool(
@@ -851,6 +917,233 @@ class ToolsError extends Error {
   }
 }
 
+
+const PERMISSION_PROFILE_NAMES = ["safe-readonly", "safe-local-dev", "approved-writes", "approved-installs", "approved-github", "creator-power", "dangerous-disabled"];
+const HARD_BLOCKED_ACTION_TYPES = new Set(["secret_read", "cookie_session_access", "captcha_bypass", "destructive_shell", "unrestricted_crawl"]);
+const ACTION_ALIASES = {
+  write_file: "apply_patch",
+  patch: "apply_patch",
+  commit: "local_commit",
+  git_commit: "local_commit",
+  run_command: "run_test",
+  run_project_task: "run_test",
+  fetch_url_text: "external_fetch",
+  web_search: "external_fetch",
+  download_safety_check: "download_check"
+};
+
+function buildPermissionProfiles() {
+  const mk = (profile_name, description, opts = {}) => ({
+    profile_name,
+    description,
+    allowed_actions: opts.allowed_actions || [],
+    blocked_actions: opts.blocked_actions || [],
+    requires_approval_actions: opts.requires_approval_actions || [],
+    network_policy: opts.network_policy || "No live network by default except explicit approved safe flows.",
+    filesystem_policy: opts.filesystem_policy || "Allowed roots only; secret-like paths blocked.",
+    secret_policy: opts.secret_policy || "Secret paths and raw secret-like values are blocked/redacted; no cookie/session extraction.",
+    command_policy: opts.command_policy || "No arbitrary shell; only allowlisted diagnostics/tasks where profile permits.",
+    package_policy: opts.package_policy || "Package install/publish/audit-fix mutation is preview/planned only unless a future implementation explicitly supports it.",
+    git_policy: opts.git_policy || "Local status/diff read-only; local commit requires approved-writes or creator-power plus approval; no push/reset-hard.",
+    github_policy: opts.github_policy || "GitHub mutation is preview/planned only; no silent issue/PR/release mutation.",
+    browser_policy: opts.browser_policy || "Local file/localhost proof only where permitted; no login/cookie/session/CAPTCHA automation.",
+    evidence_policy: opts.evidence_policy || "Real actions require bounded output and redacted evidence logs.",
+    rollback_policy: opts.rollback_policy || "Writes require backup/restore plan where possible.",
+    risk_notes: opts.risk_notes || [],
+    public_default_safe: opts.public_default_safe === true,
+    creator_only: opts.creator_only === true
+  });
+  const dangerous = ["secret_read", "cookie_session_access", "captcha_bypass", "destructive_shell", "unrestricted_crawl", "credential_theft", "malware_like_behavior", "hidden_persistence", "unrestricted_filesystem_crawl", "silent_account_mutation"];
+  const profiles = [
+    mk("safe-readonly", "Default public profile: inspect metadata/files/code only; no real writes, commands, network fetches, browser captures, dev servers, commits, installs, GitHub mutation, or account actions.", {
+      allowed_actions: ["read_file", "search_code", "inspect_workspace", "dependency_scan", "permission_status", "trust_boundary_classify", "action_policy_preview"],
+      blocked_actions: ["apply_patch", "restore_backup", "run_test", "run_build", "start_dev_server", "browser_capture", "local_commit", "package_install", "github_issue", "github_pr", "github_release", "api_call", "external_fetch", ...dangerous],
+      public_default_safe: true,
+      network_policy: "No live external network or browser capture by default; dry-run planning only.",
+      command_policy: "No real project tasks/commands in safe-readonly; inspect package scripts only."
+    }),
+    mk("safe-local-dev", "Local development profile: read-only plus approved allowlisted diagnostics/tests/builds/dev-server/localhost proof; no file writes or local commits.", {
+      allowed_actions: ["read_file", "search_code", "inspect_workspace", "dependency_scan", "run_test", "run_build", "start_dev_server", "browser_capture", "download_check", "external_fetch"],
+      blocked_actions: ["apply_patch", "restore_backup", "local_commit", "package_install", "github_issue", "github_pr", "github_release", ...dangerous],
+      requires_approval_actions: ["run_test", "run_build", "start_dev_server", "browser_capture", "download_check", "external_fetch"],
+      network_policy: "Approved localhost proof and direct-source GET/HEAD/search-provider flows only; no broad crawling or login/session use."
+    }),
+    mk("approved-writes", "Approved local write profile: allows patch/file writes, restores, allowlisted tests/builds/dev-server/browser localhost proof, and local commits only with explicit approval/evidence/rollback.", {
+      allowed_actions: ["read_file", "search_code", "inspect_workspace", "dependency_scan", "run_test", "run_build", "start_dev_server", "browser_capture", "apply_patch", "restore_backup", "local_commit", "download_check", "external_fetch"],
+      blocked_actions: ["package_install", "github_issue", "github_pr", "github_release", ...dangerous],
+      requires_approval_actions: ["run_test", "run_build", "start_dev_server", "browser_capture", "apply_patch", "restore_backup", "local_commit", "download_check", "external_fetch"],
+      rollback_policy: "Patch batch writes create backups/restore plans; local commits use explicit file lists only."
+    }),
+    mk("approved-installs", "Preview profile for future package-install workflows. This build classifies installs as planned/blocked and never silently installs.", {
+      allowed_actions: ["read_file", "search_code", "inspect_workspace", "dependency_scan", "run_test", "run_build", "start_dev_server", "browser_capture", "apply_patch", "restore_backup", "local_commit"],
+      blocked_actions: ["package_install", "github_issue", "github_pr", "github_release", ...dangerous],
+      requires_approval_actions: ["package_install", "run_test", "run_build", "start_dev_server", "browser_capture", "apply_patch", "restore_backup", "local_commit"],
+      package_policy: "Package installs/audit fixes are preview/planned/blocked in this build; no install command is executed."
+    }),
+    mk("approved-github", "Preview profile for future GitHub workflows. This build classifies GitHub mutation as planned/blocked and never silently mutates GitHub.", {
+      allowed_actions: ["read_file", "search_code", "inspect_workspace", "dependency_scan", "run_test", "run_build", "start_dev_server", "browser_capture", "apply_patch", "restore_backup", "local_commit"],
+      blocked_actions: ["package_install", "github_issue", "github_pr", "github_release", ...dangerous],
+      requires_approval_actions: ["github_issue", "github_pr", "github_release", "run_test", "run_build", "start_dev_server", "browser_capture", "apply_patch", "restore_backup", "local_commit"],
+      github_policy: "GitHub issue/PR/comment/release workflows are preview/planned/blocked in this build; no gh/API mutation is executed."
+    }),
+    mk("creator-power", "Creator/developer experimental profile with broader local scope while still blocking secrets, system paths, hidden destructive actions, unrestricted crawling, account mutation, package installs, and GitHub mutation unless explicitly implemented later.", {
+      allowed_actions: ["read_file", "search_code", "inspect_workspace", "dependency_scan", "run_test", "run_build", "start_dev_server", "browser_capture", "apply_patch", "restore_backup", "local_commit", "api_call", "download_check", "external_fetch"],
+      blocked_actions: ["package_install", "github_issue", "github_pr", "github_release", ...dangerous],
+      requires_approval_actions: ["run_test", "run_build", "start_dev_server", "browser_capture", "apply_patch", "restore_backup", "local_commit", "api_call", "download_check", "external_fetch"],
+      creator_only: true
+    }),
+    mk("dangerous-disabled", "Hard-block policy profile documenting actions VNEM Tools MCP will not perform in public builds.", {
+      allowed_actions: [],
+      blocked_actions: dangerous,
+      risk_notes: ["Hard-blocks credential theft, cookie/session extraction, malware-like behavior, destructive system commands, broad private scraping, CAPTCHA bypass, hidden persistence, unrestricted filesystem crawling, and silent account mutation."]
+    })
+  ];
+  return profiles;
+}
+
+function permissionProfilesObject() {
+  const profiles = buildPermissionProfiles();
+  return { default_profile: "safe-readonly", selected_profile: activePermissionProfile.profile_name, profiles, dangerous_disabled_policy: profiles.find((p) => p.profile_name === "dangerous-disabled") };
+}
+
+function getActivePermissionProfile() {
+  const requested = String(process.env.VNEM_TOOLS_PERMISSION_PROFILE || "safe-readonly").trim() || "safe-readonly";
+  const profiles = buildPermissionProfiles();
+  return profiles.find((p) => p.profile_name === requested) || profiles.find((p) => p.profile_name === "safe-readonly");
+}
+
+function normalizeActionType(actionType, text = "") {
+  const raw = String(actionType || "").trim().toLowerCase().replace(/[\s-]+/g, "_");
+  let type = ACTION_ALIASES[raw] || raw;
+  const hay = `${type} ${text}`.toLowerCase();
+  if (!type || type === "unknown") {
+    if (/patch|write|edit|create file|delete file/.test(hay)) type = "apply_patch";
+    else if (/commit/.test(hay)) type = "local_commit";
+    else if (/install|audit fix|package/.test(hay)) type = "package_install";
+    else if (/github|pull request|\bpr\b|issue|release/.test(hay)) type = /release/.test(hay) ? "github_release" : /issue/.test(hay) ? "github_issue" : "github_pr";
+    else if (/captcha/.test(hay)) type = "captcha_bypass";
+    else if (/cookie|session/.test(hay)) type = "cookie_session_access";
+    else if (/secret|credential|\.env|id_rsa|pem|private key/.test(hay)) type = "secret_read";
+    else if (/rm -rf|reset --hard|format|destructive/.test(hay)) type = "destructive_shell";
+    else if (/crawl|scrap(e|ing) all|whole web|whole pc/.test(hay)) type = "unrestricted_crawl";
+    else if (/build/.test(hay)) type = "run_build";
+    else if (/test|check|validate|lint/.test(hay)) type = "run_test";
+    else if (/browser|screenshot|capture/.test(hay)) type = "browser_capture";
+    else if (/fetch|url|api|network|search/.test(hay)) type = /api/.test(hay) ? "api_call" : "external_fetch";
+    else type = "inspect_workspace";
+  }
+  return ACTION_ALIASES[type] || type;
+}
+
+function trustBoundaryClassify(description) {
+  const text = String(description || "");
+  const t = text.toLowerCase();
+  let level = "2_local_project_information";
+  let why = "Local project information/action under configured allowed roots.";
+  if (/captcha|cookie|session|credential theft|malware|destructive|rm -rf|reset --hard|format|unrestricted crawl|whole pc|password manager|browser profile/.test(t)) { level = "6_blocked_dangerous_action"; why = "The description matches hard-blocked dangerous behavior."; }
+  else if (/creator|developer risky|experimental|broad repo automation|system path/.test(t)) { level = "5_creator_developer_risky_action"; why = "Creator/developer risky action requires elevated profile and explicit approval."; }
+  else if (/github|account|issue|pull request|\bpr\b|release|publish|deploy|external account/.test(t)) { level = "4_external_account_action"; why = "External account or remote mutation action."; }
+  else if (/\.env|secret|token|credential|password|id_rsa|id_ed25519|\.pem|\.key|cookies|sessions|browser profile|private key/.test(t)) { level = "3_sensitive_local_information"; why = "Sensitive local information or secret-like path/value."; }
+  else if (/user provided|pasted|input from user|log snippet|uploaded/.test(t)) { level = "1_user_provided_information"; why = "Information supplied by the user for this task."; }
+  else if (/public|official docs|https?:\/\/|web page|source url|docs/.test(t) && !/local project|repo|package\.json/.test(t)) { level = "0_public_information"; why = "Public/source information without local or account mutation."; }
+  const blocked = level === "6_blocked_dangerous_action" || (level === "3_sensitive_local_information" && /secret|token|credential|password|id_rsa|cookie|session|browser profile|password manager/.test(t));
+  const requires = blocked || ["3_sensitive_local_information", "4_external_account_action", "5_creator_developer_risky_action"].includes(level);
+  return {
+    level,
+    classification: level.replace(/^\d_/, ""),
+    why,
+    allowed_by_default: ["0_public_information", "1_user_provided_information", "2_local_project_information"].includes(level) && !blocked,
+    requires_approval: requires,
+    blocked_by_default: blocked,
+    redaction_required: blocked || level === "3_sensitive_local_information",
+    evidence_required: requires || level === "2_local_project_information",
+    safe_next_action: blocked ? "Do not access this data/action; use redacted user-provided excerpts, public docs, or a safer bounded preview instead." : requires ? "Run a dry-run/policy preview and ask for explicit approval before any real action." : "Proceed with bounded read-only inspection and evidence notes.",
+    must_not_claim: ["Accessed secrets/cookies/sessions or bypassed CAPTCHA.", "Performed account mutation or risky action without explicit approval.", "A blocked/dangerous action is safe or supported."]
+  };
+}
+
+function actionPolicyPreview(args = {}) {
+  const actionType = normalizeActionType(args.action_type, `${args.proposed_action || ""} ${args.target_path || ""} ${args.source_description || ""}`);
+  const profile = activePermissionProfile;
+  const trust = trustBoundaryClassify(`${actionType} ${args.proposed_action || ""} ${args.target_path || ""} ${args.source_description || ""}`);
+  const hardBlocked = HARD_BLOCKED_ACTION_TYPES.has(actionType) || trust.level === "6_blocked_dangerous_action";
+  const trustBoundaryLevel = hardBlocked ? "6_blocked_dangerous_action" : trust.level;
+  const plannedBlocked = ["package_install", "github_issue", "github_pr", "github_release"].includes(actionType);
+  const allowedByProfile = profile.allowed_actions.includes(actionType) || (["read_file", "search_code", "inspect_workspace", "dependency_scan"].includes(actionType) && profile.profile_name !== "dangerous-disabled");
+  const blockedByProfile = profile.blocked_actions.includes(actionType) || profile.profile_name === "dangerous-disabled";
+  const allowed = !hardBlocked && !plannedBlocked && allowedByProfile && !blockedByProfile;
+  const requiresApproval = allowed && (profile.requires_approval_actions.includes(actionType) || !["read_file", "search_code", "inspect_workspace", "dependency_scan"].includes(actionType));
+  const reason = hardBlocked ? `Action ${actionType} is hard-blocked as dangerous.` : plannedBlocked ? `Action ${actionType} is preview/planned/blocked in this build; it is not implemented for silent execution.` : allowed ? `Allowed by ${profile.profile_name}${requiresApproval ? " only with explicit approval" : ""}.` : `Blocked by active permission profile ${profile.profile_name}.`;
+  return {
+    action_type: actionType,
+    trust_boundary_level: trustBoundaryLevel,
+    permission_profile: profile.profile_name,
+    allowed,
+    requires_approval: requiresApproval,
+    blocked: !allowed,
+    reason,
+    required_user_approval_text: requiresApproval ? buildPermissionPrompt({ action_type: actionType, target_paths: [args.target_path].filter(Boolean), reason }).text : "",
+    risk_notes: [...profile.risk_notes, trust.why].filter(Boolean),
+    rollback_expected: ["apply_patch", "restore_backup", "local_commit"].includes(actionType) && allowed,
+    evidence_expected: allowed || requiresApproval,
+    safer_alternative: allowed ? "Run dry-run first, then execute only the exact approved scoped action." : trust.safe_next_action,
+    must_not_claim: [
+      "Tools MCP performed this action before evidence exists.",
+      plannedBlocked ? `${actionType} is implemented or executed in this build.` : null,
+      hardBlocked ? `${actionType} is allowed or safe.` : null,
+      requiresApproval ? `${actionType} was approved without explicit user approval text.` : null
+    ].filter(Boolean)
+  };
+}
+
+function enforceActionPolicy(actionType, args = {}) {
+  const normalized = normalizeActionType(actionType);
+  const dryRun = args.dry_run !== false;
+  const preview = actionPolicyPreview({ action_type: normalized, proposed_action: normalized });
+  if (!dryRun && !preview.allowed) throw new ToolsError(preview.reason, "permission_profile_blocked", { action_policy_preview: preview });
+  if (!dryRun && preview.requires_approval) enforceApproval(args);
+  return preview;
+}
+
+function permissionStatusObject() {
+  const manifest = safeSearchProviderManifest();
+  const workspace = path.resolve(process.env.VNEM_WORKSPACE_ROOT || process.cwd() || repoRoot);
+  const workspaceAllowed = isInsideAny(workspace, allowedRoots);
+  return {
+    active_profile: activePermissionProfile,
+    configured_by: process.env.VNEM_TOOLS_PERMISSION_PROFILE ? "VNEM_TOOLS_PERMISSION_PROFILE" : "default_safe_readonly",
+    allowed_roots: allowedRoots,
+    current_working_directory: process.cwd(),
+    workspace_root: workspace,
+    workspace_allowed: workspaceAllowed,
+    workspace_fix_suggestion: workspaceAllowed ? "Current workspace is inside an allowed root." : `Add the workspace to VNEM_TOOLS_ALLOWED_ROOTS or start Tools MCP from an allowed root. Current allowed roots: ${allowedRoots.join(path.delimiter)}`,
+    evidence_root: evidenceRoot,
+    evidence_root_inside_allowed_roots: isInsideAny(evidenceRoot, allowedRoots),
+    how_to_add_more_roots: `Set VNEM_TOOLS_ALLOWED_ROOTS to one or more project roots separated by ${JSON.stringify(path.delimiter)}; keep roots narrow, not drive/home roots.`,
+    broad_root_warnings: allowedRoots.flatMap(rootBroadnessWarnings),
+    localhost_policy: { enabled: process.env.VNEM_TOOLS_ALLOW_LOCALHOST === "1", host_policy: "localhost/127.0.0.1 only for approved local proof" },
+    configured_search_providers_by_presence_only: manifest.providers.map((p) => ({ name: p.name, configured: p.configured, env_var_name: p.env_var_name, configured_by: p.configured_by, api_key_value_exposed: false })),
+    blocked_categories: ["secret files", "raw secret values", "cookies", "sessions", "browser profiles", "password manager data", "CAPTCHA bypass", "destructive shell", "unrestricted filesystem crawling", "silent package install", "silent GitHub/account mutation"],
+    remaining_unsupported_actions: unsupportedActions()
+  };
+}
+
+function rootBroadnessWarnings(root) {
+  const parsed = path.parse(path.resolve(root));
+  const normalized = normalizePath(path.resolve(root)).toLowerCase();
+  const warnings = [];
+  if (path.resolve(root) === parsed.root) warnings.push(`Allowed root ${root} is too broad (drive/filesystem root). Use a project-specific directory.`);
+  const home = process.env.HOME || process.env.USERPROFILE;
+  if (home && path.resolve(root).toLowerCase() === path.resolve(home).toLowerCase()) warnings.push(`Allowed root ${root} is a whole user home directory; prefer a project-specific root.`);
+  if (/^([a-z]:\/)?$/i.test(normalized)) warnings.push(`Allowed root ${root} looks like a drive root and is too broad.`);
+  return [...new Set(warnings)];
+}
+
+function formatPermissionProfiles(profiles) { return [`vnem_tools_permission_profiles: ${profiles.profiles.length} profile(s)`, `default=${profiles.default_profile}`, `active=${profiles.selected_profile}`, `profiles=${profiles.profiles.map((p) => p.profile_name).join(", ")}`].join("\n"); }
+function formatPermissionStatus(status) { return [`vnem_tools_permission_status: ${status.active_profile.profile_name}`, `allowed_roots=${status.allowed_roots.join(", ")}`, `workspace_allowed=${status.workspace_allowed}`, `evidence_root=${status.evidence_root}`, status.broad_root_warnings.length ? `warnings=${status.broad_root_warnings.join("; ")}` : "warnings=none"].join("\n"); }
+function formatActionPolicyPreview(preview) { return [`vnem_tools_action_policy_preview: ${preview.action_type}`, `profile=${preview.permission_profile}`, `trust=${preview.trust_boundary_level}`, `allowed=${preview.allowed}`, `requires_approval=${preview.requires_approval}`, `blocked=${preview.blocked}`, `reason=${preview.reason}`].join("\n"); }
+function formatTrustBoundary(trust) { return [`vnem_tools_trust_boundary_classify: ${trust.level}`, `requires_approval=${trust.requires_approval}`, `blocked_by_default=${trust.blocked_by_default}`, `safe_next_action=${trust.safe_next_action}`].join("\n"); }
+
 async function computeAllowedRoots() {
   const raw = process.env.VNEM_TOOLS_ALLOWED_ROOTS;
   const roots = raw
@@ -884,6 +1177,10 @@ async function loadUsablePacks() {
   }
 }
 
+function unsupportedActions() {
+  return ["remote_github_mutation", "git_push", "package_install", "package_publish", "deployment", "arbitrary_shell", "unrestricted_api_calls", "secret_manager_backed_live_api", "search_engine_scraping", "automatic_captcha_bypass", "broad_crawling", "external_browser_browsing_by_default", "login_automation", "cookie_extraction", "session_extraction", "captcha_bypass", "giga_mcp"];
+}
+
 function statusObject() {
   return {
     server_name: "vnem-tools",
@@ -892,7 +1189,17 @@ function statusObject() {
     action_tools_enabled: true,
     dry_run_default: true,
     approval_required_for_mutation: true,
+    permission_profile: activePermissionProfile.profile_name,
+    permission_profile_description: activePermissionProfile.description,
+    permission_profiles_available: PERMISSION_PROFILE_NAMES,
+    permission_status_tool: "vnem_tools_permission_status",
+    action_policy_preview_tool: "vnem_tools_action_policy_preview",
+    trust_boundary_classifier_tool: "vnem_tools_trust_boundary_classify",
     allowed_roots: allowedRoots,
+    current_working_directory: process.cwd(),
+    workspace_allowed: permissionStatusObject().workspace_allowed,
+    allowed_root_warnings: permissionStatusObject().broad_root_warnings,
+    how_to_add_more_roots: permissionStatusObject().how_to_add_more_roots,
     blocked_paths: [".env*", "*secret*", "*token*", "*credential*", "*key*", ".git", "node_modules", "dist", "build"],
     command_allowlist: ["node --check <file>", "npm test", "npm run <safe-script>", "git status", "git diff", "git log", "git ls-files"],
     tool_catalog_policy: { tool: "vnem_tools_manifest", capability_groups: TOOL_CAPABILITY_GROUPS, safety_metadata_required: true, core_handoff_compatible: true },
@@ -941,7 +1248,7 @@ function statusObject() {
     },
     evidence_log_location: evidenceRoot,
     core_handoff_supported: true,
-    remaining_unsupported_actions: ["remote_github_mutation", "git_push", "package_install", "package_publish", "deployment", "arbitrary_shell", "unrestricted_api_calls", "secret_manager_backed_live_api", "search_engine_scraping", "automatic_captcha_bypass", "broad_crawling", "external_browser_browsing_by_default", "login_automation", "cookie_extraction", "session_extraction", "captcha_bypass", "giga_mcp"],
+    remaining_unsupported_actions: unsupportedActions(),
     unsupported_in_foundation_batch: ["remote_github_mutation", "git_push", "package_install", "package_publish", "deployment", "arbitrary_shell", "unrestricted_api_calls", "secret_manager_backed_live_api", "login_automation", "cookie_extraction", "captcha_bypass", "giga_mcp"]
   };
 }
@@ -951,7 +1258,10 @@ function formatStatus() {
   return [
     `VNEM Tools MCP ${status.version}`,
     "Tools MCP can perform actions only through safeguards.",
+    `Permission profile: ${status.permission_profile}`,
     `Allowed roots: ${status.allowed_roots.join(", ")}`,
+    `Workspace allowed: ${status.workspace_allowed}`,
+    status.allowed_root_warnings.length ? `Allowed-root warnings: ${status.allowed_root_warnings.join("; ")}` : "Allowed-root warnings: none",
     "Dry-run is default; real mutation/execution/live API/browser screenshot/project task/dev server/git commit requests require approved=true and an approval_note.",
     "Local project actions include a manifest/catalog, workspace map, read-many, code search, references, dependency scan, project scan, patch batch, restore batch, safe package tasks, local dev servers, session proof packs, research/source helpers, and approved local git commits.",
     `Browser proof: local files/localhost only, screenshots under ${status.browser_policy.screenshot_evidence_location}, runtime ${status.browser_policy.browser_runtime_status}.`,
@@ -1123,7 +1433,7 @@ async function searchAllowedFiles(args) {
   return { root: root.relativePath || ".", query: args.query, results, skipped_policy: skippedPolicy() };
 }
 
-const TOOL_CAPABILITY_GROUPS = ["filesystem", "project_intelligence", "patching", "rollback", "commands", "project_tasks", "dev_server", "browser_proof", "browser_intelligence", "api_request", "search", "research_sources", "source_quality", "browsing_risk", "research_matrix", "session_evidence", "local_git", "status_readiness"];
+const TOOL_CAPABILITY_GROUPS = ["permissions", "filesystem", "project_intelligence", "patching", "rollback", "commands", "project_tasks", "dev_server", "browser_proof", "browser_intelligence", "api_request", "search", "research_sources", "source_quality", "browsing_risk", "research_matrix", "session_evidence", "local_git", "status_readiness"];
 
 function buildToolCatalog() {
   const commonUnsafe = ["secret reading/dumping", "outside-root access", "arbitrary shell", "package installs", "git push", "deployment", "Giga MCP"];
@@ -1146,7 +1456,11 @@ function buildToolCatalog() {
     related_tools: opts.related_tools || []
   });
   return [
-    mk("vnem_tools_status", "status_readiness", { description: "Report Tools MCP policy/readiness.", evidence_logged: false, typical_use_cases: ["preflight safety status"] }),
+    mk("vnem_tools_status", "status_readiness", { description: "Report Tools MCP policy/readiness including active permission profile and allowed-root status.", evidence_logged: false, typical_use_cases: ["preflight safety status"] }),
+    mk("vnem_tools_permission_profiles", "permissions", { description: "List all first-class Tools MCP permission profiles and allow/block/approval policies.", evidence_logged: false, allowed_roots_required: false, typical_use_cases: ["permission planning", "profile discovery"] }),
+    mk("vnem_tools_permission_status", "permissions", { description: "Report active profile, allowed roots, evidence root, localhost policy, provider presence, blocked categories, and root warnings.", evidence_logged: false, allowed_roots_required: false, typical_use_cases: ["permission preflight", "allowed-root debugging"] }),
+    mk("vnem_tools_action_policy_preview", "permissions", { description: "Preview whether a proposed action is allowed, blocked, or approval-gated under the active profile.", evidence_logged: false, allowed_roots_required: false, typical_use_cases: ["approval preview", "risk classification"] }),
+    mk("vnem_tools_trust_boundary_classify", "permissions", { description: "Classify data/action/source descriptions into VNEM trust-boundary levels.", evidence_logged: false, allowed_roots_required: false, typical_use_cases: ["security boundary planning"] }),
     mk("vnem_tools_manifest", "status_readiness", { description: "Structured catalog of Tools MCP tools and safety metadata.", evidence_logged: false, typical_use_cases: ["AI tool discovery", "Core handoff planning"] }),
     mk("vnem_tools_prepare_action_plan", "status_readiness", { description: "Convert Core handoff into a dry-run-first Tools plan.", evidence_logged: false, typical_use_cases: ["Core→Tools planning"] }),
     mk("vnem_tools_permission_prompt", "status_readiness", { description: "Generate approval prompt for a risky action.", evidence_logged: false, typical_use_cases: ["human approval wording"] }),
@@ -1207,6 +1521,11 @@ function buildToolsManifest(group) {
     capability_groups: TOOL_CAPABILITY_GROUPS,
     tools,
     unsafe_actions_not_supported: statusObject().remaining_unsupported_actions,
+    permission_profile: activePermissionProfile.profile_name,
+    permission_profiles: PERMISSION_PROFILE_NAMES,
+    permission_manifest_integration: true,
+    action_policy_preview_tool: "vnem_tools_action_policy_preview",
+    trust_boundary_classifier_tool: "vnem_tools_trust_boundary_classify",
     catalog_safety_summary: "Every action/mutation/network tool declares approval behavior, dry-run status where applicable, evidence behavior, secret policy, and Core handoff compatibility."
   };
 }
@@ -1483,8 +1802,8 @@ async function safeWebSearch(args) {
   const dryRun = args.dry_run !== false;
   const base = { provider, query, executed: false, dry_run: dryRun, results: [], result_count: 0, provider_status: "unknown", blocked_or_unavailable_reason: "", freshness_notes: [], safe_to_claim: [], must_not_claim: ["A web search happened.", "Search results were fetched.", "Search result pages were scraped.", "CAPTCHA was bypassed.", "Sources were read beyond search result snippets."], evidence_log_id: null };
   if (!providerInfo) return { ...base, provider_status: "provider_unknown", blocked_or_unavailable_reason: "Provider is not in VNEM search provider manifest." };
-  if (dryRun) return { ...base, provider_status: providerInfo.configured ? "dry_run_planned_configured_provider" : "dry_run_planned_provider_unconfigured", blocked_or_unavailable_reason: providerInfo.configured ? "Dry-run only; no provider was contacted." : "Provider is not configured.", safe_to_claim: ["Search was planned only; no provider was contacted."] };
-  if (providerInfo.requires_approval) enforceApproval(args);
+  if (dryRun) return { ...base, provider_status: providerInfo.configured ? "dry_run_planned_configured_provider" : "dry_run_planned_provider_unconfigured", blocked_or_unavailable_reason: providerInfo.configured ? "Dry-run only; no provider was contacted." : "Provider is not configured.", safe_to_claim: ["Search was planned only; no provider was contacted."], action_policy_preview: actionPolicyPreview({ action_type: "external_fetch", proposed_action: query }) };
+  if (providerInfo.requires_approval) enforceActionPolicy("external_fetch", args);
   if (!providerInfo.configured) {
     const result = { ...base, dry_run: false, provider_status: "provider_unconfigured", blocked_or_unavailable_reason: `${provider} is not configured; no fake results returned.`, must_not_claim: ["Provider search executed.", "Search results were fetched.", "Current web research is complete."] };
     const log = await writeEvidenceLog("web_search", result);
@@ -1605,7 +1924,7 @@ async function safeDownloadSafetyCheck(args) {
   let contentType = null;
   let length = null;
   if (!dryRun) {
-    enforceApproval(args);
+    enforceActionPolicy("download_check", args);
     try {
       const response = await fetch(url, { method: "HEAD", redirect: "manual", signal: AbortSignal.timeout(8000) });
       executedHead = true;
@@ -1721,8 +2040,8 @@ async function safeFetchUrlText(args) {
   const url = parseSafeResearchUrl(args.url);
   const dryRun = args.dry_run !== false;
   const planned = { url: redactUrl(url), method: args.method || "GET", dry_run: dryRun, executed: false, status: null, content_type: null, text_excerpt: "", title_if_found: "", links_count: 0, sha256: null, truncated: false, evidence_log_id: null, safe_to_claim: [], must_not_claim: ["Direct URL content was fetched.", "A web search happened.", "Search engine results were scraped."] };
-  if (dryRun) return planned;
-  enforceApproval(args);
+  if (dryRun) return { ...planned, action_policy_preview: actionPolicyPreview({ action_type: "external_fetch", proposed_action: planned.url }) };
+  enforceActionPolicy("external_fetch", args);
   let raw;
   let status = 200;
   let contentType = "text/plain";
@@ -2302,7 +2621,8 @@ async function safeApplyPatch(args) {
   const parsed = parseVnemPatch(args.patch);
   const root = await resolveAllowedRoot(args.target_root || ".");
   const target = await resolveAllowedFile(path.resolve(root.absolutePath, parsed.path), { mustExist: true, blockSecrets: true });
-  if (!dryRun) enforceApproval(args);
+  if (containsRawSecret(parsed.replace)) throw new ToolsError("Raw secret-like values are blocked in patch content.", "raw_secret_blocked", { path: target.relativePath });
+  enforceActionPolicy("apply_patch", args);
   const info = await stat(target.absolutePath);
   if (!info.isFile()) throw new ToolsError("Patch target must be a regular file.", "not_a_file", { path: target.relativePath });
   const buffer = await readFile(target.absolutePath);
@@ -2341,7 +2661,7 @@ async function safeRestoreBackup(args) {
   const dryRun = args.dry_run !== false;
   const backup = await resolveAllowedFile(args.backup_path, { mustExist: true, blockSecrets: true });
   const target = await resolveAllowedFile(args.target_path, { mustExist: true, blockSecrets: true });
-  if (!dryRun) enforceApproval(args);
+  enforceActionPolicy("restore_backup", args);
   const backupInfo = await stat(backup.absolutePath);
   const targetInfo = await stat(target.absolutePath);
   if (!backupInfo.isFile() || !targetInfo.isFile()) throw new ToolsError("Backup and target must be regular files.", "not_a_file", { backup_path: backup.relativePath, target_path: target.relativePath });
@@ -2396,6 +2716,7 @@ async function safeRunCommand(args) {
   const maxOutputBytes = Math.min(args.max_output_bytes || 16000, MAX_COMMAND_OUTPUT_BYTES);
   const command = String(args.command || "").trim();
   validateSafeCommand(command);
+  enforceActionPolicy("run_test", args);
   const planned = { command, cwd: cwd.absolutePath, dry_run: dryRun, executed: false, timeout_ms: timeoutMs, max_output_bytes: maxOutputBytes, allowed: true };
   if (dryRun) return planned;
   enforceApproval(args);
@@ -2490,7 +2811,7 @@ async function safeApplyPatchBatch(args) {
     if (next === null) working.delete(target.absolutePath);
     else working.set(target.absolutePath, next);
   }
-  if (!dryRun) enforceApproval(args);
+  enforceActionPolicy("apply_patch", args);
   const backups = [];
   const changedFiles = [...new Set(plans.map((plan) => plan.target.relativePath))];
   const createdFiles = [...new Set(plans.filter((plan) => plan.op === "create").map((plan) => plan.target.relativePath))];
@@ -2564,7 +2885,7 @@ async function safeRestoreBatch(args) {
     const text = await readTextFileForMutation(backup.absolutePath, backup.relativePath);
     items.push({ action: "restore_file", backup_path: backup.absolutePath, target_path: target.relativePath, target, restore_text: text });
   }
-  if (!dryRun) enforceApproval(args);
+  enforceActionPolicy("restore_backup", args);
   if (!dryRun) {
     for (const item of items) {
       if (item.action === "delete_created_file") await rm(item.target.absolutePath, { force: true });
@@ -2646,7 +2967,7 @@ function commonDirs(files, names) {
 
 function findImmediateSecretPaths(root) {
   const out = [];
-  for (const name of [".env", ".env.local", "secrets", "tokens", "credentials"]) if (existsSync(path.join(root, name))) out.push(name);
+  for (const name of [".env", ".env.local", "secrets", "tokens", "credentials", "cookies", "sessions", ".ssh", "browser", "password-manager"]) if (existsSync(path.join(root, name))) out.push(name);
   return out;
 }
 
@@ -2659,8 +2980,8 @@ async function safeRunProjectTask(args) {
   const timeoutMs = Math.min(args.timeout_ms || 30000, MAX_COMMAND_TIMEOUT_MS);
   const maxOutputBytes = Math.min(args.max_output_bytes || 16000, MAX_COMMAND_OUTPUT_BYTES);
   const planned = { task: args.task, script: scriptName, command: `npm run ${scriptName}`, cwd: root.absolutePath, dry_run: dryRun, executed: false, timeout_ms: timeoutMs, max_output_bytes: maxOutputBytes };
-  if (dryRun) return planned;
-  enforceApproval(args);
+  if (dryRun) return { ...planned, action_policy_preview: actionPolicyPreview({ action_type: scriptName === "build" ? "run_build" : "run_test", proposed_action: planned.command }) };
+  enforceActionPolicy(scriptName === "build" ? "run_build" : "run_test", args);
   const execution = await runProcess("npm", ["run", scriptName], { cwd: root.absolutePath, timeoutMs, maxOutputBytes });
   const result = { ...planned, dry_run: false, executed: true, ...execution };
   const log = await writeEvidenceLog("project_task", result);
@@ -2701,8 +3022,8 @@ async function safeStartDevServer(args) {
   const host = String(args.host || "127.0.0.1");
   if (!["127.0.0.1", "localhost"].includes(host)) throw new ToolsError("Dev servers must bind/check localhost only.", "host_blocked", { host });
   const planned = { dry_run: dryRun, started: false, script, command: `npm run ${script} -- --host ${host} --port ${port}`, cwd: root.absolutePath, host, port, url: `http://${host}:${port}/`, registry: "in-memory per MCP process" };
-  if (dryRun) return planned;
-  enforceApproval(args);
+  if (dryRun) return { ...planned, action_policy_preview: actionPolicyPreview({ action_type: "start_dev_server", proposed_action: planned.command }) };
+  enforceActionPolicy("start_dev_server", args);
   const child = spawn(spawnCommandName("npm"), ["run", script, "--", "--host", host, "--port", String(port)], { cwd: root.absolutePath, shell: shouldUseShellForCommand("npm"), windowsHide: true });
   const serverId = logId("dev-server");
   const record = { ...planned, dry_run: false, started: true, server_id: serverId, pid: child.pid, stdout: "", stderr: "", started_at: new Date().toISOString() };
@@ -2809,8 +3130,8 @@ async function safeGitCommit(args) {
   }
   if (/\b(push|reset --hard|deploy|publish)\b/i.test(args.message)) throw new ToolsError("Unsafe git commit message/action blocked.", "unsafe_git_action_blocked");
   const planned = { dry_run: dryRun, committed: false, root: root.absolutePath, files, message: redactSecrets(args.message), remote_mutation: false };
-  if (dryRun) return planned;
-  enforceApproval(args);
+  if (dryRun) return { ...planned, action_policy_preview: actionPolicyPreview({ action_type: "local_commit", proposed_action: args.message }) };
+  enforceActionPolicy("local_commit", args);
   await runProcess("git", ["add", "--", ...files], { cwd: root.absolutePath, timeoutMs: 10000, maxOutputBytes: 12000 });
   const commitExec = await runProcess("git", ["commit", "-m", args.message], { cwd: root.absolutePath, timeoutMs: 20000, maxOutputBytes: 20000 });
   if (!commitExec.ok) throw new ToolsError("git commit failed.", "git_commit_failed", { stderr: commitExec.stderr, stdout: commitExec.stdout });
@@ -2841,8 +3162,8 @@ async function safeApiRequest(args) {
     max_response_bytes: maxResponseBytes,
     policy: "GET/HEAD only; raw secrets blocked; live requests require approval; unknown URLs blocked unless trusted/localhost-test."
   };
-  if (dryRun) return planned;
-  enforceApproval(args);
+  if (dryRun) return { ...planned, action_policy_preview: actionPolicyPreview({ action_type: "api_call", proposed_action: `${method} ${planned.url}` }) };
+  enforceActionPolicy("api_call", args);
   const started = Date.now();
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
@@ -2926,8 +3247,8 @@ async function safeBrowserCapture(args) {
     safe_to_claim: [],
     must_not_claim: ["Browser screenshot evidence was captured.", "Visual proof was collected."]
   };
-  if (dryRun) return planned;
-  enforceApproval(args);
+  if (dryRun) return { ...planned, action_policy_preview: actionPolicyPreview({ action_type: "browser_capture", proposed_action: target.url.toString() }) };
+  enforceActionPolicy("browser_capture", args);
   const browser = await discoverBrowserRuntime();
   if (!browser) {
     const unavailable = {
@@ -3064,7 +3385,7 @@ function scrubHeadersForRequest(headers) {
 
 async function collectEvidence(args) {
   const changedFiles = arrayify(args.changed_files);
-  const commandsRun = arrayify(args.commands_run);
+  const commandsRun = arrayify(args.commands_run).map(redactSecrets);
   const apiRequests = arrayify(args.api_requests).map(redactSecrets);
   const tests = arrayify(args.test_results);
   const screenshots = arrayify(args.screenshots).map(redactSecrets);
@@ -3197,7 +3518,7 @@ function enforceApproval(args) {
 
 function isSecretLikePath(targetPath) {
   const parts = normalizePath(targetPath).toLowerCase().split("/");
-  return parts.some((part) => part === ".env" || part.startsWith(".env.") || /(^|[._-])(secret|token|credential|password|passwd|api[_-]?key|private[_-]?key|id_rsa|id_ed25519)([._-]|$)/i.test(part));
+  return parts.some((part) => part === ".env" || part.startsWith(".env.") || /(^|[._-])(secret|token|tokens|credential|credentials|password|passwd|api[_-]?key|private[_-]?key|id_rsa|id_ed25519|cookies?|sessions|browser[_-]?profile|password[_-]?manager)([._-]|$)/i.test(part) || /\.(pem|key|p12|pfx)$/i.test(part));
 }
 
 function shouldSkipRelative(rel) {
@@ -3243,13 +3564,15 @@ function redactSecrets(value) {
     .replace(/(authorization\s*[:=]\s*)(bearer\s+)?[^\s"'{}]+/gi, "$1[REDACTED]")
     .replace(/((api[_-]?key|token|secret|password|credential)["']?\s*[:=]\s*["']?)[^\s"'{}]+/gi, "$1[REDACTED]")
     .replace(/bearer\s+[a-z0-9._~+/-]+/gi, "Bearer [REDACTED]")
-    .replace(/(should|sample)-redact-[a-z0-9-]+/gi, "[REDACTED]");
+    .replace(/(should|sample)-redact-[a-z0-9-]+/gi, "[REDACTED]")
+    .replace(/gh[pousr]_[A-Za-z0-9_]{20,}/g, "[REDACTED]")
+    .replace(/sk-[A-Za-z0-9_-]{20,}/g, "[REDACTED]");
 }
 
 function containsRawSecret(value) {
   if (isSecretRef(value)) return false;
   const text = typeof value === "string" ? value : JSON.stringify(value || "");
-  return /bearer\s+|api[_-]?key\s*[:=]|token\s*[:=]|secret\s*[:=]|password\s*[:=]/i.test(text);
+  return /bearer\s+|api[_-]?key\s*[:=]|token\s*[:=]|secret\s*[:=]|password\s*[:=]|gh[pousr]_[A-Za-z0-9_]{20,}|sk-[A-Za-z0-9_-]{20,}/i.test(text);
 }
 
 function redactUrl(url) {

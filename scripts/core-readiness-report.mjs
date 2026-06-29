@@ -30,6 +30,7 @@ const coreSearchPlanningTestSource = await text("scripts/test-core-search-planni
 const coreRoutingMemoryOutputTestSource = await text("scripts/test-core-routing-memory-output.mjs");
 const coreOutputQualityTestSource = await text("scripts/test-core-output-quality.mjs");
 const coreAntiStagnationTestSource = await text("scripts/test-core-anti-stagnation.mjs");
+const corePermissionPlanningTestSource = await text("scripts/test-core-permission-planning.mjs");
 const mcpUserSmokeTestSource = await text("scripts/test-mcp-user-smoke.mjs");
 const readme = await text("README.md");
 const installGuide = await text(".vnem/install-guide.md");
@@ -127,6 +128,14 @@ const routingMemoryOutputStatus = {
   plan_only_status: /core_plan_only:\s*true/.test(serverSource) && /Core must remain plan-only/.test(coreRoutingMemoryOutputTestSource)
 };
 
+const corePermissionAwarenessStatus = {
+  core_permission_awareness_status: /buildCorePermissionProfilePlan/.test(serverSource) && /tools_permission_planning/.test(serverSource) && /permission_profile_plan/.test(corePermissionPlanningTestSource),
+  trust_boundary_planning_status: /trust_boundary_level/.test(serverSource) && /6_blocked_dangerous_action/.test(corePermissionPlanningTestSource + serverSource),
+  approval_required_planning_status: /actions_requiring_approval/.test(serverSource) && /approved-writes|safe-local-dev/.test(corePermissionPlanningTestSource + serverSource),
+  blocked_action_planning_status: /actions_blocked_by_current_profile/.test(serverSource) && /package_install|github_pr|secret_read/.test(corePermissionPlanningTestSource + serverSource),
+  core_still_plan_only_status: /core_executes_tools:\s*false/.test(serverSource) && /Core must not expose Tools action\/status tool directly/.test(corePermissionPlanningTestSource)
+};
+
 const usablePackStatus = {
   usable_api_pack_count: Array.isArray(usablePacks.apis) ? usablePacks.apis.filter((pack) => pack.usable_status === "usable").length : 0,
   usable_skill_pack_count: Array.isArray(usablePacks.skills) ? usablePacks.skills.filter((pack) => pack.usable_status === "usable").length : 0,
@@ -155,6 +164,7 @@ assert.ok(Object.values(toolSelectionStatus).every(Boolean), "Core tool-selectio
 assert.ok(Object.values(browserResearchPlanningStatus).every(Boolean), "Core browser/research planning readiness is incomplete");
 assert.ok(Object.values(searchPlanningStatus).every(Boolean), "Core search/browsing planner readiness is incomplete");
 assert.ok(Object.values(routingMemoryOutputStatus).every(Boolean), "Core routing/memory/output-quality/anti-stagnation readiness is incomplete");
+assert.ok(Object.values(corePermissionAwarenessStatus).every(Boolean), "Core permission-awareness/trust-boundary planning readiness is incomplete");
 assert.ok(packageJson.scripts?.["test:core-browser-research-planning"] === "node scripts/test-core-browser-research-planning.mjs", "test:core-browser-research-planning package script is missing");
 assert.ok(packageJson.scripts?.["test:core-search-planning"] === "node scripts/test-core-search-planning.mjs", "test:core-search-planning package script is missing");
 assert.ok(packageJson.scripts?.["test:mcp-user-smoke"] === "node scripts/test-mcp-user-smoke.mjs", "test:mcp-user-smoke package script is missing");
@@ -163,6 +173,7 @@ assert.ok(packageJson.scripts?.["test:core-tools-ecosystem"] === "node scripts/t
 assert.ok(packageJson.scripts?.["test:core-routing-memory-output"] === "node scripts/test-core-routing-memory-output.mjs", "test:core-routing-memory-output package script is missing");
 assert.ok(packageJson.scripts?.["test:core-output-quality"] === "node scripts/test-core-output-quality.mjs", "test:core-output-quality package script is missing");
 assert.ok(packageJson.scripts?.["test:core-anti-stagnation"] === "node scripts/test-core-anti-stagnation.mjs", "test:core-anti-stagnation package script is missing");
+assert.ok(packageJson.scripts?.["test:core-permission-planning"] === "node scripts/test-core-permission-planning.mjs", "test:core-permission-planning package script is missing");
 assert.ok(packageJson.scripts?.["core:readiness"], "package script core:readiness is missing");
 
 const blockers = [];
@@ -200,6 +211,7 @@ const report = {
   browser_research_planning_status: browserResearchPlanningStatus,
   search_planning_status: searchPlanningStatus,
   routing_memory_output_quality_status: routingMemoryOutputStatus,
+  core_permission_awareness_status: corePermissionAwarenessStatus,
   core_tools_ecosystem_test_status: /vnem_build_tools_plan/.test(coreToolsEcosystemTestSource) && /vnem_tools_finish_session/.test(coreToolsEcosystemTestSource),
   api_library_counts: apiCounts,
   skill_library_counts: skillCounts,
@@ -216,7 +228,8 @@ const report = {
     "Core tool selection and Core→Tools planning are available, tested, and explicitly plan-only.",
     "Core browser/research planning distinguishes local UI proof, direct-source analysis, website understanding, and current-search needs without executing Tools.",
     "Core search/browsing planning now assesses research need, builds provider-search plans, handles CAPTCHA/access-block and download risk, and remains plan-only.",
-    "Core routing now returns structured task categories, memory relevance decisions, missing-context ask/no-ask decisions, output-quality contracts, anti-stagnation checks, and evidence-label audits while remaining plan-only."
+    "Core routing now returns structured task categories, memory relevance decisions, missing-context ask/no-ask decisions, output-quality contracts, anti-stagnation checks, and evidence-label audits while remaining plan-only.",
+    "Core now plans Tools permission profiles, trust-boundary levels, approval-required actions, blocked/profile-limited actions, and safe alternatives while remaining plan-only."
   ],
   not_ready: [
     "Most API docs, rate limits, CORS values, and freshness statuses remain metadata-level or unknown.",
@@ -292,6 +305,7 @@ function formatReport(report) {
   lines.push(`browser_research_planning_status: ${status(report.browser_research_planning_status)}`);
   lines.push(`search_planning_status: ${status(report.search_planning_status)}`);
   lines.push(`routing_memory_output_quality_status: ${status(report.routing_memory_output_quality_status)}`);
+  lines.push(`core_permission_awareness_status: ${status(report.core_permission_awareness_status)}`);
   lines.push(`core_tools_ecosystem_test_status: ${report.core_tools_ecosystem_test_status ? "yes" : "no"}`);
   lines.push(`real_task_examples_tested: ${report.task_boosting_status.real_task_examples_tested.join(", ")}`);
   lines.push(`api_counts: total=${report.api_library_counts.total_apis}, docs_verified=${report.api_library_counts.docs_verified_count}, docs_unknown=${report.api_library_counts.docs_unknown_count}, rate_limit_verified=${report.api_library_counts.rate_limit_verified_count}, rate_limit_unknown=${report.api_library_counts.rate_limit_unknown_count}, cors_unknown=${report.api_library_counts.cors_unknown_count}, frontend_safe=${report.api_library_counts.frontend_safe_count}, backend_required=${report.api_library_counts.backend_required_count}`);

@@ -1,6 +1,6 @@
 # vnem Best Practices
 
-Generated: 2026-06-29T07:55:08.303Z
+Generated: 2026-06-29T12:29:51.883Z
 
 Use this as a compact, current guidance layer for coding agents. Prefer these notes when choosing whether to add, replace, or avoid a tool.
 
