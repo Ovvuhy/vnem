@@ -60,6 +60,9 @@ const REQUIRED_TOOL_NAMES = [
   "vnem_tools_source_graph",
   "vnem_tools_architecture_review",
   "vnem_tools_debug_evidence",
+  "vnem_tools_ui_surface_review",
+  "vnem_tools_browser_evidence_plan",
+  "vnem_tools_ui_evidence_audit",
   "vnem_tools_apply_patch_batch",
   "vnem_tools_restore_batch",
   "vnem_tools_project_scan",
@@ -890,6 +893,39 @@ function registerTools(mcpServer) {
   );
 
   mcpServer.registerTool(
+    "vnem_tools_ui_surface_review",
+    {
+      title: "VNEM UI Surface Review",
+      description: "Safely inspect allowed local project UI files for frameworks, routes, components, entry points, render paths, styles, tests, preview/storybook, unrendered components, missing state coverage, and a11y risks. No browser, network, installs, or mutation.",
+      inputSchema: { workspace_root: z.string().default("."), max_files: z.number().int().min(20).max(500).default(220), max_bytes_per_file: z.number().int().min(256).max(12000).default(5000), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => { const result = await safeUiSurfaceReview(args); return toolResult(formatUiSurfaceReview(result), { ui_surface_review: result }); })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_browser_evidence_plan",
+    {
+      title: "VNEM Browser Evidence Plan",
+      description: "Plan bounded browser/visual proof for a local route/user flow without running a browser. Lists screenshot, DOM, console, network, accessibility, viewport, state, and before/after evidence to gather with existing tools.",
+      inputSchema: { app_url: z.string().default(""), routes: z.array(z.string()).default([]), user_flow: z.array(z.string()).default([]), claim_type: z.string().default("visual_improvement"), viewports: z.array(z.any()).default([]), states_to_check: z.array(z.string()).default([]), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => { const result = await safeBrowserEvidencePlan(args); return toolResult(formatBrowserEvidencePlan(result), { browser_evidence_plan: result }); })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_ui_evidence_audit",
+    {
+      title: "VNEM UI Evidence Audit",
+      description: "Audit provided UI evidence objects. Rejects code-only visual claims, missing screenshots, unknown console/network, single-viewport responsive claims, missing a11y/state/render/before-after evidence. Does not invent browser results.",
+      inputSchema: { claim: z.string().default(""), screenshots: z.array(z.any()).default([]), dom_assertions: z.array(z.any()).default([]), console_summary: z.any().optional(), network_summary: z.any().optional(), accessibility_summary: z.any().optional(), viewport_results: z.array(z.any()).default([]), state_results: z.array(z.any()).default([]), before_after: z.any().optional(), route_render_evidence: z.array(z.any()).default([]), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => { const result = await safeUiEvidenceAudit(args); return toolResult(formatUiEvidenceAudit(result), { ui_evidence_audit: result }); })
+  );
+
+  mcpServer.registerTool(
     "vnem_tools_fetch_url_text",
     {
       title: "Fetch Direct URL Text Safely",
@@ -1495,7 +1531,7 @@ async function searchAllowedFiles(args) {
   return { root: root.relativePath || ".", query: args.query, results, skipped_policy: skippedPolicy() };
 }
 
-const TOOL_CAPABILITY_GROUPS = ["permissions", "filesystem", "project_intelligence", "patching", "rollback", "commands", "project_tasks", "dev_server", "browser_proof", "browser_intelligence", "api_request", "search", "research_sources", "source_quality", "browsing_risk", "research_matrix", "source_ingestion", "debugging_code_quality", "session_evidence", "local_git", "status_readiness"];
+const TOOL_CAPABILITY_GROUPS = ["permissions", "filesystem", "project_intelligence", "patching", "rollback", "commands", "project_tasks", "dev_server", "browser_proof", "browser_intelligence", "ui_web_quality", "api_request", "search", "research_sources", "source_quality", "browsing_risk", "research_matrix", "source_ingestion", "debugging_code_quality", "session_evidence", "local_git", "status_readiness"];
 
 function buildToolCatalog() {
   const commonUnsafe = ["secret reading/dumping", "outside-root access", "arbitrary shell", "package installs", "git push", "deployment", "Giga MCP"];
@@ -1571,6 +1607,9 @@ function buildToolCatalog() {
     mk("vnem_tools_source_graph", "source_ingestion", { description: "Compare provided/bounded source evidence for officialness, freshness, claim support, contradictions, and confidence limits. Does not search or crawl.", allowed_roots_required: false, evidence_logged: true, typical_use_cases: ["official vs community conflict", "outdated source risk", "claim verification graph"], unsafe_actions_blocked: [...commonUnsafe, "claiming contradiction-free from one source", "broad search/crawl claims"], related_tools: ["vnem_tools_source_map", "vnem_tools_source_extract", "vnem_tools_claim_source_matrix"] }),
     mk("vnem_tools_architecture_review", "debugging_code_quality", { description: "Inspect allowed project structure for real entry points, tool/route registries, scripts, tests, configs, integration points, fake parallel systems, possible dead code, duplicate logic, contract risks, and secret risks.", allowed_roots_required: true, evidence_logged: true, typical_use_cases: ["architecture map before edits", "unwired MCP tool detection", "dead-code warning"], unsafe_actions_blocked: [...commonUnsafe, "broad crawling", "secret reads", "network access"], related_tools: ["vnem_tools_workspace_map", "vnem_tools_debug_evidence", "vnem_tools_code_search"] }),
     mk("vnem_tools_debug_evidence", "debugging_code_quality", { description: "Collect bounded log-first debugging evidence from explicit logs, package scripts, config metadata, git status, changed files, and targeted-check suggestions. Does not run arbitrary commands/tests.", allowed_roots_required: true, evidence_logged: true, typical_use_cases: ["log-first triage", "pre-fix root-cause evidence", "targeted test selection"], unsafe_actions_blocked: [...commonUnsafe, "arbitrary command execution", "secret reads", "error suppression"], related_tools: ["vnem_tools_architecture_review", "vnem_tools_run_project_task", "vnem_tools_git_status"] }),
+    mk("vnem_tools_ui_surface_review", "ui_web_quality", { description: "Inspect local UI routes/components/entrypoints/render paths/state/a11y gaps under allowed roots; no browser/network/install.", allowed_roots_required: true, evidence_logged: true, typical_use_cases: ["prove component is wired", "find dead UI", "route/component review"], unsafe_actions_blocked: [...commonUnsafe, "hidden browser automation", "broad crawling", "secret reads"], related_tools: ["vnem_tools_architecture_review", "vnem_tools_browser_evidence_plan", "vnem_tools_ui_evidence_audit"] }),
+    mk("vnem_tools_browser_evidence_plan", "ui_web_quality", { description: "Plan visual/browser proof checklist without running a browser.", allowed_roots_required: false, evidence_logged: false, typical_use_cases: ["UI proof planning", "localhost route evidence checklist"], unsafe_actions_blocked: [...commonUnsafe, "hidden browser automation", "login/session/cookie/CAPTCHA automation"] }),
+    mk("vnem_tools_ui_evidence_audit", "ui_web_quality", { description: "Audit provided UI evidence and reject unsupported visual/browser claims.", allowed_roots_required: false, evidence_logged: true, typical_use_cases: ["final UI claim audit", "responsive/a11y/state proof review"], unsafe_actions_blocked: [...commonUnsafe, "inventing browser results", "accepting code-only visual proof"] }),
     mk("vnem_tools_start_session", "session_evidence", { read_only: false, mutation: true, description: "Start session proof pack.", typical_use_cases: ["group local workflow evidence"] }),
     mk("vnem_tools_finish_session", "session_evidence", { read_only: false, mutation: true, description: "Write session proof pack.", typical_use_cases: ["final evidence summary"] }),
     mk("vnem_tools_collect_evidence", "session_evidence", { read_only: false, mutation: true, description: "Write proof-trail-compatible evidence summary.", typical_use_cases: ["final report support"] }),
@@ -2373,6 +2412,222 @@ function formatClaimSourceMatrix(result) { return `vnem_tools_claim_source_matri
 function formatResearchGapDetector(result) { return `vnem_tools_research_gap_detector: blockers=${result.confidence_blockers.length} missing_current_search=${result.missing_current_search}`; }
 
 
+
+
+async function safeUiSurfaceReview(args) {
+  const root = await resolveAllowedRoot(args.workspace_root || ".");
+  const files = [];
+  await walkFiles(root.absolutePath, root.absolutePath, files, { maxResults: args.max_files || 220 });
+  const maxBytes = Math.min(args.max_bytes_per_file || 5000, 12000);
+  const textFiles = [];
+  const secretRisks = [];
+  for (const file of files) {
+    if (isSecretLikePath(file.path) || isSecretLikePath(file.absolutePath || "")) { secretRisks.push(`${file.path}: secret-like path blocked`); continue; }
+    if (!/\.(mjs|js|ts|tsx|jsx|json|html|css|scss|sass|vue|svelte|mdx|md)$/i.test(file.path) && !/(^|\/)package\.json$/.test(file.path)) continue;
+    try {
+      const buf = await readFile(path.join(root.absolutePath, file.path));
+      if (buf.includes(0) || looksBinary(buf)) continue;
+      textFiles.push({ path: file.path, text: redactSecrets(buf.subarray(0, maxBytes).toString("utf8")) });
+    } catch {}
+  }
+  for (const name of [".env", ".env.local", "secrets", "tokens", "credentials", "cookies", "sessions", ".ssh"]) {
+    if (existsSync(path.join(root.absolutePath, name))) secretRisks.push(`${name}: secret/session/private path blocked`);
+  }
+  const pkgFile = textFiles.find((f) => /(^|\/)package\.json$/.test(f.path));
+  const frameworks = new Set();
+  if (pkgFile) {
+    try {
+      const pkg = JSON.parse(pkgFile.text);
+      const deps = { ...(pkg.dependencies || {}), ...(pkg.devDependencies || {}) };
+      for (const name of Object.keys(deps)) {
+        if (/react|next|vue|svelte|vite|astro|remix|angular|solid|storybook/i.test(name)) frameworks.add(name.replace(/^@[^/]+\//, ""));
+      }
+    } catch {}
+  }
+  for (const f of textFiles) {
+    if (/vite\.config/i.test(f.path)) frameworks.add("vite");
+    if (/next\.config|(^|\/)app\//i.test(f.path)) frameworks.add("next");
+  }
+  const entryPoints = textFiles.filter((f) => /(^|\/)(index\.html|main|index|app|root)\.(html|[cm]?[jt]sx?)$|(^|\/)package\.json$/.test(f.path)).map((f) => ({ path: f.path })).slice(0, 80);
+  const routes = [];
+  const components = [];
+  const imports = [];
+  const jsxUses = [];
+  for (const f of textFiles) {
+    if (/(^|\/)(routes|pages|app)\//i.test(f.path) || /(?:createBrowserRouter|Route\s+path=|path:\s*["'`/]|router\.(get|post)|href=["'`/])/.test(f.text)) routes.push({ path: f.path, route_hint: routeHintForFile(f.path, f.text) });
+    for (const m of f.text.matchAll(/(?:export\s+)?(?:default\s+)?function\s+([A-Z][A-Za-z0-9_]*)\s*\(|(?:export\s+)?const\s+([A-Z][A-Za-z0-9_]*)\s*=\s*(?:\([^)]*\)|[^=;]+)=>|class\s+([A-Z][A-Za-z0-9_]*)\s+extends/g)) components.push({ path: f.path, name: m[1] || m[2] || m[3] });
+    for (const m of f.text.matchAll(/import\s+(?:\{\s*([^}]+)\s*\}|([A-Z][A-Za-z0-9_]*))\s+from\s+["'`]([^"'`]+)["'`]/g)) {
+      const names = (m[1] ? m[1].split(",").map((x) => x.trim().split(/\s+as\s+/i).pop()) : [m[2]]).filter(Boolean);
+      for (const name of names) imports.push({ path: f.path, name, from: m[3] });
+    }
+    for (const m of f.text.matchAll(/<([A-Z][A-Za-z0-9_]*)\b/g)) jsxUses.push({ path: f.path, name: m[1] });
+  }
+  const styleFiles = textFiles.filter((f) => /\.(css|scss|sass)$/i.test(f.path)).map((f) => ({ path: f.path })).slice(0, 80);
+  const testFiles = textFiles.filter((f) => /(^|\/)(test|tests|__tests__)\/|\.(test|spec)\.[cm]?[jt]sx?$/i.test(f.path)).map((f) => ({ path: f.path })).slice(0, 80);
+  const storybook = textFiles.filter((f) => /\.stories\.[cm]?[jt]sx?$|storybook|preview\.[cm]?[jt]s$/i.test(f.path)).map((f) => ({ path: f.path })).slice(0, 40);
+  const allText = textFiles.map((f) => f.text).join("\n");
+  const usedNames = new Set([...imports.map((i) => i.name), ...jsxUses.map((u) => u.name)]);
+  const possibleUnrendered = components.filter((c) => !usedNames.has(c.name) && !/App|Root|Layout|Page/.test(c.name)).map((c) => ({ ...c, reason: "component export not found in bounded import/JSX render path review" })).slice(0, 60);
+  const result = {
+    workspace_root: root.absolutePath,
+    permission_profile: activePermissionProfile.profile_name,
+    allowed_roots_check: { inside_allowed_roots: true, matched_root: root.root, allowed_roots: allowedRoots },
+    detected_frameworks: [...frameworks].slice(0, 20),
+    routes_found: routes.slice(0, 80),
+    components_found: components.slice(0, 120),
+    entry_points_found: entryPoints,
+    render_paths_found: [...jsxUses.map((u) => ({ path: u.path, renders: u.name })), ...imports.map((i) => ({ path: i.path, imports: i.name, from: i.from }))].slice(0, 160),
+    style_files_found: styleFiles,
+    test_files_found: testFiles,
+    storybook_or_preview_found: storybook,
+    possible_unrendered_components: possibleUnrendered,
+    possible_dead_ui: possibleUnrendered.map((c) => ({ ...c, reason: "possible dead UI: no obvious route/caller renders this component" })).slice(0, 60),
+    missing_state_coverage: [!/loading|spinner|pending/i.test(allText) ? "loading/pending state coverage not found in bounded UI review" : null, !/error|failure|invalid/i.test(allText) ? "error/failure state coverage not found in bounded UI review" : null, !/empty|no data|zero state/i.test(allText) ? "empty/no-data state coverage not found in bounded UI review" : null].filter(Boolean),
+    accessibility_risk_hints: buildUiA11yHints(allText),
+    security_or_secret_risks: secretRisks,
+    evidence_log_id: null,
+    safe_to_claim: ["Bounded local UI source review ran under allowed roots with secret-like paths skipped.", "Framework/route/component/render-path findings are static hints, not browser visual proof."],
+    must_not_claim: ["Real browser visual proof was captured.", "The UI is fully visually verified.", "Every component is rendered or dead-code-free.", "Secret paths were read.", "Network/package/install/GitHub/deploy actions occurred."]
+  };
+  const log = await writeEvidenceLog("ui_surface_review", result);
+  result.evidence_log_id = log.evidence_log_id;
+  recordSession(args.session_id, "ui_surface_reviews", result);
+  return result;
+}
+
+function routeHintForFile(filePath, text) {
+  const match = String(text).match(/(?:path\s*[:=]\s*|href=)["'`]([^"'`]+)["'`]/);
+  if (match) return match[1];
+  return filePath.replace(/\\/g, "/").replace(/.*\/(routes|pages|app)\/?/, "/").replace(/\.(jsx|tsx|js|ts|mjs|mdx)$/, "").replace(/index$/, "") || "/";
+}
+
+function buildUiA11yHints(text) {
+  const hints = [];
+  if (/<button\b/i.test(text) && !/(aria-label|>\s*[^<\s])/.test(text)) hints.push("button accessibility label/text may need review");
+  if (/<img\b/i.test(text) && !/alt=/.test(text)) hints.push("image alt text may be missing");
+  if (/<input\b/i.test(text) && !/(<label|aria-label|aria-labelledby)/i.test(text)) hints.push("form labels may be missing");
+  if (!/(aria-|role=|<label|alt=|tabIndex|onKeyDown|keyboard|focus)/i.test(text)) hints.push("accessibility/ARIA/keyboard/focus evidence not obvious in bounded UI review");
+  return hints.length ? hints : ["No obvious static accessibility issue found, but browser/a11y audit evidence is still required for accessibility claims."];
+}
+
+function safeBrowserEvidencePlan(args) {
+  const appUrl = String(args.app_url || "");
+  const routes = arrayify(args.routes).map(String).filter(Boolean);
+  const flow = arrayify(args.user_flow).map(String).filter(Boolean);
+  const claimType = String(args.claim_type || "visual_improvement");
+  const viewportInputs = arrayify(args.viewports);
+  const viewports = normalizeViewports(viewportInputs.length ? viewportInputs : ["mobile", "tablet", "desktop"]);
+  const states = arrayify(args.states_to_check).map(String).filter(Boolean);
+  const isLocal = !appUrl || /^(https?:\/\/)?(localhost|127\.0\.0\.1|\[::1\])(?::\d+)?\b/i.test(appUrl) || /^file:/i.test(appUrl);
+  const riskNotes = [];
+  if (!isLocal) riskNotes.push("Non-localhost/non-file app_url requires approved URL policy; do not use private/login/account flows by default.");
+  if (/login|account|private|cookie|session|token/i.test(`${appUrl} ${routes.join(" ")} ${flow.join(" ")}`)) riskNotes.push("Login/private/session/cookie flows are out of scope for automatic browser evidence.");
+  return {
+    app_url: redactUrlString(appUrl),
+    routes_to_visit: routes.length ? routes : ["provide exact local route(s) before capture"],
+    user_flow_steps: flow.length ? flow : ["load route", "verify target visible text/DOM", "exercise one user-visible action if relevant"],
+    screenshots_needed: ["before screenshot for visual/layout/regression claims", "after screenshot for each changed route", ...viewports.map((v) => `after screenshot at ${v.label || v.viewport || JSON.stringify(v)} viewport`)],
+    dom_checks_needed: ["route title/heading visible", "target component visible text/selector present", "primary button/form/action present", "state-specific text for loading/empty/error/success when relevant"],
+    console_checks_needed: ["capture console errors/warnings after route load", "capture console after user-flow steps", "unknown console status blocks browser-works claims"],
+    network_checks_needed: ["capture failed API/asset requests after route load", "capture network after user-flow steps", "unknown network status blocks browser-works claims"],
+    accessibility_checks_needed: ["run vnem_tools_browser_accessibility_audit or equivalent", "check labels/alt/headings/keyboard/focus risks"],
+    viewports,
+    states_to_force_or_verify: states.length ? states : ["loading", "empty", "error", "success/normal"],
+    before_after_plan: ["capture/store before evidence before UI changes when possible", "capture after evidence on same route/viewports", "compare before/after snapshots and avoid claiming pixel-perfect visual regression unless screenshot evidence supports it"],
+    risk_notes: riskNotes,
+    existing_tools_to_use: ["vnem_tools_start_dev_server", "vnem_tools_browser_capture", "vnem_tools_browser_page_inspect", "vnem_tools_browser_accessibility_audit", "vnem_tools_browser_compare_snapshots", "vnem_tools_ui_evidence_audit", "vnem_tools_collect_evidence"],
+    permission_profile: activePermissionProfile.profile_name,
+    requires_localhost_or_approved_url: true,
+    browser_was_run: false,
+    must_not_claim: ["This tool ran browser automation.", "This tool captured screenshots.", "The UI works in browser before existing browser tools collect evidence.", "Private/login/session/cookie/CAPTCHA flows were automated."]
+  };
+}
+
+function normalizeViewports(values) {
+  const presets = { mobile: { label: "mobile", width: 390, height: 844 }, tablet: { label: "tablet", width: 768, height: 1024 }, desktop: { label: "desktop", width: 1440, height: 900 } };
+  return values.map((value) => {
+    if (typeof value === "string") return presets[value.toLowerCase()] || { label: value, note: "custom viewport label; provide dimensions before capture" };
+    return value && typeof value === "object" ? value : { label: String(value) };
+  });
+}
+
+function safeUiEvidenceAudit(args) {
+  const claim = String(args.claim || "");
+  const hay = claim.toLowerCase();
+  const screenshots = arrayify(args.screenshots);
+  const dom = arrayify(args.dom_assertions);
+  const viewportResults = arrayify(args.viewport_results);
+  const stateResults = arrayify(args.state_results);
+  const routeEvidence = arrayify(args.route_render_evidence);
+  const consoleClean = summaryClean(args.console_summary);
+  const networkClean = summaryClean(args.network_summary);
+  const a11yChecked = summaryChecked(args.accessibility_summary);
+  const beforeAfterPresent = Boolean(args.before_after && Object.keys(args.before_after || {}).length) || screenshots.some((s) => /before/i.test(JSON.stringify(s))) && screenshots.some((s) => /after/i.test(JSON.stringify(s)));
+  const viewportLabels = new Set(viewportResults.map((v) => String(v?.viewport || v?.label || v).toLowerCase()));
+  const responsiveCovered = viewportResults.length >= 2 && (viewportLabels.has("mobile") || [...viewportLabels].some((v) => /390|375|mobile/.test(v))) && (viewportLabels.has("desktop") || [...viewportLabels].some((v) => /1280|1440|desktop/.test(v)));
+  const stateNames = stateResults.map((s) => String(s?.state || s?.name || s).toLowerCase()).join(" ");
+  const stateCovered = ["loading", "empty", "error"].every((name) => stateNames.includes(name));
+  const needsResponsive = /responsive|mobile|tablet|viewport/.test(hay);
+  const needsA11y = /accessibility|a11y|aria|keyboard|contrast/.test(hay);
+  const needsBeforeAfter = /visual|layout|improved|fix|before|after|responsive/.test(hay);
+  const missing = [];
+  if (!screenshots.length) missing.push("screenshot missing for visual/browser UI claim");
+  if (!dom.length) missing.push("DOM/visible text assertion missing");
+  if (!routeEvidence.length) missing.push("route/component render evidence missing");
+  if (!consoleClean) missing.push("console clean/error status missing or not clean");
+  if (!networkClean) missing.push("network clean/error status missing or not clean");
+  if (needsA11y && !a11yChecked) missing.push("accessibility audit evidence missing");
+  if (needsResponsive && !responsiveCovered) missing.push("responsive claim needs multiple viewport evidence including mobile and desktop");
+  if (needsBeforeAfter && !beforeAfterPresent) missing.push("before/after proof missing for visual/layout claim");
+  if (/loading|empty|error|state|dashboard|form/.test(hay) && !stateCovered) missing.push("loading/empty/error state coverage missing or incomplete");
+  const visualSupported = screenshots.length > 0 && dom.length > 0 && consoleClean && networkClean;
+  const routeWired = routeEvidence.length > 0;
+  const safe = missing.length === 0;
+  let verdict = safe ? "accept_supported" : missing.some((m) => /screenshot missing|console|network|route/.test(m)) ? "reject" : "revise";
+  return {
+    verdict,
+    evidence_strength: safe ? "strong" : visualSupported ? "medium_with_gaps" : screenshots.length || dom.length ? "low" : "none",
+    missing_evidence: missing,
+    visual_claim_supported: visualSupported,
+    route_or_component_wired: routeWired,
+    console_network_status: consoleClean && networkClean ? "clean" : "unknown_or_failed",
+    accessibility_status: a11yChecked ? "checked" : "unknown_or_missing",
+    responsive_status: responsiveCovered ? "covered_multiple_viewports" : viewportResults.length ? "insufficient_viewport_coverage" : "unknown_no_viewport_evidence",
+    state_coverage_status: stateCovered ? "covered_loading_empty_error" : stateResults.length ? "partial_state_coverage" : "unknown_no_state_evidence",
+    before_after_status: beforeAfterPresent ? "present" : "missing",
+    safe_to_claim: safe,
+    must_not_claim: safe ? ["Do not generalize beyond the provided routes/viewports/states."] : ["UI improved/works visually.", "Responsive across devices.", "Accessibility improved.", "Browser works with clean console/network.", "Component is rendered by a route."],
+    next_best_check: missing[0] || "Attach evidence to final report and run relevant broader check near final."
+  };
+}
+
+function summaryClean(summary) {
+  if (!summary) return false;
+  if (typeof summary === "object") {
+    const status = String(summary.status || summary.verdict || "").toLowerCase();
+    const errors = Array.isArray(summary.errors) ? summary.errors : [];
+    const failures = Array.isArray(summary.failures) ? summary.failures : [];
+    if (/clean|passed|ok|success/.test(status) && errors.length === 0 && failures.length === 0) return true;
+  }
+  const text = JSON.stringify(summary).toLowerCase();
+  const sanitized = text.replace(/"errors"\s*:\s*\[\]/g, "").replace(/"failures"\s*:\s*\[\]/g, "");
+  return /clean|passed|no errors|no failures|0 errors|ok/.test(sanitized) && !/unknown|failed|failure|error\b/.test(sanitized);
+}
+function summaryChecked(summary) {
+  if (!summary) return false;
+  const text = JSON.stringify(summary).toLowerCase();
+  return /checked|audit|passed|clean|issues/.test(text) && !/unknown|not run|missing/.test(text);
+}
+
+function formatUiSurfaceReview(result) {
+  return [`Workspace: ${result.workspace_root}`, `Frameworks: ${result.detected_frameworks.join(", ") || "unknown"}`, `Routes: ${result.routes_found.length}`, `Components: ${result.components_found.length}`, `Possible unrendered: ${result.possible_unrendered_components.length}`].join("\n");
+}
+function formatBrowserEvidencePlan(result) {
+  return [`Browser evidence plan for ${result.app_url || "local app"}`, `Routes: ${result.routes_to_visit.join("; ")}`, `Viewports: ${result.viewports.map((v) => v.label || v.viewport || JSON.stringify(v)).join(", ")}`, `Browser was run: ${result.browser_was_run}`].join("\n");
+}
+function formatUiEvidenceAudit(result) {
+  return [`Verdict: ${result.verdict}`, `Evidence strength: ${result.evidence_strength}`, `Safe to claim: ${result.safe_to_claim}`, `Next: ${result.next_best_check}`].join("\n");
+}
 
 async function safeArchitectureReview(args) {
   const root = await resolveAllowedRoot(args.workspace_root || ".");

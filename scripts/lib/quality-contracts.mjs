@@ -149,6 +149,7 @@ export function completionAudit(options = {}) {
   const visuals = arrayify(options.screenshots_or_visual_evidence);
   const changedFiles = arrayify(options.changed_files);
   const combined = normalize([task, claimed, ...evidence, ...commands, ...sources, ...visuals, ...changedFiles].join(" "));
+  const evidenceText = normalize([evidence, commands, sources, visuals].flat().join(" "));
   const domains = classifyDomains(task, claimed);
   const missingContext = detectMissingContext({ task, claimed_result: claimed, token_budget: tokenBudget });
   const missingEvidence = [];
@@ -199,6 +200,41 @@ export function completionAudit(options = {}) {
     if (!/(mobile|responsive|desktop)/.test(combined)) uiFindings.push("UI evidence does not mention responsive desktop/mobile coverage.");
     if (!/(accessibility|a11y|keyboard|aria|contrast)/.test(combined)) uiFindings.push("UI evidence does not mention accessibility coverage.");
   }
+  if (domains.includes("ui")) {
+    const visualClaim = /ui improved|dashboard.*improved|visual|layout|polish|styled|looks|appearance/.test(combined);
+    const responsiveClaim = /responsive|mobile|tablet|viewport|breakpoint/.test(combined);
+    const accessibilityClaim = /accessibility|a11y|aria|keyboard|contrast|screen reader/.test(combined);
+    const routeComponentClaim = /route added|component added|new route|new component|component.*works|route.*works|renders?/.test(combined);
+    const browserWorksClaim = /works in browser|browser works|route works|dashboard works|form works/.test(combined);
+    if (visualClaim && !visuals.length) {
+      uiFindings.push("UI improved/visual claim lacks screenshot or browser visual evidence.");
+      missingEvidence.push("Screenshot/browser visual evidence is missing for UI improved claim.");
+    }
+    if (visualClaim && /fix|fixed|improved|layout|before.?after/.test(combined) && !/(before|after|compare|comparison|diff)/.test(evidenceText)) {
+      uiFindings.push("Visual/layout fix lacks before/after proof.");
+      missingEvidence.push("Before/after visual proof is missing for visual fix claim.");
+    }
+    if (routeComponentClaim && !/(route evidence|render evidence|renders in route|caller|imported by|visible text|dom assertion|browser_page_inspect)/.test(evidenceText)) {
+      uiFindings.push("Route/component claim lacks render/caller/route evidence; component may exist but not be user-visible.");
+      missingEvidence.push("Route/component render evidence is missing.");
+    }
+    if (responsiveClaim && !/(mobile.*desktop|desktop.*mobile|tablet|viewport_results|multiple viewport|390|768|1440)/.test(evidenceText + " " + visuals.join(" ").toLowerCase())) {
+      uiFindings.push("Responsive claim lacks multiple viewport evidence.");
+      missingEvidence.push("Multiple viewport evidence is missing for responsive claim.");
+    }
+    if (accessibilityClaim && !/(accessibility audit|a11y audit|axe|aria checked|keyboard checked|browser_accessibility_audit)/.test(evidenceText)) {
+      uiFindings.push("Accessibility claim lacks accessibility audit evidence.");
+      missingEvidence.push("Accessibility audit evidence is missing.");
+    }
+    if (/(loading|error|empty|state)/.test(combined) && !/(state_results|loading.*empty.*error|empty.*loading.*error|forced state|state evidence)/.test(evidenceText)) {
+      uiFindings.push("Loading/error/empty-state claim lacks state evidence.");
+      missingEvidence.push("UI state evidence is missing.");
+    }
+    if (browserWorksClaim && !/(console.*clean|clean.*console|network.*clean|clean.*network|console_summary|network_summary|0 errors|no failed requests)/.test(evidenceText)) {
+      uiFindings.push("Browser works claim has unknown console/network error status.");
+      missingEvidence.push("Console/network evidence is missing for browser-works claim.");
+    }
+  }
   if ((domains.includes("backend") || /backend|database|api route|server route/.test(combined)) && domains.includes("ui")) {
     if (!/(component|page|route|button|form|screen|visible|ui exposed|user can|browser)/.test(combined)) {
       uiFindings.push("Backend work is not proven usable: no UI route/component/form/button/state exposes it.");
@@ -213,7 +249,6 @@ export function completionAudit(options = {}) {
     apiFindings.push("API integration lacks auth/CORS/HTTPS/frontend-backend/secret-handling evidence.");
     missingEvidence.push("API safety decision evidence is missing.");
   }
-  const evidenceText = normalize([evidence, commands, sources, visuals].flat().join(" "));
   if (domains.includes("api") && /(next_public|frontend key|browser api key|client api key|from react)/.test(combined) && !/(no key|no secret|public no-auth|backend|server|proxy)/.test(combined)) {
     apiFindings.push("Potential unsafe frontend API-key exposure or direct browser call without backend/CORS justification.");
     unsafeClaims.push("Do not claim API integration is safe while frontend secret exposure is unresolved.");
@@ -342,6 +377,7 @@ export function completionAudit(options = {}) {
     missing_context_questions: missingContext.recommended_clarifying_questions || [],
     research_quality_findings: researchFindings,
     ui_quality_findings: uiFindings,
+    ui_findings: uiFindings,
     code_quality_findings: codeFindings,
     api_safety_findings: apiFindings,
     game_or_modding_findings: gameFindings,
@@ -625,7 +661,7 @@ function mustNotClaim(missingEvidence, unsafeClaims, domains, codeFindings = [])
     unsafeClaims.length ? "Do not claim safe/risk-free without safety review proof." : null,
     codeFindings.some((item) => /MCP tool|registry|wired|unwired/i.test(item)) ? "Do not claim an MCP tool is implemented or wired until the real registry/manifest/smoke-test evidence exists." : null,
     codeFindings.some((item) => /Mock-only/i.test(item)) ? "Do not claim real behavior from mock-only tests." : null,
-    domains.includes("ui") ? "Do not claim polished UI without visual evidence." : null,
+    domains.includes("ui") ? "Do not claim polished UI or UI improved without visual/browser evidence." : null,
     domains.includes("api") ? "Do not claim API integration is safe without auth/CORS/secret/backend proof." : null,
     domains.includes("research") ? "Do not claim current/best facts without current/source-quality evidence." : null
   ]);

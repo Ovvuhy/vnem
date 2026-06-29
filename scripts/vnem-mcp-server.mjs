@@ -99,6 +99,8 @@ const DEFAULT_MCP_TOOLS = [
   "vnem_evidence_to_fix_check",
   "vnem_build_architecture_map",
   "vnem_code_change_contract",
+  "vnem_build_ui_quality_plan",
+  "vnem_visual_proof_contract",
   "vnem_select_tools_for_task",
   "vnem_build_tools_plan",
   "vnem_build_browser_research_plan",
@@ -637,6 +639,34 @@ function registerTools(mcpServer) {
     async (args) => {
       const contract = buildCodeChangeContract(args);
       return toolResult(formatCodeChangeContract(contract), { code_change_contract: contract });
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_build_ui_quality_plan",
+    {
+      title: "Build VNEM UI Quality Plan",
+      description: "Read-only Core plan for UI/web quality work: routes/components, visual proof, browser evidence, console/network/a11y, responsive/state coverage, and must-not-claim boundaries. Does not open a browser or capture screenshots.",
+      inputSchema: { user_goal: z.string().min(1), ui_surface: z.string().default("unknown UI surface"), expected_user_flow: z.string().default(""), routes_or_components: z.array(z.string()).default([]), claim_type: z.string().default("visual_improvement"), known_context: z.string().optional(), token_budget: z.enum(["compact", "normal", "expanded"]).default("normal") },
+      annotations: READ_ONLY
+    },
+    async (args) => {
+      const plan = buildUiQualityPlan(args);
+      return toolResult(formatUiQualityPlan(plan), { ui_quality_plan: plan });
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_visual_proof_contract",
+    {
+      title: "Build VNEM Visual Proof Contract",
+      description: "Read-only proof contract for UI/web claims. Defines evidence required before visual, responsive, route/component, state, accessibility, or dashboard claims can be made.",
+      inputSchema: { claim_type: z.enum(["visual_improvement", "layout_fix", "responsive_fix", "route_added", "component_added", "dashboard_change", "accessibility_improvement", "loading_state", "error_state", "empty_state", "form_flow", "before_after_comparison"]).default("visual_improvement"), claim: z.string().default(""), route_or_component: z.string().optional(), token_budget: z.enum(["compact", "normal", "expanded"]).default("normal") },
+      annotations: READ_ONLY
+    },
+    async (args) => {
+      const contract = buildVisualProofContract(args);
+      return toolResult(formatVisualProofContract(contract), { visual_proof_contract: contract });
     }
   );
 
@@ -2083,7 +2113,7 @@ function selectToolsForTask(args = {}) {
     add("vnem_tools_workspace_map", "vnem_tools_architecture_review", "vnem_tools_code_search", "vnem_tools_read_many_files", "vnem_tools_project_scan", "vnem_tools_dependency_scan");
   }
   if (["coding", "ui_web", "debugging", "local_project_modification"].includes(type)) add("vnem_tools_apply_patch_batch", "vnem_tools_run_project_task", "vnem_tools_collect_evidence", "vnem_tools_git_status", "vnem_tools_git_diff_summary");
-  if (type === "ui_web") add("vnem_tools_start_dev_server", "vnem_tools_browser_capture", "vnem_tools_browser_page_inspect", "vnem_tools_browser_accessibility_audit", "vnem_tools_browser_compare_snapshots", "vnem_tools_stop_dev_server");
+  if (type === "ui_web") add("vnem_tools_ui_surface_review", "vnem_tools_browser_evidence_plan", "vnem_tools_ui_evidence_audit", "vnem_tools_start_dev_server", "vnem_tools_browser_capture", "vnem_tools_browser_page_inspect", "vnem_tools_browser_accessibility_audit", "vnem_tools_browser_compare_snapshots", "vnem_tools_stop_dev_server");
   if (type === "debugging") add("vnem_tools_debug_evidence", "vnem_tools_architecture_review", "vnem_tools_code_search", "vnem_tools_read_many_files", "vnem_tools_run_project_task", "vnem_tools_apply_patch_batch");
   if (["research", "direct_url_source", "current_research", "website_understanding"].includes(type)) add("vnem_tools_source_quality_check", "vnem_tools_research_brief", "vnem_tools_browser_research_pack", "vnem_tools_claim_source_matrix", "vnem_tools_research_gap_detector", "vnem_tools_source_map", "vnem_tools_source_extract", "vnem_tools_source_graph");
   if (["research", "current_research"].includes(type)) add("vnem_tools_search_provider_manifest", "vnem_tools_search_query_builder", "vnem_tools_web_search", "vnem_tools_search_result_ranker");
@@ -2167,6 +2197,9 @@ function buildCoreToolsPlan(args = {}) {
   push("vnem_tools_source_extract", "extract bounded selected targets with redaction and skipped/blocked accounting");
   push("vnem_tools_source_graph", "compare sources for officialness, freshness, claim support, and contradictions");
   push("vnem_tools_architecture_review", "inspect real entry points/registries/tests/configs and flag fake parallel systems/dead code");
+  push("vnem_tools_ui_surface_review", "inspect real UI routes/components/render paths/state coverage without browser automation");
+  push("vnem_tools_browser_evidence_plan", "plan bounded localhost/file browser proof checklist before any capture");
+  push("vnem_tools_ui_evidence_audit", "audit screenshots/DOM/console/network/a11y/viewport/state evidence before UI claims");
   push("vnem_tools_debug_evidence", "collect bounded log-first evidence, git status, package scripts, and targeted debug checks without arbitrary commands");
   push("vnem_tools_apply_patch_batch", "dry-run then apply approved coherent multi-file patch", true, true);
   push("vnem_tools_run_project_task", "dry-run then run approved safe project task/check", true, true);
@@ -2248,6 +2281,112 @@ function explainToolsChain(args = {}) {
 function truncateText(value, max = 240) {
   const text = String(value ?? "");
   return text.length > max ? `${text.slice(0, max - 1)}…` : text;
+}
+
+
+function buildUiQualityPlan(args = {}) {
+  const userGoal = String(args.user_goal || args.task || "");
+  const uiSurface = String(args.ui_surface || "unknown UI surface");
+  const expectedFlow = String(args.expected_user_flow || "");
+  const routesOrComponents = uniqueStrings(arrayify(args.routes_or_components).map(String).filter(Boolean));
+  const hay = normalize(`${userGoal} ${uiSurface} ${expectedFlow} ${routesOrComponents.join(" ")} ${args.known_context || ""}`);
+  const visualContract = buildVisualProofContract({ claim_type: args.claim_type || inferUiClaimType(hay), claim: userGoal, route_or_component: routesOrComponents[0] || uiSurface, token_budget: args.token_budget || "normal" });
+  const stateRequired = /loading|spinner|pending|empty|zero state|no data|error|failure|invalid|form|dashboard|data|api|async/.test(hay);
+  const beforeAfter = /improve|visual|layout|fix|changed|polish|dashboard|before|after|regression/.test(hay);
+  return {
+    user_goal: userGoal,
+    ui_surface: uiSurface,
+    expected_user_flow: expectedFlow || "Open the relevant local route, exercise the user-visible path, and verify visible result/state.",
+    routes_or_components_to_check: routesOrComponents.length ? routesOrComponents : ["identify actual route/page entry", "identify rendered component", "identify caller/data-flow path"],
+    visual_evidence_required: visualContract.minimum_required_evidence.filter((item) => /screenshot|visual|before|after|route|DOM/i.test(item)),
+    browser_evidence_required: ["approved localhost/file route visit evidence", "DOM/visible text assertion for the target route/component", "browser screenshot evidence or honest browser_unavailable status", "user-flow step evidence for visible action/result"],
+    console_checks_required: ["browser console checked after route load and user-flow steps", "runtime errors/warnings summarized; unknown console status blocks 'works in browser' claims"],
+    network_checks_required: ["network requests checked for failed API/assets on route and flow", "unknown network status blocks browser-works claims"],
+    accessibility_checks_required: ["run heuristic accessibility audit or equivalent a11y evidence", "keyboard/focus/labels/ARIA/contrast risks noted when relevant"],
+    responsive_viewports_required: [
+      { label: "mobile", width: 390, height: 844 },
+      { label: "tablet", width: 768, height: 1024 },
+      { label: "desktop", width: 1440, height: 900 }
+    ],
+    empty_loading_error_states_required: stateRequired ? ["loading/pending state", "empty/no-data state", "error/failure state", "success/normal populated state"] : ["state coverage still considered if data/form/API behavior appears"],
+    before_after_required: beforeAfter,
+    Tools_MCP_actions_needed: ["vnem_tools_ui_surface_review", "vnem_tools_browser_evidence_plan", "vnem_tools_start_dev_server", "vnem_tools_browser_capture", "vnem_tools_browser_page_inspect", "vnem_tools_browser_accessibility_audit", "vnem_tools_browser_compare_snapshots", "vnem_tools_ui_evidence_audit", "vnem_tools_collect_evidence"],
+    permission_profile_expected: "safe-readonly for source review; safe-local-dev or approved-writes only for approved localhost browser proof after dry-run",
+    local_dev_server_needed: true,
+    risk_flags: ["component file may exist but not be rendered", "route may not point at changed component", "responsive claim may be desktop-only", "console/network errors can invalidate browser-works claims", "visual fix needs before/after proof", "state coverage can be missing for async/data UI"],
+    targeted_checks: ["source review confirms route/component/caller path", "browser plan lists exact route and viewports before capture", "DOM text/selector proves component renders", "console and network are clean or failures are reported", "accessibility audit evidence exists for a11y claims", "empty/loading/error states are forced or verified when relevant"],
+    full_verification_near_final: ["After targeted UI evidence is clean, run affected build/test once.", "Near final, run broader smoke/readiness once; do not loop full suite during small edits."],
+    must_not_claim: ["Core opened a browser.", "Core captured screenshots.", "Core ran a dev server.", "UI improved without screenshot/DOM/browser evidence.", "Responsive without multiple viewport evidence.", "Browser works while console/network status is unknown.", "Component is user-visible without route/caller/render evidence."],
+    core_plan_only: true,
+    core_executes_tools: false,
+    core_executes_browser: false,
+    core_captures_screenshots: false
+  };
+}
+
+function buildVisualProofContract(args = {}) {
+  const claimType = String(args.claim_type || "visual_improvement");
+  const claim = String(args.claim || "");
+  const routeOrComponent = String(args.route_or_component || "target route/component");
+  const isResponsive = claimType === "responsive_fix" || /responsive|mobile|tablet|desktop|viewport/.test(normalize(claim));
+  const isA11y = claimType === "accessibility_improvement" || /accessibility|a11y|aria|keyboard|contrast/.test(normalize(claim));
+  const isState = /loading_state|error_state|empty_state/.test(claimType) || /loading|error|empty|state/.test(normalize(claim));
+  const isBeforeAfter = claimType === "before_after_comparison" || ["visual_improvement", "layout_fix", "responsive_fix", "dashboard_change"].includes(claimType);
+  const routeRequired = ["route_added", "component_added", "dashboard_change", "form_flow", "visual_improvement", "layout_fix", "responsive_fix"].includes(claimType);
+  const min = [
+    "at least one screenshot or equivalent visual/browser evidence for the affected UI",
+    routeRequired ? `route/component render evidence for ${routeOrComponent}` : null,
+    "DOM or visible-text assertion proving the target UI rendered",
+    "console error check result after load/user flow",
+    "network failure check result after load/user flow",
+    isA11y ? "accessibility audit evidence for the claimed improvement" : "accessibility risk check when UI quality is claimed",
+    isResponsive ? "multiple viewport results, not desktop-only" : null,
+    isState ? "state evidence for loading/error/empty/success as applicable" : null,
+    isBeforeAfter ? "before/after screenshot or snapshot comparison for visual/layout claims" : null
+  ].filter(Boolean);
+  const preferred = [
+    "before and after screenshots with route, viewport, timestamp/path/hash metadata",
+    "mobile, tablet, and desktop viewport evidence",
+    "DOM/visible text assertions for important headings/buttons/forms",
+    "clean console and network summaries, or explicit known failures",
+    "static/automated accessibility audit plus manual keyboard/focus notes for important flows",
+    "empty/loading/error/success state screenshots or DOM assertions"
+  ];
+  return {
+    claim_type: claimType,
+    minimum_required_evidence: min,
+    preferred_evidence: preferred,
+    route_or_component_integration_required: routeRequired,
+    screenshots_required: ["visual_improvement", "layout_fix", "responsive_fix", "dashboard_change", "before_after_comparison", "form_flow"].includes(claimType),
+    dom_or_text_assertions_required: true,
+    console_error_check_required: true,
+    network_error_check_required: true,
+    accessibility_check_required: isA11y || /visual|layout|dashboard|form|component|route/.test(claimType),
+    viewport_check_required: isResponsive || /visual|layout|dashboard/.test(claimType),
+    state_coverage_required: isState || /dashboard|form|route|component/.test(claimType),
+    what_counts_as_done: ["The target route/component is proven rendered in the browser or DOM evidence.", "Visual/browser evidence supports the claim and is attached/listed.", "Console/network status is clean or limitations are explicit.", "Responsive/a11y/state evidence exists when claimed.", "Final report separates proven/tested/unknown and avoids visual overclaims."],
+    must_not_claim: ["UI improved without screenshot or browser/DOM evidence.", "Visual fix is done without before/after proof when appearance changed.", "Responsive from a single viewport.", "Accessibility improved without accessibility audit evidence.", "Browser works while console/network errors are unknown.", "Route/component is user-visible without render/caller evidence."]
+  };
+}
+
+function inferUiClaimType(text) {
+  if (/responsive|mobile|tablet|viewport/.test(text)) return "responsive_fix";
+  if (/accessibility|a11y|aria|keyboard|contrast/.test(text)) return "accessibility_improvement";
+  if (/loading|spinner|pending/.test(text)) return "loading_state";
+  if (/error|failure|invalid/.test(text)) return "error_state";
+  if (/empty|no data|zero state/.test(text)) return "empty_state";
+  if (/route/.test(text)) return "route_added";
+  if (/component/.test(text)) return "component_added";
+  if (/dashboard/.test(text)) return "dashboard_change";
+  return "visual_improvement";
+}
+
+function formatUiQualityPlan(plan) {
+  return [`vnem_build_ui_quality_plan: ${plan.ui_surface}`, `Routes/components: ${plan.routes_or_components_to_check.join("; ")}`, `Visual evidence required: ${plan.visual_evidence_required.join("; ")}`, `Core plan-only: ${plan.core_plan_only}`].join("\n");
+}
+
+function formatVisualProofContract(contract) {
+  return [`vnem_visual_proof_contract: ${contract.claim_type}`, `Minimum evidence: ${contract.minimum_required_evidence.join("; ")}`, `Screenshots required: ${contract.screenshots_required}`, `Route/component required: ${contract.route_or_component_integration_required}`].join("\n");
 }
 
 function buildDebuggingPlan(args = {}) {
@@ -2790,7 +2929,7 @@ function verificationForType(type) {
 
 function doneDefinitionForType(type) {
   if (["research", "direct_url_source", "website_understanding", "current_research"].includes(type)) return ["Brief cites provided/direct sources", "unsupported/conflicting claims are listed", "must-not-claim prevents fake search/currentness", "external current search need is explicit when latest/current info is required"];
-  if (type === "ui_web") return ["Relevant UI files inspected", "static page/a11y/snapshot evidence collected", "browser screenshot proof captured or browser_unavailable stated", "targeted checks pass"];
+  if (type === "ui_web") return ["Relevant UI route/component files inspected", "component is proven rendered by a route/caller", "console/network/a11y and responsive viewport evidence collected", "empty/loading/error states checked when relevant", "before/after screenshot proof captured for visual fixes or browser_unavailable stated honestly", "targeted checks pass"];
   return ["Relevant files inspected", "approved patch/evidence exists if mutation happened", "targeted checks pass", "session evidence supports final claims"];
 }
 

@@ -62,6 +62,8 @@ try {
     "vnem_evidence_to_fix_check",
     "vnem_build_architecture_map",
     "vnem_code_change_contract",
+    "vnem_build_ui_quality_plan",
+    "vnem_visual_proof_contract",
     "vnem_build_api_integration_plan",
     "vnem_get_agent_profile",
     "vnem_compose_capability_contract",

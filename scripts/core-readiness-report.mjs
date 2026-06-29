@@ -38,6 +38,9 @@ const coreDebuggingPlanTestSource = await text("scripts/test-core-debugging-plan
 const coreEvidenceToFixTestSource = await text("scripts/test-core-evidence-to-fix.mjs");
 const coreCodeQualityContractTestSource = await text("scripts/test-core-code-quality-contract.mjs");
 const completionAuditCodeQualityTestSource = await text("scripts/test-completion-audit-code-quality.mjs");
+const coreUiQualityPlanTestSource = await text("scripts/test-core-ui-quality-plan.mjs");
+const coreVisualProofContractTestSource = await text("scripts/test-core-visual-proof-contract.mjs");
+const uiCompletionAuditTestSource = await text("scripts/test-ui-completion-audit.mjs");
 const toolsSourceIngestionTestSource = await text("scripts/test-tools-source-ingestion.mjs");
 const toolsSourceGraphTestSource = await text("scripts/test-tools-source-graph.mjs");
 const mcpUserSmokeTestSource = await text("scripts/test-mcp-user-smoke.mjs");
@@ -166,6 +169,16 @@ const coreDebuggingCodeQualityStatus = {
   targeted_verification_planning_status: /targeted_tests_or_checks/.test(serverSource) && /targeted_verification_required/.test(serverSource + coreEvidenceToFixTestSource)
 };
 
+
+const coreUiWebQualityStatus = {
+  ui_quality_plan_status: toolInventory.includes("vnem_build_ui_quality_plan") && /buildUiQualityPlan/.test(serverSource) && /visual_evidence_required/.test(coreUiQualityPlanTestSource + serverSource),
+  visual_proof_contract_status: toolInventory.includes("vnem_visual_proof_contract") && /buildVisualProofContract/.test(serverSource) && /responsive_fix/.test(coreVisualProofContractTestSource + serverSource),
+  ui_completion_audit_status: /UI improved\/visual claim lacks screenshot|Responsive claim lacks multiple viewport|Accessibility claim lacks accessibility audit/i.test(await text("scripts/lib/quality-contracts.mjs")) && /test:ui-completion-audit|ui_findings|missing_evidence/.test(JSON.stringify(packageJson.scripts) + uiCompletionAuditTestSource),
+  ui_route_component_planning_status: /routes_or_components_to_check|route\/component render evidence|vnem_tools_ui_surface_review/.test(serverSource + coreUiQualityPlanTestSource),
+  ui_state_coverage_planning_status: /empty_loading_error_states_required|loading.*empty.*error|state evidence/.test(serverSource + coreUiQualityPlanTestSource + coreVisualProofContractTestSource),
+  core_ui_still_plan_only_status: /core_plan_only:\s*true/.test(serverSource) && /core_executes_browser:\s*false/.test(serverSource) && /Core opened a browser|Core captured screenshots/.test(serverSource + coreUiQualityPlanTestSource)
+};
+
 const usablePackStatus = {
   usable_api_pack_count: Array.isArray(usablePacks.apis) ? usablePacks.apis.filter((pack) => pack.usable_status === "usable").length : 0,
   usable_skill_pack_count: Array.isArray(usablePacks.skills) ? usablePacks.skills.filter((pack) => pack.usable_status === "usable").length : 0,
@@ -197,6 +210,10 @@ assert.ok(Object.values(routingMemoryOutputStatus).every(Boolean), "Core routing
 assert.ok(Object.values(corePermissionAwarenessStatus).every(Boolean), "Core permission-awareness/trust-boundary planning readiness is incomplete");
 assert.ok(Object.values(coreResearchSourceStatus).every(Boolean), "Core research/source-ingestion readiness is incomplete");
 assert.ok(Object.values(coreDebuggingCodeQualityStatus).every(Boolean), "Core debugging/code-quality readiness is incomplete");
+assert.ok(Object.values(coreUiWebQualityStatus).every(Boolean), "Core UI/web quality readiness is incomplete");
+assert.ok(packageJson.scripts?.["test:core-ui-quality-plan"] === "node scripts/test-core-ui-quality-plan.mjs", "test:core-ui-quality-plan package script is missing");
+assert.ok(packageJson.scripts?.["test:core-visual-proof-contract"] === "node scripts/test-core-visual-proof-contract.mjs", "test:core-visual-proof-contract package script is missing");
+assert.ok(packageJson.scripts?.["test:ui-completion-audit"] === "node scripts/test-ui-completion-audit.mjs", "test:ui-completion-audit package script is missing");
 assert.ok(packageJson.scripts?.["test:core-research-strategy"] === "node scripts/test-core-research-strategy.mjs", "test:core-research-strategy package script is missing");
 assert.ok(packageJson.scripts?.["test:core-source-ingestion-planning"] === "node scripts/test-core-source-ingestion-planning.mjs", "test:core-source-ingestion-planning package script is missing");
 assert.ok(packageJson.scripts?.["test:research-evidence-audit"] === "node scripts/test-research-evidence-audit.mjs", "test:research-evidence-audit package script is missing");
@@ -255,6 +272,7 @@ const report = {
   core_permission_awareness_status: corePermissionAwarenessStatus,
   core_research_source_status: coreResearchSourceStatus,
   core_debugging_code_quality_status: coreDebuggingCodeQualityStatus,
+  core_ui_web_quality_status: coreUiWebQualityStatus,
   core_tools_ecosystem_test_status: /vnem_build_tools_plan/.test(coreToolsEcosystemTestSource) && /vnem_tools_finish_session/.test(coreToolsEcosystemTestSource),
   api_library_counts: apiCounts,
   skill_library_counts: skillCounts,
@@ -274,7 +292,8 @@ const report = {
     "Core routing now returns structured task categories, memory relevance decisions, missing-context ask/no-ask decisions, output-quality contracts, anti-stagnation checks, and evidence-label audits while remaining plan-only.",
     "Core now plans Tools permission profiles, trust-boundary levels, approval-required actions, blocked/profile-limited actions, and safe alternatives while remaining plan-only.",
     "Core now builds research strategies, source-ingestion plans, source-graph planning, contradiction/freshness confidence limits, and research evidence audits while remaining plan-only.",
-    "Core now builds log-first debugging plans, evidence-to-fix checks, architecture maps, code-change contracts, and completion-audit code-quality warnings while remaining plan-only."
+    "Core now builds log-first debugging plans, evidence-to-fix checks, architecture maps, code-change contracts, and completion-audit code-quality warnings while remaining plan-only.",
+    "Core now builds UI quality plans and visual proof contracts, and completion audit flags UI/browser overclaims without visual, route/render, console/network, a11y, viewport, state, and before/after evidence while remaining plan-only."
   ],
   not_ready: [
     "Most API docs, rate limits, CORS values, and freshness statuses remain metadata-level or unknown.",
@@ -355,6 +374,7 @@ function formatReport(report) {
   lines.push(`core_permission_awareness_status: ${status(report.core_permission_awareness_status)}`);
   lines.push(`core_research_source_status: ${status(report.core_research_source_status)}`);
   lines.push(`core_debugging_code_quality_status: ${status(report.core_debugging_code_quality_status)}`);
+  lines.push(`core_ui_web_quality_status: ${status(report.core_ui_web_quality_status)}`);
   lines.push(`core_tools_ecosystem_test_status: ${report.core_tools_ecosystem_test_status ? "yes" : "no"}`);
   lines.push(`real_task_examples_tested: ${report.task_boosting_status.real_task_examples_tested.join(", ")}`);
   lines.push(`api_counts: total=${report.api_library_counts.total_apis}, docs_verified=${report.api_library_counts.docs_verified_count}, docs_unknown=${report.api_library_counts.docs_unknown_count}, rate_limit_verified=${report.api_library_counts.rate_limit_verified_count}, rate_limit_unknown=${report.api_library_counts.rate_limit_unknown_count}, cors_unknown=${report.api_library_counts.cors_unknown_count}, frontend_safe=${report.api_library_counts.frontend_safe_count}, backend_required=${report.api_library_counts.backend_required_count}`);

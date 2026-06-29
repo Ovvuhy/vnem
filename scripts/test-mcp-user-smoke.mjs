@@ -30,9 +30,18 @@ try {
   assert.ok(searchPlan.selected_tools.includes("vnem_tools_web_search"));
   assert.equal(searchPlan.core_executes_tools, false);
 
+  const uiPlanCall = await core.callTool({ name: "vnem_build_ui_quality_plan", arguments: { user_goal: "Improve dashboard UI and prove responsive browser behavior", ui_surface: "dashboard", expected_user_flow: "open dashboard and verify empty state", routes_or_components: ["/dashboard", "Dashboard"] } });
+  const uiPlan = uiPlanCall.structuredContent?.ui_quality_plan;
+  assert.equal(uiPlan.core_plan_only, true);
+  assert.equal(uiPlan.core_executes_browser, false);
+  assert.ok(uiPlan.Tools_MCP_actions_needed.includes("vnem_tools_ui_evidence_audit"));
+
   const manifest = await tools.callTool({ name: "vnem_tools_manifest", arguments: {} });
   const toolNames = manifest.structuredContent?.manifest?.tools?.map((tool) => tool.name) || [];
-  for (const name of ["vnem_tools_permission_profiles", "vnem_tools_permission_status", "vnem_tools_action_policy_preview", "vnem_tools_trust_boundary_classify", "vnem_tools_search_provider_manifest", "vnem_tools_search_query_builder", "vnem_tools_web_search", "vnem_tools_search_result_ranker", "vnem_tools_captcha_detector", "vnem_tools_download_safety_check", "vnem_tools_claim_source_matrix", "vnem_tools_research_gap_detector", "vnem_tools_source_map", "vnem_tools_source_extract", "vnem_tools_source_graph", "vnem_tools_architecture_review", "vnem_tools_debug_evidence"]) assert.ok(toolNames.includes(name), `manifest missing ${name}`);
+  for (const name of ["vnem_tools_permission_profiles", "vnem_tools_permission_status", "vnem_tools_action_policy_preview", "vnem_tools_trust_boundary_classify", "vnem_tools_search_provider_manifest", "vnem_tools_search_query_builder", "vnem_tools_web_search", "vnem_tools_search_result_ranker", "vnem_tools_captcha_detector", "vnem_tools_download_safety_check", "vnem_tools_claim_source_matrix", "vnem_tools_research_gap_detector", "vnem_tools_source_map", "vnem_tools_source_extract", "vnem_tools_source_graph", "vnem_tools_architecture_review", "vnem_tools_debug_evidence", "vnem_tools_ui_surface_review", "vnem_tools_browser_evidence_plan", "vnem_tools_ui_evidence_audit"]) assert.ok(toolNames.includes(name), `manifest missing ${name}`);
+
+  const uiAudit = await tools.callTool({ name: "vnem_tools_ui_evidence_audit", arguments: { claim: "Dashboard UI improved", screenshots: [], dom_assertions: [], console_summary: { status: "unknown" }, network_summary: { status: "unknown" } } });
+  assert.equal(uiAudit.structuredContent?.ui_evidence_audit?.safe_to_claim, false);
 
   const query = await tools.callTool({ name: "vnem_tools_search_query_builder", arguments: { task: "Find official docs for safe browser automation", source_types_needed: ["official_docs"], freshness_required: false } });
   assert.ok(query.structuredContent?.search_query_builder?.queries?.length >= 3);

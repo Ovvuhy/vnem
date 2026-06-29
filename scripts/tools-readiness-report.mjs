@@ -26,6 +26,9 @@ const toolsSourceIngestionTestPath = rel("scripts/test-tools-source-ingestion.mj
 const toolsSourceGraphTestPath = rel("scripts/test-tools-source-graph.mjs");
 const toolsArchitectureReviewTestPath = rel("scripts/test-tools-architecture-review.mjs");
 const toolsDebugEvidenceTestPath = rel("scripts/test-tools-debug-evidence.mjs");
+const toolsUiSurfaceReviewTestPath = rel("scripts/test-tools-ui-surface-review.mjs");
+const toolsBrowserEvidencePlanTestPath = rel("scripts/test-tools-browser-evidence-plan.mjs");
+const toolsUiEvidenceAuditTestPath = rel("scripts/test-tools-ui-evidence-audit.mjs");
 const coreResearchStrategyTestPath = rel("scripts/test-core-research-strategy.mjs");
 const coreSourceIngestionPlanningTestPath = rel("scripts/test-core-source-ingestion-planning.mjs");
 const researchEvidenceAuditTestPath = rel("scripts/test-research-evidence-audit.mjs");
@@ -57,6 +60,9 @@ const toolsSourceIngestionTest = existsSync(toolsSourceIngestionTestPath) ? read
 const toolsSourceGraphTest = existsSync(toolsSourceGraphTestPath) ? readFileSync(toolsSourceGraphTestPath, "utf8") : "";
 const toolsArchitectureReviewTest = existsSync(toolsArchitectureReviewTestPath) ? readFileSync(toolsArchitectureReviewTestPath, "utf8") : "";
 const toolsDebugEvidenceTest = existsSync(toolsDebugEvidenceTestPath) ? readFileSync(toolsDebugEvidenceTestPath, "utf8") : "";
+const toolsUiSurfaceReviewTest = existsSync(toolsUiSurfaceReviewTestPath) ? readFileSync(toolsUiSurfaceReviewTestPath, "utf8") : "";
+const toolsBrowserEvidencePlanTest = existsSync(toolsBrowserEvidencePlanTestPath) ? readFileSync(toolsBrowserEvidencePlanTestPath, "utf8") : "";
+const toolsUiEvidenceAuditTest = existsSync(toolsUiEvidenceAuditTestPath) ? readFileSync(toolsUiEvidenceAuditTestPath, "utf8") : "";
 const coreResearchStrategyTest = existsSync(coreResearchStrategyTestPath) ? readFileSync(coreResearchStrategyTestPath, "utf8") : "";
 const coreSourceIngestionPlanningTest = existsSync(coreSourceIngestionPlanningTestPath) ? readFileSync(coreSourceIngestionPlanningTestPath, "utf8") : "";
 const researchEvidenceAuditTest = existsSync(researchEvidenceAuditTestPath) ? readFileSync(researchEvidenceAuditTestPath, "utf8") : "";
@@ -116,6 +122,9 @@ const requiredTools = [
   "vnem_tools_source_graph",
   "vnem_tools_architecture_review",
   "vnem_tools_debug_evidence",
+  "vnem_tools_ui_surface_review",
+  "vnem_tools_browser_evidence_plan",
+  "vnem_tools_ui_evidence_audit",
   "vnem_tools_apply_patch_batch",
   "vnem_tools_restore_batch",
   "vnem_tools_project_scan",
@@ -150,6 +159,9 @@ const report = {
   tools_source_graph_test_exists: existsSync(toolsSourceGraphTestPath),
   tools_architecture_review_test_exists: existsSync(toolsArchitectureReviewTestPath),
   tools_debug_evidence_test_exists: existsSync(toolsDebugEvidenceTestPath),
+  tools_ui_surface_review_test_exists: existsSync(toolsUiSurfaceReviewTestPath),
+  tools_browser_evidence_plan_test_exists: existsSync(toolsBrowserEvidencePlanTestPath),
+  tools_ui_evidence_audit_test_exists: existsSync(toolsUiEvidenceAuditTestPath),
   core_research_strategy_test_exists: existsSync(coreResearchStrategyTestPath),
   core_source_ingestion_planning_test_exists: existsSync(coreSourceIngestionPlanningTestPath),
   research_evidence_audit_test_exists: existsSync(researchEvidenceAuditTestPath),
@@ -182,6 +194,9 @@ const report = {
     test_tools_source_graph: pkg.scripts?.["test:tools-source-graph"] === "node scripts/test-tools-source-graph.mjs",
     test_tools_architecture_review: pkg.scripts?.["test:tools-architecture-review"] === "node scripts/test-tools-architecture-review.mjs",
     test_tools_debug_evidence: pkg.scripts?.["test:tools-debug-evidence"] === "node scripts/test-tools-debug-evidence.mjs",
+    test_tools_ui_surface_review: pkg.scripts?.["test:tools-ui-surface-review"] === "node scripts/test-tools-ui-surface-review.mjs",
+    test_tools_browser_evidence_plan: pkg.scripts?.["test:tools-browser-evidence-plan"] === "node scripts/test-tools-browser-evidence-plan.mjs",
+    test_tools_ui_evidence_audit: pkg.scripts?.["test:tools-ui-evidence-audit"] === "node scripts/test-tools-ui-evidence-audit.mjs",
     test_research_evidence_audit: pkg.scripts?.["test:research-evidence-audit"] === "node scripts/test-research-evidence-audit.mjs",
     test_core_search_planning: pkg.scripts?.["test:core-search-planning"] === "node scripts/test-core-search-planning.mjs",
     test_mcp_user_smoke: pkg.scripts?.["test:mcp-user-smoke"] === "node scripts/test-mcp-user-smoke.mjs",
@@ -250,6 +265,14 @@ const report = {
   parallel_fake_system_detection_status: /possible_parallel_fake_systems/.test(server + toolsArchitectureReviewTest) && /unregistered|parallel fake system/i.test(server + toolsArchitectureReviewTest),
   dead_code_warning_status: /possible_dead_code/.test(server + toolsArchitectureReviewTest) && /unusedDeadCode|helperUnused|dead code/i.test(server + toolsArchitectureReviewTest),
   contract_change_risk_status: /contract_change_risks/.test(server + toolsArchitectureReviewTest) && /schema|registry|package script|contract/i.test(server + toolsArchitectureReviewTest),
+  ui_surface_review_status: /vnem_tools_ui_surface_review/.test(server) && /safeUiSurfaceReview/.test(server) && /routes_found/.test(toolsUiSurfaceReviewTest + server),
+  browser_evidence_plan_status: /vnem_tools_browser_evidence_plan/.test(server) && /safeBrowserEvidencePlan/.test(server) && /browser_was_run:\s*false/.test(server + toolsBrowserEvidencePlanTest),
+  ui_evidence_audit_status: /vnem_tools_ui_evidence_audit/.test(server) && /safeUiEvidenceAudit/.test(server) && /code-only evidence|screenshot missing|safe_to_claim/.test(toolsUiEvidenceAuditTest + server),
+  ui_surface_secret_blocking_status: /secret-like path blocked|secret\/session\/private path blocked/.test(server) && /must-not-read/.test(toolsUiSurfaceReviewTest),
+  ui_route_component_detection_status: /routes_found|components_found|render_paths_found/.test(server) && /VisibleCard|DeadPanel|Dashboard/.test(toolsUiSurfaceReviewTest),
+  ui_state_coverage_status: /missing_state_coverage/.test(server) && /loading|empty|error/.test(toolsUiSurfaceReviewTest + toolsBrowserEvidencePlanTest + toolsUiEvidenceAuditTest),
+  ui_no_hidden_browser_status: /browser_was_run:\s*false|This tool ran browser automation/.test(server + toolsBrowserEvidencePlanTest) && /No browser, network, installs, or mutation/.test(server),
+  ui_visual_claim_audit_status: /visual_claim_supported|before_after_status|responsive_status|console_network_status/.test(server + toolsUiEvidenceAuditTest),
   browser_search_safety_policy: /no_search_engine_result_page_scraping/.test(server) && /no_fake_search_results/.test(server) && /automatic CAPTCHA bypass/.test(server),
   provider_unconfigured_honesty: /provider_unconfigured/.test(server) && /no fake results returned/.test(server) && /provider_unavailable|provider_unconfigured/.test(server + toolsSearchPowerTest),
   no_captcha_bypass_public_policy: /No automatic CAPTCHA bypass was attempted or provided/.test(server + toolsRiskCaptchaTest) && /automatic CAPTCHA bypass/.test(server),
@@ -346,6 +369,9 @@ assert.equal(report.tools_source_ingestion_test_exists, true, "tools source inge
 assert.equal(report.tools_source_graph_test_exists, true, "tools source graph test file is missing");
 assert.equal(report.tools_architecture_review_test_exists, true, "tools architecture review test file is missing");
 assert.equal(report.tools_debug_evidence_test_exists, true, "tools debug evidence test file is missing");
+assert.equal(report.tools_ui_surface_review_test_exists, true, "tools UI surface review test file is missing");
+assert.equal(report.tools_browser_evidence_plan_test_exists, true, "tools browser evidence plan test file is missing");
+assert.equal(report.tools_ui_evidence_audit_test_exists, true, "tools UI evidence audit test file is missing");
 assert.equal(report.core_research_strategy_test_exists, true, "core research strategy test file is missing");
 assert.equal(report.core_source_ingestion_planning_test_exists, true, "core source ingestion planning test file is missing");
 assert.equal(report.research_evidence_audit_test_exists, true, "research evidence audit test file is missing");
@@ -358,6 +384,9 @@ assert.equal(report.package_scripts.test_tools_source_ingestion, true, "test:too
 assert.equal(report.package_scripts.test_tools_source_graph, true, "test:tools-source-graph package script is missing");
 assert.equal(report.package_scripts.test_tools_architecture_review, true, "test:tools-architecture-review package script is missing");
 assert.equal(report.package_scripts.test_tools_debug_evidence, true, "test:tools-debug-evidence package script is missing");
+assert.equal(report.package_scripts.test_tools_ui_surface_review, true, "test:tools-ui-surface-review package script is missing");
+assert.equal(report.package_scripts.test_tools_browser_evidence_plan, true, "test:tools-browser-evidence-plan package script is missing");
+assert.equal(report.package_scripts.test_tools_ui_evidence_audit, true, "test:tools-ui-evidence-audit package script is missing");
 assert.equal(report.package_scripts.test_research_evidence_audit, true, "test:research-evidence-audit package script is missing");
 assert.equal(report.package_scripts.test_core_permission_planning, true, "test:core-permission-planning package script is missing");
 assert.equal(report.package_scripts.test_core_search_planning, true, "test:core-search-planning package script is missing");
@@ -403,6 +432,7 @@ assert.equal(report.claim_source_matrix_status, true, "claim/source matrix readi
 assert.equal(report.research_gap_detector_status, true, "research gap detector readiness missing");
 for (const [key, value] of Object.entries({ source_map_status: report.source_map_status, source_extract_status: report.source_extract_status, source_graph_status: report.source_graph_status, bounded_extraction_status: report.bounded_extraction_status, source_ingestion_permission_status: report.source_ingestion_permission_status, source_ingestion_secret_blocking_status: report.source_ingestion_secret_blocking_status, source_ingestion_no_broad_crawl_status: report.source_ingestion_no_broad_crawl_status, source_graph_contradiction_status: report.source_graph_contradiction_status, freshness_detection_status: report.freshness_detection_status, structured_evidence_report_status: report.structured_evidence_report_status })) assert.equal(value, true, `${key} readiness missing`);
 for (const [key, value] of Object.entries({ architecture_review_status: report.architecture_review_status, debug_evidence_status: report.debug_evidence_status, architecture_review_secret_blocking_status: report.architecture_review_secret_blocking_status, debug_evidence_log_first_status: report.debug_evidence_log_first_status, debug_evidence_git_status_status: report.debug_evidence_git_status_status, debug_evidence_no_arbitrary_commands_status: report.debug_evidence_no_arbitrary_commands_status, parallel_fake_system_detection_status: report.parallel_fake_system_detection_status, dead_code_warning_status: report.dead_code_warning_status, contract_change_risk_status: report.contract_change_risk_status })) assert.equal(value, true, `${key} readiness missing`);
+for (const [key, value] of Object.entries({ ui_surface_review_status: report.ui_surface_review_status, browser_evidence_plan_status: report.browser_evidence_plan_status, ui_evidence_audit_status: report.ui_evidence_audit_status, ui_surface_secret_blocking_status: report.ui_surface_secret_blocking_status, ui_route_component_detection_status: report.ui_route_component_detection_status, ui_state_coverage_status: report.ui_state_coverage_status, ui_no_hidden_browser_status: report.ui_no_hidden_browser_status, ui_visual_claim_audit_status: report.ui_visual_claim_audit_status })) assert.equal(value, true, `${key} readiness missing`);
 assert.equal(report.browser_search_safety_policy, true, "browser/search safety policy missing");
 assert.equal(report.provider_unconfigured_honesty, true, "provider unconfigured honesty missing");
 assert.equal(report.no_captcha_bypass_public_policy, true, "no-CAPTCHA-bypass public policy missing");
@@ -502,6 +532,14 @@ console.log(`architecture_review_secret_blocking_status: ${yes(report.architectu
 console.log(`debug_evidence_log_first_status: ${yes(report.debug_evidence_log_first_status)}`);
 console.log(`debug_evidence_git_status_status: ${yes(report.debug_evidence_git_status_status)}`);
 console.log(`debug_evidence_no_arbitrary_commands_status: ${yes(report.debug_evidence_no_arbitrary_commands_status)}`);
+console.log(`ui_surface_review_status: ${yes(report.ui_surface_review_status)}`);
+console.log(`browser_evidence_plan_status: ${yes(report.browser_evidence_plan_status)}`);
+console.log(`ui_evidence_audit_status: ${yes(report.ui_evidence_audit_status)}`);
+console.log(`ui_surface_secret_blocking_status: ${yes(report.ui_surface_secret_blocking_status)}`);
+console.log(`ui_route_component_detection_status: ${yes(report.ui_route_component_detection_status)}`);
+console.log(`ui_state_coverage_status: ${yes(report.ui_state_coverage_status)}`);
+console.log(`ui_no_hidden_browser_status: ${yes(report.ui_no_hidden_browser_status)}`);
+console.log(`ui_visual_claim_audit_status: ${yes(report.ui_visual_claim_audit_status)}`);
 console.log(`parallel_fake_system_detection_status: ${yes(report.parallel_fake_system_detection_status)}`);
 console.log(`dead_code_warning_status: ${yes(report.dead_code_warning_status)}`);
 console.log(`contract_change_risk_status: ${yes(report.contract_change_risk_status)}`);
