@@ -32,7 +32,7 @@ try {
 
   const manifest = await tools.callTool({ name: "vnem_tools_manifest", arguments: {} });
   const toolNames = manifest.structuredContent?.manifest?.tools?.map((tool) => tool.name) || [];
-  for (const name of ["vnem_tools_permission_profiles", "vnem_tools_permission_status", "vnem_tools_action_policy_preview", "vnem_tools_trust_boundary_classify", "vnem_tools_search_provider_manifest", "vnem_tools_search_query_builder", "vnem_tools_web_search", "vnem_tools_search_result_ranker", "vnem_tools_captcha_detector", "vnem_tools_download_safety_check", "vnem_tools_claim_source_matrix", "vnem_tools_research_gap_detector", "vnem_tools_source_map", "vnem_tools_source_extract", "vnem_tools_source_graph"]) assert.ok(toolNames.includes(name), `manifest missing ${name}`);
+  for (const name of ["vnem_tools_permission_profiles", "vnem_tools_permission_status", "vnem_tools_action_policy_preview", "vnem_tools_trust_boundary_classify", "vnem_tools_search_provider_manifest", "vnem_tools_search_query_builder", "vnem_tools_web_search", "vnem_tools_search_result_ranker", "vnem_tools_captcha_detector", "vnem_tools_download_safety_check", "vnem_tools_claim_source_matrix", "vnem_tools_research_gap_detector", "vnem_tools_source_map", "vnem_tools_source_extract", "vnem_tools_source_graph", "vnem_tools_architecture_review", "vnem_tools_debug_evidence"]) assert.ok(toolNames.includes(name), `manifest missing ${name}`);
 
   const query = await tools.callTool({ name: "vnem_tools_search_query_builder", arguments: { task: "Find official docs for safe browser automation", source_types_needed: ["official_docs"], freshness_required: false } });
   assert.ok(query.structuredContent?.search_query_builder?.queries?.length >= 3);

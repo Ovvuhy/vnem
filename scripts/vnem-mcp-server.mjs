@@ -95,6 +95,10 @@ const DEFAULT_MCP_TOOLS = [
   "vnem_route_task",
   "vnem_output_quality_plan",
   "vnem_anti_stagnation_check",
+  "vnem_build_debugging_plan",
+  "vnem_evidence_to_fix_check",
+  "vnem_build_architecture_map",
+  "vnem_code_change_contract",
   "vnem_select_tools_for_task",
   "vnem_build_tools_plan",
   "vnem_build_browser_research_plan",
@@ -577,6 +581,62 @@ function registerTools(mcpServer) {
     async (args) => {
       const check = buildAntiStagnationCheck(args);
       return toolResult(formatAntiStagnationCheck(check), { anti_stagnation_check: check });
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_build_debugging_plan",
+    {
+      title: "Build VNEM Debugging Plan",
+      description: "Read-only Core log-first debugging plan with failure type, missing evidence, root-cause areas, targeted checks, and must-not-claim boundaries. Does not inspect logs or run tests.",
+      inputSchema: { task: z.string().min(1), expected_behavior: z.string().optional(), actual_behavior: z.string().optional(), error_or_output: z.string().optional(), failing_command: z.string().optional(), known_context: z.string().optional(), token_budget: z.enum(["compact", "normal", "expanded"]).default("normal") },
+      annotations: READ_ONLY
+    },
+    async (args) => {
+      const plan = buildDebuggingPlan(args);
+      return toolResult(formatDebuggingPlan(plan), { debugging_plan: plan });
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_evidence_to_fix_check",
+    {
+      title: "VNEM Evidence To Fix Check",
+      description: "Read-only checker that rejects placebo debugging fixes: no logs/tests, docs-only bug fixes, skipped tests, unrelated changes, suppression, and missing targeted verification.",
+      inputSchema: { task: z.string().min(1), claimed_fix: z.string().min(1), root_cause: z.string().optional(), changed_files: z.array(z.string()).default([]), evidence_items: z.array(z.any()).default([]), commands_run: z.array(z.string()).default([]), token_budget: z.enum(["compact", "normal", "expanded"]).default("normal") },
+      annotations: READ_ONLY
+    },
+    async (args) => {
+      const check = buildEvidenceToFixCheck(args);
+      return toolResult(formatEvidenceToFixCheck(check), { evidence_to_fix_check: check });
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_build_architecture_map",
+    {
+      title: "Build VNEM Architecture Map",
+      description: "Read-only Core architecture map for serious code edits: entry points, implementation path, patterns, files/tests, contracts, integration points, and risks. Does not read files.",
+      inputSchema: { task: z.string().min(1), known_context: z.string().optional(), project_type_hint: z.string().optional(), token_budget: z.enum(["compact", "normal", "expanded"]).default("normal") },
+      annotations: READ_ONLY
+    },
+    async (args) => {
+      const map = buildArchitectureMap(args);
+      return toolResult(formatArchitectureMap(map), { architecture_map: map });
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_code_change_contract",
+    {
+      title: "Build VNEM Code Change Contract",
+      description: "Read-only Core contract for real integrated code changes: files, callers, contracts, tests, verification, rollback, done definition, and must-not-claim rules.",
+      inputSchema: { goal: z.string().min(1), existing_architecture_summary: z.string().optional(), architecture_evidence: z.any().optional(), files_to_change: z.array(z.string()).default([]), files_to_avoid: z.array(z.string()).default([]), contracts_affected: z.array(z.string()).default([]), token_budget: z.enum(["compact", "normal", "expanded"]).default("normal") },
+      annotations: READ_ONLY
+    },
+    async (args) => {
+      const contract = buildCodeChangeContract(args);
+      return toolResult(formatCodeChangeContract(contract), { code_change_contract: contract });
     }
   );
 
@@ -2020,11 +2080,11 @@ function selectToolsForTask(args = {}) {
   const selected = new Set(["vnem_tools_manifest", "vnem_tools_permission_status", "vnem_tools_action_policy_preview", "vnem_tools_trust_boundary_classify", "vnem_tools_start_session", "vnem_tools_finish_session"]);
   const add = (...tools) => tools.filter(Boolean).forEach((tool) => selected.add(tool));
   if (["coding", "ui_web", "debugging", "file_investigation", "local_project_modification", "security_sensitive"].includes(type)) {
-    add("vnem_tools_workspace_map", "vnem_tools_code_search", "vnem_tools_read_many_files", "vnem_tools_project_scan", "vnem_tools_dependency_scan");
+    add("vnem_tools_workspace_map", "vnem_tools_architecture_review", "vnem_tools_code_search", "vnem_tools_read_many_files", "vnem_tools_project_scan", "vnem_tools_dependency_scan");
   }
   if (["coding", "ui_web", "debugging", "local_project_modification"].includes(type)) add("vnem_tools_apply_patch_batch", "vnem_tools_run_project_task", "vnem_tools_collect_evidence", "vnem_tools_git_status", "vnem_tools_git_diff_summary");
   if (type === "ui_web") add("vnem_tools_start_dev_server", "vnem_tools_browser_capture", "vnem_tools_browser_page_inspect", "vnem_tools_browser_accessibility_audit", "vnem_tools_browser_compare_snapshots", "vnem_tools_stop_dev_server");
-  if (type === "debugging") add("vnem_tools_code_search", "vnem_tools_read_many_files", "vnem_tools_run_project_task", "vnem_tools_apply_patch_batch");
+  if (type === "debugging") add("vnem_tools_debug_evidence", "vnem_tools_architecture_review", "vnem_tools_code_search", "vnem_tools_read_many_files", "vnem_tools_run_project_task", "vnem_tools_apply_patch_batch");
   if (["research", "direct_url_source", "current_research", "website_understanding"].includes(type)) add("vnem_tools_source_quality_check", "vnem_tools_research_brief", "vnem_tools_browser_research_pack", "vnem_tools_claim_source_matrix", "vnem_tools_research_gap_detector", "vnem_tools_source_map", "vnem_tools_source_extract", "vnem_tools_source_graph");
   if (["research", "current_research"].includes(type)) add("vnem_tools_search_provider_manifest", "vnem_tools_search_query_builder", "vnem_tools_web_search", "vnem_tools_search_result_ranker");
   if (["direct_url_source", "website_understanding"].includes(type)) add("vnem_tools_fetch_url_text", "vnem_tools_browser_page_inspect", "vnem_tools_url_reputation_check", "vnem_tools_captcha_detector");
@@ -2106,6 +2166,8 @@ function buildCoreToolsPlan(args = {}) {
   push("vnem_tools_source_map", "map repo/docs/source structure before extraction; no broad crawl");
   push("vnem_tools_source_extract", "extract bounded selected targets with redaction and skipped/blocked accounting");
   push("vnem_tools_source_graph", "compare sources for officialness, freshness, claim support, and contradictions");
+  push("vnem_tools_architecture_review", "inspect real entry points/registries/tests/configs and flag fake parallel systems/dead code");
+  push("vnem_tools_debug_evidence", "collect bounded log-first evidence, git status, package scripts, and targeted debug checks without arbitrary commands");
   push("vnem_tools_apply_patch_batch", "dry-run then apply approved coherent multi-file patch", true, true);
   push("vnem_tools_run_project_task", "dry-run then run approved safe project task/check", true, true);
   push("vnem_tools_start_dev_server", "dry-run then start approved localhost dev server for UI proof", true, true);
@@ -2181,6 +2243,244 @@ function explainToolsChain(args = {}) {
   };
 }
 
+
+
+function truncateText(value, max = 240) {
+  const text = String(value ?? "");
+  return text.length > max ? `${text.slice(0, max - 1)}…` : text;
+}
+
+function buildDebuggingPlan(args = {}) {
+  const task = String(args.task || "");
+  const expected = String(args.expected_behavior || "");
+  const actual = String(args.actual_behavior || "");
+  const output = String(args.error_or_output || "");
+  const failingCommand = String(args.failing_command || "");
+  const context = String(args.known_context || "");
+  const hay = normalize(`${task} ${expected} ${actual} ${output} ${failingCommand} ${context}`);
+  const failureType = inferFailureType({ task, output, failingCommand, actual });
+  const hasEvidence = Boolean(output || failingCommand || /error|log|stack|trace|failed|failing|crash/i.test(context));
+  const uiLike = failureType === "UI" || /ui|dashboard|page|browser|click|blank|screen|component|visual/.test(hay);
+  const evidenceAvailable = [
+    output ? `provided error/output: ${truncateText(output, 220)}` : null,
+    failingCommand ? `failing command: ${failingCommand}` : null,
+    expected ? `expected behavior: ${expected}` : null,
+    actual ? `actual behavior: ${actual}` : null,
+    context && /error|log|stack|trace|failed|failing|crash/i.test(context) ? `known context evidence: ${truncateText(context, 220)}` : null
+  ].filter(Boolean);
+  const evidenceMissing = [
+    !output ? "exact error/log/stack trace or recent test/build output" : null,
+    !failingCommand ? "failing command or reproduction command" : null,
+    !expected ? "expected behavior" : null,
+    !actual ? "actual behavior" : null,
+    uiLike ? "browser console/network output and focused screenshots for the failing UI state" : null
+  ].filter(Boolean);
+  const firstEvidence = [];
+  if (output || failingCommand) firstEvidence.push("provided error/output and failing command are the first evidence to inspect");
+  if (failureType === "startup" || failureType === "crash") firstEvidence.push("startup/crash logs and terminal lines above the first red error");
+  if (failureType === "test") firstEvidence.push("the one failing test output before any code change");
+  if (failureType === "build") firstEvidence.push("build output and config/runtime version evidence");
+  if (failureType === "UI") firstEvidence.push("browser console errors, network failures, DOM/page state, and exact clicked action");
+  if (failureType === "MCP") firstEvidence.push("MCP server startup logs, tool list, allowed roots, permission profile, and client error");
+  if (!firstEvidence.length) firstEvidence.push("terminal output, logs, git status/diff, config files, and the tightest reproducible command");
+  const targeted = targetedChecksForFailure(failureType, failingCommand, task);
+  return {
+    problem_summary: task,
+    expected_behavior: expected || "not provided; clarify or infer cautiously from task",
+    actual_behavior: actual || output || "not provided; gather logs/repro before fixing",
+    failure_type: failureType,
+    evidence_available: evidenceAvailable,
+    evidence_missing: evidenceMissing,
+    user_input_or_screenshots_useful: uiLike || !hasEvidence,
+    specific_user_evidence_request: specificEvidenceRequest(failureType, uiLike, hasEvidence),
+    logs_or_output_to_check_first: firstEvidence,
+    likely_root_cause_areas: likelyRootCauseAreas(failureType, hay),
+    compatibility_risks: compatibilityRisksForDebugging(failureType, hay),
+    safety_risks: ["Do not read secrets or private session/cookie/browser-profile files.", "Do not suppress errors or skip tests to create a green run.", "Do not run package installs, GitHub mutation, deployment, or broad filesystem scans."],
+    Tools_MCP_actions_needed: ["vnem_tools_debug_evidence", "vnem_tools_architecture_review", "vnem_tools_code_search", "vnem_tools_read_many_files", "vnem_tools_run_project_task", "vnem_tools_git_status", "vnem_tools_git_diff_summary"],
+    targeted_tests_or_checks: targeted,
+    full_verification_near_final: ["After targeted checks pass, run the relevant broader suite/build/readiness once near final, not after every tiny edit.", "For VNEM changes, run npm test and readiness/check-links near final if the targeted ladder is green."],
+    permission_profile_expected: "safe-readonly for evidence/architecture; approved-writes or creator-power only for approved patch/test execution steps",
+    must_not_claim: ["Core inspected logs or ran tests.", "The bug is fixed before targeted verification passes.", "Root cause is proven when evidence is missing or only guessed.", "Unrelated passing tests prove the failing path."],
+    core_plan_only: true
+  };
+}
+
+function buildEvidenceToFixCheck(args = {}) {
+  const task = String(args.task || "");
+  const fix = String(args.claimed_fix || "");
+  const root = String(args.root_cause || "");
+  const files = arrayify(args.changed_files).map(String);
+  const evidence = arrayify(args.evidence_items).map((item) => typeof item === "string" ? item : JSON.stringify(item));
+  const commands = arrayify(args.commands_run).map(String);
+  const hay = normalize(`${task} ${fix} ${root} ${files.join(" ")} ${evidence.join(" ")} ${commands.join(" ")}`);
+  const docsOnly = files.length > 0 && files.every((file) => /(^|\/)(readme|docs?|changelog|contributing)|\.(md|mdx|txt)$/i.test(file));
+  const risks = [];
+  const unrelated = [];
+  const missingVerification = [];
+  const evidenceText = normalize(evidence.join(" "));
+  const fileMatches = !files.length || files.some((file) => evidenceText.includes(normalize(file)) || evidenceText.includes(normalize(path.basename(file))) || normalize(task).includes(normalize(file)) || normalize(task).includes(normalize(path.basename(file))));
+  if (!evidence.length) risks.push("fix with no log/error/test evidence");
+  if (!root) risks.push("root cause missing or uncertain");
+  if (docsOnly && /fix|fixed|bug|crash|runtime|test|error/.test(normalize(`${task} ${fix}`))) risks.push("docs-only or wording-only change claimed as bug fix");
+  if (/test\.skip|skip\(|\.only\(|disabled|commented out|swallow|suppress|ignore error|catch \(.*\).*empty/.test(hay)) risks.push("disabled/skipped/suppressed failure claimed as fix");
+  if (!fileMatches) unrelated.push("unrelated changed files do not match the implicated file/function/config evidence");
+  if (!commands.some((cmd) => /test|check|build|lint|node --check|npm run/i.test(cmd) && /pass|passed|exit 0|success|green|ok/i.test(cmd))) missingVerification.push("rerun the targeted failing command/check and capture passing output");
+  if (commands.some((cmd) => /validate|readiness|lint/.test(cmd) && !/test|failing|targeted|specific/.test(cmd)) && /fix|fixed|bug|crash|runtime/.test(hay)) missingVerification.push("unrelated passing checks are not proof of the failing path");
+  const fixMatches = !unrelated.length && !docsOnly && evidence.length > 0 && Boolean(root || /same file|because|root cause|caused by/i.test(fix));
+  let verdict = "accept_with_limits";
+  if (risks.length || unrelated.length || missingVerification.length) verdict = risks.some((r) => /docs-only|disabled|no log|suppressed|skipped/.test(r)) || unrelated.length ? "reject" : "revise";
+  return {
+    verdict,
+    evidence_strength: evidence.length && commands.length ? "medium" : evidence.length ? "low_to_medium" : "none",
+    root_cause_status: root ? "stated" : "missing_or_uncertain",
+    fix_matches_evidence: fixMatches,
+    targeted_verification_required: missingVerification.length ? missingVerification : ["Keep the targeted failing check in the evidence ledger."],
+    unrelated_change_risk: unrelated,
+    placebo_fix_risk: risks,
+    safe_to_claim: verdict === "accept_with_limits" ? ["Claim only the verified targeted behavior and remaining risk."] : ["Partial investigation only; do not claim fixed."],
+    must_not_claim: ["bug fix is complete without targeted verification", "docs-only/wording change fixed runtime behavior", "disabled or skipped tests prove a fix", "unrelated passing tests prove the failing path"],
+    next_best_check: missingVerification[0] || "Run the smallest targeted regression check, then the relevant broader check near final."
+  };
+}
+
+function buildArchitectureMap(args = {}) {
+  const task = String(args.task || "");
+  const context = String(args.known_context || "");
+  const hay = normalize(`${task} ${context} ${args.project_type_hint || ""}`);
+  const isMcp = /mcp|tool|server|registry|registertool/.test(hay);
+  const isDashboard = /dashboard|component|route|ui|frontend|react/.test(hay);
+  const isApi = /api|endpoint|route|backend|server/.test(hay);
+  const entry = [
+    isMcp ? "scripts/vnem-mcp-server.mjs or scripts/vnem-tools-mcp-server.mjs registerTool blocks" : null,
+    isMcp ? "package.json MCP/test scripts and test-mcp-user-smoke coverage" : null,
+    isDashboard ? "dashboard route/component entry points and real rendering path" : null,
+    isApi ? "server/API route handler and caller/client path" : null,
+    "package.json scripts and existing targeted tests"
+  ].filter(Boolean);
+  return {
+    user_goal: task,
+    relevant_entry_points: entry,
+    current_implementation_path: ["Use Tools architecture/source map evidence before editing; Core has not read files.", isMcp ? "Find existing MCP registry/tool manifest/test pattern before adding a tool." : "Trace existing caller/route/component path before adding new code."],
+    existing_patterns_to_follow: ["modify the active registry/caller/route instead of creating a side system", "add a focused test that fails when the real integration is missing", "keep output contracts backward compatible unless callers/tests are updated"],
+    files_likely_involved: likelyFilesForArchitecture(hay),
+    tests_likely_involved: ["new targeted behavior test", "test:mcp or test:mcp-user-smoke for MCP tool surfaces", "caller/contract/integration test for route/component/API changes"],
+    contracts_or_interfaces_affected: [isMcp ? "MCP tool name/schema/structuredContent manifest" : null, isDashboard ? "dashboard route/component props/data shape" : null, isApi ? "API JSON output/caller expectations" : null, "package script/test command names if changed"].filter(Boolean),
+    integration_points: [isMcp ? "MCP tool registry, Tools manifest catalog, smoke tests, readiness report" : null, isDashboard ? "actual route renders component and data flows from real caller/API" : null, isApi ? "handler, client/caller, output schema, tests" : null, "package script and targeted test entry"].filter(Boolean),
+    risks: ["parallel fake system or unwired helper", "dead code/unreferenced new module", "contract/schema change without caller/test update", "mock-only test that never hits real routing path", "secret or permission boundary regression"],
+    what_must_not_be_broken: ["existing tests/readiness", "Batch B permission/secret blocking", "Batch C source evidence boundaries", "real entry points and public output contracts"],
+    core_plan_only: true
+  };
+}
+
+function buildCodeChangeContract(args = {}) {
+  const goal = String(args.goal || "");
+  const arch = args.architecture_evidence || {};
+  const files = arrayify(args.files_to_change).map(String);
+  const avoid = arrayify(args.files_to_avoid).map(String);
+  const contracts = arrayify(args.contracts_affected).map(String);
+  return {
+    goal,
+    existing_architecture_summary: args.existing_architecture_summary || arch.current_implementation_path?.join("; ") || "Architecture evidence required before serious edits; Core itself has not inspected files.",
+    real_integration_point: arrayify(arch.integration_points).length ? arrayify(arch.integration_points) : ["Identify and modify the real route/caller/entry/registry that executes or renders the feature."],
+    files_to_change: files,
+    files_to_avoid: avoid.length ? avoid : ["unrelated docs/config/lockfiles", "parallel helper modules not imported by real callers", "secret/session/cookie/browser-profile paths"],
+    contracts_affected: contracts.length ? contracts : ["caller expectations", "test command names", "structured output / API / UI data shape if touched"],
+    compatibility_risks: ["runtime/client/version mismatch", "changed schema without caller migration", "platform/path/shell differences"],
+    safety_risks: ["secret leakage", "permission bypass", "broad filesystem or network access", "error suppression to pass tests"],
+    tests_to_update_or_add: ["targeted failing test at the real integration point", "caller/contract test for changed output shape", "regression test proving old behavior still works", "avoid mock-only proof unless paired with a real path test"],
+    verification_required: ["run the targeted test/check first", "run syntax checks for touched scripts", "run relevant readiness/smoke tests", "run broader suite/build near final"],
+    rollback_considerations: ["keep diff small and coherent", "record git status/diff before commit", "avoid irreversible generated/user data changes"],
+    what_counts_as_done: ["new behavior is wired into the real entry point", "targeted test fails without the wiring and passes with it", "callers/contracts/docs generated surfaces are updated where needed", "final report separates proven/tested/unknown"],
+    must_not_claim: ["implemented when code is unwired", "full fix from mock-only tests", "contract compatibility without caller/test evidence", "safe or complete while verification is missing"]
+  };
+}
+
+function inferFailureType({ task, output, failingCommand, actual }) {
+  const text = normalize(`${task} ${output} ${failingCommand} ${actual}`);
+  if (/test|assert|jest|vitest|pytest|npm run test|failing test/.test(text)) return "test";
+  if (/startup|start dev|server starts|boot/.test(text)) return "startup";
+  if (/build|compile|vite build|tsc|webpack|rollup/.test(text)) return "build";
+  if (/dashboard|ui|browser|page|blank|click|component|visual|dom/.test(text)) return "UI";
+  if (/mcp|stdio|tool list|registertool|allowed root/.test(text)) return "MCP";
+  if (/npm install|dependency|peer|package|lockfile|module not found/.test(text)) return "package";
+  if (/config|env|setting|yaml|json parse/.test(text)) return "config";
+  if (/crash|segfault|fatal|panic|uncaught/.test(text)) return "crash";
+  if (/typeerror|referenceerror|runtime|exception|undefined/.test(text)) return "runtime";
+  return "unknown";
+}
+
+function targetedChecksForFailure(type, failingCommand, task) {
+  const checks = [];
+  if (failingCommand) checks.push(`rerun targeted failing command: ${failingCommand}`);
+  if (type === "test") checks.push("run one failing test or one affected test file before the full suite");
+  if (type === "build") checks.push("run the single failing build/check step before full validation");
+  if (type === "startup" || type === "MCP") checks.push("run node --check on touched MCP/server scripts and the exact startup/smoke test");
+  if (type === "UI") checks.push("run the affected route/page check plus browser console/network inspection before full UI suite");
+  if (!checks.length) checks.push("create the tightest targeted repro/check before changing code");
+  checks.push("only after targeted green, run the relevant broader regression check near final");
+  return checks;
+}
+
+function specificEvidenceRequest(type, uiLike, hasEvidence) {
+  const req = [];
+  if (!hasEvidence) req.push("Paste the exact failing command and the terminal output from the first red error through the stack trace.");
+  if (uiLike) req.push("Provide one screenshot of the visible error/blank state, one screenshot or copy of browser console errors, and the exact action clicked before failure.");
+  if (type === "MCP") req.push("Provide MCP startup command, stderr/stdout, client error, tool list/allowed-root context if available.");
+  if (type === "package") req.push("Provide package manager output including peer/version/audit conflict lines and package manager/runtime version.");
+  if (!req.length) req.push("Existing evidence is enough to start; gather more only if the targeted repro is unclear.");
+  return req;
+}
+
+function likelyRootCauseAreas(type, text) {
+  const map = {
+    startup: ["entrypoint initialization", "runtime/config/env mismatch", "dependency import failure", "port or path setup"],
+    crash: ["uncaught exception site", "invalid input/state before crash", "runtime dependency/config"],
+    runtime: ["function receiving undefined/null", "caller data contract", "state initialization", "error boundary/handling"],
+    test: ["failing assertion path", "recent code diff", "fixture/data contract", "mock vs real behavior gap"],
+    build: ["syntax/type/module resolution", "config/lockfile/runtime version", "generated artifact contract"],
+    UI: ["route/component rendering path", "frontend/backend data flow", "browser console/network errors", "loading/error/empty/success states"],
+    MCP: ["server startup", "tool registry/schema", "allowed roots/permission profile", "client transport/runtime version"],
+    package: ["dependency version conflict", "package script/lockfile", "peer/runtime mismatch", "install script policy"],
+    config: ["config schema/path/env", "runtime reads different file than edited", "caller contract mismatch"],
+    unknown: ["tight reproduction path", "logs/output", "recent diff", "integration boundary"]
+  };
+  return map[type] || map.unknown;
+}
+
+function compatibilityRisksForDebugging(type, text) {
+  return [
+    /node|npm|package|mcp|vite|react|browser/.test(text) ? "runtime/package/client version compatibility" : null,
+    type === "MCP" ? "MCP client/server SDK and stdio transport compatibility" : null,
+    type === "UI" ? "browser/device/responsive/frontend-backend compatibility" : null,
+    /windows|path|shell|powershell|bash/.test(text) ? "OS/shell/path compatibility" : null,
+    "unknown until version/config evidence is gathered"
+  ].filter(Boolean);
+}
+
+function likelyFilesForArchitecture(text) {
+  const files = ["package.json", "existing targeted tests under scripts/test-*.mjs or project test directory"];
+  if (/mcp|tool|registertool/.test(text)) files.push("scripts/vnem-mcp-server.mjs", "scripts/vnem-tools-mcp-server.mjs", "scripts/test-mcp-server.mjs", "scripts/test-mcp-user-smoke.mjs", "readiness report scripts");
+  if (/dashboard|ui|react|component/.test(text)) files.push("dashboard/src routes/components", "dashboard tests", "dashboard build config");
+  if (/api|server|route|backend/.test(text)) files.push("server/API handler", "client/caller using API output", "API contract tests");
+  return [...new Set(files)];
+}
+
+function formatDebuggingPlan(plan) {
+  return [`Problem: ${plan.problem_summary}`, `Failure type: ${plan.failure_type}`, `Evidence missing: ${plan.evidence_missing.join("; ") || "none"}`, `Check first: ${plan.logs_or_output_to_check_first.join("; ")}`, `Core plan-only: ${plan.core_plan_only}`].join("\n");
+}
+
+function formatEvidenceToFixCheck(check) {
+  return [`Verdict: ${check.verdict}`, `Evidence strength: ${check.evidence_strength}`, `Fix matches evidence: ${check.fix_matches_evidence}`, `Next: ${check.next_best_check}`].join("\n");
+}
+
+function formatArchitectureMap(map) {
+  return [`Goal: ${map.user_goal}`, `Entry points: ${map.relevant_entry_points.join("; ")}`, `Integration points: ${map.integration_points.join("; ")}`, `Core plan-only: ${map.core_plan_only}`].join("\n");
+}
+
+function formatCodeChangeContract(contract) {
+  return [`Goal: ${contract.goal}`, `Integration: ${contract.real_integration_point.join("; ")}`, `Verification: ${contract.verification_required.join("; ")}`, `Done: ${contract.what_counts_as_done.join("; ")}`].join("\n");
+}
 
 function buildResearchStrategy(args = {}) {
   const task = String(args.task || "");

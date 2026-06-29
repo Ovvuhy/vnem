@@ -223,6 +223,37 @@ export function completionAudit(options = {}) {
     unverifiedClaims.push("Implementation/major-improvement claim is preparation_only until callable behavior and tests exist.");
     evidenceLedger.preparation_only.push("docs-only change: no callable behavior evidence supplied");
   }
+  if (docsOnlyChange && /\b(fix|fixed|bug|crash|runtime|startup|test failure|broken)\b/.test(combined)) {
+    codeFindings.push("Docs-only/wording-only change cannot be claimed as a bug fix without runtime/code evidence and targeted verification.");
+    missingEvidence.push("Bug-fix claim is docs-only; targeted runtime/test evidence is missing.");
+    unverifiedClaims.push("Bug-fix claim is unverified because only documentation changed.");
+  }
+  if (/\bimplemented\b|new mcp tool|new tool|mcp tool|feature complete|wired/i.test(combined)) {
+    const changedText = changedFiles.join(" ").toLowerCase();
+    const evidenceLower = evidenceText.toLowerCase();
+    const claimsMcpTool = /mcp tool|vnem_tools_|vnem_build_|registertool/i.test(combined);
+    if (claimsMcpTool && !/(vnem-mcp-server|vnem-tools-mcp-server|test-mcp|test-mcp-user-smoke|tools-readiness|core-readiness)/.test(changedText + " " + evidenceLower)) {
+      codeFindings.push("Implemented MCP tool claim lacks evidence that code is wired into the real MCP registry/manifest/smoke tests.");
+      missingEvidence.push("Real MCP registry/manifest wiring evidence is missing for implemented tool claim.");
+      unverifiedClaims.push("MCP tool implementation may be an unwired helper or parallel fake system.");
+    }
+  }
+  if (/mock-only|test:mock|mocked service|fake service|only mocks|mock test/i.test(combined)) {
+    codeFindings.push("Mock-only test evidence cannot prove the real behavior or integration path.");
+    missingEvidence.push("Targeted real-path verification is missing; mock-only tests are insufficient proof.");
+    unverifiedClaims.push("Implementation/fix claim is limited until a real integration or caller-path test passes.");
+  }
+  if (/test\.skip|skip\(|disabled test|commented out test|suppressed error|swallow/i.test(combined)) {
+    codeFindings.push("Disabled/skipped/suppressed failure cannot be claimed as a fix.");
+    missingEvidence.push("The original failing path must be fixed and rerun, not skipped or suppressed.");
+  }
+  if (/\bfixed\b|bug fix|crash fixed|runtime fixed/i.test(combined)) {
+    const hasTargetedVerification = commands.some((cmd) => /test|check|build|node --check|npm run/i.test(String(cmd)) && /pass|passed|exit 0|success|green|ok/i.test(String(cmd)) && !/validate|readiness|mock/i.test(String(cmd)));
+    if (!hasTargetedVerification) {
+      codeFindings.push("Fixed claim lacks targeted verification for the failing path.");
+      missingEvidence.push("Targeted verification for the original failure is missing.");
+    }
+  }
   if (/\bcompatible\b|compatibility|supported/.test(combined) && !/(compatib|version|runtime|official docs|tested on|node|browser|windows|linux|mcp client)/.test(evidenceText)) {
     missingEvidence.push("Compatibility/support claim lacks compatibility proof.");
     unverifiedClaims.push("Compatibility/support status is unknown without version/runtime/client evidence.");
@@ -318,7 +349,7 @@ export function completionAudit(options = {}) {
     evidence_ledger: evidenceLedger,
     required_next_actions: unique(nextActions).slice(0, tokenBudget === "expanded" ? 10 : 6),
     what_can_be_claimed_safely: safeClaims(verdict, evidence, commands),
-    what_must_not_be_claimed: mustNotClaim(missingEvidence, unsafeClaims, domains),
+    what_must_not_be_claimed: mustNotClaim(missingEvidence, unsafeClaims, domains, codeFindings),
     final_report_requirements: ["state verdict/evidence", "list commands/sources/visual proof used", "state skipped checks and remaining risks"],
     anti_placebo_result: verdict === "pass" ? "evidence supports the claim" : "completion claim is not fully supported; revise before claiming done",
     token_budget_used: tokenBudget
@@ -588,10 +619,12 @@ function safeClaims(verdict, evidence, commands) {
   return claims;
 }
 
-function mustNotClaim(missingEvidence, unsafeClaims, domains) {
+function mustNotClaim(missingEvidence, unsafeClaims, domains, codeFindings = []) {
   return unique([
     missingEvidence.length ? "Do not claim done/complete until missing evidence is provided." : null,
     unsafeClaims.length ? "Do not claim safe/risk-free without safety review proof." : null,
+    codeFindings.some((item) => /MCP tool|registry|wired|unwired/i.test(item)) ? "Do not claim an MCP tool is implemented or wired until the real registry/manifest/smoke-test evidence exists." : null,
+    codeFindings.some((item) => /Mock-only/i.test(item)) ? "Do not claim real behavior from mock-only tests." : null,
     domains.includes("ui") ? "Do not claim polished UI without visual evidence." : null,
     domains.includes("api") ? "Do not claim API integration is safe without auth/CORS/secret/backend proof." : null,
     domains.includes("research") ? "Do not claim current/best facts without current/source-quality evidence." : null

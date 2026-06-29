@@ -58,6 +58,8 @@ const REQUIRED_TOOL_NAMES = [
   "vnem_tools_source_map",
   "vnem_tools_source_extract",
   "vnem_tools_source_graph",
+  "vnem_tools_architecture_review",
+  "vnem_tools_debug_evidence",
   "vnem_tools_apply_patch_batch",
   "vnem_tools_restore_batch",
   "vnem_tools_project_scan",
@@ -866,6 +868,28 @@ function registerTools(mcpServer) {
 
 
   mcpServer.registerTool(
+    "vnem_tools_architecture_review",
+    {
+      title: "VNEM Architecture Review",
+      description: "Safely inspect an allowed local project for entry points, registries/routes, package scripts, tests, configs, integration points, parallel fake systems, dead code, duplicate logic, contract risks, and secret risks. No network or commands.",
+      inputSchema: { workspace_root: z.string().default("."), max_files: z.number().int().min(20).max(500).default(220), max_bytes_per_file: z.number().int().min(256).max(12000).default(5000), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => { const result = await safeArchitectureReview(args); return toolResult(formatArchitectureReview(result), { architecture_review: result }); })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_debug_evidence",
+    {
+      title: "VNEM Debug Evidence",
+      description: "Collect bounded log-first debugging evidence from explicit logs, package scripts, config summaries, git status, and changed files under allowed roots. Does not run arbitrary commands or tests.",
+      inputSchema: { workspace_root: z.string().default("."), problem_description: z.string().default(""), failing_command: z.string().optional(), log_paths: z.array(z.string()).default([]), changed_files: z.array(z.string()).default([]), include_git_status: z.boolean().default(true), include_package_scripts: z.boolean().default(true), include_recent_test_output: z.boolean().default(false), include_config_summary: z.boolean().default(true), max_log_bytes: z.number().int().min(256).max(16000).default(5000), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => { const result = await safeDebugEvidence(args); return toolResult(formatDebugEvidence(result), { debug_evidence: result }); })
+  );
+
+  mcpServer.registerTool(
     "vnem_tools_fetch_url_text",
     {
       title: "Fetch Direct URL Text Safely",
@@ -1242,6 +1266,7 @@ function statusObject() {
     filesystem_intelligence_policy: { tools: ["vnem_tools_workspace_map", "vnem_tools_read_many_files", "vnem_tools_code_search", "vnem_tools_find_references", "vnem_tools_dependency_scan"], allowed_roots_only: true, secret_paths_blocked: true, generated_build_cache_skipped: true, evidence_logged: true },
     research_sources_policy: { tools: ["vnem_tools_fetch_url_text", "vnem_tools_source_quality_check", "vnem_tools_research_brief", "vnem_tools_browser_research_pack", "vnem_tools_claim_source_matrix", "vnem_tools_research_gap_detector", "vnem_tools_source_map", "vnem_tools_source_extract", "vnem_tools_source_graph"], no_search_engine_scraping: true, external_fetch_dry_run_default: true, approval_required_for_real_external_fetch: true, no_login_cookie_session_use: true },
     source_ingestion_policy: { tools: ["vnem_tools_source_map", "vnem_tools_source_extract", "vnem_tools_source_graph"], allowed_roots_only_for_local_sources: true, explicit_targets_only_for_extraction: true, secret_paths_blocked: true, broad_crawl_blocked: true, evidence_logged: true, source_graph_uses_provided_or_bounded_sources_only: true },
+    debugging_code_quality_policy: { tools: ["vnem_tools_architecture_review", "vnem_tools_debug_evidence"], allowed_roots_only: true, secret_paths_blocked: true, no_arbitrary_commands: true, log_first_debugging: true, detects_parallel_fake_systems: true, flags_possible_dead_code: true, evidence_logged: true },
     search_provider_policy: { tools: ["vnem_tools_search_provider_manifest", "vnem_tools_search_query_builder", "vnem_tools_web_search", "vnem_tools_search_result_ranker"], local_fixture_available_for_tests: true, provider_keys_detected_by_presence_only: true, provider_unavailable_returns_structured_status: true, no_search_engine_result_page_scraping: true, no_fake_search_results: true },
     browser_risk_policy: { tools: ["vnem_tools_redirect_chain_check", "vnem_tools_url_reputation_check", "vnem_tools_captcha_detector", "vnem_tools_download_safety_check"], no_captcha_bypass: true, user_assisted_captcha_handoff: true, suspicious_redirect_download_phishing_detection: true, no_auto_download_or_installer_execution: true },
     patch_batch_policy: { tool: "vnem_tools_apply_patch_batch", dry_run_default: true, approval_required: true, operations: ["replace", "create", "delete", "append"], no_partial_apply_by_default: true, backups_per_changed_file: true },
@@ -1338,7 +1363,7 @@ function buildActionPlan(args = {}) {
 
 function isSupportedCapability(capability) {
   const text = String(capability || "").toLowerCase();
-  return /file_edit|patch|restore|test_runner|command|api_request|read_file|list_files|search_files|evidence|browser|screenshot|visual|project_scan|project_task|dev_server|local_git|git_status|git_diff|git_commit|session/.test(text);
+  return /file_edit|patch|restore|test_runner|command|api_request|read_file|list_files|search_files|evidence|debug_evidence|architecture_review|browser|screenshot|visual|project_scan|project_task|dev_server|local_git|git_status|git_diff|git_commit|session/.test(text);
 }
 
 function unsupportedReason(capability) {
@@ -1470,7 +1495,7 @@ async function searchAllowedFiles(args) {
   return { root: root.relativePath || ".", query: args.query, results, skipped_policy: skippedPolicy() };
 }
 
-const TOOL_CAPABILITY_GROUPS = ["permissions", "filesystem", "project_intelligence", "patching", "rollback", "commands", "project_tasks", "dev_server", "browser_proof", "browser_intelligence", "api_request", "search", "research_sources", "source_quality", "browsing_risk", "research_matrix", "source_ingestion", "session_evidence", "local_git", "status_readiness"];
+const TOOL_CAPABILITY_GROUPS = ["permissions", "filesystem", "project_intelligence", "patching", "rollback", "commands", "project_tasks", "dev_server", "browser_proof", "browser_intelligence", "api_request", "search", "research_sources", "source_quality", "browsing_risk", "research_matrix", "source_ingestion", "debugging_code_quality", "session_evidence", "local_git", "status_readiness"];
 
 function buildToolCatalog() {
   const commonUnsafe = ["secret reading/dumping", "outside-root access", "arbitrary shell", "package installs", "git push", "deployment", "Giga MCP"];
@@ -1544,6 +1569,8 @@ function buildToolCatalog() {
     mk("vnem_tools_source_map", "source_ingestion", { description: "Safely map a local repo/docs folder or explicit source target before bounded extraction; no broad crawling or hidden external fetch.", allowed_roots_required: true, evidence_logged: true, typical_use_cases: ["repo/docs source map", "find docs/code/config/test/release areas"], unsafe_actions_blocked: [...commonUnsafe, "broad crawling", "secret/session/browser-profile reads"], related_tools: ["vnem_tools_source_extract", "vnem_tools_source_graph"] }),
     mk("vnem_tools_source_extract", "source_ingestion", { description: "Extract bounded evidence from explicit selected local source targets only with secret blocking, redaction, skipped-target accounting, and structured evidence items.", allowed_roots_required: true, evidence_logged: true, typical_use_cases: ["bounded README/docs/changelog extraction", "claim candidate and version/date extraction"], unsafe_actions_blocked: [...commonUnsafe, "unbounded repo/site extraction", "secret reads"], related_tools: ["vnem_tools_source_map", "vnem_tools_source_graph", "vnem_tools_claim_source_matrix"] }),
     mk("vnem_tools_source_graph", "source_ingestion", { description: "Compare provided/bounded source evidence for officialness, freshness, claim support, contradictions, and confidence limits. Does not search or crawl.", allowed_roots_required: false, evidence_logged: true, typical_use_cases: ["official vs community conflict", "outdated source risk", "claim verification graph"], unsafe_actions_blocked: [...commonUnsafe, "claiming contradiction-free from one source", "broad search/crawl claims"], related_tools: ["vnem_tools_source_map", "vnem_tools_source_extract", "vnem_tools_claim_source_matrix"] }),
+    mk("vnem_tools_architecture_review", "debugging_code_quality", { description: "Inspect allowed project structure for real entry points, tool/route registries, scripts, tests, configs, integration points, fake parallel systems, possible dead code, duplicate logic, contract risks, and secret risks.", allowed_roots_required: true, evidence_logged: true, typical_use_cases: ["architecture map before edits", "unwired MCP tool detection", "dead-code warning"], unsafe_actions_blocked: [...commonUnsafe, "broad crawling", "secret reads", "network access"], related_tools: ["vnem_tools_workspace_map", "vnem_tools_debug_evidence", "vnem_tools_code_search"] }),
+    mk("vnem_tools_debug_evidence", "debugging_code_quality", { description: "Collect bounded log-first debugging evidence from explicit logs, package scripts, config metadata, git status, changed files, and targeted-check suggestions. Does not run arbitrary commands/tests.", allowed_roots_required: true, evidence_logged: true, typical_use_cases: ["log-first triage", "pre-fix root-cause evidence", "targeted test selection"], unsafe_actions_blocked: [...commonUnsafe, "arbitrary command execution", "secret reads", "error suppression"], related_tools: ["vnem_tools_architecture_review", "vnem_tools_run_project_task", "vnem_tools_git_status"] }),
     mk("vnem_tools_start_session", "session_evidence", { read_only: false, mutation: true, description: "Start session proof pack.", typical_use_cases: ["group local workflow evidence"] }),
     mk("vnem_tools_finish_session", "session_evidence", { read_only: false, mutation: true, description: "Write session proof pack.", typical_use_cases: ["final evidence summary"] }),
     mk("vnem_tools_collect_evidence", "session_evidence", { read_only: false, mutation: true, description: "Write proof-trail-compatible evidence summary.", typical_use_cases: ["final report support"] }),
@@ -2345,6 +2372,205 @@ function formatDownloadSafety(result) { return `vnem_tools_download_safety_check
 function formatClaimSourceMatrix(result) { return `vnem_tools_claim_source_matrix: claims=${result.claims.length} supported=${result.supported_claims.length} unsupported=${result.unsupported_claims.length} conflicting=${result.conflicting_claims.length}`; }
 function formatResearchGapDetector(result) { return `vnem_tools_research_gap_detector: blockers=${result.confidence_blockers.length} missing_current_search=${result.missing_current_search}`; }
 
+
+
+async function safeArchitectureReview(args) {
+  const root = await resolveAllowedRoot(args.workspace_root || ".");
+  const files = [];
+  await walkFiles(root.absolutePath, root.absolutePath, files, { maxResults: args.max_files || 220 });
+  const maxBytes = Math.min(args.max_bytes_per_file || 5000, 12000);
+  const textFiles = [];
+  const secretRisks = [];
+  for (const file of files) {
+    if (isSecretLikePath(file.path) || isSecretLikePath(file.absolutePath || "")) { secretRisks.push(`${file.path}: secret-like path blocked`); continue; }
+    if (!/\.(mjs|js|ts|tsx|jsx|json|md|yaml|yml|toml|html|css)$/i.test(file.path) && !/(^|\/)package\.json$/.test(file.path)) continue;
+    try {
+      const buf = await readFile(path.join(root.absolutePath, file.path));
+      if (buf.includes(0) || looksBinary(buf)) continue;
+      textFiles.push({ path: file.path, text: redactSecrets(buf.subarray(0, maxBytes).toString("utf8")) });
+    } catch {}
+  }
+  for (const name of [".env", ".env.local", "secrets", "tokens", "credentials", "cookies", "sessions", ".ssh"]) {
+    if (existsSync(path.join(root.absolutePath, name))) secretRisks.push(`${name}: secret/session/private path blocked`);
+  }
+  const byPath = (re) => textFiles.filter((f) => re.test(f.path)).map((f) => ({ path: f.path })).slice(0, 80);
+  const packageScripts = [];
+  const pkg = textFiles.find((f) => /(^|\/)package\.json$/.test(f.path));
+  if (pkg) {
+    try {
+      const parsed = JSON.parse(pkg.text);
+      for (const [name, command] of Object.entries(parsed.scripts || {})) packageScripts.push({ name, command: redactSecrets(String(command)), risk: /deploy|publish|install|wrangler|netlify|vercel|rm -rf/i.test(String(command)) ? "mutation_or_deploy_script" : "local_script" });
+    } catch {}
+  }
+  const registries = [];
+  for (const f of textFiles) {
+    const matches = [...f.text.matchAll(/registerTool\(["'`]([^"'`]+)["'`]|app\.(get|post|put|delete)\(["'`]([^"'`]+)["'`]|router\.(get|post|put|delete)\(["'`]([^"'`]+)["'`]/g)].slice(0, 20);
+    for (const m of matches) registries.push({ path: f.path, registry: m[1] || m[3] || "route", snippet: truncate(m[0], 180) });
+  }
+  const exportedToolLikes = [];
+  for (const f of textFiles) {
+    const matches = [...f.text.matchAll(/(?:export\s+)?function\s+(vnem_tools_[A-Za-z0-9_]+|[A-Za-z0-9_]*tool[A-Za-z0-9_]*)|const\s+(vnem_tools_[A-Za-z0-9_]+)\s*=/gi)].slice(0, 40);
+    for (const m of matches) exportedToolLikes.push({ path: f.path, name: m[1] || m[2] });
+  }
+  const registeredNames = new Set(registries.map((r) => r.registry));
+  const possibleParallel = exportedToolLikes.filter((item) => !registeredNames.has(item.name) && !textFiles.some((f) => f.path !== item.path && f.text.includes(item.name))).map((item) => ({ ...item, reason: "tool-like implementation not found in registry/callers; possible unregistered parallel fake system" })).slice(0, 40);
+  const possibleDead = [];
+  for (const f of textFiles) {
+    const defs = [...f.text.matchAll(/(?:export\s+)?function\s+([A-Za-z_$][\w$]*)\s*\(|const\s+([A-Za-z_$][\w$]*)\s*=\s*(?:\([^)]*\)|async\s*\([^)]*\))\s*=>/g)].slice(0, 80);
+    for (const m of defs) {
+      const name = m[1] || m[2];
+      if (!name || name.length < 5) continue;
+      const refs = textFiles.reduce((n, other) => n + (other.text.match(new RegExp(`\\b${escapeRegex(name)}\\b`, "g")) || []).length, 0);
+      if (refs <= 1 || /^unused|.*Unused|helperUnused|.*DeadCode/.test(name)) possibleDead.push({ path: f.path, symbol: name, reason: "defined with no obvious cross-file/caller reference in bounded review" });
+    }
+  }
+  const configFiles = byPath(/(^|\/)(package\.json|tsconfig\.json|vite\.config|next\.config|eslint|\.github|wrangler|netlify|vercel|docker|compose)/i);
+  const testsFound = byPath(/(^|\/)(test|tests|__tests__)\/|\.(test|spec)\.[cm]?[jt]sx?$/i);
+  const entryPoints = byPath(/(^|\/)(package\.json|index|main|app|server|cli)\.(json|mjs|js|ts|tsx|jsx)$/i);
+  const result = {
+    workspace_root: root.absolutePath,
+    permission_profile: activePermissionProfile.profile_name,
+    allowed_roots_check: { inside_allowed_roots: true, matched_root: root.root, allowed_roots: allowedRoots },
+    entry_points_found: entryPoints,
+    tool_or_route_registries_found: registries,
+    package_scripts_found: packageScripts,
+    tests_found: testsFound,
+    config_files_found: configFiles,
+    likely_integration_points: [registries.length ? "MCP tool registry / route registry entries" : null, packageScripts.length ? "package script entrypoints" : null, testsFound.length ? "existing targeted tests" : null, entryPoints.length ? "application/server entrypoints" : null].filter(Boolean),
+    possible_parallel_fake_systems: possibleParallel,
+    possible_dead_code: possibleDead.slice(0, 60),
+    possible_duplicate_logic: detectDuplicateLogicHints(textFiles),
+    contract_change_risks: ["MCP tool schema/structuredContent contract", "package script command contract", "route/API JSON contract", "caller/test update required for output shape changes"],
+    security_or_secret_risks: secretRisks,
+    evidence_log_id: null,
+    safe_to_claim: ["Reviewed bounded local project metadata and capped source snippets under allowed roots.", "Findings are warnings for integration/dead-code risk, not a full static-analysis proof."],
+    must_not_claim: ["Project is fully wired or dead-code-free.", "All contracts are safe without caller/test evidence.", "Secret paths were read.", "Network/package/GitHub/deploy actions occurred."]
+  };
+  const log = await writeEvidenceLog("architecture_review", result);
+  result.evidence_log_id = log.evidence_log_id;
+  recordSession(args.session_id, "architecture_reviews", result);
+  return result;
+}
+
+async function safeDebugEvidence(args) {
+  const root = await resolveAllowedRoot(args.workspace_root || ".");
+  const logsChecked = [];
+  const logsMissing = [];
+  const maxBytes = Math.min(args.max_log_bytes || 5000, 16000);
+  for (const raw of arrayify(args.log_paths).map(String)) {
+    try {
+      const target = await resolveAllowedFile(path.isAbsolute(raw) ? raw : path.join(root.absolutePath, raw), { mustExist: true, blockSecrets: true });
+      const buf = await readFile(target.absolutePath);
+      if (buf.includes(0) || looksBinary(buf)) throw new ToolsError("Binary log blocked.", "binary_file_blocked", { path: target.relativePath });
+      const text = redactSecrets(buf.subarray(0, maxBytes).toString("utf8"));
+      logsChecked.push({ path: target.relativePath, bytes_read: Math.min(buf.length, maxBytes), summary: summarizeLogText(text), error_lines: extractErrorLines(text), redaction_marker: text.includes("[REDACTED]") ? "[REDACTED]" : null });
+    } catch (error) {
+      logsMissing.push({ path: raw, reason: error instanceof ToolsError ? error.code : error.message || "missing_or_blocked" });
+    }
+  }
+  let gitSummary = null;
+  if (args.include_git_status !== false) gitSummary = await safeGitStatus({ root: root.absolutePath, max_output_bytes: 8000 }).catch((error) => ({ ok: false, error: error.message }));
+  const pkgScripts = [];
+  const configs = [];
+  const pkgPath = path.join(root.absolutePath, "package.json");
+  if (args.include_package_scripts !== false && existsSync(pkgPath)) {
+    try {
+      const pkg = JSON.parse(redactSecrets(await readFile(pkgPath, "utf8")));
+      for (const [name, command] of Object.entries(pkg.scripts || {})) {
+        if (/test|check|lint|build|type|validate|dev|start/i.test(name + " " + command) && !/deploy|publish|install|release/i.test(name + " " + command)) pkgScripts.push({ name, command: String(command) });
+      }
+    } catch {}
+  }
+  if (args.include_config_summary !== false) {
+    for (const rel of ["package.json", "tsconfig.json", "vite.config.js", "vite.config.mjs", "next.config.js", "eslint.config.js"]) if (existsSync(path.join(root.absolutePath, rel)) && !isSecretLikePath(rel)) configs.push({ path: rel, kind: rel.includes("package") ? "package_manifest" : "config" });
+  }
+  const combinedLogs = logsChecked.map((l) => `${l.summary} ${l.error_lines.join(" ")}`).join(" ");
+  const type = inferDebugEvidenceFailureType(`${args.problem_description || ""} ${args.failing_command || ""} ${combinedLogs}`);
+  const likelyAreas = [...new Set([
+    ...arrayify(args.changed_files).map(String).filter(Boolean),
+    ...extractPathsFromText(combinedLogs),
+    /typeerror|undefined/i.test(combinedLogs) ? "undefined/null caller or data-shape mismatch" : null,
+    type === "build" ? "build/config/module resolution" : null,
+    type === "test" ? "failing test assertion path" : null
+  ].filter(Boolean))].slice(0, 20);
+  const suggested = [];
+  if (args.failing_command) suggested.push(`rerun targeted failing command after fix: ${args.failing_command}`);
+  for (const file of arrayify(args.changed_files).map(String).filter((f) => /\.[cm]?[jt]sx?$/.test(f))) suggested.push(`node --check ${file}`);
+  if (!suggested.length) suggested.push("create/run the smallest targeted failing check before editing");
+  const result = {
+    failure_type_guess: type,
+    logs_checked: logsChecked,
+    logs_missing: logsMissing,
+    commands_or_outputs_summarized: [{ failing_command: args.failing_command || null, status: "not run by vnem_tools_debug_evidence; captured as provided context only" }],
+    arbitrary_commands_run: false,
+    git_status_summary: gitSummary,
+    changed_files_summary: arrayify(args.changed_files).map(String).filter((f) => !isSecretLikePath(f)).map((file) => ({ path: file, mentioned_in_logs: combinedLogs.includes(file) || combinedLogs.includes(path.basename(file)) })),
+    package_scripts_relevant: pkgScripts,
+    config_files_relevant: configs,
+    likely_root_cause_areas: likelyAreas,
+    targeted_checks_suggested: suggested,
+    permission_profile: activePermissionProfile.profile_name,
+    allowed_roots_check: { inside_allowed_roots: true, matched_root: root.root },
+    evidence_log_id: null,
+    safe_to_claim: ["Collected bounded log/config/git-status evidence only.", "No arbitrary commands, tests, package installs, network, GitHub, or deploy actions were run."],
+    must_not_claim: ["vnem_tools_debug_evidence ran arbitrary commands or tests.", "The issue is fixed.", "Secret files were read.", "Root cause is proven beyond the collected evidence."]
+  };
+  const log = await writeEvidenceLog("debug_evidence", result);
+  result.evidence_log_id = log.evidence_log_id;
+  recordSession(args.session_id, "debug_evidence", result);
+  return result;
+}
+
+function summarizeLogText(text) {
+  const lines = String(text).split(/\r?\n/).filter(Boolean);
+  const interesting = lines.filter((line) => /error|fail|exception|typeerror|referenceerror|fatal|warn|stack|at \S+:/i.test(line)).slice(0, 8);
+  return truncate((interesting.length ? interesting : lines.slice(0, 5)).join("\n"), 1200);
+}
+
+function extractErrorLines(text) {
+  return String(text).split(/\r?\n/).filter((line) => /error|fail|exception|typeerror|referenceerror|fatal|at \S+:/i.test(line)).map((line) => truncate(redactSecrets(line.trim()), 240)).slice(0, 12);
+}
+
+function extractPathsFromText(text) {
+  return [...String(text).matchAll(/(?:^|\s)((?:src|scripts|tests?|dashboard|lib)\/[A-Za-z0-9_./-]+\.[A-Za-z0-9]+)/g)].map((m) => m[1]);
+}
+
+function inferDebugEvidenceFailureType(text) {
+  const hay = String(text).toLowerCase();
+  if (/npm run test|assert|test failed|failing test/.test(hay)) return "test";
+  if (/build|compile|vite|tsc|webpack/.test(hay)) return "build";
+  if (/startup|boot|server start/.test(hay)) return "startup";
+  if (/ui|browser|dashboard|blank|click/.test(hay)) return "UI";
+  if (/mcp|registertool|stdio/.test(hay)) return "MCP";
+  if (/typeerror|referenceerror|exception|undefined|runtime/.test(hay)) return "runtime";
+  if (/crash|fatal|panic/.test(hay)) return "crash";
+  if (/package|dependency|peer/.test(hay)) return "package";
+  return "unknown";
+}
+
+function detectDuplicateLogicHints(files) {
+  const buckets = new Map();
+  for (const f of files) {
+    for (const m of f.text.matchAll(/function\s+([A-Za-z_$][\w$]*)|const\s+([A-Za-z_$][\w$]*)\s*=/g)) {
+      const name = (m[1] || m[2] || "").toLowerCase();
+      if (!name) continue;
+      buckets.set(name, [...(buckets.get(name) || []), f.path]);
+    }
+  }
+  return [...buckets.entries()].filter(([, paths]) => new Set(paths).size > 1).map(([symbol, paths]) => ({ symbol, paths: [...new Set(paths)].slice(0, 8), reason: "same symbol appears in multiple files; review for duplicate logic or legitimate boundary" })).slice(0, 20);
+}
+
+function formatArchitectureReview(result) {
+  return [`Workspace: ${result.workspace_root}`, `Entry points: ${result.entry_points_found.length}`, `Registries/routes: ${result.tool_or_route_registries_found.length}`, `Possible fake systems: ${result.possible_parallel_fake_systems.length}`, `Possible dead code: ${result.possible_dead_code.length}`].join("\n");
+}
+
+function formatDebugEvidence(result) {
+  return [`Failure type guess: ${result.failure_type_guess}`, `Logs checked: ${result.logs_checked.length}`, `Logs missing/blocked: ${result.logs_missing.length}`, `Arbitrary commands run: ${result.arbitrary_commands_run}`, `Targeted checks: ${result.targeted_checks_suggested.join("; ")}`].join("\n");
+}
+
+function escapeRegex(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
 
 async function safeFetchUrlText(args) {
   if (!["GET", "HEAD"].includes(args.method || "GET")) throw new ToolsError("Only GET/HEAD are allowed.", "method_blocked");

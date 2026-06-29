@@ -34,6 +34,10 @@ const corePermissionPlanningTestSource = await text("scripts/test-core-permissio
 const coreResearchStrategyTestSource = await text("scripts/test-core-research-strategy.mjs");
 const coreSourceIngestionPlanningTestSource = await text("scripts/test-core-source-ingestion-planning.mjs");
 const researchEvidenceAuditTestSource = await text("scripts/test-research-evidence-audit.mjs");
+const coreDebuggingPlanTestSource = await text("scripts/test-core-debugging-plan.mjs");
+const coreEvidenceToFixTestSource = await text("scripts/test-core-evidence-to-fix.mjs");
+const coreCodeQualityContractTestSource = await text("scripts/test-core-code-quality-contract.mjs");
+const completionAuditCodeQualityTestSource = await text("scripts/test-completion-audit-code-quality.mjs");
 const toolsSourceIngestionTestSource = await text("scripts/test-tools-source-ingestion.mjs");
 const toolsSourceGraphTestSource = await text("scripts/test-tools-source-graph.mjs");
 const mcpUserSmokeTestSource = await text("scripts/test-mcp-user-smoke.mjs");
@@ -151,6 +155,17 @@ const coreResearchSourceStatus = {
   core_research_still_plan_only_status: /core_executes_tools:\s*false/.test(serverSource) && /Core searched the web or browsed pages/.test(serverSource + coreResearchStrategyTestSource) && /Core crawled\/read\/extracted sources/.test(serverSource + coreSourceIngestionPlanningTestSource)
 };
 
+const coreDebuggingCodeQualityStatus = {
+  debugging_plan_status: toolInventory.includes("vnem_build_debugging_plan") && /buildDebuggingPlan/.test(serverSource) && /logs_or_output_to_check_first/.test(serverSource) && /failing command/.test(coreDebuggingPlanTestSource),
+  evidence_to_fix_check_status: toolInventory.includes("vnem_evidence_to_fix_check") && /buildEvidenceToFixCheck/.test(serverSource) && /docs-only/.test(coreEvidenceToFixTestSource) && /skipped|disabled/.test(coreEvidenceToFixTestSource),
+  architecture_map_status: toolInventory.includes("vnem_build_architecture_map") && /buildArchitectureMap/.test(serverSource) && /integration_points/.test(coreCodeQualityContractTestSource + serverSource),
+  code_change_contract_status: toolInventory.includes("vnem_code_change_contract") && /buildCodeChangeContract/.test(serverSource) && /real_integration_point/.test(coreCodeQualityContractTestSource + serverSource),
+  completion_audit_debugging_status: /Fixed claim lacks targeted verification/.test(await text("scripts/lib/quality-contracts.mjs")) && /mock-only/.test(completionAuditCodeQualityTestSource),
+  completion_audit_integration_status: /unwired helper|real MCP registry|parallel fake system/i.test(await text("scripts/lib/quality-contracts.mjs") + completionAuditCodeQualityTestSource),
+  core_debugging_still_plan_only_status: /core_plan_only:\s*true/.test(serverSource) && /Core inspected logs or ran tests/.test(serverSource + coreDebuggingPlanTestSource),
+  targeted_verification_planning_status: /targeted_tests_or_checks/.test(serverSource) && /targeted_verification_required/.test(serverSource + coreEvidenceToFixTestSource)
+};
+
 const usablePackStatus = {
   usable_api_pack_count: Array.isArray(usablePacks.apis) ? usablePacks.apis.filter((pack) => pack.usable_status === "usable").length : 0,
   usable_skill_pack_count: Array.isArray(usablePacks.skills) ? usablePacks.skills.filter((pack) => pack.usable_status === "usable").length : 0,
@@ -181,6 +196,7 @@ assert.ok(Object.values(searchPlanningStatus).every(Boolean), "Core search/brows
 assert.ok(Object.values(routingMemoryOutputStatus).every(Boolean), "Core routing/memory/output-quality/anti-stagnation readiness is incomplete");
 assert.ok(Object.values(corePermissionAwarenessStatus).every(Boolean), "Core permission-awareness/trust-boundary planning readiness is incomplete");
 assert.ok(Object.values(coreResearchSourceStatus).every(Boolean), "Core research/source-ingestion readiness is incomplete");
+assert.ok(Object.values(coreDebuggingCodeQualityStatus).every(Boolean), "Core debugging/code-quality readiness is incomplete");
 assert.ok(packageJson.scripts?.["test:core-research-strategy"] === "node scripts/test-core-research-strategy.mjs", "test:core-research-strategy package script is missing");
 assert.ok(packageJson.scripts?.["test:core-source-ingestion-planning"] === "node scripts/test-core-source-ingestion-planning.mjs", "test:core-source-ingestion-planning package script is missing");
 assert.ok(packageJson.scripts?.["test:research-evidence-audit"] === "node scripts/test-research-evidence-audit.mjs", "test:research-evidence-audit package script is missing");
@@ -188,6 +204,10 @@ assert.ok(packageJson.scripts?.["test:tools-source-ingestion"] === "node scripts
 assert.ok(packageJson.scripts?.["test:tools-source-graph"] === "node scripts/test-tools-source-graph.mjs", "test:tools-source-graph package script is missing");
 assert.ok(packageJson.scripts?.["test:core-browser-research-planning"] === "node scripts/test-core-browser-research-planning.mjs", "test:core-browser-research-planning package script is missing");
 assert.ok(packageJson.scripts?.["test:core-search-planning"] === "node scripts/test-core-search-planning.mjs", "test:core-search-planning package script is missing");
+assert.ok(packageJson.scripts?.["test:core-debugging-plan"] === "node scripts/test-core-debugging-plan.mjs", "test:core-debugging-plan package script is missing");
+assert.ok(packageJson.scripts?.["test:core-evidence-to-fix"] === "node scripts/test-core-evidence-to-fix.mjs", "test:core-evidence-to-fix package script is missing");
+assert.ok(packageJson.scripts?.["test:core-code-quality-contract"] === "node scripts/test-core-code-quality-contract.mjs", "test:core-code-quality-contract package script is missing");
+assert.ok(packageJson.scripts?.["test:completion-audit-code-quality"] === "node scripts/test-completion-audit-code-quality.mjs", "test:completion-audit-code-quality package script is missing");
 assert.ok(packageJson.scripts?.["test:mcp-user-smoke"] === "node scripts/test-mcp-user-smoke.mjs", "test:mcp-user-smoke package script is missing");
 assert.ok(packageJson.scripts?.["test:core-tool-selection"] === "node scripts/test-core-tool-selection.mjs", "test:core-tool-selection package script is missing");
 assert.ok(packageJson.scripts?.["test:core-tools-ecosystem"] === "node scripts/test-core-tools-tool-ecosystem.mjs", "test:core-tools-ecosystem package script is missing");
@@ -234,6 +254,7 @@ const report = {
   routing_memory_output_quality_status: routingMemoryOutputStatus,
   core_permission_awareness_status: corePermissionAwarenessStatus,
   core_research_source_status: coreResearchSourceStatus,
+  core_debugging_code_quality_status: coreDebuggingCodeQualityStatus,
   core_tools_ecosystem_test_status: /vnem_build_tools_plan/.test(coreToolsEcosystemTestSource) && /vnem_tools_finish_session/.test(coreToolsEcosystemTestSource),
   api_library_counts: apiCounts,
   skill_library_counts: skillCounts,
@@ -252,7 +273,8 @@ const report = {
     "Core search/browsing planning now assesses research need, builds provider-search plans, handles CAPTCHA/access-block and download risk, and remains plan-only.",
     "Core routing now returns structured task categories, memory relevance decisions, missing-context ask/no-ask decisions, output-quality contracts, anti-stagnation checks, and evidence-label audits while remaining plan-only.",
     "Core now plans Tools permission profiles, trust-boundary levels, approval-required actions, blocked/profile-limited actions, and safe alternatives while remaining plan-only.",
-    "Core now builds research strategies, source-ingestion plans, source-graph planning, contradiction/freshness confidence limits, and research evidence audits while remaining plan-only."
+    "Core now builds research strategies, source-ingestion plans, source-graph planning, contradiction/freshness confidence limits, and research evidence audits while remaining plan-only.",
+    "Core now builds log-first debugging plans, evidence-to-fix checks, architecture maps, code-change contracts, and completion-audit code-quality warnings while remaining plan-only."
   ],
   not_ready: [
     "Most API docs, rate limits, CORS values, and freshness statuses remain metadata-level or unknown.",
@@ -332,6 +354,7 @@ function formatReport(report) {
   lines.push(`routing_memory_output_quality_status: ${status(report.routing_memory_output_quality_status)}`);
   lines.push(`core_permission_awareness_status: ${status(report.core_permission_awareness_status)}`);
   lines.push(`core_research_source_status: ${status(report.core_research_source_status)}`);
+  lines.push(`core_debugging_code_quality_status: ${status(report.core_debugging_code_quality_status)}`);
   lines.push(`core_tools_ecosystem_test_status: ${report.core_tools_ecosystem_test_status ? "yes" : "no"}`);
   lines.push(`real_task_examples_tested: ${report.task_boosting_status.real_task_examples_tested.join(", ")}`);
   lines.push(`api_counts: total=${report.api_library_counts.total_apis}, docs_verified=${report.api_library_counts.docs_verified_count}, docs_unknown=${report.api_library_counts.docs_unknown_count}, rate_limit_verified=${report.api_library_counts.rate_limit_verified_count}, rate_limit_unknown=${report.api_library_counts.rate_limit_unknown_count}, cors_unknown=${report.api_library_counts.cors_unknown_count}, frontend_safe=${report.api_library_counts.frontend_safe_count}, backend_required=${report.api_library_counts.backend_required_count}`);
