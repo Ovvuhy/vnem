@@ -22,6 +22,11 @@ const toolsRiskCaptchaTestPath = rel("scripts/test-tools-risk-captcha.mjs");
 const toolsPermissionProfilesTestPath = rel("scripts/test-tools-permission-profiles.mjs");
 const toolsTrustBoundaryTestPath = rel("scripts/test-tools-trust-boundary.mjs");
 const toolsSecretBlockingTestPath = rel("scripts/test-tools-secret-blocking.mjs");
+const toolsSourceIngestionTestPath = rel("scripts/test-tools-source-ingestion.mjs");
+const toolsSourceGraphTestPath = rel("scripts/test-tools-source-graph.mjs");
+const coreResearchStrategyTestPath = rel("scripts/test-core-research-strategy.mjs");
+const coreSourceIngestionPlanningTestPath = rel("scripts/test-core-source-ingestion-planning.mjs");
+const researchEvidenceAuditTestPath = rel("scripts/test-research-evidence-audit.mjs");
 const corePermissionPlanningTestPath = rel("scripts/test-core-permission-planning.mjs");
 const mcpUserSmokeTestPath = rel("scripts/test-mcp-user-smoke.mjs");
 const coreSearchPlanningTestPath = rel("scripts/test-core-search-planning.mjs");
@@ -46,6 +51,11 @@ const toolsRiskCaptchaTest = existsSync(toolsRiskCaptchaTestPath) ? readFileSync
 const toolsPermissionProfilesTest = existsSync(toolsPermissionProfilesTestPath) ? readFileSync(toolsPermissionProfilesTestPath, "utf8") : "";
 const toolsTrustBoundaryTest = existsSync(toolsTrustBoundaryTestPath) ? readFileSync(toolsTrustBoundaryTestPath, "utf8") : "";
 const toolsSecretBlockingTest = existsSync(toolsSecretBlockingTestPath) ? readFileSync(toolsSecretBlockingTestPath, "utf8") : "";
+const toolsSourceIngestionTest = existsSync(toolsSourceIngestionTestPath) ? readFileSync(toolsSourceIngestionTestPath, "utf8") : "";
+const toolsSourceGraphTest = existsSync(toolsSourceGraphTestPath) ? readFileSync(toolsSourceGraphTestPath, "utf8") : "";
+const coreResearchStrategyTest = existsSync(coreResearchStrategyTestPath) ? readFileSync(coreResearchStrategyTestPath, "utf8") : "";
+const coreSourceIngestionPlanningTest = existsSync(coreSourceIngestionPlanningTestPath) ? readFileSync(coreSourceIngestionPlanningTestPath, "utf8") : "";
+const researchEvidenceAuditTest = existsSync(researchEvidenceAuditTestPath) ? readFileSync(researchEvidenceAuditTestPath, "utf8") : "";
 const corePermissionPlanningTest = existsSync(corePermissionPlanningTestPath) ? readFileSync(corePermissionPlanningTestPath, "utf8") : "";
 const mcpUserSmokeTest = existsSync(mcpUserSmokeTestPath) ? readFileSync(mcpUserSmokeTestPath, "utf8") : "";
 const coreSearchPlanningTest = existsSync(coreSearchPlanningTestPath) ? readFileSync(coreSearchPlanningTestPath, "utf8") : "";
@@ -97,6 +107,9 @@ const requiredTools = [
   "vnem_tools_download_safety_check",
   "vnem_tools_claim_source_matrix",
   "vnem_tools_research_gap_detector",
+  "vnem_tools_source_map",
+  "vnem_tools_source_extract",
+  "vnem_tools_source_graph",
   "vnem_tools_apply_patch_batch",
   "vnem_tools_restore_batch",
   "vnem_tools_project_scan",
@@ -127,6 +140,11 @@ const report = {
   tools_permission_profiles_test_exists: existsSync(toolsPermissionProfilesTestPath),
   tools_trust_boundary_test_exists: existsSync(toolsTrustBoundaryTestPath),
   tools_secret_blocking_test_exists: existsSync(toolsSecretBlockingTestPath),
+  tools_source_ingestion_test_exists: existsSync(toolsSourceIngestionTestPath),
+  tools_source_graph_test_exists: existsSync(toolsSourceGraphTestPath),
+  core_research_strategy_test_exists: existsSync(coreResearchStrategyTestPath),
+  core_source_ingestion_planning_test_exists: existsSync(coreSourceIngestionPlanningTestPath),
+  research_evidence_audit_test_exists: existsSync(researchEvidenceAuditTestPath),
   core_permission_planning_test_exists: existsSync(corePermissionPlanningTestPath),
   mcp_user_smoke_test_exists: existsSync(mcpUserSmokeTestPath),
   core_search_planning_test_exists: existsSync(coreSearchPlanningTestPath),
@@ -150,6 +168,11 @@ const report = {
     test_tools_trust_boundary: pkg.scripts?.["test:tools-trust-boundary"] === "node scripts/test-tools-trust-boundary.mjs",
     test_tools_secret_blocking: pkg.scripts?.["test:tools-secret-blocking"] === "node scripts/test-tools-secret-blocking.mjs",
     test_core_permission_planning: pkg.scripts?.["test:core-permission-planning"] === "node scripts/test-core-permission-planning.mjs",
+    test_core_research_strategy: pkg.scripts?.["test:core-research-strategy"] === "node scripts/test-core-research-strategy.mjs",
+    test_core_source_ingestion_planning: pkg.scripts?.["test:core-source-ingestion-planning"] === "node scripts/test-core-source-ingestion-planning.mjs",
+    test_tools_source_ingestion: pkg.scripts?.["test:tools-source-ingestion"] === "node scripts/test-tools-source-ingestion.mjs",
+    test_tools_source_graph: pkg.scripts?.["test:tools-source-graph"] === "node scripts/test-tools-source-graph.mjs",
+    test_research_evidence_audit: pkg.scripts?.["test:research-evidence-audit"] === "node scripts/test-research-evidence-audit.mjs",
     test_core_search_planning: pkg.scripts?.["test:core-search-planning"] === "node scripts/test-core-search-planning.mjs",
     test_mcp_user_smoke: pkg.scripts?.["test:mcp-user-smoke"] === "node scripts/test-mcp-user-smoke.mjs",
     test_core_browser_research_planning: pkg.scripts?.["test:core-browser-research-planning"] === "node scripts/test-core-browser-research-planning.mjs",
@@ -198,6 +221,16 @@ const report = {
   download_safety_check_status: /vnem_tools_download_safety_check/.test(server) && /safeDownloadSafetyCheck/.test(server) && /The file was downloaded/.test(server) && /requires_manual_review/.test(toolsRiskCaptchaTest),
   claim_source_matrix_status: /vnem_tools_claim_source_matrix/.test(server) && /safeClaimSourceMatrix/.test(server) && /supported_claims/.test(toolsSearchPowerTest + server) && /unsupported_claims/.test(server),
   research_gap_detector_status: /vnem_tools_research_gap_detector/.test(server) && /safeResearchGapDetector/.test(server) && /missing_current_search/.test(toolsSearchPowerTest + mcpUserSmokeTest),
+  source_map_status: /vnem_tools_source_map/.test(server) && /safeSourceMap/.test(server) && /top_level_structure/.test(toolsSourceIngestionTest + server),
+  source_extract_status: /vnem_tools_source_extract/.test(server) && /safeSourceExtract/.test(server) && /targets_skipped/.test(toolsSourceIngestionTest + server),
+  source_graph_status: /vnem_tools_source_graph/.test(server) && /safeSourceGraph/.test(server) && /claim_verification/.test(toolsSourceGraphTest + server),
+  bounded_extraction_status: /explicit targets are required|explicit selected targets/.test(server + toolsSourceIngestionTest) && /broad extraction|broad crawl/.test(server + toolsSourceIngestionTest),
+  source_ingestion_permission_status: /permission_profile/.test(server + toolsSourceIngestionTest) && /safe-readonly/.test(toolsSourceIngestionTest),
+  source_ingestion_secret_blocking_status: /secret_path_blocked/.test(server + toolsSourceIngestionTest) && /sk-test-1234567890/.test(toolsSourceIngestionTest) && /\[REDACTED\]/.test(toolsSourceIngestionTest),
+  source_ingestion_no_broad_crawl_status: /broad_crawl_blocked|broad crawl/.test(server + toolsSourceIngestionTest) && /no hidden external fetches|no broad crawl/i.test(server),
+  source_graph_contradiction_status: /conflicting_install_steps/.test(server + toolsSourceGraphTest) && /old_docs_vs_new_docs|official_vs_community_conflict/.test(server + toolsSourceGraphTest),
+  freshness_detection_status: /classifyFreshness/.test(server) && /outdated_risk/.test(toolsSourceGraphTest + server),
+  structured_evidence_report_status: /evidence_items/.test(server + toolsSourceIngestionTest) && /evidence_log_id/.test(toolsSourceIngestionTest + toolsSourceGraphTest + server),
   browser_search_safety_policy: /no_search_engine_result_page_scraping/.test(server) && /no_fake_search_results/.test(server) && /automatic CAPTCHA bypass/.test(server),
   provider_unconfigured_honesty: /provider_unconfigured/.test(server) && /no fake results returned/.test(server) && /provider_unavailable|provider_unconfigured/.test(server + toolsSearchPowerTest),
   no_captcha_bypass_public_policy: /No automatic CAPTCHA bypass was attempted or provided/.test(server + toolsRiskCaptchaTest) && /automatic CAPTCHA bypass/.test(server),
@@ -290,9 +323,19 @@ assert.equal(report.tools_permission_profiles_test_exists, true, "tools permissi
 assert.equal(report.tools_trust_boundary_test_exists, true, "tools trust-boundary test file is missing");
 assert.equal(report.tools_secret_blocking_test_exists, true, "tools secret blocking test file is missing");
 assert.equal(report.core_permission_planning_test_exists, true, "core permission planning test file is missing");
+assert.equal(report.tools_source_ingestion_test_exists, true, "tools source ingestion test file is missing");
+assert.equal(report.tools_source_graph_test_exists, true, "tools source graph test file is missing");
+assert.equal(report.core_research_strategy_test_exists, true, "core research strategy test file is missing");
+assert.equal(report.core_source_ingestion_planning_test_exists, true, "core source ingestion planning test file is missing");
+assert.equal(report.research_evidence_audit_test_exists, true, "research evidence audit test file is missing");
 assert.equal(report.package_scripts.test_tools_permission_profiles, true, "test:tools-permission-profiles package script is missing");
 assert.equal(report.package_scripts.test_tools_trust_boundary, true, "test:tools-trust-boundary package script is missing");
 assert.equal(report.package_scripts.test_tools_secret_blocking, true, "test:tools-secret-blocking package script is missing");
+assert.equal(report.package_scripts.test_core_research_strategy, true, "test:core-research-strategy package script is missing");
+assert.equal(report.package_scripts.test_core_source_ingestion_planning, true, "test:core-source-ingestion-planning package script is missing");
+assert.equal(report.package_scripts.test_tools_source_ingestion, true, "test:tools-source-ingestion package script is missing");
+assert.equal(report.package_scripts.test_tools_source_graph, true, "test:tools-source-graph package script is missing");
+assert.equal(report.package_scripts.test_research_evidence_audit, true, "test:research-evidence-audit package script is missing");
 assert.equal(report.package_scripts.test_core_permission_planning, true, "test:core-permission-planning package script is missing");
 assert.equal(report.package_scripts.test_core_search_planning, true, "test:core-search-planning package script is missing");
 assert.equal(report.package_scripts.test_mcp_user_smoke, true, "test:mcp-user-smoke package script is missing");
@@ -335,6 +378,7 @@ assert.equal(report.captcha_detector_status, true, "CAPTCHA detector readiness m
 assert.equal(report.download_safety_check_status, true, "download safety readiness missing");
 assert.equal(report.claim_source_matrix_status, true, "claim/source matrix readiness missing");
 assert.equal(report.research_gap_detector_status, true, "research gap detector readiness missing");
+for (const [key, value] of Object.entries({ source_map_status: report.source_map_status, source_extract_status: report.source_extract_status, source_graph_status: report.source_graph_status, bounded_extraction_status: report.bounded_extraction_status, source_ingestion_permission_status: report.source_ingestion_permission_status, source_ingestion_secret_blocking_status: report.source_ingestion_secret_blocking_status, source_ingestion_no_broad_crawl_status: report.source_ingestion_no_broad_crawl_status, source_graph_contradiction_status: report.source_graph_contradiction_status, freshness_detection_status: report.freshness_detection_status, structured_evidence_report_status: report.structured_evidence_report_status })) assert.equal(value, true, `${key} readiness missing`);
 assert.equal(report.browser_search_safety_policy, true, "browser/search safety policy missing");
 assert.equal(report.provider_unconfigured_honesty, true, "provider unconfigured honesty missing");
 assert.equal(report.no_captcha_bypass_public_policy, true, "no-CAPTCHA-bypass public policy missing");
@@ -418,6 +462,16 @@ console.log(`captcha_detector_status: ${yes(report.captcha_detector_status)}`);
 console.log(`download_safety_check_status: ${yes(report.download_safety_check_status)}`);
 console.log(`claim_source_matrix_status: ${yes(report.claim_source_matrix_status)}`);
 console.log(`research_gap_detector_status: ${yes(report.research_gap_detector_status)}`);
+console.log(`source_map_status: ${yes(report.source_map_status)}`);
+console.log(`source_extract_status: ${yes(report.source_extract_status)}`);
+console.log(`source_graph_status: ${yes(report.source_graph_status)}`);
+console.log(`bounded_extraction_status: ${yes(report.bounded_extraction_status)}`);
+console.log(`source_ingestion_permission_status: ${yes(report.source_ingestion_permission_status)}`);
+console.log(`source_ingestion_secret_blocking_status: ${yes(report.source_ingestion_secret_blocking_status)}`);
+console.log(`source_ingestion_no_broad_crawl_status: ${yes(report.source_ingestion_no_broad_crawl_status)}`);
+console.log(`source_graph_contradiction_status: ${yes(report.source_graph_contradiction_status)}`);
+console.log(`freshness_detection_status: ${yes(report.freshness_detection_status)}`);
+console.log(`structured_evidence_report_status: ${yes(report.structured_evidence_report_status)}`);
 console.log(`browser_search_safety_policy: ${yes(report.browser_search_safety_policy)}`);
 console.log(`provider_unconfigured_honesty: ${yes(report.provider_unconfigured_honesty)}`);
 console.log(`no_captcha_bypass_public_policy: ${yes(report.no_captcha_bypass_public_policy)}`);

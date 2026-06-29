@@ -101,6 +101,9 @@ const DEFAULT_MCP_TOOLS = [
   "vnem_assess_research_need",
   "vnem_build_search_plan",
   "vnem_build_browsing_plan",
+  "vnem_build_research_strategy",
+  "vnem_build_source_ingestion_plan",
+  "vnem_research_evidence_audit",
   "vnem_explain_tools_chain",
   "vnem_prepare_tools_handoff",
   "vnem_build_api_integration_plan",
@@ -679,6 +682,48 @@ function registerTools(mcpServer) {
     }
   );
 
+  mcpServer.registerTool(
+    "vnem_build_research_strategy",
+    {
+      title: "Build VNEM Research Strategy",
+      description: "Read-only Core research strategy for currentness, official docs, source ingestion, contradiction/freshness checks, claims to verify, and confidence limits. Does not search or browse.",
+      inputSchema: { task: z.string().min(1), known_context: z.string().optional(), domain_hint: z.string().optional(), freshness_required: z.boolean().optional(), token_budget: z.enum(["compact", "normal", "expanded"]).default("normal") },
+      annotations: READ_ONLY
+    },
+    async (args) => {
+      const strategy = buildResearchStrategy(args);
+      return toolResult(formatResearchStrategy(strategy), { research_strategy: strategy });
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_build_source_ingestion_plan",
+    {
+      title: "Build VNEM Source Ingestion Plan",
+      description: "Read-only Core plan for bounded website/docs/GitHub/local repo/package/API source ingestion. Does not crawl, browse, or read files.",
+      inputSchema: { task: z.string().min(1), source_type: z.enum(["website", "documentation_site", "GitHub_repo", "local_repo", "package_registry", "API_docs", "issue_tracker", "release_notes", "mixed"]).default("mixed"), source_targets: z.array(z.string()).default([]), extraction_goal: z.string().default(""), known_context: z.string().optional(), token_budget: z.enum(["compact", "normal", "expanded"]).default("normal") },
+      annotations: READ_ONLY
+    },
+    async (args) => {
+      const plan = buildSourceIngestionPlan(args);
+      return toolResult(formatSourceIngestionPlan(plan), { source_ingestion_plan: plan });
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_research_evidence_audit",
+    {
+      title: "VNEM Research Evidence Audit",
+      description: "Read-only audit of research/source conclusions against evidence, freshness, official-doc, download, website, repo, compatibility, and contradiction requirements.",
+      inputSchema: { task: z.string().min(1), conclusion: z.string().default(""), evidence_items: z.array(z.record(z.any())).default([]), required_claims: z.array(z.string()).default([]), freshness_required: z.boolean().optional() },
+      annotations: READ_ONLY
+    },
+    async (args) => {
+      const audit = buildResearchEvidenceAudit(args);
+      return toolResult(formatResearchEvidenceAudit(audit), { research_evidence_audit: audit });
+    }
+  );
+
 
   mcpServer.registerTool(
     "vnem_explain_tools_chain",
@@ -814,7 +859,7 @@ function registerTools(mcpServer) {
       annotations: READ_ONLY
     },
     async (args) => {
-      const result = augmentCompletionAuditForPermissions(completionAudit(args), args);
+      const result = augmentCompletionAuditForResearch(augmentCompletionAuditForPermissions(completionAudit(args), args), args);
       return toolResult(formatCompletionAudit(result), result);
     }
   );
@@ -1980,7 +2025,7 @@ function selectToolsForTask(args = {}) {
   if (["coding", "ui_web", "debugging", "local_project_modification"].includes(type)) add("vnem_tools_apply_patch_batch", "vnem_tools_run_project_task", "vnem_tools_collect_evidence", "vnem_tools_git_status", "vnem_tools_git_diff_summary");
   if (type === "ui_web") add("vnem_tools_start_dev_server", "vnem_tools_browser_capture", "vnem_tools_browser_page_inspect", "vnem_tools_browser_accessibility_audit", "vnem_tools_browser_compare_snapshots", "vnem_tools_stop_dev_server");
   if (type === "debugging") add("vnem_tools_code_search", "vnem_tools_read_many_files", "vnem_tools_run_project_task", "vnem_tools_apply_patch_batch");
-  if (["research", "direct_url_source", "current_research", "website_understanding"].includes(type)) add("vnem_tools_source_quality_check", "vnem_tools_research_brief", "vnem_tools_browser_research_pack", "vnem_tools_claim_source_matrix", "vnem_tools_research_gap_detector");
+  if (["research", "direct_url_source", "current_research", "website_understanding"].includes(type)) add("vnem_tools_source_quality_check", "vnem_tools_research_brief", "vnem_tools_browser_research_pack", "vnem_tools_claim_source_matrix", "vnem_tools_research_gap_detector", "vnem_tools_source_map", "vnem_tools_source_extract", "vnem_tools_source_graph");
   if (["research", "current_research"].includes(type)) add("vnem_tools_search_provider_manifest", "vnem_tools_search_query_builder", "vnem_tools_web_search", "vnem_tools_search_result_ranker");
   if (["direct_url_source", "website_understanding"].includes(type)) add("vnem_tools_fetch_url_text", "vnem_tools_browser_page_inspect", "vnem_tools_url_reputation_check", "vnem_tools_captcha_detector");
   if (type === "website_understanding") add("vnem_tools_browser_readability_extract", "vnem_tools_browser_link_map", "vnem_tools_browser_dom_search");
@@ -2058,6 +2103,9 @@ function buildCoreToolsPlan(args = {}) {
   push("vnem_tools_download_safety_check", "preflight download link risk; no actual download or installer execution", true, true);
   push("vnem_tools_claim_source_matrix", "build claim/source support matrix");
   push("vnem_tools_research_gap_detector", "identify missing current/primary/counter/date/version evidence");
+  push("vnem_tools_source_map", "map repo/docs/source structure before extraction; no broad crawl");
+  push("vnem_tools_source_extract", "extract bounded selected targets with redaction and skipped/blocked accounting");
+  push("vnem_tools_source_graph", "compare sources for officialness, freshness, claim support, and contradictions");
   push("vnem_tools_apply_patch_batch", "dry-run then apply approved coherent multi-file patch", true, true);
   push("vnem_tools_run_project_task", "dry-run then run approved safe project task/check", true, true);
   push("vnem_tools_start_dev_server", "dry-run then start approved localhost dev server for UI proof", true, true);
@@ -2134,6 +2182,198 @@ function explainToolsChain(args = {}) {
 }
 
 
+function buildResearchStrategy(args = {}) {
+  const task = String(args.task || "");
+  const known = String(args.known_context || "");
+  const hay = normalize(`${task} ${known} ${args.domain_hint || ""}`);
+  const assessment = assessResearchNeed(args);
+  const currentness = Boolean(args.freshness_required || assessment.freshness_requirement.required || /latest|current|today|recent|now|this week|security|pricing|version|api|package|docs|release/.test(hay));
+  const officialRequired = /api|sdk|official|docs|package|install|setup|security|download|release|changelog|version|compatib|mcp|client|library|framework/.test(hay);
+  const localBrowser = /local app|dashboard|browser proof|ui state|frontend|web app|visual|page state|backend data/.test(hay);
+  const securityRisk = /security|download|redirect|phishing|malware|credential|captcha|installer|token|secret|scam/.test(hay);
+  const sourceTypes = new Set([...(assessment.source_types_needed || [])]);
+  if (officialRequired) sourceTypes.add("official_docs");
+  if (currentness) { sourceTypes.add("release_notes"); sourceTypes.add("package_registry_or_current_index"); }
+  if (/repo|github|source code|architecture|readme/.test(hay)) sourceTypes.add("source_repo");
+  if (localBrowser) sourceTypes.add("local_browser_page");
+  if (securityRisk) sourceTypes.add("security_advisory_or_reputation_source");
+  const claims = inferResearchClaims(task, known, { currentness, officialRequired, localBrowser, securityRisk });
+  const queries = buildCoreSearchQueries(task, args.domain_hint || "", currentness, [...sourceTypes], known).queries.slice(0, args.token_budget === "compact" ? 5 : 10);
+  const strategy = {
+    user_question_or_task: task,
+    research_goal: inferResearchGoal(task, known),
+    currentness_required: currentness,
+    official_docs_required: officialRequired,
+    local_browser_or_app_inspection_required: localBrowser,
+    security_or_download_risk: securityRisk,
+    source_types_to_check: [...sourceTypes],
+    claims_to_verify: claims,
+    likely_weak_source_risks: weakSourceRisksForResearch({ currentness, officialRequired, localBrowser, securityRisk }),
+    queries_to_try: queries,
+    source_ingestion_needed: /repo|docs|website|source|extract|understand|architecture|current|api|install|setup/.test(hay),
+    contradiction_check_needed: currentness || officialRequired || /compare|conflict|contradict|old|outdated|community|blog|versus|vs/.test(hay),
+    freshness_check_needed: currentness,
+    stop_condition: ["A bounded source map/extract exists for each large source before any source-understanding claim.", "Important claims are tied to source graph or claim matrix evidence.", "Official/current source gaps are either closed or marked unknown/blocked.", "Contradictions and freshness limits are reported instead of hidden."],
+    confidence_limit: currentness || officialRequired ? "medium until official/current source evidence and contradiction check exist" : "low_to_medium until bounded source evidence exists",
+    must_not_claim: researchPlanMustNotClaim(),
+    selected_tools_to_request_from_Tools_MCP: ["vnem_tools_source_map", "vnem_tools_source_extract", "vnem_tools_source_graph", "vnem_tools_claim_source_matrix", "vnem_tools_research_gap_detector"],
+    core_executes_tools: false,
+    web_search_executed: false
+  };
+  return strategy;
+}
+
+function arrayify(value) {
+  if (Array.isArray(value)) return value;
+  if (value === undefined || value === null) return [];
+  return [value];
+}
+
+function buildSourceIngestionPlan(args = {}) {
+  const task = String(args.task || "");
+  const sourceType = args.source_type || inferSourceIngestionType(`${task} ${args.known_context || ""} ${arrayify(args.source_targets).join(" ")}`);
+  const targets = arrayify(args.source_targets).map(String);
+  const local = sourceType === "local_repo";
+  const external = ["website", "documentation_site", "GitHub_repo", "API_docs", "package_registry", "issue_tracker", "release_notes", "mixed"].includes(sourceType) && !local;
+  const required = requiredSourceAreas(sourceType, task);
+  const plan = {
+    user_goal: task,
+    source_type: sourceType,
+    source_targets: targets,
+    extraction_goal: args.extraction_goal || inferResearchGoal(task, args.known_context || ""),
+    required_source_areas: required,
+    optional_source_areas: optionalSourceAreas(sourceType, task),
+    exclusions: ["secret-like paths (.env, tokens, credentials, cookies, sessions, private keys)", ".git internals", "node_modules/build/cache output", "irrelevant generated files", "broad uncontrolled crawling", "login/paywall/CAPTCHA/private-account data"],
+    safety_boundaries: ["Map first, extract selected targets second.", "Do not ask Tools MCP to crawl blindly or follow links broadly.", external ? "Live external fetching requires explicit direct URLs, dry-run/approval where applicable, and provider/fetch evidence." : "Local inspection must stay inside allowed roots.", "Secret path blocking and output redaction remain mandatory."],
+    access_level: local ? "user-approved local" : targets.some((t) => /^https?:/i.test(t)) ? "public_or_user_provided" : "unknown_or_user_provided",
+    extraction_depth: /architecture|full-stack|repo|understand|debug|compat/i.test(task) ? "medium" : "shallow_to_medium",
+    token_or_rate_limit_budget: args.token_budget === "expanded" ? "expanded but bounded; summarize/chunk large sources" : "bounded; prefer map and selected high-value targets",
+    structured_output_required: ["source map", "source extraction report", "source graph", "claim verification matrix", "freshness/contradiction/gap notes"],
+    stop_condition: ["Required source areas are mapped or explicitly marked blocked/missing.", "Selected extraction targets cover the claims being made.", "Source graph/audit can classify claims without pretending full-source understanding."],
+    Tools_MCP_actions_needed: ["vnem_tools_source_map", "vnem_tools_source_extract", "vnem_tools_source_graph", "vnem_tools_claim_source_matrix", "vnem_tools_research_gap_detector"],
+    permission_profile_expected: external ? "safe-local-dev for approved live fetches; safe-readonly for local/provided planning" : "safe-readonly",
+    must_not_claim: ["Core crawled/read/extracted sources.", "Tools should crawl the whole site/repo blindly.", "Secret/private/account data is needed or allowed by default.", "Repo/site is fully understood from a shallow map only."],
+    core_executes_tools: false,
+    broad_crawl_allowed: false
+  };
+  return plan;
+}
+
+function buildResearchEvidenceAudit(args = {}) {
+  const task = String(args.task || "");
+  const conclusion = String(args.conclusion || "");
+  const text = normalize(`${task} ${conclusion}`);
+  const evidence = arrayify(args.evidence_items);
+  const hasCurrent = evidence.some((item) => /current|recent|probably_current|version_specific/i.test(`${item.freshness || ""} ${item.published_at || ""} ${item.retrieved_at || ""}`) || /20\d{2}/.test(`${item.published_at || ""} ${item.retrieved_at || ""}`));
+  const hasOfficial = evidence.some((item) => item.official === true || /official|docs|release|changelog|vendor|repo|package_registry/.test(`${item.source_type || ""} ${item.title || ""}`.toLowerCase()));
+  const hasDownload = evidence.some((item) => /redirect|reputation|download|checksum|signature|head/i.test(`${item.source_type || ""} ${item.evidence_type || ""} ${item.title || ""}`));
+  const hasWebsiteMap = evidence.some((item) => item.source_map_present === true || /source_map|page_inspect|link_map|browser_research_pack/.test(`${item.evidence_type || ""} ${item.source_type || ""}`));
+  const hasRepoMap = evidence.some((item) => item.source_map_present === true || /source_map|repo_map|workspace_map|source_extract/.test(`${item.evidence_type || ""} ${item.source_type || ""}`));
+  const hasVersionRuntime = evidence.some((item) => /version|runtime|package|lockfile|release|compat/i.test(`${item.source_type || ""} ${item.title || ""} ${item.text_excerpt || ""}`));
+  const hasMultiple = evidence.length >= 2;
+  const hasContradictionCheck = evidence.some((item) => item.contradiction_checked === true || /source_graph|claim_source_matrix|contradiction/i.test(`${item.evidence_type || ""} ${item.source_type || ""}`));
+  const rejections = [];
+  if ((args.freshness_required || /latest|current|today|recent|now|this week/.test(text)) && !hasCurrent) rejections.push("current-info claim without current source evidence");
+  if (/official docs|official documentation|docs confirm|api behavior|official/.test(text) && !hasOfficial) rejections.push("official-docs claim without official docs or primary source evidence");
+  if (/download safe|safe to download|redirect|installer|malware|phishing/.test(text) && !hasDownload) rejections.push("download safety claim without redirect/reputation/download evidence");
+  if (/website|page|browser|ui|local app/.test(text) && !hasWebsiteMap) rejections.push("website-understanding claim without source map/page evidence");
+  if (/repo|repository|codebase|architecture|fully understood/.test(text) && !hasRepoMap) rejections.push("repo-understanding claim without repo map/files evidence");
+  if (/compatible|compatibility|works with|runtime|version/.test(text) && !hasVersionRuntime) rejections.push("compatibility claim without version/runtime evidence");
+  if (/no contradiction|contradiction-free|no conflicts/.test(text) && (!hasMultiple || !hasContradictionCheck)) rejections.push("contradiction-free claim without multiple relevant sources and contradiction check");
+  let classification = "unknown";
+  if (rejections.some((r) => /current|official|repo|download|website|compatibility|contradiction/.test(r))) classification = evidence.length ? "weakly_supported" : "unknown";
+  if (evidence.length && !rejections.length) classification = hasOfficial && hasMultiple ? "well_supported" : "likely";
+  if (evidence.some((item) => /contradicted/i.test(`${item.status || ""} ${item.claim_status || ""}`))) classification = "contradicted";
+  if (evidence.some((item) => /outdated/i.test(`${item.freshness || ""} ${item.status || ""}`)) && /current|latest|now|today/.test(text)) classification = "outdated";
+  return {
+    task,
+    conclusion,
+    classification,
+    evidence_count: evidence.length,
+    evidence_summary: evidence.map((item, index) => ({ id: item.id || `E${index + 1}`, title: item.title || item.path || "untitled", source_type: item.source_type || item.evidence_type || "unknown", official: Boolean(item.official), freshness: item.freshness || "unknown" })).slice(0, 20),
+    rejections,
+    missing_evidence: rejections,
+    allowed_labels: ["proven", "well_supported", "likely", "weakly_supported", "contradicted", "outdated", "unknown", "blocked", "not_attempted"],
+    must_not_claim: ["current-info claim without current source", "official-docs claim without official docs", "download safety claim without redirect/reputation/download evidence", "website-understanding claim without source map/page evidence", "repo-understanding claim without repo map/files evidence", "compatibility claim without version/runtime evidence", "contradiction-free claim without multiple relevant sources"],
+    core_executes_tools: false,
+    safe_next_action: rejections.length ? "Collect bounded source map/extract/source graph evidence or downgrade the claim to unknown/blocked." : "Use the classification and cite the evidence scope; do not exceed it."
+  };
+}
+
+function inferResearchGoal(task, known) {
+  if (/verify|confirm|claim|prove/i.test(task)) return "verify claims with bounded evidence and source graph";
+  if (/current|latest|today|recent/i.test(task)) return "find current evidence and freshness limits";
+  if (/repo|architecture|source|codebase/i.test(task)) return "map and extract source evidence before repo-understanding claims";
+  return `answer the task with evidence boundaries: ${String(task || known).slice(0, 180)}`;
+}
+
+function inferResearchClaims(task, known, flags) {
+  const claims = [];
+  if (flags.currentness) claims.push("The answer reflects current/latest source evidence.");
+  if (flags.officialRequired) claims.push("Official docs or primary sources support the key recommendation.");
+  if (flags.localBrowser) claims.push("Local browser/app evidence supports any UI/page understanding claim.");
+  if (flags.securityRisk) claims.push("Security/download risk was checked with redirect/reputation/download evidence.");
+  const sentences = `${task}. ${known}`.split(/(?<=[.!?])\s+/).map((s) => s.trim()).filter(Boolean);
+  claims.push(...sentences.slice(0, 4));
+  return [...new Set(claims)].slice(0, 10);
+}
+
+function weakSourceRisksForResearch(flags) {
+  return [
+    flags.officialRequired ? "random blog/video used where official docs or source repo are required" : null,
+    flags.currentness ? "outdated docs, old forum posts, cached AI pages, or missing release dates" : null,
+    flags.securityRisk ? "download mirrors, fake buttons, phishing pages, unverified checksums" : null,
+    flags.localBrowser ? "claiming UI behavior without page/source-map/browser evidence" : null,
+    "single-source confidence without contradiction/counter-source check"
+  ].filter(Boolean);
+}
+
+function researchPlanMustNotClaim() {
+  return ["Core searched the web or browsed pages.", "Core executed Tools MCP actions.", "Current/latest facts are verified before source evidence exists.", "Official docs confirm a claim before official source evidence exists.", "No contradictions exist before multiple relevant sources are compared."];
+}
+
+function inferSourceIngestionType(text) {
+  const t = normalize(text);
+  if (/local repo|local project|workspace|c:\\|\/home|repo path/.test(t)) return "local_repo";
+  if (/github/.test(t)) return "GitHub_repo";
+  if (/api docs|official docs|sdk docs/.test(t)) return "API_docs";
+  if (/package|npm|pypi|registry/.test(t)) return "package_registry";
+  if (/issue|pull request|\bpr\b/.test(t)) return "issue_tracker";
+  if (/release|changelog/.test(t)) return "release_notes";
+  if (/docs|documentation/.test(t)) return "documentation_site";
+  if (/website|web page|site/.test(t)) return "website";
+  return "mixed";
+}
+
+function requiredSourceAreas(sourceType, task) {
+  const base = {
+    local_repo: ["README/install docs", "package or dependency manifests", "source directories", "tests/examples", "changelog/release notes", "config/CI files"],
+    GitHub_repo: ["README", "default branch metadata", "source tree", "package manifests", "docs/examples", "issues/PRs only if relevant", "releases/changelog"],
+    API_docs: ["official quickstart/install", "API reference", "auth/security docs", "version/deprecation notes", "changelog/migration guide"],
+    documentation_site: ["docs hierarchy", "quickstart/install", "API/reference pages", "version selector", "changelog/troubleshooting"],
+    website: ["homepage purpose", "navigation/link map", "important pages", "download/pricing/support if relevant", "risk/access-block notes"],
+    package_registry: ["latest version", "published date", "repository/docs links", "dependencies/peer deps", "license/security notes"],
+    issue_tracker: ["issue title/status", "maintainer comments", "affected versions", "linked PR/release", "workaround"],
+    release_notes: ["latest version", "release date", "breaking changes", "migration/security fixes", "known issues"],
+    mixed: ["source map", "high-value docs/pages/files", "release/currentness evidence", "claim-source evidence"]
+  };
+  const areas = base[sourceType] || base.mixed;
+  if (/frontend|backend|full-stack|ui/i.test(task)) return [...areas, "frontend/backend flow map where relevant"];
+  return areas;
+}
+
+function optionalSourceAreas(sourceType, task) {
+  const out = ["examples/tutorials", "troubleshooting", "security policy", "license/contributing notes"];
+  if (/issue|bug|compat|current/i.test(task)) out.push("issues/PRs/maintainer comments");
+  if (/download|security|installer/i.test(task)) out.push("redirect/reputation/checksum/signature evidence");
+  return out;
+}
+
+function formatResearchStrategy(plan) { return `vnem_build_research_strategy: current=${plan.currentness_required} official=${plan.official_docs_required} claims=${plan.claims_to_verify.length} core_executes_tools=false`; }
+function formatSourceIngestionPlan(plan) { return `vnem_build_source_ingestion_plan: ${plan.source_type} targets=${plan.source_targets.length} actions=${plan.Tools_MCP_actions_needed.length} core_executes_tools=false`; }
+function formatResearchEvidenceAudit(audit) { return `vnem_research_evidence_audit: ${audit.classification}; rejections=${audit.rejections.length} core_executes_tools=false`; }
+
+
 function buildCorePermissionProfilePlan(task, known = "", selectedTools = []) {
   const text = normalize(`${task} ${known} ${selectedTools.join(" ")}`);
   const actionMap = [
@@ -2202,6 +2442,18 @@ function augmentCompletionAuditForPermissions(result, args = {}) {
     missing_evidence: [...new Set([...(result.missing_evidence || []), ...flags])]
   };
 }
+
+function augmentCompletionAuditForResearch(result, args = {}) {
+  const audit = buildResearchEvidenceAudit({ task: args.task || "", conclusion: args.claimed_result || "", evidence_items: Array.isArray(args.evidence) ? args.evidence : [] });
+  const flags = audit.rejections.map((item) => `research/source evidence audit: ${item}`);
+  return {
+    ...result,
+    research_evidence_audit: audit,
+    must_not_claim: [...new Set([...(result.must_not_claim || []), ...audit.must_not_claim])],
+    missing_evidence: [...new Set([...(result.missing_evidence || []), ...flags])]
+  };
+}
+
 
 function inferCoreToolTaskType(text) {
   const t = String(text || "").toLowerCase();

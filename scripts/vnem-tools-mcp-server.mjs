@@ -55,6 +55,9 @@ const REQUIRED_TOOL_NAMES = [
   "vnem_tools_download_safety_check",
   "vnem_tools_claim_source_matrix",
   "vnem_tools_research_gap_detector",
+  "vnem_tools_source_map",
+  "vnem_tools_source_extract",
+  "vnem_tools_source_graph",
   "vnem_tools_apply_patch_batch",
   "vnem_tools_restore_batch",
   "vnem_tools_project_scan",
@@ -828,6 +831,39 @@ function registerTools(mcpServer) {
     async (args) => withToolErrors(async () => { const result = await safeResearchGapDetector(args); return toolResult(formatResearchGapDetector(result), { research_gap_detector: result }); })
   );
 
+  mcpServer.registerTool(
+    "vnem_tools_source_map",
+    {
+      title: "VNEM Source Map",
+      description: "Safely map a local repo/docs folder or explicit source target before bounded extraction. Allowed roots only for local sources; no broad crawling or hidden external fetches.",
+      inputSchema: { source: z.string().min(1), source_type: z.string().default("local_repo"), max_files: z.number().int().min(1).max(500).default(150), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => { const result = await safeSourceMap(args); return toolResult(formatSourceMap(result), { source_map: result }); })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_source_extract",
+    {
+      title: "VNEM Source Extract",
+      description: "Extract bounded evidence from explicit local source targets only. Blocks secret paths, caps/redacts output, and returns structured evidence for Core audit.",
+      inputSchema: { extraction_goal: z.string().min(1), source_root: z.string().default("."), targets: z.array(z.string()).default([]), max_targets: z.number().int().min(1).max(30).default(12), max_bytes_per_target: z.number().int().min(128).max(16000).default(4000), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => { const result = await safeSourceExtract(args); return toolResult(formatSourceExtract(result), { source_extract: result }); })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_source_graph",
+    {
+      title: "VNEM Source Graph",
+      description: "Build source graph, claim verification, contradiction, freshness, and confidence notes from provided/bounded source evidence. Does not search or crawl.",
+      inputSchema: { task: z.string().default(""), sources: z.array(z.record(z.any())).default([]), claims: z.array(z.string()).default([]), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => { const result = await safeSourceGraph(args); return toolResult(formatSourceGraph(result), { source_graph: result }); })
+  );
+
 
   mcpServer.registerTool(
     "vnem_tools_fetch_url_text",
@@ -1204,7 +1240,8 @@ function statusObject() {
     command_allowlist: ["node --check <file>", "npm test", "npm run <safe-script>", "git status", "git diff", "git log", "git ls-files"],
     tool_catalog_policy: { tool: "vnem_tools_manifest", capability_groups: TOOL_CAPABILITY_GROUPS, safety_metadata_required: true, core_handoff_compatible: true },
     filesystem_intelligence_policy: { tools: ["vnem_tools_workspace_map", "vnem_tools_read_many_files", "vnem_tools_code_search", "vnem_tools_find_references", "vnem_tools_dependency_scan"], allowed_roots_only: true, secret_paths_blocked: true, generated_build_cache_skipped: true, evidence_logged: true },
-    research_sources_policy: { tools: ["vnem_tools_fetch_url_text", "vnem_tools_source_quality_check", "vnem_tools_research_brief", "vnem_tools_browser_research_pack", "vnem_tools_claim_source_matrix", "vnem_tools_research_gap_detector"], no_search_engine_scraping: true, external_fetch_dry_run_default: true, approval_required_for_real_external_fetch: true, no_login_cookie_session_use: true },
+    research_sources_policy: { tools: ["vnem_tools_fetch_url_text", "vnem_tools_source_quality_check", "vnem_tools_research_brief", "vnem_tools_browser_research_pack", "vnem_tools_claim_source_matrix", "vnem_tools_research_gap_detector", "vnem_tools_source_map", "vnem_tools_source_extract", "vnem_tools_source_graph"], no_search_engine_scraping: true, external_fetch_dry_run_default: true, approval_required_for_real_external_fetch: true, no_login_cookie_session_use: true },
+    source_ingestion_policy: { tools: ["vnem_tools_source_map", "vnem_tools_source_extract", "vnem_tools_source_graph"], allowed_roots_only_for_local_sources: true, explicit_targets_only_for_extraction: true, secret_paths_blocked: true, broad_crawl_blocked: true, evidence_logged: true, source_graph_uses_provided_or_bounded_sources_only: true },
     search_provider_policy: { tools: ["vnem_tools_search_provider_manifest", "vnem_tools_search_query_builder", "vnem_tools_web_search", "vnem_tools_search_result_ranker"], local_fixture_available_for_tests: true, provider_keys_detected_by_presence_only: true, provider_unavailable_returns_structured_status: true, no_search_engine_result_page_scraping: true, no_fake_search_results: true },
     browser_risk_policy: { tools: ["vnem_tools_redirect_chain_check", "vnem_tools_url_reputation_check", "vnem_tools_captcha_detector", "vnem_tools_download_safety_check"], no_captcha_bypass: true, user_assisted_captcha_handoff: true, suspicious_redirect_download_phishing_detection: true, no_auto_download_or_installer_execution: true },
     patch_batch_policy: { tool: "vnem_tools_apply_patch_batch", dry_run_default: true, approval_required: true, operations: ["replace", "create", "delete", "append"], no_partial_apply_by_default: true, backups_per_changed_file: true },
@@ -1433,7 +1470,7 @@ async function searchAllowedFiles(args) {
   return { root: root.relativePath || ".", query: args.query, results, skipped_policy: skippedPolicy() };
 }
 
-const TOOL_CAPABILITY_GROUPS = ["permissions", "filesystem", "project_intelligence", "patching", "rollback", "commands", "project_tasks", "dev_server", "browser_proof", "browser_intelligence", "api_request", "search", "research_sources", "source_quality", "browsing_risk", "research_matrix", "session_evidence", "local_git", "status_readiness"];
+const TOOL_CAPABILITY_GROUPS = ["permissions", "filesystem", "project_intelligence", "patching", "rollback", "commands", "project_tasks", "dev_server", "browser_proof", "browser_intelligence", "api_request", "search", "research_sources", "source_quality", "browsing_risk", "research_matrix", "source_ingestion", "session_evidence", "local_git", "status_readiness"];
 
 function buildToolCatalog() {
   const commonUnsafe = ["secret reading/dumping", "outside-root access", "arbitrary shell", "package installs", "git push", "deployment", "Giga MCP"];
@@ -1504,6 +1541,9 @@ function buildToolCatalog() {
     mk("vnem_tools_download_safety_check", "browsing_risk", { read_only: false, network: true, requires_approval: true, dry_run_default: true, allowed_roots_required: false, description: "Assess download link risk before following/downloading; optional approved HEAD only, no download.", typical_use_cases: ["fake download/installer risk", "pre-download review"], unsafe_actions_blocked: [...commonUnsafe, "automatic downloads", "installer execution", "malware scanning overclaim"] }),
     mk("vnem_tools_claim_source_matrix", "research_matrix", { description: "Build claim/source support matrix with supported, unsupported, conflicting claims and citation plan.", allowed_roots_required: false, typical_use_cases: ["citation planning", "avoid fake confidence"], related_tools: ["vnem_tools_research_gap_detector", "vnem_tools_browser_research_pack"] }),
     mk("vnem_tools_research_gap_detector", "research_matrix", { description: "Detect missing current search, primary/counter sources, dates/versions, and confidence blockers.", allowed_roots_required: false, typical_use_cases: ["research completeness review", "next query/tool planning"], related_tools: ["vnem_tools_search_query_builder", "vnem_tools_web_search", "vnem_tools_claim_source_matrix"] }),
+    mk("vnem_tools_source_map", "source_ingestion", { description: "Safely map a local repo/docs folder or explicit source target before bounded extraction; no broad crawling or hidden external fetch.", allowed_roots_required: true, evidence_logged: true, typical_use_cases: ["repo/docs source map", "find docs/code/config/test/release areas"], unsafe_actions_blocked: [...commonUnsafe, "broad crawling", "secret/session/browser-profile reads"], related_tools: ["vnem_tools_source_extract", "vnem_tools_source_graph"] }),
+    mk("vnem_tools_source_extract", "source_ingestion", { description: "Extract bounded evidence from explicit selected local source targets only with secret blocking, redaction, skipped-target accounting, and structured evidence items.", allowed_roots_required: true, evidence_logged: true, typical_use_cases: ["bounded README/docs/changelog extraction", "claim candidate and version/date extraction"], unsafe_actions_blocked: [...commonUnsafe, "unbounded repo/site extraction", "secret reads"], related_tools: ["vnem_tools_source_map", "vnem_tools_source_graph", "vnem_tools_claim_source_matrix"] }),
+    mk("vnem_tools_source_graph", "source_ingestion", { description: "Compare provided/bounded source evidence for officialness, freshness, claim support, contradictions, and confidence limits. Does not search or crawl.", allowed_roots_required: false, evidence_logged: true, typical_use_cases: ["official vs community conflict", "outdated source risk", "claim verification graph"], unsafe_actions_blocked: [...commonUnsafe, "claiming contradiction-free from one source", "broad search/crawl claims"], related_tools: ["vnem_tools_source_map", "vnem_tools_source_extract", "vnem_tools_claim_source_matrix"] }),
     mk("vnem_tools_start_session", "session_evidence", { read_only: false, mutation: true, description: "Start session proof pack.", typical_use_cases: ["group local workflow evidence"] }),
     mk("vnem_tools_finish_session", "session_evidence", { read_only: false, mutation: true, description: "Write session proof pack.", typical_use_cases: ["final evidence summary"] }),
     mk("vnem_tools_collect_evidence", "session_evidence", { read_only: false, mutation: true, description: "Write proof-trail-compatible evidence summary.", typical_use_cases: ["final report support"] }),
@@ -1940,6 +1980,280 @@ async function safeDownloadSafetyCheck(args) {
   recordSession(args.session_id, "download_safety_checks", result);
   return result;
 }
+
+async function safeSourceMap(args) {
+  const sourceType = String(args.source_type || "local_repo");
+  const source = String(args.source || ".");
+  const isExternal = /^https?:\/\//i.test(source);
+  if (isExternal) {
+    const result = {
+      source: redactSecrets(source),
+      source_type: sourceType,
+      top_level_structure: [],
+      important_files_or_pages: [],
+      docs_locations: [],
+      code_locations: [],
+      config_locations: [],
+      test_or_example_locations: [],
+      changelog_or_release_locations: [],
+      issue_or_pr_locations_if_available_or_blocked: ["external issue/PR/release extraction requires explicit selected URLs and approval; no broad crawl performed"],
+      likely_irrelevant_areas: [],
+      missing_or_blocked_areas: ["external_source_mapping_requires_selected_fetch_or_link_map", "broad_crawl_blocked"],
+      allowed_roots_check: { inside_allowed_roots: false, external_source: true },
+      permission_profile: activePermissionProfile.profile_name,
+      trust_boundary: "0_public_information",
+      evidence_log_id: null,
+      safe_to_claim: ["External source map was planned/blocked only; no hidden external fetch or crawl occurred."],
+      must_not_claim: sourceIngestionMustNotClaim()
+    };
+    const log = await writeEvidenceLog("source_map", result);
+    result.evidence_log_id = log.evidence_log_id;
+    recordSession(args.session_id, "source_maps", result);
+    return result;
+  }
+  const root = await resolveAllowedRoot(source);
+  const files = [];
+  await walkFiles(root.absolutePath, root.absolutePath, files, { maxResults: args.max_files || 150 });
+  const topEntries = await readdir(root.absolutePath, { withFileTypes: true });
+  const top = topEntries.slice(0, 120).map((entry) => ({ path: entry.name, type: entry.isDirectory() ? "directory" : "file", skipped: SKIPPED_DIRS.has(entry.name) || isSecretLikePath(path.join(root.absolutePath, entry.name)) }));
+  const rels = files.map((file) => file.path);
+  const pick = (re, max = 40) => rels.filter((rel) => re.test(rel)).slice(0, max);
+  const blocked = top.filter((entry) => entry.skipped).map((entry) => `${entry.path}: skipped by source-map safety policy`);
+  for (const name of [".env", ".env.local", "sessions.db", "cookies.txt", "secrets", "tokens", "credentials", ".ssh", "browser-profile", "password-manager"]) {
+    if (existsSync(path.join(root.absolutePath, name))) blocked.push(`${name}: secret/session/private path blocked`);
+  }
+  const result = {
+    source: root.absolutePath,
+    source_type: sourceType,
+    top_level_structure: top,
+    important_files_or_pages: pick(/(^|\/)(README|AGENTS|package|pyproject|Cargo|go\.mod|requirements|CHANGELOG|SECURITY|LICENSE)(\.|$)/i, 60),
+    docs_locations: pick(/(^|\/)(docs?|documentation|guides?)(\/|$)|README|quickstart|install/i),
+    code_locations: pick(/(^|\/)(src|lib|app|pages|server|client|api|components|routes)(\/|$)|\.(js|mjs|ts|tsx|jsx|py|go|rs|java|cs)$/i),
+    config_locations: pick(/(^|\/)(package\.json|tsconfig|vite|next|astro|eslint|prettier|docker|compose|config|\.github\/workflows)/i),
+    test_or_example_locations: pick(/(^|\/)(tests?|__tests__|spec|examples?|fixtures?)(\/|$)|\.(test|spec)\./i),
+    changelog_or_release_locations: pick(/CHANGELOG|RELEASE|HISTORY|MIGRATION|versions?/i),
+    issue_or_pr_locations_if_available_or_blocked: ["Local source map does not read remote GitHub issues/PRs; use explicit public issue/release URLs if needed."],
+    likely_irrelevant_areas: ["node_modules", ".git", "build outputs", "coverage", "cache directories"].filter((name) => top.some((entry) => entry.path === name || entry.path.includes(name))),
+    missing_or_blocked_areas: [...new Set(blocked)],
+    allowed_roots_check: { inside_allowed_roots: true, matched_root: root.root, allowed_roots: allowedRoots },
+    permission_profile: activePermissionProfile.profile_name,
+    trust_boundary: "2_local_project_information",
+    evidence_log_id: null,
+    safe_to_claim: [`Mapped ${files.length} non-secret file(s) under the allowed source root.`, "Only structure/path metadata was inspected; secret-like paths and skipped directories were not read."],
+    must_not_claim: sourceIngestionMustNotClaim()
+  };
+  const log = await writeEvidenceLog("source_map", result);
+  result.evidence_log_id = log.evidence_log_id;
+  recordSession(args.session_id, "source_maps", result);
+  return result;
+}
+
+async function safeSourceExtract(args) {
+  const root = await resolveAllowedRoot(args.source_root || ".");
+  const targets = arrayify(args.targets).map(String).filter(Boolean).slice(0, Math.min(args.max_targets || 12, 30));
+  const read = [];
+  const skipped = [];
+  const evidenceItems = [];
+  if (!targets.length) skipped.push({ path: "<none>", reason: "explicit targets are required; broad extraction/crawling is blocked" });
+  for (const targetName of targets) {
+    try {
+      const target = await resolveAllowedFile(path.isAbsolute(targetName) ? targetName : path.join(root.absolutePath, targetName), { mustExist: true, blockSecrets: true });
+      const info = await stat(target.absolutePath);
+      if (!info.isFile()) { skipped.push({ path: target.relativePath, reason: "not_a_regular_file" }); continue; }
+      const bytes = await readFile(target.absolutePath);
+      if (bytes.includes(0) || looksBinary(bytes)) { skipped.push({ path: target.relativePath, reason: "binary_file_blocked" }); continue; }
+      const capped = bytes.subarray(0, Math.min(args.max_bytes_per_target || 4000, 16000)).toString("utf8");
+      const text = redactSecrets(capped);
+      read.push({ path: target.relativePath, bytes_read: Math.min(bytes.length, Buffer.byteLength(capped)), truncated: bytes.length > Buffer.byteLength(capped) });
+      evidenceItems.push({ path: target.relativePath, source_type: inferSourceTypeFromPath(target.relativePath), excerpt: truncate(text, 1200), relevance: inferExtractionRelevance(target.relativePath, args.extraction_goal), officialness: inferOfficialness({ path: target.relativePath, text }) });
+    } catch (error) {
+      skipped.push({ path: targetName, reason: error?.code === "secret_path_blocked" ? "secret_path_blocked" : error?.message || "blocked_or_missing" });
+    }
+  }
+  const combined = evidenceItems.map((item) => `${item.path}\n${item.excerpt}`).join("\n");
+  const result = {
+    extraction_goal: args.extraction_goal,
+    targets_read: read,
+    targets_skipped: skipped,
+    evidence_items: evidenceItems,
+    claim_candidates: extractClaimCandidates(combined),
+    dates_or_versions_found: extractDatesAndVersions(combined),
+    officialness: summarizeOfficialness(evidenceItems),
+    source_quality_notes: evidenceItems.map((item) => ({ path: item.path, source_type: item.source_type, note: item.officialness === "likely_official_project_source" ? "project-local/official repo evidence" : "bounded local source evidence" })),
+    freshness_notes: freshnessNotesForText(combined),
+    contradictions_found: detectSimpleContradictions(evidenceItems.map((item) => ({ title: item.path, text_excerpt: item.excerpt, source_type: item.source_type, official: item.officialness === "likely_official_project_source" }))),
+    gaps: [read.length ? null : "No explicit targets were read.", "Extraction was bounded to selected targets; unselected repo/site areas remain uninspected."].filter(Boolean),
+    permission_profile: activePermissionProfile.profile_name,
+    trust_boundary_level: "2_local_project_information",
+    allowed_roots_check: { inside_allowed_roots: true, matched_root: root.root },
+    evidence_log_id: null,
+    safe_to_claim: ["Only explicit selected targets were read under allowed roots.", "Secret-like paths were blocked and text excerpts were redacted."],
+    must_not_claim: sourceIngestionMustNotClaim()
+  };
+  const log = await writeEvidenceLog("source_extract", result);
+  result.evidence_log_id = log.evidence_log_id;
+  recordSession(args.session_id, "source_extracts", result);
+  return result;
+}
+
+async function safeSourceGraph(args) {
+  const rawSources = arrayify(args.sources).map(normalizeGraphSource);
+  const claims = arrayify(args.claims).map(String).filter(Boolean);
+  const sources = rawSources.map((source) => ({
+    ...source,
+    freshness: classifyFreshness(source),
+    trust_level: classifySourceTrust(source),
+    claims_supported: claims.filter((claim) => sourceSupportsClaim(source, claim)),
+    claims_contradicted: claims.filter((claim) => sourceContradictsClaim(source, claim)),
+    outdated_risk: classifyFreshness(source).includes("outdated") || classifyFreshness(source).includes("old"),
+    links_to_stronger_evidence: source.official ? [] : rawSources.filter((other) => other.official).map((other) => other.title).slice(0, 3),
+    confidence: source.official ? "medium_high" : "low_to_medium",
+    notes: source.official ? "Official or primary-like source." : "Community/secondary source; corroborate before confident claims."
+  }));
+  const contradictions = detectGraphContradictions(sources, claims);
+  const verification = claims.map((claim) => {
+    const supporting = sources.filter((source) => source.claims_supported.includes(claim));
+    const contradicting = sources.filter((source) => source.claims_contradicted.includes(claim));
+    const status = contradicting.length ? "contradicted" : supporting.some((s) => s.official) ? "well_supported" : supporting.length ? "likely" : "unknown";
+    return { claim, status, supporting_sources: supporting.map((s) => s.title), contradicting_sources: contradicting.map((s) => s.title), confidence: status === "well_supported" ? "medium_high" : status === "contradicted" ? "low_until_resolved" : "low" };
+  });
+  const result = {
+    task: args.task || "",
+    sources,
+    source_type: [...new Set(sources.map((s) => s.source_type))],
+    contradictions_found: contradictions,
+    claim_verification: verification,
+    freshness_summary: { outdated_risk_count: sources.filter((s) => s.outdated_risk).length, freshness_required_unknown_unless_current_sources: /current|latest|today|recent|now/i.test(args.task || "") },
+    permission_profile: activePermissionProfile.profile_name,
+    trust_boundary_level: sources.some((s) => /^https?:/i.test(s.url || "")) ? "0_public_information" : "2_local_project_information",
+    allowed_roots_check: { provided_sources_only: true, local_file_reads: false },
+    confidence: contradictions.length ? "medium_with_conflicts" : sources.length > 1 ? "medium" : "low_single_source",
+    notes: [sources.length < 2 ? "Single-source graph cannot prove contradiction-free status." : "Multiple provided sources compared.", contradictions.length ? "Resolve contradictions before confident final claims." : "No contradiction detected in provided sources only."],
+    evidence_log_id: null,
+    safe_to_claim: ["Source graph compared only provided sources / bounded source evidence.", "Contradiction and freshness notes are limited to supplied source text/metadata."],
+    must_not_claim: ["A broad search or crawl happened.", "The topic is contradiction-free when fewer than two relevant sources were checked.", "Outdated/community sources override stronger official evidence.", "Missing sources were checked."]
+  };
+  const log = await writeEvidenceLog("source_graph", result);
+  result.evidence_log_id = log.evidence_log_id;
+  recordSession(args.session_id, "source_graphs", result);
+  return result;
+}
+
+function sourceIngestionMustNotClaim() {
+  return ["A broad crawl or scrape was performed.", "Secret/cookie/session/browser-profile files were read.", "External pages were fetched without explicit approved fetch evidence.", "The full repo/site is understood when only a bounded map/extract was performed.", "GitHub issues/PRs/releases were extracted unless explicit source evidence says so."];
+}
+
+function inferSourceTypeFromPath(rel) {
+  if (/README/i.test(rel)) return "readme";
+  if (/docs?|guide|quickstart|install/i.test(rel)) return "docs";
+  if (/CHANGELOG|RELEASE|HISTORY|MIGRATION/i.test(rel)) return "changelog_or_release_notes";
+  if (/(^|\/)(tests?|__tests__|spec|examples?)(\/|$)|\.(test|spec)\./i.test(rel)) return "test_or_example";
+  if (/package\.json|pyproject|Cargo|go\.mod|requirements|config|tsconfig|vite|next|astro/i.test(rel)) return "config_or_manifest";
+  if (/\.(js|mjs|ts|tsx|jsx|py|go|rs|java|cs)$/i.test(rel)) return "code";
+  return "local_file";
+}
+
+function inferExtractionRelevance(rel, goal) {
+  const text = `${rel} ${goal}`.toLowerCase();
+  if (/readme|docs|guide|install|changelog|release|package|src|test/.test(text)) return "high";
+  return "medium";
+}
+
+function inferOfficialness(item = {}) {
+  const text = `${item.path || ""} ${item.url || ""} ${item.source_type || ""} ${item.title || ""}`.toLowerCase();
+  if (item.official === true || /official|docs|readme|changelog|release|repo|package/.test(text)) return "likely_official_project_source";
+  if (/blog|forum|reddit|community/.test(text)) return "community_or_secondary";
+  return "unknown";
+}
+
+function summarizeOfficialness(items) {
+  return { likely_official_count: items.filter((item) => item.officialness === "likely_official_project_source").length, unknown_count: items.filter((item) => item.officialness === "unknown").length };
+}
+
+function extractClaimCandidates(text) {
+  const sentences = String(text || "").split(/(?<=[.!?])\s+|\n+/).map((line) => line.trim()).filter(Boolean);
+  return sentences.filter((line) => /install|setup|version|current|requires?|supports?|deprecated|API|breaking|release/i.test(line)).slice(0, 20).map((claim) => ({ claim: truncate(redactSecrets(claim), 240), status: "candidate_needs_source_graph_or_audit" }));
+}
+
+function extractDatesAndVersions(text) {
+  const out = [];
+  for (const match of String(text || "").matchAll(/\b(?:v?\d+\.\d+(?:\.\d+)?|20\d{2}-\d{2}-\d{2}|20\d{2})\b/g)) out.push({ value: match[0], context: "date_or_version_candidate" });
+  return [...new Map(out.map((item) => [item.value, item])).values()].slice(0, 30);
+}
+
+function freshnessNotesForText(text) {
+  const notes = [];
+  if (/20\d{2}-\d{2}-\d{2}|20\d{2}/.test(text)) notes.push("Date-like evidence found; compare with current task requirements before claiming freshness.");
+  else notes.push("No clear date found; freshness unknown.");
+  if (/deprecated|removed|breaking|migration|release/i.test(text)) notes.push("Version/change wording found; release/changelog evidence may be needed.");
+  return notes;
+}
+
+function normalizeGraphSource(source = {}, index = 0) {
+  return {
+    id: source.id || `S${index + 1}`,
+    title: redactSecrets(source.title || source.path || source.url || `source_${index + 1}`),
+    url: source.url ? redactSecrets(source.url) : null,
+    source_type: String(source.source_type || inferSourceTypeFromPath(source.path || "") || "unknown"),
+    owner_or_author: redactSecrets(source.owner_or_author || source.author || source.owner || "unknown"),
+    official: Boolean(source.official) || inferOfficialness(source) === "likely_official_project_source",
+    published_at: source.published_at || source.date || source.retrieved_at || null,
+    text_excerpt: redactSecrets(source.text_excerpt || source.excerpt || source.summary || source.text || "")
+  };
+}
+
+function classifyFreshness(source) {
+  const d = String(source.published_at || "");
+  const year = Number((d.match(/20\d{2}/) || [])[0] || 0);
+  if (!year) return "unknown";
+  if (year <= new Date().getFullYear() - 3) return "outdated_risk";
+  if (year < new Date().getFullYear()) return "probably_current_or_version_specific";
+  return "current_or_recent";
+}
+
+function classifySourceTrust(source) {
+  if (source.official) return "high";
+  if (/release|changelog|repo|package/.test(source.source_type)) return "medium_high";
+  if (/community|blog|forum|reddit/.test(source.source_type)) return "medium_low";
+  return "medium";
+}
+
+function sourceSupportsClaim(source, claim) {
+  const terms = significantTerms(claim);
+  const hay = source.text_excerpt.toLowerCase();
+  return terms.length > 0 && terms.every((term) => hay.includes(term)) && !sourceContradictsClaim(source, claim);
+}
+
+function sourceContradictsClaim(source, claim) {
+  const hay = source.text_excerpt.toLowerCase();
+  const c = String(claim || "").toLowerCase();
+  if (/npm install/.test(c) && /npm install.*(removed|deprecated|no longer|not supported)|removed.*npm install|deprecated.*npm install/.test(hay)) return true;
+  if (/yarn add/.test(c) && ((/yarn/.test(hay) && /removed|deprecated|no longer|not supported|not/.test(hay)) || (/npm install/.test(hay) && /removed|deprecated|no longer|not/.test(hay)))) return true;
+  if (/current|latest|version 2/.test(c) && /version 1 is current|v1 is current/.test(hay)) return true;
+  if (/stable|supported|required|deprecated/.test(c) && /not stable|unsupported|not supported|no longer required|not deprecated/.test(hay)) return true;
+  return false;
+}
+
+function detectSimpleContradictions(items) {
+  return detectGraphContradictions(items.map(normalizeGraphSource), []);
+}
+
+function detectGraphContradictions(sources, claims) {
+  const contradictions = [];
+  const all = sources.map((s) => `${s.title} ${s.text_excerpt}`).join("\n").toLowerCase();
+  const installCommands = [...new Set([...all.matchAll(/\b(npm install|npm create|yarn add|pnpm add|pip install|uv add)\b/g)].map((m) => m[1]))];
+  if (installCommands.length > 1) contradictions.push({ type: "conflicting_install_steps", details: installCommands, resolution_hint: "Prefer official current docs/release notes, then test in target runtime." });
+  const versions = [...new Set([...all.matchAll(/\bversion\s+([0-9]+(?:\.[0-9]+)*)\s+is\s+current/g)].map((m) => m[1]))];
+  if (versions.length > 1) contradictions.push({ type: "version_conflict", details: versions, resolution_hint: "Check release notes/package registry/current official docs." });
+  if (sources.some((s) => s.outdated_risk || classifyFreshness(s).includes("outdated")) && sources.some((s) => s.official && /release|docs|official/i.test(`${s.source_type} ${s.title}`))) contradictions.push({ type: "old_docs_vs_new_docs", details: ["Older source conflicts or may conflict with current official/release evidence."], resolution_hint: "Use current official/release evidence first." });
+  if (sources.some((s) => !s.official) && sources.some((s) => s.official) && /not deprecated|version 1 is current|yarn add/.test(all) && /deprecated|version 2 is current|npm install/.test(all)) contradictions.push({ type: "official_vs_community_conflict", details: ["Community/secondary wording appears to conflict with official/current source wording."], resolution_hint: "Prefer official source unless runtime evidence disproves it." });
+  if (!sources.length) contradictions.push({ type: "unknown_due_to_missing_source", details: ["No sources supplied."], resolution_hint: "Supply at least one bounded source." });
+  return contradictions;
+}
+
+function formatSourceMap(result) { return `vnem_tools_source_map: ${result.source_type} ${result.top_level_structure.length} top-level item(s); blocked ${result.missing_or_blocked_areas.length}\nevidence: ${result.evidence_log_id || "not written"}`; }
+function formatSourceExtract(result) { return `vnem_tools_source_extract: read ${result.targets_read.length}; skipped ${result.targets_skipped.length}; claims ${result.claim_candidates.length}\nevidence: ${result.evidence_log_id || "not written"}`; }
+function formatSourceGraph(result) { return `vnem_tools_source_graph: ${result.sources.length} source(s); contradictions ${result.contradictions_found.length}; confidence ${result.confidence}\nevidence: ${result.evidence_log_id || "not written"}`; }
 
 async function safeClaimSourceMatrix(args) {
   const sources = arrayify(args.sources).map((s, i) => normalizeMatrixSource(s, i));
@@ -3566,13 +3880,13 @@ function redactSecrets(value) {
     .replace(/bearer\s+[a-z0-9._~+/-]+/gi, "Bearer [REDACTED]")
     .replace(/(should|sample)-redact-[a-z0-9-]+/gi, "[REDACTED]")
     .replace(/gh[pousr]_[A-Za-z0-9_]{20,}/g, "[REDACTED]")
-    .replace(/sk-[A-Za-z0-9_-]{20,}/g, "[REDACTED]");
+    .replace(/sk-[A-Za-z0-9_-]{10,}/g, "[REDACTED]");
 }
 
 function containsRawSecret(value) {
   if (isSecretRef(value)) return false;
   const text = typeof value === "string" ? value : JSON.stringify(value || "");
-  return /bearer\s+|api[_-]?key\s*[:=]|token\s*[:=]|secret\s*[:=]|password\s*[:=]|gh[pousr]_[A-Za-z0-9_]{20,}|sk-[A-Za-z0-9_-]{20,}/i.test(text);
+  return /bearer\s+|api[_-]?key\s*[:=]|token\s*[:=]|secret\s*[:=]|password\s*[:=]|gh[pousr]_[A-Za-z0-9_]{20,}|sk-[A-Za-z0-9_-]{10,}/i.test(text);
 }
 
 function redactUrl(url) {

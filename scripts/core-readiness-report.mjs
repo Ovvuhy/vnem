@@ -31,6 +31,11 @@ const coreRoutingMemoryOutputTestSource = await text("scripts/test-core-routing-
 const coreOutputQualityTestSource = await text("scripts/test-core-output-quality.mjs");
 const coreAntiStagnationTestSource = await text("scripts/test-core-anti-stagnation.mjs");
 const corePermissionPlanningTestSource = await text("scripts/test-core-permission-planning.mjs");
+const coreResearchStrategyTestSource = await text("scripts/test-core-research-strategy.mjs");
+const coreSourceIngestionPlanningTestSource = await text("scripts/test-core-source-ingestion-planning.mjs");
+const researchEvidenceAuditTestSource = await text("scripts/test-research-evidence-audit.mjs");
+const toolsSourceIngestionTestSource = await text("scripts/test-tools-source-ingestion.mjs");
+const toolsSourceGraphTestSource = await text("scripts/test-tools-source-graph.mjs");
 const mcpUserSmokeTestSource = await text("scripts/test-mcp-user-smoke.mjs");
 const readme = await text("README.md");
 const installGuide = await text(".vnem/install-guide.md");
@@ -136,6 +141,16 @@ const corePermissionAwarenessStatus = {
   core_still_plan_only_status: /core_executes_tools:\s*false/.test(serverSource) && /Core must not expose Tools action\/status tool directly/.test(corePermissionPlanningTestSource)
 };
 
+const coreResearchSourceStatus = {
+  research_strategy_status: toolInventory.includes("vnem_build_research_strategy") && /buildResearchStrategy/.test(serverSource) && /currentness_required/.test(coreResearchStrategyTestSource) && /web_search_executed:\s*false/.test(serverSource),
+  source_ingestion_plan_status: toolInventory.includes("vnem_build_source_ingestion_plan") && /buildSourceIngestionPlan/.test(serverSource) && /source_targets/.test(coreSourceIngestionPlanningTestSource) && /broad_crawl_allowed:\s*false/.test(serverSource),
+  research_evidence_audit_status: toolInventory.includes("vnem_research_evidence_audit") && /buildResearchEvidenceAudit/.test(serverSource) && /current-info claim without current source/.test(researchEvidenceAuditTestSource + serverSource),
+  source_graph_planning_status: /vnem_tools_source_graph/.test(serverSource) && /source graph/i.test(coreResearchStrategyTestSource + coreSourceIngestionPlanningTestSource + serverSource),
+  contradiction_detection_planning_status: /contradiction_check_needed/.test(serverSource) && /contradiction-free claim without multiple relevant sources/.test(researchEvidenceAuditTestSource + serverSource),
+  freshness_confidence_status: /freshness_check_needed/.test(serverSource) && /confidence_limit/.test(serverSource) && /outdated/.test(researchEvidenceAuditTestSource + toolsSourceGraphTestSource),
+  core_research_still_plan_only_status: /core_executes_tools:\s*false/.test(serverSource) && /Core searched the web or browsed pages/.test(serverSource + coreResearchStrategyTestSource) && /Core crawled\/read\/extracted sources/.test(serverSource + coreSourceIngestionPlanningTestSource)
+};
+
 const usablePackStatus = {
   usable_api_pack_count: Array.isArray(usablePacks.apis) ? usablePacks.apis.filter((pack) => pack.usable_status === "usable").length : 0,
   usable_skill_pack_count: Array.isArray(usablePacks.skills) ? usablePacks.skills.filter((pack) => pack.usable_status === "usable").length : 0,
@@ -165,6 +180,12 @@ assert.ok(Object.values(browserResearchPlanningStatus).every(Boolean), "Core bro
 assert.ok(Object.values(searchPlanningStatus).every(Boolean), "Core search/browsing planner readiness is incomplete");
 assert.ok(Object.values(routingMemoryOutputStatus).every(Boolean), "Core routing/memory/output-quality/anti-stagnation readiness is incomplete");
 assert.ok(Object.values(corePermissionAwarenessStatus).every(Boolean), "Core permission-awareness/trust-boundary planning readiness is incomplete");
+assert.ok(Object.values(coreResearchSourceStatus).every(Boolean), "Core research/source-ingestion readiness is incomplete");
+assert.ok(packageJson.scripts?.["test:core-research-strategy"] === "node scripts/test-core-research-strategy.mjs", "test:core-research-strategy package script is missing");
+assert.ok(packageJson.scripts?.["test:core-source-ingestion-planning"] === "node scripts/test-core-source-ingestion-planning.mjs", "test:core-source-ingestion-planning package script is missing");
+assert.ok(packageJson.scripts?.["test:research-evidence-audit"] === "node scripts/test-research-evidence-audit.mjs", "test:research-evidence-audit package script is missing");
+assert.ok(packageJson.scripts?.["test:tools-source-ingestion"] === "node scripts/test-tools-source-ingestion.mjs", "test:tools-source-ingestion package script is missing");
+assert.ok(packageJson.scripts?.["test:tools-source-graph"] === "node scripts/test-tools-source-graph.mjs", "test:tools-source-graph package script is missing");
 assert.ok(packageJson.scripts?.["test:core-browser-research-planning"] === "node scripts/test-core-browser-research-planning.mjs", "test:core-browser-research-planning package script is missing");
 assert.ok(packageJson.scripts?.["test:core-search-planning"] === "node scripts/test-core-search-planning.mjs", "test:core-search-planning package script is missing");
 assert.ok(packageJson.scripts?.["test:mcp-user-smoke"] === "node scripts/test-mcp-user-smoke.mjs", "test:mcp-user-smoke package script is missing");
@@ -212,6 +233,7 @@ const report = {
   search_planning_status: searchPlanningStatus,
   routing_memory_output_quality_status: routingMemoryOutputStatus,
   core_permission_awareness_status: corePermissionAwarenessStatus,
+  core_research_source_status: coreResearchSourceStatus,
   core_tools_ecosystem_test_status: /vnem_build_tools_plan/.test(coreToolsEcosystemTestSource) && /vnem_tools_finish_session/.test(coreToolsEcosystemTestSource),
   api_library_counts: apiCounts,
   skill_library_counts: skillCounts,
@@ -229,19 +251,22 @@ const report = {
     "Core browser/research planning distinguishes local UI proof, direct-source analysis, website understanding, and current-search needs without executing Tools.",
     "Core search/browsing planning now assesses research need, builds provider-search plans, handles CAPTCHA/access-block and download risk, and remains plan-only.",
     "Core routing now returns structured task categories, memory relevance decisions, missing-context ask/no-ask decisions, output-quality contracts, anti-stagnation checks, and evidence-label audits while remaining plan-only.",
-    "Core now plans Tools permission profiles, trust-boundary levels, approval-required actions, blocked/profile-limited actions, and safe alternatives while remaining plan-only."
+    "Core now plans Tools permission profiles, trust-boundary levels, approval-required actions, blocked/profile-limited actions, and safe alternatives while remaining plan-only.",
+    "Core now builds research strategies, source-ingestion plans, source-graph planning, contradiction/freshness confidence limits, and research evidence audits while remaining plan-only."
   ],
   not_ready: [
     "Most API docs, rate limits, CORS values, and freshness statuses remain metadata-level or unknown.",
     "Most skill/client compatibility remains unknown or likely, not verified for named clients.",
-    "Core can summarize guidance only; install/execution and live API calls remain outside Core MCP."
+    "Core can summarize guidance only; install/execution and live API calls remain outside Core MCP.",
+    "Research/source ingestion plans do not imply live search, broad crawling, external account access, or complete repo/site understanding without Tools evidence."
   ],
   remaining_blockers_before_final_enough: blockers,
   next_technical_priorities: [
     "Verify another small high-value API slice from official docs with rate-limit/CORS evidence.",
     "Add source-reviewed SKILL.md summaries and client compatibility evidence for selected high-value skills.",
     "Keep readiness reporting strict: closer/not_ready/blocked only until unknowns are materially reduced.",
-    "Keep Core MCP read-only; reserve installation, execution, browser, terminal, GitHub, and live API calls for future Precision/Tools MCP."
+    "Keep Core MCP read-only; reserve installation, execution, browser, terminal, GitHub, and live API calls for future Precision/Tools MCP.",
+    "Expand source graph/audit cases only with bounded source evidence and strict no-overclaim labels."
   ]
 };
 
@@ -306,6 +331,7 @@ function formatReport(report) {
   lines.push(`search_planning_status: ${status(report.search_planning_status)}`);
   lines.push(`routing_memory_output_quality_status: ${status(report.routing_memory_output_quality_status)}`);
   lines.push(`core_permission_awareness_status: ${status(report.core_permission_awareness_status)}`);
+  lines.push(`core_research_source_status: ${status(report.core_research_source_status)}`);
   lines.push(`core_tools_ecosystem_test_status: ${report.core_tools_ecosystem_test_status ? "yes" : "no"}`);
   lines.push(`real_task_examples_tested: ${report.task_boosting_status.real_task_examples_tested.join(", ")}`);
   lines.push(`api_counts: total=${report.api_library_counts.total_apis}, docs_verified=${report.api_library_counts.docs_verified_count}, docs_unknown=${report.api_library_counts.docs_unknown_count}, rate_limit_verified=${report.api_library_counts.rate_limit_verified_count}, rate_limit_unknown=${report.api_library_counts.rate_limit_unknown_count}, cors_unknown=${report.api_library_counts.cors_unknown_count}, frontend_safe=${report.api_library_counts.frontend_safe_count}, backend_required=${report.api_library_counts.backend_required_count}`);
