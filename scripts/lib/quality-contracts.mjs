@@ -160,6 +160,24 @@ export function completionAudit(options = {}) {
   const gameFindings = [];
   const unsafeClaims = [];
   const nextActions = [];
+  const evidenceLedger = {
+    proven: [],
+    tested: [],
+    supported: [],
+    likely: [],
+    assumed: [],
+    unknown: [],
+    blocked: [],
+    failed: [],
+    not_attempted: [],
+    preparation_only: []
+  };
+  const docsOnlyChange = changedFiles.length > 0 && changedFiles.every((file) => /(^|\/)(readme|agents|contributing|changelog|docs?)|\.(md|mdx|txt)$/i.test(String(file)));
+  if (commands.some((cmd) => /pass|passed|exit 0|success|green/i.test(String(cmd)))) evidenceLedger.tested.push(...commands.filter((cmd) => /test|check|build|lint|validate|readiness/i.test(String(cmd))).map(String));
+  if (evidence.length) evidenceLedger.proven.push(...evidence.map(String).slice(0, 6));
+  if (sources.length) evidenceLedger.supported.push(...sources.map((source) => typeof source === "string" ? source : source?.url || source?.title || JSON.stringify(source)).slice(0, 6));
+  if (visuals.length) evidenceLedger.proven.push(...visuals.map(String).slice(0, 4));
+  if (/assum|assuming|likely|should/.test(combined)) evidenceLedger.assumed.push("Claim includes assumptions/likely language; keep it below proven/tested status.");
 
   if (!evidence.length && /\b(done|finished|complete|implemented|fixed|works|safe|polished|best)\b/.test(combined)) {
     missingEvidence.push("Claimed completion/result but provided no concrete evidence.");
@@ -195,11 +213,25 @@ export function completionAudit(options = {}) {
     apiFindings.push("API integration lacks auth/CORS/HTTPS/frontend-backend/secret-handling evidence.");
     missingEvidence.push("API safety decision evidence is missing.");
   }
+  const evidenceText = normalize([evidence, commands, sources, visuals].flat().join(" "));
   if (domains.includes("api") && /(next_public|frontend key|browser api key|client api key|from react)/.test(combined) && !/(no key|no secret|public no-auth|backend|server|proxy)/.test(combined)) {
     apiFindings.push("Potential unsafe frontend API-key exposure or direct browser call without backend/CORS justification.");
     unsafeClaims.push("Do not claim API integration is safe while frontend secret exposure is unresolved.");
   }
-  const evidenceText = normalize([evidence, commands, sources, visuals].flat().join(" "));
+  if (docsOnlyChange && /\b(major|implemented|implementation|behavior|core|tools|mcp|improvement)\b/.test(combined)) {
+    missingEvidence.push("Docs-only change cannot prove a major implementation or Core behavior improvement.");
+    unverifiedClaims.push("Implementation/major-improvement claim is preparation_only until callable behavior and tests exist.");
+    evidenceLedger.preparation_only.push("docs-only change: no callable behavior evidence supplied");
+  }
+  if (/\bcompatible\b|compatibility|supported/.test(combined) && !/(compatib|version|runtime|official docs|tested on|node|browser|windows|linux|mcp client)/.test(evidenceText)) {
+    missingEvidence.push("Compatibility/support claim lacks compatibility proof.");
+    unverifiedClaims.push("Compatibility/support status is unknown without version/runtime/client evidence.");
+    evidenceLedger.unknown.push("compatibility/support proof missing");
+  }
+  if (/\b(done|complete|implemented|fixed|works)\b/.test(combined) && !commands.length) {
+    evidenceLedger.not_attempted.push("No commands/tests/checks were supplied for the done/implemented claim.");
+  }
+  if (/\bfailed\b|exit 1|error/.test(evidenceText)) evidenceLedger.failed.push("Provided evidence includes failure/error output; report failed or blocked status explicitly.");
   const hasCurrentSourceEvidence = sources.length > 0 && /(official|docs|changelog|patch|version|current|release|source|http|https|wiki|fextralife|github)/.test(evidenceText);
   const hasAssumptions = /(assum|assuming|if you|for pve|for pvp|base game|dlc|progression|rune level)/.test(combined);
   if (domains.includes("research") && !sources.length && !/(source|official|docs|citation|url|patch|version|current)/.test(evidenceText)) {
@@ -259,6 +291,9 @@ export function completionAudit(options = {}) {
   if (domains.includes("api") && /(cors|https|auth|secret|backend|server|proxy|rate limit)/.test(combined)) score += 8;
   if (domains.includes("game_build") && /(pve|pvp|dlc|shadow|progression|rune|armor|poise|skill|patch|source)/.test(combined)) score += 10;
   if (domains.includes("modding") && /(game|version|tool|file format|regulation|bnd|dcx|pak|backup|isolation|restore|compatibility|verification)/.test(combined)) score += 12;
+  if (!evidenceLedger.proven.length && !evidence.length && !commands.length) evidenceLedger.unknown.push("No concrete evidence supplied.");
+  if (missingEvidence.length) evidenceLedger.blocked.push(...missingEvidence.filter((item) => /blocked|missing|cannot|lacks|required|proof/i.test(item)).slice(0, 4));
+  if (unverifiedClaims.length && !evidenceLedger.likely.length) evidenceLedger.likely.push("Some claims may be true but remain unverified until evidence is supplied.");
   score = clamp(score, 0, 100);
 
   let verdict = "pass";
@@ -280,6 +315,7 @@ export function completionAudit(options = {}) {
     api_safety_findings: apiFindings,
     game_or_modding_findings: gameFindings,
     unsafe_or_overconfident_claims: unsafeClaims,
+    evidence_ledger: evidenceLedger,
     required_next_actions: unique(nextActions).slice(0, tokenBudget === "expanded" ? 10 : 6),
     what_can_be_claimed_safely: safeClaims(verdict, evidence, commands),
     what_must_not_be_claimed: mustNotClaim(missingEvidence, unsafeClaims, domains),

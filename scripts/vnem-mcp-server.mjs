@@ -92,6 +92,9 @@ const DEFAULT_MCP_TOOLS = [
   "vnem_activate_capability_pack",
   "vnem_apply_skill_guidance",
   "vnem_boost_task",
+  "vnem_route_task",
+  "vnem_output_quality_plan",
+  "vnem_anti_stagnation_check",
   "vnem_select_tools_for_task",
   "vnem_build_tools_plan",
   "vnem_build_browser_research_plan",
@@ -492,16 +495,85 @@ function registerTools(mcpServer) {
     },
     async (args) => {
       const result = boostTask(superLibrary, agentProfiles, args);
-      if (args.token_budget === "compact") return toolResult(formatBoostTask(result), result);
+      const routingRecord = buildCoreRoutingRecord({ task: args.task, known_context: args.known_context, token_budget: args.token_budget });
+      const outputQualityPlan = buildOutputQualityPlan({ task: args.task, output_type: "technical_final_report", audience: "developer" });
+      const baseResult = args.token_budget === "compact"
+        ? { ...result, routing_record: compactRoutingRecord(routingRecord), output_quality_plan: compactOutputQualityPlan(outputQualityPlan) }
+        : { ...result, routing_record: routingRecord, output_quality_plan: outputQualityPlan };
+      if (args.token_budget === "compact") return toolResult(formatBoostTask(baseResult), baseResult);
       const toolSelectionPlan = compactCoreToolsPlan(buildCoreToolsPlan(args));
       const enhanced = {
-        ...result,
+        ...baseResult,
         tool_selection_plan: toolSelectionPlan,
         tools_plan: toolSelectionPlan,
         tools_mcp_handoff: { ...(result.tools_mcp_handoff || result.tools_handoff || {}), ...toolSelectionPlan.core_tools_handoff },
         core_executes_tools: false
       };
       return toolResult(formatBoostTask(enhanced), enhanced);
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_route_task",
+    {
+      title: "Build VNEM Core Routing Record",
+      description: "Read-only Core routing record for serious tasks: task categories, relevant/ignored memory, missing-context ask decision, capabilities, Tools/current-research needs, risks, evidence, next action, and must-not-claim limits.",
+      inputSchema: {
+        task: z.string().min(1),
+        known_context: z.string().optional(),
+        memory_items: z.array(z.any()).default([]),
+        completed_areas: z.array(z.string()).default([]),
+        available_tools: z.array(z.string()).default([]),
+        token_budget: z.enum(["compact", "normal", "expanded"]).default("normal")
+      },
+      annotations: READ_ONLY
+    },
+    async (args) => {
+      const record = buildCoreRoutingRecord(args);
+      return toolResult(formatCoreRoutingRecord(record), { routing_record: record });
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_output_quality_plan",
+    {
+      title: "Build VNEM Output Quality Plan",
+      description: "Read-only compact-first output contract and audit for reports, blocker reports, user command handoffs, Building AI prompt handoffs, technical final reports, and AI work reviews.",
+      inputSchema: {
+        task: z.string().min(1),
+        output_type: z.string().default("technical_final_report"),
+        audience: z.enum(["public_user", "developer", "ai_worker", "unknown"]).default("unknown"),
+        evidence_available: z.array(z.string()).default([]),
+        blockers: z.array(z.string()).default([]),
+        commands_to_handoff: z.array(z.string()).default([]),
+        output_text: z.string().optional(),
+        token_budget: z.enum(["compact", "normal", "expanded"]).default("normal")
+      },
+      annotations: READ_ONLY
+    },
+    async (args) => {
+      const plan = buildOutputQualityPlan(args);
+      return toolResult(formatOutputQualityPlan(plan), { output_quality_plan: plan });
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_anti_stagnation_check",
+    {
+      title: "Check VNEM Anti-Stagnation Risk",
+      description: "Read-only checker that flags repeated finished work, docs-only fake progress, broad-scan loops, full-test loops, same-next-step renames, and polishing finished areas while higher-value work waits.",
+      inputSchema: {
+        task: z.string().min(1),
+        completed_areas: z.array(z.string()).default([]),
+        recent_actions: z.array(z.string()).default([]),
+        proposed_next_step: z.string().optional(),
+        token_budget: z.enum(["compact", "normal", "expanded"]).default("normal")
+      },
+      annotations: READ_ONLY
+    },
+    async (args) => {
+      const check = buildAntiStagnationCheck(args);
+      return toolResult(formatAntiStagnationCheck(check), { anti_stagnation_check: check });
     }
   );
 
@@ -1593,6 +1665,304 @@ function sourceRadarResults(intent, category, limit) {
     .sort((a, b) => b.rank_score - a.rank_score || String(a.title).localeCompare(String(b.title)))
     .slice(0, limit);
 }
+
+
+const CORE_TASK_CATEGORIES = [
+  "coding/debugging",
+  "UI/web/app improvement",
+  "research/current information",
+  "security/safety review",
+  "compatibility investigation",
+  "API/tool integration",
+  "local project action",
+  "dependency/package maintenance",
+  "Git/GitHub workflow",
+  "dashboard/control-surface work",
+  "benchmark/evaluation",
+  "documentation-only",
+  "user troubleshooting"
+];
+const MEMORY_SCOPE_TAGS = ["user-specific", "project-specific", "workspace-specific", "tool-specific", "mcp-client-specific", "os-specific", "shell-specific", "package-specific", "api-specific", "game-specific", "mod-specific", "domain-pattern", "universal-pattern", "temporary", "outdated", "unverified", "verified"];
+const EVIDENCE_LABELS = ["proven", "tested", "supported", "likely", "assumed", "unknown", "blocked", "failed", "not_attempted", "preparation_only"];
+
+function buildCoreRoutingRecord(args = {}) {
+  const task = String(args.task || "").trim();
+  const known = String(args.known_context || "").trim();
+  const hay = normalize(`${task} ${known}`);
+  const categories = inferCoreTaskCategories(task, known);
+  const memory = classifyMemoryForTask(task, known, args.memory_items || []);
+  const missing = buildMaterialMissingContext(task, known, categories);
+  const anti = buildAntiStagnationCheck({ task, completed_areas: args.completed_areas || [], proposed_next_step: task, recent_actions: [] });
+  const selection = selectToolsForTask({ task, known_context: known, available_tools: args.available_tools || [] });
+  const research = assessResearchNeed({ task, known_context: known });
+  const criticalQuestions = missing.filter((item) => item.ask_now);
+  const needTools = categories.includes("documentation-only") && !/inspect|workspace|repo|local files|browser|source|security|fix|implement|debug|dashboard|git|package/.test(hay)
+    ? false
+    : (!categories.includes("documentation-only") || /inspect|workspace|repo|local|test|prove|browser|source|security|fix|implement|debug|dashboard|git|package/.test(hay));
+  const compatRisks = inferCompatibilityRisks(task, known, categories, memory.relevant_memory_used);
+  const safetyRisks = inferSafetyRisks(task, known, categories);
+  const requiredEvidence = inferRequiredEvidence(categories, selection.selected_tools, research);
+  const nextBestAction = anti.should_continue_same_area === false
+    ? anti.recommended_next_action
+    : criticalQuestions.length
+      ? `Ask the minimum blocking question(s): ${criticalQuestions.map((q) => q.question).slice(0, 2).join(" | ")}`
+      : needTools
+        ? "Proceed with Core plan-only handoff, then use Tools MCP for targeted inspection/evidence with dry-run/approval where required."
+        : "Proceed with compact answer using provided context; no extra question needed.";
+  return {
+    user_goal: task,
+    task_categories: categories,
+    relevant_memory_found: memory.relevant_memory_used.length > 0,
+    relevant_memory_used: memory.relevant_memory_used,
+    memory_ignored: memory.memory_ignored,
+    memory_scope_tags_supported: MEMORY_SCOPE_TAGS,
+    missing_context: missing,
+    must_ask_user: criticalQuestions.length > 0,
+    reason_for_asking_or_not_asking: criticalQuestions.length
+      ? "Missing context materially affects correctness, compatibility, safety, or usefulness."
+      : "No blocking missing context detected; safe defaults or Tools MCP inspection can cover remaining low-impact gaps.",
+    needed_capabilities: selection.selected_tools,
+    need_tools_mcp: needTools,
+    need_current_research: Boolean(research.current_info_required || research.external_search_required),
+    compatibility_risks: compatRisks,
+    safety_risks: safetyRisks,
+    required_evidence: requiredEvidence,
+    next_best_action: nextBestAction,
+    anti_stagnation: anti,
+    must_not_claim: [
+      "Core executed Tools MCP actions.",
+      "Current/live research, files, tests, browser proof, or visual verification happened without evidence.",
+      "Relevant memory was used if it was ignored as irrelevant, outdated, conflicting, or unverified.",
+      "The task is done/compatible/safe without required evidence."
+    ],
+    core_executes_tools: false,
+    core_plan_only: true
+  };
+}
+
+function inferCoreTaskCategories(task, known = "") {
+  const text = normalize(`${task} ${known}`);
+  const out = new Set();
+  if (/debug|bug|failing|failure|error|stack trace|fix|implement|code|test|build|refactor/.test(text)) out.add("coding/debugging");
+  if (/ui|ux|frontend|web app|website|browser|visual|responsive|accessibility|dashboard/.test(text)) out.add("UI/web/app improvement");
+  if (/research|current|latest|today|news|source|citation|docs|compare|recommend|best|patch/.test(text)) out.add("research/current information");
+  if (/security|safety review|safe\?|risk|malware|phishing|credential|secret|trust boundary|suspicious|login link/.test(text)) out.add("security/safety review");
+  if (/compatib|version|os|shell|windows|linux|mac|node|npm|browser|mcp client|mod|loader|dependency/.test(text)) out.add("compatibility investigation");
+  if (/api|tool integration|mcp|provider|webhook|oauth|sdk|plugin/.test(text)) out.add("API/tool integration");
+  if (/local|workspace|repo|project|file|patch|edit|run|inspect|prove/.test(text)) out.add("local project action");
+  if (/dependency|package|npm|pnpm|yarn|lockfile|audit|install|upgrade/.test(text)) out.add("dependency/package maintenance");
+  if (/git|github|branch|commit|push|pull request|pr|ci|actions/.test(text)) out.add("Git/GitHub workflow");
+  if (/dashboard|control surface|control-surface|telemetry|builder|ard/.test(text)) out.add("dashboard/control-surface work");
+  if (/benchmark|eval|evaluation|measure|score|regression suite/.test(text)) out.add("benchmark/evaluation");
+  if (/readme|docs?|documentation|explain|write a short|guide|instructions/.test(text) && !/implement|fix|code change|patch|dashboard ui|app feature/.test(text)) out.add("documentation-only");
+  if (/troubleshoot|help me|user problem|support|setup|install issue|not working/.test(text)) out.add("user troubleshooting");
+  if (!out.size) out.add("user troubleshooting");
+  return CORE_TASK_CATEGORIES.filter((cat) => out.has(cat));
+}
+
+function classifyMemoryForTask(task, known, items) {
+  const taskText = normalize(`${task} ${known}`);
+  const taskTerms = new Set(tokenize(taskText));
+  const relevant_memory_used = [];
+  const memory_ignored = [];
+  for (const raw of Array.isArray(items) ? items : []) {
+    const item = typeof raw === "string" ? { content: raw } : (raw || {});
+    const content = String(item.content || item.text || item.note || "");
+    const scope_tags = uniqueStrings(routeArrayify(item.scope_tags || item.tags || item.scope).map((tag) => String(tag).trim()).filter(Boolean));
+    const id = item.id || stableMemoryId(content);
+    const memoryText = normalize(`${content} ${scope_tags.join(" ")}`);
+    const outdated = scope_tags.includes("outdated") || /\boutdated\b|old draft|deprecated/.test(memoryText);
+    const unverified = scope_tags.includes("unverified") || /\bunverified\b|guess|maybe/.test(memoryText);
+    const verified = scope_tags.includes("verified") || /\bverified\b|real git checkout|passed|confirmed/.test(memoryText);
+    const conflict = /conflict|contradict|wrong path|different workspace/.test(memoryText) && sharesAnyTerm(taskTerms, tokenize(memoryText));
+    const relevance = memoryRelevanceScore(taskText, taskTerms, memoryText, scope_tags);
+    const domainMismatch = scope_tags.some((tag) => /game-specific|mod-specific/.test(tag)) && !/elden ring|rng lands|mod|modding|game|build|loadout|dlc|pve|pvp/.test(taskText);
+    const base = { id, content, scope_tags, relevance_score: relevance };
+    if (domainMismatch) memory_ignored.push({ ...base, classification: "ignored", reason: "Game/mod-specific memory does not materially apply to this non-game task." });
+    else if (outdated) memory_ignored.push({ ...base, classification: "outdated", reason: "Memory is tagged or detected as outdated for this task." });
+    else if (conflict) memory_ignored.push({ ...base, classification: "conflicting", reason: "Memory conflicts with current task/context and needs fresh evidence before use." });
+    else if (relevance >= 3 && !unverified) relevant_memory_used.push({ ...base, classification: "used", verification_status: verified ? "verified" : "unverified" });
+    else if (relevance >= 3 && unverified) memory_ignored.push({ ...base, classification: "unverified", reason: "Potentially relevant but unverified; use only as a search/check hint, not as fact." });
+    else memory_ignored.push({ ...base, classification: "ignored", reason: "No material relevance to the current task." });
+  }
+  return { relevant_memory_used, memory_ignored };
+}
+
+function memoryRelevanceScore(taskText, taskTerms, memoryText, tags) {
+  let score = 0;
+  for (const term of tokenize(memoryText)) if (taskTerms.has(term)) score += 1;
+  if (/\bvnem\b/.test(taskText) && /\bvnem\b|vnem-src/.test(memoryText)) score += 4;
+  if (/dashboard|ui|frontend/.test(taskText) && /dashboard|ui|frontend/.test(memoryText)) score += 3;
+  if (/windows|powershell|bash|shell|cmd/.test(taskText) && tags.some((tag) => /os-specific|shell-specific/.test(tag))) score += 3;
+  if (/api|oauth|cors|sdk/.test(taskText) && tags.some((tag) => /api-specific|tool-specific|package-specific/.test(tag))) score += 3;
+  if (/elden ring|mod|game|build/.test(taskText) && tags.some((tag) => /game-specific|mod-specific/.test(tag))) score += 3;
+  if (/workspace|repo|project|local/.test(taskText) && tags.some((tag) => /workspace-specific|project-specific/.test(tag))) score += 2;
+  if (/security|safe|phishing|credential/.test(taskText) && /security|credential|phishing|secret|safe/.test(memoryText)) score += 3;
+  return score;
+}
+
+function buildMaterialMissingContext(task, known, categories) {
+  const text = normalize(`${task} ${known}`);
+  const missing = [];
+  const add = (id, question, reason, ask_now = true) => missing.push({ id, question, reason, ask_now });
+  if (categories.includes("research/current information") && /elden ring|build|loadout|best|op|meta/.test(text)) {
+    if (!/(pve|pvp|duel|invasion|arena)/.test(text)) add("game_mode", "Is this for PvE, PvP, co-op, or mixed play?", "Build recommendations change materially by mode.", true);
+    if (/elden ring/.test(text) && !/(base game|dlc|shadow of the erdtree|sote)/.test(text)) add("dlc_ownership", "Should DLC/Shadow of the Erdtree items be included or base-game only?", "Availability and current build advice depend on DLC scope.", true);
+  }
+  if (categories.includes("coding/debugging") && /debug|bug|failing|failure|fix/.test(text) && (!/(error|log|stack trace|failing command|repro|test output|command output)/.test(text) || /no logs?|without logs?|no failing command|not supplied|missing/.test(text))) {
+    add("debug_repro", "What exact error, log, failing command, or repro steps show the failure?", "Root-cause debugging needs a red-capable loop before fixes.", true);
+  }
+  if (categories.includes("local project action") && !/(repo path|workspace|project root|c:\/vnem|c:\\vnem|tools mcp can inspect|allowed root)/.test(text)) {
+    add("workspace_scope", "Which workspace/project root should Tools MCP inspect?", "Workspace scope affects safe file reads and evidence.", false);
+  }
+  if (categories.includes("security/safety review")) {
+    if (!/(https?:\/\/|file hash|sha256|attachment id|source artifact|url:\s*https?:\/\/)/.test(text)) add("security_artifact", "What exact link/file/source should be reviewed?", "Security/safety review needs the exact artifact/source boundary, not just a generic link description.", true);
+    if (!/(stranger|trusted|official|own account|permission|authorized|phishing|credential|login)/.test(text)) add("trust_boundary", "Who provided it and what trust/account boundary applies?", "Trust boundary changes safe handling and what must not be clicked or entered.", true);
+  }
+  if (categories.includes("API/tool integration") && /\b(api|oauth|sdk|webhook|cors|api key|external service)\b/.test(text) && !/(auth|cors|https|server|backend|frontend|api key|oauth|docs)/.test(text)) {
+    add("api_boundary", "What auth/CORS/HTTPS/frontend-backend boundary applies?", "API/tool integrations can expose secrets or fail in browsers without boundary evidence.", true);
+  }
+  return uniqueBy(missing, (item) => item.id);
+}
+
+function inferCompatibilityRisks(task, known, categories, usedMemory) {
+  const text = normalize(`${task} ${known} ${JSON.stringify(usedMemory)}`);
+  const risks = [];
+  if (/windows|powershell|bash|cmd|shell/.test(text)) risks.push("OS/shell command syntax may differ; use the current host shell evidence before command handoff.");
+  if (categories.includes("dependency/package maintenance")) risks.push("Package manager, lockfile, install scripts, and Node/npm versions affect compatibility.");
+  if (categories.includes("UI/web/app improvement")) risks.push("Browser/runtime and localhost availability affect UI/browser proof.");
+  if (/mcp client|claude|cursor|codex|hermes/.test(text)) risks.push("MCP client support and tool schema handling may differ by client.");
+  if (/elden ring|mod|game/.test(text)) risks.push("Game version, DLC, mod loader, save safety, and file formats affect compatibility.");
+  if (!risks.length) risks.push("No blocking compatibility risk detected yet; verify with task-appropriate evidence before final claims.");
+  return uniqueStrings(risks);
+}
+
+function inferSafetyRisks(task, known, categories) {
+  const text = normalize(`${task} ${known}`);
+  const risks = [];
+  if (/credential|secret|token|api key|login|auth/.test(text)) risks.push("Credential/auth boundary: do not collect, print, enter, or store secrets.");
+  if (/phishing|malware|suspicious|download|installer|captcha|redirect/.test(text)) risks.push("Suspicious browser/source risk: do not bypass CAPTCHA, follow risky redirects, or run downloads/installers automatically.");
+  if (/push|deploy|publish|delete|overwrite|global|install/.test(text)) risks.push("External/persistent side effects need explicit approval, evidence, and rollback plan.");
+  if (categories.includes("local project action")) risks.push("Local project actions must be scoped to allowed roots, dry-run first for mutation, and evidence logged.");
+  return uniqueStrings(risks.length ? risks : ["No high-risk action detected from the task text; Core remains plan-only."]);
+}
+
+function inferRequiredEvidence(categories, selectedTools, research) {
+  const evidence = ["routing record with task categories, missing-context decision, risks, and must-not-claim limits"];
+  if (categories.includes("coding/debugging")) evidence.push("failing command/log/repro first for debugging; targeted test/build output after changes");
+  if (categories.includes("UI/web/app improvement")) evidence.push("browser/visual/localhost or honest browser_unavailable evidence plus accessibility/responsive state checks");
+  if (categories.includes("research/current information") || research.current_info_required) evidence.push("current/official/provider-backed source evidence, source quality, claim/source matrix, and research gap list");
+  if (categories.includes("security/safety review")) evidence.push("artifact/source boundary, URL/reputation/redirect/CAPTCHA/download risk classification, and safe handoff");
+  if (categories.includes("compatibility investigation")) evidence.push("compatibility status label with exact evidence: tested/supported/likely/unknown/blocked");
+  if (selectedTools.includes("vnem_tools_finish_session")) evidence.push("Tools session evidence pack before final done/safe/compatible claims");
+  return uniqueStrings(evidence);
+}
+
+function buildAntiStagnationCheck(args = {}) {
+  const task = String(args.task || "");
+  const next = String(args.proposed_next_step || task || "");
+  const completed = routeArrayify(args.completed_areas).map((item) => normalize(item));
+  const recent = routeArrayify(args.recent_actions).map((item) => normalize(item));
+  const hay = normalize(`${task} ${next} ${recent.join(" ")}`);
+  const flags = [];
+  const coveredBrowserSearch = completed.some((item) => /browser|search|captcha|claim.source|research gap/.test(item));
+  if (coveredBrowserSearch && /browser|search|captcha|claim.source|research gap/.test(hay)) flags.push("repeating already-covered improvement area");
+  if (/docs|readme|wording|documentation/.test(hay) && /major|implementation|improvement|done|complete|polish/.test(hay)) flags.push("docs-only fake progress risk");
+  if (/broad scan|scan everything|full repo|all files|re-run discovery|rerun discovery/.test(hay)) flags.push("rerunning broad scans when targeted inspection is enough");
+  if (/full test|npm test|entire suite|all tests/.test(hay) && /again|loop|repeat|rerun/.test(hay)) flags.push("full test suite loop risk");
+  if (sameNormalizedMeaning(task, next) && /next|step|again|another/.test(hay)) flags.push("same next step under a different name");
+  if (/polish|tweak|wording|cleanup/.test(hay) && completed.length) flags.push("polishing finished areas while higher-value work waits");
+  const shouldContinue = !flags.some((flag) => /repeating|docs-only|full test suite|same next step|polishing/.test(flag));
+  return {
+    task,
+    completed_areas: args.completed_areas || [],
+    stagnation_risk_flags: uniqueStrings(flags),
+    should_continue_same_area: shouldContinue,
+    recommended_next_action: shouldContinue
+      ? "Continue with focused test-first implementation and targeted verification."
+      : "Move to a different weakness or next useful batch; prefer routing, memory relevance, output-quality, compatibility, or evaluation work unless new browser/search behavior and tests are clearly added.",
+    avoid: ["docs-only fake progress", "broad scans without a specific question", "full test suite loops during development", "renaming the same next step", "polishing completed areas without new behavior"],
+    must_not_claim: ["Do not claim new behavior from docs-only or repeated work.", "Do not claim a repeated completed area is a major new improvement without new tests/evidence.", "Do not claim full validation was necessary if targeted checks were enough."],
+    core_plan_only: true
+  };
+}
+
+function buildOutputQualityPlan(args = {}) {
+  const task = String(args.task || "");
+  const type = normalizeOutputType(args.output_type || "technical_final_report");
+  const evidence = routeArrayify(args.evidence_available);
+  const blockers = routeArrayify(args.blockers);
+  const commands = routeArrayify(args.commands_to_handoff);
+  const outputText = String(args.output_text || "");
+  const contract = outputTemplateForType(type, commands);
+  const auditFlags = auditOutputText(outputText, type, evidence, blockers, commands);
+  return {
+    task,
+    output_type: type,
+    audience: args.audience || "unknown",
+    compact_first_order: ["status/result first", "what matters", "evidence/proof", "blocked/unknown", "next action", "details only if useful"],
+    required_sections: contract.required_sections,
+    template_contract: contract.template,
+    evidence_labels: EVIDENCE_LABELS,
+    detail_policy: detailPolicyForOutput(type, args.audience, blockers),
+    audit_flags: auditFlags,
+    missing_output_requirements: auditFlags,
+    must_not_claim: ["Do not claim done/safe/compatible without evidence.", "Do not bury blockers after long background.", "Do not present preparation-only work as implementation.", "Do not omit the next action."],
+    final_report_contract: ["Separate proven/tested/supported/likely/assumed/unknown/blocked/failed/not_attempted/preparation_only.", "List exact tests/evidence before claims.", "Keep result compact first; details only when useful."],
+    core_plan_only: true
+  };
+}
+
+function normalizeOutputType(type) {
+  const t = normalize(type).replace(/[\s-]+/g, "_");
+  if (/ai_work|work_review|review/.test(t)) return "ai_work_review";
+  if (/blocker/.test(t)) return "blocker_report";
+  if (/command|handoff.*command|user_command/.test(t)) return "user_command_handoff";
+  if (/building|prompt_handoff|implementation_handoff/.test(t)) return "building_ai_prompt_handoff";
+  if (/technical|final/.test(t)) return "technical_final_report";
+  return t || "technical_final_report";
+}
+
+function outputTemplateForType(type, commands = []) {
+  if (type === "ai_work_review") return { required_sections: ["Result", "What it actually did", "What matters", "What is proven", "What is blocked or unknown", "Next best step"], template: "## Result\n-\n\n## What it actually did\n-\n\n## What matters\n-\n\n## What is proven\n-\n\n## What is blocked or unknown\n-\n\n## Next best step\n-" };
+  if (type === "blocker_report") return { required_sections: ["Blocked by", "Why it matters", "Evidence missing", "Safe next step", "Do not claim yet"], template: "## Blocked by\n-\n\n## Why it matters\n-\n\n## Evidence missing\n-\n\n## Safe next step\n-\n\n## Do not claim yet\n-" };
+  if (type === "user_command_handoff") return { required_sections: ["Run this", "Success looks like", "If it fails, send back"], template: `## Run this\n\n\`\`\`bash\n${commands.join("\n") || "# command here"}\n\`\`\`\n\n## Success looks like\n-\n\n## If it fails, send back\n- first error block\n- final summary` };
+  if (type === "building_ai_prompt_handoff") return { required_sections: ["Result", "Goal", "Must read first", "Current known state", "Do not repeat", "Required first checks", "Implementation targets", "Files/areas likely involved", "Tests/checks required", "Evidence required", "What counts as done", "What must be marked blocked/unverified"], template: "## Result\n-\n\n## Goal\n-\n\n## Must read first\n-\n\n## Current known state\n-\n\n## Do not repeat\n-\n\n## Required first checks\n-\n\n## Implementation targets\n-\n\n## Files/areas likely involved\n-\n\n## Tests/checks required\n-\n\n## Evidence required\n-\n\n## What counts as done\n-\n\n## What must be marked blocked/unverified\n-" };
+  return { required_sections: ["Result", "What changed", "Evidence", "What is proven", "What remains blocked/unknown", "What was not attempted", "Commit/GitHub status", "Exact next best task"], template: "## Result\n-\n\n## What changed\n-\n\n## Evidence\n-\n\n## What is proven\n-\n\n## What remains blocked/unknown\n-\n\n## What was not attempted\n-\n\n## Commit/GitHub status\n-\n\n## Exact next best task\n-" };
+}
+
+function detailPolicyForOutput(type, audience, blockers) {
+  if (blockers.length) return "Use blocker-first detail: state blocker, why it matters, missing evidence, safe next step, and do-not-claim line.";
+  if (type === "user_command_handoff") return "Give exact commands, where to run them, success signal, and failure output to send back.";
+  if (audience === "developer") return "Technical detail is allowed, but keep result/evidence/next action first.";
+  return "Plain language, compact first, no internal jargon unless needed.";
+}
+
+function auditOutputText(outputText, type, evidence, blockers, commands) {
+  if (!outputText) return [];
+  const text = normalize(outputText);
+  const flags = [];
+  if (!/^(result|status|blocked|done|passed|failed|implemented|not attempted|unknown|## result|## status|## blocked)/.test(text)) flags.push("not compact-first: status/result/blocker should come first");
+  if (!/(next action|next step|safe next step|exact next|if it fails|what remains)/.test(text)) flags.push("missing next action");
+  if (/\bsafe\b|secure|compatible|works|done|complete|major improvement/.test(text) && evidence.length === 0) flags.push("fake confidence risk: strong claim without evidence");
+  if (/\bsafe\b|secure/.test(text) && !evidence.some((item) => /safety|review|test|scan|evidence|approval/i.test(String(item)))) flags.push("safe without evidence");
+  if (/compatible|supported/.test(text) && !evidence.some((item) => /compat|test|docs|version|runtime|official/i.test(String(item)))) flags.push("compatible/supported without compatibility proof");
+  if (type === "user_command_handoff" && commands.length && !/(cd |where to run|run this|success looks like|if it fails)/.test(text)) flags.push("command handoff missing where to run or success/failure instructions; command may be too broad");
+  if (blockers.length && !/(blocked by|why it matters|safe next step|do not claim)/.test(text)) flags.push("blocker report hides or under-specifies blocker");
+  return uniqueStrings(flags);
+}
+
+function formatCoreRoutingRecord(record) { return [`vnem_route_task: ${record.task_categories.join(", ")}`, `must_ask_user=${record.must_ask_user}`, `need_tools_mcp=${record.need_tools_mcp}`, `next=${record.next_best_action}`].join("\n"); }
+function compactRoutingRecord(record) { return { task_categories: record.task_categories.slice(0, 5), must_ask_user: record.must_ask_user, need_tools_mcp: record.need_tools_mcp, need_current_research: record.need_current_research, core_plan_only: true }; }
+function compactOutputQualityPlan(plan) { return { output_type: plan.output_type, core_plan_only: true }; }
+function formatOutputQualityPlan(plan) { return [`vnem_output_quality_plan: ${plan.output_type}`, `sections=${plan.required_sections.join(", ")}`, `audit_flags=${plan.audit_flags.length}`].join("\n"); }
+function formatAntiStagnationCheck(check) { return [`vnem_anti_stagnation_check: flags=${check.stagnation_risk_flags.join(", ") || "none"}`, `continue=${check.should_continue_same_area}`, `next=${check.recommended_next_action}`].join("\n"); }
+
+function uniqueBy(items, keyFn) { const seen = new Set(); const out = []; for (const item of items) { const key = keyFn(item); if (!seen.has(key)) { seen.add(key); out.push(item); } } return out; }
+function routeArrayify(value) { if (value === undefined || value === null) return []; return Array.isArray(value) ? value : [value]; }
+function stableMemoryId(content) { return `memory-${createHash("sha256").update(String(content || "")).digest("hex").slice(0, 8)}`; }
+function sharesAnyTerm(a, b) { const setB = new Set(b); return [...a].some((term) => setB.has(term)); }
+function sameNormalizedMeaning(a, b) { const left = tokenize(normalize(a)).filter((term) => !["another", "again", "more", "next", "step", "make", "improve"].includes(term)).sort().join(" "); const right = tokenize(normalize(b)).filter((term) => !["another", "again", "more", "next", "step", "make", "improve"].includes(term)).sort().join(" "); return left && right && (left === right || left.includes(right) || right.includes(left)); }
 
 function selectToolsForTask(args = {}) {
   const task = String(args.task || "");

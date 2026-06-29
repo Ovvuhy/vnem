@@ -208,6 +208,9 @@ npm run test:core-tool-selection
 npm run test:core-tools-ecosystem
 npm run test:core-browser-research-planning
 npm run test:core-search-planning
+npm run test:core-routing-memory-output
+npm run test:core-output-quality
+npm run test:core-anti-stagnation
 npm run test:mcp-user-smoke
 npm run test:core-tools-e2e
 npm run tools:readiness
@@ -218,7 +221,7 @@ Actual Core → Tools use path:
 
 1. Start/connect Core MCP.
 2. Start/connect Tools MCP for a specific workspace.
-3. Ask Core `vnem_select_tools_for_task`, `vnem_build_tools_plan`, `vnem_assess_research_need`, `vnem_build_search_plan`, `vnem_build_browsing_plan`, `vnem_build_browser_research_plan`, `vnem_explain_tools_chain`, or `vnem_boost_task` to classify the task, choose Tools capabilities, define dry-runs/approvals/evidence, detect freshness/search needs, handle CAPTCHA/download/redirect risk in plan form, and produce a plan-only Core→Tools handoff.
+3. Ask Core `vnem_route_task`, `vnem_output_quality_plan`, `vnem_anti_stagnation_check`, `vnem_select_tools_for_task`, `vnem_build_tools_plan`, `vnem_assess_research_need`, `vnem_build_search_plan`, `vnem_build_browsing_plan`, `vnem_build_browser_research_plan`, `vnem_explain_tools_chain`, or `vnem_boost_task` to classify the task, choose Tools capabilities, classify relevant/ignored memory, decide whether missing context materially requires asking the user, define dry-runs/approvals/evidence, detect freshness/search needs, handle CAPTCHA/download/redirect risk in plan form, prevent repeated finished work, and produce a compact-first output/final-report contract.
 4. Pass Core's `tools_mcp_handoff` to `vnem_tools_prepare_action_plan`.
 5. Tools creates an action plan and marks unsupported work as blocked.
 6. Tools dry-runs the catalog/project/source scan/patch batch/restore/task/dev-server/API/browser/local-git action first.
@@ -549,7 +552,10 @@ Read-only MCP tools:
 - `vnem_get_required_capabilities`: select the few required/strongly recommended capability modules for a task and return compact instructions, risks, evidence requirements, and deeper lookup IDs.
 - `vnem_activate_capability_pack`: create a task-specific activation contract with required instructions, usage-proof fields, incomplete-if-skipped rules, and safety boundaries.
 - `vnem_apply_skill_guidance`: apply one selected skill's compact guidance to the current task without installing the skill or executing scripts.
-- `vnem_boost_task`: single real-task entry point that selects usable skill packs, usable API packs only when relevant, domain contracts, missing questions, workflow steps, safety rules, verification/proof requirements, must-not-claim limits, and Core-vs-Tools/Precision boundaries.
+- `vnem_boost_task`: single real-task entry point that selects usable skill packs, usable API packs only when relevant, domain contracts, routing record, missing questions, output-quality plan, workflow steps, safety rules, verification/proof requirements, must-not-claim limits, and Core-vs-Tools/Precision boundaries.
+- `vnem_route_task`: produce a structured Core routing record for serious tasks: task categories, relevant/ignored/outdated/conflicting/unverified/verified memory, material missing-context ask/no-ask decision, needed capabilities, Tools/current-research needs, compatibility/safety risks, evidence, next action, and must-not-claim limits.
+- `vnem_output_quality_plan`: produce compact-first output/report contracts for AI work review, blocker report, user command handoff, Building AI prompt handoff, and technical final report, with evidence labels (`proven`, `tested`, `supported`, `likely`, `assumed`, `unknown`, `blocked`, `failed`, `not_attempted`, `preparation_only`).
+- `vnem_anti_stagnation_check`: flag docs-only fake progress, repeated finished areas, broad-scan loops, full-test-suite loops, same-next-step renames, and polishing finished areas while higher-value work waits.
 - `vnem_prepare_tools_handoff`: prepare a read-only handoff for future Tools/Precision MCP: selected usable packs, required tool capabilities, permissions, dry-run-first plan, rollback/restore plan, evidence to collect, blocked actions, safe Core actions, and must-not-claim limits.
 - `vnem_build_api_integration_plan`: build a safe API plan with auth/HTTPS/CORS, frontend/backend decision, backend proxy/secret rules, tests, and evidence. It does not call the API.
 - `vnem_get_agent_profile`: return only the relevant Codex/Claude/Gemini/DeepSeek/Hermes/Qwen/generic/unknown profile so one AI does not receive another AI's irrelevant instructions.
@@ -582,7 +588,7 @@ Safety boundary:
 Recommended agent flow:
 
 1. Call `vnem_bootstrap`.
-2. Call `vnem_boost_task` for the concrete task workflow. It selects usable API/skill packs rather than raw discovered records, and includes a compact `tools_mcp_handoff` summary.
+2. Call `vnem_route_task` or `vnem_boost_task` for the concrete task workflow. It classifies the task, filters relevant memory from ignored/outdated/conflicting memory, asks only for material missing context, selects usable API/skill packs rather than raw discovered records, includes a compact `tools_mcp_handoff`, and returns output-quality/anti-stagnation guidance.
 3. If you need a standalone future Tools MCP handoff, call `vnem_prepare_tools_handoff` for selected usable packs, required tools, permissions, dry-run-first plan, rollback/restore, evidence, blocked actions, and must-not-claim limits.
 4. If you need lower-level details, call `vnem_compose_capability_contract` for required capability IDs or `vnem_build_api_integration_plan` / safety-profile tools for API-specific work.
 5. Use returned required rules/resources and task-specific checks/evidence requirements.
@@ -592,7 +598,7 @@ Recommended agent flow:
 
 Core/Tools boundary:
 
-- Core MCP chooses useful APIs/skills, selects Tools MCP capabilities with `vnem_select_tools_for_task`, assesses research need with `vnem_assess_research_need`, builds provider-search plans with `vnem_build_search_plan`, builds browsing risk plans with `vnem_build_browsing_plan`, builds general plan-only Core→Tools sequences with `vnem_build_tools_plan`, builds browser/source research plans with `vnem_build_browser_research_plan`, explains Tools chains with `vnem_explain_tools_chain`, creates concrete workflows, asks missing questions, says what proof is required, and prepares a Tools MCP handoff.
+- Core MCP chooses useful APIs/skills, routes serious tasks with `vnem_route_task`, selects Tools MCP capabilities with `vnem_select_tools_for_task`, assesses research need with `vnem_assess_research_need`, builds provider-search plans with `vnem_build_search_plan`, builds browsing risk plans with `vnem_build_browsing_plan`, builds general plan-only Core→Tools sequences with `vnem_build_tools_plan`, builds browser/source research plans with `vnem_build_browser_research_plan`, explains Tools chains with `vnem_explain_tools_chain`, creates compact-first output contracts with `vnem_output_quality_plan`, flags repetition with `vnem_anti_stagnation_check`, audits final claims with `vnem_completion_audit` / `vnem_proof_trail`, and prepares Tools MCP handoffs without executing actions.
 - Core MCP does not execute actions: no file edits, terminal commands, browser/screenshot work, package installs, GitHub mutations, live API calls, local mod edits, account/device changes, or claims that Tools actions happened.
 - Tools MCP foundation performs approved bounded actions using Core's handoff: manifest/catalog discovery, dry-run first, permission prompts, path-limited reads/search/workspace maps/read-many/reference/dependency scans, source-quality/research-brief/research-pack helpers for direct/provided/local sources, provider-search query/build/run/rank helpers, URL reputation/redirect/CAPTCHA/download risk checks, claim/source matrices, research gap detection, safe static page inspection/readability/link-map/DOM-search/accessibility/snapshot-comparison helpers, project scans/patch batches/restores, safe project tasks, local dev server lifecycle, approved GET/HEAD API requests, approved local browser screenshot capture, optional approved local git commits, session evidence, and proof handoffs.
 - Not in this foundation batch: no Giga MCP, unrestricted filesystem, arbitrary shell, git push / remote GitHub mutation, package installs, package publishing, deployment, unrestricted external browser browsing by default, search-engine result page scraping by default, automatic CAPTCHA bypass, unrestricted crawling, secret-backed live API execution, login/cookie/session automation, credential capture, automatic downloads/installers, or unrestricted API calls. Real provider search only works when configured and approved; otherwise Tools returns honest unavailable/unconfigured status.
