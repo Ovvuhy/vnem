@@ -1,0 +1,282 @@
+{
+  "generated_at": "2026-06-30T07:13:26.000Z",
+  "mode": "brain-hourly",
+  "lookback_days": 1,
+  "source_routes": [
+    "github-search",
+    "github-releases",
+    "npm-search",
+    "mcp-registry"
+  ],
+  "comment": "Hermes brain synthesis from hourly and deep candidate reports. Curated for maintainer review.",
+  "candidates": [
+    {
+      "name": "trpc-group/trpc-agent-go",
+      "title": "trpc-agent-go",
+      "description": "A Go framework for building production agent systems with graph workflows, tools, memory, A2A, AG-UI, MCP, evaluation, and observability.",
+      "repo_url": "https://github.com/trpc-group/trpc-agent-go",
+      "homepage_url": "https://trpc-group.github.io/trpc-agent-go/",
+      "source_urls": [
+        "https://github.com/trpc-group/trpc-agent-go",
+        "https://trpc-group.github.io/trpc-agent-go/"
+      ],
+      "source_route": "github-search",
+      "signal_summary": "Matched GitHub searches for agent-framework and MCP topics. Stars growing rapidly (1440). Apache-2.0 licensed, actively pushed. Unique Go agent framework with A2A, AG-UI, and MCP support.",
+      "why_builders_should_care": "First Go-native production agent framework covering graph workflows, A2A protocol, AG-UI, MCP, evaluation, and OpenTelemetry observability in one package. Fills a gap for Go-speaking agent builders.",
+      "suggested_trust_tier": "promising",
+      "risk_flags": [
+        "sensitive-permissions"
+      ],
+      "recommended_action": "review",
+      "allow_registry_proposal": true,
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 0,
+        "trust_score": 100,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-06-30T07:13:26.000Z",
+        "evidence": {
+          "readme_checked": true,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      },
+      "metrics": {
+        "stars": 1440,
+        "forks": 186,
+        "open_issues": 54,
+        "language": "Go",
+        "license": "Apache-2.0",
+        "created_at": "2025-05-14T13:51:35Z",
+        "pushed_at": "2026-06-30T06:32:34Z",
+        "topics": [
+          "a2a",
+          "ag-ui",
+          "agent-framework",
+          "ai-agents",
+          "evaluation",
+          "go",
+          "graph-workflows",
+          "mcp",
+          "observability",
+          "opentelemetry",
+          "rag"
+        ],
+        "repo_risk_score": 0,
+        "repo_trust_score": 100,
+        "repo_verdict": "low-risk"
+      }
+    },
+    {
+      "name": "redis/agent-memory-server",
+      "title": "Redis Agent Memory Server",
+      "description": "Fast and flexible memory for agents and AI applications using Redis.",
+      "repo_url": "https://github.com/redis/agent-memory-server",
+      "homepage_url": null,
+      "source_urls": [
+        "https://github.com/redis/agent-memory-server"
+      ],
+      "source_route": "github-search",
+      "signal_summary": "Matched GitHub search for agent memory topics. 286 stars, actively maintained. Official Redis Inc. project. License not detected via GitHub API but likely Redis Source Available or MIT.",
+      "why_builders_should_care": "Official Redis-backed memory layer for AI agents. Addresses a key gap: persistent, fast agent memory that works across sessions and agent instances.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [
+        "license-not-asserted"
+      ],
+      "recommended_action": "watchlist",
+      "allow_registry_proposal": true,
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 0,
+        "trust_score": 100,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-06-30T07:13:26.000Z",
+        "evidence": {
+          "readme_checked": true,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      },
+      "metrics": {
+        "stars": 286,
+        "forks": null,
+        "open_issues": null,
+        "language": "Python",
+        "license": "NOASSERTION",
+        "repo_risk_score": 0,
+        "repo_trust_score": 100,
+        "repo_verdict": "low-risk"
+      }
+    },
+    {
+      "name": "gptme/gptme",
+      "title": "gptme",
+      "description": "Your agent in your terminal, equipped with local tools: writes code, uses the terminal, browses the web.",
+      "repo_url": "https://github.com/gptme/gptme",
+      "homepage_url": null,
+      "source_urls": [
+        "https://github.com/gptme/gptme"
+      ],
+      "source_route": "github-search",
+      "signal_summary": "Matched GitHub search for agent-framework and MCP topics. 4343 stars, MIT licensed, actively maintained. Long-lived terminal agent project with MCP support.",
+      "why_builders_should_care": "Mature terminal-based AI agent with MCP integration, 4K+ stars, MIT license. Good alternative or complement to Codex/Claude Code for builders wanting local-first agent tooling.",
+      "suggested_trust_tier": "promising",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "allow_registry_proposal": true,
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 0,
+        "trust_score": 100,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-06-30T07:13:26.000Z",
+        "evidence": {
+          "readme_checked": true,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      },
+      "metrics": {
+        "stars": 4343,
+        "forks": null,
+        "open_issues": null,
+        "language": "Python",
+        "license": "MIT",
+        "repo_risk_score": 0,
+        "repo_trust_score": 100,
+        "repo_verdict": "low-risk"
+      }
+    },
+    {
+      "name": "numtide/llm-agents.nix",
+      "title": "llm-agents.nix",
+      "description": "Nix packages for AI coding agents and development tools. Automatically updated daily.",
+      "repo_url": "https://github.com/numtide/llm-agents.nix",
+      "homepage_url": null,
+      "source_urls": [
+        "https://github.com/numtide/llm-agents.nix"
+      ],
+      "source_route": "github-search",
+      "signal_summary": "Matched GitHub search for coding-agent topics. 1490 stars, MIT licensed, Nix ecosystem. Daily auto-updated packages for AI agents.",
+      "why_builders_should_care": "Reproducible, hermetic packaging of AI coding agents via Nix. Useful for teams already in the Nix ecosystem who want reliable, versioned agent deployments.",
+      "suggested_trust_tier": "promising",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "allow_registry_proposal": true,
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 0,
+        "trust_score": 100,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-06-30T07:13:26.000Z",
+        "evidence": {
+          "readme_checked": true,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      },
+      "metrics": {
+        "stars": 1490,
+        "forks": null,
+        "open_issues": null,
+        "language": "Nix",
+        "license": "MIT",
+        "repo_risk_score": 0,
+        "repo_trust_score": 100,
+        "repo_verdict": "low-risk"
+      }
+    },
+    {
+      "name": "genomoncology/biomcp",
+      "title": "BioMCP",
+      "description": "BioMCP: Biomedical Model Context Protocol.",
+      "repo_url": "https://github.com/genomoncology/biomcp",
+      "homepage_url": null,
+      "source_urls": [
+        "https://github.com/genomoncology/biomcp"
+      ],
+      "source_route": "github-search",
+      "signal_summary": "Matched GitHub search for MCP topics. 534 stars, MIT licensed. Domain-specific MCP for biomedical data access.",
+      "why_builders_should_care": "Domain-specific MCP server for biomedical data. Demonstrates MCP applicability beyond general coding workflows.",
+      "suggested_trust_tier": "promising",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "allow_registry_proposal": true,
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 0,
+        "trust_score": 100,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-06-30T07:13:26.000Z",
+        "evidence": {
+          "readme_checked": true,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      },
+      "metrics": {
+        "stars": 534,
+        "forks": null,
+        "open_issues": null,
+        "language": "Rust",
+        "license": "MIT",
+        "repo_risk_score": 0,
+        "repo_trust_score": 100,
+        "repo_verdict": "low-risk"
+      }
+    },
+    {
+      "name": "tanaikech/ggsrun",
+      "title": "ggsrun",
+      "description": "High-performance Google Drive CLI and MCP Server for LLM/AI agents. Execute Google Apps Script under a secure sandbox.",
+      "repo_url": "https://github.com/tanaikech/ggsrun",
+      "homepage_url": null,
+      "source_urls": [
+        "https://github.com/tanaikech/ggsrun"
+      ],
+      "source_route": "github-search",
+      "signal_summary": "Matched GitHub search for MCP topic. 167 stars, MIT licensed. Mature project (created 2017) that recently added MCP support. Strong security model with whitelisted runtime sandbox.",
+      "why_builders_should_care": "Mature Google Drive/Apps Script MCP server with a sandboxed execution model -- rare for MCP servers that handle sensitive Google credentials.",
+      "suggested_trust_tier": "unreviewed",
+      "risk_flags": [],
+      "recommended_action": "review",
+      "allow_registry_proposal": true,
+      "repository_review": {
+        "verdict": "low-risk",
+        "risk_score": 0,
+        "trust_score": 100,
+        "flags": [],
+        "reasons": [],
+        "reviewed_at": "2026-06-30T07:13:26.000Z",
+        "evidence": {
+          "readme_checked": true,
+          "release_text_checked": true,
+          "executable_artifact_count": 0,
+          "hard_blocklisted": false
+        }
+      },
+      "metrics": {
+        "stars": 167,
+        "forks": 18,
+        "open_issues": 0,
+        "language": "Go",
+        "license": "MIT",
+        "created_at": "2017-04-24T05:35:27Z",
+        "pushed_at": "2026-06-30T06:34:59Z",
+        "repo_risk_score": 0,
+        "repo_trust_score": 100,
+        "repo_verdict": "low-risk"
+      }
+    }
+  ]
+}

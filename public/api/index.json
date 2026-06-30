@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-06-28T07:19:52.903Z",
+  "generated_at": "2026-06-30T07:15:33.376Z",
   "schema_version": "1.0.0",
   "package_version": "1.0.1",
   "release_version": "1.0.1",
-  "release_date": "2026-06-28",
-  "entry_count": 230,
+  "release_date": "2026-06-30",
+  "entry_count": 231,
   "install_command": "curl -fsSL https://raw.githubusercontent.com/naellisim/vnem/main/public/install.tgz | tar -xz",
   "install_archive": "/install.tgz",
   "install_archive_url": "https://raw.githubusercontent.com/naellisim/vnem/main/public/install.tgz",
@@ -31,6 +31,7 @@
   ],
   "protocols": [
     "A2A",
+    "AG-UI",
     "JSON-RPC 2.0",
     "MCP",
     "SSE",
@@ -59,6 +60,7 @@
     "Cursor",
     "Git",
     "GitHub",
+    "Go",
     "Google Cloud",
     "GPT",
     "Hosted API",
@@ -98,8 +100,10 @@
     "Windsurf"
   ],
   "tags": [
+    "a2a",
     "access-control",
     "actions",
+    "ag-ui",
     "agent",
     "agent-commerce",
     "agent-framework",
@@ -176,6 +180,7 @@
     "enterprise",
     "errors",
     "evals",
+    "evaluation",
     "event-driven",
     "examples",
     "filesystem",
@@ -189,9 +194,11 @@
     "git",
     "github",
     "github-issues",
+    "go",
     "google",
     "governance",
     "graders",
+    "graph-workflows",
     "graphics",
     "grep",
     "guardrails",
@@ -342,6 +349,7 @@
     "Add human approval gates",
     "Add lightweight custom lint rules",
     "Add MCP memory recall and storage tools",
+    "Add OpenTelemetry-native observability to agent pipelines",
     "Apply reviewable edits to Git repositories",
     "Assign repository issues to an agent",
     "Automate browser debugging sessions through MCP",
@@ -360,6 +368,7 @@
     "Build multi-agent conversations",
     "Build multi-agent workflows",
     "Build physics-based prototypes without adopting a full game engine",
+    "Build production-grade AI agent systems in Go",
     "Build retrieval-grounded agents",
     "Build small playful web games with concise code",
     "Build source-backed research and data ingestion workflows",
@@ -418,6 +427,7 @@
     "Evaluate LLM and agent behavior",
     "Evaluate RAG retrieval and answers",
     "Experiment with custom mode prompts and permissions",
+    "Expose agent capabilities via MCP, A2A, and AG-UI protocols",
     "Expose carefully gated database access to coding assistants",
     "Expose internal web-app APIs as MCP tools",
     "Expose workspace task graph and project configurations",
@@ -463,6 +473,7 @@
     "Operate MCP servers in Kubernetes-oriented environments",
     "Optimize LLM pipelines against metrics",
     "Optimize prompts against examples and graders",
+    "Orchestrate multi-agent workflows with graph-based control flow",
     "Pair program from the terminal",
     "Persist project instructions in memory files",
     "Persist stable project instructions",
@@ -19493,6 +19504,106 @@
       "entry_path": "registry/entries/three-js/entry.yaml",
       "profile_path": "registry/entries/three-js/profile.md",
       "url_path": "/entries/three-js/",
+      "recommendation_score": 9
+    },
+    {
+      "schema_version": "1.0.0",
+      "homepage_url": "https://trpc-group.github.io/trpc-agent-go/",
+      "repo_url": "https://github.com/trpc-group/trpc-agent-go",
+      "package_urls": [],
+      "licenses": [
+        "Apache-2.0"
+      ],
+      "copyright_owner": "trpc-group",
+      "source_kind": "github",
+      "protocols": [
+        "MCP",
+        "A2A",
+        "AG-UI"
+      ],
+      "clients": [
+        "Go",
+        "Terminal"
+      ],
+      "install": {
+        "command": "go get github.com/trpc-group/trpc-agent-go",
+        "notes": "Production Go agent framework. Requires Go 1.22+. Supports graph workflows, tools, memory, A2A protocol, AG-UI, MCP server/client, evaluation, and OpenTelemetry observability out of the box.",
+        "config_example": null
+      },
+      "permissions": [
+        "filesystem",
+        "network",
+        "command-execution"
+      ],
+      "env_vars": [],
+      "tags": [
+        "agent-framework",
+        "mcp",
+        "a2a",
+        "ag-ui",
+        "go",
+        "graph-workflows",
+        "observability",
+        "opentelemetry",
+        "evaluation"
+      ],
+      "use_cases": [
+        "Build production-grade AI agent systems in Go",
+        "Orchestrate multi-agent workflows with graph-based control flow",
+        "Expose agent capabilities via MCP, A2A, and AG-UI protocols",
+        "Add OpenTelemetry-native observability to agent pipelines"
+      ],
+      "best_for": [
+        "Go-speaking teams building production agent systems with multi-protocol support",
+        "Agent builders who need graph workflows, evaluation, and observability in one framework",
+        "Build production-grade AI agent systems in Go",
+        "Orchestrate multi-agent workflows with graph-based control flow",
+        "Expose agent capabilities via MCP, A2A, and AG-UI protocols",
+        "Add OpenTelemetry-native observability to agent pipelines",
+        "agent-framework workflows",
+        "mcp workflows"
+      ],
+      "not_for": [
+        "Projects that cannot review upstream permissions, data handling, pricing, or operational risk.",
+        "Non-Go projects or teams who prefer Python/TypeScript agent frameworks"
+      ],
+      "alternatives": [
+        "langgraph",
+        "crewai"
+      ],
+      "supersedes": [],
+      "freshness": "current",
+      "source_confidence": "high",
+      "maintenance_signals": [
+        "Actively pushed as of 2026-06-30",
+        "Apache-2.0 licensed with clear README and docs site",
+        "1440 stars, 186 forks, 54 open issues",
+        "Canonical repository URL recorded"
+      ],
+      "risk_flags": [
+        "sensitive-permissions",
+        "command-execution"
+      ],
+      "recommended_when": [
+        "Use when building Go-native production agent systems that need graph workflows, MCP, A2A, and observability.",
+        "Use when a project needs build production-grade ai agent systems in go and the upstream source has been reviewed.",
+        "Treat as promising until a maintainer verifies install and behavior."
+      ],
+      "trust_tier": "promising",
+      "review_status": "bot-reviewed",
+      "last_checked": "2026-06-30",
+      "slug": "trpc-agent-go",
+      "name": "trpc-agent-go",
+      "type": "agent-framework",
+      "summary_llm": "trpc-agent-go is a Go framework for building production agent systems with graph workflows, tools, memory, A2A protocol, AG-UI, MCP, evaluation, and OpenTelemetry observability.",
+      "source_urls": [
+        "https://github.com/trpc-group/trpc-agent-go",
+        "https://trpc-group.github.io/trpc-agent-go/"
+      ],
+      "profile_excerpt": "A Go framework for building production agent systems with graph workflows, tools, memory, A2A, AG-UI, MCP, evaluation, and observability. - **Repository:** https://github.com/trpc-group/trpc-agent-go - **Docs:** https://trpc-group.github.io/trpc-agent-go/ - **License:** Apache-2.0 - **Trust Tier:** promising ## What it",
+      "entry_path": "registry/entries/trpc-agent-go/entry.yaml",
+      "profile_path": "registry/entries/trpc-agent-go/profile.md",
+      "url_path": "/entries/trpc-agent-go/",
       "recommendation_score": 9
     },
     {

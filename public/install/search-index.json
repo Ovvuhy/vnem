@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-06-28T07:19:52.903Z",
+  "generated_at": "2026-06-30T07:15:33.376Z",
   "schema_version": "1.0.0",
   "package_version": "1.0.1",
   "release_version": "1.0.1",
-  "release_date": "2026-06-28",
+  "release_date": "2026-06-30",
   "install_folder": ".vnem",
   "safety": {
     "mode": "read-only-files",
@@ -30981,6 +30981,154 @@
       ]
     },
     {
+      "id": "entry:trpc-agent-go",
+      "kind": "registry-entry",
+      "title": "trpc-agent-go",
+      "summary": "trpc-agent-go is a Go framework for building production agent systems with graph workflows, tools, memory, A2A protocol, AG-UI, MCP, evaluation, and OpenTelemetry observability.",
+      "url_path": "/entries/trpc-agent-go/",
+      "trust_tier": "promising",
+      "type": "agent-framework",
+      "score": 9,
+      "tags": [
+        "agent-framework",
+        "mcp",
+        "a2a",
+        "ag-ui",
+        "go",
+        "graph-workflows",
+        "observability",
+        "opentelemetry",
+        "evaluation"
+      ],
+      "use_cases": [
+        "Build production-grade AI agent systems in Go",
+        "Orchestrate multi-agent workflows with graph-based control flow",
+        "Expose agent capabilities via MCP, A2A, and AG-UI protocols",
+        "Add OpenTelemetry-native observability to agent pipelines"
+      ],
+      "best_for": [
+        "Go-speaking teams building production agent systems with multi-protocol support",
+        "Agent builders who need graph workflows, evaluation, and observability in one framework",
+        "Build production-grade AI agent systems in Go",
+        "Orchestrate multi-agent workflows with graph-based control flow",
+        "Expose agent capabilities via MCP, A2A, and AG-UI protocols",
+        "Add OpenTelemetry-native observability to agent pipelines",
+        "agent-framework workflows",
+        "mcp workflows"
+      ],
+      "risk_flags": [
+        "sensitive-permissions",
+        "command-execution"
+      ],
+      "source_urls": [
+        "https://github.com/trpc-group/trpc-agent-go",
+        "https://trpc-group.github.io/trpc-agent-go/"
+      ],
+      "keywords": [
+        "trpc-agent-go",
+        "agent-framework",
+        "is",
+        "go",
+        "framework",
+        "building",
+        "production",
+        "agent",
+        "systems",
+        "graph",
+        "workflows",
+        "tools",
+        "memory",
+        "a2a",
+        "protocol",
+        "ag-ui",
+        "mcp",
+        "evaluation",
+        "opentelemetry",
+        "observability.",
+        "https",
+        "//trpc-group.github.io/trpc-agent-go/",
+        "//github.com/trpc-group/trpc-agent-go",
+        "promising",
+        "bot-reviewed",
+        "current",
+        "high",
+        "terminal",
+        "filesystem",
+        "network",
+        "command-execution",
+        "graph-workflows",
+        "observability",
+        "build",
+        "production-grade",
+        "ai",
+        "in",
+        "orchestrate",
+        "multi-agent",
+        "graph-based",
+        "control",
+        "flow",
+        "expose",
+        "capabilities",
+        "via",
+        "protocols",
+        "add",
+        "opentelemetry-native",
+        "to",
+        "pipelines",
+        "go-speaking",
+        "teams",
+        "multi-protocol",
+        "support",
+        "builders",
+        "who",
+        "need",
+        "one",
+        "cannot",
+        "permissions",
+        "data",
+        "handling",
+        "pricing",
+        "or",
+        "operational",
+        "risk.",
+        "non-go",
+        "prefer",
+        "python/typescript",
+        "frameworks",
+        "langgraph",
+        "crewai",
+        "actively",
+        "pushed",
+        "as",
+        "of",
+        "2026-06-30",
+        "apache-2.0",
+        "licensed",
+        "clear",
+        "readme",
+        "docs",
+        "site",
+        "1440",
+        "stars",
+        "186",
+        "forks",
+        "54",
+        "open",
+        "issues",
+        "canonical",
+        "repository",
+        "sensitive-permissions",
+        "go-native",
+        "been",
+        "reviewed.",
+        "until",
+        "maintainer",
+        "verifies",
+        "install",
+        "behavior."
+      ]
+    },
+    {
       "id": "entry:ugrep",
       "kind": "registry-entry",
       "title": "ugrep",
@@ -35780,14 +35928,23 @@
       "entry:ai-gavelin-mcp",
       "entry:nx-mcp"
     ],
+    "54": [
+      "entry:trpc-agent-go"
+    ],
     "56": [
       "entry:chrome-devtools-mcp"
     ],
     "70": [
       "entry:ai-baselight-baselight"
     ],
+    "186": [
+      "entry:trpc-agent-go"
+    ],
     "751": [
       "entry:ai-lucasandersen-mlp-tax"
+    ],
+    "1440": [
+      "entry:trpc-agent-go"
     ],
     "42001": [
       "entry:ai-modulos-demo-booking"
@@ -36602,6 +36759,9 @@
     "//github.com/thenightproject/tnp.web.mailjunky.ai": [
       "entry:ai-mailjunky-mcp"
     ],
+    "//github.com/trpc-group/trpc-agent-go": [
+      "entry:trpc-agent-go"
+    ],
     "//github.com/u00dxk2/agentic-news": [
       "entry:ai-agentic-news-mcp"
     ],
@@ -37274,6 +37434,9 @@
     "//threejs.org/docs/index": [
       "entry:three-js"
     ],
+    "//trpc-group.github.io/trpc-agent-go/": [
+      "entry:trpc-agent-go"
+    ],
     "//ts.sdk.modelcontextprotocol.io/variables/types.toolannotationsschema.html": [
       "source:agentic-gateway-security"
     ],
@@ -37437,6 +37600,9 @@
     ],
     "2026-06-23": [
       "entry:chrome-devtools-mcp"
+    ],
+    "2026-06-30": [
+      "entry:trpc-agent-go"
     ],
     "26-2": [
       "entry:ai-complyhat-compliance"
@@ -37905,7 +38071,8 @@
     "a2a": [
       "entry:google-agent2agent-protocol",
       "entry:ai-agenttrust-mcp-server",
-      "entry:ai-nefesh-human-state"
+      "entry:ai-nefesh-human-state",
+      "entry:trpc-agent-go"
     ],
     "abandoned": [
       "practice:persistent-memory-context-files"
@@ -38108,6 +38275,9 @@
       "entry:three-js",
       "entry:openai-swarm"
     ],
+    "actively": [
+      "entry:trpc-agent-go"
+    ],
     "activities": [
       "entry:ai-autonomad-travel",
       "entry:ai-com-mcp-strava"
@@ -38158,6 +38328,7 @@
       "entry:pixijs",
       "entry:rapier-js",
       "entry:three-js",
+      "entry:trpc-agent-go",
       "entry:ast-grep",
       "entry:clude"
     ],
@@ -38261,6 +38432,9 @@
       "entry:opentabs",
       "entry:roo-code",
       "entry:kaimo"
+    ],
+    "ag-ui": [
+      "entry:trpc-agent-go"
     ],
     "again.": [
       "prompt-pattern:visual-polish-review"
@@ -38378,6 +38552,7 @@
       "entry:playwright-mcp",
       "entry:rapier-js",
       "entry:three-js",
+      "entry:trpc-agent-go",
       "entry:claude-code-memory",
       "entry:claude-code-subagents",
       "entry:github-mcp-server",
@@ -38437,6 +38612,7 @@
       "entry:pydantic-ai",
       "entry:semantic-kernel",
       "entry:llamaindex-agents",
+      "entry:trpc-agent-go",
       "entry:swarms"
     ],
     "agent-modes": [
@@ -39126,6 +39302,7 @@
       "entry:aider",
       "entry:continue-dev",
       "entry:ai-moxt-mcp-workspace",
+      "entry:trpc-agent-go",
       "entry:mem0",
       "entry:zep",
       "entry:clude",
@@ -40153,6 +40330,9 @@
     "anzenna": [
       "entry:ai-anzenna-anzenna"
     ],
+    "apache-2.0": [
+      "entry:trpc-agent-go"
+    ],
     "apca-style": [
       "source:ui-architecture-sources"
     ],
@@ -40675,6 +40855,7 @@
       "entry:rapier-js",
       "entry:ripgrep",
       "entry:three-js",
+      "entry:trpc-agent-go",
       "entry:ugrep",
       "entry:ast-grep",
       "entry:browserbase-mcp",
@@ -41370,6 +41551,7 @@
       "entry:rapier-js",
       "entry:ripgrep",
       "entry:three-js",
+      "entry:trpc-agent-go",
       "entry:ugrep",
       "entry:ast-grep",
       "entry:browserbase-mcp",
@@ -41792,6 +41974,7 @@
       "entry:rapier-js",
       "entry:ripgrep",
       "entry:three-js",
+      "entry:trpc-agent-go",
       "entry:ugrep",
       "entry:ast-grep",
       "entry:browserbase-mcp",
@@ -42180,6 +42363,7 @@
       "entry:ai-clarid-hmda",
       "entry:ai-com-mcp-linkedin",
       "entry:ai-moxt-mcp-workspace",
+      "entry:trpc-agent-go",
       "entry:nx-mcp"
     ],
     "boundaries": [
@@ -42426,6 +42610,7 @@
       "entry:pixijs",
       "entry:playcanvas-engine",
       "entry:three-js",
+      "entry:trpc-agent-go",
       "entry:graphiti",
       "entry:letta",
       "entry:stripe-agent-toolkit",
@@ -42440,7 +42625,8 @@
       "operating-protocol:vnem-operating-loop"
     ],
     "builders": [
-      "prompt-pattern:agent-workspace-architecture"
+      "prompt-pattern:agent-workspace-architecture",
+      "entry:trpc-agent-go"
     ],
     "building": [
       "source:browser-and-ui-verification",
@@ -42450,6 +42636,7 @@
       "entry:semantic-kernel",
       "entry:anthropic-building-effective-agents",
       "entry:phaser",
+      "entry:trpc-agent-go",
       "entry:graphiti"
     ],
     "builds": [
@@ -42864,6 +43051,7 @@
       "entry:ai-moxt-mcp-workspace",
       "entry:playwright-mcp",
       "entry:rapier-js",
+      "entry:trpc-agent-go",
       "entry:browserbase-mcp",
       "entry:claude-code-memory",
       "entry:claude-code-subagents",
@@ -43017,6 +43205,7 @@
       "entry:rapier-js",
       "entry:ripgrep",
       "entry:three-js",
+      "entry:trpc-agent-go",
       "entry:ugrep",
       "entry:ast-grep",
       "entry:browserbase-mcp",
@@ -43092,6 +43281,7 @@
       "practice:agent-tooling",
       "entry:ai-cirra-salesforce-mcp",
       "entry:ai-nexustoken-nexustoken-sdk",
+      "entry:trpc-agent-go",
       "entry:cline"
     ],
     "capabilities.": [
@@ -43699,6 +43889,7 @@
       "practice:subagents-and-multi-agent",
       "entry:openai-prompt-engineering-guide",
       "prompt-pattern:prompt-enhancement",
+      "entry:trpc-agent-go",
       "entry:claude-code-subagents",
       "entry:covenant-research"
     ],
@@ -44047,6 +44238,7 @@
       "entry:anthropic-claude-code"
     ],
     "command-execution": [
+      "entry:trpc-agent-go",
       "entry:nx-mcp"
     ],
     "command-line": [
@@ -44710,6 +44902,7 @@
       "entry:ai-gossiper-shopify-admin-mcp",
       "entry:aider",
       "entry:chrome-devtools-mcp",
+      "entry:trpc-agent-go",
       "entry:cline"
     ],
     "control.": [
@@ -44936,6 +45129,7 @@
     "crewai": [
       "entry:crewai",
       "entry:agentops",
+      "entry:trpc-agent-go",
       "entry:swarms"
     ],
     "crews": [
@@ -45267,6 +45461,7 @@
       "entry:rapier-js",
       "entry:ripgrep",
       "entry:three-js",
+      "entry:trpc-agent-go",
       "entry:ugrep",
       "entry:ast-grep",
       "entry:browserbase-mcp",
@@ -45746,6 +45941,7 @@
       "entry:microsoft-mcp-gateway",
       "entry:ai-moxt-mcp-workspace",
       "entry:playwright-mcp",
+      "entry:trpc-agent-go",
       "entry:browserbase-mcp",
       "entry:claude-code-memory",
       "entry:claude-code-subagents",
@@ -46801,6 +46997,7 @@
       "entry:playwright-mcp",
       "entry:rapier-js",
       "entry:three-js",
+      "entry:trpc-agent-go",
       "entry:ast-grep",
       "entry:browserbase-mcp",
       "entry:claude-code-memory",
@@ -47440,6 +47637,7 @@
       "entry:langfuse",
       "prompt-pattern:mcp-gateway-evaluation",
       "entry:ragas",
+      "entry:trpc-agent-go",
       "entry:langsmith"
     ],
     "evaluation-and-observability": [
@@ -47731,6 +47929,7 @@
       "practice:data",
       "practice:evals",
       "entry:chrome-devtools-mcp",
+      "entry:trpc-agent-go",
       "entry:nx-mcp",
       "entry:opentabs",
       "entry:mcp-server-mysql"
@@ -48464,6 +48663,7 @@
       "entry:ai-moxt-mcp-workspace",
       "entry:playwright-mcp",
       "entry:ripgrep",
+      "entry:trpc-agent-go",
       "entry:ugrep",
       "entry:ast-grep",
       "entry:claude-code-memory",
@@ -48667,6 +48867,7 @@
       "task-rubric:refactor",
       "prompt-pattern:code-simplification",
       "prompt-pattern:ui-build",
+      "entry:trpc-agent-go",
       "entry:kaimo"
     ],
     "flow.": [
@@ -48722,7 +48923,8 @@
       "entry:matter-js"
     ],
     "forks": [
-      "practice:ide-agent-selection"
+      "practice:ide-agent-selection",
+      "entry:trpc-agent-go"
     ],
     "form": [
       "practice:frontend"
@@ -48775,6 +48977,7 @@
       "entry:ragas",
       "entry:phaser",
       "entry:pixijs",
+      "entry:trpc-agent-go",
       "entry:graphiti",
       "entry:letta",
       "entry:swarms"
@@ -48783,7 +48986,8 @@
       "source:evaluation-and-observability",
       "task-rubric:frontend_ui",
       "practice:research-source-intake",
-      "entry:context7-mcp"
+      "entry:context7-mcp",
+      "entry:trpc-agent-go"
     ],
     "frameworks.": [
       "entry:mastra",
@@ -49166,6 +49370,15 @@
       "task-rubric:interactive_canvas",
       "prompt-pattern:visual-build"
     ],
+    "go": [
+      "entry:trpc-agent-go"
+    ],
+    "go-native": [
+      "entry:trpc-agent-go"
+    ],
+    "go-speaking": [
+      "entry:trpc-agent-go"
+    ],
     "goal": [
       "task-rubric:docs_prompt",
       "prompt-pattern:agent-workspace-architecture",
@@ -49254,16 +49467,21 @@
       "entry:langgraph",
       "entry:openai-agents-sdk",
       "entry:ripgrep",
+      "entry:trpc-agent-go",
       "entry:nx-mcp",
       "entry:swarms",
       "entry:zep",
       "entry:codebase-memory-mcp"
     ],
     "graph-based": [
-      "entry:langgraph"
+      "entry:langgraph",
+      "entry:trpc-agent-go"
     ],
     "graph-shaped": [
       "entry:zep"
+    ],
+    "graph-workflows": [
+      "entry:trpc-agent-go"
     ],
     "graphics": [
       "entry:babylon-js",
@@ -49403,6 +49621,7 @@
       "entry:firecrawl-mcp",
       "entry:microsoft-mcp-gateway",
       "entry:playwright-mcp",
+      "entry:trpc-agent-go",
       "entry:browserbase-mcp",
       "entry:claude-code-memory",
       "entry:claude-code-subagents",
@@ -49739,6 +49958,7 @@
       "entry:aider",
       "entry:continue-dev",
       "entry:ripgrep",
+      "entry:trpc-agent-go",
       "entry:ugrep",
       "entry:ast-grep",
       "entry:graphiti",
@@ -50095,6 +50315,7 @@
       "entry:rapier-js",
       "entry:ripgrep",
       "entry:three-js",
+      "entry:trpc-agent-go",
       "entry:ugrep",
       "entry:ast-grep",
       "entry:browserbase-mcp",
@@ -50500,6 +50721,7 @@
       "entry:ai-moxt-mcp-workspace",
       "entry:playcanvas-engine",
       "entry:three-js",
+      "entry:trpc-agent-go",
       "entry:jscpd",
       "entry:letta",
       "entry:nx-mcp",
@@ -50913,6 +51135,7 @@
       "entry:rapier-js",
       "entry:ripgrep",
       "entry:three-js",
+      "entry:trpc-agent-go",
       "entry:ugrep",
       "entry:ast-grep",
       "entry:browserbase-mcp",
@@ -51413,6 +51636,7 @@
       "entry:playwright-mcp",
       "entry:ripgrep",
       "entry:three-js",
+      "entry:trpc-agent-go",
       "entry:ugrep",
       "entry:ast-grep",
       "entry:github-mcp-server",
@@ -51469,6 +51693,7 @@
       "source:platform-and-data-connectors",
       "prompt-pattern:code-review",
       "entry:sentry-mcp",
+      "entry:trpc-agent-go",
       "entry:github-mcp-server",
       "entry:swe-agent",
       "entry:github-copilot-coding-agent",
@@ -51788,6 +52013,7 @@
     ],
     "langgraph": [
       "entry:langgraph",
+      "entry:trpc-agent-go",
       "entry:langsmith",
       "entry:swarms"
     ],
@@ -52316,6 +52542,9 @@
       "entry:covenant-research",
       "entry:rules-template-memory-bank",
       "entry:kaimo"
+    ],
+    "licensed": [
+      "entry:trpc-agent-go"
     ],
     "licenses": [
       "source:mcp-core-and-registry",
@@ -53008,6 +53237,7 @@
       "entry:rapier-js",
       "entry:ripgrep",
       "entry:three-js",
+      "entry:trpc-agent-go",
       "entry:ugrep",
       "entry:ast-grep",
       "entry:browserbase-mcp",
@@ -53519,6 +53749,7 @@
       "entry:microsoft-mcp-gateway",
       "entry:ai-moxt-mcp-workspace",
       "entry:playwright-mcp",
+      "entry:trpc-agent-go",
       "entry:browserbase-mcp",
       "entry:github-mcp-server",
       "entry:lunar-mcpx",
@@ -53838,6 +54069,7 @@
       "entry:ai-donethat-donethat",
       "prompt-pattern:memory-bank-initialization",
       "prompt-pattern:memory-policy",
+      "entry:trpc-agent-go",
       "entry:claude-code-memory",
       "entry:graphiti",
       "entry:letta",
@@ -54224,6 +54456,7 @@
       "entry:openai-agents-sdk",
       "practice:subagents-and-multi-agent",
       "entry:anthropic-multi-agent-research-system",
+      "entry:trpc-agent-go",
       "entry:swarms",
       "entry:openai-swarm"
     ],
@@ -54234,6 +54467,9 @@
       "practice:ide-agent-selection",
       "entry:ai-artidrop-artidrop",
       "entry:cursor-agent"
+    ],
+    "multi-protocol": [
+      "entry:trpc-agent-go"
     ],
     "multi-step": [
       "entry:langgraph"
@@ -54393,6 +54629,7 @@
       "entry:pixijs",
       "entry:rapier-js",
       "entry:ripgrep",
+      "entry:trpc-agent-go",
       "entry:ugrep",
       "entry:ast-grep",
       "entry:claude-code-memory",
@@ -54628,6 +54865,7 @@
       "entry:microsoft-mcp-gateway",
       "entry:ai-moxt-mcp-workspace",
       "entry:playwright-mcp",
+      "entry:trpc-agent-go",
       "entry:browserbase-mcp",
       "entry:claude-code-subagents",
       "entry:github-mcp-server",
@@ -54825,6 +55063,9 @@
     "nomd": [
       "entry:ai-autonomad-computeback"
     ],
+    "non-go": [
+      "entry:trpc-agent-go"
+    ],
     "non-goals": [
       "operating-protocol:vnem-operating-loop",
       "task-rubric:docs_prompt",
@@ -54998,8 +55239,12 @@
       "prompt-pattern:mcp-gateway-evaluation",
       "entry:sentry-mcp",
       "entry:agentops",
+      "entry:trpc-agent-go",
       "entry:langsmith",
       "entry:lunar-mcpx"
+    ],
+    "observability.": [
+      "entry:trpc-agent-go"
     ],
     "observable": [
       "task-rubric:backend_api",
@@ -55048,6 +55293,7 @@
       "entry:continue-dev",
       "entry:phaser",
       "entry:playwright-mcp",
+      "entry:trpc-agent-go",
       "entry:ast-grep",
       "entry:stripe-agent-toolkit",
       "entry:codebase-memory-mcp",
@@ -55119,6 +55365,7 @@
       "entry:ai-mino-web-agent",
       "prompt-pattern:visual-build",
       "entry:playcanvas-engine",
+      "entry:trpc-agent-go",
       "entry:kaimo"
     ],
     "one-screen": [
@@ -55173,6 +55420,7 @@
       "entry:model-context-protocol",
       "entry:ai-openarx-openarx",
       "entry:arize-phoenix",
+      "entry:trpc-agent-go",
       "entry:github-copilot-coding-agent",
       "entry:opentabs"
     ],
@@ -55436,10 +55684,14 @@
     ],
     "opentelemetry": [
       "entry:arize-phoenix",
-      "entry:langfuse"
+      "entry:langfuse",
+      "entry:trpc-agent-go"
     ],
     "opentelemetry-friendly": [
       "entry:arize-phoenix"
+    ],
+    "opentelemetry-native": [
+      "entry:trpc-agent-go"
     ],
     "operate": [
       "entry:ai-borealhost-mcp",
@@ -55493,6 +55745,7 @@
       "entry:firecrawl-mcp",
       "entry:microsoft-mcp-gateway",
       "entry:playwright-mcp",
+      "entry:trpc-agent-go",
       "entry:browserbase-mcp",
       "entry:claude-code-memory",
       "entry:claude-code-subagents",
@@ -55825,6 +56078,7 @@
       "entry:rapier-js",
       "entry:ripgrep",
       "entry:three-js",
+      "entry:trpc-agent-go",
       "entry:ugrep",
       "entry:ast-grep",
       "entry:browserbase-mcp",
@@ -55862,6 +56116,9 @@
     ],
     "oracle": [
       "entry:ai-agentrapay-agentra"
+    ],
+    "orchestrate": [
+      "entry:trpc-agent-go"
     ],
     "orchestration": [
       "practice:agent-tooling",
@@ -56546,6 +56803,7 @@
       "entry:microsoft-mcp-gateway",
       "entry:ai-moxt-mcp-workspace",
       "entry:playwright-mcp",
+      "entry:trpc-agent-go",
       "entry:browserbase-mcp",
       "entry:claude-code-memory",
       "entry:claude-code-subagents",
@@ -56704,7 +56962,8 @@
     ],
     "pipelines": [
       "entry:crewai",
-      "entry:dspy"
+      "entry:dspy",
+      "entry:trpc-agent-go"
     ],
     "pipelines.": [
       "entry:llamaindex-agents"
@@ -57029,6 +57288,7 @@
       "entry:openai-prompt-optimizer",
       "entry:vnem-mcp",
       "prompt-pattern:mcp-selection",
+      "entry:trpc-agent-go",
       "entry:claude-code-memory",
       "entry:claude-code-subagents",
       "entry:github-mcp-server",
@@ -57147,6 +57407,7 @@
       "entry:firecrawl-mcp",
       "entry:microsoft-mcp-gateway",
       "entry:playwright-mcp",
+      "entry:trpc-agent-go",
       "entry:browserbase-mcp",
       "entry:claude-code-memory",
       "entry:claude-code-subagents",
@@ -57265,11 +57526,15 @@
       "practice:mcp-server-selection",
       "prompt-pattern:codex-implementation",
       "entry:sentry-mcp",
+      "entry:trpc-agent-go",
       "entry:swarms",
       "entry:supabase-mcp",
       "entry:covenant-research",
       "entry:kaimo",
       "entry:openai-swarm"
+    ],
+    "production-grade": [
+      "entry:trpc-agent-go"
     ],
     "production-like": [
       "source:platform-and-data-connectors"
@@ -57522,6 +57787,7 @@
       "entry:rapier-js",
       "entry:ripgrep",
       "entry:three-js",
+      "entry:trpc-agent-go",
       "entry:ugrep",
       "entry:ast-grep",
       "entry:browserbase-mcp",
@@ -57695,7 +57961,8 @@
       "entry:google-agent2agent-protocol",
       "practice:mcp-server-selection",
       "entry:model-context-protocol",
-      "entry:chrome-devtools-mcp"
+      "entry:chrome-devtools-mcp",
+      "entry:trpc-agent-go"
     ],
     "protocol-registry": [
       "source:mcp-core-and-registry"
@@ -57704,7 +57971,8 @@
       "prompt-pattern:memory-bank-initialization"
     ],
     "protocols": [
-      "practice:payments"
+      "practice:payments",
+      "entry:trpc-agent-go"
     ],
     "prototype": [
       "task-rubric:frontend_ui",
@@ -57867,6 +58135,9 @@
     "purpose": [
       "prompt-pattern:memory-bank-initialization"
     ],
+    "pushed": [
+      "entry:trpc-agent-go"
+    ],
     "put": [
       "practice:persistent-memory-context-files",
       "practice:context-engineering",
@@ -57910,6 +58181,9 @@
     ],
     "python.": [
       "entry:swarms"
+    ],
+    "python/typescript": [
+      "entry:trpc-agent-go"
     ],
     "qa": [
       "visual-qa-protocol:vnem-visual-qa-protocol",
@@ -58125,7 +58399,8 @@
     ],
     "readme": [
       "entry:excalibur-js",
-      "entry:rapier-js"
+      "entry:rapier-js",
+      "entry:trpc-agent-go"
     ],
     "reads": [
       "source:coding-agent-clients",
@@ -58798,6 +59073,7 @@
       "entry:rapier-js",
       "entry:ripgrep",
       "entry:three-js",
+      "entry:trpc-agent-go",
       "entry:ugrep",
       "entry:ast-grep",
       "entry:browserbase-mcp",
@@ -59372,6 +59648,7 @@
       "entry:rapier-js",
       "entry:ripgrep",
       "entry:three-js",
+      "entry:trpc-agent-go",
       "entry:ugrep",
       "entry:ast-grep",
       "entry:browserbase-mcp",
@@ -59537,6 +59814,7 @@
       "entry:firecrawl-mcp",
       "entry:microsoft-mcp-gateway",
       "entry:playwright-mcp",
+      "entry:trpc-agent-go",
       "entry:browserbase-mcp",
       "entry:claude-code-memory",
       "entry:claude-code-subagents",
@@ -60495,6 +60773,7 @@
       "entry:rapier-js",
       "entry:ripgrep",
       "entry:three-js",
+      "entry:trpc-agent-go",
       "entry:ugrep",
       "entry:ast-grep",
       "entry:browserbase-mcp",
@@ -61095,6 +61374,7 @@
       "entry:ai-boolsai-directory",
       "entry:ai-boolsai-scan",
       "entry:matter-js",
+      "entry:trpc-agent-go",
       "entry:covenant-research"
     ],
     "sites": [
@@ -61425,6 +61705,9 @@
     ],
     "standards": [
       "source:ui-architecture-sources"
+    ],
+    "stars": [
+      "entry:trpc-agent-go"
     ],
     "start": [
       "practice:mcp-gateway-tool-routing",
@@ -61784,6 +62067,7 @@
       "practice:human-approval-and-durability",
       "entry:babylon-js",
       "entry:three-js",
+      "entry:trpc-agent-go",
       "entry:knip",
       "entry:stripe-agent-toolkit"
     ],
@@ -61909,6 +62193,7 @@
       "entry:llamaindex-agents",
       "entry:promptfoo",
       "entry:ragas",
+      "entry:trpc-agent-go",
       "entry:zep"
     ],
     "systems.": [
@@ -62210,6 +62495,7 @@
       "entry:langfuse",
       "entry:continue-dev",
       "entry:microsoft-mcp-gateway",
+      "entry:trpc-agent-go",
       "entry:langsmith",
       "entry:lunar-mcpx",
       "entry:qdrant-mcp-server",
@@ -62255,6 +62541,7 @@
       "entry:codex-agents-md",
       "entry:ai-agenticterminal-directory",
       "entry:aider",
+      "entry:trpc-agent-go",
       "entry:openai-codex-cli",
       "entry:swe-agent",
       "entry:openhands",
@@ -62604,6 +62891,7 @@
       "entry:playwright-mcp",
       "entry:rapier-js",
       "entry:three-js",
+      "entry:trpc-agent-go",
       "entry:ast-grep",
       "entry:claude-code-memory",
       "entry:nx-mcp",
@@ -62909,6 +63197,7 @@
       "entry:ai-com-mcp-linkedin",
       "entry:ai-moxt-mcp-workspace",
       "entry:ripgrep",
+      "entry:trpc-agent-go",
       "entry:github-mcp-server",
       "entry:letta",
       "entry:stripe-agent-toolkit",
@@ -63080,6 +63369,9 @@
     ],
     "triangles": [
       "design-architecture:vnem-design-architecture"
+    ],
+    "trpc-agent-go": [
+      "entry:trpc-agent-go"
     ],
     "true": [
       "entry:phaser"
@@ -63552,6 +63844,7 @@
       "entry:rapier-js",
       "entry:ripgrep",
       "entry:three-js",
+      "entry:trpc-agent-go",
       "entry:ugrep",
       "entry:ast-grep",
       "entry:browserbase-mcp",
@@ -64124,6 +64417,7 @@
       "entry:rapier-js",
       "entry:ripgrep",
       "entry:three-js",
+      "entry:trpc-agent-go",
       "entry:ugrep",
       "entry:ast-grep",
       "entry:browserbase-mcp",
@@ -64228,7 +64522,8 @@
       "entry:ai-gossiper-shopify-admin-mcp",
       "entry:ai-com-mcp-openai-tools",
       "entry:ai-artidrop-artidrop",
-      "entry:chrome-devtools-mcp"
+      "entry:chrome-devtools-mcp",
+      "entry:trpc-agent-go"
     ],
     "vibes.": [
       "entry:openai-prompt-optimizer"
@@ -64818,6 +65113,7 @@
     "who": [
       "prompt-pattern:ui-build",
       "prompt-pattern:visual-build",
+      "entry:trpc-agent-go",
       "entry:cursor-agent"
     ],
     "why": [
@@ -65316,6 +65612,7 @@
       "entry:rapier-js",
       "entry:ripgrep",
       "entry:three-js",
+      "entry:trpc-agent-go",
       "entry:ugrep",
       "entry:ast-grep",
       "entry:browserbase-mcp",

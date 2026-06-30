@@ -1,0 +1,76 @@
+schema_version: 1.0.0
+homepage_url: https://trpc-group.github.io/trpc-agent-go/
+repo_url: https://github.com/trpc-group/trpc-agent-go
+package_urls: []
+licenses:
+  - Apache-2.0
+copyright_owner: trpc-group
+source_kind: github
+protocols:
+  - MCP
+  - A2A
+  - AG-UI
+clients:
+  - Go
+  - Terminal
+install:
+  command: go get github.com/trpc-group/trpc-agent-go
+  notes: >-
+    Production Go agent framework. Requires Go 1.22+. Supports graph workflows,
+    tools, memory, A2A protocol, AG-UI, MCP server/client, evaluation, and
+    OpenTelemetry observability out of the box.
+  config_example: null
+permissions:
+  - filesystem
+  - network
+  - command-execution
+env_vars: []
+tags:
+  - agent-framework
+  - mcp
+  - a2a
+  - ag-ui
+  - go
+  - graph-workflows
+  - observability
+  - opentelemetry
+  - evaluation
+use_cases:
+  - Build production-grade AI agent systems in Go
+  - Orchestrate multi-agent workflows with graph-based control flow
+  - Expose agent capabilities via MCP, A2A, and AG-UI protocols
+  - Add OpenTelemetry-native observability to agent pipelines
+best_for:
+  - Go-speaking teams building production agent systems with multi-protocol support
+  - Agent builders who need graph workflows, evaluation, and observability in one framework
+not_for:
+  - Projects that cannot review upstream permissions, data handling, pricing, or operational risk.
+  - Non-Go projects or teams who prefer Python/TypeScript agent frameworks
+alternatives:
+  - langgraph
+  - crewai
+supersedes: []
+freshness: current
+source_confidence: high
+maintenance_signals:
+  - Actively pushed as of 2026-06-30
+  - Apache-2.0 licensed with clear README and docs site
+  - 1440 stars, 186 forks, 54 open issues
+risk_flags:
+  - sensitive-permissions
+  - command-execution
+recommended_when:
+  - Use when building Go-native production agent systems that need graph workflows, MCP, A2A, and observability.
+trust_tier: promising
+review_status: bot-reviewed
+last_checked: '2026-06-30'
+slug: trpc-agent-go
+name: trpc-agent-go
+type: agent-framework
+summary_llm: >-
+  trpc-agent-go is a Go framework for building production agent systems with
+  graph workflows, tools, memory, A2A protocol, AG-UI, MCP, evaluation,
+  and OpenTelemetry observability.
+source_urls:
+  - https://github.com/trpc-group/trpc-agent-go
+  - https://trpc-group.github.io/trpc-agent-go/
