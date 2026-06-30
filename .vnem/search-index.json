@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-06-29T22:37:27.790Z",
+  "generated_at": "2026-06-30T09:26:27.230Z",
   "schema_version": "1.0.0",
   "package_version": "1.0.1",
   "release_version": "1.0.1",
-  "release_date": "2026-06-29",
+  "release_date": "2026-06-30",
   "install_folder": ".vnem",
   "safety": {
     "mode": "read-only-files",
@@ -4678,7 +4678,7 @@
     ]
   },
   "coding_playbooks": {
-    "generated_at": "2026-06-29T22:37:27.790Z",
+    "generated_at": "2026-06-30T09:26:27.230Z",
     "schema_version": "1.0.0",
     "safety": {
       "mode": "read-only-coding-playbooks",

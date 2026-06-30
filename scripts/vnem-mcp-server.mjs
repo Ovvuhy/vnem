@@ -2113,7 +2113,7 @@ function selectToolsForTask(args = {}) {
     add("vnem_tools_workspace_map", "vnem_tools_architecture_review", "vnem_tools_code_search", "vnem_tools_read_many_files", "vnem_tools_project_scan", "vnem_tools_dependency_scan");
   }
   if (["coding", "ui_web", "debugging", "local_project_modification"].includes(type)) add("vnem_tools_apply_patch_batch", "vnem_tools_run_project_task", "vnem_tools_collect_evidence", "vnem_tools_git_status", "vnem_tools_git_diff_summary");
-  if (type === "ui_web") add("vnem_tools_ui_surface_review", "vnem_tools_browser_evidence_plan", "vnem_tools_ui_evidence_audit", "vnem_tools_start_dev_server", "vnem_tools_browser_capture", "vnem_tools_browser_page_inspect", "vnem_tools_browser_accessibility_audit", "vnem_tools_browser_compare_snapshots", "vnem_tools_stop_dev_server");
+  if (type === "ui_web") add("vnem_tools_ui_surface_review", "vnem_tools_browser_evidence_plan", "vnem_tools_browser_evidence_run", "vnem_tools_ui_evidence_audit", "vnem_tools_start_dev_server", "vnem_tools_browser_capture", "vnem_tools_browser_page_inspect", "vnem_tools_browser_accessibility_audit", "vnem_tools_browser_compare_snapshots", "vnem_tools_stop_dev_server");
   if (type === "debugging") add("vnem_tools_debug_evidence", "vnem_tools_architecture_review", "vnem_tools_code_search", "vnem_tools_read_many_files", "vnem_tools_run_project_task", "vnem_tools_apply_patch_batch");
   if (["research", "direct_url_source", "current_research", "website_understanding"].includes(type)) add("vnem_tools_source_quality_check", "vnem_tools_research_brief", "vnem_tools_browser_research_pack", "vnem_tools_claim_source_matrix", "vnem_tools_research_gap_detector", "vnem_tools_source_map", "vnem_tools_source_extract", "vnem_tools_source_graph");
   if (["research", "current_research"].includes(type)) add("vnem_tools_search_provider_manifest", "vnem_tools_search_query_builder", "vnem_tools_web_search", "vnem_tools_search_result_ranker");
@@ -2199,6 +2199,7 @@ function buildCoreToolsPlan(args = {}) {
   push("vnem_tools_architecture_review", "inspect real entry points/registries/tests/configs and flag fake parallel systems/dead code");
   push("vnem_tools_ui_surface_review", "inspect real UI routes/components/render paths/state coverage without browser automation");
   push("vnem_tools_browser_evidence_plan", "plan bounded localhost/file browser proof checklist before any capture");
+  push("vnem_tools_browser_evidence_run", "execute approved bounded localhost browser evidence plans and store structured screenshot/DOM/a11y proof packs", true, true);
   push("vnem_tools_ui_evidence_audit", "audit screenshots/DOM/console/network/a11y/viewport/state evidence before UI claims");
   push("vnem_tools_debug_evidence", "collect bounded log-first evidence, git status, package scripts, and targeted debug checks without arbitrary commands");
   push("vnem_tools_apply_patch_batch", "dry-run then apply approved coherent multi-file patch", true, true);
@@ -2310,7 +2311,7 @@ function buildUiQualityPlan(args = {}) {
     ],
     empty_loading_error_states_required: stateRequired ? ["loading/pending state", "empty/no-data state", "error/failure state", "success/normal populated state"] : ["state coverage still considered if data/form/API behavior appears"],
     before_after_required: beforeAfter,
-    Tools_MCP_actions_needed: ["vnem_tools_ui_surface_review", "vnem_tools_browser_evidence_plan", "vnem_tools_start_dev_server", "vnem_tools_browser_capture", "vnem_tools_browser_page_inspect", "vnem_tools_browser_accessibility_audit", "vnem_tools_browser_compare_snapshots", "vnem_tools_ui_evidence_audit", "vnem_tools_collect_evidence"],
+    Tools_MCP_actions_needed: ["vnem_tools_ui_surface_review", "vnem_tools_browser_evidence_plan", "vnem_tools_start_dev_server", "vnem_tools_browser_evidence_run", "vnem_tools_browser_capture", "vnem_tools_browser_page_inspect", "vnem_tools_browser_accessibility_audit", "vnem_tools_browser_compare_snapshots", "vnem_tools_ui_evidence_audit", "vnem_tools_collect_evidence"],
     permission_profile_expected: "safe-readonly for source review; safe-local-dev or approved-writes only for approved localhost browser proof after dry-run",
     local_dev_server_needed: true,
     risk_flags: ["component file may exist but not be rendered", "route may not point at changed component", "responsive claim may be desktop-only", "console/network errors can invalidate browser-works claims", "visual fix needs before/after proof", "state coverage can be missing for async/data UI"],

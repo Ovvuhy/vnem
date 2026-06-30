@@ -172,6 +172,7 @@ const coreDebuggingCodeQualityStatus = {
 
 const coreUiWebQualityStatus = {
   ui_quality_plan_status: toolInventory.includes("vnem_build_ui_quality_plan") && /buildUiQualityPlan/.test(serverSource) && /visual_evidence_required/.test(coreUiQualityPlanTestSource + serverSource),
+  ui_browser_evidence_run_handoff_status: /vnem_tools_browser_evidence_run/.test(serverSource + coreUiQualityPlanTestSource + mcpUserSmokeTestSource) && /core_plan_only:\s*true/.test(serverSource) && /core_executes_browser:\s*false/.test(serverSource),
   visual_proof_contract_status: toolInventory.includes("vnem_visual_proof_contract") && /buildVisualProofContract/.test(serverSource) && /responsive_fix/.test(coreVisualProofContractTestSource + serverSource),
   ui_completion_audit_status: /UI improved\/visual claim lacks screenshot|Responsive claim lacks multiple viewport|Accessibility claim lacks accessibility audit/i.test(await text("scripts/lib/quality-contracts.mjs")) && /test:ui-completion-audit|ui_findings|missing_evidence/.test(JSON.stringify(packageJson.scripts) + uiCompletionAuditTestSource),
   ui_route_component_planning_status: /routes_or_components_to_check|route\/component render evidence|vnem_tools_ui_surface_review/.test(serverSource + coreUiQualityPlanTestSource),
@@ -214,6 +215,7 @@ assert.ok(Object.values(coreUiWebQualityStatus).every(Boolean), "Core UI/web qua
 assert.ok(packageJson.scripts?.["test:core-ui-quality-plan"] === "node scripts/test-core-ui-quality-plan.mjs", "test:core-ui-quality-plan package script is missing");
 assert.ok(packageJson.scripts?.["test:core-visual-proof-contract"] === "node scripts/test-core-visual-proof-contract.mjs", "test:core-visual-proof-contract package script is missing");
 assert.ok(packageJson.scripts?.["test:ui-completion-audit"] === "node scripts/test-ui-completion-audit.mjs", "test:ui-completion-audit package script is missing");
+assert.ok(packageJson.scripts?.["test:browser-evidence-completion-audit"] === "node scripts/test-browser-evidence-completion-audit.mjs", "test:browser-evidence-completion-audit package script is missing");
 assert.ok(packageJson.scripts?.["test:core-research-strategy"] === "node scripts/test-core-research-strategy.mjs", "test:core-research-strategy package script is missing");
 assert.ok(packageJson.scripts?.["test:core-source-ingestion-planning"] === "node scripts/test-core-source-ingestion-planning.mjs", "test:core-source-ingestion-planning package script is missing");
 assert.ok(packageJson.scripts?.["test:research-evidence-audit"] === "node scripts/test-research-evidence-audit.mjs", "test:research-evidence-audit package script is missing");

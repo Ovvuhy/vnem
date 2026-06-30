@@ -62,6 +62,7 @@ const REQUIRED_TOOL_NAMES = [
   "vnem_tools_debug_evidence",
   "vnem_tools_ui_surface_review",
   "vnem_tools_browser_evidence_plan",
+  "vnem_tools_browser_evidence_run",
   "vnem_tools_ui_evidence_audit",
   "vnem_tools_apply_patch_batch",
   "vnem_tools_restore_batch",
@@ -915,11 +916,22 @@ function registerTools(mcpServer) {
   );
 
   mcpServer.registerTool(
+    "vnem_tools_browser_evidence_run",
+    {
+      title: "VNEM Browser Evidence Run",
+      description: "Execute a bounded approved localhost browser evidence run from a browser evidence plan. Coordinates existing capture/page-inspect/a11y tools, stores a structured proof pack, and returns blocked/partial results honestly when execution cannot prove the UI.",
+      inputSchema: { browser_evidence_plan: z.record(z.any()).optional(), app_url: z.string().default(""), routes: z.array(z.string()).default([]), user_flow: z.array(z.string()).default([]), claim_type: z.string().default("visual_improvement"), viewports: z.array(z.any()).default([]), states_to_check: z.array(z.string()).default([]), before_label: z.string().default(""), after_label: z.string().default(""), dry_run: z.boolean().default(true), approved: z.boolean().default(false), approval_note: z.string().default(""), wait_ms: z.number().int().min(0).max(MAX_BROWSER_WAIT_MS).default(500), session_id: z.string().optional() },
+      annotations: NETWORK_ACTION
+    },
+    async (args) => withToolErrors(async () => { const result = await safeBrowserEvidenceRun(args); return toolResult(formatBrowserEvidenceRun(result), { browser_evidence_run: result }); })
+  );
+
+  mcpServer.registerTool(
     "vnem_tools_ui_evidence_audit",
     {
       title: "VNEM UI Evidence Audit",
       description: "Audit provided UI evidence objects. Rejects code-only visual claims, missing screenshots, unknown console/network, single-viewport responsive claims, missing a11y/state/render/before-after evidence. Does not invent browser results.",
-      inputSchema: { claim: z.string().default(""), screenshots: z.array(z.any()).default([]), dom_assertions: z.array(z.any()).default([]), console_summary: z.any().optional(), network_summary: z.any().optional(), accessibility_summary: z.any().optional(), viewport_results: z.array(z.any()).default([]), state_results: z.array(z.any()).default([]), before_after: z.any().optional(), route_render_evidence: z.array(z.any()).default([]), session_id: z.string().optional() },
+      inputSchema: { claim: z.string().default(""), screenshots: z.array(z.any()).default([]), dom_assertions: z.array(z.any()).default([]), console_summary: z.any().optional(), network_summary: z.any().optional(), accessibility_summary: z.any().optional(), viewport_results: z.array(z.any()).default([]), state_results: z.array(z.any()).default([]), before_after: z.any().optional(), route_render_evidence: z.array(z.any()).default([]), browser_evidence_run: z.any().optional(), session_id: z.string().optional() },
       annotations: READ_ONLY_LOCAL
     },
     async (args) => withToolErrors(async () => { const result = await safeUiEvidenceAudit(args); return toolResult(formatUiEvidenceAudit(result), { ui_evidence_audit: result }); })
@@ -1609,6 +1621,7 @@ function buildToolCatalog() {
     mk("vnem_tools_debug_evidence", "debugging_code_quality", { description: "Collect bounded log-first debugging evidence from explicit logs, package scripts, config metadata, git status, changed files, and targeted-check suggestions. Does not run arbitrary commands/tests.", allowed_roots_required: true, evidence_logged: true, typical_use_cases: ["log-first triage", "pre-fix root-cause evidence", "targeted test selection"], unsafe_actions_blocked: [...commonUnsafe, "arbitrary command execution", "secret reads", "error suppression"], related_tools: ["vnem_tools_architecture_review", "vnem_tools_run_project_task", "vnem_tools_git_status"] }),
     mk("vnem_tools_ui_surface_review", "ui_web_quality", { description: "Inspect local UI routes/components/entrypoints/render paths/state/a11y gaps under allowed roots; no browser/network/install.", allowed_roots_required: true, evidence_logged: true, typical_use_cases: ["prove component is wired", "find dead UI", "route/component review"], unsafe_actions_blocked: [...commonUnsafe, "hidden browser automation", "broad crawling", "secret reads"], related_tools: ["vnem_tools_architecture_review", "vnem_tools_browser_evidence_plan", "vnem_tools_ui_evidence_audit"] }),
     mk("vnem_tools_browser_evidence_plan", "ui_web_quality", { description: "Plan visual/browser proof checklist without running a browser.", allowed_roots_required: false, evidence_logged: false, typical_use_cases: ["UI proof planning", "localhost route evidence checklist"], unsafe_actions_blocked: [...commonUnsafe, "hidden browser automation", "login/session/cookie/CAPTCHA automation"] }),
+    mk("vnem_tools_browser_evidence_run", "ui_web_quality", { read_only: false, network: true, requires_approval: true, dry_run_default: true, description: "Run bounded approved localhost browser proof collection and store structured screenshot/DOM/a11y evidence packs.", allowed_roots_required: true, evidence_logged: true, typical_use_cases: ["approved localhost UI proof run", "before/after screenshot evidence pack"], related_tools: ["vnem_tools_browser_evidence_plan", "vnem_tools_browser_capture", "vnem_tools_browser_page_inspect", "vnem_tools_browser_accessibility_audit", "vnem_tools_ui_evidence_audit"], unsafe_actions_blocked: [...commonUnsafe, "external browsing by default", "hidden browser automation", "login/session/cookie/CAPTCHA automation", "broad crawling"] }),
     mk("vnem_tools_ui_evidence_audit", "ui_web_quality", { description: "Audit provided UI evidence and reject unsupported visual/browser claims.", allowed_roots_required: false, evidence_logged: true, typical_use_cases: ["final UI claim audit", "responsive/a11y/state proof review"], unsafe_actions_blocked: [...commonUnsafe, "inventing browser results", "accepting code-only visual proof"] }),
     mk("vnem_tools_start_session", "session_evidence", { read_only: false, mutation: true, description: "Start session proof pack.", typical_use_cases: ["group local workflow evidence"] }),
     mk("vnem_tools_finish_session", "session_evidence", { read_only: false, mutation: true, description: "Write session proof pack.", typical_use_cases: ["final evidence summary"] }),
@@ -2551,18 +2564,203 @@ function normalizeViewports(values) {
   });
 }
 
+async function safeBrowserEvidenceRun(args) {
+  const plan = args.browser_evidence_plan && typeof args.browser_evidence_plan === "object" ? args.browser_evidence_plan : {};
+  const appUrl = String(args.app_url || plan.app_url || "").trim();
+  const routes = normalizeEvidenceRoutes(appUrl, arrayify(args.routes).length ? args.routes : plan.routes_to_visit || plan.routes || []);
+  const flow = arrayify(args.user_flow).length ? arrayify(args.user_flow).map(String) : arrayify(plan.user_flow_steps || plan.user_flow).map(String);
+  const viewports = normalizeViewports(arrayify(args.viewports).length ? args.viewports : plan.viewports || ["desktop"]);
+  const states = [...new Set([...(arrayify(args.states_to_check).map(String)), ...(arrayify(plan.states_to_force_or_verify).map(String))].filter(Boolean))];
+  const claimType = String(args.claim_type || plan.claim_type || "visual_improvement");
+  const dryRun = args.dry_run !== false;
+  const base = makeBrowserEvidenceRunBase({ appUrl, routes, flow, viewports, states, claimType, args, dryRun });
+  const blocked = [];
+  const privateText = `${appUrl} ${routes.join(" ")} ${flow.join(" ")}`;
+  if (!appUrl) blocked.push({ code: "app_url_required", reason: "Provide app_url for bounded browser evidence execution." });
+  if (/login|sign[ -]?in|account|private|cookie|session|browser profile|password|credential/i.test(privateText)) blocked.push({ code: "login_private_flow_blocked", reason: "Login/private/account/cookie/session/browser-profile flows are not automated." });
+  for (const urlText of routes.length ? routes : [appUrl]) {
+    try {
+      const url = new URL(urlText);
+      if (containsRawSecret(url.toString())) blocked.push({ code: "raw_secret_blocked", url: redactUrlString(url.toString()) });
+      if (url.username || url.password) blocked.push({ code: "credentialed_url_blocked", url: redactUrlString(url.toString()) });
+      if (!isLocalBrowserEvidenceUrl(url)) blocked.push({ code: "external_url_blocked", url: redactUrlString(url.toString()), reason: "Browser evidence run is limited to localhost/127.0.0.1/[::1] URLs in this build; use direct page tools for explicitly approved sources." });
+    } catch { blocked.push({ code: "invalid_url", url: redactSecrets(urlText) }); }
+  }
+  if (routes.some((route) => { try { return isLocalBrowserEvidenceUrl(new URL(route)); } catch { return false; } }) && process.env.VNEM_TOOLS_ALLOW_LOCALHOST !== "1") {
+    blocked.push({ code: "localhost_policy_disabled", reason: "Set VNEM_TOOLS_ALLOW_LOCALHOST=1 to allow approved localhost browser evidence execution." });
+  }
+  const preview = actionPolicyPreview({ action_type: "browser_capture", proposed_action: routes.join(" ") || appUrl });
+  if (!dryRun && !preview.allowed) blocked.push({ code: "permission_profile_blocked", reason: preview.reason, action_policy_preview: preview });
+  if (!dryRun && preview.requires_approval && (args.approved !== true || !String(args.approval_note || "").trim())) blocked.push({ code: "approval_required", reason: "Browser evidence execution requires dry_run=false, approved=true, and non-empty approval_note." });
+  if (dryRun || blocked.length) {
+    const result = { ...base, status: blocked.length ? "blocked" : "dry_run", failures_or_blockers: blocked, action_policy_preview: preview, localhost_policy: localhostEvidencePolicy(blocked), safe_to_claim: false, must_not_claim: browserEvidenceRunMustNotClaim(false, blocked) };
+    if (blocked.length) {
+      const log = await writeEvidenceLog("browser_evidence_run", result);
+      result.evidence_log_id = log.evidence_log_id;
+      recordSession(args.session_id, "browser_evidence_runs", result);
+    }
+    return result;
+  }
+
+  const screenshots = [];
+  const inspections = [];
+  const a11yAudits = [];
+  const blockers = [];
+  for (const routeUrl of routes) {
+    try {
+      const inspection = await safeBrowserPageInspect({ url: routeUrl, dry_run: false, approved: true, approval_note: args.approval_note || "approved browser evidence route inspection", max_bytes: 16000, session_id: args.session_id });
+      inspections.push(summarizePageInspectionForEvidence(routeUrl, inspection));
+    } catch (error) {
+      blockers.push({ route: redactSecrets(routeUrl), code: error.code || "page_inspect_failed", reason: error.message });
+    }
+    try {
+      const audit = await safeBrowserAccessibilityAudit({ url: routeUrl, dry_run: false, approved: true, approval_note: args.approval_note || "approved browser evidence accessibility audit", max_bytes: 16000, session_id: args.session_id });
+      a11yAudits.push({ route: redactSecrets(routeUrl), status: "checked", score: audit.score, issues: audit.issues || [], warnings: audit.warnings || [], evidence_log_id: audit.evidence_log_id });
+    } catch (error) {
+      blockers.push({ route: redactSecrets(routeUrl), code: error.code || "accessibility_audit_failed", reason: error.message });
+    }
+    for (const viewport of viewports) {
+      try {
+        const capture = await safeBrowserCapture({ url: routeUrl, dry_run: false, approved: true, approval_note: args.approval_note || "approved browser evidence screenshot capture", viewport_width: Number(viewport.width || 1280), viewport_height: Number(viewport.height || 720), wait_ms: args.wait_ms ?? 500, full_page: true, session_id: args.session_id });
+        screenshots.push({ route: redactSecrets(routeUrl), viewport: viewport.label || viewport.viewport || `${viewport.width}x${viewport.height}`, status: capture.status, captured: capture.captured === true, screenshot_path: capture.screenshot_path, screenshot_sha256: capture.screenshot_sha256, screenshot_bytes: capture.screenshot_bytes, evidence_log_id: capture.evidence_log_id, browser_runtime_status: capture.browser_runtime_status, must_not_claim: capture.must_not_claim || [] });
+        if (capture.status !== "captured") blockers.push({ route: redactSecrets(routeUrl), viewport: viewport.label || viewport.viewport || `${viewport.width}x${viewport.height}`, code: capture.status || "browser_capture_failed", reason: capture.browser_runtime_status || "screenshot not captured" });
+      } catch (error) {
+        blockers.push({ route: redactSecrets(routeUrl), viewport: viewport.label || viewport.viewport || `${viewport.width}x${viewport.height}`, code: error.code || "browser_capture_failed", reason: error.message });
+      }
+    }
+  }
+  const capturedScreenshots = screenshots.filter((item) => item.captured && item.screenshot_path);
+  const expectedScreenshotCount = routes.length * viewports.length;
+  const browserWasRun = capturedScreenshots.length > 0;
+  const allScreenshotsCaptured = expectedScreenshotCount > 0 && capturedScreenshots.length === expectedScreenshotCount;
+  const networkFailures = inspections.filter((item) => item.fetch_status && (item.fetch_status < 200 || item.fetch_status >= 400)).map((item) => ({ route: item.route, status: item.fetch_status }));
+  const consoleSummary = { status: "unavailable_not_collected_by_current_headless_capture", errors: null, warnings: null, available: false, note: "Current browser capture path uses a bounded headless screenshot command and does not expose runtime console events." };
+  const networkSummary = inspections.length && !networkFailures.length ? { status: "clean", failures: [], checked_routes: inspections.map((item) => ({ route: item.route, status: item.fetch_status || "unknown" })), note: "Route HTML fetches completed; subresource waterfall is not captured by current runtime." } : { status: inspections.length ? "failed_or_partial" : "unavailable", failures: networkFailures, checked_routes: inspections.map((item) => ({ route: item.route, status: item.fetch_status || "unknown" })) };
+  const accessibilitySummary = a11yAudits.length ? { status: "checked", routes_checked: a11yAudits.length, issue_count: a11yAudits.reduce((sum, item) => sum + item.issues.length, 0), audits: a11yAudits } : { status: "unavailable", routes_checked: 0, issue_count: null, audits: [] };
+  const viewportCoverage = viewports.map((viewport) => {
+    const label = viewport.label || viewport.viewport || `${viewport.width}x${viewport.height}`;
+    const captures = screenshots.filter((item) => item.viewport === label);
+    return { viewport: label, width: viewport.width || null, height: viewport.height || null, status: captures.length && captures.every((item) => item.captured) ? "passed" : captures.some((item) => item.captured) ? "partial" : "not_captured", routes_checked: captures.map((item) => item.route) };
+  });
+  const stateCoverage = states.map((state) => ({ state, status: inspections.some((item) => JSON.stringify(item).toLowerCase().includes(String(state).toLowerCase())) ? "observed_in_page_text_or_metadata" : "not_forced_or_not_observed" }));
+  const beforeAfter = { status: args.before_label && args.after_label ? "metadata_recorded_requires_matching_before_after_screenshots" : "not_provided", before_label: args.before_label || null, after_label: args.after_label || null, comparison_note: "This evidence run records before/after labels and screenshot metadata; it does not invent a prior baseline if no before screenshot exists." };
+  const safe = allScreenshotsCaptured && inspections.length === routes.length && networkSummary.status === "clean" && accessibilitySummary.status === "checked" && consoleSummary.status === "clean";
+  const result = {
+    ...base,
+    status: blockers.length ? (browserWasRun ? "partial" : "blocked") : "completed",
+    browser_was_run: browserWasRun,
+    routes_checked: routes.map((route) => ({ route: routePathForEvidence(route), url: redactSecrets(route), status: inspections.some((item) => item.url === redactSecrets(route)) ? "checked" : "not_checked" })),
+    user_flow_steps_attempted: flow,
+    viewports_checked: viewportCoverage,
+    states_checked: stateCoverage,
+    screenshots,
+    dom_or_page_inspection: inspections,
+    console_summary: consoleSummary,
+    network_summary: networkSummary,
+    accessibility_summary: accessibilitySummary,
+    before_after_comparison: beforeAfter,
+    viewport_coverage: viewportCoverage,
+    state_coverage: stateCoverage,
+    failures_or_blockers: blockers,
+    localhost_policy: localhostEvidencePolicy(blockers),
+    safe_to_claim: safe,
+    must_not_claim: browserEvidenceRunMustNotClaim(safe, blockers, { consoleSummary, allScreenshotsCaptured })
+  };
+  const log = await writeEvidenceLog("browser_evidence_run", result);
+  result.evidence_log_id = log.evidence_log_id;
+  recordSession(args.session_id, "browser_evidence_runs", result);
+  return result;
+}
+
+function makeBrowserEvidenceRunBase({ appUrl, routes, flow, viewports, states, claimType, args, dryRun }) {
+  return {
+    browser_was_run: false,
+    app_url: redactSecrets(appUrl),
+    claim_type: claimType,
+    routes_checked: routes.map((route) => ({ route: routePathForEvidence(route), url: redactSecrets(route), status: dryRun ? "planned" : "pending" })),
+    user_flow_steps_attempted: flow,
+    viewports_checked: viewports.map((viewport) => ({ viewport: viewport.label || viewport.viewport || `${viewport.width || "?"}x${viewport.height || "?"}`, width: viewport.width || null, height: viewport.height || null, status: dryRun ? "planned" : "pending" })),
+    states_checked: states.map((state) => ({ state, status: dryRun ? "planned" : "pending" })),
+    screenshots: [],
+    dom_or_page_inspection: [],
+    console_summary: { status: dryRun ? "planned" : "unknown" },
+    network_summary: { status: dryRun ? "planned" : "unknown" },
+    accessibility_summary: { status: dryRun ? "planned" : "unknown" },
+    before_after_comparison: { status: args.before_label || args.after_label ? "planned" : "not_provided", before_label: args.before_label || null, after_label: args.after_label || null },
+    failures_or_blockers: [],
+    permission_profile: activePermissionProfile.profile_name,
+    localhost_policy: localhostEvidencePolicy([]),
+    evidence_log_id: null,
+    safe_to_claim: false,
+    must_not_claim: browserEvidenceRunMustNotClaim(false, [])
+  };
+}
+
+function normalizeEvidenceRoutes(appUrl, rawRoutes) {
+  const base = appUrl ? new URL(appUrl) : null;
+  const inputs = arrayify(rawRoutes).map(String).filter((route) => route && !/provide exact/i.test(route));
+  if (!inputs.length && appUrl) return [base.toString()];
+  return inputs.map((route) => {
+    try {
+      if (/^https?:\/\//i.test(route)) return new URL(route).toString();
+      if (!base) return route;
+      if (route.startsWith("/")) return new URL(route, `${base.protocol}//${base.host}`).toString();
+      return new URL(route, base).toString();
+    } catch { return route; }
+  }).slice(0, 8);
+}
+
+function isLocalBrowserEvidenceUrl(url) {
+  return ["localhost", "127.0.0.1", "::1"].includes(url.hostname) && ["http:", "https:"].includes(url.protocol);
+}
+
+function localhostEvidencePolicy(blockers) {
+  const enabled = process.env.VNEM_TOOLS_ALLOW_LOCALHOST === "1";
+  const localBlocked = blockers.some((item) => item.code === "localhost_policy_disabled");
+  return { enabled, required_for_localhost: true, host_policy: "localhost/127.0.0.1/[::1] only; no login/cookie/session/CAPTCHA automation", reason: localBlocked ? "VNEM_TOOLS_ALLOW_LOCALHOST=1 is required for localhost browser evidence execution." : enabled ? "localhost browser evidence execution enabled for approved bounded routes" : "localhost execution disabled unless dry-run or non-executing plan" };
+}
+
+function summarizePageInspectionForEvidence(routeUrl, inspection) {
+  return { route: routePathForEvidence(routeUrl), url: redactSecrets(routeUrl), status: inspection.executed ? "checked" : "not_executed", source_type: inspection.source_type, title: inspection.title || "", headings: (inspection.headings || []).map((h) => h.text || h).slice(0, 8), main_text_excerpt: inspection.main_text_excerpt || "", links_count: inspection.links_count || 0, forms_count: inspection.forms_count || 0, buttons_count: inspection.buttons_count || 0, risk_flags: inspection.risk_flags || [], quality_flags: inspection.quality_flags || [], fetch_status: inspection.fetched?.status || null, evidence_log_id: inspection.evidence_log_id };
+}
+
+function routePathForEvidence(routeUrl) {
+  try { const url = new URL(routeUrl); return `${url.pathname}${url.search}` || "/"; } catch { return routeUrl; }
+}
+
+function browserEvidenceRunMustNotClaim(safe, blockers = [], details = {}) {
+  if (safe) return ["Do not generalize browser proof beyond the exact routes, user-flow steps, viewports, and states in this evidence run."];
+  return [
+    "Complete browser proof was collected.",
+    "Visual proof is complete for the UI claim.",
+    "The UI works in browser with clean console/network status.",
+    details.consoleSummary?.status !== "clean" ? "Console status is clean." : null,
+    details.allScreenshotsCaptured === false ? "Every required screenshot was captured." : null,
+    blockers.some((item) => /login|cookie|session|captcha/i.test(JSON.stringify(item))) ? "Login/private/cookie/session/CAPTCHA flow was automated." : null
+  ].filter(Boolean);
+}
+
+function formatBrowserEvidenceRun(result) {
+  return [`vnem_tools_browser_evidence_run: ${result.status}`, `Browser was run: ${result.browser_was_run}`, `Routes: ${result.routes_checked.length}`, `Screenshots: ${result.screenshots.filter((item) => item.captured).length}/${result.screenshots.length}`, `Safe to claim: ${result.safe_to_claim}`, `Evidence: ${result.evidence_log_id || "not written"}`].join("\n");
+}
+
 function safeUiEvidenceAudit(args) {
   const claim = String(args.claim || "");
   const hay = claim.toLowerCase();
-  const screenshots = arrayify(args.screenshots);
-  const dom = arrayify(args.dom_assertions);
-  const viewportResults = arrayify(args.viewport_results);
-  const stateResults = arrayify(args.state_results);
-  const routeEvidence = arrayify(args.route_render_evidence);
-  const consoleClean = summaryClean(args.console_summary);
-  const networkClean = summaryClean(args.network_summary);
-  const a11yChecked = summaryChecked(args.accessibility_summary);
-  const beforeAfterPresent = Boolean(args.before_after && Object.keys(args.before_after || {}).length) || screenshots.some((s) => /before/i.test(JSON.stringify(s))) && screenshots.some((s) => /after/i.test(JSON.stringify(s)));
+  const run = normalizeBrowserEvidenceRunForAudit(args.browser_evidence_run);
+  const screenshots = [...arrayify(args.screenshots), ...run.screenshots];
+  const dom = [...arrayify(args.dom_assertions), ...run.dom_assertions];
+  const viewportResults = [...arrayify(args.viewport_results), ...run.viewport_results];
+  const stateResults = [...arrayify(args.state_results), ...run.state_results];
+  const routeEvidence = [...arrayify(args.route_render_evidence), ...run.route_render_evidence];
+  const consoleSummary = args.console_summary ?? run.console_summary;
+  const networkSummary = args.network_summary ?? run.network_summary;
+  const accessibilitySummary = args.accessibility_summary ?? run.accessibility_summary;
+  const beforeAfter = args.before_after ?? run.before_after;
+  const consoleClean = summaryClean(consoleSummary);
+  const networkClean = summaryClean(networkSummary);
+  const a11yChecked = summaryChecked(accessibilitySummary);
+  const beforeAfterPresent = Boolean(beforeAfter && Object.keys(beforeAfter || {}).length && !/not_provided|missing/.test(String(beforeAfter.status || ""))) || screenshots.some((s) => /before/i.test(JSON.stringify(s))) && screenshots.some((s) => /after/i.test(JSON.stringify(s)));
   const viewportLabels = new Set(viewportResults.map((v) => String(v?.viewport || v?.label || v).toLowerCase()));
   const responsiveCovered = viewportResults.length >= 2 && (viewportLabels.has("mobile") || [...viewportLabels].some((v) => /390|375|mobile/.test(v))) && (viewportLabels.has("desktop") || [...viewportLabels].some((v) => /1280|1440|desktop/.test(v)));
   const stateNames = stateResults.map((s) => String(s?.state || s?.name || s).toLowerCase()).join(" ");
@@ -2586,7 +2784,8 @@ function safeUiEvidenceAudit(args) {
   let verdict = safe ? "accept_supported" : missing.some((m) => /screenshot missing|console|network|route/.test(m)) ? "reject" : "revise";
   return {
     verdict,
-    evidence_strength: safe ? "strong" : visualSupported ? "medium_with_gaps" : screenshots.length || dom.length ? "low" : "none",
+    evidence_strength: run.present ? (safe ? "strong_browser_evidence_run" : run.browser_was_run ? "browser_evidence_run_with_gaps" : "browser_evidence_run_blocked_or_incomplete") : safe ? "strong" : visualSupported ? "medium_with_gaps" : screenshots.length || dom.length ? "low" : "none",
+    browser_evidence_run_status: run.present ? (run.browser_was_run ? "completed_or_partial_browser_execution" : "blocked_or_not_run") : "not_provided",
     missing_evidence: missing,
     visual_claim_supported: visualSupported,
     route_or_component_wired: routeWired,
@@ -2598,6 +2797,26 @@ function safeUiEvidenceAudit(args) {
     safe_to_claim: safe,
     must_not_claim: safe ? ["Do not generalize beyond the provided routes/viewports/states."] : ["UI improved/works visually.", "Responsive across devices.", "Accessibility improved.", "Browser works with clean console/network.", "Component is rendered by a route."],
     next_best_check: missing[0] || "Attach evidence to final report and run relevant broader check near final."
+  };
+}
+
+function normalizeBrowserEvidenceRunForAudit(run) {
+  if (!run || typeof run !== "object") return { present: false, browser_was_run: false, screenshots: [], dom_assertions: [], viewport_results: [], state_results: [], route_render_evidence: [], console_summary: undefined, network_summary: undefined, accessibility_summary: undefined, before_after: undefined };
+  const screenshots = arrayify(run.screenshots).filter((item) => item && (item.screenshot_path || item.captured || item.status === "captured"));
+  const dom = arrayify(run.dom_or_page_inspection).map((item) => typeof item === "string" ? item : `${item.route || "route"} ${item.title || ""} ${(item.headings || []).join?.(" ") || ""} ${item.main_text_excerpt || ""}`.trim()).filter(Boolean);
+  const routes = arrayify(run.routes_checked).filter((item) => item && !/not_checked/i.test(String(item.status || "")));
+  return {
+    present: true,
+    browser_was_run: run.browser_was_run === true,
+    screenshots,
+    dom_assertions: dom,
+    viewport_results: arrayify(run.viewport_coverage || run.viewports_checked),
+    state_results: arrayify(run.state_coverage || run.states_checked),
+    route_render_evidence: routes.length ? routes : dom.map((item) => ({ route: "unknown", status: "checked", evidence: item })),
+    console_summary: run.console_summary,
+    network_summary: run.network_summary,
+    accessibility_summary: run.accessibility_summary,
+    before_after: run.before_after_comparison || run.before_after
   };
 }
 

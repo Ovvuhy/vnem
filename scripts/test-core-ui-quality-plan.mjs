@@ -36,7 +36,7 @@ try {
   assert.ok(plan.responsive_viewports_required.some((item) => /mobile/i.test(JSON.stringify(item))));
   assert.ok(plan.empty_loading_error_states_required.some((item) => /empty/i.test(item)));
   assert.equal(plan.before_after_required, true);
-  for (const expected of ["vnem_tools_ui_surface_review", "vnem_tools_browser_evidence_plan", "vnem_tools_ui_evidence_audit"]) assert.ok(plan.Tools_MCP_actions_needed.includes(expected), `missing ${expected}`);
+  for (const expected of ["vnem_tools_ui_surface_review", "vnem_tools_browser_evidence_plan", "vnem_tools_browser_evidence_run", "vnem_tools_ui_evidence_audit"]) assert.ok(plan.Tools_MCP_actions_needed.includes(expected), `missing ${expected}`);
   assert.equal(plan.permission_profile_expected, "safe-readonly for source review; safe-local-dev or approved-writes only for approved localhost browser proof after dry-run");
   assert.ok(plan.must_not_claim.some((item) => /Core opened a browser|captured screenshots|UI improved/i.test(item)));
 

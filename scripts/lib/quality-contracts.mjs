@@ -150,6 +150,16 @@ export function completionAudit(options = {}) {
   const changedFiles = arrayify(options.changed_files);
   const combined = normalize([task, claimed, ...evidence, ...commands, ...sources, ...visuals, ...changedFiles].join(" "));
   const evidenceText = normalize([evidence, commands, sources, visuals].flat().join(" "));
+  const browserEvidenceText = normalize([evidenceText, visuals.map((item) => typeof item === "string" ? item : JSON.stringify(item)).join(" ")].join(" "));
+  const hasBrowserEvidenceRun = /browser_evidence_run|browser evidence run|browser_was_run/.test(browserEvidenceText);
+  const browserEvidenceRunCompleted = hasBrowserEvidenceRun && /browser_was_run["'\s:=>-]*true/.test(browserEvidenceText);
+  const hasScreenshotEvidence = visuals.length > 0 || /screenshots?|screenshot_path|screenshot_sha256|browser screenshot|visual proof/.test(browserEvidenceText);
+  const hasRouteDomEvidence = /route evidence|render evidence|renders in route|caller|imported by|visible text|dom assertion|browser_page_inspect|dom_or_page_inspection|routes_checked|headings|main_text_excerpt/.test(browserEvidenceText);
+  const hasResponsiveEvidence = /(mobile.*desktop|desktop.*mobile|tablet|viewport_results|viewport_coverage|viewports_checked|multiple viewport|390|768|1440)/.test(browserEvidenceText);
+  const hasAccessibilityEvidence = /(accessibility audit|a11y audit|axe|aria checked|keyboard checked|browser_accessibility_audit|accessibility_summary|"status":"checked"|status checked)/.test(browserEvidenceText);
+  const hasBeforeAfterEvidence = /(before_after|before_after_comparison|before.*after|after.*before|compare|comparison|diff)/.test(browserEvidenceText);
+  const hasConsoleNetworkEvidence = /(console.*clean|clean.*console|network.*clean|clean.*network|console_summary|network_summary|0 errors|no failed requests)/.test(browserEvidenceText) && !/unavailable_not_collected|unknown_or_failed/.test(browserEvidenceText);
+  const hasStateEvidence = /(state_results|state_coverage|states_checked|loading.*empty.*error|empty.*loading.*error|forced state|state evidence)/.test(browserEvidenceText);
   const domains = classifyDomains(task, claimed);
   const missingContext = detectMissingContext({ task, claimed_result: claimed, token_budget: tokenBudget });
   const missingEvidence = [];
@@ -206,31 +216,31 @@ export function completionAudit(options = {}) {
     const accessibilityClaim = /accessibility|a11y|aria|keyboard|contrast|screen reader/.test(combined);
     const routeComponentClaim = /route added|component added|new route|new component|component.*works|route.*works|renders?/.test(combined);
     const browserWorksClaim = /works in browser|browser works|route works|dashboard works|form works/.test(combined);
-    if (visualClaim && !visuals.length) {
+    if (visualClaim && !hasScreenshotEvidence) {
       uiFindings.push("UI improved/visual claim lacks screenshot or browser visual evidence.");
       missingEvidence.push("Screenshot/browser visual evidence is missing for UI improved claim.");
     }
-    if (visualClaim && /fix|fixed|improved|layout|before.?after/.test(combined) && !/(before|after|compare|comparison|diff)/.test(evidenceText)) {
+    if (visualClaim && /fix|fixed|improved|layout|before.?after/.test(combined) && !hasBeforeAfterEvidence) {
       uiFindings.push("Visual/layout fix lacks before/after proof.");
       missingEvidence.push("Before/after visual proof is missing for visual fix claim.");
     }
-    if (routeComponentClaim && !/(route evidence|render evidence|renders in route|caller|imported by|visible text|dom assertion|browser_page_inspect)/.test(evidenceText)) {
+    if (routeComponentClaim && !hasRouteDomEvidence) {
       uiFindings.push("Route/component claim lacks render/caller/route evidence; component may exist but not be user-visible.");
       missingEvidence.push("Route/component render evidence is missing.");
     }
-    if (responsiveClaim && !/(mobile.*desktop|desktop.*mobile|tablet|viewport_results|multiple viewport|390|768|1440)/.test(evidenceText + " " + visuals.join(" ").toLowerCase())) {
+    if (responsiveClaim && !hasResponsiveEvidence) {
       uiFindings.push("Responsive claim lacks multiple viewport evidence.");
       missingEvidence.push("Multiple viewport evidence is missing for responsive claim.");
     }
-    if (accessibilityClaim && !/(accessibility audit|a11y audit|axe|aria checked|keyboard checked|browser_accessibility_audit)/.test(evidenceText)) {
+    if (accessibilityClaim && !hasAccessibilityEvidence) {
       uiFindings.push("Accessibility claim lacks accessibility audit evidence.");
       missingEvidence.push("Accessibility audit evidence is missing.");
     }
-    if (/(loading|error|empty|state)/.test(combined) && !/(state_results|loading.*empty.*error|empty.*loading.*error|forced state|state evidence)/.test(evidenceText)) {
+    if (/(loading|error|empty|state)/.test(combined) && !hasStateEvidence) {
       uiFindings.push("Loading/error/empty-state claim lacks state evidence.");
       missingEvidence.push("UI state evidence is missing.");
     }
-    if (browserWorksClaim && !/(console.*clean|clean.*console|network.*clean|clean.*network|console_summary|network_summary|0 errors|no failed requests)/.test(evidenceText)) {
+    if (browserWorksClaim && !hasConsoleNetworkEvidence) {
       uiFindings.push("Browser works claim has unknown console/network error status.");
       missingEvidence.push("Console/network evidence is missing for browser-works claim.");
     }
@@ -353,7 +363,7 @@ export function completionAudit(options = {}) {
   if (commands.length) score += 5;
   if (evidence.length >= 3) score += 5;
   if (domains.includes("research") && hasCurrentSourceEvidence) score += 12;
-  if (domains.includes("ui") && visuals.length && /(loading|error|empty|mobile|responsive|accessibility|a11y)/.test(combined)) score += 10;
+  if (domains.includes("ui") && (visuals.length || browserEvidenceRunCompleted) && /(loading|error|empty|mobile|responsive|accessibility|a11y)/.test(combined)) score += 10;
   if (domains.includes("api") && /(cors|https|auth|secret|backend|server|proxy|rate limit)/.test(combined)) score += 8;
   if (domains.includes("game_build") && /(pve|pvp|dlc|shadow|progression|rune|armor|poise|skill|patch|source)/.test(combined)) score += 10;
   if (domains.includes("modding") && /(game|version|tool|file format|regulation|bnd|dcx|pak|backup|isolation|restore|compatibility|verification)/.test(combined)) score += 12;
