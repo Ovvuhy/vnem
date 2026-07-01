@@ -1,0 +1,12 @@
+#!/usr/bin/env node
+import assert from "node:assert/strict";
+import { mkdir, mkdtemp, rm } from "node:fs/promises";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+const scriptDir=path.dirname(fileURLToPath(import.meta.url)); const rootDir=path.resolve(scriptDir,".."); await mkdir(path.join(rootDir,".tmp"),{recursive:true}); const tmpRoot=await mkdtemp(path.join(rootDir,".tmp","cf-redact-"));
+const client=new Client({name:"cf-redaction-test",version:"1.0.1"},{capabilities:{}}); const transport=new StdioClientTransport({command:process.execPath,args:[path.join(scriptDir,"vnem-tools-mcp-server.mjs")],cwd:rootDir,env:{...process.env,VNEM_TOOLS_ALLOWED_ROOTS:tmpRoot,VNEM_TOOLS_EVIDENCE_ROOT:path.join(tmpRoot,".vnem","tool-runs"),CLOUDFLARE_API_TOKEN:"cfut_REALTOKENSHOULDNOTAPPEAR1234567890",CF_API_TOKEN:"cfut_SECONDARYSHOULDNOTAPPEAR1234567890",CF_TOKEN:"plain-cf-token-secret"},stderr:"pipe"});
+try { await client.connect(transport); const leakText="CLOUDFLARE_API_TOKEN=cfut_REALTOKENSHOULDNOTAPPEAR1234567890 CF_API_TOKEN=cfut_SECONDARYSHOULDNOTAPPEAR1234567890 Authorization: Bearer abc.def.ghi cfut_thirdtokenthirdtokenthirdtoken X-Auth-Email: user@example.com X-Auth-Key: 1234567890abcdef SECRET=secret-value"; const check=await client.callTool({name:"vnem_tools_secret_redaction_check",arguments:{text:leakText,secret_values:["secret-value","plain-cf-token-secret"]}}); const r=check.structuredContent?.secret_redaction_check; assert.equal(r.leak_detected,true); assert.equal(r.redacted_output_safe,true); assert.ok(r.detected_patterns.includes("cfut_token")); assert.ok(r.detected_patterns.includes("authorization_bearer")); assert.ok(r.detected_patterns.includes("cloudflare_env_token")); assert.doesNotMatch(JSON.stringify(check),/REALTOKENSHOULDNOTAPPEAR|SECONDARYSHOULDNOTAPPEAR|abc\.def\.ghi|secret-value|plain-cf-token-secret/);
+ const env=await client.callTool({name:"vnem_tools_cloudflare_env_apply",arguments:{target_type:"pages",target_name:"demo",variables:[{name:"API_SECRET",value:"secret-value",secret:true,operation:"put"}],simulate:true,approval_phrase:"I APPROVE CLOUDFLARE MUTATION"}}); assert.equal(env.isError,true); assert.doesNotMatch(JSON.stringify(env),/secret-value/);
+ console.log("vnem Tools Cloudflare redaction tests passed"); } finally { await client.close().catch(()=>{}); await rm(tmpRoot,{recursive:true,force:true}); }

@@ -97,6 +97,8 @@ const intentAliases = {
   "research layer": ["source radar", "source intake", "current docs", "official docs", "mcp registry", "benchmark evidence", "evidence"],
   "source intake": ["source radar", "research layer", "upstream source", "source trust", "source provenance", "source license", "source permissions", "source risk review"],
   "benchmark evidence": ["evals", "inspect ai", "promptfoo", "ragas", "quality evidence", "performance data", "regression test", "pilot task"],
+  "cloudflare control": ["Cloudflare", "Wrangler", "Pages deploy", "Workers deploy", "DNS management", "cache purge", "rollback", "env secrets", "approval gates", "evidence pack"],
+  "deployment": ["deploy", "release", "Cloudflare", "Pages", "Workers", "rollback", "cache purge", "verification"],
   "pre execution gateway": ["zero trust gateway", "agent gateway", "tool firewall", "command risk", "alignment barrier", "path confinement", "secret redaction"],
   "zero trust gateway": ["pre execution gateway", "tool pinning", "schema hashing", "mcp rug pull", "tool poisoning", "read only hint", "destructive hint"],
   "tool pinning": ["schema hash", "tool schema", "mcp rug pull", "tool poisoning", "tools/list_changed", "tool annotations", "tool metadata"],

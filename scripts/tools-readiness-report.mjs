@@ -31,6 +31,12 @@ const toolsBrowserEvidencePlanTestPath = rel("scripts/test-tools-browser-evidenc
 const toolsBrowserEvidenceRunTestPath = rel("scripts/test-tools-browser-evidence-run.mjs");
 const browserEvidenceCompletionAuditTestPath = rel("scripts/test-browser-evidence-completion-audit.mjs");
 const toolsUiEvidenceAuditTestPath = rel("scripts/test-tools-ui-evidence-audit.mjs");
+const toolsCloudflareStatusAuthTestPath = rel("scripts/test-tools-cloudflare-status-auth.mjs");
+const toolsCloudflarePlansTestPath = rel("scripts/test-tools-cloudflare-plans.mjs");
+const toolsCloudflareApprovalGatesTestPath = rel("scripts/test-tools-cloudflare-approval-gates.mjs");
+const toolsCloudflareRedactionTestPath = rel("scripts/test-tools-cloudflare-redaction.mjs");
+const toolsCloudflareEvidencePackTestPath = rel("scripts/test-tools-cloudflare-evidence-pack.mjs");
+const toolsQualityGeneralTestPath = rel("scripts/test-tools-quality-general.mjs");
 const coreResearchStrategyTestPath = rel("scripts/test-core-research-strategy.mjs");
 const coreSourceIngestionPlanningTestPath = rel("scripts/test-core-source-ingestion-planning.mjs");
 const researchEvidenceAuditTestPath = rel("scripts/test-research-evidence-audit.mjs");
@@ -67,6 +73,12 @@ const toolsBrowserEvidencePlanTest = existsSync(toolsBrowserEvidencePlanTestPath
 const toolsBrowserEvidenceRunTest = existsSync(toolsBrowserEvidenceRunTestPath) ? readFileSync(toolsBrowserEvidenceRunTestPath, "utf8") : "";
 const browserEvidenceCompletionAuditTest = existsSync(browserEvidenceCompletionAuditTestPath) ? readFileSync(browserEvidenceCompletionAuditTestPath, "utf8") : "";
 const toolsUiEvidenceAuditTest = existsSync(toolsUiEvidenceAuditTestPath) ? readFileSync(toolsUiEvidenceAuditTestPath, "utf8") : "";
+const toolsCloudflareStatusAuthTest = existsSync(toolsCloudflareStatusAuthTestPath) ? readFileSync(toolsCloudflareStatusAuthTestPath, "utf8") : "";
+const toolsCloudflarePlansTest = existsSync(toolsCloudflarePlansTestPath) ? readFileSync(toolsCloudflarePlansTestPath, "utf8") : "";
+const toolsCloudflareApprovalGatesTest = existsSync(toolsCloudflareApprovalGatesTestPath) ? readFileSync(toolsCloudflareApprovalGatesTestPath, "utf8") : "";
+const toolsCloudflareRedactionTest = existsSync(toolsCloudflareRedactionTestPath) ? readFileSync(toolsCloudflareRedactionTestPath, "utf8") : "";
+const toolsCloudflareEvidencePackTest = existsSync(toolsCloudflareEvidencePackTestPath) ? readFileSync(toolsCloudflareEvidencePackTestPath, "utf8") : "";
+const toolsQualityGeneralTest = existsSync(toolsQualityGeneralTestPath) ? readFileSync(toolsQualityGeneralTestPath, "utf8") : "";
 const coreResearchStrategyTest = existsSync(coreResearchStrategyTestPath) ? readFileSync(coreResearchStrategyTestPath, "utf8") : "";
 const coreSourceIngestionPlanningTest = existsSync(coreSourceIngestionPlanningTestPath) ? readFileSync(coreSourceIngestionPlanningTestPath, "utf8") : "";
 const researchEvidenceAuditTest = existsSync(researchEvidenceAuditTestPath) ? readFileSync(researchEvidenceAuditTestPath, "utf8") : "";
@@ -141,7 +153,27 @@ const requiredTools = [
   "vnem_tools_finish_session",
   "vnem_tools_git_status",
   "vnem_tools_git_diff_summary",
-  "vnem_tools_git_commit"
+  "vnem_tools_git_commit",
+  "vnem_tools_cloudflare_status",
+  "vnem_tools_cloudflare_auth_plan",
+  "vnem_tools_cloudflare_accounts_list",
+  "vnem_tools_cloudflare_projects_list",
+  "vnem_tools_cloudflare_pages_deploy_plan",
+  "vnem_tools_cloudflare_pages_deploy",
+  "vnem_tools_cloudflare_workers_deploy_plan",
+  "vnem_tools_cloudflare_workers_deploy",
+  "vnem_tools_cloudflare_dns_plan",
+  "vnem_tools_cloudflare_dns_apply",
+  "vnem_tools_cloudflare_env_plan",
+  "vnem_tools_cloudflare_env_apply",
+  "vnem_tools_cloudflare_deploy_verify",
+  "vnem_tools_cloudflare_rollback_plan",
+  "vnem_tools_cloudflare_rollback",
+  "vnem_tools_cloudflare_cache_purge_plan",
+  "vnem_tools_cloudflare_cache_purge",
+  "vnem_tools_evidence_pack_audit",
+  "vnem_tools_mutation_approval_contract",
+  "vnem_tools_secret_redaction_check"
 ];
 
 const report = {
@@ -211,7 +243,13 @@ const report = {
     test_mcp_user_smoke: pkg.scripts?.["test:mcp-user-smoke"] === "node scripts/test-mcp-user-smoke.mjs",
     test_core_browser_research_planning: pkg.scripts?.["test:core-browser-research-planning"] === "node scripts/test-core-browser-research-planning.mjs",
     test_core_tool_selection: pkg.scripts?.["test:core-tool-selection"] === "node scripts/test-core-tool-selection.mjs",
-    test_core_tools_ecosystem: pkg.scripts?.["test:core-tools-ecosystem"] === "node scripts/test-core-tools-tool-ecosystem.mjs"
+    test_core_tools_ecosystem: pkg.scripts?.["test:core-tools-ecosystem"] === "node scripts/test-core-tools-tool-ecosystem.mjs",
+    test_tools_cloudflare_status_auth: pkg.scripts?.["test:tools-cloudflare-status-auth"] === "node scripts/test-tools-cloudflare-status-auth.mjs",
+    test_tools_cloudflare_plans: pkg.scripts?.["test:tools-cloudflare-plans"] === "node scripts/test-tools-cloudflare-plans.mjs",
+    test_tools_cloudflare_approval_gates: pkg.scripts?.["test:tools-cloudflare-approval-gates"] === "node scripts/test-tools-cloudflare-approval-gates.mjs",
+    test_tools_cloudflare_redaction: pkg.scripts?.["test:tools-cloudflare-redaction"] === "node scripts/test-tools-cloudflare-redaction.mjs",
+    test_tools_cloudflare_evidence_pack: pkg.scripts?.["test:tools-cloudflare-evidence-pack"] === "node scripts/test-tools-cloudflare-evidence-pack.mjs",
+    test_tools_quality_general: pkg.scripts?.["test:tools-quality-general"] === "node scripts/test-tools-quality-general.mjs"
   },
   required_tools_present: Object.fromEntries(requiredTools.map((name) => [name, server.includes(`"${name}"`)])),
   mcp_config_tools_support: /--tools/.test(cli) && /VNEM_TOOLS_ALLOWED_ROOTS/.test(cli) && /VNEM_TOOLS_EVIDENCE_ROOT/.test(cli) && /vnem-tools-mcp-server/.test(cli),
@@ -284,6 +322,24 @@ const report = {
   browser_evidence_no_login_cookie_status: /login_private_flow_blocked/.test(server) && /cookie|session|browser-profile|CAPTCHA/.test(server + toolsBrowserEvidenceRunTest),
   browser_evidence_pack_status: /writeEvidenceLog\("browser_evidence_run"/.test(server) && /evidence_log_id/.test(server + toolsBrowserEvidenceRunTest) && /test:browser-evidence-completion-audit|test-browser-evidence-completion-audit/.test(JSON.stringify(pkg.scripts) + browserEvidenceCompletionAuditTest),
   ui_evidence_audit_status: /vnem_tools_ui_evidence_audit/.test(server) && /safeUiEvidenceAudit/.test(server) && /browser_evidence_run/.test(server + toolsUiEvidenceAuditTest) && /code-only evidence|screenshot missing|safe_to_claim/.test(toolsUiEvidenceAuditTest + server),
+  cloudflare_control_status: /cloudflare_control/.test(server) && /buildCloudflareStatusPolicy/.test(server) && /vnem_tools_cloudflare_status/.test(server + toolsCloudflareStatusAuthTest),
+  cloudflare_auth_status_tool_status: /vnem_tools_cloudflare_status/.test(server) && /wrangler_available/.test(server) && /api_token_redacted/.test(toolsCloudflareStatusAuthTest + server),
+  cloudflare_auth_plan_status: /vnem_tools_cloudflare_auth_plan/.test(server) && /forbidden_auth_methods/.test(server) && /cookies/.test(toolsCloudflareStatusAuthTest),
+  cloudflare_discovery_status: /vnem_tools_cloudflare_accounts_list/.test(server) && /vnem_tools_cloudflare_projects_list/.test(server) && /read_only/.test(toolsCloudflareStatusAuthTest),
+  cloudflare_pages_deploy_status: /vnem_tools_cloudflare_pages_deploy_plan/.test(server) && /vnem_tools_cloudflare_pages_deploy/.test(server) && /pages_deploy/.test(toolsCloudflarePlansTest + toolsCloudflareApprovalGatesTest),
+  cloudflare_workers_deploy_status: /vnem_tools_cloudflare_workers_deploy_plan/.test(server) && /vnem_tools_cloudflare_workers_deploy/.test(server) && /workers_deploy/.test(toolsCloudflarePlansTest + toolsCloudflareApprovalGatesTest),
+  cloudflare_dns_status: /vnem_tools_cloudflare_dns_plan/.test(server) && /vnem_tools_cloudflare_dns_apply/.test(server) && /SPF|MX|www|apex/.test(toolsCloudflarePlansTest + server),
+  cloudflare_env_secrets_status: /vnem_tools_cloudflare_env_plan/.test(server) && /vnem_tools_cloudflare_env_apply/.test(server) && /values_redacted/.test(toolsCloudflarePlansTest + toolsCloudflareRedactionTest),
+  cloudflare_verify_status: /vnem_tools_cloudflare_deploy_verify/.test(server) && /deployment_url/.test(server),
+  cloudflare_rollback_status: /vnem_tools_cloudflare_rollback_plan/.test(server) && /vnem_tools_cloudflare_rollback/.test(server) && /rollback requires approval|Rollback/.test(toolsCloudflareApprovalGatesTest + server),
+  cloudflare_cache_purge_status: /vnem_tools_cloudflare_cache_purge_plan/.test(server) && /vnem_tools_cloudflare_cache_purge/.test(server) && /cache purge requires approval|cache_purge/.test(toolsCloudflareApprovalGatesTest + server),
+  cloudflare_approval_gate_status: /I APPROVE CLOUDFLARE MUTATION/.test(server + toolsCloudflareApprovalGatesTest) && /cloudflare_mutation_approval_required/.test(toolsCloudflareApprovalGatesTest + server),
+  cloudflare_destructive_approval_status: /I APPROVE CLOUDFLARE DESTRUCTIVE ACTION/.test(server + toolsCloudflareApprovalGatesTest) && /cloudflare_destructive_approval_required/.test(toolsCloudflareApprovalGatesTest + server),
+  cloudflare_secret_redaction_status: /CLOUDFLARE_API_TOKEN|CF_API_TOKEN|cfut_/.test(server + toolsCloudflareRedactionTest) && /secret_redaction_check/.test(toolsCloudflareRedactionTest + server),
+  cloudflare_evidence_pack_status: /writeCloudflareEvidencePack/.test(server) && /request_summary.json/.test(server + toolsCloudflareEvidencePackTest),
+  general_tools_evidence_pack_audit_status: /vnem_tools_evidence_pack_audit/.test(server) && /missing_files/.test(toolsQualityGeneralTest + server),
+  general_tools_mutation_approval_contract_status: /vnem_tools_mutation_approval_contract/.test(server) && /required_phrase/.test(toolsQualityGeneralTest + server),
+  general_tools_secret_redaction_check_status: /vnem_tools_secret_redaction_check/.test(server) && /redacted_output_safe/.test(toolsQualityGeneralTest + server),
   ui_surface_secret_blocking_status: /secret-like path blocked|secret\/session\/private path blocked/.test(server) && /must-not-read/.test(toolsUiSurfaceReviewTest),
   ui_route_component_detection_status: /routes_found|components_found|render_paths_found/.test(server) && /VisibleCard|DeadPanel|Dashboard/.test(toolsUiSurfaceReviewTest),
   ui_state_coverage_status: /missing_state_coverage/.test(server) && /loading|empty|error/.test(toolsUiSurfaceReviewTest + toolsBrowserEvidencePlanTest + toolsUiEvidenceAuditTest),
@@ -367,6 +423,7 @@ assert.equal(report.package_scripts.test_tools_intelligence, true, "test:tools-i
 assert.equal(report.package_scripts.test_tools_research, true, "test:tools-research package script is missing");
 assert.equal(report.package_scripts.test_core_tool_selection, true, "test:core-tool-selection package script is missing");
 assert.equal(report.package_scripts.test_core_tools_ecosystem, true, "test:core-tools-ecosystem package script is missing");
+for (const [key, value] of Object.entries({ test_tools_cloudflare_status_auth: report.package_scripts.test_tools_cloudflare_status_auth, test_tools_cloudflare_plans: report.package_scripts.test_tools_cloudflare_plans, test_tools_cloudflare_approval_gates: report.package_scripts.test_tools_cloudflare_approval_gates, test_tools_cloudflare_redaction: report.package_scripts.test_tools_cloudflare_redaction, test_tools_cloudflare_evidence_pack: report.package_scripts.test_tools_cloudflare_evidence_pack, test_tools_quality_general: report.package_scripts.test_tools_quality_general })) assert.equal(value, true, `${key} package script is missing`);
 assert.equal(report.intelligence_test_exists, true, "tools intelligence test file is missing");
 assert.equal(report.research_test_exists, true, "tools research test file is missing");
 assert.equal(report.browser_intelligence_test_exists, true, "browser intelligence test file is missing");
@@ -452,6 +509,7 @@ for (const [key, value] of Object.entries({ ui_surface_review_status: report.ui_
 assert.equal(report.browser_search_safety_policy, true, "browser/search safety policy missing");
 assert.equal(report.provider_unconfigured_honesty, true, "provider unconfigured honesty missing");
 assert.equal(report.no_captcha_bypass_public_policy, true, "no-CAPTCHA-bypass public policy missing");
+for (const [key, value] of Object.entries({ cloudflare_control_status: report.cloudflare_control_status, cloudflare_auth_status_tool_status: report.cloudflare_auth_status_tool_status, cloudflare_auth_plan_status: report.cloudflare_auth_plan_status, cloudflare_discovery_status: report.cloudflare_discovery_status, cloudflare_pages_deploy_status: report.cloudflare_pages_deploy_status, cloudflare_workers_deploy_status: report.cloudflare_workers_deploy_status, cloudflare_dns_status: report.cloudflare_dns_status, cloudflare_env_secrets_status: report.cloudflare_env_secrets_status, cloudflare_verify_status: report.cloudflare_verify_status, cloudflare_rollback_status: report.cloudflare_rollback_status, cloudflare_cache_purge_status: report.cloudflare_cache_purge_status, cloudflare_approval_gate_status: report.cloudflare_approval_gate_status, cloudflare_destructive_approval_status: report.cloudflare_destructive_approval_status, cloudflare_secret_redaction_status: report.cloudflare_secret_redaction_status, cloudflare_evidence_pack_status: report.cloudflare_evidence_pack_status, general_tools_evidence_pack_audit_status: report.general_tools_evidence_pack_audit_status, general_tools_mutation_approval_contract_status: report.general_tools_mutation_approval_contract_status, general_tools_secret_redaction_check_status: report.general_tools_secret_redaction_check_status })) assert.equal(value, true, `${key} readiness missing`);
 assert.equal(report.patch_batch_status, true, "patch batch support/test coverage is missing");
 assert.equal(report.restore_batch_status, true, "restore batch support/test coverage is missing");
 assert.equal(report.project_scan_status, true, "project scan support/test coverage is missing");
@@ -563,6 +621,7 @@ console.log(`ui_route_component_detection_status: ${yes(report.ui_route_componen
 console.log(`ui_state_coverage_status: ${yes(report.ui_state_coverage_status)}`);
 console.log(`ui_no_hidden_browser_status: ${yes(report.ui_no_hidden_browser_status)}`);
 console.log(`ui_visual_claim_audit_status: ${yes(report.ui_visual_claim_audit_status)}`);
+for (const key of ["cloudflare_control_status", "cloudflare_auth_status_tool_status", "cloudflare_auth_plan_status", "cloudflare_discovery_status", "cloudflare_pages_deploy_status", "cloudflare_workers_deploy_status", "cloudflare_dns_status", "cloudflare_env_secrets_status", "cloudflare_verify_status", "cloudflare_rollback_status", "cloudflare_cache_purge_status", "cloudflare_approval_gate_status", "cloudflare_destructive_approval_status", "cloudflare_secret_redaction_status", "cloudflare_evidence_pack_status", "general_tools_evidence_pack_audit_status", "general_tools_mutation_approval_contract_status", "general_tools_secret_redaction_check_status"]) console.log(`${key}: ${yes(report[key])}`);
 console.log(`parallel_fake_system_detection_status: ${yes(report.parallel_fake_system_detection_status)}`);
 console.log(`dead_code_warning_status: ${yes(report.dead_code_warning_status)}`);
 console.log(`contract_change_risk_status: ${yes(report.contract_change_risk_status)}`);
