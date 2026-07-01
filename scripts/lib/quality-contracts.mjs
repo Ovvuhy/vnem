@@ -161,6 +161,17 @@ export function completionAudit(options = {}) {
   const hasConsoleNetworkEvidence = /(console.*clean|clean.*console|network.*clean|clean.*network|console_summary|network_summary|0 errors|no failed requests)/.test(browserEvidenceText) && !/unavailable_not_collected|unknown_or_failed/.test(browserEvidenceText);
   const hasStateEvidence = /(state_results|state_coverage|states_checked|loading.*empty.*error|empty.*loading.*error|forced state|state evidence)/.test(browserEvidenceText);
   const domains = classifyDomains(task, claimed);
+  const designScoreNumbers = [...combined.matchAll(/\b(9[0-9]|100)\s*(?:\/\s*100|%|score)?\b/g)].map((match) => Number(match[1]));
+  const inflatedDesignScore = designScoreNumbers.some((score) => score >= 90) && (!hasScreenshotEvidence || !hasBeforeAfterEvidence);
+  const unsupportedOriginalVsNewScore = /(?:original|old|before).{0,30}(?:new|redesign|after)|(?:new|redesign|after).{0,30}(?:original|old|before)|versus original|vs original|\b\d{2,3}\s*\/\s*100/.test(combined) && (!hasScreenshotEvidence || !hasBeforeAfterEvidence);
+  const claimedBetterWithoutBeforeAfter = /better than (?:the )?(?:original|reference)|clearly better|dramatically better|superior/.test(combined) && !hasBeforeAfterEvidence;
+  const claimedBetterWithoutVisualEvidence = /better|improved|visual|looks|polished|redesign/.test(combined) && !hasScreenshotEvidence && domains.includes("ui");
+  const oneAxisDesignOptimization = /only (?:hero|visual|animation|motion|photo|typography)|(?:hero|visual|animation|motion|photo|typography).*only|only hero visual direction|one[- ]axis|prettier/.test(combined) || (/(hero|visual|beautiful|prettier|cinematic|animation)/.test(combined) && /(conversion|usability|mobile|content|trust|accessibility|performance).{0,40}(unknown|weak|missing|unclear|not evidenced)/.test(combined));
+  const newDesignWorseOrMixedButClaimedSuccess = /success|done|complete|clearly better|dramatically better/.test(combined) && (/mixed|worse|weak|unclear|unknown|not evidenced|missing/.test(combined) || oneAxisDesignOptimization || !hasScreenshotEvidence || !hasBeforeAfterEvidence) && domains.includes("ui");
+  const claimedText = normalize(claimed);
+  const compactOutputTooVague = /compact\s*(done|complete|success|looks great|looks better)|\b(done|complete|success)\b.{0,30}\blooks (great|better|good)\b/.test(claimedText) && !/(sha|test|screenshot|evidence|caveat|unknown|blocked|before|after)/.test(claimedText);
+  const compactOutputHidMaterialCaveat = /(no caveats included|caveat.*omitted|hid.*caveat|without caveat)/.test(combined) || (/compact\s/.test(claimedText) && /(no screenshot|pending|not captured|not verified|not proven|unknown)/.test(combined) && !/(caveat|blocked|unknown)/.test(claimedText));
+  const compactOutputRemovedNeededProof = /compact\s/.test(claimedText) && /(done|success|looks)/.test(claimedText) && !/(proof|evidence|test|sha|ci|screenshot|before|after)/.test(claimedText);
   const missingContext = detectMissingContext({ task, claimed_result: claimed, token_budget: tokenBudget });
   const missingEvidence = [];
   const unverifiedClaims = [];
@@ -266,6 +277,42 @@ export function completionAudit(options = {}) {
     if (browserWorksClaim && !hasConsoleNetworkEvidence) {
       uiFindings.push("Browser works claim has unknown console/network error status.");
       missingEvidence.push("Console/network evidence is missing for browser-works claim.");
+    }
+    if (inflatedDesignScore) {
+      uiFindings.push("inflated_design_score");
+      unverifiedClaims.push("inflated_design_score: numeric design score is unsupported by visual and before/after evidence.");
+    }
+    if (unsupportedOriginalVsNewScore) {
+      uiFindings.push("unsupported_original_vs_new_score");
+      missingEvidence.push("unsupported_original_vs_new_score: original-vs-new score needs an evidence-backed comparison scorecard.");
+    }
+    if (claimedBetterWithoutBeforeAfter) {
+      uiFindings.push("claimed_better_without_before_after");
+      missingEvidence.push("claimed_better_without_before_after: better-than-original claim needs before/after evidence.");
+    }
+    if (claimedBetterWithoutVisualEvidence) {
+      uiFindings.push("claimed_better_without_visual_evidence");
+      missingEvidence.push("claimed_better_without_visual_evidence: visual superiority needs screenshot/browser evidence.");
+    }
+    if (newDesignWorseOrMixedButClaimedSuccess) {
+      uiFindings.push("new_design_worse_or_mixed_but_claimed_success");
+      unverifiedClaims.push("new_design_worse_or_mixed_but_claimed_success: success claim conflicts with missing/mixed/worse design evidence.");
+    }
+    if (oneAxisDesignOptimization) {
+      uiFindings.push("one_axis_design_optimization");
+      missingEvidence.push("one_axis_design_optimization: redesign quality cannot be judged by one axis only.");
+    }
+    if (compactOutputTooVague) {
+      uiFindings.push("compact_output_too_vague");
+      missingEvidence.push("compact_output_too_vague: compact result needs concrete status, proof, caveats, and next step.");
+    }
+    if (compactOutputHidMaterialCaveat) {
+      uiFindings.push("compact_output_hid_material_caveat");
+      missingEvidence.push("compact_output_hid_material_caveat: material caveats must remain visible in compact output.");
+    }
+    if (compactOutputRemovedNeededProof) {
+      uiFindings.push("compact_output_removed_needed_proof");
+      missingEvidence.push("compact_output_removed_needed_proof: compact output must preserve needed proof.");
     }
   }
   if ((domains.includes("backend") || /backend|database|api route|server route/.test(combined)) && domains.includes("ui")) {

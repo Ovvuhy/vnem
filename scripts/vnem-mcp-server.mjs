@@ -99,6 +99,10 @@ const DEFAULT_MCP_TOOLS = [
   "vnem_fast_answer_contract",
   "vnem_design_ambition_plan",
   "vnem_visual_taste_audit",
+  "vnem_redesign_comparison_scorecard",
+  "vnem_total_impact_design_plan",
+  "vnem_design_direction_selector",
+  "vnem_compact_output_contract",
   "vnem_build_debugging_plan",
   "vnem_evidence_to_fix_check",
   "vnem_build_architecture_map",
@@ -641,13 +645,69 @@ function registerTools(mcpServer) {
     "vnem_visual_taste_audit",
     {
       title: "Audit VNEM Visual Taste",
-      description: "Read-only Core audit for UI/design quality: flags boring/generic/template-like, weak brand fit, ignored user style, low ambition, weak mobile/hero/typography/spacing, and missing visual/before-after proof.",
+      description: "Read-only Core audit for UI/design quality: flags boring/generic/template-like, weak brand fit, ignored user style, score inflation, one-axis optimization, actually-better-than-original risk, weak mobile/hero/typography/spacing, and missing visual/before-after proof.",
       inputSchema: { user_goal: z.string().min(1), design_summary: z.string().default(""), user_requested_style: z.string().optional(), referenced_site_or_product: z.string().optional(), evidence: z.array(z.any()).default([]), screenshots_or_visual_evidence: z.array(z.any()).default([]), before_after_evidence: z.array(z.any()).default([]), token_budget: z.enum(["compact", "normal", "expanded"]).default("normal") },
       annotations: READ_ONLY
     },
     async (args) => {
       const audit = buildVisualTasteAudit(args);
       return toolResult(formatVisualTasteAudit(audit), { visual_taste_audit: audit });
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_redesign_comparison_scorecard",
+    {
+      title: "Build VNEM Redesign Comparison Scorecard",
+      description: "Read-only Core scorecard for redesigns: compares original/reference vs new design across equal total-impact axes, flags inflated scores, one-axis optimization, and unsupported better-than-original claims. Core does not inspect screenshots or run a browser.",
+      inputSchema: { user_goal: z.string().min(1), original_summary: z.string().default(""), new_design_summary: z.string().default(""), claimed_original_score: z.number().optional(), claimed_new_score: z.number().optional(), claimed_result: z.string().default(""), evidence: z.array(z.any()).default([]), screenshots_or_visual_evidence: z.array(z.any()).default([]), before_after_evidence: z.array(z.any()).default([]), token_budget: z.enum(["compact", "normal", "expanded"]).default("normal") },
+      annotations: READ_ONLY
+    },
+    async (args) => {
+      const scorecard = buildRedesignComparisonScorecard(args);
+      return toolResult(formatRedesignComparisonScorecard(scorecard), { redesign_comparison_scorecard: scorecard });
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_total_impact_design_plan",
+    {
+      title: "Build VNEM Total Impact Design Plan",
+      description: "Read-only Core plan for redesign quality across visual beauty, brand, conversion, usability, hierarchy, typography, layout, mobile, motion, originality, performance/feel, trust/accessibility, and overall impact.",
+      inputSchema: { user_goal: z.string().min(1), referenced_site_or_product: z.string().default(""), business_goal: z.string().optional(), user_requested_style: z.string().optional(), known_context: z.string().optional(), token_budget: z.enum(["compact", "normal", "expanded"]).default("normal") },
+      annotations: READ_ONLY
+    },
+    async (args) => {
+      const plan = buildTotalImpactDesignPlan(args);
+      return toolResult(formatTotalImpactDesignPlan(plan), { total_impact_design_plan: plan });
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_design_direction_selector",
+    {
+      title: "Select VNEM Design Direction",
+      description: "Read-only Core selector for design/redesign directions using total impact rather than one-axis prettiness. It ranks candidate directions and preserves explicit user style while requiring before/after evidence later.",
+      inputSchema: { user_goal: z.string().min(1), referenced_site_or_product: z.string().default(""), user_requested_style: z.string().optional(), candidate_directions: z.array(z.any()).default([]), known_context: z.string().optional(), token_budget: z.enum(["compact", "normal", "expanded"]).default("normal") },
+      annotations: READ_ONLY
+    },
+    async (args) => {
+      const selector = buildDesignDirectionSelector(args);
+      return toolResult(formatDesignDirectionSelector(selector), { design_direction_selector: selector });
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_compact_output_contract",
+    {
+      title: "Build VNEM Compact Output Contract",
+      description: "Read-only Core compact-output contract: compact by default, not vague, never hiding material caveats or needed proof, and expands for risky/current/UI/debug/security/repo/file tasks.",
+      inputSchema: { task: z.string().min(1), output_text: z.string().default(""), material_caveats: z.array(z.string()).default([]), needed_proof: z.array(z.string()).default([]), evidence_available: z.array(z.string()).default([]), token_budget: z.enum(["compact", "normal", "expanded"]).default("compact") },
+      annotations: READ_ONLY
+    },
+    async (args) => {
+      const contract = buildCompactOutputContract(args);
+      return toolResult(formatCompactOutputContract(contract), { compact_output_contract: contract });
     }
   );
 
@@ -2192,6 +2252,22 @@ function buildFastAnswerContract(args = {}) {
   };
 }
 
+const DESIGN_TOTAL_IMPACT_AXES = [
+  "visual beauty",
+  "brand fit",
+  "conversion/sales clarity",
+  "usability",
+  "content hierarchy",
+  "typography",
+  "spacing/layout",
+  "mobile polish",
+  "animation/interactivity",
+  "originality",
+  "performance/feel",
+  "trust/accessibility basics",
+  "overall user impact"
+];
+
 function buildDesignAmbitionPlan(args = {}) {
   const userGoal = String(args.user_goal || "").trim();
   const site = String(args.referenced_site_or_product || "").trim();
@@ -2213,6 +2289,12 @@ function buildDesignAmbitionPlan(args = {}) {
     force_user_to_choose_design_directions: false,
     visual_ambition_level: explicitStyle ? "high_user_directed" : "high_adaptive_brand_fit",
     design_quality_targets: ["first screen must have a strong opinion", "not a generic template", "visible hierarchy and conversion clarity", "better than original/reference, not merely different"],
+    total_impact_required: true,
+    total_impact_requirements: DESIGN_TOTAL_IMPACT_AXES.map((axis) => `Improve ${axis} without sacrificing the other redesign axes.`),
+    avoid_one_axis_optimization: true,
+    comparison_scorecard_required: true,
+    before_after_evidence_required: true,
+    before_after_evidence_requirements: ["desktop and mobile before/after screenshots or browser evidence", "original/reference vs new comparison across all total-impact axes", "label mixed/worse/not-proven honestly"],
     typography_targets: ["distinct type scale", "strong headline rhythm", "readable body copy", "brand-fit weight/spacing"],
     layout_targets: ["clear hero", "strong CTA path", "scannable sections", "mobile-first responsive composition"],
     animation_interaction_targets: ["purposeful microinteractions when useful", "no distracting motion", "respect reduced-motion", "animation supports the requested style if specified"],
@@ -2243,28 +2325,38 @@ function buildVisualTasteAudit(args = {}) {
   const requestedWords = requested ? normalize(requested).split(" ").filter(Boolean) : [];
   const summaryNorm = normalize(summary);
   const styleMismatch = Boolean(requested && requestedWords.length && !requestedWords.every((word) => summaryNorm.includes(word)) && !summaryNorm.includes(requestedWords[0]));
-  const missingVisualProof = !evidence.some((item) => /screenshot|browser|visual|viewport|image|dom|browser_was_run/i.test(String(item)));
+  const missingVisualProof = !hasVisualEvidence(evidence);
   const missingBeforeAfter = /better|improved|redesign|original|reference/.test(text) && !beforeAfter.length && !/before.*after|after.*before|comparison/.test(text);
+  const oneAxis = detectOneAxisOptimization(text);
+  const inflated = detectInflatedDesignScore(text, evidence, beforeAfter);
+  const actuallyBetterRisk = /better|improved|redesign|original|reference|new version/.test(text) && (missingVisualProof || missingBeforeAfter || oneAxis || /unknown|not evidenced|uncertain|worse|mixed/.test(text));
   const issues = [];
   if (generic) issues.push("generic/template-like look; not enough brand-specific taste");
   if (/hero/.test(text) || generic) issues.push("hero/CTA/hierarchy needs stronger visual direction");
   if (/typography|plain|generic|boring/.test(text)) issues.push("typography/spacing/hierarchy are weak or unproven");
   if (/mobile|responsive|redesign|website/.test(text) && !/mobile screenshot|viewport|390|responsive evidence/.test(text)) issues.push("mobile polish is missing or unproven");
   if (styleMismatch) issues.push(`design ignores user-specified style: ${requested}`);
+  if (inflated) issues.push("inflated_design_score: design score appears too high for the evidence supplied");
+  if (oneAxis) issues.push("one_axis_design_optimization: design optimizes one visible axis while total impact is unknown or weak");
+  if (actuallyBetterRisk) issues.push("actually_better_than_original_risk: new design may be mixed, worse, or not proven better than original/reference");
   if (missingVisualProof) issues.push("missing visual/browser proof");
   if (missingBeforeAfter) issues.push("missing before/after comparison for better-than-original claim");
-  const scorePenalty = (generic ? 25 : 0) + (weakVisual ? 15 : 0) + (styleMismatch ? 25 : 0) + (missingVisualProof ? 20 : 0) + (missingBeforeAfter ? 10 : 0);
+  const scorePenalty = (generic ? 25 : 0) + (weakVisual ? 15 : 0) + (styleMismatch ? 25 : 0) + (missingVisualProof ? 20 : 0) + (missingBeforeAfter ? 10 : 0) + (inflated ? 12 : 0) + (oneAxis ? 16 : 0);
   const visualScore = Math.max(0, 90 - scorePenalty);
   return {
-    verdict: issues.length ? (missingVisualProof || styleMismatch ? "blocked" : "revise") : "pass_with_evidence",
+    verdict: issues.length ? (missingVisualProof || styleMismatch || inflated || actuallyBetterRisk ? "blocked" : "revise") : "pass_with_evidence",
     visual_quality_score: visualScore,
     brand_fit_score: styleMismatch ? 35 : generic ? 50 : 80,
     ambition_score: generic ? 35 : weakVisual ? 55 : 82,
-    usability_score: /unclear|cramped|bad/.test(text) ? 50 : 75,
+    usability_score: /unclear|cramped|bad|weak.*usability|usability.*unknown/.test(text) ? 45 : 75,
     mobile_score: /mobile screenshot|viewport|responsive evidence|390/.test(text) ? 80 : 45,
     animation_interaction_score: /animation|motion|interaction|microinteraction/.test(text) && !/no animation/.test(text) ? 75 : 45,
     originality_score: generic ? 30 : 72,
-    conversion_clarity_score: /cta|conversion|order|book|buy|contact/.test(text) ? 75 : 55,
+    conversion_clarity_score: /cta|conversion|order|book|buy|contact/.test(text) && !/unclear ordering|weak.*cta/.test(text) ? 75 : 50,
+    total_impact_axes: DESIGN_TOTAL_IMPACT_AXES,
+    inflated_design_score: inflated,
+    one_axis_design_optimization: oneAxis,
+    actually_better_than_original_risk: actuallyBetterRisk,
     boring_or_generic_risk: generic || weakVisual ? "high" : "medium",
     template_like_risk: generic ? "high" : "medium",
     over_safe_design_risk: generic || /corporate|muted|minimal/.test(text) ? "high" : "medium",
@@ -2273,11 +2365,241 @@ function buildVisualTasteAudit(args = {}) {
     missing_visual_proof: missingVisualProof,
     missing_before_after_comparison: missingBeforeAfter,
     strongest_visual_issues: uniqueStrings(issues),
-    highest_value_improvements: ["make the hero/CTA unmistakably stronger", "tighten typography, spacing, and visual hierarchy", "add brand-specific imagery/color/motion choices", "prove desktop/mobile before-after with browser evidence"],
+    highest_value_improvements: ["make the hero/CTA unmistakably stronger", "tighten typography, spacing, and visual hierarchy", "add brand-specific imagery/color/motion choices", "prove desktop/mobile before-after with browser evidence", "score the redesign across all total-impact axes"],
     safe_to_claim: !issues.length,
-    must_not_claim: ["visually better without screenshots", "better than original/reference without before/after comparison", "brand-fit design while style/business mismatch remains", "mobile polish without viewport evidence"]
+    must_not_claim: ["visually better without screenshots", "better than original/reference without before/after comparison", "95/100 or superior design scores without evidence-based scorecard", "brand-fit design while style/business mismatch remains", "mobile polish without viewport evidence"]
   };
 }
+
+function hasVisualEvidence(items = []) {
+  return routeArrayify(items).some((item) => /screenshot|browser|visual|viewport|image|dom|browser_was_run/i.test(String(item)));
+}
+
+function hasBeforeAfterEvidence(items = []) {
+  return routeArrayify(items).some((item) => /before.?after|after.?before|comparison|compare|diff/i.test(String(item)));
+}
+
+function detectInflatedDesignScore(text, evidence = [], beforeAfter = []) {
+  const scores = [...String(text).matchAll(/\b(9[0-9]|100)\s*(?:\/\s*100|%|score)?\b/g)].map((m) => Number(m[1]));
+  const highScore = scores.some((score) => score >= 90) || /perfect|dramatically better|clearly better|best[- ]in[- ]class|10\/10/.test(text);
+  return Boolean(highScore && (!hasVisualEvidence(evidence) || !hasBeforeAfterEvidence(beforeAfter)));
+}
+
+function detectOneAxisOptimization(text) {
+  const visualOnly = /(only|just|because).*\b(hero|beautiful|pretty|visual|photo|animation|motion|minimal|dark|premium)\b|\b(hero|beautiful|pretty|visual|photo|animation|motion)\b.*\bonly\b/.test(text);
+  const missingImpact = /(conversion|usability|mobile|content|hierarchy|trust|accessibility|performance|cta).*\b(unknown|not evidenced|uncertain|weak|missing|unclear)\b|\bunknown\b.*(conversion|usability|mobile|content|trust|performance)/.test(text);
+  return Boolean(visualOnly || missingImpact || (/beautiful|prettier|cinematic|animated/.test(text) && /unclear|weak|unknown|not evidenced/.test(text)));
+}
+
+function axisScoreForSummary(summary, axis, side) {
+  const text = normalize(summary);
+  let score = side === "new" ? 62 : 58;
+  const positive = {
+    "visual beauty": /beautiful|polished|strong visual|photography|cinematic|premium|distinct|warm/.test(text),
+    "brand fit": /brand|brand-fit|restaurant|pizza|local|warm|food|portfolio|editorial|user-specified/.test(text) && !/generic|saas|corporate/.test(text),
+    "conversion/sales clarity": /cta|order|buy|book|pricing|phone|contact|conversion|sales|above fold/.test(text) && !/unclear|weak/.test(text),
+    usability: /usable|navigation|clear|simple|menu|flow|thumb|readable/.test(text) && !/confusing|unclear/.test(text),
+    "content hierarchy": /hierarchy|menu|offer|value|section|scannable|above fold/.test(text),
+    typography: /typography|type scale|headline|readable|font/.test(text),
+    "spacing/layout": /spacing|layout|rhythm|grid|composition|fast-feeling/.test(text),
+    "mobile polish": /mobile|responsive|viewport|thumb|call button/.test(text),
+    "animation/interactivity": /animation|motion|interaction|microinteraction|hover|restrained/.test(text),
+    originality: /original|distinct|opinionated|brutalist|editorial|cinematic/.test(text) && !/generic|template/.test(text),
+    "performance/feel": /fast|lightweight|performance|fast-feeling|snappy|restrained/.test(text) && !/heavy/.test(text),
+    "trust/accessibility basics": /trust|accessibility|a11y|contrast|phone|address|reviews|proof|accessible/.test(text),
+    "overall user impact": /impact|better|clear|conversion|usable|orders|sales|user/.test(text) && !/unknown|not evidenced/.test(text)
+  };
+  const negative = {
+    "visual beauty": /ugly|plain|boring|weak visual/.test(text),
+    "brand fit": /generic|saas|corporate|no brand|low.*personality/.test(text),
+    "conversion/sales clarity": /weak.*cta|unclear.*cta|unclear ordering|missing.*order|menu.*not|phone.*not/.test(text),
+    usability: /confusing|unclear|cramped|uncertain mobile|weak.*usability/.test(text),
+    "content hierarchy": /clutter|equal-weight|unclear|menu.*not|content.*unknown/.test(text),
+    typography: /plain|generic typography|weak typography/.test(text),
+    "spacing/layout": /cramped|bad spacing|layout.*unknown|heavy/.test(text),
+    "mobile polish": /no mobile|mobile.*unknown|uncertain mobile|not evidenced/.test(text),
+    "animation/interactivity": /no animation|distracting|heavy/.test(text),
+    originality: /generic|template|stock|cards/.test(text),
+    "performance/feel": /heavy|slow|bloated/.test(text),
+    "trust/accessibility basics": /trust.*unknown|accessibility.*unknown|contrast.*unknown|not evidenced/.test(text),
+    "overall user impact": /unknown|not evidenced|mixed|worse|uncertain|weak/.test(text)
+  };
+  if (positive[axis]) score += 18;
+  if (negative[axis]) score -= 20;
+  if (text.includes("unknown") || text.includes("not evidenced")) score -= 6;
+  return clampDesignScore(score, 20, 88);
+}
+
+function averageScore(rows, key) {
+  return Math.round(rows.reduce((sum, row) => sum + Number(row[key] || 0), 0) / Math.max(1, rows.length));
+}
+
+function clampDesignScore(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
+
+function buildRedesignComparisonScorecard(args = {}) {
+  const userGoal = String(args.user_goal || "");
+  const original = String(args.original_summary || "");
+  const next = String(args.new_design_summary || "");
+  const claimed = String(args.claimed_result || "");
+  const evidence = routeArrayify(args.evidence);
+  const visuals = routeArrayify(args.screenshots_or_visual_evidence);
+  const beforeAfter = routeArrayify(args.before_after_evidence);
+  const allEvidence = [...evidence, ...visuals];
+  const combined = normalize(`${userGoal} ${original} ${next} ${claimed} ${allEvidence.join(" ")} ${beforeAfter.join(" ")}`);
+  const visualProof = hasVisualEvidence(visuals) || hasVisualEvidence(evidence);
+  const beforeAfterPresent = hasBeforeAfterEvidence(beforeAfter) || hasBeforeAfterEvidence(evidence);
+  const axis_scores = DESIGN_TOTAL_IMPACT_AXES.map((axis) => {
+    const originalScore = axisScoreForSummary(original, axis, "original");
+    let newScore = axisScoreForSummary(next, axis, "new");
+    if (!visualProof && ["visual beauty", "spacing/layout", "mobile polish", "animation/interactivity"].includes(axis)) newScore = Math.min(newScore, 62);
+    if (!beforeAfterPresent && axis === "overall user impact") newScore = Math.min(newScore, 58);
+    return { axis, original_score: originalScore, new_score: newScore, delta: newScore - originalScore, evidence_status: visualProof || !/visual|mobile|spacing|animation/.test(axis) ? "supported_or_plannable" : "not_proven_without_visual_evidence" };
+  });
+  const originalTotal = averageScore(axis_scores, "original_score");
+  const newTotal = averageScore(axis_scores, "new_score");
+  const oneAxis = detectOneAxisOptimization(combined);
+  const claimedOriginal = Number.isFinite(args.claimed_original_score) ? args.claimed_original_score : null;
+  const claimedNew = Number.isFinite(args.claimed_new_score) ? args.claimed_new_score : null;
+  const inflated = (claimedNew !== null && claimedNew >= 90 && (!visualProof || !beforeAfterPresent)) || detectInflatedDesignScore(`${claimed} ${next}`, allEvidence, beforeAfter);
+  const unsupportedScore = (claimedOriginal !== null || claimedNew !== null || /\b\d{2,3}\s*\/\s*100\b|versus original|vs original/.test(combined)) && (!beforeAfterPresent || !visualProof);
+  const betterClaim = /better|improved|superior|success|dramatically|clearly/.test(combined);
+  const worseOrMixedRisk = oneAxis || /weak|unclear|unknown|not evidenced|missing|mixed|worse|heavy/.test(normalize(next));
+  const verdict = !visualProof || !beforeAfterPresent ? "not_proven" : worseOrMixedRisk ? "mixed" : newTotal > originalTotal + 4 ? "better_with_evidence" : "mixed";
+  return {
+    user_goal: userGoal,
+    evaluation_axes: DESIGN_TOTAL_IMPACT_AXES,
+    equal_axis_weighting: true,
+    axis_scores,
+    original_total_impact_score: originalTotal,
+    new_total_impact_score: newTotal,
+    total_impact_delta: newTotal - originalTotal,
+    claimed_original_score: claimedOriginal,
+    claimed_new_score: claimedNew,
+    realistic_score_policy: "conservative_evidence_based_scores_no_visual_superiority_without_browser_or_screenshot_evidence",
+    visual_superiority_proven: Boolean(visualProof && beforeAfterPresent),
+    before_after_comparison_present: beforeAfterPresent,
+    comparison_scorecard_required: true,
+    total_impact_required: true,
+    avoid_one_axis_optimization: true,
+    one_axis_design_optimization: oneAxis,
+    inflated_design_score: inflated,
+    unsupported_original_vs_new_score: unsupportedScore,
+    user_might_rate_new_lower_risk: Boolean(!visualProof || !beforeAfterPresent || worseOrMixedRisk || newTotal <= originalTotal + 4),
+    redesign_verdict: verdict,
+    safe_to_claim_better_than_original: verdict === "better_with_evidence",
+    strongest_risks: uniqueStrings([
+      inflated ? "inflated_design_score" : null,
+      unsupportedScore ? "unsupported_original_vs_new_score" : null,
+      oneAxis ? "one_axis_design_optimization" : null,
+      !visualProof ? "claimed_better_without_visual_evidence" : null,
+      !beforeAfterPresent ? "claimed_better_without_before_after" : null,
+      worseOrMixedRisk && betterClaim ? "new_design_worse_or_mixed_but_claimed_success" : null
+    ].filter(Boolean)),
+    must_not_claim: uniqueStrings([
+      !visualProof ? "visual superiority or visually better than original without screenshots/browser evidence" : null,
+      !beforeAfterPresent ? "better than original/reference without before/after comparison" : null,
+      unsupportedScore ? "original-vs-new numeric score without evidence-backed scorecard" : null,
+      worseOrMixedRisk ? "success if new design is mixed, worse, or could realistically be rated lower" : null
+    ].filter(Boolean)),
+    core_plan_only: true
+  };
+}
+
+function buildTotalImpactDesignPlan(args = {}) {
+  const goal = String(args.user_goal || "");
+  const site = String(args.referenced_site_or_product || "");
+  const businessGoal = String(args.business_goal || args.known_context || "");
+  return {
+    user_goal: goal,
+    referenced_site_or_product: site || null,
+    business_goal: businessGoal || "infer from business/audience/reference before scoring",
+    total_impact_required: true,
+    avoid_one_axis_optimization: true,
+    comparison_scorecard_required: true,
+    before_after_evidence_required: true,
+    equal_mix_axes: DESIGN_TOTAL_IMPACT_AXES,
+    total_impact_requirements: DESIGN_TOTAL_IMPACT_AXES.map((axis) => `${axis}: improve or preserve this axis; do not sacrifice it for one prettier surface.`),
+    planning_sequence: ["inspect original/reference and business goal", "select direction by total impact", "design across all equal axes", "capture desktop/mobile before-after evidence", "score conservatively and label mixed/worse/not-proven when appropriate"],
+    evidence_requirements: ["screenshots/browser visual evidence", "desktop and mobile before/after comparison", "CTA/content hierarchy proof", "accessibility/trust basics check", "performance/feel check or caveat", "comparison scorecard across all axes"],
+    must_not_do: ["optimize only visual beauty, animation, minimalism, or novelty", "claim better when merely different", "use unsupported score inflation", "hide caveats in compact output", "claim visual superiority without screenshots/browser evidence"],
+    must_not_claim: ["better than original without before/after evidence", "total-impact win if conversion/usability/mobile/trust are unknown", "95/100 design score without evidence"],
+    core_plan_only: true
+  };
+}
+
+function normalizeDirection(raw, index) {
+  if (typeof raw === "string") return { name: raw, summary: raw, index };
+  return { name: String(raw?.name || raw?.title || `direction_${index + 1}`), summary: String(raw?.summary || raw?.description || raw?.rationale || raw?.name || ""), index };
+}
+
+function scoreDesignDirection(direction, userGoal, explicitStyle) {
+  const text = normalize(`${direction.name} ${direction.summary} ${userGoal}`);
+  let score = 50;
+  if (explicitStyle && text.includes(normalize(explicitStyle).split(" ")[0])) score += 18;
+  for (const axis of DESIGN_TOTAL_IMPACT_AXES) score += axisScoreForSummary(text, axis, "new") >= 70 ? 2 : -1;
+  if (detectOneAxisOptimization(text)) score -= 25;
+  if (/generic|template|saas cards|corporate/.test(text)) score -= 18;
+  if (/cta|order|conversion|menu|phone|mobile|trust|accessible|fast/.test(text)) score += 14;
+  return clampDesignScore(score, 0, 100);
+}
+
+function buildDesignDirectionSelector(args = {}) {
+  const goal = String(args.user_goal || "");
+  const explicit = detectUserDesignStyle(`${args.user_requested_style || ""} ${goal}`);
+  const candidates = routeArrayify(args.candidate_directions).map(normalizeDirection);
+  const fallback = candidates.length ? candidates : designDirectionsForBusiness(inferBusinessDesignContext(normalize(`${goal} ${args.referenced_site_or_product || ""}`), args.referenced_site_or_product || ""), explicit).map((name, index) => ({ name, summary: name, index }));
+  const scored = fallback.map((direction) => ({ ...direction, total_impact_score: scoreDesignDirection(direction, goal, explicit), one_axis_design_optimization: detectOneAxisOptimization(normalize(`${direction.name} ${direction.summary}`)) }));
+  scored.sort((a, b) => b.total_impact_score - a.total_impact_score || a.index - b.index);
+  const selected = scored[0];
+  return {
+    user_goal: goal,
+    selection_basis: "total_impact_not_one_axis",
+    avoid_one_axis_optimization: true,
+    total_impact_axes: DESIGN_TOTAL_IMPACT_AXES,
+    selected_direction: selected,
+    why_selected: explicit ? "Selected direction best preserves the user-specified style while maintaining total-impact basics." : "Selected direction has the strongest total-impact balance, not just the prettiest single axis.",
+    rejected_directions: scored.slice(1).map((item) => ({ name: item.name, total_impact_score: item.total_impact_score, reason: item.one_axis_design_optimization ? "rejected for one-axis optimization risk: visual/novelty without enough conversion, usability, brand, mobile, trust, or performance impact" : /generic|corporate|saas/i.test(`${item.name} ${item.summary}`) ? "rejected as generic/weak brand fit" : "lower total-impact score" })),
+    required_next_evidence: ["before/after screenshots", "mobile viewport evidence", "redesign comparison scorecard", "accessibility/trust basics check", "claim caveats if mixed or not proven"],
+    must_not_claim: ["selected direction is better until implemented and proven with before/after evidence", "visual-only direction is best if total impact is weaker"],
+    core_plan_only: true
+  };
+}
+
+function buildCompactOutputContract(args = {}) {
+  const task = String(args.task || "");
+  const out = String(args.output_text || "");
+  const caveats = routeArrayify(args.material_caveats);
+  const proof = routeArrayify(args.needed_proof);
+  const evidence = routeArrayify(args.evidence_available);
+  const text = normalize(`${task} ${out}`);
+  const risky = /current|latest|ui|redesign|debug|security|safe|repo|file|commit|push|deploy|browser|visual|proof|ci|test/.test(text);
+  const vague = !out.trim() || /^(done|fixed|complete|looks good|success)[.!\s]*(it works|looks better)?$/i.test(out.trim()) || (/\bdone\b|\blooks (good|great|better)\b/.test(normalize(out)) && !/(tested|proven|blocked|unknown|caveat|sha|screenshot|command|evidence|assum)/.test(normalize(out)));
+  const hidCaveat = caveats.length > 0 && !caveats.some((item) => normalize(out).includes(normalize(item).slice(0, 18))) && !/(caveat|blocked|unknown|pending|not captured|not verified|not proven)/.test(normalize(out));
+  const removedProof = proof.length > 0 && evidence.length === 0 && !/(test|screenshot|sha|ci|source|evidence|proof|command|browser|before|after)/.test(normalize(out));
+  return {
+    compact_by_default: true,
+    compact_does_not_mean_vague: true,
+    compact_does_not_remove_material_caveats: true,
+    compact_does_not_remove_needed_proof: true,
+    expand_for_risky_current_ui_debug_security_repo_file_tasks: risky,
+    compact_output_too_vague: vague,
+    compact_output_hid_material_caveat: hidCaveat,
+    compact_output_removed_needed_proof: removedProof,
+    recommended_length: risky ? "compact_with_required_evidence" : "short",
+    required_output_shape: risky ? ["Result", "What changed", "Tests/proof", "Caveats/unknowns", "Next best task"] : ["Result", "Assumption/caveat if any"],
+    material_caveats_required: caveats,
+    needed_proof_required: proof,
+    audit_flags: uniqueStrings([vague ? "compact_output_too_vague" : null, hidCaveat ? "compact_output_hid_material_caveat" : null, removedProof ? "compact_output_removed_needed_proof" : null].filter(Boolean)),
+    core_plan_only: true
+  };
+}
+
+function formatRedesignComparisonScorecard(s) { return [`vnem_redesign_comparison_scorecard: ${s.redesign_verdict}`, `original=${s.original_total_impact_score}`, `new=${s.new_total_impact_score}`, `visual_proven=${s.visual_superiority_proven}`].join("\n"); }
+function formatTotalImpactDesignPlan(p) { return [`vnem_total_impact_design_plan: total_impact_required=${p.total_impact_required}`, `axes=${p.equal_mix_axes.length}`, `scorecard_required=${p.comparison_scorecard_required}`].join("\n"); }
+function formatDesignDirectionSelector(s) { return [`vnem_design_direction_selector: ${s.selected_direction?.name || "none"}`, `basis=${s.selection_basis}`, `score=${s.selected_direction?.total_impact_score ?? "n/a"}`].join("\n"); }
+function formatCompactOutputContract(c) { return [`vnem_compact_output_contract: compact_by_default=${c.compact_by_default}`, `vague=${c.compact_output_too_vague}`, `expand=${c.expand_for_risky_current_ui_debug_security_repo_file_tasks}`].join("\n"); }
 
 function needsExternalResearchForAdaptive(type, text) {
   if (["current_research", "security_safety", "high_stakes_advice"].includes(type)) return true;
@@ -2315,7 +2637,7 @@ function formatFastAnswerContract(c) { return [`vnem_fast_answer_contract: direc
 function formatDesignAmbitionPlan(p) { return [`vnem_design_ambition_plan: ${p.selected_direction}`, `user_style=${p.user_specified_style}`, `adapt=${p.should_adapt_to_existing_brand}`].join("\n"); }
 function formatVisualTasteAudit(a) { return [`vnem_visual_taste_audit: ${a.verdict}`, `visual_score=${a.visual_quality_score}`, `safe_to_claim=${a.safe_to_claim}`].join("\n"); }
 function compactAdaptiveEffort(b) { return { effort_mode: b.effort_mode, why_not_deeper: "no_trigger", why_not_lighter: "truth_risk", minimum_quality_checks: ["classify"], truth_over_comfort_rule: "on", research_decision: b.research_needed ? "required" : "not_required", tool_budget: b.tool_budget.budget, wasted_tool_risk: ["instant_answer", "quick_plan"].includes(b.effort_mode) ? "high_if_decorative" : "avoid_decorative", escalation_triggers: ["current", "risk"], output_length_guidance: b.effort_mode === "instant_answer" ? "direct" : "compact" }; }
-function compactDesignBehavior(plan) { if (!plan) return { applies: false }; return { applies: true, user_style_specified: plan.user_specified_style, adapt_to_brand: plan.should_adapt_to_existing_brand, design_reference_needed: plan.design_reference_needed, visual_ambition_required: true, avoid_generic_template: true }; }
+function compactDesignBehavior(plan) { if (!plan) return { applies: false }; return { applies: true, user_style_specified: plan.user_specified_style, adapt_to_brand: plan.should_adapt_to_existing_brand, design_reference_needed: plan.design_reference_needed, visual_ambition_required: true, avoid_generic_template: true, total_impact_required: true, avoid_one_axis_optimization: true, comparison_scorecard_required: true, before_after_evidence_required: true }; }
 
 function buildAntiStagnationCheck(args = {}) {
   const task = String(args.task || "");

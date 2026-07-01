@@ -46,6 +46,11 @@ const coreFastAnswerContractTestSource = await text("scripts/test-core-fast-answ
 const coreAntiOverheadAuditTestSource = await text("scripts/test-core-anti-overhead-audit.mjs");
 const coreDesignAmbitionTestSource = await text("scripts/test-core-design-ambition.mjs");
 const coreVisualTasteAuditTestSource = await text("scripts/test-core-visual-taste-audit.mjs");
+const coreRedesignComparisonScorecardTestSource = await text("scripts/test-core-redesign-comparison-scorecard.mjs");
+const coreTotalImpactDesignPlanTestSource = await text("scripts/test-core-total-impact-design-plan.mjs");
+const coreDesignDirectionSelectorTestSource = await text("scripts/test-core-design-direction-selector.mjs");
+const coreCompactOutputContractTestSource = await text("scripts/test-core-compact-output-contract.mjs");
+const coreSpeedDesign2AuditTestSource = await text("scripts/test-core-speed-design-2-audit.mjs");
 const toolsSourceIngestionTestSource = await text("scripts/test-tools-source-ingestion.mjs");
 const toolsSourceGraphTestSource = await text("scripts/test-tools-source-graph.mjs");
 const mcpUserSmokeTestSource = await text("scripts/test-mcp-user-smoke.mjs");
@@ -194,8 +199,13 @@ const coreAdaptiveSpeedDesignStatus = {
   anti_overhead_audit_status: /anti_overhead_findings|overused deep verification on simple stable task|proof section without proof/.test(await text("scripts/lib/quality-contracts.mjs") + coreAntiOverheadAuditTestSource),
   design_ambition_status: toolInventory.includes("vnem_design_ambition_plan") && /buildDesignAmbitionPlan/.test(serverSource) && /adapt to business|force_user_to_choose_design_directions|generic template/i.test(serverSource + coreDesignAmbitionTestSource),
   visual_taste_audit_status: toolInventory.includes("vnem_visual_taste_audit") && /buildVisualTasteAudit/.test(serverSource) && /boring_or_generic_risk|template_like_risk|mismatch_with_user_requested_style/.test(serverSource + coreVisualTasteAuditTestSource),
+  redesign_comparison_scorecard_status: toolInventory.includes("vnem_redesign_comparison_scorecard") && /buildRedesignComparisonScorecard/.test(serverSource) && /inflated_design_score|unsupported_original_vs_new_score|visual_superiority_proven/.test(serverSource + coreRedesignComparisonScorecardTestSource),
+  total_impact_design_plan_status: toolInventory.includes("vnem_total_impact_design_plan") && /buildTotalImpactDesignPlan/.test(serverSource) && /total_impact_required|avoid_one_axis_optimization|comparison_scorecard_required/.test(serverSource + coreTotalImpactDesignPlanTestSource),
+  design_direction_selector_status: toolInventory.includes("vnem_design_direction_selector") && /buildDesignDirectionSelector/.test(serverSource) && /total_impact_not_one_axis|warm local delivery-first|rejected_directions/.test(serverSource + coreDesignDirectionSelectorTestSource),
+  compact_output_contract_status: toolInventory.includes("vnem_compact_output_contract") && /buildCompactOutputContract/.test(serverSource) && /compact_output_too_vague|compact_output_hid_material_caveat|compact_output_removed_needed_proof/.test(serverSource + coreCompactOutputContractTestSource),
+  speed_design_2_audit_status: /inflated_design_score|claimed_better_without_before_after|new_design_worse_or_mixed_but_claimed_success|compact_output_removed_needed_proof/.test(await text("scripts/lib/quality-contracts.mjs") + coreSpeedDesign2AuditTestSource),
   route_effort_categories_status: /simple_stable_question|prompt_improvement|ui_redesign|current_research|repo_modification|deployment_workflow/.test(serverSource + coreAdaptiveEffortTestSource),
-  boost_adaptive_design_status: /adaptive_effort|design_behavior|visual_ambition_required|wasted_tool_risk/.test(serverSource)
+  boost_adaptive_design_status: /adaptive_effort|design_behavior|visual_ambition_required|wasted_tool_risk|total_impact_required|comparison_scorecard_required/.test(serverSource)
 };
 
 const usablePackStatus = {
@@ -321,7 +331,8 @@ const report = {
     "Core now builds research strategies, source-ingestion plans, source-graph planning, contradiction/freshness confidence limits, and research evidence audits while remaining plan-only.",
     "Core now builds log-first debugging plans, evidence-to-fix checks, architecture maps, code-change contracts, and completion-audit code-quality warnings while remaining plan-only.",
     "Core now builds UI quality plans and visual proof contracts, and completion audit flags UI/browser overclaims without visual, route/render, console/network, a11y, viewport, state, and before/after evidence while remaining plan-only.",
-    "Core now classifies adaptive effort, enforces fast-answer/no-ceremony contracts, harsh-truth uncertainty labels, design ambition, visual taste audits, and wasted-tool/anti-overhead checks while remaining plan-only."
+    "Core now classifies adaptive effort, enforces fast-answer/no-ceremony contracts, harsh-truth uncertainty labels, design ambition, visual taste audits, and wasted-tool/anti-overhead checks while remaining plan-only.",
+    "Core now adds realistic redesign comparison scorecards, total-impact design planning, total-impact direction selection, compact output contracts, and SPEED-DESIGN-2 audit flags while remaining plan-only."
   ],
   not_ready: [
     "Most API docs, rate limits, CORS values, and freshness statuses remain metadata-level or unknown.",

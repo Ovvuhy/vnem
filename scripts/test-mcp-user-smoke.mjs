@@ -26,7 +26,7 @@ try {
   await tools.connect(toolsTransport);
 
   const coreToolNames = new Set((await core.listTools()).tools.map((tool) => tool.name));
-  for (const name of ["vnem_plan_effort_budget", "vnem_fast_answer_contract", "vnem_design_ambition_plan", "vnem_visual_taste_audit"]) assert.ok(coreToolNames.has(name), `Core manifest missing ${name}`);
+  for (const name of ["vnem_plan_effort_budget", "vnem_fast_answer_contract", "vnem_design_ambition_plan", "vnem_visual_taste_audit", "vnem_redesign_comparison_scorecard", "vnem_total_impact_design_plan", "vnem_design_direction_selector", "vnem_compact_output_contract"]) assert.ok(coreToolNames.has(name), `Core manifest missing ${name}`);
 
   const corePlan = await core.callTool({ name: "vnem_build_search_plan", arguments: { task: "Research a current browser MCP safely and identify suspicious download risks", freshness_required: true } });
   const searchPlan = corePlan.structuredContent?.search_plan;
