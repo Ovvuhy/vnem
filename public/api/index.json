@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-06-30T09:26:27.230Z",
+  "generated_at": "2026-07-01T10:44:46.419Z",
   "schema_version": "1.0.0",
   "package_version": "1.0.1",
   "release_version": "1.0.1",
-  "release_date": "2026-06-30",
+  "release_date": "2026-07-01",
   "entry_count": 228,
   "install_command": "curl -fsSL https://raw.githubusercontent.com/Ovvuhy/vnem/main/public/install.tgz | tar -xz",
   "install_archive": "/install.tgz",
@@ -4867,6 +4867,18 @@
       {
         "name": "Intelligent Trade-offs",
         "rule": "When constraints conflict, engineer controls, modes, fallbacks, and evidence before lowering product quality."
+      },
+      {
+        "name": "Quality Floor, Adaptive Effort Ceiling",
+        "rule": "Use VNEM Core to classify every task, keep simple stable answers direct, and escalate only when truth, safety, files, UI, debugging, current facts, repo work, or public claims need evidence."
+      },
+      {
+        "name": "Harsh Truth Without Fake Comfort",
+        "rule": "Say bad/unknown/current-source-needed plainly; never claim a file, browser, repo, UI, source, test, or deployment was checked unless it was actually checked."
+      },
+      {
+        "name": "Visual Ambition",
+        "rule": "For UI/redesign work, adapt to the user's style or the business/audience/brand instead of shipping generic safe templates; prove visual claims with browser/visual evidence."
       }
     ],
     "triple_check": [
@@ -4888,7 +4900,29 @@
       "Do not remove visual quality, game feel, accessibility, or verification just to claim better performance.",
       "If performance conflicts with visuals or playability, first offer an intelligent alternative: quality toggles, settings GUI, adaptive effects, lazy loading, reduced-motion handling, asset optimization, feature flags, or scoped fallback.",
       "For production-ready work, require evidence that the task still works, still looks/feels intentional when visual or interactive, and remains maintainable.",
-      "If evidence cannot be gathered, report the blocked verification and residual risk instead of claiming ship-quality."
+      "If evidence cannot be gathered, report the blocked verification and residual risk instead of claiming ship-quality.",
+      "Do not add long reports, decorative tool plans, fake proof sections, or pointless clarification when a direct answer is enough.",
+      "Do not skip research/tools when facts may be current, high-stakes, source-dependent, file/repo/debug/UI/security-related, or explicitly requested for verification."
+    ],
+    "adaptive_effort_modes": [
+      "instant_answer",
+      "quick_plan",
+      "standard",
+      "deep_proof",
+      "max_verification"
+    ],
+    "truth_rules": [
+      "truth_over_comfort_status",
+      "no_sugarcoating_status",
+      "uncertainty_must_be_labeled_status",
+      "harsh_truth_quality_status"
+    ],
+    "design_ambition_rules": [
+      "Follow explicit user style when supplied.",
+      "If style is not supplied, adapt to the website/business/audience/content/purpose and improve weak original choices.",
+      "Do not force premium/modern/minimal/fun/corporate by default.",
+      "Internally consider directions, then implement the strongest one unless uncertainty materially changes the result.",
+      "Flag generic/template-like/boring design and missing visual proof."
     ],
     "domain_balance": [
       "performance",
@@ -5195,7 +5229,7 @@
     ]
   },
   "coding_playbooks": {
-    "generated_at": "2026-06-30T09:26:27.230Z",
+    "generated_at": "2026-07-01T10:44:46.419Z",
     "schema_version": "1.0.0",
     "safety": {
       "mode": "read-only-coding-playbooks",

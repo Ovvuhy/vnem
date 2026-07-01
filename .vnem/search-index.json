@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-06-30T09:26:27.230Z",
+  "generated_at": "2026-07-01T10:44:46.419Z",
   "schema_version": "1.0.0",
   "package_version": "1.0.1",
   "release_version": "1.0.1",
-  "release_date": "2026-06-30",
+  "release_date": "2026-07-01",
   "install_folder": ".vnem",
   "safety": {
     "mode": "read-only-files",
@@ -4350,6 +4350,18 @@
       {
         "name": "Intelligent Trade-offs",
         "rule": "When constraints conflict, engineer controls, modes, fallbacks, and evidence before lowering product quality."
+      },
+      {
+        "name": "Quality Floor, Adaptive Effort Ceiling",
+        "rule": "Use VNEM Core to classify every task, keep simple stable answers direct, and escalate only when truth, safety, files, UI, debugging, current facts, repo work, or public claims need evidence."
+      },
+      {
+        "name": "Harsh Truth Without Fake Comfort",
+        "rule": "Say bad/unknown/current-source-needed plainly; never claim a file, browser, repo, UI, source, test, or deployment was checked unless it was actually checked."
+      },
+      {
+        "name": "Visual Ambition",
+        "rule": "For UI/redesign work, adapt to the user's style or the business/audience/brand instead of shipping generic safe templates; prove visual claims with browser/visual evidence."
       }
     ],
     "triple_check": [
@@ -4371,7 +4383,29 @@
       "Do not remove visual quality, game feel, accessibility, or verification just to claim better performance.",
       "If performance conflicts with visuals or playability, first offer an intelligent alternative: quality toggles, settings GUI, adaptive effects, lazy loading, reduced-motion handling, asset optimization, feature flags, or scoped fallback.",
       "For production-ready work, require evidence that the task still works, still looks/feels intentional when visual or interactive, and remains maintainable.",
-      "If evidence cannot be gathered, report the blocked verification and residual risk instead of claiming ship-quality."
+      "If evidence cannot be gathered, report the blocked verification and residual risk instead of claiming ship-quality.",
+      "Do not add long reports, decorative tool plans, fake proof sections, or pointless clarification when a direct answer is enough.",
+      "Do not skip research/tools when facts may be current, high-stakes, source-dependent, file/repo/debug/UI/security-related, or explicitly requested for verification."
+    ],
+    "adaptive_effort_modes": [
+      "instant_answer",
+      "quick_plan",
+      "standard",
+      "deep_proof",
+      "max_verification"
+    ],
+    "truth_rules": [
+      "truth_over_comfort_status",
+      "no_sugarcoating_status",
+      "uncertainty_must_be_labeled_status",
+      "harsh_truth_quality_status"
+    ],
+    "design_ambition_rules": [
+      "Follow explicit user style when supplied.",
+      "If style is not supplied, adapt to the website/business/audience/content/purpose and improve weak original choices.",
+      "Do not force premium/modern/minimal/fun/corporate by default.",
+      "Internally consider directions, then implement the strongest one unless uncertainty materially changes the result.",
+      "Flag generic/template-like/boring design and missing visual proof."
     ],
     "domain_balance": [
       "performance",
@@ -4678,7 +4712,7 @@
     ]
   },
   "coding_playbooks": {
-    "generated_at": "2026-06-30T09:26:27.230Z",
+    "generated_at": "2026-07-01T10:44:46.419Z",
     "schema_version": "1.0.0",
     "safety": {
       "mode": "read-only-coding-playbooks",
@@ -7720,12 +7754,19 @@
         "playability",
         "production ready",
         "settings gui",
-        "domain balance"
+        "domain balance",
+        "adaptive effort",
+        "no ceremony",
+        "harsh truth",
+        "visual ambition"
       ],
       "use_cases": [
         "Holistic Excellence: Performance, visuals, playability, accessibility, maintainability, and safety are all part of done when they apply to the task.",
         "Proactive Enhancement: Infer the stronger product the user actually wants, not only the smallest literal interpretation of the prompt.",
         "Intelligent Trade-offs: When constraints conflict, engineer controls, modes, fallbacks, and evidence before lowering product quality.",
+        "Quality Floor, Adaptive Effort Ceiling: Use VNEM Core to classify every task, keep simple stable answers direct, and escalate only when truth, safety, files, UI, debugging, current facts, repo work, or public claims need evidence.",
+        "Harsh Truth Without Fake Comfort: Say bad/unknown/current-source-needed plainly; never claim a file, browser, repo, UI, source, test, or deployment was checked unless it was actually checked.",
+        "Visual Ambition: For UI/redesign work, adapt to the user's style or the business/audience/brand instead of shipping generic safe templates; prove visual claims with browser/visual evidence.",
         "Analyze: Identify the user's stated goal, hidden requirements, visible or interactive surfaces, risk domains, and what the user will judge even if they did not say it explicitly.",
         "Architect: Plan for maximum feasible performance and top-tier visuals/playability together. Prefer robust settings, quality profiles, progressive enhancement, fallback paths, asset optimization, and smarter algorithms over degrading the product.",
         "Review: Before final output or code delivery, verify no important domain was sacrificed. If a trade-off remains, state it explicitly with evidence and the next best mitigation.",
@@ -7733,7 +7774,23 @@
         "Do not remove visual quality, game feel, accessibility, or verification just to claim better performance.",
         "If performance conflicts with visuals or playability, first offer an intelligent alternative: quality toggles, settings GUI, adaptive effects, lazy loading, reduced-motion handling, asset optimization, feature flags, or scoped fallback.",
         "For production-ready work, require evidence that the task still works, still looks/feels intentional when visual or interactive, and remains maintainable.",
-        "If evidence cannot be gathered, report the blocked verification and residual risk instead of claiming ship-quality."
+        "If evidence cannot be gathered, report the blocked verification and residual risk instead of claiming ship-quality.",
+        "Do not add long reports, decorative tool plans, fake proof sections, or pointless clarification when a direct answer is enough.",
+        "Do not skip research/tools when facts may be current, high-stakes, source-dependent, file/repo/debug/UI/security-related, or explicitly requested for verification.",
+        "Adaptive effort mode: instant_answer",
+        "Adaptive effort mode: quick_plan",
+        "Adaptive effort mode: standard",
+        "Adaptive effort mode: deep_proof",
+        "Adaptive effort mode: max_verification",
+        "truth_over_comfort_status",
+        "no_sugarcoating_status",
+        "uncertainty_must_be_labeled_status",
+        "harsh_truth_quality_status",
+        "Follow explicit user style when supplied.",
+        "If style is not supplied, adapt to the website/business/audience/content/purpose and improve weak original choices.",
+        "Do not force premium/modern/minimal/fun/corporate by default.",
+        "Internally consider directions, then implement the strongest one unless uncertainty materially changes the result.",
+        "Flag generic/template-like/boring design and missing visual proof."
       ],
       "best_for": [
         "Optimize the actual bottleneck before lowering quality.",
@@ -7802,6 +7859,14 @@
         "settings",
         "gui",
         "balance",
+        "adaptive",
+        "effort",
+        "no",
+        "ceremony",
+        "harsh",
+        "truth",
+        "visual",
+        "ambition",
         "all",
         "part",
         "done",
@@ -7829,6 +7894,57 @@
         "evidence",
         "lowering",
         "quality.",
+        "floor",
+        "ceiling",
+        "core",
+        "classify",
+        "every",
+        "task",
+        "keep",
+        "simple",
+        "stable",
+        "answers",
+        "direct",
+        "escalate",
+        "files",
+        "ui",
+        "debugging",
+        "current",
+        "facts",
+        "repo",
+        "work",
+        "or",
+        "public",
+        "claims",
+        "need",
+        "evidence.",
+        "without",
+        "fake",
+        "comfort",
+        "say",
+        "bad/unknown/current-source-needed",
+        "plainly",
+        "never",
+        "claim",
+        "file",
+        "browser",
+        "test",
+        "deployment",
+        "was",
+        "checked",
+        "unless",
+        "it",
+        "checked.",
+        "ui/redesign",
+        "adapt",
+        "style",
+        "business/audience/brand",
+        "shipping",
+        "generic",
+        "safe",
+        "templates",
+        "prove",
+        "browser/visual",
         "analyze",
         "identify",
         "stated",
@@ -7836,7 +7952,6 @@
         "hidden",
         "requirements",
         "visible",
-        "or",
         "interactive",
         "surfaces",
         "risk",
@@ -7847,8 +7962,6 @@
         "even",
         "if",
         "did",
-        "say",
-        "it",
         "explicitly.",
         "architect",
         "plan",
@@ -7874,9 +7987,7 @@
         "output",
         "delivery",
         "verify",
-        "no",
         "important",
-        "was",
         "sacrificed.",
         "trade-off",
         "remains",
@@ -7888,61 +7999,7 @@
         "do",
         "solve",
         "requirement",
-        "by",
-        "quietly",
-        "damaging",
-        "another",
-        "requirement.",
-        "remove",
-        "visual",
-        "game",
-        "feel",
-        "verification",
-        "just",
-        "claim",
-        "better",
-        "performance.",
-        "conflicts",
-        "first",
-        "offer",
-        "an",
-        "alternative",
-        "toggles",
-        "adaptive",
-        "effects",
-        "lazy",
-        "loading",
-        "reduced-motion",
-        "handling",
-        "feature",
-        "flags",
-        "scoped",
-        "fallback.",
-        "production-ready",
-        "work",
-        "require",
-        "task",
-        "still",
-        "works",
-        "looks/feels",
-        "intentional",
-        "maintainable.",
-        "cannot",
-        "be",
-        "gathered",
-        "report",
-        "blocked",
-        "residual",
-        "claiming",
-        "ship-quality.",
-        "actual",
-        "bottleneck",
-        "expose",
-        "user-controllable",
-        "quality/performance",
-        "both",
-        "high",
-        "matter."
+        "by"
       ]
     },
     {
@@ -44691,7 +44748,6 @@
       "orchestration-protocol:vnem-orchestration-protocol"
     ],
     "actual": [
-      "quality-contract:vnem-quality-contract",
       "practice:visual-experience",
       "visual-qa-protocol:vnem-visual-qa-protocol",
       "practice:mcp-server-selection",
@@ -44711,6 +44767,9 @@
     ],
     "adadvisor": [
       "entry:ai-adadvisor-mcp-server"
+    ],
+    "adapt": [
+      "quality-contract:vnem-quality-contract"
     ],
     "adaptation.": [
       "entry:ai-nefesh-human-state"
@@ -46433,14 +46492,14 @@
     "alt-data.": [
       "entry:ai-drillr-drillr"
     ],
-    "alternative": [
-      "quality-contract:vnem-quality-contract"
-    ],
     "alternatives": [
       "practice:holistic-excellence-intelligent-tradeoffs"
     ],
     "ambiguous": [
       "prompt-pattern:eval-design"
+    ],
+    "ambition": [
+      "quality-contract:vnem-quality-contract"
     ],
     "ambitious": [
       "prompt-pattern:zero-trust-gateway-roadmap"
@@ -46454,7 +46513,6 @@
       "practice:precision-execution-dynamic-knowledge",
       "orchestration-protocol:vnem-orchestration-protocol",
       "practice:multi-agent-orchestration-reflection",
-      "quality-contract:vnem-quality-contract",
       "practice:holistic-excellence-intelligent-tradeoffs",
       "install-guide:vnem-install-guide",
       "coding-protocol:vnem-coding-protocol",
@@ -46748,7 +46806,6 @@
       "entry:ai-anomalyarmor-armor-mcp"
     ],
     "another": [
-      "quality-contract:vnem-quality-contract",
       "practice:holistic-excellence-intelligent-tradeoffs",
       "source:platform-and-data-connectors",
       "prompt-pattern:agentic-coding-task"
@@ -46767,6 +46824,7 @@
     ],
     "answers": [
       "orchestration-protocol:vnem-orchestration-protocol",
+      "quality-contract:vnem-quality-contract",
       "entry:ragas"
     ],
     "answers.": [
@@ -47873,6 +47931,9 @@
     "backtesting": [
       "entry:agency-lona-trading"
     ],
+    "bad/unknown/current-source-needed": [
+      "quality-contract:vnem-quality-contract"
+    ],
     "badges": [
       "design-architecture:vnem-design-architecture"
     ],
@@ -47925,7 +47986,6 @@
     ],
     "be": [
       "precision-execution-protocol:vnem-precision-execution-protocol",
-      "quality-contract:vnem-quality-contract",
       "practice:holistic-excellence-intelligent-tradeoffs",
       "coding-playbook:feature-slice",
       "practice:visual-experience",
@@ -48715,7 +48775,6 @@
       "source:secure-mcp-distribution"
     ],
     "better": [
-      "quality-contract:vnem-quality-contract",
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
       "coding-playbook:web-app-rendered-quality",
@@ -48794,7 +48853,6 @@
       "practice:precision-execution-dynamic-knowledge",
       "orchestration-protocol:vnem-orchestration-protocol",
       "practice:multi-agent-orchestration-reflection",
-      "quality-contract:vnem-quality-contract",
       "coding-playbook:failure-recovery",
       "design-architecture:vnem-design-architecture",
       "visual-qa-protocol:vnem-visual-qa-protocol",
@@ -49024,11 +49082,7 @@
       "entry:ai-com-mcp-linkedin",
       "entry:ai-moxt-mcp-workspace"
     ],
-    "both": [
-      "quality-contract:vnem-quality-contract"
-    ],
     "bottleneck": [
-      "quality-contract:vnem-quality-contract",
       "practice:holistic-excellence-intelligent-tradeoffs"
     ],
     "boundaries": [
@@ -49137,6 +49191,7 @@
       "entry:ai-moxt-mcp-workspace"
     ],
     "browser": [
+      "quality-contract:vnem-quality-contract",
       "practice:holistic-excellence-intelligent-tradeoffs",
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
@@ -49227,6 +49282,9 @@
     ],
     "browser/screenshot": [
       "task-rubric:aesthetic_experience"
+    ],
+    "browser/visual": [
+      "quality-contract:vnem-quality-contract"
     ],
     "browserbase": [
       "source:browser-and-ui-verification",
@@ -49388,6 +49446,9 @@
       "entry:ai-bezal-local-commerce",
       "entry:ai-nordax-mcp",
       "entry:zep"
+    ],
+    "business/audience/brand": [
+      "quality-contract:vnem-quality-contract"
     ],
     "businesses": [
       "entry:ai-bezal-local-commerce"
@@ -49616,7 +49677,6 @@
       "practice:research-source-intake"
     ],
     "cannot": [
-      "quality-contract:vnem-quality-contract",
       "coding-playbook:failure-recovery",
       "entry:google-agent2agent-protocol",
       "entry:codex-agents-md",
@@ -50116,6 +50176,9 @@
     "cbm": [
       "entry:codebase-memory-mcp"
     ],
+    "ceiling": [
+      "quality-contract:vnem-quality-contract"
+    ],
     "center": [
       "practice:visual-experience",
       "prompt-pattern:ui-build",
@@ -50135,6 +50198,9 @@
     ],
     "centralizes-tool-access": [
       "entry:lunar-mcpx"
+    ],
+    "ceremony": [
+      "quality-contract:vnem-quality-contract"
     ],
     "cfpb": [
       "entry:ai-clarid-hmda"
@@ -50266,7 +50332,11 @@
       "prompt-pattern:source-intake",
       "prompt-pattern:visual-polish-review"
     ],
+    "checked": [
+      "quality-contract:vnem-quality-contract"
+    ],
     "checked.": [
+      "quality-contract:vnem-quality-contract",
       "entry:matter-js",
       "entry:babylon-js",
       "entry:excalibur-js",
@@ -50437,12 +50507,12 @@
       "source:evaluation-and-observability"
     ],
     "claiming": [
-      "quality-contract:vnem-quality-contract",
       "visual-qa-protocol:vnem-visual-qa-protocol"
     ],
     "claims": [
       "orchestration-protocol:vnem-orchestration-protocol",
       "practice:multi-agent-orchestration-reflection",
+      "quality-contract:vnem-quality-contract",
       "source:agentic-coding-best-practices",
       "practice:persistent-memory-context-files",
       "practice:ide-agent-selection",
@@ -50473,6 +50543,7 @@
     ],
     "classify": [
       "practice:multi-agent-orchestration-reflection",
+      "quality-contract:vnem-quality-contract",
       "operating-protocol:vnem-operating-loop",
       "source:agentic-gateway-security"
     ],
@@ -51101,6 +51172,9 @@
     "combining": [
       "practice:zero-trust-agent-gateway"
     ],
+    "comfort": [
+      "quality-contract:vnem-quality-contract"
+    ],
     "command": [
       "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "practice:omniscient-context-self-healing",
@@ -51575,7 +51649,6 @@
       "practice:subagents-and-multi-agent"
     ],
     "conflicts": [
-      "quality-contract:vnem-quality-contract",
       "entry:ai-kawacode-mcp"
     ],
     "conflicts.": [
@@ -51948,6 +52021,7 @@
       "prompt-pattern:visual-polish-review"
     ],
     "core": [
+      "quality-contract:vnem-quality-contract",
       "design-architecture:vnem-design-architecture",
       "source:mcp-core-and-registry",
       "task-rubric:interactive_canvas",
@@ -52219,6 +52293,7 @@
     "current": [
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:precision-execution-dynamic-knowledge",
+      "quality-contract:vnem-quality-contract",
       "practice:code-simplification",
       "visual-qa-protocol:vnem-visual-qa-protocol",
       "operating-protocol:vnem-operating-loop",
@@ -52696,9 +52771,6 @@
     "daemons.": [
       "practice:codex-vnem-setup"
     ],
-    "damaging": [
-      "quality-contract:vnem-quality-contract"
-    ],
     "dangerous": [
       "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol"
     ],
@@ -53079,6 +53151,7 @@
       "entry:roo-code"
     ],
     "debugging": [
+      "quality-contract:vnem-quality-contract",
       "coding-protocol:vnem-coding-protocol",
       "source:browser-and-ui-verification",
       "entry:arize-phoenix",
@@ -53340,6 +53413,7 @@
       "entry:google-agent-development-kit"
     ],
     "deployment": [
+      "quality-contract:vnem-quality-contract",
       "practice:model-and-provider-selection",
       "task-rubric:security_sensitive",
       "practice:backend",
@@ -53741,6 +53815,7 @@
     ],
     "direct": [
       "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "quality-contract:vnem-quality-contract",
       "practice:mcp-gateway-tool-routing",
       "entry:lunar-mcpx"
     ],
@@ -54421,7 +54496,6 @@
       "entry:anthropic-building-effective-agents"
     ],
     "effects": [
-      "quality-contract:vnem-quality-contract",
       "practice:holistic-excellence-intelligent-tradeoffs",
       "practice:visual-experience",
       "design-architecture:vnem-design-architecture",
@@ -54440,6 +54514,7 @@
       "practice:human-approval-and-durability"
     ],
     "effort": [
+      "quality-contract:vnem-quality-contract",
       "prompt-pattern:research"
     ],
     "elements": [
@@ -54706,6 +54781,9 @@
     "es1/nq": [
       "entry:ai-lattiq-x402-trading-signals"
     ],
+    "escalate": [
+      "quality-contract:vnem-quality-contract"
+    ],
     "escapes": [
       "precision-execution-protocol:vnem-precision-execution-protocol"
     ],
@@ -54841,6 +54919,7 @@
       "entry:microsoft-autogen"
     ],
     "every": [
+      "quality-contract:vnem-quality-contract",
       "practice:mcp-gateway-tool-routing",
       "practice:subagents-and-multi-agent",
       "entry:ai-obris-mcp",
@@ -54884,6 +54963,7 @@
       "entry:knip"
     ],
     "evidence.": [
+      "quality-contract:vnem-quality-contract",
       "practice:holistic-excellence-intelligent-tradeoffs",
       "task-rubric:security_sensitive",
       "practice:coding-agents",
@@ -55152,7 +55232,6 @@
     ],
     "expose": [
       "practice:precision-execution-dynamic-knowledge",
-      "quality-contract:vnem-quality-contract",
       "practice:mcp-gateway-tool-routing",
       "practice:codex-vnem-setup",
       "task-rubric:agent_tooling",
@@ -55524,6 +55603,7 @@
     ],
     "facts": [
       "orchestration-protocol:vnem-orchestration-protocol",
+      "quality-contract:vnem-quality-contract",
       "practice:persistent-memory-context-files",
       "task-rubric:data_memory",
       "prompt-pattern:memory-bank-initialization",
@@ -55582,12 +55662,12 @@
     "fair-use": [
       "source:documentation-ingestion"
     ],
+    "fake": [
+      "quality-contract:vnem-quality-contract"
+    ],
     "fallback": [
       "quality-contract:vnem-quality-contract",
       "source:ui-architecture-sources"
-    ],
-    "fallback.": [
-      "quality-contract:vnem-quality-contract"
     ],
     "fallbacks": [
       "quality-contract:vnem-quality-contract"
@@ -55635,7 +55715,6 @@
     ],
     "feature": [
       "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
-      "quality-contract:vnem-quality-contract",
       "practice:holistic-excellence-intelligent-tradeoffs",
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
@@ -55839,7 +55918,6 @@
       "entry:ai-deepledger-mcp"
     ],
     "feel": [
-      "quality-contract:vnem-quality-contract",
       "practice:holistic-excellence-intelligent-tradeoffs",
       "coding-protocol:vnem-coding-protocol",
       "practice:visual-experience",
@@ -55890,6 +55968,7 @@
     "file": [
       "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "precision-execution-protocol:vnem-precision-execution-protocol",
+      "quality-contract:vnem-quality-contract",
       "coding-playbook:large-change-checkpoints",
       "coding-playbook:review-risk-scan",
       "source:agentic-coding-best-practices",
@@ -55912,6 +55991,7 @@
       "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "orchestration-protocol:vnem-orchestration-protocol",
+      "quality-contract:vnem-quality-contract",
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
       "visual-qa-protocol:vnem-visual-qa-protocol",
@@ -56070,7 +56150,6 @@
       "prompt-pattern:zero-trust-gateway-roadmap"
     ],
     "first": [
-      "quality-contract:vnem-quality-contract",
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
       "coding-playbook:bug-root-cause",
@@ -56187,7 +56266,6 @@
       "entry:ai-abmeter-abmeter"
     ],
     "flags": [
-      "quality-contract:vnem-quality-contract",
       "practice:holistic-excellence-intelligent-tradeoffs",
       "practice:research-source-intake",
       "entry:vnem-mcp"
@@ -56215,6 +56293,9 @@
     ],
     "flights": [
       "entry:ai-autonomad-travel"
+    ],
+    "floor": [
+      "quality-contract:vnem-quality-contract"
     ],
     "flow": [
       "practice:agentic-coding-execution",
@@ -56437,7 +56518,6 @@
     ],
     "game": [
       "orchestration-protocol:vnem-orchestration-protocol",
-      "quality-contract:vnem-quality-contract",
       "practice:holistic-excellence-intelligent-tradeoffs",
       "coding-protocol:vnem-coding-protocol",
       "practice:visual-experience",
@@ -56563,9 +56643,6 @@
     "gather": [
       "orchestration-protocol:vnem-orchestration-protocol"
     ],
-    "gathered": [
-      "quality-contract:vnem-quality-contract"
-    ],
     "gating": [
       "entry:opentabs"
     ],
@@ -56638,6 +56715,7 @@
       "practice:multi-agent-orchestration-reflection"
     ],
     "generic": [
+      "quality-contract:vnem-quality-contract",
       "practice:visual-experience"
     ],
     "genuinely": [
@@ -57003,7 +57081,6 @@
       "practice:code-simplification"
     ],
     "handling": [
-      "quality-contract:vnem-quality-contract",
       "practice:holistic-excellence-intelligent-tradeoffs",
       "source:agentic-gateway-security",
       "entry:google-agent2agent-protocol",
@@ -57275,6 +57352,9 @@
       "entry:ai-bringyour-bringyour",
       "prompt-pattern:eval-design"
     ],
+    "harsh": [
+      "quality-contract:vnem-quality-contract"
+    ],
     "hash": [
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:precision-execution-dynamic-knowledge"
@@ -57379,7 +57459,6 @@
       "prompt-pattern:visual-polish-review"
     ],
     "high": [
-      "quality-contract:vnem-quality-contract",
       "source:agentic-gateway-security",
       "source:browser-and-ui-verification",
       "source:documentation-ingestion",
@@ -58869,7 +58948,6 @@
       "prompt-pattern:prompt-enhancement"
     ],
     "intentional": [
-      "quality-contract:vnem-quality-contract",
       "design-architecture:vnem-design-architecture",
       "prompt-pattern:visual-build"
     ],
@@ -59386,7 +59464,6 @@
       "practice:subagents-and-multi-agent"
     ],
     "just": [
-      "quality-contract:vnem-quality-contract",
       "design-architecture:vnem-design-architecture",
       "entry:ai-newzai-api-newzai",
       "entry:ai-newzai-api-news-mcp",
@@ -59425,6 +59502,7 @@
       "practice:omniscient-context-self-healing",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:precision-execution-dynamic-knowledge",
+      "quality-contract:vnem-quality-contract",
       "coding-protocol:vnem-coding-protocol",
       "practice:mcp-gateway-tool-routing",
       "practice:code-simplification",
@@ -59887,7 +59965,6 @@
       "source:ui-architecture-sources"
     ],
     "lazy": [
-      "quality-contract:vnem-quality-contract",
       "practice:holistic-excellence-intelligent-tradeoffs"
     ],
     "lead": [
@@ -60482,7 +60559,6 @@
       "entry:claude-code-memory"
     ],
     "loading": [
-      "quality-contract:vnem-quality-contract",
       "practice:holistic-excellence-intelligent-tradeoffs",
       "entry:phaser",
       "entry:rapier-js"
@@ -60624,9 +60700,6 @@
       "task-rubric:frontend_ui",
       "practice:evals"
     ],
-    "looks/feels": [
-      "quality-contract:vnem-quality-contract"
-    ],
     "lookup": [
       "orchestration-protocol:vnem-orchestration-protocol"
     ],
@@ -60723,9 +60796,6 @@
       "prompt-pattern:codex-implementation",
       "prompt-pattern:ui-build",
       "prompt-pattern:visual-build"
-    ],
-    "maintainable.": [
-      "quality-contract:vnem-quality-contract"
     ],
     "maintained": [
       "practice:research-source-intake",
@@ -61232,7 +61302,6 @@
     ],
     "matter.": [
       "precision-execution-protocol:vnem-precision-execution-protocol",
-      "quality-contract:vnem-quality-contract",
       "coding-protocol:vnem-coding-protocol",
       "practice:browser-games",
       "prompt-pattern:mcp-gateway-evaluation",
@@ -62348,6 +62417,7 @@
       "prompt-pattern:codex-implementation"
     ],
     "need": [
+      "quality-contract:vnem-quality-contract",
       "source:mcp-core-and-registry",
       "practice:browser-games",
       "practice:ide-agent-selection",
@@ -62648,6 +62718,7 @@
       "entry:ai-openmandate-mcp"
     ],
     "never": [
+      "quality-contract:vnem-quality-contract",
       "practice:persistent-memory-context-files",
       "practice:security"
     ],
@@ -63082,7 +63153,6 @@
       "entry:custom-modes-roo-code"
     ],
     "offer": [
-      "quality-contract:vnem-quality-contract",
       "entry:ai-offerhopper-mcp-shopping-optimizer"
     ],
     "offering": [
@@ -64536,9 +64606,6 @@
       "prompt-pattern:visual-build",
       "entry:pixijs"
     ],
-    "performance.": [
-      "quality-contract:vnem-quality-contract"
-    ],
     "performed": [
       "task-rubric:frontend_ui"
     ],
@@ -64947,6 +65014,7 @@
       "entry:ast-grep"
     ],
     "plainly": [
+      "quality-contract:vnem-quality-contract",
       "task-rubric:security_sensitive"
     ],
     "plan": [
@@ -65596,7 +65664,6 @@
       "source:platform-and-data-connectors"
     ],
     "production-ready": [
-      "quality-contract:vnem-quality-contract",
       "practice:holistic-excellence-intelligent-tradeoffs"
     ],
     "productivity": [
@@ -66077,6 +66144,7 @@
       "entry:kaplay"
     ],
     "prove": [
+      "quality-contract:vnem-quality-contract",
       "source:evaluation-and-observability",
       "practice:evals"
     ],
@@ -66154,6 +66222,7 @@
       "entry:ai-childpsychiatry-library"
     ],
     "public": [
+      "quality-contract:vnem-quality-contract",
       "practice:agentic-coding-execution",
       "coding-playbook:refactor-preserve",
       "practice:code-simplification",
@@ -66310,9 +66379,6 @@
       "source:agentic-coding-best-practices",
       "entry:ai-anomalyarmor-armor-mcp"
     ],
-    "quality/performance": [
-      "quality-contract:vnem-quality-contract"
-    ],
     "quant": [
       "entry:ai-lattiq-x402-trading-signals"
     ],
@@ -66362,7 +66428,6 @@
       "entry:ripgrep"
     ],
     "quietly": [
-      "quality-contract:vnem-quality-contract",
       "coding-protocol:vnem-coding-protocol"
     ],
     "qwen": [
@@ -66734,7 +66799,6 @@
       "entry:opentabs"
     ],
     "reduced-motion": [
-      "quality-contract:vnem-quality-contract",
       "practice:holistic-excellence-intelligent-tradeoffs",
       "prompt-pattern:visual-build"
     ],
@@ -66941,7 +67005,6 @@
       "prompt-pattern:code-simplification"
     ],
     "remove": [
-      "quality-contract:vnem-quality-contract",
       "practice:holistic-excellence-intelligent-tradeoffs",
       "coding-playbook:refactor-preserve",
       "practice:code-simplification",
@@ -67046,6 +67109,7 @@
       "practice:human-approval-and-durability"
     ],
     "repo": [
+      "quality-contract:vnem-quality-contract",
       "install-guide:vnem-install-guide",
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
@@ -67080,7 +67144,6 @@
       "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "practice:omniscient-context-self-healing",
       "precision-execution-protocol:vnem-precision-execution-protocol",
-      "quality-contract:vnem-quality-contract",
       "operating-protocol:vnem-operating-loop",
       "task-rubric:agentic_coding",
       "task-rubric:security_sensitive",
@@ -67415,7 +67478,6 @@
       "practice:omniscient-context-self-healing",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:multi-agent-orchestration-reflection",
-      "quality-contract:vnem-quality-contract",
       "practice:holistic-excellence-intelligent-tradeoffs",
       "source:coding-agent-clients",
       "source:agentic-gateway-security",
@@ -67454,9 +67516,6 @@
       "practice:holistic-excellence-intelligent-tradeoffs",
       "design-architecture:vnem-design-architecture",
       "prompt-pattern:agentic-coding-task"
-    ],
-    "requirement.": [
-      "quality-contract:vnem-quality-contract"
     ],
     "requirements": [
       "quality-contract:vnem-quality-contract",
@@ -67542,7 +67601,6 @@
     ],
     "residual": [
       "orchestration-protocol:vnem-orchestration-protocol",
-      "quality-contract:vnem-quality-contract",
       "operating-protocol:vnem-operating-loop",
       "task-rubric:agentic_coding",
       "practice:coding-agents",
@@ -68464,6 +68522,7 @@
       "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "precision-execution-protocol:vnem-precision-execution-protocol",
       "practice:precision-execution-dynamic-knowledge",
+      "quality-contract:vnem-quality-contract",
       "install-guide:vnem-install-guide",
       "prompt-pattern:zero-trust-gateway-roadmap",
       "entry:qdrant-mcp-server"
@@ -68656,7 +68715,6 @@
     ],
     "scoped": [
       "orchestration-protocol:vnem-orchestration-protocol",
-      "quality-contract:vnem-quality-contract",
       "practice:holistic-excellence-intelligent-tradeoffs",
       "task-rubric:agentic_coding",
       "prompt-pattern:agentic-coding-task",
@@ -69670,10 +69728,10 @@
       "visual-qa-protocol:vnem-visual-qa-protocol"
     ],
     "ship-quality.": [
-      "quality-contract:vnem-quality-contract",
       "visual-qa-protocol:vnem-visual-qa-protocol"
     ],
     "shipping": [
+      "quality-contract:vnem-quality-contract",
       "practice:frontend"
     ],
     "shopify": [
@@ -69797,6 +69855,7 @@
     "simple": [
       "orchestration-protocol:vnem-orchestration-protocol",
       "practice:multi-agent-orchestration-reflection",
+      "quality-contract:vnem-quality-contract",
       "practice:browser-games",
       "entry:anthropic-building-effective-agents",
       "entry:matter-js",
@@ -70193,6 +70252,7 @@
       "source:mcp-core-and-registry"
     ],
     "stable": [
+      "quality-contract:vnem-quality-contract",
       "coding-protocol:vnem-coding-protocol",
       "practice:code-simplification",
       "practice:persistent-memory-context-files",
@@ -70391,7 +70451,6 @@
       "prompt-pattern:memory-bank-initialization"
     ],
     "still": [
-      "quality-contract:vnem-quality-contract",
       "practice:zero-trust-agent-gateway",
       "prompt-pattern:code-simplification",
       "entry:excalibur-js"
@@ -70559,6 +70618,7 @@
       "entry:covenant-research"
     ],
     "style": [
+      "quality-contract:vnem-quality-contract",
       "practice:agentic-coding-execution",
       "task-rubric:aesthetic_experience",
       "prompt-pattern:visual-build",
@@ -71180,6 +71240,9 @@
     "template": [
       "entry:rules-template-memory-bank"
     ],
+    "templates": [
+      "quality-contract:vnem-quality-contract"
+    ],
     "temporal": [
       "entry:graphiti",
       "entry:zep"
@@ -71233,6 +71296,7 @@
       "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
       "practice:omniscient-context-self-healing",
       "precision-execution-protocol:vnem-precision-execution-protocol",
+      "quality-contract:vnem-quality-contract",
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
       "coding-playbook:bug-root-cause",
@@ -71647,9 +71711,6 @@
       "quality-contract:vnem-quality-contract",
       "prompt-pattern:ui-build",
       "entry:langfuse"
-    ],
-    "toggles": [
-      "quality-contract:vnem-quality-contract"
     ],
     "token": [
       "practice:zero-trust-agent-gateway",
@@ -72188,6 +72249,7 @@
       "practice:coding-agents"
     ],
     "truth": [
+      "quality-contract:vnem-quality-contract",
       "source:mcp-core-and-registry"
     ],
     "truth.": [
@@ -72316,6 +72378,7 @@
     "ui": [
       "orchestration-protocol:vnem-orchestration-protocol",
       "practice:multi-agent-orchestration-reflection",
+      "quality-contract:vnem-quality-contract",
       "practice:holistic-excellence-intelligent-tradeoffs",
       "coding-playbook:web-app-rendered-quality",
       "practice:visual-experience",
@@ -72342,6 +72405,9 @@
     ],
     "ui.": [
       "prompt-pattern:ui-build"
+    ],
+    "ui/redesign": [
+      "quality-contract:vnem-quality-contract"
     ],
     "ui/web": [
       "task-rubric:agentic_coding"
@@ -72425,6 +72491,7 @@
     ],
     "unless": [
       "practice:multi-agent-orchestration-reflection",
+      "quality-contract:vnem-quality-contract",
       "practice:agentic-coding-execution",
       "practice:code-simplification",
       "practice:visual-experience",
@@ -72842,9 +72909,6 @@
       "entry:mcp-server-mysql",
       "entry:mcp-crawl4ai-rag"
     ],
-    "user-controllable": [
-      "quality-contract:vnem-quality-contract"
-    ],
     "user-controlled": [
       "entry:openai-codex-cli"
     ],
@@ -73032,7 +73096,6 @@
       "practice:precision-execution-dynamic-knowledge",
       "orchestration-protocol:vnem-orchestration-protocol",
       "practice:multi-agent-orchestration-reflection",
-      "quality-contract:vnem-quality-contract",
       "practice:agentic-coding-execution",
       "coding-protocol:vnem-coding-protocol",
       "coding-playbook:large-change-checkpoints",
@@ -74282,6 +74345,7 @@
     ],
     "without": [
       "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
+      "quality-contract:vnem-quality-contract",
       "install-guide:vnem-install-guide",
       "design-architecture:vnem-design-architecture",
       "source:agentic-coding-best-practices",
@@ -74677,7 +74741,6 @@
     ],
     "works": [
       "omniscient-self-healing-protocol:vnem-omniscient-self-healing-protocol",
-      "quality-contract:vnem-quality-contract",
       "design-architecture:vnem-design-architecture",
       "task-rubric:interactive_canvas",
       "entry:aider"

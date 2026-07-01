@@ -1573,7 +1573,11 @@ const qualityContract = {
     "playability",
     "production ready",
     "settings gui",
-    "domain balance"
+    "domain balance",
+    "adaptive effort",
+    "no ceremony",
+    "harsh truth",
+    "visual ambition"
   ],
   principles: [
     {
@@ -1587,6 +1591,18 @@ const qualityContract = {
     {
       name: "Intelligent Trade-offs",
       rule: "When constraints conflict, engineer controls, modes, fallbacks, and evidence before lowering product quality."
+    },
+    {
+      name: "Quality Floor, Adaptive Effort Ceiling",
+      rule: "Use VNEM Core to classify every task, keep simple stable answers direct, and escalate only when truth, safety, files, UI, debugging, current facts, repo work, or public claims need evidence."
+    },
+    {
+      name: "Harsh Truth Without Fake Comfort",
+      rule: "Say bad/unknown/current-source-needed plainly; never claim a file, browser, repo, UI, source, test, or deployment was checked unless it was actually checked."
+    },
+    {
+      name: "Visual Ambition",
+      rule: "For UI/redesign work, adapt to the user's style or the business/audience/brand instead of shipping generic safe templates; prove visual claims with browser/visual evidence."
     }
   ],
   triple_check: [
@@ -1611,7 +1627,9 @@ const qualityContract = {
     "Do not remove visual quality, game feel, accessibility, or verification just to claim better performance.",
     "If performance conflicts with visuals or playability, first offer an intelligent alternative: quality toggles, settings GUI, adaptive effects, lazy loading, reduced-motion handling, asset optimization, feature flags, or scoped fallback.",
     "For production-ready work, require evidence that the task still works, still looks/feels intentional when visual or interactive, and remains maintainable.",
-    "If evidence cannot be gathered, report the blocked verification and residual risk instead of claiming ship-quality."
+    "If evidence cannot be gathered, report the blocked verification and residual risk instead of claiming ship-quality.",
+    "Do not add long reports, decorative tool plans, fake proof sections, or pointless clarification when a direct answer is enough.",
+    "Do not skip research/tools when facts may be current, high-stakes, source-dependent, file/repo/debug/UI/security-related, or explicitly requested for verification."
   ],
   domain_balance: [
     "performance",
@@ -1620,6 +1638,20 @@ const qualityContract = {
     "accessibility",
     "maintainability",
     "safety"
+  ],
+  adaptive_effort_modes: ["instant_answer", "quick_plan", "standard", "deep_proof", "max_verification"],
+  truth_rules: [
+    "truth_over_comfort_status",
+    "no_sugarcoating_status",
+    "uncertainty_must_be_labeled_status",
+    "harsh_truth_quality_status"
+  ],
+  design_ambition_rules: [
+    "Follow explicit user style when supplied.",
+    "If style is not supplied, adapt to the website/business/audience/content/purpose and improve weak original choices.",
+    "Do not force premium/modern/minimal/fun/corporate by default.",
+    "Internally consider directions, then implement the strongest one unless uncertainty materially changes the result.",
+    "Flag generic/template-like/boring design and missing visual proof."
   ],
   tradeoff_policy: [
     "Optimize the actual bottleneck before lowering quality.",
@@ -3834,7 +3866,10 @@ function buildSearchDocuments(entries) {
       use_cases: [
         ...qualityContract.principles.map((principle) => `${principle.name}: ${principle.rule}`),
         ...qualityContract.triple_check.map((item) => `${item.step}: ${item.instruction}`),
-        ...qualityContract.quality_floor
+        ...qualityContract.quality_floor,
+        ...qualityContract.adaptive_effort_modes.map((mode) => `Adaptive effort mode: ${mode}`),
+        ...qualityContract.truth_rules,
+        ...qualityContract.design_ambition_rules
       ],
       best_for: qualityContract.tradeoff_policy,
       risk_flags: [],
@@ -3847,6 +3882,9 @@ function buildSearchDocuments(entries) {
         ...qualityContract.principles.flatMap((principle) => [principle.name, principle.rule]),
         ...qualityContract.triple_check.flatMap((item) => [item.step, item.instruction]),
         ...qualityContract.quality_floor,
+        ...qualityContract.adaptive_effort_modes,
+        ...qualityContract.truth_rules,
+        ...qualityContract.design_ambition_rules,
         ...qualityContract.domain_balance,
         ...qualityContract.tradeoff_policy,
         ...qualityContract.source_urls
@@ -4296,6 +4334,7 @@ function qualityContractMarkdown() {
     ...qualityContract.principles.map((principle) => `- **${principle.name}:** ${principle.rule}`),
     "",
     "If a user asks for extreme performance, VNEM should not let the agent quietly remove visual quality or game feel. The better answer is to optimize the system and expose control: fast defaults, high-quality modes, adaptive effects, and honest verification evidence.",
+    "VNEM also should not turn every request into ceremony. Simple stable questions should be answered directly after Core classification; deep proof is reserved for current facts, files, repo changes, debugging, UI/browser proof, security/high-stakes work, public claims, and deployment/release workflows.",
     "",
     "## Triple-Check Workflow",
     "",
@@ -4307,6 +4346,16 @@ function qualityContractMarkdown() {
     "## Quality Floor",
     "",
     ...qualityContract.quality_floor.map((item) => `- ${item}`),
+    "",
+    "## Adaptive Effort And Harsh Truth",
+    "",
+    ...qualityContract.adaptive_effort_modes.map((item) => `- ${item}`),
+    "",
+    ...qualityContract.truth_rules.map((item) => `- ${item}`),
+    "",
+    "## Design Ambition Rules",
+    "",
+    ...qualityContract.design_ambition_rules.map((item) => `- ${item}`),
     "",
     "## Domain Balance",
     "",
@@ -4727,6 +4776,11 @@ function installGuideMarkdown() {
     "npm run test:core-routing-memory-output",
     "npm run test:core-output-quality",
     "npm run test:core-anti-stagnation",
+    "npm run test:core-adaptive-effort",
+    "npm run test:core-fast-answer-contract",
+    "npm run test:core-anti-overhead-audit",
+    "npm run test:core-design-ambition",
+    "npm run test:core-visual-taste-audit",
     "npm run test:mcp-user-smoke",
     "npm run test:core-tools-e2e",
     "npm run tools:readiness",
@@ -4735,7 +4789,7 @@ function installGuideMarkdown() {
     "",
     "Tools MCP is separate from Core MCP and is not Giga MCP: no Giga MCP, unrestricted filesystem, arbitrary shell, git push / remote GitHub mutation, package installs, package publishing, deployment, unrestricted external browser browsing by default, search-engine result page scraping by default, automatic CAPTCHA bypass, unrestricted crawling, login/session/cookie automation, credential capture, automatic downloads/installers, secret-backed live API execution, and unrestricted API calls remain unsupported. Default Tools profile is `safe-readonly`; real local dev/write/API/browser/git actions require an explicit stronger profile plus approval/evidence/rollback where applicable. Real provider search works only when configured and approved; otherwise Tools returns honest unavailable/unconfigured status.",
     "",
-    "Actual Core → Tools use path: start/connect Core MCP; start/connect Tools MCP for a specific workspace; ask Core `vnem_route_task`, `vnem_output_quality_plan`, `vnem_anti_stagnation_check`, `vnem_build_debugging_plan`, `vnem_evidence_to_fix_check`, `vnem_build_architecture_map`, `vnem_code_change_contract`, `vnem_build_ui_quality_plan`, `vnem_visual_proof_contract`, `vnem_select_tools_for_task`, `vnem_build_tools_plan`, `vnem_assess_research_need`, `vnem_build_search_plan`, `vnem_build_browsing_plan`, `vnem_build_browser_research_plan`, `vnem_build_research_strategy`, `vnem_build_source_ingestion_plan`, `vnem_research_evidence_audit`, `vnem_explain_tools_chain`, or `vnem_boost_task` to select tool capabilities, classify relevant/ignored memory, make material missing-context ask/no-ask decisions, prevent repeated finished work, and build a compact-first plan-only handoff; use `vnem_tools_manifest`, `vnem_tools_permission_status`, `vnem_tools_action_policy_preview`, and `vnem_tools_trust_boundary_classify` for catalog/profile/trust-boundary discovery; dry-run first; ask the user for exact approval including active/required profile, trust boundary, scope, rollback, and evidence; map/read/search the project, inspect dependencies without installing, build search queries, run configured/approved provider search or return honest unavailable status, rank search results, evaluate direct/provided/local sources, inspect page structure, extract readability, map links without following them, search DOM-like content, detect CAPTCHA/access blocks, check URL/redirect/download risk, build claim/source matrices, detect research gaps, build source maps, extract explicit bounded targets, compare source graphs for official/community conflicts, freshness, and contradictions, review architecture entry points/registries/tests/configs for fake parallel systems and possible dead code, review UI routes/components/render paths/state coverage, plan browser evidence without hidden automation, execute bounded approved localhost browser evidence packs, audit UI evidence objects, and do not treat blocked/partial browser runs as proof. Browser evidence run requires `VNEM_TOOLS_ALLOW_LOCALHOST=1`, permission/approval, requested routes only, and `browser_was_run=true` before visual/browser claims; no login/cookie/session/CAPTCHA/broad browsing is supported. audit provided UI evidence objects, collect bounded log-first debug evidence without arbitrary commands, run static accessibility checks, compare page snapshots, apply approved patch batches/restores, run safe project tasks, start/stop local dev servers, perform approved API/browser proof, optionally make an approved local git commit, and collect `vnem_tools_collect_evidence` or `vnem_tools_finish_session`; use `proof_trail_compatible_summary` with `vnem_completion_audit` / `vnem_research_evidence_audit` / `vnem_proof_trail`; do not claim visual/live API/search proof unless those evidence fields exist.",
+    "Actual Core → Tools use path: start/connect Core MCP; start/connect Tools MCP for a specific workspace; ask Core `vnem_plan_effort_budget`, `vnem_fast_answer_contract`, `vnem_route_task`, `vnem_output_quality_plan`, `vnem_anti_stagnation_check`, `vnem_design_ambition_plan`, `vnem_visual_taste_audit`, `vnem_build_debugging_plan`, `vnem_evidence_to_fix_check`, `vnem_build_architecture_map`, `vnem_code_change_contract`, `vnem_build_ui_quality_plan`, `vnem_visual_proof_contract`, `vnem_select_tools_for_task`, `vnem_build_tools_plan`, `vnem_assess_research_need`, `vnem_build_search_plan`, `vnem_build_browsing_plan`, `vnem_build_browser_research_plan`, `vnem_build_research_strategy`, `vnem_build_source_ingestion_plan`, `vnem_research_evidence_audit`, `vnem_explain_tools_chain`, or `vnem_boost_task` to select tool capabilities, classify relevant/ignored memory, make material missing-context ask/no-ask decisions, prevent repeated finished work, and build a compact-first plan-only handoff; use `vnem_tools_manifest`, `vnem_tools_permission_status`, `vnem_tools_action_policy_preview`, and `vnem_tools_trust_boundary_classify` for catalog/profile/trust-boundary discovery; dry-run first; ask the user for exact approval including active/required profile, trust boundary, scope, rollback, and evidence; map/read/search the project, inspect dependencies without installing, build search queries, run configured/approved provider search or return honest unavailable status, rank search results, evaluate direct/provided/local sources, inspect page structure, extract readability, map links without following them, search DOM-like content, detect CAPTCHA/access blocks, check URL/redirect/download risk, build claim/source matrices, detect research gaps, build source maps, extract explicit bounded targets, compare source graphs for official/community conflicts, freshness, and contradictions, review architecture entry points/registries/tests/configs for fake parallel systems and possible dead code, review UI routes/components/render paths/state coverage, plan browser evidence without hidden automation, execute bounded approved localhost browser evidence packs, audit UI evidence objects, and do not treat blocked/partial browser runs as proof. Browser evidence run requires `VNEM_TOOLS_ALLOW_LOCALHOST=1`, permission/approval, requested routes only, and `browser_was_run=true` before visual/browser claims; no login/cookie/session/CAPTCHA/broad browsing is supported. audit provided UI evidence objects, collect bounded log-first debug evidence without arbitrary commands, run static accessibility checks, compare page snapshots, apply approved patch batches/restores, run safe project tasks, start/stop local dev servers, perform approved API/browser proof, optionally make an approved local git commit, and collect `vnem_tools_collect_evidence` or `vnem_tools_finish_session`; use `proof_trail_compatible_summary` with `vnem_completion_audit` / `vnem_research_evidence_audit` / `vnem_proof_trail`; do not claim visual/live API/search proof unless those evidence fields exist.",
     "",
     "How to test Core + Tools MCP locally without external internet: `npm run test:mcp-user-smoke`, `npm run tools:readiness`, and `npm run core:readiness`. Public Tools MCP reports permission profiles, allowed-root/workspace/evidence-root status, broad-root warnings, blocked categories, action policy previews, and trust-boundary classifications. It can build search queries, run configured/approved provider search, rank results, inspect sources/pages, map allowed local repos/docs, extract explicit bounded targets, build source graphs, detect freshness/contradictions, check URL/reputation/download risk, build claim/source matrices, detect research gaps, review architecture entry points/registries/tests/configs, review UI route/component/render/state coverage, plan browser proof without hidden automation, execute bounded approved localhost browser evidence packs, audit UI evidence objects, flag fake parallel systems and possible dead code, and collect bounded log-first debug evidence without arbitrary commands. It blocks secret paths/values, cookies/sessions/browser profiles/password-manager-like paths, and hard-dangerous actions by default. It does not automatically bypass CAPTCHA, scrape search engine result pages by default, perform login/session/cookie automation, run arbitrary downloads/installers, crawl broadly, read secret/session/browser-profile paths, or claim live/current search, full repo/site understanding, root cause, completed fixes, UI improvement, responsive/accessibility/browser-working status, wired implementation, or dead-code-free status without matching visual/browser/source evidence. Browser proof requires `browser_was_run=true` plus screenshot/DOM/route/console/network/a11y/viewport/state evidence as applicable; blocked runs are not proof.",
     "",
@@ -4763,9 +4817,9 @@ function installGuideMarkdown() {
     "",
     "- Pack install: run `npm run doctor -- /path/to/project` from the vnem checkout.",
     "- MCP activation: connect the client and call `vnem_bootstrap` with the real task. Confirm the structured output includes `activation.status=active`, `read_only=true`, `precision_tools_exposed=false`, `compact_startup_contract`, `missing_context`, `domain_quality_contracts`, task-specific `required_rules`, `recommended_vnem_calls`, `protection_needs`, `verification_contract`, `completion_audit_expectations`, proof-trail recommendation, and `anti_placebo_checks`.",
-    "- Agent flow: call `vnem_bootstrap`, then `vnem_boost_task` for the concrete user-task workflow. It selects usable API/skill packs rather than raw records and returns a compact `tools_mcp_handoff`. Use `vnem_prepare_tools_handoff` when a standalone Tools MCP handoff is needed; for source/browser work, use `vnem_build_browser_research_plan` and `vnem_explain_tools_chain` to separate direct-source, website-understanding, local-UI, and current-search needs. Connect the separate `vnem-tools` MCP foundation only when approved actions are needed; it dry-runs first, asks permission, scans projects safely, applies approved path-limited patch batches, restores from approved backups/restore plans, runs only allowlisted commands and safe package tasks, starts/stops only local Tools-started dev servers, performs only approved GET/HEAD API requests, inspects direct/local/provided page sources, maps links without following/crawling, runs heuristic accessibility/snapshot checks, captures approved local browser screenshots, can make approved local git commits of explicit safe files, and collects redacted action/session evidence. Use `vnem_compose_capability_contract` only when lower-level capability IDs/details are needed. Call `vnem_protection_review` before risky filesystem/terminal/browser/GitHub/package/API/skill/modding actions; collect task-specific checks/evidence; call/apply `vnem_completion_audit`; then call `vnem_proof_trail` and include its compact proof/evidence summary in the final response.",
-    "- Capability library: when `vnem_bootstrap` reports skill/API availability, use `vnem_library_status`, `vnem_get_required_capabilities`, `vnem_activate_capability_pack`, `vnem_apply_skill_guidance`, `vnem_boost_task`, `vnem_route_task`, `vnem_output_quality_plan`, `vnem_anti_stagnation_check`, `vnem_prepare_tools_handoff`, `vnem_build_tools_plan`, `vnem_build_debugging_plan`, `vnem_evidence_to_fix_check`, `vnem_build_architecture_map`, `vnem_code_change_contract`, `vnem_build_browser_research_plan`, `vnem_explain_tools_chain`, `vnem_build_api_integration_plan`, `vnem_api_safety_profile`, `vnem_skill_safety_profile`, `vnem_get_agent_profile`, `vnem_compose_capability_contract`, `vnem_completion_audit`, `vnem_protection_review`, `vnem_proof_trail`, `vnem_recommend_skills`, `vnem_recommend_apis`, and `vnem_review_skill_or_api` for read-only capability activation, usable pack selection, routing/memory relevance, missing-context decisions, output-quality contracts, anti-stagnation checks, browser/source planning, audit, proof, and protection review. The default Core MCP chooses useful APIs/skills and prepares Tools MCP handoff, but it does not install skills, execute scripts, call APIs, mutate files, open browsers, run terminals, or push GitHub changes. Tools MCP is separate and approval-gated.",
-    "- Domain contracts: research/source-quality work must use current/high-quality sources where facts can change; UI/backend work needs visible user-path, backend-to-UI data flow, loading/error/empty/success/responsive/accessibility checks, and visual evidence; API work needs auth/CORS/HTTPS/secret/backend handling plus docs/freshness/rate-limit unknowns; game/build/modding work needs specific game/version/tool/file-format context, backups/isolation where mutation is proposed, and no generic best-build claims without PvE/PvP/DLC/progression assumptions.",
+    "- Agent flow: call `vnem_bootstrap`, then `vnem_plan_effort_budget` or `vnem_boost_task` for the concrete user-task workflow. It selects usable API/skill packs rather than raw records and returns a compact `tools_mcp_handoff`. Use `vnem_prepare_tools_handoff` when a standalone Tools MCP handoff is needed; for source/browser work, use `vnem_build_browser_research_plan` and `vnem_explain_tools_chain` to separate direct-source, website-understanding, local-UI, and current-search needs. Connect the separate `vnem-tools` MCP foundation only when approved actions are needed; it dry-runs first, asks permission, scans projects safely, applies approved path-limited patch batches, restores from approved backups/restore plans, runs only allowlisted commands and safe package tasks, starts/stops only local Tools-started dev servers, performs only approved GET/HEAD API requests, inspects direct/local/provided page sources, maps links without following/crawling, runs heuristic accessibility/snapshot checks, captures approved local browser screenshots, can make approved local git commits of explicit safe files, and collects redacted action/session evidence. Use `vnem_compose_capability_contract` only when lower-level capability IDs/details are needed. Call `vnem_protection_review` before risky filesystem/terminal/browser/GitHub/package/API/skill/modding actions; collect task-specific checks/evidence; call/apply `vnem_completion_audit`; then call `vnem_proof_trail` and include its compact proof/evidence summary in the final response.",
+    "- Capability library: when `vnem_bootstrap` reports skill/API availability, use `vnem_library_status`, `vnem_get_required_capabilities`, `vnem_activate_capability_pack`, `vnem_apply_skill_guidance`, `vnem_boost_task`, `vnem_plan_effort_budget`, `vnem_fast_answer_contract`, `vnem_route_task`, `vnem_output_quality_plan`, `vnem_anti_stagnation_check`, `vnem_design_ambition_plan`, `vnem_visual_taste_audit`, `vnem_prepare_tools_handoff`, `vnem_build_tools_plan`, `vnem_build_debugging_plan`, `vnem_evidence_to_fix_check`, `vnem_build_architecture_map`, `vnem_code_change_contract`, `vnem_build_browser_research_plan`, `vnem_explain_tools_chain`, `vnem_build_api_integration_plan`, `vnem_api_safety_profile`, `vnem_skill_safety_profile`, `vnem_get_agent_profile`, `vnem_compose_capability_contract`, `vnem_completion_audit`, `vnem_protection_review`, `vnem_proof_trail`, `vnem_recommend_skills`, `vnem_recommend_apis`, and `vnem_review_skill_or_api` for read-only capability activation, usable pack selection, routing/memory relevance, missing-context decisions, output-quality contracts, anti-stagnation checks, browser/source planning, audit, proof, and protection review. The default Core MCP chooses useful APIs/skills and prepares Tools MCP handoff, but it does not install skills, execute scripts, call APIs, mutate files, open browsers, run terminals, or push GitHub changes. Tools MCP is separate and approval-gated.",
+    "- Domain contracts: research/source-quality work must use current/high-quality sources where facts can change; UI/backend work needs visible user-path, backend-to-UI data flow, loading/error/empty/success/responsive/accessibility checks, design ambition/taste audit, and visual evidence; API work needs auth/CORS/HTTPS/secret/backend handling plus docs/freshness/rate-limit unknowns; game/build/modding work needs specific game/version/tool/file-format context, backups/isolation where mutation is proposed, and no generic best-build claims without PvE/PvP/DLC/progression assumptions.",
     "- Real task examples: Elden Ring build boosts ask PvE/PvP, DLC/base game, progression/rune level, weapon/stat preference, armor/poise, player skill, and patch/source freshness; weather widgets select a usable weather API pack and require frontend/backend, CORS, secret, rate-limit, loading/error/empty/success, and mocked-test proof; currency converters select a usable exchange API pack and require mocked rates, stale-rate handling, rate-limit/backoff, and no frontend secrets; repo issue triage helpers select a usable GitHub API pack with backend OAuth/PAT and GitHub/action handoff; suspicious domain/IP checks select a usable threat/IP pack with backend API-key handling, corroboration, and human review; dashboard UI/backend tasks require visible user path, backend-to-UI data flow, visual/browser/screenshot, responsive, accessibility, and state proof; modding tasks require game version, platform, toolchain, file formats, backup, restore, compatibility, and Tools/Precision MCP for edits; Gmail/PC security tasks separate user actions from tool actions, require current source-quality checks, and forbid impossible guarantees; repo debugging tasks require logs first, reproduction, root cause, minimal patch, tests, and before/after proof.",
 
     "- Orchestration: for complex app, game, coding, or research work, call `vnem_orchestrate` and confirm it returns the expected pattern and JSON schemas.",
@@ -5352,6 +5406,9 @@ function searchIndexJson(entries) {
       principles: qualityContract.principles,
       triple_check: qualityContract.triple_check,
       quality_floor: qualityContract.quality_floor,
+      adaptive_effort_modes: qualityContract.adaptive_effort_modes,
+      truth_rules: qualityContract.truth_rules,
+      design_ambition_rules: qualityContract.design_ambition_rules,
       domain_balance: qualityContract.domain_balance,
       tradeoff_policy: qualityContract.tradeoff_policy,
       source_urls: qualityContract.source_urls

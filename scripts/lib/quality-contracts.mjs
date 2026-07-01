@@ -171,6 +171,11 @@ export function completionAudit(options = {}) {
   const gameFindings = [];
   const unsafeClaims = [];
   const nextActions = [];
+  const overheadFindings = [];
+  const irrelevantToolCalls = [];
+  const usefulToolCalls = [];
+  const toolUseShouldHaveBeenSkipped = [];
+  const toolUseMissingWhenNeeded = [];
   const evidenceLedger = {
     proven: [],
     tested: [],
@@ -189,6 +194,24 @@ export function completionAudit(options = {}) {
   if (sources.length) evidenceLedger.supported.push(...sources.map((source) => typeof source === "string" ? source : source?.url || source?.title || JSON.stringify(source)).slice(0, 6));
   if (visuals.length) evidenceLedger.proven.push(...visuals.map(String).slice(0, 4));
   if (/assum|assuming|likely|should/.test(combined)) evidenceLedger.assumed.push("Claim includes assumptions/likely language; keep it below proven/tested status.");
+
+  const simpleStableTask = isSimpleStableTask(task);
+  const seriousTaskNeedsTools = needsTaskEvidenceTools(task, combined);
+  const mentionsToolProcess = /tool|mcp|browser|search|source|file|repo|inspect|verify|evidence report|proof section|full audit|plan/i.test(claimed);
+  if (simpleStableTask && mentionsToolProcess && !/(current|latest|security|file|repo|debug|ui|website)/.test(normalize(task))) {
+    overheadFindings.push("overused deep verification on simple stable task");
+    overheadFindings.push("used research/tool plan when user only needed direct answer");
+    overheadFindings.push("used proof section without proof or task value");
+    irrelevantToolCalls.push(...extractToolLikeWords(claimed));
+    toolUseShouldHaveBeenSkipped.push("Simple stable question should have used Core classification then a direct answer; browser/file/source/Tools ceremony adds overhead without improving truth.");
+  }
+  if (/long report|full evidence report|audit report|first i will|i will verify|proof section/i.test(claimed) && simpleStableTask) overheadFindings.push("gave long process text before answering");
+  if (/clarify|question/i.test(claimed) && simpleStableTask && !/ambiguous|two meanings|depends materially/.test(combined)) overheadFindings.push("asked unnecessary clarification");
+  if (mentionsToolProcess && !evidence.length && /proof|evidence|verified|checked/.test(combined)) overheadFindings.push("generated evidence/proof language without evidence");
+  if (seriousTaskNeedsTools && !commands.length && !sources.length && !visuals.length && evidence.length < 2) {
+    toolUseMissingWhenNeeded.push(...missingToolsForTask(task, combined));
+  }
+  if (commands.length || sources.length || visuals.length || evidence.length) usefulToolCalls.push(...classifyUsefulToolEvidence(task, { commands, sources, visuals, evidence }));
 
   if (!evidence.length && /\b(done|finished|complete|implemented|fixed|works|safe|polished|best)\b/.test(combined)) {
     missingEvidence.push("Claimed completion/result but provided no concrete evidence.");
@@ -349,6 +372,8 @@ export function completionAudit(options = {}) {
   if (uiFindings.length) nextActions.push("Provide UI visual evidence and UI/backend integration proof.");
   if (researchFindings.length) nextActions.push("Use current/high-quality sources and separate facts from assumptions.");
   if (gameFindings.length) nextActions.push("Add game/build/modding-specific context, source, tooling, and verification evidence.");
+  if (overheadFindings.length) nextActions.push("Remove useless process: answer first, skip decorative tools, and do not add proof sections without proof.");
+  if (toolUseMissingWhenNeeded.length) nextActions.push("Use the missing task-appropriate tools/research/evidence path or downgrade claims to unknown/blocked.");
 
   let score = 100;
   score -= missingEvidence.length * 12;
@@ -360,6 +385,8 @@ export function completionAudit(options = {}) {
   score -= apiFindings.length * 14;
   score -= gameFindings.length * 14;
   score -= unsafeClaims.length * 12;
+  score -= overheadFindings.length * 8;
+  score -= toolUseMissingWhenNeeded.length * 10;
   if (commands.length) score += 5;
   if (evidence.length >= 3) score += 5;
   if (domains.includes("research") && hasCurrentSourceEvidence) score += 12;
@@ -375,7 +402,7 @@ export function completionAudit(options = {}) {
   let verdict = "pass";
   if (apiFindings.some((item) => /frontend API-key/.test(item)) || (domains.includes("modding") && gameFindings.length && !evidence.length)) verdict = "blocked";
   else if (missingEvidence.length && !evidence.length) verdict = "insufficient_evidence";
-  else if (score < 80 || missingEvidence.length || unverifiedClaims.length || researchFindings.length || uiFindings.length || apiFindings.length || gameFindings.length || unsafeClaims.length) verdict = "revise";
+  else if (score < 80 || missingEvidence.length || unverifiedClaims.length || researchFindings.length || uiFindings.length || apiFindings.length || gameFindings.length || unsafeClaims.length || overheadFindings.length || toolUseMissingWhenNeeded.length) verdict = "revise";
 
   return compactForBudget({
     verdict,
@@ -392,6 +419,15 @@ export function completionAudit(options = {}) {
     api_safety_findings: apiFindings,
     game_or_modding_findings: gameFindings,
     unsafe_or_overconfident_claims: unsafeClaims,
+    wasted_tool_usage_status: overheadFindings.length || irrelevantToolCalls.length || toolUseShouldHaveBeenSkipped.length || toolUseMissingWhenNeeded.length ? "flagged" : "pass",
+    irrelevant_tool_calls: unique(irrelevantToolCalls),
+    useful_tool_calls: unique(usefulToolCalls),
+    tool_use_value: overheadFindings.length ? "low_or_negative_for_this_task" : usefulToolCalls.length ? "material_evidence_value" : "not_enough_tool_evidence_to_score",
+    tool_use_reason: usefulToolCalls.length ? "Provided tools/evidence map to task needs." : overheadFindings.length ? "Tool/process references did not materially improve truth or result." : "No tool use needed or supplied.",
+    tool_use_overhead_risk: overheadFindings.length ? "high" : simpleStableTask ? "low_if_direct_answer" : "normal",
+    tool_use_should_have_been_skipped: unique(toolUseShouldHaveBeenSkipped),
+    tool_use_missing_when_needed: unique(toolUseMissingWhenNeeded),
+    anti_overhead_findings: unique(overheadFindings),
     evidence_ledger: evidenceLedger,
     required_next_actions: unique(nextActions).slice(0, tokenBudget === "expanded" ? 10 : 6),
     what_can_be_claimed_safely: safeClaims(verdict, evidence, commands),
@@ -592,6 +628,47 @@ export function proofTrail(options = {}) {
     compact_final_report_block: compactBlock,
     token_budget_used: tokenBudget
   }, tokenBudget);
+}
+
+
+function isSimpleStableTask(task) {
+  const text = normalize(task);
+  return /\b(what does|what is|define|meaning of|explain)\b/.test(text) && !/\b(current|latest|right now|today|policy|price|law|legal|medical|financial|security|safe|file|repo|debug|ui|website|redesign|patch)\b/.test(text);
+}
+
+function needsTaskEvidenceTools(task, combined = "") {
+  const text = normalize(`${task} ${combined}`);
+  return /\b(current|latest|right now|policy|requirements|security|safe|phishing|malware|debug|stack trace|error log|repo|patch|file|source|website|ui|redesign|browser|visual|public-facing|deploy|release)\b/.test(text);
+}
+
+function extractToolLikeWords(text) {
+  const normalized = normalize(text);
+  const out = [];
+  for (const [pattern, label] of [
+    [/browser/, "browser tool"], [/search|source/, "research/source tool"], [/file|repo|inspect/, "file/repo inspection tool"], [/tools mcp|mcp/, "MCP tool ceremony"], [/evidence report|proof section|audit report/, "proof/report ceremony"]
+  ]) if (pattern.test(normalized)) out.push(label);
+  return unique(out);
+}
+
+function missingToolsForTask(task, combined = "") {
+  const text = normalize(`${task} ${combined}`);
+  const out = [];
+  if (/\b(current|latest|right now|policy|requirements|price|law|version)\b/.test(text)) out.push("current/source research evidence missing");
+  if (/\b(security|safe|phishing|malware|account|login|credential)\b/.test(text)) out.push("security/source/artifact risk evidence missing");
+  if (/\b(ui|website|redesign|visual|responsive|browser)\b/.test(text)) out.push("UI/browser/visual evidence tools missing");
+  if (/\b(debug|stack trace|error log|failing|root cause)\b/.test(text)) out.push("debug/log/test evidence tools missing");
+  if (/\b(repo|patch|file|commit|push|deploy|release)\b/.test(text)) out.push("repo/file/test/git evidence tools missing");
+  return unique(out);
+}
+
+function classifyUsefulToolEvidence(task, data) {
+  const text = normalize(`${task} ${data.commands.join(" ")} ${data.sources.join(" ")} ${data.visuals.join(" ")} ${data.evidence.join(" ")}`);
+  const out = [];
+  if (/test|build|lint|validate|node --check|npm run/.test(text)) out.push("verification command evidence");
+  if (/http|source|official|docs|policy|current|changelog/.test(text)) out.push("source/research evidence");
+  if (/screenshot|browser|viewport|accessibility|dom|visual/.test(text)) out.push("UI/browser visual evidence");
+  if (/log|stack trace|root cause|failing command/.test(text)) out.push("debug evidence");
+  return unique(out);
 }
 
 export function classifyDomains(task = "", context = "") {

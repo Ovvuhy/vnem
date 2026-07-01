@@ -41,6 +41,11 @@ const completionAuditCodeQualityTestSource = await text("scripts/test-completion
 const coreUiQualityPlanTestSource = await text("scripts/test-core-ui-quality-plan.mjs");
 const coreVisualProofContractTestSource = await text("scripts/test-core-visual-proof-contract.mjs");
 const uiCompletionAuditTestSource = await text("scripts/test-ui-completion-audit.mjs");
+const coreAdaptiveEffortTestSource = await text("scripts/test-core-adaptive-effort.mjs");
+const coreFastAnswerContractTestSource = await text("scripts/test-core-fast-answer-contract.mjs");
+const coreAntiOverheadAuditTestSource = await text("scripts/test-core-anti-overhead-audit.mjs");
+const coreDesignAmbitionTestSource = await text("scripts/test-core-design-ambition.mjs");
+const coreVisualTasteAuditTestSource = await text("scripts/test-core-visual-taste-audit.mjs");
 const toolsSourceIngestionTestSource = await text("scripts/test-tools-source-ingestion.mjs");
 const toolsSourceGraphTestSource = await text("scripts/test-tools-source-graph.mjs");
 const mcpUserSmokeTestSource = await text("scripts/test-mcp-user-smoke.mjs");
@@ -180,6 +185,19 @@ const coreUiWebQualityStatus = {
   core_ui_still_plan_only_status: /core_plan_only:\s*true/.test(serverSource) && /core_executes_browser:\s*false/.test(serverSource) && /Core opened a browser|Core captured screenshots/.test(serverSource + coreUiQualityPlanTestSource)
 };
 
+const coreAdaptiveSpeedDesignStatus = {
+  adaptive_effort_status: toolInventory.includes("vnem_plan_effort_budget") && /buildEffortBudget/.test(serverSource) && /instant_answer/.test(coreAdaptiveEffortTestSource) && /max_verification/.test(coreAdaptiveEffortTestSource),
+  fast_answer_contract_status: toolInventory.includes("vnem_fast_answer_contract") && /buildFastAnswerContract/.test(serverSource) && /forbidden_overhead/.test(coreFastAnswerContractTestSource + serverSource),
+  harsh_truth_status: /truth_over_comfort_status|no_sugarcoating_status|uncertainty_must_be_labeled_status|harsh_truth_quality_status/.test(serverSource) && /uncertainty|fake certainty|false certainty/i.test(coreFastAnswerContractTestSource + serverSource),
+  clarification_discipline_status: /clarification_question_needed|question_count_limit|assumption_must_be_labeled/.test(serverSource) && /pointless clarification|one precise question|materially/.test(serverSource + coreFastAnswerContractTestSource),
+  wasted_tool_audit_status: /wasted_tool_usage_status|irrelevant_tool_calls|tool_use_missing_when_needed|tool_use_should_have_been_skipped/.test(await text("scripts/lib/quality-contracts.mjs")) && /wasted_tool_usage_status/.test(coreAntiOverheadAuditTestSource),
+  anti_overhead_audit_status: /anti_overhead_findings|overused deep verification on simple stable task|proof section without proof/.test(await text("scripts/lib/quality-contracts.mjs") + coreAntiOverheadAuditTestSource),
+  design_ambition_status: toolInventory.includes("vnem_design_ambition_plan") && /buildDesignAmbitionPlan/.test(serverSource) && /adapt to business|force_user_to_choose_design_directions|generic template/i.test(serverSource + coreDesignAmbitionTestSource),
+  visual_taste_audit_status: toolInventory.includes("vnem_visual_taste_audit") && /buildVisualTasteAudit/.test(serverSource) && /boring_or_generic_risk|template_like_risk|mismatch_with_user_requested_style/.test(serverSource + coreVisualTasteAuditTestSource),
+  route_effort_categories_status: /simple_stable_question|prompt_improvement|ui_redesign|current_research|repo_modification|deployment_workflow/.test(serverSource + coreAdaptiveEffortTestSource),
+  boost_adaptive_design_status: /adaptive_effort|design_behavior|visual_ambition_required|wasted_tool_risk/.test(serverSource)
+};
+
 const usablePackStatus = {
   usable_api_pack_count: Array.isArray(usablePacks.apis) ? usablePacks.apis.filter((pack) => pack.usable_status === "usable").length : 0,
   usable_skill_pack_count: Array.isArray(usablePacks.skills) ? usablePacks.skills.filter((pack) => pack.usable_status === "usable").length : 0,
@@ -212,6 +230,12 @@ assert.ok(Object.values(corePermissionAwarenessStatus).every(Boolean), "Core per
 assert.ok(Object.values(coreResearchSourceStatus).every(Boolean), "Core research/source-ingestion readiness is incomplete");
 assert.ok(Object.values(coreDebuggingCodeQualityStatus).every(Boolean), "Core debugging/code-quality readiness is incomplete");
 assert.ok(Object.values(coreUiWebQualityStatus).every(Boolean), "Core UI/web quality readiness is incomplete");
+assert.ok(Object.values(coreAdaptiveSpeedDesignStatus).every(Boolean), "Core adaptive effort / speed-design readiness is incomplete");
+assert.ok(packageJson.scripts?.["test:core-adaptive-effort"] === "node scripts/test-core-adaptive-effort.mjs", "test:core-adaptive-effort package script is missing");
+assert.ok(packageJson.scripts?.["test:core-fast-answer-contract"] === "node scripts/test-core-fast-answer-contract.mjs", "test:core-fast-answer-contract package script is missing");
+assert.ok(packageJson.scripts?.["test:core-anti-overhead-audit"] === "node scripts/test-core-anti-overhead-audit.mjs", "test:core-anti-overhead-audit package script is missing");
+assert.ok(packageJson.scripts?.["test:core-design-ambition"] === "node scripts/test-core-design-ambition.mjs", "test:core-design-ambition package script is missing");
+assert.ok(packageJson.scripts?.["test:core-visual-taste-audit"] === "node scripts/test-core-visual-taste-audit.mjs", "test:core-visual-taste-audit package script is missing");
 assert.ok(packageJson.scripts?.["test:core-ui-quality-plan"] === "node scripts/test-core-ui-quality-plan.mjs", "test:core-ui-quality-plan package script is missing");
 assert.ok(packageJson.scripts?.["test:core-visual-proof-contract"] === "node scripts/test-core-visual-proof-contract.mjs", "test:core-visual-proof-contract package script is missing");
 assert.ok(packageJson.scripts?.["test:ui-completion-audit"] === "node scripts/test-ui-completion-audit.mjs", "test:ui-completion-audit package script is missing");
@@ -275,6 +299,7 @@ const report = {
   core_research_source_status: coreResearchSourceStatus,
   core_debugging_code_quality_status: coreDebuggingCodeQualityStatus,
   core_ui_web_quality_status: coreUiWebQualityStatus,
+  core_adaptive_speed_design_status: coreAdaptiveSpeedDesignStatus,
   core_tools_ecosystem_test_status: /vnem_build_tools_plan/.test(coreToolsEcosystemTestSource) && /vnem_tools_finish_session/.test(coreToolsEcosystemTestSource),
   api_library_counts: apiCounts,
   skill_library_counts: skillCounts,
@@ -295,7 +320,8 @@ const report = {
     "Core now plans Tools permission profiles, trust-boundary levels, approval-required actions, blocked/profile-limited actions, and safe alternatives while remaining plan-only.",
     "Core now builds research strategies, source-ingestion plans, source-graph planning, contradiction/freshness confidence limits, and research evidence audits while remaining plan-only.",
     "Core now builds log-first debugging plans, evidence-to-fix checks, architecture maps, code-change contracts, and completion-audit code-quality warnings while remaining plan-only.",
-    "Core now builds UI quality plans and visual proof contracts, and completion audit flags UI/browser overclaims without visual, route/render, console/network, a11y, viewport, state, and before/after evidence while remaining plan-only."
+    "Core now builds UI quality plans and visual proof contracts, and completion audit flags UI/browser overclaims without visual, route/render, console/network, a11y, viewport, state, and before/after evidence while remaining plan-only.",
+    "Core now classifies adaptive effort, enforces fast-answer/no-ceremony contracts, harsh-truth uncertainty labels, design ambition, visual taste audits, and wasted-tool/anti-overhead checks while remaining plan-only."
   ],
   not_ready: [
     "Most API docs, rate limits, CORS values, and freshness statuses remain metadata-level or unknown.",
@@ -377,6 +403,7 @@ function formatReport(report) {
   lines.push(`core_research_source_status: ${status(report.core_research_source_status)}`);
   lines.push(`core_debugging_code_quality_status: ${status(report.core_debugging_code_quality_status)}`);
   lines.push(`core_ui_web_quality_status: ${status(report.core_ui_web_quality_status)}`);
+  lines.push(`core_adaptive_speed_design_status: ${status(report.core_adaptive_speed_design_status)}`);
   lines.push(`core_tools_ecosystem_test_status: ${report.core_tools_ecosystem_test_status ? "yes" : "no"}`);
   lines.push(`real_task_examples_tested: ${report.task_boosting_status.real_task_examples_tested.join(", ")}`);
   lines.push(`api_counts: total=${report.api_library_counts.total_apis}, docs_verified=${report.api_library_counts.docs_verified_count}, docs_unknown=${report.api_library_counts.docs_unknown_count}, rate_limit_verified=${report.api_library_counts.rate_limit_verified_count}, rate_limit_unknown=${report.api_library_counts.rate_limit_unknown_count}, cors_unknown=${report.api_library_counts.cors_unknown_count}, frontend_safe=${report.api_library_counts.frontend_safe_count}, backend_required=${report.api_library_counts.backend_required_count}`);

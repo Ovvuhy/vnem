@@ -95,6 +95,10 @@ const DEFAULT_MCP_TOOLS = [
   "vnem_route_task",
   "vnem_output_quality_plan",
   "vnem_anti_stagnation_check",
+  "vnem_plan_effort_budget",
+  "vnem_fast_answer_contract",
+  "vnem_design_ambition_plan",
+  "vnem_visual_taste_audit",
   "vnem_build_debugging_plan",
   "vnem_evidence_to_fix_check",
   "vnem_build_architecture_map",
@@ -506,9 +510,14 @@ function registerTools(mcpServer) {
       const result = boostTask(superLibrary, agentProfiles, args);
       const routingRecord = buildCoreRoutingRecord({ task: args.task, known_context: args.known_context, token_budget: args.token_budget });
       const outputQualityPlan = buildOutputQualityPlan({ task: args.task, output_type: "technical_final_report", audience: "developer" });
+      const effortBudget = buildEffortBudget({ user_goal: args.task, known_context: args.known_context, token_budget: args.token_budget });
+      const designPlan = /ui|ux|website|web app|redesign|design|visual|landing page/i.test(`${args.task} ${args.known_context || ""}`) ? buildDesignAmbitionPlan({ user_goal: args.task, known_context: args.known_context, token_budget: "compact" }) : null;
+      const adaptiveEffort = compactAdaptiveEffort(effortBudget);
+      const designBehavior = compactDesignBehavior(designPlan);
+      const { tools_mcp_handoff: _compactDuplicateToolsHandoff, ...compactResult } = result;
       const baseResult = args.token_budget === "compact"
-        ? { ...result, routing_record: compactRoutingRecord(routingRecord), output_quality_plan: compactOutputQualityPlan(outputQualityPlan) }
-        : { ...result, routing_record: routingRecord, output_quality_plan: outputQualityPlan };
+        ? { ...compactResult, routing_record: compactRoutingRecord(routingRecord), output_quality_plan: compactOutputQualityPlan(outputQualityPlan), adaptive_effort: adaptiveEffort, design_behavior: designBehavior }
+        : { ...result, routing_record: routingRecord, output_quality_plan: outputQualityPlan, adaptive_effort: adaptiveEffort, design_behavior: designBehavior };
       if (args.token_budget === "compact") return toolResult(formatBoostTask(baseResult), baseResult);
       const toolSelectionPlan = compactCoreToolsPlan(buildCoreToolsPlan(args));
       const enhanced = {
@@ -583,6 +592,62 @@ function registerTools(mcpServer) {
     async (args) => {
       const check = buildAntiStagnationCheck(args);
       return toolResult(formatAntiStagnationCheck(check), { anti_stagnation_check: check });
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_plan_effort_budget",
+    {
+      title: "Plan VNEM Adaptive Effort Budget",
+      description: "Read-only Core classifier for quality floor/adaptive effort ceiling: chooses instant/quick/standard/deep/max mode, truth rules, research decision, tool budget, clarification discipline, evidence, and must-not-claim limits. Core does not execute Tools.",
+      inputSchema: { user_goal: z.string().min(1), known_context: z.string().optional(), user_requested_style: z.string().optional(), token_budget: z.enum(["compact", "normal", "expanded"]).default("normal") },
+      annotations: READ_ONLY
+    },
+    async (args) => {
+      const budget = buildEffortBudget(args);
+      return toolResult(formatEffortBudget(budget), { effort_budget: budget });
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_fast_answer_contract",
+    {
+      title: "Build VNEM Fast Answer Contract",
+      description: "Read-only Core contract for direct answers: answer first, avoid fake proof/process, label uncertainty, use research/tools only when facts, risk, files, UI, or verification require them.",
+      inputSchema: { task_summary: z.string().min(1), known_context: z.string().optional(), token_budget: z.enum(["compact", "normal", "expanded"]).default("compact") },
+      annotations: READ_ONLY
+    },
+    async (args) => {
+      const contract = buildFastAnswerContract(args);
+      return toolResult(formatFastAnswerContract(contract), { fast_answer_contract: contract });
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_design_ambition_plan",
+    {
+      title: "Build VNEM Design Ambition Plan",
+      description: "Read-only Core design plan for UI/redesign tasks: adapt to business/brand/purpose when style is unspecified, follow explicit style when supplied, avoid generic safe templates, and require visibly better browser-proofed results.",
+      inputSchema: { user_goal: z.string().min(1), referenced_site_or_product: z.string().default(""), user_requested_style: z.string().optional(), known_context: z.string().optional(), token_budget: z.enum(["compact", "normal", "expanded"]).default("normal") },
+      annotations: READ_ONLY
+    },
+    async (args) => {
+      const plan = buildDesignAmbitionPlan(args);
+      return toolResult(formatDesignAmbitionPlan(plan), { design_ambition_plan: plan });
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_visual_taste_audit",
+    {
+      title: "Audit VNEM Visual Taste",
+      description: "Read-only Core audit for UI/design quality: flags boring/generic/template-like, weak brand fit, ignored user style, low ambition, weak mobile/hero/typography/spacing, and missing visual/before-after proof.",
+      inputSchema: { user_goal: z.string().min(1), design_summary: z.string().default(""), user_requested_style: z.string().optional(), referenced_site_or_product: z.string().optional(), evidence: z.array(z.any()).default([]), screenshots_or_visual_evidence: z.array(z.any()).default([]), before_after_evidence: z.array(z.any()).default([]), token_budget: z.enum(["compact", "normal", "expanded"]).default("normal") },
+      annotations: READ_ONLY
+    },
+    async (args) => {
+      const audit = buildVisualTasteAudit(args);
+      return toolResult(formatVisualTasteAudit(audit), { visual_taste_audit: audit });
     }
   );
 
@@ -1803,6 +1868,20 @@ function sourceRadarResults(intent, category, limit) {
 
 
 const CORE_TASK_CATEGORIES = [
+  "simple_stable_question",
+  "simple_explanation",
+  "prompt_improvement",
+  "summarization_of_user_text",
+  "local_debugging",
+  "repo_modification",
+  "ui_web_change",
+  "ui_redesign",
+  "current_research",
+  "security_safety",
+  "file_analysis",
+  "high_stakes_advice",
+  "public_facing_claim",
+  "deployment_workflow",
   "coding/debugging",
   "UI/web/app improvement",
   "research/current information",
@@ -1831,6 +1910,7 @@ function buildCoreRoutingRecord(args = {}) {
   const selection = selectToolsForTask({ task, known_context: known, available_tools: args.available_tools || [] });
   const toolsPermissionPlanning = buildCorePermissionProfilePlan(task, known, selection.selected_tools);
   const research = assessResearchNeed({ task, known_context: known });
+  const effortBudget = buildEffortBudget({ user_goal: task, known_context: known, token_budget: args.token_budget || "normal" });
   const criticalQuestions = missing.filter((item) => item.ask_now);
   const needTools = categories.includes("documentation-only") && !/inspect|workspace|repo|local files|browser|source|security|fix|implement|debug|dashboard|git|package/.test(hay)
     ? false
@@ -1859,7 +1939,14 @@ function buildCoreRoutingRecord(args = {}) {
       : "No blocking missing context detected; safe defaults or Tools MCP inspection can cover remaining low-impact gaps.",
     needed_capabilities: selection.selected_tools,
     need_tools_mcp: needTools,
-    need_current_research: Boolean(research.current_info_required || research.external_search_required),
+    effort_mode: effortBudget.effort_mode,
+    task_type: effortBudget.task_type,
+    clarification_question_needed: effortBudget.clarification_question_needed,
+    clarification_question_reason: effortBudget.clarification_question_reason,
+    question_count_limit: effortBudget.clarification_question_needed ? 1 : 0,
+    assumption_allowed: !effortBudget.clarification_question_needed,
+    assumption_must_be_labeled: true,
+    need_current_research: Boolean(research.current_info_required || research.external_search_required || effortBudget.research_needed),
     tools_permission_planning: toolsPermissionPlanning,
     compatibility_risks: compatRisks,
     safety_risks: safetyRisks,
@@ -1881,6 +1968,14 @@ function buildCoreRoutingRecord(args = {}) {
 function inferCoreTaskCategories(task, known = "") {
   const text = normalize(`${task} ${known}`);
   const out = new Set();
+  const classified = classifyAdaptiveTaskType(task, known);
+  if (classified) out.add(classified);
+  if (classified === "ui_redesign" || classified === "ui_web_change") out.add("UI/web/app improvement");
+  if (classified === "local_debugging") out.add("coding/debugging");
+  if (classified === "repo_modification") out.add("local project action");
+  if (classified === "current_research") out.add("research/current information");
+  if (classified === "security_safety") out.add("security/safety review");
+  if (classified === "deployment_workflow") out.add("Git/GitHub workflow");
   if (/debug|bug|failing|failure|error|stack trace|fix|implement|code|test|build|refactor/.test(text)) out.add("coding/debugging");
   if (/ui|ux|frontend|web app|website|browser|visual|responsive|accessibility|dashboard/.test(text)) out.add("UI/web/app improvement");
   if (/research|current|latest|today|news|source|citation|docs|compare|recommend|best|patch/.test(text)) out.add("research/current information");
@@ -1995,6 +2090,232 @@ function inferRequiredEvidence(categories, selectedTools, research) {
   if (selectedTools.includes("vnem_tools_finish_session")) evidence.push("Tools session evidence pack before final done/safe/compatible claims");
   return uniqueStrings(evidence);
 }
+
+
+function classifyAdaptiveTaskType(task, known = "") {
+  const text = normalize(`${task} ${known}`);
+  if (/\b(deploy|deployment|release|publish|cloudflare|wrangler)\b/.test(text)) return "deployment_workflow";
+  if (/\b(commit|push|pull request|pr|patch this repo|edit this repo|make code changes|repo changes|git\b|ci\b)\b/.test(text)) return "repo_modification";
+  if (/\b(debug|stack trace|failing|failure|error log|root cause|crash|regression)\b/.test(text)) return "local_debugging";
+  if (/\b(redesign|make.*look better|website.*better|landing page.*better|visual redesign|ui redesign)\b/.test(text)) return "ui_redesign";
+  if (/\b(ui|ux|frontend|website|web app|browser proof|visual|responsive|accessibility|component|dashboard)\b/.test(text)) return "ui_web_change";
+  if (/\b(current|latest|right now|today|policy|requirements|price|version|patch notes|refund|news)\b/.test(text)) return "current_research";
+  if (/\b(security|safe to use|phishing|malware|suspicious|account|login link|credential|token|cookie|session|medical|legal|financial)\b/.test(text)) return "security_safety";
+  if (/\b(file|log|source file|analyze this file|read this|attachment)\b/.test(text)) return "file_analysis";
+  if (/\b(public-facing|public claim|announcement|press|production claim)\b/.test(text)) return "public_facing_claim";
+  if (/\b(prompt|system prompt|instructions|improve this prompt)\b/.test(text)) return "prompt_improvement";
+  if (/\b(summarize|summary|tldr|tl;dr)\b/.test(text) && /\b(pasted|provided|above|this text|user provided)\b/.test(text)) return "summarization_of_user_text";
+  if (/\b(what does|what is|explain|meaning of|define|how do you say)\b/.test(text) && !/\b(current|latest|right now|policy|price|security|safe|file|repo|debug|website|redesign)\b/.test(text)) return "simple_stable_question";
+  if (/\b(explain|how does|why does)\b/.test(text) && !/\b(current|latest|right now|security|file|repo|debug)\b/.test(text)) return "simple_explanation";
+  if (/\b(doctor|law|medical|financial|tax|investment|legal)\b/.test(text)) return "high_stakes_advice";
+  return null;
+}
+
+function effortModeForTaskType(type, text) {
+  if (["repo_modification", "deployment_workflow", "public_facing_claim"].includes(type)) return "max_verification";
+  if (["local_debugging", "ui_redesign", "ui_web_change", "security_safety", "file_analysis", "high_stakes_advice"].includes(type)) return "deep_proof";
+  if (type === "current_research") return /security|safe|legal|medical|financial|download/.test(text) ? "deep_proof" : "standard";
+  if (["prompt_improvement", "summarization_of_user_text"].includes(type)) return "quick_plan";
+  if (["simple_stable_question", "simple_explanation"].includes(type)) return "instant_answer";
+  return "standard";
+}
+
+function buildEffortBudget(args = {}) {
+  const userGoal = String(args.user_goal || args.task || "").trim();
+  const known = String(args.known_context || "").trim();
+  const text = normalize(`${userGoal} ${known}`);
+  const taskType = classifyAdaptiveTaskType(userGoal, known) || "standard";
+  const mode = effortModeForTaskType(taskType, text);
+  const researchNeeded = needsExternalResearchForAdaptive(taskType, text);
+  const toolsNeeded = !["instant_answer", "quick_plan"].includes(mode) || ["ui_redesign", "ui_web_change", "local_debugging", "repo_modification", "security_safety", "file_analysis", "deployment_workflow"].includes(taskType);
+  const recommendedTools = recommendedCoreToolsForEffort(taskType, mode, researchNeeded);
+  const recommendedMcpTools = recommendedToolsMcpForEffort(taskType, mode, researchNeeded);
+  const clarify = clarificationDecisionForTask(taskType, text, userGoal, known);
+  const evidenceRequired = evidenceForEffort(taskType, mode, researchNeeded);
+  const evidenceNotRequired = evidenceNotRequiredForEffort(taskType, mode);
+  return {
+    user_goal: userGoal,
+    task_type: taskType,
+    effort_mode: mode,
+    reason_for_mode: reasonForEffortMode(taskType, mode, researchNeeded),
+    speed_priority: ["instant_answer", "quick_plan"].includes(mode) ? "high" : mode === "standard" ? "medium" : "lower_than_truth_quality",
+    quality_priority: ["deep_proof", "max_verification"].includes(mode) ? "very_high" : "quality_floor_enforced",
+    truth_over_comfort_status: "enforced",
+    no_sugarcoating_status: "enforced",
+    uncertainty_must_be_labeled_status: "enforced",
+    harsh_truth_quality_status: "enforced",
+    research_decision: researchNeeded ? "research_or_source_verification_required" : "no_external_research_required_for_stable_or_user_provided_context",
+    research_needed: researchNeeded,
+    why_research_is_or_is_not_needed: researchReason(taskType, text, researchNeeded),
+    tool_budget: { tools_needed: toolsNeeded, budget: toolBudgetForMode(mode), rule: toolsNeeded ? "Use only tools that materially improve truth, quality, safety, evidence, design, or result." : "Avoid Tools; direct answer is enough after Core classification." },
+    token_budget_guidance: tokenBudgetGuidance(mode),
+    evidence_required: evidenceRequired,
+    evidence_not_required: evidenceNotRequired,
+    recommended_core_tools: recommendedTools,
+    recommended_tools_mcp_tools: recommendedMcpTools,
+    tools_to_avoid: toolsToAvoidForEffort(mode, taskType),
+    wasted_tool_risk: wastedToolRisk(mode, taskType),
+    clarification_question_needed: clarify.needed,
+    clarification_question_reason: clarify.reason,
+    question_count_limit: clarify.needed ? 1 : 0,
+    assumption_allowed: !clarify.needed,
+    assumption_must_be_labeled: true,
+    escalation_triggers: escalationTriggersForEffort(),
+    answer_shape: answerShapeForMode(mode),
+    must_not_claim: mustNotClaimForEffort(mode, taskType, researchNeeded),
+    core_plan_only: true
+  };
+}
+
+function buildFastAnswerContract(args = {}) {
+  const task = String(args.task_summary || args.task || "").trim();
+  const known = String(args.known_context || "").trim();
+  const budget = buildEffortBudget({ user_goal: task, known_context: known, token_budget: args.token_budget || "compact" });
+  const direct = ["instant_answer", "quick_plan"].includes(budget.effort_mode) && !budget.research_needed && !budget.clarification_question_needed;
+  return {
+    task_summary: task,
+    should_answer_directly: direct,
+    core_used_for_classification: true,
+    max_sections: direct ? 1 : budget.effort_mode === "quick_plan" ? 3 : 5,
+    max_bullets: direct ? 5 : budget.effort_mode === "quick_plan" ? 7 : 10,
+    tools_needed: budget.tool_budget.tools_needed,
+    research_needed: budget.research_needed,
+    why_research_is_or_is_not_needed: budget.why_research_is_or_is_not_needed,
+    ask_clarifying_question: budget.clarification_question_needed,
+    clarification_question_required_reason: budget.clarification_question_reason,
+    answer_first_rule: true,
+    harsh_truth_rule: true,
+    uncertainty_style: "Label unknown/assumed/current-source-needed plainly; do not comfort with false certainty.",
+    forbidden_overhead: ["long audit report", "unnecessary tool plan", "generic safety boilerplate", "fake certainty", "pointless clarification", "proof section without proof"],
+    escalation_triggers: budget.escalation_triggers,
+    core_plan_only: true
+  };
+}
+
+function buildDesignAmbitionPlan(args = {}) {
+  const userGoal = String(args.user_goal || "").trim();
+  const site = String(args.referenced_site_or_product || "").trim();
+  const known = String(args.known_context || "").trim();
+  const explicitStyle = detectUserDesignStyle(`${args.user_requested_style || ""} ${userGoal}`);
+  const text = normalize(`${userGoal} ${site} ${known}`);
+  const business = inferBusinessDesignContext(text, site);
+  const shouldAdapt = !explicitStyle;
+  const direction = explicitStyle || business.defaultDirection;
+  return {
+    user_goal: userGoal,
+    referenced_site_or_product: site || null,
+    user_specified_style: Boolean(explicitStyle),
+    should_adapt_to_existing_brand: shouldAdapt,
+    inferred_brand_direction: explicitStyle ? `Follow explicit ${explicitStyle} direction while preserving conversion clarity.` : business.defaultDirection,
+    audience_and_conversion_goal: business.audience,
+    design_reference_needed: /website|site|landing|redesign|restaurant|pizza|delivery|unknown/.test(text),
+    design_reference_plan: ["Inspect the original/reference when available.", `Compare against 2-3 comparable ${business.referenceClass} sites only when it materially improves direction.`, "Use references to beat the original, not to copy it."],
+    force_user_to_choose_design_directions: false,
+    visual_ambition_level: explicitStyle ? "high_user_directed" : "high_adaptive_brand_fit",
+    design_quality_targets: ["first screen must have a strong opinion", "not a generic template", "visible hierarchy and conversion clarity", "better than original/reference, not merely different"],
+    typography_targets: ["distinct type scale", "strong headline rhythm", "readable body copy", "brand-fit weight/spacing"],
+    layout_targets: ["clear hero", "strong CTA path", "scannable sections", "mobile-first responsive composition"],
+    animation_interaction_targets: ["purposeful microinteractions when useful", "no distracting motion", "respect reduced-motion", "animation supports the requested style if specified"],
+    mobile_quality_targets: ["thumb-safe CTA", "no cramped hero", "fast menu/contact/conversion path", "desktop and mobile proof before claims"],
+    content_hierarchy_targets: ["offer/value first", "proof/social/menu/features next", "CTA repeated at decision points", "avoid equal-weight card soup"],
+    brand_personality_targets: explicitStyle ? [`user-specified ${explicitStyle}`, "do not dilute the requested tone"] : business.personality,
+    what_original_site_does_poorly: ["unknown until inspected; do not copy weak original styling", "likely risks: weak hero, generic typography, poor CTA hierarchy, weak mobile polish"],
+    how_new_design_must_be_better: ["stronger first impression", "clearer conversion path", "better typography/spacing", "better mobile layout", "browser/visual proof before visual claims"],
+    directions_considered_internally: designDirectionsForBusiness(business, explicitStyle),
+    selected_direction: direction,
+    why_selected_direction: explicitStyle ? "The user specified this style, so it overrides the old brand unless it conflicts with safety/usability." : "No style was specified, so VNEM adapts to the business, audience, content, and conversion goal instead of forcing a preset style.",
+    must_not_do: ["ask user to pick 3 design directions by default", "force premium/modern/minimal/fun/corporate by default", "copy weak original design choices", "ship a generic template", "ignore user-specified style", "claim visual improvement without visual/browser proof"],
+    must_not_claim: ["visually better without screenshots/before-after proof", "brand fit without inspecting/adapting to business/audience", "responsive without multiple viewport evidence", "accessibility improved without audit evidence"],
+    core_plan_only: true
+  };
+}
+
+function buildVisualTasteAudit(args = {}) {
+  const goal = String(args.user_goal || "");
+  const summary = String(args.design_summary || "");
+  const userStyle = String(args.user_requested_style || "");
+  const evidence = [...routeArrayify(args.evidence), ...routeArrayify(args.screenshots_or_visual_evidence)];
+  const beforeAfter = routeArrayify(args.before_after_evidence);
+  const text = normalize(`${goal} ${summary} ${userStyle} ${evidence.join(" ")}`);
+  const generic = /generic|template|plain cards|blue button|corporate|minimal homepage|stock|card grid|centered hero/.test(text);
+  const weakVisual = /weak|boring|plain|bad spacing|poor hierarchy|no brand|no animation|no mobile|muted blue/.test(text) || generic;
+  const requested = detectUserDesignStyle(userStyle || goal);
+  const requestedWords = requested ? normalize(requested).split(" ").filter(Boolean) : [];
+  const summaryNorm = normalize(summary);
+  const styleMismatch = Boolean(requested && requestedWords.length && !requestedWords.every((word) => summaryNorm.includes(word)) && !summaryNorm.includes(requestedWords[0]));
+  const missingVisualProof = !evidence.some((item) => /screenshot|browser|visual|viewport|image|dom|browser_was_run/i.test(String(item)));
+  const missingBeforeAfter = /better|improved|redesign|original|reference/.test(text) && !beforeAfter.length && !/before.*after|after.*before|comparison/.test(text);
+  const issues = [];
+  if (generic) issues.push("generic/template-like look; not enough brand-specific taste");
+  if (/hero/.test(text) || generic) issues.push("hero/CTA/hierarchy needs stronger visual direction");
+  if (/typography|plain|generic|boring/.test(text)) issues.push("typography/spacing/hierarchy are weak or unproven");
+  if (/mobile|responsive|redesign|website/.test(text) && !/mobile screenshot|viewport|390|responsive evidence/.test(text)) issues.push("mobile polish is missing or unproven");
+  if (styleMismatch) issues.push(`design ignores user-specified style: ${requested}`);
+  if (missingVisualProof) issues.push("missing visual/browser proof");
+  if (missingBeforeAfter) issues.push("missing before/after comparison for better-than-original claim");
+  const scorePenalty = (generic ? 25 : 0) + (weakVisual ? 15 : 0) + (styleMismatch ? 25 : 0) + (missingVisualProof ? 20 : 0) + (missingBeforeAfter ? 10 : 0);
+  const visualScore = Math.max(0, 90 - scorePenalty);
+  return {
+    verdict: issues.length ? (missingVisualProof || styleMismatch ? "blocked" : "revise") : "pass_with_evidence",
+    visual_quality_score: visualScore,
+    brand_fit_score: styleMismatch ? 35 : generic ? 50 : 80,
+    ambition_score: generic ? 35 : weakVisual ? 55 : 82,
+    usability_score: /unclear|cramped|bad/.test(text) ? 50 : 75,
+    mobile_score: /mobile screenshot|viewport|responsive evidence|390/.test(text) ? 80 : 45,
+    animation_interaction_score: /animation|motion|interaction|microinteraction/.test(text) && !/no animation/.test(text) ? 75 : 45,
+    originality_score: generic ? 30 : 72,
+    conversion_clarity_score: /cta|conversion|order|book|buy|contact/.test(text) ? 75 : 55,
+    boring_or_generic_risk: generic || weakVisual ? "high" : "medium",
+    template_like_risk: generic ? "high" : "medium",
+    over_safe_design_risk: generic || /corporate|muted|minimal/.test(text) ? "high" : "medium",
+    mismatch_with_user_requested_style: styleMismatch,
+    mismatch_with_business_brand: /restaurant|pizza|delivery/.test(text) && /corporate|saas|generic/.test(text),
+    missing_visual_proof: missingVisualProof,
+    missing_before_after_comparison: missingBeforeAfter,
+    strongest_visual_issues: uniqueStrings(issues),
+    highest_value_improvements: ["make the hero/CTA unmistakably stronger", "tighten typography, spacing, and visual hierarchy", "add brand-specific imagery/color/motion choices", "prove desktop/mobile before-after with browser evidence"],
+    safe_to_claim: !issues.length,
+    must_not_claim: ["visually better without screenshots", "better than original/reference without before/after comparison", "brand-fit design while style/business mismatch remains", "mobile polish without viewport evidence"]
+  };
+}
+
+function needsExternalResearchForAdaptive(type, text) {
+  if (["current_research", "security_safety", "high_stakes_advice"].includes(type)) return true;
+  if (/\b(current|latest|right now|today|policy|price|law|legal|medical|financial|security|safe|version|patch|meta|requirements|refund)\b/.test(text)) return true;
+  if (["ui_redesign", "ui_web_change"].includes(type) && /\b(original|reference|website|site|compare|better than)\b/.test(text)) return true;
+  return false;
+}
+
+function reasonForEffortMode(type, mode, researchNeeded) {
+  if (mode === "instant_answer") return "The task appears simple, stable, low-stakes, and answerable directly after Core classification.";
+  if (mode === "quick_plan") return "The task needs concise shaping but not heavy proof unless escalation triggers appear.";
+  if (mode === "standard") return researchNeeded ? "Facts may change, so source verification is required without full repo/browser proof by default." : "Normal task: targeted checks and relevant tools only.";
+  if (mode === "deep_proof") return "Failure would matter or evidence is required: debugging, UI, security, files, current sources, or visual proof.";
+  return "Repo changes, releases, deploys, public claims, or irreversible actions require max verification.";
+}
+function researchReason(type, text, needed) { return needed ? "Research/source verification is needed because the task may involve current facts, policy/security/high-stakes risk, or redesign reference quality." : "No external research is needed because the task is stable enough or uses user-provided text; answer from stable knowledge with labeled uncertainty if needed."; }
+function toolBudgetForMode(mode) { return ({ instant_answer: "none_by_default", quick_plan: "minimal_only_if_useful", standard: "targeted", deep_proof: "evidence_driven", max_verification: "full_verification_ladder" })[mode] || "targeted"; }
+function tokenBudgetGuidance(mode) { return ({ instant_answer: "1 short answer; no report", quick_plan: "short structure; answer/action first", standard: "targeted detail only", deep_proof: "evidence sections allowed but only with actual evidence", max_verification: "complete evidence ladder and compact final report" })[mode] || "targeted detail only"; }
+function recommendedCoreToolsForEffort(type, mode, researchNeeded) { const out = ["vnem_plan_effort_budget"]; if (mode !== "instant_answer") out.push("vnem_route_task"); if (researchNeeded) out.push("vnem_assess_research_need", "vnem_build_search_plan"); if (/ui/.test(type)) out.push("vnem_design_ambition_plan", "vnem_build_ui_quality_plan", "vnem_visual_taste_audit"); if (type === "local_debugging") out.push("vnem_build_debugging_plan"); if (mode === "max_verification") out.push("vnem_completion_audit"); return uniqueStrings(out); }
+function recommendedToolsMcpForEffort(type, mode, researchNeeded) { const out = []; if (researchNeeded) out.push("vnem_tools_search_query_builder", "vnem_tools_web_search", "vnem_tools_claim_source_matrix"); if (/ui/.test(type)) out.push("vnem_tools_ui_surface_review", "vnem_tools_browser_evidence_plan", "vnem_tools_browser_evidence_run", "vnem_tools_ui_evidence_audit"); if (type === "local_debugging") out.push("vnem_tools_debug_evidence", "vnem_tools_run_project_task"); if (["repo_modification", "deployment_workflow"].includes(type)) out.push("vnem_tools_workspace_map", "vnem_tools_apply_patch_batch", "vnem_tools_run_project_task", "vnem_tools_git_status", "vnem_tools_finish_session"); return uniqueStrings(out); }
+function evidenceForEffort(type, mode, researchNeeded) { const out = ["Core classification output"]; if (researchNeeded) out.push("current/official source verification or explicit unavailable/unknown status"); if (/ui/.test(type)) out.push("browser/visual proof, screenshots or browser_unavailable, responsive/a11y/state evidence, before/after for visual claims"); if (type === "local_debugging") out.push("failing log/command/repro, root cause, targeted verification"); if (["repo_modification", "deployment_workflow"].includes(type)) out.push("changed files, tests/checks, commit SHA, exact CI/deploy status when pushed"); if (type === "security_safety") out.push("artifact boundary, source/reputation/risk checks, no credential/session handling"); return uniqueStrings(out); }
+function evidenceNotRequiredForEffort(type, mode) { if (mode === "instant_answer") return ["browser proof", "file inspection", "source matrix", "long audit report", "proof section without proof"]; if (mode === "quick_plan") return ["full verification ladder unless escalation triggers appear", "broad tool sweep"]; return ["decorative tools that do not improve truth/result"]; }
+function toolsToAvoidForEffort(mode, type) { if (mode === "instant_answer") return ["browser/file/source/research tools for stable Q&A", "many Tools MCP calls just to look advanced", "long planning tools before answer"]; if (mode === "quick_plan") return ["broad scans", "full test suite", "browser proof unless UI/current evidence matters"]; return ["unrelated tools", "decorative evidence sections", "broad crawling or scraping"]; }
+function wastedToolRisk(mode, type) { return ["instant_answer", "quick_plan"].includes(mode) ? "high_if_tools_used_without_new_truth" : "medium_if_tools_do_not_map_to required evidence"; }
+function clarificationDecisionForTask(type, text, goal, known) { if (type === "local_debugging" && !/(error|log|stack trace|failing command|repro|provided)/.test(text)) return { needed: true, reason: "A precise log/failing command materially changes debugging correctness." }; if (type === "security_safety" && !/(url|link|file|hash|artifact|provided by|stranger|trusted)/.test(text)) return { needed: true, reason: "Security/safety review needs exact artifact and trust boundary." }; if (type === "ui_redesign" && /\b(choose|which direction|options)\b/.test(text)) return { needed: true, reason: "The user explicitly asked for design direction choice." }; return { needed: false, reason: "No blocking ambiguity; proceed with labeled assumptions and adapt if needed." }; }
+function escalationTriggersForEffort() { return ["latest/current requested", "facts may be stale", "medical/legal/financial/security risk", "code changes requested", "files/logs involved", "UI/browser proof involved", "public-facing claim", "destructive/irreversible action", "secrets/tokens/cookies/accounts", "user explicitly asks to verify/research/prove", "model uncertainty", "redesign quality depends on original/reference site"]; }
+function answerShapeForMode(mode) { return ({ instant_answer: "direct answer first; no long report", quick_plan: "concise structure; action first; important caveats only", standard: "targeted checks and evidence labels", deep_proof: "evidence-driven with must-not-claim boundaries", max_verification: "verification ladder, changed files, tests, commit/CI proof when relevant" })[mode] || "targeted answer"; }
+function mustNotClaimForEffort(mode, type, researchNeeded) { const out = ["Do not claim a file, browser, repo, UI, source, test, or deployment was checked unless it was actually checked.", "Do not present guesses as facts.", "Do not comfort with false certainty."]; if (researchNeeded) out.push("Do not claim current/latest/source-verified facts without current source evidence."); if (/ui/.test(type)) out.push("Do not claim visual improvement without browser/visual proof."); if (mode === "instant_answer") out.push("Do not claim research/tools/proof were used for a direct answer."); return out; }
+
+function detectUserDesignStyle(text) { const t = normalize(text); const styles = ["dark cyberpunk", "cyberpunk", "luxury premium", "premium", "playful", "high-conversion", "modern", "minimal", "corporate", "brutalist", "retro", "elegant", "bold", "fun"]; return styles.find((style) => t.includes(style)) || null; }
+function inferBusinessDesignContext(text, site) { if (/pizza|pizzabomba|restaurant|food|delivery|menu/.test(text)) return { referenceClass: "pizza/restaurant/delivery", defaultDirection: "energetic pizza restaurant/delivery experience with appetizing visuals, clear menu/order path, local trust, and mobile-first conversion", audience: "hungry local customers choosing quickly on mobile; conversion goal is order/call/reservation", personality: ["appetizing", "energetic", "local", "clear", "confident"] }; return { referenceClass: "same-category product/business", defaultDirection: "adaptive brand-fit direction based on business, audience, content, and conversion goal", audience: "target users inferred from the business and user request", personality: ["specific", "memorable", "usable", "not generic"] }; }
+function designDirectionsForBusiness(business, explicitStyle) { if (explicitStyle) return [`explicit ${explicitStyle}`, "brand-compatible variant", "conversion-focused variant"]; if (/pizza|restaurant/.test(business.referenceClass)) return ["high-conversion delivery-focused", "warm local restaurant", "bold appetizing pizza brand"]; return ["brand-fit conversion direction", "content-led editorial direction", "bold memorable product direction"]; }
+function formatEffortBudget(b) { return [`vnem_plan_effort_budget: ${b.effort_mode}`, `task_type=${b.task_type}`, `research_needed=${b.research_needed}`, `tools_needed=${b.tool_budget.tools_needed}`].join("\n"); }
+function formatFastAnswerContract(c) { return [`vnem_fast_answer_contract: direct=${c.should_answer_directly}`, `research_needed=${c.research_needed}`, `tools_needed=${c.tools_needed}`].join("\n"); }
+function formatDesignAmbitionPlan(p) { return [`vnem_design_ambition_plan: ${p.selected_direction}`, `user_style=${p.user_specified_style}`, `adapt=${p.should_adapt_to_existing_brand}`].join("\n"); }
+function formatVisualTasteAudit(a) { return [`vnem_visual_taste_audit: ${a.verdict}`, `visual_score=${a.visual_quality_score}`, `safe_to_claim=${a.safe_to_claim}`].join("\n"); }
+function compactAdaptiveEffort(b) { return { effort_mode: b.effort_mode, why_not_deeper: "no_trigger", why_not_lighter: "truth_risk", minimum_quality_checks: ["classify"], truth_over_comfort_rule: "on", research_decision: b.research_needed ? "required" : "not_required", tool_budget: b.tool_budget.budget, wasted_tool_risk: ["instant_answer", "quick_plan"].includes(b.effort_mode) ? "high_if_decorative" : "avoid_decorative", escalation_triggers: ["current", "risk"], output_length_guidance: b.effort_mode === "instant_answer" ? "direct" : "compact" }; }
+function compactDesignBehavior(plan) { if (!plan) return { applies: false }; return { applies: true, user_style_specified: plan.user_specified_style, adapt_to_brand: plan.should_adapt_to_existing_brand, design_reference_needed: plan.design_reference_needed, visual_ambition_required: true, avoid_generic_template: true }; }
 
 function buildAntiStagnationCheck(args = {}) {
   const task = String(args.task || "");
