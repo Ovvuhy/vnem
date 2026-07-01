@@ -16,6 +16,10 @@ const REQUIRED_TOOL_NAMES = [
   "vnem_tools_status",
   "vnem_tools_permission_profiles",
   "vnem_tools_permission_status",
+  "vnem_tools_reliability_catalog",
+  "vnem_tools_action_recovery_plan",
+  "vnem_tools_high_power_action_review",
+  "vnem_tools_capability_gap_report",
   "vnem_tools_action_policy_preview",
   "vnem_tools_trust_boundary_classify",
   "vnem_tools_prepare_action_plan",
@@ -187,6 +191,62 @@ function registerTools(mcpServer) {
     async () => {
       const status = permissionStatusObject();
       return toolResult(formatPermissionStatus(status), { permission_status: status });
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_reliability_catalog",
+    {
+      title: "Tools Reliability Catalog",
+      description: "List major Tools MCP tools with honest reliability labels, safe claims, unsafe claims, known limits, and next validation steps.",
+      inputSchema: { capability_group: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => {
+      const catalog = buildReliabilityCatalog(args);
+      return toolResult(formatReliabilityCatalog(catalog), { reliability_catalog: catalog });
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_action_recovery_plan",
+    {
+      title: "Tools Action Recovery Plan",
+      description: "Turn a failed tool/action result into exact safe next steps, retry rules, and must-not-claim boundaries.",
+      inputSchema: { tool_name: z.string().default(""), operation: z.string().default(""), error_code: z.string().default(""), stderr: z.string().default(""), stdout: z.string().default(""), context: z.string().default(""), permission_profile: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => {
+      const plan = buildActionRecoveryPlan(args);
+      return toolResult(formatActionRecoveryPlan(plan), { action_recovery_plan: plan });
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_high_power_action_review",
+    {
+      title: "High-power Action Review",
+      description: "Review proposed high-power mutations before execution and return allow/block reasons, approval phrases, protected/secret/production risk, and safest path.",
+      inputSchema: { tool_name: z.string().default(""), operation: z.string().default(""), target: z.string().default(""), mutation_type: z.string().default(""), destructive: z.boolean().default(false), approval_phrase: z.string().default(""), protected_resources: z.array(z.string()).default([]), expected_effect: z.string().default("") },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => {
+      const review = highPowerActionReview(args);
+      return toolResult(formatHighPowerActionReview(review), { high_power_action_review: review });
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_capability_gap_report",
+    {
+      title: "Tools Capability Gap Report",
+      description: "Report known Tools MCP limitations honestly with safe alternatives and what would be needed to add them.",
+      inputSchema: {},
+      annotations: READ_ONLY_LOCAL
+    },
+    async () => {
+      const report = capabilityGapReport();
+      return toolResult(formatCapabilityGapReport(report), { capability_gap_report: report });
     }
   );
 
@@ -1271,6 +1331,13 @@ function permissionStatusObject() {
     how_to_add_more_roots: `Set VNEM_TOOLS_ALLOWED_ROOTS to one or more project roots separated by ${JSON.stringify(path.delimiter)}; keep roots narrow, not drive/home roots.`,
     broad_root_warnings: allowedRoots.flatMap(rootBroadnessWarnings),
     localhost_policy: { enabled: process.env.VNEM_TOOLS_ALLOW_LOCALHOST === "1", host_policy: "localhost/127.0.0.1 only for approved local proof" },
+    high_power_summary: { principle: "High power, honest confidence, strict boundaries.", reliability_catalog_tool: "vnem_tools_reliability_catalog", action_recovery_tool: "vnem_tools_action_recovery_plan", high_power_review_tool: "vnem_tools_high_power_action_review" },
+    cloudflare_summary: buildCloudflareStatusPolicy(),
+    mutation_allowed_summary: { profile: activePermissionProfile.profile_name, safe_readonly_can_mutate: false, non_destructive_mutation_allowed_with_approval: ["approved-writes", "creator-power"].includes(activePermissionProfile.profile_name), destructive_allowed_with_exact_approval: activePermissionProfile.profile_name === "creator-power", package_installs_github_mutation_arbitrary_shell_still_blocked: true },
+    destructive_allowed_summary: { allowed: activePermissionProfile.profile_name === "creator-power", exact_destructive_approval_required: true, destructive_phrase: CLOUDFLARE_DESTRUCTIVE_APPROVAL_PHRASE, protected_resource_acknowledgment_required: true },
+    approval_phrase_summary: { generic_tools: "approved=true plus a specific approval_note", cloudflare_mutation: CLOUDFLARE_MUTATION_APPROVAL_PHRASE, cloudflare_destructive: CLOUDFLARE_DESTRUCTIVE_APPROVAL_PHRASE },
+    known_blocked_actions: unsupportedActions(),
+    recommended_profile_for_goal: { inspect: "safe-readonly", local_dry_run_or_plan: "safe-local-dev", approved_local_writes: "approved-writes", destructive_or_creator_work: "creator-power with exact approval", cloudflare_disabled: "dangerous-disabled" },
     configured_search_providers_by_presence_only: manifest.providers.map((p) => ({ name: p.name, configured: p.configured, env_var_name: p.env_var_name, configured_by: p.configured_by, api_key_value_exposed: false })),
     blocked_categories: ["secret files", "raw secret values", "cookies", "sessions", "browser profiles", "password manager data", "CAPTCHA bypass", "destructive shell", "unrestricted filesystem crawling", "silent package install", "silent GitHub/account mutation"],
     remaining_unsupported_actions: unsupportedActions()
@@ -1289,7 +1356,7 @@ function rootBroadnessWarnings(root) {
 }
 
 function formatPermissionProfiles(profiles) { return [`vnem_tools_permission_profiles: ${profiles.profiles.length} profile(s)`, `default=${profiles.default_profile}`, `active=${profiles.selected_profile}`, `profiles=${profiles.profiles.map((p) => p.profile_name).join(", ")}`].join("\n"); }
-function formatPermissionStatus(status) { return [`vnem_tools_permission_status: ${status.active_profile.profile_name}`, `allowed_roots=${status.allowed_roots.join(", ")}`, `workspace_allowed=${status.workspace_allowed}`, `evidence_root=${status.evidence_root}`, status.broad_root_warnings.length ? `warnings=${status.broad_root_warnings.join("; ")}` : "warnings=none"].join("\n"); }
+function formatPermissionStatus(status) { return [`vnem_tools_permission_status: ${status.active_profile.profile_name}`, `allowed_roots=${status.allowed_roots.join(", ")}`, `workspace_allowed=${status.workspace_allowed}`, `mutations=${status.mutation_allowed_summary.non_destructive_mutation_allowed_with_approval ? "approval_gated" : "blocked_or_plan_only"}`, `cloudflare=${status.cloudflare_summary.capability_status}`, `evidence_root=${status.evidence_root}`, status.broad_root_warnings.length ? `warnings=${status.broad_root_warnings.join("; ")}` : "warnings=none"].join("\n"); }
 function formatActionPolicyPreview(preview) { return [`vnem_tools_action_policy_preview: ${preview.action_type}`, `profile=${preview.permission_profile}`, `trust=${preview.trust_boundary_level}`, `allowed=${preview.allowed}`, `requires_approval=${preview.requires_approval}`, `blocked=${preview.blocked}`, `reason=${preview.reason}`].join("\n"); }
 function formatTrustBoundary(trust) { return [`vnem_tools_trust_boundary_classify: ${trust.level}`, `requires_approval=${trust.requires_approval}`, `blocked_by_default=${trust.blocked_by_default}`, `safe_next_action=${trust.safe_next_action}`].join("\n"); }
 
@@ -1329,6 +1396,149 @@ async function loadUsablePacks() {
 function unsupportedActions() {
   return ["remote_github_mutation", "git_push", "package_install", "package_publish", "deployment", "arbitrary_shell", "unrestricted_api_calls", "secret_manager_backed_live_api", "search_engine_scraping", "automatic_captcha_bypass", "broad_crawling", "external_browser_browsing_by_default", "login_automation", "cookie_extraction", "session_extraction", "captcha_bypass", "giga_mcp"];
 }
+
+
+const RELIABILITY_LEVELS = {
+  declared_only: "Tool exists but has no meaningful tests. Do not trust for serious work.",
+  simulated_tested: "Tool passed mocked/simulated tests. Useful, but do not claim real external-world success.",
+  dry_run_tested: "Tool can plan safely without mutating anything.",
+  local_tested: "Tool was tested locally against files/processes/local environment.",
+  live_tested_disposable: "Tool was tested against disposable real external resources.",
+  production_safe_with_approval: "Tool is safe for production only with explicit approval, evidence, and rollback/repair plan."
+};
+function reliabilityDefinition(level) { return RELIABILITY_LEVELS[level] || RELIABILITY_LEVELS.declared_only; }
+function toolReliabilityFor(name, descriptor = {}) {
+  const group = descriptor.capability_group || descriptor.group || "unknown";
+  let level = "local_tested";
+  let testedWith = ["deterministic local unit/smoke tests"];
+  let safe = ["Tool shape and safety policy are available."];
+  let unsafe = ["Do not claim production or external-world success without matching evidence."];
+  let next = "Run the focused tool test plus an approved task-specific verification.";
+  let known = [];
+  if (/cloudflare_/.test(name)) {
+    if (/_plan$|_status$|_auth_plan$|_accounts_list$|_projects_list$|_deploy_verify$/.test(name)) {
+      level = name.includes("deploy_verify") ? "dry_run_tested" : "simulated_tested";
+      safe = ["Cloudflare workflow policy, auth presence, planning, or simulated/read-only behavior is available with secret redaction."];
+      unsafe = ["Real Cloudflare mutation succeeded", "Live production DNS/deploy/env/cache changed", "Cloudflare tokens or secrets are safe to print"];
+      next = "Validate against a disposable Cloudflare account/project/zone with least-privilege auth before claiming live external success.";
+    } else {
+      level = "simulated_tested";
+      safe = ["Approval gates, protected-resource checks, redaction, and simulated mutation evidence are tested."];
+      unsafe = ["Real Cloudflare mutation succeeded", "Production-safe without explicit approval", "Live DNS/deploy/env/cache/rollback worked in the external world"];
+      next = "Run one approved mutation on disposable Cloudflare resources and inspect the evidence pack before upgrading reliability.";
+    }
+    known = ["No cookies/sessions/browser-profile auth", "Live mutation requires user auth and exact approval", "Production claims require real evidence"];
+  } else if (["patching", "rollback", "project_tasks", "dev_server", "local_git", "commands"].includes(group)) {
+    level = "local_tested";
+    safe = ["Local dry-run and bounded approved local execution behavior is tested under allowed roots."];
+    unsafe = ["Remote GitHub mutation", "Package install/publish/deploy", "Arbitrary shell execution", "Production deployment"];
+    next = "Run the focused local tool test in the target repo and verify changed files/evidence before final claims.";
+    known = ["Allowed roots only", "Secrets blocked/redacted", "Real mutation requires profile and approval"];
+  } else if (["browser_proof", "ui_web_quality", "browser_intelligence"].includes(group)) {
+    level = name.includes("browser_evidence_run") || name.includes("browser_capture") ? "local_tested" : "dry_run_tested";
+    safe = ["Localhost/file-under-allowed-root browser evidence planning or bounded local proof behavior is tested."];
+    unsafe = ["Screenshot proof exists when browser was unavailable or blocked", "External browsing/login/session/CAPTCHA proof succeeded", "Accessibility or visual quality certification"];
+    next = "Run bounded localhost browser evidence with VNEM_TOOLS_ALLOW_LOCALHOST=1 and inspect screenshot/DOM/a11y metadata.";
+    known = ["No login/cookie/session/CAPTCHA automation", "External browser automation blocked by default", "Unavailable browser runtime must be reported honestly"];
+  } else if (["api_request", "search", "research_sources", "source_ingestion", "browsing_risk", "research_matrix"].includes(group)) {
+    level = descriptor.network ? "dry_run_tested" : "local_tested";
+    safe = ["Planning, bounded local/source evidence, or configured-provider behavior is tested without fake current/live claims."];
+    unsafe = ["Unrestricted crawling or API access", "Search/current facts were fetched when provider was unconfigured", "Secret-backed live API success without proof"];
+    next = "Use configured provider credentials or explicit approved URL/API call and capture source/evidence IDs.";
+    known = ["No search-engine scraping by default", "No login/cookie/session/CAPTCHA bypass", "Secret headers are blocked/redacted"];
+  } else if (group === "tool_intelligence" || group === "tools_quality" || group === "permissions" || group === "status_readiness") {
+    level = "local_tested";
+    safe = ["Local policy/intelligence output is tested against deterministic cases."];
+    unsafe = ["A reviewed action executed", "External mutation succeeded", "All future gaps are implemented"];
+    next = "Use the review/recovery/gap output before the specific high-power tool executes.";
+  }
+  return { level, meaning: reliabilityDefinition(level), tested_with: testedWith, safe_to_claim: safe, unsafe_to_claim: unsafe, next_validation_step: next, known_limits: known };
+}
+function addReliabilityFields(tool) {
+  const reliability = toolReliabilityFor(tool.name, tool);
+  return { ...tool, high_power: tool.high_power ?? Boolean(tool.mutation || tool.network || tool.requires_approval || ["cloudflare_control", "patching", "rollback", "project_tasks", "dev_server", "browser_proof", "ui_web_quality", "api_request", "local_git", "commands"].includes(tool.capability_group)), mutation_capable: Boolean(tool.mutation), reliability_level: reliability.level, tested_with: reliability.tested_with, safe_to_claim: reliability.safe_to_claim, unsafe_to_claim: reliability.unsafe_to_claim, next_validation_step: reliability.next_validation_step, known_limits: reliability.known_limits, tool_reliability: reliability };
+}
+function buildReliabilityCatalog(args = {}) { const tools = buildToolCatalog().filter((tool) => !args.capability_group || tool.capability_group === args.capability_group); return { generated_at: new Date().toISOString(), permission_profile: activePermissionProfile.profile_name, tools }; }
+function formatReliabilityCatalog(catalog) { return [`vnem_tools_reliability_catalog: ${catalog.tools.length} tool(s)`, `profile=${catalog.permission_profile}`, `levels=${[...new Set(catalog.tools.map((tool) => tool.reliability_level))].join(",")}`].join("\n"); }
+function operationStateFor(result = {}) { if (result.blocked_reason || result.blocked) return "blocked"; if (result.dry_run === true || result.dry_run_only === true) return "dry_run_or_plan"; if (result.source === "simulated" || result.simulated === true || result.verification?.status === "simulated") return "simulated"; if (result.applied || result.executed || result.started || result.committed || result.evidence_pack_path) return "executed_with_evidence"; if (result.ok === false || result.success === false) return "failed"; return "reported"; }
+function decorateToolResult(toolName, result = {}, extras = {}) {
+  const reliability = toolReliabilityFor(toolName, { capability_group: extras.capability_group, mutation: extras.mutation, network: extras.network, requires_approval: extras.requires_approval });
+  const opState = operationStateFor(result);
+  const approvalRequired = extras.requires_approval || result.approval_required || result.destructive_approval_required || result.action_policy_preview?.requires_approval;
+  const approvalState = result.dry_run === true || result.dry_run_only === true ? "not_needed_for_dry_run" : approvalRequired ? (result.approval_state || "approval_required_for_real_action") : "not_required";
+  return { ...result, operation_state: result.operation_state || opState, permission_state: result.permission_state || activePermissionProfile.profile_name, approval_state: result.approval_state || approvalState, evidence_state: result.evidence_state || (result.evidence_log_id || result.evidence_pack_path ? "evidence_logged" : opState === "dry_run_or_plan" ? "plan_only_no_mutation_evidence" : "evidence_not_required_or_unavailable"), reliability_level: result.reliability_level || reliability.level, tool_reliability: result.tool_reliability || reliability, safe_to_claim: Object.hasOwn(result, "safe_to_claim") ? result.safe_to_claim : reliability.safe_to_claim, unsafe_to_claim: Object.hasOwn(result, "unsafe_to_claim") ? result.unsafe_to_claim : reliability.unsafe_to_claim, next_best_action: result.next_best_action || reliability.next_validation_step, blocked_reason: result.blocked_reason || null };
+}
+function decorateCloudflareResult(operation, result = {}, args = {}) {
+  const toolName = operation.startsWith("vnem_tools_") ? operation : `vnem_tools_cloudflare_${operation}`;
+  const reliability = toolReliabilityFor(toolName, { capability_group: "cloudflare_control", mutation: /deploy|apply|rollback|purge/.test(operation) && !/plan|verify|status|auth|list/.test(operation), network: true, requires_approval: true });
+  const mutationCapable = /deploy$|apply$|rollback$|purge$/.test(operation);
+  const dryOrPlan = result.dry_run === true || result.dry_run_only === true || /plan|status|auth|list|verify/.test(operation);
+  return { ...result, tool_reliability: result.tool_reliability || reliability, auth_state: result.auth_state || (process.env.CLOUDFLARE_API_TOKEN || process.env.CF_API_TOKEN || process.env.CF_TOKEN ? "api_token_present_value_redacted" : "not_authenticated_or_wrangler_login_unknown"), mutation_state: result.mutation_state || (mutationCapable ? (result.evidence_pack_path ? "mutation_attempted_with_evidence" : dryOrPlan ? "planned_or_dry_run_no_mutation" : "mutation_state_unknown") : "read_or_plan_only"), approval_state: result.approval_state || (mutationCapable ? (args.approval_phrase ? "approval_phrase_supplied_unverified_here" : "approval_required_for_real_mutation") : "not_required_for_read_or_plan"), evidence_state: result.evidence_state || (result.evidence_pack_path ? "evidence_pack_written" : dryOrPlan ? "plan_or_read_only_no_mutation_evidence" : "evidence_unavailable"), safe_to_claim: Object.hasOwn(result, "safe_to_claim") ? result.safe_to_claim : reliability.safe_to_claim, unsafe_to_claim: Object.hasOwn(result, "unsafe_to_claim") ? result.unsafe_to_claim : reliability.unsafe_to_claim, next_validation_step: result.next_validation_step || reliability.next_validation_step };
+}
+function buildActionRecoveryPlan(args = {}) {
+  const text = `${args.tool_name || ""} ${args.operation || ""} ${args.error_code || ""} ${args.stderr || ""} ${args.stdout || ""} ${args.context || ""}`;
+  const lower = text.toLowerCase();
+  const profile = args.permission_profile || activePermissionProfile.profile_name;
+  const plan = { likely_cause: "Tool failed or was blocked; inspect code/stdout/stderr and recover with the narrowest safe retry.", blocked_by_permission: false, blocked_by_missing_auth: false, blocked_by_missing_dependency: false, blocked_by_path_or_allowed_root: false, blocked_by_approval: false, blocked_by_network_or_provider: false, exact_next_steps: [], safe_retry_allowed: false, retry_requires_approval: false, what_not_to_do: ["Do not fake success.", "Do not bypass permission profiles.", "Do not expose secrets."], must_not_claim: ["The action succeeded", "External-world state changed", "Evidence exists when it was not produced"] };
+  if (/cloudflare|wrangler/.test(lower) && /(auth|token|login|unauthorized|forbidden|account_id|required|api_token|not authenticated)/.test(lower)) { plan.likely_cause = "Cloudflare authentication or account/project context is missing."; plan.blocked_by_missing_auth = true; plan.exact_next_steps.push("Run `npx wrangler login` and verify with `npx wrangler whoami`, or set CLOUDFLARE_API_TOKEN/CLOUDFLARE_ACCOUNT_ID (or CF_API_TOKEN/CF_ACCOUNT_ID) outside the repo."); plan.exact_next_steps.push("Retry read-only discovery first; only attempt mutation after plan output and exact approval phrase."); }
+  if (/approval|approved|mutation_approval|destructive_approval/.test(lower)) { plan.likely_cause = "Required approval phrase or approval note was missing or did not match exactly."; plan.blocked_by_approval = true; const destructive = /destructive|delete|rollback|purge_everything/.test(lower); plan.exact_next_steps.push(`If the user intends this action, provide exact phrase: ${destructive ? CLOUDFLARE_DESTRUCTIVE_APPROVAL_PHRASE : CLOUDFLARE_MUTATION_APPROVAL_PHRASE}.`); plan.retry_requires_approval = true; }
+  if (/outside_allowed|allowed root|allowed_roots|path_outside|not inside|evidence_root_outside|root/.test(lower) && /path|root|allowed/.test(lower)) { plan.likely_cause = "Requested path is outside VNEM Tools allowed roots or evidence root policy."; plan.blocked_by_path_or_allowed_root = true; plan.exact_next_steps.push("Move the target under an allowed project root or start Tools MCP with VNEM_TOOLS_ALLOWED_ROOTS set to the narrow project root."); plan.exact_next_steps.push("Run vnem_tools_permission_status to see current allowed_roots and workspace_fix_suggestion."); }
+  if (/browser_unavailable|chromium|chrome|browser.*not found|playwright|screenshot/.test(lower)) { plan.likely_cause = "Browser runtime was unavailable or blocked by policy, so visual proof was not collected."; plan.blocked_by_missing_dependency = true; plan.exact_next_steps.push("Install/configure a local Chromium/Chrome command or set VNEM_TOOLS_BROWSER_COMMAND, then retry only against localhost/allowed file targets with approval."); plan.exact_next_steps.push("If a browser cannot run, use static UI evidence only and do not claim screenshot/browser proof."); plan.must_not_claim.push("Screenshot proof was captured", "Browser console/network/a11y proof was clean"); }
+  if (/network|provider|timeout|fetch|dns|econn|enotfound|429|rate limit|unconfigured/.test(lower)) { plan.blocked_by_network_or_provider = true; plan.exact_next_steps.push("Check provider configuration and network availability; retry read-only/dry-run first with capped output."); }
+  if (/permission profile|safe-readonly|dangerous-disabled|profile_blocked/.test(lower)) { plan.blocked_by_permission = true; plan.exact_next_steps.push(`Current/selected profile (${profile}) blocks this action; switch only intentionally to the narrow profile needed and rerun policy preview first.`); }
+  if (/build failed|test failed|exit code|non-zero|npm/.test(lower)) { plan.likely_cause = "Local build/test/project task failed before the next action."; plan.exact_next_steps.push("Fix the first build/test error, rerun the same local check, and do not deploy or claim success until it passes."); plan.must_not_claim.push("Build passed", "Deploy was attempted after failed build"); }
+  if (!plan.exact_next_steps.length) plan.exact_next_steps.push("Run the tool's dry-run/plan mode, inspect structured error details, then retry only after the blocker is removed.");
+  plan.safe_retry_allowed = !plan.blocked_by_approval && !plan.blocked_by_permission && !plan.blocked_by_missing_auth && !plan.blocked_by_missing_dependency;
+  return plan;
+}
+function highPowerActionReview(args = {}) {
+  const profile = activePermissionProfile.profile_name;
+  const tool = String(args.tool_name || "");
+  const mutationType = String(args.mutation_type || args.operation || "").toLowerCase();
+  const combined = `${tool} ${args.operation || ""} ${args.target || ""} ${mutationType} ${args.expected_effect || ""}`;
+  const destructive = args.destructive === true || /delete|destroy|rollback|purge_everything|reset|remove/.test(combined.toLowerCase());
+  const mutation = destructive || /deploy|apply|commit|patch|restore|server|api_request|env|secret|dns|purge|rollback|mutation/.test(combined.toLowerCase());
+  const protectedRisk = [...new Set([...arrayify(args.protected_resources), ...(/root|apex|www|mx|spf|dkim|dmarc|production|prod/i.test(combined) ? ["protected_or_production_resource_signal"] : [])])];
+  const secretRisk = /secret|token|api[_-]?key|authorization|bearer|password|credential|\.env/i.test(combined);
+  const productionRisk = /production|prod|apex|root|www|mx|dns|deploy|rollback|cache/i.test(combined);
+  const approvalRequired = mutation;
+  const destructiveApprovalRequired = destructive;
+  let approvalPhraseNeeded = approvalRequired ? "Set approved=true with a specific human approval_note for local Tools actions." : "";
+  if (/cloudflare/.test(combined.toLowerCase())) approvalPhraseNeeded = destructive ? CLOUDFLARE_DESTRUCTIVE_APPROVAL_PHRASE : CLOUDFLARE_MUTATION_APPROVAL_PHRASE;
+  const reasons = [];
+  if (profile === "dangerous-disabled") reasons.push("Current permission profile dangerous-disabled blocks high-power and Cloudflare actions.");
+  if (profile === "safe-readonly" && mutation) reasons.push("Current permission profile safe-readonly blocks mutation/execution.");
+  if (profile === "safe-local-dev" && mutation && !/plan|dry/i.test(combined)) reasons.push("safe-local-dev allows planning/dry-run only, not real mutation.");
+  if (approvalRequired && !args.approval_phrase) reasons.push("Approval is required before execution.");
+  if (destructiveApprovalRequired && args.approval_phrase !== CLOUDFLARE_DESTRUCTIVE_APPROVAL_PHRASE) reasons.push("Destructive/high-impact action needs the exact destructive approval phrase.");
+  else if (/cloudflare/.test(combined.toLowerCase()) && approvalRequired && !destructive && args.approval_phrase !== CLOUDFLARE_MUTATION_APPROVAL_PHRASE) reasons.push("Cloudflare mutation needs the exact mutation approval phrase.");
+  if (protectedRisk.length && destructive && !String(args.approval_phrase || "").includes("DESTRUCTIVE")) reasons.push("Protected resource risk requires explicit protected-resource review before mutation.");
+  return { action_allowed: reasons.length === 0, permission_profile: profile, approval_required: approvalRequired, destructive_approval_required: destructiveApprovalRequired, protected_resource_risk: protectedRisk, secret_risk: secretRisk, production_risk: productionRisk, rollback_or_repair_needed: mutation || productionRisk || destructive, safest_execution_path: safestExecutionPathFor(combined, destructive, secretRisk), reasons_to_block: reasons, approval_phrase_needed: approvalPhraseNeeded, must_not_do: ["Do not bypass permission profiles.", "Do not print or commit secrets.", "Do not claim success without evidence.", destructive ? "Do not run destructive action without exact destructive approval and repair plan." : null].filter(Boolean) };
+}
+function safestExecutionPathFor(text, destructive, secretRisk) {
+  const lower = text.toLowerCase();
+  if (lower.includes("git")) return ["Run git status/diff first.", "Use explicit file list only.", "Create local commit only; never git push from this tool."];
+  if (lower.includes("api")) return ["Dry-run the request plan.", "Use GET/HEAD only unless a future scoped mutator exists.", "Keep auth as secret refs and redact outputs."];
+  if (lower.includes("cloudflare")) return ["Run status/read-only discovery first.", "Run plan tool and inspect protected-resource risks.", "Use Wrangler first for deploys and API where needed.", destructive ? "Prepare repair/rollback plan before exact destructive approval." : "Provide exact mutation approval only after plan review."];
+  if (lower.includes("patch") || lower.includes("restore")) return ["Dry-run batch first.", "Review changed files and restore plan.", "Apply only under allowed roots with approval."];
+  if (lower.includes("server")) return ["Dry-run dev server command.", "Bind localhost only.", "Stop only Tools-started server IDs."];
+  return ["Dry-run/plan first.", "Use the narrowest permission profile.", secretRisk ? "Use secret references/redaction only." : "Collect evidence before claiming success."];
+}
+function capabilityGapReport() {
+  const gaps = [
+    ["GitHub mutation", "Remote GitHub writes/PR/issues/releases are still blocked unless explicitly implemented later.", "Use local git status/diff/commit only, then use external human-approved GitHub workflow.", "A scoped GitHub mutator with token-secret handling, exact approvals, branch protections, and CI verification.", "Could silently push/merge/delete or leak tokens.", "high"],
+    ["package installs", "Package install/add/update/publish scripts are blocked by design.", "Inspect dependency metadata and run existing safe scripts; ask user to install manually if needed.", "Lockfile-aware install tool with approval, sandboxing, audit, and rollback.", "Supply-chain compromise, postinstall execution, lockfile churn.", "high"],
+    ["arbitrary shell", "Tools MCP only runs allowlisted commands/tasks, not arbitrary shell.", "Use vnem_tools_run_project_task or allowed verification commands.", "A bounded shell executor with policy parser, no secret env exposure, approval, and evidence.", "Destructive commands or credential exfiltration.", "high"],
+    ["unrestricted crawling", "Broad crawling is blocked; extraction requires explicit bounded targets.", "Use source_map/source_extract/browser page tools on explicit URLs/files.", "Crawl budget, robots/rate policy, auth/session prohibition, and evidence caps.", "Legal/abuse risk, CAPTCHA traps, fake completeness claims.", "medium"],
+    ["automatic CAPTCHA bypass", "CAPTCHA bypass and anti-bot evasion are blocked.", "Use user-assisted handoff and alternate official sources/APIs.", "Nothing automatic should be added; only safe human handoff patterns.", "Abuse, policy violations, account risk.", "blocked"],
+    ["secret-manager-backed live API calls", "Secret-manager integration and live external API auth are limited/unknown.", "Use env presence checks and dry-run request planning without printing values.", "Secret-ref resolver with scoped providers, audit logs, redaction, and tests against disposable accounts.", "Secret leakage or accidental real-world mutation.", "medium"],
+    ["broad external browser automation", "External browser automation/login/cookies/sessions are blocked by default.", "Use localhost/file proof or static browser-intelligence tools.", "A scoped browser sandbox with no persistent profile, explicit approvals, and strict URL allowlists.", "Credential capture, session misuse, scraping/anti-bot violations.", "high"]
+  ];
+  return { generated_at: new Date().toISOString(), missing_or_limited_capabilities: gaps.map(([capability, why_limited, current_safe_alternative, what_would_be_needed_to_add, risk_if_added_badly, priority]) => ({ capability, why_limited, current_safe_alternative, what_would_be_needed_to_add, risk_if_added_badly, priority })) };
+}
+function formatActionRecoveryPlan(plan) { return [`vnem_tools_action_recovery_plan: ${plan.likely_cause}`, `safe_retry_allowed=${plan.safe_retry_allowed}`, `retry_requires_approval=${plan.retry_requires_approval}`, `next=${plan.exact_next_steps[0] || "none"}`].join("\n"); }
+function formatHighPowerActionReview(review) { return [`vnem_tools_high_power_action_review: allowed=${review.action_allowed}`, `profile=${review.permission_profile}`, `approval_required=${review.approval_required}`, `destructive=${review.destructive_approval_required}`, `blocks=${review.reasons_to_block.join("; ") || "none"}`].join("\n"); }
+function formatCapabilityGapReport(report) { return [`vnem_tools_capability_gap_report: ${report.missing_or_limited_capabilities.length} gap(s)`, `top=${report.missing_or_limited_capabilities.slice(0, 3).map((g) => g.capability).join(", ")}`].join("\n"); }
 
 function statusObject() {
   return {
@@ -1585,32 +1795,40 @@ async function searchAllowedFiles(args) {
   return { root: root.relativePath || ".", query: args.query, results, skipped_policy: skippedPolicy() };
 }
 
-const TOOL_CAPABILITY_GROUPS = ["permissions", "filesystem", "project_intelligence", "patching", "rollback", "commands", "project_tasks", "dev_server", "browser_proof", "browser_intelligence", "ui_web_quality", "api_request", "search", "research_sources", "source_quality", "browsing_risk", "research_matrix", "source_ingestion", "debugging_code_quality", "session_evidence", "local_git", "status_readiness", "cloudflare_control", "tools_quality"];
+const TOOL_CAPABILITY_GROUPS = ["permissions", "filesystem", "project_intelligence", "patching", "rollback", "commands", "project_tasks", "dev_server", "browser_proof", "browser_intelligence", "ui_web_quality", "api_request", "search", "research_sources", "source_quality", "browsing_risk", "research_matrix", "source_ingestion", "debugging_code_quality", "session_evidence", "local_git", "status_readiness", "cloudflare_control", "tools_quality", "tool_intelligence"];
 
 function buildToolCatalog() {
   const commonUnsafe = ["secret reading/dumping", "outside-root access", "arbitrary shell", "package installs", "git push", "deployment", "Giga MCP"];
-  const mk = (name, group, opts = {}) => ({
-    tool_name: name,
-    name,
-    capability_group: group,
-    description: opts.description || `${name} VNEM-improved safe tool`,
-    read_only: opts.read_only ?? true,
-    mutation: opts.mutation ?? false,
-    network: opts.network ?? false,
-    requires_approval: opts.requires_approval ?? false,
-    dry_run_default: opts.dry_run_default ?? false,
-    allowed_roots_required: opts.allowed_roots_required ?? true,
-    secret_policy: opts.secret_policy || "Blocks secret-like paths and redacts secret-like output.",
-    evidence_logged: opts.evidence_logged ?? true,
-    core_handoff_compatible: true,
-    typical_use_cases: opts.typical_use_cases || [],
-    unsafe_actions_blocked: opts.unsafe_actions_blocked || commonUnsafe,
-    related_tools: opts.related_tools || []
-  });
+  const mk = (name, group, opts = {}) => {
+    const base = {
+      tool_name: name,
+      name,
+      capability_group: group,
+      description: opts.description || `${name} VNEM-improved safe tool`,
+      read_only: opts.read_only ?? true,
+      mutation: opts.mutation ?? false,
+      network: opts.network ?? false,
+      requires_approval: opts.requires_approval ?? false,
+      dry_run_default: opts.dry_run_default ?? false,
+      allowed_roots_required: opts.allowed_roots_required ?? true,
+      secret_policy: opts.secret_policy || "Blocks secret-like paths and redacts secret-like output.",
+      evidence_logged: opts.evidence_logged ?? true,
+      core_handoff_compatible: true,
+      typical_use_cases: opts.typical_use_cases || [],
+      unsafe_actions_blocked: opts.unsafe_actions_blocked || commonUnsafe,
+      related_tools: opts.related_tools || [],
+      high_power: opts.high_power
+    };
+    return addReliabilityFields(base);
+  };
   return [
     mk("vnem_tools_status", "status_readiness", { description: "Report Tools MCP policy/readiness including active permission profile and allowed-root status.", evidence_logged: false, typical_use_cases: ["preflight safety status"] }),
     mk("vnem_tools_permission_profiles", "permissions", { description: "List all first-class Tools MCP permission profiles and allow/block/approval policies.", evidence_logged: false, allowed_roots_required: false, typical_use_cases: ["permission planning", "profile discovery"] }),
-    mk("vnem_tools_permission_status", "permissions", { description: "Report active profile, allowed roots, evidence root, localhost policy, provider presence, blocked categories, and root warnings.", evidence_logged: false, allowed_roots_required: false, typical_use_cases: ["permission preflight", "allowed-root debugging"] }),
+    mk("vnem_tools_permission_status", "permissions", { description: "Report active profile, allowed roots, evidence root, localhost policy, provider presence, blocked categories, root warnings, high-power summary, Cloudflare summary, approval phrases, and known blocked actions.", evidence_logged: false, allowed_roots_required: false, typical_use_cases: ["permission preflight", "allowed-root debugging"] }),
+    mk("vnem_tools_reliability_catalog", "tool_intelligence", { description: "List major Tools MCP tools with reliability levels, tested_with, safe/unsafe claims, known limits, and next validation step.", evidence_logged: false, allowed_roots_required: false, typical_use_cases: ["avoid fake confidence", "choose proven tools"] }),
+    mk("vnem_tools_action_recovery_plan", "tool_intelligence", { description: "Turn failed/blocked tool output into exact next steps, retry rules, and must-not-claim boundaries.", evidence_logged: false, allowed_roots_required: false, typical_use_cases: ["recover from tool failure", "explain blockers"] }),
+    mk("vnem_tools_high_power_action_review", "tool_intelligence", { description: "Review proposed high-power action before execution for permission, approval, protected-resource, secret, production, and rollback risk.", evidence_logged: false, allowed_roots_required: false, typical_use_cases: ["preflight mutation", "creator-power guardrail"] }),
+    mk("vnem_tools_capability_gap_report", "tool_intelligence", { description: "Report known Tools MCP gaps honestly with safe alternatives and add-requirements.", evidence_logged: false, allowed_roots_required: false, typical_use_cases: ["avoid pretending unsupported tools exist"] }),
     mk("vnem_tools_action_policy_preview", "permissions", { description: "Preview whether a proposed action is allowed, blocked, or approval-gated under the active profile.", evidence_logged: false, allowed_roots_required: false, typical_use_cases: ["approval preview", "risk classification"] }),
     mk("vnem_tools_trust_boundary_classify", "permissions", { description: "Classify data/action/source descriptions into VNEM trust-boundary levels.", evidence_logged: false, allowed_roots_required: false, typical_use_cases: ["security boundary planning"] }),
     mk("vnem_tools_manifest", "status_readiness", { description: "Structured catalog of Tools MCP tools and safety metadata.", evidence_logged: false, typical_use_cases: ["AI tool discovery", "Core handoff planning"] }),
@@ -1988,7 +2206,7 @@ async function safeWebSearch(args) {
   if (!providerInfo.configured) {
     const result = { ...base, dry_run: false, provider_status: "provider_unconfigured", blocked_or_unavailable_reason: `${provider} is not configured; no fake results returned.`, must_not_claim: ["Provider search executed.", "Search results were fetched.", "Current web research is complete."] };
     const log = await writeEvidenceLog("web_search", result);
-    return { ...result, evidence_log_id: log.evidence_log_id };
+    return decorateToolResult("vnem_tools_api_request", { ...result, evidence_log_id: log.evidence_log_id }, { capability_group: "api_request", network: true, requires_approval: true });
   }
   let results = [];
   let providerStatus = "executed_local_fixture";
@@ -2661,7 +2879,7 @@ async function safeBrowserEvidenceRun(args) {
       result.evidence_log_id = log.evidence_log_id;
       recordSession(args.session_id, "browser_evidence_runs", result);
     }
-    return result;
+    return decorateToolResult("vnem_tools_browser_evidence_run", result, { capability_group: "ui_web_quality", network: true, requires_approval: true });
   }
 
   const screenshots = [];
@@ -2731,7 +2949,7 @@ async function safeBrowserEvidenceRun(args) {
   const log = await writeEvidenceLog("browser_evidence_run", result);
   result.evidence_log_id = log.evidence_log_id;
   recordSession(args.session_id, "browser_evidence_runs", result);
-  return result;
+  return decorateToolResult("vnem_tools_browser_evidence_run", result, { capability_group: "ui_web_quality", network: true, requires_approval: true });
 }
 
 function makeBrowserEvidenceRunBase({ appUrl, routes, flow, viewports, states, claimType, args, dryRun }) {
@@ -3954,7 +4172,7 @@ async function safeApplyPatchBatch(args) {
   const log = await writeEvidenceLog("patch_batch", result);
   const withLog = { ...result, evidence_log_id: log.evidence_log_id };
   recordSession(args.session_id, "patches_applied", withLog);
-  return withLog;
+  return decorateToolResult("vnem_tools_apply_patch_batch", withLog, { capability_group: "patching", mutation: true, requires_approval: true });
 }
 
 function normalizePatchOperation(raw, index) {
@@ -3999,7 +4217,7 @@ async function safeRestoreBatch(args) {
   const log = await writeEvidenceLog("restore_batch", result);
   const withLog = { ...result, evidence_log_id: log.evidence_log_id };
   recordSession(args.session_id, "restores", withLog);
-  return withLog;
+  return decorateToolResult("vnem_tools_restore_batch", withLog, { capability_group: "rollback", mutation: true, requires_approval: true });
 }
 
 async function safeProjectScan(args) {
@@ -4083,14 +4301,14 @@ async function safeRunProjectTask(args) {
   const timeoutMs = Math.min(args.timeout_ms || 30000, MAX_COMMAND_TIMEOUT_MS);
   const maxOutputBytes = Math.min(args.max_output_bytes || 16000, MAX_COMMAND_OUTPUT_BYTES);
   const planned = { task: args.task, script: scriptName, command: `npm run ${scriptName}`, cwd: root.absolutePath, dry_run: dryRun, executed: false, timeout_ms: timeoutMs, max_output_bytes: maxOutputBytes };
-  if (dryRun) return { ...planned, action_policy_preview: actionPolicyPreview({ action_type: scriptName === "build" ? "run_build" : "run_test", proposed_action: planned.command }) };
+  if (dryRun) return decorateToolResult("vnem_tools_run_project_task", { ...planned, action_policy_preview: actionPolicyPreview({ action_type: scriptName === "build" ? "run_build" : "run_test", proposed_action: planned.command }) }, { capability_group: "project_tasks", mutation: true, requires_approval: true });
   enforceActionPolicy(scriptName === "build" ? "run_build" : "run_test", args);
   const execution = await runProcess("npm", ["run", scriptName], { cwd: root.absolutePath, timeoutMs, maxOutputBytes });
   const result = { ...planned, dry_run: false, executed: true, ...execution };
   const log = await writeEvidenceLog("project_task", result);
   const withLog = { ...result, evidence_log_id: log.evidence_log_id };
   recordSession(args.session_id, "commands_run", withLog);
-  return withLog;
+  return decorateToolResult("vnem_tools_run_project_task", withLog, { capability_group: "project_tasks", mutation: true, requires_approval: true });
 }
 
 async function readPackageScripts(root) {
@@ -4125,7 +4343,7 @@ async function safeStartDevServer(args) {
   const host = String(args.host || "127.0.0.1");
   if (!["127.0.0.1", "localhost"].includes(host)) throw new ToolsError("Dev servers must bind/check localhost only.", "host_blocked", { host });
   const planned = { dry_run: dryRun, started: false, script, command: `npm run ${script} -- --host ${host} --port ${port}`, cwd: root.absolutePath, host, port, url: `http://${host}:${port}/`, registry: "in-memory per MCP process" };
-  if (dryRun) return { ...planned, action_policy_preview: actionPolicyPreview({ action_type: "start_dev_server", proposed_action: planned.command }) };
+  if (dryRun) return decorateToolResult("vnem_tools_start_dev_server", { ...planned, action_policy_preview: actionPolicyPreview({ action_type: "start_dev_server", proposed_action: planned.command }) }, { capability_group: "dev_server", mutation: true, network: true, requires_approval: true });
   enforceActionPolicy("start_dev_server", args);
   const child = spawn(spawnCommandName("npm"), ["run", script, "--", "--host", host, "--port", String(port)], { cwd: root.absolutePath, shell: shouldUseShellForCommand("npm"), windowsHide: true });
   const serverId = logId("dev-server");
@@ -4140,7 +4358,7 @@ async function safeStartDevServer(args) {
   const log = await writeEvidenceLog("dev_server_start", record, serverId);
   const withLog = { ...record, evidence_log_id: log.evidence_log_id };
   recordSession(args.session_id, "dev_servers_started", withLog);
-  return withLog;
+  return decorateToolResult("vnem_tools_start_dev_server", withLog, { capability_group: "dev_server", mutation: true, network: true, requires_approval: true });
 }
 
 async function safeStopDevServer(args) {
@@ -4156,7 +4374,7 @@ async function safeStopDevServer(args) {
   const log = await writeEvidenceLog("dev_server_stop", result);
   const withLog = { ...result, evidence_log_id: log.evidence_log_id };
   recordSession(args.session_id, "dev_servers_stopped", withLog);
-  return withLog;
+  return decorateToolResult("vnem_tools_stop_dev_server", withLog, { capability_group: "dev_server", mutation: true, requires_approval: true });
 }
 
 function listDevServers() {
@@ -4233,7 +4451,7 @@ async function safeGitCommit(args) {
   }
   if (/\b(push|reset --hard|deploy|publish)\b/i.test(args.message)) throw new ToolsError("Unsafe git commit message/action blocked.", "unsafe_git_action_blocked");
   const planned = { dry_run: dryRun, committed: false, root: root.absolutePath, files, message: redactSecrets(args.message), remote_mutation: false };
-  if (dryRun) return { ...planned, action_policy_preview: actionPolicyPreview({ action_type: "local_commit", proposed_action: args.message }) };
+  if (dryRun) return decorateToolResult("vnem_tools_git_commit", { ...planned, action_policy_preview: actionPolicyPreview({ action_type: "local_commit", proposed_action: args.message }) }, { capability_group: "local_git", mutation: true, requires_approval: true });
   enforceActionPolicy("local_commit", args);
   await runProcess("git", ["add", "--", ...files], { cwd: root.absolutePath, timeoutMs: 10000, maxOutputBytes: 12000 });
   const commitExec = await runProcess("git", ["commit", "-m", args.message], { cwd: root.absolutePath, timeoutMs: 20000, maxOutputBytes: 20000 });
@@ -4243,7 +4461,7 @@ async function safeGitCommit(args) {
   const log = await writeEvidenceLog("git_commit", result);
   const withLog = { ...result, evidence_log_id: log.evidence_log_id };
   recordSession(args.session_id, "git_commits", withLog);
-  return withLog;
+  return decorateToolResult("vnem_tools_git_commit", withLog, { capability_group: "local_git", mutation: true, requires_approval: true });
 }
 
 async function safeApiRequest(args) {
@@ -4265,7 +4483,7 @@ async function safeApiRequest(args) {
     max_response_bytes: maxResponseBytes,
     policy: "GET/HEAD only; raw secrets blocked; live requests require approval; unknown URLs blocked unless trusted/localhost-test."
   };
-  if (dryRun) return { ...planned, action_policy_preview: actionPolicyPreview({ action_type: "api_call", proposed_action: `${method} ${planned.url}` }) };
+  if (dryRun) return decorateToolResult("vnem_tools_api_request", { ...planned, action_policy_preview: actionPolicyPreview({ action_type: "api_call", proposed_action: `${method} ${planned.url}` }) }, { capability_group: "api_request", network: true, requires_approval: true });
   enforceActionPolicy("api_call", args);
   const started = Date.now();
   const controller = new AbortController();
@@ -4607,23 +4825,23 @@ function normalizeBrowserEvidence(item) {
 
 function registerCloudflareTools(mcpServer) {
   const commonMutation = { dry_run: z.boolean().default(true), approval_phrase: z.string().default(""), protected_resources: z.array(z.string()).default([]), protected_acknowledgment: z.string().default(""), simulate: z.boolean().default(false), session_id: z.string().optional() };
-  mcpServer.registerTool("vnem_tools_cloudflare_status", { title: "Cloudflare Status", description: "Detect Wrangler/API token/account/profile Cloudflare readiness without printing secrets.", inputSchema: {}, annotations: READ_ONLY_LOCAL }, async () => withToolErrors(async () => { const result = await cloudflareStatus(); return toolResult(formatCloudflare("cloudflare_status", result), { cloudflare_status: result }); }));
-  mcpServer.registerTool("vnem_tools_cloudflare_auth_plan", { title: "Cloudflare Auth Plan", description: "Plan safe Wrangler/API-token authentication without cookies, sessions, scraping, or token leaks.", inputSchema: { access_goal: z.string().default("least_privilege") }, annotations: READ_ONLY_LOCAL }, async (args) => withToolErrors(async () => { const result = cloudflareAuthPlan(args); return toolResult(formatCloudflare("cloudflare_auth_plan", result), { cloudflare_auth_plan: result }); }));
-  mcpServer.registerTool("vnem_tools_cloudflare_accounts_list", { title: "Cloudflare Accounts List", description: "List accessible Cloudflare accounts read-only using API when authenticated.", inputSchema: { simulate: z.boolean().default(false) }, annotations: NETWORK_ACTION }, async (args) => withToolErrors(async () => { const result = await cloudflareAccountsList(args); return toolResult(formatCloudflare("cloudflare_accounts_list", result), { cloudflare_accounts_list: result }); }));
-  mcpServer.registerTool("vnem_tools_cloudflare_projects_list", { title: "Cloudflare Projects List", description: "List Cloudflare Pages projects and Workers scripts read-only.", inputSchema: { account_id: z.string().optional(), simulate: z.boolean().default(false) }, annotations: NETWORK_ACTION }, async (args) => withToolErrors(async () => { const result = await cloudflareProjectsList(args); return toolResult(formatCloudflare("cloudflare_projects_list", result), { cloudflare_projects_list: result }); }));
-  mcpServer.registerTool("vnem_tools_cloudflare_pages_deploy_plan", { title: "Cloudflare Pages Deploy Plan", description: "Plan Cloudflare Pages deploy without executing.", inputSchema: { project_dir: z.string().default("."), project_name: z.string().min(1), branch: z.string().default(""), build_command: z.string().default(""), output_dir: z.string().default("dist"), environment: z.string().default("preview"), protected_resources: z.array(z.string()).default([]) }, annotations: READ_ONLY_LOCAL }, async (args) => withToolErrors(async () => { const result = await cloudflarePagesDeployPlan(args); return toolResult(formatCloudflare("pages_deploy_plan", result), { pages_deploy_plan: result }); }));
-  mcpServer.registerTool("vnem_tools_cloudflare_pages_deploy", { title: "Cloudflare Pages Deploy", description: "Execute approved Cloudflare Pages deploy via Wrangler/API and write evidence pack.", inputSchema: { project_dir: z.string().default("."), project_name: z.string().min(1), branch: z.string().default(""), build_command: z.string().default(""), output_dir: z.string().default("dist"), environment: z.string().default("preview"), ...commonMutation }, annotations: NETWORK_ACTION }, async (args) => withToolErrors(async () => { const result = await cloudflarePagesDeploy(args); return toolResult(formatCloudflare("pages_deploy", result), { pages_deploy: result }); }));
-  mcpServer.registerTool("vnem_tools_cloudflare_workers_deploy_plan", { title: "Cloudflare Workers Deploy Plan", description: "Plan Cloudflare Worker deploy and inspect Wrangler config when present.", inputSchema: { project_dir: z.string().default("."), script_name: z.string().default(""), entrypoint: z.string().default(""), environment: z.string().default("preview"), build_command: z.string().default(""), protected_resources: z.array(z.string()).default([]) }, annotations: READ_ONLY_LOCAL }, async (args) => withToolErrors(async () => { const result = await cloudflareWorkersDeployPlan(args); return toolResult(formatCloudflare("workers_deploy_plan", result), { workers_deploy_plan: result }); }));
-  mcpServer.registerTool("vnem_tools_cloudflare_workers_deploy", { title: "Cloudflare Workers Deploy", description: "Execute approved Cloudflare Worker deploy via Wrangler and write evidence pack.", inputSchema: { project_dir: z.string().default("."), script_name: z.string().default(""), entrypoint: z.string().default(""), environment: z.string().default("preview"), build_command: z.string().default(""), ...commonMutation }, annotations: NETWORK_ACTION }, async (args) => withToolErrors(async () => { const result = await cloudflareWorkersDeploy(args); return toolResult(formatCloudflare("workers_deploy", result), { workers_deploy: result }); }));
-  mcpServer.registerTool("vnem_tools_cloudflare_dns_plan", { title: "Cloudflare DNS Plan", description: "Plan DNS create/update/delete and flag protected resources.", inputSchema: { zone_name: z.string().min(1), record_name: z.string().min(1), record_type: z.string().min(1), record_value: z.string().default(""), proxied: z.boolean().optional(), ttl: z.number().int().optional(), operation: z.string().default("create"), protected_resources: z.array(z.string()).default([]), simulate: z.boolean().default(false) }, annotations: READ_ONLY_LOCAL }, async (args) => withToolErrors(async () => { const result = await cloudflareDnsPlan(args); return toolResult(formatCloudflare("dns_plan", result), { dns_plan: result }); }));
-  mcpServer.registerTool("vnem_tools_cloudflare_dns_apply", { title: "Cloudflare DNS Apply", description: "Apply approved DNS create/update/delete with before/after evidence and protected-resource gates.", inputSchema: { zone_name: z.string().min(1), record_name: z.string().min(1), record_type: z.string().min(1), record_value: z.string().default(""), proxied: z.boolean().optional(), ttl: z.number().int().optional(), operation: z.string().default("create"), ...commonMutation }, annotations: NETWORK_ACTION }, async (args) => withToolErrors(async () => { const result = await cloudflareDnsApply(args); return toolResult(formatCloudflare("dns_apply", result), { dns_apply: result }); }));
-  mcpServer.registerTool("vnem_tools_cloudflare_env_plan", { title: "Cloudflare Env/Secrets Plan", description: "Plan Cloudflare Pages/Workers env var and secret changes with values redacted.", inputSchema: { target_type: z.enum(["pages", "workers"]).default("workers"), target_name: z.string().min(1), environment: z.string().default("production"), variables: z.array(z.record(z.any())).default([]), protected_resources: z.array(z.string()).default([]) }, annotations: READ_ONLY_LOCAL }, async (args) => withToolErrors(async () => { const result = cloudflareEnvPlan(args); return toolResult(formatCloudflare("env_plan", result), { env_plan: result }); }));
-  mcpServer.registerTool("vnem_tools_cloudflare_env_apply", { title: "Cloudflare Env/Secrets Apply", description: "Apply approved env/secret changes without printing values and with evidence pack.", inputSchema: { target_type: z.enum(["pages", "workers"]).default("workers"), target_name: z.string().min(1), environment: z.string().default("production"), variables: z.array(z.record(z.any())).default([]), ...commonMutation }, annotations: NETWORK_ACTION }, async (args) => withToolErrors(async () => { const result = await cloudflareEnvApply(args); return toolResult(formatCloudflare("env_apply", result), { env_apply: result }); }));
-  mcpServer.registerTool("vnem_tools_cloudflare_deploy_verify", { title: "Cloudflare Deploy Verify", description: "Verify deployment URL reachability and optional marker/title evidence.", inputSchema: { deployment_url: z.string().default(""), expected_status: z.number().int().default(200), expected_body_marker: z.string().default(""), expected_title: z.string().default(""), simulate: z.boolean().default(false), account_id: z.string().optional(), project_name: z.string().optional(), script_name: z.string().optional() }, annotations: NETWORK_ACTION }, async (args) => withToolErrors(async () => { const result = await cloudflareDeployVerify(args); return toolResult(formatCloudflare("deploy_verify", result), { deploy_verify: result }); }));
-  mcpServer.registerTool("vnem_tools_cloudflare_rollback_plan", { title: "Cloudflare Rollback Plan", description: "Plan Cloudflare Pages/Workers rollback and identify previous deployment/version when possible.", inputSchema: { target_type: z.enum(["pages", "workers"]).default("pages"), project_name: z.string().default(""), script_name: z.string().default(""), deployment_id: z.string().default(""), version_id: z.string().default(""), simulate: z.boolean().default(false), protected_resources: z.array(z.string()).default([]) }, annotations: READ_ONLY_LOCAL }, async (args) => withToolErrors(async () => { const result = await cloudflareRollbackPlan(args); return toolResult(formatCloudflare("rollback_plan", result), { rollback_plan: result }); }));
-  mcpServer.registerTool("vnem_tools_cloudflare_rollback", { title: "Cloudflare Rollback", description: "Execute approved high-impact Cloudflare rollback with evidence pack.", inputSchema: { target_type: z.enum(["pages", "workers"]).default("pages"), project_name: z.string().default(""), script_name: z.string().default(""), deployment_id: z.string().default(""), version_id: z.string().default(""), ...commonMutation }, annotations: NETWORK_ACTION }, async (args) => withToolErrors(async () => { const result = await cloudflareRollback(args); return toolResult(formatCloudflare("rollback", result), { rollback: result }); }));
-  mcpServer.registerTool("vnem_tools_cloudflare_cache_purge_plan", { title: "Cloudflare Cache Purge Plan", description: "Plan Cloudflare cache purge.", inputSchema: { zone_name: z.string().min(1), files: z.array(z.string()).default([]), purge_everything: z.boolean().default(false), protected_resources: z.array(z.string()).default([]) }, annotations: READ_ONLY_LOCAL }, async (args) => withToolErrors(async () => { const result = await cloudflareCachePurgePlan(args); return toolResult(formatCloudflare("cache_purge_plan", result), { cache_purge_plan: result }); }));
-  mcpServer.registerTool("vnem_tools_cloudflare_cache_purge", { title: "Cloudflare Cache Purge", description: "Execute approved Cloudflare cache purge with evidence pack.", inputSchema: { zone_name: z.string().min(1), files: z.array(z.string()).default([]), purge_everything: z.boolean().default(false), ...commonMutation }, annotations: NETWORK_ACTION }, async (args) => withToolErrors(async () => { const result = await cloudflareCachePurge(args); return toolResult(formatCloudflare("cache_purge", result), { cache_purge: result }); }));
+  mcpServer.registerTool("vnem_tools_cloudflare_status", { title: "Cloudflare Status", description: "Detect Wrangler/API token/account/profile Cloudflare readiness without printing secrets.", inputSchema: {}, annotations: READ_ONLY_LOCAL }, async () => withToolErrors(async () => { const result = decorateCloudflareResult("status", await cloudflareStatus(), {}); return toolResult(formatCloudflare("cloudflare_status", result), { cloudflare_status: result }); }));
+  mcpServer.registerTool("vnem_tools_cloudflare_auth_plan", { title: "Cloudflare Auth Plan", description: "Plan safe Wrangler/API-token authentication without cookies, sessions, scraping, or token leaks.", inputSchema: { access_goal: z.string().default("least_privilege") }, annotations: READ_ONLY_LOCAL }, async (args) => withToolErrors(async () => { const result = decorateCloudflareResult("auth_plan", cloudflareAuthPlan(args), args); return toolResult(formatCloudflare("cloudflare_auth_plan", result), { cloudflare_auth_plan: result }); }));
+  mcpServer.registerTool("vnem_tools_cloudflare_accounts_list", { title: "Cloudflare Accounts List", description: "List accessible Cloudflare accounts read-only using API when authenticated.", inputSchema: { simulate: z.boolean().default(false) }, annotations: NETWORK_ACTION }, async (args) => withToolErrors(async () => { const result = decorateCloudflareResult("accounts_list", await cloudflareAccountsList(args), args); return toolResult(formatCloudflare("cloudflare_accounts_list", result), { cloudflare_accounts_list: result }); }));
+  mcpServer.registerTool("vnem_tools_cloudflare_projects_list", { title: "Cloudflare Projects List", description: "List Cloudflare Pages projects and Workers scripts read-only.", inputSchema: { account_id: z.string().optional(), simulate: z.boolean().default(false) }, annotations: NETWORK_ACTION }, async (args) => withToolErrors(async () => { const result = decorateCloudflareResult("projects_list", await cloudflareProjectsList(args), args); return toolResult(formatCloudflare("cloudflare_projects_list", result), { cloudflare_projects_list: result }); }));
+  mcpServer.registerTool("vnem_tools_cloudflare_pages_deploy_plan", { title: "Cloudflare Pages Deploy Plan", description: "Plan Cloudflare Pages deploy without executing.", inputSchema: { project_dir: z.string().default("."), project_name: z.string().min(1), branch: z.string().default(""), build_command: z.string().default(""), output_dir: z.string().default("dist"), environment: z.string().default("preview"), protected_resources: z.array(z.string()).default([]) }, annotations: READ_ONLY_LOCAL }, async (args) => withToolErrors(async () => { const result = decorateCloudflareResult("pages_deploy_plan", await cloudflarePagesDeployPlan(args), args); return toolResult(formatCloudflare("pages_deploy_plan", result), { pages_deploy_plan: result }); }));
+  mcpServer.registerTool("vnem_tools_cloudflare_pages_deploy", { title: "Cloudflare Pages Deploy", description: "Execute approved Cloudflare Pages deploy via Wrangler/API and write evidence pack.", inputSchema: { project_dir: z.string().default("."), project_name: z.string().min(1), branch: z.string().default(""), build_command: z.string().default(""), output_dir: z.string().default("dist"), environment: z.string().default("preview"), ...commonMutation }, annotations: NETWORK_ACTION }, async (args) => withToolErrors(async () => { const result = decorateCloudflareResult("pages_deploy", await cloudflarePagesDeploy(args), args); return toolResult(formatCloudflare("pages_deploy", result), { pages_deploy: result }); }));
+  mcpServer.registerTool("vnem_tools_cloudflare_workers_deploy_plan", { title: "Cloudflare Workers Deploy Plan", description: "Plan Cloudflare Worker deploy and inspect Wrangler config when present.", inputSchema: { project_dir: z.string().default("."), script_name: z.string().default(""), entrypoint: z.string().default(""), environment: z.string().default("preview"), build_command: z.string().default(""), protected_resources: z.array(z.string()).default([]) }, annotations: READ_ONLY_LOCAL }, async (args) => withToolErrors(async () => { const result = decorateCloudflareResult("workers_deploy_plan", await cloudflareWorkersDeployPlan(args), args); return toolResult(formatCloudflare("workers_deploy_plan", result), { workers_deploy_plan: result }); }));
+  mcpServer.registerTool("vnem_tools_cloudflare_workers_deploy", { title: "Cloudflare Workers Deploy", description: "Execute approved Cloudflare Worker deploy via Wrangler and write evidence pack.", inputSchema: { project_dir: z.string().default("."), script_name: z.string().default(""), entrypoint: z.string().default(""), environment: z.string().default("preview"), build_command: z.string().default(""), ...commonMutation }, annotations: NETWORK_ACTION }, async (args) => withToolErrors(async () => { const result = decorateCloudflareResult("workers_deploy", await cloudflareWorkersDeploy(args), args); return toolResult(formatCloudflare("workers_deploy", result), { workers_deploy: result }); }));
+  mcpServer.registerTool("vnem_tools_cloudflare_dns_plan", { title: "Cloudflare DNS Plan", description: "Plan DNS create/update/delete and flag protected resources.", inputSchema: { zone_name: z.string().min(1), record_name: z.string().min(1), record_type: z.string().min(1), record_value: z.string().default(""), proxied: z.boolean().optional(), ttl: z.number().int().optional(), operation: z.string().default("create"), protected_resources: z.array(z.string()).default([]), simulate: z.boolean().default(false) }, annotations: READ_ONLY_LOCAL }, async (args) => withToolErrors(async () => { const result = decorateCloudflareResult("dns_plan", await cloudflareDnsPlan(args), args); return toolResult(formatCloudflare("dns_plan", result), { dns_plan: result }); }));
+  mcpServer.registerTool("vnem_tools_cloudflare_dns_apply", { title: "Cloudflare DNS Apply", description: "Apply approved DNS create/update/delete with before/after evidence and protected-resource gates.", inputSchema: { zone_name: z.string().min(1), record_name: z.string().min(1), record_type: z.string().min(1), record_value: z.string().default(""), proxied: z.boolean().optional(), ttl: z.number().int().optional(), operation: z.string().default("create"), ...commonMutation }, annotations: NETWORK_ACTION }, async (args) => withToolErrors(async () => { const result = decorateCloudflareResult("dns_apply", await cloudflareDnsApply(args), args); return toolResult(formatCloudflare("dns_apply", result), { dns_apply: result }); }));
+  mcpServer.registerTool("vnem_tools_cloudflare_env_plan", { title: "Cloudflare Env/Secrets Plan", description: "Plan Cloudflare Pages/Workers env var and secret changes with values redacted.", inputSchema: { target_type: z.enum(["pages", "workers"]).default("workers"), target_name: z.string().min(1), environment: z.string().default("production"), variables: z.array(z.record(z.any())).default([]), protected_resources: z.array(z.string()).default([]) }, annotations: READ_ONLY_LOCAL }, async (args) => withToolErrors(async () => { const result = decorateCloudflareResult("env_plan", cloudflareEnvPlan(args), args); return toolResult(formatCloudflare("env_plan", result), { env_plan: result }); }));
+  mcpServer.registerTool("vnem_tools_cloudflare_env_apply", { title: "Cloudflare Env/Secrets Apply", description: "Apply approved env/secret changes without printing values and with evidence pack.", inputSchema: { target_type: z.enum(["pages", "workers"]).default("workers"), target_name: z.string().min(1), environment: z.string().default("production"), variables: z.array(z.record(z.any())).default([]), ...commonMutation }, annotations: NETWORK_ACTION }, async (args) => withToolErrors(async () => { const result = decorateCloudflareResult("env_apply", await cloudflareEnvApply(args), args); return toolResult(formatCloudflare("env_apply", result), { env_apply: result }); }));
+  mcpServer.registerTool("vnem_tools_cloudflare_deploy_verify", { title: "Cloudflare Deploy Verify", description: "Verify deployment URL reachability and optional marker/title evidence.", inputSchema: { deployment_url: z.string().default(""), expected_status: z.number().int().default(200), expected_body_marker: z.string().default(""), expected_title: z.string().default(""), simulate: z.boolean().default(false), account_id: z.string().optional(), project_name: z.string().optional(), script_name: z.string().optional() }, annotations: NETWORK_ACTION }, async (args) => withToolErrors(async () => { const result = decorateCloudflareResult("deploy_verify", await cloudflareDeployVerify(args), args); return toolResult(formatCloudflare("deploy_verify", result), { deploy_verify: result }); }));
+  mcpServer.registerTool("vnem_tools_cloudflare_rollback_plan", { title: "Cloudflare Rollback Plan", description: "Plan Cloudflare Pages/Workers rollback and identify previous deployment/version when possible.", inputSchema: { target_type: z.enum(["pages", "workers"]).default("pages"), project_name: z.string().default(""), script_name: z.string().default(""), deployment_id: z.string().default(""), version_id: z.string().default(""), simulate: z.boolean().default(false), protected_resources: z.array(z.string()).default([]) }, annotations: READ_ONLY_LOCAL }, async (args) => withToolErrors(async () => { const result = decorateCloudflareResult("rollback_plan", await cloudflareRollbackPlan(args), args); return toolResult(formatCloudflare("rollback_plan", result), { rollback_plan: result }); }));
+  mcpServer.registerTool("vnem_tools_cloudflare_rollback", { title: "Cloudflare Rollback", description: "Execute approved high-impact Cloudflare rollback with evidence pack.", inputSchema: { target_type: z.enum(["pages", "workers"]).default("pages"), project_name: z.string().default(""), script_name: z.string().default(""), deployment_id: z.string().default(""), version_id: z.string().default(""), ...commonMutation }, annotations: NETWORK_ACTION }, async (args) => withToolErrors(async () => { const result = decorateCloudflareResult("rollback", await cloudflareRollback(args), args); return toolResult(formatCloudflare("rollback", result), { rollback: result }); }));
+  mcpServer.registerTool("vnem_tools_cloudflare_cache_purge_plan", { title: "Cloudflare Cache Purge Plan", description: "Plan Cloudflare cache purge.", inputSchema: { zone_name: z.string().min(1), files: z.array(z.string()).default([]), purge_everything: z.boolean().default(false), protected_resources: z.array(z.string()).default([]) }, annotations: READ_ONLY_LOCAL }, async (args) => withToolErrors(async () => { const result = decorateCloudflareResult("cache_purge_plan", await cloudflareCachePurgePlan(args), args); return toolResult(formatCloudflare("cache_purge_plan", result), { cache_purge_plan: result }); }));
+  mcpServer.registerTool("vnem_tools_cloudflare_cache_purge", { title: "Cloudflare Cache Purge", description: "Execute approved Cloudflare cache purge with evidence pack.", inputSchema: { zone_name: z.string().min(1), files: z.array(z.string()).default([]), purge_everything: z.boolean().default(false), ...commonMutation }, annotations: NETWORK_ACTION }, async (args) => withToolErrors(async () => { const result = decorateCloudflareResult("cache_purge", await cloudflareCachePurge(args), args); return toolResult(formatCloudflare("cache_purge", result), { cache_purge: result }); }));
   mcpServer.registerTool("vnem_tools_evidence_pack_audit", { title: "Tools Evidence Pack Audit", description: "Audit mutation evidence pack completeness and fake-success prevention.", inputSchema: { evidence_pack_path: z.string().min(1) }, annotations: READ_ONLY_LOCAL }, async (args) => withToolErrors(async () => { const result = await evidencePackAudit(args); return toolResult(formatCloudflare("evidence_pack_audit", result), { evidence_pack_audit: result }); }));
   mcpServer.registerTool("vnem_tools_mutation_approval_contract", { title: "Tools Mutation Approval Contract", description: "Check exact approval phrase for mutation/destructive operations.", inputSchema: { operation: z.string().min(1), destructive: z.boolean().default(false), approval_phrase: z.string().default(""), protected_resource_risk: z.array(z.string()).default([]) }, annotations: READ_ONLY_LOCAL }, async (args) => withToolErrors(async () => { const result = mutationApprovalContract(args); return toolResult(formatCloudflare("mutation_approval_contract", result), { mutation_approval_contract: result }); }));
   mcpServer.registerTool("vnem_tools_secret_redaction_check", { title: "Tools Secret Redaction Check", description: "Detect and redact secret/token patterns including Cloudflare tokens.", inputSchema: { text: z.string().default(""), secret_values: z.array(z.string()).default([]) }, annotations: READ_ONLY_LOCAL }, async (args) => withToolErrors(async () => { const result = secretRedactionCheck(args); return toolResult(formatCloudflare("secret_redaction_check", result), { secret_redaction_check: result }); }));
@@ -5311,7 +5529,8 @@ function toolResult(text, structuredContent) {
 }
 
 function errorResult(text, code = "tools_error", details = {}) {
-  return { isError: true, content: [{ type: "text", text: redactSecrets(text) }], structuredContent: { error: redactSecrets(text), code, ...details } };
+  const action_recovery_plan = buildActionRecoveryPlan({ error_code: code, stderr: typeof details?.stderr === "string" ? details.stderr : "", stdout: typeof details?.stdout === "string" ? details.stdout : "", context: JSON.stringify(details || {}) });
+  return { isError: true, content: [{ type: "text", text: redactSecrets(text) }], structuredContent: { error: redactSecrets(text), code, ...details, action_recovery_plan } };
 }
 
 export { REQUIRED_TOOL_NAMES, statusObject };

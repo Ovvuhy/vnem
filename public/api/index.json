@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-01T17:27:00.460Z",
+  "generated_at": "2026-07-01T19:34:25.880Z",
   "schema_version": "1.0.0",
   "package_version": "1.0.1",
   "release_version": "1.0.1",
@@ -1312,7 +1312,9 @@
       "rollback",
       "env secrets",
       "approval gates",
-      "evidence pack"
+      "evidence pack",
+      "reliability labels",
+      "action recovery"
     ],
     "deployment": [
       "deploy",
@@ -5251,7 +5253,7 @@
     ]
   },
   "coding_playbooks": {
-    "generated_at": "2026-07-01T17:27:00.460Z",
+    "generated_at": "2026-07-01T19:34:25.880Z",
     "schema_version": "1.0.0",
     "safety": {
       "mode": "read-only-coding-playbooks",

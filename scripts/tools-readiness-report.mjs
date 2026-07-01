@@ -37,6 +37,11 @@ const toolsCloudflareApprovalGatesTestPath = rel("scripts/test-tools-cloudflare-
 const toolsCloudflareRedactionTestPath = rel("scripts/test-tools-cloudflare-redaction.mjs");
 const toolsCloudflareEvidencePackTestPath = rel("scripts/test-tools-cloudflare-evidence-pack.mjs");
 const toolsQualityGeneralTestPath = rel("scripts/test-tools-quality-general.mjs");
+const toolsReliabilityCatalogTestPath = rel("scripts/test-tools-reliability-catalog.mjs");
+const toolsActionRecoveryPlanTestPath = rel("scripts/test-tools-action-recovery-plan.mjs");
+const toolsHighPowerActionReviewTestPath = rel("scripts/test-tools-high-power-action-review.mjs");
+const toolsCapabilityGapReportTestPath = rel("scripts/test-tools-capability-gap-report.mjs");
+const toolsQuality2RegressionTestPath = rel("scripts/test-tools-quality-2-regression.mjs");
 const coreResearchStrategyTestPath = rel("scripts/test-core-research-strategy.mjs");
 const coreSourceIngestionPlanningTestPath = rel("scripts/test-core-source-ingestion-planning.mjs");
 const researchEvidenceAuditTestPath = rel("scripts/test-research-evidence-audit.mjs");
@@ -79,6 +84,11 @@ const toolsCloudflareApprovalGatesTest = existsSync(toolsCloudflareApprovalGates
 const toolsCloudflareRedactionTest = existsSync(toolsCloudflareRedactionTestPath) ? readFileSync(toolsCloudflareRedactionTestPath, "utf8") : "";
 const toolsCloudflareEvidencePackTest = existsSync(toolsCloudflareEvidencePackTestPath) ? readFileSync(toolsCloudflareEvidencePackTestPath, "utf8") : "";
 const toolsQualityGeneralTest = existsSync(toolsQualityGeneralTestPath) ? readFileSync(toolsQualityGeneralTestPath, "utf8") : "";
+const toolsReliabilityCatalogTest = existsSync(toolsReliabilityCatalogTestPath) ? readFileSync(toolsReliabilityCatalogTestPath, "utf8") : "";
+const toolsActionRecoveryPlanTest = existsSync(toolsActionRecoveryPlanTestPath) ? readFileSync(toolsActionRecoveryPlanTestPath, "utf8") : "";
+const toolsHighPowerActionReviewTest = existsSync(toolsHighPowerActionReviewTestPath) ? readFileSync(toolsHighPowerActionReviewTestPath, "utf8") : "";
+const toolsCapabilityGapReportTest = existsSync(toolsCapabilityGapReportTestPath) ? readFileSync(toolsCapabilityGapReportTestPath, "utf8") : "";
+const toolsQuality2RegressionTest = existsSync(toolsQuality2RegressionTestPath) ? readFileSync(toolsQuality2RegressionTestPath, "utf8") : "";
 const coreResearchStrategyTest = existsSync(coreResearchStrategyTestPath) ? readFileSync(coreResearchStrategyTestPath, "utf8") : "";
 const coreSourceIngestionPlanningTest = existsSync(coreSourceIngestionPlanningTestPath) ? readFileSync(coreSourceIngestionPlanningTestPath, "utf8") : "";
 const researchEvidenceAuditTest = existsSync(researchEvidenceAuditTestPath) ? readFileSync(researchEvidenceAuditTestPath, "utf8") : "";
@@ -94,6 +104,10 @@ const requiredTools = [
   "vnem_tools_status",
   "vnem_tools_permission_profiles",
   "vnem_tools_permission_status",
+  "vnem_tools_reliability_catalog",
+  "vnem_tools_action_recovery_plan",
+  "vnem_tools_high_power_action_review",
+  "vnem_tools_capability_gap_report",
   "vnem_tools_action_policy_preview",
   "vnem_tools_trust_boundary_classify",
   "vnem_tools_prepare_action_plan",
@@ -201,6 +215,11 @@ const report = {
   tools_browser_evidence_run_test_exists: existsSync(toolsBrowserEvidenceRunTestPath),
   browser_evidence_completion_audit_test_exists: existsSync(browserEvidenceCompletionAuditTestPath),
   tools_ui_evidence_audit_test_exists: existsSync(toolsUiEvidenceAuditTestPath),
+  tools_reliability_catalog_test_exists: existsSync(toolsReliabilityCatalogTestPath),
+  tools_action_recovery_plan_test_exists: existsSync(toolsActionRecoveryPlanTestPath),
+  tools_high_power_action_review_test_exists: existsSync(toolsHighPowerActionReviewTestPath),
+  tools_capability_gap_report_test_exists: existsSync(toolsCapabilityGapReportTestPath),
+  tools_quality_2_regression_test_exists: existsSync(toolsQuality2RegressionTestPath),
   core_research_strategy_test_exists: existsSync(coreResearchStrategyTestPath),
   core_source_ingestion_planning_test_exists: existsSync(coreSourceIngestionPlanningTestPath),
   research_evidence_audit_test_exists: existsSync(researchEvidenceAuditTestPath),
@@ -249,7 +268,12 @@ const report = {
     test_tools_cloudflare_approval_gates: pkg.scripts?.["test:tools-cloudflare-approval-gates"] === "node scripts/test-tools-cloudflare-approval-gates.mjs",
     test_tools_cloudflare_redaction: pkg.scripts?.["test:tools-cloudflare-redaction"] === "node scripts/test-tools-cloudflare-redaction.mjs",
     test_tools_cloudflare_evidence_pack: pkg.scripts?.["test:tools-cloudflare-evidence-pack"] === "node scripts/test-tools-cloudflare-evidence-pack.mjs",
-    test_tools_quality_general: pkg.scripts?.["test:tools-quality-general"] === "node scripts/test-tools-quality-general.mjs"
+    test_tools_quality_general: pkg.scripts?.["test:tools-quality-general"] === "node scripts/test-tools-quality-general.mjs",
+    test_tools_reliability_catalog: pkg.scripts?.["test:tools-reliability-catalog"] === "node scripts/test-tools-reliability-catalog.mjs",
+    test_tools_action_recovery_plan: pkg.scripts?.["test:tools-action-recovery-plan"] === "node scripts/test-tools-action-recovery-plan.mjs",
+    test_tools_high_power_action_review: pkg.scripts?.["test:tools-high-power-action-review"] === "node scripts/test-tools-high-power-action-review.mjs",
+    test_tools_capability_gap_report: pkg.scripts?.["test:tools-capability-gap-report"] === "node scripts/test-tools-capability-gap-report.mjs",
+    test_tools_quality_2_regression: pkg.scripts?.["test:tools-quality-2-regression"] === "node scripts/test-tools-quality-2-regression.mjs"
   },
   required_tools_present: Object.fromEntries(requiredTools.map((name) => [name, server.includes(`"${name}"`)])),
   mcp_config_tools_support: /--tools/.test(cli) && /VNEM_TOOLS_ALLOWED_ROOTS/.test(cli) && /VNEM_TOOLS_EVIDENCE_ROOT/.test(cli) && /vnem-tools-mcp-server/.test(cli),
@@ -340,6 +364,11 @@ const report = {
   general_tools_evidence_pack_audit_status: /vnem_tools_evidence_pack_audit/.test(server) && /missing_files/.test(toolsQualityGeneralTest + server),
   general_tools_mutation_approval_contract_status: /vnem_tools_mutation_approval_contract/.test(server) && /required_phrase/.test(toolsQualityGeneralTest + server),
   general_tools_secret_redaction_check_status: /vnem_tools_secret_redaction_check/.test(server) && /redacted_output_safe/.test(toolsQualityGeneralTest + server),
+  tools_reliability_catalog_status: /vnem_tools_reliability_catalog/.test(server) && /tool_reliability/.test(server) && /simulated_tested/.test(server + toolsReliabilityCatalogTest) && /Cloudflare/.test(toolsReliabilityCatalogTest),
+  tools_action_recovery_plan_status: /vnem_tools_action_recovery_plan/.test(server) && /buildActionRecoveryPlan/.test(server) && /blocked_by_missing_auth/.test(server + toolsActionRecoveryPlanTest) && /I APPROVE CLOUDFLARE MUTATION/.test(server + toolsActionRecoveryPlanTest),
+  tools_high_power_action_review_status: /vnem_tools_high_power_action_review/.test(server) && /highPowerActionReview/.test(server) && /destructive_approval_required/.test(server + toolsHighPowerActionReviewTest) && /protected_resource_risk/.test(server + toolsHighPowerActionReviewTest),
+  tools_capability_gap_report_status: /vnem_tools_capability_gap_report/.test(server) && /capabilityGapReport/.test(server) && /GitHub mutation/.test(server + toolsCapabilityGapReportTest) && /automatic CAPTCHA bypass/.test(server + toolsCapabilityGapReportTest),
+  tools_quality_2_regression_status: /high_power_summary/.test(server + toolsQuality2RegressionTest) && /cloudflare_summary/.test(server) && /dangerous-disabled/.test(toolsQuality2RegressionTest),
   ui_surface_secret_blocking_status: /secret-like path blocked|secret\/session\/private path blocked/.test(server) && /must-not-read/.test(toolsUiSurfaceReviewTest),
   ui_route_component_detection_status: /routes_found|components_found|render_paths_found/.test(server) && /VisibleCard|DeadPanel|Dashboard/.test(toolsUiSurfaceReviewTest),
   ui_state_coverage_status: /missing_state_coverage/.test(server) && /loading|empty|error/.test(toolsUiSurfaceReviewTest + toolsBrowserEvidencePlanTest + toolsUiEvidenceAuditTest),
@@ -350,7 +379,7 @@ const report = {
   no_captcha_bypass_public_policy: /No automatic CAPTCHA bypass was attempted or provided/.test(server + toolsRiskCaptchaTest) && /automatic CAPTCHA bypass/.test(server),
 
   permission_profiles_status: /PERMISSION_PROFILE_NAMES/.test(server) && /safe-readonly/.test(server) && /creator-power/.test(server) && /dangerous-disabled/.test(toolsPermissionProfilesTest + server),
-  permission_status_tool: /vnem_tools_permission_status/.test(server) && /permissionStatusObject/.test(server) && /workspace_allowed/.test(toolsPermissionProfilesTest + server),
+  permission_status_tool: /vnem_tools_permission_status/.test(server) && /permissionStatusObject/.test(server) && /workspace_allowed/.test(toolsPermissionProfilesTest + server) && /high_power_summary/.test(server) && /approval_phrase_summary/.test(server),
   action_policy_preview_status: /vnem_tools_action_policy_preview/.test(server) && /actionPolicyPreview/.test(server) && /required_user_approval_text/.test(server),
   trust_boundary_classifier_status: /vnem_tools_trust_boundary_classify/.test(server) && /trustBoundaryClassify/.test(server) && /6_blocked_dangerous_action/.test(toolsTrustBoundaryTest + server),
   safe_readonly_blocks_writes: /safe-readonly/.test(server) && /permission_profile_blocked/.test(toolsPermissionProfilesTest),
