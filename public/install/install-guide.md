@@ -1,6 +1,6 @@
 # vnem Install And MCP Guide
 
-Generated: 2026-07-01T19:34:25.880Z
+Generated: 2026-07-04T18:22:25.655Z
 
 A compact setup guide for downloading the read-only vnem pack, installing it into an existing repo without overwriting local agent instructions, and connecting the local stdio MCP server with generated JSON config.
 
@@ -150,6 +150,26 @@ Generic `.mcp.json` shape:
 Claude Code can add a single-server JSON object with `claude mcp add-json vnem '<json>'`. Other MCP clients usually accept either the full `mcpServers` object above or the single `vnem` server object printed by `--server-json`.
 
 For the precision server, use the generated `vnem-precision` config and review `VNEM_PRECISION_ROOT` before connecting it. The default read-only server remains the safer default.
+
+GitHub Tools MCP settings example:
+
+```toml
+[mcp_servers."vnem-tools".env]
+# ============================================================
+# GITHUB SETTINGS
+# ============================================================
+VNEM_TOOLS_AUTONOMY_MODE = "fast"
+VNEM_TOOLS_GITHUB_PROFILE = "maintainer"
+VNEM_TOOLS_GITHUB_ALLOWED_REPOS = "Ovvuhy/vnem;Ovvuhy/ME3-By-my-AI-and-Me"
+VNEM_TOOLS_GITHUB_PROTECTED_BRANCHES = "main;master;production"
+VNEM_TOOLS_GITHUB_ALLOW_DIRECT_PUSH = "0"
+VNEM_TOOLS_GITHUB_ALLOW_FORCE_PUSH = "0"
+VNEM_TOOLS_GITHUB_ALLOW_REPO_DELETE = "0"
+VNEM_TOOLS_GITHUB_ALLOW_SETTINGS_MUTATION = "0"
+VNEM_TOOLS_GITHUB_ALLOW_RELEASES = "1"
+VNEM_TOOLS_GITHUB_ALLOW_ACTIONS_RERUN = "1"
+VNEM_TOOLS_MALWARE_DOWNLOAD_BLOCK = "1"
+```
 
 ## Verify
 

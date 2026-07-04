@@ -42,6 +42,13 @@ const toolsActionRecoveryPlanTestPath = rel("scripts/test-tools-action-recovery-
 const toolsHighPowerActionReviewTestPath = rel("scripts/test-tools-high-power-action-review.mjs");
 const toolsCapabilityGapReportTestPath = rel("scripts/test-tools-capability-gap-report.mjs");
 const toolsQuality2RegressionTestPath = rel("scripts/test-tools-quality-2-regression.mjs");
+const toolsGithubSettingsTestPath = rel("scripts/test-tools-github-settings.mjs");
+const toolsGithubStatusProfileTestPath = rel("scripts/test-tools-github-status-profile.mjs");
+const toolsGithubRepoIntelligenceTestPath = rel("scripts/test-tools-github-repo-intelligence.mjs");
+const toolsGithubBranchCommitPrTestPath = rel("scripts/test-tools-github-branch-commit-pr.mjs");
+const toolsGithubIssuesActionsCiTestPath = rel("scripts/test-tools-github-issues-actions-ci.mjs");
+const toolsAutonomyEfficiencyTestPath = rel("scripts/test-tools-autonomy-efficiency.mjs");
+const toolsAutonomy1RegressionTestPath = rel("scripts/test-tools-autonomy-1-regression.mjs");
 const coreResearchStrategyTestPath = rel("scripts/test-core-research-strategy.mjs");
 const coreSourceIngestionPlanningTestPath = rel("scripts/test-core-source-ingestion-planning.mjs");
 const researchEvidenceAuditTestPath = rel("scripts/test-research-evidence-audit.mjs");
@@ -89,6 +96,13 @@ const toolsActionRecoveryPlanTest = existsSync(toolsActionRecoveryPlanTestPath) 
 const toolsHighPowerActionReviewTest = existsSync(toolsHighPowerActionReviewTestPath) ? readFileSync(toolsHighPowerActionReviewTestPath, "utf8") : "";
 const toolsCapabilityGapReportTest = existsSync(toolsCapabilityGapReportTestPath) ? readFileSync(toolsCapabilityGapReportTestPath, "utf8") : "";
 const toolsQuality2RegressionTest = existsSync(toolsQuality2RegressionTestPath) ? readFileSync(toolsQuality2RegressionTestPath, "utf8") : "";
+const toolsGithubSettingsTest = existsSync(toolsGithubSettingsTestPath) ? readFileSync(toolsGithubSettingsTestPath, "utf8") : "";
+const toolsGithubStatusProfileTest = existsSync(toolsGithubStatusProfileTestPath) ? readFileSync(toolsGithubStatusProfileTestPath, "utf8") : "";
+const toolsGithubRepoIntelligenceTest = existsSync(toolsGithubRepoIntelligenceTestPath) ? readFileSync(toolsGithubRepoIntelligenceTestPath, "utf8") : "";
+const toolsGithubBranchCommitPrTest = existsSync(toolsGithubBranchCommitPrTestPath) ? readFileSync(toolsGithubBranchCommitPrTestPath, "utf8") : "";
+const toolsGithubIssuesActionsCiTest = existsSync(toolsGithubIssuesActionsCiTestPath) ? readFileSync(toolsGithubIssuesActionsCiTestPath, "utf8") : "";
+const toolsAutonomyEfficiencyTest = existsSync(toolsAutonomyEfficiencyTestPath) ? readFileSync(toolsAutonomyEfficiencyTestPath, "utf8") : "";
+const toolsAutonomy1RegressionTest = existsSync(toolsAutonomy1RegressionTestPath) ? readFileSync(toolsAutonomy1RegressionTestPath, "utf8") : "";
 const coreResearchStrategyTest = existsSync(coreResearchStrategyTestPath) ? readFileSync(coreResearchStrategyTestPath, "utf8") : "";
 const coreSourceIngestionPlanningTest = existsSync(coreSourceIngestionPlanningTestPath) ? readFileSync(coreSourceIngestionPlanningTestPath, "utf8") : "";
 const researchEvidenceAuditTest = existsSync(researchEvidenceAuditTestPath) ? readFileSync(researchEvidenceAuditTestPath, "utf8") : "";
@@ -168,6 +182,28 @@ const requiredTools = [
   "vnem_tools_git_status",
   "vnem_tools_git_diff_summary",
   "vnem_tools_git_commit",
+  "vnem_tools_github_status",
+  "vnem_tools_github_settings_guide",
+  "vnem_tools_github_profile_status",
+  "vnem_tools_github_repo_inspect",
+  "vnem_tools_repo_intelligence_report",
+  "vnem_tools_github_branch_create",
+  "vnem_tools_github_commit_push",
+  "vnem_tools_github_pr_create",
+  "vnem_tools_github_pr_update",
+  "vnem_tools_github_issue_create",
+  "vnem_tools_github_issue_update",
+  "vnem_tools_github_issue_comment",
+  "vnem_tools_github_labels_manage",
+  "vnem_tools_github_actions_status",
+  "vnem_tools_github_actions_rerun",
+  "vnem_tools_github_ci_failure_triage",
+  "vnem_tools_pr_quality_gate",
+  "vnem_tools_task_progress_truth_check",
+  "vnem_tools_github_release_plan",
+  "vnem_tools_github_release_create",
+  "vnem_tools_github_repo_settings_plan",
+  "vnem_tools_github_repo_settings_apply",
   "vnem_tools_cloudflare_status",
   "vnem_tools_cloudflare_auth_plan",
   "vnem_tools_cloudflare_accounts_list",
@@ -220,6 +256,13 @@ const report = {
   tools_high_power_action_review_test_exists: existsSync(toolsHighPowerActionReviewTestPath),
   tools_capability_gap_report_test_exists: existsSync(toolsCapabilityGapReportTestPath),
   tools_quality_2_regression_test_exists: existsSync(toolsQuality2RegressionTestPath),
+  tools_github_settings_test_exists: existsSync(toolsGithubSettingsTestPath),
+  tools_github_status_profile_test_exists: existsSync(toolsGithubStatusProfileTestPath),
+  tools_github_repo_intelligence_test_exists: existsSync(toolsGithubRepoIntelligenceTestPath),
+  tools_github_branch_commit_pr_test_exists: existsSync(toolsGithubBranchCommitPrTestPath),
+  tools_github_issues_actions_ci_test_exists: existsSync(toolsGithubIssuesActionsCiTestPath),
+  tools_autonomy_efficiency_test_exists: existsSync(toolsAutonomyEfficiencyTestPath),
+  tools_autonomy_1_regression_test_exists: existsSync(toolsAutonomy1RegressionTestPath),
   core_research_strategy_test_exists: existsSync(coreResearchStrategyTestPath),
   core_source_ingestion_planning_test_exists: existsSync(coreSourceIngestionPlanningTestPath),
   research_evidence_audit_test_exists: existsSync(researchEvidenceAuditTestPath),
@@ -273,10 +316,38 @@ const report = {
     test_tools_action_recovery_plan: pkg.scripts?.["test:tools-action-recovery-plan"] === "node scripts/test-tools-action-recovery-plan.mjs",
     test_tools_high_power_action_review: pkg.scripts?.["test:tools-high-power-action-review"] === "node scripts/test-tools-high-power-action-review.mjs",
     test_tools_capability_gap_report: pkg.scripts?.["test:tools-capability-gap-report"] === "node scripts/test-tools-capability-gap-report.mjs",
-    test_tools_quality_2_regression: pkg.scripts?.["test:tools-quality-2-regression"] === "node scripts/test-tools-quality-2-regression.mjs"
+    test_tools_quality_2_regression: pkg.scripts?.["test:tools-quality-2-regression"] === "node scripts/test-tools-quality-2-regression.mjs",
+    test_tools_github_settings: pkg.scripts?.["test:tools-github-settings"] === "node scripts/test-tools-github-settings.mjs",
+    test_tools_github_status_profile: pkg.scripts?.["test:tools-github-status-profile"] === "node scripts/test-tools-github-status-profile.mjs",
+    test_tools_github_repo_intelligence: pkg.scripts?.["test:tools-github-repo-intelligence"] === "node scripts/test-tools-github-repo-intelligence.mjs",
+    test_tools_github_branch_commit_pr: pkg.scripts?.["test:tools-github-branch-commit-pr"] === "node scripts/test-tools-github-branch-commit-pr.mjs",
+    test_tools_github_issues_actions_ci: pkg.scripts?.["test:tools-github-issues-actions-ci"] === "node scripts/test-tools-github-issues-actions-ci.mjs",
+    test_tools_autonomy_efficiency: pkg.scripts?.["test:tools-autonomy-efficiency"] === "node scripts/test-tools-autonomy-efficiency.mjs",
+    test_tools_autonomy_1_regression: pkg.scripts?.["test:tools-autonomy-1-regression"] === "node scripts/test-tools-autonomy-1-regression.mjs"
   },
   required_tools_present: Object.fromEntries(requiredTools.map((name) => [name, server.includes(`"${name}"`)])),
   mcp_config_tools_support: /--tools/.test(cli) && /VNEM_TOOLS_ALLOWED_ROOTS/.test(cli) && /VNEM_TOOLS_EVIDENCE_ROOT/.test(cli) && /vnem-tools-mcp-server/.test(cli),
+  github_autonomy_status: /github_autonomy/.test(server) && /registerGithubTools/.test(server) && /vnem_tools_github_status/.test(server),
+  github_settings_guide_status: /vnem_tools_github_settings_guide/.test(server) && /# GITHUB SETTINGS/.test(server + toolsGithubSettingsTest) && /VNEM_TOOLS_GITHUB_PROFILE = "maintainer"/.test(server + toolsGithubSettingsTest),
+  github_profile_status: /vnem_tools_github_profile_status/.test(server) && /githubProfileStatus/.test(server) && /maintainer/.test(server + toolsGithubStatusProfileTest),
+  github_status_tool_status: /vnem_tools_github_status/.test(server) && /gh_available/.test(server) && /blocked_by_config_or_profile/.test(server),
+  github_repo_inspect_status: /vnem_tools_github_repo_inspect/.test(server) && /githubRepoInspect/.test(server) && /detected_build_test_commands/.test(server),
+  github_repo_intelligence_status: /vnem_tools_repo_intelligence_report/.test(server) && /repoIntelligenceReport/.test(server) && /best_next_actions/.test(server),
+  github_branch_status: /vnem_tools_github_branch_create/.test(server) && /cleanBranchName/.test(server) && /Branch .* already exists/.test(server),
+  github_commit_push_status: /vnem_tools_github_commit_push/.test(server) && /files_staged/.test(server) && /VNEM_TOOLS_GITHUB_ALLOW_DIRECT_PUSH/.test(server),
+  github_pr_status: /vnem_tools_github_pr_create/.test(server) && /vnem_tools_github_pr_update/.test(server) && /gh", \["pr"/.test(server),
+  github_issue_status: /vnem_tools_github_issue_create/.test(server) && /vnem_tools_github_issue_update/.test(server) && /vnem_tools_github_issue_comment/.test(server),
+  github_labels_status: /vnem_tools_github_labels_manage/.test(server) && /manage_labels/.test(server),
+  github_actions_status: /vnem_tools_github_actions_status/.test(server) && /vnem_tools_github_actions_rerun/.test(server) && /VNEM_TOOLS_GITHUB_ALLOW_ACTIONS_RERUN/.test(server),
+  github_ci_triage_status: /vnem_tools_github_ci_failure_triage/.test(server) && /ci_failure_triage/.test(server) && /likely_files_to_fix/.test(server),
+  github_pr_quality_gate_status: /vnem_tools_pr_quality_gate/.test(server) && /prQualityGate/.test(server) && /claim_status/.test(server),
+  github_task_progress_truth_check_status: /vnem_tools_task_progress_truth_check/.test(server) && /taskProgressTruthCheck/.test(server) && /what_not_to_claim/.test(server),
+  github_config_header_status: /GITHUB SETTINGS/.test(server + toolsGithubSettingsTest + cli) && /VNEM_TOOLS_GITHUB_PROFILE/.test(server + toolsGithubSettingsTest + cli),
+  github_profile_maintainer_default_status: /VNEM_TOOLS_GITHUB_PROFILE:\s*"maintainer"/.test(server) && /default maintainer/.test(server + toolsGithubSettingsTest),
+  github_force_push_block_default_status: /VNEM_TOOLS_GITHUB_ALLOW_FORCE_PUSH:\s*"0"/.test(server) && /Force push blocked by default/.test(server + toolsGithubBranchCommitPrTest),
+  github_repo_delete_block_default_status: /VNEM_TOOLS_GITHUB_ALLOW_REPO_DELETE:\s*"0"/.test(server) && /Repo deletion blocked by default|repo delete/.test(server),
+  github_secret_commit_block_status: /githubSecretFileBlocked/.test(server) && /\.env/.test(toolsGithubBranchCommitPrTest + toolsAutonomy1RegressionTest),
+  autonomy_efficiency_status: /operation_result/.test(server) && /next_best_action/.test(server) && /config_knob_to_change/.test(server) && /claim_status/.test(server),
   tools_manifest_status: /vnem_tools_manifest/.test(server) && /buildToolsManifest/.test(server) && /capability_group/.test(server) && /unsafe_actions_not_supported/.test(server) && /tool_catalog_policy/.test(server) && /vnem_tools_manifest/.test(intelligenceTest),
   workspace_map_status: /vnem_tools_workspace_map/.test(server) && /safeWorkspaceMap/.test(server) && /important_dirs/.test(server) && /likely_entrypoints/.test(intelligenceTest) && /secret_path_blocked|skipped_paths/.test(intelligenceTest),
   read_many_files_status: /vnem_tools_read_many_files/.test(server) && /safeReadManyFiles/.test(server) && /max_total_bytes/.test(server) && /blocked_files/.test(intelligenceTest),
@@ -367,7 +438,7 @@ const report = {
   tools_reliability_catalog_status: /vnem_tools_reliability_catalog/.test(server) && /tool_reliability/.test(server) && /simulated_tested/.test(server + toolsReliabilityCatalogTest) && /Cloudflare/.test(toolsReliabilityCatalogTest),
   tools_action_recovery_plan_status: /vnem_tools_action_recovery_plan/.test(server) && /buildActionRecoveryPlan/.test(server) && /blocked_by_missing_auth/.test(server + toolsActionRecoveryPlanTest) && /I APPROVE CLOUDFLARE MUTATION/.test(server + toolsActionRecoveryPlanTest),
   tools_high_power_action_review_status: /vnem_tools_high_power_action_review/.test(server) && /highPowerActionReview/.test(server) && /destructive_approval_required/.test(server + toolsHighPowerActionReviewTest) && /protected_resource_risk/.test(server + toolsHighPowerActionReviewTest),
-  tools_capability_gap_report_status: /vnem_tools_capability_gap_report/.test(server) && /capabilityGapReport/.test(server) && /GitHub mutation/.test(server + toolsCapabilityGapReportTest) && /automatic CAPTCHA bypass/.test(server + toolsCapabilityGapReportTest),
+  tools_capability_gap_report_status: /vnem_tools_capability_gap_report/.test(server) && /capabilityGapReport/.test(server) && /GitHub destructive admin operations|GitHub mutation/.test(server + toolsCapabilityGapReportTest) && /automatic CAPTCHA bypass/.test(server + toolsCapabilityGapReportTest),
   tools_quality_2_regression_status: /high_power_summary/.test(server + toolsQuality2RegressionTest) && /cloudflare_summary/.test(server) && /dangerous-disabled/.test(toolsQuality2RegressionTest),
   ui_surface_secret_blocking_status: /secret-like path blocked|secret\/session\/private path blocked/.test(server) && /must-not-read/.test(toolsUiSurfaceReviewTest),
   ui_route_component_detection_status: /routes_found|components_found|render_paths_found/.test(server) && /VisibleCard|DeadPanel|Dashboard/.test(toolsUiSurfaceReviewTest),
@@ -398,7 +469,7 @@ const report = {
   dev_server_status: /vnem_tools_start_dev_server/.test(server) && /vnem_tools_stop_dev_server/.test(server) && /dev_server_not_found/.test(projectActionsTest),
   session_evidence_status: /vnem_tools_start_session/.test(server) && /vnem_tools_finish_session/.test(server) && /blocked_actions/.test(gitSessionTest),
   local_git_status: /vnem_tools_git_status/.test(server) && /vnem_tools_git_diff_summary/.test(server) && /vnem_tools_git_commit/.test(server) && /git push/.test(gitSessionTest),
-  remote_github_still_blocked: /git\\s\+push/.test(server) && /remote_github_mutation/.test(server),
+  github_destructive_admin_still_blocked_status: /VNEM_TOOLS_GITHUB_ALLOW_FORCE_PUSH/.test(server) && /VNEM_TOOLS_GITHUB_ALLOW_REPO_DELETE/.test(server) && /Repo deletion blocked by default/.test(server),
   package_install_still_blocked: /UNSAFE_PACKAGE_SCRIPT_PATTERN/.test(server) && /package_install/.test(server),
   giga_still_not_built: /giga_mcp/.test(server),
   evidence_proof_bridge_status: /proof_trail_compatible_summary/.test(server) && /recommended_core_proof_trail_inputs/.test(server) && /recommended_final_report_lines/.test(server),
@@ -419,7 +490,7 @@ const report = {
     evidence: /vnem_tools_collect_evidence/.test(test)
   },
   known_missing_future_tools: [
-    "GitHub mutation",
+    "GitHub destructive admin operations (repo delete/force push/settings apply beyond explicit config)",
     "package installs",
     "arbitrary shell",
     "unrestricted API calls",
@@ -546,7 +617,7 @@ assert.equal(report.project_task_status, true, "project task support/test covera
 assert.equal(report.dev_server_status, true, "dev server support/test coverage is missing");
 assert.equal(report.session_evidence_status, true, "session evidence support/test coverage is missing");
 assert.equal(report.local_git_status, true, "local git support/test coverage is missing");
-assert.equal(report.remote_github_still_blocked, true, "remote git/GitHub mutation blocking is missing");
+assert.equal(report.github_destructive_admin_still_blocked_status, true, "GitHub destructive admin blocking is missing");
 assert.equal(report.package_install_still_blocked, true, "package install/publish blocking is missing");
 assert.equal(report.giga_still_not_built, true, "Giga MCP unsupported marker is missing");
 assert.equal(report.evidence_proof_bridge_status, true, "evidence proof bridge is missing");
@@ -650,6 +721,7 @@ console.log(`ui_route_component_detection_status: ${yes(report.ui_route_componen
 console.log(`ui_state_coverage_status: ${yes(report.ui_state_coverage_status)}`);
 console.log(`ui_no_hidden_browser_status: ${yes(report.ui_no_hidden_browser_status)}`);
 console.log(`ui_visual_claim_audit_status: ${yes(report.ui_visual_claim_audit_status)}`);
+for (const key of ["github_autonomy_status", "github_settings_guide_status", "github_profile_status", "github_status_tool_status", "github_repo_inspect_status", "github_repo_intelligence_status", "github_branch_status", "github_commit_push_status", "github_pr_status", "github_issue_status", "github_labels_status", "github_actions_status", "github_ci_triage_status", "github_pr_quality_gate_status", "github_task_progress_truth_check_status", "github_config_header_status", "github_profile_maintainer_default_status", "github_force_push_block_default_status", "github_repo_delete_block_default_status", "github_secret_commit_block_status", "autonomy_efficiency_status"]) console.log(`${key}: ${yes(report[key])}`);
 for (const key of ["cloudflare_control_status", "cloudflare_auth_status_tool_status", "cloudflare_auth_plan_status", "cloudflare_discovery_status", "cloudflare_pages_deploy_status", "cloudflare_workers_deploy_status", "cloudflare_dns_status", "cloudflare_env_secrets_status", "cloudflare_verify_status", "cloudflare_rollback_status", "cloudflare_cache_purge_status", "cloudflare_approval_gate_status", "cloudflare_destructive_approval_status", "cloudflare_secret_redaction_status", "cloudflare_evidence_pack_status", "general_tools_evidence_pack_audit_status", "general_tools_mutation_approval_contract_status", "general_tools_secret_redaction_check_status"]) console.log(`${key}: ${yes(report[key])}`);
 console.log(`parallel_fake_system_detection_status: ${yes(report.parallel_fake_system_detection_status)}`);
 console.log(`dead_code_warning_status: ${yes(report.dead_code_warning_status)}`);
@@ -677,7 +749,7 @@ console.log(`project_task_status: ${yes(report.project_task_status)}`);
 console.log(`dev_server_status: ${yes(report.dev_server_status)}`);
 console.log(`session_evidence_status: ${yes(report.session_evidence_status)}`);
 console.log(`local_git_status: ${yes(report.local_git_status)}`);
-console.log(`remote_github_still_blocked: ${yes(report.remote_github_still_blocked)}`);
+console.log(`github_destructive_admin_still_blocked: ${yes(report.github_repo_delete_block_default_status && report.github_force_push_block_default_status)}`);
 console.log(`package_install_still_blocked: ${yes(report.package_install_still_blocked)}`);
 console.log(`giga_still_not_built: ${yes(report.giga_still_not_built)}`);
 console.log(`evidence_proof_bridge_status: ${yes(report.evidence_proof_bridge_status)}`);

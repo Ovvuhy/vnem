@@ -1,6 +1,6 @@
 # vnem Prompt Engineering
 
-Generated: 2026-07-01T19:34:25.880Z
+Generated: 2026-07-04T18:22:25.655Z
 
 Use this when the user asks to improve, rewrite, harden, or operationalize a prompt. The main trigger phrase is `use vnem to enhance this prompt`.
 

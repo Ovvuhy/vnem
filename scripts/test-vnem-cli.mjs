@@ -114,7 +114,10 @@ try {
   assert.ok(parsedToolsConfig.mcpServers?.["vnem-tools"]?.args?.[0]?.endsWith("vnem-tools-mcp-server.mjs"));
   assert.equal(parsedToolsConfig.mcpServers?.["vnem-tools"]?.env?.VNEM_TOOLS_ALLOWED_ROOTS, projectDir);
   assert.equal(parsedToolsConfig.mcpServers?.["vnem-tools"]?.env?.VNEM_TOOLS_EVIDENCE_ROOT, path.join(projectDir, ".vnem", "tool-runs"));
-  assert.doesNotMatch(toolsConfig.stdout, /browser|github|install|giga/i, "Tools config should not claim browser/GitHub/install/Giga support");
+  assert.equal(parsedToolsConfig.mcpServers?.["vnem-tools"]?.env?.VNEM_TOOLS_GITHUB_PROFILE, "maintainer");
+  assert.equal(parsedToolsConfig.mcpServers?.["vnem-tools"]?.env?.VNEM_TOOLS_GITHUB_ALLOW_FORCE_PUSH, "0");
+  assert.equal(parsedToolsConfig.mcpServers?.["vnem-tools"]?.env?.VNEM_TOOLS_GITHUB_ALLOW_REPO_DELETE, "0");
+  assert.doesNotMatch(toolsConfig.stdout, /browser|install|giga/i, "Tools config should not claim browser/install/Giga support");
 
   const coreToolsConfig = runCli(["mcp-config", "--core", "--tools", "--workspace", projectDir]);
   const parsedCoreToolsConfig = JSON.parse(coreToolsConfig.stdout);

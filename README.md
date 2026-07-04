@@ -181,7 +181,8 @@ Tools MCP is safeguard-first, not Giga MCP:
 | Restore | Restores a previous Tools MCP backup or batch restore plan only inside allowed roots; dry-run default, approval required, secret-like targets blocked, evidence logged. |
 | Commands/tasks | Dry-run by default; real execution requires approval; only safe allowlisted commands and package.json project tasks are allowed; package install/publish/deploy/push/destructive shell chains stay blocked. |
 | Dev servers | Starts approved local `dev`/`start`/`preview` scripts only on localhost ports 3000-9999; tracks Tools-started servers in-memory and stops only those servers. |
-| Local git | Read-only local status/diff plus approved local commit of explicit safe files only; no git push, reset, branch deletion, or remote mutation. |
+| Local git | Read-only local status/diff plus approved local commit of explicit safe files only; destructive git remains blocked. |
+| GitHub autonomy | `github_autonomy` adds power-first repo work: `vnem_tools_github_status`, settings/profile status, repo inspect/intelligence, branch creation, selected-file commit + feature-branch push, PR/issue/comment/label tools, Actions status/rerun, CI failure triage, PR quality gate, task truth check, and optional draft release/settings plan/apply. Default GitHub profile is `maintainer`: feature branches, PRs, issues, labels, CI rerun, and draft releases are usable when config/auth allows. Hard blocks remain for token leaks, committing `.env`/secrets, blind force-push, protected direct push by default, repo delete by default, unknown installer/malware execution, and settings mutation unless explicitly enabled. |
 | API requests | Dry-run by default; real requests require approval; first batch allows only GET/HEAD, blocks raw secrets in headers/body, validates URLs against usable API pack context or explicit localhost test mode, and caps timeout/output. |
 | Cloudflare control | Cloudflare execution belongs to Tools MCP, not Core MCP. `cloudflare_control` exposes `vnem_tools_cloudflare_status`, auth planning, account/project discovery, Pages/Workers deploy plans and approval-gated deploys, DNS plans/apply, env/secret plans/apply, deploy verification, rollback plans/apply, and cache purge plans/apply. Wrangler is preferred for local Pages/Workers deploy flows; Cloudflare API is used for discovery, DNS, metadata, verification, and gaps. Tokens are never printed or stored in repo; cookies/sessions/browser profile scraping/CAPTCHA bypass are forbidden. Mutations require exact approval phrases and every mutation writes a redacted evidence pack under `.vnem/tool-runs/cloudflare/` or `VNEM_TOOLS_EVIDENCE_ROOT`. |
 | High-power Tools quality | `vnem_tools_reliability_catalog`, `vnem_tools_action_recovery_plan`, `vnem_tools_high_power_action_review`, `vnem_tools_capability_gap_report`, `vnem_tools_evidence_pack_audit`, `vnem_tools_mutation_approval_contract`, and `vnem_tools_secret_redaction_check` standardize honest reliability labels (`declared_only`, `simulated_tested`, `dry_run_tested`, `local_tested`, `live_tested_disposable`, `production_safe_with_approval`), failure recovery, mutation review, evidence completeness, approval gates, exact destructive approval, and redaction checks for Cloudflare and all high-power Tools workflows. |
@@ -238,6 +239,28 @@ npm run tools:readiness
 npm run core:readiness
 ```
 
+GitHub power is user-modifiable in the Tools MCP env config. Default example:
+
+```toml
+[mcp_servers."vnem-tools".env]
+# ============================================================
+# GITHUB SETTINGS
+# ============================================================
+VNEM_TOOLS_AUTONOMY_MODE = "fast"
+VNEM_TOOLS_GITHUB_PROFILE = "maintainer"
+VNEM_TOOLS_GITHUB_ALLOWED_REPOS = "Ovvuhy/vnem;Ovvuhy/ME3-By-my-AI-and-Me"
+VNEM_TOOLS_GITHUB_PROTECTED_BRANCHES = "main;master;production"
+VNEM_TOOLS_GITHUB_ALLOW_DIRECT_PUSH = "0"
+VNEM_TOOLS_GITHUB_ALLOW_FORCE_PUSH = "0"
+VNEM_TOOLS_GITHUB_ALLOW_REPO_DELETE = "0"
+VNEM_TOOLS_GITHUB_ALLOW_SETTINGS_MUTATION = "0"
+VNEM_TOOLS_GITHUB_ALLOW_RELEASES = "1"
+VNEM_TOOLS_GITHUB_ALLOW_ACTIONS_RERUN = "1"
+VNEM_TOOLS_MALWARE_DOWNLOAD_BLOCK = "1"
+```
+
+Profiles: `off`, `read`, `work`, `maintainer`, `admin`, `owner`, `custom`. Change the env values above to adjust GitHub power; tokens are detected by presence only and never printed.
+
 Actual Core → Tools use path:
 
 1. Start/connect Core MCP.
@@ -251,7 +274,7 @@ Actual Core → Tools use path:
 9. Tools collects redacted action/session evidence with `vnem_tools_collect_evidence` or `vnem_tools_finish_session`.
 10. Final response maps `proof_trail_compatible_summary` into Core `vnem_completion_audit` / `vnem_research_evidence_audit` / `vnem_proof_trail` inputs and says whether browser visual proof was actually captured; do not claim UI improvement, responsive behavior, accessibility improvement, browser-working status, or live API proof without screenshot/DOM/route-render/console/network/a11y/viewport/state evidence as applicable.
 
-Not in this foundation batch: no Giga MCP, unrestricted filesystem, arbitrary shell, git push / remote GitHub mutation, package installs, package publishing, unrestricted deployments outside the Cloudflare approval-gated Tools workflows, unrestricted external browser browsing by default, search-engine result page scraping by default, automatic CAPTCHA bypass, unrestricted crawling, login/cookie/session automation, credential capture, automatic downloads/installers, or unrestricted API calls. Real provider search works only when a provider is configured and the user approves it; unavailable providers return structured unavailable results, not fake search results. Future work can add more only after this safety base stays stable.
+Not in this foundation batch: no Giga MCP, unrestricted filesystem, arbitrary shell, repo deletion/force-push/protected direct push/settings mutation by default, package installs, package publishing, unrestricted deployments outside the Cloudflare approval-gated Tools workflows, unrestricted external browser browsing by default, search-engine result page scraping by default, automatic CAPTCHA bypass, unrestricted crawling, login/cookie/session automation, credential capture, automatic downloads/installers, or unrestricted API calls. Real provider search works only when a provider is configured and the user approves it; unavailable providers return structured unavailable results, not fake search results. Future work can add more only after this safety base stays stable.
 
 ## How to test Core + Tools MCP locally
 
@@ -262,6 +285,28 @@ npm run test:mcp-user-smoke
 npm run tools:readiness
 npm run core:readiness
 ```
+
+GitHub power is user-modifiable in the Tools MCP env config. Default example:
+
+```toml
+[mcp_servers."vnem-tools".env]
+# ============================================================
+# GITHUB SETTINGS
+# ============================================================
+VNEM_TOOLS_AUTONOMY_MODE = "fast"
+VNEM_TOOLS_GITHUB_PROFILE = "maintainer"
+VNEM_TOOLS_GITHUB_ALLOWED_REPOS = "Ovvuhy/vnem;Ovvuhy/ME3-By-my-AI-and-Me"
+VNEM_TOOLS_GITHUB_PROTECTED_BRANCHES = "main;master;production"
+VNEM_TOOLS_GITHUB_ALLOW_DIRECT_PUSH = "0"
+VNEM_TOOLS_GITHUB_ALLOW_FORCE_PUSH = "0"
+VNEM_TOOLS_GITHUB_ALLOW_REPO_DELETE = "0"
+VNEM_TOOLS_GITHUB_ALLOW_SETTINGS_MUTATION = "0"
+VNEM_TOOLS_GITHUB_ALLOW_RELEASES = "1"
+VNEM_TOOLS_GITHUB_ALLOW_ACTIONS_RERUN = "1"
+VNEM_TOOLS_MALWARE_DOWNLOAD_BLOCK = "1"
+```
+
+Profiles: `off`, `read`, `work`, `maintainer`, `admin`, `owner`, `custom`. Change the env values above to adjust GitHub power; tokens are detected by presence only and never printed.
 
 The smoke test proves Core can build search/browsing/debugging/code-quality plans, Tools exposes the search/browser/source/debugging/architecture safety tools, query building and result ranking work with fixtures, CAPTCHA/access-block and suspicious download/redirect signals are detected, claim/source matrices are built, source-map/extract/graph plus architecture-review/debug-evidence tools are present, and research/debugging gaps are reported without live web access or arbitrary command execution.
 
@@ -480,7 +525,7 @@ Tools MCP foundation tools, available only from `scripts/vnem-tools-mcp-server.m
 - `vnem_tools_start_session`, `vnem_tools_finish_session`, `vnem_tools_collect_evidence`: write redacted structured action/session evidence and `proof_trail_compatible_summary`, including screenshot paths/hashes when browser proof exists, for final proof trails.
 - `vnem_tools_git_status`, `vnem_tools_git_diff_summary`, `vnem_tools_git_commit`: read-only local git status/diff plus approved local commits of explicit safe files; no git push or remote mutation.
 
-Not in Tools MCP foundation: no Giga MCP, unrestricted filesystem, arbitrary shell, git push / remote GitHub mutation, package installs, package publishing, deployment, unrestricted external browser browsing by default, search-engine result page scraping by default, automatic CAPTCHA bypass, unrestricted crawling, secret-backed live API execution, login/cookie/session automation, credential capture, automatic downloads/installers, or unrestricted API calls. Real provider search only works when a provider is configured and approved; otherwise Tools returns honest unavailable/unconfigured status.
+Not in Tools MCP foundation: no Giga MCP, unrestricted filesystem, arbitrary shell, repo deletion/force-push/protected direct push/settings mutation by default, package installs, package publishing, deployment, unrestricted external browser browsing by default, search-engine result page scraping by default, automatic CAPTCHA bypass, unrestricted crawling, secret-backed live API execution, login/cookie/session automation, credential capture, automatic downloads/installers, or unrestricted API calls. Real provider search only works when a provider is configured and approved; otherwise Tools returns honest unavailable/unconfigured status.
 
 Main resources:
 
@@ -634,7 +679,7 @@ Core/Tools boundary:
 - Core MCP chooses useful APIs/skills, routes serious tasks with `vnem_route_task`, selects Tools MCP capabilities with `vnem_select_tools_for_task`, assesses research need with `vnem_assess_research_need`, builds provider-search plans with `vnem_build_search_plan`, builds browsing risk plans with `vnem_build_browsing_plan`, builds general plan-only Core→Tools sequences with `vnem_build_tools_plan`, builds browser/source research plans with `vnem_build_browser_research_plan`, explains Tools chains with `vnem_explain_tools_chain`, creates compact-first output contracts with `vnem_output_quality_plan`, flags repetition with `vnem_anti_stagnation_check`, audits final claims with `vnem_completion_audit` / `vnem_proof_trail`, and prepares Tools MCP handoffs without executing actions.
 - Core MCP does not execute actions: no file edits, terminal commands, browser/screenshot work, package installs, GitHub mutations, live API calls, local mod edits, account/device changes, or claims that Tools actions happened.
 - Tools MCP foundation performs approved bounded actions using Core's handoff: manifest/catalog discovery, dry-run first, permission prompts, path-limited reads/search/workspace maps/read-many/reference/dependency scans, source-quality/research-brief/research-pack helpers for direct/provided/local sources, provider-search query/build/run/rank helpers, URL reputation/redirect/CAPTCHA/download risk checks, claim/source matrices, research gap detection, safe static page inspection/readability/link-map/DOM-search/accessibility/snapshot-comparison helpers, project scans/patch batches/restores, safe project tasks, local dev server lifecycle, approved GET/HEAD API requests, approved local browser screenshot capture, optional approved local git commits, session evidence, and proof handoffs.
-- Not in this foundation batch: no Giga MCP, unrestricted filesystem, arbitrary shell, git push / remote GitHub mutation, package installs, package publishing, deployment, unrestricted external browser browsing by default, search-engine result page scraping by default, automatic CAPTCHA bypass, unrestricted crawling, secret-backed live API execution, login/cookie/session automation, credential capture, automatic downloads/installers, or unrestricted API calls. Real provider search only works when configured and approved; otherwise Tools returns honest unavailable/unconfigured status.
+- Not in this foundation batch: no Giga MCP, unrestricted filesystem, arbitrary shell, repo deletion/force-push/protected direct push/settings mutation by default, package installs, package publishing, deployment, unrestricted external browser browsing by default, search-engine result page scraping by default, automatic CAPTCHA bypass, unrestricted crawling, secret-backed live API execution, login/cookie/session automation, credential capture, automatic downloads/installers, or unrestricted API calls. Real provider search only works when configured and approved; otherwise Tools returns honest unavailable/unconfigured status.
 - Raw discovered APIs/skills are not counted as usable packs; usable packs are a curated subset with docs/source, safety boundaries, test plans, and handoff needs.
 
 Examples:

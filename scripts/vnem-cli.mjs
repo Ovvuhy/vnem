@@ -199,7 +199,18 @@ function toolsMcpServerConfig(workspace) {
     args: [path.join(scriptDir, "vnem-tools-mcp-server.mjs")],
     env: {
       VNEM_TOOLS_ALLOWED_ROOTS: workspace,
-      VNEM_TOOLS_EVIDENCE_ROOT: path.join(workspace, ".vnem", "tool-runs")
+      VNEM_TOOLS_EVIDENCE_ROOT: path.join(workspace, ".vnem", "tool-runs"),
+      VNEM_TOOLS_AUTONOMY_MODE: "fast",
+      VNEM_TOOLS_GITHUB_PROFILE: "maintainer",
+      VNEM_TOOLS_GITHUB_ALLOWED_REPOS: "Ovvuhy/vnem;Ovvuhy/ME3-By-my-AI-and-Me",
+      VNEM_TOOLS_GITHUB_PROTECTED_BRANCHES: "main;master;production",
+      VNEM_TOOLS_GITHUB_ALLOW_DIRECT_PUSH: "0",
+      VNEM_TOOLS_GITHUB_ALLOW_FORCE_PUSH: "0",
+      VNEM_TOOLS_GITHUB_ALLOW_REPO_DELETE: "0",
+      VNEM_TOOLS_GITHUB_ALLOW_SETTINGS_MUTATION: "0",
+      VNEM_TOOLS_GITHUB_ALLOW_RELEASES: "1",
+      VNEM_TOOLS_GITHUB_ALLOW_ACTIONS_RERUN: "1",
+      VNEM_TOOLS_MALWARE_DOWNLOAD_BLOCK: "1"
     }
   };
 }

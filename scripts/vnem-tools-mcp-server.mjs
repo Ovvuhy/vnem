@@ -80,6 +80,28 @@ const REQUIRED_TOOL_NAMES = [
   "vnem_tools_git_status",
   "vnem_tools_git_diff_summary",
   "vnem_tools_git_commit",
+  "vnem_tools_github_status",
+  "vnem_tools_github_settings_guide",
+  "vnem_tools_github_profile_status",
+  "vnem_tools_github_repo_inspect",
+  "vnem_tools_repo_intelligence_report",
+  "vnem_tools_github_branch_create",
+  "vnem_tools_github_commit_push",
+  "vnem_tools_github_pr_create",
+  "vnem_tools_github_pr_update",
+  "vnem_tools_github_issue_create",
+  "vnem_tools_github_issue_update",
+  "vnem_tools_github_issue_comment",
+  "vnem_tools_github_labels_manage",
+  "vnem_tools_github_actions_status",
+  "vnem_tools_github_actions_rerun",
+  "vnem_tools_github_ci_failure_triage",
+  "vnem_tools_pr_quality_gate",
+  "vnem_tools_task_progress_truth_check",
+  "vnem_tools_github_release_plan",
+  "vnem_tools_github_release_create",
+  "vnem_tools_github_repo_settings_plan",
+  "vnem_tools_github_repo_settings_apply",
   "vnem_tools_cloudflare_status",
   "vnem_tools_cloudflare_auth_plan",
   "vnem_tools_cloudflare_accounts_list",
@@ -104,6 +126,21 @@ const REQUIRED_TOOL_NAMES = [
 const READ_ONLY_LOCAL = { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false };
 const ACTION_TOOL = { readOnlyHint: false, destructiveHint: true, idempotentHint: false, openWorldHint: false };
 const NETWORK_ACTION = { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true };
+const GITHUB_SETTINGS_HEADER = "# ============================================================\n# GITHUB SETTINGS\n# ============================================================";
+const DEFAULT_GITHUB_ENV_SETTINGS = {
+  VNEM_TOOLS_AUTONOMY_MODE: "fast",
+  VNEM_TOOLS_GITHUB_PROFILE: "maintainer",
+  VNEM_TOOLS_GITHUB_ALLOWED_REPOS: "Ovvuhy/vnem;Ovvuhy/ME3-By-my-AI-and-Me",
+  VNEM_TOOLS_GITHUB_PROTECTED_BRANCHES: "main;master;production",
+  VNEM_TOOLS_GITHUB_ALLOW_DIRECT_PUSH: "0",
+  VNEM_TOOLS_GITHUB_ALLOW_FORCE_PUSH: "0",
+  VNEM_TOOLS_GITHUB_ALLOW_REPO_DELETE: "0",
+  VNEM_TOOLS_GITHUB_ALLOW_SETTINGS_MUTATION: "0",
+  VNEM_TOOLS_GITHUB_ALLOW_RELEASES: "1",
+  VNEM_TOOLS_GITHUB_ALLOW_ACTIONS_RERUN: "1",
+  VNEM_TOOLS_MALWARE_DOWNLOAD_BLOCK: "1"
+};
+const GITHUB_PROFILES = ["off", "read", "work", "maintainer", "admin", "owner", "custom"];
 const DEFAULT_MAX_READ_BYTES = 64 * 1024;
 const DEFAULT_MAX_RESULTS = 100;
 const MAX_COMMAND_TIMEOUT_MS = 60000;
@@ -1079,6 +1116,8 @@ function registerTools(mcpServer) {
   );
 
 
+  registerGithubTools(mcpServer);
+
   registerCloudflareTools(mcpServer);
 
   mcpServer.registerTool(
@@ -1332,14 +1371,15 @@ function permissionStatusObject() {
     broad_root_warnings: allowedRoots.flatMap(rootBroadnessWarnings),
     localhost_policy: { enabled: process.env.VNEM_TOOLS_ALLOW_LOCALHOST === "1", host_policy: "localhost/127.0.0.1 only for approved local proof" },
     high_power_summary: { principle: "High power, honest confidence, strict boundaries.", reliability_catalog_tool: "vnem_tools_reliability_catalog", action_recovery_tool: "vnem_tools_action_recovery_plan", high_power_review_tool: "vnem_tools_high_power_action_review" },
+    github_autonomy_summary: buildGithubAutonomySummary(),
     cloudflare_summary: buildCloudflareStatusPolicy(),
-    mutation_allowed_summary: { profile: activePermissionProfile.profile_name, safe_readonly_can_mutate: false, non_destructive_mutation_allowed_with_approval: ["approved-writes", "creator-power"].includes(activePermissionProfile.profile_name), destructive_allowed_with_exact_approval: activePermissionProfile.profile_name === "creator-power", package_installs_github_mutation_arbitrary_shell_still_blocked: true },
+    mutation_allowed_summary: { profile: activePermissionProfile.profile_name, safe_readonly_can_mutate: false, non_destructive_mutation_allowed_with_approval: ["approved-writes", "creator-power"].includes(activePermissionProfile.profile_name), github_maintainer_feature_branch_work_allowed_by_github_profile: githubProfilePolicy(githubSettings().profile).allowed_actions.includes("push_feature_branch"), destructive_allowed_with_exact_approval: activePermissionProfile.profile_name === "creator-power", package_installs_arbitrary_shell_still_blocked: true },
     destructive_allowed_summary: { allowed: activePermissionProfile.profile_name === "creator-power", exact_destructive_approval_required: true, destructive_phrase: CLOUDFLARE_DESTRUCTIVE_APPROVAL_PHRASE, protected_resource_acknowledgment_required: true },
     approval_phrase_summary: { generic_tools: "approved=true plus a specific approval_note", cloudflare_mutation: CLOUDFLARE_MUTATION_APPROVAL_PHRASE, cloudflare_destructive: CLOUDFLARE_DESTRUCTIVE_APPROVAL_PHRASE },
     known_blocked_actions: unsupportedActions(),
     recommended_profile_for_goal: { inspect: "safe-readonly", local_dry_run_or_plan: "safe-local-dev", approved_local_writes: "approved-writes", destructive_or_creator_work: "creator-power with exact approval", cloudflare_disabled: "dangerous-disabled" },
     configured_search_providers_by_presence_only: manifest.providers.map((p) => ({ name: p.name, configured: p.configured, env_var_name: p.env_var_name, configured_by: p.configured_by, api_key_value_exposed: false })),
-    blocked_categories: ["secret files", "raw secret values", "cookies", "sessions", "browser profiles", "password manager data", "CAPTCHA bypass", "destructive shell", "unrestricted filesystem crawling", "silent package install", "silent GitHub/account mutation"],
+    blocked_categories: ["secret files", "raw secret values", "cookies", "sessions", "browser profiles", "password manager data", "CAPTCHA bypass", "destructive shell", "unrestricted filesystem crawling", "silent package install", "blind account mutation"],
     remaining_unsupported_actions: unsupportedActions()
   };
 }
@@ -1394,7 +1434,7 @@ async function loadUsablePacks() {
 }
 
 function unsupportedActions() {
-  return ["remote_github_mutation", "git_push", "package_install", "package_publish", "deployment", "arbitrary_shell", "unrestricted_api_calls", "secret_manager_backed_live_api", "search_engine_scraping", "automatic_captcha_bypass", "broad_crawling", "external_browser_browsing_by_default", "login_automation", "cookie_extraction", "session_extraction", "captcha_bypass", "giga_mcp"];
+  return ["github_destructive_admin_without_config", "package_install", "package_publish", "deployment", "arbitrary_shell", "unrestricted_api_calls", "secret_manager_backed_live_api", "search_engine_scraping", "automatic_captcha_bypass", "broad_crawling", "external_browser_browsing_by_default", "login_automation", "cookie_extraction", "session_extraction", "captcha_bypass", "giga_mcp"];
 }
 
 
@@ -1428,6 +1468,12 @@ function toolReliabilityFor(name, descriptor = {}) {
       next = "Run one approved mutation on disposable Cloudflare resources and inspect the evidence pack before upgrading reliability.";
     }
     known = ["No cookies/sessions/browser-profile auth", "Live mutation requires user auth and exact approval", "Production claims require real evidence"];
+  } else if (group === "github_autonomy") {
+    level = "local_tested";
+    safe = ["GitHub settings/profile policy, local git/repo intelligence, dry-run gh command planning, secret-file blocking, protected-branch checks, and simulated CI triage are tested."];
+    unsafe = ["Real GitHub remote mutation succeeded", "Force push/direct protected-branch push/repo delete/settings mutation are allowed by default", "Tokens are safe to print"];
+    next = "Use gh with real auth on an allowed repo and verify the exact PR/issue/CI/release URL or run before claiming live GitHub mutation.";
+    known = ["Remote operations prefer gh and need real auth", "Hard blocks remain for secret commits, default force push, default protected-branch direct push, repo delete/settings mutation unless configured"];
   } else if (["patching", "rollback", "project_tasks", "dev_server", "local_git", "commands"].includes(group)) {
     level = "local_tested";
     safe = ["Local dry-run and bounded approved local execution behavior is tested under allowed roots."];
@@ -1456,7 +1502,7 @@ function toolReliabilityFor(name, descriptor = {}) {
 }
 function addReliabilityFields(tool) {
   const reliability = toolReliabilityFor(tool.name, tool);
-  return { ...tool, high_power: tool.high_power ?? Boolean(tool.mutation || tool.network || tool.requires_approval || ["cloudflare_control", "patching", "rollback", "project_tasks", "dev_server", "browser_proof", "ui_web_quality", "api_request", "local_git", "commands"].includes(tool.capability_group)), mutation_capable: Boolean(tool.mutation), reliability_level: reliability.level, tested_with: reliability.tested_with, safe_to_claim: reliability.safe_to_claim, unsafe_to_claim: reliability.unsafe_to_claim, next_validation_step: reliability.next_validation_step, known_limits: reliability.known_limits, tool_reliability: reliability };
+  return { ...tool, high_power: tool.high_power ?? Boolean(tool.mutation || tool.network || tool.requires_approval || ["cloudflare_control", "github_autonomy", "patching", "rollback", "project_tasks", "dev_server", "browser_proof", "ui_web_quality", "api_request", "local_git", "commands"].includes(tool.capability_group)), mutation_capable: Boolean(tool.mutation), reliability_level: reliability.level, tested_with: reliability.tested_with, safe_to_claim: reliability.safe_to_claim, unsafe_to_claim: reliability.unsafe_to_claim, next_validation_step: reliability.next_validation_step, known_limits: reliability.known_limits, tool_reliability: reliability };
 }
 function buildReliabilityCatalog(args = {}) { const tools = buildToolCatalog().filter((tool) => !args.capability_group || tool.capability_group === args.capability_group); return { generated_at: new Date().toISOString(), permission_profile: activePermissionProfile.profile_name, tools }; }
 function formatReliabilityCatalog(catalog) { return [`vnem_tools_reliability_catalog: ${catalog.tools.length} tool(s)`, `profile=${catalog.permission_profile}`, `levels=${[...new Set(catalog.tools.map((tool) => tool.reliability_level))].join(",")}`].join("\n"); }
@@ -1485,6 +1531,12 @@ function buildActionRecoveryPlan(args = {}) {
   if (/outside_allowed|allowed root|allowed_roots|path_outside|not inside|evidence_root_outside|root/.test(lower) && /path|root|allowed/.test(lower)) { plan.likely_cause = "Requested path is outside VNEM Tools allowed roots or evidence root policy."; plan.blocked_by_path_or_allowed_root = true; plan.exact_next_steps.push("Move the target under an allowed project root or start Tools MCP with VNEM_TOOLS_ALLOWED_ROOTS set to the narrow project root."); plan.exact_next_steps.push("Run vnem_tools_permission_status to see current allowed_roots and workspace_fix_suggestion."); }
   if (/browser_unavailable|chromium|chrome|browser.*not found|playwright|screenshot/.test(lower)) { plan.likely_cause = "Browser runtime was unavailable or blocked by policy, so visual proof was not collected."; plan.blocked_by_missing_dependency = true; plan.exact_next_steps.push("Install/configure a local Chromium/Chrome command or set VNEM_TOOLS_BROWSER_COMMAND, then retry only against localhost/allowed file targets with approval."); plan.exact_next_steps.push("If a browser cannot run, use static UI evidence only and do not claim screenshot/browser proof."); plan.must_not_claim.push("Screenshot proof was captured", "Browser console/network/a11y proof was clean"); }
   if (/network|provider|timeout|fetch|dns|econn|enotfound|429|rate limit|unconfigured/.test(lower)) { plan.blocked_by_network_or_provider = true; plan.exact_next_steps.push("Check provider configuration and network availability; retry read-only/dry-run first with capped output."); }
+  if (/github|gh|pull request|pr|issue|actions|workflow|ci|push|force-push|protected branch/.test(lower)) {
+    if (/gh.*not found|gh unavailable|not authenticated|auth|token/.test(lower)) { plan.likely_cause = "GitHub CLI/auth is unavailable for remote GitHub work."; plan.blocked_by_missing_auth = true; plan.exact_next_steps.push("Install/authenticate gh (`gh auth login`) or provide GH_TOKEN/GITHUB_TOKEN in the environment; never print token values."); }
+    if (/protected branch|direct push/.test(lower)) { plan.blocked_by_permission = true; plan.exact_next_steps.push("Use a feature branch + PR, or set VNEM_TOOLS_GITHUB_ALLOW_DIRECT_PUSH = \"1\" if direct protected-branch push is intentionally allowed."); }
+    if (/force push|force-push/.test(lower)) { plan.blocked_by_permission = true; plan.exact_next_steps.push("Avoid force push, or set VNEM_TOOLS_GITHUB_ALLOW_FORCE_PUSH = \"1\" if force push is intentionally allowed."); }
+    if (/repo delete|delete repo/.test(lower)) { plan.blocked_by_permission = true; plan.exact_next_steps.push("Repo deletion is blocked by default; set VNEM_TOOLS_GITHUB_ALLOW_REPO_DELETE = \"1\" only for explicit owner-approved deletion tooling."); }
+  }
   if (/permission profile|safe-readonly|dangerous-disabled|profile_blocked/.test(lower)) { plan.blocked_by_permission = true; plan.exact_next_steps.push(`Current/selected profile (${profile}) blocks this action; switch only intentionally to the narrow profile needed and rerun policy preview first.`); }
   if (/build failed|test failed|exit code|non-zero|npm/.test(lower)) { plan.likely_cause = "Local build/test/project task failed before the next action."; plan.exact_next_steps.push("Fix the first build/test error, rerun the same local check, and do not deploy or claim success until it passes."); plan.must_not_claim.push("Build passed", "Deploy was attempted after failed build"); }
   if (!plan.exact_next_steps.length) plan.exact_next_steps.push("Run the tool's dry-run/plan mode, inspect structured error details, then retry only after the blocker is removed.");
@@ -1513,11 +1565,29 @@ function highPowerActionReview(args = {}) {
   if (destructiveApprovalRequired && args.approval_phrase !== CLOUDFLARE_DESTRUCTIVE_APPROVAL_PHRASE) reasons.push("Destructive/high-impact action needs the exact destructive approval phrase.");
   else if (/cloudflare/.test(combined.toLowerCase()) && approvalRequired && !destructive && args.approval_phrase !== CLOUDFLARE_MUTATION_APPROVAL_PHRASE) reasons.push("Cloudflare mutation needs the exact mutation approval phrase.");
   if (protectedRisk.length && destructive && !String(args.approval_phrase || "").includes("DESTRUCTIVE")) reasons.push("Protected resource risk requires explicit protected-resource review before mutation.");
-  return { action_allowed: reasons.length === 0, permission_profile: profile, approval_required: approvalRequired, destructive_approval_required: destructiveApprovalRequired, protected_resource_risk: protectedRisk, secret_risk: secretRisk, production_risk: productionRisk, rollback_or_repair_needed: mutation || productionRisk || destructive, safest_execution_path: safestExecutionPathFor(combined, destructive, secretRisk), reasons_to_block: reasons, approval_phrase_needed: approvalPhraseNeeded, must_not_do: ["Do not bypass permission profiles.", "Do not print or commit secrets.", "Do not claim success without evidence.", destructive ? "Do not run destructive action without exact destructive approval and repair plan." : null].filter(Boolean) };
+  const githubReview = githubReviewFor(combined);
+  for (const reason of githubReview.reasons_to_block) reasons.push(reason);
+  return { action_allowed: reasons.length === 0, permission_profile: profile, github_profile: githubSettings().profile, approval_required: approvalRequired, destructive_approval_required: destructiveApprovalRequired, protected_resource_risk: protectedRisk, secret_risk: secretRisk, production_risk: productionRisk, rollback_or_repair_needed: mutation || productionRisk || destructive, safest_execution_path: safestExecutionPathFor(combined, destructive, secretRisk), reasons_to_block: [...new Set(reasons)], approval_phrase_needed: approvalPhraseNeeded, config_knob_to_change: githubReview.config_knob_to_change, github_allowed_actions: githubReview.allowed_actions, must_not_do: ["Do not bypass permission profiles.", "Do not print or commit secrets.", "Do not claim success without evidence.", destructive ? "Do not run destructive action without exact destructive approval and repair plan." : null].filter(Boolean) };
+}
+function githubReviewFor(text) {
+  const lower = String(text || "").toLowerCase();
+  if (!/github|gh|pull request|pr|issue|actions|workflow|git push|force push|repo settings|release/.test(lower)) return { reasons_to_block: [], config_knob_to_change: null, allowed_actions: [] };
+  const settings = githubSettings();
+  const policy = githubProfilePolicy(settings.profile);
+  const reasons = [];
+  let knob = null;
+  if (!policy.github_enabled) { reasons.push("GitHub tools disabled by VNEM_TOOLS_GITHUB_PROFILE=off."); knob = "VNEM_TOOLS_GITHUB_PROFILE"; }
+  if (/force push|force-push/.test(lower) && !settings.allow_force_push) { reasons.push("Force push blocked by default."); knob = "VNEM_TOOLS_GITHUB_ALLOW_FORCE_PUSH"; }
+  if (/main|master|production|protected branch|direct push/.test(lower) && /push/.test(lower) && !settings.allow_direct_push) { reasons.push("Direct push to protected branch blocked by default; use feature branch + PR."); knob = knob || "VNEM_TOOLS_GITHUB_ALLOW_DIRECT_PUSH"; }
+  if (/delete repo|repo delete/.test(lower) && !settings.allow_repo_delete) { reasons.push("Repo deletion blocked by default."); knob = knob || "VNEM_TOOLS_GITHUB_ALLOW_REPO_DELETE"; }
+  if (/settings/.test(lower) && !settings.allow_settings_mutation) { reasons.push("Repo settings mutation blocked by default."); knob = knob || "VNEM_TOOLS_GITHUB_ALLOW_SETTINGS_MUTATION"; }
+  if (/rerun|actions/.test(lower) && !settings.allow_actions_rerun) { reasons.push("Actions rerun disabled by config."); knob = knob || "VNEM_TOOLS_GITHUB_ALLOW_ACTIONS_RERUN"; }
+  return { reasons_to_block: reasons, config_knob_to_change: knob, allowed_actions: policy.allowed_actions };
 }
 function safestExecutionPathFor(text, destructive, secretRisk) {
   const lower = text.toLowerCase();
-  if (lower.includes("git")) return ["Run git status/diff first.", "Use explicit file list only.", "Create local commit only; never git push from this tool."];
+  if (lower.includes("github") || lower.includes("pull request") || lower.includes(" pr ") || lower.includes("issue") || lower.includes("actions") || lower.includes("git push")) return ["Run GitHub status/profile status first.", "Use feature branch + PR for protected branches.", "Use explicit file lists; block .env/secrets; verify exact PR/issue/CI URL or run before claiming."];
+  if (lower.includes("git")) return ["Run git status/diff first.", "Use explicit file list only.", "Create local commit or GitHub feature-branch push only through scoped GitHub autonomy tools."];
   if (lower.includes("api")) return ["Dry-run the request plan.", "Use GET/HEAD only unless a future scoped mutator exists.", "Keep auth as secret refs and redact outputs."];
   if (lower.includes("cloudflare")) return ["Run status/read-only discovery first.", "Run plan tool and inspect protected-resource risks.", "Use Wrangler first for deploys and API where needed.", destructive ? "Prepare repair/rollback plan before exact destructive approval." : "Provide exact mutation approval only after plan review."];
   if (lower.includes("patch") || lower.includes("restore")) return ["Dry-run batch first.", "Review changed files and restore plan.", "Apply only under allowed roots with approval."];
@@ -1526,7 +1596,7 @@ function safestExecutionPathFor(text, destructive, secretRisk) {
 }
 function capabilityGapReport() {
   const gaps = [
-    ["GitHub mutation", "Remote GitHub writes/PR/issues/releases are still blocked unless explicitly implemented later.", "Use local git status/diff/commit only, then use external human-approved GitHub workflow.", "A scoped GitHub mutator with token-secret handling, exact approvals, branch protections, and CI verification.", "Could silently push/merge/delete or leak tokens.", "high"],
+    ["GitHub destructive admin operations", "GitHub autonomy now covers profile-gated repo inspection, feature branches, commits, feature pushes, PRs, issues, labels, CI status/rerun, triage, and draft releases; repo delete, force push, protected direct push, and settings mutation remain config-blocked by default.", "Use maintainer profile for normal repo work; change exact VNEM_TOOLS_GITHUB_* knobs only when intentionally needed.", "More granular owner/admin tools with audited repo settings/delete flows and live disposable validation.", "Could delete repos, force-push away history, mutate protected branches, or leak tokens if added badly.", "medium"],
     ["package installs", "Package install/add/update/publish scripts are blocked by design.", "Inspect dependency metadata and run existing safe scripts; ask user to install manually if needed.", "Lockfile-aware install tool with approval, sandboxing, audit, and rollback.", "Supply-chain compromise, postinstall execution, lockfile churn.", "high"],
     ["arbitrary shell", "Tools MCP only runs allowlisted commands/tasks, not arbitrary shell.", "Use vnem_tools_run_project_task or allowed verification commands.", "A bounded shell executor with policy parser, no secret env exposure, approval, and evidence.", "Destructive commands or credential exfiltration.", "high"],
     ["unrestricted crawling", "Broad crawling is blocked; extraction requires explicit bounded targets.", "Use source_map/source_extract/browser page tools on explicit URLs/files.", "Crawl budget, robots/rate policy, auth/session prohibition, and evidence caps.", "Legal/abuse risk, CAPTCHA traps, fake completeness claims.", "medium"],
@@ -1539,6 +1609,12 @@ function capabilityGapReport() {
 function formatActionRecoveryPlan(plan) { return [`vnem_tools_action_recovery_plan: ${plan.likely_cause}`, `safe_retry_allowed=${plan.safe_retry_allowed}`, `retry_requires_approval=${plan.retry_requires_approval}`, `next=${plan.exact_next_steps[0] || "none"}`].join("\n"); }
 function formatHighPowerActionReview(review) { return [`vnem_tools_high_power_action_review: allowed=${review.action_allowed}`, `profile=${review.permission_profile}`, `approval_required=${review.approval_required}`, `destructive=${review.destructive_approval_required}`, `blocks=${review.reasons_to_block.join("; ") || "none"}`].join("\n"); }
 function formatCapabilityGapReport(report) { return [`vnem_tools_capability_gap_report: ${report.missing_or_limited_capabilities.length} gap(s)`, `top=${report.missing_or_limited_capabilities.slice(0, 3).map((g) => g.capability).join(", ")}`].join("\n"); }
+
+function buildGithubAutonomySummary() {
+  const settings = githubSettings();
+  const profile = githubProfileStatus({});
+  return { capability_group: "github_autonomy", active_github_profile: settings.profile, autonomy_mode: settings.autonomy_mode, allowed_repos: settings.allowed_repos, protected_branches: settings.protected_branches, allowed_actions: profile.allowed_actions, blocked_actions: profile.blocked_actions, config_knobs: { direct_push: "VNEM_TOOLS_GITHUB_ALLOW_DIRECT_PUSH", force_push: "VNEM_TOOLS_GITHUB_ALLOW_FORCE_PUSH", repo_delete: "VNEM_TOOLS_GITHUB_ALLOW_REPO_DELETE", settings_mutation: "VNEM_TOOLS_GITHUB_ALLOW_SETTINGS_MUTATION", releases: "VNEM_TOOLS_GITHUB_ALLOW_RELEASES", actions_rerun: "VNEM_TOOLS_GITHUB_ALLOW_ACTIONS_RERUN" } };
+}
 
 function statusObject() {
   return {
@@ -1574,6 +1650,7 @@ function statusObject() {
     dev_server_policy: { tools: ["vnem_tools_start_dev_server", "vnem_tools_stop_dev_server", "vnem_tools_list_dev_servers"], dry_run_default: true, approval_required: true, local_host_only: true, port_range: "3000-9999", registry: "in-memory per MCP process" },
     session_evidence_policy: { tools: ["vnem_tools_start_session", "vnem_tools_finish_session"], writes_single_json_proof_pack: true, secrets_redacted: true },
     local_git_policy: { tools: ["vnem_tools_git_status", "vnem_tools_git_diff_summary", "vnem_tools_git_commit"], status_and_diff_read_only: true, commit_requires_approval_and_explicit_files: true, git_push_blocked: true, destructive_git_blocked: true },
+    github_autonomy_policy: { tools: ["vnem_tools_github_status", "vnem_tools_github_settings_guide", "vnem_tools_github_profile_status", "vnem_tools_github_repo_inspect", "vnem_tools_repo_intelligence_report", "vnem_tools_github_branch_create", "vnem_tools_github_commit_push", "vnem_tools_github_pr_create", "vnem_tools_github_issue_create", "vnem_tools_github_actions_status", "vnem_tools_github_ci_failure_triage", "vnem_tools_pr_quality_gate", "vnem_tools_task_progress_truth_check"], default_profile: "maintainer", feature_branch_push_supported: true, protected_direct_push_blocked_by_default: true, force_push_blocked_by_default: true, repo_delete_blocked_by_default: true, settings_mutation_blocked_by_default: true },
     network_policy: {
       dry_run_default: true,
       methods: ["GET", "HEAD"],
@@ -1795,7 +1872,7 @@ async function searchAllowedFiles(args) {
   return { root: root.relativePath || ".", query: args.query, results, skipped_policy: skippedPolicy() };
 }
 
-const TOOL_CAPABILITY_GROUPS = ["permissions", "filesystem", "project_intelligence", "patching", "rollback", "commands", "project_tasks", "dev_server", "browser_proof", "browser_intelligence", "ui_web_quality", "api_request", "search", "research_sources", "source_quality", "browsing_risk", "research_matrix", "source_ingestion", "debugging_code_quality", "session_evidence", "local_git", "status_readiness", "cloudflare_control", "tools_quality", "tool_intelligence"];
+const TOOL_CAPABILITY_GROUPS = ["permissions", "filesystem", "project_intelligence", "patching", "rollback", "commands", "project_tasks", "dev_server", "browser_proof", "browser_intelligence", "ui_web_quality", "api_request", "search", "research_sources", "source_quality", "browsing_risk", "research_matrix", "source_ingestion", "debugging_code_quality", "session_evidence", "local_git", "github_autonomy", "status_readiness", "cloudflare_control", "tools_quality", "tool_intelligence"];
 
 function buildToolCatalog() {
   const commonUnsafe = ["secret reading/dumping", "outside-root access", "arbitrary shell", "package installs", "git push", "deployment", "Giga MCP"];
@@ -1889,6 +1966,28 @@ function buildToolCatalog() {
     mk("vnem_tools_git_status", "local_git", { description: "Read local git status.", typical_use_cases: ["pre/post change report"] }),
     mk("vnem_tools_git_diff_summary", "local_git", { description: "Read capped local git diff summary.", typical_use_cases: ["change summary"] }),
     mk("vnem_tools_git_commit", "local_git", { read_only: false, mutation: true, requires_approval: true, dry_run_default: true, description: "Create approved local commit of explicit safe files only; no push.", typical_use_cases: ["local handoff commit"], unsafe_actions_blocked: [...commonUnsafe, "git push", "git reset --hard", "remote GitHub mutation"] }),
+    mk("vnem_tools_github_status", "github_autonomy", { description: "Detect gh/git/auth/repo/profile/config readiness for GitHub repo work.", network: true, allowed_roots_required: false, evidence_logged: true, typical_use_cases: ["GitHub preflight", "auth/config status"] }),
+    mk("vnem_tools_github_settings_guide", "github_autonomy", { description: "Return copy-pasteable GitHub settings config block and compact knob explanations.", allowed_roots_required: false, evidence_logged: false, typical_use_cases: ["configure GitHub power"] }),
+    mk("vnem_tools_github_profile_status", "github_autonomy", { description: "Show active GitHub profile, autonomy mode, allowed/blocked actions, and config knobs.", allowed_roots_required: false, evidence_logged: false, typical_use_cases: ["profile inspection"] }),
+    mk("vnem_tools_github_repo_inspect", "github_autonomy", { description: "Inspect local/reachable GitHub repo identity, branch, commits, PRs/issues/CI when available, and build/test commands.", network: true, typical_use_cases: ["repo understanding before work"] }),
+    mk("vnem_tools_repo_intelligence_report", "github_autonomy", { description: "Repo intelligence report with build/test/risky paths/CI/work risk/next actions.", network: true, typical_use_cases: ["fast next-action decisions"] }),
+    mk("vnem_tools_github_branch_create", "github_autonomy", { read_only: false, mutation: true, requires_approval: false, dry_run_default: false, description: "Create clean local feature branches for repo work.", typical_use_cases: ["start feature branch"] }),
+    mk("vnem_tools_github_commit_push", "github_autonomy", { read_only: false, mutation: true, network: true, requires_approval: false, dry_run_default: true, description: "Commit selected safe files and push feature branches with protected-branch/secret checks.", typical_use_cases: ["handoff commit/push"] }),
+    mk("vnem_tools_github_pr_create", "github_autonomy", { read_only: false, mutation: true, network: true, dry_run_default: true, description: "Create or plan GitHub PR via gh.", typical_use_cases: ["open PR"] }),
+    mk("vnem_tools_github_pr_update", "github_autonomy", { read_only: false, mutation: true, network: true, dry_run_default: true, description: "Update PR title/body/labels/comment via gh when authenticated.", typical_use_cases: ["update PR"] }),
+    mk("vnem_tools_github_issue_create", "github_autonomy", { read_only: false, mutation: true, network: true, dry_run_default: true, description: "Create or plan GitHub issue via gh.", typical_use_cases: ["create issue"] }),
+    mk("vnem_tools_github_issue_update", "github_autonomy", { read_only: false, mutation: true, network: true, dry_run_default: true, description: "Update GitHub issue title/body/state/labels via gh.", typical_use_cases: ["triage/update issue"] }),
+    mk("vnem_tools_github_issue_comment", "github_autonomy", { read_only: false, mutation: true, network: true, dry_run_default: true, description: "Comment on issue/PR via gh.", typical_use_cases: ["post compact update"] }),
+    mk("vnem_tools_github_labels_manage", "github_autonomy", { read_only: false, mutation: true, network: true, dry_run_default: true, description: "Create/update labels via gh where profile/config allows.", typical_use_cases: ["label hygiene"] }),
+    mk("vnem_tools_github_actions_status", "github_autonomy", { read_only: true, network: true, description: "Read GitHub Actions status for repo/branch/SHA.", typical_use_cases: ["CI status"] }),
+    mk("vnem_tools_github_actions_rerun", "github_autonomy", { read_only: false, mutation: true, network: true, dry_run_default: true, description: "Rerun failed GitHub Actions runs/jobs when enabled.", typical_use_cases: ["rerun failed CI"] }),
+    mk("vnem_tools_github_ci_failure_triage", "github_autonomy", { read_only: true, network: true, description: "Summarize CI failure cause, log excerpt, likely files, and next commands.", typical_use_cases: ["fix CI fast"] }),
+    mk("vnem_tools_pr_quality_gate", "github_autonomy", { description: "Compact PR/final handoff quality gate over worktree, churn, secrets, tests, CI, and claim status.", typical_use_cases: ["pre-PR quality check"] }),
+    mk("vnem_tools_task_progress_truth_check", "github_autonomy", { description: "Truth-check done/partial/blocked status to prevent fake done claims.", typical_use_cases: ["final handoff honesty"] }),
+    mk("vnem_tools_github_release_plan", "github_autonomy", { description: "Plan GitHub release/draft release based on config.", network: true, evidence_logged: true, typical_use_cases: ["release planning"] }),
+    mk("vnem_tools_github_release_create", "github_autonomy", { read_only: false, mutation: true, network: true, dry_run_default: true, description: "Create draft release via gh when releases are enabled.", typical_use_cases: ["draft release"] }),
+    mk("vnem_tools_github_repo_settings_plan", "github_autonomy", { description: "Plan repo settings mutation and show required config knob.", network: true, evidence_logged: true, typical_use_cases: ["settings planning"] }),
+    mk("vnem_tools_github_repo_settings_apply", "github_autonomy", { read_only: false, mutation: true, network: true, dry_run_default: true, description: "Apply limited repo settings mutation only when explicitly config-enabled.", typical_use_cases: ["repo settings apply"] }),
     mk("vnem_tools_cloudflare_status", "cloudflare_control", { read_only: true, mutation: false, network: true, requires_approval: false, dry_run_default: false, allowed_roots_required: false, description: "Cloudflare Tools MCP control workflow with approval gates, redaction, and evidence packs.", typical_use_cases: ["Cloudflare control"] }),
     mk("vnem_tools_cloudflare_auth_plan", "cloudflare_control", { read_only: true, mutation: false, network: true, requires_approval: false, dry_run_default: false, allowed_roots_required: false, description: "Cloudflare Tools MCP control workflow with approval gates, redaction, and evidence packs.", typical_use_cases: ["Cloudflare control"] }),
     mk("vnem_tools_cloudflare_accounts_list", "cloudflare_control", { read_only: true, mutation: false, network: true, requires_approval: false, dry_run_default: false, allowed_roots_required: false, description: "Cloudflare Tools MCP control workflow with approval gates, redaction, and evidence packs.", typical_use_cases: ["Cloudflare control"] }),
@@ -4424,6 +4523,277 @@ function recordToolError(sessionId, tool, error) {
   recordSession(sessionId, "blocked_actions", { tool, code: error instanceof ToolsError ? error.code : "tools_unexpected_error", error: error.message || String(error) });
 }
 
+
+function githubSetting(name) { return process.env[name] ?? DEFAULT_GITHUB_ENV_SETTINGS[name]; }
+function splitSetting(name) { return String(githubSetting(name) || "").split(/[;,:]/).map((item) => item.trim()).filter(Boolean); }
+function githubBool(name) { return String(githubSetting(name) || "0") === "1"; }
+function githubSettings() {
+  return {
+    autonomy_mode: githubSetting("VNEM_TOOLS_AUTONOMY_MODE"),
+    profile: normalizeGithubProfile(githubSetting("VNEM_TOOLS_GITHUB_PROFILE")),
+    allowed_repos: splitSetting("VNEM_TOOLS_GITHUB_ALLOWED_REPOS"),
+    protected_branches: splitSetting("VNEM_TOOLS_GITHUB_PROTECTED_BRANCHES"),
+    allow_direct_push: githubBool("VNEM_TOOLS_GITHUB_ALLOW_DIRECT_PUSH"),
+    allow_force_push: githubBool("VNEM_TOOLS_GITHUB_ALLOW_FORCE_PUSH"),
+    allow_repo_delete: githubBool("VNEM_TOOLS_GITHUB_ALLOW_REPO_DELETE"),
+    allow_settings_mutation: githubBool("VNEM_TOOLS_GITHUB_ALLOW_SETTINGS_MUTATION"),
+    allow_releases: githubBool("VNEM_TOOLS_GITHUB_ALLOW_RELEASES"),
+    allow_actions_rerun: githubBool("VNEM_TOOLS_GITHUB_ALLOW_ACTIONS_RERUN"),
+    malware_download_block: githubBool("VNEM_TOOLS_MALWARE_DOWNLOAD_BLOCK")
+  };
+}
+function normalizeGithubProfile(profile) { return GITHUB_PROFILES.includes(String(profile || "").trim()) ? String(profile).trim() : "maintainer"; }
+function githubProfilePolicy(profile = githubSettings().profile) {
+  const commonRead = ["inspect_repo", "inspect_branches", "inspect_commits", "inspect_issues", "inspect_prs", "inspect_actions", "ci_triage", "repo_intelligence"];
+  const localWork = ["create_branch", "local_commit", "pr_plan", "issue_plan"];
+  const maintainer = ["push_feature_branch", "open_pr", "update_pr", "comment_issue_pr", "create_issue", "update_issue", "manage_labels", "rerun_ci", "draft_release"];
+  const admin = ["repo_settings_plan", "release_operations"];
+  const owner = ["repo_delete_if_config_enabled", "force_push_if_config_enabled", "settings_mutation_if_config_enabled"];
+  if (profile === "off") return { github_enabled: false, allowed_actions: [], blocked_actions: ["all_github_tools"], description: "GitHub tools disabled." };
+  if (profile === "read") return { github_enabled: true, allowed_actions: commonRead, blocked_actions: [...localWork, ...maintainer, ...admin, ...owner], description: "Inspect-only GitHub/repo intelligence." };
+  if (profile === "work") return { github_enabled: true, allowed_actions: [...commonRead, ...localWork], blocked_actions: [...maintainer, ...admin, ...owner], description: "Local branches/commits and PR/issue plans only." };
+  if (profile === "maintainer") return { github_enabled: true, allowed_actions: [...commonRead, ...localWork, ...maintainer], blocked_actions: [...admin, ...owner], description: "Useful repo maintenance: feature branches, commits, feature pushes, PRs, issues, labels, CI reruns/releases when enabled." };
+  if (profile === "admin") return { github_enabled: true, allowed_actions: [...commonRead, ...localWork, ...maintainer, ...admin], blocked_actions: owner, description: "Maintainer plus admin-level operations when config allows." };
+  if (profile === "owner") return { github_enabled: true, allowed_actions: [...commonRead, ...localWork, ...maintainer, ...admin, ...owner], blocked_actions: [], description: "Maximum GitHub power allowed by config/token." };
+  return { github_enabled: true, allowed_actions: [...commonRead, ...localWork, ...maintainer].filter((action) => String(process.env[`VNEM_TOOLS_GITHUB_ALLOW_${action.toUpperCase()}`] || "1") === "1"), blocked_actions: [], description: "Custom profile reads exact allow/deny env settings." };
+}
+function githubSettingsTomlBlock() {
+  const lines = ["[mcp_servers.\"vnem-tools\".env]", GITHUB_SETTINGS_HEADER];
+  for (const [key, value] of Object.entries(DEFAULT_GITHUB_ENV_SETTINGS)) lines.push(`${key} = ${JSON.stringify(value)}`);
+  return lines.join("\n");
+}
+function githubSettingsGuide() {
+  return {
+    config_block: githubSettingsTomlBlock(),
+    settings: [
+      ["VNEM_TOOLS_AUTONOMY_MODE", "fast keeps outputs action-first and compact."],
+      ["VNEM_TOOLS_GITHUB_PROFILE", "off/read/work/maintainer/admin/owner/custom power profile; default maintainer."],
+      ["VNEM_TOOLS_GITHUB_ALLOWED_REPOS", "semicolon list of owner/repo repos remote GitHub writes may target."],
+      ["VNEM_TOOLS_GITHUB_PROTECTED_BRANCHES", "semicolon list blocked from direct push unless direct push knob is enabled."],
+      ["VNEM_TOOLS_GITHUB_ALLOW_DIRECT_PUSH", "1 allows direct push to protected branches; default 0."],
+      ["VNEM_TOOLS_GITHUB_ALLOW_FORCE_PUSH", "1 allows force push; default 0."],
+      ["VNEM_TOOLS_GITHUB_ALLOW_REPO_DELETE", "1 allows repo deletion tooling if implemented; default 0."],
+      ["VNEM_TOOLS_GITHUB_ALLOW_SETTINGS_MUTATION", "1 allows repo settings apply tools; default 0."],
+      ["VNEM_TOOLS_GITHUB_ALLOW_RELEASES", "1 allows draft release operations; default 1."],
+      ["VNEM_TOOLS_GITHUB_ALLOW_ACTIONS_RERUN", "1 allows CI reruns; default 1."],
+      ["VNEM_TOOLS_MALWARE_DOWNLOAD_BLOCK", "1 blocks malware-like or unknown installer execution; default 1."]
+    ].map(([name, effect]) => ({ name, effect })),
+    secret_policy: "Tokens are detected by presence only and never printed. Prefer gh, then git remote/auth, then GH_TOKEN/GITHUB_TOKEN only when needed."
+  };
+}
+function githubProfileStatus(args = {}) {
+  const settings = githubSettings();
+  const policy = githubProfilePolicy(settings.profile);
+  const blocked = [...policy.blocked_actions];
+  if (!settings.allow_direct_push) blocked.push("direct_push_to_protected_branch");
+  if (!settings.allow_force_push) blocked.push("force_push");
+  if (!settings.allow_repo_delete) blocked.push("repo_delete");
+  if (!settings.allow_settings_mutation) blocked.push("repo_settings_apply");
+  if (!settings.allow_actions_rerun) blocked.push("actions_rerun");
+  if (!settings.allow_releases) blocked.push("release_create");
+  return { active_github_profile: settings.profile, autonomy_mode: settings.autonomy_mode, github_enabled: policy.github_enabled, profile_description: policy.description, allowed_actions: policy.allowed_actions, blocked_actions: [...new Set(blocked)], config_source: Object.fromEntries(Object.keys(DEFAULT_GITHUB_ENV_SETTINGS).map((k) => [k, process.env[k] !== undefined ? "env" : "default"])), recommended_profile_for_goal: recommendGithubProfile(args.goal || ""), config_knobs: Object.fromEntries(Object.entries(DEFAULT_GITHUB_ENV_SETTINGS).map(([k, v]) => [k, { current: githubSetting(k), default: v }])) };
+}
+function recommendGithubProfile(goal) { const g = String(goal || "").toLowerCase(); if (/delete repo|force push|settings|owner/.test(g)) return "owner/admin plus explicit config knob"; if (/push|pr|issue|label|ci|release/.test(g)) return "maintainer"; if (/branch|commit|plan/.test(g)) return "work"; if (/inspect|read|status|triage/.test(g)) return "read"; return "maintainer"; }
+function formatGithubProfileStatus(status) { return [`vnem_tools_github_profile_status: ${status.active_github_profile}`, `mode=${status.autonomy_mode}`, `allowed=${status.allowed_actions.slice(0, 8).join(",")}`, `blocked=${status.blocked_actions.slice(0, 8).join(",")}`].join("\n"); }
+function formatGithubSettingsGuide(guide) { return [`vnem_tools_github_settings_guide`, guide.config_block].join("\n"); }
+async function gitValue(cwd, args, maxOutputBytes = 4000) { const r = await runProcess("git", args, { cwd, timeoutMs: 10000, maxOutputBytes }); return r.ok ? r.stdout.trim() : ""; }
+async function githubStatus(args = {}) {
+  const root = await resolveGithubRoot(args.root || ".");
+  const ghVersion = await runProcess("gh", ["--version"], { cwd: root.absolutePath, timeoutMs: 5000, maxOutputBytes: 3000 });
+  const ghAuth = ghVersion.ok ? await runProcess("gh", ["auth", "status"], { cwd: root.absolutePath, timeoutMs: 7000, maxOutputBytes: 5000 }) : { ok: false, stdout: "", stderr: "gh unavailable" };
+  const gitVersion = await runProcess("git", ["--version"], { cwd: root.absolutePath, timeoutMs: 5000, maxOutputBytes: 2000 });
+  const branch = await gitValue(root.absolutePath, ["branch", "--show-current"]);
+  const head = await gitValue(root.absolutePath, ["rev-parse", "HEAD"]);
+  const remoteUrl = await gitValue(root.absolutePath, ["remote", "get-url", "origin"]);
+  const repoSlug = parseGithubRepo(remoteUrl) || args.repo || null;
+  const settings = githubSettings();
+  const profile = githubProfileStatus({ goal: args.goal });
+  const blocked = [...profile.blocked_actions];
+  if (repoSlug && !repoAllowed(repoSlug, settings)) blocked.push(`repo_not_allowed:${repoSlug}`);
+  if (!ghVersion.ok) blocked.push("gh_unavailable_for_remote_github_actions");
+  if (ghVersion.ok && !ghAuth.ok && !process.env.GH_TOKEN && !process.env.GITHUB_TOKEN) blocked.push("gh_not_authenticated_or_token_absent");
+  return { gh_available: ghVersion.ok, gh_version: ghVersion.ok ? ghVersion.stdout.split(/\r?\n/)[0] : null, gh_auth_status: ghAuth.ok ? "authenticated_or_status_ok" : "not_authenticated_or_unavailable", git_available: gitVersion.ok, git_version: gitVersion.ok ? gitVersion.stdout.trim() : null, current_repo_remote: redactSecrets(remoteUrl), github_repo: repoSlug, current_branch: branch, current_head: head, active_github_profile: settings.profile, autonomy_mode: settings.autonomy_mode, allowed_repos: settings.allowed_repos, protected_branches: settings.protected_branches, config_switches: { allow_direct_push: settings.allow_direct_push, allow_force_push: settings.allow_force_push, allow_repo_delete: settings.allow_repo_delete, allow_settings_mutation: settings.allow_settings_mutation, allow_releases: settings.allow_releases, allow_actions_rerun: settings.allow_actions_rerun, malware_download_block: settings.malware_download_block }, actions_currently_available: profile.allowed_actions.filter((a) => !blocked.includes(a)), blocked_by_config_or_profile: [...new Set(blocked)], secret_values_exposed: false, operation_result: "reported", next_best_action: blocked.includes("gh_unavailable_for_remote_github_actions") ? "Install/authenticate gh for remote PR/issue/Actions operations, or use local git/repo intelligence tools." : "Use repo inspect/intelligence before mutating." };
+}
+function formatGithubStatus(s) { return [`vnem_tools_github_status: profile=${s.active_github_profile}`, `repo=${s.github_repo || "unknown"}`, `branch=${s.current_branch || "unknown"}`, `gh=${s.gh_available ? "available" : "unavailable"}`, `blocked=${s.blocked_by_config_or_profile.slice(0, 4).join(",") || "none"}`].join("\n"); }
+async function resolveGithubRoot(rootArg) { return await resolveAllowedRoot(rootArg || "."); }
+function parseGithubRepo(remoteUrl) {
+  const value = String(remoteUrl || "").trim();
+  if (!value) return null;
+  let m = value.match(/github\.com[:/]([^/]+)\/([^/.]+)(?:\.git)?/i);
+  return m ? `${m[1]}/${m[2]}` : null;
+}
+function repoAllowed(repo, settings = githubSettings()) { if (!repo) return true; return !settings.allowed_repos.length || settings.allowed_repos.some((r) => r.toLowerCase() === repo.toLowerCase()); }
+function cleanBranchName(branch) { const b = String(branch || "").trim(); if (!/^[A-Za-z0-9][A-Za-z0-9._/-]{0,127}$/.test(b) || b.includes("..") || b.endsWith("/") || b.includes("//") || /[~^:?*[\\]/.test(b)) throw new ToolsError("GitHub branch name is not clean.", "github_branch_name_blocked", { branch: b }); return b; }
+function githubBlockedResult(tool, reason, knob = null, extras = {}) { return decorateToolResult(tool, { operation_result: "blocked", blocked_reason: reason, config_knob_to_change: knob, claim_status: "blocked", proof_summary: "No GitHub mutation performed.", next_best_action: knob ? `To allow it, set ${knob} = "1".` : "Change GitHub profile/config or auth, then retry.", ...extras }, { capability_group: "github_autonomy", mutation: true, network: true }); }
+async function enforceGithubRepoPolicy(root, operation, opts = {}) {
+  const settings = githubSettings();
+  const policy = githubProfilePolicy(settings.profile);
+  if (!policy.github_enabled) return githubBlockedResult(operation.toolName, "GitHub tools disabled by profile off.", "VNEM_TOOLS_GITHUB_PROFILE");
+  if (opts.requiredAction && !policy.allowed_actions.includes(opts.requiredAction)) return githubBlockedResult(operation.toolName, `GitHub profile ${settings.profile} does not allow ${opts.requiredAction}.`, "VNEM_TOOLS_GITHUB_PROFILE");
+  const remote = await gitValue(root.absolutePath, ["remote", "get-url", opts.remote || "origin"]);
+  const repo = parseGithubRepo(remote) || opts.repo || null;
+  if (repo && !repoAllowed(repo, settings)) return githubBlockedResult(operation.toolName, `Repository ${repo} is not in VNEM_TOOLS_GITHUB_ALLOWED_REPOS.`, "VNEM_TOOLS_GITHUB_ALLOWED_REPOS", { github_repo: repo });
+  return { allowed: true, github_repo: repo, remote_url: redactSecrets(remote) };
+}
+function isProtectedBranch(branch) { const b = String(branch || "").trim().toLowerCase(); return githubSettings().protected_branches.map((x) => x.toLowerCase()).includes(b); }
+function githubSecretFileBlocked(files) { return arrayify(files).find((f) => isSecretLikePath(f) || /(^|\/)\.env(\.|$|\/)|secret|token|credential|cookie|session|id_rsa|id_ed25519|\.pem$|\.key$/i.test(String(f))); }
+async function githubRepoInspect(args = {}) {
+  const root = await resolveGithubRoot(args.root || ".");
+  const remoteUrl = await gitValue(root.absolutePath, ["remote", "get-url", args.remote || "origin"]);
+  const branch = await gitValue(root.absolutePath, ["branch", "--show-current"]);
+  const head = await gitValue(root.absolutePath, ["rev-parse", "HEAD"]);
+  const statusText = await gitValue(root.absolutePath, ["status", "--short"], args.max_bytes || 12000);
+  const recent = (await gitValue(root.absolutePath, ["log", "--oneline", "-8", "--decorate"], args.max_bytes || 12000)).split(/\r?\n/).filter(Boolean);
+  const files = await listTopLevelFiles(root.absolutePath);
+  const commands = await detectProjectCommands(root.absolutePath);
+  const gh = await ghRepoSummaries(root.absolutePath, args);
+  return { owner_repo: args.repo || parseGithubRepo(remoteUrl) || "local_repo_or_unknown_remote", remote_url: redactSecrets(remoteUrl), branch, head, dirty_worktree_status: statusText ? statusText.split(/\r?\n/).filter(Boolean) : [], recent_commits: recent, open_prs: gh.open_prs, open_issues: gh.open_issues, ci_status: gh.ci_status, important_files: files.important, detected_build_test_commands: commands, operation_result: "reported", next_best_action: statusText ? "Review dirty files before branch/commit/push." : "Use repo intelligence report for next actions." };
+}
+async function listTopLevelFiles(root) { const names = await readdir(root).catch(() => []); const important = names.filter((n) => /^(package\.json|README|pnpm-lock|package-lock|yarn.lock|src|scripts|test|tests|\.github|tsconfig|vite|next|wrangler|Dockerfile)/i.test(n)).slice(0, 40); return { important }; }
+async function detectProjectCommands(root) {
+  const commands = { build_commands: [], test_commands: [] };
+  try { const pkg = JSON.parse(await readFile(path.join(root, "package.json"), "utf8")); const scripts = pkg.scripts || {}; for (const [name] of Object.entries(scripts)) { if (/build|compile/.test(name)) commands.build_commands.push(`npm run ${name}`); if (/test|check|lint|type|validate/.test(name)) commands.test_commands.push(`npm run ${name}`); } } catch {}
+  if (existsSync(path.join(root, "pyproject.toml"))) commands.test_commands.push("pytest");
+  if (existsSync(path.join(root, "Cargo.toml"))) { commands.build_commands.push("cargo build"); commands.test_commands.push("cargo test"); }
+  return commands;
+}
+async function ghRepoSummaries(root, args = {}) {
+  if (args.simulate_github) return { open_prs: [{ number: 1, title: "simulated PR", state: "OPEN" }], open_issues: [{ number: 2, title: "simulated issue", state: "OPEN" }], ci_status: { status: "simulated", conclusion: "unknown" } };
+  const ghOk = (await runProcess("gh", ["--version"], { cwd: root, timeoutMs: 4000, maxOutputBytes: 1000 })).ok;
+  if (!ghOk) return { open_prs: [], open_issues: [], ci_status: { status: "unavailable", reason: "gh unavailable" } };
+  const prs = await runProcess("gh", ["pr", "list", "--limit", "5", "--json", "number,title,state,headRefName,baseRefName"], { cwd: root, timeoutMs: 8000, maxOutputBytes: 12000 });
+  const issues = await runProcess("gh", ["issue", "list", "--limit", "5", "--json", "number,title,state,labels"], { cwd: root, timeoutMs: 8000, maxOutputBytes: 12000 });
+  const runs = await runProcess("gh", ["run", "list", "--limit", "3", "--json", "databaseId,name,status,conclusion,headSha,workflowName"], { cwd: root, timeoutMs: 8000, maxOutputBytes: 12000 });
+  return { open_prs: parseJsonOrEmpty(prs.stdout), open_issues: parseJsonOrEmpty(issues.stdout), ci_status: runs.ok ? { status: "reported", runs: parseJsonOrEmpty(runs.stdout) } : { status: "unavailable", reason: runs.stderr || runs.stdout } };
+}
+function parseJsonOrEmpty(text) { try { return JSON.parse(text || "[]"); } catch { return []; } }
+async function repoIntelligenceReport(args = {}) {
+  const inspect = await githubRepoInspect(args);
+  const projectType = detectProjectType(inspect.important_files);
+  const risky = [".env", ".env.local", "secrets/", "credentials/", ".git/", "node_modules/", "dist/", "build/", "package-lock.json if unrelated dependency churn"];
+  const currentRisk = inspect.dirty_worktree_status.length ? "dirty_worktree_review_before_commit" : "clean_or_no_uncommitted_changes_detected";
+  return { repo_identity: { owner_repo: inspect.owner_repo, remote_url: inspect.remote_url, branch: inspect.branch, head: inspect.head }, project_type: projectType, likely_build_commands: inspect.detected_build_test_commands.build_commands, likely_test_commands: inspect.detected_build_test_commands.test_commands, important_paths: inspect.important_files, risky_paths: risky, active_branch: inspect.branch, recent_commits: inspect.recent_commits, open_prs_summary: inspect.open_prs.slice(0, 5), open_issues_summary: inspect.open_issues.slice(0, 5), ci_summary: inspect.ci_status, current_work_risk: currentRisk, best_next_actions: buildBestNextActions(inspect), useless_actions_to_avoid: ["blind force-push", "random broad refactor before reading repo", "claiming CI green without checking exact SHA", "committing .env/secrets", "direct push to protected branch unless config explicitly enables it"] };
+}
+function detectProjectType(files) { const f = files.join(" ").toLowerCase(); if (f.includes("package.json")) return "node_js_or_web"; if (f.includes("pyproject.toml")) return "python"; if (f.includes("cargo.toml")) return "rust"; return "unknown_local_repo"; }
+function buildBestNextActions(inspect) { const out = []; if (inspect.dirty_worktree_status.length) out.push("Review changed files and secret-like paths before commit."); if (inspect.detected_build_test_commands.test_commands.length) out.push(`Run ${inspect.detected_build_test_commands.test_commands[0]} before PR/final claim.`); out.push("Use feature branch + PR for protected-branch work."); if (inspect.ci_status?.status === "reported") out.push("Read CI status/failures before rerun or final handoff."); return out; }
+function formatRepoIntelligence(r) { return [`vnem_tools_repo_intelligence_report: ${r.repo_identity.owner_repo}`, `branch=${r.active_branch || "unknown"}`, `tests=${r.likely_test_commands.join(",") || "unknown"}`, `next=${r.best_next_actions[0] || "inspect repo"}`].join("\n"); }
+function formatGithubRepoInspect(r) { return [`vnem_tools_github_repo_inspect: ${r.owner_repo}`, `branch=${r.branch || "unknown"}`, `dirty=${r.dirty_worktree_status.length}`, `tests=${r.detected_build_test_commands.test_commands.join(",") || "unknown"}`].join("\n"); }
+async function githubBranchCreate(args = {}) {
+  const root = await resolveGithubRoot(args.root || ".");
+  const branch = cleanBranchName(args.branch);
+  const policy = await enforceGithubRepoPolicy(root, { toolName: "vnem_tools_github_branch_create" }, { requiredAction: "create_branch" });
+  if (!policy.allowed) return policy;
+  const existing = await runProcess("git", ["rev-parse", "--verify", branch], { cwd: root.absolutePath, timeoutMs: 5000, maxOutputBytes: 2000 });
+  if (existing.ok && args.allow_existing !== true) return githubBlockedResult("vnem_tools_github_branch_create", `Branch ${branch} already exists; not overwriting.`, "VNEM_TOOLS_GITHUB_ALLOW_FORCE_PUSH", { branch });
+  const dirty = await gitValue(root.absolutePath, ["status", "--short"]);
+  if (args.dry_run === true) return decorateToolResult("vnem_tools_github_branch_create", { operation_result: "planned", branch, dirty_worktree_status: dirty ? dirty.split(/\r?\n/).filter(Boolean) : [], proof_summary: "No branch created in dry-run.", next_best_action: dirty ? "Review dirty worktree before branching." : `Create branch ${branch}.`, claim_status: "planned" }, { capability_group: "github_autonomy", mutation: true });
+  const cmd = args.from ? ["checkout", "-b", branch, args.from] : ["checkout", "-b", branch];
+  const r = await runProcess("git", cmd, { cwd: root.absolutePath, timeoutMs: 10000, maxOutputBytes: 8000 });
+  if (!r.ok) throw new ToolsError("git branch create failed.", "github_branch_create_failed", { stderr: r.stderr, stdout: r.stdout });
+  return decorateToolResult("vnem_tools_github_branch_create", { operation_result: "created", branch, from: args.from || "current_HEAD", dirty_worktree_status: dirty ? dirty.split(/\r?\n/).filter(Boolean) : [], proof_summary: `Created local branch ${branch}.`, claim_status: "local_branch_created", next_best_action: "Commit selected files and push feature branch when ready." }, { capability_group: "github_autonomy", mutation: true });
+}
+async function githubCommitPush(args = {}) {
+  const root = await resolveGithubRoot(args.root || ".");
+  const branch = cleanBranchName(args.branch || await gitValue(root.absolutePath, ["branch", "--show-current"]));
+  const remote = args.remote || "origin";
+  const settings = githubSettings();
+  if (args.force === true && !settings.allow_force_push) return githubBlockedResult("vnem_tools_github_commit_push", "Force push blocked by default.", "VNEM_TOOLS_GITHUB_ALLOW_FORCE_PUSH", { branch });
+  if (isProtectedBranch(branch) && !settings.allow_direct_push) return githubBlockedResult("vnem_tools_github_commit_push", `Blocked: direct push to protected branch ${branch}.`, "VNEM_TOOLS_GITHUB_ALLOW_DIRECT_PUSH", { branch });
+  const secret = githubSecretFileBlocked(args.files);
+  if (secret) return githubBlockedResult("vnem_tools_github_commit_push", `Secret-like file blocked from commit: ${secret}`, null, { file: secret });
+  const policy = await enforceGithubRepoPolicy(root, { toolName: "vnem_tools_github_commit_push" }, { requiredAction: isProtectedBranch(branch) ? "push_protected_branch" : "push_feature_branch", remote });
+  if (!policy.allowed) return policy;
+  const files = [];
+  for (const file of arrayify(args.files)) { const target = await resolveAllowedFile(path.join(root.absolutePath, file), { mustExist: true, blockSecrets: true }); files.push(target.relativePath); }
+  const planned = { operation_result: args.dry_run !== false ? "planned" : "pending", branch, remote, files_staged: files, message: redactSecrets(args.message || ""), push_command: `git push ${args.force ? "--force-with-lease " : ""}${remote} ${branch}`, proof_summary: "No GitHub mutation performed in dry-run.", claim_status: args.dry_run !== false ? "planned" : "pending", next_best_action: "Run tests/quality gate, then push feature branch/open PR." };
+  if (args.dry_run !== false) return decorateToolResult("vnem_tools_github_commit_push", planned, { capability_group: "github_autonomy", mutation: true, network: true });
+  await runProcess("git", ["add", "--", ...files], { cwd: root.absolutePath, timeoutMs: 10000, maxOutputBytes: 12000 });
+  const commit = await runProcess("git", ["commit", "-m", args.message], { cwd: root.absolutePath, timeoutMs: 20000, maxOutputBytes: 20000 });
+  if (!commit.ok) throw new ToolsError("git commit failed.", "github_commit_failed", { stdout: commit.stdout, stderr: commit.stderr });
+  const push = await runProcess("git", ["push", ...(args.force ? ["--force-with-lease"] : []), remote, branch], { cwd: root.absolutePath, timeoutMs: 60000, maxOutputBytes: 24000 });
+  if (!push.ok) throw new ToolsError("git push failed.", "github_push_failed", { stdout: push.stdout, stderr: push.stderr });
+  const sha = await gitValue(root.absolutePath, ["rev-parse", "HEAD"]);
+  return decorateToolResult("vnem_tools_github_commit_push", { ...planned, operation_result: "pushed", commit_sha: sha, proof_summary: `Committed and pushed ${files.length} file(s) to ${remote}/${branch}.`, claim_status: "pushed_feature_branch", push_stdout: push.stdout, push_stderr: push.stderr }, { capability_group: "github_autonomy", mutation: true, network: true });
+}
+async function githubGhMutation(toolName, args, ghArgs, requiredAction, resultKey) {
+  const root = await resolveGithubRoot(args.root || ".");
+  const policy = await enforceGithubRepoPolicy(root, { toolName }, { requiredAction });
+  if (!policy.allowed) return policy;
+  const planned = { operation_result: args.dry_run !== false ? "planned" : "pending", gh_args_redacted: ghArgs.map(redactSecrets), proof_summary: "No GitHub mutation performed in dry-run.", claim_status: args.dry_run !== false ? "planned" : "pending", next_best_action: "Run the gh command after auth/config is ready, then verify status." };
+  if (args.dry_run !== false) return decorateToolResult(toolName, planned, { capability_group: "github_autonomy", mutation: true, network: true });
+  const ghOk = await runProcess("gh", ["--version"], { cwd: root.absolutePath, timeoutMs: 5000, maxOutputBytes: 2000 });
+  if (!ghOk.ok) return githubBlockedResult(toolName, "gh CLI unavailable for GitHub remote mutation.", null);
+  const r = await runProcess("gh", ghArgs, { cwd: root.absolutePath, timeoutMs: 60000, maxOutputBytes: 24000 });
+  if (!r.ok) throw new ToolsError(`${toolName} gh command failed.`, "github_gh_command_failed", { stdout: r.stdout, stderr: r.stderr });
+  return decorateToolResult(toolName, { ...planned, operation_result: "completed", [resultKey]: r.stdout.trim(), proof_summary: "GitHub operation completed via gh; verify on exact repo/PR/issue/run.", claim_status: "completed" }, { capability_group: "github_autonomy", mutation: true, network: true });
+}
+async function githubPrCreate(args) { const gh = ["pr", "create", "--title", args.title, "--body", args.body || "", "--base", args.base || "main", "--head", args.head || await gitValue((await resolveGithubRoot(args.root || ".")).absolutePath, ["branch", "--show-current"]), ...(args.draft ? ["--draft"] : [])]; return githubGhMutation("vnem_tools_github_pr_create", args, gh, "open_pr", "pr_url"); }
+async function githubPrUpdate(args) { const gh = ["pr", "edit", String(args.pr || args.number || ""), ...(args.title ? ["--title", args.title] : []), ...(args.body ? ["--body", args.body] : []), ...arrayify(args.add_labels).flatMap((l) => ["--add-label", String(l)]), ...arrayify(args.remove_labels).flatMap((l) => ["--remove-label", String(l)])].filter(Boolean); if (args.comment) return githubGhMutation("vnem_tools_github_pr_update", args, ["pr", "comment", String(args.pr || args.number || ""), "--body", args.comment], "update_pr", "comment_url"); return githubGhMutation("vnem_tools_github_pr_update", args, gh, "update_pr", "pr_update_output"); }
+async function githubIssueCreate(args) { return githubGhMutation("vnem_tools_github_issue_create", args, ["issue", "create", "--title", args.title, "--body", args.body || "", ...arrayify(args.labels).flatMap((l) => ["--label", String(l)])], "create_issue", "issue_url"); }
+async function githubIssueUpdate(args) { return githubGhMutation("vnem_tools_github_issue_update", args, ["issue", "edit", String(args.issue || args.number || ""), ...(args.title ? ["--title", args.title] : []), ...(args.body ? ["--body", args.body] : []), ...(args.state ? [args.state === "closed" ? "--close" : "--reopen"] : []), ...arrayify(args.add_labels || args.labels).flatMap((l) => ["--add-label", String(l)]), ...arrayify(args.remove_labels).flatMap((l) => ["--remove-label", String(l)])].filter(Boolean), "update_issue", "issue_update_output"); }
+async function githubIssueComment(args) { return githubGhMutation("vnem_tools_github_issue_comment", args, ["issue", "comment", String(args.issue || args.number || ""), "--body", args.body || args.comment || ""], "comment_issue_pr", "comment_url"); }
+async function githubLabelsManage(args) { return githubGhMutation("vnem_tools_github_labels_manage", args, ["label", args.exists ? "edit" : "create", args.name, ...(args.color ? ["--color", args.color] : []), ...(args.description ? ["--description", args.description] : [])], "manage_labels", "label_output"); }
+async function githubActionsStatus(args = {}) {
+  const root = await resolveGithubRoot(args.root || ".");
+  if (args.simulate) return { operation_result: "reported", runs: [{ databaseId: 123, name: "CI", status: "completed", conclusion: "failure", workflowName: "CI" }], proof_summary: "Simulated CI status only.", claim_status: "simulated_only", next_best_action: "Use real gh actions status for exact SHA before final claims." };
+  const ghOk = await runProcess("gh", ["--version"], { cwd: root.absolutePath, timeoutMs: 5000, maxOutputBytes: 2000 });
+  if (!ghOk.ok) return { operation_result: "blocked", blocked_reason: "gh CLI unavailable", runs: [], claim_status: "blocked", next_best_action: "Install/authenticate gh or inspect GitHub Actions externally." };
+  const argsRun = ["run", "list", "--limit", String(args.limit || 10), "--json", "databaseId,name,status,conclusion,headSha,headBranch,workflowName,createdAt,url"];
+  if (args.branch) argsRun.push("--branch", args.branch);
+  const r = await runProcess("gh", argsRun, { cwd: root.absolutePath, timeoutMs: 15000, maxOutputBytes: args.max_bytes || 20000 });
+  return { operation_result: r.ok ? "reported" : "blocked", runs: parseJsonOrEmpty(r.stdout), blocked_reason: r.ok ? null : r.stderr || r.stdout, claim_status: r.ok ? "reported" : "blocked", next_best_action: r.ok ? "Use CI triage for failed runs." : "Fix gh auth/repo context." };
+}
+async function githubActionsRerun(args = {}) { if (!githubSettings().allow_actions_rerun) return githubBlockedResult("vnem_tools_github_actions_rerun", "GitHub Actions rerun is disabled by config.", "VNEM_TOOLS_GITHUB_ALLOW_ACTIONS_RERUN"); return githubGhMutation("vnem_tools_github_actions_rerun", args, ["run", "rerun", String(args.run_id), ...(args.failed_only !== false ? ["--failed"] : [])], "rerun_ci", "rerun_output"); }
+async function githubCiFailureTriage(args = {}) {
+  const root = await resolveGithubRoot(args.root || ".");
+  let log = String(args.simulated_log || "");
+  let workflow = args.workflow || "unknown";
+  if (!log && args.run_id) { const r = await runProcess("gh", ["run", "view", String(args.run_id), "--log-failed"], { cwd: root.absolutePath, timeoutMs: 20000, maxOutputBytes: args.max_bytes || 24000 }); log = `${r.stdout}\n${r.stderr}`; workflow = String(args.run_id); }
+  const lines = log.split(/\r?\n/).filter(Boolean);
+  const failLines = lines.filter((l) => /error|failed|failure|exit code|cannot find|not found|timeout|exception|traceback|assert/i.test(l)).slice(0, 10);
+  const files = [...new Set(lines.join("\n").match(/[A-Za-z0-9_./-]+\.(mjs|js|ts|tsx|jsx|json|py|yml|yaml|toml|md)/g) || [])].slice(0, 8);
+  const cause = failLines.find((l) => /cannot find|not found/i.test(l)) || failLines.find((l) => /error|failed/i.test(l)) || "Failure log unavailable or inconclusive.";
+  return { failing_workflow: workflow, failing_job: args.job || "unknown_from_available_log", failed_step: args.step || (failLines[0] || "unknown"), likely_cause: truncate(redactSecrets(cause), 500), exact_log_excerpt_summary: failLines.map((l) => truncate(redactSecrets(l), 240)).join(" | "), likely_files_to_fix: files, exact_next_commands: ["Reproduce failing command locally if shown in log.", files[0] ? `Inspect ${files[0]}` : "Run repo intelligence to identify likely test/build command.", "Rerun the targeted test, then check GitHub Actions for exact SHA."], must_not_claim: ["CI is green.", "The failure is fixed before rerunning the failing check.", "Full logs were exhaustively analyzed if only excerpt/simulated log was provided."] };
+}
+async function prQualityGate(args = {}) {
+  const root = await resolveGithubRoot(args.root || ".");
+  const status = await gitValue(root.absolutePath, ["status", "--short"]);
+  const changed = status.split(/\r?\n/).filter(Boolean).map((l) => l.slice(3).trim());
+  const secret = githubSecretFileBlocked(changed);
+  const unrelated = changed.filter((f) => /discovery\/daily-digest|\.tmp|node_modules|\.log$|scratch/i.test(f));
+  const blockers = [];
+  if (secret) blockers.push(`secret-like file changed: ${secret}`);
+  if (!arrayify(args.test_commands_run).length) blockers.push("no test commands recorded");
+  if (!String(args.pr_title || "").trim() || String(args.pr_title || "").length < 8) blockers.push("PR title missing or too vague");
+  if (!String(args.pr_body || "").trim() || String(args.pr_body || "").length < 20) blockers.push("PR body missing useful summary/testing notes");
+  if (unrelated.length) blockers.push("unrelated churn detected");
+  return { operation_result: "reported", clean_worktree: changed.length === 0, changed_files: changed, unrelated_churn: unrelated, secret_like_files: secret ? [secret] : [], test_commands_run: arrayify(args.test_commands_run), ci_status: args.ci_status || "not_checked", pr_title_quality: blockers.some((b) => b.includes("title")) ? "weak" : "usable", pr_body_quality: blockers.some((b) => b.includes("body")) ? "weak" : "usable", blocked_reason: blockers.join("; ") || null, claim_status: blockers.length ? "not_ready" : "ready_to_claim_with_listed_evidence", result_can_be_claimed_done: blockers.length === 0, next_best_action: blockers[0] || "Open/update PR and verify CI for exact SHA." };
+}
+function taskProgressTruthCheck(args = {}) {
+  const proven = arrayify(args.proven);
+  const tested = arrayify(args.tests_run || args.tested);
+  const blocked = arrayify(args.blockers || args.blocked);
+  const changed = arrayify(args.changed_files);
+  let status = "not_attempted";
+  if (blocked.length) status = "blocked";
+  else if (args.simulated_only) status = "simulated_only";
+  else if (changed.length && tested.length) status = "done";
+  else if (changed.length || proven.length) status = "partially_done";
+  else if (args.needs_user_action) status = "needs_user_action";
+  const whatNot = [];
+  if (status !== "done") whatNot.push("Do not claim done/complete.");
+  if (!tested.length) whatNot.push("Do not claim tests passed.");
+  if (blocked.length) whatNot.push("Do not claim blockers are resolved.");
+  return { status, proven, tested, not_tested: tested.length ? [] : ["No verification command evidence provided."], blocked, next_action: blocked[0] || (tested.length ? "Verify CI/PR state." : "Run targeted verification and record exact command output."), what_not_to_claim: whatNot, claim_status: status === "done" ? "claim_done_with_evidence" : "not_ready" };
+}
+function formatPrQualityGate(g) { return [`vnem_tools_pr_quality_gate: ${g.claim_status}`, `changed=${g.changed_files.length}`, `blocked=${g.blocked_reason || "none"}`, `next=${g.next_best_action}`].join("\n"); }
+function formatTruthCheck(c) { return [`vnem_tools_task_progress_truth_check: ${c.status}`, `tested=${c.tested.length}`, `blocked=${c.blocked.length}`, `next=${c.next_action}`].join("\n"); }
+async function githubReleasePlan(args = {}) { return { operation_result: githubSettings().allow_releases ? "planned" : "blocked", config_knob_to_change: githubSettings().allow_releases ? null : "VNEM_TOOLS_GITHUB_ALLOW_RELEASES", tag: args.tag || "provide_tag", title: args.title || "provide_title", draft: args.draft !== false, next_best_action: githubSettings().allow_releases ? "Review tag/changelog and create draft release." : "Set VNEM_TOOLS_GITHUB_ALLOW_RELEASES = \"1\"." }; }
+async function githubReleaseCreate(args = {}) { if (!githubSettings().allow_releases) return githubBlockedResult("vnem_tools_github_release_create", "GitHub releases disabled by config.", "VNEM_TOOLS_GITHUB_ALLOW_RELEASES"); return githubGhMutation("vnem_tools_github_release_create", args, ["release", "create", args.tag, "--title", args.title || args.tag, "--notes", args.notes || "", ...(args.draft !== false ? ["--draft"] : [])], "draft_release", "release_url"); }
+async function githubRepoSettingsPlan(args = {}) { return { operation_result: "planned", allow_settings_mutation: githubSettings().allow_settings_mutation, config_knob_to_change: githubSettings().allow_settings_mutation ? null : "VNEM_TOOLS_GITHUB_ALLOW_SETTINGS_MUTATION", requested_settings: args.settings || {}, next_best_action: githubSettings().allow_settings_mutation ? "Review exact settings diff before apply." : "Set VNEM_TOOLS_GITHUB_ALLOW_SETTINGS_MUTATION = \"1\" to allow apply." }; }
+async function githubRepoSettingsApply(args = {}) { if (!githubSettings().allow_settings_mutation) return githubBlockedResult("vnem_tools_github_repo_settings_apply", "Repo settings mutation disabled by config.", "VNEM_TOOLS_GITHUB_ALLOW_SETTINGS_MUTATION"); return githubGhMutation("vnem_tools_github_repo_settings_apply", args, ["repo", "edit", ...(args.description ? ["--description", args.description] : [])], "repo_settings_plan", "settings_output"); }
+function formatGenericGithub(tool, result) { return [`${tool}: ${result.operation_result || "reported"}`, result.blocked_reason ? `blocked=${result.blocked_reason}` : null, result.config_knob_to_change ? `config_knob_to_change=${result.config_knob_to_change}` : null, result.next_best_action ? `next=${result.next_best_action}` : null].filter(Boolean).join("\n"); }
+
 async function safeGitStatus(args) {
   const root = await resolveAllowedRoot(args.root || ".");
   const execution = await runProcess("git", ["status", "--short"], { cwd: root.absolutePath, timeoutMs: 10000, maxOutputBytes: args.max_output_bytes || 12000 });
@@ -4822,6 +5192,32 @@ function normalizeBrowserEvidence(item) {
   };
 }
 
+
+
+function registerGithubTools(mcpServer) {
+  mcpServer.registerTool("vnem_tools_github_status", { title: "GitHub Status", description: "Detect gh/git/auth/repo/profile/config readiness without printing tokens.", inputSchema: { root: z.string().default("."), repo: z.string().optional(), goal: z.string().default("") }, annotations: NETWORK_ACTION }, async (args) => withToolErrors(async () => { const result = await githubStatus(args); return toolResult(formatGithubStatus(result), { github_status: result }); }));
+  mcpServer.registerTool("vnem_tools_github_settings_guide", { title: "GitHub Settings Guide", description: "Return the copy-pasteable GitHub config block and compact setting explanations.", inputSchema: {}, annotations: READ_ONLY_LOCAL }, async () => withToolErrors(async () => { const result = githubSettingsGuide(); return toolResult(formatGithubSettingsGuide(result), { github_settings_guide: result }); }));
+  mcpServer.registerTool("vnem_tools_github_profile_status", { title: "GitHub Profile Status", description: "Show active GitHub profile, allowed/blocked actions, config source, and recommended profile.", inputSchema: { goal: z.string().default("") }, annotations: READ_ONLY_LOCAL }, async (args) => withToolErrors(async () => { const result = githubProfileStatus(args); return toolResult(formatGithubProfileStatus(result), { github_profile_status: result }); }));
+  mcpServer.registerTool("vnem_tools_github_repo_inspect", { title: "GitHub Repo Inspect", description: "Inspect current/specified repo, branch, dirty state, commits, PRs/issues/CI if available, and build/test commands.", inputSchema: { root: z.string().default("."), remote: z.string().default("origin"), repo: z.string().optional(), simulate_github: z.boolean().default(false), max_bytes: z.number().int().min(1000).default(16000) }, annotations: NETWORK_ACTION }, async (args) => withToolErrors(async () => { const result = await githubRepoInspect(args); return toolResult(formatGithubRepoInspect(result), { github_repo_inspect: result }); }));
+  mcpServer.registerTool("vnem_tools_repo_intelligence_report", { title: "Repo Intelligence Report", description: "Return project type, build/test commands, important/risky paths, work risk, CI/PR/issue summaries, and next actions.", inputSchema: { root: z.string().default("."), remote: z.string().default("origin"), repo: z.string().optional(), simulate_github: z.boolean().default(false), max_bytes: z.number().int().min(1000).default(16000) }, annotations: NETWORK_ACTION }, async (args) => withToolErrors(async () => { const result = await repoIntelligenceReport(args); return toolResult(formatRepoIntelligence(result), { repo_intelligence_report: result }); }));
+  mcpServer.registerTool("vnem_tools_github_branch_create", { title: "GitHub Branch Create", description: "Create a clean local branch for GitHub repo work; reports dirty worktree instead of hiding it.", inputSchema: { root: z.string().default("."), branch: z.string().min(1), from: z.string().optional(), dry_run: z.boolean().default(false), allow_existing: z.boolean().default(false) }, annotations: ACTION_TOOL }, async (args) => withToolErrors(async () => { const result = await githubBranchCreate(args); return toolResult(formatGenericGithub("vnem_tools_github_branch_create", result), { github_branch_create: result }); }));
+  mcpServer.registerTool("vnem_tools_github_commit_push", { title: "GitHub Commit Push", description: "Commit selected safe files and push feature branches; blocks secrets, protected direct push, force push by default.", inputSchema: { root: z.string().default("."), files: z.array(z.string()).min(1), message: z.string().min(1), branch: z.string().optional(), remote: z.string().default("origin"), force: z.boolean().default(false), dry_run: z.boolean().default(true) }, annotations: NETWORK_ACTION }, async (args) => withToolErrors(async () => { const result = await githubCommitPush(args); return toolResult(formatGenericGithub("vnem_tools_github_commit_push", result), { github_commit_push: result }); }));
+  mcpServer.registerTool("vnem_tools_github_pr_create", { title: "GitHub PR Create", description: "Create or dry-run a PR via gh.", inputSchema: { root: z.string().default("."), title: z.string().min(1), body: z.string().default(""), base: z.string().default("main"), head: z.string().default(""), draft: z.boolean().default(false), dry_run: z.boolean().default(true) }, annotations: NETWORK_ACTION }, async (args) => withToolErrors(async () => { const result = await githubPrCreate(args); return toolResult(formatGenericGithub("vnem_tools_github_pr_create", result), { github_pr_create: result }); }));
+  mcpServer.registerTool("vnem_tools_github_pr_update", { title: "GitHub PR Update", description: "Update PR title/body/labels or comment via gh.", inputSchema: { root: z.string().default("."), pr: z.union([z.string(), z.number()]).optional(), number: z.union([z.string(), z.number()]).optional(), title: z.string().optional(), body: z.string().optional(), comment: z.string().optional(), add_labels: z.array(z.string()).default([]), remove_labels: z.array(z.string()).default([]), dry_run: z.boolean().default(true) }, annotations: NETWORK_ACTION }, async (args) => withToolErrors(async () => { const result = await githubPrUpdate(args); return toolResult(formatGenericGithub("vnem_tools_github_pr_update", result), { github_pr_update: result }); }));
+  mcpServer.registerTool("vnem_tools_github_issue_create", { title: "GitHub Issue Create", description: "Create or dry-run issue via gh.", inputSchema: { root: z.string().default("."), title: z.string().min(1), body: z.string().default(""), labels: z.array(z.string()).default([]), dry_run: z.boolean().default(true) }, annotations: NETWORK_ACTION }, async (args) => withToolErrors(async () => { const result = await githubIssueCreate(args); return toolResult(formatGenericGithub("vnem_tools_github_issue_create", result), { github_issue_create: result }); }));
+  mcpServer.registerTool("vnem_tools_github_issue_update", { title: "GitHub Issue Update", description: "Update issue title/body/state/labels via gh.", inputSchema: { root: z.string().default("."), issue: z.union([z.string(), z.number()]).optional(), number: z.union([z.string(), z.number()]).optional(), title: z.string().optional(), body: z.string().optional(), state: z.enum(["open", "closed"]).optional(), labels: z.array(z.string()).default([]), add_labels: z.array(z.string()).default([]), remove_labels: z.array(z.string()).default([]), dry_run: z.boolean().default(true) }, annotations: NETWORK_ACTION }, async (args) => withToolErrors(async () => { const result = await githubIssueUpdate(args); return toolResult(formatGenericGithub("vnem_tools_github_issue_update", result), { github_issue_update: result }); }));
+  mcpServer.registerTool("vnem_tools_github_issue_comment", { title: "GitHub Issue/PR Comment", description: "Comment on issue or PR via gh.", inputSchema: { root: z.string().default("."), issue: z.union([z.string(), z.number()]).optional(), number: z.union([z.string(), z.number()]).optional(), body: z.string().default(""), comment: z.string().default(""), dry_run: z.boolean().default(true) }, annotations: NETWORK_ACTION }, async (args) => withToolErrors(async () => { const result = await githubIssueComment(args); return toolResult(formatGenericGithub("vnem_tools_github_issue_comment", result), { github_issue_comment: result }); }));
+  mcpServer.registerTool("vnem_tools_github_labels_manage", { title: "GitHub Labels Manage", description: "Create/update labels via gh.", inputSchema: { root: z.string().default("."), name: z.string().min(1), color: z.string().optional(), description: z.string().optional(), exists: z.boolean().default(false), dry_run: z.boolean().default(true) }, annotations: NETWORK_ACTION }, async (args) => withToolErrors(async () => { const result = await githubLabelsManage(args); return toolResult(formatGenericGithub("vnem_tools_github_labels_manage", result), { github_labels_manage: result }); }));
+  mcpServer.registerTool("vnem_tools_github_actions_status", { title: "GitHub Actions Status", description: "Read GitHub Actions status for current repo/branch/SHA.", inputSchema: { root: z.string().default("."), branch: z.string().optional(), sha: z.string().optional(), limit: z.number().int().min(1).max(30).default(10), simulate: z.boolean().default(false), max_bytes: z.number().int().min(1000).default(20000) }, annotations: NETWORK_ACTION }, async (args) => withToolErrors(async () => { const result = await githubActionsStatus(args); return toolResult(formatGenericGithub("vnem_tools_github_actions_status", result), { github_actions_status: result }); }));
+  mcpServer.registerTool("vnem_tools_github_actions_rerun", { title: "GitHub Actions Rerun", description: "Rerun failed workflow/job when VNEM_TOOLS_GITHUB_ALLOW_ACTIONS_RERUN=1.", inputSchema: { root: z.string().default("."), run_id: z.union([z.string(), z.number()]), failed_only: z.boolean().default(true), dry_run: z.boolean().default(true) }, annotations: NETWORK_ACTION }, async (args) => withToolErrors(async () => { const result = await githubActionsRerun(args); return toolResult(formatGenericGithub("vnem_tools_github_actions_rerun", result), { github_actions_rerun: result }); }));
+  mcpServer.registerTool("vnem_tools_github_ci_failure_triage", { title: "GitHub CI Failure Triage", description: "Fetch/summarize failing CI log information without huge dumps.", inputSchema: { root: z.string().default("."), run_id: z.union([z.string(), z.number()]).optional(), workflow: z.string().optional(), job: z.string().optional(), step: z.string().optional(), simulated_log: z.string().default(""), max_bytes: z.number().int().min(1000).default(24000) }, annotations: NETWORK_ACTION }, async (args) => withToolErrors(async () => { const result = await githubCiFailureTriage(args); return toolResult(`vnem_tools_github_ci_failure_triage: ${result.likely_cause}`, { ci_failure_triage: result }); }));
+  mcpServer.registerTool("vnem_tools_pr_quality_gate", { title: "PR Quality Gate", description: "Pre-PR/final check for dirty tree, changed files, churn, secrets, tests, CI, and claim readiness.", inputSchema: { root: z.string().default("."), test_commands_run: z.array(z.string()).default([]), ci_status: z.string().default("not_checked"), pr_title: z.string().default(""), pr_body: z.string().default("") }, annotations: READ_ONLY_LOCAL }, async (args) => withToolErrors(async () => { const result = await prQualityGate(args); return toolResult(formatPrQualityGate(result), { pr_quality_gate: result }); }));
+  mcpServer.registerTool("vnem_tools_task_progress_truth_check", { title: "Task Progress Truth Check", description: "Return done/partial/blocked/not-attempted/simulated-only status and what not to claim.", inputSchema: { goal: z.string().default(""), proven: z.array(z.string()).default([]), tested: z.array(z.string()).default([]), tests_run: z.array(z.string()).default([]), not_tested: z.array(z.string()).default([]), blockers: z.array(z.string()).default([]), blocked: z.array(z.string()).default([]), changed_files: z.array(z.string()).default([]), simulated_only: z.boolean().default(false), needs_user_action: z.boolean().default(false), claimed_done: z.boolean().default(false) }, annotations: READ_ONLY_LOCAL }, async (args) => withToolErrors(async () => { const result = taskProgressTruthCheck(args); return toolResult(formatTruthCheck(result), { task_progress_truth_check: result }); }));
+  mcpServer.registerTool("vnem_tools_github_release_plan", { title: "GitHub Release Plan", description: "Plan draft release based on config.", inputSchema: { tag: z.string().default(""), title: z.string().default(""), notes: z.string().default(""), draft: z.boolean().default(true) }, annotations: READ_ONLY_LOCAL }, async (args) => withToolErrors(async () => { const result = await githubReleasePlan(args); return toolResult(formatGenericGithub("vnem_tools_github_release_plan", result), { github_release_plan: result }); }));
+  mcpServer.registerTool("vnem_tools_github_release_create", { title: "GitHub Release Create", description: "Create draft release when releases are enabled.", inputSchema: { root: z.string().default("."), tag: z.string().min(1), title: z.string().default(""), notes: z.string().default(""), draft: z.boolean().default(true), dry_run: z.boolean().default(true) }, annotations: NETWORK_ACTION }, async (args) => withToolErrors(async () => { const result = await githubReleaseCreate(args); return toolResult(formatGenericGithub("vnem_tools_github_release_create", result), { github_release_create: result }); }));
+  mcpServer.registerTool("vnem_tools_github_repo_settings_plan", { title: "GitHub Repo Settings Plan", description: "Plan repo settings mutation and show config knob.", inputSchema: { settings: z.record(z.any()).default({}) }, annotations: READ_ONLY_LOCAL }, async (args) => withToolErrors(async () => { const result = await githubRepoSettingsPlan(args); return toolResult(formatGenericGithub("vnem_tools_github_repo_settings_plan", result), { github_repo_settings_plan: result }); }));
+  mcpServer.registerTool("vnem_tools_github_repo_settings_apply", { title: "GitHub Repo Settings Apply", description: "Apply limited settings mutation only when config-enabled.", inputSchema: { root: z.string().default("."), description: z.string().optional(), dry_run: z.boolean().default(true) }, annotations: NETWORK_ACTION }, async (args) => withToolErrors(async () => { const result = await githubRepoSettingsApply(args); return toolResult(formatGenericGithub("vnem_tools_github_repo_settings_apply", result), { github_repo_settings_apply: result }); }));
+}
 
 function registerCloudflareTools(mcpServer) {
   const commonMutation = { dry_run: z.boolean().default(true), approval_phrase: z.string().default(""), protected_resources: z.array(z.string()).default([]), protected_acknowledgment: z.string().default(""), simulate: z.boolean().default(false), session_id: z.string().optional() };

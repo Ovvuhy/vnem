@@ -20,7 +20,7 @@ await withClient("tools-gap-report-test", {}, async (client) => {
   assert.ok(new Set((await client.listTools()).tools.map((t) => t.name)).has("vnem_tools_capability_gap_report"));
   const report = (await client.callTool({ name: "vnem_tools_capability_gap_report", arguments: {} })).structuredContent.capability_gap_report;
   const text = JSON.stringify(report);
-  for (const term of ["GitHub mutation", "package installs", "arbitrary shell", "unrestricted crawling", "automatic CAPTCHA bypass", "secret-manager-backed live API", "broad external browser automation"]) assert.match(text, new RegExp(term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i"), term);
+  for (const term of ["GitHub destructive admin operations", "package installs", "arbitrary shell", "unrestricted crawling", "automatic CAPTCHA bypass", "secret-manager-backed live API", "broad external browser automation"]) assert.match(text, new RegExp(term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i"), term);
   assert.ok(report.missing_or_limited_capabilities.length >= 7);
   for (const item of report.missing_or_limited_capabilities) {
     assert.ok(item.why_limited);
