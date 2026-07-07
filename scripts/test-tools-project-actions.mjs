@@ -198,5 +198,20 @@ try {
   throw error;
 } finally {
   await client.close().catch(() => {});
-  await rm(tmpRoot, { recursive: true, force: true });
+  await removeTempRoot(tmpRoot);
+}
+
+async function removeTempRoot(root) {
+  let lastError = null;
+  for (let attempt = 0; attempt < 30; attempt += 1) {
+    try {
+      await rm(root, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 });
+      return;
+    } catch (error) {
+      lastError = error;
+      if (!["EBUSY", "EPERM", "ENOTEMPTY"].includes(error?.code)) throw error;
+      await new Promise((resolve) => setTimeout(resolve, 250));
+    }
+  }
+  process.stderr.write(`warning: could not remove temporary project folder ${root}: ${lastError?.code || lastError?.message}\n`);
 }
