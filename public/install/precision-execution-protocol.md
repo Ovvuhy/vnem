@@ -1,6 +1,6 @@
 # vnem Precision Execution Protocol
 
-Generated: 2026-07-07T17:28:13.717Z
+Generated: 2026-07-07T20:32:15.055Z
 
 An opt-in mutation-capable execution protocol for preventing destructive editing and knowledge decay through exact patch verification, current documentation context, and bounded terminal feedback.
 

@@ -20,6 +20,13 @@ const REQUIRED_TOOL_NAMES = [
   "vnem_tools_action_recovery_plan",
   "vnem_tools_high_power_action_review",
   "vnem_tools_capability_gap_report",
+  "vnem_tools_repo_deep_map",
+  "vnem_tools_next_action_ranker",
+  "vnem_tools_no_placebo_progress_audit",
+  "vnem_tools_change_impact_plan",
+  "vnem_tools_test_selection_plan",
+  "vnem_tools_failure_triage",
+  "vnem_tools_evidence_pack",
   "vnem_tools_action_policy_preview",
   "vnem_tools_trust_boundary_classify",
   "vnem_tools_prepare_action_plan",
@@ -285,6 +292,104 @@ function registerTools(mcpServer) {
       const report = capabilityGapReport();
       return toolResult(formatCapabilityGapReport(report), { capability_gap_report: report });
     }
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_repo_deep_map",
+    {
+      title: "Repo Deep Map",
+      description: "Build a compact deep repository map with scripts, languages, frameworks, entrypoints, registries, git state, changed files, generated/noise/risky paths, and bounded evidence.",
+      inputSchema: { root: z.string().default("."), max_files: z.number().int().min(20).max(1200).default(500), max_depth: z.number().int().min(1).max(10).default(6), include_git: z.boolean().default(true) },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const map = await repoDeepMap(args);
+      return toolResult(formatRepoDeepMap(map), { repo_deep_map: map });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_next_action_ranker",
+    {
+      title: "Next Action Ranker",
+      description: "Rank the highest-value next repo actions using git state, scripts, changed files, TODO/FIXME markers, proof gaps, generated staleness, user goal, and placebo penalties.",
+      inputSchema: { root: z.string().default("."), user_goal: z.string().default(""), known_failures: z.array(z.string()).default([]), max_actions: z.number().int().min(3).max(7).default(5) },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const ranking = await nextActionRanker(args);
+      return toolResult(formatNextActionRanker(ranking), { next_action_ranker: ranking });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_no_placebo_progress_audit",
+    {
+      title: "No-placebo Progress Audit",
+      description: "Check whether a proposed or completed batch is real implementation progress or likely placebo work such as registration-only tools, docs-only claims, mocked-only overclaims, or generated-only churn.",
+      inputSchema: { root: z.string().default("."), proposed_summary: z.string().default(""), completed_summary: z.string().default(""), changed_files: z.array(z.string()).default([]), tests_run: z.array(z.string()).default([]), mocked_proof: z.array(z.string()).default([]), live_proof: z.array(z.string()).default([]) },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const audit = await noPlaceboProgressAudit(args);
+      return toolResult(formatNoPlaceboAudit(audit), { no_placebo_progress_audit: audit });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_change_impact_plan",
+    {
+      title: "Change Impact Plan",
+      description: "Map changed files to likely impact, affected VNEM areas/tools/features, generation needs, targeted checks, final checks, and full-suite trigger conditions.",
+      inputSchema: { root: z.string().default("."), changed_files: z.array(z.string()).default([]), include_staged: z.boolean().default(false) },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const impact = await changeImpactPlan(args);
+      return toolResult(formatChangeImpactPlan(impact), { change_impact_plan: impact });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_test_selection_plan",
+    {
+      title: "Test Selection Plan",
+      description: "Choose the smallest useful verification set for a change and escalate only when risk/impact warrants it.",
+      inputSchema: { root: z.string().default("."), user_goal: z.string().default(""), changed_files: z.array(z.string()).default([]), failure_context: z.string().default("") },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const plan = await testSelectionPlan(args);
+      return toolResult(formatTestSelectionPlan(plan), { test_selection_plan: plan });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_failure_triage",
+    {
+      title: "Failure Triage",
+      description: "Turn failing command/test output into a compact root-cause class, file/function to inspect, smallest fix, rerun command, and continue/stop/ask decision.",
+      inputSchema: { root: z.string().default("."), command: z.string().default(""), stdout: z.string().default(""), stderr: z.string().default(""), exit_code: z.union([z.number(), z.string()]).optional(), context: z.string().default("") },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const triage = await failureTriage(args);
+      return toolResult(formatFailureTriage(triage), { failure_triage: triage });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_evidence_pack",
+    {
+      title: "Repo Evidence Pack",
+      description: "Build a compact final-handoff evidence summary with commands, tests, files, real behavior, mocked/live/blocked proof, remaining risk, commit status, safe claims, and must-not-claim lines.",
+      inputSchema: { root: z.string().default("."), commands_run: z.array(z.string()).default([]), tests_passed: z.array(z.string()).default([]), tests_failed: z.array(z.string()).default([]), real_behavior_added: z.array(z.string()).default([]), mocked_proof: z.array(z.string()).default([]), live_proof: z.array(z.string()).default([]), blocked_proof: z.array(z.string()).default([]), remaining_risk: z.array(z.string()).default([]), commit_sha: z.string().default(""), commit_message: z.string().default("") },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const pack = await repoEvidencePack(args);
+      return toolResult(formatRepoEvidencePack(pack), { evidence_pack: pack });
+    })
   );
 
   mcpServer.registerTool(
@@ -1474,6 +1579,12 @@ function toolReliabilityFor(name, descriptor = {}) {
     unsafe = ["Live GitHub remote mutation succeeded without an exact URL/SHA/run proof", "Force push/direct protected-branch push/repo delete/settings mutation are allowed by default", "Tokens are safe to print"];
     next = "Use gh with real auth on an allowed repo and verify the exact PR/issue/CI/release URL or run before claiming live GitHub mutation.";
     known = ["Command-backed gh/git execution requires auth for remote mutation", "Hard blocks remain for secret commits, default force push, default protected-branch direct push, repo delete/settings mutation unless configured"];
+  } else if (group === "repo_power") {
+    level = "local_tested";
+    safe = ["Repo map, next-action ranking, no-placebo audit, impact/test planning, failure triage, and compact evidence are local deterministic intelligence over allowed roots."];
+    unsafe = ["Live GitHub/Cloudflare/deploy proof happened", "The whole repo was exhaustively understood", "All risks were eliminated"];
+    next = "Run the focused POWER-TOOLS regression against the target repo and pair outputs with real command/test evidence before final claims.";
+    known = ["No internet or GitHub auth required", "Secret paths blocked/redacted", "Outputs are compact heuristics, not omniscient proof"];
   } else if (["patching", "rollback", "project_tasks", "dev_server", "local_git", "commands"].includes(group)) {
     level = "local_tested";
     safe = ["Local dry-run and bounded approved local execution behavior is tested under allowed roots."];
@@ -1541,6 +1652,8 @@ function buildActionRecoveryPlan(args = {}) {
   if (/build failed|test failed|exit code|non-zero|npm/.test(lower)) { plan.likely_cause = "Local build/test/project task failed before the next action."; plan.exact_next_steps.push("Fix the first build/test error, rerun the same local check, and do not deploy or claim success until it passes."); plan.must_not_claim.push("Build passed", "Deploy was attempted after failed build"); }
   if (!plan.exact_next_steps.length) plan.exact_next_steps.push("Run the tool's dry-run/plan mode, inspect structured error details, then retry only after the blocker is removed.");
   plan.safe_retry_allowed = !plan.blocked_by_approval && !plan.blocked_by_permission && !plan.blocked_by_missing_auth && !plan.blocked_by_missing_dependency;
+  plan.repo_power_next_tool = /build failed|test failed|exit code|non-zero|npm|assert|cannot find|generated|stale|ebusy|eperm|auth|network/.test(lower) ? "vnem_tools_failure_triage" : "vnem_tools_next_action_ranker";
+  plan.no_placebo_followup = "Use vnem_tools_no_placebo_progress_audit before claiming a batch is complete when proof is weak, mocked-only, docs-only, tests-only, or generated-only.";
   return plan;
 }
 function highPowerActionReview(args = {}) {
@@ -1639,6 +1752,7 @@ function statusObject() {
     command_allowlist: ["node --check <file>", "npm test", "npm run <safe-script>", "git status", "git diff", "git log", "git ls-files"],
     tool_catalog_policy: { tool: "vnem_tools_manifest", capability_groups: TOOL_CAPABILITY_GROUPS, safety_metadata_required: true, core_handoff_compatible: true },
     filesystem_intelligence_policy: { tools: ["vnem_tools_workspace_map", "vnem_tools_read_many_files", "vnem_tools_code_search", "vnem_tools_find_references", "vnem_tools_dependency_scan"], allowed_roots_only: true, secret_paths_blocked: true, generated_build_cache_skipped: true, evidence_logged: true },
+    repo_power_policy: { tools: ["vnem_tools_repo_deep_map", "vnem_tools_next_action_ranker", "vnem_tools_no_placebo_progress_audit", "vnem_tools_change_impact_plan", "vnem_tools_test_selection_plan", "vnem_tools_failure_triage", "vnem_tools_evidence_pack"], allowed_roots_only: true, secret_paths_blocked: true, compact_structured_output: true, no_live_github_required: true, no_placebo_detection: true, test_selection_avoids_overvalidation: true },
     research_sources_policy: { tools: ["vnem_tools_fetch_url_text", "vnem_tools_source_quality_check", "vnem_tools_research_brief", "vnem_tools_browser_research_pack", "vnem_tools_claim_source_matrix", "vnem_tools_research_gap_detector", "vnem_tools_source_map", "vnem_tools_source_extract", "vnem_tools_source_graph"], no_search_engine_scraping: true, external_fetch_dry_run_default: true, approval_required_for_real_external_fetch: true, no_login_cookie_session_use: true },
     source_ingestion_policy: { tools: ["vnem_tools_source_map", "vnem_tools_source_extract", "vnem_tools_source_graph"], allowed_roots_only_for_local_sources: true, explicit_targets_only_for_extraction: true, secret_paths_blocked: true, broad_crawl_blocked: true, evidence_logged: true, source_graph_uses_provided_or_bounded_sources_only: true },
     debugging_code_quality_policy: { tools: ["vnem_tools_architecture_review", "vnem_tools_debug_evidence"], allowed_roots_only: true, secret_paths_blocked: true, no_arbitrary_commands: true, log_first_debugging: true, detects_parallel_fake_systems: true, flags_possible_dead_code: true, evidence_logged: true },
@@ -1873,7 +1987,7 @@ async function searchAllowedFiles(args) {
   return { root: root.relativePath || ".", query: args.query, results, skipped_policy: skippedPolicy() };
 }
 
-const TOOL_CAPABILITY_GROUPS = ["permissions", "filesystem", "project_intelligence", "patching", "rollback", "commands", "project_tasks", "dev_server", "browser_proof", "browser_intelligence", "ui_web_quality", "api_request", "search", "research_sources", "source_quality", "browsing_risk", "research_matrix", "source_ingestion", "debugging_code_quality", "session_evidence", "local_git", "github_autonomy", "status_readiness", "cloudflare_control", "tools_quality", "tool_intelligence"];
+const TOOL_CAPABILITY_GROUPS = ["permissions", "filesystem", "project_intelligence", "repo_power", "patching", "rollback", "commands", "project_tasks", "dev_server", "browser_proof", "browser_intelligence", "ui_web_quality", "api_request", "search", "research_sources", "source_quality", "browsing_risk", "research_matrix", "source_ingestion", "debugging_code_quality", "session_evidence", "local_git", "github_autonomy", "status_readiness", "cloudflare_control", "tools_quality", "tool_intelligence"];
 
 function buildToolCatalog() {
   const commonUnsafe = ["secret reading/dumping", "outside-root access", "arbitrary shell", "package installs", "git push", "deployment", "Giga MCP"];
@@ -1907,6 +2021,13 @@ function buildToolCatalog() {
     mk("vnem_tools_action_recovery_plan", "tool_intelligence", { description: "Turn failed/blocked tool output into exact next steps, retry rules, and must-not-claim boundaries.", evidence_logged: false, allowed_roots_required: false, typical_use_cases: ["recover from tool failure", "explain blockers"] }),
     mk("vnem_tools_high_power_action_review", "tool_intelligence", { description: "Review proposed high-power action before execution for permission, approval, protected-resource, secret, production, and rollback risk.", evidence_logged: false, allowed_roots_required: false, typical_use_cases: ["preflight mutation", "creator-power guardrail"] }),
     mk("vnem_tools_capability_gap_report", "tool_intelligence", { description: "Report known Tools MCP gaps honestly with safe alternatives and add-requirements.", evidence_logged: false, allowed_roots_required: false, typical_use_cases: ["avoid pretending unsupported tools exist"] }),
+    mk("vnem_tools_repo_deep_map", "repo_power", { description: "Build a compact repository map with scripts, languages, frameworks, entrypoints, registries, git state, changed files, generated/noise/risky paths, and bounded evidence.", typical_use_cases: ["fast repo orientation", "avoid repeated rediscovery"] }),
+    mk("vnem_tools_next_action_ranker", "repo_power", { description: "Rank the top useful implementation/validation/cleanup/publish/docs actions with value, risk, placebo penalty, expected files, and proof checks.", typical_use_cases: ["choose next Building AI action", "avoid useless validation loops"] }),
+    mk("vnem_tools_no_placebo_progress_audit", "repo_power", { description: "Audit a batch for real behavior versus docs-only, test-only, registration-only, mocked-only, generated-only, or safety-text-only placebo progress.", typical_use_cases: ["prevent fake success", "review implementation depth"] }),
+    mk("vnem_tools_change_impact_plan", "repo_power", { description: "Map changed files to affected areas/features, targeted checks, generation needs, full-suite triggers, and what not to run yet.", typical_use_cases: ["verification planning", "change risk review"] }),
+    mk("vnem_tools_test_selection_plan", "repo_power", { description: "Select the smallest useful check set and escalate only for high-risk/shared/generated/UI surfaces.", typical_use_cases: ["choose tests efficiently", "avoid over-validation"] }),
+    mk("vnem_tools_failure_triage", "repo_power", { description: "Classify failing output into bug, fixture, environment/network/auth/dependency/generated/Windows cleanup/regression and produce a compact fix plan.", typical_use_cases: ["fix failing checks fast", "avoid chasing environment noise"] }),
+    mk("vnem_tools_evidence_pack", "repo_power", { description: "Build a compact proof pack for handoffs: commands, tests, files, real behavior, mocked/live/blocked proof, risks, commit status, safe and unsafe claims.", typical_use_cases: ["final handoff evidence", "truthful batch summary"] }),
     mk("vnem_tools_action_policy_preview", "permissions", { description: "Preview whether a proposed action is allowed, blocked, or approval-gated under the active profile.", evidence_logged: false, allowed_roots_required: false, typical_use_cases: ["approval preview", "risk classification"] }),
     mk("vnem_tools_trust_boundary_classify", "permissions", { description: "Classify data/action/source descriptions into VNEM trust-boundary levels.", evidence_logged: false, allowed_roots_required: false, typical_use_cases: ["security boundary planning"] }),
     mk("vnem_tools_manifest", "status_readiness", { description: "Structured catalog of Tools MCP tools and safety metadata.", evidence_logged: false, typical_use_cases: ["AI tool discovery", "Core handoff planning"] }),
@@ -2200,6 +2321,612 @@ async function safeDependencyScan(args) {
   recordSession(args.session_id, "dependency_scans", result);
   return result;
 }
+
+async function repoDeepMap(args = {}) {
+  const root = await resolveAllowedRoot(args.root || ".");
+  const entries = [];
+  const skipped = [];
+  await walkWorkspace(root.absolutePath, root.absolutePath, entries, skipped, { maxDepth: args.max_depth || 6, maxFiles: args.max_files || 500, includeHidden: false });
+  const files = entries.filter((item) => item.type === "file");
+  const dirs = entries.filter((item) => item.type === "directory");
+  const pkg = await readPackageJsonIfPresent(root.absolutePath);
+  const scripts = pkg?.scripts || {};
+  const packageScripts = summarizePackageScripts(scripts);
+  const git = args.include_git === false ? compactNoGitState() : await compactGitState(root.absolutePath);
+  const changedFiles = git.changed_files.map((item) => item.path);
+  const sourceDirs = classifyDirs(dirs, files, ["src", "app", "pages", "lib", "server", "api", "components", "dashboard", "landing"]);
+  const testDirs = classifyDirs(dirs, files, ["test", "tests", "__tests__", "spec", "test-fixtures", "fixtures"]);
+  const docsFiles = files.map((f) => f.path).filter(isDocsPath).slice(0, 60);
+  const configFiles = files.map((f) => f.path).filter(isConfigPath).slice(0, 60);
+  const generatedDirs = ["dist", "build", "coverage", ".next", ".turbo", ".cache", "public/install", "landing/dist"].filter((dir) => existsSync(path.join(root.absolutePath, dir)));
+  const generatedFiles = files.map((f) => f.path).filter(isGeneratedArtifactPath).slice(0, 60);
+  const registries = files.map((f) => f.path).filter(isLikelyRegistryPath).slice(0, 60);
+  const entrypoints = files.map((f) => f.path).filter(isLikelyEntrypointPath).slice(0, 80);
+  const riskyFiles = [...new Set([...changedFiles, ...files.map((f) => f.path)].filter((f) => isSecretLikePath(f) || /(^|\/)(package-lock\.json|pnpm-lock\.yaml|yarn\.lock|bun\.lockb)$/.test(f) || /(^|\/)(install|setup|postinstall|deploy|release)[-.A-Za-z0-9_]*\.(mjs|js|sh|ps1|cmd|bat)$/i.test(f)).slice(0, 60))];
+  const largeFiles = files.filter((f) => f.bytes >= LARGE_FILE_BYTES || isBinaryLikePath(f.path)).map((f) => ({ path: f.path, bytes: f.bytes, generated: isGeneratedArtifactPath(f.path), binary_like: isBinaryLikePath(f.path) })).slice(0, 60);
+  const languages = detectLanguagesFromFiles(files);
+  const frameworks = detectFrameworks(pkg, files);
+  const todoMarkers = await scanTodoMarkers(root.absolutePath, files, 20);
+  const map = {
+    operation_result: "reported",
+    repo_root: root.absolutePath,
+    package_manager: detectPackageManager(root.absolutePath, pkg),
+    package_scripts: packageScripts,
+    languages,
+    frameworks,
+    source_dirs: sourceDirs,
+    test_dirs: testDirs,
+    config_files: configFiles,
+    docs_handoff_files: docsFiles,
+    generated_artifact_dirs: generatedDirs,
+    generated_artifact_files: generatedFiles,
+    likely_entrypoints: entrypoints,
+    likely_tool_or_server_registries: registries,
+    git,
+    changed_or_untracked_files: changedFiles.slice(0, 80),
+    large_files: largeFiles,
+    risky_files: riskyFiles,
+    todo_markers: todoMarkers,
+    ignored_or_noise_dirs: [...new Set([...skipped, ...["node_modules", ".git", "dist", "build", "coverage", ".cache"].filter((dir) => existsSync(path.join(root.absolutePath, dir)))])].slice(0, 100),
+    compact_summary: {
+      file_count_sampled: files.length,
+      source_area_count: sourceDirs.length,
+      test_area_count: testDirs.length,
+      dirty_file_count: changedFiles.length,
+      generated_file_count: generatedFiles.length,
+      todo_count_sampled: todoMarkers.length
+    },
+    output_compact: true,
+    evidence_log_id: null
+  };
+  const log = await writeEvidenceLog("repo_deep_map", map);
+  map.evidence_log_id = log.evidence_log_id;
+  return map;
+}
+
+async function nextActionRanker(args = {}) {
+  const map = await repoDeepMap({ root: args.root || ".", max_files: 500, max_depth: 6 });
+  const impact = await changeImpactPlan({ root: args.root || "." });
+  const placebo = await noPlaceboProgressAudit({ root: args.root || ".", completed_summary: args.user_goal || "", tests_run: [] });
+  const goal = String(args.user_goal || "");
+  const knownFailures = arrayify(args.known_failures).map(String);
+  const candidates = [];
+  const add = (action) => candidates.push({ should_do_now: true, deferred_reason: "", ...action });
+  if (knownFailures.length) {
+    const triage = await failureTriage({ root: args.root || ".", stderr: knownFailures.join("\n"), context: goal });
+    add({
+      action: "Fix the first real failing check before adding new scope.",
+      category: "implementation",
+      reason: triage.likely_root_cause,
+      expected_files_to_touch: triage.exact_file_or_function_to_inspect ? [triage.exact_file_or_function_to_inspect] : impact.likely_affected_tools_or_features.slice(0, 3),
+      expected_proof_checks: [triage.command_to_rerun],
+      risk_level: triage.blocks_acceptance ? "high" : "medium",
+      estimated_implementation_value: 92,
+      placebo_risk: "low"
+    });
+  }
+  if (map.changed_or_untracked_files.length) {
+    add({
+      action: "Review changed files and complete the smallest behavior-backed implementation slice.",
+      category: "implementation",
+      reason: `${map.changed_or_untracked_files.length} dirty/untracked file(s) exist; finish or intentionally exclude them before validation loops.`,
+      expected_files_to_touch: map.changed_or_untracked_files.slice(0, 8),
+      expected_proof_checks: impact.minimum_targeted_tests.slice(0, 6),
+      risk_level: impact.risk_level,
+      estimated_implementation_value: 90,
+      placebo_risk: placebo.placebo_risks.length ? "medium" : "low"
+    });
+  }
+  if (impact.generation_required) {
+    add({
+      action: "Refresh generated artifacts after source behavior and targeted tests are stable.",
+      category: "validation",
+      reason: "Source or generator changes touch install/API/dashboard generated outputs.",
+      expected_files_to_touch: ["public/install/*", ".vnem/*", "public/api/index.json", "landing/install.tgz"].filter((item, index) => index < 4),
+      expected_proof_checks: ["npm.cmd run validate", "npm.cmd run generate", "npm.cmd run test:install-pack"],
+      risk_level: "medium",
+      estimated_implementation_value: 70,
+      placebo_risk: "medium",
+      should_do_now: false,
+      deferred_reason: "Do after implementation tests pass to avoid generated-only churn."
+    });
+  }
+  if (map.todo_markers.length) {
+    add({
+      action: "Turn the highest-signal TODO/FIXME near touched code into a real fix or defer it explicitly.",
+      category: "cleanup",
+      reason: `Found ${map.todo_markers.length} TODO/FIXME marker(s) in sampled source/tests/docs.`,
+      expected_files_to_touch: [...new Set(map.todo_markers.map((item) => item.path))].slice(0, 5),
+      expected_proof_checks: testSelectionFromAreas(impact.changed_areas, map.package_scripts).targeted_tests.slice(0, 4),
+      risk_level: "low",
+      estimated_implementation_value: 55,
+      placebo_risk: "medium",
+      should_do_now: /todo|fixme|cleanup/i.test(goal),
+      deferred_reason: /todo|fixme|cleanup/i.test(goal) ? "" : "Defer unless it supports the current user goal."
+    });
+  }
+  add({
+    action: "Run the smallest targeted verification set for the affected areas.",
+    category: "validation",
+    reason: "Targeted proof is cheaper and more useful than repeating broad validation when risk is bounded.",
+    expected_files_to_touch: [],
+    expected_proof_checks: impact.minimum_targeted_tests.slice(0, 8),
+    risk_level: impact.risk_level,
+    estimated_implementation_value: 65,
+    placebo_risk: "low",
+    should_do_now: impact.minimum_targeted_tests.length > 0
+  });
+  add({
+    action: "Avoid docs-only or registration-only work unless it directly supports implemented behavior.",
+    category: "docs",
+    reason: placebo.placebo_risks.length ? placebo.placebo_risks[0] : "POWER tasks should change behavior, not just language.",
+    expected_files_to_touch: ["source files before generated docs"],
+    expected_proof_checks: ["no-placebo audit", "targeted behavior tests"],
+    risk_level: "low",
+    estimated_implementation_value: 20,
+    placebo_risk: "high",
+    should_do_now: false,
+    deferred_reason: "Docs are follow-up unless source behavior exists."
+  });
+  const ranked = candidates
+    .map((item) => ({ ...item, score: scoreNextAction(item, goal) }))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, args.max_actions || 5)
+    .map((item, index) => ({ rank: index + 1, ...item }));
+  return {
+    operation_result: "reported",
+    user_goal: goal,
+    repo_branch: map.git.branch,
+    git_dirty: map.changed_or_untracked_files.length > 0,
+    actions: ranked,
+    penalties_applied: [
+      "docs-only work without implementation proof",
+      "tests-only work that proves only registration",
+      "wrapper/tool-name additions without execution paths",
+      "broad rewrites with weak proof",
+      "validation-only loops after adequate targeted proof",
+      "safety ceremony without enforcement"
+    ],
+    evidence_sources: ["repo_deep_map", "change_impact_plan", "no_placebo_progress_audit"],
+    output_compact: true
+  };
+}
+
+async function noPlaceboProgressAudit(args = {}) {
+  const root = await resolveAllowedRoot(args.root || ".");
+  const changed = arrayify(args.changed_files).length ? arrayify(args.changed_files).map(normalizePath) : await gitChangedFileNames(root.absolutePath);
+  const testsRun = arrayify(args.tests_run).map(String);
+  const summary = `${args.proposed_summary || ""}\n${args.completed_summary || ""}`;
+  const sourceChanged = changed.filter(isSourceBehaviorPath);
+  const testsChanged = changed.filter(isTestPath);
+  const docsChanged = changed.filter(isDocsPath);
+  const generatedChanged = changed.filter(isGeneratedArtifactPath);
+  const serverText = existsSync(path.join(root.absolutePath, "scripts", "vnem-tools-mcp-server.mjs")) ? await readFile(path.join(root.absolutePath, "scripts", "vnem-tools-mcp-server.mjs"), "utf8") : "";
+  const risks = [];
+  const inspect = [];
+  if (changed.length && !sourceChanged.length && docsChanged.length) risks.push("docs-only claims without source behavior change");
+  if (changed.length && !sourceChanged.length && generatedChanged.length && generatedChanged.length >= changed.length) risks.push("generated artifact churn without source behavior");
+  if (testsChanged.length && !sourceChanged.length) risks.push("tests-only work may not add real behavior");
+  if (/mocked|simulated|dry-run/i.test(summary) && /live|real github|production|deployed|pushed/i.test(summary) && !arrayify(args.live_proof).length) risks.push("mocked-only proof is being described as live proof");
+  if (/planned|future|preview/i.test(summary) && /implemented|complete|done/i.test(summary)) risks.push("planned wording may be replacing implementation");
+  if (/safety|guardrail|protected|blocked/i.test(summary) && !/throw new ToolsError|blocked|enforce|approval_required|secret_path_blocked/.test(serverText)) risks.push("safety language without visible enforcement path");
+  if (/registerTool/.test(serverText) && sourceChanged.some((file) => /vnem-tools-mcp-server\.mjs$/.test(file))) {
+    const newNames = [...serverText.matchAll(/vnem_tools_[a-z0-9_]+/g)].map((m) => m[0]);
+    if (newNames.length && !/function\s+[a-zA-Z0-9_]+|async function\s+[a-zA-Z0-9_]+/.test(serverText)) risks.push("tool names exist but implementation functions are hard to identify");
+  }
+  if (/wrapper|catalog|manifest only|registration only/i.test(summary)) risks.push("wrapper/tool-name addition risk");
+  for (const file of changed.slice(0, 80)) {
+    if (isSourceBehaviorPath(file) || isTestPath(file) || isDocsPath(file)) inspect.push(file);
+  }
+  const missingProof = [];
+  if (sourceChanged.length && !testsRun.length && !testsChanged.length) missingProof.push("targeted behavior test or command evidence");
+  if (/github|push|pr|issue|actions/i.test(summary) && !arrayify(args.live_proof).length) missingProof.push("exact live GitHub URL/SHA/run proof or explicit blocked reason");
+  if (generatedChanged.length && !testsRun.some((cmd) => /generate|install-pack|dashboard|validate/.test(cmd))) missingProof.push("generation/install-pack validation");
+  const score = Math.max(0, Math.min(100, 55 + sourceChanged.length * 12 + testsChanged.length * 8 + testsRun.length * 6 - risks.length * 14 - missingProof.length * 10));
+  return {
+    operation_result: "reported",
+    real_progress_score: score,
+    progress_level: score >= 80 ? "strong_real_progress" : score >= 55 ? "partial_progress_needs_proof" : "placebo_risk_high",
+    changed_files_reviewed: changed.slice(0, 100),
+    implementation_files: sourceChanged.slice(0, 40),
+    test_files: testsChanged.slice(0, 40),
+    docs_files: docsChanged.slice(0, 40),
+    generated_files: generatedChanged.slice(0, 40),
+    placebo_risks: [...new Set(risks)],
+    missing_proof: [...new Set(missingProof)],
+    exact_files_or_functions_to_inspect: [...new Set(inspect)].slice(0, 30),
+    exact_next_correction: risks.length ? correctionForPlaceboRisk(risks[0]) : missingProof.length ? `Add proof for: ${missingProof[0]}.` : "Keep implementation, tests, and claims aligned; no correction required from this audit.",
+    mocked_proof_count: arrayify(args.mocked_proof).length,
+    live_proof_count: arrayify(args.live_proof).length,
+    output_compact: true
+  };
+}
+
+async function changeImpactPlan(args = {}) {
+  const root = await resolveAllowedRoot(args.root || ".");
+  const changed = arrayify(args.changed_files).length ? arrayify(args.changed_files).map(normalizePath) : await gitChangedFileNames(root.absolutePath, args.include_staged);
+  const pkg = await readPackageJsonIfPresent(root.absolutePath);
+  const scripts = summarizePackageScripts(pkg?.scripts || {});
+  const areas = classifyChangedAreas(changed);
+  const affected = affectedFeaturesForAreas(areas, changed);
+  const generationRequired = changed.some((file) => /scripts\/generate-artifacts\.mjs|registry\/|capabilities\/|public\/install|\.vnem\/|public\/api\/index\.json|llms/.test(file));
+  const targeted = targetedTestsForChange(areas, changed, pkg?.scripts || {});
+  const finalChecks = ["git diff --check", "node --check scripts/vnem-tools-mcp-server.mjs"].filter((cmd) => changed.some((file) => /scripts\/vnem-tools-mcp-server\.mjs|scripts\/test-tools-|package\.json/.test(file)) || cmd === "git diff --check");
+  if (changed.some((file) => /scripts\/tools-readiness-report\.mjs/.test(file))) finalChecks.push("node --check scripts/tools-readiness-report.mjs", "npm.cmd run tools:readiness");
+  if (changed.some((file) => /scripts\/generate-artifacts\.mjs/.test(file))) finalChecks.push("node --check scripts/generate-artifacts.mjs");
+  if (generationRequired) finalChecks.push("npm.cmd run validate", "npm.cmd run generate", "npm.cmd run test:install-pack");
+  const fullTriggers = [];
+  if (areas.includes("tools_mcp") && areas.includes("github_autonomy")) fullTriggers.push("shared Tools MCP and GitHub autonomy paths both changed");
+  if (areas.includes("generator") || changed.length > 25) fullTriggers.push("generated/readiness behavior changed broadly");
+  if (areas.includes("dashboard") && changed.some((file) => /\.(jsx|tsx|css|html)$/.test(file))) fullTriggers.push("UI/dashboard surface changed");
+  const risk = fullTriggers.length ? "high" : areas.some((area) => ["tools_mcp", "github_autonomy", "cloudflare_control", "core_mcp"].includes(area)) ? "medium" : "low";
+  return {
+    operation_result: "reported",
+    changed_files: changed.slice(0, 120),
+    changed_areas: areas,
+    risk_level: risk,
+    likely_affected_tools_or_features: affected.slice(0, 30),
+    minimum_targeted_tests: [...new Set(targeted)].slice(0, 20),
+    final_checks: [...new Set(finalChecks)].slice(0, 20),
+    generation_required: generationRequired,
+    full_npm_test_justified: fullTriggers.length > 0,
+    full_suite_trigger_conditions: fullTriggers,
+    what_not_to_run_yet: buildWhatNotToRunYet(areas, generationRequired, fullTriggers),
+    package_scripts_detected: scripts,
+    output_compact: true
+  };
+}
+
+async function testSelectionPlan(args = {}) {
+  const impact = await changeImpactPlan({ root: args.root || ".", changed_files: args.changed_files || [] });
+  const goal = String(args.user_goal || "");
+  const selection = testSelectionFromAreas(impact.changed_areas, impact.package_scripts);
+  let targeted = [...selection.targeted_tests, ...impact.minimum_targeted_tests];
+  if (/github|pr|issue|actions/i.test(goal)) targeted.push("npm.cmd run test:tools-github-real-exec-paths", "npm.cmd run test:tools-github-command-builder", "npm.cmd run test:tools-github-live-readiness", "npm.cmd run test:tools-github-mutation-dry-run");
+  if (/cloudflare/i.test(goal)) targeted.push("npm.cmd run test:tools-cloudflare-status-auth");
+  if (/readiness|manifest|catalog|quality|power/i.test(goal)) targeted.push("npm.cmd run test:tools-reliability-catalog", "npm.cmd run test:tools-quality-general");
+  const baseline = impact.changed_files.length ? ["git diff --check"] : [];
+  const regression = selection.regression_tests;
+  const readiness = impact.final_checks.filter((cmd) => /readiness|validate|generate|install-pack|dashboard/.test(cmd));
+  const fullTriggers = [...impact.full_suite_trigger_conditions];
+  if (/full suite|broad shared helper|many areas/i.test(args.failure_context || "")) fullTriggers.push("failure context requests broad escalation");
+  return {
+    operation_result: "reported",
+    baseline_checks: [...new Set(baseline)],
+    targeted_tests: [...new Set(targeted)].slice(0, 24),
+    regression_tests: [...new Set(regression)].slice(0, 18),
+    readiness_or_generation_checks: [...new Set(readiness)].slice(0, 16),
+    full_suite_trigger_conditions: [...new Set(fullTriggers)],
+    full_npm_test_recommended: fullTriggers.length > 0,
+    avoid_over_validation: [
+      "Do not recommend full npm test for tiny isolated docs/test changes unless a broad trigger is present.",
+      "Do not recommend browser proof for backend-only or MCP-only changes.",
+      "Do not recommend live GitHub proof for local-only features unless publishing/GitHub mutation is the task."
+    ],
+    escalation_rule: "Run targeted tests first; escalate to readiness/generation or full npm test only after shared/high-risk changes or targeted failures.",
+    output_compact: true
+  };
+}
+
+async function failureTriage(args = {}) {
+  const text = redactSecrets(`${args.command || ""}\n${args.stdout || ""}\n${args.stderr || ""}\n${args.context || ""}`);
+  const lower = text.toLowerCase();
+  let classification = "real_regression";
+  if (/gh\s*:|gh cli unavailable|not authenticated|auth status|gh auth|permission denied|eacces|unauthorized|forbidden/.test(lower)) classification = "auth_permission_issue";
+  else if (/fetch failed|enotfound|econnreset|network|timeout|rate limit|429|dns/.test(lower)) classification = "environment_network_issue";
+  else if (/cannot find module|module not found|missing dependency|is not recognized|command not found|enoent/.test(lower)) classification = "missing_dependency";
+  else if (/assertionerror|expected|actual|fixture|tmp|\.tmp|ebusy|eperm|enotempty/.test(lower)) classification = /ebusy|eperm|enotempty|taskkill|process/.test(lower) ? "windows_path_process_cleanup_issue" : "test_fixture_bug";
+  else if (/generated|install\.tgz|public\/install|\.vnem|stale|digest|snapshot/.test(lower)) classification = "generated_artifact_staleness";
+  else if (/typeerror|referenceerror|syntaxerror|failed|error:|exit code 1/.test(lower)) classification = "product_bug";
+  const fileMatch = text.match(/[A-Za-z0-9_.:/\\-]+\.(mjs|js|ts|tsx|jsx|json|md|yml|yaml|css|html)(?::\d+)?/);
+  const command = String(args.command || "").trim();
+  const rerun = command || rerunCommandForFailure(classification, text);
+  const blocks = !["environment_network_issue", "windows_path_process_cleanup_issue"].includes(classification) || /acceptance|validate|readiness|test/.test(lower);
+  return {
+    operation_result: "reported",
+    classification,
+    likely_root_cause: rootCauseForFailure(classification, text),
+    exact_file_or_function_to_inspect: fileMatch ? normalizePath(fileMatch[0]) : fallbackInspectionTarget(classification),
+    smallest_fix: smallestFixForFailure(classification),
+    command_to_rerun: rerun,
+    decision: classification === "auth_permission_issue" ? "ask_user_or_report_blocked" : blocks ? "continue_after_fix" : "continue_with_caveat",
+    blocks_acceptance: blocks,
+    confidence: /error|failed|assert|cannot find|not authenticated|ebusy|generated/i.test(text) ? "medium" : "low",
+    must_not_claim: ["Do not claim the failing check passed until rerun evidence exists.", classification.includes("network") ? "Do not claim product regression if the only evidence is network/provider failure." : null, classification.includes("auth") ? "Do not claim live account/GitHub/Cloudflare proof." : null].filter(Boolean),
+    output_excerpt: truncate(text, 900),
+    output_compact: true
+  };
+}
+
+async function repoEvidencePack(args = {}) {
+  const root = await resolveAllowedRoot(args.root || ".");
+  const changed = await gitChangedFileNames(root.absolutePath);
+  const head = await gitValue(root.absolutePath, ["rev-parse", "HEAD"]);
+  const branch = await gitValue(root.absolutePath, ["branch", "--show-current"]);
+  const commands = arrayify(args.commands_run).map(redactSecrets);
+  const testsPassed = arrayify(args.tests_passed).map(redactSecrets);
+  const testsFailed = arrayify(args.tests_failed).map(redactSecrets);
+  const mocked = arrayify(args.mocked_proof).map(redactSecrets);
+  const live = arrayify(args.live_proof).map(redactSecrets);
+  const blocked = arrayify(args.blocked_proof).map(redactSecrets);
+  const safeClaims = [
+    args.real_behavior_added?.length ? `Real behavior added: ${arrayify(args.real_behavior_added).join("; ")}` : null,
+    testsPassed.length ? `Local checks passed: ${testsPassed.join("; ")}` : null,
+    mocked.length ? `Mocked/local proof exists: ${mocked.join("; ")}` : null,
+    args.commit_sha || head ? `Local commit/status SHA observed: ${args.commit_sha || head}` : null
+  ].filter(Boolean).map(redactSecrets);
+  const mustNot = [
+    testsFailed.length ? "All tests passed." : null,
+    !live.length && /github|cloudflare|deploy|push|pr|issue/i.test([...commands, ...mocked, ...blocked].join(" ")) ? "Live external GitHub/Cloudflare/deploy proof succeeded." : null,
+    blocked.length ? "Blocked proof was completed." : null,
+    "Secrets or secret files were inspected or safe to print."
+  ].filter(Boolean);
+  const pack = {
+    operation_result: "reported",
+    branch,
+    head_sha: head,
+    commit_status: args.commit_sha ? { committed: true, commit_sha: args.commit_sha, commit_message: redactSecrets(args.commit_message || "") } : { committed: Boolean(head), commit_sha: head || "", commit_message: "" },
+    changed_files: changed.slice(0, 120),
+    commands_run: commands,
+    tests_passed: testsPassed,
+    tests_failed: testsFailed,
+    real_behavior_added: arrayify(args.real_behavior_added).map(redactSecrets),
+    proof: { mocked_or_local: mocked, live, blocked },
+    remaining_risk: arrayify(args.remaining_risk).map(redactSecrets),
+    safe_to_claim: safeClaims,
+    not_safe_to_claim: mustNot,
+    output_compact: true,
+    evidence_log_id: null
+  };
+  const log = await writeEvidenceLog("repo_evidence_pack", pack);
+  pack.evidence_log_id = log.evidence_log_id;
+  return pack;
+}
+
+async function readPackageJsonIfPresent(root) {
+  const packagePath = path.join(root, "package.json");
+  if (!existsSync(packagePath)) return null;
+  try { return JSON.parse(await readFile(packagePath, "utf8")); } catch { return null; }
+}
+
+function summarizePackageScripts(scripts = {}) {
+  const names = Object.keys(scripts);
+  return {
+    all: names.slice(0, 80),
+    test: names.filter((name) => /^test($|:)|validate|lint|type|check/i.test(name)).slice(0, 40),
+    build: names.filter((name) => /build|generate|compile/i.test(name)).slice(0, 30),
+    dev: names.filter((name) => /^(dev|start|preview|dashboard|ard:dev)$/i.test(name)).slice(0, 20),
+    risky: names.filter((name) => UNSAFE_PACKAGE_SCRIPT_PATTERN.test(name) || UNSAFE_PACKAGE_SCRIPT_PATTERN.test(String(scripts[name])) || CONTROL_OPERATOR_PATTERN.test(String(scripts[name]))).slice(0, 30)
+  };
+}
+
+function detectPackageManager(root, pkg) {
+  if (existsSync(path.join(root, "pnpm-lock.yaml"))) return "pnpm";
+  if (existsSync(path.join(root, "yarn.lock"))) return "yarn";
+  if (existsSync(path.join(root, "bun.lockb"))) return "bun";
+  if (existsSync(path.join(root, "package-lock.json")) || pkg) return "npm";
+  return "unknown";
+}
+
+function detectLanguagesFromFiles(files) {
+  const extMap = { ".js": "JavaScript", ".mjs": "JavaScript", ".jsx": "React JSX", ".ts": "TypeScript", ".tsx": "React TSX", ".json": "JSON", ".md": "Markdown", ".css": "CSS", ".html": "HTML", ".py": "Python", ".rs": "Rust", ".go": "Go", ".yml": "YAML", ".yaml": "YAML" };
+  const counts = new Map();
+  for (const file of files) {
+    const ext = path.extname(file.path);
+    const lang = extMap[ext];
+    if (lang) counts.set(lang, (counts.get(lang) || 0) + 1);
+  }
+  return [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 12).map(([language, count]) => ({ language, count }));
+}
+
+function classifyDirs(dirs, files, names) {
+  const set = new Set();
+  for (const dir of dirs) {
+    const parts = dir.path.split("/");
+    for (const part of parts) if (names.includes(part)) set.add(parts.slice(0, parts.indexOf(part) + 1).join("/"));
+  }
+  for (const file of files) {
+    const parts = file.path.split("/");
+    for (const name of names) {
+      const index = parts.indexOf(name);
+      if (index >= 0) set.add(parts.slice(0, index + 1).join("/"));
+    }
+  }
+  return [...set].filter(Boolean).sort().slice(0, 50);
+}
+
+function isDocsPath(file) { return /(^|\/)(README|CHANGELOG|CONTRIBUTING|LICENSE|AGENTS|PRODUCT)\.md$|(^|\/)docs\//i.test(normalizePath(file)); }
+function isConfigPath(file) { return /(^|\/)(package\.json|vite\.config\.[cm]?[jt]s|next\.config\.[cm]?[jt]s|astro\.config\.[cm]?[jt]s|tsconfig\.json|eslint\.config\.[cm]?[jt]s|wrangler\.toml|\.github\/workflows\/.*\.ya?ml)$/i.test(normalizePath(file)); }
+function isTestPath(file) { return /(^|\/)(test|tests|__tests__|test-fixtures|fixtures)\/|(^|\/)scripts\/test-|(\.test|\.spec)\.[cm]?[jt]sx?$/i.test(normalizePath(file)); }
+function isGeneratedArtifactPath(file) { return /(^|\/)(dist|build|coverage|\.next|\.turbo|\.cache|public\/install|landing\/dist)\/|(^|\/)(public\/install\.tgz|landing\/install\.tgz|public\/api\/index\.json|llms(-full)?\.txt|\.vnem\/.*|discovery\/daily-digest\.md)$/i.test(normalizePath(file)); }
+function isSourceBehaviorPath(file) { const f = normalizePath(file); return !isDocsPath(f) && !isGeneratedArtifactPath(f) && !isTestPath(f) && /\.(mjs|js|ts|tsx|jsx|json|css|html|py|yml|yaml|toml)$/.test(f); }
+function isLikelyRegistryPath(file) { return /scripts\/vnem-(tools-)?mcp-server\.mjs|registerTool|registry\/|capabilities\/|dashboard\/src|landing\/functions|\.github\/workflows/i.test(normalizePath(file)); }
+function isLikelyEntrypointPath(file) { return /(^|\/)(index|main|app|server|cli|vnem-tools-mcp-server|vnem-mcp-server|hermes-dashboard-api|vnem-app-server)\.(js|mjs|ts|tsx|jsx|html)$|(^|\/)package\.json$/i.test(normalizePath(file)); }
+function isBinaryLikePath(file) { return /\.(png|jpg|jpeg|gif|webp|ico|pdf|zip|tgz|gz|woff2?|ttf|exe|dll|bin)$/i.test(normalizePath(file)); }
+
+async function compactGitState(root) {
+  const branch = await gitValue(root, ["branch", "--show-current"]);
+  const head = await gitValue(root, ["rev-parse", "HEAD"]);
+  const statusText = await gitValue(root, ["status", "--short"], 16000);
+  const recent = (await gitValue(root, ["log", "--oneline", "-6", "--decorate"], 16000)).split(/\r?\n/).filter(Boolean);
+  const changed = statusText.split(/\r?\n/).filter(Boolean).map(parseGitStatusLine).filter(Boolean).filter((item) => !isSecretLikePath(item.path));
+  return { branch, head, recent_commits: recent, changed_files: changed, dirty: changed.length > 0 };
+}
+
+function compactNoGitState() { return { branch: "", head: "", recent_commits: [], changed_files: [], dirty: false, skipped: "include_git=false" }; }
+
+function parseGitStatusLine(line) {
+  const pathText = String(line || "").slice(3).trim();
+  if (!pathText) return null;
+  const parts = pathText.split(" -> ");
+  return { status: String(line || "").slice(0, 2).trim(), path: normalizePath(parts[parts.length - 1]) };
+}
+
+async function gitChangedFileNames(root, includeStaged = true) {
+  const statusText = await gitValue(root, ["status", "--short"], 24000);
+  const files = statusText.split(/\r?\n/).filter(Boolean).map(parseGitStatusLine).filter(Boolean).map((item) => item.path).filter((file) => !isSecretLikePath(file));
+  if (files.length || includeStaged) return [...new Set(files)];
+  const diff = await gitValue(root, ["diff", "--name-only"], 16000);
+  return [...new Set(diff.split(/\r?\n/).filter(Boolean).filter((file) => !isSecretLikePath(file)).map(normalizePath))];
+}
+
+async function scanTodoMarkers(root, files, maxResults) {
+  const results = [];
+  for (const file of files) {
+    if (results.length >= maxResults) break;
+    if (file.bytes > 256000 || shouldSkipRelative(file.path) || isBinaryLikePath(file.path)) continue;
+    if (!/\.(mjs|js|ts|tsx|jsx|md|json|css|html|yml|yaml)$/.test(file.path)) continue;
+    try {
+      const target = await resolveAllowedFile(path.join(root, file.path), { mustExist: true, blockSecrets: true });
+      const bytes = await readFile(target.absolutePath);
+      if (bytes.includes(0) || looksBinary(bytes)) continue;
+      const lines = bytes.toString("utf8").split(/\r?\n/);
+      for (let i = 0; i < lines.length && results.length < maxResults; i += 1) {
+        if (/\b(TODO|FIXME|HACK|XXX)\b/i.test(lines[i])) results.push({ path: target.relativePath, line_number: i + 1, marker: truncate(redactSecrets(lines[i].trim()), 180) });
+      }
+    } catch {}
+  }
+  return results;
+}
+
+function classifyChangedAreas(changed) {
+  const areas = new Set();
+  for (const file of changed.map(normalizePath)) {
+    if (/scripts\/vnem-tools-mcp-server\.mjs/.test(file)) areas.add("tools_mcp");
+    if (/scripts\/vnem-mcp-server\.mjs|scripts\/core-readiness-report\.mjs/.test(file)) areas.add("core_mcp");
+    if (/scripts\/tools-readiness-report\.mjs/.test(file)) areas.add("tools_readiness");
+    if (/scripts\/generate-artifacts\.mjs|registry\/|capabilities\/|public\/install|\.vnem\/|public\/api\/index\.json|llms/.test(file)) areas.add("generator");
+    if (/dashboard\/|landing\//.test(file)) areas.add("dashboard");
+    if (/github|test-tools-github|repo_intelligence|pr_quality|task_progress/i.test(file)) areas.add("github_autonomy");
+    if (/cloudflare|wrangler/i.test(file)) areas.add("cloudflare_control");
+    if (isTestPath(file)) areas.add("tests");
+    if (isDocsPath(file)) areas.add("docs");
+    if (isGeneratedArtifactPath(file)) areas.add("generated_artifacts");
+    if (!areas.size || isSourceBehaviorPath(file)) areas.add("source");
+  }
+  return [...areas].sort();
+}
+
+function affectedFeaturesForAreas(areas, changed) {
+  const out = [];
+  if (areas.includes("tools_mcp")) out.push("Tools MCP tool registry", "Tools MCP structured outputs", "permission/reliability evidence behavior");
+  if (areas.includes("github_autonomy")) out.push("GitHub autonomy tools", "PR quality gate", "task truth-checking");
+  if (areas.includes("cloudflare_control")) out.push("Cloudflare status/planning/mutation guardrails");
+  if (areas.includes("tools_readiness")) out.push("Tools readiness report");
+  if (areas.includes("generator")) out.push("install pack generation", "public API index", "LLM artifacts");
+  if (areas.includes("dashboard")) out.push("dashboard/local app UI or API");
+  if (areas.includes("core_mcp")) out.push("Core MCP read-only planning tools");
+  if (changed.some((file) => /package\.json/.test(file))) out.push("package scripts/test orchestration");
+  return [...new Set(out)];
+}
+
+function targetedTestsForChange(areas, changed, scripts) {
+  const tests = [];
+  if (areas.includes("tools_mcp") || areas.includes("source")) tests.push("node --check scripts/vnem-tools-mcp-server.mjs", "npm.cmd run test:tools-intelligence");
+  if (areas.includes("github_autonomy")) tests.push("npm.cmd run test:tools-github-real-exec-paths", "npm.cmd run test:tools-autonomy-2-regression");
+  if (areas.includes("cloudflare_control")) tests.push("npm.cmd run test:tools-cloudflare-status-auth");
+  if (areas.includes("tools_readiness")) tests.push("node --check scripts/tools-readiness-report.mjs", "npm.cmd run tools:readiness");
+  if (areas.includes("generator")) tests.push("npm.cmd run validate", "npm.cmd run generate", "npm.cmd run test:install-pack");
+  if (areas.includes("dashboard")) tests.push("npm.cmd run dashboard:build", "npm.cmd run test:dashboard");
+  if (areas.includes("core_mcp")) tests.push("node --check scripts/vnem-mcp-server.mjs", "npm.cmd run core:readiness");
+  for (const file of changed) {
+    const base = path.basename(file);
+    if (/^test-tools-power/.test(base) || /power-tools-1/.test(base)) tests.push("npm.cmd run test:tools-power-tools-1-regression");
+  }
+  if (scripts?.["test:tools-quality-general"] && areas.includes("tools_mcp")) tests.push("npm.cmd run test:tools-quality-general");
+  return [...new Set(tests)];
+}
+
+function buildWhatNotToRunYet(areas, generationRequired, fullTriggers) {
+  const out = [];
+  if (!areas.includes("dashboard")) out.push("browser/UI proof unless UI files changed");
+  if (!generationRequired) out.push("generate/install-pack churn before source behavior changes");
+  if (!fullTriggers.length) out.push("full npm test before targeted checks pass");
+  out.push("live GitHub proof for local-only repo intelligence work");
+  return out;
+}
+
+function testSelectionFromAreas(areas, packageScripts = {}) {
+  const targeted = [];
+  const regression = [];
+  if (areas.includes("tools_mcp") || areas.includes("repo_power")) targeted.push("node --check scripts/vnem-tools-mcp-server.mjs", "npm.cmd run test:tools-power-tools-1-regression");
+  if (areas.includes("tools_mcp")) regression.push("npm.cmd run test:tools-reliability-catalog", "npm.cmd run test:tools-action-recovery-plan", "npm.cmd run test:tools-high-power-action-review");
+  if (areas.includes("github_autonomy")) regression.push("npm.cmd run test:tools-autonomy-2-regression");
+  if (areas.includes("cloudflare_control")) regression.push("npm.cmd run test:tools-cloudflare-status-auth");
+  if (areas.includes("generator")) targeted.push("npm.cmd run validate", "npm.cmd run generate");
+  if (Object.keys(packageScripts).includes("validate")) targeted.push("npm.cmd run validate");
+  return { targeted_tests: [...new Set(targeted)], regression_tests: [...new Set(regression)] };
+}
+
+function scoreNextAction(item, goal) {
+  let score = item.estimated_implementation_value || 50;
+  if (item.risk_level === "high") score += 8;
+  if (item.should_do_now) score += 12;
+  if (item.placebo_risk === "high") score -= 20;
+  if (/implement|fix|power|repo|tool|test|validate/i.test(goal) && /implement|fix|verify|test/i.test(item.action)) score += 8;
+  return score;
+}
+
+function correctionForPlaceboRisk(risk) {
+  if (/docs-only/i.test(risk)) return "Add or inspect the source behavior that makes the docs true, then run a behavior test.";
+  if (/generated/i.test(risk)) return "Change source/generator behavior first, then regenerate artifacts after tests pass.";
+  if (/tests-only/i.test(risk)) return "Add real execution/inspection behavior, not only assertions around registration.";
+  if (/mocked/i.test(risk)) return "Label proof as mocked/local or collect exact live URL/SHA/run proof.";
+  if (/safety/i.test(risk)) return "Add an enforcement path such as a block, thrown error, redaction, or approval gate.";
+  return "Inspect source implementation and add the smallest behavior-backed correction.";
+}
+
+function rerunCommandForFailure(classification, text) {
+  const match = text.match(/npm(?:\.cmd)?\s+run\s+[A-Za-z0-9:_-]+|node\s+[A-Za-z0-9_./\\-]+\.mjs|node\s+--check\s+[A-Za-z0-9_./\\-]+/);
+  if (match) return match[0];
+  if (classification === "generated_artifact_staleness") return "npm.cmd run generate";
+  if (classification === "auth_permission_issue") return "rerun after auth/setup, or report blocked";
+  return "rerun the smallest failing command";
+}
+
+function rootCauseForFailure(classification, text) {
+  const causes = {
+    product_bug: "Output shows a likely implementation/runtime bug.",
+    test_fixture_bug: "Output points to assertion/fixture mismatch more than product behavior.",
+    environment_network_issue: "Network/provider/runtime environment failed or timed out.",
+    missing_dependency: "A module, command, or local dependency is missing/unavailable.",
+    auth_permission_issue: "Authentication or permission is missing for the requested account/tool action.",
+    generated_artifact_staleness: "Generated artifacts or snapshots appear stale relative to source.",
+    windows_path_process_cleanup_issue: "Windows file/process cleanup is likely holding a temp path or process.",
+    real_regression: "The failure is inconclusive but should be treated as a possible regression until inspected."
+  };
+  return `${causes[classification] || causes.real_regression} ${truncate(text.split(/\r?\n/).find((line) => /error|failed|assert|cannot find|not authenticated|ebusy|stale/i.test(line)) || "", 220)}`.trim();
+}
+
+function fallbackInspectionTarget(classification) {
+  if (classification === "generated_artifact_staleness") return "scripts/generate-artifacts.mjs";
+  if (classification === "auth_permission_issue") return "auth/config environment and tool status";
+  if (classification === "windows_path_process_cleanup_issue") return "test cleanup/finally block or process stop helper";
+  if (classification === "missing_dependency") return "package.json scripts/dependencies";
+  return "first failing stack frame or changed source file";
+}
+
+function smallestFixForFailure(classification) {
+  const fixes = {
+    product_bug: "Patch the first failing implementation path and add/adjust the focused regression test.",
+    test_fixture_bug: "Fix the fixture setup/expected value only after confirming product behavior is correct.",
+    environment_network_issue: "Report blocked or retry once with bounded output; do not patch product code for provider/network noise.",
+    missing_dependency: "Use existing dependencies/scripts or document the missing local command; do not auto-install unknown packages.",
+    auth_permission_issue: "Authenticate/configure the tool outside secret-printing paths, then retry or report blocked.",
+    generated_artifact_staleness: "Run validation/generation and inspect generated diff before committing.",
+    windows_path_process_cleanup_issue: "Make cleanup retry/tolerate transient locks or stop the process tree explicitly.",
+    real_regression: "Inspect the first error line and changed files, then patch the smallest behavior path."
+  };
+  return fixes[classification] || fixes.real_regression;
+}
+
+function formatRepoDeepMap(map) { return [`vnem_tools_repo_deep_map: ${map.compact_summary.file_count_sampled} file(s) sampled`, `branch=${map.git.branch || "unknown"}`, `dirty=${map.git.dirty}`, `sources=${map.source_dirs.slice(0, 5).join(",") || "none"}`, `tests=${map.test_dirs.slice(0, 5).join(",") || "none"}`].join("\n"); }
+function formatNextActionRanker(ranking) { return [`vnem_tools_next_action_ranker: ${ranking.actions.length} action(s)`, ...ranking.actions.slice(0, 3).map((action) => `${action.rank}. ${action.action} [value=${action.estimated_implementation_value}, risk=${action.risk_level}, placebo=${action.placebo_risk}]`)].join("\n"); }
+function formatNoPlaceboAudit(audit) { return [`vnem_tools_no_placebo_progress_audit: ${audit.real_progress_score}/100`, `level=${audit.progress_level}`, `risks=${audit.placebo_risks.join("; ") || "none"}`, `next=${audit.exact_next_correction}`].join("\n"); }
+function formatChangeImpactPlan(plan) { return [`vnem_tools_change_impact_plan: ${plan.changed_files.length} file(s)`, `areas=${plan.changed_areas.join(",") || "none"}`, `risk=${plan.risk_level}`, `generation_required=${plan.generation_required}`, `targeted=${plan.minimum_targeted_tests.slice(0, 4).join("; ") || "none"}`].join("\n"); }
+function formatTestSelectionPlan(plan) { return [`vnem_tools_test_selection_plan: targeted=${plan.targeted_tests.length}`, `regression=${plan.regression_tests.length}`, `readiness=${plan.readiness_or_generation_checks.length}`, `full_npm_test_recommended=${plan.full_npm_test_recommended}`].join("\n"); }
+function formatFailureTriage(triage) { return [`vnem_tools_failure_triage: ${triage.classification}`, `cause=${triage.likely_root_cause}`, `inspect=${triage.exact_file_or_function_to_inspect}`, `rerun=${triage.command_to_rerun}`, `blocks=${triage.blocks_acceptance}`].join("\n"); }
+function formatRepoEvidencePack(pack) { return [`vnem_tools_evidence_pack: branch=${pack.branch || "unknown"}`, `changed=${pack.changed_files.length}`, `passed=${pack.tests_passed.length}`, `failed=${pack.tests_failed.length}`, `safe_claims=${pack.safe_to_claim.length}`, `not_safe=${pack.not_safe_to_claim.length}`].join("\n"); }
 
 const SEARCH_PROVIDER_DEFINITIONS = [
   { name: "local_fixture", env: null, supports_current_web: false, supports_news: false, supports_code_search: false, supports_docs_search: true, supports_safe_search: true, requires_api_key: false, requires_approval: false, rate_limit_notes: "deterministic local CI/test fixture", privacy_notes: "no external network" },
@@ -4798,10 +5525,12 @@ function parseJsonOrEmpty(text) { try { return JSON.parse(text || "[]"); } catch
 function parseJsonObjectOrNull(text) { try { return JSON.parse(text || "{}"); } catch { return null; } }
 async function repoIntelligenceReport(args = {}) {
   const inspect = await githubRepoInspect(args);
+  const deep = await repoDeepMap({ root: args.root || ".", max_files: 500, max_depth: 6, include_git: true });
+  const ranked = await nextActionRanker({ root: args.root || ".", user_goal: args.goal || "", max_actions: 5 });
   const projectType = detectProjectType(inspect.important_files);
   const risky = [".env", ".env.local", "secrets/", "credentials/", ".git/", "node_modules/", "dist/", "build/", "package-lock.json if unrelated dependency churn"];
   const currentRisk = inspect.dirty_worktree_status.length ? "dirty_worktree_review_before_commit" : "clean_or_no_uncommitted_changes_detected";
-  return { repo_identity: { owner_repo: inspect.owner_repo, remote_url: inspect.remote_url, branch: inspect.branch, head: inspect.head }, project_type: projectType, likely_build_commands: inspect.detected_build_test_commands.build_commands, likely_test_commands: inspect.detected_build_test_commands.test_commands, important_paths: inspect.important_files, risky_paths: risky, active_branch: inspect.branch, recent_commits: inspect.recent_commits, open_prs_summary: inspect.open_prs.slice(0, 5), open_issues_summary: inspect.open_issues.slice(0, 5), ci_summary: inspect.ci_status, current_work_risk: currentRisk, best_next_actions: buildBestNextActions(inspect), useless_actions_to_avoid: ["blind force-push", "random broad refactor before reading repo", "claiming CI green without checking exact SHA", "committing .env/secrets", "direct push to protected branch unless config explicitly enables it"] };
+  return { repo_identity: { owner_repo: inspect.owner_repo, remote_url: inspect.remote_url, branch: inspect.branch, head: inspect.head }, project_type: projectType, likely_build_commands: inspect.detected_build_test_commands.build_commands, likely_test_commands: inspect.detected_build_test_commands.test_commands, important_paths: inspect.important_files, risky_paths: risky, deep_repo_map_summary: deep.compact_summary, source_dirs: deep.source_dirs, test_dirs: deep.test_dirs, generated_artifact_dirs: deep.generated_artifact_dirs, todo_markers_sample: deep.todo_markers.slice(0, 5), active_branch: inspect.branch, recent_commits: inspect.recent_commits, open_prs_summary: inspect.open_prs.slice(0, 5), open_issues_summary: inspect.open_issues.slice(0, 5), ci_summary: inspect.ci_status, current_work_risk: currentRisk, best_next_actions: ranked.actions.map((action) => action.action), ranked_next_actions: ranked.actions, useless_actions_to_avoid: ["blind force-push", "random broad refactor before reading repo", "claiming CI green without checking exact SHA", "committing .env/secrets", "direct push to protected branch unless config explicitly enables it", "docs-only or registration-only work without behavior proof", "full npm test loops before targeted checks"] };
 }
 function detectProjectType(files) { const f = files.join(" ").toLowerCase(); if (f.includes("package.json")) return "node_js_or_web"; if (f.includes("pyproject.toml")) return "python"; if (f.includes("cargo.toml")) return "rust"; return "unknown_local_repo"; }
 function buildBestNextActions(inspect) { const out = []; if (inspect.dirty_worktree_status.length) out.push("Review changed files and secret-like paths before commit."); if (inspect.detected_build_test_commands.test_commands.length) out.push(`Run ${inspect.detected_build_test_commands.test_commands[0]} before PR/final claim.`); out.push("Use feature branch + PR for protected-branch work."); if (inspect.ci_status?.status === "reported") out.push("Read CI status/failures before rerun or final handoff."); return out; }
@@ -4927,7 +5656,7 @@ function taskProgressTruthCheck(args = {}) {
   if (status !== "done") whatNot.push("Do not claim done/complete.");
   if (!tested.length) whatNot.push("Do not claim tests passed.");
   if (blocked.length) whatNot.push("Do not claim blockers are resolved.");
-  return { status, proven, tested, not_tested: tested.length ? [] : ["No verification command evidence provided."], blocked, github_live_proof_requirement: "For GitHub mutation claims, include exact GitHub URL, pushed SHA, PR/issue/comment/release URL, or live validation blocked reason.", next_action: blocked[0] || (tested.length ? "Verify CI/PR state and exact GitHub URL/live validation when GitHub mutation is claimed." : "Run targeted verification and record exact command output."), what_not_to_claim: whatNot, claim_status: status === "done" ? "claim_done_with_evidence" : "not_ready" };
+  return { status, proven, tested, not_tested: tested.length ? [] : ["No verification command evidence provided."], blocked, github_live_proof_requirement: "For GitHub mutation claims, include exact GitHub URL, pushed SHA, PR/issue/comment/release URL, or live validation blocked reason.", repo_power_followup_tools: ["vnem_tools_no_placebo_progress_audit", "vnem_tools_evidence_pack"], next_action: blocked[0] || (tested.length ? "Verify CI/PR state and exact GitHub URL/live validation when GitHub mutation is claimed." : "Run targeted verification and record exact command output."), what_not_to_claim: whatNot, claim_status: status === "done" ? "claim_done_with_evidence" : "not_ready" };
 }
 function formatPrQualityGate(g) { return [`vnem_tools_pr_quality_gate: ${g.claim_status}`, `changed=${g.changed_files.length}`, `blocked=${g.blocked_reason || "none"}`, `next=${g.next_best_action}`].join("\n"); }
 function formatTruthCheck(c) { return [`vnem_tools_task_progress_truth_check: ${c.status}`, `tested=${c.tested.length}`, `blocked=${c.blocked.length}`, `next=${c.next_action}`].join("\n"); }
