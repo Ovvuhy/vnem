@@ -2334,7 +2334,7 @@ async function repoDeepMap(args = {}) {
   const packageScripts = summarizePackageScripts(scripts);
   const git = args.include_git === false ? compactNoGitState() : await compactGitState(root.absolutePath);
   const changedFiles = git.changed_files.map((item) => item.path);
-  const sourceDirs = classifyDirs(dirs, files, ["src", "app", "pages", "lib", "server", "api", "components", "dashboard", "landing"]);
+  const sourceDirs = classifyDirs(dirs, files, ["src", "app", "pages", "lib", "server", "api", "components", "dashboard", "landing", "scripts"]);
   const testDirs = classifyDirs(dirs, files, ["test", "tests", "__tests__", "spec", "test-fixtures", "fixtures"]);
   const docsFiles = files.map((f) => f.path).filter(isDocsPath).slice(0, 60);
   const configFiles = files.map((f) => f.path).filter(isConfigPath).slice(0, 60);
@@ -2347,6 +2347,9 @@ async function repoDeepMap(args = {}) {
   const languages = detectLanguagesFromFiles(files);
   const frameworks = detectFrameworks(pkg, files);
   const todoMarkers = await scanTodoMarkers(root.absolutePath, files, 20);
+  const fileGroups = buildRepoFileGroups(files, changedFiles);
+  const likelyImportantFiles = buildLikelyImportantFiles(files, changedFiles, registries, entrypoints, configFiles);
+  const suspiciousWorkFlags = buildSuspiciousWorkFlags(changedFiles, args.completed_summary || args.user_goal || "");
   const map = {
     operation_result: "reported",
     repo_root: root.absolutePath,
@@ -2360,14 +2363,31 @@ async function repoDeepMap(args = {}) {
     docs_handoff_files: docsFiles,
     generated_artifact_dirs: generatedDirs,
     generated_artifact_files: generatedFiles,
+    generated_artifact_status: {
+      directories_present: generatedDirs.slice(0, 20),
+      changed_generated_files: changedFiles.filter(isGeneratedArtifactPath).slice(0, 30),
+      source_generator_reason_required: changedFiles.some(isGeneratedArtifactPath) && !changedFiles.some((file) => /scripts\/generate-artifacts\.mjs|registry\/|capabilities\/|src\/|scripts\/vnem-tools-mcp-server\.mjs/.test(file))
+    },
     likely_entrypoints: entrypoints,
+    likely_important_files: likelyImportantFiles,
     likely_tool_or_server_registries: registries,
     git,
     changed_or_untracked_files: changedFiles.slice(0, 80),
+    dirty_state_summary: {
+      dirty: changedFiles.length > 0,
+      changed_file_count: changedFiles.length,
+      main_changed_files: changedFiles.filter((file) => !isGeneratedArtifactPath(file)).slice(0, 20),
+      generated_changed_files: changedFiles.filter(isGeneratedArtifactPath).slice(0, 20),
+      docs_changed_files: changedFiles.filter(isDocsPath).slice(0, 20),
+      tests_changed_files: changedFiles.filter(isTestPath).slice(0, 20)
+    },
+    file_groups: fileGroups,
+    suspicious_work_flags: suspiciousWorkFlags,
     large_files: largeFiles,
     risky_files: riskyFiles,
     todo_markers: todoMarkers,
     ignored_or_noise_dirs: [...new Set([...skipped, ...["node_modules", ".git", "dist", "build", "coverage", ".cache"].filter((dir) => existsSync(path.join(root.absolutePath, dir)))])].slice(0, 100),
+    output_limits: { max_files_sampled: args.max_files || 500, max_depth: args.max_depth || 6, large_lists_capped: true },
     compact_summary: {
       file_count_sampled: files.length,
       source_area_count: sourceDirs.length,
@@ -2389,6 +2409,12 @@ async function nextActionRanker(args = {}) {
   const impact = await changeImpactPlan({ root: args.root || "." });
   const placebo = await noPlaceboProgressAudit({ root: args.root || ".", completed_summary: args.user_goal || "", tests_run: [] });
   const goal = String(args.user_goal || "");
+  const goalFlags = {
+    local_only: /local-only|no push|no pr|do not publish|do not push|do not create a pr/i.test(goal),
+    dogfood_repo_power: /dogfood|power-tools-2|ranking quality|triage quality|proof usefulness/i.test(goal),
+    tune_existing_tools: /tune|sharper|improve|quality|existing tools|do not add more tool|no new tool/i.test(goal),
+    forbids_publish: /no push|no pr|do not publish|no merge|direct main/i.test(goal)
+  };
   const knownFailures = arrayify(args.known_failures).map(String);
   const candidates = [];
   const add = (action) => candidates.push({ should_do_now: true, deferred_reason: "", ...action });
@@ -2405,6 +2431,20 @@ async function nextActionRanker(args = {}) {
       placebo_risk: "low"
     });
   }
+  if (goalFlags.dogfood_repo_power || goalFlags.tune_existing_tools) {
+    add({
+      action: "Dogfood current repo-power output, then tune the existing implementation where the output is vague or misleading.",
+      category: "implementation",
+      reason: "The requested value is better future Building AI guidance; validation-only work would not improve ranking, triage, or proof usefulness.",
+      why_now: "Clean worktree plus explicit dogfood/tuning goal means the highest-value next step is behavior tuning, not publish or broad validation.",
+      expected_files_to_touch: ["scripts/vnem-tools-mcp-server.mjs", "scripts/test-tools-power-tools-2-regression.mjs", "package.json", "scripts/tools-readiness-report.mjs"],
+      expected_proof_checks: ["npm.cmd run test:tools-power-tools-2-regression", "npm.cmd run test:tools-power-tools-1-regression", "npm.cmd run tools:readiness"],
+      risk_level: "medium",
+      estimated_implementation_value: 96,
+      placebo_risk: "medium",
+      skip_or_defer_reason: "Defer push/PR/live proof; this is a local-only dogfood batch."
+    });
+  }
   if (map.changed_or_untracked_files.length) {
     add({
       action: "Review changed files and complete the smallest behavior-backed implementation slice.",
@@ -2414,7 +2454,8 @@ async function nextActionRanker(args = {}) {
       expected_proof_checks: impact.minimum_targeted_tests.slice(0, 6),
       risk_level: impact.risk_level,
       estimated_implementation_value: 90,
-      placebo_risk: placebo.placebo_risks.length ? "medium" : "low"
+      placebo_risk: placebo.placebo_risks.length ? "medium" : "low",
+      why_now: "Dirty files are the strongest immediate signal; finish or exclude them before judging proof."
     });
   }
   if (impact.generation_required) {
@@ -2428,7 +2469,8 @@ async function nextActionRanker(args = {}) {
       estimated_implementation_value: 70,
       placebo_risk: "medium",
       should_do_now: false,
-      deferred_reason: "Do after implementation tests pass to avoid generated-only churn."
+      deferred_reason: "Do after implementation tests pass to avoid generated-only churn.",
+      skip_or_defer_reason: "Generated churn is weak proof until source/generator behavior and targeted checks pass."
     });
   }
   if (map.todo_markers.length) {
@@ -2442,7 +2484,8 @@ async function nextActionRanker(args = {}) {
       estimated_implementation_value: 55,
       placebo_risk: "medium",
       should_do_now: /todo|fixme|cleanup/i.test(goal),
-      deferred_reason: /todo|fixme|cleanup/i.test(goal) ? "" : "Defer unless it supports the current user goal."
+      deferred_reason: /todo|fixme|cleanup/i.test(goal) ? "" : "Defer unless it supports the current user goal.",
+      skip_or_defer_reason: /todo|fixme|cleanup/i.test(goal) ? "" : "Not part of the stated batch unless near touched repo-power code."
     });
   }
   add({
@@ -2454,7 +2497,9 @@ async function nextActionRanker(args = {}) {
     risk_level: impact.risk_level,
     estimated_implementation_value: 65,
     placebo_risk: "low",
-    should_do_now: impact.minimum_targeted_tests.length > 0
+    should_do_now: impact.minimum_targeted_tests.length > 0 && !goalFlags.dogfood_repo_power,
+    why_now: "Run after a behavior change or when changed files already exist.",
+    deferred_reason: goalFlags.dogfood_repo_power ? "Dogfood/tune behavior first; validation-only is not enough for this goal." : ""
   });
   add({
     action: "Avoid docs-only or registration-only work unless it directly supports implemented behavior.",
@@ -2466,18 +2511,26 @@ async function nextActionRanker(args = {}) {
     estimated_implementation_value: 20,
     placebo_risk: "high",
     should_do_now: false,
-    deferred_reason: "Docs are follow-up unless source behavior exists."
+    deferred_reason: "Docs are follow-up unless source behavior exists.",
+    skip_or_defer_reason: "Do not spend this batch on docs/generation before behavior proof."
   });
   const ranked = candidates
+    .filter((item) => !(goalFlags.local_only && /\b(push|publish|deploy)\b|\bPR\b|pull request/i.test(`${item.action} ${item.reason}`)))
     .map((item) => ({ ...item, score: scoreNextAction(item, goal) }))
     .sort((a, b) => b.score - a.score)
     .slice(0, args.max_actions || 5)
-    .map((item, index) => ({ rank: index + 1, ...item }));
+    .map((item, index) => ({
+      rank: index + 1,
+      why_now: item.why_now || item.reason,
+      skip_or_defer_reason: item.skip_or_defer_reason || item.deferred_reason || "",
+      ...item
+    }));
   return {
     operation_result: "reported",
     user_goal: goal,
     repo_branch: map.git.branch,
     git_dirty: map.changed_or_untracked_files.length > 0,
+    task_constraints: goalFlags,
     actions: ranked,
     penalties_applied: [
       "docs-only work without implementation proof",
@@ -2485,8 +2538,10 @@ async function nextActionRanker(args = {}) {
       "wrapper/tool-name additions without execution paths",
       "broad rewrites with weak proof",
       "validation-only loops after adequate targeted proof",
-      "safety ceremony without enforcement"
-    ],
+      "safety ceremony without enforcement",
+      "broad new-tool expansion when existing repo-power tools can be tuned",
+      goalFlags.local_only ? "publish/push/PR recommendations blocked by local-only task constraint" : null
+    ].filter(Boolean),
     evidence_sources: ["repo_deep_map", "change_impact_plan", "no_placebo_progress_audit"],
     output_compact: true
   };
@@ -2509,6 +2564,7 @@ async function noPlaceboProgressAudit(args = {}) {
   if (testsChanged.length && !sourceChanged.length) risks.push("tests-only work may not add real behavior");
   if (/mocked|simulated|dry-run/i.test(summary) && /live|real github|production|deployed|pushed/i.test(summary) && !arrayify(args.live_proof).length) risks.push("mocked-only proof is being described as live proof");
   if (/planned|future|preview/i.test(summary) && /implemented|complete|done/i.test(summary)) risks.push("planned wording may be replacing implementation");
+  if (/register|manifest|catalog|tool name|exposed/i.test(summary) && !/execution|behavior|implementation|source behavior/i.test(summary)) risks.push("registration-only changes may not add execution behavior");
   if (/safety|guardrail|protected|blocked/i.test(summary) && !/throw new ToolsError|blocked|enforce|approval_required|secret_path_blocked/.test(serverText)) risks.push("safety language without visible enforcement path");
   if (/registerTool/.test(serverText) && sourceChanged.some((file) => /vnem-tools-mcp-server\.mjs$/.test(file))) {
     const newNames = [...serverText.matchAll(/vnem_tools_[a-z0-9_]+/g)].map((m) => m[0]);
@@ -2520,9 +2576,16 @@ async function noPlaceboProgressAudit(args = {}) {
   }
   const missingProof = [];
   if (sourceChanged.length && !testsRun.length && !testsChanged.length) missingProof.push("targeted behavior test or command evidence");
-  if (/github|push|pr|issue|actions/i.test(summary) && !arrayify(args.live_proof).length) missingProof.push("exact live GitHub URL/SHA/run proof or explicit blocked reason");
+  if (/\b(github|push|issue|actions)\b|\bPR\b|pull request/i.test(summary) && !arrayify(args.live_proof).length) missingProof.push("exact live GitHub URL/SHA/run proof or explicit blocked reason");
   if (generatedChanged.length && !testsRun.some((cmd) => /generate|install-pack|dashboard|validate/.test(cmd))) missingProof.push("generation/install-pack validation");
-  const score = Math.max(0, Math.min(100, 55 + sourceChanged.length * 12 + testsChanged.length * 8 + testsRun.length * 6 - risks.length * 14 - missingProof.length * 10));
+  const hasBehaviorProof = sourceChanged.length > 0 && (testsRun.length > 0 || testsChanged.length > 0);
+  const proofCount = testsRun.length + arrayify(args.live_proof).length;
+  const score = Math.max(0, Math.min(100, 25 + (sourceChanged.length ? 28 : 0) + (hasBehaviorProof ? 24 : 0) + Math.min(proofCount, 4) * 6 + Math.min(testsChanged.length, 3) * 4 - risks.length * 16 - missingProof.length * 12 - (generatedChanged.length && !sourceChanged.length ? 12 : 0) - (docsChanged.length && !sourceChanged.length ? 10 : 0)));
+  const notProven = [
+    !hasBehaviorProof ? "source behavior plus targeted proof" : null,
+    !arrayify(args.live_proof).length && (/\b(github|push|issue|actions|cloudflare|deploy)\b|\bPR\b|pull request/i.test(summary)) ? "live external proof" : null,
+    risks.length ? `risk correction: ${risks[0]}` : null
+  ].filter(Boolean);
   return {
     operation_result: "reported",
     real_progress_score: score,
@@ -2534,8 +2597,11 @@ async function noPlaceboProgressAudit(args = {}) {
     generated_files: generatedChanged.slice(0, 40),
     placebo_risks: [...new Set(risks)],
     missing_proof: [...new Set(missingProof)],
+    safe_to_claim: hasBehaviorProof && !risks.length ? ["Source behavior changed and targeted/local proof exists."] : testsRun.length ? ["Local checks were run, but claims are limited by missing behavior/live proof fields."] : [],
+    not_proven: [...new Set(notProven)],
     exact_files_or_functions_to_inspect: [...new Set(inspect)].slice(0, 30),
     exact_next_correction: risks.length ? correctionForPlaceboRisk(risks[0]) : missingProof.length ? `Add proof for: ${missingProof[0]}.` : "Keep implementation, tests, and claims aligned; no correction required from this audit.",
+    required_correction: risks.length || missingProof.length ? (risks.length ? correctionForPlaceboRisk(risks[0]) : `Add proof for: ${missingProof[0]}.`) : "",
     mocked_proof_count: arrayify(args.mocked_proof).length,
     live_proof_count: arrayify(args.live_proof).length,
     output_compact: true
@@ -2550,14 +2616,18 @@ async function changeImpactPlan(args = {}) {
   const areas = classifyChangedAreas(changed);
   const affected = affectedFeaturesForAreas(areas, changed);
   const generationRequired = changed.some((file) => /scripts\/generate-artifacts\.mjs|registry\/|capabilities\/|public\/install|\.vnem\/|public\/api\/index\.json|llms/.test(file));
+  const generatedOnly = changed.length > 0 && changed.every(isGeneratedArtifactPath);
+  const docsOnly = changed.length > 0 && changed.every(isDocsPath);
+  const sourceGeneratorReasonRequired = changed.some(isGeneratedArtifactPath) && !changed.some((file) => /scripts\/generate-artifacts\.mjs|registry\/|capabilities\/|scripts\/vnem-tools-mcp-server\.mjs|src\//.test(file));
   const targeted = targetedTestsForChange(areas, changed, pkg?.scripts || {});
   const finalChecks = ["git diff --check", "node --check scripts/vnem-tools-mcp-server.mjs"].filter((cmd) => changed.some((file) => /scripts\/vnem-tools-mcp-server\.mjs|scripts\/test-tools-|package\.json/.test(file)) || cmd === "git diff --check");
   if (changed.some((file) => /scripts\/tools-readiness-report\.mjs/.test(file))) finalChecks.push("node --check scripts/tools-readiness-report.mjs", "npm.cmd run tools:readiness");
   if (changed.some((file) => /scripts\/generate-artifacts\.mjs/.test(file))) finalChecks.push("node --check scripts/generate-artifacts.mjs");
-  if (generationRequired) finalChecks.push("npm.cmd run validate", "npm.cmd run generate", "npm.cmd run test:install-pack");
+  if (generationRequired && !docsOnly) finalChecks.push("npm.cmd run validate", "npm.cmd run generate", "npm.cmd run test:install-pack");
   const fullTriggers = [];
   if (areas.includes("tools_mcp") && areas.includes("github_autonomy")) fullTriggers.push("shared Tools MCP and GitHub autonomy paths both changed");
   if (areas.includes("generator") || changed.length > 25) fullTriggers.push("generated/readiness behavior changed broadly");
+  if (areas.includes("package_scripts")) fullTriggers.push("package script/test orchestration changed");
   if (areas.includes("dashboard") && changed.some((file) => /\.(jsx|tsx|css|html)$/.test(file))) fullTriggers.push("UI/dashboard surface changed");
   const risk = fullTriggers.length ? "high" : areas.some((area) => ["tools_mcp", "github_autonomy", "cloudflare_control", "core_mcp"].includes(area)) ? "medium" : "low";
   return {
@@ -2566,9 +2636,13 @@ async function changeImpactPlan(args = {}) {
     changed_areas: areas,
     risk_level: risk,
     likely_affected_tools_or_features: affected.slice(0, 30),
+    per_file_impacts: changed.slice(0, 80).map((file) => ({ file, areas: classifyChangedAreas([file]), requires_source_reason: isGeneratedArtifactPath(file) && sourceGeneratorReasonRequired })),
     minimum_targeted_tests: [...new Set(targeted)].slice(0, 20),
     final_checks: [...new Set(finalChecks)].slice(0, 20),
     generation_required: generationRequired,
+    docs_only: docsOnly,
+    generated_only: generatedOnly,
+    source_generator_reason_required: sourceGeneratorReasonRequired,
     full_npm_test_justified: fullTriggers.length > 0,
     full_suite_trigger_conditions: fullTriggers,
     what_not_to_run_yet: buildWhatNotToRunYet(areas, generationRequired, fullTriggers),
@@ -2598,6 +2672,12 @@ async function testSelectionPlan(args = {}) {
     readiness_or_generation_checks: [...new Set(readiness)].slice(0, 16),
     full_suite_trigger_conditions: [...new Set(fullTriggers)],
     full_npm_test_recommended: fullTriggers.length > 0,
+    first_checks_to_run: [...new Set([...baseline, ...targeted])].slice(0, 8),
+    proof_boundaries: {
+      browser_proof_required: impact.changed_areas.includes("dashboard"),
+      live_github_proof_required: /\b(publish|push|issue|actions|release)\b|\bPR\b|pull request/i.test(goal) && !/local-only|no push|no pr|do not publish/i.test(goal),
+      external_network_required: /deploy|publish|external api|live api/i.test(goal)
+    },
     avoid_over_validation: [
       "Do not recommend full npm test for tiny isolated docs/test changes unless a broad trigger is present.",
       "Do not recommend browser proof for backend-only or MCP-only changes.",
@@ -2613,15 +2693,17 @@ async function failureTriage(args = {}) {
   const lower = text.toLowerCase();
   let classification = "real_regression";
   if (/gh\s*:|gh cli unavailable|not authenticated|auth status|gh auth|permission denied|eacces|unauthorized|forbidden/.test(lower)) classification = "auth_permission_issue";
-  else if (/fetch failed|enotfound|econnreset|network|timeout|rate limit|429|dns/.test(lower)) classification = "environment_network_issue";
-  else if (/cannot find module|module not found|missing dependency|is not recognized|command not found|enoent/.test(lower)) classification = "missing_dependency";
-  else if (/assertionerror|expected|actual|fixture|tmp|\.tmp|ebusy|eperm|enotempty/.test(lower)) classification = /ebusy|eperm|enotempty|taskkill|process/.test(lower) ? "windows_path_process_cleanup_issue" : "test_fixture_bug";
+  else if (/ebusy|eperm|enotempty|taskkill|process cannot access|resource busy|rmdir/.test(lower)) classification = "windows_path_process_cleanup_issue";
   else if (/generated|install\.tgz|public\/install|\.vnem|stale|digest|snapshot/.test(lower)) classification = "generated_artifact_staleness";
+  else if (/fetch failed|enotfound|econnreset|network|timeout|rate limit|429|dns|source unavailable/.test(lower)) classification = "environment_network_issue";
+  else if (/cannot find module|module not found|missing dependency|is not recognized|command not found|enoent/.test(lower)) classification = "missing_dependency";
+  else if (/assertionerror|expected|actual/.test(lower)) classification = /fixture|golden|mock|snapshot|test-fixtures/.test(lower) ? "test_fixture_bug" : "real_assertion_failure";
   else if (/typeerror|referenceerror|syntaxerror|failed|error:|exit code 1/.test(lower)) classification = "product_bug";
   const fileMatch = text.match(/[A-Za-z0-9_.:/\\-]+\.(mjs|js|ts|tsx|jsx|json|md|yml|yaml|css|html)(?::\d+)?/);
   const command = String(args.command || "").trim();
   const rerun = command || rerunCommandForFailure(classification, text);
   const blocks = !["environment_network_issue", "windows_path_process_cleanup_issue"].includes(classification) || /acceptance|validate|readiness|test/.test(lower);
+  const decision = classification === "auth_permission_issue" ? "ask_user_or_report_blocked" : classification === "environment_network_issue" ? "stop_or_retry_once_without_product_patch" : blocks ? "continue_after_fix" : "continue_with_caveat";
   return {
     operation_result: "reported",
     classification,
@@ -2629,8 +2711,12 @@ async function failureTriage(args = {}) {
     exact_file_or_function_to_inspect: fileMatch ? normalizePath(fileMatch[0]) : fallbackInspectionTarget(classification),
     smallest_fix: smallestFixForFailure(classification),
     command_to_rerun: rerun,
-    decision: classification === "auth_permission_issue" ? "ask_user_or_report_blocked" : blocks ? "continue_after_fix" : "continue_with_caveat",
+    smallest_next_command: rerun,
+    recommended_next_action: smallestFixForFailure(classification),
+    decision,
+    continue_stop_or_ask_user: decision,
     blocks_acceptance: blocks,
+    acceptance_blocker: blocks,
     confidence: /error|failed|assert|cannot find|not authenticated|ebusy|generated/i.test(text) ? "medium" : "low",
     must_not_claim: ["Do not claim the failing check passed until rerun evidence exists.", classification.includes("network") ? "Do not claim product regression if the only evidence is network/provider failure." : null, classification.includes("auth") ? "Do not claim live account/GitHub/Cloudflare proof." : null].filter(Boolean),
     output_excerpt: truncate(text, 900),
@@ -2641,6 +2727,7 @@ async function failureTriage(args = {}) {
 async function repoEvidencePack(args = {}) {
   const root = await resolveAllowedRoot(args.root || ".");
   const changed = await gitChangedFileNames(root.absolutePath);
+  const statusText = await gitValue(root.absolutePath, ["status", "--short"], 16000);
   const head = await gitValue(root.absolutePath, ["rev-parse", "HEAD"]);
   const branch = await gitValue(root.absolutePath, ["branch", "--show-current"]);
   const commands = arrayify(args.commands_run).map(redactSecrets);
@@ -2661,20 +2748,52 @@ async function repoEvidencePack(args = {}) {
     blocked.length ? "Blocked proof was completed." : null,
     "Secrets or secret files were inspected or safe to print."
   ].filter(Boolean);
+  const generatedUpdated = changed.filter(isGeneratedArtifactPath);
+  const testsChanged = changed.filter(isTestPath);
+  const mainChanged = changed.filter((file) => !isGeneratedArtifactPath(file) && !isTestPath(file)).slice(0, 30);
+  const whatNotProven = [
+    ...mustNot,
+    !live.length ? "Live proof was not attempted or did not produce exact URL/SHA/run evidence." : null,
+    testsFailed.length ? "Failed checks are not resolved." : null
+  ].filter(Boolean);
+  const nextBestTask = args.next_best_task || (testsFailed.length ? `Fix failing check: ${testsFailed[0]}` : changed.length ? "Run the next targeted proof for changed source files." : "Choose the next behavior-backed implementation slice.");
   const pack = {
     operation_result: "reported",
     branch,
     head_sha: head,
+    worktree_status: statusText ? statusText.split(/\r?\n/).filter(Boolean).map(redactSecrets) : [],
     commit_status: args.commit_sha ? { committed: true, commit_sha: args.commit_sha, commit_message: redactSecrets(args.commit_message || "") } : { committed: Boolean(head), commit_sha: head || "", commit_message: "" },
     changed_files: changed.slice(0, 120),
+    files_changed_count: changed.length,
+    main_files_changed: mainChanged,
+    new_or_changed_tests: testsChanged,
     commands_run: commands,
     tests_passed: testsPassed,
     tests_failed: testsFailed,
     real_behavior_added: arrayify(args.real_behavior_added).map(redactSecrets),
     proof: { mocked_or_local: mocked, live, blocked },
+    live_proof_attempted: live.length > 0,
+    generated_artifacts_updated: generatedUpdated,
     remaining_risk: arrayify(args.remaining_risk).map(redactSecrets),
     safe_to_claim: safeClaims,
     not_safe_to_claim: mustNot,
+    what_is_not_proven: [...new Set(whatNotProven)],
+    next_best_task: nextBestTask,
+    proof_packet: {
+      Branch: branch,
+      "Commit SHA": args.commit_sha || head || "",
+      "Commit message": redactSecrets(args.commit_message || ""),
+      "Worktree status": statusText ? statusText.split(/\r?\n/).filter(Boolean).map(redactSecrets) : [],
+      "Files changed count": changed.length,
+      "Main files changed": mainChanged,
+      "New/changed tests": testsChanged,
+      "Exact tests/checks passed": testsPassed,
+      "Exact tests/checks failed": testsFailed,
+      "Generated artifacts updated": generatedUpdated,
+      "Live proof attempted": live.length > 0 ? "yes" : "no",
+      "What is not proven": [...new Set(whatNotProven)],
+      "Next best task": nextBestTask
+    },
     output_compact: true,
     evidence_log_id: null
   };
@@ -2744,6 +2863,41 @@ function isLikelyRegistryPath(file) { return /scripts\/vnem-(tools-)?mcp-server\
 function isLikelyEntrypointPath(file) { return /(^|\/)(index|main|app|server|cli|vnem-tools-mcp-server|vnem-mcp-server|hermes-dashboard-api|vnem-app-server)\.(js|mjs|ts|tsx|jsx|html)$|(^|\/)package\.json$/i.test(normalizePath(file)); }
 function isBinaryLikePath(file) { return /\.(png|jpg|jpeg|gif|webp|ico|pdf|zip|tgz|gz|woff2?|ttf|exe|dll|bin)$/i.test(normalizePath(file)); }
 
+function buildRepoFileGroups(files, changedFiles) {
+  const paths = files.map((file) => file.path);
+  const count = (predicate) => paths.filter(predicate).length;
+  const changed = (predicate) => changedFiles.filter(predicate).slice(0, 30);
+  return {
+    source: { count: count(isSourceBehaviorPath), changed: changed(isSourceBehaviorPath) },
+    tests: { count: count(isTestPath), changed: changed(isTestPath) },
+    docs: { count: count(isDocsPath), changed: changed(isDocsPath) },
+    generated: { count: count(isGeneratedArtifactPath), changed: changed(isGeneratedArtifactPath) },
+    config: { count: count(isConfigPath), changed: changed(isConfigPath) },
+    registries: { count: count(isLikelyRegistryPath), changed: changed(isLikelyRegistryPath) }
+  };
+}
+
+function buildLikelyImportantFiles(files, changedFiles, registries, entrypoints, configFiles) {
+  const important = [
+    ...changedFiles,
+    ...registries,
+    ...entrypoints,
+    ...configFiles,
+    ...files.map((file) => file.path).filter((file) => /(^|\/)(scripts\/vnem-tools-mcp-server\.mjs|scripts\/vnem-mcp-server\.mjs|scripts\/tools-readiness-report\.mjs|scripts\/generate-artifacts\.mjs|package\.json)$/.test(file))
+  ];
+  return [...new Set(important)].filter((file) => !isGeneratedArtifactPath(file)).slice(0, 40);
+}
+
+function buildSuspiciousWorkFlags(changedFiles, summary = "") {
+  const flags = [];
+  if (changedFiles.length && changedFiles.every(isDocsPath)) flags.push("docs_only_work_needs_behavior_proof");
+  if (changedFiles.length && changedFiles.every(isGeneratedArtifactPath)) flags.push("generated_only_work_needs_source_generator_reason");
+  if (changedFiles.some(isGeneratedArtifactPath) && !changedFiles.some((file) => /scripts\/generate-artifacts\.mjs|registry\/|capabilities\/|scripts\/vnem-tools-mcp-server\.mjs|src\//.test(file))) flags.push("generated_artifact_changed_without_source_generator_change");
+  if (/mocked|simulated|dry-run/i.test(summary) && /live|real|production|deployed|pushed/i.test(summary)) flags.push("mocked_as_live_claim_risk");
+  if (/register|manifest|catalog|tool name/i.test(summary) && !/behavior|execution|implementation/i.test(summary)) flags.push("registration_only_claim_risk");
+  return flags;
+}
+
 async function compactGitState(root) {
   const branch = await gitValue(root, ["branch", "--show-current"]);
   const head = await gitValue(root, ["rev-parse", "HEAD"]);
@@ -2756,10 +2910,12 @@ async function compactGitState(root) {
 function compactNoGitState() { return { branch: "", head: "", recent_commits: [], changed_files: [], dirty: false, skipped: "include_git=false" }; }
 
 function parseGitStatusLine(line) {
-  const pathText = String(line || "").slice(3).trim();
+  const raw = String(line || "");
+  let pathText = raw.length >= 3 && raw[2] === " " ? raw.slice(3).trim() : raw.slice(2).trim();
+  if (/^\?\?\s+/.test(raw)) pathText = raw.slice(3).trim();
   if (!pathText) return null;
   const parts = pathText.split(" -> ");
-  return { status: String(line || "").slice(0, 2).trim(), path: normalizePath(parts[parts.length - 1]) };
+  return { status: raw.slice(0, 2).trim(), path: normalizePath(parts[parts.length - 1]) };
 }
 
 async function gitChangedFileNames(root, includeStaged = true) {
@@ -2796,6 +2952,7 @@ function classifyChangedAreas(changed) {
     if (/scripts\/vnem-mcp-server\.mjs|scripts\/core-readiness-report\.mjs/.test(file)) areas.add("core_mcp");
     if (/scripts\/tools-readiness-report\.mjs/.test(file)) areas.add("tools_readiness");
     if (/scripts\/generate-artifacts\.mjs|registry\/|capabilities\/|public\/install|\.vnem\/|public\/api\/index\.json|llms/.test(file)) areas.add("generator");
+    if (/(^|\/)package\.json$/.test(file)) areas.add("package_scripts");
     if (/dashboard\/|landing\//.test(file)) areas.add("dashboard");
     if (/github|test-tools-github|repo_intelligence|pr_quality|task_progress/i.test(file)) areas.add("github_autonomy");
     if (/cloudflare|wrangler/i.test(file)) areas.add("cloudflare_control");
@@ -2814,6 +2971,7 @@ function affectedFeaturesForAreas(areas, changed) {
   if (areas.includes("cloudflare_control")) out.push("Cloudflare status/planning/mutation guardrails");
   if (areas.includes("tools_readiness")) out.push("Tools readiness report");
   if (areas.includes("generator")) out.push("install pack generation", "public API index", "LLM artifacts");
+  if (areas.includes("package_scripts")) out.push("package scripts and verification orchestration");
   if (areas.includes("dashboard")) out.push("dashboard/local app UI or API");
   if (areas.includes("core_mcp")) out.push("Core MCP read-only planning tools");
   if (changed.some((file) => /package\.json/.test(file))) out.push("package scripts/test orchestration");
@@ -2827,12 +2985,16 @@ function targetedTestsForChange(areas, changed, scripts) {
   if (areas.includes("cloudflare_control")) tests.push("npm.cmd run test:tools-cloudflare-status-auth");
   if (areas.includes("tools_readiness")) tests.push("node --check scripts/tools-readiness-report.mjs", "npm.cmd run tools:readiness");
   if (areas.includes("generator")) tests.push("npm.cmd run validate", "npm.cmd run generate", "npm.cmd run test:install-pack");
+  if (areas.includes("package_scripts")) tests.push("npm.cmd run validate", "npm.cmd run tools:readiness");
+  if (areas.includes("docs") && !areas.includes("source") && !areas.includes("tools_mcp")) tests.push("npm.cmd run check:links");
   if (areas.includes("dashboard")) tests.push("npm.cmd run dashboard:build", "npm.cmd run test:dashboard");
   if (areas.includes("core_mcp")) tests.push("node --check scripts/vnem-mcp-server.mjs", "npm.cmd run core:readiness");
   for (const file of changed) {
     const base = path.basename(file);
+    if (/power-tools-2/.test(base)) tests.push("npm.cmd run test:tools-power-tools-2-regression");
     if (/^test-tools-power/.test(base) || /power-tools-1/.test(base)) tests.push("npm.cmd run test:tools-power-tools-1-regression");
   }
+  if (scripts?.["test:tools-power-tools-2-regression"] && areas.includes("tools_mcp")) tests.push("npm.cmd run test:tools-power-tools-2-regression");
   if (scripts?.["test:tools-quality-general"] && areas.includes("tools_mcp")) tests.push("npm.cmd run test:tools-quality-general");
   return [...new Set(tests)];
 }
@@ -2864,6 +3026,8 @@ function scoreNextAction(item, goal) {
   if (item.should_do_now) score += 12;
   if (item.placebo_risk === "high") score -= 20;
   if (/implement|fix|power|repo|tool|test|validate/i.test(goal) && /implement|fix|verify|test/i.test(item.action)) score += 8;
+  if (/dogfood|tune|repo-power|power-tools/i.test(goal) && /dogfood|tune|repo-power|existing implementation/i.test(item.action)) score += 22;
+  if (/local-only|no push|no pr|do not publish/i.test(goal) && /push|pr|publish|deploy/i.test(item.action)) score -= 100;
   return score;
 }
 
@@ -2887,6 +3051,7 @@ function rerunCommandForFailure(classification, text) {
 function rootCauseForFailure(classification, text) {
   const causes = {
     product_bug: "Output shows a likely implementation/runtime bug.",
+    real_assertion_failure: "A focused assertion failed and should be treated as a real behavior regression until the failing expectation is explained.",
     test_fixture_bug: "Output points to assertion/fixture mismatch more than product behavior.",
     environment_network_issue: "Network/provider/runtime environment failed or timed out.",
     missing_dependency: "A module, command, or local dependency is missing/unavailable.",
@@ -2903,12 +3068,14 @@ function fallbackInspectionTarget(classification) {
   if (classification === "auth_permission_issue") return "auth/config environment and tool status";
   if (classification === "windows_path_process_cleanup_issue") return "test cleanup/finally block or process stop helper";
   if (classification === "missing_dependency") return "package.json scripts/dependencies";
+  if (classification === "real_assertion_failure") return "first failing assertion and changed implementation path";
   return "first failing stack frame or changed source file";
 }
 
 function smallestFixForFailure(classification) {
   const fixes = {
     product_bug: "Patch the first failing implementation path and add/adjust the focused regression test.",
+    real_assertion_failure: "Inspect the assertion and changed source, patch the smallest behavior path, then rerun the same focused test.",
     test_fixture_bug: "Fix the fixture setup/expected value only after confirming product behavior is correct.",
     environment_network_issue: "Report blocked or retry once with bounded output; do not patch product code for provider/network noise.",
     missing_dependency: "Use existing dependencies/scripts or document the missing local command; do not auto-install unknown packages.",
