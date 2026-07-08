@@ -28,6 +28,7 @@ const REQUIRED_TOOL_NAMES = [
   "vnem_tools_failure_triage",
   "vnem_tools_evidence_pack",
   "vnem_tools_local_session_recovery",
+  "vnem_tools_repo_workflow_orchestrator",
   "vnem_tools_action_policy_preview",
   "vnem_tools_trust_boundary_classify",
   "vnem_tools_prepare_action_plan",
@@ -404,6 +405,29 @@ function registerTools(mcpServer) {
     async (args) => withToolErrors(async () => {
       const recovery = await localSessionRecovery(args);
       return toolResult(formatLocalSessionRecovery(recovery), { local_session_recovery: recovery });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_repo_workflow_orchestrator",
+    {
+      title: "Repo Workflow Orchestrator",
+      description: "Synthesize repo-power tools into one compact next-workflow plan for local implementation, publish, CI failure, recovery, validation, and no-placebo decisions.",
+      inputSchema: {
+        root: z.string().default("."),
+        repo_path: z.string().optional(),
+        user_goal: z.string().default(""),
+        task_mode: z.enum(["local_only", "publish", "ci_failure", "ci_fix", "recovery", "implementation", "validation", "no_placebo"]).default("implementation"),
+        changed_files: z.array(z.string()).default([]),
+        failing_output: z.string().default(""),
+        proof_level: z.enum(["targeted", "full_local", "remote"]).default("targeted"),
+        allow_live_remote: z.boolean().default(false)
+      },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const orchestration = await repoWorkflowOrchestrator(args);
+      return toolResult(formatRepoWorkflowOrchestrator(orchestration), { repo_workflow_orchestrator: orchestration });
     })
   );
 
@@ -1657,7 +1681,7 @@ function buildActionRecoveryPlan(args = {}) {
   if (/outside_allowed|allowed root|allowed_roots|path_outside|not inside|evidence_root_outside|root/.test(lower) && /path|root|allowed/.test(lower)) { plan.likely_cause = "Requested path is outside VNEM Tools allowed roots or evidence root policy."; plan.blocked_by_path_or_allowed_root = true; plan.exact_next_steps.push("Move the target under an allowed project root or start Tools MCP with VNEM_TOOLS_ALLOWED_ROOTS set to the narrow project root."); plan.exact_next_steps.push("Run vnem_tools_permission_status to see current allowed_roots and workspace_fix_suggestion."); }
   if (/browser_unavailable|chromium|chrome|browser.*not found|playwright|screenshot/.test(lower)) { plan.likely_cause = "Browser runtime was unavailable or blocked by policy, so visual proof was not collected."; plan.blocked_by_missing_dependency = true; plan.exact_next_steps.push("Install/configure a local Chromium/Chrome command or set VNEM_TOOLS_BROWSER_COMMAND, then retry only against localhost/allowed file targets with approval."); plan.exact_next_steps.push("If a browser cannot run, use static UI evidence only and do not claim screenshot/browser proof."); plan.must_not_claim.push("Screenshot proof was captured", "Browser console/network/a11y proof was clean"); }
   if (/network|provider|timeout|fetch|dns|econn|enotfound|429|rate limit|unconfigured/.test(lower)) { plan.blocked_by_network_or_provider = true; plan.exact_next_steps.push("Check provider configuration and network availability; retry read-only/dry-run first with capped output."); }
-  if (/github|gh|pull request|pr|issue|actions|workflow|ci|push|force-push|protected branch/.test(lower)) {
+  if (/github|\bgh\b|pull request|\bpr\b|issue|actions|workflow|ci|push|force-push|protected branch/.test(lower)) {
     if (/gh.*not found|gh unavailable|not authenticated|auth|token/.test(lower)) { plan.likely_cause = "GitHub CLI/auth is unavailable for remote GitHub work."; plan.blocked_by_missing_auth = true; plan.exact_next_steps.push("Authenticate gh with `gh auth login`; never print token values."); plan.exact_next_steps.push("Run `gh auth setup-git` so git push can use GitHub credentials."); }
     if (/protected branch|direct push/.test(lower)) { plan.blocked_by_permission = true; plan.exact_next_steps.push("Use a feature branch + PR, or set VNEM_TOOLS_GITHUB_ALLOW_DIRECT_PUSH = \"1\" if direct protected-branch push is intentionally allowed."); }
     if (/force push|force-push/.test(lower)) { plan.blocked_by_permission = true; plan.exact_next_steps.push("Avoid force push, or set VNEM_TOOLS_GITHUB_ALLOW_FORCE_PUSH = \"1\" if force push is intentionally allowed."); }
@@ -1699,7 +1723,7 @@ function highPowerActionReview(args = {}) {
 }
 function githubReviewFor(text) {
   const lower = String(text || "").toLowerCase();
-  if (!/github|gh|pull request|pr|issue|actions|workflow|git push|force push|repo settings|release/.test(lower)) return { reasons_to_block: [], config_knob_to_change: null, allowed_actions: [] };
+  if (!/github|\bgh\b|pull request|\bpr\b|issue|actions|workflow|git push|force push|repo settings|release/.test(lower)) return { reasons_to_block: [], config_knob_to_change: null, allowed_actions: [] };
   const settings = githubSettings();
   const policy = githubProfilePolicy(settings.profile);
   const reasons = [];
@@ -1767,7 +1791,7 @@ function statusObject() {
     command_allowlist: ["node --check <file>", "npm test", "npm run <safe-script>", "git status", "git diff", "git log", "git ls-files"],
     tool_catalog_policy: { tool: "vnem_tools_manifest", capability_groups: TOOL_CAPABILITY_GROUPS, safety_metadata_required: true, core_handoff_compatible: true },
     filesystem_intelligence_policy: { tools: ["vnem_tools_workspace_map", "vnem_tools_read_many_files", "vnem_tools_code_search", "vnem_tools_find_references", "vnem_tools_dependency_scan"], allowed_roots_only: true, secret_paths_blocked: true, generated_build_cache_skipped: true, evidence_logged: true },
-    repo_power_policy: { tools: ["vnem_tools_repo_deep_map", "vnem_tools_next_action_ranker", "vnem_tools_no_placebo_progress_audit", "vnem_tools_change_impact_plan", "vnem_tools_test_selection_plan", "vnem_tools_failure_triage", "vnem_tools_evidence_pack", "vnem_tools_local_session_recovery"], allowed_roots_only: true, secret_paths_blocked: true, compact_structured_output: true, no_live_github_required: true, no_placebo_detection: true, test_selection_avoids_overvalidation: true, local_session_recovery_supported: true },
+    repo_power_policy: { tools: ["vnem_tools_repo_deep_map", "vnem_tools_next_action_ranker", "vnem_tools_no_placebo_progress_audit", "vnem_tools_change_impact_plan", "vnem_tools_test_selection_plan", "vnem_tools_failure_triage", "vnem_tools_evidence_pack", "vnem_tools_local_session_recovery", "vnem_tools_repo_workflow_orchestrator"], allowed_roots_only: true, secret_paths_blocked: true, compact_structured_output: true, no_live_github_required: true, no_placebo_detection: true, test_selection_avoids_overvalidation: true, local_session_recovery_supported: true, workflow_orchestrator_supported: true },
     research_sources_policy: { tools: ["vnem_tools_fetch_url_text", "vnem_tools_source_quality_check", "vnem_tools_research_brief", "vnem_tools_browser_research_pack", "vnem_tools_claim_source_matrix", "vnem_tools_research_gap_detector", "vnem_tools_source_map", "vnem_tools_source_extract", "vnem_tools_source_graph"], no_search_engine_scraping: true, external_fetch_dry_run_default: true, approval_required_for_real_external_fetch: true, no_login_cookie_session_use: true },
     source_ingestion_policy: { tools: ["vnem_tools_source_map", "vnem_tools_source_extract", "vnem_tools_source_graph"], allowed_roots_only_for_local_sources: true, explicit_targets_only_for_extraction: true, secret_paths_blocked: true, broad_crawl_blocked: true, evidence_logged: true, source_graph_uses_provided_or_bounded_sources_only: true },
     debugging_code_quality_policy: { tools: ["vnem_tools_architecture_review", "vnem_tools_debug_evidence"], allowed_roots_only: true, secret_paths_blocked: true, no_arbitrary_commands: true, log_first_debugging: true, detects_parallel_fake_systems: true, flags_possible_dead_code: true, evidence_logged: true },
@@ -2044,6 +2068,7 @@ function buildToolCatalog() {
     mk("vnem_tools_failure_triage", "repo_power", { description: "Classify failing output into bug, fixture, environment/network/auth/dependency/generated/Windows cleanup/regression and produce a compact fix plan.", typical_use_cases: ["fix failing checks fast", "avoid chasing environment noise"] }),
     mk("vnem_tools_evidence_pack", "repo_power", { description: "Build a compact proof pack for handoffs: commands, tests, files, real behavior, mocked/live/blocked proof, risks, commit status, safe and unsafe claims.", typical_use_cases: ["final handoff evidence", "truthful batch summary"] }),
     mk("vnem_tools_local_session_recovery", "repo_power", { description: "Recover local Git working state after lost chat context, including branch/head, dirty categories, local stack, unpushed commits, safe next step, and not-proven boundaries without network.", typical_use_cases: ["resume after chat loss", "recover local stack safely", "avoid touching main or secrets"] }),
+    mk("vnem_tools_repo_workflow_orchestrator", "repo_power", { description: "Coordinate repo-power helpers into a mode-aware workflow decision with selected action, rejected actions, exact checks, proof packet, stop conditions, and not-proven boundaries.", typical_use_cases: ["choose local vs publish workflow", "recover after lost context", "triage CI failure", "avoid no-placebo traps"] }),
     mk("vnem_tools_action_policy_preview", "permissions", { description: "Preview whether a proposed action is allowed, blocked, or approval-gated under the active profile.", evidence_logged: false, allowed_roots_required: false, typical_use_cases: ["approval preview", "risk classification"] }),
     mk("vnem_tools_trust_boundary_classify", "permissions", { description: "Classify data/action/source descriptions into VNEM trust-boundary levels.", evidence_logged: false, allowed_roots_required: false, typical_use_cases: ["security boundary planning"] }),
     mk("vnem_tools_manifest", "status_readiness", { description: "Structured catalog of Tools MCP tools and safety metadata.", evidence_logged: false, typical_use_cases: ["AI tool discovery", "Core handoff planning"] }),
@@ -2909,6 +2934,332 @@ async function localSessionRecovery(args = {}) {
   return recovery;
 }
 
+async function repoWorkflowOrchestrator(args = {}) {
+  const root = await resolveAllowedRoot(args.repo_path || args.root || ".");
+  const goal = redactSecrets(String(args.user_goal || ""));
+  const taskMode = normalizeWorkflowTaskMode(args.task_mode);
+  const proofLevel = ["targeted", "full_local", "remote"].includes(args.proof_level) ? args.proof_level : "targeted";
+  const changed = arrayify(args.changed_files).map(normalizePath).filter(Boolean);
+  const failingOutput = redactSecrets(String(args.failing_output || ""));
+  const map = await repoDeepMap({ root: root.absolutePath, max_files: 500, max_depth: 6, include_git: true, user_goal: goal });
+  const changedForPlanning = changed.length ? changed : map.changed_or_untracked_files;
+  const impact = await changeImpactPlan({ root: root.absolutePath, changed_files: changedForPlanning });
+  const testPlan = await testSelectionPlan({ root: root.absolutePath, user_goal: goal, changed_files: changedForPlanning, failure_context: failingOutput });
+  const audit = await noPlaceboProgressAudit({ root: root.absolutePath, proposed_summary: goal, completed_summary: goal, changed_files: changedForPlanning, tests_run: [] });
+  const ranking = await nextActionRanker({ root: root.absolutePath, user_goal: goal, known_failures: failingOutput ? [failingOutput] : [], max_actions: 5 });
+  const recovery = await localSessionRecovery({ root: root.absolutePath, task_goal: goal, max_commits: 8 });
+  const failure = taskMode === "ci_failure" || failingOutput ? await failureTriage({ root: root.absolutePath, command: "gh run view <run-id> --log", stderr: failingOutput, context: goal }) : null;
+  const actionRecovery = failingOutput ? buildActionRecoveryPlan({ tool_name: "vnem_tools_repo_workflow_orchestrator", operation: taskMode, stderr: failingOutput, context: goal }) : null;
+  const highPowerReview = highPowerActionReview({ tool_name: "vnem_tools_repo_workflow_orchestrator", operation: taskMode, target: root.relativePath || root.absolutePath, mutation_type: taskMode === "publish" ? "remote publish planning" : "read-only planning", expected_effect: goal });
+  const truthCheck = taskProgressTruthCheck({ changed_files: changedForPlanning, tested: [], simulated_only: false, proven: [], blockers: [] });
+  const selectedAction = workflowSelectedAction({ taskMode, proofLevel, goal, map, impact, testPlan, audit, ranking, recovery, failure });
+  const rejectedActions = workflowRejectedActions(taskMode, proofLevel, audit);
+  const exactChecks = workflowExactChecks({ taskMode, proofLevel, branch: recovery.current_branch || map.git.branch || "<feature-branch>", testPlan, impact, failure, goal });
+  const remoteProofRequired = taskMode === "publish" || proofLevel === "remote";
+  const stopConditions = workflowStopConditions(taskMode, recovery, failure);
+  const whatNotProven = workflowNotProven({ taskMode, proofLevel, remoteProofRequired, allowLiveRemote: args.allow_live_remote, failure });
+  const proofPacketFields = [
+    "Branch",
+    "Local HEAD SHA",
+    "Remote branch SHA",
+    "PR URL",
+    "PR head SHA",
+    "Actions run URL",
+    "Actions status/conclusion",
+    "Local checks run",
+    "Remote checks observed",
+    "Files changed in this task",
+    "New commits made in this task",
+    "Worktree status",
+    "Live proof attempted",
+    "What is not proven",
+    "Next best task"
+  ];
+  const orchestration = {
+    operation_result: "reported",
+    task_mode: taskMode,
+    proof_level: proofLevel,
+    user_goal: goal,
+    repo_root: root.absolutePath,
+    repo_state_summary: {
+      current_branch: recovery.current_branch || map.git.branch,
+      head_sha: recovery.head_sha || map.git.head,
+      dirty_worktree: recovery.worktree.dirty,
+      dirty_file_count: recovery.worktree.changed_file_count,
+      changed_files: changedForPlanning.slice(0, 80),
+      dirty_categories: recovery.worktree.dirty_categories,
+      recent_commit_stack: map.git.recent_commits.slice(0, 8),
+      local_stack: recovery.local_stack.commits.slice(0, 8),
+      unpushed_local_only: {
+        comparison_ref: recovery.unpushed_commits.comparison_ref,
+        ahead_count: recovery.unpushed_commits.ahead_count,
+        behind_count: recovery.unpushed_commits.behind_count,
+        commits: recovery.unpushed_commits.commits.slice(0, 8)
+      }
+    },
+    synthesis: {
+      selected_action: selectedAction,
+      rejected_actions: rejectedActions,
+      why_this_not_raw_tool: "This tool runs the existing repo-power helpers, compares their outputs, and returns one mode-aware workflow contract instead of making the caller manually reconcile map/rank/audit/impact/test/triage/recovery signals."
+    },
+    selected_action: selectedAction,
+    rejected_actions: rejectedActions,
+    exact_checks: exactChecks,
+    evidence_contract: {
+      proof_packet_required: true,
+      proof_packet_fields: proofPacketFields,
+      remote_proof_required: remoteProofRequired,
+      live_remote_allowed: args.allow_live_remote === true,
+      local_vs_remote: remoteProofRequired ? "Local checks are insufficient; exact remote SHA/PR/Actions evidence must be observed by the caller." : "Local proof can justify local progress, but remote GitHub/CI/deploy state remains unproven."
+    },
+    no_placebo_gate: {
+      real_progress_score: audit.real_progress_score,
+      progress_level: audit.progress_level,
+      placebo_risks: audit.placebo_risks,
+      missing_proof: audit.missing_proof,
+      required_correction: audit.exact_next_correction,
+      docs_only_rejected: audit.placebo_risks.some((risk) => /docs-only/i.test(risk))
+    },
+    failure_triage_plan: failure ? {
+      classification: failure.classification,
+      likely_root_cause: failure.likely_root_cause,
+      exact_file_or_function_to_inspect: failure.exact_file_or_function_to_inspect,
+      smallest_fix: failure.smallest_fix,
+      command_to_rerun: failure.command_to_rerun,
+      continue_stop_or_ask_user: failure.continue_stop_or_ask_user,
+      must_not_claim: failure.must_not_claim
+    } : {
+      classification: "not_applicable",
+      next_if_failure_appears: "Run vnem_tools_failure_triage with the exact failing output before patching."
+    },
+    recovery_plan: {
+      safe_next_action: recovery.safe_next_action,
+      what_not_to_touch: recovery.what_not_to_touch,
+      not_proven: recovery.not_proven,
+      action_recovery_plan: actionRecovery
+    },
+    validation_plan: {
+      first_checks_to_run: testPlan.first_checks_to_run,
+      targeted_tests: testPlan.targeted_tests,
+      regression_tests: testPlan.regression_tests,
+      readiness_or_generation_checks: testPlan.readiness_or_generation_checks,
+      full_npm_test_recommended: taskMode === "publish" || proofLevel === "full_local" ? testPlan.full_npm_test_recommended : false,
+      proof_boundaries: testPlan.proof_boundaries
+    },
+    connected_tools: {
+      repo_deep_map: { branch: map.git.branch, dirty: map.git.dirty, files_sampled: map.compact_summary.file_count_sampled },
+      next_action_ranker: ranking.actions.slice(0, 3),
+      no_placebo_progress_audit: { score: audit.real_progress_score, risks: audit.placebo_risks },
+      change_impact_plan: { areas: impact.changed_areas, risk_level: impact.risk_level, generation_required: impact.generation_required },
+      test_selection_plan: { first_checks_to_run: testPlan.first_checks_to_run, full_npm_test_recommended: testPlan.full_npm_test_recommended },
+      failure_triage: failure ? { classification: failure.classification, smallest_fix: failure.smallest_fix } : null,
+      evidence_pack_contract: { proof_packet_required: true, fields: proofPacketFields },
+      local_session_recovery: { branch: recovery.current_branch, head_sha: recovery.head_sha, safe_next_action: recovery.safe_next_action },
+      capability_gap_report: capabilityGapReport().missing_or_limited_capabilities.slice(0, 3).map((gap) => gap.capability),
+      high_power_action_review: { action_allowed: highPowerReview.action_allowed, reasons_to_block: highPowerReview.reasons_to_block },
+      action_recovery_plan: actionRecovery ? { likely_cause: actionRecovery.likely_cause, next: actionRecovery.exact_next_steps[0] } : null,
+      task_progress_truth_check: { status: truthCheck.status, what_not_to_claim: truthCheck.what_not_to_claim },
+      pr_quality_gate: taskMode === "publish" ? { required_after_local_checks: true, tool: "vnem_tools_pr_quality_gate" } : { required_after_local_checks: false },
+      tools_manifest: { repo_power_tool_count_expected: 9, includes: "vnem_tools_repo_workflow_orchestrator" }
+    },
+    stop_conditions: stopConditions,
+    safety_boundaries: [
+      "The orchestrator is read-only and does not execute commands, edit files, push, create PRs, or inspect secret contents.",
+      "Remote proof must be collected by explicit gh/git commands or scoped GitHub tools; this plan is not itself remote proof.",
+      "Do not force-push, reset, merge, or mutate protected branches from this output.",
+      "If worktree is dirty, inspect exact files before publish or validation claims."
+    ],
+    final_handoff_shape: proofPacketFields,
+    safe_next_step: selectedAction.next_best_step,
+    what_is_not_proven: whatNotProven,
+    remote_proof_required: remoteProofRequired,
+    live_proof_attempted: false,
+    output_compact: true,
+    evidence_log_id: null
+  };
+  const log = await writeEvidenceLog("repo_workflow_orchestrator", orchestration);
+  orchestration.evidence_log_id = log.evidence_log_id;
+  return orchestration;
+}
+
+function normalizeWorkflowTaskMode(value) {
+  const mode = String(value || "implementation").toLowerCase().replace(/-/g, "_");
+  if (mode === "ci_fix") return "ci_failure";
+  return ["local_only", "publish", "ci_failure", "recovery", "implementation", "validation", "no_placebo"].includes(mode) ? mode : "implementation";
+}
+
+function workflowSelectedAction({ taskMode, proofLevel, goal, map, impact, testPlan, audit, ranking, recovery, failure }) {
+  const topRank = ranking.actions[0];
+  const branch = recovery.current_branch || map.git.branch || "<feature-branch>";
+  if (taskMode === "local_only") {
+    return {
+      phase: "local_only",
+      action: "Complete and prove the smallest local behavior slice without publish, PR, or Actions proof.",
+      next_best_step: (testPlan.first_checks_to_run[0] || impact.minimum_targeted_tests[0] || topRank?.action || "Run the first targeted local check."),
+      reason: "The task mode explicitly forbids remote proof; source/test/readiness evidence is the useful boundary.",
+      expected_files_to_touch: topRank?.expected_files_to_touch || impact.changed_files.slice(0, 6),
+      expected_proof_checks: workflowLocalChecks(testPlan, impact),
+      source_behavior_required: true
+    };
+  }
+  if (taskMode === "publish") {
+    return {
+      phase: "publish",
+      action: `Publish branch ${branch}, then prove exact remote SHA, PR head SHA, and GitHub Actions status.`,
+      next_best_step: `Verify clean worktree and push refs/heads/${branch} only after local checks pass.`,
+      reason: "Publish mode requires remote evidence; local-only proof is not enough.",
+      expected_files_to_touch: [],
+      expected_proof_checks: ["git status --short", `git ls-remote origin refs/heads/${branch}`, "gh pr view/create", "gh run list/view"],
+      remote_mutation_required: true
+    };
+  }
+  if (taskMode === "ci_failure") {
+    return {
+      phase: "ci_failure",
+      action: "Classify the failing CI log, patch only the smallest branch-caused product/test failure, then rerun the exact failing check.",
+      next_best_step: failure?.smallest_fix || "Fetch the exact failing CI log before editing.",
+      reason: failure?.likely_root_cause || "CI failure mode needs failure output before implementation.",
+      expected_files_to_touch: failure?.exact_file_or_function_to_inspect ? [failure.exact_file_or_function_to_inspect] : impact.likely_affected_tools_or_features.slice(0, 4),
+      expected_proof_checks: ["gh run view <run-id> --log", failure?.command_to_rerun || "rerun the smallest failing command"],
+      failure_classification: failure?.classification || "missing_failure_output"
+    };
+  }
+  if (taskMode === "recovery") {
+    return {
+      phase: "recovery",
+      action: "Recover branch, HEAD, dirty files, local stack, and unpushed/local-only status before deciding on edits or publish.",
+      next_best_step: recovery.safe_next_action,
+      reason: "Recovery mode is about reconstructing local truth, not making mutations.",
+      expected_files_to_touch: [],
+      expected_proof_checks: ["git status --short", "git branch --show-current", "git log --oneline --decorate -8", "git rev-list --left-right --count origin/main...HEAD"],
+      recovery_first: true
+    };
+  }
+  if (taskMode === "validation") {
+    const proofAlreadyExists = /proof already exists|tests? passed|passed and|already passed/i.test(goal);
+    return {
+      phase: "validation",
+      action: proofAlreadyExists ? "Record the missing proof packet and avoid a broad validation loop unless a risk trigger is present." : "Run the smallest missing proof check, then build the evidence packet.",
+      next_best_step: proofAlreadyExists ? "Assemble evidence_pack fields from observed command output." : (testPlan.first_checks_to_run[0] || "Run the first targeted check."),
+      reason: proofAlreadyExists ? "The goal indicates proof already exists; repeating full npm test is lower value than preserving exact evidence." : "Validation should close the smallest proof gap first.",
+      expected_files_to_touch: [],
+      expected_proof_checks: proofAlreadyExists ? ["npm.cmd run tools:readiness", "vnem_tools_evidence_pack"] : workflowLocalChecks(testPlan, impact),
+      avoid_full_suite_without_trigger: proofLevel !== "full_local"
+    };
+  }
+  if (taskMode === "no_placebo") {
+    return {
+      phase: "no_placebo",
+      action: "Reject docs-only, tests-only, generated-only, or registration-only claims until source behavior and proof are visible.",
+      next_best_step: audit.exact_next_correction,
+      reason: audit.placebo_risks[0] || "No-placebo mode requires implementation proof, not only claims.",
+      expected_files_to_touch: audit.exact_files_or_functions_to_inspect,
+      expected_proof_checks: ["vnem_tools_no_placebo_progress_audit", ...workflowLocalChecks(testPlan, impact).slice(0, 4)],
+      source_behavior_required: true
+    };
+  }
+  return {
+    phase: "implementation",
+    action: topRank?.action || "Implement the smallest behavior-backed slice, then run targeted proof.",
+    next_best_step: topRank?.expected_proof_checks?.[0] || testPlan.first_checks_to_run[0] || "Run targeted proof after source behavior changes.",
+    reason: topRank?.reason || "Implementation mode should favor source behavior plus focused proof over planning-only work.",
+    expected_files_to_touch: topRank?.expected_files_to_touch || impact.changed_files.slice(0, 6),
+    expected_proof_checks: topRank?.expected_proof_checks || workflowLocalChecks(testPlan, impact),
+    source_behavior_required: true
+  };
+}
+
+function workflowRejectedActions(taskMode, proofLevel, audit) {
+  const common = [
+    "Secret file/content inspection or printing",
+    "Force push, reset --hard, history rewrite, or direct protected-branch mutation",
+    "Claiming live GitHub/CI/deploy proof without exact URL/SHA/run evidence"
+  ];
+  const byMode = {
+    local_only: ["git push / gh pr / gh run remote proof for a local-only task", "full npm test before targeted local checks pass", "generated-only churn before source behavior"],
+    publish: ["new implementation before clean-worktree and local-check verification", "push to main or force push", "editing files unless CI proves a branch-caused failure"],
+    ci_failure: ["broad refactor before reading exact failing log", "fixing environment/auth/network failures as product bugs", "claiming CI green before rerun evidence"],
+    recovery: ["git reset --hard or checkout-away dirty files", "push/merge/open PR from recovery output alone", "treating local refs as remote proof"],
+    implementation: ["docs-only implementation claim", "tests-only registration proof", "validation-only loop before behavior exists"],
+    validation: ["re-running full npm test when exact proof already exists and no broad trigger is present", "browser/live proof unless UI or remote publish is in scope", "new implementation during validation unless a proof gap exposes a bug"],
+    no_placebo: ["docs-only claims", "generated-only claims", "registration-only tool names without execution behavior", "mocked-only proof described as live proof"]
+  };
+  const extra = proofLevel === "remote" ? ["accepting local-only proof for remote acceptance"] : [];
+  return [...new Set([...common, ...(byMode[taskMode] || byMode.implementation), ...extra, ...audit.placebo_risks.map((risk) => `placebo risk: ${risk}`)])];
+}
+
+function workflowExactChecks({ taskMode, proofLevel, branch, testPlan, impact, failure, goal }) {
+  const local = workflowLocalChecks(testPlan, impact);
+  if (taskMode === "publish") {
+    return [
+      "git fetch origin",
+      "git status --short",
+      "git rev-list --left-right --count origin/main...HEAD",
+      ...local.slice(0, proofLevel === "remote" ? 8 : 5),
+      `git push -u origin ${branch}`,
+      `git ls-remote origin refs/heads/${branch}`,
+      `gh pr view ${branch} --json url,number,state,headRefName,baseRefName,headRefOid,baseRefOid`,
+      "gh pr create --base main --head <branch> --title <title> --body <body> if no PR exists",
+      `gh run list --branch ${branch} --limit 10`,
+      "gh run view <run-id> --json status,conclusion,url,headSha,name,event",
+      "gh run view <run-id> --log if the latest relevant run fails"
+    ];
+  }
+  if (taskMode === "ci_failure") {
+    return [
+      "gh run view <run-id> --log",
+      failure?.command_to_rerun || "rerun the smallest failing command",
+      "npm.cmd run tools:readiness",
+      "gh run view <run-id> --json status,conclusion,url,headSha,name,event after pushing the fix"
+    ];
+  }
+  if (taskMode === "recovery") {
+    return ["git status --short", "git branch --show-current", "git log --oneline --decorate -8", "git rev-list --left-right --count origin/main...HEAD"];
+  }
+  if (taskMode === "validation" && /proof already exists|tests? passed|already passed/i.test(goal)) {
+    return ["npm.cmd run tools:readiness", "vnem_tools_evidence_pack with the exact observed checks"];
+  }
+  return local;
+}
+
+function workflowLocalChecks(testPlan, impact) {
+  return [...new Set([
+    ...testPlan.baseline_checks,
+    ...testPlan.first_checks_to_run,
+    ...testPlan.targeted_tests,
+    ...testPlan.regression_tests,
+    ...impact.minimum_targeted_tests,
+    ...impact.final_checks.filter((cmd) => /readiness|validate|generate|install-pack/.test(cmd))
+  ])].filter((cmd) => !/\bgit push\b|\bgh pr\b|\bgh run\b|ls-remote/i.test(cmd)).slice(0, 18);
+}
+
+function workflowStopConditions(taskMode, recovery, failure) {
+  const stops = [
+    "Stop if a secret-like path is dirty or would need inspection; only report the path/status.",
+    "Stop publish if worktree is dirty before push.",
+    "Stop if expected branch/HEAD does not match the requested stack.",
+    "Stop if remote URL/auth/network proof is missing for publish mode.",
+    "Stop if targeted local checks fail; triage before broad changes."
+  ];
+  if (taskMode === "ci_failure") stops.push("Stop if the failure class is environment/network/auth/config; report blocker instead of patching product code.");
+  if (taskMode === "publish") stops.push("Stop if remote branch SHA differs from local HEAD; do not force push.");
+  if (recovery.worktree.dirty) stops.push("Dirty worktree detected; review exact changed files before commit/publish.");
+  if (failure?.classification) stops.push(`Failure classification must be honored: ${failure.classification}.`);
+  return [...new Set(stops)];
+}
+
+function workflowNotProven({ taskMode, proofLevel, remoteProofRequired, allowLiveRemote, failure }) {
+  const items = [
+    "This orchestrator did not edit files, run commands, push, create PRs, merge, or inspect CI logs.",
+    "Hidden/lost chat context is not recovered; only local repo state and supplied arguments are used."
+  ];
+  if (!allowLiveRemote || !remoteProofRequired) items.push("Remote GitHub branch, PR, Actions, deploy, and release state are not proven by this read-only output.");
+  if (remoteProofRequired) items.push("Exact remote SHA/PR/Actions proof is still required after executing the listed commands.");
+  if (proofLevel !== "full_local") items.push("Full npm test pass is not proven unless the caller runs and records it.");
+  if (taskMode === "ci_failure" && !failure) items.push("CI root cause is not proven without exact failing output/log.");
+  return [...new Set(items)];
+}
+
 async function readPackageJsonIfPresent(root) {
   const packagePath = path.join(root, "package.json");
   if (!existsSync(packagePath)) return null;
@@ -3159,8 +3510,10 @@ function targetedTestsForChange(areas, changed, scripts) {
     const base = path.basename(file);
     if (/power-tools-2/.test(base)) tests.push("npm.cmd run test:tools-power-tools-2-regression");
     if (/power-session-1|local-session-recovery/.test(base)) tests.push("npm.cmd run test:tools-power-session-1-recovery");
+    if (/orchestrator|repo-workflow/.test(base)) tests.push("npm.cmd run test:tools-orchestrator-1-regression");
     if (/^test-tools-power/.test(base) || /power-tools-1/.test(base)) tests.push("npm.cmd run test:tools-power-tools-1-regression");
   }
+  if (scripts?.["test:tools-orchestrator-1-regression"] && areas.includes("tools_mcp")) tests.push("npm.cmd run test:tools-orchestrator-1-regression");
   if (scripts?.["test:tools-power-session-1-recovery"] && areas.includes("tools_mcp")) tests.push("npm.cmd run test:tools-power-session-1-recovery");
   if (scripts?.["test:tools-power-tools-2-regression"] && areas.includes("tools_mcp")) tests.push("npm.cmd run test:tools-power-tools-2-regression");
   if (scripts?.["test:tools-quality-general"] && areas.includes("tools_mcp")) tests.push("npm.cmd run test:tools-quality-general");
@@ -3263,6 +3616,7 @@ function formatTestSelectionPlan(plan) { return [`vnem_tools_test_selection_plan
 function formatFailureTriage(triage) { return [`vnem_tools_failure_triage: ${triage.classification}`, `cause=${triage.likely_root_cause}`, `inspect=${triage.exact_file_or_function_to_inspect}`, `rerun=${triage.command_to_rerun}`, `blocks=${triage.blocks_acceptance}`].join("\n"); }
 function formatRepoEvidencePack(pack) { return [`vnem_tools_evidence_pack: branch=${pack.branch || "unknown"}`, `changed=${pack.changed_files.length}`, `passed=${pack.tests_passed.length}`, `failed=${pack.tests_failed.length}`, `safe_claims=${pack.safe_to_claim.length}`, `not_safe=${pack.not_safe_to_claim.length}`].join("\n"); }
 function formatLocalSessionRecovery(recovery) { return [`vnem_tools_local_session_recovery: branch=${recovery.current_branch || "unknown"}`, `head=${recovery.head_sha ? recovery.head_sha.slice(0, 12) : "unknown"}`, `dirty=${recovery.worktree.dirty}`, `stack_commits=${recovery.local_stack.commits.length}`, `unpushed=${recovery.unpushed_commits.ahead_count ?? "unknown"}`, `next=${recovery.safe_next_action}`].join("\n"); }
+function formatRepoWorkflowOrchestrator(orchestration) { return [`vnem_tools_repo_workflow_orchestrator: mode=${orchestration.task_mode}`, `branch=${orchestration.repo_state_summary.current_branch || "unknown"}`, `selected=${orchestration.selected_action.phase}`, `remote_proof_required=${orchestration.remote_proof_required}`, `checks=${orchestration.exact_checks.length}`, `next=${orchestration.safe_next_step}`].join("\n"); }
 
 const SEARCH_PROVIDER_DEFINITIONS = [
   { name: "local_fixture", env: null, supports_current_web: false, supports_news: false, supports_code_search: false, supports_docs_search: true, supports_safe_search: true, requires_api_key: false, requires_approval: false, rate_limit_notes: "deterministic local CI/test fixture", privacy_notes: "no external network" },

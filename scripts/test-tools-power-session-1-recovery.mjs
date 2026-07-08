@@ -140,8 +140,9 @@ await withRecoveryTools(async ({ client, repo }) => {
   assert.doesNotMatch(JSON.stringify(dirty), /SECRET_TOKEN_VALUE/);
 
   const manifest = await call(client, "vnem_tools_manifest", { capability_group: "repo_power" });
-  assert.equal(manifest.tools.length, 8);
+  assert.equal(manifest.tools.length, 9);
   assert.ok(manifest.tools.some((tool) => tool.name === "vnem_tools_local_session_recovery" && tool.reliability_level === "local_tested"));
+  assert.ok(manifest.tools.some((tool) => tool.name === "vnem_tools_repo_workflow_orchestrator" && tool.reliability_level === "local_tested"));
 
   const status = await call(client, "vnem_tools_status", {});
   assert.ok(status.repo_power_policy.tools.includes("vnem_tools_local_session_recovery"));
