@@ -55,6 +55,7 @@ const toolsSourceIngestionTestSource = await text("scripts/test-tools-source-ing
 const toolsSourceGraphTestSource = await text("scripts/test-tools-source-graph.mjs");
 const mcpUserSmokeTestSource = await text("scripts/test-mcp-user-smoke.mjs");
 const adoptionReliabilityTestSource = await text("scripts/test-vnem-adoption-reliability-1-regression.mjs");
+const adoptionReliability2TestSource = await text("scripts/test-vnem-adoption-reliability-2-regression.mjs");
 const readme = await text("README.md");
 const installGuide = await text(".vnem/install-guide.md");
 const packageJson = await json("package.json");
@@ -223,7 +224,11 @@ const coreAdoptionReliabilityStatus = {
   core_entrypoint_status: toolInventory.includes("vnem_entrypoint") && /buildCoreEntrypoint/.test(serverSource) && /should_use_vnem/.test(serverSource) && /vnem_entrypoint/.test(adoptionReliabilityTestSource),
   core_usage_contract_status: toolInventory.includes("vnem_usage_contract") && /buildCoreUsageContract/.test(serverSource) && /core_role/.test(serverSource) && /vnem_usage_contract/.test(adoptionReliabilityTestSource),
   core_tools_handoff_status: /recommended_tools_calls/.test(serverSource) && /tools_handoff/.test(serverSource) && /core_runtime_dependency:\s*false/.test(serverSource) && /vnem_tools_repo_deep_map/.test(adoptionReliabilityTestSource),
-  core_adoption_reliability_status: /when_tools_mcp_is_needed/.test(serverSource) && /what_core_cannot_do/.test(serverSource) && /no_placebo_risks/.test(serverSource) && /disconnected_agent_limit/.test(serverSource + adoptionReliabilityTestSource)
+  core_adoption_reliability_status: /when_tools_mcp_is_needed/.test(serverSource) && /what_core_cannot_do/.test(serverSource) && /no_placebo_risks/.test(serverSource) && /disconnected_agent_limit/.test(serverSource + adoptionReliabilityTestSource),
+  core_visibility_doctor_status: toolInventory.includes("vnem_mcp_visibility_doctor") && /buildCoreVisibilityDoctor/.test(serverSource) && /core-visibility-doctor/.test(adoptionReliability2TestSource),
+  core_underuse_detector_status: toolInventory.includes("vnem_underuse_detector") && /buildCoreUnderuseDetector/.test(serverSource) && /core-underuse-detector/.test(adoptionReliability2TestSource),
+  core_adoption_description_status: /core-description-discovery/.test(adoptionReliability2TestSource) && /first-call/.test(serverSource) && /visibility doctor/.test(serverSource),
+  core_adoption_reliability_2_status: /vnem_mcp_visibility_doctor/.test(serverSource) && /vnem_underuse_detector/.test(serverSource) && /vnem Tools ADOPTION-RELIABILITY-2/.test(adoptionReliability2TestSource)
 };
 
 assert.ok(toolInventory.includes("vnem_api_safety_profile"), "Core MCP API safety profile tool is missing");
@@ -280,6 +285,10 @@ assert.ok(packageJson.scripts?.["test:core-permission-planning"] === "node scrip
 assert.ok(packageJson.scripts?.["test:core-adoption-entrypoint"] === "node scripts/test-vnem-adoption-reliability-1-regression.mjs --case=core-entrypoint", "test:core-adoption-entrypoint package script is missing");
 assert.ok(packageJson.scripts?.["test:core-usage-contract"] === "node scripts/test-vnem-adoption-reliability-1-regression.mjs --case=core-usage-contract", "test:core-usage-contract package script is missing");
 assert.ok(packageJson.scripts?.["test:vnem-adoption-reliability-1-regression"] === "node scripts/test-vnem-adoption-reliability-1-regression.mjs", "test:vnem-adoption-reliability-1-regression package script is missing");
+assert.ok(packageJson.scripts?.["test:vnem-adoption-core-visibility"] === "node scripts/test-vnem-adoption-reliability-2-regression.mjs --case=core-visibility-doctor", "test:vnem-adoption-core-visibility package script is missing");
+assert.ok(packageJson.scripts?.["test:vnem-adoption-core-underuse"] === "node scripts/test-vnem-adoption-reliability-2-regression.mjs --case=core-underuse-detector", "test:vnem-adoption-core-underuse package script is missing");
+assert.ok(packageJson.scripts?.["test:vnem-adoption-cross-mcp"] === "node scripts/test-vnem-adoption-reliability-2-regression.mjs --case=cross-mcp-registered-names", "test:vnem-adoption-cross-mcp package script is missing");
+assert.ok(packageJson.scripts?.["test:vnem-adoption-reliability-2-regression"] === "node scripts/test-vnem-adoption-reliability-2-regression.mjs", "test:vnem-adoption-reliability-2-regression package script is missing");
 assert.ok(packageJson.scripts?.["core:readiness"], "package script core:readiness is missing");
 
 const blockers = [];
@@ -323,6 +332,7 @@ const report = {
   core_ui_web_quality_status: coreUiWebQualityStatus,
   core_adaptive_speed_design_status: coreAdaptiveSpeedDesignStatus,
   core_adoption_reliability_status: coreAdoptionReliabilityStatus,
+  core_adoption_reliability_2_test_exists: existsSync(rel("scripts/test-vnem-adoption-reliability-2-regression.mjs")),
   core_tools_ecosystem_test_status: /vnem_build_tools_plan/.test(coreToolsEcosystemTestSource) && /vnem_tools_finish_session/.test(coreToolsEcosystemTestSource),
   api_library_counts: apiCounts,
   skill_library_counts: skillCounts,
@@ -346,7 +356,8 @@ const report = {
     "Core now builds UI quality plans and visual proof contracts, and completion audit flags UI/browser overclaims without visual, route/render, console/network, a11y, viewport, state, and before/after evidence while remaining plan-only.",
     "Core now classifies adaptive effort, enforces fast-answer/no-ceremony contracts, harsh-truth uncertainty labels, design ambition, visual taste audits, and wasted-tool/anti-overhead checks while remaining plan-only.",
     "Core now adds realistic redesign comparison scorecards, total-impact design planning, total-impact direction selection, compact output contracts, and SPEED-DESIGN-2 audit flags while remaining plan-only.",
-    "Core now exposes a compact adoption entrypoint and usage contract that recommend exact Tools MCP handoff calls without claiming Core can execute them."
+    "Core now exposes a compact adoption entrypoint and usage contract that recommend exact Tools MCP handoff calls without claiming Core can execute them.",
+    "Core now exposes visibility and underuse diagnostics that detect missing VNEM/Tools usage and return exact registered recovery calls."
   ],
   not_ready: [
     "Most API docs, rate limits, CORS values, and freshness statuses remain metadata-level or unknown.",

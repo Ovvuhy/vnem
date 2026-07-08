@@ -17,6 +17,8 @@ const REQUIRED_TOOL_NAMES = [
   "vnem_tools_entrypoint",
   "vnem_tools_capability_router",
   "vnem_tools_adoption_readiness",
+  "vnem_tools_visibility_doctor",
+  "vnem_tools_underuse_detector",
   "vnem_tools_permission_profiles",
   "vnem_tools_permission_status",
   "vnem_tools_reliability_catalog",
@@ -225,7 +227,7 @@ function registerTools(mcpServer) {
     "vnem_tools_entrypoint",
     {
       title: "VNEM Tools Entrypoint",
-      description: "VNEM Tools MCP entrypoint to recommend and route exact next action calls for code, repo, proof, MCP, GitHub, Cloudflare, browser, recovery, and tooling tasks.",
+      description: "VNEM Tools MCP first-call entrypoint to recommend and route exact next action calls for repo, code, debug, test, proof, GitHub, CI, patch, MCP, browser, recovery, and tooling tasks.",
       inputSchema: {
         user_goal: z.string().min(1),
         repo_path: z.string().optional(),
@@ -246,7 +248,7 @@ function registerTools(mcpServer) {
     "vnem_tools_capability_router",
     {
       title: "VNEM Tools Capability Router",
-      description: "VNEM Tools MCP entrypoint router that maps user goals and task types to exact registered Tools MCP calls for code, repo, proof, MCP, next action, and safe execution planning.",
+      description: "VNEM Tools MCP first-call router that maps user goals to exact registered Tools calls for repo, code, debug, test, proof, GitHub, CI, patch, MCP, next action, and safe execution planning.",
       inputSchema: {
         user_goal: z.string().min(1),
         task_type: z.string().default("auto"),
@@ -264,7 +266,7 @@ function registerTools(mcpServer) {
     "vnem_tools_adoption_readiness",
     {
       title: "VNEM Tools Adoption Readiness",
-      description: "VNEM Tools MCP adoption readiness check for entrypoint discoverability, recommend/route/tool/code/repo/proof/MCP descriptions, exact registered tool validation, and no-placebo hooks.",
+      description: "VNEM Tools MCP adoption readiness check for first-call entrypoint discoverability, recommend/route/tool/code/repo/debug/test/proof/GitHub/CI/patch/MCP descriptions, exact registered validation, and no-placebo hooks.",
       inputSchema: { root: z.string().default(".") },
       annotations: READ_ONLY_LOCAL
     },
@@ -272,6 +274,40 @@ function registerTools(mcpServer) {
       const readiness = await toolsAdoptionReadiness(args);
       return toolResult(formatToolsAdoptionReadiness(readiness), { adoption_readiness: readiness });
     })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_visibility_doctor",
+    {
+      title: "VNEM Tools Visibility Doctor",
+      description: "VNEM Tools MCP first-call visibility doctor and entrypoint check to recommend and route the next action across Tools repo/code/debug/test/proof/GitHub/CI/patch/MCP power paths with registered-name validation.",
+      inputSchema: { user_goal: z.string().default(""), available_tool_names: z.array(z.string()).default([]) },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => {
+      const doctor = toolsVisibilityDoctor(args);
+      return toolResult(formatToolsVisibilityDoctor(doctor), { tools_visibility_doctor: doctor });
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_underuse_detector",
+    {
+      title: "VNEM Tools Underuse Detector",
+      description: "VNEM Tools MCP first-call underuse detector and entrypoint pressure check to recommend and route the next action for repo, code, debug, test, proof, GitHub, CI, patch, MCP, browser, recovery, and evidence tasks with exact registered recovery calls.",
+      inputSchema: {
+        user_goal: z.string().min(1),
+        recent_actions: z.array(z.string()).default([]),
+        task_type: z.string().default("auto"),
+        repo_path: z.string().optional(),
+        changed_files: z.array(z.string()).default([])
+      },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => {
+      const detector = toolsUnderuseDetector(args);
+      return toolResult(formatToolsUnderuseDetector(detector), { tools_underuse_detector: detector });
+    }
   );
 
   mcpServer.registerTool(
@@ -1908,6 +1944,154 @@ function formatActionRecoveryPlan(plan) { return [`vnem_tools_action_recovery_pl
 function formatHighPowerActionReview(review) { return [`vnem_tools_high_power_action_review: allowed=${review.action_allowed}`, `profile=${review.permission_profile}`, `approval_required=${review.approval_required}`, `destructive=${review.destructive_approval_required}`, `blocks=${review.reasons_to_block.join("; ") || "none"}`].join("\n"); }
 function formatCapabilityGapReport(report) { return [`vnem_tools_capability_gap_report: ${report.missing_or_limited_capabilities.length} gap(s)`, `top=${report.missing_or_limited_capabilities.slice(0, 3).map((g) => g.capability).join(", ")}`].join("\n"); }
 
+function toolsVisibilityDoctor(args = {}) {
+  const catalog = buildToolCatalog();
+  const names = new Set(catalog.map((tool) => tool.name));
+  const availableToolNames = new Set(arrayify(args.available_tool_names).map((name) => String(name)));
+  const entrypoints = ["vnem_tools_entrypoint", "vnem_tools_capability_router", "vnem_tools_adoption_readiness", "vnem_tools_visibility_doctor", "vnem_tools_underuse_detector"];
+  const powerLayers = {
+    repo_power: ["vnem_tools_repo_deep_map", "vnem_tools_failure_triage", "vnem_tools_evidence_pack"].every((tool) => names.has(tool)),
+    code_intelligence: ["vnem_tools_code_symbol_map", "vnem_tools_patch_target_finder", "vnem_tools_source_impact_trace"].every((tool) => names.has(tool)),
+    github_ci_proof: ["vnem_tools_github_status", "vnem_tools_github_actions_status", "vnem_tools_pr_quality_gate"].every((tool) => names.has(tool)),
+    browser_ui_proof: ["vnem_tools_browser_evidence_plan", "vnem_tools_browser_evidence_run", "vnem_tools_ui_evidence_audit"].every((tool) => names.has(tool)),
+    adoption_diagnostics: entrypoints.every((tool) => names.has(tool))
+  };
+  const weak = toolsWeakAdoptionDescriptions(catalog);
+  const entrypointToolsPresent = Object.fromEntries(entrypoints.map((tool) => [tool, {
+    registered: names.has(tool),
+    visible_from_client_list: availableToolNames.size ? availableToolNames.has(tool) : "unknown"
+  }]));
+  const missingPower = Object.entries(powerLayers).filter(([, present]) => !present).map(([layer]) => layer);
+  const adoptionReadinessScore = Math.max(0, 100 - (weak.length * 8) - (missingPower.length * 15) - (entrypoints.filter((tool) => !names.has(tool)).length * 20));
+  const goal = String(args.user_goal || "");
+  const router = goal ? toolsCapabilityRouter({ user_goal: goal, task_type: "auto", available_context: {} }) : null;
+  return {
+    tools_mcp_visible: true,
+    registered_tool_count: names.size,
+    entrypoint_tools_present: entrypointToolsPresent,
+    core_handoff_compatible: Boolean(statusObject().adoption_reliability_policy?.core_handoff_compatible),
+    required_power_layers_present: powerLayers,
+    missing_or_weak_descriptions: weak,
+    recommended_first_tools_call: router?.exact_call_sequence?.[0]?.tool || "vnem_tools_entrypoint",
+    adoption_readiness_score: adoptionReadinessScore,
+    next_step: router?.exact_call_sequence?.[0]?.tool
+      ? `Call ${router.exact_call_sequence[0].tool} with root/repo context.`
+      : "Call vnem_tools_entrypoint with user_goal and root.",
+    exact_registered_name_validation: true,
+    confidence: weak.length || missingPower.length ? "medium" : "high",
+    output_compact: true
+  };
+}
+
+function toolsUnderuseDetector(args = {}) {
+  const goal = String(args.user_goal || "").trim();
+  const context = {
+    repo_path: args.repo_path || "",
+    root: args.repo_path || "",
+    changed_files: arrayify(args.changed_files)
+  };
+  const router = toolsCapabilityRouter({ user_goal: goal, task_type: args.task_type || "auto", available_context: context });
+  const actionText = normalizeTextForTools(arrayify(args.recent_actions).join(" "));
+  const categories = router.matched_task_categories || [];
+  const casual = isCasualToolsTask(goal, args.task_type || "auto");
+  const usedAnyTools = /\bvnem_tools_/.test(actionText);
+  const missing = casual ? [] : router.exact_call_sequence
+    .filter((step) => !actionText.includes(step.tool.toLowerCase()))
+    .slice(0, 6)
+    .map((step) => step.tool);
+  const shouldHaveUsedTools = !casual && !usedAnyTools && missing.length > 0;
+  return {
+    task_categories: categories,
+    should_have_used_tools: shouldHaveUsedTools,
+    missing_tools_calls: missing,
+    exact_recovery_sequence: missing.map((tool, index) => ({
+      step: index + 1,
+      tool,
+      arguments: toolsRecoveryArgs(tool, goal, args)
+    })),
+    severity: shouldHaveUsedTools
+      ? categories.includes("github_pr_ci_proof") || categories.includes("debugging_failing_tests") ? "high" : "medium"
+      : "none",
+    reason: shouldHaveUsedTools
+      ? "Tools MCP should be used for this repo/code/debug/test/proof/GitHub/patch task, but recent actions show no VNEM Tools call."
+      : casual
+        ? "Casual/simple text task does not need Tools MCP."
+        : "Recent actions already include Tools MCP or no missing call is detected.",
+    not_needed_reason: casual ? "No repo/code/debug/test/proof/GitHub/CI/patch/MCP signals were detected." : "",
+    confidence: shouldHaveUsedTools || casual ? "high" : "medium",
+    diagnostic_only: true,
+    output_compact: true
+  };
+}
+
+function toolsWeakAdoptionDescriptions(catalog) {
+  const important = new Set([
+    "vnem_tools_entrypoint",
+    "vnem_tools_capability_router",
+    "vnem_tools_adoption_readiness",
+    "vnem_tools_visibility_doctor",
+    "vnem_tools_underuse_detector",
+    "vnem_tools_repo_deep_map",
+    "vnem_tools_code_symbol_map",
+    "vnem_tools_mcp_surface_audit",
+    "vnem_tools_patch_target_finder",
+    "vnem_tools_tool_test_coverage_map",
+    "vnem_tools_source_impact_trace",
+    "vnem_tools_source_control_character_guard",
+    "vnem_tools_failure_triage",
+    "vnem_tools_evidence_pack",
+    "vnem_tools_github_status",
+    "vnem_tools_github_actions_status",
+    "vnem_tools_pr_quality_gate"
+  ]);
+  return catalog
+    .filter((tool) => important.has(tool.name))
+    .filter((tool) => {
+      const description = normalizeTextForTools(tool.description || "");
+      const words = tool.name.includes("github") || tool.name.includes("pr_quality")
+        ? ["github", "ci", "proof"]
+        : tool.name.includes("patch")
+          ? ["patch", "repo", "code"]
+          : tool.name.includes("failure")
+            ? ["debug", "test"]
+            : ["repo", "code", "proof"];
+      return !description.includes("first call") && !description.includes("route") && !words.every((word) => description.includes(word));
+    })
+    .map((tool) => ({ tool: tool.name, reason: "description lacks first-call/route or task-discovery keywords" }));
+}
+
+function isCasualToolsTask(goal, taskType = "auto") {
+  const text = normalizeTextForTools([goal, taskType].join(" "));
+  return !/\b(repo|repository|code|debug|test|failing|failure|github|ci|pr|push|patch|mcp|tool|proof|evidence|browser|ui|cloudflare|deploy|session|recovery|artifact)\b/.test(text);
+}
+
+function toolsRecoveryArgs(tool, goal, args = {}) {
+  const base = { root: args.repo_path || ".", user_goal: goal };
+  if (tool.includes("failure_triage")) return { root: args.repo_path || ".", context: goal };
+  if (tool.includes("github") || tool.includes("pr_quality_gate")) return { root: args.repo_path || ".", dry_run: true };
+  if (tool.includes("source_impact") || tool.includes("test_selection")) return { ...base, changed_files: arrayify(args.changed_files) };
+  return base;
+}
+
+function formatToolsVisibilityDoctor(doctor) {
+  return [
+    `vnem_tools_visibility_doctor: score=${doctor.adoption_readiness_score}`,
+    `visible=${doctor.tools_mcp_visible}; registered=${doctor.registered_tool_count}`,
+    `first=${doctor.recommended_first_tools_call}`,
+    `weak=${doctor.missing_or_weak_descriptions.length}`,
+    `next=${doctor.next_step}`
+  ].join("\n");
+}
+
+function formatToolsUnderuseDetector(detector) {
+  return [
+    `vnem_tools_underuse_detector: should_have_used=${detector.should_have_used_tools}`,
+    `severity=${detector.severity}; categories=${detector.task_categories.slice(0, 3).join(", ")}`,
+    `missing=${detector.missing_tools_calls.slice(0, 6).join(", ") || "none"}`,
+    `next=${detector.exact_recovery_sequence[0]?.tool || "none"}`
+  ].join("\n");
+}
+
 async function toolsEntrypoint(args = {}) {
   const root = await resolveAllowedRoot(args.repo_path || args.root || ".");
   const availableContext = {
@@ -2036,7 +2220,7 @@ async function toolsAdoptionReadiness(args = {}) {
   const root = await resolveAllowedRoot(args.root || ".");
   const catalog = buildToolCatalog();
   const names = new Set(catalog.map((tool) => tool.name));
-  const entrypointTools = ["vnem_tools_entrypoint", "vnem_tools_capability_router", "vnem_tools_adoption_readiness"];
+  const entrypointTools = ["vnem_tools_entrypoint", "vnem_tools_capability_router", "vnem_tools_adoption_readiness", "vnem_tools_visibility_doctor", "vnem_tools_underuse_detector"];
   const keyPowerTools = [
     "vnem_tools_repo_deep_map",
     "vnem_tools_code_symbol_map",
@@ -2243,7 +2427,7 @@ function statusObject() {
     blocked_paths: [".env*", "*secret*", "*token*", "*credential*", "*key*", ".git", "node_modules", "dist", "build"],
     command_allowlist: ["node --check <file>", "npm test", "npm run <safe-script>", "git status", "git diff", "git log", "git ls-files"],
     tool_catalog_policy: { tool: "vnem_tools_manifest", capability_groups: TOOL_CAPABILITY_GROUPS, safety_metadata_required: true, core_handoff_compatible: true },
-    adoption_reliability_policy: { tools: ["vnem_tools_entrypoint", "vnem_tools_capability_router", "vnem_tools_adoption_readiness"], core_handoff_compatible: true, exact_registered_tool_names_only: true, compact_default: true, no_fake_vnem_control: true, source_control_guard_recommended: true },
+    adoption_reliability_policy: { tools: ["vnem_tools_entrypoint", "vnem_tools_capability_router", "vnem_tools_adoption_readiness", "vnem_tools_visibility_doctor", "vnem_tools_underuse_detector"], core_handoff_compatible: true, exact_registered_tool_names_only: true, compact_default: true, no_fake_vnem_control: true, underuse_detection_supported: true, source_control_guard_recommended: true },
     filesystem_intelligence_policy: { tools: ["vnem_tools_workspace_map", "vnem_tools_read_many_files", "vnem_tools_code_search", "vnem_tools_find_references", "vnem_tools_dependency_scan"], allowed_roots_only: true, secret_paths_blocked: true, generated_build_cache_skipped: true, evidence_logged: true },
     repo_power_policy: { tools: ["vnem_tools_repo_deep_map", "vnem_tools_next_action_ranker", "vnem_tools_no_placebo_progress_audit", "vnem_tools_change_impact_plan", "vnem_tools_test_selection_plan", "vnem_tools_failure_triage", "vnem_tools_evidence_pack", "vnem_tools_local_session_recovery", "vnem_tools_repo_workflow_orchestrator", "vnem_tools_code_symbol_map", "vnem_tools_mcp_surface_audit", "vnem_tools_patch_target_finder", "vnem_tools_tool_test_coverage_map", "vnem_tools_source_impact_trace", "vnem_tools_source_control_character_guard"], allowed_roots_only: true, secret_paths_blocked: true, compact_structured_output: true, no_live_github_required: true, no_placebo_detection: true, test_selection_avoids_overvalidation: true, local_session_recovery_supported: true, workflow_orchestrator_supported: true, code_intelligence_supported: true, source_control_character_guard_supported: true },
     research_sources_policy: { tools: ["vnem_tools_fetch_url_text", "vnem_tools_source_quality_check", "vnem_tools_research_brief", "vnem_tools_browser_research_pack", "vnem_tools_claim_source_matrix", "vnem_tools_research_gap_detector", "vnem_tools_source_map", "vnem_tools_source_extract", "vnem_tools_source_graph"], no_search_engine_scraping: true, external_fetch_dry_run_default: true, approval_required_for_real_external_fetch: true, no_login_cookie_session_use: true },
@@ -2508,30 +2692,32 @@ function buildToolCatalog() {
   };
   return [
     mk("vnem_tools_status", "status_readiness", { description: "Report Tools MCP policy/readiness including active permission profile and allowed-root status.", evidence_logged: false, typical_use_cases: ["preflight safety status"] }),
-    mk("vnem_tools_entrypoint", "adoption_reliability", { description: "VNEM Tools MCP entrypoint to recommend and route exact next action calls for code, repo, proof, MCP, GitHub, Cloudflare, browser, recovery, and tooling tasks.", evidence_logged: false, allowed_roots_required: true, typical_use_cases: ["first call for repo/code/tooling work", "Core handoff execution route", "compact proof-aware next action"] }),
-    mk("vnem_tools_capability_router", "adoption_reliability", { description: "VNEM Tools MCP entrypoint router to recommend and route exact registered tools for code, repo, proof, MCP, next action, debugging, publish, browser, recovery, and no-placebo tasks.", evidence_logged: false, allowed_roots_required: false, typical_use_cases: ["map task to exact Tools calls", "avoid fake tool names", "choose compact next action"] }),
-    mk("vnem_tools_adoption_readiness", "adoption_reliability", { description: "VNEM Tools MCP adoption readiness check for entrypoint recommend route tools code repo proof MCP next action discoverability, contracts, and no-placebo markers.", evidence_logged: false, allowed_roots_required: true, typical_use_cases: ["verify Tools discoverability", "check Core handoff compatibility", "audit adoption hooks"] }),
+    mk("vnem_tools_entrypoint", "adoption_reliability", { description: "VNEM Tools MCP first-call entrypoint to recommend and route exact next action calls for repo, code, debug, test, proof, GitHub, CI, patch, MCP, browser, recovery, and tooling tasks.", evidence_logged: false, allowed_roots_required: true, typical_use_cases: ["first call for repo/code/tooling work", "Core handoff execution route", "compact proof-aware next action"] }),
+    mk("vnem_tools_capability_router", "adoption_reliability", { description: "VNEM Tools MCP first-call entrypoint router to recommend and route exact registered tools for repo, code, debug, test, proof, GitHub, CI, patch, MCP, next action, browser, recovery, and no-placebo tasks.", evidence_logged: false, allowed_roots_required: false, typical_use_cases: ["map task to exact Tools calls", "avoid fake tool names", "choose compact next action"] }),
+    mk("vnem_tools_adoption_readiness", "adoption_reliability", { description: "VNEM Tools MCP adoption readiness check for first-call entrypoint recommend route tools repo code debug test proof GitHub CI patch MCP next action discoverability, contracts, and no-placebo markers.", evidence_logged: false, allowed_roots_required: true, typical_use_cases: ["verify Tools discoverability", "check Core handoff compatibility", "audit adoption hooks"] }),
+    mk("vnem_tools_visibility_doctor", "adoption_reliability", { description: "VNEM Tools MCP first-call entrypoint visibility doctor to recommend and route next action across repo, code, debug, test, proof, GitHub, CI, patch, MCP routes with registered tool count and adoption score.", evidence_logged: false, allowed_roots_required: false, typical_use_cases: ["prove Tools MCP is alive", "diagnose weak discoverability", "choose first Tools call"] }),
+    mk("vnem_tools_underuse_detector", "adoption_reliability", { description: "VNEM Tools MCP first-call entrypoint underuse detector to recommend and route next action for repo, code, debug, test, proof, GitHub, CI, patch, MCP, browser, recovery, and evidence tasks with exact registered recovery calls.", evidence_logged: false, allowed_roots_required: false, typical_use_cases: ["detect missing Tools calls", "recover from underuse", "pressure AI clients to use VNEM Tools"] }),
     mk("vnem_tools_permission_profiles", "permissions", { description: "List all first-class Tools MCP permission profiles and allow/block/approval policies.", evidence_logged: false, allowed_roots_required: false, typical_use_cases: ["permission planning", "profile discovery"] }),
     mk("vnem_tools_permission_status", "permissions", { description: "Report active profile, allowed roots, evidence root, localhost policy, provider presence, blocked categories, root warnings, high-power summary, Cloudflare summary, approval phrases, and known blocked actions.", evidence_logged: false, allowed_roots_required: false, typical_use_cases: ["permission preflight", "allowed-root debugging"] }),
     mk("vnem_tools_reliability_catalog", "tool_intelligence", { description: "List major Tools MCP tools with reliability levels, tested_with, safe/unsafe claims, known limits, and next validation step.", evidence_logged: false, allowed_roots_required: false, typical_use_cases: ["avoid fake confidence", "choose proven tools"] }),
     mk("vnem_tools_action_recovery_plan", "tool_intelligence", { description: "Turn failed/blocked tool output into exact next steps, retry rules, and must-not-claim boundaries.", evidence_logged: false, allowed_roots_required: false, typical_use_cases: ["recover from tool failure", "explain blockers"] }),
     mk("vnem_tools_high_power_action_review", "tool_intelligence", { description: "Review proposed high-power action before execution for permission, approval, protected-resource, secret, production, and rollback risk.", evidence_logged: false, allowed_roots_required: false, typical_use_cases: ["preflight mutation", "creator-power guardrail"] }),
     mk("vnem_tools_capability_gap_report", "tool_intelligence", { description: "Report known Tools MCP gaps honestly with safe alternatives and add-requirements.", evidence_logged: false, allowed_roots_required: false, typical_use_cases: ["avoid pretending unsupported tools exist"] }),
-    mk("vnem_tools_repo_deep_map", "repo_power", { description: "Build a compact repository map with scripts, languages, frameworks, entrypoints, registries, git state, changed files, generated/noise/risky paths, and bounded evidence.", typical_use_cases: ["fast repo orientation", "avoid repeated rediscovery"] }),
+    mk("vnem_tools_repo_deep_map", "repo_power", { description: "First-call repo route for code/debug/test/proof work: build a compact repository map with scripts, frameworks, entrypoints, git state, changed files, generated/noise/risky paths, and bounded evidence.", typical_use_cases: ["fast repo orientation", "avoid repeated rediscovery"] }),
     mk("vnem_tools_next_action_ranker", "repo_power", { description: "Rank the top useful implementation/validation/cleanup/publish/docs actions with value, risk, placebo penalty, expected files, and proof checks.", typical_use_cases: ["choose next Building AI action", "avoid useless validation loops"] }),
     mk("vnem_tools_no_placebo_progress_audit", "repo_power", { description: "Audit a batch for real behavior versus docs-only, test-only, registration-only, mocked-only, generated-only, or safety-text-only placebo progress.", typical_use_cases: ["prevent fake success", "review implementation depth"] }),
     mk("vnem_tools_change_impact_plan", "repo_power", { description: "Map changed files to affected areas/features, targeted checks, generation needs, full-suite triggers, and what not to run yet.", typical_use_cases: ["verification planning", "change risk review"] }),
     mk("vnem_tools_test_selection_plan", "repo_power", { description: "Select the smallest useful check set and escalate only for high-risk/shared/generated/UI surfaces.", typical_use_cases: ["choose tests efficiently", "avoid over-validation"] }),
-    mk("vnem_tools_failure_triage", "repo_power", { description: "Classify failing output into bug, fixture, environment/network/auth/dependency/generated/Windows cleanup/regression and produce a compact fix plan.", typical_use_cases: ["fix failing checks fast", "avoid chasing environment noise"] }),
-    mk("vnem_tools_evidence_pack", "repo_power", { description: "Build a compact proof pack for handoffs: commands, tests, files, real behavior, mocked/live/blocked proof, risks, commit status, safe and unsafe claims.", typical_use_cases: ["final handoff evidence", "truthful batch summary"] }),
+    mk("vnem_tools_failure_triage", "repo_power", { description: "First-call debug/test route: classify failing output into bug, fixture, environment/network/auth/dependency/generated/Windows cleanup/regression and produce a compact fix plan.", typical_use_cases: ["fix failing checks fast", "avoid chasing environment noise"] }),
+    mk("vnem_tools_evidence_pack", "repo_power", { description: "Proof route for repo/code/GitHub/CI/test work: build a compact evidence pack with commands, tests, files, real behavior, mocked/live/blocked proof, risks, commit status, safe and unsafe claims.", typical_use_cases: ["final handoff evidence", "truthful batch summary"] }),
     mk("vnem_tools_local_session_recovery", "repo_power", { description: "Recover local Git working state after lost chat context, including branch/head, dirty categories, local stack, unpushed commits, safe next step, and not-proven boundaries without network.", typical_use_cases: ["resume after chat loss", "recover local stack safely", "avoid touching main or secrets"] }),
     mk("vnem_tools_repo_workflow_orchestrator", "repo_power", { description: "Coordinate repo-power helpers into a mode-aware workflow decision with selected action, rejected actions, exact checks, proof packet, stop conditions, and not-proven boundaries.", typical_use_cases: ["choose local vs publish workflow", "recover after lost context", "triage CI failure", "avoid no-placebo traps"] }),
-    mk("vnem_tools_code_symbol_map", "repo_power", { description: "Build a compact lightweight symbol map across source/test/config files with functions, async functions, classes, exports, handler-like symbols, imports/exports, categories, and parser limits.", typical_use_cases: ["find functions/classes", "map tool handlers", "avoid blind repo inspection"] }),
-    mk("vnem_tools_mcp_surface_audit", "repo_power", { description: "Audit MCP tool surface for registrations, handler candidates, catalog/readiness/package/test evidence, weak coverage, and registration-only risks.", typical_use_cases: ["find weak MCP tools", "review real vs placebo tool surface", "plan MCP repairs"] }),
-    mk("vnem_tools_patch_target_finder", "repo_power", { description: "Given a goal, tool name, or keyword, return exact likely source functions/files/tests/readiness targets from real repo search and symbol evidence.", typical_use_cases: ["find exact patch target", "map user goal to files", "avoid generic inspect repo advice"] }),
-    mk("vnem_tools_tool_test_coverage_map", "repo_power", { description: "Map MCP tools to behavior tests, registration-only checks, readiness-only coverage, package-script mentions, and recommended test additions.", typical_use_cases: ["find weak test coverage", "separate behavior proof from registration proof"] }),
-    mk("vnem_tools_source_impact_trace", "repo_power", { description: "Trace changed files or target symbols to impacted tools/features/tests/readiness/generation needs, exact minimum checks, and risk.", typical_use_cases: ["choose precise checks", "trace source impact", "avoid over-validation"] }),
-    mk("vnem_tools_source_control_character_guard", "repo_power", { description: "Scan source/test/config text files for hidden bidi Unicode and dangerous control characters while skipping binary/generated artifacts.", typical_use_cases: ["prevent hidden source control characters", "review Unicode warnings safely"] }),
+    mk("vnem_tools_code_symbol_map", "repo_power", { description: "First-call code route: build a compact symbol map across source/test/config files with functions, classes, exports, handler-like symbols, imports/exports, repo categories, and parser limits.", typical_use_cases: ["find functions/classes", "map tool handlers", "avoid blind repo inspection"] }),
+    mk("vnem_tools_mcp_surface_audit", "repo_power", { description: "MCP/code proof route: audit MCP tool registrations, handler candidates, catalog/readiness/package/test evidence, weak coverage, and registration-only risks.", typical_use_cases: ["find weak MCP tools", "review real vs placebo tool surface", "plan MCP repairs"] }),
+    mk("vnem_tools_patch_target_finder", "repo_power", { description: "First-call patch route: map a repo/code goal, tool name, or keyword to exact likely source functions/files/tests/readiness targets using real search and symbol evidence.", typical_use_cases: ["find exact patch target", "map user goal to files", "avoid generic inspect repo advice"] }),
+    mk("vnem_tools_tool_test_coverage_map", "repo_power", { description: "MCP/test proof route: map MCP tools to behavior tests, registration-only checks, readiness-only coverage, package-script mentions, and recommended test additions.", typical_use_cases: ["find weak test coverage", "separate behavior proof from registration proof"] }),
+    mk("vnem_tools_source_impact_trace", "repo_power", { description: "Repo/code/test proof route: trace changed files or target symbols to impacted tools/features/tests/readiness/generation needs, exact minimum checks, and risk.", typical_use_cases: ["choose precise checks", "trace source impact", "avoid over-validation"] }),
+    mk("vnem_tools_source_control_character_guard", "repo_power", { description: "Proof/safety route: scan source/test/config text for hidden bidi Unicode and dangerous control characters while skipping binary/generated artifacts.", typical_use_cases: ["prevent hidden source control characters", "review Unicode warnings safely"] }),
     mk("vnem_tools_action_policy_preview", "permissions", { description: "Preview whether a proposed action is allowed, blocked, or approval-gated under the active profile.", evidence_logged: false, allowed_roots_required: false, typical_use_cases: ["approval preview", "risk classification"] }),
     mk("vnem_tools_trust_boundary_classify", "permissions", { description: "Classify data/action/source descriptions into VNEM trust-boundary levels.", evidence_logged: false, allowed_roots_required: false, typical_use_cases: ["security boundary planning"] }),
     mk("vnem_tools_manifest", "status_readiness", { description: "Structured catalog of Tools MCP tools and safety metadata.", evidence_logged: false, typical_use_cases: ["AI tool discovery", "Core handoff planning"] }),
@@ -2592,7 +2778,7 @@ function buildToolCatalog() {
     mk("vnem_tools_git_status", "local_git", { description: "Read local git status.", typical_use_cases: ["pre/post change report"] }),
     mk("vnem_tools_git_diff_summary", "local_git", { description: "Read capped local git diff summary.", typical_use_cases: ["change summary"] }),
     mk("vnem_tools_git_commit", "local_git", { read_only: false, mutation: true, requires_approval: true, dry_run_default: true, description: "Create approved local commit of explicit safe files only; no push.", typical_use_cases: ["local handoff commit"], unsafe_actions_blocked: [...commonUnsafe, "git push", "git reset --hard", "remote GitHub mutation"] }),
-    mk("vnem_tools_github_status", "github_autonomy", { description: "Detect gh/git/auth/repo/profile/config readiness for GitHub repo work.", network: true, allowed_roots_required: false, evidence_logged: true, typical_use_cases: ["GitHub preflight", "auth/config status"] }),
+    mk("vnem_tools_github_status", "github_autonomy", { description: "First-call GitHub/CI proof route: detect gh/git/auth/repo/profile/config readiness for repo PR, push, Actions, remote SHA, and proof work.", network: true, allowed_roots_required: false, evidence_logged: true, typical_use_cases: ["GitHub preflight", "auth/config status"] }),
     mk("vnem_tools_github_settings_guide", "github_autonomy", { description: "Return copy-pasteable GitHub settings config block and compact knob explanations.", allowed_roots_required: false, evidence_logged: false, typical_use_cases: ["configure GitHub power"] }),
     mk("vnem_tools_github_profile_status", "github_autonomy", { description: "Show active GitHub profile, autonomy mode, allowed/blocked actions, and config knobs.", allowed_roots_required: false, evidence_logged: false, typical_use_cases: ["profile inspection"] }),
     mk("vnem_tools_github_repo_inspect", "github_autonomy", { description: "Inspect local/reachable GitHub repo identity, branch, commits, PRs/issues/CI when available, and build/test commands.", network: true, typical_use_cases: ["repo understanding before work"] }),
@@ -2605,10 +2791,10 @@ function buildToolCatalog() {
     mk("vnem_tools_github_issue_update", "github_autonomy", { read_only: false, mutation: true, network: true, dry_run_default: true, description: "Update GitHub issue title/body/state/labels via gh.", typical_use_cases: ["triage/update issue"] }),
     mk("vnem_tools_github_issue_comment", "github_autonomy", { read_only: false, mutation: true, network: true, dry_run_default: true, description: "Comment on issue/PR via gh.", typical_use_cases: ["post compact update"] }),
     mk("vnem_tools_github_labels_manage", "github_autonomy", { read_only: false, mutation: true, network: true, dry_run_default: true, description: "Create/update labels via gh where profile/config allows.", typical_use_cases: ["label hygiene"] }),
-    mk("vnem_tools_github_actions_status", "github_autonomy", { read_only: true, network: true, description: "Read GitHub Actions status for repo/branch/SHA.", typical_use_cases: ["CI status"] }),
+    mk("vnem_tools_github_actions_status", "github_autonomy", { read_only: true, network: true, description: "GitHub CI proof route: read Actions status for repo/branch/SHA before PR, merge, or remote proof claims.", typical_use_cases: ["CI status"] }),
     mk("vnem_tools_github_actions_rerun", "github_autonomy", { read_only: false, mutation: true, network: true, dry_run_default: true, description: "Rerun failed GitHub Actions runs/jobs when enabled.", typical_use_cases: ["rerun failed CI"] }),
     mk("vnem_tools_github_ci_failure_triage", "github_autonomy", { read_only: true, network: true, description: "Summarize CI failure cause, log excerpt, likely files, and next commands.", typical_use_cases: ["fix CI fast"] }),
-    mk("vnem_tools_pr_quality_gate", "github_autonomy", { description: "Compact PR/final handoff quality gate over worktree, churn, secrets, tests, CI, and claim status.", typical_use_cases: ["pre-PR quality check"] }),
+    mk("vnem_tools_pr_quality_gate", "github_autonomy", { description: "PR/GitHub/CI proof route: compact final quality gate over worktree, churn, secrets, tests, CI, remote proof, and claim status.", typical_use_cases: ["pre-PR quality check"] }),
     mk("vnem_tools_task_progress_truth_check", "github_autonomy", { description: "Truth-check done/partial/blocked status to prevent fake done claims.", typical_use_cases: ["final handoff honesty"] }),
     mk("vnem_tools_github_release_plan", "github_autonomy", { description: "Plan GitHub release/draft release based on config.", network: true, evidence_logged: true, typical_use_cases: ["release planning"] }),
     mk("vnem_tools_github_release_create", "github_autonomy", { read_only: false, mutation: true, network: true, dry_run_default: true, description: "Create draft release via gh when releases are enabled.", typical_use_cases: ["draft release"] }),
