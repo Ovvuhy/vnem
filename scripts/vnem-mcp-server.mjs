@@ -82,6 +82,8 @@ const DEFAULT_MCP_TOOLS = [
   "vnem_bootstrap",
   "vnem_entrypoint",
   "vnem_usage_contract",
+  "vnem_mcp_visibility_doctor",
+  "vnem_underuse_detector",
   "vnem_library_status",
   "vnem_search_skills",
   "vnem_recommend_skills",
@@ -236,7 +238,7 @@ function registerTools(mcpServer) {
     {
       title: "VNEM Entrypoint",
       description:
-        "VNEM entrypoint that recommends and routes the next action across Core MCP and Tools MCP for code, repo, proof, MCP, GitHub, browser, recovery, and tooling tasks.",
+        "VNEM first-call entrypoint: recommend, route, and choose the next action across Core MCP and Tools handoff for repo, code, proof, MCP, GitHub, browser, recovery, and tooling tasks.",
       inputSchema: {
         user_goal: z.string().min(1).describe("User goal or task to classify and route."),
         task_context: z.string().default("").describe("Optional compact project context, constraints, failures, or known state."),
@@ -258,7 +260,7 @@ function registerTools(mcpServer) {
     {
       title: "VNEM Usage Contract",
       description:
-        "Machine-readable VNEM usage contract explaining when to call VNEM Core MCP, when to route to VNEM Tools MCP, exact next tool calls, proof requirements, and safety limits.",
+        "Machine-readable VNEM first-call usage contract: when to use Core MCP, when to route to Tools handoff, exact next tool calls, proof requirements, and safety limits.",
       inputSchema: {
         user_goal: z.string().default("").describe("Optional user goal to bias the route examples."),
         available_mcp_names: z.array(z.string()).default([]).describe("Known MCP server names available to the calling agent.")
@@ -268,6 +270,46 @@ function registerTools(mcpServer) {
     async (args) => {
       const usageContract = buildCoreUsageContract(args);
       return toolResult(formatCoreUsageContract(usageContract), { usage_contract: usageContract });
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_mcp_visibility_doctor",
+    {
+      title: "VNEM MCP Visibility Doctor",
+      description:
+        "VNEM first-call visibility doctor for AI clients: verify Core MCP and Tools MCP discoverability, entrypoints, route readiness, repo/code/proof handoff, and exact next action.",
+      inputSchema: {
+        available_mcp_names: z.array(z.string()).default([]),
+        available_tool_names: z.array(z.string()).default([]),
+        user_goal: z.string().default(""),
+        client_name: z.string().default("unknown")
+      },
+      annotations: READ_ONLY
+    },
+    async (args) => {
+      const doctor = buildCoreVisibilityDoctor(args);
+      return toolResult(formatCoreVisibilityDoctor(doctor), { visibility_doctor: doctor });
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_underuse_detector",
+    {
+      title: "VNEM Underuse Detector",
+      description:
+        "VNEM diagnostic pressure tool: detects underuse for repo, code, debug, GitHub, tooling, MCP, and proof tasks, then recommends the exact next VNEM Core or Tools MCP call.",
+      inputSchema: {
+        user_goal: z.string().min(1),
+        recent_actions: z.array(z.string()).default([]),
+        available_mcp_names: z.array(z.string()).default([]),
+        task_type: z.string().default("auto")
+      },
+      annotations: READ_ONLY
+    },
+    async (args) => {
+      const detector = buildCoreUnderuseDetector(args);
+      return toolResult(formatCoreUnderuseDetector(detector), { underuse_detector: detector });
     }
   );
 
@@ -3861,6 +3903,121 @@ function formatCoreToolsPlan(plan) {
   return [`vnem_build_tools_plan: ${plan.task_type}`, `Steps: ${plan.tool_sequence.map((step) => step.tool).join(" -> ")}`, "Core executes tools: false"].join("\n");
 }
 
+const CORE_ADOPTION_ENTRYPOINTS = ["vnem_entrypoint", "vnem_usage_contract", "vnem_mcp_visibility_doctor", "vnem_underuse_detector"];
+const TOOLS_ADOPTION_ENTRYPOINTS = ["vnem_tools_entrypoint", "vnem_tools_capability_router", "vnem_tools_adoption_readiness", "vnem_tools_visibility_doctor", "vnem_tools_underuse_detector"];
+
+function buildCoreVisibilityDoctor(args = {}) {
+  const availableMcpNames = arrayStrings(args.available_mcp_names).map((name) => name.toLowerCase());
+  const availableToolNames = new Set(arrayStrings(args.available_tool_names));
+  const userGoal = String(args.user_goal || "").trim();
+  const classification = classifyAdoptionTask(userGoal || "Inspect VNEM MCP visibility.", "", "auto");
+  const toolsNeeded = classification.execution_needed || classification.proof_needed;
+  const coreVisibleFromClient = availableMcpNames.some((name) => /\bvnem\b|vnem[-_ ]?core/.test(name)) || availableToolNames.has("vnem_entrypoint");
+  const toolsVisible = availableMcpNames.some((name) => /vnem[-_ ]?tools|tools/.test(name)) || [...availableToolNames].some((name) => name.startsWith("vnem_tools_"));
+  const coreEntryStatus = Object.fromEntries(CORE_ADOPTION_ENTRYPOINTS.map((tool) => [tool, {
+    registered_by_core: DEFAULT_MCP_TOOLS.includes(tool),
+    visible_from_client_list: availableToolNames.size ? availableToolNames.has(tool) : "unknown"
+  }]));
+  const toolsEntryStatus = Object.fromEntries(TOOLS_ADOPTION_ENTRYPOINTS.map((tool) => [tool, {
+    visible_from_client_list: availableToolNames.size ? availableToolNames.has(tool) : "unknown"
+  }]));
+  const recommendedTools = toolsNeeded ? coreRecommendedToolsCalls(classification) : [];
+  const missingSurfaces = [];
+  if (!coreVisibleFromClient && availableMcpNames.length) missingSurfaces.push("VNEM Core MCP name not listed by client");
+  if (toolsNeeded && !toolsVisible) missingSurfaces.push("VNEM Tools MCP not visible for execution/proof task");
+  if (availableToolNames.size) {
+    for (const tool of CORE_ADOPTION_ENTRYPOINTS) if (!availableToolNames.has(tool)) missingSurfaces.push(`missing Core entrypoint ${tool}`);
+    for (const tool of TOOLS_ADOPTION_ENTRYPOINTS.slice(0, 3)) if (toolsVisible && !availableToolNames.has(tool)) missingSurfaces.push(`missing Tools entrypoint ${tool}`);
+  }
+  const degradedMode = toolsNeeded && !toolsVisible
+    ? "core_only_tools_needed"
+    : toolsVisible
+      ? "core_and_tools_visible"
+      : "core_only_or_tools_unknown";
+  const adoptionReadiness = toolsVisible && missingSurfaces.length === 0
+    ? "full"
+    : toolsNeeded && !toolsVisible
+      ? "degraded"
+      : "partial";
+  return {
+    client_name: args.client_name || "unknown",
+    core_visible: true,
+    tools_visible: toolsVisible,
+    core_entrypoints_present: coreEntryStatus,
+    tools_entrypoints_present: toolsEntryStatus,
+    adoption_readiness: adoptionReadiness,
+    recommended_first_call: userGoal ? "vnem_entrypoint" : "vnem_mcp_visibility_doctor",
+    recommended_tools_handoff: {
+      needed: toolsNeeded,
+      tools_visible: toolsVisible,
+      exact_tools_calls: toolsVisible ? recommendedTools.slice(0, 12) : [],
+      unavailable_tools_calls: toolsVisible ? [] : recommendedTools.slice(0, 12),
+      fallback: toolsVisible
+        ? "Call vnem_tools_entrypoint or vnem_tools_capability_router with user_goal."
+        : "Use Core plan-only guidance and ask/connect VNEM Tools MCP before claiming execution proof."
+    },
+    missing_surfaces: missingSurfaces,
+    degraded_mode: degradedMode,
+    next_step: toolsNeeded && toolsVisible
+      ? `Call ${recommendedTools[0] || "vnem_tools_entrypoint"} next.`
+      : toolsNeeded
+        ? "Call vnem_entrypoint, then connect/use VNEM Tools MCP for execution proof."
+        : "Call vnem_entrypoint only if the task becomes repo/code/tooling work.",
+    confidence: availableMcpNames.length || availableToolNames.size ? "high" : "medium",
+    reality_boundary: "This doctor can diagnose MCP visibility only from the connected client's reported MCP/tool names."
+  };
+}
+
+function buildCoreUnderuseDetector(args = {}) {
+  const userGoal = String(args.user_goal || "").trim();
+  const recentActions = arrayStrings(args.recent_actions);
+  const availableMcpNames = arrayStrings(args.available_mcp_names).map((name) => name.toLowerCase());
+  const taskMode = args.task_type && args.task_type !== "auto" ? args.task_type : "auto";
+  const classification = classifyAdoptionTask(userGoal, "", taskMode);
+  const actionText = normalize([recentActions.join(" "), availableMcpNames.join(" ")].join(" "));
+  const vnemAvailable = availableMcpNames.length === 0 || availableMcpNames.some((name) => /vnem/.test(name));
+  const toolsAvailable = availableMcpNames.some((name) => /vnem[-_ ]?tools|tools/.test(name));
+  const simple = classification.primary === "simple_answer";
+  const usedCore = /\bvnem_(entrypoint|recommend|usage_contract|mcp_visibility_doctor|underuse_detector|select_tools_for_task|build_tools_plan)\b/.test(actionText);
+  const usedTools = /\bvnem_tools_/.test(actionText);
+  const missing = [];
+  if (!simple && vnemAvailable && !usedCore) missing.push("vnem_entrypoint");
+  const recommendedTools = coreRecommendedToolsCalls(classification);
+  const priorityTools = uniqueStrings([
+    classification.matched_flags?.debugging ? "vnem_tools_failure_triage" : null,
+    classification.matched_flags?.github_or_publish ? "vnem_tools_github_status" : null,
+    classification.matched_flags?.github_or_publish ? "vnem_tools_github_actions_status" : null,
+    classification.matched_flags?.github_or_publish ? "vnem_tools_pr_quality_gate" : null,
+    classification.matched_flags?.repo_or_code ? "vnem_tools_repo_deep_map" : null,
+    classification.matched_flags?.repo_or_code ? "vnem_tools_patch_target_finder" : null,
+    ...recommendedTools
+  ]);
+  if (!simple && classification.execution_needed && toolsAvailable && !usedTools) missing.push(...priorityTools.slice(0, 7));
+  const shouldHaveUsed = !simple && vnemAvailable && missing.length > 0;
+  const exactNext = missing[0] || (simple ? null : "vnem_entrypoint");
+  return {
+    task_classification: classification.primary,
+    should_have_used_vnem: shouldHaveUsed,
+    missing_vnem_calls: uniqueStrings(missing),
+    recommended_recovery_call: exactNext,
+    reason: shouldHaveUsed
+      ? "VNEM is available and this repo/code/debug/GitHub/tooling/proof task benefits from Core routing and Tools proof."
+      : simple
+        ? "Simple/casual task does not need VNEM routing."
+        : "Recent actions already show VNEM usage or availability is unclear.",
+    severity: shouldHaveUsed
+      ? classification.github_or_publish || classification.matched_flags.debugging ? "high" : "medium"
+      : "none",
+    exact_next_vnem_call: exactNext ? {
+      tool: exactNext,
+      arguments: exactNext.startsWith("vnem_tools_") ? { user_goal: userGoal, root: "." } : { user_goal: userGoal, available_mcp_names: availableMcpNames }
+    } : null,
+    not_needed_reason: simple ? "No repo/code/tooling/proof signals were detected." : "",
+    confidence: shouldHaveUsed || simple ? "high" : "medium",
+    diagnostic_only: true
+  };
+}
+
 function buildCoreEntrypoint(args = {}) {
   const userGoal = String(args.user_goal || "").trim();
   const taskContext = String(args.task_context || "").trim();
@@ -4142,6 +4299,25 @@ function formatCoreUsageContract(contract) {
     `tools_role=${contract.tools_role}`,
     `core_executes_tools=${contract.core_executes_tools}`,
     `next=${contract.compact_next_step}`
+  ].join("\n");
+}
+
+function formatCoreVisibilityDoctor(doctor) {
+  return [
+    `vnem_mcp_visibility_doctor: readiness=${doctor.adoption_readiness}`,
+    `core_visible=${doctor.core_visible}; tools_visible=${doctor.tools_visible}`,
+    `degraded_mode=${doctor.degraded_mode}`,
+    `first_call=${doctor.recommended_first_call}`,
+    `next=${doctor.next_step}`
+  ].join("\n");
+}
+
+function formatCoreUnderuseDetector(detector) {
+  return [
+    `vnem_underuse_detector: should_have_used=${detector.should_have_used_vnem}`,
+    `severity=${detector.severity}; task=${detector.task_classification}`,
+    `missing=${detector.missing_vnem_calls.slice(0, 6).join(", ") || "none"}`,
+    `next=${detector.recommended_recovery_call || "none"}`
   ].join("\n");
 }
 
@@ -6291,6 +6467,12 @@ function compactObject(object) {
       return true;
     })
   );
+}
+
+function arrayStrings(value) {
+  if (Array.isArray(value)) return value.filter((item) => item !== null && item !== undefined).map((item) => String(item));
+  if (value === null || value === undefined || value === "") return [];
+  return [String(value)];
 }
 
 function uniqueStrings(values) {
