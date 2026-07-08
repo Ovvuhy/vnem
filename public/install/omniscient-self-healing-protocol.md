@@ -1,6 +1,6 @@
 # vnem Omniscient Context And Self-Healing Protocol
 
-Generated: 2026-07-08T14:19:23.600Z
+Generated: 2026-07-08T15:07:39.352Z
 
 An opt-in precision-server protocol for reducing scale blindness and silent logic failures with local semantic code search, red/green verification loops, and sandboxed ephemeral scripts.
 

@@ -59,6 +59,7 @@ const toolsPowerTools2RegressionTestPath = rel("scripts/test-tools-power-tools-2
 const toolsPowerSession1RecoveryTestPath = rel("scripts/test-tools-power-session-1-recovery.mjs");
 const toolsOrchestrator1RegressionTestPath = rel("scripts/test-tools-orchestrator-1-regression.mjs");
 const toolsCodeIntelligence1RegressionTestPath = rel("scripts/test-tools-code-intelligence-1-regression.mjs");
+const adoptionReliabilityTestPath = rel("scripts/test-vnem-adoption-reliability-1-regression.mjs");
 const coreResearchStrategyTestPath = rel("scripts/test-core-research-strategy.mjs");
 const coreSourceIngestionPlanningTestPath = rel("scripts/test-core-source-ingestion-planning.mjs");
 const researchEvidenceAuditTestPath = rel("scripts/test-research-evidence-audit.mjs");
@@ -123,6 +124,7 @@ const toolsPowerTools2RegressionTest = existsSync(toolsPowerTools2RegressionTest
 const toolsPowerSession1RecoveryTest = existsSync(toolsPowerSession1RecoveryTestPath) ? readFileSync(toolsPowerSession1RecoveryTestPath, "utf8") : "";
 const toolsOrchestrator1RegressionTest = existsSync(toolsOrchestrator1RegressionTestPath) ? readFileSync(toolsOrchestrator1RegressionTestPath, "utf8") : "";
 const toolsCodeIntelligence1RegressionTest = existsSync(toolsCodeIntelligence1RegressionTestPath) ? readFileSync(toolsCodeIntelligence1RegressionTestPath, "utf8") : "";
+const adoptionReliabilityTest = existsSync(adoptionReliabilityTestPath) ? readFileSync(adoptionReliabilityTestPath, "utf8") : "";
 const coreResearchStrategyTest = existsSync(coreResearchStrategyTestPath) ? readFileSync(coreResearchStrategyTestPath, "utf8") : "";
 const coreSourceIngestionPlanningTest = existsSync(coreSourceIngestionPlanningTestPath) ? readFileSync(coreSourceIngestionPlanningTestPath, "utf8") : "";
 const researchEvidenceAuditTest = existsSync(researchEvidenceAuditTestPath) ? readFileSync(researchEvidenceAuditTestPath, "utf8") : "";
@@ -136,6 +138,9 @@ const coreServer = existsSync(coreServerPath) ? readFileSync(coreServerPath, "ut
 const cli = existsSync(cliPath) ? readFileSync(cliPath, "utf8") : "";
 const requiredTools = [
   "vnem_tools_status",
+  "vnem_tools_entrypoint",
+  "vnem_tools_capability_router",
+  "vnem_tools_adoption_readiness",
   "vnem_tools_permission_profiles",
   "vnem_tools_permission_status",
   "vnem_tools_reliability_catalog",
@@ -308,6 +313,7 @@ const report = {
   tools_power_session_1_recovery_test_exists: existsSync(toolsPowerSession1RecoveryTestPath),
   tools_orchestrator_1_regression_test_exists: existsSync(toolsOrchestrator1RegressionTestPath),
   tools_code_intelligence_1_regression_test_exists: existsSync(toolsCodeIntelligence1RegressionTestPath),
+  adoption_reliability_test_exists: existsSync(adoptionReliabilityTestPath),
   core_research_strategy_test_exists: existsSync(coreResearchStrategyTestPath),
   core_source_ingestion_planning_test_exists: existsSync(coreSourceIngestionPlanningTestPath),
   research_evidence_audit_test_exists: existsSync(researchEvidenceAuditTestPath),
@@ -402,7 +408,13 @@ const report = {
     test_tools_tool_test_coverage_map: pkg.scripts?.["test:tools-tool-test-coverage-map"] === "node scripts/test-tools-code-intelligence-1-regression.mjs --case=tool-test-coverage-map",
     test_tools_source_impact_trace: pkg.scripts?.["test:tools-source-impact-trace"] === "node scripts/test-tools-code-intelligence-1-regression.mjs --case=source-impact-trace",
     test_tools_source_control_character_guard: pkg.scripts?.["test:tools-source-control-character-guard"] === "node scripts/test-tools-code-intelligence-1-regression.mjs --case=source-control-character-guard",
-    test_tools_code_intelligence_1_regression: pkg.scripts?.["test:tools-code-intelligence-1-regression"] === "node scripts/test-tools-code-intelligence-1-regression.mjs"
+    test_tools_code_intelligence_1_regression: pkg.scripts?.["test:tools-code-intelligence-1-regression"] === "node scripts/test-tools-code-intelligence-1-regression.mjs",
+    test_core_adoption_entrypoint: pkg.scripts?.["test:core-adoption-entrypoint"] === "node scripts/test-vnem-adoption-reliability-1-regression.mjs --case=core-entrypoint",
+    test_core_usage_contract: pkg.scripts?.["test:core-usage-contract"] === "node scripts/test-vnem-adoption-reliability-1-regression.mjs --case=core-usage-contract",
+    test_tools_adoption_entrypoint: pkg.scripts?.["test:tools-adoption-entrypoint"] === "node scripts/test-vnem-adoption-reliability-1-regression.mjs --case=tools-entrypoint",
+    test_tools_capability_router_adoption: pkg.scripts?.["test:tools-capability-router"] === "node scripts/test-vnem-adoption-reliability-1-regression.mjs --case=tools-capability-router",
+    test_tools_adoption_readiness: pkg.scripts?.["test:tools-adoption-readiness"] === "node scripts/test-vnem-adoption-reliability-1-regression.mjs --case=tools-adoption-readiness",
+    test_vnem_adoption_reliability_1_regression: pkg.scripts?.["test:vnem-adoption-reliability-1-regression"] === "node scripts/test-vnem-adoption-reliability-1-regression.mjs"
   },
   required_tools_present: Object.fromEntries(requiredTools.map((name) => [name, server.includes(`"${name}"`)])),
   mcp_config_tools_support: /--tools/.test(cli) && /VNEM_TOOLS_ALLOWED_ROOTS/.test(cli) && /VNEM_TOOLS_EVIDENCE_ROOT/.test(cli) && /vnem-tools-mcp-server/.test(cli),
@@ -471,6 +483,12 @@ const report = {
   source_impact_trace_status: /vnem_tools_source_impact_trace/.test(server) && /sourceImpactTrace/.test(server) && /impacted_tools/.test(server + toolsCodeIntelligence1RegressionTest) && /exact_minimum_checks/.test(server + toolsCodeIntelligence1RegressionTest),
   source_control_character_guard_status: /vnem_tools_source_control_character_guard/.test(server) && /sourceControlCharacterGuard/.test(server) && /hiddenControlFindings/.test(server) && /BACKSPACE/.test(server + toolsCodeIntelligence1RegressionTest),
   code_intelligence_1_status: /test-tools-code-intelligence-1-regression/.test(JSON.stringify(pkg.scripts)) && /vnem Tools CODE-INTELLIGENCE-1/.test(toolsCodeIntelligence1RegressionTest) && /code_intelligence_supported/.test(server),
+  tools_entrypoint_status: /vnem_tools_entrypoint/.test(server) && /toolsEntrypoint/.test(server) && /best_tools_for_task/.test(server) && /tools-entrypoint/.test(adoptionReliabilityTest),
+  tools_capability_router_status: /vnem_tools_capability_router/.test(server) && /toolsCapabilityRouter/.test(server) && /matched_task_categories/.test(server) && /tools-capability-router/.test(adoptionReliabilityTest),
+  tools_adoption_readiness_status: /vnem_tools_adoption_readiness/.test(server) && /toolsAdoptionReadiness/.test(server) && /entrypoint_tools_present/.test(server) && /tools-adoption-readiness/.test(adoptionReliabilityTest),
+  tools_exact_call_sequence_status: /exact_tool_call_sequence/.test(server) && /exact_call_sequence/.test(server + adoptionReliabilityTest) && /vnem_tools_github_actions_status/.test(adoptionReliabilityTest),
+  tools_registered_call_validation_status: /toolsRegisteredNames/.test(server) && /fake_tool_names_removed/.test(server + adoptionReliabilityTest) && /returned unregistered tool/.test(adoptionReliabilityTest),
+  tools_adoption_reliability_status: /adoption_reliability_policy/.test(server) && /adoption_reliability/.test(server) && /vnem Tools ADOPTION-RELIABILITY-1/.test(adoptionReliabilityTest),
   tools_manifest_status: /vnem_tools_manifest/.test(server) && /buildToolsManifest/.test(server) && /capability_group/.test(server) && /unsafe_actions_not_supported/.test(server) && /tool_catalog_policy/.test(server) && /vnem_tools_manifest/.test(intelligenceTest),
   workspace_map_status: /vnem_tools_workspace_map/.test(server) && /safeWorkspaceMap/.test(server) && /important_dirs/.test(server) && /likely_entrypoints/.test(intelligenceTest) && /secret_path_blocked|skipped_paths/.test(intelligenceTest),
   read_many_files_status: /vnem_tools_read_many_files/.test(server) && /safeReadManyFiles/.test(server) && /max_total_bytes/.test(server) && /blocked_files/.test(intelligenceTest),
@@ -699,6 +717,7 @@ assert.equal(report.tools_power_tools_2_regression_test_exists, true, "POWER-TOO
 assert.equal(report.tools_power_session_1_recovery_test_exists, true, "POWER-SESSION-1 recovery test file is missing");
 assert.equal(report.tools_orchestrator_1_regression_test_exists, true, "ORCHESTRATOR-1 regression test file is missing");
 assert.equal(report.tools_code_intelligence_1_regression_test_exists, true, "CODE-INTELLIGENCE-1 regression test file is missing");
+assert.equal(report.adoption_reliability_test_exists, true, "ADOPTION-RELIABILITY-1 regression test file is missing");
 for (const [key, value] of Object.entries({
   test_tools_power_repo_deep_map: report.package_scripts.test_tools_power_repo_deep_map,
   test_tools_next_action_ranker: report.package_scripts.test_tools_next_action_ranker,
@@ -728,7 +747,13 @@ for (const [key, value] of Object.entries({
   test_tools_tool_test_coverage_map: report.package_scripts.test_tools_tool_test_coverage_map,
   test_tools_source_impact_trace: report.package_scripts.test_tools_source_impact_trace,
   test_tools_source_control_character_guard: report.package_scripts.test_tools_source_control_character_guard,
-  test_tools_code_intelligence_1_regression: report.package_scripts.test_tools_code_intelligence_1_regression
+  test_tools_code_intelligence_1_regression: report.package_scripts.test_tools_code_intelligence_1_regression,
+  test_core_adoption_entrypoint: report.package_scripts.test_core_adoption_entrypoint,
+  test_core_usage_contract: report.package_scripts.test_core_usage_contract,
+  test_tools_adoption_entrypoint: report.package_scripts.test_tools_adoption_entrypoint,
+  test_tools_capability_router_adoption: report.package_scripts.test_tools_capability_router_adoption,
+  test_tools_adoption_readiness: report.package_scripts.test_tools_adoption_readiness,
+  test_vnem_adoption_reliability_1_regression: report.package_scripts.test_vnem_adoption_reliability_1_regression
 })) assert.equal(value, true, `${key} package script is missing`);
 for (const [key, value] of Object.entries({
   repo_deep_map_status: report.repo_deep_map_status,
@@ -759,7 +784,13 @@ for (const [key, value] of Object.entries({
   tool_test_coverage_map_status: report.tool_test_coverage_map_status,
   source_impact_trace_status: report.source_impact_trace_status,
   source_control_character_guard_status: report.source_control_character_guard_status,
-  code_intelligence_1_status: report.code_intelligence_1_status
+  code_intelligence_1_status: report.code_intelligence_1_status,
+  tools_entrypoint_status: report.tools_entrypoint_status,
+  tools_capability_router_status: report.tools_capability_router_status,
+  tools_adoption_readiness_status: report.tools_adoption_readiness_status,
+  tools_exact_call_sequence_status: report.tools_exact_call_sequence_status,
+  tools_registered_call_validation_status: report.tools_registered_call_validation_status,
+  tools_adoption_reliability_status: report.tools_adoption_reliability_status
 })) assert.equal(value, true, `${key} readiness missing`);
 for (const [name, present] of Object.entries(report.required_tools_present)) assert.equal(present, true, `missing required tool ${name}`);
 assert.equal(report.dry_run_default, true, "dry-run defaults are missing");
@@ -839,6 +870,7 @@ console.log(`core_browser_planning_test_exists: ${yes(report.core_browser_planni
 console.log(`core_selection_test_exists: ${yes(report.core_selection_test_exists)}`);
 console.log(`core_ecosystem_test_exists: ${yes(report.core_ecosystem_test_exists)}`);
 console.log(`core_tools_e2e_script_exists: ${yes(report.core_tools_e2e_script_exists)}`);
+console.log(`adoption_reliability_test_exists: ${yes(report.adoption_reliability_test_exists)}`);
 console.log(`required_tools_present: ${Object.values(report.required_tools_present).filter(Boolean).length}/${requiredTools.length}`);
 console.log(`mcp_config_tools_support: ${yes(report.mcp_config_tools_support)}`);
 console.log(`tools_manifest_status: ${yes(report.tools_manifest_status)}`);
@@ -913,6 +945,7 @@ console.log(`ui_no_hidden_browser_status: ${yes(report.ui_no_hidden_browser_stat
 console.log(`ui_visual_claim_audit_status: ${yes(report.ui_visual_claim_audit_status)}`);
 for (const key of ["github_autonomy_status", "github_settings_guide_status", "github_profile_status", "github_status_tool_status", "github_repo_inspect_status", "github_repo_intelligence_status", "github_branch_status", "github_commit_push_status", "github_pr_status", "github_issue_status", "github_labels_status", "github_actions_status", "github_ci_triage_status", "github_pr_quality_gate_status", "github_task_progress_truth_check_status", "github_config_header_status", "github_profile_maintainer_default_status", "github_force_push_block_default_status", "github_repo_delete_block_default_status", "github_secret_commit_block_status", "github_real_exec_status", "github_gh_auth_detection_status", "github_git_command_status", "github_branch_real_exec_status", "github_commit_push_real_exec_status", "github_pr_real_exec_status", "github_issue_real_exec_status", "github_label_real_exec_status", "github_actions_real_exec_status", "github_ci_logs_status", "github_release_draft_status", "github_dry_run_status", "github_config_knob_status", "github_secret_file_block_status", "github_real_execution_not_only_simulated_status", "autonomy_efficiency_status"]) console.log(`${key}: ${yes(report[key])}`);
 for (const key of ["repo_deep_map_status", "next_action_ranker_status", "no_placebo_progress_audit_status", "change_impact_plan_status", "test_selection_plan_status", "failure_triage_status", "evidence_pack_status", "power_tools_1_status", "power_tools_2_dogfood_status", "ranking_quality_tuning_status", "no_placebo_strictness_status", "test_selection_efficiency_status", "evidence_pack_proof_packet_status", "failure_triage_specificity_status", "power_tools_2_status", "local_session_recovery_status", "power_session_1_status", "workflow_orchestrator_tool_status", "workflow_orchestrator_behavior_status", "workflow_orchestrator_no_placebo_status", "workflow_orchestrator_proof_packet_status", "orchestrator_1_status", "code_symbol_map_status", "mcp_surface_audit_status", "patch_target_finder_status", "tool_test_coverage_map_status", "source_impact_trace_status", "source_control_character_guard_status", "code_intelligence_1_status"]) console.log(`${key}: ${yes(report[key])}`);
+for (const key of ["tools_entrypoint_status", "tools_capability_router_status", "tools_adoption_readiness_status", "tools_exact_call_sequence_status", "tools_registered_call_validation_status", "tools_adoption_reliability_status"]) console.log(`${key}: ${yes(report[key])}`);
 for (const key of ["cloudflare_control_status", "cloudflare_auth_status_tool_status", "cloudflare_auth_plan_status", "cloudflare_discovery_status", "cloudflare_pages_deploy_status", "cloudflare_workers_deploy_status", "cloudflare_dns_status", "cloudflare_env_secrets_status", "cloudflare_verify_status", "cloudflare_rollback_status", "cloudflare_cache_purge_status", "cloudflare_approval_gate_status", "cloudflare_destructive_approval_status", "cloudflare_secret_redaction_status", "cloudflare_evidence_pack_status", "general_tools_evidence_pack_audit_status", "general_tools_mutation_approval_contract_status", "general_tools_secret_redaction_check_status"]) console.log(`${key}: ${yes(report[key])}`);
 console.log(`parallel_fake_system_detection_status: ${yes(report.parallel_fake_system_detection_status)}`);
 console.log(`dead_code_warning_status: ${yes(report.dead_code_warning_status)}`);

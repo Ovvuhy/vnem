@@ -80,6 +80,8 @@ const STOPWORDS = new Set([
 
 const DEFAULT_MCP_TOOLS = [
   "vnem_bootstrap",
+  "vnem_entrypoint",
+  "vnem_usage_contract",
   "vnem_library_status",
   "vnem_search_skills",
   "vnem_recommend_skills",
@@ -226,6 +228,46 @@ function registerTools(mcpServer) {
     async (args) => {
       const bootstrap = buildBootstrap(args);
       return toolResult(formatBootstrap(bootstrap), bootstrap);
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_entrypoint",
+    {
+      title: "VNEM Entrypoint",
+      description:
+        "VNEM entrypoint that recommends and routes the next action across Core MCP and Tools MCP for code, repo, proof, MCP, GitHub, browser, recovery, and tooling tasks.",
+      inputSchema: {
+        user_goal: z.string().min(1).describe("User goal or task to classify and route."),
+        task_context: z.string().default("").describe("Optional compact project context, constraints, failures, or known state."),
+        available_mcp_names: z.array(z.string()).default([]).describe("Known MCP server names available to the calling agent."),
+        task_mode: z
+          .enum(["auto", "answer_only", "repo_inspection", "implementation", "debugging", "validation", "publish", "recovery", "research", "ui_browser"])
+          .default("auto")
+      },
+      annotations: READ_ONLY
+    },
+    async (args) => {
+      const entrypoint = buildCoreEntrypoint(args);
+      return toolResult(formatCoreEntrypoint(entrypoint), { entrypoint });
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_usage_contract",
+    {
+      title: "VNEM Usage Contract",
+      description:
+        "Machine-readable VNEM usage contract explaining when to call VNEM Core MCP, when to route to VNEM Tools MCP, exact next tool calls, proof requirements, and safety limits.",
+      inputSchema: {
+        user_goal: z.string().default("").describe("Optional user goal to bias the route examples."),
+        available_mcp_names: z.array(z.string()).default([]).describe("Known MCP server names available to the calling agent.")
+      },
+      annotations: READ_ONLY
+    },
+    async (args) => {
+      const usageContract = buildCoreUsageContract(args);
+      return toolResult(formatCoreUsageContract(usageContract), { usage_contract: usageContract });
     }
   );
 
@@ -3817,6 +3859,290 @@ function formatCoreToolSelection(selection) {
 
 function formatCoreToolsPlan(plan) {
   return [`vnem_build_tools_plan: ${plan.task_type}`, `Steps: ${plan.tool_sequence.map((step) => step.tool).join(" -> ")}`, "Core executes tools: false"].join("\n");
+}
+
+function buildCoreEntrypoint(args = {}) {
+  const userGoal = String(args.user_goal || "").trim();
+  const taskContext = String(args.task_context || "").trim();
+  const availableMcpNames = Array.isArray(args.available_mcp_names) ? args.available_mcp_names.map((name) => String(name).toLowerCase()) : [];
+  const classification = classifyAdoptionTask(userGoal, taskContext, args.task_mode || "auto");
+  const toolsNeeded = classification.execution_needed || classification.proof_needed;
+  const toolsAvailable = availableMcpNames.some((name) => /vnem[-_ ]?tools|tools/.test(name));
+  const recommendedToolsCalls = toolsNeeded ? coreRecommendedToolsCalls(classification) : [];
+  const recommendedCoreCalls = coreRecommendedCoreCalls(classification);
+  const proofRequired = coreProofRequirements(classification);
+  const shouldUseVnem = classification.primary === "simple_answer" ? "conditional" : "yes";
+  const compactNextStep = recommendedToolsCalls.length
+    ? `Call Tools MCP ${recommendedToolsCalls[0]} with user_goal and root/repo context.`
+    : classification.primary === "simple_answer"
+      ? "Answer directly; call vnem_usage_contract only if the task becomes repo/code/tooling work."
+      : `Call Core ${recommendedCoreCalls[0] || "vnem_recommend"} before execution.`;
+
+  return {
+    task_classification: classification,
+    should_use_vnem: shouldUseVnem,
+    use_vnem_decision: {
+      decision: shouldUseVnem,
+      reason: shouldUseVnem === "yes"
+        ? "Repo, code, tooling, proof, browser, recovery, or remote-work tasks benefit from VNEM routing and proof contracts when MCPs are connected."
+        : "Simple or casual answer-only tasks do not need heavy VNEM routing unless the task expands."
+    },
+    why_use_vnem: classification.why.slice(0, 4),
+    recommended_core_calls: recommendedCoreCalls,
+    recommended_tools_calls: recommendedToolsCalls,
+    when_tools_mcp_is_needed: [
+      "repo inspection or file/code search",
+      "edits, terminal commands, tests, browser/localhost proof, GitHub/Cloudflare actions",
+      "evidence packs, session recovery, code intelligence, patch targeting, PR/CI proof"
+    ],
+    what_core_can_do: [
+      "classify the task",
+      "choose a compact route",
+      "write proof and no-placebo contracts",
+      "handoff exact Tools MCP calls"
+    ],
+    what_core_cannot_do: [
+      "mutate files",
+      "run terminal commands or tests",
+      "open browsers",
+      "push branches, create PRs, or call remote services",
+      "prove VNEM is available to disconnected agents"
+    ],
+    proof_required: proofRequired,
+    proof_contract: {
+      required_before_claims: proofRequired,
+      fake_proof_blocked: true,
+      remote_claims_require_remote_sha_pr_ci: classification.github_or_publish,
+      browser_claims_require_browser_or_screenshot_evidence: classification.browser_or_ui
+    },
+    no_placebo_risks: [
+      "registration-only tool changes",
+      "docs-only adoption claims",
+      "mocked-only remote proof",
+      "generated artifact churn without source behavior",
+      "claiming execution from Core MCP output"
+    ],
+    output_contract: {
+      compact_by_default: true,
+      rank_top_calls_first: true,
+      exact_tool_names_when_known: true,
+      include_not_proven: true
+    },
+    stop_conditions: [
+      "Tools MCP unavailable when execution proof is required",
+      "dirty or unexpected worktree for publish/merge tasks",
+      "missing auth/network for remote proof",
+      "hidden/control characters in source/test/config",
+      "evidence does not support the final claim"
+    ],
+    confidence: classification.confidence,
+    compact_next_step: compactNextStep,
+    core_executes_tools: false,
+    tools_handoff: {
+      use_tools_mcp: recommendedToolsCalls.length > 0,
+      tools_mcp_detected_from_input: toolsAvailable,
+      task_type: classification.primary,
+      exact_tool_call_sequence: recommendedToolsCalls.map((tool, index) => ({
+        step: index + 1,
+        tool,
+        purpose: coreToolPurpose(tool)
+      })),
+      required_inputs: ["user_goal", "root or repo_path when repo work is needed", "changed_files when known", "failing_output for debugging", "branch/PR/SHA context for remote proof"],
+      proof_contract: proofRequired,
+      core_runtime_dependency: false
+    },
+    reality_boundary:
+      "VNEM can make itself discoverable and useful when MCPs are connected/configured. It cannot force disconnected agents to call it."
+  };
+}
+
+function buildCoreUsageContract(args = {}) {
+  const goal = String(args.user_goal || "").trim();
+  const classification = classifyAdoptionTask(goal, "", "auto");
+  return {
+    core_role: "Read-only reasoning, routing, quality, proof, and Tools handoff layer.",
+    tools_role: "Safeguarded local/action layer for repo inspection, search, patches, commands, browser proof, GitHub/Cloudflare proof, evidence, and recovery.",
+    first_call_recommendation: goal
+      ? `For this goal, call vnem_entrypoint first; if execution is needed, follow its Tools MCP handoff.`
+      : "When VNEM MCPs are available, call vnem_entrypoint first for repo, code, tooling, MCP, proof, UI/browser, GitHub, Cloudflare, debugging, validation, or recovery tasks.",
+    when_to_call_vnem: [
+      "before coding or debugging",
+      "before selecting repo/tooling actions",
+      "before claiming proof",
+      "after context loss or local session uncertainty",
+      "when choosing between local-only and remote-proof workflows"
+    ],
+    when_to_call_tools: [
+      "repo inspection or file/code search is needed",
+      "edits, terminal commands, tests, browser captures, or evidence packs are needed",
+      "GitHub/Cloudflare status, PR, CI, deploy, or remote SHA proof is needed",
+      "code intelligence, patch targets, source impact, or control-character scans are needed"
+    ],
+    when_not_to_call_vnem: [
+      "the user asks a tiny answer-only question and no repo/tool/proof decision is involved",
+      "VNEM MCPs are not connected/configured in the current agent session",
+      "calling tools would violate user instructions or approval gates"
+    ],
+    proof_packet_required: coreProofRequirements(classification),
+    safety_boundaries: [
+      "Core MCP is read-only and cannot mutate files or run commands",
+      "Tools MCP mutations require the active permission profile, dry-run/approval where applicable, and evidence",
+      "no token/secret printing, no broad destructive filesystem actions, no fake proof, no hidden/control source characters"
+    ],
+    common_task_routes: coreCommonTaskRoutes(),
+    recommended_core_calls: coreRecommendedCoreCalls(classification),
+    recommended_tools_calls: classification.primary === "simple_answer" ? [] : coreRecommendedToolsCalls(classification),
+    disconnected_agent_limit:
+      "VNEM can influence only agents with VNEM MCPs connected/configured; it cannot guarantee usage by disconnected agents.",
+    core_executes_tools: false,
+    compact_next_step: goal ? "Call vnem_entrypoint with user_goal and any available MCP names." : "Use vnem_entrypoint as the compact first call for repo/code/tooling tasks."
+  };
+}
+
+function classifyAdoptionTask(userGoal, taskContext = "", taskMode = "auto") {
+  const text = normalize([userGoal, taskContext, taskMode].filter(Boolean).join(" "));
+  const has = (pattern) => pattern.test(text);
+  const flags = {
+    repo_or_code: has(/\b(repo|repository|code|coding|implement|edit|file|patch|source|symbol|function|class|test|package|mcp|tool|readiness|generate|artifact)\b/),
+    debugging: has(/\b(debug|failing|failure|failed|error|stack|trace|ci fail|regression|fix test|broken)\b/),
+    github_or_publish: has(/\b(github|gh|pr|pull request|push|remote sha|actions|ci|merge|publish|release|branch)\b/),
+    cloudflare: has(/\b(cloudflare|pages|workers|deploy|dns|zone|wrangler)\b/),
+    browser_or_ui: has(/\b(browser|localhost|screenshot|visual|ui|route|viewport|responsive|dom|a11y)\b/),
+    recovery: has(/\b(recover|recovery|session|lost context|chat loss|working state|local stack)\b/),
+    research: has(/\b(research|latest|current|source|cite|citation|docs|web|internet)\b/),
+    proof_or_validation: has(/\b(proof|evidence|verify|validate|readiness|no placebo|real implementation|audit|guard)\b/)
+  };
+  let primary = "simple_answer";
+  if (taskMode && taskMode !== "auto") {
+    primary = taskMode === "answer_only" ? "simple_answer" : taskMode;
+  } else if (flags.recovery) {
+    primary = "recovery";
+  } else if (flags.debugging) {
+    primary = "debugging";
+  } else if (flags.github_or_publish) {
+    primary = "github_pr_ci_proof";
+  } else if (flags.cloudflare) {
+    primary = "cloudflare_deploy_control";
+  } else if (flags.browser_or_ui) {
+    primary = "browser_ui_verification";
+  } else if (flags.repo_or_code) {
+    primary = "repo_code_implementation";
+  } else if (flags.research) {
+    primary = "research";
+  }
+  const executionNeeded = flags.repo_or_code || flags.debugging || flags.github_or_publish || flags.cloudflare || flags.browser_or_ui || flags.recovery || flags.proof_or_validation;
+  const why = [];
+  if (primary !== "simple_answer") why.push(`Classified as ${primary}, so VNEM can route the work and proof.`);
+  if (flags.repo_or_code) why.push("Repo/code/tooling work benefits from exact Tools MCP calls.");
+  if (flags.debugging) why.push("Debugging needs failure triage and targeted reruns.");
+  if (flags.github_or_publish) why.push("Remote claims need branch SHA, PR, and Actions proof.");
+  if (flags.proof_or_validation) why.push("Proof/audit language needs evidence and no-placebo checks.");
+  if (!why.length) why.push("No repo/code/proof signals were detected; keep the response lightweight.");
+  return {
+    primary,
+    matched_flags: flags,
+    execution_needed: executionNeeded,
+    proof_needed: flags.proof_or_validation || flags.github_or_publish || flags.browser_or_ui,
+    github_or_publish: flags.github_or_publish,
+    browser_or_ui: flags.browser_or_ui,
+    confidence: primary === "simple_answer" ? "medium" : "high",
+    why
+  };
+}
+
+function coreRecommendedCoreCalls(classification) {
+  if (classification.primary === "simple_answer") {
+    return ["vnem_usage_contract"];
+  }
+  return uniqueStrings([
+    "vnem_entrypoint",
+    "vnem_recommend",
+    "vnem_select_tools_for_task",
+    "vnem_build_tools_plan",
+    classification.matched_flags.browser_or_ui ? "vnem_build_ui_quality_plan" : null,
+    classification.matched_flags.research ? "vnem_build_research_strategy" : null,
+    "vnem_usage_contract"
+  ]);
+}
+
+function coreRecommendedToolsCalls(classification) {
+  const flags = classification.matched_flags || {};
+  const calls = [];
+  if (flags.recovery || classification.primary === "recovery") calls.push("vnem_tools_local_session_recovery", "vnem_tools_repo_workflow_orchestrator");
+  if (flags.repo_or_code || ["repo_inspection", "implementation", "validation", "repo_code_implementation"].includes(classification.primary)) calls.push("vnem_tools_repo_deep_map", "vnem_tools_code_symbol_map", "vnem_tools_patch_target_finder", "vnem_tools_source_impact_trace", "vnem_tools_test_selection_plan", "vnem_tools_evidence_pack");
+  if (flags.debugging || classification.primary === "debugging") calls.push("vnem_tools_failure_triage", "vnem_tools_patch_target_finder", "vnem_tools_test_selection_plan", "vnem_tools_evidence_pack");
+  if (flags.proof_or_validation) calls.push("vnem_tools_no_placebo_progress_audit", "vnem_tools_source_control_character_guard", "vnem_tools_evidence_pack");
+  if (flags.github_or_publish || classification.primary === "publish" || classification.primary === "github_pr_ci_proof") calls.push("vnem_tools_github_status", "vnem_tools_github_repo_inspect", "vnem_tools_github_actions_status", "vnem_tools_pr_quality_gate", "vnem_tools_evidence_pack");
+  if (flags.cloudflare || classification.primary === "cloudflare_deploy_control") calls.push("vnem_tools_cloudflare_status", "vnem_tools_cloudflare_auth_plan", "vnem_tools_cloudflare_deploy_verify");
+  if (flags.browser_or_ui || classification.primary === "ui_browser" || classification.primary === "browser_ui_verification") calls.push("vnem_tools_browser_evidence_plan", "vnem_tools_browser_evidence_run", "vnem_tools_ui_surface_review", "vnem_tools_ui_evidence_audit");
+  if (/mcp|tool/.test(classification.primary) || flags.repo_or_code) calls.push("vnem_tools_mcp_surface_audit", "vnem_tools_tool_test_coverage_map");
+  return uniqueStrings(calls).slice(0, 12);
+}
+
+function coreToolPurpose(tool) {
+  const purposes = {
+    vnem_tools_repo_deep_map: "map repo state before edits",
+    vnem_tools_code_symbol_map: "find symbols and handlers",
+    vnem_tools_patch_target_finder: "identify exact source/test/readiness targets",
+    vnem_tools_source_impact_trace: "trace changed files to tests and risk",
+    vnem_tools_test_selection_plan: "choose smallest useful checks",
+    vnem_tools_failure_triage: "classify failing output and next rerun",
+    vnem_tools_evidence_pack: "compile final proof packet",
+    vnem_tools_no_placebo_progress_audit: "detect fake or shallow progress",
+    vnem_tools_source_control_character_guard: "scan hidden/control characters",
+    vnem_tools_github_status: "check gh/auth/repo readiness",
+    vnem_tools_github_repo_inspect: "inspect GitHub repository state",
+    vnem_tools_github_actions_status: "check Actions status",
+    vnem_tools_pr_quality_gate: "review PR/CI proof gate",
+    vnem_tools_local_session_recovery: "recover local branch/head/worktree state",
+    vnem_tools_repo_workflow_orchestrator: "choose local/publish/CI/recovery workflow",
+    vnem_tools_mcp_surface_audit: "audit MCP tool implementation surface",
+    vnem_tools_tool_test_coverage_map: "map tools to behavior tests",
+    vnem_tools_browser_evidence_plan: "plan local browser proof",
+    vnem_tools_browser_evidence_run: "run browser proof when approved",
+    vnem_tools_ui_surface_review: "review UI surface evidence",
+    vnem_tools_ui_evidence_audit: "audit UI proof claims"
+  };
+  return purposes[tool] || "run exact Tools MCP step";
+}
+
+function coreProofRequirements(classification) {
+  const base = ["commands/tests actually run or explicitly blocked", "files changed and generated artifacts named", "what is proven and not proven"];
+  if (classification.github_or_publish) base.push("remote branch SHA", "PR URL/head SHA", "GitHub Actions run URL/status");
+  if (classification.browser_or_ui) base.push("browser screenshot/DOM/console evidence or honest browser-unavailable line");
+  if (classification.matched_flags?.proof_or_validation) base.push("no-placebo audit", "hidden/control character scan for source/test/config");
+  return uniqueStrings(base);
+}
+
+function coreCommonTaskRoutes() {
+  return [
+    { task: "repo implementation", core_first: "vnem_entrypoint", tools_next: ["vnem_tools_repo_deep_map", "vnem_tools_patch_target_finder", "vnem_tools_test_selection_plan"] },
+    { task: "debugging/failing tests", core_first: "vnem_entrypoint", tools_next: ["vnem_tools_failure_triage", "vnem_tools_patch_target_finder", "vnem_tools_test_selection_plan"] },
+    { task: "PR/CI proof", core_first: "vnem_entrypoint", tools_next: ["vnem_tools_github_status", "vnem_tools_github_actions_status", "vnem_tools_pr_quality_gate"] },
+    { task: "local session recovery", core_first: "vnem_entrypoint", tools_next: ["vnem_tools_local_session_recovery", "vnem_tools_repo_workflow_orchestrator"] },
+    { task: "MCP/code intelligence", core_first: "vnem_entrypoint", tools_next: ["vnem_tools_mcp_surface_audit", "vnem_tools_code_symbol_map", "vnem_tools_tool_test_coverage_map"] }
+  ];
+}
+
+function formatCoreEntrypoint(entrypoint) {
+  return [
+    `vnem_entrypoint: ${entrypoint.task_classification.primary}`,
+    `use_vnem=${entrypoint.should_use_vnem}; confidence=${entrypoint.confidence}`,
+    `core_next=${entrypoint.recommended_core_calls.slice(0, 4).join(", ") || "none"}`,
+    `tools_next=${entrypoint.recommended_tools_calls.slice(0, 6).join(", ") || "none"}`,
+    `core_executes_tools=${entrypoint.core_executes_tools}`,
+    `next=${entrypoint.compact_next_step}`
+  ].join("\n");
+}
+
+function formatCoreUsageContract(contract) {
+  return [
+    "vnem_usage_contract",
+    `core_role=${contract.core_role}`,
+    `tools_role=${contract.tools_role}`,
+    `core_executes_tools=${contract.core_executes_tools}`,
+    `next=${contract.compact_next_step}`
+  ].join("\n");
 }
 
 function buildBootstrap(args = {}) {
