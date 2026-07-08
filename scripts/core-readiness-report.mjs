@@ -54,6 +54,7 @@ const coreSpeedDesign2AuditTestSource = await text("scripts/test-core-speed-desi
 const toolsSourceIngestionTestSource = await text("scripts/test-tools-source-ingestion.mjs");
 const toolsSourceGraphTestSource = await text("scripts/test-tools-source-graph.mjs");
 const mcpUserSmokeTestSource = await text("scripts/test-mcp-user-smoke.mjs");
+const adoptionReliabilityTestSource = await text("scripts/test-vnem-adoption-reliability-1-regression.mjs");
 const readme = await text("README.md");
 const installGuide = await text(".vnem/install-guide.md");
 const packageJson = await json("package.json");
@@ -218,6 +219,13 @@ const usablePackStatus = {
   raw_records_not_counted_as_usable: (usablePacks.apis || []).length < (library.apis || []).length && (usablePacks.skills || []).length < (library.skills || []).length
 };
 
+const coreAdoptionReliabilityStatus = {
+  core_entrypoint_status: toolInventory.includes("vnem_entrypoint") && /buildCoreEntrypoint/.test(serverSource) && /should_use_vnem/.test(serverSource) && /vnem_entrypoint/.test(adoptionReliabilityTestSource),
+  core_usage_contract_status: toolInventory.includes("vnem_usage_contract") && /buildCoreUsageContract/.test(serverSource) && /core_role/.test(serverSource) && /vnem_usage_contract/.test(adoptionReliabilityTestSource),
+  core_tools_handoff_status: /recommended_tools_calls/.test(serverSource) && /tools_handoff/.test(serverSource) && /core_runtime_dependency:\s*false/.test(serverSource) && /vnem_tools_repo_deep_map/.test(adoptionReliabilityTestSource),
+  core_adoption_reliability_status: /when_tools_mcp_is_needed/.test(serverSource) && /what_core_cannot_do/.test(serverSource) && /no_placebo_risks/.test(serverSource) && /disconnected_agent_limit/.test(serverSource + adoptionReliabilityTestSource)
+};
+
 assert.ok(toolInventory.includes("vnem_api_safety_profile"), "Core MCP API safety profile tool is missing");
 assert.ok(toolInventory.includes("vnem_skill_safety_profile"), "Core MCP skill safety profile tool is missing");
 assert.equal(forbiddenCoreTools.length, 0, `Default Core MCP exposes high-power-looking tool names: ${forbiddenCoreTools.join(", ")}`);
@@ -241,6 +249,7 @@ assert.ok(Object.values(coreResearchSourceStatus).every(Boolean), "Core research
 assert.ok(Object.values(coreDebuggingCodeQualityStatus).every(Boolean), "Core debugging/code-quality readiness is incomplete");
 assert.ok(Object.values(coreUiWebQualityStatus).every(Boolean), "Core UI/web quality readiness is incomplete");
 assert.ok(Object.values(coreAdaptiveSpeedDesignStatus).every(Boolean), "Core adaptive effort / speed-design readiness is incomplete");
+assert.ok(Object.values(coreAdoptionReliabilityStatus).every(Boolean), "Core adoption reliability readiness is incomplete");
 assert.ok(packageJson.scripts?.["test:core-adaptive-effort"] === "node scripts/test-core-adaptive-effort.mjs", "test:core-adaptive-effort package script is missing");
 assert.ok(packageJson.scripts?.["test:core-fast-answer-contract"] === "node scripts/test-core-fast-answer-contract.mjs", "test:core-fast-answer-contract package script is missing");
 assert.ok(packageJson.scripts?.["test:core-anti-overhead-audit"] === "node scripts/test-core-anti-overhead-audit.mjs", "test:core-anti-overhead-audit package script is missing");
@@ -268,6 +277,9 @@ assert.ok(packageJson.scripts?.["test:core-routing-memory-output"] === "node scr
 assert.ok(packageJson.scripts?.["test:core-output-quality"] === "node scripts/test-core-output-quality.mjs", "test:core-output-quality package script is missing");
 assert.ok(packageJson.scripts?.["test:core-anti-stagnation"] === "node scripts/test-core-anti-stagnation.mjs", "test:core-anti-stagnation package script is missing");
 assert.ok(packageJson.scripts?.["test:core-permission-planning"] === "node scripts/test-core-permission-planning.mjs", "test:core-permission-planning package script is missing");
+assert.ok(packageJson.scripts?.["test:core-adoption-entrypoint"] === "node scripts/test-vnem-adoption-reliability-1-regression.mjs --case=core-entrypoint", "test:core-adoption-entrypoint package script is missing");
+assert.ok(packageJson.scripts?.["test:core-usage-contract"] === "node scripts/test-vnem-adoption-reliability-1-regression.mjs --case=core-usage-contract", "test:core-usage-contract package script is missing");
+assert.ok(packageJson.scripts?.["test:vnem-adoption-reliability-1-regression"] === "node scripts/test-vnem-adoption-reliability-1-regression.mjs", "test:vnem-adoption-reliability-1-regression package script is missing");
 assert.ok(packageJson.scripts?.["core:readiness"], "package script core:readiness is missing");
 
 const blockers = [];
@@ -310,6 +322,7 @@ const report = {
   core_debugging_code_quality_status: coreDebuggingCodeQualityStatus,
   core_ui_web_quality_status: coreUiWebQualityStatus,
   core_adaptive_speed_design_status: coreAdaptiveSpeedDesignStatus,
+  core_adoption_reliability_status: coreAdoptionReliabilityStatus,
   core_tools_ecosystem_test_status: /vnem_build_tools_plan/.test(coreToolsEcosystemTestSource) && /vnem_tools_finish_session/.test(coreToolsEcosystemTestSource),
   api_library_counts: apiCounts,
   skill_library_counts: skillCounts,
@@ -332,7 +345,8 @@ const report = {
     "Core now builds log-first debugging plans, evidence-to-fix checks, architecture maps, code-change contracts, and completion-audit code-quality warnings while remaining plan-only.",
     "Core now builds UI quality plans and visual proof contracts, and completion audit flags UI/browser overclaims without visual, route/render, console/network, a11y, viewport, state, and before/after evidence while remaining plan-only.",
     "Core now classifies adaptive effort, enforces fast-answer/no-ceremony contracts, harsh-truth uncertainty labels, design ambition, visual taste audits, and wasted-tool/anti-overhead checks while remaining plan-only.",
-    "Core now adds realistic redesign comparison scorecards, total-impact design planning, total-impact direction selection, compact output contracts, and SPEED-DESIGN-2 audit flags while remaining plan-only."
+    "Core now adds realistic redesign comparison scorecards, total-impact design planning, total-impact direction selection, compact output contracts, and SPEED-DESIGN-2 audit flags while remaining plan-only.",
+    "Core now exposes a compact adoption entrypoint and usage contract that recommend exact Tools MCP handoff calls without claiming Core can execute them."
   ],
   not_ready: [
     "Most API docs, rate limits, CORS values, and freshness statuses remain metadata-level or unknown.",
@@ -415,6 +429,7 @@ function formatReport(report) {
   lines.push(`core_debugging_code_quality_status: ${status(report.core_debugging_code_quality_status)}`);
   lines.push(`core_ui_web_quality_status: ${status(report.core_ui_web_quality_status)}`);
   lines.push(`core_adaptive_speed_design_status: ${status(report.core_adaptive_speed_design_status)}`);
+  lines.push(`core_adoption_reliability_status: ${status(report.core_adoption_reliability_status)}`);
   lines.push(`core_tools_ecosystem_test_status: ${report.core_tools_ecosystem_test_status ? "yes" : "no"}`);
   lines.push(`real_task_examples_tested: ${report.task_boosting_status.real_task_examples_tested.join(", ")}`);
   lines.push(`api_counts: total=${report.api_library_counts.total_apis}, docs_verified=${report.api_library_counts.docs_verified_count}, docs_unknown=${report.api_library_counts.docs_unknown_count}, rate_limit_verified=${report.api_library_counts.rate_limit_verified_count}, rate_limit_unknown=${report.api_library_counts.rate_limit_unknown_count}, cors_unknown=${report.api_library_counts.cors_unknown_count}, frontend_safe=${report.api_library_counts.frontend_safe_count}, backend_required=${report.api_library_counts.backend_required_count}`);
