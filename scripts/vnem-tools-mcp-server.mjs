@@ -27,6 +27,7 @@ const REQUIRED_TOOL_NAMES = [
   "vnem_tools_test_selection_plan",
   "vnem_tools_failure_triage",
   "vnem_tools_evidence_pack",
+  "vnem_tools_local_session_recovery",
   "vnem_tools_action_policy_preview",
   "vnem_tools_trust_boundary_classify",
   "vnem_tools_prepare_action_plan",
@@ -389,6 +390,20 @@ function registerTools(mcpServer) {
     async (args) => withToolErrors(async () => {
       const pack = await repoEvidencePack(args);
       return toolResult(formatRepoEvidencePack(pack), { evidence_pack: pack });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_local_session_recovery",
+    {
+      title: "Local Session Recovery",
+      description: "Reconstruct compact local Git session state after chat/tool context loss: branch, head, stack, dirty files, unpushed commits, safe next step, and what is not proven.",
+      inputSchema: { root: z.string().default("."), base_ref: z.string().default("origin/main"), task_goal: z.string().default(""), expected_branch_prefix: z.string().default("feat/"), max_commits: z.number().int().min(3).max(30).default(12) },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const recovery = await localSessionRecovery(args);
+      return toolResult(formatLocalSessionRecovery(recovery), { local_session_recovery: recovery });
     })
   );
 
@@ -1581,7 +1596,7 @@ function toolReliabilityFor(name, descriptor = {}) {
     known = ["Command-backed gh/git execution requires auth for remote mutation", "Hard blocks remain for secret commits, default force push, default protected-branch direct push, repo delete/settings mutation unless configured"];
   } else if (group === "repo_power") {
     level = "local_tested";
-    safe = ["Repo map, next-action ranking, no-placebo audit, impact/test planning, failure triage, and compact evidence are local deterministic intelligence over allowed roots."];
+    safe = ["Repo map, next-action ranking, no-placebo audit, impact/test planning, failure triage, compact evidence, and local session recovery are deterministic intelligence over allowed roots."];
     unsafe = ["Live GitHub/Cloudflare/deploy proof happened", "The whole repo was exhaustively understood", "All risks were eliminated"];
     next = "Run the focused POWER-TOOLS regression against the target repo and pair outputs with real command/test evidence before final claims.";
     known = ["No internet or GitHub auth required", "Secret paths blocked/redacted", "Outputs are compact heuristics, not omniscient proof"];
@@ -1752,7 +1767,7 @@ function statusObject() {
     command_allowlist: ["node --check <file>", "npm test", "npm run <safe-script>", "git status", "git diff", "git log", "git ls-files"],
     tool_catalog_policy: { tool: "vnem_tools_manifest", capability_groups: TOOL_CAPABILITY_GROUPS, safety_metadata_required: true, core_handoff_compatible: true },
     filesystem_intelligence_policy: { tools: ["vnem_tools_workspace_map", "vnem_tools_read_many_files", "vnem_tools_code_search", "vnem_tools_find_references", "vnem_tools_dependency_scan"], allowed_roots_only: true, secret_paths_blocked: true, generated_build_cache_skipped: true, evidence_logged: true },
-    repo_power_policy: { tools: ["vnem_tools_repo_deep_map", "vnem_tools_next_action_ranker", "vnem_tools_no_placebo_progress_audit", "vnem_tools_change_impact_plan", "vnem_tools_test_selection_plan", "vnem_tools_failure_triage", "vnem_tools_evidence_pack"], allowed_roots_only: true, secret_paths_blocked: true, compact_structured_output: true, no_live_github_required: true, no_placebo_detection: true, test_selection_avoids_overvalidation: true },
+    repo_power_policy: { tools: ["vnem_tools_repo_deep_map", "vnem_tools_next_action_ranker", "vnem_tools_no_placebo_progress_audit", "vnem_tools_change_impact_plan", "vnem_tools_test_selection_plan", "vnem_tools_failure_triage", "vnem_tools_evidence_pack", "vnem_tools_local_session_recovery"], allowed_roots_only: true, secret_paths_blocked: true, compact_structured_output: true, no_live_github_required: true, no_placebo_detection: true, test_selection_avoids_overvalidation: true, local_session_recovery_supported: true },
     research_sources_policy: { tools: ["vnem_tools_fetch_url_text", "vnem_tools_source_quality_check", "vnem_tools_research_brief", "vnem_tools_browser_research_pack", "vnem_tools_claim_source_matrix", "vnem_tools_research_gap_detector", "vnem_tools_source_map", "vnem_tools_source_extract", "vnem_tools_source_graph"], no_search_engine_scraping: true, external_fetch_dry_run_default: true, approval_required_for_real_external_fetch: true, no_login_cookie_session_use: true },
     source_ingestion_policy: { tools: ["vnem_tools_source_map", "vnem_tools_source_extract", "vnem_tools_source_graph"], allowed_roots_only_for_local_sources: true, explicit_targets_only_for_extraction: true, secret_paths_blocked: true, broad_crawl_blocked: true, evidence_logged: true, source_graph_uses_provided_or_bounded_sources_only: true },
     debugging_code_quality_policy: { tools: ["vnem_tools_architecture_review", "vnem_tools_debug_evidence"], allowed_roots_only: true, secret_paths_blocked: true, no_arbitrary_commands: true, log_first_debugging: true, detects_parallel_fake_systems: true, flags_possible_dead_code: true, evidence_logged: true },
@@ -2028,6 +2043,7 @@ function buildToolCatalog() {
     mk("vnem_tools_test_selection_plan", "repo_power", { description: "Select the smallest useful check set and escalate only for high-risk/shared/generated/UI surfaces.", typical_use_cases: ["choose tests efficiently", "avoid over-validation"] }),
     mk("vnem_tools_failure_triage", "repo_power", { description: "Classify failing output into bug, fixture, environment/network/auth/dependency/generated/Windows cleanup/regression and produce a compact fix plan.", typical_use_cases: ["fix failing checks fast", "avoid chasing environment noise"] }),
     mk("vnem_tools_evidence_pack", "repo_power", { description: "Build a compact proof pack for handoffs: commands, tests, files, real behavior, mocked/live/blocked proof, risks, commit status, safe and unsafe claims.", typical_use_cases: ["final handoff evidence", "truthful batch summary"] }),
+    mk("vnem_tools_local_session_recovery", "repo_power", { description: "Recover local Git working state after lost chat context, including branch/head, dirty categories, local stack, unpushed commits, safe next step, and not-proven boundaries without network.", typical_use_cases: ["resume after chat loss", "recover local stack safely", "avoid touching main or secrets"] }),
     mk("vnem_tools_action_policy_preview", "permissions", { description: "Preview whether a proposed action is allowed, blocked, or approval-gated under the active profile.", evidence_logged: false, allowed_roots_required: false, typical_use_cases: ["approval preview", "risk classification"] }),
     mk("vnem_tools_trust_boundary_classify", "permissions", { description: "Classify data/action/source descriptions into VNEM trust-boundary levels.", evidence_logged: false, allowed_roots_required: false, typical_use_cases: ["security boundary planning"] }),
     mk("vnem_tools_manifest", "status_readiness", { description: "Structured catalog of Tools MCP tools and safety metadata.", evidence_logged: false, typical_use_cases: ["AI tool discovery", "Core handoff planning"] }),
@@ -2802,6 +2818,97 @@ async function repoEvidencePack(args = {}) {
   return pack;
 }
 
+async function localSessionRecovery(args = {}) {
+  const root = await resolveAllowedRoot(args.root || ".");
+  const maxCommits = Math.max(3, Math.min(Number(args.max_commits || 12), 30));
+  const git = await compactGitState(root.absolutePath);
+  const statusText = await gitValue(root.absolutePath, ["status", "--short"], 24000);
+  const rawStatus = statusText.split(/\r?\n/).filter(Boolean).map(parseGitStatusLine).filter(Boolean);
+  const changedFiles = rawStatus.map((item) => item.path);
+  const baseRefRequested = String(args.base_ref || "origin/main").trim() || "origin/main";
+  const baseRef = await firstExistingGitRef(root.absolutePath, [baseRefRequested, "origin/main", "main", "master"]);
+  const upstream = await gitValue(root.absolutePath, ["rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}"]);
+  const stackRange = baseRef ? `${baseRef}..HEAD` : "HEAD";
+  const stackLog = await gitValue(root.absolutePath, baseRef
+    ? ["log", "--oneline", "--decorate", "--first-parent", `-${maxCommits}`, stackRange]
+    : ["log", "--oneline", "--decorate", "--first-parent", `-${maxCommits}`], 24000);
+  const recentLog = await gitValue(root.absolutePath, ["log", "--oneline", "--decorate", `-${maxCommits}`], 24000);
+  const aheadBehindBase = baseRef ? parseAheadBehind(await gitValue(root.absolutePath, ["rev-list", "--left-right", "--count", `${baseRef}...HEAD`])) : null;
+  const aheadBehindUpstream = upstream ? parseAheadBehind(await gitValue(root.absolutePath, ["rev-list", "--left-right", "--count", `${upstream}...HEAD`])) : null;
+  const localBranches = (await gitValue(root.absolutePath, ["branch", "--format=%(refname:short) %(objectname:short)"], 16000))
+    .split(/\r?\n/).filter(Boolean).map((line) => {
+      const [name, short_sha = ""] = line.trim().split(/\s+/);
+      return { name, short_sha };
+    }).filter((item) => item.name);
+  const branchesContainingHead = (await gitValue(root.absolutePath, ["branch", "--contains", "HEAD", "--format=%(refname:short)"], 12000))
+    .split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+  const stackCommits = parseGitLogEntries(stackLog);
+  const recentCommits = parseGitLogEntries(recentLog);
+  const dirtyCategories = classifyRecoveryDirtyFiles(changedFiles);
+  const stackBranchCandidates = localBranches
+    .filter((branch) => branch.name === git.branch || branchesContainingHead.includes(branch.name) || String(branch.name).startsWith(args.expected_branch_prefix || "feat/"))
+    .slice(0, 30);
+  const comparisonRef = upstream || baseRef || "";
+  const unpushedLog = comparisonRef ? await gitValue(root.absolutePath, ["log", "--oneline", "--decorate", `-${maxCommits}`, `${comparisonRef}..HEAD`], 24000) : stackLog;
+  const unpushedCommits = parseGitLogEntries(unpushedLog);
+  const recovery = {
+    operation_result: "reported",
+    repo_root: root.absolutePath,
+    current_branch: git.branch,
+    head_sha: git.head,
+    base_ref: { requested: baseRefRequested, selected: baseRef || "", found: Boolean(baseRef) },
+    upstream: upstream || "",
+    worktree: {
+      dirty: rawStatus.length > 0,
+      status: rawStatus.slice(0, 120),
+      changed_file_count: rawStatus.length,
+      dirty_categories: dirtyCategories
+    },
+    local_stack: {
+      comparison_ref: baseRef || "",
+      ahead_count: aheadBehindBase?.ahead ?? null,
+      behind_count: aheadBehindBase?.behind ?? null,
+      commits: stackCommits,
+      recent_commits: recentCommits,
+      branches_containing_head: branchesContainingHead,
+      local_branches_on_stack: stackBranchCandidates
+    },
+    unpushed_commits: {
+      comparison_ref: comparisonRef,
+      ahead_count: (aheadBehindUpstream || aheadBehindBase)?.ahead ?? (comparisonRef ? unpushedCommits.length : null),
+      behind_count: (aheadBehindUpstream || aheadBehindBase)?.behind ?? null,
+      commits: unpushedCommits
+    },
+    likely_next_branch: inferLikelyRecoveryBranch(git.branch, args),
+    safe_next_action: chooseSessionRecoverySafeNext(rawStatus, unpushedCommits, git.branch),
+    what_not_to_touch: [
+      "Do not mutate main/master or protected branches during recovery.",
+      "Do not force-push, merge, push, or open a PR from recovery output alone.",
+      "Do not inspect or print secret file contents; only path/status classification is used.",
+      "Do not rewrite previous local stack commits unless the user explicitly asks.",
+      "Do not treat local refs as proof of remote GitHub/CI/deploy state."
+    ],
+    safe_to_claim: [
+      "Local branch, HEAD, worktree status, local branches, and commit stack were reconstructed from git.",
+      "Unpushed/ahead counts are inferred from local refs only.",
+      "No secret file contents were read and no network/live GitHub proof was attempted."
+    ],
+    not_proven: [
+      "Remote GitHub branch, PR, issue, Actions, and CI state.",
+      "Whether origin/main is freshly fetched.",
+      "Whether a push, merge, deploy, or release happened elsewhere.",
+      "That hidden chat context was recovered."
+    ],
+    live_proof_attempted: false,
+    secret_values_exposed: false,
+    output_compact: true,
+    evidence_log_id: null
+  };
+  const log = await writeEvidenceLog("local_session_recovery", recovery);
+  recovery.evidence_log_id = log.evidence_log_id;
+  return recovery;
+}
+
 async function readPackageJsonIfPresent(root) {
   const packagePath = path.join(root, "package.json");
   if (!existsSync(packagePath)) return null;
@@ -2926,6 +3033,65 @@ async function gitChangedFileNames(root, includeStaged = true) {
   return [...new Set(diff.split(/\r?\n/).filter(Boolean).filter((file) => !isSecretLikePath(file)).map(normalizePath))];
 }
 
+async function firstExistingGitRef(root, refs) {
+  for (const ref of refs.filter(Boolean)) {
+    const found = await gitValue(root, ["rev-parse", "--verify", "--quiet", ref]);
+    if (found) return ref;
+  }
+  return "";
+}
+
+function parseAheadBehind(text) {
+  const [behindRaw, aheadRaw] = String(text || "").trim().split(/\s+/);
+  const behind = Number.parseInt(behindRaw, 10);
+  const ahead = Number.parseInt(aheadRaw, 10);
+  return { behind: Number.isFinite(behind) ? behind : 0, ahead: Number.isFinite(ahead) ? ahead : 0 };
+}
+
+function parseGitLogEntries(text) {
+  return String(text || "").split(/\r?\n/).filter(Boolean).map((line) => {
+    const match = line.match(/^([0-9a-f]{7,40})\s+(.*)$/i);
+    return match ? { short_sha: match[1], subject: redactSecrets(match[2]) } : { short_sha: "", subject: redactSecrets(line) };
+  });
+}
+
+function classifyRecoveryDirtyFiles(files) {
+  const unique = [...new Set(files.map(normalizePath))];
+  const risky = unique.filter(isSecretLikePath);
+  const tests = unique.filter((file) => !risky.includes(file) && isTestPath(file));
+  const docs = unique.filter((file) => !risky.includes(file) && isDocsPath(file));
+  const generated = unique.filter((file) => !risky.includes(file) && isGeneratedArtifactPath(file));
+  const source = unique.filter((file) => !risky.includes(file) && !tests.includes(file) && !docs.includes(file) && !generated.includes(file) && isSourceBehaviorPath(file));
+  const known = new Set([...risky, ...tests, ...docs, ...generated, ...source]);
+  return {
+    source: source.slice(0, 40),
+    tests: tests.slice(0, 40),
+    docs: docs.slice(0, 40),
+    generated: generated.slice(0, 40),
+    risky_or_secret_like: risky.slice(0, 40),
+    other: unique.filter((file) => !known.has(file)).slice(0, 40)
+  };
+}
+
+function inferLikelyRecoveryBranch(currentBranch, args = {}) {
+  const current = String(currentBranch || "");
+  const prefix = String(args.expected_branch_prefix || "feat/");
+  if (current && current !== "main" && current !== "master") return current;
+  const goal = String(args.task_goal || "session recovery").toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 48) || "session-recovery";
+  return `${prefix}${goal}`;
+}
+
+function chooseSessionRecoverySafeNext(statusItems, unpushedCommits, branch) {
+  const dirty = statusItems.length > 0;
+  if (/^(main|master)$/.test(String(branch || ""))) return "Create or switch to a feature branch before any edits or commits.";
+  if (dirty) return "Review dirty files with change-impact/test-selection before committing or excluding anything.";
+  if (unpushedCommits.length) return "Resume on the current feature branch and run targeted local checks before any publish step.";
+  return "Choose one behavior-backed implementation slice on the current feature branch.";
+}
+
 async function scanTodoMarkers(root, files, maxResults) {
   const results = [];
   for (const file of files) {
@@ -2992,8 +3158,10 @@ function targetedTestsForChange(areas, changed, scripts) {
   for (const file of changed) {
     const base = path.basename(file);
     if (/power-tools-2/.test(base)) tests.push("npm.cmd run test:tools-power-tools-2-regression");
+    if (/power-session-1|local-session-recovery/.test(base)) tests.push("npm.cmd run test:tools-power-session-1-recovery");
     if (/^test-tools-power/.test(base) || /power-tools-1/.test(base)) tests.push("npm.cmd run test:tools-power-tools-1-regression");
   }
+  if (scripts?.["test:tools-power-session-1-recovery"] && areas.includes("tools_mcp")) tests.push("npm.cmd run test:tools-power-session-1-recovery");
   if (scripts?.["test:tools-power-tools-2-regression"] && areas.includes("tools_mcp")) tests.push("npm.cmd run test:tools-power-tools-2-regression");
   if (scripts?.["test:tools-quality-general"] && areas.includes("tools_mcp")) tests.push("npm.cmd run test:tools-quality-general");
   return [...new Set(tests)];
@@ -3094,6 +3262,7 @@ function formatChangeImpactPlan(plan) { return [`vnem_tools_change_impact_plan: 
 function formatTestSelectionPlan(plan) { return [`vnem_tools_test_selection_plan: targeted=${plan.targeted_tests.length}`, `regression=${plan.regression_tests.length}`, `readiness=${plan.readiness_or_generation_checks.length}`, `full_npm_test_recommended=${plan.full_npm_test_recommended}`].join("\n"); }
 function formatFailureTriage(triage) { return [`vnem_tools_failure_triage: ${triage.classification}`, `cause=${triage.likely_root_cause}`, `inspect=${triage.exact_file_or_function_to_inspect}`, `rerun=${triage.command_to_rerun}`, `blocks=${triage.blocks_acceptance}`].join("\n"); }
 function formatRepoEvidencePack(pack) { return [`vnem_tools_evidence_pack: branch=${pack.branch || "unknown"}`, `changed=${pack.changed_files.length}`, `passed=${pack.tests_passed.length}`, `failed=${pack.tests_failed.length}`, `safe_claims=${pack.safe_to_claim.length}`, `not_safe=${pack.not_safe_to_claim.length}`].join("\n"); }
+function formatLocalSessionRecovery(recovery) { return [`vnem_tools_local_session_recovery: branch=${recovery.current_branch || "unknown"}`, `head=${recovery.head_sha ? recovery.head_sha.slice(0, 12) : "unknown"}`, `dirty=${recovery.worktree.dirty}`, `stack_commits=${recovery.local_stack.commits.length}`, `unpushed=${recovery.unpushed_commits.ahead_count ?? "unknown"}`, `next=${recovery.safe_next_action}`].join("\n"); }
 
 const SEARCH_PROVIDER_DEFINITIONS = [
   { name: "local_fixture", env: null, supports_current_web: false, supports_news: false, supports_code_search: false, supports_docs_search: true, supports_safe_search: true, requires_api_key: false, requires_approval: false, rate_limit_notes: "deterministic local CI/test fixture", privacy_notes: "no external network" },
