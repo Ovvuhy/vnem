@@ -49,6 +49,14 @@ const toolsGithubBranchCommitPrTestPath = rel("scripts/test-tools-github-branch-
 const toolsGithubIssuesActionsCiTestPath = rel("scripts/test-tools-github-issues-actions-ci.mjs");
 const toolsAutonomyEfficiencyTestPath = rel("scripts/test-tools-autonomy-efficiency.mjs");
 const toolsAutonomy1RegressionTestPath = rel("scripts/test-tools-autonomy-1-regression.mjs");
+const toolsGithubRealExecPathsTestPath = rel("scripts/test-tools-github-real-exec-paths.mjs");
+const toolsGithubCommandBuilderTestPath = rel("scripts/test-tools-github-command-builder.mjs");
+const toolsGithubLiveReadinessTestPath = rel("scripts/test-tools-github-live-readiness.mjs");
+const toolsGithubMutationDryRunTestPath = rel("scripts/test-tools-github-mutation-dry-run.mjs");
+const toolsAutonomy2RegressionTestPath = rel("scripts/test-tools-autonomy-2-regression.mjs");
+const toolsPowerTools1RegressionTestPath = rel("scripts/test-tools-power-tools-1-regression.mjs");
+const toolsPowerTools2RegressionTestPath = rel("scripts/test-tools-power-tools-2-regression.mjs");
+const toolsPowerSession1RecoveryTestPath = rel("scripts/test-tools-power-session-1-recovery.mjs");
 const coreResearchStrategyTestPath = rel("scripts/test-core-research-strategy.mjs");
 const coreSourceIngestionPlanningTestPath = rel("scripts/test-core-source-ingestion-planning.mjs");
 const researchEvidenceAuditTestPath = rel("scripts/test-research-evidence-audit.mjs");
@@ -103,6 +111,14 @@ const toolsGithubBranchCommitPrTest = existsSync(toolsGithubBranchCommitPrTestPa
 const toolsGithubIssuesActionsCiTest = existsSync(toolsGithubIssuesActionsCiTestPath) ? readFileSync(toolsGithubIssuesActionsCiTestPath, "utf8") : "";
 const toolsAutonomyEfficiencyTest = existsSync(toolsAutonomyEfficiencyTestPath) ? readFileSync(toolsAutonomyEfficiencyTestPath, "utf8") : "";
 const toolsAutonomy1RegressionTest = existsSync(toolsAutonomy1RegressionTestPath) ? readFileSync(toolsAutonomy1RegressionTestPath, "utf8") : "";
+const toolsGithubRealExecPathsTest = existsSync(toolsGithubRealExecPathsTestPath) ? readFileSync(toolsGithubRealExecPathsTestPath, "utf8") : "";
+const toolsGithubCommandBuilderTest = existsSync(toolsGithubCommandBuilderTestPath) ? readFileSync(toolsGithubCommandBuilderTestPath, "utf8") : "";
+const toolsGithubLiveReadinessTest = existsSync(toolsGithubLiveReadinessTestPath) ? readFileSync(toolsGithubLiveReadinessTestPath, "utf8") : "";
+const toolsGithubMutationDryRunTest = existsSync(toolsGithubMutationDryRunTestPath) ? readFileSync(toolsGithubMutationDryRunTestPath, "utf8") : "";
+const toolsAutonomy2RegressionTest = existsSync(toolsAutonomy2RegressionTestPath) ? readFileSync(toolsAutonomy2RegressionTestPath, "utf8") : "";
+const toolsPowerTools1RegressionTest = existsSync(toolsPowerTools1RegressionTestPath) ? readFileSync(toolsPowerTools1RegressionTestPath, "utf8") : "";
+const toolsPowerTools2RegressionTest = existsSync(toolsPowerTools2RegressionTestPath) ? readFileSync(toolsPowerTools2RegressionTestPath, "utf8") : "";
+const toolsPowerSession1RecoveryTest = existsSync(toolsPowerSession1RecoveryTestPath) ? readFileSync(toolsPowerSession1RecoveryTestPath, "utf8") : "";
 const coreResearchStrategyTest = existsSync(coreResearchStrategyTestPath) ? readFileSync(coreResearchStrategyTestPath, "utf8") : "";
 const coreSourceIngestionPlanningTest = existsSync(coreSourceIngestionPlanningTestPath) ? readFileSync(coreSourceIngestionPlanningTestPath, "utf8") : "";
 const researchEvidenceAuditTest = existsSync(researchEvidenceAuditTestPath) ? readFileSync(researchEvidenceAuditTestPath, "utf8") : "";
@@ -122,6 +138,14 @@ const requiredTools = [
   "vnem_tools_action_recovery_plan",
   "vnem_tools_high_power_action_review",
   "vnem_tools_capability_gap_report",
+  "vnem_tools_repo_deep_map",
+  "vnem_tools_next_action_ranker",
+  "vnem_tools_no_placebo_progress_audit",
+  "vnem_tools_change_impact_plan",
+  "vnem_tools_test_selection_plan",
+  "vnem_tools_failure_triage",
+  "vnem_tools_evidence_pack",
+  "vnem_tools_local_session_recovery",
   "vnem_tools_action_policy_preview",
   "vnem_tools_trust_boundary_classify",
   "vnem_tools_prepare_action_plan",
@@ -263,6 +287,14 @@ const report = {
   tools_github_issues_actions_ci_test_exists: existsSync(toolsGithubIssuesActionsCiTestPath),
   tools_autonomy_efficiency_test_exists: existsSync(toolsAutonomyEfficiencyTestPath),
   tools_autonomy_1_regression_test_exists: existsSync(toolsAutonomy1RegressionTestPath),
+  tools_github_real_exec_paths_test_exists: existsSync(toolsGithubRealExecPathsTestPath),
+  tools_github_command_builder_test_exists: existsSync(toolsGithubCommandBuilderTestPath),
+  tools_github_live_readiness_test_exists: existsSync(toolsGithubLiveReadinessTestPath),
+  tools_github_mutation_dry_run_test_exists: existsSync(toolsGithubMutationDryRunTestPath),
+  tools_autonomy_2_regression_test_exists: existsSync(toolsAutonomy2RegressionTestPath),
+  tools_power_tools_1_regression_test_exists: existsSync(toolsPowerTools1RegressionTestPath),
+  tools_power_tools_2_regression_test_exists: existsSync(toolsPowerTools2RegressionTestPath),
+  tools_power_session_1_recovery_test_exists: existsSync(toolsPowerSession1RecoveryTestPath),
   core_research_strategy_test_exists: existsSync(coreResearchStrategyTestPath),
   core_source_ingestion_planning_test_exists: existsSync(coreSourceIngestionPlanningTestPath),
   research_evidence_audit_test_exists: existsSync(researchEvidenceAuditTestPath),
@@ -323,7 +355,27 @@ const report = {
     test_tools_github_branch_commit_pr: pkg.scripts?.["test:tools-github-branch-commit-pr"] === "node scripts/test-tools-github-branch-commit-pr.mjs",
     test_tools_github_issues_actions_ci: pkg.scripts?.["test:tools-github-issues-actions-ci"] === "node scripts/test-tools-github-issues-actions-ci.mjs",
     test_tools_autonomy_efficiency: pkg.scripts?.["test:tools-autonomy-efficiency"] === "node scripts/test-tools-autonomy-efficiency.mjs",
-    test_tools_autonomy_1_regression: pkg.scripts?.["test:tools-autonomy-1-regression"] === "node scripts/test-tools-autonomy-1-regression.mjs"
+    test_tools_autonomy_1_regression: pkg.scripts?.["test:tools-autonomy-1-regression"] === "node scripts/test-tools-autonomy-1-regression.mjs",
+    test_tools_github_real_exec_paths: pkg.scripts?.["test:tools-github-real-exec-paths"] === "node scripts/test-tools-github-real-exec-paths.mjs",
+    test_tools_github_command_builder: pkg.scripts?.["test:tools-github-command-builder"] === "node scripts/test-tools-github-command-builder.mjs",
+    test_tools_github_live_readiness: pkg.scripts?.["test:tools-github-live-readiness"] === "node scripts/test-tools-github-live-readiness.mjs",
+    test_tools_github_mutation_dry_run: pkg.scripts?.["test:tools-github-mutation-dry-run"] === "node scripts/test-tools-github-mutation-dry-run.mjs",
+    test_tools_autonomy_2_regression: pkg.scripts?.["test:tools-autonomy-2-regression"] === "node scripts/test-tools-autonomy-2-regression.mjs",
+    test_tools_power_repo_deep_map: pkg.scripts?.["test:tools-power-repo-deep-map"] === "node scripts/test-tools-power-tools-1-regression.mjs --case=repo-deep-map",
+    test_tools_next_action_ranker: pkg.scripts?.["test:tools-next-action-ranker"] === "node scripts/test-tools-power-tools-1-regression.mjs --case=next-action-ranker",
+    test_tools_no_placebo_progress_audit: pkg.scripts?.["test:tools-no-placebo-progress-audit"] === "node scripts/test-tools-power-tools-1-regression.mjs --case=no-placebo-progress-audit",
+    test_tools_change_impact_plan: pkg.scripts?.["test:tools-change-impact-plan"] === "node scripts/test-tools-power-tools-1-regression.mjs --case=change-impact-plan",
+    test_tools_test_selection_plan: pkg.scripts?.["test:tools-test-selection-plan"] === "node scripts/test-tools-power-tools-1-regression.mjs --case=test-selection-plan",
+    test_tools_failure_triage: pkg.scripts?.["test:tools-failure-triage"] === "node scripts/test-tools-power-tools-1-regression.mjs --case=failure-triage",
+    test_tools_evidence_pack: pkg.scripts?.["test:tools-evidence-pack"] === "node scripts/test-tools-power-tools-1-regression.mjs --case=evidence-pack",
+    test_tools_power_tools_1_regression: pkg.scripts?.["test:tools-power-tools-1-regression"] === "node scripts/test-tools-power-tools-1-regression.mjs",
+    test_tools_power_tools_2_dogfood: pkg.scripts?.["test:tools-power-tools-2-dogfood"] === "node scripts/test-tools-power-tools-2-regression.mjs --case=dogfood",
+    test_tools_power_tools_2_ranking_quality: pkg.scripts?.["test:tools-power-tools-2-ranking-quality"] === "node scripts/test-tools-power-tools-2-regression.mjs --case=ranking-quality",
+    test_tools_power_tools_2_no_placebo_strictness: pkg.scripts?.["test:tools-power-tools-2-no-placebo-strictness"] === "node scripts/test-tools-power-tools-2-regression.mjs --case=no-placebo-strictness",
+    test_tools_power_tools_2_test_selection: pkg.scripts?.["test:tools-power-tools-2-test-selection"] === "node scripts/test-tools-power-tools-2-regression.mjs --case=test-selection",
+    test_tools_power_tools_2_evidence_pack: pkg.scripts?.["test:tools-power-tools-2-evidence-pack"] === "node scripts/test-tools-power-tools-2-regression.mjs --case=evidence-pack",
+    test_tools_power_tools_2_regression: pkg.scripts?.["test:tools-power-tools-2-regression"] === "node scripts/test-tools-power-tools-2-regression.mjs",
+    test_tools_power_session_1_recovery: pkg.scripts?.["test:tools-power-session-1-recovery"] === "node scripts/test-tools-power-session-1-recovery.mjs"
   },
   required_tools_present: Object.fromEntries(requiredTools.map((name) => [name, server.includes(`"${name}"`)])),
   mcp_config_tools_support: /--tools/.test(cli) && /VNEM_TOOLS_ALLOWED_ROOTS/.test(cli) && /VNEM_TOOLS_EVIDENCE_ROOT/.test(cli) && /vnem-tools-mcp-server/.test(cli),
@@ -347,7 +399,39 @@ const report = {
   github_force_push_block_default_status: /VNEM_TOOLS_GITHUB_ALLOW_FORCE_PUSH:\s*"0"/.test(server) && /Force push blocked by default/.test(server + toolsGithubBranchCommitPrTest),
   github_repo_delete_block_default_status: /VNEM_TOOLS_GITHUB_ALLOW_REPO_DELETE:\s*"0"/.test(server) && /Repo deletion blocked by default|repo delete/.test(server),
   github_secret_commit_block_status: /githubSecretFileBlocked/.test(server) && /\.env/.test(toolsGithubBranchCommitPrTest + toolsAutonomy1RegressionTest),
+  github_real_exec_status: /runProcess\("gh"/.test(server) && /runProcess\("git"/.test(server) && /VNEM_TOOLS_COMMAND_MOCK_LOG/.test(server) && /command_classification/.test(server) && /env_safety_summary/.test(server) && /simulated_result/.test(server) && /gh pr create/.test(toolsGithubRealExecPathsTest),
+  github_gh_auth_detection_status: /githubAuthStatus/.test(server) && /gh auth login/.test(server + toolsGithubLiveReadinessTest) && /gh auth setup-git/.test(server + toolsGithubLiveReadinessTest),
+  github_git_command_status: /\["remote", "-v"\]/.test(server) && /\["status", "--short"\]/.test(server) && /\["log", "--oneline", "-10"/.test(server),
+  github_branch_real_exec_status: /git", cmd/.test(server) && /git \(switch -c|checkout -b\)/.test(toolsGithubCommandBuilderTest),
+  github_commit_push_real_exec_status: /git", \["add", "--", \.\.\.files\]/.test(server) && /git", \["commit", "-m"/.test(server) && /git", \["push"/.test(server) && /selected files only/.test(toolsGithubCommandBuilderTest),
+  github_pr_real_exec_status: /\["pr", "create"/.test(server) && /gh pr create/.test(toolsGithubRealExecPathsTest + toolsGithubCommandBuilderTest),
+  github_issue_real_exec_status: /\["issue", "create"/.test(server) && /\["issue", "edit"/.test(server) && /\["issue", "comment"/.test(server) && /gh issue/.test(toolsGithubRealExecPathsTest),
+  github_label_real_exec_status: /\["label", args\.exists \? "edit" : "create"/.test(server) && /gh label/.test(toolsGithubRealExecPathsTest),
+  github_actions_real_exec_status: /\["run", "list"/.test(server) && /\["run", "rerun"/.test(server) && /gh run/.test(toolsGithubRealExecPathsTest),
+  github_ci_logs_status: /run", "view"/.test(server) && /--log-failed|--log/.test(server) && /Cannot find module/.test(toolsGithubRealExecPathsTest + toolsGithubMutationDryRunTest + server),
+  github_release_draft_status: /\["release", "create"/.test(server) && /--draft/.test(server + toolsGithubRealExecPathsTest),
+  github_dry_run_status: /dry_run !== false/.test(server) && /must not/.test(toolsGithubMutationDryRunTest),
+  github_config_knob_status: /config_knob_to_change/.test(server) && /VNEM_TOOLS_GITHUB_ALLOW_DIRECT_PUSH/.test(toolsGithubMutationDryRunTest + server) && /VNEM_TOOLS_GITHUB_ALLOW_ACTIONS_RERUN/.test(toolsGithubMutationDryRunTest + server),
+  github_secret_file_block_status: /githubSecretFileBlocked/.test(server) && /Secret-like file blocked/.test(server) && /\.env/.test(toolsGithubMutationDryRunTest + server),
+  github_real_execution_not_only_simulated_status: /command-backed gh\/git/.test(server) && /real gh\\\/git command paths|real gh\/git command paths|mocked runner/.test(toolsAutonomy2RegressionTest + server) && !/GitHub mutation, package install, arbitrary shell\/API, login automation, cookie extraction, CAPTCHA bypass, and broad scraping are not implemented/.test(server),
   autonomy_efficiency_status: /operation_result/.test(server) && /next_best_action/.test(server) && /config_knob_to_change/.test(server) && /claim_status/.test(server),
+  repo_deep_map_status: /vnem_tools_repo_deep_map/.test(server) && /repoDeepMap/.test(server) && /package_scripts/.test(server) && /ignored_or_noise_dirs/.test(server) && /repo-deep-map/.test(toolsPowerTools1RegressionTest),
+  next_action_ranker_status: /vnem_tools_next_action_ranker/.test(server) && /nextActionRanker/.test(server) && /estimated_implementation_value/.test(server) && /penalties_applied/.test(server) && /next-action-ranker/.test(toolsPowerTools1RegressionTest),
+  no_placebo_progress_audit_status: /vnem_tools_no_placebo_progress_audit/.test(server) && /noPlaceboProgressAudit/.test(server) && /real_progress_score/.test(server) && /placebo_risks/.test(server) && /mocked-only/.test(toolsPowerTools1RegressionTest),
+  change_impact_plan_status: /vnem_tools_change_impact_plan/.test(server) && /changeImpactPlan/.test(server) && /generation_required/.test(server) && /minimum_targeted_tests/.test(server) && /change-impact-plan/.test(toolsPowerTools1RegressionTest),
+  test_selection_plan_status: /vnem_tools_test_selection_plan/.test(server) && /testSelectionPlan/.test(server) && /avoid_over_validation/.test(server) && /full_npm_test_recommended/.test(server) && /test-selection-plan/.test(toolsPowerTools1RegressionTest),
+  failure_triage_status: /vnem_tools_failure_triage/.test(server) && /failureTriage/.test(server) && /windows_path_process_cleanup_issue/.test(server + toolsPowerTools1RegressionTest) && /generated_artifact_staleness/.test(server + toolsPowerTools1RegressionTest),
+  evidence_pack_status: /vnem_tools_evidence_pack/.test(server) && /repoEvidencePack/.test(server) && /not_safe_to_claim/.test(server) && /mocked_or_local/.test(server) && /evidence-pack/.test(toolsPowerTools1RegressionTest),
+  power_tools_1_status: /repo_power_policy/.test(server) && /repo_power/.test(server) && /test-tools-power-tools-1-regression/.test(JSON.stringify(pkg.scripts)) && /vnem Tools POWER-TOOLS-1/.test(toolsPowerTools1RegressionTest),
+  power_tools_2_dogfood_status: /Dogfood current repo-power output/.test(server + toolsPowerTools2RegressionTest) && /dirty path must not lose its first character/.test(toolsPowerTools2RegressionTest),
+  ranking_quality_tuning_status: /task_constraints/.test(server) && /skip_or_defer_reason/.test(server) && /new-tool expansion/.test(server + toolsPowerTools2RegressionTest),
+  no_placebo_strictness_status: /required_correction/.test(server) && /not_proven/.test(server) && /registration-only/.test(server + toolsPowerTools2RegressionTest),
+  test_selection_efficiency_status: /first_checks_to_run/.test(server) && /proof_boundaries/.test(server) && /source_generator_reason_required/.test(server + toolsPowerTools2RegressionTest),
+  evidence_pack_proof_packet_status: /proof_packet/.test(server) && /Files changed count/.test(server + toolsPowerTools2RegressionTest) && /Live proof attempted/.test(server + toolsPowerTools2RegressionTest),
+  failure_triage_specificity_status: /real_assertion_failure/.test(server + toolsPowerTools2RegressionTest) && /smallest_next_command/.test(server) && /continue_stop_or_ask_user/.test(server),
+  power_tools_2_status: /test-tools-power-tools-2-regression/.test(JSON.stringify(pkg.scripts)) && /vnem Tools POWER-TOOLS-2/.test(toolsPowerTools2RegressionTest),
+  local_session_recovery_status: /vnem_tools_local_session_recovery/.test(server) && /localSessionRecovery/.test(server) && /base_ref/.test(server) && /dirty_categories/.test(server) && /live_proof_attempted/.test(server) && /not_proven/.test(server) && /POWER-SESSION-1 local session recovery/.test(toolsPowerSession1RecoveryTest),
+  power_session_1_status: /test-tools-power-session-1-recovery/.test(JSON.stringify(pkg.scripts)) && /vnem Tools POWER-SESSION-1/.test(toolsPowerSession1RecoveryTest),
   tools_manifest_status: /vnem_tools_manifest/.test(server) && /buildToolsManifest/.test(server) && /capability_group/.test(server) && /unsafe_actions_not_supported/.test(server) && /tool_catalog_policy/.test(server) && /vnem_tools_manifest/.test(intelligenceTest),
   workspace_map_status: /vnem_tools_workspace_map/.test(server) && /safeWorkspaceMap/.test(server) && /important_dirs/.test(server) && /likely_entrypoints/.test(intelligenceTest) && /secret_path_blocked|skipped_paths/.test(intelligenceTest),
   read_many_files_status: /vnem_tools_read_many_files/.test(server) && /safeReadManyFiles/.test(server) && /max_total_bytes/.test(server) && /blocked_files/.test(intelligenceTest),
@@ -571,6 +655,45 @@ assert.equal(report.package_scripts.test_core_browser_research_planning, true, "
 for (const [key, value] of Object.entries({ permission_profiles_status: report.permission_profiles_status, permission_status_tool: report.permission_status_tool, action_policy_preview_status: report.action_policy_preview_status, trust_boundary_classifier_status: report.trust_boundary_classifier_status, safe_readonly_blocks_writes: report.safe_readonly_blocks_writes, approved_writes_requires_approval: report.approved_writes_requires_approval, package_install_still_not_silent: report.package_install_still_not_silent, github_mutation_still_not_silent: report.github_mutation_still_not_silent, secret_read_blocked_by_default: report.secret_read_blocked_by_default, dangerous_disabled_policy: report.dangerous_disabled_policy, allowed_root_status_reporting: report.allowed_root_status_reporting, broad_root_warning_status: report.broad_root_warning_status, permission_manifest_integration: report.permission_manifest_integration })) assert.equal(value, true, `${key} is incomplete`);
 assert.equal(report.core_selection_test_exists, true, "core tool selection test file is missing");
 assert.equal(report.core_ecosystem_test_exists, true, "core tools ecosystem test file is missing");
+assert.equal(report.tools_power_tools_1_regression_test_exists, true, "POWER-TOOLS-1 regression test file is missing");
+assert.equal(report.tools_power_tools_2_regression_test_exists, true, "POWER-TOOLS-2 regression test file is missing");
+assert.equal(report.tools_power_session_1_recovery_test_exists, true, "POWER-SESSION-1 recovery test file is missing");
+for (const [key, value] of Object.entries({
+  test_tools_power_repo_deep_map: report.package_scripts.test_tools_power_repo_deep_map,
+  test_tools_next_action_ranker: report.package_scripts.test_tools_next_action_ranker,
+  test_tools_no_placebo_progress_audit: report.package_scripts.test_tools_no_placebo_progress_audit,
+  test_tools_change_impact_plan: report.package_scripts.test_tools_change_impact_plan,
+  test_tools_test_selection_plan: report.package_scripts.test_tools_test_selection_plan,
+  test_tools_failure_triage: report.package_scripts.test_tools_failure_triage,
+  test_tools_evidence_pack: report.package_scripts.test_tools_evidence_pack,
+  test_tools_power_tools_1_regression: report.package_scripts.test_tools_power_tools_1_regression,
+  test_tools_power_tools_2_dogfood: report.package_scripts.test_tools_power_tools_2_dogfood,
+  test_tools_power_tools_2_ranking_quality: report.package_scripts.test_tools_power_tools_2_ranking_quality,
+  test_tools_power_tools_2_no_placebo_strictness: report.package_scripts.test_tools_power_tools_2_no_placebo_strictness,
+  test_tools_power_tools_2_test_selection: report.package_scripts.test_tools_power_tools_2_test_selection,
+  test_tools_power_tools_2_evidence_pack: report.package_scripts.test_tools_power_tools_2_evidence_pack,
+  test_tools_power_tools_2_regression: report.package_scripts.test_tools_power_tools_2_regression,
+  test_tools_power_session_1_recovery: report.package_scripts.test_tools_power_session_1_recovery
+})) assert.equal(value, true, `${key} package script is missing`);
+for (const [key, value] of Object.entries({
+  repo_deep_map_status: report.repo_deep_map_status,
+  next_action_ranker_status: report.next_action_ranker_status,
+  no_placebo_progress_audit_status: report.no_placebo_progress_audit_status,
+  change_impact_plan_status: report.change_impact_plan_status,
+  test_selection_plan_status: report.test_selection_plan_status,
+  failure_triage_status: report.failure_triage_status,
+  evidence_pack_status: report.evidence_pack_status,
+  power_tools_1_status: report.power_tools_1_status,
+  power_tools_2_dogfood_status: report.power_tools_2_dogfood_status,
+  ranking_quality_tuning_status: report.ranking_quality_tuning_status,
+  no_placebo_strictness_status: report.no_placebo_strictness_status,
+  test_selection_efficiency_status: report.test_selection_efficiency_status,
+  evidence_pack_proof_packet_status: report.evidence_pack_proof_packet_status,
+  failure_triage_specificity_status: report.failure_triage_specificity_status,
+  power_tools_2_status: report.power_tools_2_status,
+  local_session_recovery_status: report.local_session_recovery_status,
+  power_session_1_status: report.power_session_1_status
+})) assert.equal(value, true, `${key} readiness missing`);
 for (const [name, present] of Object.entries(report.required_tools_present)) assert.equal(present, true, `missing required tool ${name}`);
 assert.equal(report.dry_run_default, true, "dry-run defaults are missing");
 assert.equal(report.mcp_config_tools_support, true, "MCP config Tools support is missing");
@@ -721,7 +844,8 @@ console.log(`ui_route_component_detection_status: ${yes(report.ui_route_componen
 console.log(`ui_state_coverage_status: ${yes(report.ui_state_coverage_status)}`);
 console.log(`ui_no_hidden_browser_status: ${yes(report.ui_no_hidden_browser_status)}`);
 console.log(`ui_visual_claim_audit_status: ${yes(report.ui_visual_claim_audit_status)}`);
-for (const key of ["github_autonomy_status", "github_settings_guide_status", "github_profile_status", "github_status_tool_status", "github_repo_inspect_status", "github_repo_intelligence_status", "github_branch_status", "github_commit_push_status", "github_pr_status", "github_issue_status", "github_labels_status", "github_actions_status", "github_ci_triage_status", "github_pr_quality_gate_status", "github_task_progress_truth_check_status", "github_config_header_status", "github_profile_maintainer_default_status", "github_force_push_block_default_status", "github_repo_delete_block_default_status", "github_secret_commit_block_status", "autonomy_efficiency_status"]) console.log(`${key}: ${yes(report[key])}`);
+for (const key of ["github_autonomy_status", "github_settings_guide_status", "github_profile_status", "github_status_tool_status", "github_repo_inspect_status", "github_repo_intelligence_status", "github_branch_status", "github_commit_push_status", "github_pr_status", "github_issue_status", "github_labels_status", "github_actions_status", "github_ci_triage_status", "github_pr_quality_gate_status", "github_task_progress_truth_check_status", "github_config_header_status", "github_profile_maintainer_default_status", "github_force_push_block_default_status", "github_repo_delete_block_default_status", "github_secret_commit_block_status", "github_real_exec_status", "github_gh_auth_detection_status", "github_git_command_status", "github_branch_real_exec_status", "github_commit_push_real_exec_status", "github_pr_real_exec_status", "github_issue_real_exec_status", "github_label_real_exec_status", "github_actions_real_exec_status", "github_ci_logs_status", "github_release_draft_status", "github_dry_run_status", "github_config_knob_status", "github_secret_file_block_status", "github_real_execution_not_only_simulated_status", "autonomy_efficiency_status"]) console.log(`${key}: ${yes(report[key])}`);
+for (const key of ["repo_deep_map_status", "next_action_ranker_status", "no_placebo_progress_audit_status", "change_impact_plan_status", "test_selection_plan_status", "failure_triage_status", "evidence_pack_status", "power_tools_1_status", "power_tools_2_dogfood_status", "ranking_quality_tuning_status", "no_placebo_strictness_status", "test_selection_efficiency_status", "evidence_pack_proof_packet_status", "failure_triage_specificity_status", "power_tools_2_status", "local_session_recovery_status", "power_session_1_status"]) console.log(`${key}: ${yes(report[key])}`);
 for (const key of ["cloudflare_control_status", "cloudflare_auth_status_tool_status", "cloudflare_auth_plan_status", "cloudflare_discovery_status", "cloudflare_pages_deploy_status", "cloudflare_workers_deploy_status", "cloudflare_dns_status", "cloudflare_env_secrets_status", "cloudflare_verify_status", "cloudflare_rollback_status", "cloudflare_cache_purge_status", "cloudflare_approval_gate_status", "cloudflare_destructive_approval_status", "cloudflare_secret_redaction_status", "cloudflare_evidence_pack_status", "general_tools_evidence_pack_audit_status", "general_tools_mutation_approval_contract_status", "general_tools_secret_redaction_check_status"]) console.log(`${key}: ${yes(report[key])}`);
 console.log(`parallel_fake_system_detection_status: ${yes(report.parallel_fake_system_detection_status)}`);
 console.log(`dead_code_warning_status: ${yes(report.dead_code_warning_status)}`);

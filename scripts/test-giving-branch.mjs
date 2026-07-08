@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 import assert from "node:assert/strict";
+import { mkdir, mkdtemp, rm } from "node:fs/promises";
+import path from "node:path";
 import { prepareGivingBranch, previewGivingBranchPlan } from "./giving-branch.mjs";
 
 const allowedCandidate = {
@@ -116,29 +118,34 @@ enqueue("prepare refuses dirty worktree", async () => {
 
 enqueue("prepare never pushes to main and records manual review plan", async () => {
   const gitCalls = [];
-  const prepare = await prepareGivingBranch({
-    ...basePayload({ includedCandidates: [allowedCandidate, reviewedCandidate] }),
-    confirm: "prepare-giving-branch"
-  }, {
-    repositoryRoot: "/tmp/vnem-test",
-    now: "2026-06-04T12:00:00.000Z",
-    gitRunner: async (args) => {
-      gitCalls.push(args);
-      const command = args.join(" ");
-      if (command === "branch --show-current") return "main\n";
-      if (command === "status --short") return "";
-      if (command === "rev-parse HEAD") return "abc123\n";
-      return "";
-    },
-    commandRunner: async () => ({ exitCode: 0, output: "ok" })
-  });
-  assert.equal(prepare.ok, true);
-  assert.equal(prepare.branchStatus, "pushed");
-  assert.equal(prepare.commitHash, "abc123");
-  assert.equal(prepare.reviewStatus, "waiting-for-manual-review");
-  assert.equal(gitCalls.some((args) => args[0] === "push" && args.includes("main")), false, "prepare must not push main");
-  assert.equal(gitCalls.some((args) => args.join(" ") === "push -u origin vnem-giving/dashboard-ai-mission-engine"), true);
-  assert.equal(gitCalls.some((args) => args.join(" ") === "checkout main"), true);
+  const repositoryRoot = await makeTempRepoRoot("giving-branch-prepare-");
+  try {
+    const prepare = await prepareGivingBranch({
+      ...basePayload({ includedCandidates: [allowedCandidate, reviewedCandidate] }),
+      confirm: "prepare-giving-branch"
+    }, {
+      repositoryRoot,
+      now: "2026-06-04T12:00:00.000Z",
+      gitRunner: async (args) => {
+        gitCalls.push(args);
+        const command = args.join(" ");
+        if (command === "branch --show-current") return "main\n";
+        if (command === "status --short") return "";
+        if (command === "rev-parse HEAD") return "abc123\n";
+        return "";
+      },
+      commandRunner: async () => ({ exitCode: 0, output: "ok" })
+    });
+    assert.equal(prepare.ok, true);
+    assert.equal(prepare.branchStatus, "pushed");
+    assert.equal(prepare.commitHash, "abc123");
+    assert.equal(prepare.reviewStatus, "waiting-for-manual-review");
+    assert.equal(gitCalls.some((args) => args[0] === "push" && args.includes("main")), false, "prepare must not push main");
+    assert.equal(gitCalls.some((args) => args.join(" ") === "push -u origin vnem-giving/dashboard-ai-mission-engine"), true);
+    assert.equal(gitCalls.some((args) => args.join(" ") === "checkout main"), true);
+  } finally {
+    await rm(repositoryRoot, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
+  }
 });
 
 for (const { name, fn } of queued) {
@@ -146,3 +153,9 @@ for (const { name, fn } of queued) {
 }
 
 console.log("giving branch tests passed");
+
+async function makeTempRepoRoot(prefix) {
+  const tmpBase = path.join(process.cwd(), ".tmp");
+  await mkdir(tmpBase, { recursive: true });
+  return await mkdtemp(path.join(tmpBase, prefix));
+}

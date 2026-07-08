@@ -1,0 +1,42 @@
+import assert from "node:assert/strict";
+import { assertNoCommand, commandLines, readCommands, withGithubMockTools } from "./test-tools-github-autonomy-2-helpers.mjs";
+
+await withGithubMockTools({}, async ({ client, workspace, commandLog }) => {
+  const branch = await client.callTool({ name: "vnem_tools_github_branch_create", arguments: { root: workspace, branch: "feat/dry-run", dry_run: true } });
+  assert.equal(branch.structuredContent.github_branch_create.operation_result, "planned");
+  const commit = await client.callTool({ name: "vnem_tools_github_commit_push", arguments: { root: workspace, files: ["README.md"], message: "docs: dry run", branch: "feat/dry-run", dry_run: true } });
+  assert.equal(commit.structuredContent.github_commit_push.operation_result, "planned");
+  const pr = await client.callTool({ name: "vnem_tools_github_pr_create", arguments: { root: workspace, title: "feat: dry", body: "body", base: "main", head: "feat/dry-run", dry_run: true } });
+  assert.equal(pr.structuredContent.github_pr_create.operation_result, "planned");
+  const issue = await client.callTool({ name: "vnem_tools_github_issue_create", arguments: { root: workspace, title: "bug: dry", body: "body", dry_run: true } });
+  assert.equal(issue.structuredContent.github_issue_create.operation_result, "planned");
+  const label = await client.callTool({ name: "vnem_tools_github_labels_manage", arguments: { root: workspace, name: "dry", dry_run: true } });
+  assert.equal(label.structuredContent.github_labels_manage.operation_result, "planned");
+  const rerun = await client.callTool({ name: "vnem_tools_github_actions_rerun", arguments: { root: workspace, run_id: "102", dry_run: true } });
+  assert.equal(rerun.structuredContent.github_actions_rerun.operation_result, "planned");
+  const release = await client.callTool({ name: "vnem_tools_github_release_create", arguments: { root: workspace, tag: "v0.0.0-dry", title: "Dry", dry_run: true } });
+  assert.equal(release.structuredContent.github_release_create.operation_result, "planned");
+  const secret = await client.callTool({ name: "vnem_tools_github_commit_push", arguments: { root: workspace, files: [".env"], message: "bad", branch: "feat/dry-run", dry_run: true } });
+  assert.equal(secret.structuredContent.github_commit_push.operation_result, "blocked");
+  const protectedPush = await client.callTool({ name: "vnem_tools_github_commit_push", arguments: { root: workspace, files: ["README.md"], message: "bad", branch: "main", dry_run: true } });
+  assert.equal(protectedPush.structuredContent.github_commit_push.config_knob_to_change, "VNEM_TOOLS_GITHUB_ALLOW_DIRECT_PUSH");
+  const force = await client.callTool({ name: "vnem_tools_github_commit_push", arguments: { root: workspace, files: ["README.md"], message: "bad", branch: "feat/dry-run", force: true, dry_run: true } });
+  assert.equal(force.structuredContent.github_commit_push.config_knob_to_change, "VNEM_TOOLS_GITHUB_ALLOW_FORCE_PUSH");
+  const lines = commandLines(await readCommands(commandLog));
+  assertNoCommand(lines, /^git (switch -c|checkout -b) feat\/dry-run/, "branch dry-run must not create branch");
+  assertNoCommand(lines, /^git add -- README\.md$/, "commit dry-run must not git add");
+  assertNoCommand(lines, /^git commit /, "commit dry-run must not git commit");
+  assertNoCommand(lines, /^git push /, "commit dry-run must not git push");
+  assertNoCommand(lines, /^gh pr create /, "PR dry-run must not call gh pr create");
+  assertNoCommand(lines, /^gh issue create /, "issue dry-run must not call gh issue create");
+  assertNoCommand(lines, /^gh label create /, "label dry-run must not call gh label create");
+  assertNoCommand(lines, /^gh run rerun 102/, "Actions dry-run must not rerun");
+  assertNoCommand(lines, /^gh release create v0\.0\.0-dry/, "release dry-run must not create release");
+});
+await withGithubMockTools({ VNEM_TOOLS_GITHUB_ALLOW_ACTIONS_RERUN: "0", VNEM_TOOLS_GITHUB_ALLOW_RELEASES: "0" }, async ({ client, workspace }) => {
+  const rerun = await client.callTool({ name: "vnem_tools_github_actions_rerun", arguments: { root: workspace, run_id: "102", dry_run: false } });
+  assert.equal(rerun.structuredContent.github_actions_rerun.config_knob_to_change, "VNEM_TOOLS_GITHUB_ALLOW_ACTIONS_RERUN");
+  const release = await client.callTool({ name: "vnem_tools_github_release_create", arguments: { root: workspace, tag: "v0.0.0", dry_run: false } });
+  assert.equal(release.structuredContent.github_release_create.config_knob_to_change, "VNEM_TOOLS_GITHUB_ALLOW_RELEASES");
+});
+console.log("vnem Tools GitHub mutation dry-run tests passed");
