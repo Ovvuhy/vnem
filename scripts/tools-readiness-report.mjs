@@ -57,6 +57,7 @@ const toolsAutonomy2RegressionTestPath = rel("scripts/test-tools-autonomy-2-regr
 const toolsPowerTools1RegressionTestPath = rel("scripts/test-tools-power-tools-1-regression.mjs");
 const toolsPowerTools2RegressionTestPath = rel("scripts/test-tools-power-tools-2-regression.mjs");
 const toolsPowerSession1RecoveryTestPath = rel("scripts/test-tools-power-session-1-recovery.mjs");
+const toolsOrchestrator1RegressionTestPath = rel("scripts/test-tools-orchestrator-1-regression.mjs");
 const coreResearchStrategyTestPath = rel("scripts/test-core-research-strategy.mjs");
 const coreSourceIngestionPlanningTestPath = rel("scripts/test-core-source-ingestion-planning.mjs");
 const researchEvidenceAuditTestPath = rel("scripts/test-research-evidence-audit.mjs");
@@ -119,6 +120,7 @@ const toolsAutonomy2RegressionTest = existsSync(toolsAutonomy2RegressionTestPath
 const toolsPowerTools1RegressionTest = existsSync(toolsPowerTools1RegressionTestPath) ? readFileSync(toolsPowerTools1RegressionTestPath, "utf8") : "";
 const toolsPowerTools2RegressionTest = existsSync(toolsPowerTools2RegressionTestPath) ? readFileSync(toolsPowerTools2RegressionTestPath, "utf8") : "";
 const toolsPowerSession1RecoveryTest = existsSync(toolsPowerSession1RecoveryTestPath) ? readFileSync(toolsPowerSession1RecoveryTestPath, "utf8") : "";
+const toolsOrchestrator1RegressionTest = existsSync(toolsOrchestrator1RegressionTestPath) ? readFileSync(toolsOrchestrator1RegressionTestPath, "utf8") : "";
 const coreResearchStrategyTest = existsSync(coreResearchStrategyTestPath) ? readFileSync(coreResearchStrategyTestPath, "utf8") : "";
 const coreSourceIngestionPlanningTest = existsSync(coreSourceIngestionPlanningTestPath) ? readFileSync(coreSourceIngestionPlanningTestPath, "utf8") : "";
 const researchEvidenceAuditTest = existsSync(researchEvidenceAuditTestPath) ? readFileSync(researchEvidenceAuditTestPath, "utf8") : "";
@@ -146,6 +148,7 @@ const requiredTools = [
   "vnem_tools_failure_triage",
   "vnem_tools_evidence_pack",
   "vnem_tools_local_session_recovery",
+  "vnem_tools_repo_workflow_orchestrator",
   "vnem_tools_action_policy_preview",
   "vnem_tools_trust_boundary_classify",
   "vnem_tools_prepare_action_plan",
@@ -295,6 +298,7 @@ const report = {
   tools_power_tools_1_regression_test_exists: existsSync(toolsPowerTools1RegressionTestPath),
   tools_power_tools_2_regression_test_exists: existsSync(toolsPowerTools2RegressionTestPath),
   tools_power_session_1_recovery_test_exists: existsSync(toolsPowerSession1RecoveryTestPath),
+  tools_orchestrator_1_regression_test_exists: existsSync(toolsOrchestrator1RegressionTestPath),
   core_research_strategy_test_exists: existsSync(coreResearchStrategyTestPath),
   core_source_ingestion_planning_test_exists: existsSync(coreSourceIngestionPlanningTestPath),
   research_evidence_audit_test_exists: existsSync(researchEvidenceAuditTestPath),
@@ -375,7 +379,14 @@ const report = {
     test_tools_power_tools_2_test_selection: pkg.scripts?.["test:tools-power-tools-2-test-selection"] === "node scripts/test-tools-power-tools-2-regression.mjs --case=test-selection",
     test_tools_power_tools_2_evidence_pack: pkg.scripts?.["test:tools-power-tools-2-evidence-pack"] === "node scripts/test-tools-power-tools-2-regression.mjs --case=evidence-pack",
     test_tools_power_tools_2_regression: pkg.scripts?.["test:tools-power-tools-2-regression"] === "node scripts/test-tools-power-tools-2-regression.mjs",
-    test_tools_power_session_1_recovery: pkg.scripts?.["test:tools-power-session-1-recovery"] === "node scripts/test-tools-power-session-1-recovery.mjs"
+    test_tools_power_session_1_recovery: pkg.scripts?.["test:tools-power-session-1-recovery"] === "node scripts/test-tools-power-session-1-recovery.mjs",
+    test_tools_orchestrator_1_local: pkg.scripts?.["test:tools-orchestrator-1-local"] === "node scripts/test-tools-orchestrator-1-regression.mjs --case=local",
+    test_tools_orchestrator_1_publish: pkg.scripts?.["test:tools-orchestrator-1-publish"] === "node scripts/test-tools-orchestrator-1-regression.mjs --case=publish",
+    test_tools_orchestrator_1_ci_failure: pkg.scripts?.["test:tools-orchestrator-1-ci-failure"] === "node scripts/test-tools-orchestrator-1-regression.mjs --case=ci-failure",
+    test_tools_orchestrator_1_recovery: pkg.scripts?.["test:tools-orchestrator-1-recovery"] === "node scripts/test-tools-orchestrator-1-regression.mjs --case=recovery",
+    test_tools_orchestrator_1_no_placebo: pkg.scripts?.["test:tools-orchestrator-1-no-placebo"] === "node scripts/test-tools-orchestrator-1-regression.mjs --case=no-placebo",
+    test_tools_orchestrator_1_validation: pkg.scripts?.["test:tools-orchestrator-1-validation"] === "node scripts/test-tools-orchestrator-1-regression.mjs --case=validation",
+    test_tools_orchestrator_1_regression: pkg.scripts?.["test:tools-orchestrator-1-regression"] === "node scripts/test-tools-orchestrator-1-regression.mjs"
   },
   required_tools_present: Object.fromEntries(requiredTools.map((name) => [name, server.includes(`"${name}"`)])),
   mcp_config_tools_support: /--tools/.test(cli) && /VNEM_TOOLS_ALLOWED_ROOTS/.test(cli) && /VNEM_TOOLS_EVIDENCE_ROOT/.test(cli) && /vnem-tools-mcp-server/.test(cli),
@@ -432,6 +443,11 @@ const report = {
   power_tools_2_status: /test-tools-power-tools-2-regression/.test(JSON.stringify(pkg.scripts)) && /vnem Tools POWER-TOOLS-2/.test(toolsPowerTools2RegressionTest),
   local_session_recovery_status: /vnem_tools_local_session_recovery/.test(server) && /localSessionRecovery/.test(server) && /base_ref/.test(server) && /dirty_categories/.test(server) && /live_proof_attempted/.test(server) && /not_proven/.test(server) && /POWER-SESSION-1 local session recovery/.test(toolsPowerSession1RecoveryTest),
   power_session_1_status: /test-tools-power-session-1-recovery/.test(JSON.stringify(pkg.scripts)) && /vnem Tools POWER-SESSION-1/.test(toolsPowerSession1RecoveryTest),
+  workflow_orchestrator_tool_status: /vnem_tools_repo_workflow_orchestrator/.test(server) && /repoWorkflowOrchestrator/.test(server) && /repo_state_summary/.test(server) && /selected_action/.test(server) && /exact_checks/.test(server),
+  workflow_orchestrator_behavior_status: /task_mode: "local_only"|local_only/.test(server + toolsOrchestrator1RegressionTest) && /publish/.test(toolsOrchestrator1RegressionTest) && /ci_failure|ci-failure/.test(server + toolsOrchestrator1RegressionTest) && /recovery/.test(toolsOrchestrator1RegressionTest) && /validation/.test(toolsOrchestrator1RegressionTest) && /rejected_actions/.test(server) && /why_this_not_raw_tool/.test(server),
+  workflow_orchestrator_no_placebo_status: /no_placebo_gate/.test(server) && /placebo_risks/.test(server) && /docs-only/.test(toolsOrchestrator1RegressionTest),
+  workflow_orchestrator_proof_packet_status: /evidence_contract/.test(server) && /proof_packet_required/.test(server + toolsOrchestrator1RegressionTest) && /Actions run URL/.test(server),
+  orchestrator_1_status: /test-tools-orchestrator-1-regression/.test(JSON.stringify(pkg.scripts)) && /vnem Tools ORCHESTRATOR-1/.test(toolsOrchestrator1RegressionTest),
   tools_manifest_status: /vnem_tools_manifest/.test(server) && /buildToolsManifest/.test(server) && /capability_group/.test(server) && /unsafe_actions_not_supported/.test(server) && /tool_catalog_policy/.test(server) && /vnem_tools_manifest/.test(intelligenceTest),
   workspace_map_status: /vnem_tools_workspace_map/.test(server) && /safeWorkspaceMap/.test(server) && /important_dirs/.test(server) && /likely_entrypoints/.test(intelligenceTest) && /secret_path_blocked|skipped_paths/.test(intelligenceTest),
   read_many_files_status: /vnem_tools_read_many_files/.test(server) && /safeReadManyFiles/.test(server) && /max_total_bytes/.test(server) && /blocked_files/.test(intelligenceTest),
@@ -658,6 +674,7 @@ assert.equal(report.core_ecosystem_test_exists, true, "core tools ecosystem test
 assert.equal(report.tools_power_tools_1_regression_test_exists, true, "POWER-TOOLS-1 regression test file is missing");
 assert.equal(report.tools_power_tools_2_regression_test_exists, true, "POWER-TOOLS-2 regression test file is missing");
 assert.equal(report.tools_power_session_1_recovery_test_exists, true, "POWER-SESSION-1 recovery test file is missing");
+assert.equal(report.tools_orchestrator_1_regression_test_exists, true, "ORCHESTRATOR-1 regression test file is missing");
 for (const [key, value] of Object.entries({
   test_tools_power_repo_deep_map: report.package_scripts.test_tools_power_repo_deep_map,
   test_tools_next_action_ranker: report.package_scripts.test_tools_next_action_ranker,
@@ -673,7 +690,14 @@ for (const [key, value] of Object.entries({
   test_tools_power_tools_2_test_selection: report.package_scripts.test_tools_power_tools_2_test_selection,
   test_tools_power_tools_2_evidence_pack: report.package_scripts.test_tools_power_tools_2_evidence_pack,
   test_tools_power_tools_2_regression: report.package_scripts.test_tools_power_tools_2_regression,
-  test_tools_power_session_1_recovery: report.package_scripts.test_tools_power_session_1_recovery
+  test_tools_power_session_1_recovery: report.package_scripts.test_tools_power_session_1_recovery,
+  test_tools_orchestrator_1_local: report.package_scripts.test_tools_orchestrator_1_local,
+  test_tools_orchestrator_1_publish: report.package_scripts.test_tools_orchestrator_1_publish,
+  test_tools_orchestrator_1_ci_failure: report.package_scripts.test_tools_orchestrator_1_ci_failure,
+  test_tools_orchestrator_1_recovery: report.package_scripts.test_tools_orchestrator_1_recovery,
+  test_tools_orchestrator_1_no_placebo: report.package_scripts.test_tools_orchestrator_1_no_placebo,
+  test_tools_orchestrator_1_validation: report.package_scripts.test_tools_orchestrator_1_validation,
+  test_tools_orchestrator_1_regression: report.package_scripts.test_tools_orchestrator_1_regression
 })) assert.equal(value, true, `${key} package script is missing`);
 for (const [key, value] of Object.entries({
   repo_deep_map_status: report.repo_deep_map_status,
@@ -692,7 +716,12 @@ for (const [key, value] of Object.entries({
   failure_triage_specificity_status: report.failure_triage_specificity_status,
   power_tools_2_status: report.power_tools_2_status,
   local_session_recovery_status: report.local_session_recovery_status,
-  power_session_1_status: report.power_session_1_status
+  power_session_1_status: report.power_session_1_status,
+  workflow_orchestrator_tool_status: report.workflow_orchestrator_tool_status,
+  workflow_orchestrator_behavior_status: report.workflow_orchestrator_behavior_status,
+  workflow_orchestrator_no_placebo_status: report.workflow_orchestrator_no_placebo_status,
+  workflow_orchestrator_proof_packet_status: report.workflow_orchestrator_proof_packet_status,
+  orchestrator_1_status: report.orchestrator_1_status
 })) assert.equal(value, true, `${key} readiness missing`);
 for (const [name, present] of Object.entries(report.required_tools_present)) assert.equal(present, true, `missing required tool ${name}`);
 assert.equal(report.dry_run_default, true, "dry-run defaults are missing");
@@ -845,7 +874,7 @@ console.log(`ui_state_coverage_status: ${yes(report.ui_state_coverage_status)}`)
 console.log(`ui_no_hidden_browser_status: ${yes(report.ui_no_hidden_browser_status)}`);
 console.log(`ui_visual_claim_audit_status: ${yes(report.ui_visual_claim_audit_status)}`);
 for (const key of ["github_autonomy_status", "github_settings_guide_status", "github_profile_status", "github_status_tool_status", "github_repo_inspect_status", "github_repo_intelligence_status", "github_branch_status", "github_commit_push_status", "github_pr_status", "github_issue_status", "github_labels_status", "github_actions_status", "github_ci_triage_status", "github_pr_quality_gate_status", "github_task_progress_truth_check_status", "github_config_header_status", "github_profile_maintainer_default_status", "github_force_push_block_default_status", "github_repo_delete_block_default_status", "github_secret_commit_block_status", "github_real_exec_status", "github_gh_auth_detection_status", "github_git_command_status", "github_branch_real_exec_status", "github_commit_push_real_exec_status", "github_pr_real_exec_status", "github_issue_real_exec_status", "github_label_real_exec_status", "github_actions_real_exec_status", "github_ci_logs_status", "github_release_draft_status", "github_dry_run_status", "github_config_knob_status", "github_secret_file_block_status", "github_real_execution_not_only_simulated_status", "autonomy_efficiency_status"]) console.log(`${key}: ${yes(report[key])}`);
-for (const key of ["repo_deep_map_status", "next_action_ranker_status", "no_placebo_progress_audit_status", "change_impact_plan_status", "test_selection_plan_status", "failure_triage_status", "evidence_pack_status", "power_tools_1_status", "power_tools_2_dogfood_status", "ranking_quality_tuning_status", "no_placebo_strictness_status", "test_selection_efficiency_status", "evidence_pack_proof_packet_status", "failure_triage_specificity_status", "power_tools_2_status", "local_session_recovery_status", "power_session_1_status"]) console.log(`${key}: ${yes(report[key])}`);
+for (const key of ["repo_deep_map_status", "next_action_ranker_status", "no_placebo_progress_audit_status", "change_impact_plan_status", "test_selection_plan_status", "failure_triage_status", "evidence_pack_status", "power_tools_1_status", "power_tools_2_dogfood_status", "ranking_quality_tuning_status", "no_placebo_strictness_status", "test_selection_efficiency_status", "evidence_pack_proof_packet_status", "failure_triage_specificity_status", "power_tools_2_status", "local_session_recovery_status", "power_session_1_status", "workflow_orchestrator_tool_status", "workflow_orchestrator_behavior_status", "workflow_orchestrator_no_placebo_status", "workflow_orchestrator_proof_packet_status", "orchestrator_1_status"]) console.log(`${key}: ${yes(report[key])}`);
 for (const key of ["cloudflare_control_status", "cloudflare_auth_status_tool_status", "cloudflare_auth_plan_status", "cloudflare_discovery_status", "cloudflare_pages_deploy_status", "cloudflare_workers_deploy_status", "cloudflare_dns_status", "cloudflare_env_secrets_status", "cloudflare_verify_status", "cloudflare_rollback_status", "cloudflare_cache_purge_status", "cloudflare_approval_gate_status", "cloudflare_destructive_approval_status", "cloudflare_secret_redaction_status", "cloudflare_evidence_pack_status", "general_tools_evidence_pack_audit_status", "general_tools_mutation_approval_contract_status", "general_tools_secret_redaction_check_status"]) console.log(`${key}: ${yes(report[key])}`);
 console.log(`parallel_fake_system_detection_status: ${yes(report.parallel_fake_system_detection_status)}`);
 console.log(`dead_code_warning_status: ${yes(report.dead_code_warning_status)}`);
