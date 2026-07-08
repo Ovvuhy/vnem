@@ -207,8 +207,9 @@ await withOrchestratorTools(async ({ client, repo }) => {
 
   if (casesToRun.includes("regression")) {
     const manifest = await call(client, "vnem_tools_manifest", { capability_group: "repo_power" });
-    assert.equal(manifest.tools.length, 9);
+    assert.equal(manifest.tools.length, 15);
     assert.ok(manifest.tools.some((tool) => tool.name === "vnem_tools_repo_workflow_orchestrator" && tool.reliability_level === "local_tested"));
+    assert.ok(manifest.tools.some((tool) => tool.name === "vnem_tools_code_symbol_map" && tool.reliability_level === "local_tested"));
     const status = await call(client, "vnem_tools_status", {});
     assert.ok(status.repo_power_policy.tools.includes("vnem_tools_repo_workflow_orchestrator"));
     assert.equal(status.repo_power_policy.workflow_orchestrator_supported, true);

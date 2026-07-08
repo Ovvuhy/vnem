@@ -178,9 +178,10 @@ await withPowerTools(async ({ client, repo }) => {
 
   if (casesToRun.includes("regression")) {
     const manifest = (await client.callTool({ name: "vnem_tools_manifest", arguments: { capability_group: "repo_power" } })).structuredContent.manifest;
-    assert.equal(manifest.tools.length, 9);
+    assert.equal(manifest.tools.length, 15);
     assert.ok(manifest.tools.some((tool) => tool.name === "vnem_tools_local_session_recovery"));
     assert.ok(manifest.tools.some((tool) => tool.name === "vnem_tools_repo_workflow_orchestrator"));
+    assert.ok(manifest.tools.some((tool) => tool.name === "vnem_tools_code_symbol_map"));
     assert.ok(manifest.tools.every((tool) => tool.reliability_level === "local_tested"));
     const status = (await client.callTool({ name: "vnem_tools_status", arguments: {} })).structuredContent.tools_status;
     assert.ok(status.repo_power_policy.no_placebo_detection);
