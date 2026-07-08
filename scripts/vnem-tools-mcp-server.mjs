@@ -29,6 +29,12 @@ const REQUIRED_TOOL_NAMES = [
   "vnem_tools_evidence_pack",
   "vnem_tools_local_session_recovery",
   "vnem_tools_repo_workflow_orchestrator",
+  "vnem_tools_code_symbol_map",
+  "vnem_tools_mcp_surface_audit",
+  "vnem_tools_patch_target_finder",
+  "vnem_tools_tool_test_coverage_map",
+  "vnem_tools_source_impact_trace",
+  "vnem_tools_source_control_character_guard",
   "vnem_tools_action_policy_preview",
   "vnem_tools_trust_boundary_classify",
   "vnem_tools_prepare_action_plan",
@@ -428,6 +434,90 @@ function registerTools(mcpServer) {
     async (args) => withToolErrors(async () => {
       const orchestration = await repoWorkflowOrchestrator(args);
       return toolResult(formatRepoWorkflowOrchestrator(orchestration), { repo_workflow_orchestrator: orchestration });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_code_symbol_map",
+    {
+      title: "Code Symbol Map",
+      description: "Build a compact lightweight source symbol map with functions, classes, exports, handler-like symbols, imports/exports, file categories, and honest parser limits.",
+      inputSchema: { root: z.string().default("."), max_files: z.number().int().min(20).max(1000).default(260), max_symbols: z.number().int().min(20).max(1000).default(220), include_tests: z.boolean().default(true) },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const map = await codeSymbolMap(args);
+      return toolResult(formatCodeSymbolMap(map), { code_symbol_map: map });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_mcp_surface_audit",
+    {
+      title: "MCP Surface Audit",
+      description: "Audit MCP tool registrations against handler candidates, catalog/manifest/readiness references, package scripts, behavior tests, registration-only risks, and exact repair targets.",
+      inputSchema: { root: z.string().default("."), server_file: z.string().default("scripts/vnem-tools-mcp-server.mjs"), max_tools: z.number().int().min(10).max(250).default(160) },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const audit = await mcpSurfaceAudit(args);
+      return toolResult(formatMcpSurfaceAudit(audit), { mcp_surface_audit: audit });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_patch_target_finder",
+    {
+      title: "Patch Target Finder",
+      description: "Find exact likely source functions/files/tests/readiness/generated targets for a tool name, keyword, or natural-language goal using symbol and repo search evidence.",
+      inputSchema: { root: z.string().default("."), user_goal: z.string().default(""), tool_name: z.string().default(""), keyword: z.string().default(""), max_results: z.number().int().min(3).max(30).default(12) },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const targets = await patchTargetFinder(args);
+      return toolResult(formatPatchTargetFinder(targets), { patch_target_finder: targets });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_tool_test_coverage_map",
+    {
+      title: "Tool Test Coverage Map",
+      description: "Map MCP tools to behavior tests, registration-only tests, readiness-only coverage, package-script mentions, weak coverage, and recommended test additions.",
+      inputSchema: { root: z.string().default("."), tool_name: z.string().default(""), max_tools: z.number().int().min(10).max(250).default(160) },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const coverage = await toolTestCoverageMap(args);
+      return toolResult(formatToolTestCoverageMap(coverage), { tool_test_coverage_map: coverage });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_source_impact_trace",
+    {
+      title: "Source Impact Trace",
+      description: "Trace changed files or a target file/symbol to impacted MCP tools, features, tests, readiness/generation needs, minimum checks, and risk level.",
+      inputSchema: { root: z.string().default("."), changed_files: z.array(z.string()).default([]), target_file: z.string().default(""), target_symbol: z.string().default(""), user_goal: z.string().default("") },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const trace = await sourceImpactTrace(args);
+      return toolResult(formatSourceImpactTrace(trace), { source_impact_trace: trace });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_source_control_character_guard",
+    {
+      title: "Source Control Character Guard",
+      description: "Scan source/test/config text files for hidden bidi Unicode and dangerous control characters while skipping binary/generated artifacts.",
+      inputSchema: { root: z.string().default("."), changed_files: z.array(z.string()).default([]), max_files: z.number().int().min(10).max(1000).default(500) },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const guard = await sourceControlCharacterGuard(args);
+      return toolResult(formatSourceControlCharacterGuard(guard), { source_control_character_guard: guard });
     })
   );
 
@@ -1791,7 +1881,7 @@ function statusObject() {
     command_allowlist: ["node --check <file>", "npm test", "npm run <safe-script>", "git status", "git diff", "git log", "git ls-files"],
     tool_catalog_policy: { tool: "vnem_tools_manifest", capability_groups: TOOL_CAPABILITY_GROUPS, safety_metadata_required: true, core_handoff_compatible: true },
     filesystem_intelligence_policy: { tools: ["vnem_tools_workspace_map", "vnem_tools_read_many_files", "vnem_tools_code_search", "vnem_tools_find_references", "vnem_tools_dependency_scan"], allowed_roots_only: true, secret_paths_blocked: true, generated_build_cache_skipped: true, evidence_logged: true },
-    repo_power_policy: { tools: ["vnem_tools_repo_deep_map", "vnem_tools_next_action_ranker", "vnem_tools_no_placebo_progress_audit", "vnem_tools_change_impact_plan", "vnem_tools_test_selection_plan", "vnem_tools_failure_triage", "vnem_tools_evidence_pack", "vnem_tools_local_session_recovery", "vnem_tools_repo_workflow_orchestrator"], allowed_roots_only: true, secret_paths_blocked: true, compact_structured_output: true, no_live_github_required: true, no_placebo_detection: true, test_selection_avoids_overvalidation: true, local_session_recovery_supported: true, workflow_orchestrator_supported: true },
+    repo_power_policy: { tools: ["vnem_tools_repo_deep_map", "vnem_tools_next_action_ranker", "vnem_tools_no_placebo_progress_audit", "vnem_tools_change_impact_plan", "vnem_tools_test_selection_plan", "vnem_tools_failure_triage", "vnem_tools_evidence_pack", "vnem_tools_local_session_recovery", "vnem_tools_repo_workflow_orchestrator", "vnem_tools_code_symbol_map", "vnem_tools_mcp_surface_audit", "vnem_tools_patch_target_finder", "vnem_tools_tool_test_coverage_map", "vnem_tools_source_impact_trace", "vnem_tools_source_control_character_guard"], allowed_roots_only: true, secret_paths_blocked: true, compact_structured_output: true, no_live_github_required: true, no_placebo_detection: true, test_selection_avoids_overvalidation: true, local_session_recovery_supported: true, workflow_orchestrator_supported: true, code_intelligence_supported: true, source_control_character_guard_supported: true },
     research_sources_policy: { tools: ["vnem_tools_fetch_url_text", "vnem_tools_source_quality_check", "vnem_tools_research_brief", "vnem_tools_browser_research_pack", "vnem_tools_claim_source_matrix", "vnem_tools_research_gap_detector", "vnem_tools_source_map", "vnem_tools_source_extract", "vnem_tools_source_graph"], no_search_engine_scraping: true, external_fetch_dry_run_default: true, approval_required_for_real_external_fetch: true, no_login_cookie_session_use: true },
     source_ingestion_policy: { tools: ["vnem_tools_source_map", "vnem_tools_source_extract", "vnem_tools_source_graph"], allowed_roots_only_for_local_sources: true, explicit_targets_only_for_extraction: true, secret_paths_blocked: true, broad_crawl_blocked: true, evidence_logged: true, source_graph_uses_provided_or_bounded_sources_only: true },
     debugging_code_quality_policy: { tools: ["vnem_tools_architecture_review", "vnem_tools_debug_evidence"], allowed_roots_only: true, secret_paths_blocked: true, no_arbitrary_commands: true, log_first_debugging: true, detects_parallel_fake_systems: true, flags_possible_dead_code: true, evidence_logged: true },
@@ -2069,6 +2159,12 @@ function buildToolCatalog() {
     mk("vnem_tools_evidence_pack", "repo_power", { description: "Build a compact proof pack for handoffs: commands, tests, files, real behavior, mocked/live/blocked proof, risks, commit status, safe and unsafe claims.", typical_use_cases: ["final handoff evidence", "truthful batch summary"] }),
     mk("vnem_tools_local_session_recovery", "repo_power", { description: "Recover local Git working state after lost chat context, including branch/head, dirty categories, local stack, unpushed commits, safe next step, and not-proven boundaries without network.", typical_use_cases: ["resume after chat loss", "recover local stack safely", "avoid touching main or secrets"] }),
     mk("vnem_tools_repo_workflow_orchestrator", "repo_power", { description: "Coordinate repo-power helpers into a mode-aware workflow decision with selected action, rejected actions, exact checks, proof packet, stop conditions, and not-proven boundaries.", typical_use_cases: ["choose local vs publish workflow", "recover after lost context", "triage CI failure", "avoid no-placebo traps"] }),
+    mk("vnem_tools_code_symbol_map", "repo_power", { description: "Build a compact lightweight symbol map across source/test/config files with functions, async functions, classes, exports, handler-like symbols, imports/exports, categories, and parser limits.", typical_use_cases: ["find functions/classes", "map tool handlers", "avoid blind repo inspection"] }),
+    mk("vnem_tools_mcp_surface_audit", "repo_power", { description: "Audit MCP tool surface for registrations, handler candidates, catalog/readiness/package/test evidence, weak coverage, and registration-only risks.", typical_use_cases: ["find weak MCP tools", "review real vs placebo tool surface", "plan MCP repairs"] }),
+    mk("vnem_tools_patch_target_finder", "repo_power", { description: "Given a goal, tool name, or keyword, return exact likely source functions/files/tests/readiness targets from real repo search and symbol evidence.", typical_use_cases: ["find exact patch target", "map user goal to files", "avoid generic inspect repo advice"] }),
+    mk("vnem_tools_tool_test_coverage_map", "repo_power", { description: "Map MCP tools to behavior tests, registration-only checks, readiness-only coverage, package-script mentions, and recommended test additions.", typical_use_cases: ["find weak test coverage", "separate behavior proof from registration proof"] }),
+    mk("vnem_tools_source_impact_trace", "repo_power", { description: "Trace changed files or target symbols to impacted tools/features/tests/readiness/generation needs, exact minimum checks, and risk.", typical_use_cases: ["choose precise checks", "trace source impact", "avoid over-validation"] }),
+    mk("vnem_tools_source_control_character_guard", "repo_power", { description: "Scan source/test/config text files for hidden bidi Unicode and dangerous control characters while skipping binary/generated artifacts.", typical_use_cases: ["prevent hidden source control characters", "review Unicode warnings safely"] }),
     mk("vnem_tools_action_policy_preview", "permissions", { description: "Preview whether a proposed action is allowed, blocked, or approval-gated under the active profile.", evidence_logged: false, allowed_roots_required: false, typical_use_cases: ["approval preview", "risk classification"] }),
     mk("vnem_tools_trust_boundary_classify", "permissions", { description: "Classify data/action/source descriptions into VNEM trust-boundary levels.", evidence_logged: false, allowed_roots_required: false, typical_use_cases: ["security boundary planning"] }),
     mk("vnem_tools_manifest", "status_readiness", { description: "Structured catalog of Tools MCP tools and safety metadata.", evidence_logged: false, typical_use_cases: ["AI tool discovery", "Core handoff planning"] }),
@@ -3060,7 +3156,7 @@ async function repoWorkflowOrchestrator(args = {}) {
       action_recovery_plan: actionRecovery ? { likely_cause: actionRecovery.likely_cause, next: actionRecovery.exact_next_steps[0] } : null,
       task_progress_truth_check: { status: truthCheck.status, what_not_to_claim: truthCheck.what_not_to_claim },
       pr_quality_gate: taskMode === "publish" ? { required_after_local_checks: true, tool: "vnem_tools_pr_quality_gate" } : { required_after_local_checks: false },
-      tools_manifest: { repo_power_tool_count_expected: 9, includes: "vnem_tools_repo_workflow_orchestrator" }
+      tools_manifest: { repo_power_tool_count_expected: 15, includes: "vnem_tools_repo_workflow_orchestrator,vnem_tools_code_symbol_map" }
     },
     stop_conditions: stopConditions,
     safety_boundaries: [
@@ -3080,6 +3176,315 @@ async function repoWorkflowOrchestrator(args = {}) {
   const log = await writeEvidenceLog("repo_workflow_orchestrator", orchestration);
   orchestration.evidence_log_id = log.evidence_log_id;
   return orchestration;
+}
+
+async function codeSymbolMap(args = {}) {
+  const root = await resolveAllowedRoot(args.root || ".");
+  const maxFiles = Math.min(Math.max(args.max_files || 260, 20), 1000);
+  const maxSymbols = Math.min(Math.max(args.max_symbols || 220, 20), 1000);
+  const candidates = await codeIntelligenceCandidateFiles(root.absolutePath, { maxFiles, includeTests: args.include_tests !== false });
+  const symbols = [];
+  const fileSummaries = [];
+  const warnings = [];
+  for (const file of candidates.files.slice(0, maxFiles)) {
+    if (symbols.length >= maxSymbols) break;
+    const read = await readRepoTextFile(root.absolutePath, file.path, 256000);
+    if (!read.text) continue;
+    const extracted = extractLightweightSymbols(file.path, read.text);
+    if (read.truncated) warnings.push(`${file.path} truncated before symbol extraction`);
+    symbols.push(...extracted.symbols);
+    fileSummaries.push({
+      path: file.path,
+      category: codeFileCategory(file.path),
+      bytes_read: read.bytes_read,
+      truncated: read.truncated,
+      symbol_count: extracted.symbols.length,
+      imports_or_exports: extracted.imports_or_exports.slice(0, 8),
+      tool_related: extracted.tool_related
+    });
+  }
+  const capped = symbols.slice(0, maxSymbols);
+  const toolRelated = capped.filter((symbol) => symbol.tool_related || /vnem_tools_|Tool|Handler|Action|Recovery|Audit|Guard|Orchestrator/i.test(`${symbol.name} ${symbol.file}`));
+  const map = {
+    operation_result: "reported",
+    repo_path: root.absolutePath,
+    parser_type: "lightweight-regex-heuristic",
+    files_scanned: fileSummaries.length,
+    symbols_found: capped.length,
+    important_files: buildCodeIntelligenceImportantFiles(fileSummaries, toolRelated),
+    top_symbols: capped.slice(0, 80),
+    tool_related_symbols: toolRelated.slice(0, 80),
+    file_summaries: fileSummaries.slice(0, 120),
+    skipped: candidates.skipped.slice(0, 80),
+    warnings: [...new Set(warnings.concat(capped.length < symbols.length ? "symbol output capped" : []))].filter(Boolean),
+    limits: { max_files: maxFiles, max_symbols: maxSymbols, max_file_bytes: 256000, parser_is_not_ast: true },
+    output_compact: true,
+    evidence_log_id: null
+  };
+  const log = await writeEvidenceLog("code_symbol_map", map);
+  map.evidence_log_id = log.evidence_log_id;
+  return map;
+}
+
+async function mcpSurfaceAudit(args = {}) {
+  const root = await resolveAllowedRoot(args.root || ".");
+  const serverFile = normalizePath(args.server_file || "scripts/vnem-tools-mcp-server.mjs");
+  const serverRead = await readRepoTextFile(root.absolutePath, serverFile, 900000);
+  const serverText = serverRead.text || "";
+  const packageRead = await readRepoTextFile(root.absolutePath, "package.json", 320000);
+  const readinessRead = await readRepoTextFile(root.absolutePath, "scripts/tools-readiness-report.mjs", 900000);
+  const registrations = parseRegisteredToolsFromServer(serverText).slice(0, args.max_tools || 160);
+  const toolNames = registrations.map((tool) => tool.name);
+  const coverage = await scanToolCoverage(root.absolutePath, toolNames, { packageText: packageRead.text, readinessText: readinessRead.text });
+  const tools = registrations.map((tool) => {
+    const cov = coverage.per_tool[tool.name] || {};
+    const catalogReferenced = new RegExp(`mk\\(["']${escapeRegExp(tool.name)}["']`).test(serverText) || serverText.includes(tool.name);
+    const readinessReferenced = readinessRead.text.includes(tool.name);
+    const packageReferenced = packageRead.text.includes(tool.name) || (cov.package_scripts || []).length > 0;
+    const weak = !tool.handler_candidates.length || cov.coverage_level !== "behavior_test";
+    return {
+      name: tool.name,
+      registration_line: tool.line_number,
+      handler_candidates: tool.handler_candidates,
+      primary_handler_candidate: tool.handler_candidates[0] || "",
+      catalog_referenced: catalogReferenced,
+      readiness_referenced: readinessReferenced,
+      package_referenced: packageReferenced,
+      coverage_level: cov.coverage_level || "no_test_found",
+      behavior_test_files: cov.behavior_test_files || [],
+      registration_only_test_files: cov.registration_only_test_files || [],
+      weak_surface: weak,
+      risk: !tool.handler_candidates.length ? "registration_without_clear_handler" : cov.coverage_level !== "behavior_test" ? "missing_behavior_test" : "low"
+    };
+  });
+  const weakTools = tools.filter((tool) => tool.weak_surface);
+  const audit = {
+    operation_result: "reported",
+    repo_path: root.absolutePath,
+    server_file: serverFile,
+    total_tools_detected: tools.length,
+    tools_with_handlers: tools.filter((tool) => tool.handler_candidates.length).length,
+    tools_with_tests: tools.filter((tool) => tool.coverage_level === "behavior_test").length,
+    tools_with_readiness: tools.filter((tool) => tool.readiness_referenced).length,
+    tools: tools.slice(0, args.max_tools || 160),
+    weak_tools: weakTools.map((tool) => ({ name: tool.name, risk: tool.risk, handler_candidates: tool.handler_candidates, coverage_level: tool.coverage_level })).slice(0, 80),
+    registration_only_risks: tools.filter((tool) => tool.coverage_level === "registration_only" || !tool.handler_candidates.length).map((tool) => tool.name).slice(0, 80),
+    missing_tests: tools.filter((tool) => tool.coverage_level !== "behavior_test").map((tool) => tool.name).slice(0, 80),
+    exact_files_to_inspect: [...new Set([serverFile, "scripts/tools-readiness-report.mjs", "package.json", ...Object.values(coverage.per_tool).flatMap((item) => [...(item.behavior_test_files || []), ...(item.registration_only_test_files || [])])])].slice(0, 80),
+    recommended_next_repairs: weakTools.slice(0, 12).map((tool) => `${tool.name}: add/verify handler behavior and MCP-path behavior test`),
+    parser_limits: { parser_type: "lightweight-regex-heuristic", block_matching_is_heuristic: true },
+    output_compact: true,
+    evidence_log_id: null
+  };
+  const log = await writeEvidenceLog("mcp_surface_audit", audit);
+  audit.evidence_log_id = log.evidence_log_id;
+  return audit;
+}
+
+async function patchTargetFinder(args = {}) {
+  const root = await resolveAllowedRoot(args.root || ".");
+  const goal = redactSecrets(String(args.user_goal || ""));
+  const exactTool = normalizeToolName(args.tool_name || goal.match(/vnem_tools_[a-z0-9_]+/i)?.[0] || "");
+  const keyword = String(args.keyword || "");
+  const tokens = tokenizeCodeGoal(`${goal} ${keyword} ${exactTool}`).slice(0, 14);
+  const [audit, symbols] = await Promise.all([
+    mcpSurfaceAudit({ root: root.absolutePath, max_tools: 220 }),
+    codeSymbolMap({ root: root.absolutePath, max_files: 420, max_symbols: 420, include_tests: true })
+  ]);
+  const coverage = await toolTestCoverageMap({ root: root.absolutePath, tool_name: exactTool });
+  const sourceScores = new Map();
+  const functionScores = new Map();
+  const testScores = new Map();
+  const searchEvidence = [];
+  const bump = (map, key, score) => { if (key) map.set(key, (map.get(key) || 0) + score); };
+  if (exactTool) {
+    const tool = audit.tools.find((item) => item.name === exactTool);
+    if (tool) {
+      bump(sourceScores, audit.server_file, 80);
+      for (const fn of tool.handler_candidates) bump(functionScores, fn, 80);
+      for (const file of tool.behavior_test_files) bump(testScores, file, 80);
+      for (const file of tool.registration_only_test_files) bump(testScores, file, 30);
+      searchEvidence.push({ reason: "exact_tool_registration", tool: exactTool, server_file: audit.server_file, handler_candidates: tool.handler_candidates });
+    }
+  }
+  for (const symbol of symbols.top_symbols) {
+    const haystack = `${symbol.name} ${symbol.file} ${symbol.kind} ${symbol.snippet}`.toLowerCase();
+    const score = tokens.reduce((sum, token) => sum + (haystack.includes(token) ? 12 : 0), 0);
+    if (score > 0) {
+      bump(sourceScores, symbol.file, score + (symbol.tool_related ? 12 : 0));
+      bump(functionScores, symbol.name, score);
+      searchEvidence.push({ reason: "symbol_token_match", file: symbol.file, symbol: symbol.name, matched_tokens: tokens.filter((token) => haystack.includes(token)).slice(0, 6) });
+    }
+  }
+  const candidateFiles = await codeIntelligenceCandidateFiles(root.absolutePath, { maxFiles: 700, includeTests: true });
+  for (const file of candidateFiles.files.slice(0, 700)) {
+    const read = await readRepoTextFile(root.absolutePath, file.path, 120000);
+    if (!read.text) continue;
+    const haystack = `${file.path}\n${read.text}`.toLowerCase();
+    const matches = tokens.filter((token) => haystack.includes(token));
+    if (!matches.length) continue;
+    const score = matches.length * (isTestPath(file.path) ? 8 : 10) + (isLikelyRegistryPath(file.path) ? 20 : 0);
+    if (isTestPath(file.path)) bump(testScores, file.path, score);
+    else bump(sourceScores, file.path, score);
+    searchEvidence.push({ reason: "text_token_match", file: file.path, matched_tokens: matches.slice(0, 6), snippet: truncate(firstMatchingLine(read.text, matches), 180) });
+  }
+  const toRanked = (map, limit) => [...map.entries()].sort((a, b) => b[1] - a[1]).slice(0, limit).map(([item, score]) => ({ item, score }));
+  const likelySourceFiles = toRanked(sourceScores, args.max_results || 12).map(({ item, score }) => ({ path: item, score }));
+  const likelyFunctions = toRanked(functionScores, args.max_results || 12).map(({ item, score }) => ({ name: item, score }));
+  const likelyTests = toRanked(testScores, args.max_results || 12).map(({ item, score }) => ({ path: item, score }));
+  const readinessFiles = ["scripts/tools-readiness-report.mjs", "package.json"].filter((file) => existsSync(path.join(root.absolutePath, file)));
+  const packageScripts = coverage.coverage_summary?.package_scripts_reviewed || [];
+  const result = {
+    operation_result: "reported",
+    repo_path: root.absolutePath,
+    query: { user_goal: goal, tool_name: exactTool, keyword, tokens },
+    likely_source_files: likelySourceFiles,
+    likely_functions: likelyFunctions,
+    likely_tests: likelyTests,
+    likely_readiness_files: readinessFiles,
+    likely_generated_sources: ["scripts/generate-artifacts.mjs", "registry/", "capabilities/"].filter((item) => existsSync(path.join(root.absolutePath, item.replace(/\/$/, "")))),
+    package_scripts: packageScripts.filter((script) => tokens.some((token) => script.toLowerCase().includes(token)) || (exactTool && script.includes(exactTool.replace("vnem_tools_", "").replace(/_/g, "-")))).slice(0, 20),
+    search_evidence: searchEvidence.slice(0, 30),
+    exact_next_file_to_open: likelySourceFiles[0]?.path || likelyTests[0]?.path || audit.server_file,
+    confidence: exactTool && likelySourceFiles.length && likelyFunctions.length ? "high" : likelySourceFiles.length || likelyTests.length ? "medium" : "low",
+    what_not_to_edit: ["generated artifacts before source behavior is stable", "unrelated registries/catalog text without handler behavior", "secret-like paths or .env files"],
+    parser_limits: { parser_type: "lightweight-regex-heuristic", not_a_full_semantic_index: true },
+    output_compact: true,
+    evidence_log_id: null
+  };
+  const log = await writeEvidenceLog("patch_target_finder", result);
+  result.evidence_log_id = log.evidence_log_id;
+  return result;
+}
+
+async function toolTestCoverageMap(args = {}) {
+  const root = await resolveAllowedRoot(args.root || ".");
+  const serverRead = await readRepoTextFile(root.absolutePath, "scripts/vnem-tools-mcp-server.mjs", 900000);
+  const allTools = parseRegisteredToolsFromServer(serverRead.text).map((tool) => tool.name);
+  const selected = normalizeToolName(args.tool_name || "");
+  const toolNames = (selected ? allTools.filter((name) => name === selected) : allTools).slice(0, args.max_tools || 160);
+  const packageRead = await readRepoTextFile(root.absolutePath, "package.json", 320000);
+  const readinessRead = await readRepoTextFile(root.absolutePath, "scripts/tools-readiness-report.mjs", 900000);
+  const coverage = await scanToolCoverage(root.absolutePath, toolNames, { packageText: packageRead.text, readinessText: readinessRead.text });
+  const perTool = Object.fromEntries(toolNames.map((name) => [name, coverage.per_tool[name]]));
+  const strong = Object.values(perTool).filter((item) => item.coverage_level === "behavior_test").map((item) => item.tool_name);
+  const weak = Object.values(perTool).filter((item) => item.coverage_level !== "behavior_test").map((item) => item.tool_name);
+  const result = {
+    operation_result: "reported",
+    repo_path: root.absolutePath,
+    coverage_summary: {
+      tools_reviewed: toolNames.length,
+      behavior_tested: strong.length,
+      weak_or_missing: weak.length,
+      package_scripts_reviewed: coverage.package_scripts.slice(0, 120),
+      readiness_file_reviewed: Boolean(readinessRead.text)
+    },
+    per_tool: perTool,
+    strong_coverage_tools: strong.slice(0, 80),
+    weak_coverage_tools: weak.slice(0, 80),
+    untested_tools: Object.values(perTool).filter((item) => item.coverage_level === "no_test_found").map((item) => item.tool_name).slice(0, 80),
+    behavior_test_files: [...new Set(Object.values(perTool).flatMap((item) => item.behavior_test_files || []))].slice(0, 80),
+    registration_only_risks: Object.values(perTool).filter((item) => item.coverage_level === "registration_only").map((item) => item.tool_name).slice(0, 80),
+    recommended_test_additions: weak.slice(0, 20).map((name) => `${name}: add MCP client behavior test that calls the tool and asserts structured output, not only listTools/manifest presence`),
+    output_compact: true,
+    evidence_log_id: null
+  };
+  const log = await writeEvidenceLog("tool_test_coverage_map", result);
+  result.evidence_log_id = log.evidence_log_id;
+  return result;
+}
+
+async function sourceImpactTrace(args = {}) {
+  const root = await resolveAllowedRoot(args.root || ".");
+  let changed = arrayify(args.changed_files).map(normalizePath).filter(Boolean);
+  const targetFile = normalizePath(args.target_file || "");
+  const targetSymbol = String(args.target_symbol || "");
+  if (!changed.length && targetFile) changed = [targetFile];
+  const finder = (!changed.length || targetSymbol || args.user_goal) ? await patchTargetFinder({ root: root.absolutePath, user_goal: args.user_goal || targetSymbol, keyword: targetSymbol, max_results: 12 }) : null;
+  if (!changed.length && finder) changed = finder.likely_source_files.map((item) => item.path).slice(0, 6);
+  const impact = await changeImpactPlan({ root: root.absolutePath, changed_files: changed });
+  const audit = await mcpSurfaceAudit({ root: root.absolutePath, max_tools: 220 });
+  const impactedTools = new Set();
+  for (const tool of audit.tools) {
+    if (targetSymbol && tool.handler_candidates.includes(targetSymbol)) impactedTools.add(tool.name);
+    if (changed.includes(audit.server_file) && (tool.handler_candidates.some((fn) => targetSymbol && fn.toLowerCase().includes(targetSymbol.toLowerCase())) || !targetSymbol)) impactedTools.add(tool.name);
+    if (changed.some((file) => [...tool.behavior_test_files, ...tool.registration_only_test_files].includes(file))) impactedTools.add(tool.name);
+  }
+  if (finder?.query?.tool_name) impactedTools.add(finder.query.tool_name);
+  const coverage = await toolTestCoverageMap({ root: root.absolutePath });
+  const impactedTests = [...impactedTools].flatMap((tool) => coverage.per_tool[tool]?.behavior_test_files || []);
+  const exactChecks = [...new Set([
+    ...impact.minimum_targeted_tests,
+    ...impactedTests.map((file) => packageScriptForTestFile(coverage.coverage_summary.package_scripts_reviewed, file)).filter(Boolean),
+    changed.some((file) => file === "scripts/tools-readiness-report.mjs" || file === "package.json" || file === audit.server_file) ? "npm.cmd run tools:readiness" : null
+  ].filter(Boolean))];
+  const trace = {
+    operation_result: "reported",
+    repo_path: root.absolutePath,
+    changed_files: changed.slice(0, 80),
+    target_file: targetFile,
+    target_symbol: targetSymbol,
+    impacted_tools: [...impactedTools].slice(0, 60),
+    impacted_features: impact.likely_affected_tools_or_features,
+    impacted_tests: [...new Set(impactedTests)].slice(0, 60),
+    readiness_needed: changed.some((file) => /scripts\/tools-readiness-report\.mjs|package\.json|scripts\/vnem-tools-mcp-server\.mjs/.test(file)),
+    generation_needed: impact.generation_required,
+    dashboard_install_artifact_needed: changed.some((file) => /dashboard\/|public\/install|landing\/install\.tgz|scripts\/generate-artifacts\.mjs/.test(file)),
+    full_suite_justified: impact.full_npm_test_justified,
+    exact_minimum_checks: exactChecks.slice(0, 24),
+    risk_level: impact.risk_level,
+    why: impactedTools.size ? "Changed/targeted files map to MCP registered tool handlers or behavior tests." : "Impact is inferred from changed file areas and package/readiness/generation rules.",
+    patch_target_context: finder ? { exact_next_file_to_open: finder.exact_next_file_to_open, confidence: finder.confidence } : null,
+    output_compact: true,
+    evidence_log_id: null
+  };
+  const log = await writeEvidenceLog("source_impact_trace", trace);
+  trace.evidence_log_id = log.evidence_log_id;
+  return trace;
+}
+
+async function sourceControlCharacterGuard(args = {}) {
+  const root = await resolveAllowedRoot(args.root || ".");
+  const changed = arrayify(args.changed_files).map(normalizePath).filter(Boolean);
+  const maxFiles = Math.min(Math.max(args.max_files || 500, 10), 1000);
+  const skipped = [];
+  let scanFiles = [];
+  if (changed.length) {
+    scanFiles = changed.map((file) => ({ path: file, bytes: 0 })).filter((file) => !isSecretLikePath(file.path));
+  } else {
+    const candidates = await codeIntelligenceCandidateFiles(root.absolutePath, { maxFiles, includeTests: true });
+    scanFiles = candidates.files;
+    skipped.push(...candidates.skipped);
+  }
+  const findings = [];
+  const generatedOrBinary = [];
+  let filesScanned = 0;
+  for (const file of scanFiles.slice(0, maxFiles)) {
+    const rel = normalizePath(file.path);
+    if (isGeneratedArtifactPath(rel) || isBinaryLikePath(rel) || shouldSkipRelative(rel)) { generatedOrBinary.push(rel); continue; }
+    if (!isSourceBehaviorPath(rel) && !isTestPath(rel) && !isConfigPath(rel)) { skipped.push(rel); continue; }
+    const read = await readRepoTextFile(root.absolutePath, rel, 512000);
+    if (!read.text) { skipped.push(rel); continue; }
+    filesScanned += 1;
+    findings.push(...hiddenControlFindings(rel, read.text));
+  }
+  const dangerous = findings.filter((finding) => finding.category === "bidi_or_directional_control" || finding.category === "dangerous_control_character");
+  const result = {
+    operation_result: "reported",
+    repo_path: root.absolutePath,
+    files_scanned: filesScanned,
+    findings: findings.slice(0, 120),
+    dangerous_source_findings: dangerous.slice(0, 120),
+    source_clean: dangerous.length === 0,
+    skipped_binary_or_generated: [...new Set(generatedOrBinary)].slice(0, 120),
+    skipped_other: [...new Set(skipped)].slice(0, 120),
+    warnings: [findings.length > 120 ? "finding output capped" : null, scanFiles.length > maxFiles ? "file scan capped" : null].filter(Boolean),
+    output_compact: true,
+    evidence_log_id: null
+  };
+  const log = await writeEvidenceLog("source_control_character_guard", result);
+  result.evidence_log_id = log.evidence_log_id;
+  return result;
 }
 
 function normalizeWorkflowTaskMode(value) {
@@ -3511,8 +3916,10 @@ function targetedTestsForChange(areas, changed, scripts) {
     if (/power-tools-2/.test(base)) tests.push("npm.cmd run test:tools-power-tools-2-regression");
     if (/power-session-1|local-session-recovery/.test(base)) tests.push("npm.cmd run test:tools-power-session-1-recovery");
     if (/orchestrator|repo-workflow/.test(base)) tests.push("npm.cmd run test:tools-orchestrator-1-regression");
+    if (/code-intelligence|symbol-map|surface-audit|patch-target|coverage-map|source-impact|control-character/.test(base)) tests.push("npm.cmd run test:tools-code-intelligence-1-regression");
     if (/^test-tools-power/.test(base) || /power-tools-1/.test(base)) tests.push("npm.cmd run test:tools-power-tools-1-regression");
   }
+  if (scripts?.["test:tools-code-intelligence-1-regression"] && areas.includes("tools_mcp")) tests.push("npm.cmd run test:tools-code-intelligence-1-regression");
   if (scripts?.["test:tools-orchestrator-1-regression"] && areas.includes("tools_mcp")) tests.push("npm.cmd run test:tools-orchestrator-1-regression");
   if (scripts?.["test:tools-power-session-1-recovery"] && areas.includes("tools_mcp")) tests.push("npm.cmd run test:tools-power-session-1-recovery");
   if (scripts?.["test:tools-power-tools-2-regression"] && areas.includes("tools_mcp")) tests.push("npm.cmd run test:tools-power-tools-2-regression");
@@ -3608,6 +4015,251 @@ function smallestFixForFailure(classification) {
   return fixes[classification] || fixes.real_regression;
 }
 
+async function codeIntelligenceCandidateFiles(root, options = {}) {
+  const entries = [];
+  const skipped = [];
+  const maxFiles = Math.max((options.maxFiles || 500) * 4, options.maxFiles || 500);
+  await walkWorkspace(root, root, entries, skipped, { maxDepth: options.maxDepth || 12, maxFiles, includeHidden: false });
+  const includeTests = options.includeTests !== false;
+  const files = entries
+    .filter((entry) => entry.type === "file")
+    .filter((entry) => !isSecretLikePath(entry.path) && !shouldSkipRelative(entry.path) && !isGeneratedArtifactPath(entry.path) && !isBinaryLikePath(entry.path))
+    .filter((entry) => isSourceBehaviorPath(entry.path) || isConfigPath(entry.path) || (includeTests && isTestPath(entry.path)))
+    .filter((entry) => /\.(mjs|cjs|js|jsx|ts|tsx|json|yml|yaml|toml|css|html)$/.test(entry.path))
+    .sort((a, b) => codeIntelligenceFilePriority(a.path) - codeIntelligenceFilePriority(b.path) || a.path.localeCompare(b.path))
+    .slice(0, options.maxFiles || 500);
+  return { files, skipped };
+}
+
+function codeIntelligenceFilePriority(file) {
+  const f = normalizePath(file);
+  if (/scripts\/vnem-tools-mcp-server\.mjs$/.test(f)) return 0;
+  if (/scripts\/tools-readiness-report\.mjs$|package\.json$/.test(f)) return 1;
+  if (isLikelyRegistryPath(f)) return 2;
+  if (isSourceBehaviorPath(f)) return 3;
+  if (isTestPath(f)) return 4;
+  return 8;
+}
+
+async function readRepoTextFile(root, file, maxBytes = 256000) {
+  try {
+    const targetPath = path.isAbsolute(file) ? file : path.join(root, file);
+    const target = await resolveAllowedFile(targetPath, { mustExist: true, blockSecrets: true });
+    const info = await stat(target.absolutePath);
+    if (!info.isFile() || isBinaryLikePath(target.relativePath)) return { text: "", bytes_read: 0, truncated: false, skipped: "not_text_file" };
+    const bytes = await readFile(target.absolutePath);
+    if (bytes.includes(0) || looksBinary(bytes)) return { text: "", bytes_read: 0, truncated: false, skipped: "binary_file" };
+    const take = Math.min(bytes.length, maxBytes);
+    return { text: redactSecrets(bytes.subarray(0, take).toString("utf8")), bytes_read: take, truncated: take < bytes.length, path: target.relativePath };
+  } catch (error) {
+    return { text: "", bytes_read: 0, truncated: false, skipped: error instanceof ToolsError ? error.code : "read_failed" };
+  }
+}
+
+function extractLightweightSymbols(file, text) {
+  const symbols = [];
+  const importsOrExports = [];
+  const lines = String(text || "").split(/\r?\n/);
+  const fileToolRelated = /vnem_tools_|registerTool|mcpServer\.registerTool|toolResult|McpServer/i.test(text);
+  const push = (name, kind, lineNumber, exported, snippet) => {
+    symbols.push({
+      file,
+      name,
+      kind,
+      line_number: lineNumber,
+      exported,
+      async: /\basync\b/.test(snippet),
+      tool_related: fileToolRelated || /vnem_tools_|Tool|Handler|Action|Recovery|Audit|Guard|Orchestrator/i.test(`${name} ${snippet}`),
+      snippet: truncate(snippet.trim(), 180)
+    });
+  };
+  const patterns = [
+    { kind: "function", re: /^\s*(export\s+)?(async\s+)?function\s+([A-Za-z_$][\w$]*)\s*\(/ },
+    { kind: "class", re: /^\s*(export\s+)?class\s+([A-Za-z_$][\w$]*)\b/ },
+    { kind: "arrow_function", re: /^\s*(export\s+)?(?:const|let|var)\s+([A-Za-z_$][\w$]*)\s*=\s*(?:async\s*)?(?:\([^)]*\)|[A-Za-z_$][\w$]*)\s*=>/ },
+    { kind: "function_expression", re: /^\s*(export\s+)?(?:const|let|var)\s+([A-Za-z_$][\w$]*)\s*=\s*(?:async\s*)?function\b/ },
+    { kind: "tool_registration", re: /registerTool\s*\(\s*["'](vnem_tools_[a-z0-9_]+)["']/i }
+  ];
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index];
+    if (/^\s*(import|export)\b/.test(line)) importsOrExports.push(truncate(line.trim(), 160));
+    for (const pattern of patterns) {
+      const match = line.match(pattern.re);
+      if (!match) continue;
+      const name = pattern.kind === "function" ? match[3] : pattern.kind === "class" || pattern.kind === "arrow_function" || pattern.kind === "function_expression" ? match[2] : match[1];
+      const exported = Boolean(match[1]) || /^\s*export\b/.test(line);
+      push(name, pattern.kind, index + 1, exported, line);
+      break;
+    }
+  }
+  return { symbols, imports_or_exports: importsOrExports, tool_related: fileToolRelated || symbols.some((symbol) => symbol.tool_related) };
+}
+
+function codeFileCategory(file) {
+  if (isTestPath(file)) return "test";
+  if (isConfigPath(file)) return "config";
+  if (isLikelyRegistryPath(file)) return "registry";
+  if (isSourceBehaviorPath(file)) return "source";
+  return "other";
+}
+
+function buildCodeIntelligenceImportantFiles(fileSummaries, toolRelated) {
+  return [...new Set([
+    ...toolRelated.map((symbol) => symbol.file),
+    ...fileSummaries.filter((file) => file.category === "registry" || file.tool_related).map((file) => file.path),
+    ...fileSummaries.filter((file) => file.symbol_count > 0).map((file) => file.path)
+  ])].slice(0, 40);
+}
+
+function parseRegisteredToolsFromServer(serverText) {
+  const text = String(serverText || "");
+  const matches = [...text.matchAll(/registerTool\s*\(\s*["'](vnem_tools_[a-z0-9_]+)["']/gi)];
+  return matches.map((match, index) => {
+    const start = match.index || 0;
+    const next = matches[index + 1]?.index ?? Math.min(text.length, start + 5000);
+    const block = text.slice(start, next);
+    return {
+      name: match[1],
+      index: start,
+      line_number: lineNumberAt(text, start),
+      handler_candidates: handlerCandidatesForRegistrationBlock(block)
+    };
+  });
+}
+
+function handlerCandidatesForRegistrationBlock(block) {
+  const ignored = new Set(["registerTool", "withToolErrors", "toolResult", "String", "Number", "Boolean", "Array", "Object", "Promise", "redactSecrets", "truncate", "filter", "map", "slice", "join", "includes", "push", "min", "max", "default", "optional", "array", "enum", "string", "number", "int", "boolean"]);
+  const out = [];
+  for (const match of String(block || "").matchAll(/\b([A-Za-z_$][\w$]*)\s*\(/g)) {
+    const name = match[1];
+    if (ignored.has(name) || /^format[A-Z]/.test(name) || /^[A-Z]/.test(name) || name === "async") continue;
+    if (!out.includes(name)) out.push(name);
+  }
+  return out.slice(0, 8);
+}
+
+async function scanToolCoverage(root, toolNames, options = {}) {
+  const packageText = options.packageText ?? (await readRepoTextFile(root, "package.json", 320000)).text;
+  const readinessText = options.readinessText ?? (await readRepoTextFile(root, "scripts/tools-readiness-report.mjs", 900000)).text;
+  const packageScripts = packageText ? Object.entries(safeJsonParse(packageText)?.scripts || {}).map(([name, value]) => `${name}: ${value}`) : [];
+  const candidates = await codeIntelligenceCandidateFiles(root, { maxFiles: 900, includeTests: true });
+  const testFiles = candidates.files.filter((file) => isTestPath(file.path));
+  const testTexts = [];
+  for (const file of testFiles) {
+    const read = await readRepoTextFile(root, file.path, 320000);
+    if (read.text) testTexts.push({ path: file.path, text: read.text });
+  }
+  const perTool = {};
+  for (const toolName of toolNames) {
+    const escaped = escapeRegExp(toolName);
+    const behaviorFiles = [];
+    const registrationFiles = [];
+    const mentionFiles = [];
+    for (const file of testTexts) {
+      if (!file.text.includes(toolName)) continue;
+      mentionFiles.push(file.path);
+      const behaviorRe = new RegExp(`(callTool\\s*\\(\\s*\\{[^}]*name\\s*:\\s*["']${escaped}["']|call\\s*\\(\\s*client\\s*,\\s*["']${escaped}["'])`, "s");
+      const registrationOnlyRe = new RegExp(`(listTools|tools\\.has|manifest\\.tools|includes\\s*\\(\\s*["']${escaped}["'])`, "s");
+      if (behaviorRe.test(file.text)) behaviorFiles.push(file.path);
+      else if (registrationOnlyRe.test(file.text)) registrationFiles.push(file.path);
+    }
+    const packageMatches = packageScripts.filter((script) => script.includes(toolName) || script.toLowerCase().includes(toolName.replace("vnem_tools_", "").replace(/_/g, "-")));
+    const readinessMention = readinessText.includes(toolName);
+    const coverageLevel = behaviorFiles.length ? "behavior_test" : registrationFiles.length ? "registration_only" : readinessMention ? "readiness_only" : packageMatches.length ? "package_script_only" : mentionFiles.length ? "mentioned_only" : "no_test_found";
+    perTool[toolName] = {
+      tool_name: toolName,
+      coverage_level: coverageLevel,
+      behavior_test_files: behaviorFiles,
+      registration_only_test_files: registrationFiles,
+      mentioned_test_files: mentionFiles,
+      readiness_referenced: readinessMention,
+      package_scripts: packageMatches,
+      evidence: behaviorFiles.length ? "MCP client call path found in test text." : registrationFiles.length ? "Only listTools/manifest-style evidence found." : readinessMention ? "Readiness/report mention found without behavior test." : "No direct proof found."
+    };
+  }
+  return { per_tool: perTool, package_scripts: packageScripts };
+}
+
+function safeJsonParse(text) {
+  try { return JSON.parse(text); } catch { return null; }
+}
+
+function normalizeToolName(value) {
+  const raw = String(value || "").trim();
+  if (!raw) return "";
+  if (/^vnem_tools_[a-z0-9_]+$/i.test(raw)) return raw;
+  return `vnem_tools_${raw.toLowerCase().replace(/^vnem[-_ ]tools[-_ ]/, "").replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "")}`;
+}
+
+function tokenizeCodeGoal(value) {
+  const stop = new Set(["the", "and", "for", "with", "from", "this", "that", "tool", "tools", "make", "add", "real", "vnem", "mcp", "repo", "code"]);
+  return [...new Set(String(value || "").toLowerCase().replace(/vnem_tools_/g, " ").replace(/[_/-]+/g, " ").split(/[^a-z0-9]+/).filter((token) => token.length >= 3 && !stop.has(token)))];
+}
+
+function firstMatchingLine(text, tokens) {
+  const lines = String(text || "").split(/\r?\n/);
+  return lines.find((line) => tokens.some((token) => line.toLowerCase().includes(token))) || "";
+}
+
+function packageScriptForTestFile(scripts, file) {
+  const normalized = normalizePath(file);
+  const found = arrayify(scripts).find((script) => script.includes(normalized));
+  return found ? `npm.cmd run ${String(found).split(":")[0]}` : "";
+}
+
+function hiddenControlFindings(file, text) {
+  const findings = [];
+  let line = 1;
+  let column = 0;
+  for (let index = 0; index < text.length; index += 1) {
+    const code = text.charCodeAt(index);
+    const ch = text[index];
+    column += 1;
+    const isNewline = ch === "\n";
+    const bidi = (code >= 0x202A && code <= 0x202E) || (code >= 0x2066 && code <= 0x2069) || code === 0x200E || code === 0x200F;
+    const dangerousControl = (code < 32 && ![9, 10, 13].includes(code)) || code === 127;
+    if (bidi || dangerousControl) {
+      findings.push({
+        file,
+        line_number: line,
+        column,
+        code_point: `U+${code.toString(16).toUpperCase().padStart(4, "0")}`,
+        category: bidi ? "bidi_or_directional_control" : "dangerous_control_character",
+        name: sourceControlCharacterName(code)
+      });
+    }
+    if (isNewline) { line += 1; column = 0; }
+  }
+  return findings;
+}
+
+function sourceControlCharacterName(code) {
+  const names = {
+    0x0008: "BACKSPACE",
+    0x007F: "DELETE",
+    0x200E: "LEFT-TO-RIGHT MARK",
+    0x200F: "RIGHT-TO-LEFT MARK",
+    0x202A: "LEFT-TO-RIGHT EMBEDDING",
+    0x202B: "RIGHT-TO-LEFT EMBEDDING",
+    0x202C: "POP DIRECTIONAL FORMATTING",
+    0x202D: "LEFT-TO-RIGHT OVERRIDE",
+    0x202E: "RIGHT-TO-LEFT OVERRIDE",
+    0x2066: "LEFT-TO-RIGHT ISOLATE",
+    0x2067: "RIGHT-TO-LEFT ISOLATE",
+    0x2068: "FIRST STRONG ISOLATE",
+    0x2069: "POP DIRECTIONAL ISOLATE"
+  };
+  return names[code] || `CONTROL_${code}`;
+}
+
+function lineNumberAt(text, index) {
+  return String(text || "").slice(0, index).split(/\r?\n/).length;
+}
+
+function escapeRegExp(value) {
+  return String(value || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 function formatRepoDeepMap(map) { return [`vnem_tools_repo_deep_map: ${map.compact_summary.file_count_sampled} file(s) sampled`, `branch=${map.git.branch || "unknown"}`, `dirty=${map.git.dirty}`, `sources=${map.source_dirs.slice(0, 5).join(",") || "none"}`, `tests=${map.test_dirs.slice(0, 5).join(",") || "none"}`].join("\n"); }
 function formatNextActionRanker(ranking) { return [`vnem_tools_next_action_ranker: ${ranking.actions.length} action(s)`, ...ranking.actions.slice(0, 3).map((action) => `${action.rank}. ${action.action} [value=${action.estimated_implementation_value}, risk=${action.risk_level}, placebo=${action.placebo_risk}]`)].join("\n"); }
 function formatNoPlaceboAudit(audit) { return [`vnem_tools_no_placebo_progress_audit: ${audit.real_progress_score}/100`, `level=${audit.progress_level}`, `risks=${audit.placebo_risks.join("; ") || "none"}`, `next=${audit.exact_next_correction}`].join("\n"); }
@@ -3617,6 +4269,12 @@ function formatFailureTriage(triage) { return [`vnem_tools_failure_triage: ${tri
 function formatRepoEvidencePack(pack) { return [`vnem_tools_evidence_pack: branch=${pack.branch || "unknown"}`, `changed=${pack.changed_files.length}`, `passed=${pack.tests_passed.length}`, `failed=${pack.tests_failed.length}`, `safe_claims=${pack.safe_to_claim.length}`, `not_safe=${pack.not_safe_to_claim.length}`].join("\n"); }
 function formatLocalSessionRecovery(recovery) { return [`vnem_tools_local_session_recovery: branch=${recovery.current_branch || "unknown"}`, `head=${recovery.head_sha ? recovery.head_sha.slice(0, 12) : "unknown"}`, `dirty=${recovery.worktree.dirty}`, `stack_commits=${recovery.local_stack.commits.length}`, `unpushed=${recovery.unpushed_commits.ahead_count ?? "unknown"}`, `next=${recovery.safe_next_action}`].join("\n"); }
 function formatRepoWorkflowOrchestrator(orchestration) { return [`vnem_tools_repo_workflow_orchestrator: mode=${orchestration.task_mode}`, `branch=${orchestration.repo_state_summary.current_branch || "unknown"}`, `selected=${orchestration.selected_action.phase}`, `remote_proof_required=${orchestration.remote_proof_required}`, `checks=${orchestration.exact_checks.length}`, `next=${orchestration.safe_next_step}`].join("\n"); }
+function formatCodeSymbolMap(map) { return [`vnem_tools_code_symbol_map: files=${map.files_scanned}`, `symbols=${map.symbols_found}`, `parser=${map.parser_type}`, `top=${map.top_symbols.slice(0, 5).map((symbol) => `${symbol.name}@${symbol.file}:${symbol.line_number}`).join("; ") || "none"}`].join("\n"); }
+function formatMcpSurfaceAudit(audit) { return [`vnem_tools_mcp_surface_audit: tools=${audit.total_tools_detected}`, `handlers=${audit.tools_with_handlers}`, `behavior_tests=${audit.tools_with_tests}`, `weak=${audit.weak_tools.length}`, `inspect=${audit.exact_files_to_inspect.slice(0, 5).join("; ") || "none"}`].join("\n"); }
+function formatPatchTargetFinder(targets) { return [`vnem_tools_patch_target_finder: confidence=${targets.confidence}`, `next=${targets.exact_next_file_to_open}`, `sources=${targets.likely_source_files.slice(0, 5).map((item) => item.path).join("; ") || "none"}`, `functions=${targets.likely_functions.slice(0, 5).map((item) => item.name).join("; ") || "none"}`].join("\n"); }
+function formatToolTestCoverageMap(map) { return [`vnem_tools_tool_test_coverage_map: tools=${map.coverage_summary.tools_reviewed}`, `behavior=${map.coverage_summary.behavior_tested}`, `weak=${map.coverage_summary.weak_or_missing}`, `untested=${map.untested_tools.slice(0, 5).join("; ") || "none"}`].join("\n"); }
+function formatSourceImpactTrace(trace) { return [`vnem_tools_source_impact_trace: changed=${trace.changed_files.length}`, `tools=${trace.impacted_tools.slice(0, 5).join("; ") || "none"}`, `risk=${trace.risk_level}`, `checks=${trace.exact_minimum_checks.slice(0, 5).join("; ") || "none"}`].join("\n"); }
+function formatSourceControlCharacterGuard(guard) { return [`vnem_tools_source_control_character_guard: scanned=${guard.files_scanned}`, `source_clean=${guard.source_clean}`, `findings=${guard.dangerous_source_findings.length}`, `skipped_generated_or_binary=${guard.skipped_binary_or_generated.length}`].join("\n"); }
 
 const SEARCH_PROVIDER_DEFINITIONS = [
   { name: "local_fixture", env: null, supports_current_web: false, supports_news: false, supports_code_search: false, supports_docs_search: true, supports_safe_search: true, requires_api_key: false, requires_approval: false, rate_limit_notes: "deterministic local CI/test fixture", privacy_notes: "no external network" },
