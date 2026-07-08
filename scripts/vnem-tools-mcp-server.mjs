@@ -1681,7 +1681,7 @@ function buildActionRecoveryPlan(args = {}) {
   if (/outside_allowed|allowed root|allowed_roots|path_outside|not inside|evidence_root_outside|root/.test(lower) && /path|root|allowed/.test(lower)) { plan.likely_cause = "Requested path is outside VNEM Tools allowed roots or evidence root policy."; plan.blocked_by_path_or_allowed_root = true; plan.exact_next_steps.push("Move the target under an allowed project root or start Tools MCP with VNEM_TOOLS_ALLOWED_ROOTS set to the narrow project root."); plan.exact_next_steps.push("Run vnem_tools_permission_status to see current allowed_roots and workspace_fix_suggestion."); }
   if (/browser_unavailable|chromium|chrome|browser.*not found|playwright|screenshot/.test(lower)) { plan.likely_cause = "Browser runtime was unavailable or blocked by policy, so visual proof was not collected."; plan.blocked_by_missing_dependency = true; plan.exact_next_steps.push("Install/configure a local Chromium/Chrome command or set VNEM_TOOLS_BROWSER_COMMAND, then retry only against localhost/allowed file targets with approval."); plan.exact_next_steps.push("If a browser cannot run, use static UI evidence only and do not claim screenshot/browser proof."); plan.must_not_claim.push("Screenshot proof was captured", "Browser console/network/a11y proof was clean"); }
   if (/network|provider|timeout|fetch|dns|econn|enotfound|429|rate limit|unconfigured/.test(lower)) { plan.blocked_by_network_or_provider = true; plan.exact_next_steps.push("Check provider configuration and network availability; retry read-only/dry-run first with capped output."); }
-  if (/github|gh|pull request|pr|issue|actions|workflow|ci|push|force-push|protected branch/.test(lower)) {
+  if (/github|\bgh\b|pull request|\bpr\b|issue|actions|workflow|ci|push|force-push|protected branch/.test(lower)) {
     if (/gh.*not found|gh unavailable|not authenticated|auth|token/.test(lower)) { plan.likely_cause = "GitHub CLI/auth is unavailable for remote GitHub work."; plan.blocked_by_missing_auth = true; plan.exact_next_steps.push("Authenticate gh with `gh auth login`; never print token values."); plan.exact_next_steps.push("Run `gh auth setup-git` so git push can use GitHub credentials."); }
     if (/protected branch|direct push/.test(lower)) { plan.blocked_by_permission = true; plan.exact_next_steps.push("Use a feature branch + PR, or set VNEM_TOOLS_GITHUB_ALLOW_DIRECT_PUSH = \"1\" if direct protected-branch push is intentionally allowed."); }
     if (/force push|force-push/.test(lower)) { plan.blocked_by_permission = true; plan.exact_next_steps.push("Avoid force push, or set VNEM_TOOLS_GITHUB_ALLOW_FORCE_PUSH = \"1\" if force push is intentionally allowed."); }
@@ -1723,7 +1723,7 @@ function highPowerActionReview(args = {}) {
 }
 function githubReviewFor(text) {
   const lower = String(text || "").toLowerCase();
-  if (!/github|gh|pull request|pr|issue|actions|workflow|git push|force push|repo settings|release/.test(lower)) return { reasons_to_block: [], config_knob_to_change: null, allowed_actions: [] };
+  if (!/github|\bgh\b|pull request|\bpr\b|issue|actions|workflow|git push|force push|repo settings|release/.test(lower)) return { reasons_to_block: [], config_knob_to_change: null, allowed_actions: [] };
   const settings = githubSettings();
   const policy = githubProfilePolicy(settings.profile);
   const reasons = [];
