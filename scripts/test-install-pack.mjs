@@ -246,9 +246,19 @@ assert(
     ".vnem/best-practices.md",
     ".vnem/agent-workspace.md",
     ".vnem/prompt-engineering.md",
-    ".vnem/prompt-patterns.json"
+    ".vnem/prompt-patterns.json",
+    ".vnem/install-adoption/codex/config-snippet.toml",
+    ".vnem/install-adoption/codex/README.md",
+    ".vnem/install-adoption/claude/mcp.json",
+    ".vnem/install-adoption/claude/README.md",
+    ".vnem/install-adoption/antigravity/mcp.json",
+    ".vnem/install-adoption/antigravity/README.md",
+    ".vnem/install-adoption/generic/mcp.json",
+    ".vnem/install-adoption/generic/README.md",
+    ".vnem/install-adoption/prompts/vnem-agent-use-instruction.md",
+    ".vnem/install-adoption/verify/install-doctor-report.json"
   ]),
-  "install archive must extract root AGENTS.md plus the eighteen read-only pack files."
+  "install archive must extract root AGENTS.md, the read-only pack files, and the repo-local install adoption profiles."
 );
 assert(agents.includes("operating-protocol.md"), "AGENTS.md must tell agents to read the operating protocol.");
 assert(agents.includes("install-guide.md"), "AGENTS.md must mention the install guide.");

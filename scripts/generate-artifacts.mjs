@@ -2,6 +2,7 @@ import path from "node:path";
 import { readFile } from "node:fs/promises";
 import { gzipSync } from "node:zlib";
 import { ROOT, publicEntry, readEntries, uniqueSorted, writeBytes, writeJson, writeText } from "./lib/registry.mjs";
+import { buildInstallAdoptionFiles } from "./vnem-install-adoption.mjs";
 
 const generatedAt = new Date().toISOString();
 const generatedDate = generatedAt.slice(0, 10);
@@ -4732,6 +4733,15 @@ function installGuideMarkdown() {
     "node scripts/vnem-cli.mjs mcp-config --server-json",
     "```",
     "",
+    "For client-specific Core+Tools MCP adoption profiles, emit repo-local snippets without writing to Codex, Claude, Antigravity-style, or generic MCP client config paths:",
+    "",
+    "```bash",
+    "node scripts/vnem-install-adoption.mjs emit --all",
+    "node scripts/vnem-install-adoption.mjs doctor",
+    "```",
+    "",
+    "The emitted profiles live under `.vnem/install-adoption/` and include both `vnem` and `vnem-tools`; merge/import only the profile for the client you use.",
+    "",
     "Opt-in precision MCP config for a project that should allow exact patching, current-doc fetching, and safe terminal feedback:",
     "",
     "```bash",
@@ -5618,6 +5628,10 @@ function singleLine(value) {
   return String(value ?? "").replace(/\s+/g, " ").trim();
 }
 
+function archivePath(value) {
+  return String(value).split(path.sep).join("/");
+}
+
 const llmsTxt = [
   "# vnem",
   "",
@@ -5694,6 +5708,10 @@ const promptEngineering = promptEngineeringMarkdown(promptPatternData);
 const agentWorkspace = agentWorkspaceMarkdown();
 const agentInstructions = agentsMarkdown();
 const rootAgentInstructions = rootAgentsMarkdown();
+const installAdoptionFiles = buildInstallAdoptionFiles(ROOT);
+const installAdoptionArchiveFiles = Object.fromEntries(
+  Object.entries(installAdoptionFiles).map(([name, content]) => [archivePath(name), content])
+);
 const archive = installArchive({
   "AGENTS.md": `${rootAgentInstructions}\n`,
   [`${installFolder}/AGENTS.md`]: `${agentInstructions}\n`,
@@ -5713,7 +5731,8 @@ const archive = installArchive({
   [`${installFolder}/best-practices.md`]: `${bestPractices}\n`,
   [`${installFolder}/agent-workspace.md`]: `${agentWorkspace}\n`,
   [`${installFolder}/prompt-engineering.md`]: `${promptEngineering}\n`,
-  [`${installFolder}/prompt-patterns.json`]: jsonText(promptPatternData)
+  [`${installFolder}/prompt-patterns.json`]: jsonText(promptPatternData),
+  ...installAdoptionArchiveFiles
 });
 
 await writeJson(path.join(ROOT, "public", "api", "index.json"), index);
@@ -5725,6 +5744,12 @@ await writeJson(path.join(ROOT, "public", "install", "source-radar.json"), sourc
 await writeJson(path.join(ROOT, installFolder, "source-radar.json"), sourceRadarData);
 await writeJson(path.join(ROOT, "public", "install", "prompt-patterns.json"), promptPatternData);
 await writeJson(path.join(ROOT, installFolder, "prompt-patterns.json"), promptPatternData);
+for (const [relativeName, content] of Object.entries(installAdoptionFiles)) {
+  const archiveName = archivePath(relativeName);
+  const publicName = archiveName.replace(`${installFolder}/`, "");
+  await writeText(path.join(ROOT, relativeName), content);
+  await writeText(path.join(ROOT, "public", "install", publicName), content);
+}
 await writeBytes(path.join(ROOT, "public", installArchiveName), archive);
 await writeText(path.join(ROOT, "public", "install", "AGENTS.md"), `${agentInstructions}\n`);
 await writeText(path.join(ROOT, installFolder, "AGENTS.md"), `${agentInstructions}\n`);
