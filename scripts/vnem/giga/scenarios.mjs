@@ -1,0 +1,50 @@
+const scenario = (id, category, goal, expectedTools, options = {}) => ({
+  id,
+  category,
+  goal,
+  expected_tools: expectedTools,
+  task_mode: options.task_mode || "auto",
+  permission_expected: options.permission_expected || false,
+  rollback_expected: options.rollback_expected || false,
+  execution_expected: options.execution_expected !== false
+});
+
+export const GIGA_SCENARIOS = [
+  scenario("full-stack-app", "full-stack app creation", "Build a full-stack TypeScript app with a web UI, API, tests, and local proof.", ["vnem_tools_repo_deep_map", "vnem_tools_test_selection_plan"]),
+  scenario("frontend-feature", "frontend feature work", "Implement a responsive React dashboard feature and verify its rendered states in a browser.", ["vnem_tools_browser_evidence_plan", "vnem_tools_ui_surface_review"]),
+  scenario("backend-api", "backend/API feature work", "Add a validated backend API endpoint with focused tests and evidence.", ["vnem_tools_repo_deep_map", "vnem_tools_test_selection_plan"]),
+  scenario("debug-existing-app", "existing app debugging", "Debug a failing authentication test from its stack trace and patch the smallest root cause.", ["vnem_tools_failure_triage", "vnem_tools_patch_target_finder"], { task_mode: "debugging" }),
+  scenario("architecture-understanding", "architecture understanding", "Map this repository architecture, entrypoints, dependencies, and ownership boundaries.", ["vnem_tools_repo_deep_map", "vnem_tools_code_symbol_map"], { task_mode: "repo_inspection" }),
+  scenario("patch-targeting", "patch targeting", "Find the exact source function and tests to change for an MCP routing bug.", ["vnem_tools_patch_target_finder", "vnem_tools_source_impact_trace"], { task_mode: "patch_targeting" }),
+  scenario("safe-refactor", "safe refactoring", "Refactor duplicated handlers without changing public MCP behavior and select regression tests.", ["vnem_tools_code_symbol_map", "vnem_tools_source_impact_trace"]),
+  scenario("terminal-automation", "terminal/project automation", "Run an approved package.json validation task and preserve command evidence.", ["vnem_tools_run_project_task", "vnem_tools_evidence_pack"], { permission_expected: true }),
+  scenario("test-selection", "test selection", "Choose the smallest sufficient tests for changes to the Tools MCP registry.", ["vnem_tools_test_selection_plan", "vnem_tools_source_impact_trace"]),
+  scenario("ci-failure", "CI failure diagnosis", "Diagnose a failing GitHub Actions test log and classify whether the branch caused it.", ["vnem_tools_failure_triage", "vnem_tools_github_ci_failure_triage"], { task_mode: "debugging" }),
+  scenario("coverage-analysis", "coverage analysis", "Audit MCP tool behavior coverage and find registration-only tools.", ["vnem_tools_tool_test_coverage_map", "vnem_tools_mcp_surface_audit"], { task_mode: "mcp_tool_audit" }),
+  scenario("benchmark-interpretation", "benchmark interpretation", "Interpret baseline versus current benchmark results without inventing improvement claims.", ["vnem_tools_evidence_pack", "vnem_tools_task_progress_truth_check"]),
+  scenario("browser-inspection", "browser/UI inspection", "Inspect a localhost UI with screenshots, DOM evidence, and console limitations.", ["vnem_tools_browser_evidence_plan", "vnem_tools_browser_evidence_run"], { task_mode: "browser_ui", permission_expected: true }),
+  scenario("accessibility", "accessibility verification", "Verify keyboard, semantics, labels, focus, and accessibility evidence for a local UI.", ["vnem_tools_browser_accessibility_audit", "vnem_tools_ui_evidence_audit"], { task_mode: "browser_ui" }),
+  scenario("responsive-proof", "responsive visual proof", "Capture and compare desktop and mobile viewport proof for a responsive page.", ["vnem_tools_browser_evidence_run", "vnem_tools_browser_compare_snapshots"], { task_mode: "browser_ui", permission_expected: true }),
+  scenario("windows-diagnosis", "Windows/PowerShell diagnosis", "Diagnose a Windows PowerShell path and process failure using read-only system evidence.", ["vnem_tools_windows_system_snapshot", "vnem_tools_process_inspect"]),
+  scenario("process-port", "local process/port troubleshooting", "Find which local process owns port 9099 and recommend a safe next step.", ["vnem_tools_port_inspect", "vnem_tools_process_inspect"]),
+  scenario("github-pr", "GitHub branch/PR work", "Inspect branch state, push an approved feature branch, and verify the PR head SHA.", ["vnem_tools_github_status", "vnem_tools_pr_quality_gate"], { task_mode: "publish", permission_expected: true, rollback_expected: true }),
+  scenario("github-actions", "GitHub Actions diagnosis", "Inspect the latest Actions run, classify a failure, and avoid fake remote proof.", ["vnem_tools_github_actions_status", "vnem_tools_github_ci_failure_triage"], { task_mode: "publish" }),
+  scenario("game-modding", "game/modding project inspection", "Inspect a local game mod project, configs, logs, and compatibility risks without launching installers.", ["vnem_tools_game_project_inspect", "vnem_tools_game_config_audit"]),
+  scenario("roblox-luau", "Roblox/Luau project inspection", "Map a Roblox Luau project, services, remotes, modules, and risky trust boundaries.", ["vnem_tools_roblox_project_inspect", "vnem_tools_luau_symbol_map"]),
+  scenario("dependency-risk", "dependency/install risk", "Audit dependency and install-script risk without installing packages.", ["vnem_tools_dependency_scan", "vnem_tools_package_risk_audit"]),
+  scenario("package-upgrade", "package upgrade planning", "Plan a safe package upgrade with changelog, compatibility, tests, and rollback.", ["vnem_tools_package_upgrade_plan", "vnem_tools_dependency_scan"], { rollback_expected: true }),
+  scenario("api-selection", "API selection and integration", "Select a suitable API, review trust and auth needs, then build an integration plan.", ["vnem_tools_api_catalog_search", "vnem_tools_api_integration_plan"]),
+  scenario("live-api", "approved live API execution", "Execute an explicitly approved allowlisted GET API request with redaction and evidence.", ["vnem_tools_api_request", "vnem_tools_evidence_pack"], { permission_expected: true }),
+  scenario("skill-selection", "skill selection", "Select a vetted skill for a repository task and explain why it fits.", ["vnem_tools_skill_catalog_search", "vnem_tools_skill_recommend"]),
+  scenario("skill-execution", "vetted skill execution", "Execute a reviewed local skill with bounded inputs, approval, and proof.", ["vnem_tools_skill_execute", "vnem_tools_evidence_pack"], { permission_expected: true, rollback_expected: true }),
+  scenario("client-install", "client installation", "Install VNEM into a detected Codex client with backup, validation, and no config clobbering.", ["vnem_tools_client_detect", "vnem_tools_client_install"], { permission_expected: true, rollback_expected: true }),
+  scenario("client-rollback", "client rollback", "Roll back a VNEM client config change from its exact backup and verify restoration.", ["vnem_tools_client_rollback", "vnem_tools_client_verify"], { permission_expected: true, rollback_expected: true }),
+  scenario("session-recovery", "context/session recovery", "Recover local branch, HEAD, dirty files, unpushed commits, and the safe next step after context loss.", ["vnem_tools_local_session_recovery"], { task_mode: "recovery" }),
+  scenario("evidence-pack", "evidence-pack generation", "Build a compact evidence packet with safe claims and explicit not-proven boundaries.", ["vnem_tools_evidence_pack"], { task_mode: "evidence_pack" }),
+  scenario("no-placebo", "no-placebo completion auditing", "Audit whether a claimed MCP feature has real handlers, behavior tests, and live proof.", ["vnem_tools_no_placebo_progress_audit", "vnem_tools_task_progress_truth_check"], { task_mode: "no_placebo" }),
+  scenario("current-docs", "current documentation retrieval", "Retrieve current official framework documentation with provenance and freshness limits.", ["vnem_tools_source_map", "vnem_tools_source_extract"], { permission_expected: true }),
+  scenario("structured-data", "structured data or database work", "Inspect a database schema, plan a read-only query, and validate structured results.", ["vnem_tools_database_schema_inspect", "vnem_tools_database_query"], { permission_expected: true }),
+  scenario("cloudflare", "Cloudflare deployment verification", "Verify an approved Cloudflare Pages deployment, remote status, and rollback guidance.", ["vnem_tools_cloudflare_deploy_verify", "vnem_tools_cloudflare_status"], { task_mode: "cloudflare", permission_expected: true, rollback_expected: true })
+];
+
+export const GIGA_SCENARIO_CATEGORIES = GIGA_SCENARIOS.map((item) => item.category);
