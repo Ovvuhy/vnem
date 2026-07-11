@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0.0",
+  "status": "run-doctor-to-refresh",
+  "root": "${VNEM_CHECKOUT}",
+  "portable_template": true,
+  "clients": [
+    "codex",
+    "claude",
+    "antigravity",
+    "generic"
+  ],
+  "servers": [
+    "vnem",
+    "vnem-tools"
+  ],
+  "note": "Run node scripts/vnem-install-adoption.mjs doctor to refresh this repo-local report."
+}

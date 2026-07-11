@@ -39,6 +39,7 @@ try {
   const toolNames = new Set(tools.tools.map((tool) => tool.name));
   for (const name of [
     "vnem_bootstrap",
+    "vnem_install_adoption_guide",
     "vnem_library_status",
     "vnem_search_skills",
     "vnem_recommend_skills",

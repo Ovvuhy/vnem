@@ -1,0 +1,29 @@
+# VNEM Codex MCP snippet.
+# Merge these tables into your existing Codex config.toml; do not replace unrelated settings.
+# This file is repo-local guidance only. It does not write to a Codex config path.
+# Portable template: replace ${VNEM_CHECKOUT} with the absolute checkout path, or run the local emitter.
+# Verify local CLI syntax with `codex mcp --help` before using any codex mcp command.
+
+[mcp_servers.vnem]
+command = "node"
+args = ["${VNEM_CHECKOUT}/scripts/vnem-mcp-server.mjs"]
+cwd = "${VNEM_CHECKOUT}"
+transport = "stdio"
+
+[mcp_servers.vnem.env]
+VNEM_ROOT = "${VNEM_CHECKOUT}"
+
+[mcp_servers.vnem-tools]
+command = "node"
+args = ["${VNEM_CHECKOUT}/scripts/vnem-tools-mcp-server.mjs"]
+cwd = "${VNEM_CHECKOUT}"
+transport = "stdio"
+
+[mcp_servers.vnem-tools.env]
+VNEM_TOOLS_ALLOWED_ROOTS = "${VNEM_CHECKOUT}"
+VNEM_TOOLS_EVIDENCE_ROOT = "${VNEM_CHECKOUT}/.vnem/tool-runs"
+VNEM_TOOLS_SKIP_WRANGLER_CHECK = "1"
+VNEM_TOOLS_GITHUB_ALLOW_DIRECT_PUSH = "0"
+VNEM_TOOLS_GITHUB_ALLOW_FORCE_PUSH = "0"
+VNEM_TOOLS_GITHUB_ALLOW_REPO_DELETE = "0"
+VNEM_TOOLS_GITHUB_ALLOW_SETTINGS_MUTATION = "0"

@@ -61,6 +61,7 @@ const toolsOrchestrator1RegressionTestPath = rel("scripts/test-tools-orchestrato
 const toolsCodeIntelligence1RegressionTestPath = rel("scripts/test-tools-code-intelligence-1-regression.mjs");
 const adoptionReliabilityTestPath = rel("scripts/test-vnem-adoption-reliability-1-regression.mjs");
 const adoptionReliability2TestPath = rel("scripts/test-vnem-adoption-reliability-2-regression.mjs");
+const installAdoptionTestPath = rel("scripts/test-vnem-install-adoption-1-regression.mjs");
 const coreResearchStrategyTestPath = rel("scripts/test-core-research-strategy.mjs");
 const coreSourceIngestionPlanningTestPath = rel("scripts/test-core-source-ingestion-planning.mjs");
 const researchEvidenceAuditTestPath = rel("scripts/test-research-evidence-audit.mjs");
@@ -127,6 +128,7 @@ const toolsOrchestrator1RegressionTest = existsSync(toolsOrchestrator1Regression
 const toolsCodeIntelligence1RegressionTest = existsSync(toolsCodeIntelligence1RegressionTestPath) ? readFileSync(toolsCodeIntelligence1RegressionTestPath, "utf8") : "";
 const adoptionReliabilityTest = existsSync(adoptionReliabilityTestPath) ? readFileSync(adoptionReliabilityTestPath, "utf8") : "";
 const adoptionReliability2Test = existsSync(adoptionReliability2TestPath) ? readFileSync(adoptionReliability2TestPath, "utf8") : "";
+const installAdoptionTest = existsSync(installAdoptionTestPath) ? readFileSync(installAdoptionTestPath, "utf8") : "";
 const coreResearchStrategyTest = existsSync(coreResearchStrategyTestPath) ? readFileSync(coreResearchStrategyTestPath, "utf8") : "";
 const coreSourceIngestionPlanningTest = existsSync(coreSourceIngestionPlanningTestPath) ? readFileSync(coreSourceIngestionPlanningTestPath, "utf8") : "";
 const researchEvidenceAuditTest = existsSync(researchEvidenceAuditTestPath) ? readFileSync(researchEvidenceAuditTestPath, "utf8") : "";
@@ -145,6 +147,8 @@ const requiredTools = [
   "vnem_tools_adoption_readiness",
   "vnem_tools_visibility_doctor",
   "vnem_tools_underuse_detector",
+  "vnem_tools_install_profile_emit",
+  "vnem_tools_install_doctor",
   "vnem_tools_permission_profiles",
   "vnem_tools_permission_status",
   "vnem_tools_reliability_catalog",
@@ -425,7 +429,15 @@ const report = {
     test_vnem_adoption_tools_visibility: pkg.scripts?.["test:vnem-adoption-tools-visibility"] === "node scripts/test-vnem-adoption-reliability-2-regression.mjs --case=tools-visibility-doctor",
     test_vnem_adoption_tools_underuse: pkg.scripts?.["test:vnem-adoption-tools-underuse"] === "node scripts/test-vnem-adoption-reliability-2-regression.mjs --case=tools-underuse-detector",
     test_vnem_adoption_cross_mcp: pkg.scripts?.["test:vnem-adoption-cross-mcp"] === "node scripts/test-vnem-adoption-reliability-2-regression.mjs --case=cross-mcp-registered-names",
-    test_vnem_adoption_reliability_2_regression: pkg.scripts?.["test:vnem-adoption-reliability-2-regression"] === "node scripts/test-vnem-adoption-reliability-2-regression.mjs"
+    test_vnem_adoption_reliability_2_regression: pkg.scripts?.["test:vnem-adoption-reliability-2-regression"] === "node scripts/test-vnem-adoption-reliability-2-regression.mjs",
+    vnem_install_doctor: pkg.scripts?.["vnem:install:doctor"] === "node scripts/vnem-install-adoption.mjs doctor",
+    vnem_install_emit: pkg.scripts?.["vnem:install:emit"] === "node scripts/vnem-install-adoption.mjs emit --all",
+    test_vnem_install_emit_generic: pkg.scripts?.["test:vnem-install-emit-generic"] === "node scripts/test-vnem-install-adoption-1-regression.mjs --case=emit-generic-profile",
+    test_vnem_install_emit_codex: pkg.scripts?.["test:vnem-install-emit-codex"] === "node scripts/test-vnem-install-adoption-1-regression.mjs --case=emit-codex-profile",
+    test_vnem_install_emit_claude: pkg.scripts?.["test:vnem-install-emit-claude"] === "node scripts/test-vnem-install-adoption-1-regression.mjs --case=emit-claude-profile",
+    test_vnem_install_emit_antigravity: pkg.scripts?.["test:vnem-install-emit-antigravity"] === "node scripts/test-vnem-install-adoption-1-regression.mjs --case=emit-antigravity-profile",
+    test_vnem_install_doctor: pkg.scripts?.["test:vnem-install-doctor"] === "node scripts/test-vnem-install-adoption-1-regression.mjs --case=install-doctor",
+    test_vnem_install_adoption_1_regression: pkg.scripts?.["test:vnem-install-adoption-1-regression"] === "node scripts/test-vnem-install-adoption-1-regression.mjs"
   },
   required_tools_present: Object.fromEntries(requiredTools.map((name) => [name, server.includes(`"${name}"`)])),
   mcp_config_tools_support: /--tools/.test(cli) && /VNEM_TOOLS_ALLOWED_ROOTS/.test(cli) && /VNEM_TOOLS_EVIDENCE_ROOT/.test(cli) && /vnem-tools-mcp-server/.test(cli),
@@ -505,6 +517,10 @@ const report = {
   tools_adoption_description_status: /tools-description-discovery/.test(adoptionReliability2Test) && /first-call entrypoint/.test(server) && /recommend and route/.test(server),
   tools_registered_name_validation_2_status: /cross-mcp-registered-names/.test(adoptionReliability2Test) && /returned unregistered/.test(adoptionReliability2Test),
   tools_adoption_reliability_2_status: /underuse_detection_supported/.test(server) && /vnem Tools ADOPTION-RELIABILITY-2/.test(adoptionReliability2Test),
+  tools_install_profile_emit_status: /vnem_tools_install_profile_emit/.test(server) && /emitInstallAdoptionProfile/.test(server) && /mcp-tools-profile-emit/.test(installAdoptionTest),
+  tools_install_doctor_status: /vnem_tools_install_doctor/.test(server) && /installAdoptionDoctor/.test(server) && /mcp-tools-install-doctor/.test(installAdoptionTest),
+  tools_install_profile_validation_status: /no-secret-leak/.test(installAdoptionTest) && /no-hidden-control-chars/.test(installAdoptionTest) && /config-parseability/.test(installAdoptionTest) && /both-mcps-present/.test(installAdoptionTest),
+  tools_install_adoption_1_status: /test:vnem-install-adoption-1-regression/.test(JSON.stringify(pkg.scripts)) && /vnem_tools_install_profile_emit/.test(server) && /vnem_tools_install_doctor/.test(server),
   tools_manifest_status: /vnem_tools_manifest/.test(server) && /buildToolsManifest/.test(server) && /capability_group/.test(server) && /unsafe_actions_not_supported/.test(server) && /tool_catalog_policy/.test(server) && /vnem_tools_manifest/.test(intelligenceTest),
   workspace_map_status: /vnem_tools_workspace_map/.test(server) && /safeWorkspaceMap/.test(server) && /important_dirs/.test(server) && /likely_entrypoints/.test(intelligenceTest) && /secret_path_blocked|skipped_paths/.test(intelligenceTest),
   read_many_files_status: /vnem_tools_read_many_files/.test(server) && /safeReadManyFiles/.test(server) && /max_total_bytes/.test(server) && /blocked_files/.test(intelligenceTest),
@@ -776,7 +792,15 @@ for (const [key, value] of Object.entries({
   test_vnem_adoption_tools_visibility: report.package_scripts.test_vnem_adoption_tools_visibility,
   test_vnem_adoption_tools_underuse: report.package_scripts.test_vnem_adoption_tools_underuse,
   test_vnem_adoption_cross_mcp: report.package_scripts.test_vnem_adoption_cross_mcp,
-  test_vnem_adoption_reliability_2_regression: report.package_scripts.test_vnem_adoption_reliability_2_regression
+  test_vnem_adoption_reliability_2_regression: report.package_scripts.test_vnem_adoption_reliability_2_regression,
+  vnem_install_doctor: report.package_scripts.vnem_install_doctor,
+  vnem_install_emit: report.package_scripts.vnem_install_emit,
+  test_vnem_install_emit_generic: report.package_scripts.test_vnem_install_emit_generic,
+  test_vnem_install_emit_codex: report.package_scripts.test_vnem_install_emit_codex,
+  test_vnem_install_emit_claude: report.package_scripts.test_vnem_install_emit_claude,
+  test_vnem_install_emit_antigravity: report.package_scripts.test_vnem_install_emit_antigravity,
+  test_vnem_install_doctor: report.package_scripts.test_vnem_install_doctor,
+  test_vnem_install_adoption_1_regression: report.package_scripts.test_vnem_install_adoption_1_regression
 })) assert.equal(value, true, `${key} package script is missing`);
 for (const [key, value] of Object.entries({
   repo_deep_map_status: report.repo_deep_map_status,
@@ -818,7 +842,11 @@ for (const [key, value] of Object.entries({
   tools_underuse_detector_status: report.tools_underuse_detector_status,
   tools_adoption_description_status: report.tools_adoption_description_status,
   tools_registered_name_validation_2_status: report.tools_registered_name_validation_2_status,
-  tools_adoption_reliability_2_status: report.tools_adoption_reliability_2_status
+  tools_adoption_reliability_2_status: report.tools_adoption_reliability_2_status,
+  tools_install_profile_emit_status: report.tools_install_profile_emit_status,
+  tools_install_doctor_status: report.tools_install_doctor_status,
+  tools_install_profile_validation_status: report.tools_install_profile_validation_status,
+  tools_install_adoption_1_status: report.tools_install_adoption_1_status
 })) assert.equal(value, true, `${key} readiness missing`);
 for (const [name, present] of Object.entries(report.required_tools_present)) assert.equal(present, true, `missing required tool ${name}`);
 assert.equal(report.dry_run_default, true, "dry-run defaults are missing");
@@ -974,7 +1002,7 @@ console.log(`ui_no_hidden_browser_status: ${yes(report.ui_no_hidden_browser_stat
 console.log(`ui_visual_claim_audit_status: ${yes(report.ui_visual_claim_audit_status)}`);
 for (const key of ["github_autonomy_status", "github_settings_guide_status", "github_profile_status", "github_status_tool_status", "github_repo_inspect_status", "github_repo_intelligence_status", "github_branch_status", "github_commit_push_status", "github_pr_status", "github_issue_status", "github_labels_status", "github_actions_status", "github_ci_triage_status", "github_pr_quality_gate_status", "github_task_progress_truth_check_status", "github_config_header_status", "github_profile_maintainer_default_status", "github_force_push_block_default_status", "github_repo_delete_block_default_status", "github_secret_commit_block_status", "github_real_exec_status", "github_gh_auth_detection_status", "github_git_command_status", "github_branch_real_exec_status", "github_commit_push_real_exec_status", "github_pr_real_exec_status", "github_issue_real_exec_status", "github_label_real_exec_status", "github_actions_real_exec_status", "github_ci_logs_status", "github_release_draft_status", "github_dry_run_status", "github_config_knob_status", "github_secret_file_block_status", "github_real_execution_not_only_simulated_status", "autonomy_efficiency_status"]) console.log(`${key}: ${yes(report[key])}`);
 for (const key of ["repo_deep_map_status", "next_action_ranker_status", "no_placebo_progress_audit_status", "change_impact_plan_status", "test_selection_plan_status", "failure_triage_status", "evidence_pack_status", "power_tools_1_status", "power_tools_2_dogfood_status", "ranking_quality_tuning_status", "no_placebo_strictness_status", "test_selection_efficiency_status", "evidence_pack_proof_packet_status", "failure_triage_specificity_status", "power_tools_2_status", "local_session_recovery_status", "power_session_1_status", "workflow_orchestrator_tool_status", "workflow_orchestrator_behavior_status", "workflow_orchestrator_no_placebo_status", "workflow_orchestrator_proof_packet_status", "orchestrator_1_status", "code_symbol_map_status", "mcp_surface_audit_status", "patch_target_finder_status", "tool_test_coverage_map_status", "source_impact_trace_status", "source_control_character_guard_status", "code_intelligence_1_status"]) console.log(`${key}: ${yes(report[key])}`);
-for (const key of ["tools_entrypoint_status", "tools_capability_router_status", "tools_adoption_readiness_status", "tools_exact_call_sequence_status", "tools_registered_call_validation_status", "tools_adoption_reliability_status", "tools_visibility_doctor_status", "tools_underuse_detector_status", "tools_adoption_description_status", "tools_registered_name_validation_2_status", "tools_adoption_reliability_2_status"]) console.log(`${key}: ${yes(report[key])}`);
+for (const key of ["tools_entrypoint_status", "tools_capability_router_status", "tools_adoption_readiness_status", "tools_exact_call_sequence_status", "tools_registered_call_validation_status", "tools_adoption_reliability_status", "tools_visibility_doctor_status", "tools_underuse_detector_status", "tools_adoption_description_status", "tools_registered_name_validation_2_status", "tools_adoption_reliability_2_status", "tools_install_profile_emit_status", "tools_install_doctor_status", "tools_install_profile_validation_status", "tools_install_adoption_1_status"]) console.log(`${key}: ${yes(report[key])}`);
 for (const key of ["cloudflare_control_status", "cloudflare_auth_status_tool_status", "cloudflare_auth_plan_status", "cloudflare_discovery_status", "cloudflare_pages_deploy_status", "cloudflare_workers_deploy_status", "cloudflare_dns_status", "cloudflare_env_secrets_status", "cloudflare_verify_status", "cloudflare_rollback_status", "cloudflare_cache_purge_status", "cloudflare_approval_gate_status", "cloudflare_destructive_approval_status", "cloudflare_secret_redaction_status", "cloudflare_evidence_pack_status", "general_tools_evidence_pack_audit_status", "general_tools_mutation_approval_contract_status", "general_tools_secret_redaction_check_status"]) console.log(`${key}: ${yes(report[key])}`);
 console.log(`parallel_fake_system_detection_status: ${yes(report.parallel_fake_system_detection_status)}`);
 console.log(`dead_code_warning_status: ${yes(report.dead_code_warning_status)}`);

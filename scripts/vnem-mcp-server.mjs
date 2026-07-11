@@ -36,6 +36,7 @@ import {
   searchSkills,
   skillSafetyProfile
 } from "./lib/super-library.mjs";
+import { buildInstallAdoptionGuide, formatInstallAdoptionGuide } from "./vnem-install-adoption.mjs";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = process.env.VNEM_ROOT
@@ -84,6 +85,7 @@ const DEFAULT_MCP_TOOLS = [
   "vnem_usage_contract",
   "vnem_mcp_visibility_doctor",
   "vnem_underuse_detector",
+  "vnem_install_adoption_guide",
   "vnem_library_status",
   "vnem_search_skills",
   "vnem_recommend_skills",
@@ -310,6 +312,24 @@ function registerTools(mcpServer) {
     async (args) => {
       const detector = buildCoreUnderuseDetector(args);
       return toolResult(formatCoreUnderuseDetector(detector), { underuse_detector: detector });
+    }
+  );
+
+  mcpServer.registerTool(
+    "vnem_install_adoption_guide",
+    {
+      title: "VNEM Install Adoption Guide",
+      description:
+        "VNEM Core MCP install adoption guide for connecting both Core and Tools MCP to Codex, Claude, Antigravity-style IDE agents, and generic MCP stdio clients without guessing config paths or writing outside the repo.",
+      inputSchema: {
+        client: z.enum(["codex", "claude", "antigravity", "generic"]).default("generic"),
+        root: z.string().default(rootDir).describe("VNEM checkout root used for generated MCP command paths.")
+      },
+      annotations: READ_ONLY
+    },
+    async (args) => {
+      const guide = buildInstallAdoptionGuide({ client: args.client, root: args.root || rootDir });
+      return toolResult(formatInstallAdoptionGuide(guide), { install_adoption_guide: guide });
     }
   );
 
@@ -3903,7 +3923,7 @@ function formatCoreToolsPlan(plan) {
   return [`vnem_build_tools_plan: ${plan.task_type}`, `Steps: ${plan.tool_sequence.map((step) => step.tool).join(" -> ")}`, "Core executes tools: false"].join("\n");
 }
 
-const CORE_ADOPTION_ENTRYPOINTS = ["vnem_entrypoint", "vnem_usage_contract", "vnem_mcp_visibility_doctor", "vnem_underuse_detector"];
+const CORE_ADOPTION_ENTRYPOINTS = ["vnem_entrypoint", "vnem_usage_contract", "vnem_mcp_visibility_doctor", "vnem_underuse_detector", "vnem_install_adoption_guide"];
 const TOOLS_ADOPTION_ENTRYPOINTS = ["vnem_tools_entrypoint", "vnem_tools_capability_router", "vnem_tools_adoption_readiness", "vnem_tools_visibility_doctor", "vnem_tools_underuse_detector"];
 
 function buildCoreVisibilityDoctor(args = {}) {

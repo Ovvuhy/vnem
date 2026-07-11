@@ -8,6 +8,13 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
+import {
+  emitAllInstallAdoptionProfiles,
+  emitInstallAdoptionProfile,
+  formatInstallDoctor,
+  formatInstallProfileEmit,
+  installAdoptionDoctor
+} from "./vnem-install-adoption.mjs";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(scriptDir, "..");
@@ -19,6 +26,8 @@ const REQUIRED_TOOL_NAMES = [
   "vnem_tools_adoption_readiness",
   "vnem_tools_visibility_doctor",
   "vnem_tools_underuse_detector",
+  "vnem_tools_install_profile_emit",
+  "vnem_tools_install_doctor",
   "vnem_tools_permission_profiles",
   "vnem_tools_permission_status",
   "vnem_tools_reliability_catalog",
@@ -308,6 +317,42 @@ function registerTools(mcpServer) {
       const detector = toolsUnderuseDetector(args);
       return toolResult(formatToolsUnderuseDetector(detector), { tools_underuse_detector: detector });
     }
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_install_profile_emit",
+    {
+      title: "VNEM Tools Install Profile Emit",
+      description: "VNEM Tools MCP first-call install adoption route: emit repo-local Core+Tools MCP profiles for Codex, Claude, Antigravity-style, or generic clients, with repo/code/proof next action guidance and no external config writes.",
+      inputSchema: {
+        root: z.string().default(repoRoot),
+        client: z.enum(["codex", "claude", "antigravity", "generic", "all"]).default("generic")
+      },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const result = args.client === "all"
+        ? await emitAllInstallAdoptionProfiles({ root: args.root || repoRoot })
+        : await emitInstallAdoptionProfile({ client: args.client, root: args.root || repoRoot });
+      return toolResult(formatInstallProfileEmit(result), { install_profile_emit: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_install_doctor",
+    {
+      title: "VNEM Tools Install Doctor",
+      description: "VNEM Tools MCP first-call install doctor route: validate Core+Tools MCP profile setup, repo/code/proof next action readiness, tool entrypoints, no secrets, no hidden control chars, and safe repo-local behavior.",
+      inputSchema: {
+        root: z.string().default(repoRoot),
+        emit: z.boolean().default(true)
+      },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const report = await installAdoptionDoctor({ root: args.root || repoRoot, emit: args.emit !== false, writeReport: true });
+      return toolResult(formatInstallDoctor(report), { install_doctor: report });
+    })
   );
 
   mcpServer.registerTool(
@@ -1948,7 +1993,7 @@ function toolsVisibilityDoctor(args = {}) {
   const catalog = buildToolCatalog();
   const names = new Set(catalog.map((tool) => tool.name));
   const availableToolNames = new Set(arrayify(args.available_tool_names).map((name) => String(name)));
-  const entrypoints = ["vnem_tools_entrypoint", "vnem_tools_capability_router", "vnem_tools_adoption_readiness", "vnem_tools_visibility_doctor", "vnem_tools_underuse_detector"];
+  const entrypoints = ["vnem_tools_entrypoint", "vnem_tools_capability_router", "vnem_tools_adoption_readiness", "vnem_tools_visibility_doctor", "vnem_tools_underuse_detector", "vnem_tools_install_profile_emit", "vnem_tools_install_doctor"];
   const powerLayers = {
     repo_power: ["vnem_tools_repo_deep_map", "vnem_tools_failure_triage", "vnem_tools_evidence_pack"].every((tool) => names.has(tool)),
     code_intelligence: ["vnem_tools_code_symbol_map", "vnem_tools_patch_target_finder", "vnem_tools_source_impact_trace"].every((tool) => names.has(tool)),
@@ -2031,6 +2076,8 @@ function toolsWeakAdoptionDescriptions(catalog) {
     "vnem_tools_adoption_readiness",
     "vnem_tools_visibility_doctor",
     "vnem_tools_underuse_detector",
+    "vnem_tools_install_profile_emit",
+    "vnem_tools_install_doctor",
     "vnem_tools_repo_deep_map",
     "vnem_tools_code_symbol_map",
     "vnem_tools_mcp_surface_audit",
@@ -2427,7 +2474,7 @@ function statusObject() {
     blocked_paths: [".env*", "*secret*", "*token*", "*credential*", "*key*", ".git", "node_modules", "dist", "build"],
     command_allowlist: ["node --check <file>", "npm test", "npm run <safe-script>", "git status", "git diff", "git log", "git ls-files"],
     tool_catalog_policy: { tool: "vnem_tools_manifest", capability_groups: TOOL_CAPABILITY_GROUPS, safety_metadata_required: true, core_handoff_compatible: true },
-    adoption_reliability_policy: { tools: ["vnem_tools_entrypoint", "vnem_tools_capability_router", "vnem_tools_adoption_readiness", "vnem_tools_visibility_doctor", "vnem_tools_underuse_detector"], core_handoff_compatible: true, exact_registered_tool_names_only: true, compact_default: true, no_fake_vnem_control: true, underuse_detection_supported: true, source_control_guard_recommended: true },
+    adoption_reliability_policy: { tools: ["vnem_tools_entrypoint", "vnem_tools_capability_router", "vnem_tools_adoption_readiness", "vnem_tools_visibility_doctor", "vnem_tools_underuse_detector", "vnem_tools_install_profile_emit", "vnem_tools_install_doctor"], core_handoff_compatible: true, exact_registered_tool_names_only: true, compact_default: true, no_fake_vnem_control: true, underuse_detection_supported: true, source_control_guard_recommended: true, install_profile_emit_supported: true, install_doctor_supported: true },
     filesystem_intelligence_policy: { tools: ["vnem_tools_workspace_map", "vnem_tools_read_many_files", "vnem_tools_code_search", "vnem_tools_find_references", "vnem_tools_dependency_scan"], allowed_roots_only: true, secret_paths_blocked: true, generated_build_cache_skipped: true, evidence_logged: true },
     repo_power_policy: { tools: ["vnem_tools_repo_deep_map", "vnem_tools_next_action_ranker", "vnem_tools_no_placebo_progress_audit", "vnem_tools_change_impact_plan", "vnem_tools_test_selection_plan", "vnem_tools_failure_triage", "vnem_tools_evidence_pack", "vnem_tools_local_session_recovery", "vnem_tools_repo_workflow_orchestrator", "vnem_tools_code_symbol_map", "vnem_tools_mcp_surface_audit", "vnem_tools_patch_target_finder", "vnem_tools_tool_test_coverage_map", "vnem_tools_source_impact_trace", "vnem_tools_source_control_character_guard"], allowed_roots_only: true, secret_paths_blocked: true, compact_structured_output: true, no_live_github_required: true, no_placebo_detection: true, test_selection_avoids_overvalidation: true, local_session_recovery_supported: true, workflow_orchestrator_supported: true, code_intelligence_supported: true, source_control_character_guard_supported: true },
     research_sources_policy: { tools: ["vnem_tools_fetch_url_text", "vnem_tools_source_quality_check", "vnem_tools_research_brief", "vnem_tools_browser_research_pack", "vnem_tools_claim_source_matrix", "vnem_tools_research_gap_detector", "vnem_tools_source_map", "vnem_tools_source_extract", "vnem_tools_source_graph"], no_search_engine_scraping: true, external_fetch_dry_run_default: true, approval_required_for_real_external_fetch: true, no_login_cookie_session_use: true },
@@ -2697,6 +2744,8 @@ function buildToolCatalog() {
     mk("vnem_tools_adoption_readiness", "adoption_reliability", { description: "VNEM Tools MCP adoption readiness check for first-call entrypoint recommend route tools repo code debug test proof GitHub CI patch MCP next action discoverability, contracts, and no-placebo markers.", evidence_logged: false, allowed_roots_required: true, typical_use_cases: ["verify Tools discoverability", "check Core handoff compatibility", "audit adoption hooks"] }),
     mk("vnem_tools_visibility_doctor", "adoption_reliability", { description: "VNEM Tools MCP first-call entrypoint visibility doctor to recommend and route next action across repo, code, debug, test, proof, GitHub, CI, patch, MCP routes with registered tool count and adoption score.", evidence_logged: false, allowed_roots_required: false, typical_use_cases: ["prove Tools MCP is alive", "diagnose weak discoverability", "choose first Tools call"] }),
     mk("vnem_tools_underuse_detector", "adoption_reliability", { description: "VNEM Tools MCP first-call entrypoint underuse detector to recommend and route next action for repo, code, debug, test, proof, GitHub, CI, patch, MCP, browser, recovery, and evidence tasks with exact registered recovery calls.", evidence_logged: false, allowed_roots_required: false, typical_use_cases: ["detect missing Tools calls", "recover from underuse", "pressure AI clients to use VNEM Tools"] }),
+    mk("vnem_tools_install_profile_emit", "adoption_reliability", { description: "VNEM Tools MCP first-call install adoption route: emit repo-local Core and Tools MCP profiles for Codex, Claude, Antigravity-style IDE agents, and generic clients with repo code proof next action guidance and no external config writes.", evidence_logged: false, allowed_roots_required: false, typical_use_cases: ["generate MCP client config snippets", "adopt VNEM in AI clients", "avoid overwriting user config"] }),
+    mk("vnem_tools_install_doctor", "adoption_reliability", { description: "VNEM Tools MCP first-call install doctor route: validate Core and Tools MCP profile setup, repo code proof next action readiness, tool entrypoints, no secrets, no hidden control characters, parseability, and safe next steps.", evidence_logged: false, allowed_roots_required: false, typical_use_cases: ["verify MCP install profiles", "prove install kit is not placebo", "diagnose missing profile files"] }),
     mk("vnem_tools_permission_profiles", "permissions", { description: "List all first-class Tools MCP permission profiles and allow/block/approval policies.", evidence_logged: false, allowed_roots_required: false, typical_use_cases: ["permission planning", "profile discovery"] }),
     mk("vnem_tools_permission_status", "permissions", { description: "Report active profile, allowed roots, evidence root, localhost policy, provider presence, blocked categories, root warnings, high-power summary, Cloudflare summary, approval phrases, and known blocked actions.", evidence_logged: false, allowed_roots_required: false, typical_use_cases: ["permission preflight", "allowed-root debugging"] }),
     mk("vnem_tools_reliability_catalog", "tool_intelligence", { description: "List major Tools MCP tools with reliability levels, tested_with, safe/unsafe claims, known limits, and next validation step.", evidence_logged: false, allowed_roots_required: false, typical_use_cases: ["avoid fake confidence", "choose proven tools"] }),

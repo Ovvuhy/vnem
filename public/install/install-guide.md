@@ -1,6 +1,6 @@
 # vnem Install And MCP Guide
 
-Generated: 2026-07-08T20:23:36.071Z
+Generated: 2026-07-08T21:12:40.970Z
 
 A compact setup guide for downloading the read-only vnem pack, installing it into an existing repo without overwriting local agent instructions, and connecting the local stdio MCP server with generated JSON config.
 
@@ -65,6 +65,15 @@ For client config, generate absolute-path JSON from the checkout:
 node scripts/vnem-cli.mjs mcp-config
 node scripts/vnem-cli.mjs mcp-config --server-json
 ```
+
+For client-specific Core+Tools MCP adoption profiles, emit repo-local snippets without writing to Codex, Claude, Antigravity-style, or generic MCP client config paths:
+
+```bash
+node scripts/vnem-install-adoption.mjs emit --all
+node scripts/vnem-install-adoption.mjs doctor
+```
+
+The emitted profiles live under `.vnem/install-adoption/` and include both `vnem` and `vnem-tools`; merge/import only the profile for the client you use.
 
 Opt-in precision MCP config for a project that should allow exact patching, current-doc fetching, and safe terminal feedback:
 

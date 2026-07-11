@@ -215,6 +215,7 @@ const localSourceRadar = await readJson(path.join(localPackDir, "source-radar.js
 const localPromptPatterns = await readJson(path.join(localPackDir, "prompt-patterns.json"));
 const apiIndex = await readJson(path.join(ROOT, "public", "api", "index.json"));
 const installArchive = await readFile(path.join(ROOT, "public", "install.tgz"));
+const installArchiveText = gunzipSync(installArchive).toString("utf8");
 
 assert(agents.includes("Project Review Protocol"), "AGENTS.md must include the project review protocol.");
 assert(agents.includes("Natural Use Rule"), "AGENTS.md must tell agents to auto-use vnem naturally.");
@@ -246,10 +247,23 @@ assert(
     ".vnem/best-practices.md",
     ".vnem/agent-workspace.md",
     ".vnem/prompt-engineering.md",
-    ".vnem/prompt-patterns.json"
+    ".vnem/prompt-patterns.json",
+    ".vnem/install-adoption/codex/config-snippet.toml",
+    ".vnem/install-adoption/codex/README.md",
+    ".vnem/install-adoption/claude/mcp.json",
+    ".vnem/install-adoption/claude/README.md",
+    ".vnem/install-adoption/antigravity/mcp.json",
+    ".vnem/install-adoption/antigravity/README.md",
+    ".vnem/install-adoption/generic/mcp.json",
+    ".vnem/install-adoption/generic/README.md",
+    ".vnem/install-adoption/prompts/vnem-agent-use-instruction.md",
+    ".vnem/install-adoption/verify/install-doctor-report.json"
   ]),
-  "install archive must extract root AGENTS.md plus the eighteen read-only pack files."
+  "install archive must extract root AGENTS.md, the read-only pack files, and the repo-local install adoption profiles."
 );
+assert(!/[A-Za-z]:\\Users\\/i.test(installArchiveText), "install archive must not contain a machine-specific Windows user path.");
+assert(!/C:\\VNEM/i.test(installArchiveText), "install archive must not contain the maintainer's local checkout path.");
+assert(installArchiveText.includes("${VNEM_CHECKOUT}"), "install archive must contain portable VNEM checkout placeholders.");
 assert(agents.includes("operating-protocol.md"), "AGENTS.md must tell agents to read the operating protocol.");
 assert(agents.includes("install-guide.md"), "AGENTS.md must mention the install guide.");
 assert(agents.includes("quality-contract.md"), "AGENTS.md must tell agents to read the quality contract.");

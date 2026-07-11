@@ -56,6 +56,7 @@ const toolsSourceGraphTestSource = await text("scripts/test-tools-source-graph.m
 const mcpUserSmokeTestSource = await text("scripts/test-mcp-user-smoke.mjs");
 const adoptionReliabilityTestSource = await text("scripts/test-vnem-adoption-reliability-1-regression.mjs");
 const adoptionReliability2TestSource = await text("scripts/test-vnem-adoption-reliability-2-regression.mjs");
+const installAdoptionTestSource = await text("scripts/test-vnem-install-adoption-1-regression.mjs");
 const readme = await text("README.md");
 const installGuide = await text(".vnem/install-guide.md");
 const packageJson = await json("package.json");
@@ -231,6 +232,12 @@ const coreAdoptionReliabilityStatus = {
   core_adoption_reliability_2_status: /vnem_mcp_visibility_doctor/.test(serverSource) && /vnem_underuse_detector/.test(serverSource) && /vnem Tools ADOPTION-RELIABILITY-2/.test(adoptionReliability2TestSource)
 };
 
+const coreInstallAdoptionStatus = {
+  core_install_adoption_guide_status: toolInventory.includes("vnem_install_adoption_guide") && /buildInstallAdoptionGuide/.test(serverSource) && /mcp-core-install-guide/.test(installAdoptionTestSource),
+  core_install_profile_guidance_status: /Codex|Claude|Antigravity-style|generic MCP stdio/.test(serverSource) && /emit-codex-profile/.test(installAdoptionTestSource) && /emit-claude-profile/.test(installAdoptionTestSource),
+  core_install_adoption_1_status: /vnem_install_adoption_guide/.test(serverSource) && /test:vnem-install-adoption-1-regression/.test(JSON.stringify(packageJson.scripts)) && /both-mcps-present/.test(installAdoptionTestSource)
+};
+
 assert.ok(toolInventory.includes("vnem_api_safety_profile"), "Core MCP API safety profile tool is missing");
 assert.ok(toolInventory.includes("vnem_skill_safety_profile"), "Core MCP skill safety profile tool is missing");
 assert.equal(forbiddenCoreTools.length, 0, `Default Core MCP exposes high-power-looking tool names: ${forbiddenCoreTools.join(", ")}`);
@@ -255,6 +262,7 @@ assert.ok(Object.values(coreDebuggingCodeQualityStatus).every(Boolean), "Core de
 assert.ok(Object.values(coreUiWebQualityStatus).every(Boolean), "Core UI/web quality readiness is incomplete");
 assert.ok(Object.values(coreAdaptiveSpeedDesignStatus).every(Boolean), "Core adaptive effort / speed-design readiness is incomplete");
 assert.ok(Object.values(coreAdoptionReliabilityStatus).every(Boolean), "Core adoption reliability readiness is incomplete");
+assert.ok(Object.values(coreInstallAdoptionStatus).every(Boolean), "Core install adoption readiness is incomplete");
 assert.ok(packageJson.scripts?.["test:core-adaptive-effort"] === "node scripts/test-core-adaptive-effort.mjs", "test:core-adaptive-effort package script is missing");
 assert.ok(packageJson.scripts?.["test:core-fast-answer-contract"] === "node scripts/test-core-fast-answer-contract.mjs", "test:core-fast-answer-contract package script is missing");
 assert.ok(packageJson.scripts?.["test:core-anti-overhead-audit"] === "node scripts/test-core-anti-overhead-audit.mjs", "test:core-anti-overhead-audit package script is missing");
@@ -332,6 +340,7 @@ const report = {
   core_ui_web_quality_status: coreUiWebQualityStatus,
   core_adaptive_speed_design_status: coreAdaptiveSpeedDesignStatus,
   core_adoption_reliability_status: coreAdoptionReliabilityStatus,
+  core_install_adoption_status: coreInstallAdoptionStatus,
   core_adoption_reliability_2_test_exists: existsSync(rel("scripts/test-vnem-adoption-reliability-2-regression.mjs")),
   core_tools_ecosystem_test_status: /vnem_build_tools_plan/.test(coreToolsEcosystemTestSource) && /vnem_tools_finish_session/.test(coreToolsEcosystemTestSource),
   api_library_counts: apiCounts,
@@ -357,7 +366,8 @@ const report = {
     "Core now classifies adaptive effort, enforces fast-answer/no-ceremony contracts, harsh-truth uncertainty labels, design ambition, visual taste audits, and wasted-tool/anti-overhead checks while remaining plan-only.",
     "Core now adds realistic redesign comparison scorecards, total-impact design planning, total-impact direction selection, compact output contracts, and SPEED-DESIGN-2 audit flags while remaining plan-only.",
     "Core now exposes a compact adoption entrypoint and usage contract that recommend exact Tools MCP handoff calls without claiming Core can execute them.",
-    "Core now exposes visibility and underuse diagnostics that detect missing VNEM/Tools usage and return exact registered recovery calls."
+    "Core now exposes visibility and underuse diagnostics that detect missing VNEM/Tools usage and return exact registered recovery calls.",
+    "Core now exposes install adoption guidance for Codex, Claude, Antigravity-style, and generic MCP stdio clients while staying read-only."
   ],
   not_ready: [
     "Most API docs, rate limits, CORS values, and freshness statuses remain metadata-level or unknown.",
@@ -441,6 +451,7 @@ function formatReport(report) {
   lines.push(`core_ui_web_quality_status: ${status(report.core_ui_web_quality_status)}`);
   lines.push(`core_adaptive_speed_design_status: ${status(report.core_adaptive_speed_design_status)}`);
   lines.push(`core_adoption_reliability_status: ${status(report.core_adoption_reliability_status)}`);
+  lines.push(`core_install_adoption_status: ${status(report.core_install_adoption_status)}`);
   lines.push(`core_tools_ecosystem_test_status: ${report.core_tools_ecosystem_test_status ? "yes" : "no"}`);
   lines.push(`real_task_examples_tested: ${report.task_boosting_status.real_task_examples_tested.join(", ")}`);
   lines.push(`api_counts: total=${report.api_library_counts.total_apis}, docs_verified=${report.api_library_counts.docs_verified_count}, docs_unknown=${report.api_library_counts.docs_unknown_count}, rate_limit_verified=${report.api_library_counts.rate_limit_verified_count}, rate_limit_unknown=${report.api_library_counts.rate_limit_unknown_count}, cors_unknown=${report.api_library_counts.cors_unknown_count}, frontend_safe=${report.api_library_counts.frontend_safe_count}, backend_required=${report.api_library_counts.backend_required_count}`);

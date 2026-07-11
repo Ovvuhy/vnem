@@ -27,7 +27,17 @@ const packFiles = [
   "best-practices.md",
   "agent-workspace.md",
   "prompt-engineering.md",
-  "prompt-patterns.json"
+  "prompt-patterns.json",
+  "install-adoption/codex/config-snippet.toml",
+  "install-adoption/codex/README.md",
+  "install-adoption/claude/mcp.json",
+  "install-adoption/claude/README.md",
+  "install-adoption/antigravity/mcp.json",
+  "install-adoption/antigravity/README.md",
+  "install-adoption/generic/mcp.json",
+  "install-adoption/generic/README.md",
+  "install-adoption/prompts/vnem-agent-use-instruction.md",
+  "install-adoption/verify/install-doctor-report.json"
 ];
 const blockStart = "<!-- vnem:start -->";
 const blockEnd = "<!-- vnem:end -->";
@@ -79,7 +89,9 @@ async function installCommand(rawArgs) {
   await mkdir(path.join(targetDir, ".vnem"), { recursive: true });
 
   for (const fileName of packFiles) {
-    await copyFile(path.join(packDir, fileName), path.join(targetDir, ".vnem", fileName));
+    const targetFile = path.join(targetDir, ".vnem", fileName);
+    await mkdir(path.dirname(targetFile), { recursive: true });
+    await copyFile(path.join(packDir, fileName), targetFile);
   }
 
   if (options.rootAgents) {

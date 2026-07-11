@@ -63,6 +63,8 @@ try {
   const toolNames = new Set(listed.tools.map((tool) => tool.name));
   const requiredTools = [
     "vnem_tools_status",
+    "vnem_tools_install_profile_emit",
+    "vnem_tools_install_doctor",
     "vnem_tools_prepare_action_plan",
     "vnem_tools_permission_prompt",
     "vnem_tools_read_file",

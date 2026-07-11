@@ -1,0 +1,32 @@
+{
+  "mcpServers": {
+    "vnem": {
+      "command": "node",
+      "args": [
+        "${VNEM_CHECKOUT}/scripts/vnem-mcp-server.mjs"
+      ],
+      "cwd": "${VNEM_CHECKOUT}",
+      "transport": "stdio",
+      "env": {
+        "VNEM_ROOT": "${VNEM_CHECKOUT}"
+      }
+    },
+    "vnem-tools": {
+      "command": "node",
+      "args": [
+        "${VNEM_CHECKOUT}/scripts/vnem-tools-mcp-server.mjs"
+      ],
+      "cwd": "${VNEM_CHECKOUT}",
+      "transport": "stdio",
+      "env": {
+        "VNEM_TOOLS_ALLOWED_ROOTS": "${VNEM_CHECKOUT}",
+        "VNEM_TOOLS_EVIDENCE_ROOT": "${VNEM_CHECKOUT}/.vnem/tool-runs",
+        "VNEM_TOOLS_SKIP_WRANGLER_CHECK": "1",
+        "VNEM_TOOLS_GITHUB_ALLOW_DIRECT_PUSH": "0",
+        "VNEM_TOOLS_GITHUB_ALLOW_FORCE_PUSH": "0",
+        "VNEM_TOOLS_GITHUB_ALLOW_REPO_DELETE": "0",
+        "VNEM_TOOLS_GITHUB_ALLOW_SETTINGS_MUTATION": "0"
+      }
+    }
+  }
+}
