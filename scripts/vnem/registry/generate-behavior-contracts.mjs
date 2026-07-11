@@ -12,17 +12,24 @@ const tools = await connectMcp({ root, serverFile: "scripts/vnem-tools-mcp-serve
 const precision = await connectMcp({ root, serverFile: "scripts/vnem-precision-mcp-server.mjs", name: "vnem-behavior-contracts-precision" });
 
 try {
-  const [coreManifest, toolsManifest, precisionManifest, coverageCall] = await Promise.all([
+  const [coreManifest, toolsManifest, precisionManifest, coverageCall, toolsRegistryCall] = await Promise.all([
     core.client.listTools(),
     tools.client.listTools(),
     precision.client.listTools(),
-    callTimed(tools.client, "vnem_tools_tool_test_coverage_map", { root, max_tools: 160 })
+    callTimed(tools.client, "vnem_tools_tool_test_coverage_map", { root, max_tools: 240 }),
+    callTimed(tools.client, "vnem_tools_registry_status", {})
   ]);
   const coverage = coverageCall.structured?.tool_test_coverage_map || coverageCall.structured;
+  const runtimeTools = new Map((toolsRegistryCall.structured?.registry_status?.tools || []).map((tool) => [tool.name, tool]));
   const toolReferences = {};
   for (const tool of toolsManifest.tools) {
     const evidence = coverage?.per_tool?.[tool.name];
-    toolReferences[tool.name] = evidence?.coverage_level === "behavior_test" ? evidence.behavior_test_files || [] : [];
+    const runtimeReferences = runtimeTools.get(tool.name)?.behavior_test_references || [];
+    toolReferences[tool.name] = runtimeReferences.length
+      ? runtimeReferences
+      : evidence?.coverage_level === "behavior_test"
+        ? evidence.behavior_test_files || []
+        : [];
   }
   toolReferences.vnem_tools_registry_status = ["scripts/test-vnem-runtime-registry.mjs"];
   const report = {

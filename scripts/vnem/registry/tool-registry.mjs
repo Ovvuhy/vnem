@@ -81,7 +81,12 @@ export class ToolRegistry {
     for (const key of ["behavior_test_references", "benchmark_scenarios", "compatibility_aliases"]) {
       if (metadata[key]) entry[key] = [...new Set(metadata[key])];
     }
-    if (metadata.implementation_module) entry.implementation_module = metadata.implementation_module;
+    for (const key of ["implementation_module", "category", "side_effect_class", "network_behavior", "credential_behavior", "evidence_behavior", "output_contract"]) {
+      if (metadata[key] !== undefined) entry[key] = metadata[key];
+    }
+    for (const key of ["permission_requirements", "rollback_behavior", "deprecation_state"]) {
+      if (metadata[key] !== undefined) entry[key] = structuredClone(metadata[key]);
+    }
     return entry;
   }
 
@@ -115,7 +120,7 @@ export function attachToolRegistry(server, options) {
 function normalizeEntry({ name, version, definition, handler, implementationModule, metadata }) {
   const annotations = { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: false, ...(definition.annotations || {}) };
   const sideEffect = metadata.side_effect_class || inferSideEffect(name, annotations);
-  const network = metadata.network_behavior || (NETWORK_WORDS.test(name) ? "bounded_or_approved_network" : "none");
+  const network = metadata.network_behavior || (annotations.openWorldHint || NETWORK_WORDS.test(name) ? "bounded_or_approved_network" : "none");
   const evidence = metadata.evidence_behavior || (sideEffect === "read_only" ? "optional" : "required_redacted_record");
   return {
     name,

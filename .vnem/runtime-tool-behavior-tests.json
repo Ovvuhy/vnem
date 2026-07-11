@@ -667,6 +667,39 @@
       "vnem_tools_restore_backup": [
         "scripts/test-tools-mcp-server.mjs"
       ],
+      "vnem_tools_structural_code_search": [
+        "scripts/test-tools-precision-subsystem.mjs"
+      ],
+      "vnem_tools_exact_patch": [
+        "scripts/test-tools-precision-subsystem.mjs"
+      ],
+      "vnem_tools_unified_diff_apply": [
+        "scripts/test-tools-precision-subsystem.mjs"
+      ],
+      "vnem_tools_patch_transaction": [
+        "scripts/test-tools-precision-subsystem.mjs"
+      ],
+      "vnem_tools_patch_transaction_rollback": [
+        "scripts/test-tools-precision-subsystem.mjs"
+      ],
+      "vnem_tools_verification_loop": [
+        "scripts/test-tools-precision-subsystem.mjs"
+      ],
+      "vnem_tools_terminal_session": [
+        "scripts/test-tools-precision-subsystem.mjs"
+      ],
+      "vnem_tools_official_documentation_fetch": [
+        "scripts/test-tools-precision-subsystem.mjs"
+      ],
+      "vnem_tools_documentation_context": [
+        "scripts/test-tools-precision-subsystem.mjs"
+      ],
+      "vnem_tools_ephemeral_script": [
+        "scripts/test-tools-precision-subsystem.mjs"
+      ],
+      "vnem_tools_code_index_status": [
+        "scripts/test-tools-precision-subsystem.mjs"
+      ],
       "vnem_tools_registry_status": [
         "scripts/test-vnem-runtime-registry.mjs"
       ]

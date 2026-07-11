@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "source": "live MCP runtime registry status calls",
-  "total_tools": 204,
+  "total_tools": 215,
   "servers": {
     "core": {
       "schema_version": "1.0.0",
@@ -2432,7 +2432,7 @@
       "server_name": "vnem-tools",
       "version": "1.0.1",
       "valid": true,
-      "tool_count": 132,
+      "tool_count": 143,
       "alias_count": 0,
       "categories": {
         "action": 2,
@@ -2445,11 +2445,14 @@
         "captcha": 1,
         "change": 1,
         "cloudflare": 17,
-        "code": 2,
+        "code": 3,
         "dependency": 1,
+        "documentation": 1,
         "download": 1,
         "entrypoint": 1,
+        "ephemeral": 1,
         "evidence": 5,
+        "exact": 1,
         "failure": 1,
         "fetch": 1,
         "find": 1,
@@ -2465,7 +2468,8 @@
         "mutation": 1,
         "next": 1,
         "no": 1,
-        "patch": 1,
+        "official": 1,
+        "patch": 3,
         "permission": 3,
         "pr": 1,
         "prepare": 1,
@@ -2484,27 +2488,31 @@
         "start": 2,
         "status": 1,
         "stop": 1,
+        "structural": 1,
         "task": 1,
+        "terminal": 1,
         "test": 1,
         "tool": 1,
         "trust": 1,
         "ui": 1,
         "underuse": 1,
+        "unified": 1,
         "url": 1,
+        "verification": 1,
         "visibility": 1,
         "web": 1,
         "workspace": 1
       },
       "side_effect_classes": {
-        "destructive_mutation": 13,
+        "destructive_mutation": 20,
         "network_mutation": 16,
-        "read_only": 103
+        "read_only": 107
       },
       "validation": {
         "valid": true,
         "server_name": "vnem-tools",
         "version": "1.0.1",
-        "tool_count": 132,
+        "tool_count": 143,
         "alias_count": 0,
         "errors": [],
         "warnings": [
@@ -5141,10 +5149,10 @@
           },
           "side_effect_class": "read_only",
           "permission_requirements": [
-            "allowed_root_read"
+            "approved_network_read"
           ],
-          "network_behavior": "none",
-          "credential_behavior": "none",
+          "network_behavior": "bounded_or_approved_network",
+          "credential_behavior": "credential references only; values never returned",
           "evidence_behavior": "optional",
           "rollback_behavior": {
             "mode": "not_required",
@@ -5250,10 +5258,10 @@
           },
           "side_effect_class": "read_only",
           "permission_requirements": [
-            "allowed_root_read"
+            "approved_network_read"
           ],
-          "network_behavior": "none",
-          "credential_behavior": "none",
+          "network_behavior": "bounded_or_approved_network",
+          "credential_behavior": "credential references only; values never returned",
           "evidence_behavior": "optional",
           "rollback_behavior": {
             "mode": "not_required",
@@ -5984,10 +5992,10 @@
           },
           "side_effect_class": "read_only",
           "permission_requirements": [
-            "allowed_root_read"
+            "approved_network_read"
           ],
-          "network_behavior": "none",
-          "credential_behavior": "none",
+          "network_behavior": "bounded_or_approved_network",
+          "credential_behavior": "credential references only; values never returned",
           "evidence_behavior": "optional",
           "rollback_behavior": {
             "mode": "not_required",
@@ -7403,6 +7411,424 @@
           "input_schema_present": true
         },
         {
+          "name": "vnem_tools_structural_code_search",
+          "version": "1.0.1",
+          "title": "Structural Code Search",
+          "description": "Lazily build and incrementally update a local private language-aware code index, then return ranked semantic and structural matches with file, line, symbol, and snippet evidence.",
+          "category": "structural",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/precision/tools.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-precision-subsystem.mjs"
+          ],
+          "benchmark_scenarios": [
+            "precision shared runtime MCP behavior"
+          ],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_exact_patch",
+          "version": "1.0.1",
+          "title": "Exact Search Replace Patch",
+          "description": "Verify or atomically apply an exact search/replace patch with SHA-256 preconditions, task-scoped documentation gates, persisted evidence, and rollback support.",
+          "category": "exact",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": true,
+            "idempotentHint": false,
+            "openWorldHint": false
+          },
+          "side_effect_class": "destructive_mutation",
+          "permission_requirements": [
+            "approved_local_mutation"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "required_redacted_record",
+          "rollback_behavior": {
+            "mode": "required_or_explicitly_not_available",
+            "guidance": "Return backup, compensating action, or explicit rollback-unavailable state in evidence."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/precision/tools.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-precision-subsystem.mjs"
+          ],
+          "benchmark_scenarios": [
+            "precision shared runtime MCP behavior"
+          ],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_unified_diff_apply",
+          "version": "1.0.1",
+          "title": "Unified Diff Apply",
+          "description": "Verify or atomically apply exact unified-diff hunks with SHA-256 preconditions, persisted evidence, and rollback support.",
+          "category": "unified",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": true,
+            "idempotentHint": false,
+            "openWorldHint": false
+          },
+          "side_effect_class": "destructive_mutation",
+          "permission_requirements": [
+            "approved_local_mutation"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "required_redacted_record",
+          "rollback_behavior": {
+            "mode": "required_or_explicitly_not_available",
+            "guidance": "Return backup, compensating action, or explicit rollback-unavailable state in evidence."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/precision/tools.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-precision-subsystem.mjs"
+          ],
+          "benchmark_scenarios": [
+            "precision shared runtime MCP behavior"
+          ],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_patch_transaction",
+          "version": "1.0.1",
+          "title": "Atomic Multi-file Patch Transaction",
+          "description": "Verify or apply up to 25 exact patches as one atomic transaction; duplicate targets are rejected, partial failures roll back, and a local evidence manifest enables later rollback.",
+          "category": "patch",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": true,
+            "idempotentHint": false,
+            "openWorldHint": false
+          },
+          "side_effect_class": "destructive_mutation",
+          "permission_requirements": [
+            "approved_local_mutation"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "required_redacted_record",
+          "rollback_behavior": {
+            "mode": "required_or_explicitly_not_available",
+            "guidance": "Return backup, compensating action, or explicit rollback-unavailable state in evidence."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/precision/tools.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-precision-subsystem.mjs"
+          ],
+          "benchmark_scenarios": [
+            "precision shared runtime MCP behavior"
+          ],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_patch_transaction_rollback",
+          "version": "1.0.1",
+          "title": "Patch Transaction Rollback",
+          "description": "Restore every file from a persisted patch-transaction backup after verifying current hashes; refuses to overwrite later edits unless force is explicitly true.",
+          "category": "patch",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": true,
+            "idempotentHint": false,
+            "openWorldHint": false
+          },
+          "side_effect_class": "destructive_mutation",
+          "permission_requirements": [
+            "approved_local_mutation"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "required_redacted_record",
+          "rollback_behavior": {
+            "mode": "self",
+            "guidance": "The tool is itself a rollback operation and must verify the restored state."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/precision/tools.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-precision-subsystem.mjs"
+          ],
+          "benchmark_scenarios": [
+            "precision shared runtime MCP behavior"
+          ],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_verification_loop",
+          "version": "1.0.1",
+          "title": "Persistent Verification Loop",
+          "description": "Run bounded red, green, or check verification commands in a workspace-scoped terminal and persist task attempt state across server restarts.",
+          "category": "verification",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": true,
+            "idempotentHint": false,
+            "openWorldHint": false
+          },
+          "side_effect_class": "destructive_mutation",
+          "permission_requirements": [
+            "approved_local_mutation"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "required_redacted_record",
+          "rollback_behavior": {
+            "mode": "required_or_explicitly_not_available",
+            "guidance": "Return backup, compensating action, or explicit rollback-unavailable state in evidence."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/precision/tools.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-precision-subsystem.mjs"
+          ],
+          "benchmark_scenarios": [
+            "precision shared runtime MCP behavior"
+          ],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_terminal_session",
+          "version": "1.0.1",
+          "title": "Bounded Terminal Session",
+          "description": "Run one allowlisted build, test, check, or repository-inspection command in a stateful workspace-bounded session with captured output and explicit timeout evidence.",
+          "category": "terminal",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": true,
+            "idempotentHint": false,
+            "openWorldHint": false
+          },
+          "side_effect_class": "destructive_mutation",
+          "permission_requirements": [
+            "approved_local_mutation"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "required_redacted_record",
+          "rollback_behavior": {
+            "mode": "required_or_explicitly_not_available",
+            "guidance": "Return backup, compensating action, or explicit rollback-unavailable state in evidence."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/precision/tools.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-precision-subsystem.mjs"
+          ],
+          "benchmark_scenarios": [
+            "precision shared runtime MCP behavior"
+          ],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_official_documentation_fetch",
+          "version": "1.0.1",
+          "title": "Official Documentation Fetch",
+          "description": "Fetch bounded HTTPS documentation from VNEM's known official source registry or a user-supplied URL and record compact task-scoped read-before-write context.",
+          "category": "official",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": true
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "approved_network_read"
+          ],
+          "network_behavior": "bounded_or_approved_network",
+          "credential_behavior": "credential references only; values never returned",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/precision/tools.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-precision-subsystem.mjs"
+          ],
+          "benchmark_scenarios": [
+            "precision shared runtime MCP behavior"
+          ],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_documentation_context",
+          "version": "1.0.1",
+          "title": "Task Documentation Context",
+          "description": "Read compact documentation context previously fetched for one worker and task without another network call.",
+          "category": "documentation",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/precision/tools.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-precision-subsystem.mjs"
+          ],
+          "benchmark_scenarios": [
+            "precision shared runtime MCP behavior"
+          ],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_ephemeral_script",
+          "version": "1.0.1",
+          "title": "Ephemeral Local Script",
+          "description": "Run a bounded one-off Node or Python helper in a temporary local sandbox, block process/network/dangerous APIs, capture evidence, and verify cleanup.",
+          "category": "ephemeral",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": true,
+            "idempotentHint": false,
+            "openWorldHint": false
+          },
+          "side_effect_class": "destructive_mutation",
+          "permission_requirements": [
+            "approved_local_mutation"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "required_redacted_record",
+          "rollback_behavior": {
+            "mode": "required_or_explicitly_not_available",
+            "guidance": "Return backup, compensating action, or explicit rollback-unavailable state in evidence."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/precision/tools.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-precision-subsystem.mjs"
+          ],
+          "benchmark_scenarios": [
+            "precision shared runtime MCP behavior"
+          ],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_code_index_status",
+          "version": "1.0.1",
+          "title": "Code Index Status",
+          "description": "Report whether the structural index has been initialized, its size, dirty state, watcher state, pending incremental paths, and last redacted error without triggering a build.",
+          "category": "code",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/precision/tools.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-precision-subsystem.mjs"
+          ],
+          "benchmark_scenarios": [
+            "precision shared runtime MCP behavior"
+          ],
+          "input_schema_present": true
+        },
+        {
           "name": "vnem_tools_registry_status",
           "version": "1.0.1",
           "title": "VNEM Tools Registry Status",
@@ -7446,12 +7872,13 @@
     "precision": {
       "schema_version": "1.0.0",
       "server_name": "vnem-precision",
-      "version": "1.0.1",
+      "version": "1.1.0",
       "valid": true,
       "tool_count": 7,
       "alias_count": 0,
       "categories": {
-        "mcp": 7
+        "mcp": 1,
+        "precision_compatibility": 6
       },
       "side_effect_classes": {
         "destructive_mutation": 4,
@@ -7460,7 +7887,7 @@
       "validation": {
         "valid": true,
         "server_name": "vnem-precision",
-        "version": "1.0.1",
+        "version": "1.1.0",
         "tool_count": 7,
         "alias_count": 0,
         "errors": [],
@@ -7482,10 +7909,10 @@
       "tools": [
         {
           "name": "mcp_semantic_code_search",
-          "version": "1.0.1",
+          "version": "1.1.0",
           "title": "Semantic Code Search",
-          "description": "Search the active workspace by concept using a local private hashed-vector code index. Returns file paths, line numbers, snippets, scores, matched terms, and index metadata without external embedding APIs.",
-          "category": "mcp",
+          "description": "Compatibility name for the shared VNEM Tools structural code search implementation. Uses a lazy local private index and does not call external embedding APIs.",
+          "category": "precision_compatibility",
           "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
           "annotations": {
             "readOnlyHint": true,
@@ -7506,22 +7933,25 @@
           },
           "compatibility_aliases": [],
           "deprecation_state": {
-            "deprecated": false,
-            "migration_guidance": null
+            "deprecated": true,
+            "removal_target": "not_before_next_major_release",
+            "migration_guidance": "Use vnem_tools_structural_code_search on VNEM Tools MCP."
           },
-          "implementation_module": "scripts/vnem-precision-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/precision/tools.mjs",
           "behavior_test_references": [
             "scripts/test-precision-mcp-server.mjs"
           ],
-          "benchmark_scenarios": [],
+          "benchmark_scenarios": [
+            "precision shared runtime MCP behavior"
+          ],
           "input_schema_present": true
         },
         {
           "name": "mcp_apply_diff_patch",
-          "version": "1.0.1",
+          "version": "1.1.0",
           "title": "Apply Exact Diff Patch",
-          "description": "Apply a surgical text patch inside the configured workspace. Accepts a SEARCH/REPLACE block or unified diff, verifies exact context before writing, and rejects mismatches instead of rewriting whole files.",
-          "category": "mcp",
+          "description": "Compatibility name for shared VNEM Tools exact and unified-diff patching with preconditions, atomic writes, evidence, and rollback.",
+          "category": "precision_compatibility",
           "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
           "annotations": {
             "readOnlyHint": false,
@@ -7542,22 +7972,25 @@
           },
           "compatibility_aliases": [],
           "deprecation_state": {
-            "deprecated": false,
-            "migration_guidance": null
+            "deprecated": true,
+            "removal_target": "not_before_next_major_release",
+            "migration_guidance": "Use vnem_tools_exact_patch, vnem_tools_unified_diff_apply, or vnem_tools_patch_transaction on VNEM Tools MCP."
           },
-          "implementation_module": "scripts/vnem-precision-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/precision/tools.mjs",
           "behavior_test_references": [
             "scripts/test-precision-mcp-server.mjs"
           ],
-          "benchmark_scenarios": [],
+          "benchmark_scenarios": [
+            "precision shared runtime MCP behavior"
+          ],
           "input_schema_present": true
         },
         {
           "name": "mcp_fetch_documentation",
-          "version": "1.0.1",
+          "version": "1.1.0",
           "title": "Fetch Current Documentation",
-          "description": "Fetch HTTPS documentation for a framework/library, normalize it into compact worker context, and record it as read-before-write evidence for the current worker/task.",
-          "category": "mcp",
+          "description": "Compatibility name for shared VNEM Tools official documentation retrieval and task-scoped context recording.",
+          "category": "precision_compatibility",
           "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
           "annotations": {
             "readOnlyHint": true,
@@ -7567,10 +8000,10 @@
           },
           "side_effect_class": "read_only",
           "permission_requirements": [
-            "allowed_root_read"
+            "approved_network_read"
           ],
-          "network_behavior": "none",
-          "credential_behavior": "none",
+          "network_behavior": "bounded_or_approved_network",
+          "credential_behavior": "credential references only; values never returned",
           "evidence_behavior": "optional",
           "rollback_behavior": {
             "mode": "not_required",
@@ -7578,22 +8011,25 @@
           },
           "compatibility_aliases": [],
           "deprecation_state": {
-            "deprecated": false,
-            "migration_guidance": null
+            "deprecated": true,
+            "removal_target": "not_before_next_major_release",
+            "migration_guidance": "Use vnem_tools_official_documentation_fetch and vnem_tools_documentation_context on VNEM Tools MCP."
           },
-          "implementation_module": "scripts/vnem-precision-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/precision/tools.mjs",
           "behavior_test_references": [
             "scripts/test-precision-mcp-server.mjs"
           ],
-          "benchmark_scenarios": [],
+          "benchmark_scenarios": [
+            "precision shared runtime MCP behavior"
+          ],
           "input_schema_present": true
         },
         {
           "name": "mcp_execute_terminal_command",
-          "version": "1.0.1",
+          "version": "1.1.0",
           "title": "Execute Safe Stateful Terminal Command",
-          "description": "Run one allowlisted build/test/check command in a persistent workspace-scoped session. Captures stdout/stderr, preserves cwd between calls, blocks shell operators/destructive commands, and reports timeouts instead of crashing.",
-          "category": "mcp",
+          "description": "Compatibility name for the shared VNEM Tools bounded stateful terminal implementation.",
+          "category": "precision_compatibility",
           "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
           "annotations": {
             "readOnlyHint": false,
@@ -7614,22 +8050,25 @@
           },
           "compatibility_aliases": [],
           "deprecation_state": {
-            "deprecated": false,
-            "migration_guidance": null
+            "deprecated": true,
+            "removal_target": "not_before_next_major_release",
+            "migration_guidance": "Use vnem_tools_terminal_session on VNEM Tools MCP."
           },
-          "implementation_module": "scripts/vnem-precision-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/precision/tools.mjs",
           "behavior_test_references": [
             "scripts/test-precision-mcp-server.mjs"
           ],
-          "benchmark_scenarios": [],
+          "benchmark_scenarios": [
+            "precision shared runtime MCP behavior"
+          ],
           "input_schema_present": true
         },
         {
           "name": "mcp_run_verification_tests",
-          "version": "1.0.1",
+          "version": "1.1.0",
           "title": "Run Verification Tests",
-          "description": "Run a bounded test/check command as part of VNEM's test-driven healing loop. Use phase=red to prove the test fails before implementation, then phase=green after mcp_apply_diff_patch until pass or max_attempts is reached.",
-          "category": "mcp",
+          "description": "Compatibility name for the shared persistent VNEM Tools red, green, and check verification loop.",
+          "category": "precision_compatibility",
           "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
           "annotations": {
             "readOnlyHint": false,
@@ -7650,22 +8089,25 @@
           },
           "compatibility_aliases": [],
           "deprecation_state": {
-            "deprecated": false,
-            "migration_guidance": null
+            "deprecated": true,
+            "removal_target": "not_before_next_major_release",
+            "migration_guidance": "Use vnem_tools_verification_loop on VNEM Tools MCP."
           },
-          "implementation_module": "scripts/vnem-precision-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/precision/tools.mjs",
           "behavior_test_references": [
             "scripts/test-precision-mcp-server.mjs"
           ],
-          "benchmark_scenarios": [],
+          "benchmark_scenarios": [
+            "precision shared runtime MCP behavior"
+          ],
           "input_schema_present": true
         },
         {
           "name": "mcp_execute_ephemeral_script",
-          "version": "1.0.1",
+          "version": "1.1.0",
           "title": "Execute Ephemeral Script",
-          "description": "Run a short one-off Node or Python helper in a temporary workspace-local sandbox, capture stdout/stderr, then delete the script and sandbox. Blocks dangerous APIs, process spawning, network APIs, and shell scripts unless explicitly allowed after review.",
-          "category": "mcp",
+          "description": "Compatibility name for the shared VNEM Tools bounded temporary-script implementation with cleanup evidence.",
+          "category": "precision_compatibility",
           "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
           "annotations": {
             "readOnlyHint": false,
@@ -7686,19 +8128,22 @@
           },
           "compatibility_aliases": [],
           "deprecation_state": {
-            "deprecated": false,
-            "migration_guidance": null
+            "deprecated": true,
+            "removal_target": "not_before_next_major_release",
+            "migration_guidance": "Use vnem_tools_ephemeral_script on VNEM Tools MCP."
           },
-          "implementation_module": "scripts/vnem-precision-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/precision/tools.mjs",
           "behavior_test_references": [
             "scripts/test-precision-mcp-server.mjs"
           ],
-          "benchmark_scenarios": [],
+          "benchmark_scenarios": [
+            "precision shared runtime MCP behavior"
+          ],
           "input_schema_present": true
         },
         {
           "name": "mcp_registry_status",
-          "version": "1.0.1",
+          "version": "1.1.0",
           "title": "VNEM Precision Registry Status",
           "description": "Return the authoritative runtime tool registry, contract validation, categories, side-effect classes, compatibility metadata, and behavior-test reference gaps.",
           "category": "mcp",

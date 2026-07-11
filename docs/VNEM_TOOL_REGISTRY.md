@@ -2,7 +2,7 @@
 
 Generated from live MCP runtime registries. Do not edit this table manually.
 
-- Total tools: 204
+- Total tools: 215
 - Registry valid: true
 - Missing behavior-test references: 18
 
@@ -142,10 +142,10 @@ Generated from live MCP runtime registries. Do not edit this table manually.
 | tools | `vnem_tools_search_query_builder` | search | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_web_search` | web | read_only | approved_network_read | optional | not_required | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_search_result_ranker` | search | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
-| tools | `vnem_tools_redirect_chain_check` | redirect | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_redirect_chain_check` | redirect | read_only | approved_network_read | optional | not_required | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_url_reputation_check` | url | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_captcha_detector` | captcha | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
-| tools | `vnem_tools_download_safety_check` | download | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_download_safety_check` | download | read_only | approved_network_read | optional | not_required | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_claim_source_matrix` | source | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_research_gap_detector` | research | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_source_map` | source | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
@@ -165,7 +165,7 @@ Generated from live MCP runtime registries. Do not edit this table manually.
 | tools | `vnem_tools_github_settings_guide` | github | read_only | approved_network_read | optional | not_required | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_github_profile_status` | github | read_only | approved_network_read | optional | not_required | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_github_repo_inspect` | github | read_only | approved_network_read | optional | not_required | scripts/vnem/tools/server.mjs |
-| tools | `vnem_tools_repo_intelligence_report` | repo | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_repo_intelligence_report` | repo | read_only | approved_network_read | optional | not_required | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_github_branch_create` | github | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_github_commit_push` | github | network_mutation | approved_network_mutation, scoped_credential_reference | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_github_pr_create` | github | network_mutation | approved_network_mutation, scoped_credential_reference | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/tools/server.mjs |
@@ -204,11 +204,22 @@ Generated from live MCP runtime registries. Do not edit this table manually.
 | tools | `vnem_tools_mutation_approval_contract` | mutation | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_secret_redaction_check` | secret | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_restore_backup` | restore | destructive_mutation | approved_local_mutation | required_redacted_record | self | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_structural_code_search` | structural | read_only | allowed_root_read | optional | not_required | scripts/vnem/precision/tools.mjs |
+| tools | `vnem_tools_exact_patch` | exact | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/precision/tools.mjs |
+| tools | `vnem_tools_unified_diff_apply` | unified | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/precision/tools.mjs |
+| tools | `vnem_tools_patch_transaction` | patch | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/precision/tools.mjs |
+| tools | `vnem_tools_patch_transaction_rollback` | patch | destructive_mutation | approved_local_mutation | required_redacted_record | self | scripts/vnem/precision/tools.mjs |
+| tools | `vnem_tools_verification_loop` | verification | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/precision/tools.mjs |
+| tools | `vnem_tools_terminal_session` | terminal | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/precision/tools.mjs |
+| tools | `vnem_tools_official_documentation_fetch` | official | read_only | approved_network_read | optional | not_required | scripts/vnem/precision/tools.mjs |
+| tools | `vnem_tools_documentation_context` | documentation | read_only | allowed_root_read | optional | not_required | scripts/vnem/precision/tools.mjs |
+| tools | `vnem_tools_ephemeral_script` | ephemeral | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/precision/tools.mjs |
+| tools | `vnem_tools_code_index_status` | code | read_only | allowed_root_read | optional | not_required | scripts/vnem/precision/tools.mjs |
 | tools | `vnem_tools_registry_status` | registry | read_only | allowed_root_read | optional | not_required | scripts/vnem/runtime/registry-tool.mjs |
-| precision | `mcp_semantic_code_search` | mcp | read_only | allowed_root_read | optional | not_required | scripts/vnem-precision-mcp-server.mjs |
-| precision | `mcp_apply_diff_patch` | mcp | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem-precision-mcp-server.mjs |
-| precision | `mcp_fetch_documentation` | mcp | read_only | allowed_root_read | optional | not_required | scripts/vnem-precision-mcp-server.mjs |
-| precision | `mcp_execute_terminal_command` | mcp | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem-precision-mcp-server.mjs |
-| precision | `mcp_run_verification_tests` | mcp | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem-precision-mcp-server.mjs |
-| precision | `mcp_execute_ephemeral_script` | mcp | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem-precision-mcp-server.mjs |
+| precision | `mcp_semantic_code_search` | precision_compatibility | read_only | allowed_root_read | optional | not_required | scripts/vnem/precision/tools.mjs |
+| precision | `mcp_apply_diff_patch` | precision_compatibility | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/precision/tools.mjs |
+| precision | `mcp_fetch_documentation` | precision_compatibility | read_only | approved_network_read | optional | not_required | scripts/vnem/precision/tools.mjs |
+| precision | `mcp_execute_terminal_command` | precision_compatibility | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/precision/tools.mjs |
+| precision | `mcp_run_verification_tests` | precision_compatibility | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/precision/tools.mjs |
+| precision | `mcp_execute_ephemeral_script` | precision_compatibility | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/precision/tools.mjs |
 | precision | `mcp_registry_status` | mcp | read_only | allowed_root_read | optional | not_required | scripts/vnem/runtime/registry-tool.mjs |

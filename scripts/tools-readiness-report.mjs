@@ -59,6 +59,9 @@ const toolsPowerTools2RegressionTestPath = rel("scripts/test-tools-power-tools-2
 const toolsPowerSession1RecoveryTestPath = rel("scripts/test-tools-power-session-1-recovery.mjs");
 const toolsOrchestrator1RegressionTestPath = rel("scripts/test-tools-orchestrator-1-regression.mjs");
 const toolsCodeIntelligence1RegressionTestPath = rel("scripts/test-tools-code-intelligence-1-regression.mjs");
+const toolsPrecisionSubsystemTestPath = rel("scripts/test-tools-precision-subsystem.mjs");
+const precisionSubsystemPath = rel("scripts/vnem/precision/tools.mjs");
+const runtimeRegistryPath = rel(".vnem/runtime-tool-registry.json");
 const adoptionReliabilityTestPath = rel("scripts/test-vnem-adoption-reliability-1-regression.mjs");
 const adoptionReliability2TestPath = rel("scripts/test-vnem-adoption-reliability-2-regression.mjs");
 const installAdoptionTestPath = rel("scripts/test-vnem-install-adoption-1-regression.mjs");
@@ -126,6 +129,10 @@ const toolsPowerTools2RegressionTest = existsSync(toolsPowerTools2RegressionTest
 const toolsPowerSession1RecoveryTest = existsSync(toolsPowerSession1RecoveryTestPath) ? readFileSync(toolsPowerSession1RecoveryTestPath, "utf8") : "";
 const toolsOrchestrator1RegressionTest = existsSync(toolsOrchestrator1RegressionTestPath) ? readFileSync(toolsOrchestrator1RegressionTestPath, "utf8") : "";
 const toolsCodeIntelligence1RegressionTest = existsSync(toolsCodeIntelligence1RegressionTestPath) ? readFileSync(toolsCodeIntelligence1RegressionTestPath, "utf8") : "";
+const toolsPrecisionSubsystemTest = existsSync(toolsPrecisionSubsystemTestPath) ? readFileSync(toolsPrecisionSubsystemTestPath, "utf8") : "";
+const precisionSubsystem = existsSync(precisionSubsystemPath) ? readFileSync(precisionSubsystemPath, "utf8") : "";
+const runtimeRegistry = existsSync(runtimeRegistryPath) ? JSON.parse(readFileSync(runtimeRegistryPath, "utf8")) : null;
+const runtimeToolNames = new Set(runtimeRegistry?.servers?.tools?.tools?.map((tool) => tool.name) || []);
 const adoptionReliabilityTest = existsSync(adoptionReliabilityTestPath) ? readFileSync(adoptionReliabilityTestPath, "utf8") : "";
 const adoptionReliability2Test = existsSync(adoptionReliability2TestPath) ? readFileSync(adoptionReliability2TestPath, "utf8") : "";
 const installAdoptionTest = existsSync(installAdoptionTestPath) ? readFileSync(installAdoptionTestPath, "utf8") : "";
@@ -271,7 +278,18 @@ const requiredTools = [
   "vnem_tools_cloudflare_cache_purge",
   "vnem_tools_evidence_pack_audit",
   "vnem_tools_mutation_approval_contract",
-  "vnem_tools_secret_redaction_check"
+  "vnem_tools_secret_redaction_check",
+  "vnem_tools_structural_code_search",
+  "vnem_tools_exact_patch",
+  "vnem_tools_unified_diff_apply",
+  "vnem_tools_patch_transaction",
+  "vnem_tools_patch_transaction_rollback",
+  "vnem_tools_verification_loop",
+  "vnem_tools_terminal_session",
+  "vnem_tools_official_documentation_fetch",
+  "vnem_tools_documentation_context",
+  "vnem_tools_ephemeral_script",
+  "vnem_tools_code_index_status"
 ];
 
 const report = {
@@ -321,6 +339,8 @@ const report = {
   tools_power_session_1_recovery_test_exists: existsSync(toolsPowerSession1RecoveryTestPath),
   tools_orchestrator_1_regression_test_exists: existsSync(toolsOrchestrator1RegressionTestPath),
   tools_code_intelligence_1_regression_test_exists: existsSync(toolsCodeIntelligence1RegressionTestPath),
+  tools_precision_subsystem_test_exists: existsSync(toolsPrecisionSubsystemTestPath),
+  precision_subsystem_module_exists: existsSync(precisionSubsystemPath),
   adoption_reliability_test_exists: existsSync(adoptionReliabilityTestPath),
   adoption_reliability_2_test_exists: existsSync(adoptionReliability2TestPath),
   core_research_strategy_test_exists: existsSync(coreResearchStrategyTestPath),
@@ -418,6 +438,7 @@ const report = {
     test_tools_source_impact_trace: pkg.scripts?.["test:tools-source-impact-trace"] === "node scripts/test-tools-code-intelligence-1-regression.mjs --case=source-impact-trace",
     test_tools_source_control_character_guard: pkg.scripts?.["test:tools-source-control-character-guard"] === "node scripts/test-tools-code-intelligence-1-regression.mjs --case=source-control-character-guard",
     test_tools_code_intelligence_1_regression: pkg.scripts?.["test:tools-code-intelligence-1-regression"] === "node scripts/test-tools-code-intelligence-1-regression.mjs",
+    test_tools_precision_subsystem: pkg.scripts?.["test:tools-precision-subsystem"] === "node scripts/test-tools-precision-subsystem.mjs",
     test_core_adoption_entrypoint: pkg.scripts?.["test:core-adoption-entrypoint"] === "node scripts/test-vnem-adoption-reliability-1-regression.mjs --case=core-entrypoint",
     test_core_usage_contract: pkg.scripts?.["test:core-usage-contract"] === "node scripts/test-vnem-adoption-reliability-1-regression.mjs --case=core-usage-contract",
     test_tools_adoption_entrypoint: pkg.scripts?.["test:tools-adoption-entrypoint"] === "node scripts/test-vnem-adoption-reliability-1-regression.mjs --case=tools-entrypoint",
@@ -439,7 +460,22 @@ const report = {
     test_vnem_install_doctor: pkg.scripts?.["test:vnem-install-doctor"] === "node scripts/test-vnem-install-adoption-1-regression.mjs --case=install-doctor",
     test_vnem_install_adoption_1_regression: pkg.scripts?.["test:vnem-install-adoption-1-regression"] === "node scripts/test-vnem-install-adoption-1-regression.mjs"
   },
-  required_tools_present: Object.fromEntries(requiredTools.map((name) => [name, server.includes(`"${name}"`)])),
+  required_tools_present: Object.fromEntries(requiredTools.map((name) => [name, runtimeToolNames.has(name) || server.includes(`"${name}"`)])),
+  precision_subsystem_runtime_registry_status: [
+    "vnem_tools_structural_code_search",
+    "vnem_tools_exact_patch",
+    "vnem_tools_unified_diff_apply",
+    "vnem_tools_patch_transaction",
+    "vnem_tools_patch_transaction_rollback",
+    "vnem_tools_verification_loop",
+    "vnem_tools_terminal_session",
+    "vnem_tools_official_documentation_fetch",
+    "vnem_tools_documentation_context",
+    "vnem_tools_ephemeral_script",
+    "vnem_tools_code_index_status"
+  ].every((name) => runtimeToolNames.has(name)),
+  precision_subsystem_behavior_status: /phase3-atomic-proof/.test(toolsPrecisionSubsystemTest) && /rollback_available/.test(toolsPrecisionSubsystemTest) && /initialized, false/.test(toolsPrecisionSubsystemTest),
+  precision_subsystem_shared_runtime_status: /registerToolsPrecisionSubsystem/.test(server) && /registerPrecisionCompatibilityTools/.test(precisionSubsystem),
   mcp_config_tools_support: /--tools/.test(cli) && /VNEM_TOOLS_ALLOWED_ROOTS/.test(cli) && /VNEM_TOOLS_EVIDENCE_ROOT/.test(cli) && /vnem-tools-mcp-server/.test(cli),
   github_autonomy_status: /github_autonomy/.test(server) && /registerGithubTools/.test(server) && /vnem_tools_github_status/.test(server),
   github_settings_guide_status: /vnem_tools_github_settings_guide/.test(server) && /# GITHUB SETTINGS/.test(server + toolsGithubSettingsTest) && /VNEM_TOOLS_GITHUB_PROFILE = "maintainer"/.test(server + toolsGithubSettingsTest),
@@ -749,6 +785,8 @@ assert.equal(report.tools_power_tools_2_regression_test_exists, true, "POWER-TOO
 assert.equal(report.tools_power_session_1_recovery_test_exists, true, "POWER-SESSION-1 recovery test file is missing");
 assert.equal(report.tools_orchestrator_1_regression_test_exists, true, "ORCHESTRATOR-1 regression test file is missing");
 assert.equal(report.tools_code_intelligence_1_regression_test_exists, true, "CODE-INTELLIGENCE-1 regression test file is missing");
+assert.equal(report.tools_precision_subsystem_test_exists, true, "Tools precision subsystem MCP test file is missing");
+assert.equal(report.precision_subsystem_module_exists, true, "Tools precision subsystem module is missing");
 assert.equal(report.adoption_reliability_test_exists, true, "ADOPTION-RELIABILITY-1 regression test file is missing");
 assert.equal(report.adoption_reliability_2_test_exists, true, "ADOPTION-RELIABILITY-2 regression test file is missing");
 for (const [key, value] of Object.entries({
@@ -781,6 +819,7 @@ for (const [key, value] of Object.entries({
   test_tools_source_impact_trace: report.package_scripts.test_tools_source_impact_trace,
   test_tools_source_control_character_guard: report.package_scripts.test_tools_source_control_character_guard,
   test_tools_code_intelligence_1_regression: report.package_scripts.test_tools_code_intelligence_1_regression,
+  test_tools_precision_subsystem: report.package_scripts.test_tools_precision_subsystem,
   test_core_adoption_entrypoint: report.package_scripts.test_core_adoption_entrypoint,
   test_core_usage_contract: report.package_scripts.test_core_usage_contract,
   test_tools_adoption_entrypoint: report.package_scripts.test_tools_adoption_entrypoint,
@@ -847,6 +886,11 @@ for (const [key, value] of Object.entries({
   tools_install_doctor_status: report.tools_install_doctor_status,
   tools_install_profile_validation_status: report.tools_install_profile_validation_status,
   tools_install_adoption_1_status: report.tools_install_adoption_1_status
+})) assert.equal(value, true, `${key} readiness missing`);
+for (const [key, value] of Object.entries({
+  precision_subsystem_runtime_registry_status: report.precision_subsystem_runtime_registry_status,
+  precision_subsystem_behavior_status: report.precision_subsystem_behavior_status,
+  precision_subsystem_shared_runtime_status: report.precision_subsystem_shared_runtime_status
 })) assert.equal(value, true, `${key} readiness missing`);
 for (const [name, present] of Object.entries(report.required_tools_present)) assert.equal(present, true, `missing required tool ${name}`);
 assert.equal(report.dry_run_default, true, "dry-run defaults are missing");
@@ -928,6 +972,10 @@ console.log(`core_ecosystem_test_exists: ${yes(report.core_ecosystem_test_exists
 console.log(`core_tools_e2e_script_exists: ${yes(report.core_tools_e2e_script_exists)}`);
 console.log(`adoption_reliability_test_exists: ${yes(report.adoption_reliability_test_exists)}`);
 console.log(`adoption_reliability_2_test_exists: ${yes(report.adoption_reliability_2_test_exists)}`);
+console.log(`tools_precision_subsystem_test_exists: ${yes(report.tools_precision_subsystem_test_exists)}`);
+console.log(`precision_subsystem_runtime_registry_status: ${yes(report.precision_subsystem_runtime_registry_status)}`);
+console.log(`precision_subsystem_behavior_status: ${yes(report.precision_subsystem_behavior_status)}`);
+console.log(`precision_subsystem_shared_runtime_status: ${yes(report.precision_subsystem_shared_runtime_status)}`);
 console.log(`required_tools_present: ${Object.values(report.required_tools_present).filter(Boolean).length}/${requiredTools.length}`);
 console.log(`mcp_config_tools_support: ${yes(report.mcp_config_tools_support)}`);
 console.log(`tools_manifest_status: ${yes(report.tools_manifest_status)}`);

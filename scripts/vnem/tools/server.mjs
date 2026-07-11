@@ -18,6 +18,9 @@ import {
 import { attachToolRegistry } from "../registry/tool-registry.mjs";
 import { loadBehaviorTestReferences } from "../registry/behavior-contracts.mjs";
 import { registerRegistryStatusTool } from "../runtime/registry-tool.mjs";
+import { PrecisionExecutionError } from "../precision/execution.mjs";
+import { PrecisionRuntime } from "../precision/runtime.mjs";
+import { registerToolsPrecisionSubsystem } from "../precision/tools.mjs";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(scriptDir, "..", "..", "..");
@@ -153,7 +156,18 @@ const REQUIRED_TOOL_NAMES = [
   "vnem_tools_cloudflare_cache_purge",
   "vnem_tools_evidence_pack_audit",
   "vnem_tools_mutation_approval_contract",
-  "vnem_tools_secret_redaction_check"
+  "vnem_tools_secret_redaction_check",
+  "vnem_tools_structural_code_search",
+  "vnem_tools_exact_patch",
+  "vnem_tools_unified_diff_apply",
+  "vnem_tools_patch_transaction",
+  "vnem_tools_patch_transaction_rollback",
+  "vnem_tools_verification_loop",
+  "vnem_tools_terminal_session",
+  "vnem_tools_official_documentation_fetch",
+  "vnem_tools_documentation_context",
+  "vnem_tools_ephemeral_script",
+  "vnem_tools_code_index_status"
 ];
 const READ_ONLY_LOCAL = { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false };
 const ACTION_TOOL = { readOnlyHint: false, destructiveHint: true, idempotentHint: false, openWorldHint: false };
@@ -207,6 +221,21 @@ const allowedRoots = await computeAllowedRoots();
 const evidenceRoot = await computeEvidenceRoot();
 const activePermissionProfile = getActivePermissionProfile();
 const usablePacks = await loadUsablePacks();
+const requestedPrecisionWorkspaceCandidate = path.resolve(
+  process.env.VNEM_TOOLS_PRECISION_ROOT || process.env.VNEM_TOOLS_ROOT || process.env.VNEM_WORKSPACE_ROOT || process.cwd()
+);
+const requestedPrecisionWorkspaceRoot = existsSync(requestedPrecisionWorkspaceCandidate)
+  ? await realpath(requestedPrecisionWorkspaceCandidate)
+  : requestedPrecisionWorkspaceCandidate;
+if (process.env.VNEM_TOOLS_PRECISION_ROOT && !isInsideAny(requestedPrecisionWorkspaceRoot, allowedRoots)) {
+  throw new Error("VNEM Tools precision workspace must be inside VNEM_TOOLS_ALLOWED_ROOTS.");
+}
+const precisionWorkspaceRoot = isInsideAny(requestedPrecisionWorkspaceRoot, allowedRoots)
+  ? requestedPrecisionWorkspaceRoot
+  : allowedRoots[0];
+const precisionRuntime = new PrecisionRuntime({
+  workspaceRoot: precisionWorkspaceRoot
+});
 
 const server = new McpServer(
   { name: "vnem-tools", version: SERVER_VERSION },
@@ -214,6 +243,7 @@ const server = new McpServer(
     instructions: [
       "VNEM Tools MCP is a safeguard-first action server for approved project work after VNEM Core has planned the task.",
       "Tools MCP is not Core MCP and is not Giga MCP. It can read, search, dry-run patches, apply approved patches, run approved allowlisted commands, prepare/perform approved limited API requests, capture approved local browser screenshots, and collect evidence.",
+      "For code work, prefer vnem_tools_structural_code_search before broad traversal, vnem_tools_exact_patch or vnem_tools_patch_transaction for surgical writes, and vnem_tools_verification_loop for bounded red/green/check proof. Fetch official documentation into task-scoped context when framework behavior may have changed.",
       "Dry-run is the default for mutation/execution/network/browser actions. Real changes require dry_run=false, approved=true, and a non-empty approval_note.",
       "The active Tools permission profile gates real actions. Default is safe-readonly; mutation/network/dev-server/git actions require an explicit stronger profile plus approval, evidence, and rollback where applicable. GitHub autonomy uses command-backed gh/git paths for allowed profile-gated repo work; destructive GitHub admin, package installs, arbitrary shell, broad browser automation, account login automation, cookie extraction, CAPTCHA bypass, and broad web scraping remain blocked by default."
     ].join(" ")
@@ -227,6 +257,11 @@ const toolsRegistry = attachToolRegistry(server, {
 });
 
 registerTools(server);
+registerToolsPrecisionSubsystem(server, precisionRuntime, {
+  registry: toolsRegistry,
+  mutationGuard: assertPrecisionMutationPermission,
+  networkGuard: assertPrecisionNetworkPermission
+});
 registerRegistryStatusTool(server, toolsRegistry, { name: "vnem_tools_registry_status", title: "VNEM Tools Registry Status" });
 const toolsRegistryValidation = toolsRegistry.validate();
 if (!toolsRegistryValidation.valid) throw new Error(`VNEM Tools registry validation failed: ${JSON.stringify(toolsRegistryValidation.errors)}`);
@@ -1644,6 +1679,52 @@ function getActivePermissionProfile() {
   return profiles.find((p) => p.profile_name === requested) || profiles.find((p) => p.profile_name === "safe-readonly");
 }
 
+function assertPrecisionMutationPermission(args = {}, context = {}) {
+  if (!context.executes) return;
+  const profile = activePermissionProfile.profile_name;
+  const writeAction = ["apply_patch", "restore_backup"].includes(context.action);
+  const allowedProfiles = writeAction
+    ? ["approved-writes", "approved-installs", "approved-github", "creator-power"]
+    : ["safe-local-dev", "approved-writes", "approved-installs", "approved-github", "creator-power"];
+  if (!allowedProfiles.includes(profile)) {
+    throw new PrecisionExecutionError(`Permission profile ${profile} blocks this precision action.`, "precision_permission_profile_blocked", {
+      permission_profile: profile,
+      action: context.action,
+      safe_next_action: `Select the narrowest profile that permits ${context.action}, then provide explicit approval.`
+    });
+  }
+  if (context.force && profile !== "creator-power") {
+    throw new PrecisionExecutionError("Forced patch rollback requires the creator-power profile.", "precision_force_rollback_blocked", {
+      permission_profile: profile,
+      safe_next_action: "Retry without force so rollback preconditions remain enforced."
+    });
+  }
+  if (args.approved !== true || !String(args.approval_note || "").trim()) {
+    throw new PrecisionExecutionError("Real precision execution requires approved=true and a non-empty approval_note.", "precision_explicit_approval_required", {
+      permission_profile: profile,
+      action: context.action,
+      safe_next_action: "Review the exact bounded action, then retry with explicit approval and a concise approval note."
+    });
+  }
+}
+
+function assertPrecisionNetworkPermission(args = {}, context = {}) {
+  const profile = activePermissionProfile.profile_name;
+  if (!["safe-local-dev", "approved-writes", "approved-installs", "approved-github", "creator-power"].includes(profile)) {
+    throw new PrecisionExecutionError(`Permission profile ${profile} blocks external documentation fetches.`, "precision_network_permission_blocked", {
+      permission_profile: profile,
+      action: context.action,
+      safe_next_action: "Use a local task context or select safe-local-dev or a stronger approved profile."
+    });
+  }
+  if (args.approved !== true || !String(args.approval_note || "").trim()) {
+    throw new PrecisionExecutionError("External documentation fetch requires approved=true and a non-empty approval_note.", "precision_network_approval_required", {
+      permission_profile: profile,
+      action: context.action
+    });
+  }
+}
+
 function normalizeActionType(actionType, text = "") {
   const raw = String(actionType || "").trim().toLowerCase().replace(/[\s-]+/g, "_");
   let type = ACTION_ALIASES[raw] || raw;
@@ -2172,6 +2253,7 @@ async function toolsEntrypoint(args = {}) {
     available_power_layers: [
       "repo_power",
       "code_intelligence",
+      "precision_execution",
       "tool_intelligence",
       "github_autonomy",
       "cloudflare_control",
@@ -2335,6 +2417,10 @@ function toolsTaskCategories(text, taskType, localOnly) {
   if (taskType.includes("debug") || /\b(debug|failing|failure|failed|error|stack trace|ci failure|regression)\b/.test(text)) add("debugging_failing_tests");
   if (taskType.includes("repo") || /\b(repo|repository|inspect|map|state|branch|worktree)\b/.test(text)) add("repo_inspection");
   if (taskType.includes("patch") || /\b(patch|target|edit|change file|fix source|implementation site)\b/.test(text)) add("patch_targeting");
+  if (/\b(semantic search|structural search|search code|find symbol|locate implementation)\b/.test(text)) add("structural_code_search");
+  if (/\b(exact patch|search replace|unified diff|atomic patch|multi.file patch|patch transaction|rollback patch)\b/.test(text)) add("precision_patching");
+  if (/\b(current docs|official docs|official documentation|framework documentation|library documentation)\b/.test(text)) add("official_documentation");
+  if (/\b(red green|verification loop|run verification|bounded terminal|terminal session|syntax check)\b/.test(text)) add("precision_verification");
   if (taskType.includes("mcp") || /\b(mcp|tool audit|surface audit|registration|handler|catalog|manifest|readiness)\b/.test(text)) add("mcp_tool_audit");
   if (taskType.includes("code_intelligence") || /\b(symbol|function|class|handler|coverage|impact trace|source impact|code intelligence)\b/.test(text)) add("code_intelligence");
   if (!localOnly && (taskType.includes("publish") || /\b(github|gh|pr|pull request|push|remote sha|actions|ci|merge|publish)\b/.test(text))) add("github_pr_ci_proof");
@@ -2351,10 +2437,14 @@ function toolsTaskCategories(text, taskType, localOnly) {
 
 function toolsRouteDefinitions() {
   return {
-    coding_implementation: { why: "Implementation needs repo map, symbols, exact patch targets, source impact, focused checks, and evidence.", tools: ["vnem_tools_repo_deep_map", "vnem_tools_code_symbol_map", "vnem_tools_patch_target_finder", "vnem_tools_source_impact_trace", "vnem_tools_test_selection_plan", "vnem_tools_evidence_pack"] },
-    debugging_failing_tests: { why: "Failing checks need failure triage, target selection, targeted rerun planning, and evidence.", tools: ["vnem_tools_failure_triage", "vnem_tools_patch_target_finder", "vnem_tools_test_selection_plan", "vnem_tools_evidence_pack"] },
+    coding_implementation: { why: "Implementation needs repo orientation, structural search, exact patching, focused verification, and evidence.", tools: ["vnem_tools_repo_deep_map", "vnem_tools_structural_code_search", "vnem_tools_patch_target_finder", "vnem_tools_exact_patch", "vnem_tools_test_selection_plan", "vnem_tools_verification_loop", "vnem_tools_evidence_pack"] },
+    debugging_failing_tests: { why: "Failing checks need failure triage, exact target evidence, structural search, focused test selection, bounded reruns, and evidence before any patch is chosen.", tools: ["vnem_tools_failure_triage", "vnem_tools_patch_target_finder", "vnem_tools_structural_code_search", "vnem_tools_test_selection_plan", "vnem_tools_verification_loop", "vnem_tools_evidence_pack"] },
     repo_inspection: { why: "Repo inspection needs a bounded repo map and ranked next actions.", tools: ["vnem_tools_repo_deep_map", "vnem_tools_next_action_ranker", "vnem_tools_code_symbol_map"] },
-    patch_targeting: { why: "Patch targeting needs symbol/search evidence and impact tracing.", tools: ["vnem_tools_patch_target_finder", "vnem_tools_code_symbol_map", "vnem_tools_source_impact_trace"] },
+    patch_targeting: { why: "Patch targeting needs structural and symbol evidence plus impact tracing.", tools: ["vnem_tools_structural_code_search", "vnem_tools_patch_target_finder", "vnem_tools_code_symbol_map", "vnem_tools_source_impact_trace"] },
+    structural_code_search: { why: "Conceptual code discovery benefits from the lazy language-aware local structural index.", tools: ["vnem_tools_code_index_status", "vnem_tools_structural_code_search"] },
+    precision_patching: { why: "Surgical changes need exact preconditions, dry-run verification, atomic evidence, and rollback.", tools: ["vnem_tools_exact_patch", "vnem_tools_unified_diff_apply", "vnem_tools_patch_transaction", "vnem_tools_patch_transaction_rollback"] },
+    official_documentation: { why: "Framework work needs bounded current official documentation and task-scoped context before writes.", tools: ["vnem_tools_official_documentation_fetch", "vnem_tools_documentation_context"] },
+    precision_verification: { why: "Implementation proof needs bounded stateful commands and persistent red, green, or check loops.", tools: ["vnem_tools_verification_loop", "vnem_tools_terminal_session", "vnem_tools_ephemeral_script"] },
     mcp_tool_audit: { why: "MCP tool audit needs surface, coverage, catalog/readiness, and control-character checks.", tools: ["vnem_tools_mcp_surface_audit", "vnem_tools_tool_test_coverage_map", "vnem_tools_source_control_character_guard"] },
     code_intelligence: { why: "Code intelligence needs symbols, MCP surface, patch targets, coverage, and source impact.", tools: ["vnem_tools_code_symbol_map", "vnem_tools_mcp_surface_audit", "vnem_tools_patch_target_finder", "vnem_tools_tool_test_coverage_map", "vnem_tools_source_impact_trace"] },
     github_pr_ci_proof: { why: "Remote proof needs GitHub status, repo state, Actions status, PR gate, and evidence.", tools: ["vnem_tools_github_status", "vnem_tools_github_repo_inspect", "vnem_tools_github_actions_status", "vnem_tools_pr_quality_gate", "vnem_tools_evidence_pack"] },
@@ -2384,6 +2474,10 @@ function toolsToolReason(toolName, categories) {
   if (toolName.includes("repo_deep_map")) return "orient on repo state and scripts";
   if (toolName.includes("code_symbol_map")) return "find symbols, handlers, exports, and code shape";
   if (toolName.includes("patch_target_finder")) return "find exact source/test/readiness patch targets";
+  if (toolName.includes("structural_code_search")) return "find conceptually relevant code and language-level symbols";
+  if (toolName.includes("exact_patch") || toolName.includes("unified_diff") || toolName.includes("patch_transaction")) return "verify and apply surgical changes with preconditions and rollback evidence";
+  if (toolName.includes("verification_loop") || toolName.includes("terminal_session")) return "run bounded checks with explicit timeout and persisted evidence";
+  if (toolName.includes("official_documentation") || toolName.includes("documentation_context")) return "retrieve and reuse task-scoped official documentation context";
   if (toolName.includes("source_impact_trace")) return "trace impact to tests and readiness";
   if (toolName.includes("test_selection_plan")) return "choose focused checks";
   if (toolName.includes("github_actions_status")) return "verify Actions status";

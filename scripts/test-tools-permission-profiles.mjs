@@ -68,6 +68,9 @@ try {
     const singleBlockedPatch = await client.callTool({ name: "vnem_tools_apply_patch", arguments: { target_root: ".", patch: patchText, dry_run: false, approved: true, approval_note: "try default single write" } });
     assert.equal(singleBlockedPatch.isError, true);
     assert.equal(singleBlockedPatch.structuredContent?.code, "permission_profile_blocked");
+    const precisionBlockedPatch = await client.callTool({ name: "vnem_tools_exact_patch", arguments: { target_path: "src/app.txt", search: "old", replace: "new", dry_run: false, approved: true, approval_note: "try default precision write" } });
+    assert.equal(precisionBlockedPatch.isError, true);
+    assert.equal(precisionBlockedPatch.structuredContent?.code, "precision_permission_profile_blocked");
 
     const commitBlocked = await client.callTool({ name: "vnem_tools_git_commit", arguments: { root: ".", files: ["src/app.txt"], message: "test: blocked", dry_run: false, approved: true, approval_note: "try commit" } });
     assert.equal(commitBlocked.isError, true);

@@ -62,6 +62,11 @@ try {
   ]) {
     assert.equal(toolNames.has(name), true, `expected precision MCP tool ${name}`);
   }
+  const registryStatus = await client.callTool({ name: "mcp_registry_status", arguments: {} });
+  const compatibilityEntries = registryStatus.structuredContent?.registry_status?.tools?.filter((tool) => tool.name.startsWith("mcp_") && tool.name !== "mcp_registry_status") || [];
+  assert.equal(compatibilityEntries.length, 6);
+  assert.ok(compatibilityEntries.every((tool) => tool.deprecation_state?.deprecated === true));
+  assert.ok(compatibilityEntries.every((tool) => /vnem_tools_/.test(tool.deprecation_state?.migration_guidance || "")));
   const semanticTool = tools.tools.find((tool) => tool.name === "mcp_semantic_code_search");
   const patchTool = tools.tools.find((tool) => tool.name === "mcp_apply_diff_patch");
   const docsTool = tools.tools.find((tool) => tool.name === "mcp_fetch_documentation");
