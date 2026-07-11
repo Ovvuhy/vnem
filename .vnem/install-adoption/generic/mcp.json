@@ -1,26 +1,26 @@
 {
   "mcpServers": {
     "vnem": {
-      "command": "C:\\Users\\ovvuh\\AppData\\Local\\hermes\\node\\node.exe",
+      "command": "node",
       "args": [
-        "C:\\VNEM\\vnem-src\\scripts\\vnem-mcp-server.mjs"
+        "${VNEM_CHECKOUT}/scripts/vnem-mcp-server.mjs"
       ],
-      "cwd": "C:\\VNEM\\vnem-src",
+      "cwd": "${VNEM_CHECKOUT}",
       "transport": "stdio",
       "env": {
-        "VNEM_ROOT": "C:\\VNEM\\vnem-src"
+        "VNEM_ROOT": "${VNEM_CHECKOUT}"
       }
     },
     "vnem-tools": {
-      "command": "C:\\Users\\ovvuh\\AppData\\Local\\hermes\\node\\node.exe",
+      "command": "node",
       "args": [
-        "C:\\VNEM\\vnem-src\\scripts\\vnem-tools-mcp-server.mjs"
+        "${VNEM_CHECKOUT}/scripts/vnem-tools-mcp-server.mjs"
       ],
-      "cwd": "C:\\VNEM\\vnem-src",
+      "cwd": "${VNEM_CHECKOUT}",
       "transport": "stdio",
       "env": {
-        "VNEM_TOOLS_ALLOWED_ROOTS": "C:\\VNEM\\vnem-src",
-        "VNEM_TOOLS_EVIDENCE_ROOT": "C:\\VNEM\\vnem-src\\.vnem\\tool-runs",
+        "VNEM_TOOLS_ALLOWED_ROOTS": "${VNEM_CHECKOUT}",
+        "VNEM_TOOLS_EVIDENCE_ROOT": "${VNEM_CHECKOUT}/.vnem/tool-runs",
         "VNEM_TOOLS_SKIP_WRANGLER_CHECK": "1",
         "VNEM_TOOLS_GITHUB_ALLOW_DIRECT_PUSH": "0",
         "VNEM_TOOLS_GITHUB_ALLOW_FORCE_PUSH": "0",

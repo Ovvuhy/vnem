@@ -1,7 +1,8 @@
 {
   "schema_version": "1.0.0",
   "status": "run-doctor-to-refresh",
-  "root": "C:\\VNEM\\vnem-src",
+  "root": "${VNEM_CHECKOUT}",
+  "portable_template": true,
   "clients": [
     "codex",
     "claude",

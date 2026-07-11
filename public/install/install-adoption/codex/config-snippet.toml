@@ -1,26 +1,27 @@
 # VNEM Codex MCP snippet.
 # Merge these tables into your existing Codex config.toml; do not replace unrelated settings.
 # This file is repo-local guidance only. It does not write to a Codex config path.
+# Portable template: replace ${VNEM_CHECKOUT} with the absolute checkout path, or run the local emitter.
 # Verify local CLI syntax with `codex mcp --help` before using any codex mcp command.
 
 [mcp_servers.vnem]
-command = "C:\\Users\\ovvuh\\AppData\\Local\\hermes\\node\\node.exe"
-args = ["C:\\VNEM\\vnem-src\\scripts\\vnem-mcp-server.mjs"]
-cwd = "C:\\VNEM\\vnem-src"
+command = "node"
+args = ["${VNEM_CHECKOUT}/scripts/vnem-mcp-server.mjs"]
+cwd = "${VNEM_CHECKOUT}"
 transport = "stdio"
 
 [mcp_servers.vnem.env]
-VNEM_ROOT = "C:\\VNEM\\vnem-src"
+VNEM_ROOT = "${VNEM_CHECKOUT}"
 
 [mcp_servers.vnem-tools]
-command = "C:\\Users\\ovvuh\\AppData\\Local\\hermes\\node\\node.exe"
-args = ["C:\\VNEM\\vnem-src\\scripts\\vnem-tools-mcp-server.mjs"]
-cwd = "C:\\VNEM\\vnem-src"
+command = "node"
+args = ["${VNEM_CHECKOUT}/scripts/vnem-tools-mcp-server.mjs"]
+cwd = "${VNEM_CHECKOUT}"
 transport = "stdio"
 
 [mcp_servers.vnem-tools.env]
-VNEM_TOOLS_ALLOWED_ROOTS = "C:\\VNEM\\vnem-src"
-VNEM_TOOLS_EVIDENCE_ROOT = "C:\\VNEM\\vnem-src\\.vnem\\tool-runs"
+VNEM_TOOLS_ALLOWED_ROOTS = "${VNEM_CHECKOUT}"
+VNEM_TOOLS_EVIDENCE_ROOT = "${VNEM_CHECKOUT}/.vnem/tool-runs"
 VNEM_TOOLS_SKIP_WRANGLER_CHECK = "1"
 VNEM_TOOLS_GITHUB_ALLOW_DIRECT_PUSH = "0"
 VNEM_TOOLS_GITHUB_ALLOW_FORCE_PUSH = "0"

@@ -9,6 +9,7 @@ const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const defaultRoot = path.resolve(scriptDir, "..");
 const clients = ["codex", "claude", "antigravity", "generic"];
 const outputBase = path.join(".vnem", "install-adoption");
+const portableCheckout = "${VNEM_CHECKOUT}";
 const serverNames = ["vnem", "vnem-tools"];
 const disallowedControlPattern = /[\x00-\x08\x0B\x0C\x0E-\x1F\x7F\u200E\u200F\u202A-\u202E\u2066-\u2069]/;
 const secretValuePattern = /(sk-[A-Za-z0-9_-]{12,}|gh[pousr]_[A-Za-z0-9_]{12,}|xox[baprs]-[A-Za-z0-9-]{12,}|AKIA[0-9A-Z]{16}|-----BEGIN [A-Z ]*PRIVATE KEY-----)/i;
@@ -29,33 +30,34 @@ export function supportedInstallAdoptionClients() {
   return [...clients];
 }
 
-export function buildInstallAdoptionFiles(root = defaultRoot) {
+export function buildInstallAdoptionFiles(root = defaultRoot, { portable = false } = {}) {
   const files = {};
   for (const client of clients) {
-    const profile = buildInstallAdoptionProfile({ client, root });
+    const profile = buildInstallAdoptionProfile({ client, root, portable });
     for (const file of profile.files) {
       files[file.path] = file.content;
     }
   }
   files[path.join(outputBase, "prompts", "vnem-agent-use-instruction.md")] = buildAgentUseInstruction();
-  files[path.join(outputBase, "verify", "install-doctor-report.json")] = `${JSON.stringify(buildStaticDoctorSeed(root), null, 2)}\n`;
+  files[path.join(outputBase, "verify", "install-doctor-report.json")] = `${JSON.stringify(buildStaticDoctorSeed(root, { portable }), null, 2)}\n`;
   return files;
 }
 
-export function buildInstallAdoptionProfile({ client = "generic", root = defaultRoot } = {}) {
+export function buildInstallAdoptionProfile({ client = "generic", root = defaultRoot, portable = false } = {}) {
   const normalizedClient = normalizeClient(client);
   const absoluteRoot = path.resolve(root || defaultRoot);
-  const serverConfig = buildMcpServersConfig(absoluteRoot);
+  const profileRoot = portable ? portableCheckout : absoluteRoot;
+  const serverConfig = buildMcpServersConfig(absoluteRoot, { portable });
   const files = [];
   const base = path.join(outputBase, normalizedClient);
   if (normalizedClient === "codex") {
     files.push({
       path: path.join(base, "config-snippet.toml"),
-      content: codexTomlSnippet(serverConfig, absoluteRoot)
+      content: codexTomlSnippet(serverConfig, profileRoot, { portable })
     });
     files.push({
       path: path.join(base, "README.md"),
-      content: codexReadme(absoluteRoot)
+      content: codexReadme(profileRoot, serverConfig.vnem.command, { portable })
     });
   } else {
     files.push({
@@ -64,13 +66,14 @@ export function buildInstallAdoptionProfile({ client = "generic", root = default
     });
     files.push({
       path: path.join(base, "README.md"),
-      content: clientReadme(normalizedClient, absoluteRoot)
+      content: clientReadme(normalizedClient, profileRoot, serverConfig.vnem.command, { portable })
     });
   }
 
   return {
     client: normalizedClient,
-    root: absoluteRoot,
+    root: profileRoot,
+    portable_template: portable,
     output_base: outputBase,
     files,
     server_names: serverNames,
@@ -243,26 +246,28 @@ export function formatInstallDoctor(report) {
   ].join("\n");
 }
 
-function buildMcpServersConfig(root) {
+function buildMcpServersConfig(root, { portable = false } = {}) {
   const absoluteRoot = path.resolve(root || defaultRoot);
+  const configRoot = portable ? portableCheckout : absoluteRoot;
+  const joinConfigPath = (...parts) => portable ? [configRoot, ...parts].join("/") : path.join(absoluteRoot, ...parts);
   return {
     vnem: {
-      command: process.execPath,
-      args: [path.join(absoluteRoot, "scripts", "vnem-mcp-server.mjs")],
-      cwd: absoluteRoot,
+      command: portable ? "node" : process.execPath,
+      args: [joinConfigPath("scripts", "vnem-mcp-server.mjs")],
+      cwd: configRoot,
       transport: "stdio",
       env: {
-        VNEM_ROOT: absoluteRoot
+        VNEM_ROOT: configRoot
       }
     },
     "vnem-tools": {
-      command: process.execPath,
-      args: [path.join(absoluteRoot, "scripts", "vnem-tools-mcp-server.mjs")],
-      cwd: absoluteRoot,
+      command: portable ? "node" : process.execPath,
+      args: [joinConfigPath("scripts", "vnem-tools-mcp-server.mjs")],
+      cwd: configRoot,
       transport: "stdio",
       env: {
-        VNEM_TOOLS_ALLOWED_ROOTS: absoluteRoot,
-        VNEM_TOOLS_EVIDENCE_ROOT: path.join(absoluteRoot, ".vnem", "tool-runs"),
+        VNEM_TOOLS_ALLOWED_ROOTS: configRoot,
+        VNEM_TOOLS_EVIDENCE_ROOT: joinConfigPath(".vnem", "tool-runs"),
         VNEM_TOOLS_SKIP_WRANGLER_CHECK: "1",
         VNEM_TOOLS_GITHUB_ALLOW_DIRECT_PUSH: "0",
         VNEM_TOOLS_GITHUB_ALLOW_FORCE_PUSH: "0",
@@ -273,11 +278,12 @@ function buildMcpServersConfig(root) {
   };
 }
 
-function codexTomlSnippet(serverConfig, root) {
+function codexTomlSnippet(serverConfig, root, { portable = false } = {}) {
   const lines = [
     "# VNEM Codex MCP snippet.",
     "# Merge these tables into your existing Codex config.toml; do not replace unrelated settings.",
     "# This file is repo-local guidance only. It does not write to a Codex config path.",
+    portable ? "# Portable template: replace ${VNEM_CHECKOUT} with the absolute checkout path, or run the local emitter." : "# Local profile: absolute paths were resolved by the emitter on this machine.",
     "# Verify local CLI syntax with `codex mcp --help` before using any codex mcp command.",
     "",
     "[mcp_servers.vnem]",
@@ -302,13 +308,14 @@ function codexTomlSnippet(serverConfig, root) {
   return lines.join("\n");
 }
 
-function codexReadme(root) {
+function codexReadme(root, nodeCommand, { portable = false } = {}) {
   return [
     "# Codex VNEM MCP Profile",
     "",
     "Use `config-snippet.toml` as a merge snippet. Do not replace the whole Codex config file, and do not overwrite unrelated MCP servers.",
     "",
     "This kit does not guess the Codex config path. It emits repo-local guidance only.",
+    portable ? "This tracked file is a portable template. Replace `${VNEM_CHECKOUT}` with the absolute VNEM checkout path, or run `node scripts/vnem-install-adoption.mjs emit --client codex` from a checkout to generate a local profile." : "This file is a local generated profile with machine-resolved paths.",
     "",
     "Suggested flow:",
     "",
@@ -320,8 +327,8 @@ function codexReadme(root) {
     "Rollback: remove only the two added `mcp_servers` tables from your Codex config and reload the client.",
     "",
     `Repo root: ${root}`,
-    `Node command: ${process.execPath}`,
-    `Node version: ${process.version}`,
+    `Node command: ${nodeCommand}`,
+    portable ? "Node version: resolved by the target client environment" : `Node version: ${process.version}`,
     "Transport: stdio",
     "Servers: vnem, vnem-tools",
     "Secrets: none are embedded in this profile.",
@@ -329,7 +336,7 @@ function codexReadme(root) {
   ].join("\n");
 }
 
-function clientReadme(client, root) {
+function clientReadme(client, root, nodeCommand, { portable = false } = {}) {
   const title = {
     claude: "Claude VNEM MCP Profile",
     antigravity: "Antigravity-Style VNEM MCP Profile",
@@ -354,6 +361,8 @@ function clientReadme(client, root) {
     "",
     ...notes,
     "",
+    portable ? "This tracked file is a portable template. Replace `${VNEM_CHECKOUT}` with the absolute VNEM checkout path, or run the local emitter for this client." : "This file is a local generated profile with machine-resolved paths.",
+    "",
     "Both VNEM MCP servers are included:",
     "",
     "- `vnem`: Core MCP for routing, planning, proof contracts, and install guidance.",
@@ -367,8 +376,8 @@ function clientReadme(client, root) {
     "4. Run the install doctor through the Tools MCP or locally with `node scripts/vnem-install-adoption.mjs doctor`.",
     "",
     `Repo root: ${root}`,
-    `Node command: ${process.execPath}`,
-    `Node version: ${process.version}`,
+    `Node command: ${nodeCommand}`,
+    portable ? "Node version: resolved by the target client environment" : `Node version: ${process.version}`,
     "Transport: stdio",
     "Secrets: none are embedded in this profile.",
     ""
@@ -391,11 +400,12 @@ function buildAgentUseInstruction() {
   ].join("\n");
 }
 
-function buildStaticDoctorSeed(root) {
+function buildStaticDoctorSeed(root, { portable = false } = {}) {
   return {
     schema_version: "1.0.0",
     status: "run-doctor-to-refresh",
-    root: path.resolve(root || defaultRoot),
+    root: portable ? portableCheckout : path.resolve(root || defaultRoot),
+    portable_template: portable,
     clients,
     servers: serverNames,
     note: "Run node scripts/vnem-install-adoption.mjs doctor to refresh this repo-local report."

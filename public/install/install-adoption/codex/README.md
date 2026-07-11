@@ -3,6 +3,7 @@
 Use `config-snippet.toml` as a merge snippet. Do not replace the whole Codex config file, and do not overwrite unrelated MCP servers.
 
 This kit does not guess the Codex config path. It emits repo-local guidance only.
+This tracked file is a portable template. Replace `${VNEM_CHECKOUT}` with the absolute VNEM checkout path, or run `node scripts/vnem-install-adoption.mjs emit --client codex` from a checkout to generate a local profile.
 
 Suggested flow:
 
@@ -13,9 +14,9 @@ Suggested flow:
 
 Rollback: remove only the two added `mcp_servers` tables from your Codex config and reload the client.
 
-Repo root: C:\VNEM\vnem-src
-Node command: C:\Users\ovvuh\AppData\Local\hermes\node\node.exe
-Node version: v22.22.3
+Repo root: ${VNEM_CHECKOUT}
+Node command: node
+Node version: resolved by the target client environment
 Transport: stdio
 Servers: vnem, vnem-tools
 Secrets: none are embedded in this profile.

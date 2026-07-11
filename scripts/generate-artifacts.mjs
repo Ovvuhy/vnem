@@ -4,7 +4,17 @@ import { gzipSync } from "node:zlib";
 import { ROOT, publicEntry, readEntries, uniqueSorted, writeBytes, writeJson, writeText } from "./lib/registry.mjs";
 import { buildInstallAdoptionFiles } from "./vnem-install-adoption.mjs";
 
-const generatedAt = new Date().toISOString();
+const sourceDateEpoch = process.env.SOURCE_DATE_EPOCH;
+const generatedDateTime = sourceDateEpoch
+  ? /^\d+$/.test(sourceDateEpoch)
+    ? new Date(Number(sourceDateEpoch) * 1000)
+    : new Date(sourceDateEpoch)
+  : new Date();
+if (Number.isNaN(generatedDateTime.valueOf())) {
+  throw new Error(`Invalid SOURCE_DATE_EPOCH: ${sourceDateEpoch}`);
+}
+const generatedAt = generatedDateTime.toISOString();
+const generationNowMs = generatedDateTime.getTime();
 const generatedDate = generatedAt.slice(0, 10);
 const packageJson = JSON.parse(await readFile(path.join(ROOT, "package.json"), "utf8"));
 const packageVersion = packageJson.version;
@@ -3651,7 +3661,7 @@ function installArchive(files) {
 function daysSince(dateValue) {
   const date = new Date(dateValue);
   if (Number.isNaN(date.valueOf())) return null;
-  return Math.floor((Date.now() - date.getTime()) / 86400000);
+  return Math.floor((generationNowMs - date.getTime()) / 86400000);
 }
 
 function inferFreshness(entry) {
@@ -5708,7 +5718,7 @@ const promptEngineering = promptEngineeringMarkdown(promptPatternData);
 const agentWorkspace = agentWorkspaceMarkdown();
 const agentInstructions = agentsMarkdown();
 const rootAgentInstructions = rootAgentsMarkdown();
-const installAdoptionFiles = buildInstallAdoptionFiles(ROOT);
+const installAdoptionFiles = buildInstallAdoptionFiles(ROOT, { portable: true });
 const installAdoptionArchiveFiles = Object.fromEntries(
   Object.entries(installAdoptionFiles).map(([name, content]) => [archivePath(name), content])
 );

@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 import assert from "node:assert/strict";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import {
+  buildInstallAdoptionFiles,
   buildInstallAdoptionGuide,
   emitInstallAdoptionProfile,
   formatInstallAdoptionGuide,
@@ -14,6 +15,13 @@ import {
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(scriptDir, "..");
+const profileSnapshots = Object.keys(buildInstallAdoptionFiles(rootDir, { portable: true })).map((relativePath) => ({
+  path: path.join(rootDir, relativePath),
+  content: readFileSync(path.join(rootDir, relativePath))
+}));
+process.on("exit", () => {
+  for (const snapshot of profileSnapshots) writeFileSync(snapshot.path, snapshot.content);
+});
 const selectedCase = (process.argv.find((arg) => arg.startsWith("--case=")) || "").slice("--case=".length);
 const cases = [
   "emit-generic-profile",
@@ -27,7 +35,8 @@ const cases = [
   "no-secret-leak",
   "no-hidden-control-chars",
   "config-parseability",
-  "both-mcps-present"
+  "both-mcps-present",
+  "portable-public-templates"
 ];
 const casesToRun = selectedCase ? [selectedCase] : cases;
 assert.ok(casesToRun.every((name) => cases.includes(name)), `unknown case ${selectedCase}`);
@@ -160,6 +169,20 @@ if (casesToRun.includes("both-mcps-present")) {
   assert.match(codex, /\[mcp_servers\.vnem-tools\]/);
 }
 
+if (casesToRun.includes("portable-public-templates")) {
+  const portableFiles = buildInstallAdoptionFiles(rootDir, { portable: true });
+  const portableText = Object.values(portableFiles).join("\n");
+  assert.match(portableText, /\$\{VNEM_CHECKOUT\}/);
+  assert.doesNotMatch(portableText, /[A-Za-z]:\\Users\\/i);
+  assert.doesNotMatch(portableText, /C:\\VNEM/i);
+  assert.doesNotMatch(portableText, new RegExp(escapeRegExp(rootDir), "i"));
+  assert.doesNotMatch(portableText, new RegExp(escapeRegExp(process.execPath), "i"));
+  for (const client of ["generic", "claude", "antigravity"]) {
+    const profile = JSON.parse(portableFiles[path.join(".vnem", "install-adoption", client, "mcp.json")]);
+    assertBothPortableServers(profile);
+  }
+}
+
 console.log(`vnem install adoption regression passed: ${casesToRun.join(", ")}`);
 
 function toolsEnv() {
@@ -196,6 +219,20 @@ function assertBothServers(profile) {
   assert.ok(profile.mcpServers["vnem-tools"].args?.[0]?.endsWith("vnem-tools-mcp-server.mjs"));
   assert.equal(profile.mcpServers.vnem.cwd, rootDir);
   assert.equal(profile.mcpServers["vnem-tools"].cwd, rootDir);
+}
+
+function assertBothPortableServers(profile) {
+  assert.ok(profile.mcpServers?.vnem);
+  assert.ok(profile.mcpServers?.["vnem-tools"]);
+  assert.equal(profile.mcpServers.vnem.command, "node");
+  assert.equal(profile.mcpServers.vnem.cwd, "${VNEM_CHECKOUT}");
+  assert.equal(profile.mcpServers["vnem-tools"].cwd, "${VNEM_CHECKOUT}");
+  assert.match(profile.mcpServers.vnem.args[0], /^\$\{VNEM_CHECKOUT\}\//);
+  assert.match(profile.mcpServers["vnem-tools"].args[0], /^\$\{VNEM_CHECKOUT\}\//);
+}
+
+function escapeRegExp(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 function readJson(relativePath) {
