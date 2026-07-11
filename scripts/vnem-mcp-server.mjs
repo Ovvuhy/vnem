@@ -37,6 +37,9 @@ import {
   skillSafetyProfile
 } from "./lib/super-library.mjs";
 import { buildInstallAdoptionGuide, formatInstallAdoptionGuide } from "./vnem-install-adoption.mjs";
+import { attachToolRegistry } from "./vnem/registry/tool-registry.mjs";
+import { loadBehaviorTestReferences } from "./vnem/registry/behavior-contracts.mjs";
+import { registerRegistryStatusTool } from "./vnem/runtime/registry-tool.mjs";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = process.env.VNEM_ROOT
@@ -200,10 +203,19 @@ const server = new McpServer(
       "Use vnem as a read-only AI booster and perception layer before coding, recommending tools, or changing a stack. For coding tasks, call vnem_recommend and apply the Triple-Check Workflow: Analyze the user's true goal and hidden requirements, Architect performance and visuals/playability together, then Review that no important domain was sacrificed. For complex app, game, or research tasks, call vnem_orchestrate to choose a deterministic Single Agent, Orchestrator-Worker, or Split-and-Merge plan before burning context. If a separate opt-in precision server is available, read vnem://install/precision-execution-protocol before exact patching, current-doc fetches, or safe terminal checks, and read vnem://install/omniscient-self-healing-protocol before semantic code search, red/green healing loops, or ephemeral scripting. vnem returns provenance, trust tiers, deterministic quality gates, and orchestration schemas; this default server never installs packages, edits code, calls secrets, spawns model workers, or reaches the network."
   }
 );
+const coreRegistry = attachToolRegistry(server, {
+  serverName: "vnem",
+  version: packageJson?.version || "0.1.0",
+  implementationModule: "scripts/vnem-mcp-server.mjs",
+  behaviorTestReferences: loadBehaviorTestReferences(rootDir, "vnem")
+});
 
 registerResources(server);
 registerPrompts(server);
 registerTools(server);
+registerRegistryStatusTool(server, coreRegistry, { name: "vnem_registry_status", title: "VNEM Core Registry Status" });
+const coreRegistryValidation = coreRegistry.validate();
+if (!coreRegistryValidation.valid) throw new Error(`VNEM Core registry validation failed: ${JSON.stringify(coreRegistryValidation.errors)}`);
 
 await server.connect(new StdioServerTransport());
 

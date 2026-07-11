@@ -17,6 +17,9 @@ import {
   executeEphemeralScript,
   runVerificationTests
 } from "./lib/omniscient-self-healing-layer.mjs";
+import { attachToolRegistry } from "./vnem/registry/tool-registry.mjs";
+import { loadBehaviorTestReferences } from "./vnem/registry/behavior-contracts.mjs";
+import { registerRegistryStatusTool } from "./vnem/runtime/registry-tool.mjs";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const defaultRoot = path.resolve(scriptDir, "..");
@@ -67,8 +70,17 @@ const server = new McpServer(
     ].join(" ")
   }
 );
+const precisionRegistry = attachToolRegistry(server, {
+  serverName: "vnem-precision",
+  version: "1.0.1",
+  implementationModule: "scripts/vnem-precision-mcp-server.mjs",
+  behaviorTestReferences: loadBehaviorTestReferences(defaultRoot, "vnem-precision")
+});
 
 registerPrecisionTools(server);
+registerRegistryStatusTool(server, precisionRegistry, { name: "mcp_registry_status", title: "VNEM Precision Registry Status" });
+const precisionRegistryValidation = precisionRegistry.validate();
+if (!precisionRegistryValidation.valid) throw new Error(`VNEM Precision registry validation failed: ${JSON.stringify(precisionRegistryValidation.errors)}`);
 await server.connect(new StdioServerTransport());
 
 function registerPrecisionTools(mcpServer) {

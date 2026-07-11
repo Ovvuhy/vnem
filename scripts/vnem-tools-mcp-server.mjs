@@ -15,6 +15,9 @@ import {
   formatInstallProfileEmit,
   installAdoptionDoctor
 } from "./vnem-install-adoption.mjs";
+import { attachToolRegistry } from "./vnem/registry/tool-registry.mjs";
+import { loadBehaviorTestReferences } from "./vnem/registry/behavior-contracts.mjs";
+import { registerRegistryStatusTool } from "./vnem/runtime/registry-tool.mjs";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(scriptDir, "..");
@@ -216,8 +219,17 @@ const server = new McpServer(
     ].join(" ")
   }
 );
+const toolsRegistry = attachToolRegistry(server, {
+  serverName: "vnem-tools",
+  version: SERVER_VERSION,
+  implementationModule: "scripts/vnem-tools-mcp-server.mjs",
+  behaviorTestReferences: loadBehaviorTestReferences(repoRoot, "vnem-tools")
+});
 
 registerTools(server);
+registerRegistryStatusTool(server, toolsRegistry, { name: "vnem_tools_registry_status", title: "VNEM Tools Registry Status" });
+const toolsRegistryValidation = toolsRegistry.validate();
+if (!toolsRegistryValidation.valid) throw new Error(`VNEM Tools registry validation failed: ${JSON.stringify(toolsRegistryValidation.errors)}`);
 await server.connect(new StdioServerTransport());
 
 function registerTools(mcpServer) {
@@ -257,7 +269,7 @@ function registerTools(mcpServer) {
     "vnem_tools_capability_router",
     {
       title: "VNEM Tools Capability Router",
-      description: "VNEM Tools MCP first-call router that maps user goals to exact registered Tools calls for repo, code, debug, test, proof, GitHub, CI, patch, MCP, next action, and safe execution planning.",
+      description: "VNEM Tools MCP first-call entrypoint router that recommends and routes exact registered tools for repo, code, debug, test, proof, GitHub, CI, patch, MCP, and next action execution planning.",
       inputSchema: {
         user_goal: z.string().min(1),
         task_type: z.string().default("auto"),
@@ -275,7 +287,7 @@ function registerTools(mcpServer) {
     "vnem_tools_adoption_readiness",
     {
       title: "VNEM Tools Adoption Readiness",
-      description: "VNEM Tools MCP adoption readiness check for first-call entrypoint discoverability, recommend/route/tool/code/repo/debug/test/proof/GitHub/CI/patch/MCP descriptions, exact registered validation, and no-placebo hooks.",
+      description: "VNEM Tools MCP adoption readiness check for first-call entrypoint recommend and route discovery across tools, code, repo, debug, test, proof, GitHub, CI, patch, MCP, and next action contracts.",
       inputSchema: { root: z.string().default(".") },
       annotations: READ_ONLY_LOCAL
     },
@@ -1881,7 +1893,7 @@ function addReliabilityFields(tool) {
   const reliability = toolReliabilityFor(tool.name, tool);
   return { ...tool, high_power: tool.high_power ?? Boolean(tool.mutation || tool.network || tool.requires_approval || ["cloudflare_control", "github_autonomy", "patching", "rollback", "project_tasks", "dev_server", "browser_proof", "ui_web_quality", "api_request", "local_git", "commands"].includes(tool.capability_group)), mutation_capable: Boolean(tool.mutation), reliability_level: reliability.level, tested_with: reliability.tested_with, safe_to_claim: reliability.safe_to_claim, unsafe_to_claim: reliability.unsafe_to_claim, next_validation_step: reliability.next_validation_step, known_limits: reliability.known_limits, tool_reliability: reliability };
 }
-function buildReliabilityCatalog(args = {}) { const tools = buildToolCatalog().filter((tool) => !args.capability_group || tool.capability_group === args.capability_group); return { generated_at: new Date().toISOString(), permission_profile: activePermissionProfile.profile_name, tools }; }
+function buildReliabilityCatalog(args = {}) { const tools = runtimeToolCatalog().filter((tool) => !args.capability_group || tool.capability_group === args.capability_group); return { generated_at: new Date().toISOString(), permission_profile: activePermissionProfile.profile_name, tools }; }
 function formatReliabilityCatalog(catalog) { return [`vnem_tools_reliability_catalog: ${catalog.tools.length} tool(s)`, `profile=${catalog.permission_profile}`, `levels=${[...new Set(catalog.tools.map((tool) => tool.reliability_level))].join(",")}`].join("\n"); }
 function operationStateFor(result = {}) { if (result.blocked_reason || result.blocked) return "blocked"; if (result.dry_run === true || result.dry_run_only === true) return "dry_run_or_plan"; if (result.source === "simulated" || result.simulated === true || result.verification?.status === "simulated") return "simulated"; if (result.applied || result.executed || result.started || result.committed || result.evidence_pack_path) return "executed_with_evidence"; if (result.ok === false || result.success === false) return "failed"; return "reported"; }
 function decorateToolResult(toolName, result = {}, extras = {}) {
@@ -1990,7 +2002,7 @@ function formatHighPowerActionReview(review) { return [`vnem_tools_high_power_ac
 function formatCapabilityGapReport(report) { return [`vnem_tools_capability_gap_report: ${report.missing_or_limited_capabilities.length} gap(s)`, `top=${report.missing_or_limited_capabilities.slice(0, 3).map((g) => g.capability).join(", ")}`].join("\n"); }
 
 function toolsVisibilityDoctor(args = {}) {
-  const catalog = buildToolCatalog();
+  const catalog = runtimeToolCatalog();
   const names = new Set(catalog.map((tool) => tool.name));
   const availableToolNames = new Set(arrayify(args.available_tool_names).map((name) => String(name)));
   const entrypoints = ["vnem_tools_entrypoint", "vnem_tools_capability_router", "vnem_tools_adoption_readiness", "vnem_tools_visibility_doctor", "vnem_tools_underuse_detector", "vnem_tools_install_profile_emit", "vnem_tools_install_doctor"];
@@ -2208,7 +2220,7 @@ function toolsCapabilityRouter(args = {}) {
   const localOnly = taskType === "local_only" || String(availableContext.task_mode || "").toLowerCase() === "local_only" || /\b(local only|local-only|no push|do not push|dont push|no pr|do not create pr|no remote)\b/.test(text);
   const categories = toolsTaskCategories(text, taskType, localOnly);
   const registeredNames = toolsRegisteredNames();
-  const catalogByName = new Map(buildToolCatalog().map((tool) => [tool.name, tool]));
+  const catalogByName = new Map(runtimeToolCatalog().map((tool) => [tool.name, tool]));
   const routeDefs = toolsRouteDefinitions();
   const rawTools = [];
   const unavailableCapabilities = [];
@@ -2265,7 +2277,7 @@ function toolsCapabilityRouter(args = {}) {
 
 async function toolsAdoptionReadiness(args = {}) {
   const root = await resolveAllowedRoot(args.root || ".");
-  const catalog = buildToolCatalog();
+  const catalog = runtimeToolCatalog();
   const names = new Set(catalog.map((tool) => tool.name));
   const entrypointTools = ["vnem_tools_entrypoint", "vnem_tools_capability_router", "vnem_tools_adoption_readiness", "vnem_tools_visibility_doctor", "vnem_tools_underuse_detector"];
   const keyPowerTools = [
@@ -2356,7 +2368,7 @@ function toolsRouteDefinitions() {
 }
 
 function toolsRegisteredNames() {
-  return new Set(buildToolCatalog().map((tool) => tool.name));
+  return new Set(toolsRegistry.manifest().map((tool) => tool.name));
 }
 
 function uniqueToolNames(values) {
@@ -2873,7 +2885,7 @@ function buildToolCatalog() {
 }
 
 function buildToolsManifest(group) {
-  const tools = buildToolCatalog().filter((tool) => !group || tool.capability_group === group);
+  const tools = runtimeToolCatalog().filter((tool) => !group || tool.capability_group === group);
   return {
     server_name: "vnem-tools",
     version: SERVER_VERSION,
@@ -2887,6 +2899,43 @@ function buildToolsManifest(group) {
     trust_boundary_classifier_tool: "vnem_tools_trust_boundary_classify",
     catalog_safety_summary: "Every action/mutation/network tool declares approval behavior, dry-run status where applicable, evidence behavior, secret policy, and Core handoff compatibility."
   };
+}
+
+function runtimeToolCatalog() {
+  const legacyByName = new Map(buildToolCatalog().map((tool) => [tool.name, tool]));
+  return toolsRegistry.manifest().map((entry) => {
+    const legacy = legacyByName.get(entry.name) || addReliabilityFields({
+      tool_name: entry.name,
+      name: entry.name,
+      capability_group: entry.category,
+      description: entry.description,
+      read_only: entry.side_effect_class === "read_only",
+      mutation: entry.side_effect_class !== "read_only",
+      network: entry.network_behavior !== "none",
+      requires_approval: entry.permission_requirements.some((permission) => /approved|acknowledgment/.test(permission)),
+      dry_run_default: entry.side_effect_class !== "read_only",
+      allowed_roots_required: entry.permission_requirements.includes("allowed_root_read") || entry.permission_requirements.includes("approved_local_mutation"),
+      secret_policy: "Secret values are redacted by the shared runtime result contract.",
+      evidence_logged: entry.evidence_behavior !== "none",
+      core_handoff_compatible: true,
+      typical_use_cases: ["runtime registry inspection"],
+      unsafe_actions_blocked: ["secret output", "unapproved mutation", "force push", "repo deletion"],
+      related_tools: []
+    });
+    return {
+      ...legacy,
+      name: entry.name,
+      description: entry.description,
+      capability_group: legacy.capability_group || entry.category,
+      category: entry.category,
+      read_only: entry.side_effect_class === "read_only",
+      mutation: entry.side_effect_class !== "read_only",
+      network: entry.network_behavior !== "none",
+      requires_approval: entry.permission_requirements.some((permission) => /approved|acknowledgment/.test(permission)),
+      evidence_logged: entry.evidence_behavior !== "none",
+      registry_contract: entry
+    };
+  });
 }
 
 async function safeWorkspaceMap(args) {

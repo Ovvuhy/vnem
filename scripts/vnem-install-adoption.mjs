@@ -21,10 +21,12 @@ const packageScripts = [
   "test:vnem-install-emit-codex",
   "test:vnem-install-emit-claude",
   "test:vnem-install-emit-antigravity",
-  "test:vnem-install-doctor"
+  "test:vnem-install-doctor",
+  "runtime:readiness",
+  "registry:check"
 ];
-const coreEntryTools = ["vnem_entrypoint", "vnem_usage_contract", "vnem_mcp_visibility_doctor", "vnem_install_adoption_guide"];
-const toolsEntryTools = ["vnem_tools_entrypoint", "vnem_tools_capability_router", "vnem_tools_adoption_readiness", "vnem_tools_install_profile_emit", "vnem_tools_install_doctor"];
+const fallbackCoreEntryTools = ["vnem_entrypoint", "vnem_usage_contract", "vnem_mcp_visibility_doctor", "vnem_install_adoption_guide"];
+const fallbackToolsEntryTools = ["vnem_tools_entrypoint", "vnem_tools_capability_router", "vnem_tools_adoption_readiness", "vnem_tools_install_profile_emit", "vnem_tools_install_doctor"];
 
 export function supportedInstallAdoptionClients() {
   return [...clients];
@@ -115,6 +117,9 @@ export async function emitAllInstallAdoptionProfiles({ root = defaultRoot } = {}
 
 export async function installAdoptionDoctor({ root = defaultRoot, emit = true, writeReport = true } = {}) {
   const absoluteRoot = path.resolve(root || defaultRoot);
+  const runtimeRegistry = readRuntimeRegistry(absoluteRoot);
+  const coreEntryTools = entryTools(runtimeRegistry, "core", fallbackCoreEntryTools);
+  const toolsEntryTools = entryTools(runtimeRegistry, "tools", fallbackToolsEntryTools);
   if (emit) await emitAllInstallAdoptionProfiles({ root: absoluteRoot });
   if (emit) {
     await writeProfileFiles(absoluteRoot, [{
@@ -131,6 +136,8 @@ export async function installAdoptionDoctor({ root = defaultRoot, emit = true, w
   const packageJson = existsSync(pkgPath) ? JSON.parse(await readFile(pkgPath, "utf8")) : {};
   const coreSource = existsSync(coreServerPath) ? await readFile(coreServerPath, "utf8") : "";
   const toolsSource = existsSync(toolsServerPath) ? await readFile(toolsServerPath, "utf8") : "";
+  const coreRegistryNames = runtimeRegistry?.servers?.core?.tools?.map((tool) => tool.name) || [];
+  const toolsRegistryNames = runtimeRegistry?.servers?.tools?.tools?.map((tool) => tool.name) || [];
 
   add("repo_exists", existsSync(absoluteRoot), absoluteRoot);
   add("node_available", Boolean(process.version), `${process.execPath} ${process.version}`);
@@ -141,8 +148,10 @@ export async function installAdoptionDoctor({ root = defaultRoot, emit = true, w
   add("core_node_check", nodeCheck(coreServerPath), "node --check scripts/vnem-mcp-server.mjs");
   add("tools_node_check", nodeCheck(toolsServerPath), "node --check scripts/vnem-tools-mcp-server.mjs");
   add("install_adoption_node_check", nodeCheck(cliPath), "node --check scripts/vnem-install-adoption.mjs");
-  add("core_entrypoint_tools_registered", coreEntryTools.every((tool) => sourceRegistersTool(coreSource, tool)), coreEntryTools.join(", "));
-  add("tools_entrypoint_tools_registered", toolsEntryTools.every((tool) => sourceRegistersTool(toolsSource, tool)), toolsEntryTools.join(", "));
+  add("runtime_registry_available", Boolean(runtimeRegistry), runtimeRegistry ? ".vnem/runtime-tool-registry.json" : "source-scan compatibility fallback");
+  add("runtime_registry_valid", runtimeRegistry ? runtimeRegistry.validation?.valid === true : true, runtimeRegistry ? `tools=${runtimeRegistry.total_tools}` : "not available; source fallback used");
+  add("core_entrypoint_tools_registered", coreEntryTools.every((tool) => coreRegistryNames.length ? coreRegistryNames.includes(tool) : sourceRegistersTool(coreSource, tool)), `${coreEntryTools.join(", ")} (${coreRegistryNames.length ? "runtime registry" : "source fallback"})`);
+  add("tools_entrypoint_tools_registered", toolsEntryTools.every((tool) => toolsRegistryNames.length ? toolsRegistryNames.includes(tool) : sourceRegistersTool(toolsSource, tool)), `${toolsEntryTools.join(", ")} (${toolsRegistryNames.length ? "runtime registry" : "source fallback"})`);
   add("package_scripts_exist", packageScripts.every((script) => packageJson.scripts?.[script]), packageScripts.join(", "));
 
   const expectedFiles = expectedInstallAdoptionFiles();
@@ -187,6 +196,19 @@ export async function installAdoptionDoctor({ root = defaultRoot, emit = true, w
     }]);
   }
   return report;
+}
+
+function readRuntimeRegistry(root) {
+  try {
+    return JSON.parse(readFileSync(path.join(root, ".vnem", "runtime-tool-registry.json"), "utf8"));
+  } catch {
+    return null;
+  }
+}
+
+function entryTools(registry, server, fallback) {
+  const names = registry?.servers?.[server]?.tools?.map((tool) => tool.name) || [];
+  return names.length ? fallback.filter((name) => names.includes(name)) : fallback;
 }
 
 export function buildInstallAdoptionGuide({ client = "generic", root = defaultRoot } = {}) {
