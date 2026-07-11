@@ -73,7 +73,7 @@ const firstHashes = await generatedHashes();
 const secondGeneration = runCommand(process.execPath, ["scripts/generate-artifacts.mjs"], generationEnv);
 const secondHashes = await generatedHashes();
 const tempEntries = await safeDirectoryEntries(path.join(root, ".tmp"));
-const toolsSource = await readFile(path.join(root, "scripts", "vnem-tools-mcp-server.mjs"), "utf8");
+const toolsSource = await readFile(path.join(root, "scripts", "vnem", "tools", "server.mjs"), "utf8");
 const coverageSummary = coverage?.structured?.tool_test_coverage_map?.coverage_summary || coverage?.structured?.coverage_summary || null;
 
 const report = {

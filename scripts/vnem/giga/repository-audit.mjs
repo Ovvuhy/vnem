@@ -29,8 +29,8 @@ for (const relativePath of files) {
 }
 
 const sourceFiles = [
-  "scripts/vnem-mcp-server.mjs",
-  "scripts/vnem-tools-mcp-server.mjs",
+  "scripts/vnem/core/server.mjs",
+  "scripts/vnem/tools/server.mjs",
   "scripts/vnem-precision-mcp-server.mjs",
   "scripts/generate-artifacts.mjs"
 ];

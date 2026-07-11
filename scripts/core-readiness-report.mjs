@@ -21,7 +21,7 @@ const git = (...args) => {
 
 const library = await json("capabilities/super-library.json");
 const usablePacks = await json("capabilities/usable-capability-packs.json");
-const serverSource = await text("scripts/vnem-mcp-server.mjs");
+const serverSource = await text("scripts/vnem/core/server.mjs");
 const mcpTestSource = await text("scripts/test-mcp-server.mjs");
 const coreToolSelectionTestSource = await text("scripts/test-core-tool-selection.mjs");
 const coreToolsEcosystemTestSource = await text("scripts/test-core-tools-tool-ecosystem.mjs");

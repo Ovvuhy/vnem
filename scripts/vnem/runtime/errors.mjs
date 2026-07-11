@@ -1,4 +1,4 @@
-const SECRET_PATTERN = /(sk-[A-Za-z0-9_-]{8,}|gh[pousr]_[A-Za-z0-9_]{8,}|xox[baprs]-[A-Za-z0-9-]{8,}|AKIA[0-9A-Z]{16}|Bearer\s+\S+|-----BEGIN [A-Z ]*PRIVATE KEY-----)/gi;
+const SECRET_PATTERN = /(\bsk-[A-Za-z0-9_-]{8,}|\bgh[pousr]_[A-Za-z0-9_]{8,}|\bxox[baprs]-[A-Za-z0-9-]{8,}|\bAKIA[0-9A-Z]{16}|\bBearer\s+\S+|-----BEGIN [A-Z ]*PRIVATE KEY-----)/gi;
 
 export class VnemRuntimeError extends Error {
   constructor(message, options = {}) {

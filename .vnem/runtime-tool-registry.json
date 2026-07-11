@@ -111,7 +111,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -147,7 +147,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -183,7 +183,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -219,7 +219,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -255,7 +255,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -291,7 +291,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -327,7 +327,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -363,7 +363,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -399,7 +399,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -435,7 +435,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -471,7 +471,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -507,7 +507,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -543,7 +543,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -579,7 +579,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -615,7 +615,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -626,7 +626,7 @@
           "name": "vnem_activate_capability_pack",
           "version": "1.0.1",
           "title": "Activate VNEM Capability Pack",
-          "description": "Create a compact ta[REDACTED] Core MCP activation contract from selected capability modules. Forces instructions, evidence, and incomplete-if-skipped rules without installing skills or mutating files.",
+          "description": "Create a compact task-specific Core MCP activation contract from selected capability modules. Forces instructions, evidence, and incomplete-if-skipped rules without installing skills or mutating files.",
           "category": "activate",
           "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
           "annotations": {
@@ -651,7 +651,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -662,7 +662,7 @@
           "name": "vnem_apply_skill_guidance",
           "version": "1.0.1",
           "title": "Apply VNEM Skill Guidance",
-          "description": "Return compact ta[REDACTED] guidance from one selected skill/capability record. Core MCP applies instructions only; it never installs skills or executes scripts.",
+          "description": "Return compact task-specific guidance from one selected skill/capability record. Core MCP applies instructions only; it never installs skills or executes scripts.",
           "category": "skill",
           "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
           "annotations": {
@@ -687,7 +687,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -698,7 +698,7 @@
           "name": "vnem_boost_task",
           "version": "1.0.1",
           "title": "Boost A Real User Task With VNEM Core",
-          "description": "Return one concrete ta[REDACTED] workflow using selected skill guidance, API guidance when useful, domain contracts, missing questions, verification, proof requirements, and Core/Precision boundaries. Core MCP stays read-only.",
+          "description": "Return one concrete task-specific workflow using selected skill guidance, API guidance when useful, domain contracts, missing questions, verification, proof requirements, and Core/Precision boundaries. Core MCP stays read-only.",
           "category": "boost",
           "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
           "annotations": {
@@ -723,7 +723,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -759,7 +759,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -795,7 +795,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -831,7 +831,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -867,7 +867,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -903,7 +903,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -939,7 +939,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -975,7 +975,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1011,7 +1011,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1047,7 +1047,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1083,7 +1083,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1119,7 +1119,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1155,7 +1155,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1191,7 +1191,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1227,7 +1227,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1263,7 +1263,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1299,7 +1299,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1335,7 +1335,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1371,7 +1371,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1407,7 +1407,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1443,7 +1443,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1479,7 +1479,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1515,7 +1515,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1551,7 +1551,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1587,7 +1587,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1623,7 +1623,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1659,7 +1659,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1695,7 +1695,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1731,7 +1731,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1767,7 +1767,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1803,7 +1803,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1839,7 +1839,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1875,7 +1875,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1911,7 +1911,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1947,7 +1947,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1983,7 +1983,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -2019,7 +2019,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -2055,7 +2055,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -2091,7 +2091,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -2127,7 +2127,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -2163,7 +2163,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -2199,7 +2199,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -2235,7 +2235,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -2271,7 +2271,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -2307,7 +2307,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -2343,7 +2343,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -2379,7 +2379,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/core/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -2625,7 +2625,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-browser-capture.mjs",
             "scripts/test-tools-code-intelligence-1-regression.mjs",
@@ -2666,7 +2666,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [],
           "benchmark_scenarios": [],
           "input_schema_present": true
@@ -2700,7 +2700,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [],
           "benchmark_scenarios": [],
           "input_schema_present": true
@@ -2709,7 +2709,7 @@
           "name": "vnem_tools_adoption_readiness",
           "version": "1.0.1",
           "title": "VNEM Tools Adoption Readiness",
-          "description": "VNEM Tools MCP adoption readiness check for first-call entrypoint recommend and route discovery across tools, code, repo, debug, test, proof, GitHub, CI, patch, MCP, and next action contracts.",
+          "description": "VNEM Tools MCP adoption readiness check for first-call entrypoint recommend and route discoverability across registered tools, code, repo, debug, test, proof, GitHub, CI, patch, MCP, and next action contracts with no-placebo hooks.",
           "category": "adoption",
           "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
           "annotations": {
@@ -2734,7 +2734,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [],
           "benchmark_scenarios": [],
           "input_schema_present": true
@@ -2768,7 +2768,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [],
           "benchmark_scenarios": [],
           "input_schema_present": true
@@ -2802,7 +2802,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [],
           "benchmark_scenarios": [],
           "input_schema_present": true
@@ -2836,7 +2836,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [],
           "benchmark_scenarios": [],
           "input_schema_present": true
@@ -2870,7 +2870,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [],
           "benchmark_scenarios": [],
           "input_schema_present": true
@@ -2904,7 +2904,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-permission-profiles.mjs"
           ],
@@ -2940,7 +2940,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-autonomy-1-regression.mjs",
             "scripts/test-tools-autonomy-2-regression.mjs",
@@ -2979,7 +2979,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-autonomy-1-regression.mjs",
             "scripts/test-tools-autonomy-2-regression.mjs",
@@ -3017,7 +3017,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-action-recovery-plan.mjs",
             "scripts/test-tools-autonomy-2-regression.mjs"
@@ -3054,7 +3054,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-autonomy-2-regression.mjs",
             "scripts/test-tools-autonomy-efficiency.mjs",
@@ -3093,7 +3093,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-autonomy-1-regression.mjs",
             "scripts/test-tools-autonomy-2-regression.mjs",
@@ -3131,7 +3131,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-power-tools-1-regression.mjs",
             "scripts/test-tools-power-tools-2-regression.mjs"
@@ -3168,7 +3168,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-power-tools-1-regression.mjs",
             "scripts/test-tools-power-tools-2-regression.mjs"
@@ -3205,7 +3205,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-power-tools-1-regression.mjs",
             "scripts/test-tools-power-tools-2-regression.mjs"
@@ -3242,7 +3242,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-power-tools-1-regression.mjs",
             "scripts/test-tools-power-tools-2-regression.mjs"
@@ -3279,7 +3279,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-power-tools-1-regression.mjs",
             "scripts/test-tools-power-tools-2-regression.mjs"
@@ -3316,7 +3316,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-power-tools-1-regression.mjs",
             "scripts/test-tools-power-tools-2-regression.mjs"
@@ -3353,7 +3353,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-power-tools-1-regression.mjs",
             "scripts/test-tools-power-tools-2-regression.mjs"
@@ -3390,7 +3390,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-power-session-1-recovery.mjs"
           ],
@@ -3426,7 +3426,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-orchestrator-1-regression.mjs"
           ],
@@ -3462,7 +3462,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-code-intelligence-1-regression.mjs"
           ],
@@ -3498,7 +3498,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-code-intelligence-1-regression.mjs"
           ],
@@ -3534,7 +3534,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-code-intelligence-1-regression.mjs"
           ],
@@ -3570,7 +3570,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-code-intelligence-1-regression.mjs"
           ],
@@ -3606,7 +3606,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-code-intelligence-1-regression.mjs"
           ],
@@ -3642,7 +3642,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-code-intelligence-1-regression.mjs"
           ],
@@ -3678,7 +3678,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-permission-profiles.mjs",
             "scripts/test-tools-trust-boundary.mjs"
@@ -3715,7 +3715,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-trust-boundary.mjs"
           ],
@@ -3751,7 +3751,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-user-smoke.mjs",
             "scripts/test-tools-cloudflare-plans.mjs",
@@ -3795,7 +3795,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-core-tools-e2e.mjs",
             "scripts/test-tools-mcp-server.mjs"
@@ -3832,7 +3832,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-core-tools-e2e.mjs",
             "scripts/test-tools-mcp-server.mjs"
@@ -3869,7 +3869,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-action-recovery-plan.mjs",
             "scripts/test-tools-mcp-server.mjs"
@@ -3906,7 +3906,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-mcp-server.mjs"
           ],
@@ -3942,7 +3942,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-mcp-server.mjs"
           ],
@@ -3978,7 +3978,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-core-tools-tool-ecosystem.mjs",
             "scripts/test-tools-intelligence.mjs"
@@ -4015,7 +4015,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-core-tools-tool-ecosystem.mjs",
             "scripts/test-tools-intelligence.mjs"
@@ -4052,7 +4052,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-core-tools-tool-ecosystem.mjs",
             "scripts/test-tools-intelligence.mjs"
@@ -4089,7 +4089,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-intelligence.mjs"
           ],
@@ -4125,7 +4125,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-core-tools-tool-ecosystem.mjs",
             "scripts/test-tools-intelligence.mjs"
@@ -4162,7 +4162,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-core-tools-e2e.mjs",
             "scripts/test-tools-mcp-server.mjs",
@@ -4200,7 +4200,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-core-tools-tool-ecosystem.mjs",
             "scripts/test-tools-git-session.mjs",
@@ -4239,7 +4239,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-project-actions.mjs"
           ],
@@ -4275,7 +4275,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-project-actions.mjs"
           ],
@@ -4311,7 +4311,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-core-tools-tool-ecosystem.mjs",
             "scripts/test-tools-git-session.mjs",
@@ -4349,7 +4349,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-project-actions.mjs"
           ],
@@ -4385,7 +4385,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-project-actions.mjs"
           ],
@@ -4421,7 +4421,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-project-actions.mjs"
           ],
@@ -4457,7 +4457,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-core-tools-tool-ecosystem.mjs",
             "scripts/test-tools-git-session.mjs"
@@ -4494,7 +4494,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-core-tools-tool-ecosystem.mjs",
             "scripts/test-tools-git-session.mjs"
@@ -4531,7 +4531,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-git-session.mjs"
           ],
@@ -4567,7 +4567,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-git-session.mjs"
           ],
@@ -4603,7 +4603,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-git-session.mjs",
             "scripts/test-tools-high-power-action-review.mjs",
@@ -4641,7 +4641,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-core-tools-e2e.mjs",
             "scripts/test-tools-git-session.mjs",
@@ -4680,7 +4680,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-high-power-action-review.mjs",
             "scripts/test-tools-mcp-server.mjs"
@@ -4717,7 +4717,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-core-tools-e2e.mjs",
             "scripts/test-core-tools-tool-ecosystem.mjs",
@@ -4757,7 +4757,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-browser-intelligence.mjs"
           ],
@@ -4793,7 +4793,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-browser-intelligence.mjs"
           ],
@@ -4829,7 +4829,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-browser-intelligence.mjs"
           ],
@@ -4865,7 +4865,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-browser-intelligence.mjs"
           ],
@@ -4901,7 +4901,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-browser-intelligence.mjs"
           ],
@@ -4937,7 +4937,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-browser-intelligence.mjs"
           ],
@@ -4973,7 +4973,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-browser-research-pack.mjs"
           ],
@@ -5009,7 +5009,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-search-power.mjs"
           ],
@@ -5045,7 +5045,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-user-smoke.mjs",
             "scripts/test-tools-search-power.mjs"
@@ -5082,7 +5082,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-search-power.mjs"
           ],
@@ -5118,7 +5118,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-user-smoke.mjs",
             "scripts/test-tools-search-power.mjs"
@@ -5155,7 +5155,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-risk-captcha.mjs"
           ],
@@ -5191,7 +5191,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-risk-captcha.mjs"
           ],
@@ -5227,7 +5227,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-user-smoke.mjs",
             "scripts/test-tools-risk-captcha.mjs"
@@ -5264,7 +5264,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-user-smoke.mjs",
             "scripts/test-tools-risk-captcha.mjs"
@@ -5301,7 +5301,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-user-smoke.mjs",
             "scripts/test-tools-search-power.mjs"
@@ -5338,7 +5338,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-user-smoke.mjs",
             "scripts/test-tools-search-power.mjs"
@@ -5375,7 +5375,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-source-ingestion.mjs"
           ],
@@ -5411,7 +5411,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-source-ingestion.mjs"
           ],
@@ -5447,7 +5447,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-source-graph.mjs"
           ],
@@ -5483,7 +5483,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-architecture-review.mjs"
           ],
@@ -5519,7 +5519,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-debug-evidence.mjs"
           ],
@@ -5555,7 +5555,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-ui-surface-review.mjs"
           ],
@@ -5591,7 +5591,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-browser-evidence-plan.mjs"
           ],
@@ -5628,7 +5628,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-action-recovery-plan.mjs",
             "scripts/test-tools-browser-evidence-run.mjs"
@@ -5665,7 +5665,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-user-smoke.mjs",
             "scripts/test-tools-browser-evidence-run.mjs",
@@ -5703,7 +5703,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-research.mjs"
           ],
@@ -5739,7 +5739,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-research.mjs"
           ],
@@ -5775,7 +5775,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-research.mjs"
           ],
@@ -5811,7 +5811,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-core-tools-e2e.mjs",
             "scripts/test-tools-browser-capture.mjs",
@@ -5849,7 +5849,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-autonomy-1-regression.mjs",
             "scripts/test-tools-github-live-readiness.mjs",
@@ -5888,7 +5888,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-github-settings.mjs"
           ],
@@ -5924,7 +5924,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-github-settings.mjs",
             "scripts/test-tools-github-status-profile.mjs"
@@ -5961,7 +5961,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-github-real-exec-paths.mjs",
             "scripts/test-tools-github-repo-intelligence.mjs"
@@ -5998,7 +5998,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-github-repo-intelligence.mjs",
             "scripts/test-tools-power-tools-1-regression.mjs"
@@ -6035,7 +6035,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-github-branch-commit-pr.mjs",
             "scripts/test-tools-github-command-builder.mjs",
@@ -6074,7 +6074,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-autonomy-1-regression.mjs",
             "scripts/test-tools-autonomy-2-regression.mjs",
@@ -6116,7 +6116,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-autonomy-2-regression.mjs",
             "scripts/test-tools-github-branch-commit-pr.mjs",
@@ -6158,7 +6158,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [],
           "benchmark_scenarios": [],
           "input_schema_present": true
@@ -6193,7 +6193,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-github-command-builder.mjs",
             "scripts/test-tools-github-issues-actions-ci.mjs",
@@ -6233,7 +6233,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [],
           "benchmark_scenarios": [],
           "input_schema_present": true
@@ -6267,7 +6267,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [],
           "benchmark_scenarios": [],
           "input_schema_present": true
@@ -6301,7 +6301,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-github-issues-actions-ci.mjs",
             "scripts/test-tools-github-mutation-dry-run.mjs",
@@ -6339,7 +6339,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-github-issues-actions-ci.mjs",
             "scripts/test-tools-github-real-exec-paths.mjs"
@@ -6376,7 +6376,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-github-issues-actions-ci.mjs",
             "scripts/test-tools-github-mutation-dry-run.mjs",
@@ -6414,7 +6414,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-github-issues-actions-ci.mjs",
             "scripts/test-tools-github-real-exec-paths.mjs"
@@ -6451,7 +6451,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-autonomy-2-regression.mjs",
             "scripts/test-tools-autonomy-efficiency.mjs"
@@ -6488,7 +6488,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-autonomy-2-regression.mjs",
             "scripts/test-tools-autonomy-efficiency.mjs",
@@ -6526,7 +6526,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [],
           "benchmark_scenarios": [],
           "input_schema_present": true
@@ -6561,7 +6561,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-github-mutation-dry-run.mjs",
             "scripts/test-tools-github-real-exec-paths.mjs"
@@ -6598,7 +6598,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [],
           "benchmark_scenarios": [],
           "input_schema_present": true
@@ -6633,7 +6633,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [],
           "benchmark_scenarios": [],
           "input_schema_present": true
@@ -6667,7 +6667,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-cloudflare-status-auth.mjs",
             "scripts/test-tools-quality-2-regression.mjs"
@@ -6704,7 +6704,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-cloudflare-status-auth.mjs"
           ],
@@ -6740,7 +6740,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-cloudflare-status-auth.mjs"
           ],
@@ -6776,7 +6776,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-action-recovery-plan.mjs",
             "scripts/test-tools-cloudflare-status-auth.mjs"
@@ -6813,7 +6813,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-cloudflare-plans.mjs"
           ],
@@ -6850,7 +6850,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-action-recovery-plan.mjs",
             "scripts/test-tools-cloudflare-approval-gates.mjs",
@@ -6890,7 +6890,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-cloudflare-plans.mjs"
           ],
@@ -6927,7 +6927,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-cloudflare-approval-gates.mjs"
           ],
@@ -6963,7 +6963,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-cloudflare-plans.mjs"
           ],
@@ -7000,7 +7000,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-cloudflare-approval-gates.mjs",
             "scripts/test-tools-high-power-action-review.mjs"
@@ -7037,7 +7037,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-cloudflare-plans.mjs"
           ],
@@ -7074,7 +7074,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-cloudflare-approval-gates.mjs",
             "scripts/test-tools-cloudflare-redaction.mjs",
@@ -7113,7 +7113,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [],
           "benchmark_scenarios": [],
           "input_schema_present": true
@@ -7147,7 +7147,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [],
           "benchmark_scenarios": [],
           "input_schema_present": true
@@ -7182,7 +7182,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [],
           "benchmark_scenarios": [],
           "input_schema_present": true
@@ -7216,7 +7216,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [],
           "benchmark_scenarios": [],
           "input_schema_present": true
@@ -7251,7 +7251,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [],
           "benchmark_scenarios": [],
           "input_schema_present": true
@@ -7285,7 +7285,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-cloudflare-evidence-pack.mjs",
             "scripts/test-tools-quality-general.mjs"
@@ -7322,7 +7322,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-quality-general.mjs"
           ],
@@ -7358,7 +7358,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-cloudflare-redaction.mjs",
             "scripts/test-tools-quality-general.mjs"
@@ -7395,7 +7395,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem-tools-mcp-server.mjs",
+          "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-mcp-server.mjs"
           ],
