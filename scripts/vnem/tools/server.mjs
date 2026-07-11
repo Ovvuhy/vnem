@@ -2307,7 +2307,10 @@ function toolsCapabilityRouter(args = {}) {
   const rawTools = [];
   const unavailableCapabilities = [];
 
-  for (const category of categories) {
+  const orderedCategories = taskType.includes("implementation") && categories.includes("coding_implementation")
+    ? ["coding_implementation", ...categories.filter((category) => category !== "coding_implementation")]
+    : categories;
+  for (const category of orderedCategories) {
     for (const tool of routeDefs[category]?.tools || []) rawTools.push(tool);
   }
   if (!rawTools.length) rawTools.push("vnem_tools_manifest", "vnem_tools_status");

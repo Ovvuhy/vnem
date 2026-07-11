@@ -1,9 +1,9 @@
 {
   "schema_version": "1.0.0",
   "label": "phase-3",
-  "captured_at": "2026-07-11T19:18:19.026Z",
+  "captured_at": "2026-07-11T19:27:24.675Z",
   "branch": "feat/vnem-giga-evolution-1",
-  "head_sha": "adcba8c17a8313604d800fe61dd0e15ea9eb5842",
+  "head_sha": "ca95e67131f019483c42755c1fdf1b47b97d27de",
   "methodology": {
     "protocol": "Model Context Protocol over stdio using @modelcontextprotocol/sdk",
     "clients": [
@@ -29,9 +29,9 @@
     "mean_score": 0.9024,
     "latency": {
       "runs": 35,
-      "median_ms": 6.43,
-      "worst_ms": 39.52,
-      "min_ms": 3.07
+      "median_ms": 7.54,
+      "worst_ms": 37.08,
+      "min_ms": 4.59
     },
     "output_bytes": {
       "total": 25678,
@@ -94,177 +94,177 @@
       "full-stack app creation": {
         "success": true,
         "score": 1,
-        "latency_ms": 39.52
+        "latency_ms": 37.08
       },
       "frontend feature work": {
         "success": true,
         "score": 1,
-        "latency_ms": 10.58
+        "latency_ms": 14.72
       },
       "backend/API feature work": {
         "success": false,
         "score": 0.875,
-        "latency_ms": 10.78
+        "latency_ms": 9.83
       },
       "existing app debugging": {
         "success": true,
         "score": 1,
-        "latency_ms": 10.47
+        "latency_ms": 12.96
       },
       "architecture understanding": {
         "success": true,
         "score": 1,
-        "latency_ms": 10.32
+        "latency_ms": 12.73
       },
       "patch targeting": {
         "success": true,
         "score": 1,
-        "latency_ms": 8.07
+        "latency_ms": 10.06
       },
       "safe refactoring": {
         "success": true,
         "score": 1,
-        "latency_ms": 10.22
+        "latency_ms": 7.73
       },
       "terminal/project automation": {
         "success": true,
         "score": 1,
-        "latency_ms": 6.93
+        "latency_ms": 9.57
       },
       "test selection": {
         "success": true,
         "score": 1,
-        "latency_ms": 9.56
+        "latency_ms": 10.59
       },
       "CI failure diagnosis": {
         "success": true,
         "score": 1,
-        "latency_ms": 8.7
+        "latency_ms": 9.41
       },
       "coverage analysis": {
         "success": true,
         "score": 1,
-        "latency_ms": 7.26
+        "latency_ms": 7.9
       },
       "benchmark interpretation": {
         "success": true,
         "score": 1,
-        "latency_ms": 3.36
+        "latency_ms": 9.22
       },
       "browser/UI inspection": {
         "success": true,
         "score": 1,
-        "latency_ms": 5.23
+        "latency_ms": 6.16
       },
       "accessibility verification": {
         "success": true,
         "score": 1,
-        "latency_ms": 3.07
+        "latency_ms": 5.59
       },
       "responsive visual proof": {
         "success": true,
         "score": 1,
-        "latency_ms": 5.92
+        "latency_ms": 7.44
       },
       "Windows/PowerShell diagnosis": {
         "success": false,
         "score": 0.875,
-        "latency_ms": 7.83
+        "latency_ms": 6.82
       },
       "local process/port troubleshooting": {
         "success": false,
         "score": 0.75,
-        "latency_ms": 6.31
+        "latency_ms": 10.5
       },
       "GitHub branch/PR work": {
         "success": true,
         "score": 0.9,
-        "latency_ms": 6.61
+        "latency_ms": 6.45
       },
       "GitHub Actions diagnosis": {
         "success": true,
         "score": 1,
-        "latency_ms": 5.34
+        "latency_ms": 5.41
       },
       "game/modding project inspection": {
         "success": false,
         "score": 0.75,
-        "latency_ms": 7.21
+        "latency_ms": 7.54
       },
       "Roblox/Luau project inspection": {
         "success": false,
         "score": 0.75,
-        "latency_ms": 6.43
+        "latency_ms": 6.58
       },
       "dependency/install risk": {
         "success": false,
         "score": 0.75,
-        "latency_ms": 6.32
+        "latency_ms": 12.02
       },
       "package upgrade planning": {
         "success": false,
         "score": 0.7778,
-        "latency_ms": 7.86
+        "latency_ms": 5.58
       },
       "API selection and integration": {
         "success": false,
         "score": 0.75,
-        "latency_ms": 9.53
+        "latency_ms": 7.01
       },
       "approved live API execution": {
         "success": false,
         "score": 0.8889,
-        "latency_ms": 11.18
+        "latency_ms": 14.13
       },
       "skill selection": {
         "success": false,
         "score": 0.875,
-        "latency_ms": 5.7
+        "latency_ms": 6.92
       },
       "vetted skill execution": {
         "success": false,
         "score": 0.8,
-        "latency_ms": 5.21
+        "latency_ms": 9.14
       },
       "client installation": {
         "success": false,
         "score": 0.7,
-        "latency_ms": 4.04
+        "latency_ms": 6.83
       },
       "client rollback": {
         "success": false,
         "score": 0.7,
-        "latency_ms": 6.18
+        "latency_ms": 7.16
       },
       "context/session recovery": {
         "success": true,
         "score": 1,
-        "latency_ms": 5.09
+        "latency_ms": 8.54
       },
       "evidence-pack generation": {
         "success": false,
         "score": 0.875,
-        "latency_ms": 5.96
+        "latency_ms": 5.73
       },
       "no-placebo completion auditing": {
         "success": true,
         "score": 1,
-        "latency_ms": 4.88
+        "latency_ms": 5.97
       },
       "current documentation retrieval": {
         "success": false,
         "score": 0.8889,
-        "latency_ms": 5.92
+        "latency_ms": 4.59
       },
       "structured data or database work": {
         "success": false,
         "score": 0.7778,
-        "latency_ms": 4.9
+        "latency_ms": 5.5
       },
       "Cloudflare deployment verification": {
         "success": true,
         "score": 0.9,
-        "latency_ms": 5.39
+        "latency_ms": 7.16
       }
     }
   },
@@ -318,9 +318,9 @@
       },
       "score": 1,
       "success": true,
-      "latency_ms": 39.52,
-      "core_latency_ms": 18.69,
-      "tools_latency_ms": 20.83,
+      "latency_ms": 37.08,
+      "core_latency_ms": 17.03,
+      "tools_latency_ms": 20.05,
       "output_bytes": 905,
       "remaining_uncertainty": []
     },
@@ -373,9 +373,9 @@
       },
       "score": 1,
       "success": true,
-      "latency_ms": 10.58,
-      "core_latency_ms": 4.9,
-      "tools_latency_ms": 5.68,
+      "latency_ms": 14.72,
+      "core_latency_ms": 6.4,
+      "tools_latency_ms": 8.32,
       "output_bytes": 896,
       "remaining_uncertainty": []
     },
@@ -414,9 +414,9 @@
       },
       "score": 0.875,
       "success": false,
-      "latency_ms": 10.78,
-      "core_latency_ms": 5.07,
-      "tools_latency_ms": 5.71,
+      "latency_ms": 9.83,
+      "core_latency_ms": 3.88,
+      "tools_latency_ms": 5.95,
       "output_bytes": 574,
       "remaining_uncertainty": [
         "correct_route"
@@ -467,9 +467,9 @@
       },
       "score": 1,
       "success": true,
-      "latency_ms": 10.47,
-      "core_latency_ms": 3.62,
-      "tools_latency_ms": 6.85,
+      "latency_ms": 12.96,
+      "core_latency_ms": 3.97,
+      "tools_latency_ms": 8.99,
       "output_bytes": 850,
       "remaining_uncertainty": []
     },
@@ -515,9 +515,9 @@
       },
       "score": 1,
       "success": true,
-      "latency_ms": 10.32,
-      "core_latency_ms": 3.37,
-      "tools_latency_ms": 6.95,
+      "latency_ms": 12.73,
+      "core_latency_ms": 5.1,
+      "tools_latency_ms": 7.63,
       "output_bytes": 716,
       "remaining_uncertainty": []
     },
@@ -565,9 +565,9 @@
       },
       "score": 1,
       "success": true,
-      "latency_ms": 8.07,
-      "core_latency_ms": 2.89,
-      "tools_latency_ms": 5.18,
+      "latency_ms": 10.06,
+      "core_latency_ms": 4.62,
+      "tools_latency_ms": 5.44,
       "output_bytes": 925,
       "remaining_uncertainty": []
     },
@@ -616,9 +616,9 @@
       },
       "score": 1,
       "success": true,
-      "latency_ms": 10.22,
-      "core_latency_ms": 4.94,
-      "tools_latency_ms": 5.28,
+      "latency_ms": 7.73,
+      "core_latency_ms": 2.38,
+      "tools_latency_ms": 5.35,
       "output_bytes": 884,
       "remaining_uncertainty": []
     },
@@ -666,9 +666,9 @@
       },
       "score": 1,
       "success": true,
-      "latency_ms": 6.93,
-      "core_latency_ms": 2.73,
-      "tools_latency_ms": 4.2,
+      "latency_ms": 9.57,
+      "core_latency_ms": 4.16,
+      "tools_latency_ms": 5.41,
       "output_bytes": 695,
       "remaining_uncertainty": []
     },
@@ -714,9 +714,9 @@
       },
       "score": 1,
       "success": true,
-      "latency_ms": 9.56,
-      "core_latency_ms": 4.9,
-      "tools_latency_ms": 4.66,
+      "latency_ms": 10.59,
+      "core_latency_ms": 3.16,
+      "tools_latency_ms": 7.43,
       "output_bytes": 831,
       "remaining_uncertainty": []
     },
@@ -768,9 +768,9 @@
       },
       "score": 1,
       "success": true,
-      "latency_ms": 8.7,
-      "core_latency_ms": 2.86,
-      "tools_latency_ms": 5.84,
+      "latency_ms": 9.41,
+      "core_latency_ms": 2.55,
+      "tools_latency_ms": 6.86,
       "output_bytes": 876,
       "remaining_uncertainty": []
     },
@@ -817,9 +817,9 @@
       },
       "score": 1,
       "success": true,
-      "latency_ms": 7.26,
-      "core_latency_ms": 2.1,
-      "tools_latency_ms": 5.16,
+      "latency_ms": 7.9,
+      "core_latency_ms": 2.12,
+      "tools_latency_ms": 5.78,
       "output_bytes": 923,
       "remaining_uncertainty": []
     },
@@ -861,9 +861,9 @@
       },
       "score": 1,
       "success": true,
-      "latency_ms": 3.36,
-      "core_latency_ms": 1.13,
-      "tools_latency_ms": 2.23,
+      "latency_ms": 9.22,
+      "core_latency_ms": 2.03,
+      "tools_latency_ms": 7.19,
       "output_bytes": 496,
       "remaining_uncertainty": []
     },
@@ -912,9 +912,9 @@
       },
       "score": 1,
       "success": true,
-      "latency_ms": 5.23,
-      "core_latency_ms": 1.45,
-      "tools_latency_ms": 3.78,
+      "latency_ms": 6.16,
+      "core_latency_ms": 2.28,
+      "tools_latency_ms": 3.88,
       "output_bytes": 901,
       "remaining_uncertainty": []
     },
@@ -961,9 +961,9 @@
       },
       "score": 1,
       "success": true,
-      "latency_ms": 3.07,
-      "core_latency_ms": 1.16,
-      "tools_latency_ms": 1.91,
+      "latency_ms": 5.59,
+      "core_latency_ms": 1.6,
+      "tools_latency_ms": 3.99,
       "output_bytes": 926,
       "remaining_uncertainty": []
     },
@@ -1009,9 +1009,9 @@
       },
       "score": 1,
       "success": true,
-      "latency_ms": 5.92,
-      "core_latency_ms": 1.15,
-      "tools_latency_ms": 4.77,
+      "latency_ms": 7.44,
+      "core_latency_ms": 2.81,
+      "tools_latency_ms": 4.63,
       "output_bytes": 862,
       "remaining_uncertainty": []
     },
@@ -1058,9 +1058,9 @@
       },
       "score": 0.875,
       "success": false,
-      "latency_ms": 7.83,
-      "core_latency_ms": 4.35,
-      "tools_latency_ms": 3.48,
+      "latency_ms": 6.82,
+      "core_latency_ms": 2.86,
+      "tools_latency_ms": 3.96,
       "output_bytes": 873,
       "remaining_uncertainty": [
         "correct_capability_selection"
@@ -1100,9 +1100,9 @@
       },
       "score": 0.75,
       "success": false,
-      "latency_ms": 6.31,
-      "core_latency_ms": 2.38,
-      "tools_latency_ms": 3.93,
+      "latency_ms": 10.5,
+      "core_latency_ms": 7.51,
+      "tools_latency_ms": 2.99,
       "output_bytes": 495,
       "remaining_uncertainty": [
         "correct_route",
@@ -1154,9 +1154,9 @@
       },
       "score": 0.9,
       "success": true,
-      "latency_ms": 6.61,
-      "core_latency_ms": 1.95,
-      "tools_latency_ms": 4.66,
+      "latency_ms": 6.45,
+      "core_latency_ms": 2.76,
+      "tools_latency_ms": 3.69,
       "output_bytes": 885,
       "remaining_uncertainty": [
         "rollback_behavior"
@@ -1211,9 +1211,9 @@
       },
       "score": 1,
       "success": true,
-      "latency_ms": 5.34,
-      "core_latency_ms": 2.63,
-      "tools_latency_ms": 2.71,
+      "latency_ms": 5.41,
+      "core_latency_ms": 1.93,
+      "tools_latency_ms": 3.48,
       "output_bytes": 897,
       "remaining_uncertainty": []
     },
@@ -1251,9 +1251,9 @@
       },
       "score": 0.75,
       "success": false,
-      "latency_ms": 7.21,
-      "core_latency_ms": 3.4,
-      "tools_latency_ms": 3.81,
+      "latency_ms": 7.54,
+      "core_latency_ms": 2.2,
+      "tools_latency_ms": 5.34,
       "output_bytes": 495,
       "remaining_uncertainty": [
         "correct_route",
@@ -1294,9 +1294,9 @@
       },
       "score": 0.75,
       "success": false,
-      "latency_ms": 6.43,
-      "core_latency_ms": 2.44,
-      "tools_latency_ms": 3.99,
+      "latency_ms": 6.58,
+      "core_latency_ms": 1.9,
+      "tools_latency_ms": 4.68,
       "output_bytes": 495,
       "remaining_uncertainty": [
         "correct_route",
@@ -1339,9 +1339,9 @@
       },
       "score": 0.75,
       "success": false,
-      "latency_ms": 6.32,
-      "core_latency_ms": 2.27,
-      "tools_latency_ms": 4.05,
+      "latency_ms": 12.02,
+      "core_latency_ms": 2.05,
+      "tools_latency_ms": 9.97,
       "output_bytes": 595,
       "remaining_uncertainty": [
         "correct_route",
@@ -1390,9 +1390,9 @@
       },
       "score": 0.7778,
       "success": false,
-      "latency_ms": 7.86,
-      "core_latency_ms": 3.92,
-      "tools_latency_ms": 3.94,
+      "latency_ms": 5.58,
+      "core_latency_ms": 2.53,
+      "tools_latency_ms": 3.05,
       "output_bytes": 716,
       "remaining_uncertainty": [
         "correct_capability_selection",
@@ -1436,9 +1436,9 @@
       },
       "score": 0.75,
       "success": false,
-      "latency_ms": 9.53,
-      "core_latency_ms": 3.14,
-      "tools_latency_ms": 6.39,
+      "latency_ms": 7.01,
+      "core_latency_ms": 1.93,
+      "tools_latency_ms": 5.08,
       "output_bytes": 589,
       "remaining_uncertainty": [
         "correct_route",
@@ -1480,9 +1480,9 @@
       },
       "score": 0.8889,
       "success": false,
-      "latency_ms": 11.18,
-      "core_latency_ms": 2.49,
-      "tools_latency_ms": 8.69,
+      "latency_ms": 14.13,
+      "core_latency_ms": 4.21,
+      "tools_latency_ms": 9.92,
       "output_bytes": 574,
       "remaining_uncertainty": [
         "correct_route"
@@ -1530,9 +1530,9 @@
       },
       "score": 0.875,
       "success": false,
-      "latency_ms": 5.7,
-      "core_latency_ms": 2.41,
-      "tools_latency_ms": 3.29,
+      "latency_ms": 6.92,
+      "core_latency_ms": 2.18,
+      "tools_latency_ms": 4.74,
       "output_bytes": 716,
       "remaining_uncertainty": [
         "correct_capability_selection"
@@ -1574,9 +1574,9 @@
       },
       "score": 0.8,
       "success": false,
-      "latency_ms": 5.21,
-      "core_latency_ms": 1.84,
-      "tools_latency_ms": 3.37,
+      "latency_ms": 9.14,
+      "core_latency_ms": 3.02,
+      "tools_latency_ms": 6.12,
       "output_bytes": 595,
       "remaining_uncertainty": [
         "correct_route",
@@ -1617,9 +1617,9 @@
       },
       "score": 0.7,
       "success": false,
-      "latency_ms": 4.04,
-      "core_latency_ms": 1.16,
-      "tools_latency_ms": 2.88,
+      "latency_ms": 6.83,
+      "core_latency_ms": 3.11,
+      "tools_latency_ms": 3.72,
       "output_bytes": 495,
       "remaining_uncertainty": [
         "correct_route",
@@ -1663,9 +1663,9 @@
       },
       "score": 0.7,
       "success": false,
-      "latency_ms": 6.18,
-      "core_latency_ms": 1.78,
-      "tools_latency_ms": 4.4,
+      "latency_ms": 7.16,
+      "core_latency_ms": 2.37,
+      "tools_latency_ms": 4.79,
       "output_bytes": 595,
       "remaining_uncertainty": [
         "correct_route",
@@ -1715,9 +1715,9 @@
       },
       "score": 1,
       "success": true,
-      "latency_ms": 5.09,
-      "core_latency_ms": 1.68,
-      "tools_latency_ms": 3.41,
+      "latency_ms": 8.54,
+      "core_latency_ms": 2.11,
+      "tools_latency_ms": 6.43,
       "output_bytes": 801,
       "remaining_uncertainty": []
     },
@@ -1760,9 +1760,9 @@
       },
       "score": 0.875,
       "success": false,
-      "latency_ms": 5.96,
-      "core_latency_ms": 3.07,
-      "tools_latency_ms": 2.89,
+      "latency_ms": 5.73,
+      "core_latency_ms": 1.91,
+      "tools_latency_ms": 3.82,
       "output_bytes": 691,
       "remaining_uncertainty": [
         "correct_route"
@@ -1814,9 +1814,9 @@
       },
       "score": 1,
       "success": true,
-      "latency_ms": 4.88,
-      "core_latency_ms": 2.12,
-      "tools_latency_ms": 2.76,
+      "latency_ms": 5.97,
+      "core_latency_ms": 1.83,
+      "tools_latency_ms": 4.14,
       "output_bytes": 933,
       "remaining_uncertainty": []
     },
@@ -1858,9 +1858,9 @@
       },
       "score": 0.8889,
       "success": false,
-      "latency_ms": 5.92,
-      "core_latency_ms": 1.87,
-      "tools_latency_ms": 4.05,
+      "latency_ms": 4.59,
+      "core_latency_ms": 1.8,
+      "tools_latency_ms": 2.79,
       "output_bytes": 516,
       "remaining_uncertainty": [
         "correct_capability_selection"
@@ -1902,9 +1902,9 @@
       },
       "score": 0.7778,
       "success": false,
-      "latency_ms": 4.9,
-      "core_latency_ms": 1.43,
-      "tools_latency_ms": 3.47,
+      "latency_ms": 5.5,
+      "core_latency_ms": 2.23,
+      "tools_latency_ms": 3.27,
       "output_bytes": 595,
       "remaining_uncertainty": [
         "correct_route",
@@ -1953,9 +1953,9 @@
       },
       "score": 0.9,
       "success": true,
-      "latency_ms": 5.39,
-      "core_latency_ms": 2.49,
-      "tools_latency_ms": 2.9,
+      "latency_ms": 7.16,
+      "core_latency_ms": 1.68,
+      "tools_latency_ms": 5.48,
       "output_bytes": 867,
       "remaining_uncertainty": [
         "rollback_behavior"
