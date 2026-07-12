@@ -2,14 +2,17 @@
 
 Generated from live MCP runtime registries. Do not edit this table manually.
 
-- Total tools: 220
+- Total tools: 223
 - Registry valid: true
 - Missing behavior-test references: 18
 
 | Server | Tool | Category | Side effect | Permissions | Evidence | Rollback | Implementation |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | core | `vnem_bootstrap` | bootstrap | read_only | allowed_root_read | optional | not_required | scripts/vnem/core/server.mjs |
-| core | `vnem_entrypoint` | entrypoint | read_only | allowed_root_read | optional | not_required | scripts/vnem/core/server.mjs |
+| core | `vnem_entrypoint` | entrypoint | read_only | allowed_root_read | optional | not_required | scripts/vnem/core/intelligence.mjs |
+| core | `vnem_decision_details` | decision | read_only | allowed_root_read | optional | not_required | scripts/vnem/core/intelligence.mjs |
+| core | `vnem_continue_from_tools_evidence` | evidence | read_only | allowed_root_read | optional | not_required | scripts/vnem/core/intelligence.mjs |
+| core | `vnem_compatibility_assess` | compatibility | read_only | allowed_root_read | optional | not_required | scripts/vnem/core/intelligence.mjs |
 | core | `vnem_usage_contract` | usage | read_only | allowed_root_read | optional | not_required | scripts/vnem/core/server.mjs |
 | core | `vnem_mcp_visibility_doctor` | mcp | read_only | allowed_root_read | optional | not_required | scripts/vnem/core/server.mjs |
 | core | `vnem_underuse_detector` | underuse | read_only | allowed_root_read | optional | not_required | scripts/vnem/core/server.mjs |

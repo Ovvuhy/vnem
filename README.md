@@ -170,6 +170,8 @@ This is still read-only guidance. The MCP server returns orchestration plans, pr
 
 VNEM now also has a separate `vnem-tools` MCP foundation. Core MCP decides what should happen, chooses usable skills/APIs, selects Tools capabilities, creates proof requirements, and prepares a Tools handoff. Tools MCP gives the connected AI safe hands for approved, evidence-logged actions. Tools MCP is becoming a large VNEM-improved tool ecosystem, so every tool carries safety metadata, evidence behavior, and Core handoff compatibility instead of merely copying ordinary MCP tools.
 
+`vnem_entrypoint` is the compact default Core decision layer for material tasks. It scores task domains using the goal, explicit mode, project context, repository signals, environment facts, and user constraints; mixed tasks keep multiple domains instead of collapsing to a generic route. The response selects at most six exact Tools calls, states whether each is available/configured/allowed/executed/succeeded/proven, exposes task-scoped compatibility and permission implications, and returns a deterministic decision id. Use `vnem_decision_details` for deeper scored context, `vnem_compatibility_assess` for reusable scoped compatibility evidence, and `vnem_continue_from_tools_evidence` to decide whether proof is complete, a targeted rerun is needed, a claim exceeds evidence, or a real blocker requires user input. Core remains read-only and does not impose one fixed research-plan-execute workflow.
+
 Tools MCP is safeguard-first, not Giga MCP:
 
 | Action class | Tools MCP foundation behavior |

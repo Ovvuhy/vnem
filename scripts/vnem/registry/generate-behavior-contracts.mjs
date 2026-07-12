@@ -32,11 +32,17 @@ try {
         : [];
   }
   toolReferences.vnem_tools_registry_status = ["scripts/test-vnem-runtime-registry.mjs"];
+  const coreFocusedReferences = {
+    vnem_entrypoint: ["scripts/test-vnem-adoption-reliability-1-regression.mjs", "scripts/test-core-giga-intelligence.mjs"],
+    vnem_decision_details: ["scripts/test-core-giga-intelligence.mjs"],
+    vnem_continue_from_tools_evidence: ["scripts/test-core-giga-intelligence.mjs"],
+    vnem_compatibility_assess: ["scripts/test-core-giga-intelligence.mjs"]
+  };
   const report = {
     schema_version: "1.0.0",
     source: "live MCP manifests plus vnem_tools_tool_test_coverage_map",
     servers: {
-      vnem: Object.fromEntries(coreManifest.tools.map((tool) => [tool.name, [tool.name === "vnem_registry_status" ? "scripts/test-vnem-runtime-registry.mjs" : "scripts/test-mcp-server.mjs"]])),
+      vnem: Object.fromEntries(coreManifest.tools.map((tool) => [tool.name, coreFocusedReferences[tool.name] || [tool.name === "vnem_registry_status" ? "scripts/test-vnem-runtime-registry.mjs" : "scripts/test-mcp-server.mjs"]])),
       "vnem-tools": Object.fromEntries(toolsManifest.tools.map((tool) => [tool.name, toolReferences[tool.name] || []])),
       "vnem-precision": Object.fromEntries(precisionManifest.tools.map((tool) => [tool.name, [tool.name === "mcp_registry_status" ? "scripts/test-vnem-runtime-registry.mjs" : "scripts/test-precision-mcp-server.mjs"]]))
     }

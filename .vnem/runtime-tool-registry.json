@@ -1,14 +1,14 @@
 {
   "schema_version": "1.0.0",
   "source": "live MCP runtime registry status calls",
-  "total_tools": 220,
+  "total_tools": 223,
   "servers": {
     "core": {
       "schema_version": "1.0.0",
       "server_name": "vnem",
       "version": "1.0.1",
       "valid": true,
-      "tool_count": 65,
+      "tool_count": 68,
       "alias_count": 0,
       "categories": {
         "activate": 1,
@@ -22,11 +22,13 @@
         "code": 1,
         "compact": 1,
         "compare": 1,
+        "compatibility": 1,
         "completion": 1,
         "compose": 1,
+        "decision": 1,
         "design": 2,
         "entrypoint": 1,
-        "evidence": 1,
+        "evidence": 2,
         "explain": 1,
         "fast": 1,
         "get": 3,
@@ -57,13 +59,13 @@
         "visual": 2
       },
       "side_effect_classes": {
-        "read_only": 65
+        "read_only": 68
       },
       "validation": {
         "valid": true,
         "server_name": "vnem",
         "version": "1.0.1",
-        "tool_count": 65,
+        "tool_count": 68,
         "alias_count": 0,
         "errors": [],
         "warnings": [],
@@ -147,11 +149,137 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/core/server.mjs",
+          "implementation_module": "scripts/vnem/core/intelligence.mjs",
           "behavior_test_references": [
-            "scripts/test-mcp-server.mjs"
+            "scripts/test-vnem-adoption-reliability-1-regression.mjs",
+            "scripts/test-core-giga-intelligence.mjs"
           ],
-          "benchmark_scenarios": [],
+          "benchmark_scenarios": [
+            "mixed app and UI",
+            "package upgrade and CI repair",
+            "API integration and credential safety",
+            "Windows troubleshooting and project automation"
+          ],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_decision_details",
+          "version": "1.0.1",
+          "title": "VNEM Decision Details",
+          "description": "Retrieve session-scoped scored domains, compatibility, capability effects, tool states, completion criteria, and gaps for a compact vnem_entrypoint decision id.",
+          "category": "decision",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/core/intelligence.mjs",
+          "behavior_test_references": [
+            "scripts/test-core-giga-intelligence.mjs"
+          ],
+          "benchmark_scenarios": [
+            "compact default with detail retrieval by decision id"
+          ],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_continue_from_tools_evidence",
+          "version": "1.0.1",
+          "title": "Continue From VNEM Tools Evidence",
+          "description": "Consume a compact Tools evidence summary and decide completion, remaining requirements, reruns, claim overreach, blockers, user-input need, and the smallest next action without executing Tools.",
+          "category": "evidence",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/core/intelligence.mjs",
+          "behavior_test_references": [
+            "scripts/test-core-giga-intelligence.mjs"
+          ],
+          "benchmark_scenarios": [
+            "complete evidence",
+            "failed check rerun",
+            "claim overreach",
+            "user-input blocker"
+          ],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_compatibility_assess",
+          "version": "1.0.1",
+          "title": "Assess VNEM Compatibility",
+          "description": "Build a task-scoped compatibility assessment across OS, shell, runtime, package manager, framework, client, MCP transport, game/mod loader, API auth, GitHub permissions, and browser availability with evidence and unknown boundaries.",
+          "category": "compatibility",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/core/intelligence.mjs",
+          "behavior_test_references": [
+            "scripts/test-core-giga-intelligence.mjs"
+          ],
+          "benchmark_scenarios": [
+            "Windows shell scope",
+            "MCP client transport",
+            "game version and mod-loader scope",
+            "API auth scope"
+          ],
           "input_schema_present": true
         },
         {
