@@ -22,6 +22,7 @@ Nunito.zip
 .vnem-runtime/
 .vnem/safety.json
 .vnem/safety-backups/
+.vnem/client-profiles/
 .vnem/staging/
 discovery/candidates/link-report.json
 

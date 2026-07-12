@@ -66,6 +66,18 @@ node scripts/vnem-cli.mjs mcp-config
 node scripts/vnem-cli.mjs mcp-config --server-json
 ```
 
+For reversible client detection, preview, setup, verification, and rollback, use the primary setup flow:
+
+```bash
+node scripts/vnem-cli.mjs clients --json
+node scripts/vnem-cli.mjs config preview --clients codex_app,codex_cli --workspace /path/to/project --json
+node scripts/vnem-cli.mjs setup
+node scripts/vnem-cli.mjs doctor --clients --workspace /path/to/project --json
+node scripts/vnem-cli.mjs rollback --yes --json
+```
+
+Setup preserves unrelated client settings, backs up every changed file, validates syntax, verifies Core and Tools entrypoints, and records exact rollback. Import-only profiles are used where VNEM has not verified a stable client config contract.
+
 For client-specific Core+Tools MCP adoption profiles, emit repo-local snippets without writing to Codex, Claude, Antigravity-style, or generic MCP client config paths:
 
 ```bash

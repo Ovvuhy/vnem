@@ -70,8 +70,10 @@ cd vnem
 npm install
 npm run install:project -- /path/to/my-project
 npm run doctor -- /path/to/my-project
-node scripts/vnem-cli.mjs mcp-config
+node scripts/vnem-cli.mjs setup
 ```
+
+`vnem setup` detects supported clients, lets you select Core/Tools and a safety profile, previews every config change, backs up each changed file, validates the result, exercises both MCP entrypoints, and provides exact rollback. It preserves unrelated client settings and emits import-only profiles when a global client contract is not verified. See [`docs/VNEM_SETUP.md`](docs/VNEM_SETUP.md).
 
 Run the owner dashboard and local app server when you want live Research AI -> Protection AI -> Giving AI dispatch review:
 

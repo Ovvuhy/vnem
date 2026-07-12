@@ -64,6 +64,7 @@ const precisionSubsystemPath = rel("scripts/vnem/precision/tools.mjs");
 const permissionRuntimeTestPath = rel("scripts/test-permission-runtime.mjs");
 const toolsScopedPermissionsTestPath = rel("scripts/test-tools-scoped-permissions.mjs");
 const safetyCliTestPath = rel("scripts/test-vnem-safety-cli.mjs");
+const clientSetupTestPath = rel("scripts/test-vnem-client-setup.mjs");
 const permissionRuntimePath = rel("scripts/vnem/permissions/runtime.mjs");
 const permissionToolsPath = rel("scripts/vnem/permissions/tools.mjs");
 const permissionProfilesPath = rel("scripts/vnem/permissions/profiles.mjs");
@@ -140,6 +141,7 @@ const precisionSubsystem = existsSync(precisionSubsystemPath) ? readFileSync(pre
 const permissionRuntimeTest = existsSync(permissionRuntimeTestPath) ? readFileSync(permissionRuntimeTestPath, "utf8") : "";
 const toolsScopedPermissionsTest = existsSync(toolsScopedPermissionsTestPath) ? readFileSync(toolsScopedPermissionsTestPath, "utf8") : "";
 const safetyCliTest = existsSync(safetyCliTestPath) ? readFileSync(safetyCliTestPath, "utf8") : "";
+const clientSetupTest = existsSync(clientSetupTestPath) ? readFileSync(clientSetupTestPath, "utf8") : "";
 const permissionRuntimeSource = existsSync(permissionRuntimePath) ? readFileSync(permissionRuntimePath, "utf8") : "";
 const permissionToolsSource = existsSync(permissionToolsPath) ? readFileSync(permissionToolsPath, "utf8") : "";
 const permissionProfilesSource = existsSync(permissionProfilesPath) ? readFileSync(permissionProfilesPath, "utf8") : "";
@@ -361,6 +363,7 @@ const report = {
   permission_runtime_test_exists: existsSync(permissionRuntimeTestPath),
   tools_scoped_permissions_test_exists: existsSync(toolsScopedPermissionsTestPath),
   safety_cli_test_exists: existsSync(safetyCliTestPath),
+  client_setup_test_exists: existsSync(clientSetupTestPath),
   permission_runtime_module_exists: existsSync(permissionRuntimePath),
   adoption_reliability_test_exists: existsSync(adoptionReliabilityTestPath),
   adoption_reliability_2_test_exists: existsSync(adoptionReliability2TestPath),
@@ -463,6 +466,12 @@ const report = {
     test_permission_runtime: pkg.scripts?.["test:permission-runtime"] === "node scripts/test-permission-runtime.mjs",
     test_tools_scoped_permissions: pkg.scripts?.["test:tools-scoped-permissions"] === "node scripts/test-tools-scoped-permissions.mjs",
     test_safety_cli: pkg.scripts?.["test:safety-cli"] === "node scripts/test-vnem-safety-cli.mjs",
+    test_clients: pkg.scripts?.["test:clients"] === "node scripts/test-vnem-client-setup.mjs",
+    setup: pkg.scripts?.setup === "node scripts/vnem-cli.mjs setup",
+    clients: pkg.scripts?.clients === "node scripts/vnem-cli.mjs clients",
+    status: pkg.scripts?.status === "node scripts/vnem-cli.mjs status",
+    config_preview: pkg.scripts?.["config:preview"] === "node scripts/vnem-cli.mjs config preview",
+    rollback: pkg.scripts?.rollback === "node scripts/vnem-cli.mjs rollback",
     safety: pkg.scripts?.safety === "node scripts/vnem-cli.mjs safety",
     test_core_adoption_entrypoint: pkg.scripts?.["test:core-adoption-entrypoint"] === "node scripts/test-vnem-adoption-reliability-1-regression.mjs --case=core-entrypoint",
     test_core_usage_contract: pkg.scripts?.["test:core-usage-contract"] === "node scripts/test-vnem-adoption-reliability-1-regression.mjs --case=core-usage-contract",
@@ -504,6 +513,8 @@ const report = {
   scoped_permission_runtime_registry_status: ["vnem_tools_permission_request", "vnem_tools_permission_grant", "vnem_tools_permission_revoke", "vnem_tools_permission_evaluate", "vnem_tools_permission_doctor"].every((name) => runtimeToolNames.has(name)),
   scoped_permission_behavior_status: /active scoped grant should avoid repeated per-call approval/.test(toolsScopedPermissionsTest) && /permission_hard_blocked/.test(toolsScopedPermissionsTest) && /persistence: "session"/.test(toolsScopedPermissionsTest),
   safety_cli_behavior_status: /rollbackPreview/.test(safetyCliTest) && /session-only profile/.test(safetyCliTest) && /hard_blocked_actions/.test(safetyCliTest),
+  client_setup_behavior_status: /Codex App and CLI must share one deduplicated config transaction/.test(clientSetupTest) && /preserve-me/.test(clientSetupTest) && /rollbackClientSetup/.test(clientSetupTest) && /11 profiles, merge, proof, backup, and rollback/.test(clientSetupTest),
+  client_setup_cli_status: /runSetupCommand/.test(cli) && /runConfigPreviewCommand/.test(cli) && /runRollbackCommand/.test(cli) && /vnem setup/.test(cli) && /vnem config preview/.test(cli),
   permission_runtime_shared_status: /registerPermissionRuntimeTools/.test(server) && /requestGrant/.test(permissionRuntimeSource) && /vnem_tools_permission_grant/.test(permissionToolsSource) && /HARD_BLOCKED_ACTIONS/.test(permissionRuntimeTest),
   mcp_config_tools_support: /--tools/.test(cli) && /VNEM_TOOLS_ALLOWED_ROOTS/.test(cli) && /VNEM_TOOLS_EVIDENCE_ROOT/.test(cli) && /vnem-tools-mcp-server/.test(cli),
   github_autonomy_status: /github_autonomy/.test(server) && /registerGithubTools/.test(server) && /vnem_tools_github_status/.test(server),
@@ -754,6 +765,15 @@ assert.equal(report.git_session_test_exists, true, "git/session test file is mis
 assert.equal(report.core_tools_e2e_script_exists, true, "test:core-tools-e2e package script is missing");
 assert.equal(report.package_scripts.tools_mcp, true, "tools:mcp package script is missing");
 assert.equal(report.package_scripts.test_tools_mcp, true, "test:tools-mcp package script is missing");
+assert.equal(report.client_setup_test_exists, true, "client setup behavior test is missing");
+assert.equal(report.package_scripts.test_clients, true, "test:clients package script is missing");
+assert.equal(report.package_scripts.setup, true, "setup package script is missing");
+assert.equal(report.package_scripts.clients, true, "clients package script is missing");
+assert.equal(report.package_scripts.status, true, "status package script is missing");
+assert.equal(report.package_scripts.config_preview, true, "config:preview package script is missing");
+assert.equal(report.package_scripts.rollback, true, "rollback package script is missing");
+assert.equal(report.client_setup_behavior_status, true, "client setup behavior proof is incomplete");
+assert.equal(report.client_setup_cli_status, true, "client setup CLI surface is incomplete");
 assert.equal(report.package_scripts.test_tools_browser, true, "test:tools-browser package script is missing");
 assert.equal(report.package_scripts.test_tools_project_actions, true, "test:tools-project-actions package script is missing");
 assert.equal(report.package_scripts.test_tools_git_session, true, "test:tools-git-session package script is missing");
@@ -1061,6 +1081,8 @@ console.log(`search_result_ranker_status: ${yes(report.search_result_ranker_stat
 console.log(`redirect_chain_check_status: ${yes(report.redirect_chain_check_status)}`);
 console.log(`url_reputation_check_status: ${yes(report.url_reputation_check_status)}`);
 console.log(`captcha_detector_status: ${yes(report.captcha_detector_status)}`);
+console.log(`client_setup_behavior_status: ${yes(report.client_setup_behavior_status)}`);
+console.log(`client_setup_cli_status: ${yes(report.client_setup_cli_status)}`);
 console.log(`download_safety_check_status: ${yes(report.download_safety_check_status)}`);
 console.log(`claim_source_matrix_status: ${yes(report.claim_source_matrix_status)}`);
 console.log(`research_gap_detector_status: ${yes(report.research_gap_detector_status)}`);

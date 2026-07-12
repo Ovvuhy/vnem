@@ -1,0 +1,396 @@
+{
+  "schema_version": "1.0.0",
+  "label": "phase-5",
+  "captured_at": "2026-07-12T14:32:41.015Z",
+  "branch": "feat/vnem-giga-evolution-1",
+  "head_sha": "32137337e50ffa9a6d84772b9864aab7968491e2",
+  "methodology": {
+    "runs": 5,
+    "cold_process_per_startup_sample": true,
+    "same_machine_and_checkout": true,
+    "generation_clock": "2026-07-08T21:12:40.970Z",
+    "full_test_measurement_source": "not run by this sampler"
+  },
+  "servers": {
+    "core": {
+      "file": "scripts/vnem-mcp-server.mjs",
+      "samples": [
+        {
+          "startup_ms": 531.58,
+          "manifest_ms": 20.99,
+          "entrypoint_ms": 9.6,
+          "entrypoint_output_bytes": 450,
+          "idle_working_set_bytes": 110706688,
+          "tool_count": 65,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 482.21,
+          "manifest_ms": 18.41,
+          "entrypoint_ms": 7.12,
+          "entrypoint_output_bytes": 450,
+          "idle_working_set_bytes": 110940160,
+          "tool_count": 65,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 417.74,
+          "manifest_ms": 18.29,
+          "entrypoint_ms": 6.33,
+          "entrypoint_output_bytes": 450,
+          "idle_working_set_bytes": 112013312,
+          "tool_count": 65,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 441.15,
+          "manifest_ms": 17.02,
+          "entrypoint_ms": 6.64,
+          "entrypoint_output_bytes": 450,
+          "idle_working_set_bytes": 111517696,
+          "tool_count": 65,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 434.35,
+          "manifest_ms": 61.18,
+          "entrypoint_ms": 29.98,
+          "entrypoint_output_bytes": 450,
+          "idle_working_set_bytes": 111046656,
+          "tool_count": 65,
+          "stderr": ""
+        }
+      ],
+      "startup": {
+        "runs": 5,
+        "median_ms": 441.15,
+        "worst_ms": 531.58,
+        "min_ms": 417.74
+      },
+      "manifest": {
+        "runs": 5,
+        "median_ms": 18.41,
+        "worst_ms": 61.18,
+        "min_ms": 17.02
+      },
+      "entrypoint": {
+        "runs": 5,
+        "median_ms": 7.12,
+        "worst_ms": 29.98,
+        "min_ms": 6.33
+      },
+      "entrypoint_output_bytes": {
+        "runs": 5,
+        "median": 450,
+        "worst": 450,
+        "min": 450
+      },
+      "idle_working_set_bytes": {
+        "runs": 5,
+        "median": 111046656,
+        "worst": 112013312,
+        "min": 110706688
+      },
+      "tool_count": 65
+    },
+    "tools": {
+      "file": "scripts/vnem-tools-mcp-server.mjs",
+      "samples": [
+        {
+          "startup_ms": 492.73,
+          "manifest_ms": 51.65,
+          "entrypoint_ms": 10.94,
+          "entrypoint_output_bytes": 257,
+          "idle_working_set_bytes": 100188160,
+          "tool_count": 148,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 420.28,
+          "manifest_ms": 27.24,
+          "entrypoint_ms": 10.73,
+          "entrypoint_output_bytes": 257,
+          "idle_working_set_bytes": 102928384,
+          "tool_count": 148,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 410.57,
+          "manifest_ms": 25.13,
+          "entrypoint_ms": 10.94,
+          "entrypoint_output_bytes": 257,
+          "idle_working_set_bytes": 103071744,
+          "tool_count": 148,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 397.56,
+          "manifest_ms": 31.68,
+          "entrypoint_ms": 12.48,
+          "entrypoint_output_bytes": 257,
+          "idle_working_set_bytes": 100286464,
+          "tool_count": 148,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 374.91,
+          "manifest_ms": 23.75,
+          "entrypoint_ms": 12.4,
+          "entrypoint_output_bytes": 257,
+          "idle_working_set_bytes": 100376576,
+          "tool_count": 148,
+          "stderr": ""
+        }
+      ],
+      "startup": {
+        "runs": 5,
+        "median_ms": 410.57,
+        "worst_ms": 492.73,
+        "min_ms": 374.91
+      },
+      "manifest": {
+        "runs": 5,
+        "median_ms": 27.24,
+        "worst_ms": 51.65,
+        "min_ms": 23.75
+      },
+      "entrypoint": {
+        "runs": 5,
+        "median_ms": 10.94,
+        "worst_ms": 12.48,
+        "min_ms": 10.73
+      },
+      "entrypoint_output_bytes": {
+        "runs": 5,
+        "median": 257,
+        "worst": 257,
+        "min": 257
+      },
+      "idle_working_set_bytes": {
+        "runs": 5,
+        "median": 100376576,
+        "worst": 103071744,
+        "min": 100188160
+      },
+      "tool_count": 148
+    },
+    "precision": {
+      "file": "scripts/vnem-precision-mcp-server.mjs",
+      "samples": [
+        {
+          "startup_ms": 319.36,
+          "manifest_ms": 5.99,
+          "entrypoint_ms": null,
+          "entrypoint_output_bytes": null,
+          "idle_working_set_bytes": 75022336,
+          "tool_count": 7,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 320.19,
+          "manifest_ms": 6.32,
+          "entrypoint_ms": null,
+          "entrypoint_output_bytes": null,
+          "idle_working_set_bytes": 75231232,
+          "tool_count": 7,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 316.76,
+          "manifest_ms": 6.37,
+          "entrypoint_ms": null,
+          "entrypoint_output_bytes": null,
+          "idle_working_set_bytes": 74776576,
+          "tool_count": 7,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 331.41,
+          "manifest_ms": 7.41,
+          "entrypoint_ms": null,
+          "entrypoint_output_bytes": null,
+          "idle_working_set_bytes": 74690560,
+          "tool_count": 7,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 320.05,
+          "manifest_ms": 5.97,
+          "entrypoint_ms": null,
+          "entrypoint_output_bytes": null,
+          "idle_working_set_bytes": 75018240,
+          "tool_count": 7,
+          "stderr": ""
+        }
+      ],
+      "startup": {
+        "runs": 5,
+        "median_ms": 320.05,
+        "worst_ms": 331.41,
+        "min_ms": 316.76
+      },
+      "manifest": {
+        "runs": 5,
+        "median_ms": 6.32,
+        "worst_ms": 7.41,
+        "min_ms": 5.97
+      },
+      "entrypoint": {
+        "runs": 0,
+        "median_ms": null,
+        "worst_ms": null,
+        "min_ms": null
+      },
+      "entrypoint_output_bytes": {
+        "runs": 0,
+        "median": null,
+        "worst": null,
+        "min": null
+      },
+      "idle_working_set_bytes": {
+        "runs": 5,
+        "median": 75018240,
+        "worst": 75231232,
+        "min": 74690560
+      },
+      "tool_count": 7
+    }
+  },
+  "representative_calls": {
+    "code_search": {
+      "latency": {
+        "runs": 5,
+        "median_ms": 97.96,
+        "worst_ms": 164.33,
+        "min_ms": 91.05
+      },
+      "output_bytes": {
+        "runs": 5,
+        "median": 100,
+        "worst": 100,
+        "min": 100
+      },
+      "errors": 0
+    },
+    "workspace_map": {
+      "latency": {
+        "runs": 5,
+        "median_ms": 48.62,
+        "worst_ms": 78.1,
+        "min_ms": 40.92
+      },
+      "output_bytes": {
+        "runs": 5,
+        "median": 249,
+        "worst": 249,
+        "min": 249
+      },
+      "errors": 0
+    },
+    "install_doctor": {
+      "latency": {
+        "runs": 5,
+        "median_ms": 182.82,
+        "worst_ms": 253.64,
+        "min_ms": 178.09
+      },
+      "output_bytes": {
+        "runs": 5,
+        "median": 565,
+        "worst": 565,
+        "min": 565
+      },
+      "errors": 0
+    }
+  },
+  "suites": {
+    "full_test": {
+      "duration_ms": null,
+      "status": "pass",
+      "warning_summary": "No assertion or test failures; Windows nested npm PipeWrap exit regression fixed and verified in the uninterrupted suite.",
+      "source": "local npm test, uninterrupted Windows run"
+    },
+    "focused_tools_mcp": {
+      "status": "pass",
+      "exit_code": 0,
+      "duration_ms": 1180.96,
+      "warning_lines": []
+    }
+  },
+  "generation": {
+    "first": {
+      "status": "pass",
+      "exit_code": 0,
+      "duration_ms": 600.18,
+      "warning_lines": []
+    },
+    "second": {
+      "status": "pass",
+      "exit_code": 0,
+      "duration_ms": 588.87,
+      "warning_lines": []
+    },
+    "deterministic": true,
+    "checksums": {
+      "public/install.tgz": "cc6632231ed26fc7380cbca4cd1fec4d398790c75715642130484175ad97db66",
+      "landing/install.tgz": "17b9d89f6838393450e48bedf165d32545f6f8043739d64617abf1254e85e1ea",
+      "public/api/index.json": "6e56aec731fcd3b9445cca6e962c75937c797a8a06534c865787b25884280606",
+      ".vnem/search-index.json": "694af4c43507a44feda50150b89404afb3c5b3f2ca4469af54f161df45c46930",
+      "llms.txt": "08666513e6463d2824593a56b4ca5a1dd2efb3b0c22cf30b435b56b3c4c36eae",
+      "llms-full.txt": "b66b778ed413edc98fc1bc5060a580de337cff4e0b4024071c0a7816d060d89c"
+    }
+  },
+  "tool_surface": {
+    "registration_count": 131,
+    "handler_count": 131,
+    "behavior_tested_count": 113,
+    "registration_only_or_weak_count": 18,
+    "count_source": "live MCP coverage map"
+  },
+  "flaky_or_cleanup_observations": {
+    "temp_entry_count": 70,
+    "temp_entries_sample": [
+      "adoption-reliability-1-sample",
+      "adoption-reliability-1-tools",
+      "adoption-reliability-2-proof",
+      "adoption-reliability-2-tools",
+      "app-server-avcw0M",
+      "app-server-aVyTzo",
+      "app-server-bbiJe3",
+      "app-server-cCvWeg",
+      "app-server-chnKW3",
+      "app-server-G5eOSK",
+      "app-server-isK1gq",
+      "app-server-od58DZ",
+      "app-server-puT93S",
+      "app-server-pWL9rl",
+      "app-server-rSW6C9",
+      "app-server-tTmjqk",
+      "app-server-WSsK1b",
+      "app-server-xcvoOV",
+      "code-intel-proof",
+      "connector-apply-3UZjgR",
+      "connector-apply-6OiS3p",
+      "connector-apply-EISzf6",
+      "connector-apply-ExUFPC",
+      "connector-apply-G8Ir66",
+      "connector-apply-GWAAxp",
+      "connector-apply-jkGQnV",
+      "connector-apply-JzQbbl",
+      "connector-apply-MPgXYE",
+      "connector-apply-PIAj6j",
+      "connector-apply-TcePRt",
+      "connector-apply-vd3Mio",
+      "connector-apply-XEtNBd",
+      "connector-apply-YwLyAq",
+      "install-adoption-sample",
+      "install-adoption-tools",
+      "local-env-58qwyf",
+      "local-env-6lcvlA",
+      "local-env-8xsw17",
+      "local-env-AoqZUA",
+      "local-env-kVGfcB"
+    ],
+    "known_warning": "No assertion or test failures; Windows nested npm PipeWrap exit regression fixed and verified in the uninterrupted suite."
+  }
+}

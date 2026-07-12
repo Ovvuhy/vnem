@@ -14,6 +14,12 @@ const serverNames = ["vnem", "vnem-tools"];
 const disallowedControlPattern = /[\x00-\x08\x0B\x0C\x0E-\x1F\x7F\u200E\u200F\u202A-\u202E\u2066-\u2069]/;
 const secretValuePattern = /(sk-[A-Za-z0-9_-]{12,}|gh[pousr]_[A-Za-z0-9_]{12,}|xox[baprs]-[A-Za-z0-9-]{12,}|AKIA[0-9A-Z]{16}|-----BEGIN [A-Z ]*PRIVATE KEY-----)/i;
 const packageScripts = [
+  "setup",
+  "clients",
+  "status",
+  "config:preview",
+  "rollback",
+  "test:clients",
   "vnem:install:doctor",
   "vnem:install:emit",
   "test:vnem-install-adoption-1-regression",
