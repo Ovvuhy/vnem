@@ -101,9 +101,10 @@ try {
 
   await withClient({ VNEM_TOOLS_PERMISSION_PROFILE: "approved-github" }, async (client) => {
     const ghPreview = await client.callTool({ name: "vnem_tools_action_policy_preview", arguments: { proposed_action: "create GitHub PR", action_type: "github_pr" } });
-    assert.equal(ghPreview.structuredContent?.action_policy_preview?.allowed, false);
-    assert.equal(ghPreview.structuredContent?.action_policy_preview?.blocked, true);
-    assert.match(ghPreview.structuredContent?.action_policy_preview?.reason || "", /preview|not implemented|blocked/i);
+    assert.equal(ghPreview.structuredContent?.action_policy_preview?.allowed, true);
+    assert.equal(ghPreview.structuredContent?.action_policy_preview?.requires_approval, true);
+    assert.equal(ghPreview.structuredContent?.action_policy_preview?.blocked, false);
+    assert.match(ghPreview.structuredContent?.action_policy_preview?.reason || "", /allowed|approval/i);
   });
 
   await withClient({ VNEM_TOOLS_ALLOWED_ROOTS: path.parse(projectDir).root, VNEM_TOOLS_EVIDENCE_ROOT: path.join(projectDir, ".vnem", "broad-root-evidence") }, async (client) => {

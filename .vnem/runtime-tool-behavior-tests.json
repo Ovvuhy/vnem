@@ -667,6 +667,21 @@
       "vnem_tools_restore_backup": [
         "scripts/test-tools-mcp-server.mjs"
       ],
+      "vnem_tools_permission_request": [
+        "scripts/test-tools-scoped-permissions.mjs"
+      ],
+      "vnem_tools_permission_grant": [
+        "scripts/test-tools-scoped-permissions.mjs"
+      ],
+      "vnem_tools_permission_revoke": [
+        "scripts/test-tools-scoped-permissions.mjs"
+      ],
+      "vnem_tools_permission_evaluate": [
+        "scripts/test-tools-scoped-permissions.mjs"
+      ],
+      "vnem_tools_permission_doctor": [
+        "scripts/test-tools-scoped-permissions.mjs"
+      ],
       "vnem_tools_structural_code_search": [
         "scripts/test-tools-precision-subsystem.mjs"
       ],

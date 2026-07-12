@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "source": "live MCP runtime registry status calls",
-  "total_tools": 215,
+  "total_tools": 220,
   "servers": {
     "core": {
       "schema_version": "1.0.0",
@@ -2432,7 +2432,7 @@
       "server_name": "vnem-tools",
       "version": "1.0.1",
       "valid": true,
-      "tool_count": 143,
+      "tool_count": 148,
       "alias_count": 0,
       "categories": {
         "action": 2,
@@ -2470,7 +2470,7 @@
         "no": 1,
         "official": 1,
         "patch": 3,
-        "permission": 3,
+        "permission": 8,
         "pr": 1,
         "prepare": 1,
         "project": 2,
@@ -2504,15 +2504,15 @@
         "workspace": 1
       },
       "side_effect_classes": {
-        "destructive_mutation": 20,
+        "destructive_mutation": 22,
         "network_mutation": 16,
-        "read_only": 107
+        "read_only": 110
       },
       "validation": {
         "valid": true,
         "server_name": "vnem-tools",
         "version": "1.0.1",
-        "tool_count": 143,
+        "tool_count": 148,
         "alias_count": 0,
         "errors": [],
         "warnings": [
@@ -7408,6 +7408,196 @@
             "scripts/test-tools-mcp-server.mjs"
           ],
           "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_permission_request",
+          "version": "1.0.1",
+          "title": "Request Scoped Permission",
+          "description": "Prepare one exact session or persistent permission request with action, scope, duration, material risk, rollback, safer alternative, and action-specific acknowledgment; hard blocks cannot be requested.",
+          "category": "permission",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/permissions/tools.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-scoped-permissions.mjs"
+          ],
+          "benchmark_scenarios": [
+            "scoped permission grant and hard-block enforcement"
+          ],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_permission_grant",
+          "version": "1.0.1",
+          "title": "Approve Scoped Permission",
+          "description": "Activate a previously prepared exact scoped grant after matching its action-specific acknowledgment; session grants stay in memory and persistent grants create rollback-capable config backups.",
+          "category": "permission",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": true,
+            "idempotentHint": false,
+            "openWorldHint": false
+          },
+          "side_effect_class": "destructive_mutation",
+          "permission_requirements": [
+            "approved_local_mutation"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "required_redacted_record",
+          "rollback_behavior": {
+            "mode": "required_or_explicitly_not_available",
+            "guidance": "Return backup, compensating action, or explicit rollback-unavailable state in evidence."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/permissions/tools.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-scoped-permissions.mjs"
+          ],
+          "benchmark_scenarios": [
+            "scoped permission grant and hard-block enforcement"
+          ],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_permission_revoke",
+          "version": "1.0.1",
+          "title": "Revoke Scoped Permission",
+          "description": "Revoke one session or persistent scoped permission by exact grant id and preserve config rollback evidence for persistent changes.",
+          "category": "permission",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": true,
+            "idempotentHint": false,
+            "openWorldHint": false
+          },
+          "side_effect_class": "destructive_mutation",
+          "permission_requirements": [
+            "approved_local_mutation"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "required_redacted_record",
+          "rollback_behavior": {
+            "mode": "required_or_explicitly_not_available",
+            "guidance": "Return backup, compensating action, or explicit rollback-unavailable state in evidence."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/permissions/tools.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-scoped-permissions.mjs"
+          ],
+          "benchmark_scenarios": [
+            "scoped permission grant and hard-block enforcement"
+          ],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_permission_evaluate",
+          "version": "1.0.1",
+          "title": "Evaluate Permission",
+          "description": "Evaluate one action against hard blocks, the active profile, and exact active scoped grants without executing the action.",
+          "category": "permission",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/permissions/tools.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-scoped-permissions.mjs"
+          ],
+          "benchmark_scenarios": [
+            "scoped permission grant and hard-block enforcement"
+          ],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_permission_doctor",
+          "version": "1.0.1",
+          "title": "Permission Configuration Doctor",
+          "description": "Validate the active safety profile, custom actions, persistent grants, backup availability, and hard-block integrity from the shared permission runtime.",
+          "category": "permission",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/permissions/tools.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-scoped-permissions.mjs"
+          ],
+          "benchmark_scenarios": [
+            "scoped permission grant and hard-block enforcement"
+          ],
           "input_schema_present": true
         },
         {

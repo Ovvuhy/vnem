@@ -2,7 +2,7 @@
 
 Generated from live MCP runtime registries. Do not edit this table manually.
 
-- Total tools: 215
+- Total tools: 220
 - Registry valid: true
 - Missing behavior-test references: 18
 
@@ -204,6 +204,11 @@ Generated from live MCP runtime registries. Do not edit this table manually.
 | tools | `vnem_tools_mutation_approval_contract` | mutation | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_secret_redaction_check` | secret | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_restore_backup` | restore | destructive_mutation | approved_local_mutation | required_redacted_record | self | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_permission_request` | permission | read_only | allowed_root_read | optional | not_required | scripts/vnem/permissions/tools.mjs |
+| tools | `vnem_tools_permission_grant` | permission | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/permissions/tools.mjs |
+| tools | `vnem_tools_permission_revoke` | permission | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/permissions/tools.mjs |
+| tools | `vnem_tools_permission_evaluate` | permission | read_only | allowed_root_read | optional | not_required | scripts/vnem/permissions/tools.mjs |
+| tools | `vnem_tools_permission_doctor` | permission | read_only | allowed_root_read | optional | not_required | scripts/vnem/permissions/tools.mjs |
 | tools | `vnem_tools_structural_code_search` | structural | read_only | allowed_root_read | optional | not_required | scripts/vnem/precision/tools.mjs |
 | tools | `vnem_tools_exact_patch` | exact | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/precision/tools.mjs |
 | tools | `vnem_tools_unified_diff_apply` | unified | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/precision/tools.mjs |

@@ -4,6 +4,7 @@ import { copyFile, cp, mkdir, readFile, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { runSafetyCommand } from "./vnem/permissions/cli.mjs";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(scriptDir, "..");
@@ -60,6 +61,8 @@ const args = process.argv.slice(3);
 try {
   if (command === "install") {
     await installCommand(args);
+  } else if (command === "safety") {
+    await runSafetyCommand(args);
   } else if (command === "doctor") {
     await doctorCommand(args);
   } else if (command === "install-skill") {
@@ -316,6 +319,7 @@ function printHelp() {
 Usage:
   vnem install [project-dir] [--no-agents] [--claude]
   vnem doctor [project-dir]
+  vnem safety [--status|--list-profiles|--doctor|--rollback] [--profile NAME] [--root PROJECT] [--json] [--yes] [--session]
   vnem install-skill [skill-dir]
   vnem mcp-config [--server-json] [--core] [--tools --workspace /path/to/project] [--precision --workspace /path/to/project]
   vnem mcp
@@ -326,6 +330,9 @@ Examples:
   vnem install ~/code/my-app
   vnem install ~/code/my-app --claude
   vnem doctor ~/code/my-app
+  vnem safety --status --json
+  vnem safety --profile safe-local-dev --root ~/code/my-app
+  vnem safety --profile safe-local-dev --root ~/code/my-app --yes
   vnem mcp-config
   vnem mcp-config --server-json
   vnem mcp-config --precision --workspace ~/code/my-app

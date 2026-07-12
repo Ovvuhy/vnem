@@ -18,6 +18,13 @@ import {
 import { attachToolRegistry } from "../registry/tool-registry.mjs";
 import { loadBehaviorTestReferences } from "../registry/behavior-contracts.mjs";
 import { registerRegistryStatusTool } from "../runtime/registry-tool.mjs";
+import {
+  ACTION_ALIASES as SHARED_ACTION_ALIASES,
+  HARD_BLOCKED_ACTIONS as SHARED_HARD_BLOCKED_ACTIONS,
+  buildPermissionProfiles as buildSharedPermissionProfiles
+} from "../permissions/profiles.mjs";
+import { PermissionRuntime } from "../permissions/runtime.mjs";
+import { registerPermissionRuntimeTools } from "../permissions/tools.mjs";
 import { PrecisionExecutionError } from "../precision/execution.mjs";
 import { PrecisionRuntime } from "../precision/runtime.mjs";
 import { registerToolsPrecisionSubsystem } from "../precision/tools.mjs";
@@ -167,7 +174,12 @@ const REQUIRED_TOOL_NAMES = [
   "vnem_tools_official_documentation_fetch",
   "vnem_tools_documentation_context",
   "vnem_tools_ephemeral_script",
-  "vnem_tools_code_index_status"
+  "vnem_tools_code_index_status",
+  "vnem_tools_permission_request",
+  "vnem_tools_permission_grant",
+  "vnem_tools_permission_revoke",
+  "vnem_tools_permission_evaluate",
+  "vnem_tools_permission_doctor"
 ];
 const READ_ONLY_LOCAL = { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false };
 const ACTION_TOOL = { readOnlyHint: false, destructiveHint: true, idempotentHint: false, openWorldHint: false };
@@ -219,7 +231,12 @@ const sessions = new Map();
 
 const allowedRoots = await computeAllowedRoots();
 const evidenceRoot = await computeEvidenceRoot();
-const activePermissionProfile = getActivePermissionProfile();
+const permissionRuntime = await PermissionRuntime.create({
+  workspaceRoot: allowedRoots[0],
+  allowedRoots,
+  profileName: process.env.VNEM_TOOLS_PERMISSION_PROFILE || null
+});
+const activePermissionProfile = permissionRuntime.activeProfile();
 const usablePacks = await loadUsablePacks();
 const requestedPrecisionWorkspaceCandidate = path.resolve(
   process.env.VNEM_TOOLS_PRECISION_ROOT || process.env.VNEM_TOOLS_ROOT || process.env.VNEM_WORKSPACE_ROOT || process.cwd()
@@ -257,6 +274,7 @@ const toolsRegistry = attachToolRegistry(server, {
 });
 
 registerTools(server);
+registerPermissionRuntimeTools(server, permissionRuntime, { registry: toolsRegistry });
 registerToolsPrecisionSubsystem(server, precisionRuntime, {
   registry: toolsRegistry,
   mutationGuard: assertPrecisionMutationPermission,
@@ -1571,101 +1589,12 @@ class ToolsError extends Error {
 }
 
 
-const PERMISSION_PROFILE_NAMES = ["safe-readonly", "safe-local-dev", "approved-writes", "approved-installs", "approved-github", "creator-power", "dangerous-disabled"];
-const HARD_BLOCKED_ACTION_TYPES = new Set(["secret_read", "cookie_session_access", "captcha_bypass", "destructive_shell", "unrestricted_crawl"]);
-const ACTION_ALIASES = {
-  write_file: "apply_patch",
-  patch: "apply_patch",
-  commit: "local_commit",
-  git_commit: "local_commit",
-  run_command: "run_test",
-  run_project_task: "run_test",
-  fetch_url_text: "external_fetch",
-  web_search: "external_fetch",
-  download_safety_check: "download_check",
-  cloudflare_status: "cloudflare_read",
-  cloudflare_discovery: "cloudflare_read",
-  cloudflare_deploy: "cloudflare_mutation",
-  cloudflare_pages_deploy: "cloudflare_mutation",
-  cloudflare_workers_deploy: "cloudflare_mutation",
-  cloudflare_dns: "cloudflare_mutation",
-  cloudflare_dns_delete: "cloudflare_destructive",
-  cloudflare_env: "cloudflare_mutation",
-  cloudflare_secret: "cloudflare_mutation",
-  cloudflare_rollback: "cloudflare_destructive",
-  cloudflare_cache_purge: "cloudflare_mutation",
-  evidence_pack_audit: "evidence_pack_audit",
-  mutation_approval_contract: "mutation_approval_contract",
-  secret_redaction_check: "secret_redaction_check"
-};
+const PERMISSION_PROFILE_NAMES = buildSharedPermissionProfiles().map((profile) => profile.profile_name);
+const HARD_BLOCKED_ACTION_TYPES = SHARED_HARD_BLOCKED_ACTIONS;
+const ACTION_ALIASES = SHARED_ACTION_ALIASES;
 
 function buildPermissionProfiles() {
-  const mk = (profile_name, description, opts = {}) => ({
-    profile_name,
-    description,
-    allowed_actions: opts.allowed_actions || [],
-    blocked_actions: opts.blocked_actions || [],
-    requires_approval_actions: opts.requires_approval_actions || [],
-    network_policy: opts.network_policy || "No live network by default except explicit approved safe flows.",
-    filesystem_policy: opts.filesystem_policy || "Allowed roots only; secret-like paths blocked.",
-    secret_policy: opts.secret_policy || "Secret paths and raw secret-like values are blocked/redacted; no cookie/session extraction.",
-    command_policy: opts.command_policy || "No arbitrary shell; only allowlisted diagnostics/tasks where profile permits.",
-    package_policy: opts.package_policy || "Package install/publish/audit-fix mutation is preview/planned only unless a future implementation explicitly supports it.",
-    git_policy: opts.git_policy || "Local status/diff read-only; local commit requires approved-writes or creator-power plus approval; no push/reset-hard.",
-    github_policy: opts.github_policy || "GitHub mutation is command-backed through scoped gh/git tools only; dry-run stays non-mutating and no silent issue/PR/release mutation is allowed.",
-    browser_policy: opts.browser_policy || "Local file/localhost proof only where permitted; no login/cookie/session/CAPTCHA automation.",
-    evidence_policy: opts.evidence_policy || "Real actions require bounded output and redacted evidence logs.",
-    rollback_policy: opts.rollback_policy || "Writes require backup/restore plan where possible.",
-    risk_notes: opts.risk_notes || [],
-    public_default_safe: opts.public_default_safe === true,
-    creator_only: opts.creator_only === true
-  });
-  const dangerous = ["secret_read", "cookie_session_access", "captcha_bypass", "destructive_shell", "unrestricted_crawl", "credential_theft", "malware_like_behavior", "hidden_persistence", "unrestricted_filesystem_crawl", "silent_account_mutation"];
-  const profiles = [
-    mk("safe-readonly", "Default public profile: inspect metadata/files/code only; no real writes, commands, network fetches, browser captures, dev servers, commits, installs, GitHub mutation, or account actions.", {
-      allowed_actions: ["read_file", "search_code", "inspect_workspace", "dependency_scan", "permission_status", "trust_boundary_classify", "action_policy_preview", "cloudflare_read", "evidence_pack_audit", "mutation_approval_contract", "secret_redaction_check"],
-      blocked_actions: ["apply_patch", "restore_backup", "run_test", "run_build", "start_dev_server", "browser_capture", "local_commit", "package_install", "github_issue", "github_pr", "github_release", "api_call", "external_fetch", "cloudflare_mutation", "cloudflare_destructive", ...dangerous],
-      public_default_safe: true,
-      network_policy: "No live external network or browser capture by default; dry-run planning only.",
-      command_policy: "No real project tasks/commands in safe-readonly; inspect package scripts only."
-    }),
-    mk("safe-local-dev", "Local development profile: read-only plus approved allowlisted diagnostics/tests/builds/dev-server/localhost proof; no file writes or local commits.", {
-      allowed_actions: ["read_file", "search_code", "inspect_workspace", "dependency_scan", "run_test", "run_build", "start_dev_server", "browser_capture", "download_check", "external_fetch", "cloudflare_read", "evidence_pack_audit", "mutation_approval_contract", "secret_redaction_check"],
-      blocked_actions: ["apply_patch", "restore_backup", "local_commit", "package_install", "github_issue", "github_pr", "github_release", "cloudflare_mutation", "cloudflare_destructive", ...dangerous],
-      requires_approval_actions: ["run_test", "run_build", "start_dev_server", "browser_capture", "download_check", "external_fetch"],
-      network_policy: "Approved localhost proof and direct-source GET/HEAD/search-provider flows only; no broad crawling or login/session use."
-    }),
-    mk("approved-writes", "Approved local write profile: allows patch/file writes, restores, allowlisted tests/builds/dev-server/browser localhost proof, and local commits only with explicit approval/evidence/rollback.", {
-      allowed_actions: ["read_file", "search_code", "inspect_workspace", "dependency_scan", "run_test", "run_build", "start_dev_server", "browser_capture", "apply_patch", "restore_backup", "local_commit", "download_check", "external_fetch", "cloudflare_read", "cloudflare_mutation", "evidence_pack_audit", "mutation_approval_contract", "secret_redaction_check"],
-      blocked_actions: ["package_install", "github_issue", "github_pr", "github_release", "cloudflare_destructive", ...dangerous],
-      requires_approval_actions: ["run_test", "run_build", "start_dev_server", "browser_capture", "apply_patch", "restore_backup", "local_commit", "download_check", "external_fetch", "cloudflare_mutation"],
-      rollback_policy: "Patch batch writes create backups/restore plans; local commits use explicit file lists only."
-    }),
-    mk("approved-installs", "Preview profile for future package-install workflows. This build classifies installs as planned/blocked and never silently installs.", {
-      allowed_actions: ["read_file", "search_code", "inspect_workspace", "dependency_scan", "run_test", "run_build", "start_dev_server", "browser_capture", "apply_patch", "restore_backup", "local_commit"],
-      blocked_actions: ["package_install", "github_issue", "github_pr", "github_release", ...dangerous],
-      requires_approval_actions: ["package_install", "run_test", "run_build", "start_dev_server", "browser_capture", "apply_patch", "restore_backup", "local_commit"],
-      package_policy: "Package installs/audit fixes are preview/planned/blocked in this build; no install command is executed."
-    }),
-    mk("approved-github", "GitHub workflow profile: issue/PR/comment/release workflows are command-backed through gh/git with dry-run, auth, config, secret-file, and protected-branch gates.", {
-      allowed_actions: ["read_file", "search_code", "inspect_workspace", "dependency_scan", "run_test", "run_build", "start_dev_server", "browser_capture", "apply_patch", "restore_backup", "local_commit", "github_issue", "github_pr", "github_release"],
-      blocked_actions: ["package_install", ...dangerous],
-      requires_approval_actions: ["github_issue", "github_pr", "github_release", "run_test", "run_build", "start_dev_server", "browser_capture", "apply_patch", "restore_backup", "local_commit"],
-      github_policy: "GitHub issue/PR/comment/release workflows execute only through scoped gh/git command paths when dry_run=false, auth exists, and config allows; no silent mutation."
-    }),
-    mk("creator-power", "Creator/developer experimental profile with broader local scope while still blocking secrets, system paths, hidden destructive actions, unrestricted crawling, unsafe account mutation, package installs, and GitHub destructive admin unless explicitly config-enabled.", {
-      allowed_actions: ["read_file", "search_code", "inspect_workspace", "dependency_scan", "run_test", "run_build", "start_dev_server", "browser_capture", "apply_patch", "restore_backup", "local_commit", "api_call", "download_check", "external_fetch", "cloudflare_read", "cloudflare_mutation", "cloudflare_destructive", "evidence_pack_audit", "mutation_approval_contract", "secret_redaction_check"],
-      blocked_actions: ["package_install", "github_issue", "github_pr", "github_release", ...dangerous],
-      requires_approval_actions: ["run_test", "run_build", "start_dev_server", "browser_capture", "apply_patch", "restore_backup", "local_commit", "api_call", "download_check", "external_fetch", "cloudflare_mutation", "cloudflare_destructive"],
-      creator_only: true
-    }),
-    mk("dangerous-disabled", "Hard-block policy profile documenting actions VNEM Tools MCP will not perform in public builds.", {
-      allowed_actions: [],
-      blocked_actions: dangerous,
-      risk_notes: ["Hard-blocks credential theft, cookie/session extraction, malware-like behavior, destructive system commands, broad private scraping, CAPTCHA bypass, hidden persistence, unrestricted filesystem crawling, and silent account mutation."]
-    })
-  ];
-  return profiles;
+  return permissionRuntime.profiles();
 }
 
 function permissionProfilesObject() {
@@ -1674,34 +1603,29 @@ function permissionProfilesObject() {
 }
 
 function getActivePermissionProfile() {
-  const requested = String(process.env.VNEM_TOOLS_PERMISSION_PROFILE || "safe-readonly").trim() || "safe-readonly";
-  const profiles = buildPermissionProfiles();
-  return profiles.find((p) => p.profile_name === requested) || profiles.find((p) => p.profile_name === "safe-readonly");
+  return permissionRuntime.activeProfile();
 }
 
 function assertPrecisionMutationPermission(args = {}, context = {}) {
   if (!context.executes) return;
-  const profile = activePermissionProfile.profile_name;
-  const writeAction = ["apply_patch", "restore_backup"].includes(context.action);
-  const allowedProfiles = writeAction
-    ? ["approved-writes", "approved-installs", "approved-github", "creator-power"]
-    : ["safe-local-dev", "approved-writes", "approved-installs", "approved-github", "creator-power"];
-  if (!allowedProfiles.includes(profile)) {
-    throw new PrecisionExecutionError(`Permission profile ${profile} blocks this precision action.`, "precision_permission_profile_blocked", {
-      permission_profile: profile,
+  const decision = permissionRuntime.evaluate({ action: context.action, target_path: args.target_path });
+  if (!decision.allowed) {
+    throw new PrecisionExecutionError(decision.reason, "precision_permission_profile_blocked", {
+      permission_profile: decision.profile,
       action: context.action,
-      safe_next_action: `Select the narrowest profile that permits ${context.action}, then provide explicit approval.`
+      permission_decision: decision,
+      safe_next_action: decision.safe_next_action
     });
   }
-  if (context.force && profile !== "creator-power") {
+  if (context.force && !["creator-power", "expert"].includes(decision.profile)) {
     throw new PrecisionExecutionError("Forced patch rollback requires the creator-power profile.", "precision_force_rollback_blocked", {
-      permission_profile: profile,
+      permission_profile: decision.profile,
       safe_next_action: "Retry without force so rollback preconditions remain enforced."
     });
   }
-  if (args.approved !== true || !String(args.approval_note || "").trim()) {
+  if (decision.approval_required && (args.approved !== true || !String(args.approval_note || "").trim())) {
     throw new PrecisionExecutionError("Real precision execution requires approved=true and a non-empty approval_note.", "precision_explicit_approval_required", {
-      permission_profile: profile,
+      permission_profile: decision.profile,
       action: context.action,
       safe_next_action: "Review the exact bounded action, then retry with explicit approval and a concise approval note."
     });
@@ -1709,17 +1633,18 @@ function assertPrecisionMutationPermission(args = {}, context = {}) {
 }
 
 function assertPrecisionNetworkPermission(args = {}, context = {}) {
-  const profile = activePermissionProfile.profile_name;
-  if (!["safe-local-dev", "approved-writes", "approved-installs", "approved-github", "creator-power"].includes(profile)) {
-    throw new PrecisionExecutionError(`Permission profile ${profile} blocks external documentation fetches.`, "precision_network_permission_blocked", {
-      permission_profile: profile,
+  const decision = permissionRuntime.evaluate({ action: context.action, url: args.url });
+  if (!decision.allowed) {
+    throw new PrecisionExecutionError(decision.reason, "precision_network_permission_blocked", {
+      permission_profile: decision.profile,
       action: context.action,
-      safe_next_action: "Use a local task context or select safe-local-dev or a stronger approved profile."
+      permission_decision: decision,
+      safe_next_action: decision.safe_next_action
     });
   }
-  if (args.approved !== true || !String(args.approval_note || "").trim()) {
+  if (decision.approval_required && (args.approved !== true || !String(args.approval_note || "").trim())) {
     throw new PrecisionExecutionError("External documentation fetch requires approved=true and a non-empty approval_note.", "precision_network_approval_required", {
-      permission_profile: profile,
+      permission_profile: decision.profile,
       action: context.action
     });
   }
@@ -1782,12 +1707,23 @@ function actionPolicyPreview(args = {}) {
   const trust = trustBoundaryClassify(`${actionType} ${args.proposed_action || ""} ${args.target_path || ""} ${args.source_description || ""}`);
   const hardBlocked = HARD_BLOCKED_ACTION_TYPES.has(actionType) || trust.level === "6_blocked_dangerous_action";
   const trustBoundaryLevel = hardBlocked ? "6_blocked_dangerous_action" : trust.level;
-  const plannedBlocked = ["package_install", "github_issue", "github_pr", "github_release"].includes(actionType);
-  const allowedByProfile = profile.allowed_actions.includes(actionType) || (["read_file", "search_code", "inspect_workspace", "dependency_scan"].includes(actionType) && profile.profile_name !== "dangerous-disabled");
-  const blockedByProfile = profile.blocked_actions.includes(actionType) || profile.profile_name === "dangerous-disabled";
-  const allowed = !hardBlocked && !plannedBlocked && allowedByProfile && !blockedByProfile;
-  const requiresApproval = allowed && (profile.requires_approval_actions.includes(actionType) || !["read_file", "search_code", "inspect_workspace", "dependency_scan"].includes(actionType));
-  const reason = hardBlocked ? `Action ${actionType} is hard-blocked as dangerous.` : plannedBlocked ? `Action ${actionType} is preview/planned/blocked in this build; it is not implemented for silent execution.` : allowed ? `Allowed by ${profile.profile_name}${requiresApproval ? " only with explicit approval" : ""}.` : `Blocked by active permission profile ${profile.profile_name}.`;
+  const plannedBlocked = actionType === "package_install";
+  const runtimeDecision = permissionRuntime.evaluate({
+    action: actionType,
+    target_path: args.target_path || args.path || args.root,
+    repository: args.repository || args.repo,
+    branch: args.branch,
+    provider: args.provider,
+    domain: args.domain,
+    url: args.url
+  });
+  const allowed = !hardBlocked && !plannedBlocked && runtimeDecision.allowed;
+  const requiresApproval = allowed && runtimeDecision.approval_required;
+  const reason = hardBlocked
+    ? `Action ${actionType} is hard-blocked as dangerous.`
+    : plannedBlocked
+      ? `Action ${actionType} is preview/planned/blocked until the vetted dependency runtime is implemented.`
+      : runtimeDecision.reason;
   return {
     action_type: actionType,
     trust_boundary_level: trustBoundaryLevel,
@@ -1800,6 +1736,8 @@ function actionPolicyPreview(args = {}) {
     risk_notes: [...profile.risk_notes, trust.why].filter(Boolean),
     rollback_expected: ["apply_patch", "restore_backup", "local_commit"].includes(actionType) && allowed,
     evidence_expected: allowed || requiresApproval,
+    decision_source: runtimeDecision.decision_source,
+    scoped_grant: runtimeDecision.grant,
     safer_alternative: allowed ? "Run dry-run first, then execute only the exact approved scoped action." : trust.safe_next_action,
     must_not_claim: [
       "Tools MCP performed this action before evidence exists.",
@@ -1813,7 +1751,7 @@ function actionPolicyPreview(args = {}) {
 function enforceActionPolicy(actionType, args = {}) {
   const normalized = normalizeActionType(actionType);
   const dryRun = args.dry_run !== false;
-  const preview = actionPolicyPreview({ action_type: normalized, proposed_action: normalized });
+  const preview = actionPolicyPreview({ ...args, action_type: normalized, proposed_action: args.proposed_action || normalized });
   if (!dryRun && !preview.allowed) throw new ToolsError(preview.reason, "permission_profile_blocked", { action_policy_preview: preview });
   if (!dryRun && preview.requires_approval) enforceApproval(args);
   return preview;
@@ -1821,11 +1759,12 @@ function enforceActionPolicy(actionType, args = {}) {
 
 function permissionStatusObject() {
   const manifest = safeSearchProviderManifest();
+  const sharedStatus = permissionRuntime.status();
   const workspace = path.resolve(process.env.VNEM_WORKSPACE_ROOT || process.cwd() || repoRoot);
   const workspaceAllowed = isInsideAny(workspace, allowedRoots);
   return {
     active_profile: activePermissionProfile,
-    configured_by: process.env.VNEM_TOOLS_PERMISSION_PROFILE ? "VNEM_TOOLS_PERMISSION_PROFILE" : "default_safe_readonly",
+    configured_by: sharedStatus.configured_by,
     allowed_roots: allowedRoots,
     current_working_directory: process.cwd(),
     workspace_root: workspace,
@@ -1839,8 +1778,9 @@ function permissionStatusObject() {
     high_power_summary: { principle: "High power, honest confidence, strict boundaries.", reliability_catalog_tool: "vnem_tools_reliability_catalog", action_recovery_tool: "vnem_tools_action_recovery_plan", high_power_review_tool: "vnem_tools_high_power_action_review" },
     github_autonomy_summary: buildGithubAutonomySummary(),
     cloudflare_summary: buildCloudflareStatusPolicy(),
-    mutation_allowed_summary: { profile: activePermissionProfile.profile_name, safe_readonly_can_mutate: false, non_destructive_mutation_allowed_with_approval: ["approved-writes", "creator-power"].includes(activePermissionProfile.profile_name), github_maintainer_feature_branch_work_allowed_by_github_profile: githubProfilePolicy(githubSettings().profile).allowed_actions.includes("push_feature_branch"), destructive_allowed_with_exact_approval: activePermissionProfile.profile_name === "creator-power", package_installs_arbitrary_shell_still_blocked: true },
-    destructive_allowed_summary: { allowed: activePermissionProfile.profile_name === "creator-power", exact_destructive_approval_required: true, destructive_phrase: CLOUDFLARE_DESTRUCTIVE_APPROVAL_PHRASE, protected_resource_acknowledgment_required: true },
+    scoped_grants: { session: sharedStatus.session_grants, persistent: sharedStatus.persistent_grants, request_tool: "vnem_tools_permission_request", grant_tool: "vnem_tools_permission_grant", revoke_tool: "vnem_tools_permission_revoke" },
+    mutation_allowed_summary: { profile: activePermissionProfile.profile_name, safe_readonly_can_mutate: false, non_destructive_mutation_allowed_with_approval: permissionRuntime.evaluate({ action: "apply_patch" }).allowed, github_maintainer_feature_branch_work_allowed_by_github_profile: githubProfilePolicy(githubSettings().profile).allowed_actions.includes("push_feature_branch"), high_impact_operations_remain_approval_gated: true, package_installs_arbitrary_shell_still_blocked: true },
+    destructive_allowed_summary: { allowed: false, hard_blocked_actions: sharedStatus.hard_blocked_actions, exact_destructive_approval_required: true, destructive_phrase: CLOUDFLARE_DESTRUCTIVE_APPROVAL_PHRASE, protected_resource_acknowledgment_required: true },
     approval_phrase_summary: { generic_tools: "approved=true plus a specific approval_note", cloudflare_mutation: CLOUDFLARE_MUTATION_APPROVAL_PHRASE, cloudflare_destructive: CLOUDFLARE_DESTRUCTIVE_APPROVAL_PHRASE },
     known_blocked_actions: unsupportedActions(),
     recommended_profile_for_goal: { inspect: "safe-readonly", local_dry_run_or_plan: "safe-local-dev", approved_local_writes: "approved-writes", destructive_or_creator_work: "creator-power with exact approval", cloudflare_disabled: "dangerous-disabled" },
@@ -2254,6 +2194,7 @@ async function toolsEntrypoint(args = {}) {
       "repo_power",
       "code_intelligence",
       "precision_execution",
+      "permission_control",
       "tool_intelligence",
       "github_autonomy",
       "cloudflare_control",
@@ -2424,6 +2365,7 @@ function toolsTaskCategories(text, taskType, localOnly) {
   if (/\b(exact patch|search replace|unified diff|atomic patch|multi.file patch|patch transaction|rollback patch)\b/.test(text)) add("precision_patching");
   if (/\b(current docs|official docs|official documentation|framework documentation|library documentation)\b/.test(text)) add("official_documentation");
   if (/\b(red green|verification loop|run verification|bounded terminal|terminal session|syntax check)\b/.test(text)) add("precision_verification");
+  if (/\b(permission profile|safety profile|scoped grant|grant access|power level|hard block)\b/.test(text)) add("permission_control");
   if (taskType.includes("mcp") || /\b(mcp|tool audit|surface audit|registration|handler|catalog|manifest|readiness)\b/.test(text)) add("mcp_tool_audit");
   if (taskType.includes("code_intelligence") || /\b(symbol|function|class|handler|coverage|impact trace|source impact|code intelligence)\b/.test(text)) add("code_intelligence");
   if (!localOnly && (taskType.includes("publish") || /\b(github|gh|pr|pull request|push|remote sha|actions|ci|merge|publish)\b/.test(text))) add("github_pr_ci_proof");
@@ -2448,6 +2390,7 @@ function toolsRouteDefinitions() {
     precision_patching: { why: "Surgical changes need exact preconditions, dry-run verification, atomic evidence, and rollback.", tools: ["vnem_tools_exact_patch", "vnem_tools_unified_diff_apply", "vnem_tools_patch_transaction", "vnem_tools_patch_transaction_rollback"] },
     official_documentation: { why: "Framework work needs bounded current official documentation and task-scoped context before writes.", tools: ["vnem_tools_official_documentation_fetch", "vnem_tools_documentation_context"] },
     precision_verification: { why: "Implementation proof needs bounded stateful commands and persistent red, green, or check loops.", tools: ["vnem_tools_verification_loop", "vnem_tools_terminal_session", "vnem_tools_ephemeral_script"] },
+    permission_control: { why: "Permission changes need a narrow request, exact acknowledgment, scope evaluation, doctor proof, and revocation path.", tools: ["vnem_tools_permission_evaluate", "vnem_tools_permission_request", "vnem_tools_permission_grant", "vnem_tools_permission_doctor", "vnem_tools_permission_revoke"] },
     mcp_tool_audit: { why: "MCP tool audit needs surface, coverage, catalog/readiness, and control-character checks.", tools: ["vnem_tools_mcp_surface_audit", "vnem_tools_tool_test_coverage_map", "vnem_tools_source_control_character_guard"] },
     code_intelligence: { why: "Code intelligence needs symbols, MCP surface, patch targets, coverage, and source impact.", tools: ["vnem_tools_code_symbol_map", "vnem_tools_mcp_surface_audit", "vnem_tools_patch_target_finder", "vnem_tools_tool_test_coverage_map", "vnem_tools_source_impact_trace"] },
     github_pr_ci_proof: { why: "Remote proof needs GitHub status, repo state, Actions status, PR gate, and evidence.", tools: ["vnem_tools_github_status", "vnem_tools_github_repo_inspect", "vnem_tools_github_actions_status", "vnem_tools_pr_quality_gate", "vnem_tools_evidence_pack"] },
@@ -2481,6 +2424,7 @@ function toolsToolReason(toolName, categories) {
   if (toolName.includes("exact_patch") || toolName.includes("unified_diff") || toolName.includes("patch_transaction")) return "verify and apply surgical changes with preconditions and rollback evidence";
   if (toolName.includes("verification_loop") || toolName.includes("terminal_session")) return "run bounded checks with explicit timeout and persisted evidence";
   if (toolName.includes("official_documentation") || toolName.includes("documentation_context")) return "retrieve and reuse task-scoped official documentation context";
+  if (toolName.includes("permission_")) return "evaluate or grant one bounded capability without weakening hard blocks";
   if (toolName.includes("source_impact_trace")) return "trace impact to tests and readiness";
   if (toolName.includes("test_selection_plan")) return "choose focused checks";
   if (toolName.includes("github_actions_status")) return "verify Actions status";

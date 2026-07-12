@@ -61,6 +61,12 @@ const toolsOrchestrator1RegressionTestPath = rel("scripts/test-tools-orchestrato
 const toolsCodeIntelligence1RegressionTestPath = rel("scripts/test-tools-code-intelligence-1-regression.mjs");
 const toolsPrecisionSubsystemTestPath = rel("scripts/test-tools-precision-subsystem.mjs");
 const precisionSubsystemPath = rel("scripts/vnem/precision/tools.mjs");
+const permissionRuntimeTestPath = rel("scripts/test-permission-runtime.mjs");
+const toolsScopedPermissionsTestPath = rel("scripts/test-tools-scoped-permissions.mjs");
+const safetyCliTestPath = rel("scripts/test-vnem-safety-cli.mjs");
+const permissionRuntimePath = rel("scripts/vnem/permissions/runtime.mjs");
+const permissionToolsPath = rel("scripts/vnem/permissions/tools.mjs");
+const permissionProfilesPath = rel("scripts/vnem/permissions/profiles.mjs");
 const runtimeRegistryPath = rel(".vnem/runtime-tool-registry.json");
 const adoptionReliabilityTestPath = rel("scripts/test-vnem-adoption-reliability-1-regression.mjs");
 const adoptionReliability2TestPath = rel("scripts/test-vnem-adoption-reliability-2-regression.mjs");
@@ -131,6 +137,12 @@ const toolsOrchestrator1RegressionTest = existsSync(toolsOrchestrator1Regression
 const toolsCodeIntelligence1RegressionTest = existsSync(toolsCodeIntelligence1RegressionTestPath) ? readFileSync(toolsCodeIntelligence1RegressionTestPath, "utf8") : "";
 const toolsPrecisionSubsystemTest = existsSync(toolsPrecisionSubsystemTestPath) ? readFileSync(toolsPrecisionSubsystemTestPath, "utf8") : "";
 const precisionSubsystem = existsSync(precisionSubsystemPath) ? readFileSync(precisionSubsystemPath, "utf8") : "";
+const permissionRuntimeTest = existsSync(permissionRuntimeTestPath) ? readFileSync(permissionRuntimeTestPath, "utf8") : "";
+const toolsScopedPermissionsTest = existsSync(toolsScopedPermissionsTestPath) ? readFileSync(toolsScopedPermissionsTestPath, "utf8") : "";
+const safetyCliTest = existsSync(safetyCliTestPath) ? readFileSync(safetyCliTestPath, "utf8") : "";
+const permissionRuntimeSource = existsSync(permissionRuntimePath) ? readFileSync(permissionRuntimePath, "utf8") : "";
+const permissionToolsSource = existsSync(permissionToolsPath) ? readFileSync(permissionToolsPath, "utf8") : "";
+const permissionProfilesSource = existsSync(permissionProfilesPath) ? readFileSync(permissionProfilesPath, "utf8") : "";
 const runtimeRegistry = existsSync(runtimeRegistryPath) ? JSON.parse(readFileSync(runtimeRegistryPath, "utf8")) : null;
 const runtimeToolNames = new Set(runtimeRegistry?.servers?.tools?.tools?.map((tool) => tool.name) || []);
 const adoptionReliabilityTest = existsSync(adoptionReliabilityTestPath) ? readFileSync(adoptionReliabilityTestPath, "utf8") : "";
@@ -289,7 +301,12 @@ const requiredTools = [
   "vnem_tools_official_documentation_fetch",
   "vnem_tools_documentation_context",
   "vnem_tools_ephemeral_script",
-  "vnem_tools_code_index_status"
+  "vnem_tools_code_index_status",
+  "vnem_tools_permission_request",
+  "vnem_tools_permission_grant",
+  "vnem_tools_permission_revoke",
+  "vnem_tools_permission_evaluate",
+  "vnem_tools_permission_doctor"
 ];
 
 const report = {
@@ -341,6 +358,10 @@ const report = {
   tools_code_intelligence_1_regression_test_exists: existsSync(toolsCodeIntelligence1RegressionTestPath),
   tools_precision_subsystem_test_exists: existsSync(toolsPrecisionSubsystemTestPath),
   precision_subsystem_module_exists: existsSync(precisionSubsystemPath),
+  permission_runtime_test_exists: existsSync(permissionRuntimeTestPath),
+  tools_scoped_permissions_test_exists: existsSync(toolsScopedPermissionsTestPath),
+  safety_cli_test_exists: existsSync(safetyCliTestPath),
+  permission_runtime_module_exists: existsSync(permissionRuntimePath),
   adoption_reliability_test_exists: existsSync(adoptionReliabilityTestPath),
   adoption_reliability_2_test_exists: existsSync(adoptionReliability2TestPath),
   core_research_strategy_test_exists: existsSync(coreResearchStrategyTestPath),
@@ -439,6 +460,10 @@ const report = {
     test_tools_source_control_character_guard: pkg.scripts?.["test:tools-source-control-character-guard"] === "node scripts/test-tools-code-intelligence-1-regression.mjs --case=source-control-character-guard",
     test_tools_code_intelligence_1_regression: pkg.scripts?.["test:tools-code-intelligence-1-regression"] === "node scripts/test-tools-code-intelligence-1-regression.mjs",
     test_tools_precision_subsystem: pkg.scripts?.["test:tools-precision-subsystem"] === "node scripts/test-tools-precision-subsystem.mjs",
+    test_permission_runtime: pkg.scripts?.["test:permission-runtime"] === "node scripts/test-permission-runtime.mjs",
+    test_tools_scoped_permissions: pkg.scripts?.["test:tools-scoped-permissions"] === "node scripts/test-tools-scoped-permissions.mjs",
+    test_safety_cli: pkg.scripts?.["test:safety-cli"] === "node scripts/test-vnem-safety-cli.mjs",
+    safety: pkg.scripts?.safety === "node scripts/vnem-cli.mjs safety",
     test_core_adoption_entrypoint: pkg.scripts?.["test:core-adoption-entrypoint"] === "node scripts/test-vnem-adoption-reliability-1-regression.mjs --case=core-entrypoint",
     test_core_usage_contract: pkg.scripts?.["test:core-usage-contract"] === "node scripts/test-vnem-adoption-reliability-1-regression.mjs --case=core-usage-contract",
     test_tools_adoption_entrypoint: pkg.scripts?.["test:tools-adoption-entrypoint"] === "node scripts/test-vnem-adoption-reliability-1-regression.mjs --case=tools-entrypoint",
@@ -476,6 +501,10 @@ const report = {
   ].every((name) => runtimeToolNames.has(name)),
   precision_subsystem_behavior_status: /phase3-atomic-proof/.test(toolsPrecisionSubsystemTest) && /rollback_available/.test(toolsPrecisionSubsystemTest) && /initialized, false/.test(toolsPrecisionSubsystemTest),
   precision_subsystem_shared_runtime_status: /registerToolsPrecisionSubsystem/.test(server) && /registerPrecisionCompatibilityTools/.test(precisionSubsystem),
+  scoped_permission_runtime_registry_status: ["vnem_tools_permission_request", "vnem_tools_permission_grant", "vnem_tools_permission_revoke", "vnem_tools_permission_evaluate", "vnem_tools_permission_doctor"].every((name) => runtimeToolNames.has(name)),
+  scoped_permission_behavior_status: /active scoped grant should avoid repeated per-call approval/.test(toolsScopedPermissionsTest) && /permission_hard_blocked/.test(toolsScopedPermissionsTest) && /persistence: "session"/.test(toolsScopedPermissionsTest),
+  safety_cli_behavior_status: /rollbackPreview/.test(safetyCliTest) && /session-only profile/.test(safetyCliTest) && /hard_blocked_actions/.test(safetyCliTest),
+  permission_runtime_shared_status: /registerPermissionRuntimeTools/.test(server) && /requestGrant/.test(permissionRuntimeSource) && /vnem_tools_permission_grant/.test(permissionToolsSource) && /HARD_BLOCKED_ACTIONS/.test(permissionRuntimeTest),
   mcp_config_tools_support: /--tools/.test(cli) && /VNEM_TOOLS_ALLOWED_ROOTS/.test(cli) && /VNEM_TOOLS_EVIDENCE_ROOT/.test(cli) && /vnem-tools-mcp-server/.test(cli),
   github_autonomy_status: /github_autonomy/.test(server) && /registerGithubTools/.test(server) && /vnem_tools_github_status/.test(server),
   github_settings_guide_status: /vnem_tools_github_settings_guide/.test(server) && /# GITHUB SETTINGS/.test(server + toolsGithubSettingsTest) && /VNEM_TOOLS_GITHUB_PROFILE = "maintainer"/.test(server + toolsGithubSettingsTest),
@@ -658,16 +687,16 @@ const report = {
   provider_unconfigured_honesty: /provider_unconfigured/.test(server) && /no fake results returned/.test(server) && /provider_unavailable|provider_unconfigured/.test(server + toolsSearchPowerTest),
   no_captcha_bypass_public_policy: /No automatic CAPTCHA bypass was attempted or provided/.test(server + toolsRiskCaptchaTest) && /automatic CAPTCHA bypass/.test(server),
 
-  permission_profiles_status: /PERMISSION_PROFILE_NAMES/.test(server) && /safe-readonly/.test(server) && /creator-power/.test(server) && /dangerous-disabled/.test(toolsPermissionProfilesTest + server),
+  permission_profiles_status: /PERMISSION_PROFILE_NAMES/.test(server) && /safe-readonly/.test(permissionProfilesSource) && /creator-power/.test(permissionProfilesSource) && /dangerous-disabled/.test(toolsPermissionProfilesTest + permissionProfilesSource),
   permission_status_tool: /vnem_tools_permission_status/.test(server) && /permissionStatusObject/.test(server) && /workspace_allowed/.test(toolsPermissionProfilesTest + server) && /high_power_summary/.test(server) && /approval_phrase_summary/.test(server),
   action_policy_preview_status: /vnem_tools_action_policy_preview/.test(server) && /actionPolicyPreview/.test(server) && /required_user_approval_text/.test(server),
   trust_boundary_classifier_status: /vnem_tools_trust_boundary_classify/.test(server) && /trustBoundaryClassify/.test(server) && /6_blocked_dangerous_action/.test(toolsTrustBoundaryTest + server),
   safe_readonly_blocks_writes: /safe-readonly/.test(server) && /permission_profile_blocked/.test(toolsPermissionProfilesTest),
   approved_writes_requires_approval: /approved-writes/.test(server) && /approval_required/.test(toolsPermissionProfilesTest),
-  package_install_still_not_silent: /approved-installs/.test(server) && /package_install/.test(toolsPermissionProfilesTest) && /preview\/planned\/blocked/.test(server),
-  github_mutation_still_not_silent: /approved-github/.test(server) && /github_pr/.test(toolsPermissionProfilesTest) && /never silently mutates GitHub|preview\/planned\/blocked/.test(server),
+  package_install_still_not_silent: /approved-installs/.test(permissionProfilesSource) && /package_install/.test(toolsPermissionProfilesTest) && /plannedBlocked/.test(server),
+  github_mutation_still_not_silent: /approved-github/.test(permissionProfilesSource) && /github_pr/.test(toolsPermissionProfilesTest) && /requires_approval/.test(toolsPermissionProfilesTest),
   secret_read_blocked_by_default: /secret_read/.test(server) && /secret_path_blocked/.test(toolsSecretBlockingTest) && /raw_secret_blocked/.test(toolsSecretBlockingTest),
-  dangerous_disabled_policy: /dangerous-disabled/.test(server) && /captcha_bypass/.test(toolsTrustBoundaryTest) && /destructive_shell/.test(toolsTrustBoundaryTest),
+  dangerous_disabled_policy: /dangerous-disabled/.test(permissionProfilesSource) && /captcha_bypass/.test(toolsTrustBoundaryTest) && /destructive_shell/.test(toolsTrustBoundaryTest),
   allowed_root_status_reporting: /allowed_roots/.test(server) && /how_to_add_more_roots/.test(server) && /workspace_fix_suggestion/.test(toolsPermissionProfilesTest + server),
   broad_root_warning_status: /broad_root_warnings/.test(server) && /too broad/.test(toolsPermissionProfilesTest + server),
   permission_manifest_integration: /permission_manifest_integration/.test(server) && /permission_profile/.test(server) && /vnem_tools_permission_status/.test(server),
@@ -787,6 +816,10 @@ assert.equal(report.tools_orchestrator_1_regression_test_exists, true, "ORCHESTR
 assert.equal(report.tools_code_intelligence_1_regression_test_exists, true, "CODE-INTELLIGENCE-1 regression test file is missing");
 assert.equal(report.tools_precision_subsystem_test_exists, true, "Tools precision subsystem MCP test file is missing");
 assert.equal(report.precision_subsystem_module_exists, true, "Tools precision subsystem module is missing");
+assert.equal(report.permission_runtime_test_exists, true, "Shared permission runtime test file is missing");
+assert.equal(report.tools_scoped_permissions_test_exists, true, "Scoped permission MCP test file is missing");
+assert.equal(report.safety_cli_test_exists, true, "Safety CLI test file is missing");
+assert.equal(report.permission_runtime_module_exists, true, "Shared permission runtime module is missing");
 assert.equal(report.adoption_reliability_test_exists, true, "ADOPTION-RELIABILITY-1 regression test file is missing");
 assert.equal(report.adoption_reliability_2_test_exists, true, "ADOPTION-RELIABILITY-2 regression test file is missing");
 for (const [key, value] of Object.entries({
@@ -820,6 +853,10 @@ for (const [key, value] of Object.entries({
   test_tools_source_control_character_guard: report.package_scripts.test_tools_source_control_character_guard,
   test_tools_code_intelligence_1_regression: report.package_scripts.test_tools_code_intelligence_1_regression,
   test_tools_precision_subsystem: report.package_scripts.test_tools_precision_subsystem,
+  test_permission_runtime: report.package_scripts.test_permission_runtime,
+  test_tools_scoped_permissions: report.package_scripts.test_tools_scoped_permissions,
+  test_safety_cli: report.package_scripts.test_safety_cli,
+  safety: report.package_scripts.safety,
   test_core_adoption_entrypoint: report.package_scripts.test_core_adoption_entrypoint,
   test_core_usage_contract: report.package_scripts.test_core_usage_contract,
   test_tools_adoption_entrypoint: report.package_scripts.test_tools_adoption_entrypoint,
@@ -891,6 +928,12 @@ for (const [key, value] of Object.entries({
   precision_subsystem_runtime_registry_status: report.precision_subsystem_runtime_registry_status,
   precision_subsystem_behavior_status: report.precision_subsystem_behavior_status,
   precision_subsystem_shared_runtime_status: report.precision_subsystem_shared_runtime_status
+})) assert.equal(value, true, `${key} readiness missing`);
+for (const [key, value] of Object.entries({
+  scoped_permission_runtime_registry_status: report.scoped_permission_runtime_registry_status,
+  scoped_permission_behavior_status: report.scoped_permission_behavior_status,
+  safety_cli_behavior_status: report.safety_cli_behavior_status,
+  permission_runtime_shared_status: report.permission_runtime_shared_status
 })) assert.equal(value, true, `${key} readiness missing`);
 for (const [name, present] of Object.entries(report.required_tools_present)) assert.equal(present, true, `missing required tool ${name}`);
 assert.equal(report.dry_run_default, true, "dry-run defaults are missing");
@@ -976,6 +1019,10 @@ console.log(`tools_precision_subsystem_test_exists: ${yes(report.tools_precision
 console.log(`precision_subsystem_runtime_registry_status: ${yes(report.precision_subsystem_runtime_registry_status)}`);
 console.log(`precision_subsystem_behavior_status: ${yes(report.precision_subsystem_behavior_status)}`);
 console.log(`precision_subsystem_shared_runtime_status: ${yes(report.precision_subsystem_shared_runtime_status)}`);
+console.log(`scoped_permission_runtime_registry_status: ${yes(report.scoped_permission_runtime_registry_status)}`);
+console.log(`scoped_permission_behavior_status: ${yes(report.scoped_permission_behavior_status)}`);
+console.log(`safety_cli_behavior_status: ${yes(report.safety_cli_behavior_status)}`);
+console.log(`permission_runtime_shared_status: ${yes(report.permission_runtime_shared_status)}`);
 console.log(`required_tools_present: ${Object.values(report.required_tools_present).filter(Boolean).length}/${requiredTools.length}`);
 console.log(`mcp_config_tools_support: ${yes(report.mcp_config_tools_support)}`);
 console.log(`tools_manifest_status: ${yes(report.tools_manifest_status)}`);
