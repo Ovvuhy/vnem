@@ -15,7 +15,7 @@ const DOMAIN_ADAPTERS = [
   adapter("github_publish", "GitHub publishing and remote proof", 9, [
     feature(/\b(github|pull request|\bpr\b|push|remote sha|actions|release|branch|merge)\b/, 5, "remote repository intent"),
     feature(/\b(publish|remote proof|head sha|workflow run)\b/, 4, "publish or remote-proof requirement")
-  ], ["remote truth", "branch safety", "CI evidence"], ["vnem_tools_github_status", "vnem_tools_github_actions_status", "vnem_tools_pr_quality_gate"]),
+  ], ["remote truth", "branch safety", "diff and review quality", "CI evidence", "repair or rollback guidance"], ["vnem_tools_github_status", "vnem_tools_github_diff_review", "vnem_tools_github_remote_proof", "vnem_tools_github_actions_status", "vnem_tools_pr_quality_gate"]),
   adapter("browser_ui", "Browser and UI verification", 8, [
     feature(/\b(browser|localhost|screenshot|viewport|responsive|\bdom\b|accessibility|a11y|visual proof)\b/, 5, "browser or visual-proof requirement"),
     feature(/\b(ui|frontend|page|component|rendered states?)\b/, 3, "user-interface surface")
@@ -122,7 +122,13 @@ const TOOL_PURPOSES = {
   vnem_tools_test_selection_plan: "choose the smallest sufficient verification set",
   vnem_tools_failure_triage: "classify failure evidence before changing code",
   vnem_tools_github_status: "verify GitHub authentication and repository readiness",
+  vnem_tools_github_diff_review: "review the bounded local or live PR diff, hidden controls, secret additions, generated churn, and high-risk surfaces",
+  vnem_tools_github_review_threads: "inspect unresolved, resolved, outdated, and paginated review threads without mutating them",
+  vnem_tools_github_remote_proof: "prove local, remote branch, PR head, and exact-head Actions SHA equality",
   vnem_tools_github_actions_status: "inspect actual workflow status and head SHA",
+  vnem_tools_github_actions_run_inspect: "inspect exact Actions jobs, steps, and bounded redacted logs",
+  vnem_tools_github_release_verify: "verify release metadata and the exact remote tag SHA",
+  vnem_tools_github_public_surface_audit: "check README, package, and public repo-surface consistency without editing",
   vnem_tools_pr_quality_gate: "verify PR, CI, and proof requirements",
   vnem_tools_ui_surface_review: "inspect UI routes and states before browser proof",
   vnem_tools_browser_evidence_plan: "plan bounded browser and viewport evidence",
@@ -238,7 +244,7 @@ export function buildCoreEntrypoint(args = {}) {
     when_tools_mcp_is_needed: ["repo inspection or code search", "edits, commands, tests, browser or remote actions", "runtime evidence and completion proof"],
     what_core_can_do: ["classify mixed tasks", "select compact capability and Tools routes", "reason from compatibility and evidence"],
     what_core_cannot_do: ["mutate files", "run terminal commands or tests", "push branches or call remote services"],
-    proof_required: proofRequired,
+    proof_required: ["See proof_contract.required_before_claims."],
     proof_contract: {
       required_before_claims: proofRequired,
       fake_proof_blocked: true,
@@ -256,8 +262,8 @@ export function buildCoreEntrypoint(args = {}) {
       use_tools_mcp: recommendedToolsCalls.length > 0,
       tools_mcp_detected_from_input: toolsMcpConfigured(args.available_mcp_names),
       task_type: classification.primary,
-      exact_tool_call_sequence: toolSequence.map(({ step, tool, purpose }) => ({ step, tool, purpose })),
-      proof_contract: proofRequired,
+      exact_tool_call_sequence: toolSequence.map(({ step, tool }) => ({ step, tool })),
+      proof_contract: ["See top-level proof_contract.required_before_claims."],
       core_runtime_dependency: false
     },
     reality_boundary: "Core reasons and routes. Tool execution, success, and proof remain distinct states and must come from Tools evidence."
@@ -441,6 +447,16 @@ export function coreRecommendedToolsCalls(classification, args = {}) {
   if (domainIds.has("app_engineering")) candidates.push("vnem_tools_app_inspect", "vnem_tools_app_vertical_slice_plan", "vnem_tools_repo_deep_map");
   if (domainIds.has("project_automation")) candidates.push("vnem_tools_project_automation_inspect", "vnem_tools_project_command_run", "vnem_tools_project_task_graph_plan");
   if (domainIds.has("windows_local")) candidates.push("vnem_tools_windows_system_snapshot", "vnem_tools_powershell_command_plan", "vnem_tools_process_inspect", "vnem_tools_port_inspect");
+  if (domainIds.has("github_publish")) {
+    const githubText = `${args.user_goal || ""} ${args.task_context || ""}`;
+    candidates.push("vnem_tools_github_actions_status");
+    if (/review threads?|review comments?|unresolved review/i.test(githubText)) {
+      candidates.push("vnem_tools_github_diff_review", "vnem_tools_github_review_threads", "vnem_tools_github_remote_proof", "vnem_tools_pr_quality_gate");
+    }
+    if (/job|step|logs?|workflow failure|actions run/i.test(githubText)) {
+      candidates.push("vnem_tools_github_remote_proof", "vnem_tools_github_actions_run_inspect");
+    }
+  }
   if (domainIds.has("repo_code")) candidates.push("vnem_tools_repo_deep_map", "vnem_tools_patch_target_finder");
   if (domainIds.has("repo_code") || domainIds.has("app_engineering")) candidates.push("vnem_tools_test_selection_plan");
   // Give every material domain execution influence before filling deeper steps.
@@ -475,7 +491,7 @@ export function coreRecommendedCoreCalls(classification) {
 export function coreProofRequirements(classification) {
   const ids = new Set((classification.domains || []).map((item) => item.id));
   const requirements = ["commands and Tools calls actually executed, or an explicit blocked state", "checks actually run with status", "what remains not proven"];
-  if (ids.has("github_publish")) requirements.push("remote branch SHA, PR head SHA, and Actions URL/status");
+  if (ids.has("github_publish")) requirements.push("bounded diff and unresolved-review evidence as relevant; exact local HEAD, remote branch SHA, and PR head SHA equality; exact-head GitHub Actions URL/job/step status; protected-branch state; release tag proof when claimed; and normal corrective-commit or rollback guidance without force-push");
   if (ids.has("browser_ui")) requirements.push("structured interaction results, before/after screenshots and pixel comparison, DOM and accessibility snapshots, console errors, failed network requests, responsive viewport/state coverage, and owned-browser cleanup evidence");
   if (ids.has("windows_local")) requirements.push("exact Windows targets, PATH/tool/provider/access evidence, process/port/path/service/task/event results as relevant, no command-line/config/secret collection, and scoped permission plus rollback before any system mutation");
   if (ids.has("package_dependency")) requirements.push("lockfile/dependency diff, install-script risk, focused tests, and rollback");
@@ -511,7 +527,7 @@ export function coreCommonTaskRoutes() {
   return [
     { task: "mixed app and UI", core_first: "vnem_entrypoint", tools_next: ["vnem_tools_repo_deep_map", "vnem_tools_ui_surface_review", "vnem_tools_browser_evidence_plan"] },
     { task: "package upgrade and CI repair", core_first: "vnem_entrypoint", tools_next: ["vnem_tools_dependency_scan", "vnem_tools_failure_triage", "vnem_tools_test_selection_plan"] },
-    { task: "GitHub publishing and proof", core_first: "vnem_entrypoint", tools_next: ["vnem_tools_github_status", "vnem_tools_github_actions_status", "vnem_tools_pr_quality_gate"] },
+    { task: "GitHub publishing and proof", core_first: "vnem_entrypoint", tools_next: ["vnem_tools_github_status", "vnem_tools_github_diff_review", "vnem_tools_github_remote_proof", "vnem_tools_github_actions_run_inspect", "vnem_tools_pr_quality_gate"] },
     { task: "evidence continuation", core_first: "vnem_continue_from_tools_evidence", tools_next: ["vnem_tools_evidence_pack", "vnem_tools_task_progress_truth_check"] }
   ];
 }
@@ -576,6 +592,13 @@ function legacyPrimary(domain) {
 }
 
 function domainTools(domain, args) {
+  if (domain.id === "github_publish") {
+    const text = `${args.user_goal || ""} ${args.task_context || ""}`;
+    if (/review threads?|review comments?|unresolved review/i.test(text)) return ["vnem_tools_github_status", "vnem_tools_github_diff_review", "vnem_tools_github_review_threads", "vnem_tools_github_remote_proof", "vnem_tools_github_actions_status", "vnem_tools_pr_quality_gate"];
+    if (/job|step|logs?|workflow failure|actions run/i.test(text)) return ["vnem_tools_github_status", "vnem_tools_github_remote_proof", "vnem_tools_github_actions_status", "vnem_tools_github_actions_run_inspect", "vnem_tools_github_diff_review", "vnem_tools_pr_quality_gate"];
+    if (/release|tag|asset/i.test(text)) return ["vnem_tools_github_status", "vnem_tools_github_release_verify", "vnem_tools_github_remote_proof", "vnem_tools_github_actions_status", "vnem_tools_pr_quality_gate"];
+    if (/readme|repo page|public page|public surface/i.test(text)) return ["vnem_tools_github_status", "vnem_tools_github_public_surface_audit", "vnem_tools_github_diff_review", "vnem_tools_github_remote_proof", "vnem_tools_pr_quality_gate"];
+  }
   if (domain.id === "repo_code" && /\b(refactor|duplicated|preserve public|without changing public)\b/i.test(String(args.user_goal || ""))) {
     return ["vnem_tools_code_symbol_map", "vnem_tools_source_impact_trace", "vnem_tools_test_selection_plan"];
   }
@@ -658,7 +681,7 @@ function adapterSelectionFor(classification, tools) {
 function checksForDomain(domain) {
   const map = {
     debugging: ["reproduce or classify failure", "targeted regression rerun"],
-    github_publish: ["remote SHA equality", "PR head equality", "Actions conclusion"],
+    github_publish: ["bounded diff and unresolved review state", "remote SHA equality", "PR head equality", "exact-head Actions jobs/steps conclusion", "protected-branch state", "normal corrective-commit or rollback guidance"],
     browser_ui: ["desktop and mobile state", "structured interaction", "accessibility tree", "console and failed-network evidence", "before/after comparison", "owned-process cleanup"],
     windows_local: ["exact process/port/path/service/task targets", "provider and access status", "secret/privacy boundary", "scoped local_pc_action permission and rollback for any mutation", "security controls remain enabled"],
     package_dependency: ["dependency/install-script audit", "focused tests", "rollback"],
@@ -669,7 +692,7 @@ function checksForDomain(domain) {
 }
 
 function outputEffectsForDomain(domain) {
-  if (domain === "github_publish") return ["remote SHA", "PR URL", "CI URL/status", "not proven"];
+  if (domain === "github_publish") return ["diff/review findings", "remote and PR SHA equality", "PR URL", "exact-head CI jobs/steps URL/status", "release/tag proof when relevant", "repair or rollback guidance", "not proven"];
   if (domain === "browser_ui") return ["interaction and state evidence", "before/after screenshots and pixel delta", "DOM/a11y snapshots", "console/network status", "browser cleanup", "not proven"];
   if (domain === "windows_local") return ["bounded system/path/process/port/service/task/event evidence", "provider or access limits", "safe restart/reload guidance", "permission and rollback gate", "not proven"];
   if (domain === "debugging") return ["root-cause evidence", "smallest fix", "rerun result", "residual risk"];
@@ -720,7 +743,11 @@ function completionCriteriaFor(classification) {
     { id: "verification", criterion: "Affected checks ran successfully or are explicitly blocked/not proven." },
     { id: "claim_boundary", criterion: "The final claim does not exceed collected evidence." }
   ];
-  if (ids.has("github_publish")) criteria.push({ id: "remote_proof", criterion: "Remote branch, PR head, and Actions evidence agree on the exact SHA." });
+  if (ids.has("github_publish")) {
+    criteria.push({ id: "remote_proof", criterion: "Local HEAD, remote branch, PR head, and exact-head Actions evidence agree on the exact SHA." });
+    criteria.push({ id: "remote_review", criterion: "The bounded diff, unresolved review threads, protected-branch state, and relevant job/step or release proof were inspected without overstating pagination or semantic correctness." });
+    criteria.push({ id: "remote_repair", criterion: "A normal corrective-commit, PR update, rerun, or release repair path is stated; force-push is not treated as default rollback." });
+  }
   if (ids.has("browser_ui")) criteria.push({ id: "browser_proof", criterion: "Required UI states have browser evidence or an honest unavailable boundary." });
   if (ids.has("package_dependency") || ids.has("client_setup") || ids.has("game_modding")) criteria.push({ id: "rollback", criterion: "The mutation has a verified rollback or an explicit rollback-unavailable warning." });
   return criteria;

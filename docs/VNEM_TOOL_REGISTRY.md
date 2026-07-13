@@ -2,7 +2,7 @@
 
 Generated from live MCP runtime registries. Do not edit this table manually.
 
-- Total tools: 253
+- Total tools: 259
 - Registry valid: true
 - Missing behavior-test references: 18
 
@@ -198,6 +198,12 @@ Generated from live MCP runtime registries. Do not edit this table manually.
 | tools | `vnem_tools_github_settings_guide` | github | read_only | approved_network_read | optional | not_required | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_github_profile_status` | github | read_only | approved_network_read | optional | not_required | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_github_repo_inspect` | github | read_only | approved_network_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_github_diff_review` | github | read_only | approved_network_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_github_review_threads` | github | read_only | approved_network_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_github_remote_proof` | github | read_only | approved_network_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_github_actions_run_inspect` | github | read_only | approved_network_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_github_release_verify` | github | read_only | approved_network_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_github_public_surface_audit` | github | read_only | approved_network_read | optional | not_required | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_repo_intelligence_report` | repo | read_only | approved_network_read | optional | not_required | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_github_branch_create` | github | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_github_commit_push` | github | network_mutation | approved_network_mutation, scoped_credential_reference | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/tools/server.mjs |

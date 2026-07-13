@@ -635,6 +635,24 @@
         "scripts/test-tools-github-real-exec-paths.mjs",
         "scripts/test-tools-github-repo-intelligence.mjs"
       ],
+      "vnem_tools_github_diff_review": [
+        "scripts/test-tools-giga-github-development.mjs"
+      ],
+      "vnem_tools_github_review_threads": [
+        "scripts/test-tools-giga-github-development.mjs"
+      ],
+      "vnem_tools_github_remote_proof": [
+        "scripts/test-tools-giga-github-development.mjs"
+      ],
+      "vnem_tools_github_actions_run_inspect": [
+        "scripts/test-tools-giga-github-development.mjs"
+      ],
+      "vnem_tools_github_release_verify": [
+        "scripts/test-tools-giga-github-development.mjs"
+      ],
+      "vnem_tools_github_public_surface_audit": [
+        "scripts/test-tools-giga-github-development.mjs"
+      ],
       "vnem_tools_repo_intelligence_report": [
         "scripts/test-tools-github-repo-intelligence.mjs",
         "scripts/test-tools-power-tools-1-regression.mjs"

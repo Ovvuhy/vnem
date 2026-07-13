@@ -31,6 +31,7 @@
     "test:tools-giga-app-engineering": "node scripts/test-tools-giga-app-engineering.mjs",
     "test:tools-giga-browser-interaction": "node scripts/test-tools-giga-browser-interaction.mjs",
     "test:tools-giga-windows-local": "node scripts/test-tools-giga-windows-local.mjs",
+    "test:tools-giga-github-development": "node scripts/test-tools-giga-github-development.mjs",
     "test:tools-giga-project-automation": "node scripts/test-tools-giga-project-automation.mjs",
     "test:tools-git-session": "node scripts/test-tools-git-session.mjs",
     "test:tools-intelligence": "node scripts/test-tools-intelligence.mjs",
@@ -296,6 +297,7 @@
     "giga:phase9-performance": "node scripts/vnem/testing/phase-benchmark.mjs",
     "giga:phase10-benchmark": "node scripts/test-tools-giga-browser-interaction.mjs --benchmark-output=.vnem/giga-evolution/phase-10/browser-interaction-benchmark.json",
     "giga:phase11-benchmark": "node scripts/test-tools-giga-windows-local.mjs --benchmark-output=.vnem/giga-evolution/phase-11/windows-local-benchmark.json",
+    "giga:phase12-benchmark": "node scripts/test-tools-giga-github-development.mjs --benchmark-output=.vnem/giga-evolution/phase-12/github-development-benchmark.json",
     "test:clients:setup": "node scripts/test-vnem-client-setup.mjs"
   },
   "dependencies": {

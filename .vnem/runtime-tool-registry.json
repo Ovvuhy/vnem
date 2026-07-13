@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "source": "live MCP runtime registry status calls",
-  "total_tools": 253,
+  "total_tools": 259,
   "servers": {
     "core": {
       "schema_version": "1.0.0",
@@ -2560,7 +2560,7 @@
       "server_name": "vnem-tools",
       "version": "1.0.1",
       "valid": true,
-      "tool_count": 178,
+      "tool_count": 184,
       "alias_count": 0,
       "categories": {
         "action": 2,
@@ -2590,7 +2590,7 @@
         "find": 1,
         "finish": 1,
         "git": 3,
-        "github": 19,
+        "github": 25,
         "high": 1,
         "install": 2,
         "list": 2,
@@ -2642,13 +2642,13 @@
       "side_effect_classes": {
         "destructive_mutation": 31,
         "network_mutation": 17,
-        "read_only": 130
+        "read_only": 136
       },
       "validation": {
         "valid": true,
         "server_name": "vnem-tools",
         "version": "1.0.1",
-        "tool_count": 178,
+        "tool_count": 184,
         "alias_count": 0,
         "errors": [],
         "warnings": [
@@ -7195,6 +7195,222 @@
           "input_schema_present": true
         },
         {
+          "name": "vnem_tools_github_diff_review",
+          "version": "1.0.1",
+          "title": "Review Local or GitHub PR Diff",
+          "description": "Inspect a bounded local Git range or live PR patch with file classification, workflow/dependency risk, hidden/bidi controls, secret-like additions, generated-only detection, and explicit semantic-review limits.",
+          "category": "github",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": true
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "approved_network_read"
+          ],
+          "network_behavior": "bounded_or_approved_network",
+          "credential_behavior": "credential references only; values never returned",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-github-development.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_github_review_threads",
+          "version": "1.0.1",
+          "title": "Inspect GitHub PR Review Threads",
+          "description": "Read up to 50 pull-request review threads with unresolved/resolved/outdated state, exact file/line context, bounded redacted comments, and honest pagination without replying or resolving.",
+          "category": "github",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": true
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "approved_network_read"
+          ],
+          "network_behavior": "bounded_or_approved_network",
+          "credential_behavior": "credential references only; values never returned",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-github-development.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_github_remote_proof",
+          "version": "1.0.1",
+          "title": "Verify Exact GitHub Remote PR and CI SHA",
+          "description": "Compare local HEAD, exact remote branch SHA, PR head SHA, and exact-head Actions runs; report worktree and configured/live base-branch protection without fetching, pushing, merging, or mutating.",
+          "category": "github",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": true
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "approved_network_read"
+          ],
+          "network_behavior": "bounded_or_approved_network",
+          "credential_behavior": "credential references only; values never returned",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-github-development.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_github_actions_run_inspect",
+          "version": "1.0.1",
+          "title": "Inspect GitHub Actions Jobs Steps and Logs",
+          "description": "Read one exact Actions run with job/step status and optional bounded failed or exact-job logs. Returns redacted high-signal lines and never reruns or mutates CI.",
+          "category": "github",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": true
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "approved_network_read"
+          ],
+          "network_behavior": "bounded_or_approved_network",
+          "credential_behavior": "credential references only; values never returned",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-github-development.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_github_release_verify",
+          "version": "1.0.1",
+          "title": "Verify GitHub Release and Remote Tag Proof",
+          "description": "Read an exact GitHub release and remote tag, compare the peeled tag SHA with an optional expected SHA, and report draft/prerelease/assets state without creating, publishing, or changing a release.",
+          "category": "github",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": true
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "approved_network_read"
+          ],
+          "network_behavior": "bounded_or_approved_network",
+          "credential_behavior": "credential references only; values never returned",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-github-development.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_github_public_surface_audit",
+          "version": "1.0.1",
+          "title": "Audit README and Public Repo Surface Consistency",
+          "description": "Compare a bounded README/package/public API surface for canonical repo links, Core/Tools naming, setup visibility, package metadata, front-page complexity, and simplification opportunities without crawling links or editing content.",
+          "category": "github",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "approved_network_read"
+          ],
+          "network_behavior": "bounded_or_approved_network",
+          "credential_behavior": "credential references only; values never returned",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-github-development.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
           "name": "vnem_tools_repo_intelligence_report",
           "version": "1.0.1",
           "title": "Repo Intelligence Report",
@@ -7235,7 +7451,7 @@
           "name": "vnem_tools_github_branch_create",
           "version": "1.0.1",
           "title": "GitHub Branch Create",
-          "description": "Create a clean local branch for GitHub repo work; reports dirty worktree instead of hiding it.",
+          "description": "Create a local feature branch; blocks a dirty worktree unless allow_dirty is explicitly selected and never overwrites an existing branch by default.",
           "category": "github",
           "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
           "annotations": {

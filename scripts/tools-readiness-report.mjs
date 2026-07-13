@@ -21,6 +21,8 @@ const browserInteractionFixturePath = rel("fixtures/browser-interaction/index.ht
 const windowsLocalTestPath = rel("scripts/test-tools-giga-windows-local.mjs");
 const windowsLocalModulePath = rel("scripts/vnem/tools/windows-local.mjs");
 const windowsLocalFixturePath = rel("fixtures/windows-local/path with spaces/sample.txt");
+const githubDevelopmentTestPath = rel("scripts/test-tools-giga-github-development.mjs");
+const githubDevelopmentModulePath = rel("scripts/vnem/tools/github-development.mjs");
 const projectAutomationTestPath = rel("scripts/test-tools-giga-project-automation.mjs");
 const projectAutomationModulePath = rel("scripts/vnem/tools/project-automation.mjs");
 const projectAutomationFixturePath = rel("fixtures/project-automation/package.json");
@@ -115,6 +117,8 @@ const browserInteractionTest = existsSync(browserInteractionTestPath) ? readFile
 const browserInteractionModule = existsSync(browserInteractionModulePath) ? readFileSync(browserInteractionModulePath, "utf8") : "";
 const windowsLocalTest = existsSync(windowsLocalTestPath) ? readFileSync(windowsLocalTestPath, "utf8") : "";
 const windowsLocalModule = existsSync(windowsLocalModulePath) ? readFileSync(windowsLocalModulePath, "utf8") : "";
+const githubDevelopmentTest = existsSync(githubDevelopmentTestPath) ? readFileSync(githubDevelopmentTestPath, "utf8") : "";
+const githubDevelopmentModule = existsSync(githubDevelopmentModulePath) ? readFileSync(githubDevelopmentModulePath, "utf8") : "";
 const projectAutomationTest = existsSync(projectAutomationTestPath) ? readFileSync(projectAutomationTestPath, "utf8") : "";
 const projectAutomationModule = existsSync(projectAutomationModulePath) ? readFileSync(projectAutomationModulePath, "utf8") : "";
 const testingCiTest = existsSync(testingCiTestPath) ? readFileSync(testingCiTestPath, "utf8") : "";
@@ -318,6 +322,12 @@ const requiredTools = [
   "vnem_tools_github_settings_guide",
   "vnem_tools_github_profile_status",
   "vnem_tools_github_repo_inspect",
+  "vnem_tools_github_diff_review",
+  "vnem_tools_github_review_threads",
+  "vnem_tools_github_remote_proof",
+  "vnem_tools_github_actions_run_inspect",
+  "vnem_tools_github_release_verify",
+  "vnem_tools_github_public_surface_audit",
   "vnem_tools_repo_intelligence_report",
   "vnem_tools_github_branch_create",
   "vnem_tools_github_commit_push",
@@ -389,6 +399,8 @@ const report = {
   windows_local_test_exists: existsSync(windowsLocalTestPath),
   windows_local_module_exists: existsSync(windowsLocalModulePath),
   windows_local_fixture_exists: existsSync(windowsLocalFixturePath),
+  github_development_test_exists: existsSync(githubDevelopmentTestPath),
+  github_development_module_exists: existsSync(githubDevelopmentModulePath),
   project_automation_test_exists: existsSync(projectAutomationTestPath),
   project_automation_module_exists: existsSync(projectAutomationModulePath),
   project_automation_fixture_exists: existsSync(projectAutomationFixturePath),
@@ -465,6 +477,7 @@ const report = {
     test_tools_giga_app_engineering: pkg.scripts?.["test:tools-giga-app-engineering"] === "node scripts/test-tools-giga-app-engineering.mjs",
     test_tools_giga_browser_interaction: pkg.scripts?.["test:tools-giga-browser-interaction"] === "node scripts/test-tools-giga-browser-interaction.mjs",
     test_tools_giga_windows_local: pkg.scripts?.["test:tools-giga-windows-local"] === "node scripts/test-tools-giga-windows-local.mjs",
+    test_tools_giga_github_development: pkg.scripts?.["test:tools-giga-github-development"] === "node scripts/test-tools-giga-github-development.mjs",
     test_tools_giga_project_automation: pkg.scripts?.["test:tools-giga-project-automation"] === "node scripts/test-tools-giga-project-automation.mjs",
     test_tools_giga_testing_ci: pkg.scripts?.["test:tools-giga-testing-ci"] === "node scripts/test-tools-giga-testing-ci.mjs",
     test_tools_git_session: pkg.scripts?.["test:tools-git-session"] === "node scripts/test-tools-git-session.mjs",
@@ -644,9 +657,18 @@ const report = {
   github_actions_real_exec_status: /\["run", "list"/.test(server) && /\["run", "rerun"/.test(server) && /gh run/.test(toolsGithubRealExecPathsTest),
   github_ci_logs_status: /run", "view"/.test(server) && /--log-failed|--log/.test(server) && /Cannot find module/.test(toolsGithubRealExecPathsTest + toolsGithubMutationDryRunTest + server),
   github_release_draft_status: /\["release", "create"/.test(server) && /--draft/.test(server + toolsGithubRealExecPathsTest),
+  github_development_module_status: /GithubDevelopmentRuntime/.test(server + githubDevelopmentModule) && /runGithubDevelopmentRead/.test(server) && /GITHUB_DEVELOPMENT_MARKERS/.test(githubDevelopmentModule),
+  github_diff_review_status: /vnem_tools_github_diff_review/.test(server + githubDevelopmentTest) && /scanPatch/.test(githubDevelopmentModule) && /hidden_or_bidi_unicode/.test(githubDevelopmentModule + githubDevelopmentTest) && /secret_like_addition/.test(githubDevelopmentModule),
+  github_review_threads_status: /vnem_tools_github_review_threads/.test(server + githubDevelopmentTest) && /reviewThreads/.test(githubDevelopmentModule) && /has_next_page/.test(githubDevelopmentModule) && /mutation_performed, false/.test(githubDevelopmentTest),
+  github_remote_proof_status: /vnem_tools_github_remote_proof/.test(server + githubDevelopmentTest) && /ls-remote/.test(githubDevelopmentModule) && /local_matches_remote/.test(githubDevelopmentModule) && /exact_head_actions_observed/.test(githubDevelopmentModule) && /repair_or_rollback_guidance/.test(githubDevelopmentModule + githubDevelopmentTest),
+  github_actions_run_inspect_status: /vnem_tools_github_actions_run_inspect/.test(server + githubDevelopmentTest) && /--log-failed/.test(githubDevelopmentModule + githubDevelopmentTest) && /failed_steps/.test(githubDevelopmentModule + githubDevelopmentTest) && /important_lines/.test(githubDevelopmentModule),
+  github_release_verify_status: /vnem_tools_github_release_verify/.test(server + githubDevelopmentTest) && /parseTagRefs/.test(githubDevelopmentModule) && /expected_matches_remote_tag/.test(githubDevelopmentModule) && /release_absence_proof/.test(githubDevelopmentTest),
+  github_public_surface_audit_status: /vnem_tools_github_public_surface_audit/.test(server + githubDevelopmentTest) && /publicSurfaceAudit/.test(githubDevelopmentModule) && /core_product_missing/.test(githubDevelopmentModule) && /simplification_suggestions/.test(githubDevelopmentModule),
+  github_selective_commit_isolation_status: /unrelated files are already staged/.test(server + githubDevelopmentTest) && /parseGitPathList/.test(server) && /scanGithubCommitContent/.test(server) && /remote_sha_verified/.test(server) && /pre-staged isolation/.test(githubDevelopmentTest),
+  github_development_real_mcp_proof_status: /StdioClientTransport/.test(githubDevelopmentTest) && /GIGA GitHub-development MCP tests passed/.test(githubDevelopmentTest) && /actual_stdio_mcp_live_github_read_proof/.test(githubDevelopmentTest),
   github_dry_run_status: /dry_run !== false/.test(server) && /must not/.test(toolsGithubMutationDryRunTest),
   github_config_knob_status: /config_knob_to_change/.test(server) && /VNEM_TOOLS_GITHUB_ALLOW_DIRECT_PUSH/.test(toolsGithubMutationDryRunTest + server) && /VNEM_TOOLS_GITHUB_ALLOW_ACTIONS_RERUN/.test(toolsGithubMutationDryRunTest + server),
-  github_secret_file_block_status: /githubSecretFileBlocked/.test(server) && /Secret-like file blocked/.test(server) && /\.env/.test(toolsGithubMutationDryRunTest + server),
+  github_secret_file_block_status: /githubSecretFileBlocked/.test(server) && /Secret-like file blocked/.test(server) && /scanGithubCommitContent/.test(server) && /Secret-like content blocked/.test(server + githubDevelopmentTest) && /\.env/.test(toolsGithubMutationDryRunTest + server),
   github_real_execution_not_only_simulated_status: /command-backed gh\/git/.test(server) && /real gh\\\/git command paths|real gh\/git command paths|mocked runner/.test(toolsAutonomy2RegressionTest + server) && !/GitHub mutation, package install, arbitrary shell\/API, login automation, cookie extraction, CAPTCHA bypass, and broad scraping are not implemented/.test(server),
   autonomy_efficiency_status: /operation_result/.test(server) && /next_best_action/.test(server) && /config_knob_to_change/.test(server) && /claim_status/.test(server),
   repo_deep_map_status: /vnem_tools_repo_deep_map/.test(server) && /repoDeepMap/.test(server) && /package_scripts/.test(server) && /ignored_or_noise_dirs/.test(server) && /repo-deep-map/.test(toolsPowerTools1RegressionTest),
@@ -908,6 +930,8 @@ assert.equal(report.browser_interaction_fixture_exists, true, "browser interacti
 assert.equal(report.windows_local_test_exists, true, "Windows/local-PC MCP test file is missing");
 assert.equal(report.windows_local_module_exists, true, "Windows/local-PC runtime module is missing");
 assert.equal(report.windows_local_fixture_exists, true, "Windows/local-PC fixture is missing");
+assert.equal(report.github_development_test_exists, true, "GitHub development MCP test file is missing");
+assert.equal(report.github_development_module_exists, true, "GitHub development runtime module is missing");
 assert.equal(report.project_automation_test_exists, true, "project automation MCP test file is missing");
 assert.equal(report.project_automation_module_exists, true, "project automation module is missing");
 assert.equal(report.project_automation_fixture_exists, true, "project automation fixture is missing");
@@ -936,6 +960,7 @@ assert.equal(report.package_scripts.test_tools_giga_project_automation, true, "t
 assert.equal(report.package_scripts.test_tools_giga_testing_ci, true, "test:tools-giga-testing-ci package script is missing");
 assert.equal(report.package_scripts.test_tools_giga_browser_interaction, true, "test:tools-giga-browser-interaction package script is missing");
 assert.equal(report.package_scripts.test_tools_giga_windows_local, true, "test:tools-giga-windows-local package script is missing");
+assert.equal(report.package_scripts.test_tools_giga_github_development, true, "test:tools-giga-github-development package script is missing");
 for (const [key, value] of Object.entries({ test_smoke_tier: report.package_scripts.test_smoke_tier, test_affected_tier: report.package_scripts.test_affected_tier, test_core_tier: report.package_scripts.test_core_tier, test_tools_tier: report.package_scripts.test_tools_tier, test_precision_compat_tier: report.package_scripts.test_precision_compat_tier, test_integration_tier: report.package_scripts.test_integration_tier, test_benchmarks_tier: report.package_scripts.test_benchmarks_tier, test_full_tier: report.package_scripts.test_full_tier, test_ci_tier: report.package_scripts.test_ci_tier, npm_test_routes_full: report.package_scripts.npm_test_routes_full })) assert.equal(value, true, `${key} package script is missing`);
 assert.equal(report.package_scripts.test_tools_git_session, true, "test:tools-git-session package script is missing");
 assert.equal(report.package_scripts.test_tools_intelligence, true, "test:tools-intelligence package script is missing");
@@ -1163,6 +1188,7 @@ for (const [key, value] of Object.entries({ testing_ci_discovery_status: report.
 for (const [key, value] of Object.entries({ app_engineering_inspection_status: report.app_engineering_inspection_status, app_engineering_transaction_status: report.app_engineering_transaction_status, app_engineering_acceptance_status: report.app_engineering_acceptance_status, app_engineering_rollback_status: report.app_engineering_rollback_status, app_engineering_adapter_fixture_status: report.app_engineering_adapter_fixture_status, app_engineering_real_mcp_proof_status: report.app_engineering_real_mcp_proof_status, dev_server_listener_cleanup_status: report.dev_server_listener_cleanup_status })) assert.equal(value, true, `${key} readiness missing`);
 for (const [key, value] of Object.entries({ browser_interaction_registration_status: report.browser_interaction_registration_status, browser_interaction_actions_status: report.browser_interaction_actions_status, browser_interaction_runtime_evidence_status: report.browser_interaction_runtime_evidence_status, browser_interaction_state_viewport_status: report.browser_interaction_state_viewport_status, browser_interaction_compare_status: report.browser_interaction_compare_status, browser_interaction_safety_status: report.browser_interaction_safety_status, browser_interaction_cleanup_status: report.browser_interaction_cleanup_status, browser_interaction_real_mcp_proof_status: report.browser_interaction_real_mcp_proof_status })) assert.equal(value, true, `${key} readiness missing`);
 for (const [key, value] of Object.entries({ windows_local_registration_status: report.windows_local_registration_status, windows_local_powershell_status: report.windows_local_powershell_status, windows_local_environment_status: report.windows_local_environment_status, windows_local_path_status: report.windows_local_path_status, windows_local_process_port_status: report.windows_local_process_port_status, windows_local_service_task_event_status: report.windows_local_service_task_event_status, windows_local_client_status: report.windows_local_client_status, windows_local_mutation_gate_status: report.windows_local_mutation_gate_status, windows_local_real_mcp_proof_status: report.windows_local_real_mcp_proof_status })) assert.equal(value, true, `${key} readiness missing`);
+for (const [key, value] of Object.entries({ github_development_module_status: report.github_development_module_status, github_diff_review_status: report.github_diff_review_status, github_review_threads_status: report.github_review_threads_status, github_remote_proof_status: report.github_remote_proof_status, github_actions_run_inspect_status: report.github_actions_run_inspect_status, github_release_verify_status: report.github_release_verify_status, github_public_surface_audit_status: report.github_public_surface_audit_status, github_selective_commit_isolation_status: report.github_selective_commit_isolation_status, github_development_real_mcp_proof_status: report.github_development_real_mcp_proof_status })) assert.equal(value, true, `${key} readiness missing`);
 assert.equal(report.project_task_status, true, "project task support/test coverage is missing");
 assert.equal(report.dev_server_status, true, "dev server support/test coverage is missing");
 assert.equal(report.session_evidence_status, true, "session evidence support/test coverage is missing");
@@ -1283,7 +1309,7 @@ console.log(`ui_route_component_detection_status: ${yes(report.ui_route_componen
 console.log(`ui_state_coverage_status: ${yes(report.ui_state_coverage_status)}`);
 console.log(`ui_no_hidden_browser_status: ${yes(report.ui_no_hidden_browser_status)}`);
 console.log(`ui_visual_claim_audit_status: ${yes(report.ui_visual_claim_audit_status)}`);
-for (const key of ["github_autonomy_status", "github_settings_guide_status", "github_profile_status", "github_status_tool_status", "github_repo_inspect_status", "github_repo_intelligence_status", "github_branch_status", "github_commit_push_status", "github_pr_status", "github_issue_status", "github_labels_status", "github_actions_status", "github_ci_triage_status", "github_pr_quality_gate_status", "github_task_progress_truth_check_status", "github_config_header_status", "github_profile_maintainer_default_status", "github_force_push_block_default_status", "github_repo_delete_block_default_status", "github_secret_commit_block_status", "github_real_exec_status", "github_gh_auth_detection_status", "github_git_command_status", "github_branch_real_exec_status", "github_commit_push_real_exec_status", "github_pr_real_exec_status", "github_issue_real_exec_status", "github_label_real_exec_status", "github_actions_real_exec_status", "github_ci_logs_status", "github_release_draft_status", "github_dry_run_status", "github_config_knob_status", "github_secret_file_block_status", "github_real_execution_not_only_simulated_status", "autonomy_efficiency_status"]) console.log(`${key}: ${yes(report[key])}`);
+for (const key of ["github_autonomy_status", "github_settings_guide_status", "github_profile_status", "github_status_tool_status", "github_repo_inspect_status", "github_repo_intelligence_status", "github_branch_status", "github_commit_push_status", "github_pr_status", "github_issue_status", "github_labels_status", "github_actions_status", "github_ci_triage_status", "github_pr_quality_gate_status", "github_task_progress_truth_check_status", "github_config_header_status", "github_profile_maintainer_default_status", "github_force_push_block_default_status", "github_repo_delete_block_default_status", "github_secret_commit_block_status", "github_real_exec_status", "github_gh_auth_detection_status", "github_git_command_status", "github_branch_real_exec_status", "github_commit_push_real_exec_status", "github_pr_real_exec_status", "github_issue_real_exec_status", "github_label_real_exec_status", "github_actions_real_exec_status", "github_ci_logs_status", "github_release_draft_status", "github_development_module_status", "github_diff_review_status", "github_review_threads_status", "github_remote_proof_status", "github_actions_run_inspect_status", "github_release_verify_status", "github_public_surface_audit_status", "github_selective_commit_isolation_status", "github_development_real_mcp_proof_status", "github_dry_run_status", "github_config_knob_status", "github_secret_file_block_status", "github_real_execution_not_only_simulated_status", "autonomy_efficiency_status"]) console.log(`${key}: ${yes(report[key])}`);
 for (const key of ["repo_deep_map_status", "next_action_ranker_status", "no_placebo_progress_audit_status", "change_impact_plan_status", "test_selection_plan_status", "failure_triage_status", "evidence_pack_status", "power_tools_1_status", "power_tools_2_dogfood_status", "ranking_quality_tuning_status", "no_placebo_strictness_status", "test_selection_efficiency_status", "evidence_pack_proof_packet_status", "failure_triage_specificity_status", "power_tools_2_status", "local_session_recovery_status", "power_session_1_status", "workflow_orchestrator_tool_status", "workflow_orchestrator_behavior_status", "workflow_orchestrator_no_placebo_status", "workflow_orchestrator_proof_packet_status", "orchestrator_1_status", "code_symbol_map_status", "mcp_surface_audit_status", "patch_target_finder_status", "tool_test_coverage_map_status", "source_impact_trace_status", "source_control_character_guard_status", "code_intelligence_1_status"]) console.log(`${key}: ${yes(report[key])}`);
 for (const key of ["tools_entrypoint_status", "tools_capability_router_status", "tools_adoption_readiness_status", "tools_exact_call_sequence_status", "tools_registered_call_validation_status", "tools_adoption_reliability_status", "tools_visibility_doctor_status", "tools_underuse_detector_status", "tools_adoption_description_status", "tools_registered_name_validation_2_status", "tools_adoption_reliability_2_status", "tools_install_profile_emit_status", "tools_install_doctor_status", "tools_install_profile_validation_status", "tools_install_adoption_1_status"]) console.log(`${key}: ${yes(report[key])}`);
 for (const key of ["cloudflare_control_status", "cloudflare_auth_status_tool_status", "cloudflare_auth_plan_status", "cloudflare_discovery_status", "cloudflare_pages_deploy_status", "cloudflare_workers_deploy_status", "cloudflare_dns_status", "cloudflare_env_secrets_status", "cloudflare_verify_status", "cloudflare_rollback_status", "cloudflare_cache_purge_status", "cloudflare_approval_gate_status", "cloudflare_destructive_approval_status", "cloudflare_secret_redaction_status", "cloudflare_evidence_pack_status", "general_tools_evidence_pack_audit_status", "general_tools_mutation_approval_contract_status", "general_tools_secret_redaction_check_status"]) console.log(`${key}: ${yes(report[key])}`);

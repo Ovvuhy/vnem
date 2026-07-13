@@ -119,6 +119,28 @@ try {
   assert.ok(windowsLocal.evidence_requirements.some((requirement) => /scoped permission plus rollback/.test(requirement)));
   assert.ok(windowsLocal.recommended_tools_call_sequence.every((step) => step.state.available && step.state.allowed));
 
+  const githubReview = await call(core.client, "vnem_entrypoint", {
+    user_goal: "Review GitHub PR #15 diff and unresolved review threads, verify the remote and PR head SHA, inspect Actions, and do not merge.",
+    task_context: "Base main, feature branch only; force-push and protected direct push stay blocked.",
+    task_mode: "publish",
+    available_mcp_names: ["vnem", "vnem-tools"],
+    available_tool_names: [...toolNames],
+    allowed_tool_names: [...toolNames]
+  }, "entrypoint");
+  for (const tool of ["vnem_tools_github_diff_review", "vnem_tools_github_review_threads", "vnem_tools_github_remote_proof", "vnem_tools_github_actions_status", "vnem_tools_pr_quality_gate"]) assert.ok(githubReview.recommended_tools_calls.includes(tool), `missing Phase 12 GitHub review route ${tool}`);
+  assert.ok(githubReview.evidence_requirements.some((requirement) => /corrective-commit or rollback guidance/.test(requirement)));
+  assert.ok(githubReview.completion_criteria.some((item) => item.id === "remote_review"));
+
+  const githubRun = await call(core.client, "vnem_entrypoint", {
+    user_goal: "Inspect an exact GitHub Actions run, its jobs, failed step, and bounded logs for the feature branch.",
+    task_context: "Read-only diagnosis for PR #15 on main base.",
+    task_mode: "publish",
+    available_mcp_names: ["vnem", "vnem-tools"],
+    available_tool_names: [...toolNames],
+    allowed_tool_names: [...toolNames]
+  }, "entrypoint");
+  assert.ok(githubRun.recommended_tools_calls.includes("vnem_tools_github_actions_run_inspect"));
+
   const details = await call(core.client, "vnem_decision_details", {
     decision_id: mixed.decision_id,
     sections: ["classification", "compatibility", "capability_packs", "unavailable_capabilities"]

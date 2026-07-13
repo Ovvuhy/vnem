@@ -41,6 +41,7 @@ import { ProjectAutomationError, ProjectAutomationRuntime } from "./project-auto
 import { TestingCiError, TestingCiRuntime } from "../testing/runtime.mjs";
 import { BrowserInteractionError, BrowserInteractionRuntime } from "./browser-interaction.mjs";
 import { WindowsLocalError, WindowsLocalRuntime } from "./windows-local.mjs";
+import { GithubDevelopmentError, GithubDevelopmentRuntime } from "./github-development.mjs";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(scriptDir, "..", "..", "..");
@@ -169,6 +170,12 @@ const REQUIRED_TOOL_NAMES = [
   "vnem_tools_github_settings_guide",
   "vnem_tools_github_profile_status",
   "vnem_tools_github_repo_inspect",
+  "vnem_tools_github_diff_review",
+  "vnem_tools_github_review_threads",
+  "vnem_tools_github_remote_proof",
+  "vnem_tools_github_actions_run_inspect",
+  "vnem_tools_github_release_verify",
+  "vnem_tools_github_public_surface_audit",
   "vnem_tools_repo_intelligence_report",
   "vnem_tools_github_branch_create",
   "vnem_tools_github_commit_push",
@@ -225,6 +232,7 @@ const REQUIRED_TOOL_NAMES = [
   "vnem_tools_permission_doctor"
 ];
 const READ_ONLY_LOCAL = { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false };
+const NETWORK_READ = { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true };
 const ACTION_TOOL = { readOnlyHint: false, destructiveHint: true, idempotentHint: false, openWorldHint: false };
 const NETWORK_ACTION = { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true };
 const GITHUB_SETTINGS_HEADER = "# ============================================================\n# GITHUB SETTINGS\n# ============================================================";
@@ -284,6 +292,12 @@ const projectAutomationRuntime = new ProjectAutomationRuntime({ allowedRoots, ev
 const testingCiRuntime = new TestingCiRuntime({ allowedRoots, evidenceRoot });
 const browserInteractionRuntime = new BrowserInteractionRuntime({ allowedRoots, evidenceRoot });
 const windowsLocalRuntime = new WindowsLocalRuntime({ allowedRoots });
+const githubDevelopmentRuntime = new GithubDevelopmentRuntime({
+  runProcess,
+  resolveRoot: resolveGithubRoot,
+  redact: redactSecrets,
+  protectedBranches: () => githubSettings().protected_branches
+});
 const activePermissionProfile = permissionRuntime.activeProfile();
 const usablePacks = await loadUsablePacks();
 const requestedPrecisionWorkspaceCandidate = path.resolve(
@@ -2483,8 +2497,10 @@ function unsupportedActions() {
 const RELIABILITY_LEVELS = {
   declared_only: "Tool exists but has no meaningful tests. Do not trust for serious work.",
   simulated_tested: "Tool passed mocked/simulated tests. Useful, but do not claim real external-world success.",
+  command_path_tested: "Tool passed real command-construction and mocked-runner behavior tests; live external state still requires exact URL/SHA proof.",
   dry_run_tested: "Tool can plan safely without mutating anything.",
   local_tested: "Tool was tested locally against files/processes/local environment.",
+  live_read_tested: "Tool completed bounded read-only proof against a real external service without mutating it.",
   live_tested_disposable: "Tool was tested against disposable real external resources.",
   production_safe_with_approval: "Tool is safe for production only with explicit approval, evidence, and rollback/repair plan."
 };
@@ -2511,11 +2527,11 @@ function toolReliabilityFor(name, descriptor = {}) {
     }
     known = ["No cookies/sessions/browser-profile auth", "Live mutation requires user auth and exact approval", "Production claims require real evidence"];
   } else if (group === "github_autonomy") {
-    level = "command_path_tested";
-    safe = ["GitHub settings/profile policy, local git/repo intelligence, real gh/git command paths through mocked runner, dry-run non-mutation, secret-file blocking, protected-branch checks, Actions log triage, and config knob blockers are tested."];
+    level = name.includes("_diff_review") || name.includes("_review_threads") || name.includes("_remote_proof") || name.includes("_actions_run_inspect") || name.includes("_release_verify") ? "live_read_tested" : "command_path_tested";
+    safe = ["GitHub settings/profile policy, bounded diff and review-thread reads, exact remote/PR/Actions SHA proof, structured job/step logs, release/tag verification, local repo intelligence, real gh/git command paths, dry-run non-mutation, selective-commit isolation, secret blocking, protected-branch checks, and config blockers are tested."];
     unsafe = ["Live GitHub remote mutation succeeded without an exact URL/SHA/run proof", "Force push/direct protected-branch push/repo delete/settings mutation are allowed by default", "Tokens are safe to print"];
-    next = "Use gh with real auth on an allowed repo and verify the exact PR/issue/CI/release URL or run before claiming live GitHub mutation.";
-    known = ["Command-backed gh/git execution requires auth for remote mutation", "Hard blocks remain for secret commits, default force push, default protected-branch direct push, repo delete/settings mutation unless configured"];
+    next = "Use bounded live reads on the exact repo/PR/run/tag, then verify exact SHA and URL before claiming remote state or mutation.";
+    known = ["Command-backed gh/git execution requires auth for live remote reads and mutation", "Review-thread reads are page-bounded", "Diff scans do not replace semantic review", "Hard blocks remain for secret commits, default force push, default protected-branch direct push, repo delete/settings mutation unless configured"];
   } else if (group === "repo_power") {
     level = "local_tested";
     safe = ["Repo map, next-action ranking, no-placebo audit, impact/test planning, failure triage, compact evidence, and local session recovery are deterministic intelligence over allowed roots."];
@@ -2674,7 +2690,7 @@ function toolsVisibilityDoctor(args = {}) {
   const powerLayers = {
     repo_power: ["vnem_tools_repo_deep_map", "vnem_tools_failure_triage", "vnem_tools_evidence_pack"].every((tool) => names.has(tool)),
     code_intelligence: ["vnem_tools_code_symbol_map", "vnem_tools_patch_target_finder", "vnem_tools_source_impact_trace"].every((tool) => names.has(tool)),
-    github_ci_proof: ["vnem_tools_github_status", "vnem_tools_github_actions_status", "vnem_tools_pr_quality_gate"].every((tool) => names.has(tool)),
+    github_ci_proof: ["vnem_tools_github_status", "vnem_tools_github_diff_review", "vnem_tools_github_review_threads", "vnem_tools_github_remote_proof", "vnem_tools_github_actions_run_inspect", "vnem_tools_github_release_verify", "vnem_tools_github_public_surface_audit", "vnem_tools_github_actions_status", "vnem_tools_pr_quality_gate"].every((tool) => names.has(tool)),
     browser_ui_proof: ["vnem_tools_browser_evidence_plan", "vnem_tools_browser_interaction_run", "vnem_tools_browser_evidence_compare", "vnem_tools_ui_evidence_audit"].every((tool) => names.has(tool)),
     windows_local_proof: ["vnem_tools_windows_system_snapshot", "vnem_tools_powershell_command_plan", "vnem_tools_windows_path_inspect", "vnem_tools_process_inspect", "vnem_tools_port_inspect", "vnem_tools_windows_event_log_read", "vnem_tools_windows_change_plan"].every((tool) => names.has(tool)),
     adoption_diagnostics: entrypoints.every((tool) => names.has(tool))
@@ -3011,7 +3027,7 @@ function toolsTaskCategories(text, taskType, localOnly) {
   if (/\b(permission profile|safety profile|scoped grant|grant access|power level|hard block)\b/.test(text)) add("permission_control");
   if (taskType.includes("mcp") || /\b(mcp|tool audit|surface audit|registration|handler|catalog|manifest|readiness)\b/.test(text)) add("mcp_tool_audit");
   if (taskType.includes("code_intelligence") || /\b(symbol|function|class|handler|coverage|impact trace|source impact|code intelligence)\b/.test(text)) add("code_intelligence");
-  if (!localOnly && (taskType.includes("publish") || /\b(github|gh|pr|pull request|push|remote sha|actions|ci|merge|publish)\b/.test(text))) add("github_pr_ci_proof");
+  if (!localOnly && (taskType.includes("publish") || /\b(github|gh|pr|pull request|push|remote sha|actions|ci|merge|publish|review threads?|release proof|repo page)\b/.test(text))) add("github_pr_ci_proof");
   if (taskType.includes("cloudflare") || /\b(cloudflare|pages|workers|dns|zone|wrangler|deploy)\b/.test(text)) add("cloudflare_deploy_control");
   if (taskType.includes("browser") || /\b(browser|localhost|screenshot|ui|visual|viewport|responsive|dom|a11y)\b/.test(text)) add("browser_ui_verification");
   if (taskType.includes("windows") || /\b(windows|powershell|event viewer|defender|scheduled task|service status|path issue|file lock|local pc|tcp port)\b/.test(text)) add("windows_local_diagnosis");
@@ -3037,7 +3053,7 @@ function toolsRouteDefinitions() {
     permission_control: { why: "Permission changes need a narrow request, exact acknowledgment, scope evaluation, doctor proof, and revocation path.", tools: ["vnem_tools_permission_evaluate", "vnem_tools_permission_request", "vnem_tools_permission_grant", "vnem_tools_permission_doctor", "vnem_tools_permission_revoke"] },
     mcp_tool_audit: { why: "MCP tool audit needs surface, coverage, catalog/readiness, and control-character checks.", tools: ["vnem_tools_mcp_surface_audit", "vnem_tools_tool_test_coverage_map", "vnem_tools_source_control_character_guard"] },
     code_intelligence: { why: "Code intelligence needs symbols, MCP surface, patch targets, coverage, and source impact.", tools: ["vnem_tools_code_symbol_map", "vnem_tools_mcp_surface_audit", "vnem_tools_patch_target_finder", "vnem_tools_tool_test_coverage_map", "vnem_tools_source_impact_trace"] },
-    github_pr_ci_proof: { why: "Remote proof needs GitHub status, repo state, Actions status, PR gate, and evidence.", tools: ["vnem_tools_github_status", "vnem_tools_github_repo_inspect", "vnem_tools_github_actions_status", "vnem_tools_pr_quality_gate", "vnem_tools_evidence_pack"] },
+    github_pr_ci_proof: { why: "Remote work needs bounded diff/review evidence, exact local/remote/PR/Actions SHA proof, job/step visibility, a PR gate, and repair guidance.", tools: ["vnem_tools_github_status", "vnem_tools_github_diff_review", "vnem_tools_github_remote_proof", "vnem_tools_github_actions_status", "vnem_tools_github_actions_run_inspect", "vnem_tools_pr_quality_gate", "vnem_tools_evidence_pack"] },
     cloudflare_deploy_control: { why: "Cloudflare work needs auth/status, deploy planning, verification, and guarded mutation tools only when approved.", tools: ["vnem_tools_cloudflare_status", "vnem_tools_cloudflare_auth_plan", "vnem_tools_cloudflare_pages_deploy_plan", "vnem_tools_cloudflare_workers_deploy_plan", "vnem_tools_cloudflare_deploy_verify"] },
     browser_ui_verification: { why: "UI/browser claims need planned local interaction proof, runtime evidence, before/after comparison, and an audit of evidence limits.", tools: ["vnem_tools_browser_evidence_plan", "vnem_tools_browser_interaction_run", "vnem_tools_browser_evidence_compare", "vnem_tools_ui_surface_review", "vnem_tools_ui_evidence_audit", "vnem_tools_browser_evidence_run"] },
     windows_local_diagnosis: { why: "Windows/local-PC work needs safe quoting, bounded exact-target system evidence, provider/access honesty, and a permission plus rollback gate before mutation.", tools: ["vnem_tools_windows_system_snapshot", "vnem_tools_powershell_command_plan", "vnem_tools_windows_path_inspect", "vnem_tools_process_inspect", "vnem_tools_port_inspect", "vnem_tools_windows_service_status", "vnem_tools_windows_scheduled_task_status", "vnem_tools_windows_event_log_read", "vnem_tools_windows_app_config_detect", "vnem_tools_windows_change_plan"] },
@@ -3187,7 +3203,7 @@ function statusObject() {
     dev_server_policy: { tools: ["vnem_tools_start_dev_server", "vnem_tools_stop_dev_server", "vnem_tools_list_dev_servers"], dry_run_default: true, approval_required: true, local_host_only: true, port_range: "3000-9999", registry: "in-memory per MCP process" },
     session_evidence_policy: { tools: ["vnem_tools_start_session", "vnem_tools_finish_session"], writes_single_json_proof_pack: true, secrets_redacted: true },
     local_git_policy: { tools: ["vnem_tools_git_status", "vnem_tools_git_diff_summary", "vnem_tools_git_commit"], status_and_diff_read_only: true, commit_requires_approval_and_explicit_files: true, git_push_blocked: true, destructive_git_blocked: true },
-    github_autonomy_policy: { tools: ["vnem_tools_github_status", "vnem_tools_github_settings_guide", "vnem_tools_github_profile_status", "vnem_tools_github_repo_inspect", "vnem_tools_repo_intelligence_report", "vnem_tools_github_branch_create", "vnem_tools_github_commit_push", "vnem_tools_github_pr_create", "vnem_tools_github_pr_update", "vnem_tools_github_issue_create", "vnem_tools_github_issue_update", "vnem_tools_github_issue_comment", "vnem_tools_github_labels_manage", "vnem_tools_github_actions_status", "vnem_tools_github_actions_rerun", "vnem_tools_github_ci_failure_triage", "vnem_tools_pr_quality_gate", "vnem_tools_task_progress_truth_check", "vnem_tools_github_release_plan", "vnem_tools_github_release_create"], execution_model: "command-backed gh/git with dry-run and mocked-runner coverage", default_profile: "maintainer", feature_branch_push_supported: true, protected_direct_push_blocked_by_default: true, force_push_blocked_by_default: true, repo_delete_blocked_by_default: true, settings_mutation_blocked_by_default: true },
+    github_autonomy_policy: { tools: ["vnem_tools_github_status", "vnem_tools_github_settings_guide", "vnem_tools_github_profile_status", "vnem_tools_github_repo_inspect", "vnem_tools_github_diff_review", "vnem_tools_github_review_threads", "vnem_tools_github_remote_proof", "vnem_tools_github_actions_run_inspect", "vnem_tools_github_release_verify", "vnem_tools_github_public_surface_audit", "vnem_tools_repo_intelligence_report", "vnem_tools_github_branch_create", "vnem_tools_github_commit_push", "vnem_tools_github_pr_create", "vnem_tools_github_pr_update", "vnem_tools_github_issue_create", "vnem_tools_github_issue_update", "vnem_tools_github_issue_comment", "vnem_tools_github_labels_manage", "vnem_tools_github_actions_status", "vnem_tools_github_actions_rerun", "vnem_tools_github_ci_failure_triage", "vnem_tools_pr_quality_gate", "vnem_tools_task_progress_truth_check", "vnem_tools_github_release_plan", "vnem_tools_github_release_create"], execution_model: "command-backed gh/git with dry-run, mocked-runner coverage, bounded live-read proof, and exact-SHA verification", default_profile: "maintainer", feature_branch_push_supported: true, protected_direct_push_blocked_by_default: true, force_push_blocked_by_default: true, repo_delete_blocked_by_default: true, settings_mutation_blocked_by_default: true },
     network_policy: {
       dry_run_default: true,
       methods: ["GET", "HEAD"],
@@ -3547,6 +3563,12 @@ function buildToolCatalog() {
     mk("vnem_tools_github_settings_guide", "github_autonomy", { description: "Return copy-pasteable GitHub settings config block and compact knob explanations.", allowed_roots_required: false, evidence_logged: false, typical_use_cases: ["configure GitHub power"] }),
     mk("vnem_tools_github_profile_status", "github_autonomy", { description: "Show active GitHub profile, autonomy mode, allowed/blocked actions, and config knobs.", allowed_roots_required: false, evidence_logged: false, typical_use_cases: ["profile inspection"] }),
     mk("vnem_tools_github_repo_inspect", "github_autonomy", { description: "Inspect local/reachable GitHub repo identity, branch, commits, PRs/issues/CI when available, and build/test commands.", network: true, typical_use_cases: ["repo understanding before work"] }),
+    mk("vnem_tools_github_diff_review", "github_autonomy", { description: "Review a bounded local range or live PR diff with file/risk classification plus hidden-control, secret-addition, generated-churn, and semantic-review boundaries.", network: true, typical_use_cases: ["PR diff review", "hidden/bidi warning investigation", "generated churn review"], related_tools: ["vnem_tools_github_review_threads", "vnem_tools_github_remote_proof", "vnem_tools_pr_quality_gate"], unsafe_actions_blocked: [...commonUnsafe, "claiming semantic correctness from structural scans", "returning unbounded patches"] }),
+    mk("vnem_tools_github_review_threads", "github_autonomy", { description: "Read bounded PR review threads and unresolved/resolved/outdated state through GitHub GraphQL without replying or resolving.", network: true, typical_use_cases: ["review-thread inspection", "unresolved review audit"], related_tools: ["vnem_tools_github_diff_review", "vnem_tools_github_pr_update"], unsafe_actions_blocked: [...commonUnsafe, "replying to or resolving review threads", "claiming all pages were read when pagination remains"] }),
+    mk("vnem_tools_github_remote_proof", "github_autonomy", { description: "Verify local, exact remote branch, PR head, and exact-head Actions SHA equality plus configured/live base-branch protection state.", network: true, typical_use_cases: ["remote SHA proof", "PR handoff proof", "protected-branch awareness"], related_tools: ["vnem_tools_github_actions_run_inspect", "vnem_tools_pr_quality_gate"], unsafe_actions_blocked: [...commonUnsafe, "fetching or mutating refs", "merge claims", "force-push repair"] }),
+    mk("vnem_tools_github_actions_run_inspect", "github_autonomy", { description: "Inspect one exact Actions run with jobs, steps, and bounded redacted failed or job logs without rerunning CI.", network: true, typical_use_cases: ["job and step inspection", "bounded Actions log evidence"], related_tools: ["vnem_tools_github_ci_failure_triage", "vnem_tools_github_actions_rerun", "vnem_tools_github_remote_proof"], unsafe_actions_blocked: [...commonUnsafe, "CI rerun", "unbounded log dump", "green claim for a different SHA"] }),
+    mk("vnem_tools_github_release_verify", "github_autonomy", { description: "Verify an exact GitHub release, remote tag/peeled SHA, draft/prerelease state, and asset metadata without release mutation.", network: true, typical_use_cases: ["release proof", "remote tag SHA verification"], related_tools: ["vnem_tools_github_release_plan", "vnem_tools_github_release_create"], unsafe_actions_blocked: [...commonUnsafe, "creating or publishing a release", "claiming a missing tag or release exists"] }),
+    mk("vnem_tools_github_public_surface_audit", "github_autonomy", { description: "Audit bounded README, package, and public API consistency plus repo-page simplification opportunities without editing or crawling links.", typical_use_cases: ["README/public-page consistency", "repo-page simplification"], related_tools: ["vnem_tools_github_diff_review"], unsafe_actions_blocked: [...commonUnsafe, "editing public content", "external link crawling", "writing-quality certification"] }),
     mk("vnem_tools_repo_intelligence_report", "github_autonomy", { description: "Repo intelligence report with build/test/risky paths/CI/work risk/next actions.", network: true, typical_use_cases: ["fast next-action decisions"] }),
     mk("vnem_tools_github_branch_create", "github_autonomy", { read_only: false, mutation: true, requires_approval: false, dry_run_default: true, description: "Create clean local feature branches for repo work.", typical_use_cases: ["start feature branch"] }),
     mk("vnem_tools_github_commit_push", "github_autonomy", { read_only: false, mutation: true, network: true, requires_approval: false, dry_run_default: true, description: "Commit selected safe files and push feature branches with protected-branch/secret checks.", typical_use_cases: ["handoff commit/push"] }),
@@ -7662,25 +7684,45 @@ async function runMockedProcess(command, args = [], options = {}) {
   const ok = (stdout = "", stderr = "") => recordAndReturn({ ok: true, exit_code: 0, signal: null, timed_out: false, stdout: truncate(redactSecrets(stdout), options.maxOutputBytes || MAX_COMMAND_OUTPUT_BYTES), stderr: truncate(redactSecrets(stderr), options.maxOutputBytes || MAX_COMMAND_OUTPUT_BYTES) });
   const fail = (stderr = "mock command failed", stdout = "") => recordAndReturn({ ok: false, exit_code: 1, signal: null, timed_out: false, stdout: truncate(redactSecrets(stdout), options.maxOutputBytes || MAX_COMMAND_OUTPUT_BYTES), stderr: truncate(redactSecrets(stderr), options.maxOutputBytes || MAX_COMMAND_OUTPUT_BYTES) });
   if (command === "git") {
+    const mockSha = "0123456789abcdef0123456789abcdef01234567";
     if (args[0] === "--version") return ok("git version 2.99.0\n");
     if (args[0] === "remote" && args[1] === "get-url") return ok("https://github.com/fixture/local.git\n");
     if (args[0] === "remote" && args[1] === "-v") return ok("origin\thttps://github.com/fixture/local.git (fetch)\norigin\thttps://github.com/fixture/local.git (push)\n");
     if (args[0] === "branch" && args[1] === "--show-current") return ok(process.env.VNEM_TOOLS_MOCK_BRANCH || "feat/autonomy-2\n");
     if (args[0] === "rev-parse" && args[1] === "--verify") return fail("fatal: Needed a single revision\n");
-    if (args[0] === "rev-parse" && args[1] === "HEAD") return ok("0123456789abcdef0123456789abcdef01234567\n");
+    if (args[0] === "rev-parse" && args[1] === "HEAD") return ok(`${mockSha}\n`);
+    if (args[0] === "rev-parse" && args.includes("@{u}")) return ok("origin/feat/autonomy-2\n");
     if (args[0] === "status" && args[1] === "--short") return ok(" M README.md\n?? src/app.js\n");
+    if (args[0] === "diff" && args.includes("--cached") && args.includes("--name-only")) return ok(String(process.env.VNEM_TOOLS_MOCK_STAGED_FILES || "").split(/[;,]/).filter(Boolean).join("\0"));
+    if (args[0] === "diff" && args.includes("--name-status")) return ok("M\tsrc/app.js\nA\ttests/app.test.js\nM\tREADME.md\n");
+    if (args[0] === "diff" && args.includes("--numstat")) return ok("4\t1\tsrc/app.js\n8\t0\ttests/app.test.js\n2\t1\tREADME.md\n");
+    if (args[0] === "cat-file" && args[1] === "-e") return ok("");
+    if (args[0] === "diff" && args.includes("--check")) return ok("");
+    if (args[0] === "diff") return ok("diff --git a/src/app.js b/src/app.js\n--- a/src/app.js\n+++ b/src/app.js\n@@ -1,1 +1,2 @@\n console.log('fixture');\n+export const ready = true;\n");
+    if (args[0] === "ls-remote" && args.includes("--heads")) return ok(`${mockSha}\trefs/heads/${process.env.VNEM_TOOLS_MOCK_BRANCH || "feat/autonomy-2"}\n`);
+    if (args[0] === "ls-remote" && args.some((arg) => String(arg).startsWith("refs/tags/"))) return ok(`${mockSha}\trefs/tags/v1.0.0\n${mockSha}\trefs/tags/v1.0.0^{}\n`);
+    if (args[0] === "rev-list") return ok("0\t0\n");
     if (args[0] === "log") return ok("0123456 (HEAD -> feat/autonomy-2) feat: mock\n89abcde main commit\n");
     if (["switch", "checkout", "add", "commit", "push"].includes(args[0])) return ok(`${line}\n`);
     return ok(`${line}\n`);
   }
   if (command === "gh") {
+    const mockSha = "0123456789abcdef0123456789abcdef01234567";
     if (args[0] === "--version") return ok("gh version 2.63.0 (mock)\n");
     if (args[0] === "auth" && args[1] === "status") return process.env.VNEM_TOOLS_MOCK_GH_AUTH === "missing" ? fail("You are not logged into any GitHub hosts. Run gh auth login.\n") : ok("github.com\n  Logged in to github.com account fixture (keyring)\n");
     if (args[0] === "repo" && args[1] === "view") return ok(JSON.stringify({ nameWithOwner: "fixture/local", defaultBranchRef: { name: "main" }, isPrivate: false, url: "https://github.com/fixture/local" }) + "\n");
     if (args[0] === "pr" && args[1] === "list") return ok(JSON.stringify([{ number: 7, title: "Mock PR", state: "OPEN", headRefName: "feat/autonomy-2", baseRefName: "main" }]) + "\n");
+    if (args[0] === "pr" && args[1] === "view") return ok(JSON.stringify({ url: "https://github.com/fixture/local/pull/7", number: 7, state: "OPEN", isDraft: true, baseRefName: "main", headRefName: "feat/autonomy-2", headRefOid: mockSha, baseRefOid: "89abcdef0123456789abcdef0123456789abcdef", mergeable: "MERGEABLE", reviewDecision: "", additions: 14, deletions: 2, changedFiles: process.env.VNEM_TOOLS_MOCK_PR_FILES_TRUNCATED === "1" ? 5 : 3, files: [{ path: "src/app.js", additions: 4, deletions: 1 }, { path: "tests/app.test.js", additions: 8, deletions: 0 }, { path: "README.md", additions: 2, deletions: 1 }], statusCheckRollup: [{ name: "validate", status: "COMPLETED", conclusion: "SUCCESS", detailsUrl: "https://github.com/fixture/local/actions/runs/101" }] }) + "\n");
+    if (args[0] === "pr" && args[1] === "diff" && args.includes("--patch")) {
+      if (process.env.VNEM_TOOLS_MOCK_PR_DIFF_TOO_LARGE === "1") return fail("HTTP 406: diff exceeded the maximum number of lines (20000)\nPullRequest.diff too_large\n");
+      return ok(["diff --git a/src/app.js b/src/app.js", "--- a/src/app.js", "+++ b/src/app.js", "@@ -1,1 +1,2 @@", " console.log('fixture');", `+export const label = 'safe${String.fromCodePoint(0x202e)}text';`, "diff --git a/tests/app.test.js b/tests/app.test.js", "--- /dev/null", "+++ b/tests/app.test.js", "@@ -0,0 +1,1 @@", "+assert.equal(true, true);", ""].join("\n"));
+    }
     if (args[0] === "issue" && args[1] === "list") return ok(JSON.stringify([{ number: 8, title: "Mock issue", state: "OPEN", labels: [{ name: "bug" }] }]) + "\n");
     if (args[0] === "run" && args[1] === "list") return ok(JSON.stringify([{ databaseId: 101, name: "CI", status: "completed", conclusion: "failure", headSha: "0123456789abcdef0123456789abcdef01234567", headBranch: "feat/autonomy-2", workflowName: "CI", url: "https://github.com/fixture/local/actions/runs/101" }]) + "\n");
+    if (args[0] === "run" && args[1] === "view" && args.includes("--json")) return ok(JSON.stringify({ status: "completed", conclusion: "failure", url: "https://github.com/fixture/local/actions/runs/101", headSha: mockSha, headBranch: "feat/autonomy-2", name: "CI", event: "pull_request", createdAt: "2026-07-13T00:00:00Z", updatedAt: "2026-07-13T00:02:00Z", jobs: [{ databaseId: 201, name: "validate", status: "completed", conclusion: "failure", url: "https://github.com/fixture/local/actions/runs/101/job/201", steps: [{ number: 1, name: "checkout", status: "completed", conclusion: "success" }, { number: 2, name: "npm test", status: "completed", conclusion: "failure" }] }] }) + "\n");
     if (args[0] === "run" && args[1] === "view") return ok("Run npm test\nError: Cannot find module './src/app.js'\ntests/app.test.js:4\nfailed with exit code 1\n");
+    if (args[0] === "api" && args[1] === "graphql") return ok(JSON.stringify({ data: { repository: { pullRequest: { url: "https://github.com/fixture/local/pull/7", reviewThreads: { nodes: [{ id: "PRRT_1", isResolved: false, isOutdated: false, path: "src/app.js", line: 2, originalLine: 2, diffSide: "RIGHT", comments: { nodes: [{ id: "PRRC_1", author: { login: "reviewer" }, body: "Please test the error path.", createdAt: "2026-07-13T00:01:00Z", url: "https://github.com/fixture/local/pull/7#discussion_r1" }] } }, { id: "PRRT_2", isResolved: true, isOutdated: true, path: "README.md", line: null, originalLine: 4, diffSide: "RIGHT", comments: { nodes: [] } }], pageInfo: { hasNextPage: false, endCursor: null } } } } } }) + "\n");
+    if (args[0] === "api" && args[1] === "--method") return ok(JSON.stringify({ required_status_checks: { strict: true }, restrictions: null }) + "\n");
     if (args[0] === "pr" && args[1] === "create") return ok("https://github.com/fixture/local/pull/9\n");
     if (args[0] === "pr" && args[1] === "edit") return ok("https://github.com/fixture/local/pull/9\n");
     if (args[0] === "pr" && args[1] === "comment") return ok("https://github.com/fixture/local/pull/9#issuecomment-1\n");
@@ -7690,6 +7732,7 @@ async function runMockedProcess(command, args = [], options = {}) {
     if (args[0] === "label" && ["create", "edit"].includes(args[1])) return ok("label updated\n");
     if (args[0] === "run" && args[1] === "rerun") return ok("Requested rerun of run 101\n");
     if (args[0] === "release" && args[1] === "create") return ok("https://github.com/fixture/local/releases/tag/" + args[2] + "\n");
+    if (args[0] === "release" && args[1] === "view") return ok(JSON.stringify({ tagName: args[2], name: "Fixture release", isDraft: true, isPrerelease: false, url: `https://github.com/fixture/local/releases/tag/${args[2]}`, targetCommitish: mockSha, publishedAt: null, createdAt: "2026-07-13T00:00:00Z", assets: [{ name: "fixture.tgz", size: 1234, state: "uploaded", downloadCount: 0, url: "https://github.com/fixture/local/releases/download/v1.0.0/fixture.tgz" }] }) + "\n");
     return ok(`${line}\n`);
   }
   return ok(`${line}\n`);
@@ -8528,8 +8571,44 @@ async function enforceGithubRepoPolicy(root, operation, opts = {}) {
   if (repo && !repoAllowed(repo, settings)) return githubBlockedResult(operation.toolName, `Repository ${repo} is not in VNEM_TOOLS_GITHUB_ALLOWED_REPOS.`, "VNEM_TOOLS_GITHUB_ALLOWED_REPOS", { github_repo: repo });
   return { allowed: true, github_repo: repo, remote_url: redactSecrets(remote) };
 }
+async function runGithubDevelopmentRead(args, requiredAction, operation) {
+  const root = await resolveGithubRoot(args.root || ".");
+  const settings = githubSettings();
+  const profile = githubProfilePolicy(settings.profile);
+  if (!profile.github_enabled || !profile.allowed_actions.includes(requiredAction)) {
+    return { operation_result: "blocked", blocked_reason: `GitHub profile ${settings.profile} does not allow ${requiredAction}.`, config_knob_to_change: "VNEM_TOOLS_GITHUB_PROFILE", mutation_performed: false, must_not_claim: ["Live GitHub proof was collected."], safe_next_step: "Select a GitHub read-capable profile and retry the exact bounded read." };
+  }
+  const remote = await gitValue(root.absolutePath, ["remote", "get-url", args.remote || "origin"]);
+  const repo = parseGithubRepo(remote) || args.repo || null;
+  if (repo && !repoAllowed(repo, settings)) return { operation_result: "blocked", blocked_reason: `Repository ${repo} is not in VNEM_TOOLS_GITHUB_ALLOWED_REPOS.`, config_knob_to_change: "VNEM_TOOLS_GITHUB_ALLOWED_REPOS", github_repo: repo, mutation_performed: false, must_not_claim: ["Live GitHub proof was collected."], safe_next_step: "Add only the exact intended owner/repo to the allowlist, then retry." };
+  return await operation();
+}
 function isProtectedBranch(branch) { const b = String(branch || "").trim().toLowerCase(); return githubSettings().protected_branches.map((x) => x.toLowerCase()).includes(b); }
 function githubSecretFileBlocked(files) { return arrayify(files).find((f) => isSecretLikePath(f) || /(^|\/)\.env(\.|$|\/)|secret|token|credential|cookie|session|id_rsa|id_ed25519|\.pem$|\.key$/i.test(String(f))); }
+function parseGitPathList(value) { const text = String(value || ""); return text.split(text.includes("\0") ? "\0" : /\r?\n/).map((item) => normalizePath(item.trim())).filter(Boolean); }
+async function scanGithubCommitContent(root, files) {
+  for (const file of files) {
+    const absolute = path.resolve(root, file);
+    if (!existsSync(absolute)) continue;
+    const info = await stat(absolute);
+    if (!info.isFile() || info.size > 1024 * 1024) continue;
+    const content = await readFile(absolute);
+    if (content.includes(0)) continue;
+    const detector = containsCommitSecret(content.toString("utf8"));
+    if (detector) return { file, detector };
+  }
+  return null;
+}
+function containsCommitSecret(value) {
+  for (const line of String(value || "").split(/\r?\n/)) {
+    if (/\b(?:EXAMPLE|CANARY|REDACTED|PLACEHOLDER|FAKE|TEST_ONLY)\b/i.test(line)) continue;
+    if (/(?:github_pat_|gh[pousr]_|sk-|xox[baprs]-|cfut_)[A-Za-z0-9_-]{16,}/i.test(line)) return "provider_token_pattern";
+    if (/-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----|\bAKIA[0-9A-Z]{16}\b/.test(line)) return "private_key_or_cloud_key_pattern";
+    const assignment = line.match(/(?:token|secret|password|credential|api[_-]?key|authorization|cookie|session)\s*[=:]\s*["']?([^\s"']{16,})/i);
+    if (assignment && !/[\[({+*?\\]/.test(assignment[1])) return "secret_assignment_pattern";
+  }
+  return null;
+}
 async function githubRepoInspect(args = {}) {
   const root = await resolveGithubRoot(args.root || ".");
   const remoteUrl = await gitValue(root.absolutePath, ["remote", "get-url", args.remote || "origin"]);
@@ -8585,6 +8664,7 @@ async function githubBranchCreate(args = {}) {
   if (existing.ok && args.allow_existing !== true) return githubBlockedResult("vnem_tools_github_branch_create", `Branch ${branch} already exists; not overwriting.`, "VNEM_TOOLS_GITHUB_ALLOW_FORCE_PUSH", { branch });
   const dirty = await gitValue(root.absolutePath, ["status", "--short"]);
   if (args.dry_run === true) return decorateToolResult("vnem_tools_github_branch_create", { operation_result: "planned", branch, dirty_worktree_status: dirty ? dirty.split(/\r?\n/).filter(Boolean) : [], proof_summary: "No branch created in dry-run.", next_best_action: dirty ? "Review dirty worktree before branching." : `Create branch ${branch}.`, claim_status: "planned" }, { capability_group: "github_autonomy", mutation: true });
+  if (dirty && args.allow_dirty !== true) return githubBlockedResult("vnem_tools_github_branch_create", "Branch creation blocked because the worktree is dirty and allow_dirty was not explicitly selected.", null, { branch, dirty_worktree_status: dirty.split(/\r?\n/).filter(Boolean), safe_recovery: "Review the exact changed files, commit them intentionally or restore them through a user-approved workflow, then retry. VNEM did not switch branches." });
   const cmd = args.from ? ["checkout", "-b", branch, args.from] : ["checkout", "-b", branch];
   const r = await runProcess("git", cmd, { cwd: root.absolutePath, timeoutMs: 10000, maxOutputBytes: 8000 });
   if (!r.ok) throw new ToolsError("git branch create failed.", "github_branch_create_failed", { stderr: r.stderr, stdout: r.stdout });
@@ -8602,8 +8682,21 @@ async function githubCommitPush(args = {}) {
   const policy = await enforceGithubRepoPolicy(root, { toolName: "vnem_tools_github_commit_push" }, { requiredAction: isProtectedBranch(branch) ? "push_protected_branch" : "push_feature_branch", remote });
   if (!policy.allowed) return policy;
   const files = [];
-  for (const file of arrayify(args.files)) { const target = await resolveAllowedFile(path.join(root.absolutePath, file), { mustExist: true, blockSecrets: true }); files.push(target.relativePath); }
-  const planned = { operation_result: args.dry_run !== false ? "planned" : "pending", branch, remote, files_staged: files, message: redactSecrets(args.message || ""), push_command: `git push ${args.force ? "--force-with-lease " : ""}${remote} ${branch}`, proof_summary: "No GitHub mutation performed in dry-run.", claim_status: args.dry_run !== false ? "planned" : "pending", next_best_action: "Run tests/quality gate, then push feature branch/open PR." };
+  for (const file of arrayify(args.files)) {
+    const target = await resolveAllowedFile(path.join(root.absolutePath, file), { mustExist: false, blockSecrets: true });
+    const relative = normalizePath(path.relative(root.absolutePath, target.absolutePath));
+    if (!relative || relative.startsWith("../") || path.isAbsolute(relative)) throw new ToolsError("Selected commit path is outside the target repository.", "github_commit_path_blocked", { file: String(file) });
+    files.push(relative);
+  }
+  const preStaged = await runProcess("git", ["diff", "--cached", "--name-only", "--diff-filter=ACDMRTUXB", "-z"], { cwd: root.absolutePath, timeoutMs: 10000, maxOutputBytes: 24000 });
+  if (!preStaged.ok) throw new ToolsError("Could not inspect the existing staged index before selective commit.", "github_staged_preflight_failed", { stderr: preStaged.stderr });
+  const stagedBefore = parseGitPathList(preStaged.stdout);
+  const unrelatedStaged = stagedBefore.filter((file) => !files.includes(normalizePath(file)));
+  if (unrelatedStaged.length) return githubBlockedResult("vnem_tools_github_commit_push", "Selective commit blocked because unrelated files are already staged.", null, { pre_staged_files: stagedBefore, unrelated_pre_staged_files: unrelatedStaged, selected_files: files, safe_recovery: "Commit or unstage the unrelated files through an explicit user-reviewed workflow, then retry. VNEM did not alter the index." });
+  const secretContent = await scanGithubCommitContent(root.absolutePath, files);
+  if (secretContent) return githubBlockedResult("vnem_tools_github_commit_push", `Secret-like content blocked from commit in ${secretContent.file}.`, null, { file: secretContent.file, detector: secretContent.detector, content_returned: false });
+  if (containsCommitSecret(String(args.message || ""))) return githubBlockedResult("vnem_tools_github_commit_push", "Secret-like content blocked from the commit message.", null, { content_returned: false });
+  const planned = { operation_result: args.dry_run !== false ? "planned" : "pending", branch, remote, files_staged: files, pre_staged_files: stagedBefore, selective_index_isolation_verified: unrelatedStaged.length === 0, secret_content_scan: "passed", message: redactSecrets(args.message || ""), push_command: `git push ${args.force ? "--force-with-lease " : ""}${remote} ${branch}`, proof_summary: "No GitHub mutation performed in dry-run.", claim_status: args.dry_run !== false ? "planned" : "pending", next_best_action: "Run tests/quality gate, then push feature branch/open PR." };
   if (args.dry_run !== false) return decorateToolResult("vnem_tools_github_commit_push", planned, { capability_group: "github_autonomy", mutation: true, network: true });
   const ghAuth = await githubAuthStatus(root.absolutePath);
   if (!ghAuth.gh_available) return githubBlockedResult("vnem_tools_github_commit_push", "gh CLI unavailable for GitHub push readiness.", null, { auth_fix_commands: ["gh auth login", "gh auth setup-git"] });
@@ -8615,7 +8708,10 @@ async function githubCommitPush(args = {}) {
   const push = await runProcess("git", ["push", ...(args.force ? ["--force-with-lease"] : []), remote, branch], { cwd: root.absolutePath, timeoutMs: 60000, maxOutputBytes: 24000 });
   if (!push.ok) throw new ToolsError("git push failed.", "github_push_failed", { stdout: push.stdout, stderr: push.stderr });
   const sha = await gitValue(root.absolutePath, ["rev-parse", "HEAD"]);
-  return decorateToolResult("vnem_tools_github_commit_push", { ...planned, operation_result: "pushed", commit_sha: sha, proof_summary: `Committed and pushed ${files.length} file(s) to ${remote}/${branch}.`, claim_status: "pushed_feature_branch", push_stdout: push.stdout, push_stderr: push.stderr }, { capability_group: "github_autonomy", mutation: true, network: true });
+  const remoteProof = await runProcess("git", ["ls-remote", "--heads", remote, `refs/heads/${branch}`], { cwd: root.absolutePath, timeoutMs: 30000, maxOutputBytes: 12000 });
+  const remoteSha = remoteProof.ok ? remoteProof.stdout.trim().split(/\s+/)[0] : "";
+  if (!remoteProof.ok || !remoteSha || remoteSha !== sha) throw new ToolsError("Push completed but the exact remote branch SHA did not verify. VNEM will not force-push.", "github_push_remote_sha_mismatch", { local_sha: sha, remote_sha: remoteSha || null, remote, branch, ls_remote_error: remoteProof.ok ? null : remoteProof.stderr });
+  return decorateToolResult("vnem_tools_github_commit_push", { ...planned, operation_result: "pushed", commit_sha: sha, remote_branch_sha: remoteSha, remote_sha_verified: true, proof_summary: `Committed and pushed ${files.length} file(s) to ${remote}/${branch}; exact remote SHA verified.`, claim_status: "pushed_feature_branch", push_stdout: push.stdout, push_stderr: push.stderr, repair_or_rollback_guidance: "Use a normal corrective commit or PR update if the pushed change is wrong; force-push remains blocked by default." }, { capability_group: "github_autonomy", mutation: true, network: true });
 }
 async function githubGhMutation(toolName, args, ghArgs, requiredAction, resultKey) {
   const root = await resolveGithubRoot(args.root || ".");
@@ -8705,6 +8801,15 @@ async function githubReleaseCreate(args = {}) { if (!githubSettings().allow_rele
 async function githubRepoSettingsPlan(args = {}) { return { operation_result: "planned", allow_settings_mutation: githubSettings().allow_settings_mutation, config_knob_to_change: githubSettings().allow_settings_mutation ? null : "VNEM_TOOLS_GITHUB_ALLOW_SETTINGS_MUTATION", requested_settings: args.settings || {}, next_best_action: githubSettings().allow_settings_mutation ? "Review exact settings diff before apply." : "Set VNEM_TOOLS_GITHUB_ALLOW_SETTINGS_MUTATION = \"1\" to allow apply." }; }
 async function githubRepoSettingsApply(args = {}) { if (!githubSettings().allow_settings_mutation) return githubBlockedResult("vnem_tools_github_repo_settings_apply", "Repo settings mutation disabled by config.", "VNEM_TOOLS_GITHUB_ALLOW_SETTINGS_MUTATION"); return githubGhMutation("vnem_tools_github_repo_settings_apply", args, ["repo", "edit", ...(args.description ? ["--description", args.description] : [])], "repo_settings_plan", "settings_output"); }
 function formatGenericGithub(tool, result) { return [`${tool}: ${result.operation_result || "reported"}`, result.blocked_reason ? `blocked=${result.blocked_reason}` : null, result.config_knob_to_change ? `config_knob_to_change=${result.config_knob_to_change}` : null, result.next_best_action ? `next=${result.next_best_action}` : null].filter(Boolean).join("\n"); }
+function formatGithubDevelopment(tool, result) {
+  return [
+    `${tool}: ${result.operation_result || "reported"}`,
+    result.verified === undefined ? null : `verified=${result.verified}`,
+    result.summary ? `summary=${JSON.stringify(result.summary)}` : null,
+    result.blocked_reason ? `blocked=${result.blocked_reason}` : null,
+    result.safe_next_step ? `next=${result.safe_next_step}` : null
+  ].filter(Boolean).join("\n");
+}
 
 async function safeGitStatus(args) {
   const root = await resolveAllowedRoot(args.root || ".");
@@ -9111,8 +9216,14 @@ function registerGithubTools(mcpServer) {
   mcpServer.registerTool("vnem_tools_github_settings_guide", { title: "GitHub Settings Guide", description: "Return the copy-pasteable GitHub config block and compact setting explanations.", inputSchema: {}, annotations: READ_ONLY_LOCAL }, async () => withToolErrors(async () => { const result = githubSettingsGuide(); return toolResult(formatGithubSettingsGuide(result), { github_settings_guide: result }); }));
   mcpServer.registerTool("vnem_tools_github_profile_status", { title: "GitHub Profile Status", description: "Show active GitHub profile, allowed/blocked actions, config source, and recommended profile.", inputSchema: { goal: z.string().default("") }, annotations: READ_ONLY_LOCAL }, async (args) => withToolErrors(async () => { const result = githubProfileStatus(args); return toolResult(formatGithubProfileStatus(result), { github_profile_status: result }); }));
   mcpServer.registerTool("vnem_tools_github_repo_inspect", { title: "GitHub Repo Inspect", description: "Inspect current/specified repo, branch, dirty state, commits, PRs/issues/CI if available, and build/test commands.", inputSchema: { root: z.string().default("."), remote: z.string().default("origin"), repo: z.string().optional(), simulate_github: z.boolean().default(false), max_bytes: z.number().int().min(1000).default(16000) }, annotations: NETWORK_ACTION }, async (args) => withToolErrors(async () => { const result = await githubRepoInspect(args); return toolResult(formatGithubRepoInspect(result), { github_repo_inspect: result }); }));
+  mcpServer.registerTool("vnem_tools_github_diff_review", { title: "Review Local or GitHub PR Diff", description: "Inspect a bounded local Git range or live PR patch with file classification, workflow/dependency risk, hidden/bidi controls, secret-like additions, generated-only detection, and explicit semantic-review limits.", inputSchema: { root: z.string().default("."), pr: z.union([z.string(), z.number()]).optional(), base: z.string().default("origin/main"), head: z.string().default("HEAD"), max_bytes: z.number().int().min(8000).max(1048576).default(262144) }, annotations: NETWORK_READ }, async (args) => withToolErrors(async () => { const result = await runGithubDevelopmentRead(args, "inspect_prs", () => githubDevelopmentRuntime.diffReview(args)); return toolResult(formatGithubDevelopment("vnem_tools_github_diff_review", result), { github_diff_review: result }); }));
+  mcpServer.registerTool("vnem_tools_github_review_threads", { title: "Inspect GitHub PR Review Threads", description: "Read up to 50 pull-request review threads with unresolved/resolved/outdated state, exact file/line context, bounded redacted comments, and honest pagination without replying or resolving.", inputSchema: { root: z.string().default("."), repo: z.string().optional(), pr: z.union([z.string(), z.number()]), include_resolved: z.boolean().default(false), limit: z.number().int().min(1).max(50).default(50) }, annotations: NETWORK_READ }, async (args) => withToolErrors(async () => { const result = await runGithubDevelopmentRead(args, "inspect_prs", () => githubDevelopmentRuntime.reviewThreads(args)); return toolResult(formatGithubDevelopment("vnem_tools_github_review_threads", result), { github_review_threads: result }); }));
+  mcpServer.registerTool("vnem_tools_github_remote_proof", { title: "Verify Exact GitHub Remote PR and CI SHA", description: "Compare local HEAD, exact remote branch SHA, PR head SHA, and exact-head Actions runs; report worktree and configured/live base-branch protection without fetching, pushing, merging, or mutating.", inputSchema: { root: z.string().default("."), remote: z.string().default("origin"), branch: z.string().optional(), base: z.string().optional(), pr: z.union([z.string(), z.number()]).optional(), expected_sha: z.string().optional(), run_limit: z.number().int().min(1).max(20).default(10) }, annotations: NETWORK_READ }, async (args) => withToolErrors(async () => { const result = await runGithubDevelopmentRead(args, "inspect_repo", () => githubDevelopmentRuntime.remoteProof(args)); return toolResult(formatGithubDevelopment("vnem_tools_github_remote_proof", result), { github_remote_proof: result }); }));
+  mcpServer.registerTool("vnem_tools_github_actions_run_inspect", { title: "Inspect GitHub Actions Jobs Steps and Logs", description: "Read one exact Actions run with job/step status and optional bounded failed or exact-job logs. Returns redacted high-signal lines and never reruns or mutates CI.", inputSchema: { root: z.string().default("."), run_id: z.union([z.string(), z.number()]), log_mode: z.enum(["none", "failed", "job"]).default("failed"), job_id: z.union([z.string(), z.number()]).optional(), max_bytes: z.number().int().min(4000).max(524288).default(98304) }, annotations: NETWORK_READ }, async (args) => withToolErrors(async () => { const result = await runGithubDevelopmentRead(args, "inspect_actions", () => githubDevelopmentRuntime.actionsRunInspect(args)); return toolResult(formatGithubDevelopment("vnem_tools_github_actions_run_inspect", result), { github_actions_run: result }); }));
+  mcpServer.registerTool("vnem_tools_github_release_verify", { title: "Verify GitHub Release and Remote Tag Proof", description: "Read an exact GitHub release and remote tag, compare the peeled tag SHA with an optional expected SHA, and report draft/prerelease/assets state without creating, publishing, or changing a release.", inputSchema: { root: z.string().default("."), tag: z.string().min(1), remote: z.string().default("origin"), expected_sha: z.string().optional() }, annotations: NETWORK_READ }, async (args) => withToolErrors(async () => { const result = await runGithubDevelopmentRead(args, "inspect_repo", () => githubDevelopmentRuntime.releaseVerify(args)); return toolResult(formatGithubDevelopment("vnem_tools_github_release_verify", result), { github_release_verification: result }); }));
+  mcpServer.registerTool("vnem_tools_github_public_surface_audit", { title: "Audit README and Public Repo Surface Consistency", description: "Compare a bounded README/package/public API surface for canonical repo links, Core/Tools naming, setup visibility, package metadata, front-page complexity, and simplification opportunities without crawling links or editing content.", inputSchema: { root: z.string().default("."), remote: z.string().default("origin"), paths: z.array(z.string()).max(12).default([]) }, annotations: READ_ONLY_LOCAL }, async (args) => withToolErrors(async () => { const result = await githubDevelopmentRuntime.publicSurfaceAudit(args); return toolResult(formatGithubDevelopment("vnem_tools_github_public_surface_audit", result), { github_public_surface_audit: result }); }));
   mcpServer.registerTool("vnem_tools_repo_intelligence_report", { title: "Repo Intelligence Report", description: "Return project type, build/test commands, important/risky paths, work risk, CI/PR/issue summaries, and next actions.", inputSchema: { root: z.string().default("."), remote: z.string().default("origin"), repo: z.string().optional(), simulate_github: z.boolean().default(false), max_bytes: z.number().int().min(1000).default(16000) }, annotations: NETWORK_ACTION }, async (args) => withToolErrors(async () => { const result = await repoIntelligenceReport(args); return toolResult(formatRepoIntelligence(result), { repo_intelligence_report: result }); }));
-  mcpServer.registerTool("vnem_tools_github_branch_create", { title: "GitHub Branch Create", description: "Create a clean local branch for GitHub repo work; reports dirty worktree instead of hiding it.", inputSchema: { root: z.string().default("."), branch: z.string().min(1), from: z.string().optional(), dry_run: z.boolean().default(true), allow_existing: z.boolean().default(false) }, annotations: ACTION_TOOL }, async (args) => withToolErrors(async () => { const result = await githubBranchCreate(args); return toolResult(formatGenericGithub("vnem_tools_github_branch_create", result), { github_branch_create: result }); }));
+  mcpServer.registerTool("vnem_tools_github_branch_create", { title: "GitHub Branch Create", description: "Create a local feature branch; blocks a dirty worktree unless allow_dirty is explicitly selected and never overwrites an existing branch by default.", inputSchema: { root: z.string().default("."), branch: z.string().min(1), from: z.string().optional(), dry_run: z.boolean().default(true), allow_existing: z.boolean().default(false), allow_dirty: z.boolean().default(false) }, annotations: ACTION_TOOL }, async (args) => withToolErrors(async () => { const result = await githubBranchCreate(args); return toolResult(formatGenericGithub("vnem_tools_github_branch_create", result), { github_branch_create: result }); }));
   mcpServer.registerTool("vnem_tools_github_commit_push", { title: "GitHub Commit Push", description: "Commit selected safe files and push feature branches; blocks secrets, protected direct push, force push by default.", inputSchema: { root: z.string().default("."), files: z.array(z.string()).min(1), message: z.string().min(1), branch: z.string().optional(), remote: z.string().default("origin"), force: z.boolean().default(false), dry_run: z.boolean().default(true) }, annotations: NETWORK_ACTION }, async (args) => withToolErrors(async () => { const result = await githubCommitPush(args); return toolResult(formatGenericGithub("vnem_tools_github_commit_push", result), { github_commit_push: result }); }));
   mcpServer.registerTool("vnem_tools_github_pr_create", { title: "GitHub PR Create", description: "Create or dry-run a PR via gh.", inputSchema: { root: z.string().default("."), title: z.string().min(1), body: z.string().default(""), base: z.string().default("main"), head: z.string().default(""), draft: z.boolean().default(false), dry_run: z.boolean().default(true) }, annotations: NETWORK_ACTION }, async (args) => withToolErrors(async () => { const result = await githubPrCreate(args); return toolResult(formatGenericGithub("vnem_tools_github_pr_create", result), { github_pr_create: result }); }));
   mcpServer.registerTool("vnem_tools_github_pr_update", { title: "GitHub PR Update", description: "Update PR title/body/labels or comment via gh.", inputSchema: { root: z.string().default("."), pr: z.union([z.string(), z.number()]).optional(), number: z.union([z.string(), z.number()]).optional(), title: z.string().optional(), body: z.string().optional(), comment: z.string().optional(), add_labels: z.array(z.string()).default([]), remove_labels: z.array(z.string()).default([]), dry_run: z.boolean().default(true) }, annotations: NETWORK_ACTION }, async (args) => withToolErrors(async () => { const result = await githubPrUpdate(args); return toolResult(formatGenericGithub("vnem_tools_github_pr_update", result), { github_pr_update: result }); }));
@@ -9911,6 +10022,7 @@ async function withToolErrors(fn) {
     if (error instanceof TestingCiError) return errorResult(error.message, error.code, error.details);
     if (error instanceof BrowserInteractionError) return errorResult(error.message, error.code, error.details);
     if (error instanceof WindowsLocalError) return errorResult(error.message, error.code, error.details);
+    if (error instanceof GithubDevelopmentError) return errorResult(error.message, error.code, error.details);
     return errorResult(error.message || String(error), "tools_unexpected_error");
   }
 }
