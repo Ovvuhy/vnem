@@ -2,7 +2,7 @@
 
 Generated from live MCP runtime registries. Do not edit this table manually.
 
-- Total tools: 236
+- Total tools: 241
 - Registry valid: true
 - Missing behavior-test references: 18
 
@@ -135,6 +135,11 @@ Generated from live MCP runtime registries. Do not edit this table manually.
 | tools | `vnem_tools_project_task_graph_rollback` | project | destructive_mutation | approved_local_mutation | required_redacted_record | self | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_project_runtime_diagnose` | project | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_project_temp_cleanup` | project | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_test_system_inspect` | test | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_affected_test_graph` | affected | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_test_run` | test | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_ci_failure_diagnose` | ci | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_coverage_benchmark_report` | coverage | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_run_project_task` | project | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_start_dev_server` | start | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_stop_dev_server` | stop | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/tools/server.mjs |

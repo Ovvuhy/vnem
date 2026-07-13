@@ -417,6 +417,21 @@
       "vnem_tools_project_temp_cleanup": [
         "scripts/test-tools-giga-project-automation.mjs"
       ],
+      "vnem_tools_test_system_inspect": [
+        "scripts/test-tools-giga-testing-ci.mjs"
+      ],
+      "vnem_tools_affected_test_graph": [
+        "scripts/test-tools-giga-testing-ci.mjs"
+      ],
+      "vnem_tools_test_run": [
+        "scripts/test-tools-giga-testing-ci.mjs"
+      ],
+      "vnem_tools_ci_failure_diagnose": [
+        "scripts/test-tools-giga-testing-ci.mjs"
+      ],
+      "vnem_tools_coverage_benchmark_report": [
+        "scripts/test-tools-giga-testing-ci.mjs"
+      ],
       "vnem_tools_run_project_task": [
         "scripts/test-core-tools-tool-ecosystem.mjs",
         "scripts/test-tools-git-session.mjs",

@@ -18,6 +18,14 @@ const appEngineeringFixturesPath = rel("fixtures/app-engineering/README.md");
 const projectAutomationTestPath = rel("scripts/test-tools-giga-project-automation.mjs");
 const projectAutomationModulePath = rel("scripts/vnem/tools/project-automation.mjs");
 const projectAutomationFixturePath = rel("fixtures/project-automation/package.json");
+const testingCiTestPath = rel("scripts/test-tools-giga-testing-ci.mjs");
+const testingCiRuntimePath = rel("scripts/vnem/testing/runtime.mjs");
+const testingCiRunnerPath = rel("scripts/vnem/testing/runner.mjs");
+const testingCiManifestPath = rel("scripts/vnem/testing/suite-manifest.mjs");
+const testingCiFixturePath = rel("fixtures/testing-ci/package.json");
+const ciWorkflowPath = rel(".github/workflows/ci.yml");
+const discoveryWorkflowPath = rel(".github/workflows/discovery.yml");
+const deployWorkflowPath = rel(".github/workflows/deploy-cloudflare-pages.yml");
 const gitSessionTestPath = rel("scripts/test-tools-git-session.mjs");
 const intelligenceTestPath = rel("scripts/test-tools-intelligence.mjs");
 const researchTestPath = rel("scripts/test-tools-research.mjs");
@@ -99,6 +107,11 @@ const appEngineeringTest = existsSync(appEngineeringTestPath) ? readFileSync(app
 const appEngineeringModule = existsSync(appEngineeringModulePath) ? readFileSync(appEngineeringModulePath, "utf8") : "";
 const projectAutomationTest = existsSync(projectAutomationTestPath) ? readFileSync(projectAutomationTestPath, "utf8") : "";
 const projectAutomationModule = existsSync(projectAutomationModulePath) ? readFileSync(projectAutomationModulePath, "utf8") : "";
+const testingCiTest = existsSync(testingCiTestPath) ? readFileSync(testingCiTestPath, "utf8") : "";
+const testingCiRuntime = existsSync(testingCiRuntimePath) ? readFileSync(testingCiRuntimePath, "utf8") : "";
+const testingCiRunner = existsSync(testingCiRunnerPath) ? readFileSync(testingCiRunnerPath, "utf8") : "";
+const testingCiManifest = existsSync(testingCiManifestPath) ? readFileSync(testingCiManifestPath, "utf8") : "";
+const workflowText = [ciWorkflowPath, discoveryWorkflowPath, deployWorkflowPath].filter(existsSync).map((file) => readFileSync(file, "utf8")).join("\n");
 const gitSessionTest = existsSync(gitSessionTestPath) ? readFileSync(gitSessionTestPath, "utf8") : "";
 const intelligenceTest = existsSync(intelligenceTestPath) ? readFileSync(intelligenceTestPath, "utf8") : "";
 const researchTest = existsSync(researchTestPath) ? readFileSync(researchTestPath, "utf8") : "";
@@ -260,6 +273,11 @@ const requiredTools = [
   "vnem_tools_project_task_graph_rollback",
   "vnem_tools_project_runtime_diagnose",
   "vnem_tools_project_temp_cleanup",
+  "vnem_tools_test_system_inspect",
+  "vnem_tools_affected_test_graph",
+  "vnem_tools_test_run",
+  "vnem_tools_ci_failure_diagnose",
+  "vnem_tools_coverage_benchmark_report",
   "vnem_tools_app_inspect",
   "vnem_tools_app_vertical_slice_plan",
   "vnem_tools_app_vertical_slice_apply",
@@ -346,6 +364,11 @@ const report = {
   project_automation_test_exists: existsSync(projectAutomationTestPath),
   project_automation_module_exists: existsSync(projectAutomationModulePath),
   project_automation_fixture_exists: existsSync(projectAutomationFixturePath),
+  testing_ci_test_exists: existsSync(testingCiTestPath),
+  testing_ci_runtime_exists: existsSync(testingCiRuntimePath),
+  testing_ci_runner_exists: existsSync(testingCiRunnerPath),
+  testing_ci_manifest_exists: existsSync(testingCiManifestPath),
+  testing_ci_fixture_exists: existsSync(testingCiFixturePath),
   git_session_test_exists: existsSync(gitSessionTestPath),
   intelligence_test_exists: existsSync(intelligenceTestPath),
   research_test_exists: existsSync(researchTestPath),
@@ -413,6 +436,7 @@ const report = {
     test_tools_project_actions: pkg.scripts?.["test:tools-project-actions"] === "node scripts/test-tools-project-actions.mjs",
     test_tools_giga_app_engineering: pkg.scripts?.["test:tools-giga-app-engineering"] === "node scripts/test-tools-giga-app-engineering.mjs",
     test_tools_giga_project_automation: pkg.scripts?.["test:tools-giga-project-automation"] === "node scripts/test-tools-giga-project-automation.mjs",
+    test_tools_giga_testing_ci: pkg.scripts?.["test:tools-giga-testing-ci"] === "node scripts/test-tools-giga-testing-ci.mjs",
     test_tools_git_session: pkg.scripts?.["test:tools-git-session"] === "node scripts/test-tools-git-session.mjs",
     test_tools_intelligence: pkg.scripts?.["test:tools-intelligence"] === "node scripts/test-tools-intelligence.mjs",
     test_tools_research: pkg.scripts?.["test:tools-research"] === "node scripts/test-tools-research.mjs",
@@ -497,7 +521,18 @@ const report = {
     test_permission_runtime: pkg.scripts?.["test:permission-runtime"] === "node scripts/test-permission-runtime.mjs",
     test_tools_scoped_permissions: pkg.scripts?.["test:tools-scoped-permissions"] === "node scripts/test-tools-scoped-permissions.mjs",
     test_safety_cli: pkg.scripts?.["test:safety-cli"] === "node scripts/test-vnem-safety-cli.mjs",
-    test_clients: pkg.scripts?.["test:clients"] === "node scripts/test-vnem-client-setup.mjs",
+    test_clients: pkg.scripts?.["test:clients"] === "node scripts/vnem/testing/runner.mjs --tier=clients",
+    test_clients_setup: pkg.scripts?.["test:clients:setup"] === "node scripts/test-vnem-client-setup.mjs",
+    test_smoke_tier: pkg.scripts?.["test:smoke"] === "node scripts/vnem/testing/runner.mjs --tier=smoke",
+    test_affected_tier: pkg.scripts?.["test:affected"] === "node scripts/vnem/testing/runner.mjs --tier=affected",
+    test_core_tier: pkg.scripts?.["test:core"] === "node scripts/vnem/testing/runner.mjs --tier=core",
+    test_tools_tier: pkg.scripts?.["test:tools"] === "node scripts/vnem/testing/runner.mjs --tier=tools",
+    test_precision_compat_tier: pkg.scripts?.["test:precision-compat"] === "node scripts/vnem/testing/runner.mjs --tier=precision-compat",
+    test_integration_tier: pkg.scripts?.["test:integration"] === "node scripts/vnem/testing/runner.mjs --tier=integration",
+    test_benchmarks_tier: pkg.scripts?.["test:benchmarks"] === "node scripts/vnem/testing/runner.mjs --tier=benchmarks",
+    test_full_tier: pkg.scripts?.["test:full"] === "node scripts/vnem/testing/runner.mjs --tier=full",
+    test_ci_tier: pkg.scripts?.["test:ci"] === "node scripts/vnem/testing/runner.mjs --tier=ci",
+    npm_test_routes_full: pkg.scripts?.test === "node scripts/vnem/testing/runner.mjs --tier=full",
     setup: pkg.scripts?.setup === "node scripts/vnem-cli.mjs setup",
     clients: pkg.scripts?.clients === "node scripts/vnem-cli.mjs clients",
     status: pkg.scripts?.status === "node scripts/vnem-cli.mjs status",
@@ -756,6 +791,15 @@ const report = {
   project_automation_diagnosis_status: /vnem_tools_project_runtime_diagnose/.test(server) && /collectLogsFirst/.test(projectAutomationModule) && /inspectPorts/.test(projectAutomationModule) && /diagnostic_order\[0\], "logs"/.test(projectAutomationTest) && /listening, true/.test(projectAutomationTest),
   project_automation_temp_cleanup_status: /vnem_tools_project_temp_cleanup/.test(server) && /renameWithRetry/.test(projectAutomationModule) && /irreversible_delete_performed: false/.test(projectAutomationModule) && /operation_result, "quarantined"/.test(projectAutomationTest) && /operation_result, "restored"/.test(projectAutomationTest),
   project_automation_real_mcp_proof_status: /StdioClientTransport/.test(projectAutomationTest) && /project-automation MCP tests passed/.test(projectAutomationTest) && /vnem_tools_project_task_graph_run/.test(projectAutomationTest) && /vnem_tools_project_runtime_diagnose/.test(projectAutomationTest),
+  testing_ci_discovery_status: /vnem_tools_test_system_inspect/.test(server) && /detectTestFrameworks/.test(testingCiRuntime) && /inspectWorkflows/.test(testingCiRuntime) && /generated_file_implications/.test(testingCiRuntime) && /runtime_deprecations/.test(testingCiTest),
+  testing_ci_affected_graph_status: /vnem_tools_affected_test_graph/.test(server) && /buildSourceGraph/.test(testingCiRuntime) && /transitiveImporters/.test(testingCiRuntime) && /tool ownership reference/.test(testingCiRuntime) && /generated output or benchmark ownership/.test(testingCiRuntime) && /filename_substring_only_selection, false/.test(testingCiTest),
+  testing_ci_tiered_runner_status: /vnem_tools_test_run/.test(server) && /VNEM_FULL_SUITE/.test(testingCiManifest + testingCiRuntime) && /runResourceAware/.test(testingCiRuntime) && /slowest_tests/.test(testingCiRuntime + testingCiTest) && /failure_groups/.test(testingCiRuntime) && /Machine report/.test(testingCiRunner),
+  testing_ci_parallel_safety_status: /shared_resources_serialized/.test(testingCiRuntime) && /stage_barriers/.test(testingCiRuntime) && /resource_conflicts_prevented/.test(testingCiRuntime + testingCiTest) && /repo-generated-state/.test(testingCiManifest),
+  testing_ci_reliability_status: /unique_run_directory/.test(testingCiRuntime) && /bounded_per_task_logs/.test(testingCiRuntime) && /process_tree_timeout_cleanup/.test(testingCiRuntime) && /binary_archives_excluded_from_source_text_scans/.test(testingCiRuntime + testingCiTest) && /retries.attempted, 0/.test(testingCiTest),
+  testing_ci_diagnosis_status: /vnem_tools_ci_failure_diagnose/.test(server) && /classifyCiFailure/.test(testingCiRuntime) && /scheduling_failure/.test(testingCiRuntime + testingCiTest) && /process_cleanup_failure/.test(testingCiRuntime + testingCiTest) && /smallest_safe_fix/.test(testingCiRuntime + testingCiTest),
+  testing_ci_coverage_benchmark_status: /vnem_tools_coverage_benchmark_report/.test(server) && /parseLcov/.test(testingCiRuntime) && /uncovered_critical_paths/.test(testingCiRuntime + testingCiTest) && /baseline_post_change_percent/.test(testingCiTest),
+  testing_ci_actions_runtime_status: !/actions\/(?:checkout|setup-node)@v[1-5]\b/.test(workflowText) && (workflowText.match(/actions\/checkout@v6/g) || []).length === 3 && (workflowText.match(/actions\/setup-node@v6/g) || []).length === 3 && /npm run test:ci/.test(workflowText) && /npm ci/.test(workflowText),
+  testing_ci_real_mcp_proof_status: /StdioClientTransport/.test(testingCiTest) && /testing\/CI MCP tests passed/.test(testingCiTest) && /vnem_tools_test_run/.test(testingCiTest) && /vnem_tools_ci_failure_diagnose/.test(testingCiTest),
   app_engineering_inspection_status: /vnem_tools_app_inspect/.test(server) && /inspectAppProject/.test(server + appEngineeringModule) && /frontend_without_detected_backend_boundary/.test(appEngineeringModule + appEngineeringTest) && /inspection_and_plan_only/.test(appEngineeringModule),
   app_engineering_transaction_status: /vnem_tools_app_vertical_slice_plan/.test(server) && /vnem_tools_app_vertical_slice_apply/.test(server) && /expected_before_sha256/.test(appEngineeringModule) && /automatic_all_or_rollback_semantics/.test(appEngineeringModule + appEngineeringTest) && /approval_required/.test(appEngineeringTest),
   app_engineering_acceptance_status: /vnem_tools_app_acceptance_run/.test(server) && /runChromiumUserPath/.test(server + appEngineeringModule) && /Runtime\.consoleAPICalled/.test(appEngineeringModule) && /Network\.loadingFailed/.test(appEngineeringModule) && /desktop\.png/.test(appEngineeringModule) && /mobile\.png/.test(appEngineeringModule) && /user_path_passed/.test(appEngineeringTest),
@@ -813,12 +857,18 @@ assert.equal(report.project_actions_test_exists, true, "project actions test fil
 assert.equal(report.project_automation_test_exists, true, "project automation MCP test file is missing");
 assert.equal(report.project_automation_module_exists, true, "project automation module is missing");
 assert.equal(report.project_automation_fixture_exists, true, "project automation fixture is missing");
+assert.equal(report.testing_ci_test_exists, true, "testing/CI MCP test file is missing");
+assert.equal(report.testing_ci_runtime_exists, true, "testing/CI runtime module is missing");
+assert.equal(report.testing_ci_runner_exists, true, "tiered test runner is missing");
+assert.equal(report.testing_ci_manifest_exists, true, "test suite manifest is missing");
+assert.equal(report.testing_ci_fixture_exists, true, "testing/CI fixture is missing");
 assert.equal(report.git_session_test_exists, true, "git/session test file is missing");
 assert.equal(report.core_tools_e2e_script_exists, true, "test:core-tools-e2e package script is missing");
 assert.equal(report.package_scripts.tools_mcp, true, "tools:mcp package script is missing");
 assert.equal(report.package_scripts.test_tools_mcp, true, "test:tools-mcp package script is missing");
 assert.equal(report.client_setup_test_exists, true, "client setup behavior test is missing");
 assert.equal(report.package_scripts.test_clients, true, "test:clients package script is missing");
+assert.equal(report.package_scripts.test_clients_setup, true, "test:clients:setup leaf script is missing");
 assert.equal(report.package_scripts.setup, true, "setup package script is missing");
 assert.equal(report.package_scripts.clients, true, "clients package script is missing");
 assert.equal(report.package_scripts.status, true, "status package script is missing");
@@ -829,6 +879,8 @@ assert.equal(report.client_setup_cli_status, true, "client setup CLI surface is 
 assert.equal(report.package_scripts.test_tools_browser, true, "test:tools-browser package script is missing");
 assert.equal(report.package_scripts.test_tools_project_actions, true, "test:tools-project-actions package script is missing");
 assert.equal(report.package_scripts.test_tools_giga_project_automation, true, "test:tools-giga-project-automation package script is missing");
+assert.equal(report.package_scripts.test_tools_giga_testing_ci, true, "test:tools-giga-testing-ci package script is missing");
+for (const [key, value] of Object.entries({ test_smoke_tier: report.package_scripts.test_smoke_tier, test_affected_tier: report.package_scripts.test_affected_tier, test_core_tier: report.package_scripts.test_core_tier, test_tools_tier: report.package_scripts.test_tools_tier, test_precision_compat_tier: report.package_scripts.test_precision_compat_tier, test_integration_tier: report.package_scripts.test_integration_tier, test_benchmarks_tier: report.package_scripts.test_benchmarks_tier, test_full_tier: report.package_scripts.test_full_tier, test_ci_tier: report.package_scripts.test_ci_tier, npm_test_routes_full: report.package_scripts.npm_test_routes_full })) assert.equal(value, true, `${key} package script is missing`);
 assert.equal(report.package_scripts.test_tools_git_session, true, "test:tools-git-session package script is missing");
 assert.equal(report.package_scripts.test_tools_intelligence, true, "test:tools-intelligence package script is missing");
 assert.equal(report.package_scripts.test_tools_research, true, "test:tools-research package script is missing");
@@ -1051,6 +1103,7 @@ assert.equal(report.patch_batch_status, true, "patch batch support/test coverage
 assert.equal(report.restore_batch_status, true, "restore batch support/test coverage is missing");
 assert.equal(report.project_scan_status, true, "project scan support/test coverage is missing");
 for (const [key, value] of Object.entries({ project_automation_environment_status: report.project_automation_environment_status, project_automation_layered_policy_status: report.project_automation_layered_policy_status, project_automation_secret_boundary_status: report.project_automation_secret_boundary_status, project_automation_lifecycle_hook_status: report.project_automation_lifecycle_hook_status, project_automation_exact_execution_status: report.project_automation_exact_execution_status, project_automation_process_cleanup_status: report.project_automation_process_cleanup_status, project_automation_task_graph_status: report.project_automation_task_graph_status, project_automation_rollback_status: report.project_automation_rollback_status, project_automation_diagnosis_status: report.project_automation_diagnosis_status, project_automation_temp_cleanup_status: report.project_automation_temp_cleanup_status, project_automation_real_mcp_proof_status: report.project_automation_real_mcp_proof_status })) assert.equal(value, true, `${key} readiness missing`);
+for (const [key, value] of Object.entries({ testing_ci_discovery_status: report.testing_ci_discovery_status, testing_ci_affected_graph_status: report.testing_ci_affected_graph_status, testing_ci_tiered_runner_status: report.testing_ci_tiered_runner_status, testing_ci_parallel_safety_status: report.testing_ci_parallel_safety_status, testing_ci_reliability_status: report.testing_ci_reliability_status, testing_ci_diagnosis_status: report.testing_ci_diagnosis_status, testing_ci_coverage_benchmark_status: report.testing_ci_coverage_benchmark_status, testing_ci_actions_runtime_status: report.testing_ci_actions_runtime_status, testing_ci_real_mcp_proof_status: report.testing_ci_real_mcp_proof_status })) assert.equal(value, true, `${key} readiness missing`);
 for (const [key, value] of Object.entries({ app_engineering_inspection_status: report.app_engineering_inspection_status, app_engineering_transaction_status: report.app_engineering_transaction_status, app_engineering_acceptance_status: report.app_engineering_acceptance_status, app_engineering_rollback_status: report.app_engineering_rollback_status, app_engineering_adapter_fixture_status: report.app_engineering_adapter_fixture_status, app_engineering_real_mcp_proof_status: report.app_engineering_real_mcp_proof_status, dev_server_listener_cleanup_status: report.dev_server_listener_cleanup_status })) assert.equal(value, true, `${key} readiness missing`);
 assert.equal(report.project_task_status, true, "project task support/test coverage is missing");
 assert.equal(report.dev_server_status, true, "dev server support/test coverage is missing");
@@ -1199,6 +1252,7 @@ console.log(`patch_batch_status: ${yes(report.patch_batch_status)}`);
 console.log(`restore_batch_status: ${yes(report.restore_batch_status)}`);
 console.log(`project_scan_status: ${yes(report.project_scan_status)}`);
 for (const key of ["project_automation_environment_status", "project_automation_layered_policy_status", "project_automation_secret_boundary_status", "project_automation_lifecycle_hook_status", "project_automation_exact_execution_status", "project_automation_process_cleanup_status", "project_automation_task_graph_status", "project_automation_rollback_status", "project_automation_diagnosis_status", "project_automation_temp_cleanup_status", "project_automation_real_mcp_proof_status"]) console.log(`${key}: ${yes(report[key])}`);
+for (const key of ["testing_ci_discovery_status", "testing_ci_affected_graph_status", "testing_ci_tiered_runner_status", "testing_ci_parallel_safety_status", "testing_ci_reliability_status", "testing_ci_diagnosis_status", "testing_ci_coverage_benchmark_status", "testing_ci_actions_runtime_status", "testing_ci_real_mcp_proof_status"]) console.log(`${key}: ${yes(report[key])}`);
 for (const key of ["app_engineering_inspection_status", "app_engineering_transaction_status", "app_engineering_acceptance_status", "app_engineering_rollback_status", "app_engineering_adapter_fixture_status", "app_engineering_real_mcp_proof_status", "dev_server_listener_cleanup_status"]) console.log(`${key}: ${yes(report[key])}`);
 console.log(`project_task_status: ${yes(report.project_task_status)}`);
 console.log(`dev_server_status: ${yes(report.dev_server_status)}`);

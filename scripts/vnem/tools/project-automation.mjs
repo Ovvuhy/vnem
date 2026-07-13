@@ -680,7 +680,7 @@ function classifyDeclaredScript(name, body) {
   const reasons = [];
   const text = String(body || "").trim();
   if (!text) reasons.push("empty script body");
-  if (BLOCKED_SCRIPT_NAME_PATTERN.test(name)) reasons.push("dangerous lifecycle/deploy/release script name");
+  if (BLOCKED_SCRIPT_NAME_PATTERN.test(name) && !/^test(?::|$)/i.test(name)) reasons.push("dangerous lifecycle/deploy/release script name");
   if (DANGEROUS_TEXT_PATTERN.test(text)) reasons.push("dangerous command pattern");
   if (SCRIPT_CONTROL_PATTERN.test(text.replace(/\s+&&\s+/g, " "))) reasons.push("uncontrolled shell operator or redirection");
   const segments = text.split(/\s+&&\s+/).map((segment) => segment.trim()).filter(Boolean);

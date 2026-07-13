@@ -76,6 +76,19 @@ try {
   assert.ok(projectAutomation.evidence_requirements.some((requirement) => /exit\/timeout state/.test(requirement)));
   assert.ok(projectAutomation.recommended_tools_call_sequence.every((step) => step.state.available && step.state.allowed));
 
+  const testingCi = await call(core.client, "vnem_entrypoint", {
+    user_goal: "Build an import-based affected test graph, run the smallest safe tier, diagnose the failing CI job and step, report coverage gaps, and compare benchmark history.",
+    task_context: "Do not retry product failures or call scheduling failures code regressions.",
+    task_mode: "testing",
+    available_mcp_names: ["vnem", "vnem-tools"],
+    available_tool_names: [...toolNames],
+    allowed_tool_names: [...toolNames]
+  }, "entrypoint");
+  assert.ok(testingCi.task_classification.domains.some((domain) => domain.id === "testing_ci"));
+  for (const tool of ["vnem_tools_test_system_inspect", "vnem_tools_affected_test_graph", "vnem_tools_test_run"]) assert.ok(testingCi.recommended_tools_calls.includes(tool), `missing Phase 9 testing/CI route ${tool}`);
+  assert.ok(testingCi.evidence_requirements.some((requirement) => /affected-test graph reasons/.test(requirement)));
+  assert.ok(testingCi.recommended_tools_call_sequence.every((step) => step.state.available && step.state.allowed));
+
   const details = await call(core.client, "vnem_decision_details", {
     decision_id: mixed.decision_id,
     sections: ["classification", "compatibility", "capability_packs", "unavailable_capabilities"]

@@ -1,0 +1,5 @@
+{
+  "suites": {
+    "full_test": { "duration_ms": 6000, "status": "pass" }
+  }
+}

@@ -3,7 +3,14 @@ import { readdir } from "node:fs/promises";
 import path from "node:path";
 import { ROOT, readJson, writeText } from "./lib/registry.mjs";
 
-const generatedAt = new Date().toISOString();
+const sourceDateEpoch = process.env.SOURCE_DATE_EPOCH;
+const generatedDate = sourceDateEpoch
+  ? /^\d+$/.test(sourceDateEpoch)
+    ? new Date(Number(sourceDateEpoch) * 1000)
+    : new Date(sourceDateEpoch)
+  : new Date();
+if (Number.isNaN(generatedDate.getTime())) throw new Error(`Invalid SOURCE_DATE_EPOCH: ${sourceDateEpoch}`);
+const generatedAt = generatedDate.toISOString();
 const candidatesDir = path.join(ROOT, "discovery", "candidates");
 
 async function latestCandidateReport() {

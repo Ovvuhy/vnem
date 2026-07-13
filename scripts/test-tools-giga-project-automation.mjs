@@ -68,6 +68,12 @@ try {
   const chainedRun = await call(client, "vnem_tools_project_command_run", { root: projectRoot, mode: "project_script", script: "validate:chain", review_id: chainedReview.review_id, dry_run: false, approved: true, approval_note: "approve reviewed declared validation chain" });
   assert.equal(chainedRun.structuredContent.project_command.execution.ok, true);
 
+  const installNamedTest = await call(client, "vnem_tools_project_command_run", { root: projectRoot, mode: "project_script", script: "test:install-simulation" });
+  assert.equal(installNamedTest.structuredContent.project_command.review.project_script.policy.allowed, true);
+  const lifecycleInstallBlocked = await client.callTool({ name: "vnem_tools_project_command_run", arguments: { root: projectRoot, mode: "project_script", script: "install" } });
+  assert.equal(lifecycleInstallBlocked.isError, true);
+  assert.equal(lifecycleInstallBlocked.structuredContent.code, "project_script_policy_blocked");
+
   const dangerous = await client.callTool({ name: "vnem_tools_project_command_run", arguments: { root: projectRoot, mode: "project_script", script: "dangerous-push" } });
   assert.equal(dangerous.isError, true);
   assert.equal(dangerous.structuredContent.code, "project_script_policy_blocked");

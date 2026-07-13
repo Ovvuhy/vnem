@@ -315,7 +315,7 @@ function registerTools(mcpServer) {
         compatibility_facts: z.array(CORE_COMPATIBILITY_FACT_SCHEMA).default([]),
         tools_evidence_summary: z.any().default({}).describe("Optional compact Tools evidence packet for completion-aware continuation."),
         task_mode: z
-          .enum(["auto", "answer_only", "repo_inspection", "implementation", "project_automation", "terminal", "debugging", "validation", "publish", "recovery", "research", "ui_browser", "patch_targeting", "mcp_tool_audit", "evidence_pack", "no_placebo", "cloudflare", "windows", "package", "api", "skill", "database", "game_modding", "client_setup"])
+          .enum(["auto", "answer_only", "repo_inspection", "implementation", "testing", "ci", "coverage", "benchmarks", "project_automation", "terminal", "debugging", "validation", "publish", "recovery", "research", "ui_browser", "patch_targeting", "mcp_tool_audit", "evidence_pack", "no_placebo", "cloudflare", "windows", "package", "api", "skill", "database", "game_modding", "client_setup"])
           .default("auto")
       },
       annotations: READ_ONLY

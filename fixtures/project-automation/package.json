@@ -4,6 +4,8 @@
   "type": "module",
   "scripts": {
     "test": "node scripts/task.mjs test",
+    "test:install-simulation": "node scripts/task.mjs test",
+    "install": "node scripts/task.mjs test",
     "build": "node scripts/task.mjs build",
     "validate:chain": "node --check scripts/task.mjs && node --check scripts/dev.mjs",
     "prepare-state": "node scripts/task.mjs prepare",

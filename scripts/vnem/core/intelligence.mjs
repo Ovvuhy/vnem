@@ -4,6 +4,10 @@ const MAX_DECISIONS = 64;
 const decisionStore = new Map();
 
 const DOMAIN_ADAPTERS = [
+  adapter("testing_ci", "Testing, CI, coverage, and benchmarks", 10, [
+    feature(/\b(test discovery|affected tests?|test graph|test runner|test tier|coverage|changed[- ]line coverage|benchmark history|performance regression)\b/, 6, "test-system, coverage, or benchmark requirement"),
+    feature(/\b(ci|workflow|github actions|job|failing step|flaky|retry|runtime deprecation|ebusy|port collision|stale generated)\b/, 4, "CI or test-reliability signal")
+  ], ["affected verification", "failure classification", "coverage honesty", "performance evidence"], ["vnem_tools_test_system_inspect", "vnem_tools_affected_test_graph", "vnem_tools_test_run", "vnem_tools_ci_failure_diagnose", "vnem_tools_coverage_benchmark_report"]),
   adapter("debugging", "Debugging and failure diagnosis", 10, [
     feature(/\b(debug|failing|failure|failed|error|stack trace|broken|root cause|repair)\b/, 5, "failure evidence or repair intent"),
     feature(/\b(ci fail|test fail|crash|exception|log)\b/, 4, "runtime or test failure signal")
@@ -69,6 +73,10 @@ const DOMAIN_ADAPTERS = [
 ];
 
 const MODE_DOMAINS = {
+  testing: "testing_ci",
+  ci: "testing_ci",
+  coverage: "testing_ci",
+  benchmarks: "testing_ci",
   debugging: "debugging",
   publish: "github_publish",
   recovery: "recovery",
@@ -103,6 +111,11 @@ const DOMAIN_GAPS = {
 };
 
 const TOOL_PURPOSES = {
+  vnem_tools_test_system_inspect: "detect frameworks, scripts, configs, coverage, workflows, generated implications, and shared resources",
+  vnem_tools_affected_test_graph: "select tests from imports, references, package scripts, ownership, generated outputs, and integration boundaries",
+  vnem_tools_test_run: "run an approved tier with resource-aware parallelism and bounded machine plus human evidence",
+  vnem_tools_ci_failure_diagnose: "classify workflow, job, step, command, logs, branch versus infrastructure cause, smallest fix, and rerun eligibility",
+  vnem_tools_coverage_benchmark_report: "ingest real coverage and compare benchmark history without inventing missing evidence",
   vnem_tools_repo_deep_map: "map repository state and ownership before changes",
   vnem_tools_code_symbol_map: "locate symbols and implementation boundaries",
   vnem_tools_patch_target_finder: "identify exact source and test targets",
@@ -379,7 +392,7 @@ export function classifyAdoptionTask(userGoal, taskContext = "", taskMode = "aut
     : mode === "answer_only" ? "simple_answer" : legacyPrimary(primaryDomain);
   const ids = new Set(domains.map((domain) => domain.id));
   const flags = {
-    repo_or_code: ["repo_code", "app_engineering", "project_automation", "package_dependency", "api_integration", "database_data", "client_setup"].some((id) => ids.has(id)),
+    repo_or_code: ["repo_code", "app_engineering", "testing_ci", "project_automation", "package_dependency", "api_integration", "database_data", "client_setup"].some((id) => ids.has(id)),
     debugging: ids.has("debugging"),
     github_or_publish: ids.has("github_publish"),
     cloudflare: ids.has("cloudflare"),
@@ -400,7 +413,7 @@ export function classifyAdoptionTask(userGoal, taskContext = "", taskMode = "aut
     scoring_method: "weighted domain adapters using goal, explicit mode, task context, repo signals, and user constraints",
     matched_flags: flags,
     execution_needed: executionNeeded,
-    proof_needed: flags.proof_or_validation || domains.some((domain) => ["debugging", "project_automation", "package_dependency", "api_integration", "cloudflare"].includes(domain.id)),
+    proof_needed: flags.proof_or_validation || domains.some((domain) => ["debugging", "testing_ci", "project_automation", "package_dependency", "api_integration", "cloudflare"].includes(domain.id)),
     github_or_publish: flags.github_or_publish,
     browser_or_ui: flags.browser_or_ui,
     confidence: !domains.length ? "medium" : domains[0].score >= 9 ? "high" : "normal",
@@ -459,6 +472,7 @@ export function coreProofRequirements(classification) {
   if (ids.has("browser_ui")) requirements.push("browser screenshot, DOM, accessibility, and console-availability evidence");
   if (ids.has("package_dependency")) requirements.push("lockfile/dependency diff, install-script risk, focused tests, and rollback");
   if (ids.has("project_automation")) requirements.push("exact reviewed command or graph id, exit/timeout state, process cleanup, bounded output evidence, and declared rollback status");
+  if (ids.has("testing_ci")) requirements.push("affected-test graph reasons, tier result, exit/timing/failure groups, coverage source or explicit absence, and baseline/post benchmark evidence where claimed");
   if (ids.has("api_integration")) requirements.push("allowlist/auth reference, redacted response metadata, and provider/version scope");
   if (ids.has("evidence_validation")) requirements.push("handler, behavior-test, MCP-path, and no-placebo evidence where applicable");
   return unique(requirements);

@@ -38,6 +38,7 @@ import {
   updateTransactionAcceptance
 } from "./app-engineering.mjs";
 import { ProjectAutomationError, ProjectAutomationRuntime } from "./project-automation.mjs";
+import { TestingCiError, TestingCiRuntime } from "../testing/runtime.mjs";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(scriptDir, "..", "..", "..");
@@ -131,6 +132,11 @@ const REQUIRED_TOOL_NAMES = [
   "vnem_tools_project_task_graph_rollback",
   "vnem_tools_project_runtime_diagnose",
   "vnem_tools_project_temp_cleanup",
+  "vnem_tools_test_system_inspect",
+  "vnem_tools_affected_test_graph",
+  "vnem_tools_test_run",
+  "vnem_tools_ci_failure_diagnose",
+  "vnem_tools_coverage_benchmark_report",
   "vnem_tools_app_inspect",
   "vnem_tools_app_vertical_slice_plan",
   "vnem_tools_app_vertical_slice_apply",
@@ -261,6 +267,7 @@ const permissionRuntime = await PermissionRuntime.create({
   profileName: process.env.VNEM_TOOLS_PERMISSION_PROFILE || null
 });
 const projectAutomationRuntime = new ProjectAutomationRuntime({ allowedRoots, evidenceRoot });
+const testingCiRuntime = new TestingCiRuntime({ allowedRoots, evidenceRoot });
 const activePermissionProfile = permissionRuntime.activeProfile();
 const usablePacks = await loadUsablePacks();
 const requestedPrecisionWorkspaceCandidate = path.resolve(
@@ -1309,6 +1316,120 @@ function registerTools(mcpServer) {
       const result = await projectAutomationRuntime.tempCleanup({ ...args, root: root.absolutePath });
       if (result.executed) recordSession(args.session_id, args.operation === "restore" ? "restores" : "temp_cleanups", result);
       return toolResult(formatTempCleanup(result), { project_temp_cleanup: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_test_system_inspect",
+    {
+      title: "Inspect Project Test and CI System",
+      description: "Detect test frameworks, package scripts, configs, test locations, coverage producers/reports, lint/type/build commands, parsed CI workflows, generated implications, and shared test resources without executing checks.",
+      inputSchema: { root: z.string().default("."), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const root = await resolveAllowedRoot(args.root || ".");
+      const result = await testingCiRuntime.inspect({ ...args, root: root.absolutePath });
+      recordSession(args.session_id, "test_system_inspections", result);
+      return toolResult(formatTestSystemInspect(result), { test_system_inspection: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_affected_test_graph",
+    {
+      title: "Build Affected Test Graph",
+      description: "Select tests from changed files using static import/reference edges, package-script sources, tool ownership, benchmark/generated ownership, and known integration boundaries. Never claims filename-substring-only selection.",
+      inputSchema: { root: z.string().default("."), changed_files: z.array(z.string()).max(200).default([]), base: z.string().default(""), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const root = await resolveAllowedRoot(args.root || ".");
+      const result = await testingCiRuntime.affectedGraph({ ...args, root: root.absolutePath, base: args.base || undefined });
+      recordSession(args.session_id, "affected_test_graphs", result);
+      return toolResult(formatAffectedTestGraph(result), { affected_test_graph: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_test_run",
+    {
+      title: "Plan or Run Tiered Project Tests",
+      description: "Dry-run by default or execute a package-script-only test tier with stage barriers, resource-aware parallelism, bounded logs, exit/timeout/process evidence, failure grouping, slowest tests, and JSON plus Markdown reports. Retries remain disabled unless explicitly proven infrastructure-only.",
+      inputSchema: {
+        root: z.string().default("."),
+        tier: z.enum(["smoke", "affected", "core", "tools", "precision-compat", "clients", "integration", "benchmarks", "full", "ci"]).default("affected"),
+        changed_files: z.array(z.string()).max(200).default([]),
+        base: z.string().default(""),
+        max_parallel: z.number().int().min(1).max(8).default(3),
+        timeout_ms: z.number().int().min(5000).max(120000).default(120000),
+        max_output_bytes: z.number().int().min(1024).max(65536).default(12000),
+        continue_on_failure: z.boolean().default(false),
+        dry_run: z.boolean().default(true),
+        approved: z.boolean().default(false),
+        approval_note: z.string().default(""),
+        session_id: z.string().optional()
+      },
+      annotations: ACTION_TOOL
+    },
+    async (args) => withToolErrors(async () => {
+      const root = await resolveAllowedRoot(args.root || ".");
+      const runArgs = { ...args, root: root.absolutePath, base: args.base || undefined };
+      if (args.dry_run !== false) {
+        const result = await testingCiRuntime.plan(runArgs);
+        return toolResult(formatTestRun({ ...result, executed: false, status: "planned" }), { test_run: { ...result, executed: false, status: "planned" } });
+      }
+      enforceActionPolicy("run_test", { ...args, proposed_action: `run ${args.tier} project test tier` });
+      const result = await testingCiRuntime.run({ ...runArgs, dry_run: false });
+      recordSession(args.session_id, "test_runs", result);
+      return toolResult(formatTestRun(result), { test_run: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_ci_failure_diagnose",
+    {
+      title: "Diagnose CI Failure Evidence",
+      description: "Parse a workflow and bounded run evidence into job, step, command, scheduling versus branch versus infrastructure classification, relevant changed files/tests, likely root cause, smallest fix, rerun eligibility, final status, and runtime deprecations.",
+      inputSchema: {
+        root: z.string().default("."),
+        workflow_path: z.string().default(".github/workflows/ci.yml"),
+        job: z.string().default(""),
+        step: z.string().default(""),
+        command: z.string().default(""),
+        status: z.string().default("completed"),
+        conclusion: z.string().default("failure"),
+        run_id: z.string().default(""),
+        log: z.string().max(120000).default(""),
+        context: z.string().max(10000).default(""),
+        changed_files: z.array(z.string()).max(200).default([]),
+        fix_applied: z.boolean().default(false),
+        final_status: z.string().default(""),
+        session_id: z.string().optional()
+      },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const root = await resolveAllowedRoot(args.root || ".");
+      const result = await testingCiRuntime.diagnoseCi({ ...args, root: root.absolutePath });
+      recordSession(args.session_id, "ci_diagnoses", result);
+      return toolResult(formatCiDiagnosis(result), { ci_failure_diagnosis: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_coverage_benchmark_report",
+    {
+      title: "Report Coverage and Benchmark History",
+      description: "Ingest real coverage-summary.json or lcov.info, identify uncovered critical paths, report changed-file line evidence when available, and compare machine-readable benchmark baseline/history/post metrics without inventing coverage.",
+      inputSchema: { root: z.string().default("."), changed_files: z.array(z.string()).max(200).default([]), critical_paths: z.array(z.string()).max(100).default([]), baseline_label: z.string().default("baseline"), post_label: z.string().default(""), regression_threshold_percent: z.number().min(0).max(100).default(10), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const root = await resolveAllowedRoot(args.root || ".");
+      const result = await testingCiRuntime.coverageBenchmarks({ ...args, root: root.absolutePath, post_label: args.post_label || undefined });
+      recordSession(args.session_id, "coverage_benchmark_reports", result);
+      return toolResult(formatCoverageBenchmark(result), { coverage_benchmark_report: result });
     })
   );
 
@@ -3788,9 +3909,11 @@ async function changeImpactPlan(args = {}) {
 
 async function testSelectionPlan(args = {}) {
   const impact = await changeImpactPlan({ root: args.root || ".", changed_files: args.changed_files || [] });
+  const root = await resolveAllowedRoot(args.root || ".");
+  const affectedGraph = await testingCiRuntime.affectedGraph({ root: root.absolutePath, changed_files: impact.changed_files });
   const goal = String(args.user_goal || "");
   const selection = testSelectionFromAreas(impact.changed_areas, impact.package_scripts);
-  let targeted = [...selection.targeted_tests, ...impact.minimum_targeted_tests];
+  let targeted = [...affectedGraph.selected_scripts.map((script) => `npm.cmd run ${script}`), ...selection.targeted_tests, ...impact.minimum_targeted_tests];
   if (/github|pr|issue|actions/i.test(goal)) targeted.push("npm.cmd run test:tools-github-real-exec-paths", "npm.cmd run test:tools-github-command-builder", "npm.cmd run test:tools-github-live-readiness", "npm.cmd run test:tools-github-mutation-dry-run");
   if (/cloudflare/i.test(goal)) targeted.push("npm.cmd run test:tools-cloudflare-status-auth");
   if (/readiness|manifest|catalog|quality|power/i.test(goal)) targeted.push("npm.cmd run test:tools-reliability-catalog", "npm.cmd run test:tools-quality-general");
@@ -3805,6 +3928,12 @@ async function testSelectionPlan(args = {}) {
     targeted_tests: [...new Set(targeted)].slice(0, 24),
     regression_tests: [...new Set(regression)].slice(0, 18),
     readiness_or_generation_checks: [...new Set(readiness)].slice(0, 16),
+    affected_test_graph: {
+      selected_tests: affectedGraph.selected_tests,
+      graph_summary: affectedGraph.graph_summary,
+      generated_checks: affectedGraph.generated_checks,
+      filename_substring_only_selection: false
+    },
     full_suite_trigger_conditions: [...new Set(fullTriggers)],
     full_npm_test_recommended: fullTriggers.length > 0,
     first_checks_to_run: [...new Set([...baseline, ...targeted])].slice(0, 8),
@@ -9450,6 +9579,26 @@ function formatTempCleanup(result) {
   return [`vnem_tools_project_temp_cleanup: ${result.operation_result}`, `Operation: ${result.operation}`, `Executed: ${result.executed === true}`, result.cleanup_id ? `Cleanup id: ${result.cleanup_id}` : null, `Moved/restored: ${result.moved?.length || result.restored?.length || 0}`, `Unresolved: ${result.unresolved?.length || 0}`, `Rollback available: ${result.rollback_available === true}`].filter(Boolean).join("\n");
 }
 
+function formatTestSystemInspect(result) {
+  return [`vnem_tools_test_system_inspect: ${result.operation_result}`, `Frameworks: ${result.test_frameworks.join(", ") || "none detected"}`, `Tests/configs/workflows: ${result.test_files.length}/${result.config_files.length}/${result.ci_workflows.length}`, `Coverage: ${result.coverage.tools.join(", ") || "no producer detected"}`, `Resource-mapped scripts: ${result.resource_isolation.length}`].join("\n");
+}
+
+function formatAffectedTestGraph(result) {
+  return [`vnem_tools_affected_test_graph: ${result.selected_scripts.length} selected`, `Changed: ${result.changed_files.length}`, `Import/script edges: ${result.graph_summary.import_edges}/${result.graph_summary.package_script_edges}`, `Full recommended: ${result.full_suite_recommended}`, `First tests: ${result.selected_scripts.slice(0, 6).join(", ") || "none"}`].join("\n");
+}
+
+function formatTestRun(result) {
+  return [`vnem_tools_test_run: ${result.status || result.operation_result}`, `Tier/tasks: ${result.tier}/${result.task_count || result.counts?.planned || 0}`, `Executed: ${result.executed !== false}`, result.counts ? `Passed/failed/skipped: ${result.counts.passed}/${result.counts.failed}/${result.counts.skipped}` : null, result.duration_ms !== undefined ? `Duration: ${result.duration_ms}ms` : null, result.report_path ? `Report: ${result.report_path}` : null].filter(Boolean).join("\n");
+}
+
+function formatCiDiagnosis(result) {
+  return [`vnem_tools_ci_failure_diagnose: ${result.classification}`, `Workflow/job/step: ${result.workflow.name}/${result.job || "unknown"}/${result.step || "unknown"}`, `Branch/infrastructure/scheduling: ${result.branch_caused}/${result.infrastructure_caused}/${result.scheduling_failure}`, `Command: ${result.failing_command || "unknown"}`, `Next: ${result.smallest_safe_fix}`].join("\n");
+}
+
+function formatCoverageBenchmark(result) {
+  return [`vnem_tools_coverage_benchmark_report: ${result.coverage.available ? "coverage available" : "coverage unavailable"}`, `Coverage sources: ${result.coverage.sources.join(", ") || "none"}`, `Uncovered critical: ${result.coverage.uncovered_critical_paths.length}`, `Benchmark history: ${result.benchmarks.history.length}`, `Regressions: ${result.benchmarks.regressions.length}`].join("\n");
+}
+
 function formatProjectTask(task) {
   return [`vnem_tools_run_project_task: ${task.executed ? "executed" : "dry-run planned"}`, `Command: ${task.command}`, task.executed ? `Exit: ${task.exit_code}` : "No task executed because dry_run=true.", task.stdout ? `stdout:\n${task.stdout}` : "", task.stderr ? `stderr:\n${task.stderr}` : ""].filter(Boolean).join("\n");
 }
@@ -9489,6 +9638,7 @@ async function withToolErrors(fn) {
   } catch (error) {
     if (error instanceof ToolsError) return errorResult(error.message, error.code, error.details);
     if (error instanceof ProjectAutomationError) return errorResult(error.message, error.code, error.details);
+    if (error instanceof TestingCiError) return errorResult(error.message, error.code, error.details);
     return errorResult(error.message || String(error), "tools_unexpected_error");
   }
 }

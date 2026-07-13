@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "source": "live MCP runtime registry status calls",
-  "total_tools": 236,
+  "total_tools": 241,
   "servers": {
     "core": {
       "schema_version": "1.0.0",
@@ -2560,11 +2560,12 @@
       "server_name": "vnem-tools",
       "version": "1.0.1",
       "valid": true,
-      "tool_count": 161,
+      "tool_count": 166,
       "alias_count": 0,
       "categories": {
         "action": 2,
         "adoption": 1,
+        "affected": 1,
         "api": 1,
         "app": 5,
         "apply": 2,
@@ -2573,8 +2574,10 @@
         "capability": 2,
         "captcha": 1,
         "change": 1,
+        "ci": 1,
         "cloudflare": 17,
         "code": 3,
+        "coverage": 1,
         "dependency": 1,
         "documentation": 1,
         "download": 1,
@@ -2620,7 +2623,7 @@
         "structural": 1,
         "task": 1,
         "terminal": 1,
-        "test": 1,
+        "test": 3,
         "tool": 1,
         "trust": 1,
         "ui": 1,
@@ -2633,15 +2636,15 @@
         "workspace": 1
       },
       "side_effect_classes": {
-        "destructive_mutation": 30,
+        "destructive_mutation": 31,
         "network_mutation": 16,
-        "read_only": 115
+        "read_only": 119
       },
       "validation": {
         "valid": true,
         "server_name": "vnem-tools",
         "version": "1.0.1",
-        "tool_count": 161,
+        "tool_count": 166,
         "alias_count": 0,
         "errors": [],
         "warnings": [
@@ -4883,6 +4886,186 @@
           "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-giga-project-automation.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_test_system_inspect",
+          "version": "1.0.1",
+          "title": "Inspect Project Test and CI System",
+          "description": "Detect test frameworks, package scripts, configs, test locations, coverage producers/reports, lint/type/build commands, parsed CI workflows, generated implications, and shared test resources without executing checks.",
+          "category": "test",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-testing-ci.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_affected_test_graph",
+          "version": "1.0.1",
+          "title": "Build Affected Test Graph",
+          "description": "Select tests from changed files using static import/reference edges, package-script sources, tool ownership, benchmark/generated ownership, and known integration boundaries. Never claims filename-substring-only selection.",
+          "category": "affected",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-testing-ci.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_test_run",
+          "version": "1.0.1",
+          "title": "Plan or Run Tiered Project Tests",
+          "description": "Dry-run by default or execute a package-script-only test tier with stage barriers, resource-aware parallelism, bounded logs, exit/timeout/process evidence, failure grouping, slowest tests, and JSON plus Markdown reports. Retries remain disabled unless explicitly proven infrastructure-only.",
+          "category": "test",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": true,
+            "idempotentHint": false,
+            "openWorldHint": false
+          },
+          "side_effect_class": "destructive_mutation",
+          "permission_requirements": [
+            "approved_local_mutation"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "required_redacted_record",
+          "rollback_behavior": {
+            "mode": "required_or_explicitly_not_available",
+            "guidance": "Return backup, compensating action, or explicit rollback-unavailable state in evidence."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-testing-ci.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_ci_failure_diagnose",
+          "version": "1.0.1",
+          "title": "Diagnose CI Failure Evidence",
+          "description": "Parse a workflow and bounded run evidence into job, step, command, scheduling versus branch versus infrastructure classification, relevant changed files/tests, likely root cause, smallest fix, rerun eligibility, final status, and runtime deprecations.",
+          "category": "ci",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-testing-ci.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_coverage_benchmark_report",
+          "version": "1.0.1",
+          "title": "Report Coverage and Benchmark History",
+          "description": "Ingest real coverage-summary.json or lcov.info, identify uncovered critical paths, report changed-file line evidence when available, and compare machine-readable benchmark baseline/history/post metrics without inventing coverage.",
+          "category": "coverage",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-testing-ci.mjs"
           ],
           "benchmark_scenarios": [],
           "input_schema_present": true

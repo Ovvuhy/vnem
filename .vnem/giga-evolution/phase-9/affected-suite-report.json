@@ -1,0 +1,344 @@
+{
+  "schema_version": 1,
+  "operation_result": "executed",
+  "run_id": "test-run-1783960384483-5b43faf3",
+  "tier": "affected",
+  "status": "passed",
+  "started_at": "2026-07-13T16:33:04.484Z",
+  "finished_at": "2026-07-13T16:33:11.078Z",
+  "duration_ms": 6594,
+  "max_parallel": 4,
+  "counts": {
+    "planned": 5,
+    "completed": 5,
+    "passed": 5,
+    "failed": 0,
+    "skipped": 0
+  },
+  "results": [
+    {
+      "script": "test:tools-mcp",
+      "status": "passed",
+      "attempt": 1,
+      "duration_ms": 3248,
+      "exit_code": 0,
+      "signal": null,
+      "timed_out": false,
+      "failure_classification": null,
+      "infrastructure_failure": false,
+      "resources": [],
+      "source_files": [
+        "scripts/test-tools-mcp-server.mjs"
+      ],
+      "output_summary": {
+        "stdout_bytes": 104,
+        "stderr_bytes": 0,
+        "stdout_lines": 6,
+        "stderr_lines": 0,
+        "output_truncated": false,
+        "response_strategy": "bounded_full_output",
+        "evidence_log_cap_bytes": 1048576
+      },
+      "evidence_dir": "C:\\VNEM\\vnem-src\\.vnem\\test-runs\\project-automation\\commands\\command-1783960384500-067e419e",
+      "process_tree_termination_evidence": null,
+      "attempts": [
+        {
+          "script": "test:tools-mcp",
+          "status": "passed",
+          "attempt": 1,
+          "duration_ms": 3248,
+          "exit_code": 0,
+          "signal": null,
+          "timed_out": false,
+          "failure_classification": null,
+          "infrastructure_failure": false,
+          "resources": [],
+          "source_files": [
+            "scripts/test-tools-mcp-server.mjs"
+          ],
+          "output_summary": {
+            "stdout_bytes": 104,
+            "stderr_bytes": 0,
+            "stdout_lines": 6,
+            "stderr_lines": 0,
+            "output_truncated": false,
+            "response_strategy": "bounded_full_output",
+            "evidence_log_cap_bytes": 1048576
+          },
+          "evidence_dir": "C:\\VNEM\\vnem-src\\.vnem\\test-runs\\project-automation\\commands\\command-1783960384500-067e419e",
+          "process_tree_termination_evidence": null
+        }
+      ]
+    },
+    {
+      "script": "test:runtime-registry",
+      "status": "passed",
+      "attempt": 1,
+      "duration_ms": 3999,
+      "exit_code": 0,
+      "signal": null,
+      "timed_out": false,
+      "failure_classification": null,
+      "infrastructure_failure": false,
+      "resources": [],
+      "source_files": [
+        "scripts/test-vnem-runtime-registry.mjs"
+      ],
+      "output_summary": {
+        "stdout_bytes": 126,
+        "stderr_bytes": 0,
+        "stdout_lines": 6,
+        "stderr_lines": 0,
+        "output_truncated": false,
+        "response_strategy": "bounded_full_output",
+        "evidence_log_cap_bytes": 1048576
+      },
+      "evidence_dir": "C:\\VNEM\\vnem-src\\.vnem\\test-runs\\project-automation\\commands\\command-1783960384501-82a878aa",
+      "process_tree_termination_evidence": null,
+      "attempts": [
+        {
+          "script": "test:runtime-registry",
+          "status": "passed",
+          "attempt": 1,
+          "duration_ms": 3999,
+          "exit_code": 0,
+          "signal": null,
+          "timed_out": false,
+          "failure_classification": null,
+          "infrastructure_failure": false,
+          "resources": [],
+          "source_files": [
+            "scripts/test-vnem-runtime-registry.mjs"
+          ],
+          "output_summary": {
+            "stdout_bytes": 126,
+            "stderr_bytes": 0,
+            "stdout_lines": 6,
+            "stderr_lines": 0,
+            "output_truncated": false,
+            "response_strategy": "bounded_full_output",
+            "evidence_log_cap_bytes": 1048576
+          },
+          "evidence_dir": "C:\\VNEM\\vnem-src\\.vnem\\test-runs\\project-automation\\commands\\command-1783960384501-82a878aa",
+          "process_tree_termination_evidence": null
+        }
+      ]
+    },
+    {
+      "script": "registry:behavior:check",
+      "status": "passed",
+      "attempt": 1,
+      "duration_ms": 4492,
+      "exit_code": 0,
+      "signal": null,
+      "timed_out": false,
+      "failure_classification": null,
+      "infrastructure_failure": false,
+      "resources": [],
+      "source_files": [
+        "scripts/vnem/registry/generate-behavior-contracts.mjs"
+      ],
+      "output_summary": {
+        "stdout_bytes": 167,
+        "stderr_bytes": 0,
+        "stdout_lines": 6,
+        "stderr_lines": 0,
+        "output_truncated": false,
+        "response_strategy": "bounded_full_output",
+        "evidence_log_cap_bytes": 1048576
+      },
+      "evidence_dir": "C:\\VNEM\\vnem-src\\.vnem\\test-runs\\project-automation\\commands\\command-1783960384517-18178bd2",
+      "process_tree_termination_evidence": null,
+      "attempts": [
+        {
+          "script": "registry:behavior:check",
+          "status": "passed",
+          "attempt": 1,
+          "duration_ms": 4492,
+          "exit_code": 0,
+          "signal": null,
+          "timed_out": false,
+          "failure_classification": null,
+          "infrastructure_failure": false,
+          "resources": [],
+          "source_files": [
+            "scripts/vnem/registry/generate-behavior-contracts.mjs"
+          ],
+          "output_summary": {
+            "stdout_bytes": 167,
+            "stderr_bytes": 0,
+            "stdout_lines": 6,
+            "stderr_lines": 0,
+            "output_truncated": false,
+            "response_strategy": "bounded_full_output",
+            "evidence_log_cap_bytes": 1048576
+          },
+          "evidence_dir": "C:\\VNEM\\vnem-src\\.vnem\\test-runs\\project-automation\\commands\\command-1783960384517-18178bd2",
+          "process_tree_termination_evidence": null
+        }
+      ]
+    },
+    {
+      "script": "test:tools-giga-testing-ci",
+      "status": "passed",
+      "attempt": 1,
+      "duration_ms": 5924,
+      "exit_code": 0,
+      "signal": null,
+      "timed_out": false,
+      "failure_classification": null,
+      "infrastructure_failure": false,
+      "resources": [],
+      "source_files": [
+        "scripts/test-tools-giga-testing-ci.mjs"
+      ],
+      "output_summary": {
+        "stdout_bytes": 132,
+        "stderr_bytes": 0,
+        "stdout_lines": 6,
+        "stderr_lines": 0,
+        "output_truncated": false,
+        "response_strategy": "bounded_full_output",
+        "evidence_log_cap_bytes": 1048576
+      },
+      "evidence_dir": "C:\\VNEM\\vnem-src\\.vnem\\test-runs\\project-automation\\commands\\command-1783960384500-3e48a86c",
+      "process_tree_termination_evidence": null,
+      "attempts": [
+        {
+          "script": "test:tools-giga-testing-ci",
+          "status": "passed",
+          "attempt": 1,
+          "duration_ms": 5924,
+          "exit_code": 0,
+          "signal": null,
+          "timed_out": false,
+          "failure_classification": null,
+          "infrastructure_failure": false,
+          "resources": [],
+          "source_files": [
+            "scripts/test-tools-giga-testing-ci.mjs"
+          ],
+          "output_summary": {
+            "stdout_bytes": 132,
+            "stderr_bytes": 0,
+            "stdout_lines": 6,
+            "stderr_lines": 0,
+            "output_truncated": false,
+            "response_strategy": "bounded_full_output",
+            "evidence_log_cap_bytes": 1048576
+          },
+          "evidence_dir": "C:\\VNEM\\vnem-src\\.vnem\\test-runs\\project-automation\\commands\\command-1783960384500-3e48a86c",
+          "process_tree_termination_evidence": null
+        }
+      ]
+    },
+    {
+      "script": "registry:check",
+      "status": "passed",
+      "attempt": 1,
+      "duration_ms": 3342,
+      "exit_code": 0,
+      "signal": null,
+      "timed_out": false,
+      "failure_classification": null,
+      "infrastructure_failure": false,
+      "resources": [],
+      "source_files": [
+        "scripts/vnem/registry/export-registry.mjs"
+      ],
+      "output_summary": {
+        "stdout_bytes": 138,
+        "stderr_bytes": 0,
+        "stdout_lines": 6,
+        "stderr_lines": 0,
+        "output_truncated": false,
+        "response_strategy": "bounded_full_output",
+        "evidence_log_cap_bytes": 1048576
+      },
+      "evidence_dir": "C:\\VNEM\\vnem-src\\.vnem\\test-runs\\project-automation\\commands\\command-1783960387739-67bca513",
+      "process_tree_termination_evidence": null,
+      "attempts": [
+        {
+          "script": "registry:check",
+          "status": "passed",
+          "attempt": 1,
+          "duration_ms": 3342,
+          "exit_code": 0,
+          "signal": null,
+          "timed_out": false,
+          "failure_classification": null,
+          "infrastructure_failure": false,
+          "resources": [],
+          "source_files": [
+            "scripts/vnem/registry/export-registry.mjs"
+          ],
+          "output_summary": {
+            "stdout_bytes": 138,
+            "stderr_bytes": 0,
+            "stdout_lines": 6,
+            "stderr_lines": 0,
+            "output_truncated": false,
+            "response_strategy": "bounded_full_output",
+            "evidence_log_cap_bytes": 1048576
+          },
+          "evidence_dir": "C:\\VNEM\\vnem-src\\.vnem\\test-runs\\project-automation\\commands\\command-1783960387739-67bca513",
+          "process_tree_termination_evidence": null
+        }
+      ]
+    }
+  ],
+  "failure_groups": [],
+  "slowest_tests": [
+    {
+      "script": "test:tools-giga-testing-ci",
+      "duration_ms": 5924,
+      "status": "passed"
+    },
+    {
+      "script": "registry:behavior:check",
+      "duration_ms": 4492,
+      "status": "passed"
+    },
+    {
+      "script": "test:runtime-registry",
+      "duration_ms": 3999,
+      "status": "passed"
+    },
+    {
+      "script": "registry:check",
+      "duration_ms": 3342,
+      "status": "passed"
+    },
+    {
+      "script": "test:tools-mcp",
+      "duration_ms": 3248,
+      "status": "passed"
+    }
+  ],
+  "flaky_indicators": [],
+  "retries": {
+    "attempted": 0,
+    "policy": {
+      "default_attempts": 1,
+      "infrastructure_attempts": 2,
+      "enabled_scripts": [],
+      "infrastructure_signatures": [
+        "EAI_AGAIN",
+        "ECONNRESET",
+        "ETIMEDOUT",
+        "HTTP 429",
+        "rate limit"
+      ]
+    },
+    "note": "Retries are disabled unless a script is explicitly allowlisted and output matches a known infrastructure signature."
+  },
+  "reliability": {
+    "cleanup_warnings": [],
+    "timeout_process_evidence": [],
+    "resource_conflicts_prevented": true,
+    "run_directory": "C:/VNEM/vnem-src/.vnem/test-runs/testing-ci/test-run-1783960384483-5b43faf3"
+  },
+  "compatibility": null,
+  "report_path": ".vnem/giga-evolution/phase-9/affected-suite-report.json",
+  "summary_path": ".vnem/giga-evolution/phase-9/affected-suite-summary.md"
+}
