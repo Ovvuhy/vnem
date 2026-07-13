@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "source": "live MCP runtime registry status calls",
-  "total_tools": 241,
+  "total_tools": 243,
   "servers": {
     "core": {
       "schema_version": "1.0.0",
@@ -2560,7 +2560,7 @@
       "server_name": "vnem-tools",
       "version": "1.0.1",
       "valid": true,
-      "tool_count": 166,
+      "tool_count": 168,
       "alias_count": 0,
       "categories": {
         "action": 2,
@@ -2570,7 +2570,7 @@
         "app": 5,
         "apply": 2,
         "architecture": 1,
-        "browser": 10,
+        "browser": 12,
         "capability": 2,
         "captcha": 1,
         "change": 1,
@@ -2637,14 +2637,14 @@
       },
       "side_effect_classes": {
         "destructive_mutation": 31,
-        "network_mutation": 16,
-        "read_only": 119
+        "network_mutation": 17,
+        "read_only": 120
       },
       "validation": {
         "valid": true,
         "server_name": "vnem-tools",
         "version": "1.0.1",
-        "tool_count": 166,
+        "tool_count": 168,
         "alias_count": 0,
         "errors": [],
         "warnings": [
@@ -6420,6 +6420,79 @@
           "behavior_test_references": [
             "scripts/test-tools-action-recovery-plan.mjs",
             "scripts/test-tools-browser-evidence-run.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_browser_interaction_run",
+          "version": "1.0.1",
+          "title": "VNEM Browser Interaction Run",
+          "description": "Plan or run bounded approved Chromium interaction scenarios against localhost or exact approved external origins. Executes structured navigate/click/type/select/wait/assert actions, captures screenshots plus DOM/accessibility/console/network evidence, compares before/after pixels and snapshots, detects CAPTCHA/private flows, and cleans up its owned browser profile and process.",
+          "category": "browser",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": false,
+            "idempotentHint": false,
+            "openWorldHint": true
+          },
+          "side_effect_class": "network_mutation",
+          "permission_requirements": [
+            "approved_network_mutation",
+            "scoped_credential_reference"
+          ],
+          "network_behavior": "bounded_or_approved_network",
+          "credential_behavior": "credential references only; values never returned",
+          "evidence_behavior": "required_redacted_record",
+          "rollback_behavior": {
+            "mode": "required_or_explicitly_not_available",
+            "guidance": "Return backup, compensating action, or explicit rollback-unavailable state in evidence."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-browser-interaction.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_browser_evidence_compare",
+          "version": "1.0.1",
+          "title": "VNEM Browser Evidence Compare",
+          "description": "Read and compare two allowed browser interaction evidence packs by matching scenario, viewport, and stage, then report PNG pixel, bounded DOM, and accessibility snapshot changes without deciding aesthetic correctness.",
+          "category": "browser",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "approved_network_read"
+          ],
+          "network_behavior": "bounded_or_approved_network",
+          "credential_behavior": "credential references only; values never returned",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-browser-interaction.mjs"
           ],
           "benchmark_scenarios": [],
           "input_schema_present": true

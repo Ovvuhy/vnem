@@ -2,7 +2,7 @@
 
 Generated from live MCP runtime registries. Do not edit this table manually.
 
-- Total tools: 241
+- Total tools: 243
 - Registry valid: true
 - Missing behavior-test references: 18
 
@@ -177,6 +177,8 @@ Generated from live MCP runtime registries. Do not edit this table manually.
 | tools | `vnem_tools_ui_surface_review` | ui | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_browser_evidence_plan` | browser | read_only | approved_network_read | optional | not_required | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_browser_evidence_run` | browser | network_mutation | approved_network_mutation, scoped_credential_reference | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_browser_interaction_run` | browser | network_mutation | approved_network_mutation, scoped_credential_reference | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_browser_evidence_compare` | browser | read_only | approved_network_read | optional | not_required | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_ui_evidence_audit` | evidence | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_fetch_url_text` | fetch | read_only | approved_network_read | optional | not_required | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_source_quality_check` | source | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |

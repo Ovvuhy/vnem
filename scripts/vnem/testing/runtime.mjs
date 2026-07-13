@@ -239,8 +239,8 @@ export class TestingCiRuntime {
         executable_leaf_tasks: tasks.length,
         renamed_leaf_scripts: [{ legacy_script: "test:clients", leaf_task: "test:clients:setup", reason: "test:clients is now the required public tier entrypoint" }],
         expanded_aggregates: [{ script: "test:giga-baseline", leaf_tasks: ["test:giga-baseline:capability", "test:runtime-registry", "registry:behavior:check", "registry:check"] }],
-        phase_additions: ["test:tools-giga-testing-ci"],
-        exact_manifest_preserved: tasks.length === VNEM_FULL_SUITE.length + 4
+        phase_additions: ["test:tools-giga-testing-ci", "test:tools-giga-browser-interaction"],
+        exact_manifest_preserved: tasks.length === VNEM_FULL_SUITE.length + 5
       } : null,
       safety: {
         stage_barriers: true,

@@ -19,7 +19,7 @@ const DOMAIN_ADAPTERS = [
   adapter("browser_ui", "Browser and UI verification", 8, [
     feature(/\b(browser|localhost|screenshot|viewport|responsive|\bdom\b|accessibility|a11y|visual proof)\b/, 5, "browser or visual-proof requirement"),
     feature(/\b(ui|frontend|page|component|rendered states?)\b/, 3, "user-interface surface")
-  ], ["visual correctness", "accessibility", "responsive behavior"], ["vnem_tools_ui_surface_review", "vnem_tools_browser_evidence_plan", "vnem_tools_browser_evidence_run"]),
+  ], ["visual correctness", "accessibility", "responsive behavior", "runtime interaction evidence"], ["vnem_tools_ui_surface_review", "vnem_tools_browser_evidence_plan", "vnem_tools_browser_interaction_run", "vnem_tools_browser_evidence_compare", "vnem_tools_ui_evidence_audit", "vnem_tools_browser_evidence_run"]),
   adapter("app_engineering", "Application engineering", 7, [
     feature(/\b(full[- ]?stack|frontend|backend|web app|application|api endpoint|react|vue|svelte|next\.?js|express)\b/, 5, "application stack or feature"),
     feature(/\b(build|implement|add|create)\b.*\b(endpoint|component|page|frontend|backend|api|service|app)\b/, 4, "application implementation deliverable")
@@ -444,7 +444,7 @@ export function coreRecommendedToolsCalls(classification, args = {}) {
   if (domainIds.has("repo_code") || domainIds.has("app_engineering")) candidates.push("vnem_tools_test_selection_plan");
   if (domainIds.has("github_publish")) candidates.push("vnem_tools_github_actions_status");
   if (domainIds.has("package_dependency")) candidates.push("vnem_tools_dependency_scan");
-  if (domainIds.has("browser_ui")) candidates.push("vnem_tools_browser_evidence_plan");
+  if (domainIds.has("browser_ui")) candidates.push("vnem_tools_browser_evidence_plan", "vnem_tools_browser_interaction_run");
   for (const route of routes) for (const tool of route.slice(2)) candidates.push(tool);
   if (!candidates.length && classification?.matched_flags?.repo_or_code) candidates.push(...DOMAIN_ADAPTERS.find((item) => item.id === "repo_code").tools);
   return unique(candidates).slice(0, 6);
@@ -469,7 +469,7 @@ export function coreProofRequirements(classification) {
   const ids = new Set((classification.domains || []).map((item) => item.id));
   const requirements = ["commands and Tools calls actually executed, or an explicit blocked state", "checks actually run with status", "what remains not proven"];
   if (ids.has("github_publish")) requirements.push("remote branch SHA, PR head SHA, and Actions URL/status");
-  if (ids.has("browser_ui")) requirements.push("browser screenshot, DOM, accessibility, and console-availability evidence");
+  if (ids.has("browser_ui")) requirements.push("structured interaction results, before/after screenshots and pixel comparison, DOM and accessibility snapshots, console errors, failed network requests, responsive viewport/state coverage, and owned-browser cleanup evidence");
   if (ids.has("package_dependency")) requirements.push("lockfile/dependency diff, install-script risk, focused tests, and rollback");
   if (ids.has("project_automation")) requirements.push("exact reviewed command or graph id, exit/timeout state, process cleanup, bounded output evidence, and declared rollback status");
   if (ids.has("testing_ci")) requirements.push("affected-test graph reasons, tier result, exit/timing/failure groups, coverage source or explicit absence, and baseline/post benchmark evidence where claimed");
@@ -651,7 +651,7 @@ function checksForDomain(domain) {
   const map = {
     debugging: ["reproduce or classify failure", "targeted regression rerun"],
     github_publish: ["remote SHA equality", "PR head equality", "Actions conclusion"],
-    browser_ui: ["desktop and mobile state", "accessibility", "console availability"],
+    browser_ui: ["desktop and mobile state", "structured interaction", "accessibility tree", "console and failed-network evidence", "before/after comparison", "owned-process cleanup"],
     package_dependency: ["dependency/install-script audit", "focused tests", "rollback"],
     api_integration: ["schema/auth review", "redaction", "bounded response proof"],
     evidence_validation: ["handler and behavior test", "MCP-path proof", "claim audit"]
@@ -661,7 +661,7 @@ function checksForDomain(domain) {
 
 function outputEffectsForDomain(domain) {
   if (domain === "github_publish") return ["remote SHA", "PR URL", "CI URL/status", "not proven"];
-  if (domain === "browser_ui") return ["viewport evidence", "DOM/a11y evidence", "console limit", "not proven"];
+  if (domain === "browser_ui") return ["interaction and state evidence", "before/after screenshots and pixel delta", "DOM/a11y snapshots", "console/network status", "browser cleanup", "not proven"];
   if (domain === "debugging") return ["root-cause evidence", "smallest fix", "rerun result", "residual risk"];
   return ["result", "evidence", "not proven", "next action"];
 }

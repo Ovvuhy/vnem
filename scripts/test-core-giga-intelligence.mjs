@@ -89,6 +89,21 @@ try {
   assert.ok(testingCi.evidence_requirements.some((requirement) => /affected-test graph reasons/.test(requirement)));
   assert.ok(testingCi.recommended_tools_call_sequence.every((step) => step.state.available && step.state.allowed));
 
+  const browserInteraction = await call(core.client, "vnem_entrypoint", {
+    user_goal: "Launch an approved localhost browser, click and type safe test fields, navigate, prove loading empty error and success states on desktop and mobile, inspect console network DOM accessibility, compare before and after screenshots, and cleanly terminate the browser.",
+    task_context: "No login, cookies, private account, CAPTCHA bypass, broad scraping, or hidden automation.",
+    task_mode: "ui_browser",
+    available_mcp_names: ["vnem", "vnem-tools"],
+    available_tool_names: [...toolNames],
+    allowed_tool_names: [...toolNames],
+    environment: { os: "win32", browser_available: "Chromium CDP", app_url: "localhost" }
+  }, "entrypoint");
+  assert.ok(browserInteraction.task_classification.domains.some((domain) => domain.id === "browser_ui"));
+  for (const tool of ["vnem_tools_browser_evidence_plan", "vnem_tools_browser_interaction_run"]) assert.ok(browserInteraction.recommended_tools_calls.includes(tool), `missing Phase 10 browser route ${tool}`);
+  assert.ok(browserInteraction.evidence_requirements.some((requirement) => /structured interaction results/.test(requirement)));
+  assert.ok(browserInteraction.evidence_requirements.some((requirement) => /owned-browser cleanup/.test(requirement)));
+  assert.ok(browserInteraction.recommended_tools_call_sequence.every((step) => step.state.available && step.state.allowed));
+
   const details = await call(core.client, "vnem_decision_details", {
     decision_id: mixed.decision_id,
     sections: ["classification", "compatibility", "capability_packs", "unavailable_capabilities"]

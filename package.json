@@ -29,6 +29,7 @@
     "test:tools-browser": "node scripts/test-tools-browser-capture.mjs",
     "test:tools-project-actions": "node scripts/test-tools-project-actions.mjs",
     "test:tools-giga-app-engineering": "node scripts/test-tools-giga-app-engineering.mjs",
+    "test:tools-giga-browser-interaction": "node scripts/test-tools-giga-browser-interaction.mjs",
     "test:tools-giga-project-automation": "node scripts/test-tools-giga-project-automation.mjs",
     "test:tools-git-session": "node scripts/test-tools-git-session.mjs",
     "test:tools-intelligence": "node scripts/test-tools-intelligence.mjs",
@@ -292,6 +293,7 @@
     "test:tools-giga-testing-ci": "node scripts/test-tools-giga-testing-ci.mjs",
     "giga:phase9-benchmark": "node scripts/test-tools-giga-testing-ci.mjs --benchmark-output=.vnem/giga-evolution/phase-9/testing-ci-benchmark.json",
     "giga:phase9-performance": "node scripts/vnem/testing/phase-benchmark.mjs",
+    "giga:phase10-benchmark": "node scripts/test-tools-giga-browser-interaction.mjs --benchmark-output=.vnem/giga-evolution/phase-10/browser-interaction-benchmark.json",
     "test:clients:setup": "node scripts/test-vnem-client-setup.mjs"
   },
   "dependencies": {

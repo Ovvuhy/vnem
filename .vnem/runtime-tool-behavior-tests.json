@@ -563,6 +563,12 @@
         "scripts/test-tools-action-recovery-plan.mjs",
         "scripts/test-tools-browser-evidence-run.mjs"
       ],
+      "vnem_tools_browser_interaction_run": [
+        "scripts/test-tools-giga-browser-interaction.mjs"
+      ],
+      "vnem_tools_browser_evidence_compare": [
+        "scripts/test-tools-giga-browser-interaction.mjs"
+      ],
       "vnem_tools_ui_evidence_audit": [
         "scripts/test-mcp-user-smoke.mjs",
         "scripts/test-tools-browser-evidence-run.mjs",

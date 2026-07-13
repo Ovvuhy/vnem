@@ -15,6 +15,9 @@ const projectActionsTestPath = rel("scripts/test-tools-project-actions.mjs");
 const appEngineeringTestPath = rel("scripts/test-tools-giga-app-engineering.mjs");
 const appEngineeringModulePath = rel("scripts/vnem/tools/app-engineering.mjs");
 const appEngineeringFixturesPath = rel("fixtures/app-engineering/README.md");
+const browserInteractionTestPath = rel("scripts/test-tools-giga-browser-interaction.mjs");
+const browserInteractionModulePath = rel("scripts/vnem/tools/browser-interaction.mjs");
+const browserInteractionFixturePath = rel("fixtures/browser-interaction/index.html");
 const projectAutomationTestPath = rel("scripts/test-tools-giga-project-automation.mjs");
 const projectAutomationModulePath = rel("scripts/vnem/tools/project-automation.mjs");
 const projectAutomationFixturePath = rel("fixtures/project-automation/package.json");
@@ -105,6 +108,8 @@ const browserTest = existsSync(browserTestPath) ? readFileSync(browserTestPath, 
 const projectActionsTest = existsSync(projectActionsTestPath) ? readFileSync(projectActionsTestPath, "utf8") : "";
 const appEngineeringTest = existsSync(appEngineeringTestPath) ? readFileSync(appEngineeringTestPath, "utf8") : "";
 const appEngineeringModule = existsSync(appEngineeringModulePath) ? readFileSync(appEngineeringModulePath, "utf8") : "";
+const browserInteractionTest = existsSync(browserInteractionTestPath) ? readFileSync(browserInteractionTestPath, "utf8") : "";
+const browserInteractionModule = existsSync(browserInteractionModulePath) ? readFileSync(browserInteractionModulePath, "utf8") : "";
 const projectAutomationTest = existsSync(projectAutomationTestPath) ? readFileSync(projectAutomationTestPath, "utf8") : "";
 const projectAutomationModule = existsSync(projectAutomationModulePath) ? readFileSync(projectAutomationModulePath, "utf8") : "";
 const testingCiTest = existsSync(testingCiTestPath) ? readFileSync(testingCiTestPath, "utf8") : "";
@@ -261,6 +266,8 @@ const requiredTools = [
   "vnem_tools_ui_surface_review",
   "vnem_tools_browser_evidence_plan",
   "vnem_tools_browser_evidence_run",
+  "vnem_tools_browser_interaction_run",
+  "vnem_tools_browser_evidence_compare",
   "vnem_tools_ui_evidence_audit",
   "vnem_tools_apply_patch_batch",
   "vnem_tools_restore_batch",
@@ -361,6 +368,9 @@ const report = {
   app_engineering_test_exists: existsSync(appEngineeringTestPath),
   app_engineering_module_exists: existsSync(appEngineeringModulePath),
   app_engineering_fixtures_exist: existsSync(appEngineeringFixturesPath),
+  browser_interaction_test_exists: existsSync(browserInteractionTestPath),
+  browser_interaction_module_exists: existsSync(browserInteractionModulePath),
+  browser_interaction_fixture_exists: existsSync(browserInteractionFixturePath),
   project_automation_test_exists: existsSync(projectAutomationTestPath),
   project_automation_module_exists: existsSync(projectAutomationModulePath),
   project_automation_fixture_exists: existsSync(projectAutomationFixturePath),
@@ -435,6 +445,7 @@ const report = {
     test_tools_browser: pkg.scripts?.["test:tools-browser"] === "node scripts/test-tools-browser-capture.mjs",
     test_tools_project_actions: pkg.scripts?.["test:tools-project-actions"] === "node scripts/test-tools-project-actions.mjs",
     test_tools_giga_app_engineering: pkg.scripts?.["test:tools-giga-app-engineering"] === "node scripts/test-tools-giga-app-engineering.mjs",
+    test_tools_giga_browser_interaction: pkg.scripts?.["test:tools-giga-browser-interaction"] === "node scripts/test-tools-giga-browser-interaction.mjs",
     test_tools_giga_project_automation: pkg.scripts?.["test:tools-giga-project-automation"] === "node scripts/test-tools-giga-project-automation.mjs",
     test_tools_giga_testing_ci: pkg.scripts?.["test:tools-giga-testing-ci"] === "node scripts/test-tools-giga-testing-ci.mjs",
     test_tools_git_session: pkg.scripts?.["test:tools-git-session"] === "node scripts/test-tools-git-session.mjs",
@@ -806,6 +817,14 @@ const report = {
   app_engineering_rollback_status: /vnem_tools_app_transaction_rollback/.test(server) && /rollbackVerticalSliceTransaction/.test(server + appEngineeringModule) && /restored_after_failure/.test(server + appEngineeringTest) && /app_rollback_precondition_changed/.test(appEngineeringModule),
   app_engineering_adapter_fixture_status: existsSync(appEngineeringFixturesPath) && /vite-react-node/.test(appEngineeringModule + appEngineeringTest) && /static-node/.test(appEngineeringModule + appEngineeringTest) && /blocked_unsupported_adapter/.test(appEngineeringTest),
   app_engineering_real_mcp_proof_status: /StdioClientTransport/.test(appEngineeringTest) && /status, "passed"/.test(appEngineeringTest) && /browser_was_run/.test(appEngineeringTest) && /network_failures/.test(appEngineeringTest) && /horizontal_overflow/.test(appEngineeringTest),
+  browser_interaction_registration_status: /vnem_tools_browser_interaction_run/.test(server) && /vnem_tools_browser_evidence_compare/.test(server) && /BrowserInteractionRuntime/.test(server + browserInteractionModule) && /browser_interaction/.test(browserInteractionTest),
+  browser_interaction_actions_status: /navigate.*click.*type.*select.*wait.*wait_for.*assert/.test(browserInteractionModule) && /structured_actions/.test(browserInteractionModule + browserInteractionTest) && /actionTypes/.test(browserInteractionTest),
+  browser_interaction_runtime_evidence_status: /Runtime\.consoleAPICalled/.test(browserInteractionModule) && /Network\.loadingFailed/.test(browserInteractionModule) && /Page\.captureScreenshot/.test(browserInteractionModule) && /Accessibility\.getFullAXTree/.test(browserInteractionModule) && /captureDom/.test(browserInteractionModule) && /analyzeRenderedPixels/.test(browserInteractionModule) && /render_integrity\.status, "nonblank"/.test(browserInteractionTest),
+  browser_interaction_state_viewport_status: /state_coverage/.test(browserInteractionModule + browserInteractionTest) && /viewport_coverage/.test(browserInteractionModule + browserInteractionTest) && ["loading", "empty", "error", "success"].every((state) => browserInteractionTest.includes(`"${state}"`)),
+  browser_interaction_compare_status: /comparePngFiles/.test(browserInteractionModule) && /decodePng/.test(browserInteractionModule) && /vnem_tools_browser_evidence_compare/.test(server + browserInteractionTest) && /changed_pixels/.test(browserInteractionTest) && /accessibility_changes/.test(browserInteractionTest),
+  browser_interaction_safety_status: /Fetch\.requestPaused/.test(browserInteractionModule) && /private_flow_detected/.test(browserInteractionModule + browserInteractionTest) && /captcha_detected/.test(browserInteractionModule + browserInteractionTest) && /cookie_extraction:\s*false/.test(browserInteractionModule) && /login_automation:\s*false/.test(browserInteractionModule) && /stealth_mode:\s*false/.test(browserInteractionModule),
+  browser_interaction_cleanup_status: /Browser\.close/.test(browserInteractionModule + browserInteractionTest) && /taskkill-owned-tree/.test(browserInteractionModule) && /kill-owned-process-group/.test(browserInteractionModule) && /profile_removed/.test(browserInteractionTest) && /process_exited/.test(browserInteractionTest),
+  browser_interaction_real_mcp_proof_status: /StdioClientTransport/.test(browserInteractionTest) && /GIGA browser-interaction MCP tests passed/.test(browserInteractionTest) && /browser_was_run, true/.test(browserInteractionTest) && /screenshots\.length, 10/.test(browserInteractionTest),
   dev_server_listener_cleanup_status: /listener_pid/.test(server) && /findWindowsListeningPid/.test(server) && /waitForWindowsListenerStop/.test(server) && /dev_server_stop_failed/.test(server),
   project_task_status: /vnem_tools_run_project_task/.test(server) && /safeRunProjectTask/.test(server) && /unsafe_script_blocked/.test(projectActionsTest),
   dev_server_status: /vnem_tools_start_dev_server/.test(server) && /vnem_tools_stop_dev_server/.test(server) && /dev_server_not_found/.test(projectActionsTest),
@@ -843,9 +862,9 @@ const report = {
     "Giga MCP orchestration"
   ],
   browser_known_limitations: [
-    "approved localhost/127.0.0.1 browser evidence execution only when VNEM_TOOLS_ALLOW_LOCALHOST=1",
+    "approved localhost/127.0.0.1 browser interaction only when VNEM_TOOLS_ALLOW_LOCALHOST=1; external read-only navigation additionally requires an environment gate and exact approved origins",
     "reports blocked/partial/browser_unavailable when policy, permission, or browser runtime blocks proof",
-    "legacy static browser evidence reports console status unavailable; vnem_tools_app_acceptance_run captures real Chromium console/network events for dedicated-profile localhost fixtures only; no login automation, cookie extraction, persistent sessions, CAPTCHA bypass, credential capture, or broad scraping"
+    "vnem_tools_browser_interaction_run captures real disclosed Chromium actions, screenshots, DOM/accessibility snapshots, console/network events, state/viewport coverage, comparisons, and cleanup evidence; no login automation, cookie extraction, persistent sessions, CAPTCHA bypass, credential capture, search scraping, stealth, or cross-browser proof"
   ]
 };
 
@@ -854,6 +873,9 @@ assert.equal(report.test_file_exists, true, "Tools MCP test file is missing");
 assert.equal(report.core_tools_e2e_test_exists, true, "Core→Tools e2e test file is missing");
 assert.equal(report.browser_capture_test_exists, true, "browser capture test file is missing");
 assert.equal(report.project_actions_test_exists, true, "project actions test file is missing");
+assert.equal(report.browser_interaction_test_exists, true, "browser interaction MCP test file is missing");
+assert.equal(report.browser_interaction_module_exists, true, "browser interaction runtime module is missing");
+assert.equal(report.browser_interaction_fixture_exists, true, "browser interaction fixture is missing");
 assert.equal(report.project_automation_test_exists, true, "project automation MCP test file is missing");
 assert.equal(report.project_automation_module_exists, true, "project automation module is missing");
 assert.equal(report.project_automation_fixture_exists, true, "project automation fixture is missing");
@@ -880,6 +902,7 @@ assert.equal(report.package_scripts.test_tools_browser, true, "test:tools-browse
 assert.equal(report.package_scripts.test_tools_project_actions, true, "test:tools-project-actions package script is missing");
 assert.equal(report.package_scripts.test_tools_giga_project_automation, true, "test:tools-giga-project-automation package script is missing");
 assert.equal(report.package_scripts.test_tools_giga_testing_ci, true, "test:tools-giga-testing-ci package script is missing");
+assert.equal(report.package_scripts.test_tools_giga_browser_interaction, true, "test:tools-giga-browser-interaction package script is missing");
 for (const [key, value] of Object.entries({ test_smoke_tier: report.package_scripts.test_smoke_tier, test_affected_tier: report.package_scripts.test_affected_tier, test_core_tier: report.package_scripts.test_core_tier, test_tools_tier: report.package_scripts.test_tools_tier, test_precision_compat_tier: report.package_scripts.test_precision_compat_tier, test_integration_tier: report.package_scripts.test_integration_tier, test_benchmarks_tier: report.package_scripts.test_benchmarks_tier, test_full_tier: report.package_scripts.test_full_tier, test_ci_tier: report.package_scripts.test_ci_tier, npm_test_routes_full: report.package_scripts.npm_test_routes_full })) assert.equal(value, true, `${key} package script is missing`);
 assert.equal(report.package_scripts.test_tools_git_session, true, "test:tools-git-session package script is missing");
 assert.equal(report.package_scripts.test_tools_intelligence, true, "test:tools-intelligence package script is missing");
@@ -1105,6 +1128,7 @@ assert.equal(report.project_scan_status, true, "project scan support/test covera
 for (const [key, value] of Object.entries({ project_automation_environment_status: report.project_automation_environment_status, project_automation_layered_policy_status: report.project_automation_layered_policy_status, project_automation_secret_boundary_status: report.project_automation_secret_boundary_status, project_automation_lifecycle_hook_status: report.project_automation_lifecycle_hook_status, project_automation_exact_execution_status: report.project_automation_exact_execution_status, project_automation_process_cleanup_status: report.project_automation_process_cleanup_status, project_automation_task_graph_status: report.project_automation_task_graph_status, project_automation_rollback_status: report.project_automation_rollback_status, project_automation_diagnosis_status: report.project_automation_diagnosis_status, project_automation_temp_cleanup_status: report.project_automation_temp_cleanup_status, project_automation_real_mcp_proof_status: report.project_automation_real_mcp_proof_status })) assert.equal(value, true, `${key} readiness missing`);
 for (const [key, value] of Object.entries({ testing_ci_discovery_status: report.testing_ci_discovery_status, testing_ci_affected_graph_status: report.testing_ci_affected_graph_status, testing_ci_tiered_runner_status: report.testing_ci_tiered_runner_status, testing_ci_parallel_safety_status: report.testing_ci_parallel_safety_status, testing_ci_reliability_status: report.testing_ci_reliability_status, testing_ci_diagnosis_status: report.testing_ci_diagnosis_status, testing_ci_coverage_benchmark_status: report.testing_ci_coverage_benchmark_status, testing_ci_actions_runtime_status: report.testing_ci_actions_runtime_status, testing_ci_real_mcp_proof_status: report.testing_ci_real_mcp_proof_status })) assert.equal(value, true, `${key} readiness missing`);
 for (const [key, value] of Object.entries({ app_engineering_inspection_status: report.app_engineering_inspection_status, app_engineering_transaction_status: report.app_engineering_transaction_status, app_engineering_acceptance_status: report.app_engineering_acceptance_status, app_engineering_rollback_status: report.app_engineering_rollback_status, app_engineering_adapter_fixture_status: report.app_engineering_adapter_fixture_status, app_engineering_real_mcp_proof_status: report.app_engineering_real_mcp_proof_status, dev_server_listener_cleanup_status: report.dev_server_listener_cleanup_status })) assert.equal(value, true, `${key} readiness missing`);
+for (const [key, value] of Object.entries({ browser_interaction_registration_status: report.browser_interaction_registration_status, browser_interaction_actions_status: report.browser_interaction_actions_status, browser_interaction_runtime_evidence_status: report.browser_interaction_runtime_evidence_status, browser_interaction_state_viewport_status: report.browser_interaction_state_viewport_status, browser_interaction_compare_status: report.browser_interaction_compare_status, browser_interaction_safety_status: report.browser_interaction_safety_status, browser_interaction_cleanup_status: report.browser_interaction_cleanup_status, browser_interaction_real_mcp_proof_status: report.browser_interaction_real_mcp_proof_status })) assert.equal(value, true, `${key} readiness missing`);
 assert.equal(report.project_task_status, true, "project task support/test coverage is missing");
 assert.equal(report.dev_server_status, true, "dev server support/test coverage is missing");
 assert.equal(report.session_evidence_status, true, "session evidence support/test coverage is missing");
@@ -1254,6 +1278,7 @@ console.log(`project_scan_status: ${yes(report.project_scan_status)}`);
 for (const key of ["project_automation_environment_status", "project_automation_layered_policy_status", "project_automation_secret_boundary_status", "project_automation_lifecycle_hook_status", "project_automation_exact_execution_status", "project_automation_process_cleanup_status", "project_automation_task_graph_status", "project_automation_rollback_status", "project_automation_diagnosis_status", "project_automation_temp_cleanup_status", "project_automation_real_mcp_proof_status"]) console.log(`${key}: ${yes(report[key])}`);
 for (const key of ["testing_ci_discovery_status", "testing_ci_affected_graph_status", "testing_ci_tiered_runner_status", "testing_ci_parallel_safety_status", "testing_ci_reliability_status", "testing_ci_diagnosis_status", "testing_ci_coverage_benchmark_status", "testing_ci_actions_runtime_status", "testing_ci_real_mcp_proof_status"]) console.log(`${key}: ${yes(report[key])}`);
 for (const key of ["app_engineering_inspection_status", "app_engineering_transaction_status", "app_engineering_acceptance_status", "app_engineering_rollback_status", "app_engineering_adapter_fixture_status", "app_engineering_real_mcp_proof_status", "dev_server_listener_cleanup_status"]) console.log(`${key}: ${yes(report[key])}`);
+for (const key of ["browser_interaction_registration_status", "browser_interaction_actions_status", "browser_interaction_runtime_evidence_status", "browser_interaction_state_viewport_status", "browser_interaction_compare_status", "browser_interaction_safety_status", "browser_interaction_cleanup_status", "browser_interaction_real_mcp_proof_status"]) console.log(`${key}: ${yes(report[key])}`);
 console.log(`project_task_status: ${yes(report.project_task_status)}`);
 console.log(`dev_server_status: ${yes(report.dev_server_status)}`);
 console.log(`session_evidence_status: ${yes(report.session_evidence_status)}`);

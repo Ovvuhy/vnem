@@ -39,6 +39,7 @@ import {
 } from "./app-engineering.mjs";
 import { ProjectAutomationError, ProjectAutomationRuntime } from "./project-automation.mjs";
 import { TestingCiError, TestingCiRuntime } from "../testing/runtime.mjs";
+import { BrowserInteractionError, BrowserInteractionRuntime } from "./browser-interaction.mjs";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(scriptDir, "..", "..", "..");
@@ -120,6 +121,8 @@ const REQUIRED_TOOL_NAMES = [
   "vnem_tools_ui_surface_review",
   "vnem_tools_browser_evidence_plan",
   "vnem_tools_browser_evidence_run",
+  "vnem_tools_browser_interaction_run",
+  "vnem_tools_browser_evidence_compare",
   "vnem_tools_ui_evidence_audit",
   "vnem_tools_apply_patch_batch",
   "vnem_tools_restore_batch",
@@ -268,6 +271,7 @@ const permissionRuntime = await PermissionRuntime.create({
 });
 const projectAutomationRuntime = new ProjectAutomationRuntime({ allowedRoots, evidenceRoot });
 const testingCiRuntime = new TestingCiRuntime({ allowedRoots, evidenceRoot });
+const browserInteractionRuntime = new BrowserInteractionRuntime({ allowedRoots, evidenceRoot });
 const activePermissionProfile = permissionRuntime.activeProfile();
 const usablePacks = await loadUsablePacks();
 const requestedPrecisionWorkspaceCandidate = path.resolve(
@@ -1905,6 +1909,51 @@ function registerTools(mcpServer) {
   );
 
   mcpServer.registerTool(
+    "vnem_tools_browser_interaction_run",
+    {
+      title: "VNEM Browser Interaction Run",
+      description: "Plan or run bounded approved Chromium interaction scenarios against localhost or exact approved external origins. Executes structured navigate/click/type/select/wait/assert actions, captures screenshots plus DOM/accessibility/console/network evidence, compares before/after pixels and snapshots, detects CAPTCHA/private flows, and cleans up its owned browser profile and process.",
+      inputSchema: {
+        root: z.string().default("."),
+        app_url: z.string().default(""),
+        scenarios: z.array(z.record(z.any())).max(20).default([]),
+        actions: z.array(z.record(z.any())).max(40).default([]),
+        viewport: z.any().optional(),
+        state: z.string().default("unspecified"),
+        allow_external: z.boolean().default(false),
+        approved_origins: z.array(z.string()).max(20).default([]),
+        browser_command: z.string().optional(),
+        dry_run: z.boolean().default(true),
+        approved: z.boolean().default(false),
+        approval_note: z.string().default(""),
+        session_id: z.string().optional()
+      },
+      annotations: NETWORK_ACTION
+    },
+    async (args) => withToolErrors(async () => {
+      const result = args.dry_run === false
+        ? (enforceActionPolicy("browser_capture", args), await browserInteractionRuntime.run(args))
+        : await browserInteractionRuntime.plan(args);
+      recordSession(args.session_id, "browser_captures", { status: result.status || result.operation_result, run_id: result.run_id || null, evidence_path: result.evidence_path || null, browser_was_run: result.browser_was_run === true });
+      return toolResult(formatBrowserInteraction(result), { browser_interaction: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_browser_evidence_compare",
+    {
+      title: "VNEM Browser Evidence Compare",
+      description: "Read and compare two allowed browser interaction evidence packs by matching scenario, viewport, and stage, then report PNG pixel, bounded DOM, and accessibility snapshot changes without deciding aesthetic correctness.",
+      inputSchema: { root: z.string().default("."), before_pack_path: z.string().min(1), after_pack_path: z.string().min(1) },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const result = await browserInteractionRuntime.compare(args);
+      return toolResult(formatBrowserEvidenceCompare(result), { browser_evidence_compare: result });
+    })
+  );
+
+  mcpServer.registerTool(
     "vnem_tools_ui_evidence_audit",
     {
       title: "VNEM UI Evidence Audit",
@@ -2313,7 +2362,7 @@ function toolReliabilityFor(name, descriptor = {}) {
     next = "Run the focused local tool test in the target repo and verify changed files/evidence before final claims.";
     known = ["Allowed roots only", "Secrets blocked/redacted", "Real mutation requires profile and approval"];
   } else if (["browser_proof", "ui_web_quality", "browser_intelligence"].includes(group)) {
-    level = name.includes("browser_evidence_run") || name.includes("browser_capture") ? "local_tested" : "dry_run_tested";
+    level = name.includes("browser_interaction_run") || name.includes("browser_evidence_compare") || name.includes("browser_evidence_run") || name.includes("browser_capture") ? "local_tested" : "dry_run_tested";
     safe = ["Localhost/file-under-allowed-root browser evidence planning or bounded local proof behavior is tested."];
     unsafe = ["Screenshot proof exists when browser was unavailable or blocked", "External browsing/login/session/CAPTCHA proof succeeded", "Accessibility or visual quality certification"];
     next = "Run bounded localhost browser evidence with VNEM_TOOLS_ALLOW_LOCALHOST=1 and inspect screenshot/DOM/a11y metadata.";
@@ -2453,7 +2502,7 @@ function toolsVisibilityDoctor(args = {}) {
     repo_power: ["vnem_tools_repo_deep_map", "vnem_tools_failure_triage", "vnem_tools_evidence_pack"].every((tool) => names.has(tool)),
     code_intelligence: ["vnem_tools_code_symbol_map", "vnem_tools_patch_target_finder", "vnem_tools_source_impact_trace"].every((tool) => names.has(tool)),
     github_ci_proof: ["vnem_tools_github_status", "vnem_tools_github_actions_status", "vnem_tools_pr_quality_gate"].every((tool) => names.has(tool)),
-    browser_ui_proof: ["vnem_tools_browser_evidence_plan", "vnem_tools_browser_evidence_run", "vnem_tools_ui_evidence_audit"].every((tool) => names.has(tool)),
+    browser_ui_proof: ["vnem_tools_browser_evidence_plan", "vnem_tools_browser_interaction_run", "vnem_tools_browser_evidence_compare", "vnem_tools_ui_evidence_audit"].every((tool) => names.has(tool)),
     adoption_diagnostics: entrypoints.every((tool) => names.has(tool))
   };
   const weak = toolsWeakAdoptionDescriptions(catalog);
@@ -2815,7 +2864,7 @@ function toolsRouteDefinitions() {
     code_intelligence: { why: "Code intelligence needs symbols, MCP surface, patch targets, coverage, and source impact.", tools: ["vnem_tools_code_symbol_map", "vnem_tools_mcp_surface_audit", "vnem_tools_patch_target_finder", "vnem_tools_tool_test_coverage_map", "vnem_tools_source_impact_trace"] },
     github_pr_ci_proof: { why: "Remote proof needs GitHub status, repo state, Actions status, PR gate, and evidence.", tools: ["vnem_tools_github_status", "vnem_tools_github_repo_inspect", "vnem_tools_github_actions_status", "vnem_tools_pr_quality_gate", "vnem_tools_evidence_pack"] },
     cloudflare_deploy_control: { why: "Cloudflare work needs auth/status, deploy planning, verification, and guarded mutation tools only when approved.", tools: ["vnem_tools_cloudflare_status", "vnem_tools_cloudflare_auth_plan", "vnem_tools_cloudflare_pages_deploy_plan", "vnem_tools_cloudflare_workers_deploy_plan", "vnem_tools_cloudflare_deploy_verify"] },
-    browser_ui_verification: { why: "UI/browser claims need planned local browser proof and audit of evidence limits.", tools: ["vnem_tools_browser_evidence_plan", "vnem_tools_browser_evidence_run", "vnem_tools_ui_surface_review", "vnem_tools_ui_evidence_audit"] },
+    browser_ui_verification: { why: "UI/browser claims need planned local interaction proof, runtime evidence, before/after comparison, and an audit of evidence limits.", tools: ["vnem_tools_browser_evidence_plan", "vnem_tools_browser_interaction_run", "vnem_tools_browser_evidence_compare", "vnem_tools_ui_surface_review", "vnem_tools_ui_evidence_audit", "vnem_tools_browser_evidence_run"] },
     local_session_recovery: { why: "Recovery needs branch/head/worktree/session state before further work.", tools: ["vnem_tools_local_session_recovery", "vnem_tools_repo_workflow_orchestrator"] },
     no_placebo_progress_audit: { why: "No-placebo review needs proof that behavior changed beyond docs/registration/generated churn.", tools: ["vnem_tools_no_placebo_progress_audit", "vnem_tools_task_progress_truth_check", "vnem_tools_evidence_pack"] },
     evidence_proof_pack: { why: "Evidence tasks need a compact proof packet and safe/must-not-claim boundaries.", tools: ["vnem_tools_evidence_pack", "vnem_tools_task_progress_truth_check"] },
@@ -3299,6 +3348,8 @@ function buildToolCatalog() {
     mk("vnem_tools_ui_surface_review", "ui_web_quality", { description: "Inspect local UI routes/components/entrypoints/render paths/state/a11y gaps under allowed roots; no browser/network/install.", allowed_roots_required: true, evidence_logged: true, typical_use_cases: ["prove component is wired", "find dead UI", "route/component review"], unsafe_actions_blocked: [...commonUnsafe, "hidden browser automation", "broad crawling", "secret reads"], related_tools: ["vnem_tools_architecture_review", "vnem_tools_browser_evidence_plan", "vnem_tools_ui_evidence_audit"] }),
     mk("vnem_tools_browser_evidence_plan", "ui_web_quality", { description: "Plan visual/browser proof checklist without running a browser.", allowed_roots_required: false, evidence_logged: false, typical_use_cases: ["UI proof planning", "localhost route evidence checklist"], unsafe_actions_blocked: [...commonUnsafe, "hidden browser automation", "login/session/cookie/CAPTCHA automation"] }),
     mk("vnem_tools_browser_evidence_run", "ui_web_quality", { read_only: false, network: true, requires_approval: true, dry_run_default: true, description: "Run bounded approved localhost browser proof collection and store structured screenshot/DOM/a11y evidence packs.", allowed_roots_required: true, evidence_logged: true, typical_use_cases: ["approved localhost UI proof run", "before/after screenshot evidence pack"], related_tools: ["vnem_tools_browser_evidence_plan", "vnem_tools_browser_capture", "vnem_tools_browser_page_inspect", "vnem_tools_browser_accessibility_audit", "vnem_tools_ui_evidence_audit"], unsafe_actions_blocked: [...commonUnsafe, "external browsing by default", "hidden browser automation", "login/session/cookie/CAPTCHA automation", "broad crawling"] }),
+    mk("vnem_tools_browser_interaction_run", "browser_interaction", { read_only: false, network: true, requires_approval: true, dry_run_default: true, description: "Run bounded disclosed Chromium scenarios with structured interaction, runtime console/network evidence, screenshots, DOM/accessibility snapshots, state/viewport coverage, pixel comparison, and owned-process cleanup.", allowed_roots_required: true, evidence_logged: true, typical_use_cases: ["localhost user-flow proof", "loading/empty/error/success state proof", "responsive before/after evidence"], related_tools: ["vnem_tools_browser_evidence_plan", "vnem_tools_browser_evidence_compare", "vnem_tools_ui_evidence_audit"], unsafe_actions_blocked: [...commonUnsafe, "persistent/shared profiles", "cookie access", "login/private/session automation", "CAPTCHA bypass", "search-engine scraping", "unapproved external origins", "hidden or stealth automation"] }),
+    mk("vnem_tools_browser_evidence_compare", "browser_interaction", { description: "Compare matching screenshots plus bounded DOM and accessibility snapshots from two browser interaction evidence packs.", allowed_roots_required: true, evidence_logged: false, typical_use_cases: ["before/after evidence comparison", "deterministic UI regression inspection"], related_tools: ["vnem_tools_browser_interaction_run"], unsafe_actions_blocked: [...commonUnsafe, "aesthetic-correctness claims from pixel difference alone", "reading evidence outside allowed roots"] }),
     mk("vnem_tools_ui_evidence_audit", "ui_web_quality", { description: "Audit provided UI evidence and reject unsupported visual/browser claims.", allowed_roots_required: false, evidence_logged: true, typical_use_cases: ["final UI claim audit", "responsive/a11y/state proof review"], unsafe_actions_blocked: [...commonUnsafe, "inventing browser results", "accepting code-only visual proof"] }),
     mk("vnem_tools_start_session", "session_evidence", { read_only: false, mutation: true, description: "Start session proof pack.", typical_use_cases: ["group local workflow evidence"] }),
     mk("vnem_tools_finish_session", "session_evidence", { read_only: false, mutation: true, description: "Write session proof pack.", typical_use_cases: ["final evidence summary"] }),
@@ -6139,7 +6190,7 @@ function safeBrowserEvidencePlan(args) {
     states_to_force_or_verify: states.length ? states : ["loading", "empty", "error", "success/normal"],
     before_after_plan: ["capture/store before evidence before UI changes when possible", "capture after evidence on same route/viewports", "compare before/after snapshots and avoid claiming pixel-perfect visual regression unless screenshot evidence supports it"],
     risk_notes: riskNotes,
-    existing_tools_to_use: ["vnem_tools_start_dev_server", "vnem_tools_browser_capture", "vnem_tools_browser_page_inspect", "vnem_tools_browser_accessibility_audit", "vnem_tools_browser_compare_snapshots", "vnem_tools_ui_evidence_audit", "vnem_tools_collect_evidence"],
+    existing_tools_to_use: ["vnem_tools_start_dev_server", "vnem_tools_browser_interaction_run", "vnem_tools_browser_evidence_compare", "vnem_tools_browser_capture", "vnem_tools_browser_page_inspect", "vnem_tools_browser_accessibility_audit", "vnem_tools_browser_compare_snapshots", "vnem_tools_ui_evidence_audit", "vnem_tools_collect_evidence"],
     permission_profile: activePermissionProfile.profile_name,
     requires_localhost_or_approved_url: true,
     browser_was_run: false,
@@ -6335,6 +6386,27 @@ function formatBrowserEvidenceRun(result) {
   return [`vnem_tools_browser_evidence_run: ${result.status}`, `Browser was run: ${result.browser_was_run}`, `Routes: ${result.routes_checked.length}`, `Screenshots: ${result.screenshots.filter((item) => item.captured).length}/${result.screenshots.length}`, `Safe to claim: ${result.safe_to_claim}`, `Evidence: ${result.evidence_log_id || "not written"}`].join("\n");
 }
 
+function formatBrowserInteraction(result) {
+  return [
+    `vnem_tools_browser_interaction_run: ${result.status || result.operation_result}`,
+    `Browser was run: ${result.browser_was_run === true}`,
+    `Scenarios: ${result.counts ? `${result.counts.passed}/${result.counts.planned}` : `0/${result.scenario_count || 0}`}`,
+    `Screenshots: ${result.screenshots?.length || 0}`,
+    `Console/network: ${result.console_summary?.status || "not run"}/${result.network_summary?.status || "not run"}`,
+    `Safe to claim: ${result.safe_to_claim === true}`,
+    `Evidence: ${result.evidence_path || "not written"}`
+  ].join("\n");
+}
+
+function formatBrowserEvidenceCompare(result) {
+  return [
+    `vnem_tools_browser_evidence_compare: ${result.operation_result}`,
+    `Matching/unmatched: ${result.matching_items}/${result.unmatched_items}`,
+    `Visual changes: ${result.visual_changes}`,
+    `DOM/accessibility changes: ${result.dom_changes}/${result.accessibility_changes}`
+  ].join("\n");
+}
+
 function safeUiEvidenceAudit(args) {
   const claim = String(args.claim || "");
   const hay = claim.toLowerCase();
@@ -6393,9 +6465,11 @@ function safeUiEvidenceAudit(args) {
 
 function normalizeBrowserEvidenceRunForAudit(run) {
   if (!run || typeof run !== "object") return { present: false, browser_was_run: false, screenshots: [], dom_assertions: [], viewport_results: [], state_results: [], route_render_evidence: [], console_summary: undefined, network_summary: undefined, accessibility_summary: undefined, before_after: undefined };
-  const screenshots = arrayify(run.screenshots).filter((item) => item && (item.screenshot_path || item.captured || item.status === "captured"));
-  const dom = arrayify(run.dom_or_page_inspection).map((item) => typeof item === "string" ? item : `${item.route || "route"} ${item.title || ""} ${(item.headings || []).join?.(" ") || ""} ${item.main_text_excerpt || ""}`.trim()).filter(Boolean);
-  const routes = arrayify(run.routes_checked).filter((item) => item && !/not_checked/i.test(String(item.status || "")));
+  const interactionScenarios = arrayify(run.scenarios);
+  const screenshots = arrayify(run.screenshots).filter((item) => item && (item.path || item.screenshot_path || item.captured || item.status === "captured"));
+  const interactionDom = interactionScenarios.flatMap((scenario) => [scenario.before?.dom, scenario.after?.dom].filter(Boolean).map((snapshot) => `${scenario.url || scenario.name || "route"} ${snapshot.title || ""} ${arrayify(snapshot.headings).map((heading) => heading.text || "").join(" ")} ${snapshot.text || ""}`.trim()));
+  const dom = [...arrayify(run.dom_or_page_inspection).map((item) => typeof item === "string" ? item : `${item.route || "route"} ${item.title || ""} ${(item.headings || []).join?.(" ") || ""} ${item.main_text_excerpt || ""}`.trim()), ...interactionDom].filter(Boolean);
+  const routes = [...arrayify(run.routes_checked).filter((item) => item && !/not_checked|failed|blocked/i.test(String(item.status || ""))), ...interactionScenarios.filter((scenario) => scenario.status === "passed").map((scenario) => ({ route: scenario.url || scenario.name, status: scenario.status }))];
   return {
     present: true,
     browser_was_run: run.browser_was_run === true,
@@ -9639,6 +9713,7 @@ async function withToolErrors(fn) {
     if (error instanceof ToolsError) return errorResult(error.message, error.code, error.details);
     if (error instanceof ProjectAutomationError) return errorResult(error.message, error.code, error.details);
     if (error instanceof TestingCiError) return errorResult(error.message, error.code, error.details);
+    if (error instanceof BrowserInteractionError) return errorResult(error.message, error.code, error.details);
     return errorResult(error.message || String(error), "tools_unexpected_error");
   }
 }
