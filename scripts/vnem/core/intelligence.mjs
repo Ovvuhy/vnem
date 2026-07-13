@@ -57,7 +57,7 @@ const DOMAIN_ADAPTERS = [
   ], ["platform compatibility", "system safety", "diagnostic evidence", "permission and rollback boundaries"], ["vnem_tools_windows_system_snapshot", "vnem_tools_powershell_command_plan", "vnem_tools_windows_path_inspect", "vnem_tools_process_inspect", "vnem_tools_port_inspect", "vnem_tools_windows_event_log_read", "vnem_tools_windows_service_status", "vnem_tools_windows_scheduled_task_status", "vnem_tools_windows_app_config_detect", "vnem_tools_windows_change_plan"]),
   adapter("game_modding", "Game and modding work", -1, [
     feature(/\b(game|modding|mod loader|load order|save file|anti-cheat|roblox|luau)\b/, 5, "game or modding domain")
-  ], ["version compatibility", "backup safety", "runtime proof"], ["vnem_tools_capability_gap_report", "vnem_tools_project_scan"]),
+  ], ["version compatibility", "backup safety", "format/toolchain boundaries", "runtime proof"], ["vnem_tools_game_adapter_catalog", "vnem_tools_game_project_inspect", "vnem_tools_game_config_audit", "vnem_tools_mod_compatibility_analyze", "vnem_tools_game_project_validate", "vnem_tools_mod_backup_create", "vnem_tools_mod_backup_restore", "vnem_tools_roblox_project_inspect", "vnem_tools_luau_symbol_map"]),
   adapter("skills", "Vetted skill selection or execution", -2, [
     feature(/\b(skill|plugin|agent skill|skill catalog|execute.*skill|install.*skill)\b/, 5, "skill or plugin workflow")
   ], ["provenance", "execution readiness", "prompt-injection safety"], ["vnem_tools_trust_boundary_classify", "vnem_tools_capability_gap_report"]),
@@ -103,7 +103,6 @@ const MODE_DOMAINS = {
 };
 
 const DOMAIN_GAPS = {
-  game_modding: ["dedicated game-project, config, Roblox, and Luau tools are not registered yet"],
   skills: ["a vetted skill execution runtime is not registered in Tools yet"],
   database_data: ["database schema and query tools are not registered in Tools yet"],
   client_setup: ["client setup currently executes through the VNEM CLI, not Tools MCP"]
@@ -140,6 +139,16 @@ const TOOL_PURPOSES = {
   vnem_tools_port_inspect: "inspect exact Windows TCP ports and correlate listener PIDs",
   vnem_tools_windows_event_log_read: "read bounded redacted Application, System, or Setup event evidence",
   vnem_tools_windows_change_plan: "require exact scope, permission, rollback, and security-control hard blocks before system mutation",
+  vnem_tools_game_adapter_catalog: "select a complete safe adapter contract and expose unsupported binary/toolchain boundaries",
+  vnem_tools_game_project_inspect: "inventory bounded game/mod files, formats, manifests, load order, assets, hashes, duplicates, and guarded binaries",
+  vnem_tools_game_config_audit: "parse or statically scan text, JSON, XML, YAML, TOML, Lua, and Luau configs without execution or secret values",
+  vnem_tools_mod_compatibility_analyze: "analyze dependencies, conflicts, version evidence, cycles, load order, and a bounded compatibility matrix",
+  vnem_tools_mod_profile_compare: "compare structural mod profile membership, versions, enabled state, and ordering",
+  vnem_tools_game_project_validate: "run bounded static project checks and return isolated game-specific validation command plans",
+  vnem_tools_mod_backup_create: "create an approval-gated isolated byte-preserving backup package with SHA-256 manifest",
+  vnem_tools_mod_backup_restore: "restore an exact backup only with package and current-target hash preconditions plus a safety package",
+  vnem_tools_roblox_project_inspect: "map Rojo services and paths, Luau contexts, toolchains, tests, and remote trust boundaries",
+  vnem_tools_luau_symbol_map: "map Lua/Luau symbols, requires, services, remotes, and credible static risks with file/line evidence",
   vnem_tools_app_inspect: "inspect app frameworks, boundaries, routes, APIs, data flow, states, and completion gaps",
   vnem_tools_app_vertical_slice_plan: "preview a coherent frontend, API, and domain transaction",
   vnem_tools_app_vertical_slice_apply: "apply an approved marker-backed app transaction",
@@ -446,6 +455,12 @@ export function coreRecommendedToolsCalls(classification, args = {}) {
   // Keep implementation essentials ahead of evidence-only steps when the route is capped.
   if (domainIds.has("app_engineering")) candidates.push("vnem_tools_app_inspect", "vnem_tools_app_vertical_slice_plan", "vnem_tools_repo_deep_map");
   if (domainIds.has("project_automation")) candidates.push("vnem_tools_project_automation_inspect", "vnem_tools_project_command_run", "vnem_tools_project_task_graph_plan");
+  if (domainIds.has("game_modding")) {
+    const gameText = `${args.user_goal || ""} ${args.task_context || ""}`;
+    candidates.push("vnem_tools_game_adapter_catalog");
+    if (/roblox|rojo|luau/i.test(gameText)) candidates.push("vnem_tools_roblox_project_inspect", "vnem_tools_luau_symbol_map", "vnem_tools_game_project_validate");
+    else candidates.push("vnem_tools_game_project_inspect", "vnem_tools_game_config_audit", "vnem_tools_mod_compatibility_analyze", "vnem_tools_game_project_validate");
+  }
   if (domainIds.has("windows_local")) candidates.push("vnem_tools_windows_system_snapshot", "vnem_tools_powershell_command_plan", "vnem_tools_process_inspect", "vnem_tools_port_inspect");
   if (domainIds.has("github_publish")) {
     const githubText = `${args.user_goal || ""} ${args.task_context || ""}`;
@@ -528,6 +543,7 @@ export function coreCommonTaskRoutes() {
     { task: "mixed app and UI", core_first: "vnem_entrypoint", tools_next: ["vnem_tools_repo_deep_map", "vnem_tools_ui_surface_review", "vnem_tools_browser_evidence_plan"] },
     { task: "package upgrade and CI repair", core_first: "vnem_entrypoint", tools_next: ["vnem_tools_dependency_scan", "vnem_tools_failure_triage", "vnem_tools_test_selection_plan"] },
     { task: "GitHub publishing and proof", core_first: "vnem_entrypoint", tools_next: ["vnem_tools_github_status", "vnem_tools_github_diff_review", "vnem_tools_github_remote_proof", "vnem_tools_github_actions_run_inspect", "vnem_tools_pr_quality_gate"] },
+    { task: "Game, modding, or Roblox project work", core_first: "vnem_entrypoint", tools_next: ["vnem_tools_game_adapter_catalog", "vnem_tools_game_project_inspect", "vnem_tools_game_config_audit", "vnem_tools_mod_compatibility_analyze", "vnem_tools_roblox_project_inspect", "vnem_tools_luau_symbol_map", "vnem_tools_game_project_validate", "vnem_tools_mod_backup_create"] },
     { task: "evidence continuation", core_first: "vnem_continue_from_tools_evidence", tools_next: ["vnem_tools_evidence_pack", "vnem_tools_task_progress_truth_check"] }
   ];
 }
@@ -601,6 +617,13 @@ function domainTools(domain, args) {
   }
   if (domain.id === "repo_code" && /\b(refactor|duplicated|preserve public|without changing public)\b/i.test(String(args.user_goal || ""))) {
     return ["vnem_tools_code_symbol_map", "vnem_tools_source_impact_trace", "vnem_tools_test_selection_plan"];
+  }
+  if (domain.id === "game_modding") {
+    const text = `${args.user_goal || ""} ${args.task_context || ""}`;
+    if (/roblox|rojo|luau/i.test(text)) return ["vnem_tools_game_adapter_catalog", "vnem_tools_roblox_project_inspect", "vnem_tools_luau_symbol_map", "vnem_tools_game_project_validate", "vnem_tools_mod_backup_create", "vnem_tools_mod_backup_restore"];
+    if (/profile|compare/i.test(text)) return ["vnem_tools_game_adapter_catalog", "vnem_tools_game_project_inspect", "vnem_tools_mod_profile_compare", "vnem_tools_mod_compatibility_analyze", "vnem_tools_game_project_validate"];
+    if (/backup|restore|rollback/i.test(text)) return ["vnem_tools_game_adapter_catalog", "vnem_tools_game_project_inspect", "vnem_tools_mod_backup_create", "vnem_tools_mod_backup_restore", "vnem_tools_game_project_validate"];
+    return ["vnem_tools_game_adapter_catalog", "vnem_tools_game_project_inspect", "vnem_tools_game_config_audit", "vnem_tools_mod_compatibility_analyze", "vnem_tools_game_project_validate", "vnem_tools_mod_backup_create"];
   }
   if (domain.id === "api_integration" && !/\b(live request|allowlisted|get request|call the api|execute.*request)\b/i.test(String(args.user_goal || ""))) {
     return ["vnem_tools_trust_boundary_classify", "vnem_tools_source_map", "vnem_tools_evidence_pack"];

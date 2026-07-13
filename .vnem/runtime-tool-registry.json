@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "source": "live MCP runtime registry status calls",
-  "total_tools": 259,
+  "total_tools": 269,
   "servers": {
     "core": {
       "schema_version": "1.0.0",
@@ -2560,7 +2560,7 @@
       "server_name": "vnem-tools",
       "version": "1.0.1",
       "valid": true,
-      "tool_count": 184,
+      "tool_count": 194,
       "alias_count": 0,
       "categories": {
         "action": 2,
@@ -2589,14 +2589,17 @@
         "fetch": 1,
         "find": 1,
         "finish": 1,
+        "game": 2,
         "git": 3,
         "github": 25,
         "high": 1,
         "install": 2,
         "list": 2,
         "local": 1,
+        "luau": 1,
         "manifest": 1,
         "mcp": 1,
+        "mod": 4,
         "mutation": 1,
         "next": 1,
         "no": 1,
@@ -2608,7 +2611,7 @@
         "pr": 1,
         "prepare": 1,
         "process": 1,
-        "project": 10,
+        "project": 13,
         "read": 2,
         "redirect": 1,
         "registry": 1,
@@ -2640,15 +2643,15 @@
         "workspace": 1
       },
       "side_effect_classes": {
-        "destructive_mutation": 31,
+        "destructive_mutation": 33,
         "network_mutation": 17,
-        "read_only": 136
+        "read_only": 144
       },
       "validation": {
         "valid": true,
         "server_name": "vnem-tools",
         "version": "1.0.1",
-        "tool_count": 184,
+        "tool_count": 194,
         "alias_count": 0,
         "errors": [],
         "warnings": [
@@ -5250,6 +5253,366 @@
           "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-giga-windows-local.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_game_adapter_catalog",
+          "version": "1.0.1",
+          "title": "Inspect Game Mod and Roblox Adapter Contracts",
+          "description": "Return the bounded game-domain adapter contract and detect applicable generic text/mod, Roblox/Rojo/Luau, and guarded-binary policies without launching games or tools.",
+          "category": "game",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-game-domain.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_game_project_inspect",
+          "version": "1.0.1",
+          "title": "Inspect Game or Mod Project Inventory",
+          "description": "Inventory a bounded allowed-root game/mod project, detect manifests/load orders/configs/assets/guarded binaries, hash regular files, find duplicates, and require isolated generated output without executing anything.",
+          "category": "project",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-game-domain.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_game_config_audit",
+          "version": "1.0.1",
+          "title": "Audit Game Mod Lua and Luau Configs",
+          "description": "Parse or statically scan bounded text, JSON, XML, YAML, TOML, Lua, and Luau configs without returning values, executing code, or pretending lexical checks prove game semantics.",
+          "category": "game",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-game-domain.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_mod_compatibility_analyze",
+          "version": "1.0.1",
+          "title": "Analyze Mod Manifests Load Order and Compatibility",
+          "description": "Parse bounded manifests and load order into dependency, conflict, cycle, exact-version, ordering, and compatibility-matrix evidence. Does not activate a profile or claim runtime compatibility.",
+          "category": "mod",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-game-domain.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_mod_profile_compare",
+          "version": "1.0.1",
+          "title": "Compare Two Mod Profiles",
+          "description": "Compare two bounded JSON/YAML/TOML/text mod profiles for added, removed, version, enabled, and order changes without changing a mod manager or active game files.",
+          "category": "mod",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-game-domain.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_game_project_validate",
+          "version": "1.0.1",
+          "title": "Validate Game Mod or Roblox Project Statically",
+          "description": "Run bounded parser, path, case-collision, hash, guarded-binary, Roblox mapping, asset/config, and static script checks; return exact isolated project command plans without executing unknown tools or launching a game.",
+          "category": "project",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-game-domain.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_mod_backup_create",
+          "version": "1.0.1",
+          "title": "Create Isolated Mod Project Backup Package",
+          "description": "Dry-run or create an approval-gated bounded directory package for exact regular files with SHA-256 manifest under isolated .vnem output. Secret-like paths, links, installers, and execution are blocked.",
+          "category": "mod",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": true,
+            "idempotentHint": false,
+            "openWorldHint": false
+          },
+          "side_effect_class": "destructive_mutation",
+          "permission_requirements": [
+            "approved_local_mutation"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "required_redacted_record",
+          "rollback_behavior": {
+            "mode": "required_or_explicitly_not_available",
+            "guidance": "Return backup, compensating action, or explicit rollback-unavailable state in evidence."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-game-domain.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_mod_backup_restore",
+          "version": "1.0.1",
+          "title": "Restore Isolated Mod Project Backup Package",
+          "description": "Dry-run or restore a VNEM game-domain package after manifest hash verification and exact current-target hash preconditions; creates a pre-restore safety package and never launches a game.",
+          "category": "mod",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": true,
+            "idempotentHint": false,
+            "openWorldHint": false
+          },
+          "side_effect_class": "destructive_mutation",
+          "permission_requirements": [
+            "approved_local_mutation"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "required_redacted_record",
+          "rollback_behavior": {
+            "mode": "self",
+            "guidance": "The tool is itself a rollback operation and must verify the restored state."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-game-domain.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_roblox_project_inspect",
+          "version": "1.0.1",
+          "title": "Inspect Roblox Rojo and Luau Project Structure",
+          "description": "Map bounded Rojo projects, service paths, missing/escaping mappings, Lua/Luau contexts, configured toolchains/tests, remote trust boundaries, and static risks without Studio, account, plugin, or place mutation.",
+          "category": "project",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-game-domain.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_luau_symbol_map",
+          "version": "1.0.1",
+          "title": "Map Luau Symbols Requires Services and Remotes",
+          "description": "Build a bounded file/line map of Lua/Luau functions, table members, requires, Roblox services, remote trust boundaries, and credible static-risk markers without executing source.",
+          "category": "luau",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-game-domain.mjs"
           ],
           "benchmark_scenarios": [],
           "input_schema_present": true

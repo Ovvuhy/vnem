@@ -42,6 +42,7 @@ import { TestingCiError, TestingCiRuntime } from "../testing/runtime.mjs";
 import { BrowserInteractionError, BrowserInteractionRuntime } from "./browser-interaction.mjs";
 import { WindowsLocalError, WindowsLocalRuntime } from "./windows-local.mjs";
 import { GithubDevelopmentError, GithubDevelopmentRuntime } from "./github-development.mjs";
+import { GameDomainError, GameDomainRuntime } from "./game-domain.mjs";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(scriptDir, "..", "..", "..");
@@ -147,6 +148,16 @@ const REQUIRED_TOOL_NAMES = [
   "vnem_tools_windows_event_log_read",
   "vnem_tools_windows_app_config_detect",
   "vnem_tools_windows_change_plan",
+  "vnem_tools_game_adapter_catalog",
+  "vnem_tools_game_project_inspect",
+  "vnem_tools_game_config_audit",
+  "vnem_tools_mod_compatibility_analyze",
+  "vnem_tools_mod_profile_compare",
+  "vnem_tools_game_project_validate",
+  "vnem_tools_mod_backup_create",
+  "vnem_tools_mod_backup_restore",
+  "vnem_tools_roblox_project_inspect",
+  "vnem_tools_luau_symbol_map",
   "vnem_tools_test_system_inspect",
   "vnem_tools_affected_test_graph",
   "vnem_tools_test_run",
@@ -298,6 +309,7 @@ const githubDevelopmentRuntime = new GithubDevelopmentRuntime({
   redact: redactSecrets,
   protectedBranches: () => githubSettings().protected_branches
 });
+const gameDomainRuntime = new GameDomainRuntime({ allowedRoots, evidenceRoot });
 const activePermissionProfile = permissionRuntime.activeProfile();
 const usablePacks = await loadUsablePacks();
 const requestedPrecisionWorkspaceCandidate = path.resolve(
@@ -370,7 +382,7 @@ function registerTools(mcpServer) {
         user_goal: z.string().min(1),
         repo_path: z.string().optional(),
         root: z.string().default("."),
-        task_mode: z.enum(["auto", "local_only", "implementation", "debugging", "repo_inspection", "patch_targeting", "mcp_tool_audit", "code_intelligence", "publish", "cloudflare", "browser_ui", "recovery", "no_placebo", "evidence_pack", "generated_artifact"]).default("auto"),
+        task_mode: z.enum(["auto", "local_only", "implementation", "debugging", "repo_inspection", "patch_targeting", "mcp_tool_audit", "code_intelligence", "publish", "cloudflare", "browser_ui", "windows", "game_modding", "recovery", "no_placebo", "evidence_pack", "generated_artifact"]).default("auto"),
         changed_files: z.array(z.string()).default([]),
         failing_output: z.string().default("")
       },
@@ -1505,6 +1517,165 @@ function registerTools(mcpServer) {
   );
 
   mcpServer.registerTool(
+    "vnem_tools_game_adapter_catalog",
+    {
+      title: "Inspect Game Mod and Roblox Adapter Contracts",
+      description: "Return the bounded game-domain adapter contract and detect applicable generic text/mod, Roblox/Rojo/Luau, and guarded-binary policies without launching games or tools.",
+      inputSchema: { root: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const permission = enforceActionPolicy("game_inspect", { ...args, dry_run: false, proposed_action: "bounded game-domain adapter detection" });
+      const result = { ...(await gameDomainRuntime.adapterCatalog(args)), permission };
+      return toolResult(formatGameDomain("vnem_tools_game_adapter_catalog", result), { game_adapter_catalog: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_game_project_inspect",
+    {
+      title: "Inspect Game or Mod Project Inventory",
+      description: "Inventory a bounded allowed-root game/mod project, detect manifests/load orders/configs/assets/guarded binaries, hash regular files, find duplicates, and require isolated generated output without executing anything.",
+      inputSchema: { root: z.string().default("."), max_files: z.number().int().min(10).max(3000).default(1000), max_depth: z.number().int().min(1).max(20).default(12), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const permission = enforceActionPolicy("game_inspect", { ...args, dry_run: false, proposed_action: "bounded game/mod project inventory" });
+      const result = { ...(await gameDomainRuntime.inspectProject(args)), permission };
+      recordSession(args.session_id, "game_domain_inspections", result);
+      return toolResult(formatGameDomain("vnem_tools_game_project_inspect", result), { game_project_inspection: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_game_config_audit",
+    {
+      title: "Audit Game Mod Lua and Luau Configs",
+      description: "Parse or statically scan bounded text, JSON, XML, YAML, TOML, Lua, and Luau configs without returning values, executing code, or pretending lexical checks prove game semantics.",
+      inputSchema: { root: z.string().default("."), paths: z.array(z.string()).max(100).default([]), max_files: z.number().int().min(1).max(100).default(50), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const permission = enforceActionPolicy("game_inspect", { ...args, dry_run: false, proposed_action: "bounded structured game config audit" });
+      const result = { ...(await gameDomainRuntime.auditConfigs(args)), permission };
+      recordSession(args.session_id, "game_domain_inspections", result);
+      return toolResult(formatGameDomain("vnem_tools_game_config_audit", result), { game_config_audit: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_mod_compatibility_analyze",
+    {
+      title: "Analyze Mod Manifests Load Order and Compatibility",
+      description: "Parse bounded manifests and load order into dependency, conflict, cycle, exact-version, ordering, and compatibility-matrix evidence. Does not activate a profile or claim runtime compatibility.",
+      inputSchema: { root: z.string().default("."), manifest_paths: z.array(z.string()).max(60).default([]), load_order_path: z.string().optional(), max_manifests: z.number().int().min(1).max(60).default(30), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const permission = enforceActionPolicy("game_inspect", { ...args, dry_run: false, proposed_action: "mod manifest and load-order compatibility analysis" });
+      const result = { ...(await gameDomainRuntime.analyzeCompatibility(args)), permission };
+      recordSession(args.session_id, "game_domain_inspections", result);
+      return toolResult(formatGameDomain("vnem_tools_mod_compatibility_analyze", result), { mod_compatibility_analysis: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_mod_profile_compare",
+    {
+      title: "Compare Two Mod Profiles",
+      description: "Compare two bounded JSON/YAML/TOML/text mod profiles for added, removed, version, enabled, and order changes without changing a mod manager or active game files.",
+      inputSchema: { root: z.string().default("."), left_path: z.string().min(1), right_path: z.string().min(1), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const permission = enforceActionPolicy("game_inspect", { ...args, dry_run: false, proposed_action: "bounded mod profile comparison" });
+      const result = { ...(await gameDomainRuntime.compareProfiles(args)), permission };
+      recordSession(args.session_id, "game_domain_inspections", result);
+      return toolResult(formatGameDomain("vnem_tools_mod_profile_compare", result), { mod_profile_comparison: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_game_project_validate",
+    {
+      title: "Validate Game Mod or Roblox Project Statically",
+      description: "Run bounded parser, path, case-collision, hash, guarded-binary, Roblox mapping, asset/config, and static script checks; return exact isolated project command plans without executing unknown tools or launching a game.",
+      inputSchema: { root: z.string().default("."), max_files: z.number().int().min(10).max(2000).default(800), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const permission = enforceActionPolicy("game_inspect", { ...args, dry_run: false, proposed_action: "bounded game/mod project static validation" });
+      const result = { ...(await gameDomainRuntime.validateProject(args)), permission };
+      recordSession(args.session_id, "game_domain_validations", result);
+      return toolResult(formatGameDomain("vnem_tools_game_project_validate", result), { game_project_validation: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_mod_backup_create",
+    {
+      title: "Create Isolated Mod Project Backup Package",
+      description: "Dry-run or create an approval-gated bounded directory package for exact regular files with SHA-256 manifest under isolated .vnem output. Secret-like paths, links, installers, and execution are blocked.",
+      inputSchema: { root: z.string().default("."), paths: z.array(z.string()).min(1).max(100), adapter_id: z.enum(["generic-text-mod-project", "roblox-rojo-luau", "guarded-binary-game-format"]).default("generic-text-mod-project"), output_root: z.string().default(".vnem/game-domain"), max_files: z.number().int().min(1).max(1000).default(500), max_total_bytes: z.number().int().min(1024).max(134217728).default(67108864), dry_run: z.boolean().default(true), approved: z.boolean().default(false), approval_note: z.string().default(""), session_id: z.string().optional() },
+      annotations: ACTION_TOOL
+    },
+    async (args) => withToolErrors(async () => {
+      const permission = enforceActionPolicy("game_config_write", { ...args, proposed_action: `create isolated game/mod backup for ${args.paths.join(", ")}` });
+      const result = { ...(await gameDomainRuntime.createBackup(args)), permission };
+      if (result.executed) recordSession(args.session_id, "game_domain_backups", result);
+      return toolResult(formatGameDomain("vnem_tools_mod_backup_create", result), { mod_backup: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_mod_backup_restore",
+    {
+      title: "Restore Isolated Mod Project Backup Package",
+      description: "Dry-run or restore a VNEM game-domain package after manifest hash verification and exact current-target hash preconditions; creates a pre-restore safety package and never launches a game.",
+      inputSchema: { root: z.string().default("."), manifest_path: z.string().min(1), expected_current_sha256: z.record(z.any()).default({}), dry_run: z.boolean().default(true), approved: z.boolean().default(false), approval_note: z.string().default(""), session_id: z.string().optional() },
+      annotations: ACTION_TOOL
+    },
+    async (args) => withToolErrors(async () => {
+      const permission = enforceActionPolicy("game_config_write", { ...args, proposed_action: `restore exact game/mod backup ${args.manifest_path}` });
+      const result = { ...(await gameDomainRuntime.restoreBackup(args)), permission };
+      if (result.executed) recordSession(args.session_id, "restores", result);
+      return toolResult(formatGameDomain("vnem_tools_mod_backup_restore", result), { mod_backup_restore: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_roblox_project_inspect",
+    {
+      title: "Inspect Roblox Rojo and Luau Project Structure",
+      description: "Map bounded Rojo projects, service paths, missing/escaping mappings, Lua/Luau contexts, configured toolchains/tests, remote trust boundaries, and static risks without Studio, account, plugin, or place mutation.",
+      inputSchema: { root: z.string().default("."), max_files: z.number().int().min(10).max(2500).default(1200), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const permission = enforceActionPolicy("game_inspect", { ...args, dry_run: false, proposed_action: "bounded Roblox Rojo and Luau project inspection" });
+      const result = { ...(await gameDomainRuntime.inspectRoblox(args)), permission };
+      recordSession(args.session_id, "game_domain_inspections", result);
+      return toolResult(formatGameDomain("vnem_tools_roblox_project_inspect", result), { roblox_project_inspection: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_luau_symbol_map",
+    {
+      title: "Map Luau Symbols Requires Services and Remotes",
+      description: "Build a bounded file/line map of Lua/Luau functions, table members, requires, Roblox services, remote trust boundaries, and credible static-risk markers without executing source.",
+      inputSchema: { root: z.string().default("."), query: z.string().default(""), max_files: z.number().int().min(1).max(2000).default(800), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const permission = enforceActionPolicy("game_inspect", { ...args, dry_run: false, proposed_action: "bounded Luau source and trust-boundary mapping" });
+      const result = { ...(await gameDomainRuntime.mapLuauSymbols(args)), permission };
+      recordSession(args.session_id, "game_domain_inspections", result);
+      return toolResult(formatGameDomain("vnem_tools_luau_symbol_map", result), { luau_symbol_map: result });
+    })
+  );
+
+  mcpServer.registerTool(
     "vnem_tools_test_system_inspect",
     {
       title: "Inspect Project Test and CI System",
@@ -2490,7 +2661,7 @@ async function loadUsablePacks() {
 }
 
 function unsupportedActions() {
-  return ["github_destructive_admin_without_config", "package_install", "package_publish", "deployment", "windows_system_mutation", "arbitrary_shell", "unrestricted_api_calls", "secret_manager_backed_live_api", "search_engine_scraping", "automatic_captcha_bypass", "broad_crawling", "external_browser_browsing_by_default", "login_automation", "cookie_extraction", "session_extraction", "captcha_bypass", "giga_mcp"];
+  return ["github_destructive_admin_without_config", "package_install", "package_publish", "deployment", "windows_system_mutation", "game_launch", "downloaded_mod_or_unknown_tool_execution", "generic_binary_game_format_patch", "arbitrary_shell", "unrestricted_api_calls", "secret_manager_backed_live_api", "search_engine_scraping", "automatic_captcha_bypass", "broad_crawling", "external_browser_browsing_by_default", "login_automation", "cookie_extraction", "session_extraction", "captcha_bypass", "giga_mcp"];
 }
 
 
@@ -2556,6 +2727,12 @@ function toolReliabilityFor(name, descriptor = {}) {
     unsafe = ["Any service/registry/task/firewall/antivirus/PATH/machine setting changed", "Security controls were disabled", "Command lines, config contents, credentials, or environment values were collected", "Universal Windows compatibility"];
     next = "Run only the exact read-only probe needed; for mutation, require a separately implemented executor plus scoped local_pc_action approval and rollback evidence.";
     known = ["Windows provider access can be unavailable", "CIM falls back to exact Get-Process/Get-Service reads", "File-lock owner identity remains unproven", "System mutation is not implemented"];
+  } else if (group === "game_domain") {
+    level = "local_tested";
+    safe = ["Bounded allowed-root inventory, structured config/manifest checks, hashes, compatibility, Roblox/Luau mapping, and approval-gated package backup/restore behavior are tested through real local stdio MCP."];
+    unsafe = ["A game or Roblox Studio was launched", "Static checks prove runtime compatibility", "Unknown tools or downloaded mods executed", "Guarded binary formats were generically parsed, patched, or repacked"];
+    next = "Confirm exact game/version/platform/loader/toolchain, create an isolated backup before mutation, then run the project and game-specific validator.";
+    known = ["XML and Lua/Luau checks have explicit parser/static limits", "Semantic version ranges need a loader-specific resolver", "Backup packages preserve bytes but not external mod-manager state"];
   } else if (["api_request", "search", "research_sources", "source_ingestion", "browsing_risk", "research_matrix"].includes(group)) {
     level = descriptor.network ? "dry_run_tested" : "local_tested";
     safe = ["Planning, bounded local/source evidence, or configured-provider behavior is tested without fake current/live claims."];
@@ -2693,6 +2870,7 @@ function toolsVisibilityDoctor(args = {}) {
     github_ci_proof: ["vnem_tools_github_status", "vnem_tools_github_diff_review", "vnem_tools_github_review_threads", "vnem_tools_github_remote_proof", "vnem_tools_github_actions_run_inspect", "vnem_tools_github_release_verify", "vnem_tools_github_public_surface_audit", "vnem_tools_github_actions_status", "vnem_tools_pr_quality_gate"].every((tool) => names.has(tool)),
     browser_ui_proof: ["vnem_tools_browser_evidence_plan", "vnem_tools_browser_interaction_run", "vnem_tools_browser_evidence_compare", "vnem_tools_ui_evidence_audit"].every((tool) => names.has(tool)),
     windows_local_proof: ["vnem_tools_windows_system_snapshot", "vnem_tools_powershell_command_plan", "vnem_tools_windows_path_inspect", "vnem_tools_process_inspect", "vnem_tools_port_inspect", "vnem_tools_windows_event_log_read", "vnem_tools_windows_change_plan"].every((tool) => names.has(tool)),
+    game_domain_proof: ["vnem_tools_game_adapter_catalog", "vnem_tools_game_project_inspect", "vnem_tools_game_config_audit", "vnem_tools_mod_compatibility_analyze", "vnem_tools_mod_profile_compare", "vnem_tools_game_project_validate", "vnem_tools_mod_backup_create", "vnem_tools_mod_backup_restore", "vnem_tools_roblox_project_inspect", "vnem_tools_luau_symbol_map"].every((tool) => names.has(tool)),
     adoption_diagnostics: entrypoints.every((tool) => names.has(tool))
   };
   const weak = toolsWeakAdoptionDescriptions(catalog);
@@ -3031,6 +3209,7 @@ function toolsTaskCategories(text, taskType, localOnly) {
   if (taskType.includes("cloudflare") || /\b(cloudflare|pages|workers|dns|zone|wrangler|deploy)\b/.test(text)) add("cloudflare_deploy_control");
   if (taskType.includes("browser") || /\b(browser|localhost|screenshot|ui|visual|viewport|responsive|dom|a11y)\b/.test(text)) add("browser_ui_verification");
   if (taskType.includes("windows") || /\b(windows|powershell|event viewer|defender|scheduled task|service status|path issue|file lock|local pc|tcp port)\b/.test(text)) add("windows_local_diagnosis");
+  if (taskType.includes("game") || /\b(game|modding|mod loader|load order|mod profile|roblox|rojo|luau|game config|game asset)\b/.test(text)) add("game_modding_toolchain");
   if (taskType.includes("recovery") || /\b(recover|recovery|lost context|session|local stack|resume)\b/.test(text)) add("local_session_recovery");
   if (taskType.includes("no_placebo") || /\b(no placebo|placebo|fake proof|real implementation|not placebo|docs only|registration only)\b/.test(text)) add("no_placebo_progress_audit");
   if (taskType.includes("evidence") || /\b(evidence|proof pack|proof packet|handoff|final report|what is proven)\b/.test(text)) add("evidence_proof_pack");
@@ -3057,6 +3236,7 @@ function toolsRouteDefinitions() {
     cloudflare_deploy_control: { why: "Cloudflare work needs auth/status, deploy planning, verification, and guarded mutation tools only when approved.", tools: ["vnem_tools_cloudflare_status", "vnem_tools_cloudflare_auth_plan", "vnem_tools_cloudflare_pages_deploy_plan", "vnem_tools_cloudflare_workers_deploy_plan", "vnem_tools_cloudflare_deploy_verify"] },
     browser_ui_verification: { why: "UI/browser claims need planned local interaction proof, runtime evidence, before/after comparison, and an audit of evidence limits.", tools: ["vnem_tools_browser_evidence_plan", "vnem_tools_browser_interaction_run", "vnem_tools_browser_evidence_compare", "vnem_tools_ui_surface_review", "vnem_tools_ui_evidence_audit", "vnem_tools_browser_evidence_run"] },
     windows_local_diagnosis: { why: "Windows/local-PC work needs safe quoting, bounded exact-target system evidence, provider/access honesty, and a permission plus rollback gate before mutation.", tools: ["vnem_tools_windows_system_snapshot", "vnem_tools_powershell_command_plan", "vnem_tools_windows_path_inspect", "vnem_tools_process_inspect", "vnem_tools_port_inspect", "vnem_tools_windows_service_status", "vnem_tools_windows_scheduled_task_status", "vnem_tools_windows_event_log_read", "vnem_tools_windows_app_config_detect", "vnem_tools_windows_change_plan"] },
+    game_modding_toolchain: { why: "Game/mod/Roblox work needs an explicit adapter contract, bounded configs/manifests/load order, compatibility and hash evidence, isolated backup/restore, and game-specific validation without unknown tool execution.", tools: ["vnem_tools_game_adapter_catalog", "vnem_tools_game_project_inspect", "vnem_tools_game_config_audit", "vnem_tools_mod_compatibility_analyze", "vnem_tools_roblox_project_inspect", "vnem_tools_luau_symbol_map", "vnem_tools_game_project_validate", "vnem_tools_mod_backup_create"] },
     local_session_recovery: { why: "Recovery needs branch/head/worktree/session state before further work.", tools: ["vnem_tools_local_session_recovery", "vnem_tools_repo_workflow_orchestrator"] },
     no_placebo_progress_audit: { why: "No-placebo review needs proof that behavior changed beyond docs/registration/generated churn.", tools: ["vnem_tools_no_placebo_progress_audit", "vnem_tools_task_progress_truth_check", "vnem_tools_evidence_pack"] },
     evidence_proof_pack: { why: "Evidence tasks need a compact proof packet and safe/must-not-claim boundaries.", tools: ["vnem_tools_evidence_pack", "vnem_tools_task_progress_truth_check"] },
@@ -3103,6 +3283,7 @@ function toolsRequiredInputsForTool(toolName, categories) {
   if (toolName.includes("source_impact_trace") || toolName.includes("test_selection")) inputs.push("changed_files when known");
   if (toolName.includes("github") || toolName.includes("pr_quality_gate")) inputs.push("owner/repo, branch, PR, or SHA context");
   if (toolName.includes("browser")) inputs.push("app_url, file_path, or route");
+  if (toolName.includes("game") || toolName.includes("mod_") || toolName.includes("roblox") || toolName.includes("luau")) inputs.push("exact game/tool version, platform, loader, and project root when known");
   if (categories.includes("evidence_proof_pack")) inputs.push("commands_run, tests_passed, tests_failed");
   return uniqueToolNames(inputs);
 }
@@ -3113,6 +3294,7 @@ function toolsMissingInputs(categories, context, localOnly) {
   if (categories.includes("debugging_failing_tests") && !context.failing_output) missing.push("failing_output");
   if (categories.includes("github_pr_ci_proof") && !localOnly) missing.push("branch/commit_sha/pr_number when known");
   if (categories.includes("browser_ui_verification") && !context.app_url && !context.file_path) missing.push("app_url, file_path, or route");
+  if (categories.includes("game_modding_toolchain") && !context.game_version) missing.push("game/tool version and loader/toolchain version when runtime compatibility matters");
   return uniqueToolNames(missing);
 }
 
@@ -3122,6 +3304,7 @@ function toolsChecksForCategories(categories, changedFiles = []) {
   if (categories.includes("debugging_failing_tests")) checks.push("rerun the failing command after the smallest fix");
   if (categories.includes("github_pr_ci_proof")) checks.push("verify remote branch SHA", "check GitHub Actions run status");
   if (categories.includes("browser_ui_verification")) checks.push("collect local browser evidence or report browser unavailable");
+  if (categories.includes("game_modding_toolchain")) checks.push("run vnem_tools_game_project_validate", "run the exact game/loader project check or report it unproven");
   if (changedFiles.some((file) => /package\.json|scripts\//.test(String(file)))) checks.push("npm.cmd run validate");
   return uniqueToolNames(checks).slice(0, 8);
 }
@@ -3426,7 +3609,7 @@ async function searchAllowedFiles(args) {
   return { root: root.relativePath || ".", query: args.query, results, skipped_policy: skippedPolicy() };
 }
 
-const TOOL_CAPABILITY_GROUPS = ["permissions", "filesystem", "project_intelligence", "app_engineering", "repo_power", "adoption_reliability", "patching", "rollback", "commands", "project_tasks", "dev_server", "browser_proof", "browser_intelligence", "ui_web_quality", "windows_local", "api_request", "search", "research_sources", "source_quality", "browsing_risk", "research_matrix", "source_ingestion", "debugging_code_quality", "session_evidence", "local_git", "github_autonomy", "status_readiness", "cloudflare_control", "tools_quality", "tool_intelligence"];
+const TOOL_CAPABILITY_GROUPS = ["permissions", "filesystem", "project_intelligence", "app_engineering", "repo_power", "adoption_reliability", "patching", "rollback", "commands", "project_tasks", "dev_server", "browser_proof", "browser_intelligence", "ui_web_quality", "windows_local", "game_domain", "api_request", "search", "research_sources", "source_quality", "browsing_risk", "research_matrix", "source_ingestion", "debugging_code_quality", "session_evidence", "local_git", "github_autonomy", "status_readiness", "cloudflare_control", "tools_quality", "tool_intelligence"];
 
 function buildToolCatalog() {
   const commonUnsafe = ["secret reading/dumping", "outside-root access", "arbitrary shell", "package installs", "git push", "deployment", "Giga MCP"];
@@ -3552,6 +3735,16 @@ function buildToolCatalog() {
     mk("vnem_tools_windows_event_log_read", "windows_local", { description: "Read up to 50 redacted recent Application/System/Setup events over at most 24 hours.", allowed_roots_required: false, evidence_logged: false, typical_use_cases: ["Event Viewer diagnosis", "app startup failure evidence"], unsafe_actions_blocked: [...commonUnsafe, "broad log export", "log clearing", "access-policy bypass"] }),
     mk("vnem_tools_windows_app_config_detect", "windows_local", { description: "Detect known client commands/install/config/profile locations and reload guidance using the shared client catalog.", evidence_logged: false, typical_use_cases: ["installed-client detection", "config location recovery", "reload guidance"], unsafe_actions_blocked: [...commonUnsafe, "config-content reads", "config mutation", "guessing unverified global paths"] }),
     mk("vnem_tools_windows_change_plan", "windows_local", { description: "Build a non-executing exact-scope permission and rollback gate for Windows system changes; security disabling is hard-blocked.", allowed_roots_required: false, evidence_logged: false, typical_use_cases: ["system mutation preflight", "rollback planning"], unsafe_actions_blocked: [...commonUnsafe, "system mutation", "security-control disabling", "approval inference"] }),
+    mk("vnem_tools_game_adapter_catalog", "game_domain", { description: "Detect and report complete adapter contracts for generic text/mod projects, Roblox/Rojo/Luau, and guarded binary formats.", evidence_logged: false, typical_use_cases: ["choose a safe game/mod adapter", "prove unsupported binary boundaries"], unsafe_actions_blocked: [...commonUnsafe, "game launch", "unknown tool execution", "generic binary patching"] }),
+    mk("vnem_tools_game_project_inspect", "game_domain", { description: "Inventory bounded game/mod files, manifests, load order, configs, assets, guarded binaries, hashes, duplicates, and isolated output requirements.", typical_use_cases: ["game/mod project inventory", "duplicate and binary-format guard"], unsafe_actions_blocked: [...commonUnsafe, "game launch", "installer execution", "unbounded game-folder crawl"] }),
+    mk("vnem_tools_game_config_audit", "game_domain", { description: "Parse or statically scan bounded text, JSON, XML, YAML, TOML, Lua, and Luau configs without values or execution.", typical_use_cases: ["config validation", "Lua/Luau static risk scan"], unsafe_actions_blocked: [...commonUnsafe, "source execution", "secret value output", "claiming lexical XML or Lua checks prove semantics"] }),
+    mk("vnem_tools_mod_compatibility_analyze", "game_domain", { description: "Analyze manifests and load order for dependencies, conflicts, cycles, exact versions, ordering, and a bounded compatibility matrix.", typical_use_cases: ["mod load-order analysis", "compatibility matrix"], unsafe_actions_blocked: [...commonUnsafe, "profile activation", "runtime compatibility certification", "invented version-range resolution"] }),
+    mk("vnem_tools_mod_profile_compare", "game_domain", { description: "Compare two bounded mod profiles for added, removed, version, enabled, and ordering changes.", typical_use_cases: ["profile drift review", "mod profile migration"], unsafe_actions_blocked: [...commonUnsafe, "mod-manager mutation", "profile activation"] }),
+    mk("vnem_tools_game_project_validate", "game_domain", { description: "Run bounded static config/path/hash/asset/Roblox checks and return exact isolated validation command plans without executing unknown tools.", typical_use_cases: ["pre-build project validation", "game-specific check planning"], unsafe_actions_blocked: [...commonUnsafe, "unknown tool execution", "game launch", "runtime-success claims"] }),
+    mk("vnem_tools_mod_backup_create", "game_domain", { read_only: false, mutation: true, requires_approval: true, dry_run_default: true, description: "Create an isolated bounded directory backup package for exact regular files with SHA-256 manifest.", typical_use_cases: ["pre-mutation mod backup", "byte-preserving project package"], unsafe_actions_blocked: [...commonUnsafe, "secret-path backup", "link traversal", "unbounded archives"] }),
+    mk("vnem_tools_mod_backup_restore", "game_domain", { read_only: false, mutation: true, requires_approval: true, dry_run_default: true, description: "Restore a VNEM game-domain package only after package and exact current-target hash checks, with a pre-restore safety package.", typical_use_cases: ["rollback game/mod files", "verified package restore"], unsafe_actions_blocked: [...commonUnsafe, "unreviewed overwrite", "cross-project restore", "game launch"] }),
+    mk("vnem_tools_roblox_project_inspect", "game_domain", { description: "Map Rojo project/service paths, Luau contexts, toolchains/tests, remote trust boundaries, and missing/escaping mappings.", typical_use_cases: ["Roblox project structure", "Rojo mapping and remote review"], unsafe_actions_blocked: [...commonUnsafe, "Studio automation", "account/session access", "place publishing", "plugin execution"] }),
+    mk("vnem_tools_luau_symbol_map", "game_domain", { description: "Map bounded Lua/Luau symbols, requires, Roblox services, remote boundaries, and static risks with file/line evidence.", typical_use_cases: ["Luau source search", "remote and module mapping"], unsafe_actions_blocked: [...commonUnsafe, "source execution", "full semantic/type-analysis claims"] }),
     mk("vnem_tools_ui_evidence_audit", "ui_web_quality", { description: "Audit provided UI evidence and reject unsupported visual/browser claims.", allowed_roots_required: false, evidence_logged: true, typical_use_cases: ["final UI claim audit", "responsive/a11y/state proof review"], unsafe_actions_blocked: [...commonUnsafe, "inventing browser results", "accepting code-only visual proof"] }),
     mk("vnem_tools_start_session", "session_evidence", { read_only: false, mutation: true, description: "Start session proof pack.", typical_use_cases: ["group local workflow evidence"] }),
     mk("vnem_tools_finish_session", "session_evidence", { read_only: false, mutation: true, description: "Write session proof pack.", typical_use_cases: ["final evidence summary"] }),
@@ -9960,6 +10153,17 @@ function formatWindowsLocal(tool, result) {
   ].filter(Boolean).join("\n");
 }
 
+function formatGameDomain(tool, result) {
+  const count = result.inventory?.files_seen ?? result.files?.length ?? result.mods?.length ?? result.source_map?.length ?? result.file_count ?? result.targets?.length;
+  return [
+    `${tool}: ${result.operation_result}`,
+    count === undefined ? null : `Items: ${count}`,
+    `Read-only/executed: ${result.read_only !== false}/${result.executed === true}`,
+    result.safe_to_claim === undefined ? null : `Static validation safe to claim: ${result.safe_to_claim}`,
+    result.safe_next_step ? `Next: ${result.safe_next_step}` : null
+  ].filter(Boolean).join("\n");
+}
+
 function formatTestSystemInspect(result) {
   return [`vnem_tools_test_system_inspect: ${result.operation_result}`, `Frameworks: ${result.test_frameworks.join(", ") || "none detected"}`, `Tests/configs/workflows: ${result.test_files.length}/${result.config_files.length}/${result.ci_workflows.length}`, `Coverage: ${result.coverage.tools.join(", ") || "no producer detected"}`, `Resource-mapped scripts: ${result.resource_isolation.length}`].join("\n");
 }
@@ -10023,6 +10227,7 @@ async function withToolErrors(fn) {
     if (error instanceof BrowserInteractionError) return errorResult(error.message, error.code, error.details);
     if (error instanceof WindowsLocalError) return errorResult(error.message, error.code, error.details);
     if (error instanceof GithubDevelopmentError) return errorResult(error.message, error.code, error.details);
+    if (error instanceof GameDomainError) return errorResult(error.message, error.code, error.details);
     return errorResult(error.message || String(error), "tools_unexpected_error");
   }
 }

@@ -14,6 +14,7 @@ export const VNEM_FULL_SUITE = Object.freeze([
   "test:tools-project-actions",
   "test:tools-giga-app-engineering",
   "test:tools-giga-project-automation",
+  "test:tools-giga-game-domain",
   "test:tools-git-session",
   "test:tools-intelligence",
   "test:tools-research",
@@ -187,8 +188,8 @@ export function scriptsForTier(tier, affected = []) {
   if (tier === "clients") return [...CLIENTS];
   if (tier === "benchmarks") return ["test:giga-baseline:capability", "test:runtime-registry", "registry:behavior:check", "registry:check"];
   if (tier === "core") return VNEM_FULL_SUITE.filter((name) => /^test:core-|^test:mcp-user-smoke$|^test:mcp$|^test:vnem-adoption-/.test(name));
-  if (tier === "tools") return unique([...VNEM_FULL_SUITE.filter((name) => /^test:tools-|^test:permission-runtime$|^test:safety-cli$/.test(name)), "test:tools-giga-testing-ci", "test:tools-giga-browser-interaction", "test:tools-giga-windows-local", "test:tools-giga-github-development"]);
-  if (tier === "integration") return unique([...VNEM_FULL_SUITE.filter((name) => INTEGRATION_PATTERN.test(name)), "test:tools-giga-testing-ci", "test:tools-giga-browser-interaction", "test:tools-giga-windows-local", "test:tools-giga-github-development"]);
+  if (tier === "tools") return unique([...VNEM_FULL_SUITE.filter((name) => /^test:tools-|^test:permission-runtime$|^test:safety-cli$/.test(name)), "test:tools-giga-testing-ci", "test:tools-giga-browser-interaction", "test:tools-giga-windows-local", "test:tools-giga-github-development", "test:tools-giga-game-domain"]);
+  if (tier === "integration") return unique([...VNEM_FULL_SUITE.filter((name) => INTEGRATION_PATTERN.test(name)), "test:tools-giga-testing-ci", "test:tools-giga-browser-interaction", "test:tools-giga-windows-local", "test:tools-giga-github-development", "test:tools-giga-game-domain"]);
   if (tier === "full" || tier === "ci") return VNEM_FULL_SUITE.flatMap((script) => {
     if (script === "test:clients") return ["test:clients:setup"];
     if (script === "test:giga-baseline") return ["test:giga-baseline:capability", "test:runtime-registry", "registry:behavior:check", "registry:check"];

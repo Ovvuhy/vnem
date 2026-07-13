@@ -1,0 +1,167 @@
+{
+  "schema_version": 1,
+  "phase": 13,
+  "benchmark_type": "actual_stdio_mcp_game_modding_roblox_execution",
+  "generated_at": "2026-07-13T20:41:58.793Z",
+  "total_duration_ms": 1598.92,
+  "mcp_transport": "stdio",
+  "tools_exercised": [
+    "vnem_tools_game_adapter_catalog",
+    "vnem_tools_game_project_inspect",
+    "vnem_tools_game_config_audit",
+    "vnem_tools_mod_compatibility_analyze",
+    "vnem_tools_mod_profile_compare",
+    "vnem_tools_roblox_project_inspect",
+    "vnem_tools_luau_symbol_map",
+    "vnem_tools_game_project_validate",
+    "vnem_tools_project_command_run",
+    "vnem_tools_mod_backup_create",
+    "vnem_tools_mod_backup_restore"
+  ],
+  "tool_calls": [
+    {
+      "tool": "vnem_tools_game_adapter_catalog",
+      "duration_ms": 33.52,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_game_project_inspect",
+      "duration_ms": 11.82,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_game_config_audit",
+      "duration_ms": 11.94,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_mod_compatibility_analyze",
+      "duration_ms": 6.29,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_mod_profile_compare",
+      "duration_ms": 4.42,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_roblox_project_inspect",
+      "duration_ms": 13.16,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_luau_symbol_map",
+      "duration_ms": 10.77,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_game_project_validate",
+      "duration_ms": 21.74,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_project_command_run",
+      "duration_ms": 9.11,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_project_command_run",
+      "duration_ms": 742.53,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_mod_backup_create",
+      "duration_ms": 4.23,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_mod_backup_create",
+      "duration_ms": 8.26,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_mod_backup_restore",
+      "duration_ms": 5.01,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_mod_backup_restore",
+      "duration_ms": 10.41,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_mod_backup_restore",
+      "duration_ms": 3.8,
+      "status": "ok"
+    }
+  ],
+  "fixture_sha256": "f9b2d31532e16575ea5d2e25e848438ef5c786ecacf579818515a5483b0af450",
+  "results": {
+    "adapter_contract": {
+      "adapters": 3,
+      "detected": [
+        "generic-text-mod-project",
+        "roblox-rojo-luau",
+        "guarded-binary-game-format"
+      ],
+      "complete_fields": 14
+    },
+    "inventory": {
+      "files": 20,
+      "formats": 9,
+      "guarded_binaries": 1,
+      "duplicate_groups": 1
+    },
+    "configs": {
+      "files": 4,
+      "invalid_or_blocked": 1,
+      "static_findings": 4,
+      "secret_values_returned": false
+    },
+    "compatibility": {
+      "mods": 3,
+      "matrix_rows": 3,
+      "issues": 3,
+      "cycles": 1,
+      "compatible": false
+    },
+    "profiles": {
+      "changed": true,
+      "changes": 5
+    },
+    "roblox_luau": {
+      "project_files": 1,
+      "source_files": 4,
+      "service_mappings": 3,
+      "remote_boundaries": 2,
+      "symbols": 2
+    },
+    "validation": {
+      "status": "validation_warnings",
+      "command_plans": 6,
+      "project_test_executed": true,
+      "project_test_exit_code": 0,
+      "guarded_binary_warnings": 1
+    },
+    "backup_restore": {
+      "backup_files": 2,
+      "package_created": true,
+      "restore_completed": true,
+      "hash_preconditions": true,
+      "pre_restore_safety_package": true,
+      "safety_package_round_trip_planned": true
+    },
+    "mutation_boundaries": {
+      "game_launched": false,
+      "unknown_tools_executed": false,
+      "downloaded_mods_executed": false,
+      "binary_formats_patched": false
+    }
+  },
+  "limitations": [
+    "Fixture proof covers local adapter behavior, not compatibility with every game or mod loader.",
+    "Static Lua/Luau and XML checks do not replace configured analyzers, schemas, game runtime, or Roblox Studio tests.",
+    "No game, Studio instance, installer, plugin, downloaded mod, or unknown external tool was executed.",
+    "Backup packages preserve exact selected bytes but not OS ACLs or external mod-manager state."
+  ]
+}

@@ -141,6 +141,33 @@ try {
   }, "entrypoint");
   assert.ok(githubRun.recommended_tools_calls.includes("vnem_tools_github_actions_run_inspect"));
 
+  const gameModding = await call(core.client, "vnem_entrypoint", {
+    user_goal: "Inspect a local game mod project, parse configs and manifests, analyze load order and compatibility, validate assets, and create a reviewed backup before any changes.",
+    task_context: "FixtureGame 1.2.3 on Windows with FixtureLoader 4.0; binary regulation and archive formats must not be generically patched or executed.",
+    task_mode: "game_modding",
+    available_mcp_names: ["vnem", "vnem-tools"],
+    available_tool_names: [...toolNames],
+    allowed_tool_names: [...toolNames],
+    environment: { os: "Windows 11", game_version: "1.2.3", mod_loader: "FixtureLoader 4.0", file_format: "JSON/YAML plus guarded binary" }
+  }, "entrypoint");
+  assert.ok(gameModding.task_classification.domains.some((domain) => domain.id === "game_modding"));
+  for (const tool of ["vnem_tools_game_adapter_catalog", "vnem_tools_game_project_inspect", "vnem_tools_game_config_audit", "vnem_tools_mod_compatibility_analyze"]) assert.ok(gameModding.recommended_tools_calls.includes(tool), `missing Phase 13 game/mod route ${tool}`);
+  assert.ok(gameModding.recommended_tools_call_sequence.every((step) => step.state.available && step.state.allowed));
+  assert.doesNotMatch(JSON.stringify(gameModding), /game-project, config, Roblox, and Luau tools are not registered/);
+  assert.ok(gameModding.completion_criteria.some((item) => item.id === "rollback"));
+
+  const robloxLuau = await call(core.client, "vnem_entrypoint", {
+    user_goal: "Map this Roblox Rojo Luau project, services, remotes, modules, risky trust boundaries, static checks, tests, and an isolated build plan.",
+    task_context: "Rojo 7 project on Windows; do not connect to Studio, publish a place, execute plugins, or run downloaded code.",
+    task_mode: "game_modding",
+    available_mcp_names: ["vnem", "vnem-tools"],
+    available_tool_names: [...toolNames],
+    allowed_tool_names: [...toolNames],
+    environment: { os: "Windows 11", game_version: "Roblox current project", mod_loader: "Rojo 7", file_format: "Luau and project JSON" }
+  }, "entrypoint");
+  for (const tool of ["vnem_tools_game_adapter_catalog", "vnem_tools_roblox_project_inspect", "vnem_tools_luau_symbol_map", "vnem_tools_game_project_validate"]) assert.ok(robloxLuau.recommended_tools_calls.includes(tool), `missing Phase 13 Roblox/Luau route ${tool}`);
+  assert.ok(robloxLuau.recommended_tools_calls.length <= 6);
+
   const details = await call(core.client, "vnem_decision_details", {
     decision_id: mixed.decision_id,
     sections: ["classification", "compatibility", "capability_packs", "unavailable_capabilities"]

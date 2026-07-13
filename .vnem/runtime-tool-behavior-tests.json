@@ -447,6 +447,36 @@
       "vnem_tools_windows_change_plan": [
         "scripts/test-tools-giga-windows-local.mjs"
       ],
+      "vnem_tools_game_adapter_catalog": [
+        "scripts/test-tools-giga-game-domain.mjs"
+      ],
+      "vnem_tools_game_project_inspect": [
+        "scripts/test-tools-giga-game-domain.mjs"
+      ],
+      "vnem_tools_game_config_audit": [
+        "scripts/test-tools-giga-game-domain.mjs"
+      ],
+      "vnem_tools_mod_compatibility_analyze": [
+        "scripts/test-tools-giga-game-domain.mjs"
+      ],
+      "vnem_tools_mod_profile_compare": [
+        "scripts/test-tools-giga-game-domain.mjs"
+      ],
+      "vnem_tools_game_project_validate": [
+        "scripts/test-tools-giga-game-domain.mjs"
+      ],
+      "vnem_tools_mod_backup_create": [
+        "scripts/test-tools-giga-game-domain.mjs"
+      ],
+      "vnem_tools_mod_backup_restore": [
+        "scripts/test-tools-giga-game-domain.mjs"
+      ],
+      "vnem_tools_roblox_project_inspect": [
+        "scripts/test-tools-giga-game-domain.mjs"
+      ],
+      "vnem_tools_luau_symbol_map": [
+        "scripts/test-tools-giga-game-domain.mjs"
+      ],
       "vnem_tools_test_system_inspect": [
         "scripts/test-tools-giga-testing-ci.mjs"
       ],

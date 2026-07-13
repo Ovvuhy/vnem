@@ -2,7 +2,7 @@
 
 Generated from live MCP runtime registries. Do not edit this table manually.
 
-- Total tools: 259
+- Total tools: 269
 - Registry valid: true
 - Missing behavior-test references: 18
 
@@ -145,6 +145,16 @@ Generated from live MCP runtime registries. Do not edit this table manually.
 | tools | `vnem_tools_windows_event_log_read` | windows | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_windows_app_config_detect` | windows | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_windows_change_plan` | windows | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_game_adapter_catalog` | game | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_game_project_inspect` | project | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_game_config_audit` | game | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_mod_compatibility_analyze` | mod | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_mod_profile_compare` | mod | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_game_project_validate` | project | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_mod_backup_create` | mod | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_mod_backup_restore` | mod | destructive_mutation | approved_local_mutation | required_redacted_record | self | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_roblox_project_inspect` | project | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_luau_symbol_map` | luau | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_test_system_inspect` | test | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_affected_test_graph` | affected | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_test_run` | test | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/tools/server.mjs |

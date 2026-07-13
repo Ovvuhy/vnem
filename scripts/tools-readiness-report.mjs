@@ -23,6 +23,8 @@ const windowsLocalModulePath = rel("scripts/vnem/tools/windows-local.mjs");
 const windowsLocalFixturePath = rel("fixtures/windows-local/path with spaces/sample.txt");
 const githubDevelopmentTestPath = rel("scripts/test-tools-giga-github-development.mjs");
 const githubDevelopmentModulePath = rel("scripts/vnem/tools/github-development.mjs");
+const gameDomainTestPath = rel("scripts/test-tools-giga-game-domain.mjs");
+const gameDomainModulePath = rel("scripts/vnem/tools/game-domain.mjs");
 const projectAutomationTestPath = rel("scripts/test-tools-giga-project-automation.mjs");
 const projectAutomationModulePath = rel("scripts/vnem/tools/project-automation.mjs");
 const projectAutomationFixturePath = rel("fixtures/project-automation/package.json");
@@ -119,6 +121,8 @@ const windowsLocalTest = existsSync(windowsLocalTestPath) ? readFileSync(windows
 const windowsLocalModule = existsSync(windowsLocalModulePath) ? readFileSync(windowsLocalModulePath, "utf8") : "";
 const githubDevelopmentTest = existsSync(githubDevelopmentTestPath) ? readFileSync(githubDevelopmentTestPath, "utf8") : "";
 const githubDevelopmentModule = existsSync(githubDevelopmentModulePath) ? readFileSync(githubDevelopmentModulePath, "utf8") : "";
+const gameDomainTest = existsSync(gameDomainTestPath) ? readFileSync(gameDomainTestPath, "utf8") : "";
+const gameDomainModule = existsSync(gameDomainModulePath) ? readFileSync(gameDomainModulePath, "utf8") : "";
 const projectAutomationTest = existsSync(projectAutomationTestPath) ? readFileSync(projectAutomationTestPath, "utf8") : "";
 const projectAutomationModule = existsSync(projectAutomationModulePath) ? readFileSync(projectAutomationModulePath, "utf8") : "";
 const testingCiTest = existsSync(testingCiTestPath) ? readFileSync(testingCiTestPath, "utf8") : "";
@@ -287,6 +291,16 @@ const requiredTools = [
   "vnem_tools_windows_event_log_read",
   "vnem_tools_windows_app_config_detect",
   "vnem_tools_windows_change_plan",
+  "vnem_tools_game_adapter_catalog",
+  "vnem_tools_game_project_inspect",
+  "vnem_tools_game_config_audit",
+  "vnem_tools_mod_compatibility_analyze",
+  "vnem_tools_mod_profile_compare",
+  "vnem_tools_game_project_validate",
+  "vnem_tools_mod_backup_create",
+  "vnem_tools_mod_backup_restore",
+  "vnem_tools_roblox_project_inspect",
+  "vnem_tools_luau_symbol_map",
   "vnem_tools_ui_evidence_audit",
   "vnem_tools_apply_patch_batch",
   "vnem_tools_restore_batch",
@@ -401,6 +415,8 @@ const report = {
   windows_local_fixture_exists: existsSync(windowsLocalFixturePath),
   github_development_test_exists: existsSync(githubDevelopmentTestPath),
   github_development_module_exists: existsSync(githubDevelopmentModulePath),
+  game_domain_test_exists: existsSync(gameDomainTestPath),
+  game_domain_module_exists: existsSync(gameDomainModulePath),
   project_automation_test_exists: existsSync(projectAutomationTestPath),
   project_automation_module_exists: existsSync(projectAutomationModulePath),
   project_automation_fixture_exists: existsSync(projectAutomationFixturePath),
@@ -478,6 +494,7 @@ const report = {
     test_tools_giga_browser_interaction: pkg.scripts?.["test:tools-giga-browser-interaction"] === "node scripts/test-tools-giga-browser-interaction.mjs",
     test_tools_giga_windows_local: pkg.scripts?.["test:tools-giga-windows-local"] === "node scripts/test-tools-giga-windows-local.mjs",
     test_tools_giga_github_development: pkg.scripts?.["test:tools-giga-github-development"] === "node scripts/test-tools-giga-github-development.mjs",
+    test_tools_giga_game_domain: pkg.scripts?.["test:tools-giga-game-domain"] === "node scripts/test-tools-giga-game-domain.mjs",
     test_tools_giga_project_automation: pkg.scripts?.["test:tools-giga-project-automation"] === "node scripts/test-tools-giga-project-automation.mjs",
     test_tools_giga_testing_ci: pkg.scripts?.["test:tools-giga-testing-ci"] === "node scripts/test-tools-giga-testing-ci.mjs",
     test_tools_git_session: pkg.scripts?.["test:tools-git-session"] === "node scripts/test-tools-git-session.mjs",
@@ -666,6 +683,16 @@ const report = {
   github_public_surface_audit_status: /vnem_tools_github_public_surface_audit/.test(server + githubDevelopmentTest) && /publicSurfaceAudit/.test(githubDevelopmentModule) && /core_product_missing/.test(githubDevelopmentModule) && /simplification_suggestions/.test(githubDevelopmentModule),
   github_selective_commit_isolation_status: /unrelated files are already staged/.test(server + githubDevelopmentTest) && /parseGitPathList/.test(server) && /scanGithubCommitContent/.test(server) && /remote_sha_verified/.test(server) && /pre-staged isolation/.test(githubDevelopmentTest),
   github_development_real_mcp_proof_status: /StdioClientTransport/.test(githubDevelopmentTest) && /GIGA GitHub-development MCP tests passed/.test(githubDevelopmentTest) && /actual_stdio_mcp_live_github_read_proof/.test(githubDevelopmentTest),
+  game_domain_module_status: /GameDomainRuntime/.test(server + gameDomainModule) && /GAME_DOMAIN_MARKERS/.test(gameDomainModule) && /game_domain/.test(server),
+  game_domain_adapter_contract_status: /game_tool_name/.test(gameDomainModule + gameDomainTest) && /version_scope/.test(gameDomainModule) && /supported_loaders/.test(gameDomainModule) && /backup_strategy/.test(gameDomainModule) && /unsupported_operations/.test(gameDomainModule),
+  game_domain_inventory_status: /vnem_tools_game_project_inspect/.test(server + gameDomainTest) && /duplicateGroups/.test(gameDomainModule) && /GUARDED_BINARY_FORMATS/.test(gameDomainModule) && /generated_output_isolation/.test(gameDomainModule),
+  game_domain_config_status: /vnem_tools_game_config_audit/.test(server + gameDomainTest) && /JSON\.parse/.test(gameDomainModule) && /FAILSAFE_SCHEMA/.test(gameDomainModule) && /@iarna\/toml/.test(gameDomainModule) && /scanXml/.test(gameDomainModule) && /mapLuauFile/.test(gameDomainModule),
+  game_domain_compatibility_status: /vnem_tools_mod_compatibility_analyze/.test(server + gameDomainTest) && /dependencyCycles/.test(gameDomainModule) && /compatibility_matrix/.test(gameDomainModule) && /dependency_load_order_violation/.test(gameDomainModule + gameDomainTest),
+  game_domain_profile_status: /vnem_tools_mod_profile_compare/.test(server + gameDomainTest) && /version_changed/.test(gameDomainModule + gameDomainTest) && /enabled_changed/.test(gameDomainModule + gameDomainTest) && /order_changed/.test(gameDomainModule + gameDomainTest),
+  game_domain_backup_restore_status: /vnem_tools_mod_backup_create/.test(server + gameDomainTest) && /vnem_tools_mod_backup_restore/.test(server + gameDomainTest) && /expected_current_sha256/.test(gameDomainModule + gameDomainTest) && /pre_restore_safety_package/.test(gameDomainModule + gameDomainTest) && /game_restore_hash_precondition_failed/.test(gameDomainTest),
+  game_domain_roblox_luau_status: /vnem_tools_roblox_project_inspect/.test(server + gameDomainTest) && /vnem_tools_luau_symbol_map/.test(server + gameDomainTest) && /remote_trust_boundaries/.test(gameDomainModule + gameDomainTest) && /service_mappings/.test(gameDomainModule + gameDomainTest),
+  game_domain_validation_status: /vnem_tools_game_project_validate/.test(server + gameDomainTest) && /isolated_rojo_build/.test(gameDomainModule + gameDomainTest) && /command_execution/.test(gameDomainModule + gameDomainTest) && /guarded_binary/.test(gameDomainModule + gameDomainTest),
+  game_domain_real_mcp_proof_status: /StdioClientTransport/.test(gameDomainTest) && /game\/modding\/Roblox MCP tests passed/.test(gameDomainTest) && /actual_stdio_mcp_game_modding_roblox_execution/.test(gameDomainTest),
   github_dry_run_status: /dry_run !== false/.test(server) && /must not/.test(toolsGithubMutationDryRunTest),
   github_config_knob_status: /config_knob_to_change/.test(server) && /VNEM_TOOLS_GITHUB_ALLOW_DIRECT_PUSH/.test(toolsGithubMutationDryRunTest + server) && /VNEM_TOOLS_GITHUB_ALLOW_ACTIONS_RERUN/.test(toolsGithubMutationDryRunTest + server),
   github_secret_file_block_status: /githubSecretFileBlocked/.test(server) && /Secret-like file blocked/.test(server) && /scanGithubCommitContent/.test(server) && /Secret-like content blocked/.test(server + githubDevelopmentTest) && /\.env/.test(toolsGithubMutationDryRunTest + server),
@@ -932,6 +959,8 @@ assert.equal(report.windows_local_module_exists, true, "Windows/local-PC runtime
 assert.equal(report.windows_local_fixture_exists, true, "Windows/local-PC fixture is missing");
 assert.equal(report.github_development_test_exists, true, "GitHub development MCP test file is missing");
 assert.equal(report.github_development_module_exists, true, "GitHub development runtime module is missing");
+assert.equal(report.game_domain_test_exists, true, "game-domain MCP test file is missing");
+assert.equal(report.game_domain_module_exists, true, "game-domain runtime module is missing");
 assert.equal(report.project_automation_test_exists, true, "project automation MCP test file is missing");
 assert.equal(report.project_automation_module_exists, true, "project automation module is missing");
 assert.equal(report.project_automation_fixture_exists, true, "project automation fixture is missing");
@@ -961,6 +990,7 @@ assert.equal(report.package_scripts.test_tools_giga_testing_ci, true, "test:tool
 assert.equal(report.package_scripts.test_tools_giga_browser_interaction, true, "test:tools-giga-browser-interaction package script is missing");
 assert.equal(report.package_scripts.test_tools_giga_windows_local, true, "test:tools-giga-windows-local package script is missing");
 assert.equal(report.package_scripts.test_tools_giga_github_development, true, "test:tools-giga-github-development package script is missing");
+assert.equal(report.package_scripts.test_tools_giga_game_domain, true, "test:tools-giga-game-domain package script is missing");
 for (const [key, value] of Object.entries({ test_smoke_tier: report.package_scripts.test_smoke_tier, test_affected_tier: report.package_scripts.test_affected_tier, test_core_tier: report.package_scripts.test_core_tier, test_tools_tier: report.package_scripts.test_tools_tier, test_precision_compat_tier: report.package_scripts.test_precision_compat_tier, test_integration_tier: report.package_scripts.test_integration_tier, test_benchmarks_tier: report.package_scripts.test_benchmarks_tier, test_full_tier: report.package_scripts.test_full_tier, test_ci_tier: report.package_scripts.test_ci_tier, npm_test_routes_full: report.package_scripts.npm_test_routes_full })) assert.equal(value, true, `${key} package script is missing`);
 assert.equal(report.package_scripts.test_tools_git_session, true, "test:tools-git-session package script is missing");
 assert.equal(report.package_scripts.test_tools_intelligence, true, "test:tools-intelligence package script is missing");
@@ -1189,6 +1219,7 @@ for (const [key, value] of Object.entries({ app_engineering_inspection_status: r
 for (const [key, value] of Object.entries({ browser_interaction_registration_status: report.browser_interaction_registration_status, browser_interaction_actions_status: report.browser_interaction_actions_status, browser_interaction_runtime_evidence_status: report.browser_interaction_runtime_evidence_status, browser_interaction_state_viewport_status: report.browser_interaction_state_viewport_status, browser_interaction_compare_status: report.browser_interaction_compare_status, browser_interaction_safety_status: report.browser_interaction_safety_status, browser_interaction_cleanup_status: report.browser_interaction_cleanup_status, browser_interaction_real_mcp_proof_status: report.browser_interaction_real_mcp_proof_status })) assert.equal(value, true, `${key} readiness missing`);
 for (const [key, value] of Object.entries({ windows_local_registration_status: report.windows_local_registration_status, windows_local_powershell_status: report.windows_local_powershell_status, windows_local_environment_status: report.windows_local_environment_status, windows_local_path_status: report.windows_local_path_status, windows_local_process_port_status: report.windows_local_process_port_status, windows_local_service_task_event_status: report.windows_local_service_task_event_status, windows_local_client_status: report.windows_local_client_status, windows_local_mutation_gate_status: report.windows_local_mutation_gate_status, windows_local_real_mcp_proof_status: report.windows_local_real_mcp_proof_status })) assert.equal(value, true, `${key} readiness missing`);
 for (const [key, value] of Object.entries({ github_development_module_status: report.github_development_module_status, github_diff_review_status: report.github_diff_review_status, github_review_threads_status: report.github_review_threads_status, github_remote_proof_status: report.github_remote_proof_status, github_actions_run_inspect_status: report.github_actions_run_inspect_status, github_release_verify_status: report.github_release_verify_status, github_public_surface_audit_status: report.github_public_surface_audit_status, github_selective_commit_isolation_status: report.github_selective_commit_isolation_status, github_development_real_mcp_proof_status: report.github_development_real_mcp_proof_status })) assert.equal(value, true, `${key} readiness missing`);
+for (const [key, value] of Object.entries({ game_domain_module_status: report.game_domain_module_status, game_domain_adapter_contract_status: report.game_domain_adapter_contract_status, game_domain_inventory_status: report.game_domain_inventory_status, game_domain_config_status: report.game_domain_config_status, game_domain_compatibility_status: report.game_domain_compatibility_status, game_domain_profile_status: report.game_domain_profile_status, game_domain_backup_restore_status: report.game_domain_backup_restore_status, game_domain_roblox_luau_status: report.game_domain_roblox_luau_status, game_domain_validation_status: report.game_domain_validation_status, game_domain_real_mcp_proof_status: report.game_domain_real_mcp_proof_status })) assert.equal(value, true, `${key} readiness missing`);
 assert.equal(report.project_task_status, true, "project task support/test coverage is missing");
 assert.equal(report.dev_server_status, true, "dev server support/test coverage is missing");
 assert.equal(report.session_evidence_status, true, "session evidence support/test coverage is missing");
