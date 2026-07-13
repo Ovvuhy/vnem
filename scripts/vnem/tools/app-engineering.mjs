@@ -328,7 +328,8 @@ export async function runChromiumUserPath(url, outputDir, options = {}) {
     localhost_only: true,
     browser_sandbox_disabled: true,
     gpu_disabled: true,
-    limitation: "The detected Windows Chromium runtime required test-only sandbox and GPU disablement; this is local acceptance evidence, not a production browser security claim."
+    shared_memory_disabled: true,
+    limitation: "The validated Chromium runtimes required test-only sandbox, GPU, and shared-memory disablement; this is local acceptance evidence, not a production browser security claim."
   };
   const child = spawn(browser, [
     "--headless=new",
@@ -343,6 +344,7 @@ export async function runChromiumUserPath(url, outputDir, options = {}) {
     "--disable-sync",
     "--disable-gpu",
     "--disable-gpu-compositing",
+    "--disable-dev-shm-usage",
     "--hide-scrollbars",
     "about:blank"
   ], { windowsHide: true, stdio: ["ignore", "pipe", "pipe"] });
@@ -351,7 +353,10 @@ export async function runChromiumUserPath(url, outputDir, options = {}) {
   let cdp;
   try {
     const activePortFile = path.join(profileDir, "DevToolsActivePort");
-    await waitFor(() => existsSync(activePortFile), Number(options.launch_timeout_ms || 10000));
+    await waitFor(() => {
+      if (child.exitCode !== null || child.signalCode !== null) throw appError("Chromium exited before exposing a debugging port.", "browser_exited_before_debugging", { exit_code: child.exitCode, signal: child.signalCode });
+      return existsSync(activePortFile);
+    }, Number(options.launch_timeout_ms || 30000));
     const [port] = (await readFile(activePortFile, "utf8")).trim().split(/\r?\n/);
     const targets = await fetch(`http://127.0.0.1:${port}/json/list`).then((response) => response.json());
     const page = targets.find((item) => item.type === "page");

@@ -103,6 +103,7 @@ try {
   assert.equal(viteProof.browser.launch_policy.dedicated_temporary_profile, true);
   assert.equal(viteProof.browser.launch_policy.localhost_only, true);
   assert.equal(viteProof.browser.launch_policy.browser_sandbox_disabled, true);
+  assert.equal(viteProof.browser.launch_policy.shared_memory_disabled, true);
   assert.match(viteProof.browser.launch_policy.limitation, /not a production browser security claim/);
   assert.ok(viteProof.browser.network.some((item) => item.url.includes("/api/tasks") && [200, 201].includes(item.status)));
   for (const screenshot of viteProof.browser.screenshots) assert.ok((await stat(screenshot.path)).size > 1000);

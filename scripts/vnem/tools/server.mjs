@@ -7449,7 +7449,7 @@ async function safeAppAcceptanceRun(args) {
       serverResult = await safeStartDevServer({ ...args, root: root.absolutePath, script: args.dev_script || "dev", host: "127.0.0.1", dry_run: false, max_output_bytes: 12000 });
       await waitForLocalUrl(serverResult.url, Math.min(args.timeout_ms || 30000, 30000));
       enforceActionPolicy("browser_capture", args);
-      browserResult = await runChromiumUserPath(serverResult.url, outputDir, { launch_timeout_ms: 10000 });
+      browserResult = await runChromiumUserPath(serverResult.url, outputDir, { launch_timeout_ms: Math.min(args.timeout_ms || 30000, 30000) });
     }
   } catch (error) {
     acceptanceError = { code: error.code || "app_acceptance_error", message: error.message || String(error), details: error.details || {} };

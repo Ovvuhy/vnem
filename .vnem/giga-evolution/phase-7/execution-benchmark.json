@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "phase": 7,
-  "generated_at": "2026-07-13T11:43:07.547Z",
+  "generated_at": "2026-07-13T12:13:14.482Z",
   "benchmark_type": "actual_mcp_project_execution",
   "deterministic_routing_benchmark": false,
   "mcp_transport": "stdio",
@@ -13,83 +13,83 @@
     "vite-react-node",
     "static-node"
   ],
-  "total_duration_ms": 16880.57,
+  "total_duration_ms": 19258.7,
   "tool_calls": [
     {
       "tool": "vnem_tools_app_inspect",
-      "duration_ms": 21.11,
+      "duration_ms": 28.39,
       "status": "ok"
     },
     {
       "tool": "vnem_tools_app_vertical_slice_plan",
-      "duration_ms": 7.32,
+      "duration_ms": 17.47,
       "status": "ok"
     },
     {
       "tool": "vnem_tools_app_vertical_slice_plan",
-      "duration_ms": 15.39,
+      "duration_ms": 25.33,
       "status": "ok"
     },
     {
       "tool": "vnem_tools_app_vertical_slice_apply",
-      "duration_ms": 6.13,
+      "duration_ms": 8.27,
       "status": "ok"
     },
     {
       "tool": "vnem_tools_app_vertical_slice_apply",
-      "duration_ms": 42.88,
+      "duration_ms": 91.12,
       "status": "ok"
     },
     {
       "tool": "vnem_tools_app_inspect",
-      "duration_ms": 11.19,
+      "duration_ms": 27.08,
       "status": "ok"
     },
     {
       "tool": "vnem_tools_app_acceptance_run",
-      "duration_ms": 5.37,
+      "duration_ms": 8.73,
       "status": "ok"
     },
     {
       "tool": "vnem_tools_app_acceptance_run",
-      "duration_ms": 8538.78,
+      "duration_ms": 9596.23,
       "status": "ok"
     },
     {
       "tool": "vnem_tools_app_acceptance_run",
-      "duration_ms": 34.02,
+      "duration_ms": 35.49,
       "status": "ok"
     },
     {
       "tool": "vnem_tools_app_vertical_slice_plan",
-      "duration_ms": 9.03,
+      "duration_ms": 8.6,
       "status": "ok"
     },
     {
       "tool": "vnem_tools_app_vertical_slice_apply",
-      "duration_ms": 30.75,
+      "duration_ms": 29.08,
       "status": "ok"
     },
     {
       "tool": "vnem_tools_app_acceptance_run",
-      "duration_ms": 7367.14,
+      "duration_ms": 8102.49,
       "status": "ok"
     },
     {
       "tool": "vnem_tools_app_transaction_rollback",
-      "duration_ms": 3.79,
+      "duration_ms": 6.92,
       "status": "ok"
     },
     {
       "tool": "vnem_tools_app_transaction_rollback",
-      "duration_ms": 16.66,
+      "duration_ms": 31.23,
       "status": "ok"
     }
   ],
   "vite_react_node": {
     "files_previewed": 10,
     "files_applied": 10,
-    "transaction_duration_ms": 33.36,
+    "transaction_duration_ms": 76.1,
     "scripts": [
       {
         "script": "test",
@@ -101,7 +101,7 @@
       }
     ],
     "browser_status": "passed",
-    "browser_duration_ms": 3157.23,
+    "browser_duration_ms": 3496.02,
     "desktop_user_path_passed": true,
     "mobile_page_loaded": true,
     "mobile_horizontal_overflow": false,
@@ -113,7 +113,8 @@
       "localhost_only": true,
       "browser_sandbox_disabled": true,
       "gpu_disabled": true,
-      "limitation": "The detected Windows Chromium runtime required test-only sandbox and GPU disablement; this is local acceptance evidence, not a production browser security claim."
+      "shared_memory_disabled": true,
+      "limitation": "The validated Chromium runtimes required test-only sandbox, GPU, and shared-memory disablement; this is local acceptance evidence, not a production browser security claim."
     },
     "api_response_statuses": [
       200,
@@ -128,7 +129,7 @@
   "static_node": {
     "files_previewed": 10,
     "files_applied": 10,
-    "transaction_duration_ms": 24.31,
+    "transaction_duration_ms": 24.83,
     "scripts": [
       {
         "script": "test",
@@ -140,7 +141,7 @@
       }
     ],
     "browser_status": "passed",
-    "browser_duration_ms": 3007.65,
+    "browser_duration_ms": 3107.42,
     "desktop_user_path_passed": true,
     "mobile_page_loaded": true,
     "mobile_horizontal_overflow": false,
@@ -152,7 +153,8 @@
       "localhost_only": true,
       "browser_sandbox_disabled": true,
       "gpu_disabled": true,
-      "limitation": "The detected Windows Chromium runtime required test-only sandbox and GPU disablement; this is local acceptance evidence, not a production browser security claim."
+      "shared_memory_disabled": true,
+      "limitation": "The validated Chromium runtimes required test-only sandbox, GPU, and shared-memory disablement; this is local acceptance evidence, not a production browser security claim."
     },
     "api_response_statuses": [
       200,
