@@ -11,6 +11,7 @@ import {
   writeFile
 } from "node:fs/promises";
 import path from "node:path";
+import WebSocket from "ws";
 
 const SKIPPED_DIRECTORIES = new Set([".git", ".vnem", "node_modules", "dist", "build", "coverage", ".next", ".cache"]);
 const TEXT_EXTENSIONS = new Set([".js", ".jsx", ".mjs", ".cjs", ".ts", ".tsx", ".html", ".css", ".json", ".md"]);
@@ -319,9 +320,6 @@ export async function runChromiumUserPath(url, outputDir, options = {}) {
   const browser = resolveBrowserExecutable(options.browser_command);
   if (!browser) {
     return { status: "browser_unavailable", browser_was_run: false, console: [], network: [], network_failures: [], screenshots: [], safe_to_claim: false, what_is_not_proven: ["Browser user path", "console and network evidence", "desktop/mobile screenshots"] };
-  }
-  if (typeof WebSocket !== "function") {
-    return { status: "websocket_runtime_unavailable", browser_was_run: false, console: [], network: [], network_failures: [], screenshots: [], safe_to_claim: false, what_is_not_proven: ["Chrome DevTools Protocol requires a Node runtime with WebSocket support."] };
   }
   const profileDir = path.join(outputDir, `.browser-profile-${randomUUID()}`);
   await mkdir(profileDir, { recursive: true });
