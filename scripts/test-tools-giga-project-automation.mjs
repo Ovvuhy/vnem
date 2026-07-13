@@ -161,6 +161,7 @@ try {
   assert.ok(runtime.known_dev_servers.some((server) => server.server_id === devServerId));
   const stoppedServer = await call(client, "vnem_tools_stop_dev_server", { server_id: devServerId, approved: true, approval_note: "stop isolated fixture server" });
   assert.equal(stoppedServer.structuredContent.dev_server_stop.stopped, true);
+  assert.equal(stoppedServer.structuredContent.dev_server_stop.listener_stop_verified, true);
   devServerId = null;
   assert.equal(await canBindPort(port), true, "dev-server port remained occupied");
 

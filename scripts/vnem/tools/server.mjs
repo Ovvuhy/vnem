@@ -3,6 +3,7 @@ import { spawn } from "node:child_process";
 import { createHash, randomUUID } from "node:crypto";
 import { existsSync } from "node:fs";
 import { appendFile, copyFile, mkdir, readdir, readFile, realpath, rm, stat, writeFile } from "node:fs/promises";
+import { createConnection } from "node:net";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
@@ -7808,7 +7809,12 @@ async function safeStartDevServer(args) {
   const planned = { dry_run: dryRun, started: false, script, command: `npm run ${script} -- --host ${host} --port ${port}`, cwd: root.absolutePath, host, port, url: `http://${host}:${port}/`, registry: "in-memory per MCP process" };
   if (dryRun) return decorateToolResult("vnem_tools_start_dev_server", { ...planned, action_policy_preview: actionPolicyPreview({ action_type: "start_dev_server", proposed_action: planned.command }) }, { capability_group: "dev_server", mutation: true, network: true, requires_approval: true });
   enforceActionPolicy("start_dev_server", args);
-  const child = spawn(spawnCommandName("npm"), ["run", script, "--", "--host", host, "--port", String(port)], { cwd: root.absolutePath, shell: shouldUseShellForCommand("npm"), windowsHide: true });
+  const child = spawn(spawnCommandName("npm"), ["run", script, "--", "--host", host, "--port", String(port)], {
+    cwd: root.absolutePath,
+    shell: shouldUseShellForCommand("npm"),
+    windowsHide: true,
+    detached: process.platform !== "win32"
+  });
   const serverId = logId("dev-server");
   const record = { ...planned, dry_run: false, started: true, server_id: serverId, pid: child.pid, stdout: "", stderr: "", started_at: new Date().toISOString() };
   const collect = (field, chunk) => { record[field] = truncate(redactSecrets(record[field] + chunk.toString()), args.max_output_bytes || 8000); };
@@ -7831,6 +7837,7 @@ async function safeStopDevServer(args) {
   enforceApproval(args);
   let stopCommand = null;
   let fallbackKillSent = false;
+  let processGroupKillSent = false;
   const stopPid = entry.record.listener_pid || entry.record.pid;
   if (process.platform === "win32") {
     stopCommand = await runProcess(windowsTaskkillCommand(), ["/PID", String(stopPid), "/T", "/F"], { cwd: allowedRoots[0], timeoutMs: 5000, maxOutputBytes: 4000 });
@@ -7840,23 +7847,39 @@ async function safeStopDevServer(args) {
       } catch {}
     }
   } else {
-    entry.child.kill("SIGTERM");
+    try {
+      process.kill(-entry.child.pid, "SIGTERM");
+      processGroupKillSent = true;
+    } catch {
+      fallbackKillSent = entry.child.kill("SIGTERM");
+    }
   }
   const exited = await waitForChildExit(entry.child, 2000);
   const benignStopMiss = /not found|no running instance|not running/i.test(`${stopCommand?.stdout || ""}\n${stopCommand?.stderr || ""}`);
   if (stopCommand && !stopCommand.ok && !fallbackKillSent && !exited && !benignStopMiss) throw new ToolsError("Failed to stop Tools-started dev server process tree.", "dev_server_stop_failed", { stdout: stopCommand.stdout, stderr: stopCommand.stderr });
   if (!exited && process.platform !== "win32") {
-    entry.child.kill("SIGKILL");
+    try {
+      process.kill(-entry.child.pid, "SIGKILL");
+      processGroupKillSent = true;
+    } catch {
+      fallbackKillSent = entry.child.kill("SIGKILL") || fallbackKillSent;
+    }
     await waitForChildExit(entry.child, 1000);
   }
   devServers.delete(args.server_id);
-  let listenerStopped = process.platform !== "win32" || !entry.record.listener_pid || await waitForWindowsListenerStop(entry.record.listener_pid, entry.record.port, 1500);
-  if (!listenerStopped && entry.record.listener_pid) {
+  let listenerStopped = process.platform === "win32"
+    ? (!entry.record.listener_pid || await waitForWindowsListenerStop(entry.record.listener_pid, entry.record.port, 1500))
+    : await waitForLocalPortRelease(entry.record.host, entry.record.port, 5000);
+  if (!listenerStopped && entry.record.listener_pid && process.platform === "win32") {
     try { process.kill(entry.record.listener_pid, "SIGKILL"); fallbackKillSent = true; } catch {}
     listenerStopped = await waitForWindowsListenerStop(entry.record.listener_pid, entry.record.port, 5000);
   }
+  if (!listenerStopped && process.platform !== "win32") {
+    try { process.kill(-entry.child.pid, "SIGKILL"); processGroupKillSent = true; } catch {}
+    listenerStopped = await waitForLocalPortRelease(entry.record.host, entry.record.port, 3000);
+  }
   if (!listenerStopped) throw new ToolsError("Tools-started localhost listener remained active after stop.", "dev_server_stop_failed", { server_id: args.server_id, listener_pid: entry.record.listener_pid, port: entry.record.port, stop_stdout: stopCommand?.stdout || "", stop_stderr: stopCommand?.stderr || "" });
-  const result = { server_id: args.server_id, stopped: true, pid: entry.record.pid, listener_pid: entry.record.listener_pid || null, stop_pid: stopPid, url: entry.record.url, process_exit_observed: exited || entry.child.exitCode !== null || entry.child.signalCode !== null || listenerStopped, fallback_kill_sent: fallbackKillSent, stop_stdout: stopCommand?.stdout || "", stop_stderr: stopCommand?.stderr || "" };
+  const result = { server_id: args.server_id, stopped: true, pid: entry.record.pid, listener_pid: entry.record.listener_pid || null, stop_pid: stopPid, url: entry.record.url, process_exit_observed: exited || entry.child.exitCode !== null || entry.child.signalCode !== null || listenerStopped, listener_stop_verified: listenerStopped, process_group_kill_sent: processGroupKillSent, fallback_kill_sent: fallbackKillSent, stop_stdout: stopCommand?.stdout || "", stop_stderr: stopCommand?.stderr || "" };
   const log = await writeEvidenceLog("dev_server_stop", result);
   const withLog = { ...result, evidence_log_id: log.evidence_log_id };
   recordSession(args.session_id, "dev_servers_stopped", withLog);
@@ -7901,6 +7924,32 @@ function isPidRunning(pid) {
 function windowsNetstatCommand() {
   const systemRoot = process.env.SystemRoot || process.env.SYSTEMROOT;
   return systemRoot ? path.join(systemRoot, "System32", "netstat.exe") : "netstat";
+}
+
+async function waitForLocalPortRelease(host, port, timeoutMs) {
+  const started = Date.now();
+  while (Date.now() - started < timeoutMs) {
+    if (!(await isLocalPortListening(host, port))) return true;
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  }
+  return !(await isLocalPortListening(host, port));
+}
+
+async function isLocalPortListening(host, port) {
+  return await new Promise((resolve) => {
+    const socket = createConnection({ host, port });
+    let settled = false;
+    const finish = (listening) => {
+      if (settled) return;
+      settled = true;
+      socket.destroy();
+      resolve(listening);
+    };
+    socket.setTimeout(250);
+    socket.once("connect", () => finish(true));
+    socket.once("error", () => finish(false));
+    socket.once("timeout", () => finish(false));
+  });
 }
 
 async function waitForChildExit(child, timeoutMs) {
