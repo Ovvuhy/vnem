@@ -393,6 +393,30 @@
       "vnem_tools_app_transaction_rollback": [
         "scripts/test-tools-giga-app-engineering.mjs"
       ],
+      "vnem_tools_project_automation_inspect": [
+        "scripts/test-tools-giga-project-automation.mjs"
+      ],
+      "vnem_tools_project_command_run": [
+        "scripts/test-tools-giga-project-automation.mjs"
+      ],
+      "vnem_tools_project_task_graph_plan": [
+        "scripts/test-tools-giga-project-automation.mjs"
+      ],
+      "vnem_tools_project_task_graph_run": [
+        "scripts/test-tools-giga-project-automation.mjs"
+      ],
+      "vnem_tools_project_task_graph_status": [
+        "scripts/test-tools-giga-project-automation.mjs"
+      ],
+      "vnem_tools_project_task_graph_rollback": [
+        "scripts/test-tools-giga-project-automation.mjs"
+      ],
+      "vnem_tools_project_runtime_diagnose": [
+        "scripts/test-tools-giga-project-automation.mjs"
+      ],
+      "vnem_tools_project_temp_cleanup": [
+        "scripts/test-tools-giga-project-automation.mjs"
+      ],
       "vnem_tools_run_project_task": [
         "scripts/test-core-tools-tool-ecosystem.mjs",
         "scripts/test-tools-git-session.mjs",

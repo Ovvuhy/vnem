@@ -62,6 +62,20 @@ try {
   assert.ok(appSlice.recommended_tools_call_sequence.every((step) => step.state.available && step.state.allowed));
   assert.ok(appSlice.recommended_tools_calls.length <= 6);
 
+  const projectAutomation = await call(core.client, "vnem_entrypoint", {
+    user_goal: "Inspect the package scripts, run one reviewed terminal command, resume a dependency task graph, diagnose a listening dev-server port, and prove timeout process cleanup.",
+    task_context: "Windows Node project; no shell chaining or arbitrary process termination.",
+    task_mode: "project_automation",
+    available_mcp_names: ["vnem", "vnem-tools"],
+    available_tool_names: [...toolNames],
+    allowed_tool_names: [...toolNames],
+    environment: { os: "win32", shell: "powershell", node_version: "24", package_manager: "npm" }
+  }, "entrypoint");
+  assert.ok(projectAutomation.task_classification.domains.some((domain) => domain.id === "project_automation"));
+  for (const tool of ["vnem_tools_project_automation_inspect", "vnem_tools_project_command_run", "vnem_tools_project_task_graph_plan"]) assert.ok(projectAutomation.recommended_tools_calls.includes(tool), `missing Phase 8 project automation route ${tool}`);
+  assert.ok(projectAutomation.evidence_requirements.some((requirement) => /exit\/timeout state/.test(requirement)));
+  assert.ok(projectAutomation.recommended_tools_call_sequence.every((step) => step.state.available && step.state.allowed));
+
   const details = await call(core.client, "vnem_decision_details", {
     decision_id: mixed.decision_id,
     sections: ["classification", "compatibility", "capability_packs", "unavailable_capabilities"]

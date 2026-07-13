@@ -36,6 +36,7 @@ import {
   runChromiumUserPath,
   updateTransactionAcceptance
 } from "./app-engineering.mjs";
+import { ProjectAutomationError, ProjectAutomationRuntime } from "./project-automation.mjs";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(scriptDir, "..", "..", "..");
@@ -121,6 +122,14 @@ const REQUIRED_TOOL_NAMES = [
   "vnem_tools_apply_patch_batch",
   "vnem_tools_restore_batch",
   "vnem_tools_project_scan",
+  "vnem_tools_project_automation_inspect",
+  "vnem_tools_project_command_run",
+  "vnem_tools_project_task_graph_plan",
+  "vnem_tools_project_task_graph_run",
+  "vnem_tools_project_task_graph_status",
+  "vnem_tools_project_task_graph_rollback",
+  "vnem_tools_project_runtime_diagnose",
+  "vnem_tools_project_temp_cleanup",
   "vnem_tools_app_inspect",
   "vnem_tools_app_vertical_slice_plan",
   "vnem_tools_app_vertical_slice_apply",
@@ -250,6 +259,7 @@ const permissionRuntime = await PermissionRuntime.create({
   allowedRoots,
   profileName: process.env.VNEM_TOOLS_PERMISSION_PROFILE || null
 });
+const projectAutomationRuntime = new ProjectAutomationRuntime({ allowedRoots, evidenceRoot });
 const activePermissionProfile = permissionRuntime.activeProfile();
 const usablePacks = await loadUsablePacks();
 const requestedPrecisionWorkspaceCandidate = path.resolve(
@@ -1107,6 +1117,197 @@ function registerTools(mcpServer) {
     async (args) => withToolErrors(async () => {
       const rollback = await safeAppTransactionRollback(args);
       return toolResult(formatAppRollback(rollback), { app_transaction_rollback: rollback });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_project_automation_inspect",
+    {
+      title: "Inspect Project Automation Environment",
+      description: "Detect real shell environments, package managers, package scripts, task runners, and the layered command policy without executing project tasks.",
+      inputSchema: { root: z.string().default("."), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const root = await resolveAllowedRoot(args.root || ".");
+      const report = await projectAutomationRuntime.inspectEnvironment({ ...args, root: root.absolutePath });
+      recordSession(args.session_id, "project_scans", report);
+      return toolResult(formatProjectAutomationInspect(report), { project_automation_inspection: report });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_project_command_run",
+    {
+      title: "Review and Run Exact Project Command",
+      description: "Dry-run exact argv review or execute one known-safe, project-declared, or stronger-profile reviewed custom command without request-provided shell operators or hidden chaining. Binds execution to a review id and records timeout, exit, process-tree, output, and Git-state evidence.",
+      inputSchema: {
+        root: z.string().default("."),
+        cwd: z.string().default("."),
+        mode: z.enum(["known_safe", "project_script", "reviewed_custom"]).default("known_safe"),
+        script: z.string().default(""),
+        argv: z.array(z.string()).max(64).default([]),
+        review_id: z.string().default(""),
+        dry_run: z.boolean().default(true),
+        approved: z.boolean().default(false),
+        approval_note: z.string().default(""),
+        timeout_ms: z.number().int().min(1000).max(120000).default(30000),
+        max_output_bytes: z.number().int().min(512).max(65536).default(16000),
+        session_id: z.string().optional()
+      },
+      annotations: ACTION_TOOL
+    },
+    async (args) => withToolErrors(async () => {
+      const root = await resolveAllowedRoot(args.root || ".");
+      const commandArgs = { ...args, root: root.absolutePath };
+      const review = await projectAutomationRuntime.reviewCommand(commandArgs);
+      enforceActionPolicy(review.permission_action, { ...args, proposed_action: review.display_command });
+      const result = await projectAutomationRuntime.runCommand(commandArgs);
+      if (result.executed) recordSession(args.session_id, "commands_run", result.execution);
+      return toolResult(formatProjectCommand(result), { project_command: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_project_task_graph_plan",
+    {
+      title: "Plan Persistent Project Task Graph",
+      description: "Review and persist a dependency-ordered project task graph with satisfaction checks, exact command bindings, declared compensating commands, and resumable state.",
+      inputSchema: {
+        root: z.string().default("."),
+        name: z.string().default("project automation graph"),
+        nodes: z.array(z.object({
+          id: z.string().min(1).max(64),
+          depends_on: z.array(z.string()).default([]),
+          mode: z.enum(["known_safe", "project_script", "reviewed_custom"]),
+          script: z.string().default(""),
+          argv: z.array(z.string()).max(64).default([]),
+          cwd: z.string().default("."),
+          timeout_ms: z.number().int().min(1000).max(120000).default(30000),
+          max_output_bytes: z.number().int().min(512).max(65536).default(16000),
+          satisfaction: z.object({
+            type: z.enum(["path_exists", "path_missing", "file_sha256", "port_listening"]),
+            path: z.string().default(""),
+            sha256: z.string().default(""),
+            port: z.number().int().min(1).max(65535).optional()
+          }).optional(),
+          rollback: z.object({
+            mode: z.enum(["known_safe", "project_script", "reviewed_custom"]),
+            script: z.string().default(""),
+            argv: z.array(z.string()).max(64).default([]),
+            cwd: z.string().default(".")
+          }).optional()
+        })).min(1).max(100),
+        session_id: z.string().optional()
+      },
+      annotations: ACTION_TOOL
+    },
+    async (args) => withToolErrors(async () => {
+      const root = await resolveAllowedRoot(args.root || ".");
+      const graph = await projectAutomationRuntime.planTaskGraph({ ...args, root: root.absolutePath });
+      recordSession(args.session_id, "task_graphs", graph);
+      return toolResult(formatTaskGraph("plan", graph), { project_task_graph: graph });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_project_task_graph_run",
+    {
+      title: "Run or Resume Project Task Graph",
+      description: "Dry-run permission review or execute/resume a persisted task graph in dependency order, skip satisfied nodes, checkpoint every node, stop on failure, and preserve exact output/process evidence.",
+      inputSchema: {
+        graph_id: z.string().min(1),
+        dry_run: z.boolean().default(true),
+        approved: z.boolean().default(false),
+        approval_note: z.string().default(""),
+        max_nodes: z.number().int().min(1).max(100).default(100),
+        continue_on_failure: z.boolean().default(false),
+        ports: z.array(z.number().int().min(1).max(65535)).max(50).default([]),
+        session_id: z.string().optional()
+      },
+      annotations: ACTION_TOOL
+    },
+    async (args) => withToolErrors(async () => {
+      const status = await projectAutomationRuntime.taskGraphStatus({ graph_id: args.graph_id, include_nodes: true });
+      if (args.dry_run !== false) {
+        const previews = [...new Map(status.nodes.map((node) => [node.review.permission_action, actionPolicyPreview({ action_type: node.review.permission_action, proposed_action: node.review.display_command })])).values()];
+        const planned = { ...status, operation_result: "planned", executed: false, action_policy_previews: previews };
+        return toolResult(formatTaskGraph("run", planned), { project_task_graph: planned });
+      }
+      const result = await projectAutomationRuntime.runTaskGraph(args, {
+        authorize: async (review) => enforceActionPolicy(review.permission_action, { ...args, dry_run: false, proposed_action: review.display_command })
+      });
+      recordSession(args.session_id, "task_graphs", result);
+      return toolResult(formatTaskGraph("run", result), { project_task_graph: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_project_task_graph_status",
+    {
+      title: "Inspect Project Task Graph Status",
+      description: "Read persisted graph state, node attempts/results, interruption count, resume availability, rollback coverage, and evidence paths after context or process loss.",
+      inputSchema: { graph_id: z.string().min(1), include_nodes: z.boolean().default(true) },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const result = await projectAutomationRuntime.taskGraphStatus(args);
+      return toolResult(formatTaskGraph("status", result), { project_task_graph: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_project_task_graph_rollback",
+    {
+      title: "Rollback Project Task Graph",
+      description: "Dry-run or execute exact declared compensating commands in reverse dependency order. Reports nodes without rollback instead of claiming unknown side effects were restored.",
+      inputSchema: { graph_id: z.string().min(1), dry_run: z.boolean().default(true), approved: z.boolean().default(false), approval_note: z.string().default(""), continue_on_failure: z.boolean().default(false), session_id: z.string().optional() },
+      annotations: ACTION_TOOL
+    },
+    async (args) => withToolErrors(async () => {
+      const status = await projectAutomationRuntime.taskGraphStatus({ graph_id: args.graph_id, include_nodes: true });
+      if (args.dry_run !== false) {
+        const planned = { ...status, operation_result: "planned", executed: false, rollback_order: [...status.order].reverse(), unresolved_without_declared_rollback: status.rollback_contract.nodes_without_rollback };
+        return toolResult(formatTaskGraph("rollback", planned), { project_task_graph_rollback: planned });
+      }
+      const result = await projectAutomationRuntime.rollbackTaskGraph(args, {
+        authorize: async (review) => enforceActionPolicy(review.permission_action, { ...args, dry_run: false, proposed_action: review.display_command })
+      });
+      recordSession(args.session_id, "restores", result);
+      return toolResult(formatTaskGraph("rollback", result), { project_task_graph_rollback: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_project_runtime_diagnose",
+    {
+      title: "Diagnose Project Runtime Logs Ports and Locks",
+      description: "Collect bounded logs first, inspect requested listening ports, known VNEM dev servers, file-lock signals, temp paths, and interrupted task graphs without killing unknown processes.",
+      inputSchema: { root: z.string().default("."), ports: z.array(z.number().int().min(1).max(65535)).max(50).default([]), log_paths: z.array(z.string()).max(30).default([]), lock_paths: z.array(z.string()).max(20).default([]), max_log_files: z.number().int().min(1).max(30).default(10), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const root = await resolveAllowedRoot(args.root || ".");
+      const result = await projectAutomationRuntime.diagnoseRuntime({ ...args, root: root.absolutePath }, { devServers: listDevServers().servers });
+      recordSession(args.session_id, "runtime_diagnostics", result);
+      return toolResult(formatRuntimeDiagnosis(result), { project_runtime_diagnosis: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_project_temp_cleanup",
+    {
+      title: "Quarantine or Restore Project Temp Paths",
+      description: "Preview, approval-gated quarantine, or restore explicit project-local temp/cache paths with symlink blocking, bounded Windows lock retries, a manifest, and no irreversible delete.",
+      inputSchema: { root: z.string().default("."), operation: z.enum(["preview", "quarantine", "restore"]).default("preview"), paths: z.array(z.string()).max(30).default([]), cleanup_id: z.string().default(""), dry_run: z.boolean().default(true), approved: z.boolean().default(false), approval_note: z.string().default(""), retry_count: z.number().int().min(0).max(10).default(5), retry_delay_ms: z.number().int().min(25).max(2000).default(150), session_id: z.string().optional() },
+      annotations: ACTION_TOOL
+    },
+    async (args) => withToolErrors(async () => {
+      const root = await resolveAllowedRoot(args.root || ".");
+      enforceActionPolicy("temp_cleanup", { ...args, proposed_action: `${args.operation} project temp paths` });
+      const result = await projectAutomationRuntime.tempCleanup({ ...args, root: root.absolutePath });
+      if (result.executed) recordSession(args.session_id, args.operation === "restore" ? "restores" : "temp_cleanups", result);
+      return toolResult(formatTempCleanup(result), { project_temp_cleanup: result });
     })
   );
 
@@ -9179,6 +9380,27 @@ function formatAppRollback(result) {
   return [`vnem_tools_app_transaction_rollback: ${result.status}`, `Transaction id: ${result.transaction_id || "unknown"}`, `Files restored: ${result.restored_files?.length || 0}`, `Evidence: ${result.evidence_log_id || "not written"}`].join("\n");
 }
 
+function formatProjectAutomationInspect(report) {
+  return [`vnem_tools_project_automation_inspect: ${report.root}`, `Shells: ${report.shells.filter((item) => item.available).map((item) => item.command).join(", ") || "none detected"}`, `Package manager: ${report.selected_package_manager}`, `Task runners: ${report.task_runners.map((item) => item.runner).join(", ") || "none"}`, `Scripts: ${report.package_scripts.length}`].join("\n");
+}
+
+function formatProjectCommand(result) {
+  const execution = result.execution;
+  return [`vnem_tools_project_command_run: ${result.operation_result}`, `Policy: ${result.review.policy_layer}`, `Command: ${result.review.display_command}`, `Review id: ${result.review.review_id}`, execution ? `Exit/timeout: ${execution.exit_code}/${execution.timed_out}` : "No command executed.", execution ? `Output: ${execution.output_summary.response_strategy}` : null, execution ? `Evidence: ${execution.evidence_dir}` : null].filter(Boolean).join("\n");
+}
+
+function formatTaskGraph(action, graph) {
+  return [`vnem_tools_project_task_graph_${action}: ${graph.status || graph.operation_result}`, `Graph id: ${graph.graph_id}`, `Order: ${(graph.order || []).join(" -> ")}`, graph.counts ? `Completed/satisfied/pending/failed: ${graph.counts.completed}/${graph.counts.satisfied}/${graph.counts.pending}/${graph.counts.failed}` : null, `Resume supported: ${graph.resume_supported === true}`, `Evidence items: ${graph.evidence?.length || 0}`].filter(Boolean).join("\n");
+}
+
+function formatRuntimeDiagnosis(result) {
+  return [`vnem_tools_project_runtime_diagnose: ${result.operation_result}`, `Logs: ${result.logs.length}`, `Listening ports: ${result.ports.filter((item) => item.listening).map((item) => item.port).join(", ") || "none requested/listening"}`, `Lock signals: ${result.lock_checks.filter((item) => item.lock_signal === "possible_file_lock_or_permission").length}`, `Interrupted graphs: ${result.interrupted_graphs.length}`, `Next: ${result.safe_next_step}`, `Evidence: ${result.evidence_path}`].join("\n");
+}
+
+function formatTempCleanup(result) {
+  return [`vnem_tools_project_temp_cleanup: ${result.operation_result}`, `Operation: ${result.operation}`, `Executed: ${result.executed === true}`, result.cleanup_id ? `Cleanup id: ${result.cleanup_id}` : null, `Moved/restored: ${result.moved?.length || result.restored?.length || 0}`, `Unresolved: ${result.unresolved?.length || 0}`, `Rollback available: ${result.rollback_available === true}`].filter(Boolean).join("\n");
+}
+
 function formatProjectTask(task) {
   return [`vnem_tools_run_project_task: ${task.executed ? "executed" : "dry-run planned"}`, `Command: ${task.command}`, task.executed ? `Exit: ${task.exit_code}` : "No task executed because dry_run=true.", task.stdout ? `stdout:\n${task.stdout}` : "", task.stderr ? `stderr:\n${task.stderr}` : ""].filter(Boolean).join("\n");
 }
@@ -9217,6 +9439,7 @@ async function withToolErrors(fn) {
     return await fn();
   } catch (error) {
     if (error instanceof ToolsError) return errorResult(error.message, error.code, error.details);
+    if (error instanceof ProjectAutomationError) return errorResult(error.message, error.code, error.details);
     return errorResult(error.message || String(error), "tools_unexpected_error");
   }
 }

@@ -1,6 +1,6 @@
 export const PERMISSION_CAPABILITIES = Object.freeze({
-  filesystem: ["read_file", "search_code", "inspect_workspace", "dependency_scan", "apply_patch", "restore_backup"],
-  commands: ["run_test", "run_build", "start_dev_server", "execute_script"],
+  filesystem: ["read_file", "search_code", "inspect_workspace", "dependency_scan", "apply_patch", "restore_backup", "temp_cleanup"],
+  commands: ["run_test", "run_build", "start_dev_server", "execute_script", "run_custom_command"],
   packages: ["package_install", "package_publish"],
   browser: ["browser_capture", "browser_interaction"],
   network: ["external_fetch", "download_check", "api_call", "external_api_mutation"],
@@ -43,6 +43,8 @@ export const ACTION_ALIASES = Object.freeze({
   git_commit: "local_commit",
   run_command: "run_test",
   run_project_task: "run_test",
+  reviewed_custom_command: "run_custom_command",
+  cleanup_temp: "temp_cleanup",
   fetch_url_text: "external_fetch",
   web_search: "external_fetch",
   download_safety_check: "download_check",
@@ -70,7 +72,7 @@ const READ_ACTIONS = [
   "mutation_approval_contract", "secret_redaction_check"
 ];
 const LOCAL_DEV_ACTIONS = [...READ_ACTIONS, "run_test", "run_build", "start_dev_server", "execute_script", "browser_capture", "download_check", "external_fetch"];
-const WRITE_ACTIONS = [...LOCAL_DEV_ACTIONS, "apply_patch", "restore_backup", "local_commit", "git_branch", "database_write", "game_config_write"];
+const WRITE_ACTIONS = [...LOCAL_DEV_ACTIONS, "apply_patch", "restore_backup", "temp_cleanup", "local_commit", "git_branch", "database_write", "game_config_write"];
 
 export function buildPermissionProfiles(options = {}) {
   const custom = new Set((options.customAllowedActions || []).map(normalizeActionType));
@@ -119,7 +121,7 @@ export function buildPermissionProfiles(options = {}) {
     profile("creator-power", "Creator/developer profile with broad repository-local execution while hard protections remain active.", {
       power_level: 5,
       risk_level: "high",
-      allowed_actions: [...WRITE_ACTIONS, "package_install", "git_push", "github_issue", "github_pr", "github_actions", "github_release", "api_call", "external_api_mutation", "cloudflare_mutation", "cloudflare_destructive", "skill_execute", "local_pc_action", "game_launch"],
+      allowed_actions: [...WRITE_ACTIONS, "run_custom_command", "package_install", "git_push", "github_issue", "github_pr", "github_actions", "github_release", "api_call", "external_api_mutation", "cloudflare_mutation", "cloudflare_destructive", "skill_execute", "local_pc_action", "game_launch"],
       blocked_actions: DANGEROUS,
       requires_approval_actions: allKnownActions().filter((action) => !READ_ACTIONS.includes(action) && !HARD_BLOCKED_ACTIONS.has(action)),
       creator_only: true
@@ -127,7 +129,7 @@ export function buildPermissionProfiles(options = {}) {
     profile("maintainer", "Repository maintainer profile for approved local writes, tests, feature-branch Git/GitHub work, CI, and release preparation without protected-branch or admin mutation.", {
       power_level: 5,
       risk_level: "high",
-      allowed_actions: [...WRITE_ACTIONS, "package_install", "git_push", "github_issue", "github_pr", "github_actions", "github_release", "api_call", "external_api_mutation", "cloudflare_mutation", "skill_execute"],
+      allowed_actions: [...WRITE_ACTIONS, "run_custom_command", "package_install", "git_push", "github_issue", "github_pr", "github_actions", "github_release", "api_call", "external_api_mutation", "cloudflare_mutation", "skill_execute"],
       blocked_actions: ["github_settings", "cloudflare_destructive", "local_pc_action", "game_launch", ...DANGEROUS],
       requires_approval_actions: allKnownActions().filter((action) => !READ_ACTIONS.includes(action) && !HARD_BLOCKED_ACTIONS.has(action))
     }),

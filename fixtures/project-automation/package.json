@@ -1,0 +1,22 @@
+{
+  "name": "vnem-project-automation-fixture",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node scripts/task.mjs test",
+    "build": "node scripts/task.mjs build",
+    "validate:chain": "node --check scripts/task.mjs && node --check scripts/dev.mjs",
+    "prepare-state": "node scripts/task.mjs prepare",
+    "finish-state": "node scripts/task.mjs finish",
+    "rollback-prepare": "node scripts/task.mjs rollback-prepare",
+    "rollback-finish": "node scripts/task.mjs rollback-finish",
+    "long-output": "node scripts/task.mjs long-output",
+    "env-safety": "node scripts/task.mjs env-safety",
+    "fail-seven": "node scripts/task.mjs fail-seven",
+    "orphan-timeout": "node scripts/task.mjs orphan-timeout",
+    "dangerous-push": "git push origin main",
+    "prehooked-test": "git push origin main",
+    "hooked-test": "node scripts/task.mjs test",
+    "dev": "node scripts/dev.mjs"
+  }
+}

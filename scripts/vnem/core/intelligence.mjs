@@ -20,6 +20,10 @@ const DOMAIN_ADAPTERS = [
     feature(/\b(full[- ]?stack|frontend|backend|web app|application|api endpoint|react|vue|svelte|next\.?js|express)\b/, 5, "application stack or feature"),
     feature(/\b(build|implement|add|create)\b.*\b(endpoint|component|page|frontend|backend|api|service|app)\b/, 4, "application implementation deliverable")
   ], ["architecture", "correctness", "maintainability", "user experience"], ["vnem_tools_app_inspect", "vnem_tools_app_vertical_slice_plan", "vnem_tools_repo_deep_map", "vnem_tools_app_vertical_slice_apply", "vnem_tools_app_acceptance_run", "vnem_tools_app_transaction_rollback"]),
+  adapter("project_automation", "Terminal and project automation", 7, [
+    feature(/\b(terminal|shell command|package script|task runner|task graph|dev server|local server|listening port|orphan process|command timeout|file lock|temp cleanup)\b/, 6, "terminal, task, process, or project-runtime workflow"),
+    feature(/\b(run|execute|resume|stop|diagnose)\b.*\b(task graph|package script|terminal command|dev server|local server)\b/, 4, "explicit project automation action")
+  ], ["execution correctness", "process cleanup", "resumability", "rollback evidence"], ["vnem_tools_project_automation_inspect", "vnem_tools_project_command_run", "vnem_tools_project_task_graph_plan", "vnem_tools_project_task_graph_run", "vnem_tools_project_runtime_diagnose", "vnem_tools_project_temp_cleanup"]),
   adapter("repo_code", "Repository and code work", 6, [
     feature(/\b(repo|repository|source code|codebase|function|class|symbol|handler|patch|refactor|implementation)\b/, 4, "repository or code signal"),
     feature(/\b(edit|change|modify|test|registry|artifact|generated file)\b/, 2, "source-change or validation signal"),
@@ -46,7 +50,7 @@ const DOMAIN_ADAPTERS = [
   adapter("windows_local", "Windows and local-PC work", 0, [
     feature(/\b(windows|powershell|event viewer|windows registry|registry key|regedit|scheduled task|defender)\b/, 5, "Windows platform signal"),
     feature(/\b(process|port|local pc|path failure|appdata)\b/, 4, "local system inspection")
-  ], ["platform compatibility", "system safety", "diagnostic evidence"], ["vnem_tools_capability_gap_report", "vnem_tools_project_scan"]),
+  ], ["platform compatibility", "system safety", "diagnostic evidence"], ["vnem_tools_project_runtime_diagnose", "vnem_tools_project_automation_inspect", "vnem_tools_capability_gap_report"]),
   adapter("game_modding", "Game and modding work", -1, [
     feature(/\b(game|modding|mod loader|load order|save file|anti-cheat|roblox|luau)\b/, 5, "game or modding domain")
   ], ["version compatibility", "backup safety", "runtime proof"], ["vnem_tools_capability_gap_report", "vnem_tools_project_scan"]),
@@ -75,6 +79,8 @@ const MODE_DOMAINS = {
   evidence_pack: "evidence_validation",
   no_placebo: "evidence_validation",
   implementation: "repo_code",
+  terminal: "project_automation",
+  project_automation: "project_automation",
   repo_inspection: "repo_code",
   patch_targeting: "repo_code",
   mcp_tool_audit: "repo_code",
@@ -89,7 +95,7 @@ const MODE_DOMAINS = {
 };
 
 const DOMAIN_GAPS = {
-  windows_local: ["dedicated read-only process, port, service, registry, and Event Viewer tools are not registered yet"],
+  windows_local: ["dedicated service, registry, and Event Viewer tools are not registered yet; bounded project process/port/log diagnosis is available"],
   game_modding: ["dedicated game-project, config, Roblox, and Luau tools are not registered yet"],
   skills: ["a vetted skill execution runtime is not registered in Tools yet"],
   database_data: ["database schema and query tools are not registered in Tools yet"],
@@ -114,6 +120,14 @@ const TOOL_PURPOSES = {
   vnem_tools_app_vertical_slice_apply: "apply an approved marker-backed app transaction",
   vnem_tools_app_acceptance_run: "run focused checks and a real desktop/mobile browser user path",
   vnem_tools_app_transaction_rollback: "restore a failed app transaction with hash preconditions",
+  vnem_tools_project_automation_inspect: "detect shells, package managers, scripts, task runners, and command policy",
+  vnem_tools_project_command_run: "review and execute one exact bounded project command with exit, timeout, output, and process evidence",
+  vnem_tools_project_task_graph_plan: "persist a dependency-ordered resumable graph with satisfaction and rollback contracts",
+  vnem_tools_project_task_graph_run: "run or resume reviewed graph nodes and checkpoint every result",
+  vnem_tools_project_task_graph_status: "recover persisted task graph progress after interruption",
+  vnem_tools_project_task_graph_rollback: "execute declared compensating commands in reverse dependency order",
+  vnem_tools_project_runtime_diagnose: "collect logs first and inspect project ports, processes, locks, temp state, and interrupted graphs",
+  vnem_tools_project_temp_cleanup: "quarantine or restore explicit project temp paths with bounded lock retries",
   vnem_tools_evidence_pack: "assemble safe claims and not-proven boundaries",
   vnem_tools_task_progress_truth_check: "compare completion claims with evidence",
   vnem_tools_no_placebo_progress_audit: "detect registration-only or mocked-only progress",
@@ -365,7 +379,7 @@ export function classifyAdoptionTask(userGoal, taskContext = "", taskMode = "aut
     : mode === "answer_only" ? "simple_answer" : legacyPrimary(primaryDomain);
   const ids = new Set(domains.map((domain) => domain.id));
   const flags = {
-    repo_or_code: ["repo_code", "app_engineering", "package_dependency", "api_integration", "database_data", "client_setup"].some((id) => ids.has(id)),
+    repo_or_code: ["repo_code", "app_engineering", "project_automation", "package_dependency", "api_integration", "database_data", "client_setup"].some((id) => ids.has(id)),
     debugging: ids.has("debugging"),
     github_or_publish: ids.has("github_publish"),
     cloudflare: ids.has("cloudflare"),
@@ -386,7 +400,7 @@ export function classifyAdoptionTask(userGoal, taskContext = "", taskMode = "aut
     scoring_method: "weighted domain adapters using goal, explicit mode, task context, repo signals, and user constraints",
     matched_flags: flags,
     execution_needed: executionNeeded,
-    proof_needed: flags.proof_or_validation || domains.some((domain) => ["debugging", "package_dependency", "api_integration", "cloudflare"].includes(domain.id)),
+    proof_needed: flags.proof_or_validation || domains.some((domain) => ["debugging", "project_automation", "package_dependency", "api_integration", "cloudflare"].includes(domain.id)),
     github_or_publish: flags.github_or_publish,
     browser_or_ui: flags.browser_or_ui,
     confidence: !domains.length ? "medium" : domains[0].score >= 9 ? "high" : "normal",
@@ -406,6 +420,7 @@ export function coreRecommendedToolsCalls(classification, args = {}) {
   const domainIds = new Set(domains.map((domain) => domain.id));
   // Keep implementation essentials ahead of evidence-only steps when the route is capped.
   if (domainIds.has("app_engineering")) candidates.push("vnem_tools_app_inspect", "vnem_tools_app_vertical_slice_plan", "vnem_tools_repo_deep_map");
+  if (domainIds.has("project_automation")) candidates.push("vnem_tools_project_automation_inspect", "vnem_tools_project_command_run");
   if (domainIds.has("repo_code")) candidates.push("vnem_tools_repo_deep_map", "vnem_tools_patch_target_finder");
   if (domainIds.has("repo_code") || domainIds.has("app_engineering")) candidates.push("vnem_tools_test_selection_plan");
   // Give every material domain execution influence before filling deeper steps.
@@ -443,6 +458,7 @@ export function coreProofRequirements(classification) {
   if (ids.has("github_publish")) requirements.push("remote branch SHA, PR head SHA, and Actions URL/status");
   if (ids.has("browser_ui")) requirements.push("browser screenshot, DOM, accessibility, and console-availability evidence");
   if (ids.has("package_dependency")) requirements.push("lockfile/dependency diff, install-script risk, focused tests, and rollback");
+  if (ids.has("project_automation")) requirements.push("exact reviewed command or graph id, exit/timeout state, process cleanup, bounded output evidence, and declared rollback status");
   if (ids.has("api_integration")) requirements.push("allowlist/auth reference, redacted response metadata, and provider/version scope");
   if (ids.has("evidence_validation")) requirements.push("handler, behavior-test, MCP-path, and no-placebo evidence where applicable");
   return unique(requirements);

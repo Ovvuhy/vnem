@@ -15,6 +15,9 @@ const projectActionsTestPath = rel("scripts/test-tools-project-actions.mjs");
 const appEngineeringTestPath = rel("scripts/test-tools-giga-app-engineering.mjs");
 const appEngineeringModulePath = rel("scripts/vnem/tools/app-engineering.mjs");
 const appEngineeringFixturesPath = rel("fixtures/app-engineering/README.md");
+const projectAutomationTestPath = rel("scripts/test-tools-giga-project-automation.mjs");
+const projectAutomationModulePath = rel("scripts/vnem/tools/project-automation.mjs");
+const projectAutomationFixturePath = rel("fixtures/project-automation/package.json");
 const gitSessionTestPath = rel("scripts/test-tools-git-session.mjs");
 const intelligenceTestPath = rel("scripts/test-tools-intelligence.mjs");
 const researchTestPath = rel("scripts/test-tools-research.mjs");
@@ -94,6 +97,8 @@ const browserTest = existsSync(browserTestPath) ? readFileSync(browserTestPath, 
 const projectActionsTest = existsSync(projectActionsTestPath) ? readFileSync(projectActionsTestPath, "utf8") : "";
 const appEngineeringTest = existsSync(appEngineeringTestPath) ? readFileSync(appEngineeringTestPath, "utf8") : "";
 const appEngineeringModule = existsSync(appEngineeringModulePath) ? readFileSync(appEngineeringModulePath, "utf8") : "";
+const projectAutomationTest = existsSync(projectAutomationTestPath) ? readFileSync(projectAutomationTestPath, "utf8") : "";
+const projectAutomationModule = existsSync(projectAutomationModulePath) ? readFileSync(projectAutomationModulePath, "utf8") : "";
 const gitSessionTest = existsSync(gitSessionTestPath) ? readFileSync(gitSessionTestPath, "utf8") : "";
 const intelligenceTest = existsSync(intelligenceTestPath) ? readFileSync(intelligenceTestPath, "utf8") : "";
 const researchTest = existsSync(researchTestPath) ? readFileSync(researchTestPath, "utf8") : "";
@@ -247,6 +252,14 @@ const requiredTools = [
   "vnem_tools_apply_patch_batch",
   "vnem_tools_restore_batch",
   "vnem_tools_project_scan",
+  "vnem_tools_project_automation_inspect",
+  "vnem_tools_project_command_run",
+  "vnem_tools_project_task_graph_plan",
+  "vnem_tools_project_task_graph_run",
+  "vnem_tools_project_task_graph_status",
+  "vnem_tools_project_task_graph_rollback",
+  "vnem_tools_project_runtime_diagnose",
+  "vnem_tools_project_temp_cleanup",
   "vnem_tools_app_inspect",
   "vnem_tools_app_vertical_slice_plan",
   "vnem_tools_app_vertical_slice_apply",
@@ -330,6 +343,9 @@ const report = {
   app_engineering_test_exists: existsSync(appEngineeringTestPath),
   app_engineering_module_exists: existsSync(appEngineeringModulePath),
   app_engineering_fixtures_exist: existsSync(appEngineeringFixturesPath),
+  project_automation_test_exists: existsSync(projectAutomationTestPath),
+  project_automation_module_exists: existsSync(projectAutomationModulePath),
+  project_automation_fixture_exists: existsSync(projectAutomationFixturePath),
   git_session_test_exists: existsSync(gitSessionTestPath),
   intelligence_test_exists: existsSync(intelligenceTestPath),
   research_test_exists: existsSync(researchTestPath),
@@ -396,6 +412,7 @@ const report = {
     test_tools_browser: pkg.scripts?.["test:tools-browser"] === "node scripts/test-tools-browser-capture.mjs",
     test_tools_project_actions: pkg.scripts?.["test:tools-project-actions"] === "node scripts/test-tools-project-actions.mjs",
     test_tools_giga_app_engineering: pkg.scripts?.["test:tools-giga-app-engineering"] === "node scripts/test-tools-giga-app-engineering.mjs",
+    test_tools_giga_project_automation: pkg.scripts?.["test:tools-giga-project-automation"] === "node scripts/test-tools-giga-project-automation.mjs",
     test_tools_git_session: pkg.scripts?.["test:tools-git-session"] === "node scripts/test-tools-git-session.mjs",
     test_tools_intelligence: pkg.scripts?.["test:tools-intelligence"] === "node scripts/test-tools-intelligence.mjs",
     test_tools_research: pkg.scripts?.["test:tools-research"] === "node scripts/test-tools-research.mjs",
@@ -728,6 +745,17 @@ const report = {
   patch_batch_status: /vnem_tools_apply_patch_batch/.test(server) && /safeApplyPatchBatch/.test(server) && /partialFailure/.test(projectActionsTest) && /explicit_delete_required/.test(projectActionsTest),
   restore_batch_status: /vnem_tools_restore_batch/.test(server) && /safeRestoreBatch/.test(server) && /restoreSecret/.test(projectActionsTest),
   project_scan_status: /vnem_tools_project_scan/.test(server) && /safeProjectScan/.test(server) && /likely_frameworks/.test(server) && /blocked_or_skipped_paths/.test(projectActionsTest),
+  project_automation_environment_status: /vnem_tools_project_automation_inspect/.test(server) && /inspectEnvironment/.test(projectAutomationModule) && /selected_package_manager/.test(projectAutomationTest) && /task_runners/.test(projectAutomationTest),
+  project_automation_layered_policy_status: /known_safe/.test(projectAutomationModule + projectAutomationTest) && /project_declared/.test(projectAutomationModule + projectAutomationTest) && /reviewed_custom/.test(projectAutomationModule + projectAutomationTest) && /blocked_dangerous/.test(projectAutomationModule + projectAutomationTest) && /permission_profile_blocked/.test(projectAutomationTest) && /shell_operator_blocked/.test(projectAutomationTest),
+  project_automation_secret_boundary_status: /raw_secret_argument_blocked/.test(projectAutomationModule + projectAutomationTest) && /sanitizedCommandEnvironment/.test(projectAutomationModule) && /VNEM_PHASE8_SECRET_CANARY/.test(projectAutomationTest) && /env-safety:absent/.test(projectAutomationTest),
+  project_automation_lifecycle_hook_status: /project_script_lifecycle_hook_blocked/.test(projectAutomationModule + projectAutomationTest) && /hooked-test/.test(projectAutomationTest) && /lifecycle_hooks/.test(projectAutomationModule),
+  project_automation_exact_execution_status: /vnem_tools_project_command_run/.test(server) && /runExactProcess/.test(projectAutomationModule) && /command_review_mismatch/.test(projectAutomationTest) && /exit_code, 7/.test(projectAutomationTest) && /head_tail_summary_with_redacted_log/.test(projectAutomationModule + projectAutomationTest),
+  project_automation_process_cleanup_status: /terminateTree/.test(projectAutomationModule) && /taskkill_process_tree/.test(projectAutomationModule) && /posix_process_group_sigterm_sigkill/.test(projectAutomationModule) && /orphan-survived/.test(projectAutomationTest) && /timed_out, true/.test(projectAutomationTest),
+  project_automation_task_graph_status: /vnem_tools_project_task_graph_plan/.test(server) && /vnem_tools_project_task_graph_run/.test(server) && /vnem_tools_project_task_graph_status/.test(server) && /topologicalOrder/.test(projectAutomationModule) && /status, "paused"/.test(projectAutomationTest) && /counts\.satisfied/.test(projectAutomationTest),
+  project_automation_rollback_status: /vnem_tools_project_task_graph_rollback/.test(server) && /rollbackTaskGraph/.test(projectAutomationModule) && /reverse-order graph rollback/.test(projectAutomationTest) && /status, "rolled_back"/.test(projectAutomationTest),
+  project_automation_diagnosis_status: /vnem_tools_project_runtime_diagnose/.test(server) && /collectLogsFirst/.test(projectAutomationModule) && /inspectPorts/.test(projectAutomationModule) && /diagnostic_order\[0\], "logs"/.test(projectAutomationTest) && /listening, true/.test(projectAutomationTest),
+  project_automation_temp_cleanup_status: /vnem_tools_project_temp_cleanup/.test(server) && /renameWithRetry/.test(projectAutomationModule) && /irreversible_delete_performed: false/.test(projectAutomationModule) && /operation_result, "quarantined"/.test(projectAutomationTest) && /operation_result, "restored"/.test(projectAutomationTest),
+  project_automation_real_mcp_proof_status: /StdioClientTransport/.test(projectAutomationTest) && /project-automation MCP tests passed/.test(projectAutomationTest) && /vnem_tools_project_task_graph_run/.test(projectAutomationTest) && /vnem_tools_project_runtime_diagnose/.test(projectAutomationTest),
   app_engineering_inspection_status: /vnem_tools_app_inspect/.test(server) && /inspectAppProject/.test(server + appEngineeringModule) && /frontend_without_detected_backend_boundary/.test(appEngineeringModule + appEngineeringTest) && /inspection_and_plan_only/.test(appEngineeringModule),
   app_engineering_transaction_status: /vnem_tools_app_vertical_slice_plan/.test(server) && /vnem_tools_app_vertical_slice_apply/.test(server) && /expected_before_sha256/.test(appEngineeringModule) && /automatic_all_or_rollback_semantics/.test(appEngineeringModule + appEngineeringTest) && /approval_required/.test(appEngineeringTest),
   app_engineering_acceptance_status: /vnem_tools_app_acceptance_run/.test(server) && /runChromiumUserPath/.test(server + appEngineeringModule) && /Runtime\.consoleAPICalled/.test(appEngineeringModule) && /Network\.loadingFailed/.test(appEngineeringModule) && /desktop\.png/.test(appEngineeringModule) && /mobile\.png/.test(appEngineeringModule) && /user_path_passed/.test(appEngineeringTest),
@@ -782,6 +810,9 @@ assert.equal(report.test_file_exists, true, "Tools MCP test file is missing");
 assert.equal(report.core_tools_e2e_test_exists, true, "Core→Tools e2e test file is missing");
 assert.equal(report.browser_capture_test_exists, true, "browser capture test file is missing");
 assert.equal(report.project_actions_test_exists, true, "project actions test file is missing");
+assert.equal(report.project_automation_test_exists, true, "project automation MCP test file is missing");
+assert.equal(report.project_automation_module_exists, true, "project automation module is missing");
+assert.equal(report.project_automation_fixture_exists, true, "project automation fixture is missing");
 assert.equal(report.git_session_test_exists, true, "git/session test file is missing");
 assert.equal(report.core_tools_e2e_script_exists, true, "test:core-tools-e2e package script is missing");
 assert.equal(report.package_scripts.tools_mcp, true, "tools:mcp package script is missing");
@@ -797,6 +828,7 @@ assert.equal(report.client_setup_behavior_status, true, "client setup behavior p
 assert.equal(report.client_setup_cli_status, true, "client setup CLI surface is incomplete");
 assert.equal(report.package_scripts.test_tools_browser, true, "test:tools-browser package script is missing");
 assert.equal(report.package_scripts.test_tools_project_actions, true, "test:tools-project-actions package script is missing");
+assert.equal(report.package_scripts.test_tools_giga_project_automation, true, "test:tools-giga-project-automation package script is missing");
 assert.equal(report.package_scripts.test_tools_git_session, true, "test:tools-git-session package script is missing");
 assert.equal(report.package_scripts.test_tools_intelligence, true, "test:tools-intelligence package script is missing");
 assert.equal(report.package_scripts.test_tools_research, true, "test:tools-research package script is missing");
@@ -1018,6 +1050,7 @@ for (const [key, value] of Object.entries({ cloudflare_control_status: report.cl
 assert.equal(report.patch_batch_status, true, "patch batch support/test coverage is missing");
 assert.equal(report.restore_batch_status, true, "restore batch support/test coverage is missing");
 assert.equal(report.project_scan_status, true, "project scan support/test coverage is missing");
+for (const [key, value] of Object.entries({ project_automation_environment_status: report.project_automation_environment_status, project_automation_layered_policy_status: report.project_automation_layered_policy_status, project_automation_secret_boundary_status: report.project_automation_secret_boundary_status, project_automation_lifecycle_hook_status: report.project_automation_lifecycle_hook_status, project_automation_exact_execution_status: report.project_automation_exact_execution_status, project_automation_process_cleanup_status: report.project_automation_process_cleanup_status, project_automation_task_graph_status: report.project_automation_task_graph_status, project_automation_rollback_status: report.project_automation_rollback_status, project_automation_diagnosis_status: report.project_automation_diagnosis_status, project_automation_temp_cleanup_status: report.project_automation_temp_cleanup_status, project_automation_real_mcp_proof_status: report.project_automation_real_mcp_proof_status })) assert.equal(value, true, `${key} readiness missing`);
 for (const [key, value] of Object.entries({ app_engineering_inspection_status: report.app_engineering_inspection_status, app_engineering_transaction_status: report.app_engineering_transaction_status, app_engineering_acceptance_status: report.app_engineering_acceptance_status, app_engineering_rollback_status: report.app_engineering_rollback_status, app_engineering_adapter_fixture_status: report.app_engineering_adapter_fixture_status, app_engineering_real_mcp_proof_status: report.app_engineering_real_mcp_proof_status, dev_server_listener_cleanup_status: report.dev_server_listener_cleanup_status })) assert.equal(value, true, `${key} readiness missing`);
 assert.equal(report.project_task_status, true, "project task support/test coverage is missing");
 assert.equal(report.dev_server_status, true, "dev server support/test coverage is missing");
@@ -1165,6 +1198,7 @@ console.log(`permission_manifest_integration: ${yes(report.permission_manifest_i
 console.log(`patch_batch_status: ${yes(report.patch_batch_status)}`);
 console.log(`restore_batch_status: ${yes(report.restore_batch_status)}`);
 console.log(`project_scan_status: ${yes(report.project_scan_status)}`);
+for (const key of ["project_automation_environment_status", "project_automation_layered_policy_status", "project_automation_secret_boundary_status", "project_automation_lifecycle_hook_status", "project_automation_exact_execution_status", "project_automation_process_cleanup_status", "project_automation_task_graph_status", "project_automation_rollback_status", "project_automation_diagnosis_status", "project_automation_temp_cleanup_status", "project_automation_real_mcp_proof_status"]) console.log(`${key}: ${yes(report[key])}`);
 for (const key of ["app_engineering_inspection_status", "app_engineering_transaction_status", "app_engineering_acceptance_status", "app_engineering_rollback_status", "app_engineering_adapter_fixture_status", "app_engineering_real_mcp_proof_status", "dev_server_listener_cleanup_status"]) console.log(`${key}: ${yes(report[key])}`);
 console.log(`project_task_status: ${yes(report.project_task_status)}`);
 console.log(`dev_server_status: ${yes(report.dev_server_status)}`);

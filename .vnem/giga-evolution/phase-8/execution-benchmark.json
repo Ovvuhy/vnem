@@ -1,0 +1,193 @@
+{
+  "schema_version": 1,
+  "phase": 8,
+  "generated_at": "2026-07-13T14:44:56.870Z",
+  "benchmark_type": "actual_mcp_project_automation_execution",
+  "mcp_transport": "stdio",
+  "total_duration_ms": 15086.83,
+  "tool_calls": [
+    {
+      "tool": "vnem_tools_project_automation_inspect",
+      "duration_ms": 3264.88,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_project_command_run",
+      "duration_ms": 8.59,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_project_command_run",
+      "duration_ms": 266.88,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_project_command_run",
+      "duration_ms": 4.39,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_project_command_run",
+      "duration_ms": 16.53,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_project_command_run",
+      "duration_ms": 591.51,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_project_command_run",
+      "duration_ms": 5.26,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_project_command_run",
+      "duration_ms": 267.18,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_project_command_run",
+      "duration_ms": 9.98,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_project_command_run",
+      "duration_ms": 569.69,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_project_command_run",
+      "duration_ms": 3.83,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_project_command_run",
+      "duration_ms": 3.74,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_project_command_run",
+      "duration_ms": 529.58,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_project_command_run",
+      "duration_ms": 4.7,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_project_command_run",
+      "duration_ms": 530.26,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_project_command_run",
+      "duration_ms": 5.26,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_project_command_run",
+      "duration_ms": 1871.64,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_project_task_graph_plan",
+      "duration_ms": 9.96,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_project_task_graph_run",
+      "duration_ms": 3.53,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_project_task_graph_run",
+      "duration_ms": 534.59,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_project_task_graph_run",
+      "duration_ms": 290.17,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_project_task_graph_status",
+      "duration_ms": 2.18,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_project_task_graph_rollback",
+      "duration_ms": 875.77,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_start_dev_server",
+      "duration_ms": 865.45,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_project_runtime_diagnose",
+      "duration_ms": 59.82,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_stop_dev_server",
+      "duration_ms": 340.35,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_project_temp_cleanup",
+      "duration_ms": 6.48,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_project_temp_cleanup",
+      "duration_ms": 8.51,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_project_temp_cleanup",
+      "duration_ms": 6.07,
+      "status": "ok"
+    }
+  ],
+  "proof": {
+    "shells_detected": [
+      "powershell.exe",
+      "cmd.exe",
+      "bash.exe"
+    ],
+    "package_manager": "npm",
+    "task_runners": [
+      "package-scripts"
+    ],
+    "known_safe_exit": 0,
+    "safe_profile_custom_block": "permission_profile_blocked",
+    "exact_review_stale_block": "command_review_mismatch",
+    "dangerous_declared_script_block": "project_script_policy_blocked",
+    "dangerous_lifecycle_hook_block": "project_script_lifecycle_hook_blocked",
+    "shell_operator_block": "shell_operator_blocked",
+    "raw_secret_argument_block": "raw_secret_argument_blocked",
+    "child_secret_environment_removed": true,
+    "long_output_bytes": 46452,
+    "long_output_compacted": true,
+    "explicit_failure_exit": 7,
+    "timeout_observed": true,
+    "timeout_descendant_survived": false,
+    "graph_pause_status": "paused",
+    "graph_resume_status": "completed",
+    "graph_satisfied_nodes": 1,
+    "graph_rollback_status": "rolled_back",
+    "localhost_port_detected": true,
+    "dev_server_stopped_and_port_released": true,
+    "log_first_diagnosis": true,
+    "temp_quarantine_status": "quarantined",
+    "temp_restore_status": "restored"
+  },
+  "limitations": [
+    "Custom executable review binds exact argv and policy, but cannot prove arbitrary executable internals are harmless.",
+    "Lock-owner identification is not guaranteed without an approved OS-specific handle inspector.",
+    "Standalone command side effects are not automatically reversible; task graphs require explicit rollback commands."
+  ]
+}
