@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "source": "live MCP runtime registry status calls",
-  "total_tools": 223,
+  "total_tools": 228,
   "servers": {
     "core": {
       "schema_version": "1.0.0",
@@ -2560,12 +2560,13 @@
       "server_name": "vnem-tools",
       "version": "1.0.1",
       "valid": true,
-      "tool_count": 148,
+      "tool_count": 153,
       "alias_count": 0,
       "categories": {
         "action": 2,
         "adoption": 1,
         "api": 1,
+        "app": 5,
         "apply": 2,
         "architecture": 1,
         "browser": 10,
@@ -2632,15 +2633,15 @@
         "workspace": 1
       },
       "side_effect_classes": {
-        "destructive_mutation": 22,
+        "destructive_mutation": 25,
         "network_mutation": 16,
-        "read_only": 110
+        "read_only": 112
       },
       "validation": {
         "valid": true,
         "server_name": "vnem-tools",
         "version": "1.0.1",
-        "tool_count": 148,
+        "tool_count": 153,
         "alias_count": 0,
         "errors": [],
         "warnings": [
@@ -4414,6 +4415,186 @@
           "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-project-actions.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_app_inspect",
+          "version": "1.0.1",
+          "title": "Inspect App Architecture And Data Flow",
+          "description": "Inspect an allowed web project for framework support, frontend/backend boundaries, routes, components, APIs, data flow, state, completion gaps, validation, accessibility, responsive behavior, and focused test/build scripts.",
+          "category": "app",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-app-engineering.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_app_vertical_slice_plan",
+          "version": "1.0.1",
+          "title": "Plan Coherent App Vertical Slice",
+          "description": "Generate a deterministic file-by-file preview for a complete frontend/API/domain vertical slice. Automatic apply is limited to reviewed marker-backed Vite React Node or static Node adapters; other projects remain inspection/plan only.",
+          "category": "app",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-app-engineering.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_app_vertical_slice_apply",
+          "version": "1.0.1",
+          "title": "Apply App Vertical Slice Transaction",
+          "description": "Dry-run or apply a previously previewed app plan with hash preconditions, staged writes, per-file rename commits, automatic rollback on failure, and a retained transaction manifest. Real apply requires explicit approval.",
+          "category": "app",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": true,
+            "idempotentHint": false,
+            "openWorldHint": false
+          },
+          "side_effect_class": "destructive_mutation",
+          "permission_requirements": [
+            "approved_local_mutation"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "required_redacted_record",
+          "rollback_behavior": {
+            "mode": "required_or_explicitly_not_available",
+            "guidance": "Return backup, compensating action, or explicit rollback-unavailable state in evidence."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-app-engineering.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_app_acceptance_run",
+          "version": "1.0.1",
+          "title": "Run App Vertical Slice Acceptance",
+          "description": "Dry-run or execute focused test/build scripts, a localhost dev server, a real Chromium user path, desktop/mobile screenshots, console/network capture, and a completion report. Can restore the transaction automatically when acceptance fails.",
+          "category": "app",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": true,
+            "idempotentHint": false,
+            "openWorldHint": false
+          },
+          "side_effect_class": "destructive_mutation",
+          "permission_requirements": [
+            "approved_local_mutation"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "required_redacted_record",
+          "rollback_behavior": {
+            "mode": "required_or_explicitly_not_available",
+            "guidance": "Return backup, compensating action, or explicit rollback-unavailable state in evidence."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-app-engineering.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_app_transaction_rollback",
+          "version": "1.0.1",
+          "title": "Rollback App Vertical Slice Transaction",
+          "description": "Dry-run or restore every file in an app transaction after checking current-content hashes. Real rollback requires explicit approval and cannot overwrite later edits.",
+          "category": "app",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": true,
+            "idempotentHint": false,
+            "openWorldHint": false
+          },
+          "side_effect_class": "destructive_mutation",
+          "permission_requirements": [
+            "approved_local_mutation"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "required_redacted_record",
+          "rollback_behavior": {
+            "mode": "self",
+            "guidance": "The tool is itself a rollback operation and must verify the restored state."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-app-engineering.mjs"
           ],
           "benchmark_scenarios": [],
           "input_schema_present": true

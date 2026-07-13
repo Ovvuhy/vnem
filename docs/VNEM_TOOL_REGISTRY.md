@@ -2,7 +2,7 @@
 
 Generated from live MCP runtime registries. Do not edit this table manually.
 
-- Total tools: 223
+- Total tools: 228
 - Registry valid: true
 - Missing behavior-test references: 18
 
@@ -122,6 +122,11 @@ Generated from live MCP runtime registries. Do not edit this table manually.
 | tools | `vnem_tools_apply_patch_batch` | apply | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_restore_batch` | restore | destructive_mutation | approved_local_mutation | required_redacted_record | self | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_project_scan` | project | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_app_inspect` | app | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_app_vertical_slice_plan` | app | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_app_vertical_slice_apply` | app | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_app_acceptance_run` | app | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_app_transaction_rollback` | app | destructive_mutation | approved_local_mutation | required_redacted_record | self | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_run_project_task` | project | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_start_dev_server` | start | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_stop_dev_server` | stop | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/tools/server.mjs |

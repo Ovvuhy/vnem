@@ -378,6 +378,21 @@
       "vnem_tools_project_scan": [
         "scripts/test-tools-project-actions.mjs"
       ],
+      "vnem_tools_app_inspect": [
+        "scripts/test-tools-giga-app-engineering.mjs"
+      ],
+      "vnem_tools_app_vertical_slice_plan": [
+        "scripts/test-tools-giga-app-engineering.mjs"
+      ],
+      "vnem_tools_app_vertical_slice_apply": [
+        "scripts/test-tools-giga-app-engineering.mjs"
+      ],
+      "vnem_tools_app_acceptance_run": [
+        "scripts/test-tools-giga-app-engineering.mjs"
+      ],
+      "vnem_tools_app_transaction_rollback": [
+        "scripts/test-tools-giga-app-engineering.mjs"
+      ],
       "vnem_tools_run_project_task": [
         "scripts/test-core-tools-tool-ecosystem.mjs",
         "scripts/test-tools-git-session.mjs",

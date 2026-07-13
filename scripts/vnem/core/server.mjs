@@ -2984,7 +2984,7 @@ function selectToolsForTask(args = {}) {
     add("vnem_tools_workspace_map", "vnem_tools_architecture_review", "vnem_tools_code_search", "vnem_tools_read_many_files", "vnem_tools_project_scan", "vnem_tools_dependency_scan");
   }
   if (["coding", "ui_web", "debugging", "local_project_modification"].includes(type)) add("vnem_tools_apply_patch_batch", "vnem_tools_run_project_task", "vnem_tools_collect_evidence", "vnem_tools_git_status", "vnem_tools_git_diff_summary");
-  if (type === "ui_web") add("vnem_tools_ui_surface_review", "vnem_tools_browser_evidence_plan", "vnem_tools_browser_evidence_run", "vnem_tools_ui_evidence_audit", "vnem_tools_start_dev_server", "vnem_tools_browser_capture", "vnem_tools_browser_page_inspect", "vnem_tools_browser_accessibility_audit", "vnem_tools_browser_compare_snapshots", "vnem_tools_stop_dev_server");
+  if (type === "ui_web") add("vnem_tools_app_inspect", "vnem_tools_app_vertical_slice_plan", "vnem_tools_app_vertical_slice_apply", "vnem_tools_app_acceptance_run", "vnem_tools_app_transaction_rollback", "vnem_tools_ui_surface_review", "vnem_tools_browser_evidence_plan", "vnem_tools_browser_evidence_run", "vnem_tools_ui_evidence_audit", "vnem_tools_start_dev_server", "vnem_tools_browser_capture", "vnem_tools_browser_page_inspect", "vnem_tools_browser_accessibility_audit", "vnem_tools_browser_compare_snapshots", "vnem_tools_stop_dev_server");
   if (type === "debugging") add("vnem_tools_debug_evidence", "vnem_tools_architecture_review", "vnem_tools_code_search", "vnem_tools_read_many_files", "vnem_tools_run_project_task", "vnem_tools_apply_patch_batch");
   if (["research", "direct_url_source", "current_research", "website_understanding"].includes(type)) add("vnem_tools_source_quality_check", "vnem_tools_research_brief", "vnem_tools_browser_research_pack", "vnem_tools_claim_source_matrix", "vnem_tools_research_gap_detector", "vnem_tools_source_map", "vnem_tools_source_extract", "vnem_tools_source_graph");
   if (["research", "current_research"].includes(type)) add("vnem_tools_search_provider_manifest", "vnem_tools_search_query_builder", "vnem_tools_web_search", "vnem_tools_search_result_ranker");
@@ -2996,8 +2996,8 @@ function selectToolsForTask(args = {}) {
   if (type === "security_sensitive") add("vnem_tools_dependency_scan", "vnem_tools_source_quality_check", "vnem_tools_redirect_chain_check", "vnem_tools_url_reputation_check", "vnem_tools_captcha_detector", "vnem_tools_download_safety_check", "vnem_tools_claim_source_matrix", "vnem_tools_research_gap_detector");
   if (/download|installer|redirect|captcha|phishing|malware|scam|credential|suspicious/i.test(task + " " + context)) add("vnem_tools_redirect_chain_check", "vnem_tools_url_reputation_check", "vnem_tools_captcha_detector", "vnem_tools_download_safety_check");
   const selectedTools = [...selected];
-  const dryRunSteps = selectedTools.filter((tool) => /apply_patch|run_project_task|start_dev_server|browser_capture|browser_page|browser_readability|browser_link|browser_dom|browser_accessibility|browser_compare|web_search|redirect_chain|download_safety|fetch_url_text|git_commit|api_request|restore/.test(tool)).map((tool) => `${tool}: dry-run first before approval or real action when network/mutation/source fetching is involved`);
-  const approvalSteps = selectedTools.filter((tool) => /apply_patch|run_project_task|start_dev_server|stop_dev_server|browser_capture|browser_page|browser_readability|browser_link|browser_dom|browser_accessibility|browser_compare|web_search|redirect_chain|download_safety|fetch_url_text|git_commit|api_request|restore/.test(tool)).map((tool) => `${tool}: requires explicit approval for real external/network/mutation action`);
+  const dryRunSteps = selectedTools.filter((tool) => /apply_patch|vertical_slice_apply|app_acceptance|app_transaction_rollback|run_project_task|start_dev_server|browser_capture|browser_page|browser_readability|browser_link|browser_dom|browser_accessibility|browser_compare|web_search|redirect_chain|download_safety|fetch_url_text|git_commit|api_request|restore/.test(tool)).map((tool) => `${tool}: dry-run first before approval or real action when network/mutation/source fetching is involved`);
+  const approvalSteps = selectedTools.filter((tool) => /apply_patch|vertical_slice_apply|app_acceptance|app_transaction_rollback|run_project_task|start_dev_server|stop_dev_server|browser_capture|browser_page|browser_readability|browser_link|browser_dom|browser_accessibility|browser_compare|web_search|redirect_chain|download_safety|fetch_url_text|git_commit|api_request|restore/.test(tool)).map((tool) => `${tool}: requires explicit approval for real external/network/mutation action`);
   const currentSearchRequired = currentResearchRequired(type, `${task} ${context}`);
   return {
     task,
@@ -3040,6 +3040,11 @@ function buildCoreToolsPlan(args = {}) {
   push("vnem_tools_start_session", "start one coherent evidence pack");
   push("vnem_tools_workspace_map", "map project structure safely");
   push("vnem_tools_project_scan", "detect package scripts/frameworks/safe commands");
+  push("vnem_tools_app_inspect", "inspect app framework support, frontend/backend boundaries, routes, components, APIs, data flow, states, validation, accessibility, and responsive signals");
+  push("vnem_tools_app_vertical_slice_plan", "preview a coherent marker-backed frontend/API/domain transaction with explicit adapter limits");
+  push("vnem_tools_app_vertical_slice_apply", "dry-run then apply the approved hash-bound app transaction with automatic failure rollback", true, true);
+  push("vnem_tools_app_acceptance_run", "run focused checks, localhost server, real Chromium user path, console/network capture, and desktop/mobile screenshots", true, true);
+  push("vnem_tools_app_transaction_rollback", "restore an app transaction only when current hashes still match", true, true);
   push("vnem_tools_dependency_scan", "inspect dependencies/scripts without installing");
   push("vnem_tools_code_search", "find relevant implementation sites");
   push("vnem_tools_find_references", "trace symbols/config names");
@@ -3838,6 +3843,11 @@ function purposeForTool(tool, type) {
     vnem_tools_code_search: "find relevant code without broad file reads",
     vnem_tools_read_many_files: "load bounded relevant file context",
     vnem_tools_project_scan: "inspect scripts/frameworks/safe commands",
+    vnem_tools_app_inspect: "inspect app boundaries, routes, APIs, data flow, states, and adapter support",
+    vnem_tools_app_vertical_slice_plan: "preview a coherent marker-backed frontend/API/domain transaction",
+    vnem_tools_app_vertical_slice_apply: "apply an approved hash-bound app transaction with rollback evidence",
+    vnem_tools_app_acceptance_run: "prove focused checks and a real desktop/mobile localhost user path",
+    vnem_tools_app_transaction_rollback: "restore an app transaction without overwriting later edits",
     vnem_tools_dependency_scan: "inspect dependencies and risky scripts without installs",
     vnem_tools_fetch_url_text: "fetch one approved direct URL text/source, not search results",
     vnem_tools_browser_page_inspect: "browser/page source intelligence: turn direct/local/provided page content into structured understanding",

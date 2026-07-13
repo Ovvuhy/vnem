@@ -50,6 +50,18 @@ try {
   assert.ok(JSON.stringify(mixed).length < 16000, "default entrypoint decision should remain compact");
   for (const name of mixed.recommended_tools_calls) assert.equal(toolNames.has(name), true, `Core returned unregistered Tools call ${name}`);
 
+  const appSlice = await call(core.client, "vnem_entrypoint", {
+    user_goal: "Build a complete Vite React and Node API vertical slice, connect visible data, run test and build, and prove the localhost user path on desktop and mobile.",
+    task_context: "Use approval-gated atomic apply and rollback on failed acceptance.",
+    available_mcp_names: ["vnem", "vnem-tools"],
+    available_tool_names: [...toolNames],
+    allowed_tool_names: [...toolNames],
+    repo_signals: ["package.json: vite react", "src/App.jsx", "Node API"]
+  }, "entrypoint");
+  for (const tool of ["vnem_tools_app_inspect", "vnem_tools_repo_deep_map", "vnem_tools_app_vertical_slice_plan"]) assert.ok(appSlice.recommended_tools_calls.includes(tool), `missing Phase 7 app route ${tool}`);
+  assert.ok(appSlice.recommended_tools_call_sequence.every((step) => step.state.available && step.state.allowed));
+  assert.ok(appSlice.recommended_tools_calls.length <= 6);
+
   const details = await call(core.client, "vnem_decision_details", {
     decision_id: mixed.decision_id,
     sections: ["classification", "compatibility", "capability_packs", "unavailable_capabilities"]

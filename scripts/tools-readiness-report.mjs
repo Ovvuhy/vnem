@@ -12,6 +12,9 @@ const testPath = rel("scripts/test-tools-mcp-server.mjs");
 const e2eTestPath = rel("scripts/test-core-tools-e2e.mjs");
 const browserTestPath = rel("scripts/test-tools-browser-capture.mjs");
 const projectActionsTestPath = rel("scripts/test-tools-project-actions.mjs");
+const appEngineeringTestPath = rel("scripts/test-tools-giga-app-engineering.mjs");
+const appEngineeringModulePath = rel("scripts/vnem/tools/app-engineering.mjs");
+const appEngineeringFixturesPath = rel("fixtures/app-engineering/README.md");
 const gitSessionTestPath = rel("scripts/test-tools-git-session.mjs");
 const intelligenceTestPath = rel("scripts/test-tools-intelligence.mjs");
 const researchTestPath = rel("scripts/test-tools-research.mjs");
@@ -89,6 +92,8 @@ const test = existsSync(testPath) ? readFileSync(testPath, "utf8") : "";
 const e2eTest = existsSync(e2eTestPath) ? readFileSync(e2eTestPath, "utf8") : "";
 const browserTest = existsSync(browserTestPath) ? readFileSync(browserTestPath, "utf8") : "";
 const projectActionsTest = existsSync(projectActionsTestPath) ? readFileSync(projectActionsTestPath, "utf8") : "";
+const appEngineeringTest = existsSync(appEngineeringTestPath) ? readFileSync(appEngineeringTestPath, "utf8") : "";
+const appEngineeringModule = existsSync(appEngineeringModulePath) ? readFileSync(appEngineeringModulePath, "utf8") : "";
 const gitSessionTest = existsSync(gitSessionTestPath) ? readFileSync(gitSessionTestPath, "utf8") : "";
 const intelligenceTest = existsSync(intelligenceTestPath) ? readFileSync(intelligenceTestPath, "utf8") : "";
 const researchTest = existsSync(researchTestPath) ? readFileSync(researchTestPath, "utf8") : "";
@@ -242,6 +247,11 @@ const requiredTools = [
   "vnem_tools_apply_patch_batch",
   "vnem_tools_restore_batch",
   "vnem_tools_project_scan",
+  "vnem_tools_app_inspect",
+  "vnem_tools_app_vertical_slice_plan",
+  "vnem_tools_app_vertical_slice_apply",
+  "vnem_tools_app_acceptance_run",
+  "vnem_tools_app_transaction_rollback",
   "vnem_tools_run_project_task",
   "vnem_tools_start_dev_server",
   "vnem_tools_stop_dev_server",
@@ -317,6 +327,9 @@ const report = {
   core_tools_e2e_test_exists: existsSync(e2eTestPath),
   browser_capture_test_exists: existsSync(browserTestPath),
   project_actions_test_exists: existsSync(projectActionsTestPath),
+  app_engineering_test_exists: existsSync(appEngineeringTestPath),
+  app_engineering_module_exists: existsSync(appEngineeringModulePath),
+  app_engineering_fixtures_exist: existsSync(appEngineeringFixturesPath),
   git_session_test_exists: existsSync(gitSessionTestPath),
   intelligence_test_exists: existsSync(intelligenceTestPath),
   research_test_exists: existsSync(researchTestPath),
@@ -382,6 +395,7 @@ const report = {
     test_tools_mcp: pkg.scripts?.["test:tools-mcp"] === "node scripts/test-tools-mcp-server.mjs",
     test_tools_browser: pkg.scripts?.["test:tools-browser"] === "node scripts/test-tools-browser-capture.mjs",
     test_tools_project_actions: pkg.scripts?.["test:tools-project-actions"] === "node scripts/test-tools-project-actions.mjs",
+    test_tools_giga_app_engineering: pkg.scripts?.["test:tools-giga-app-engineering"] === "node scripts/test-tools-giga-app-engineering.mjs",
     test_tools_git_session: pkg.scripts?.["test:tools-git-session"] === "node scripts/test-tools-git-session.mjs",
     test_tools_intelligence: pkg.scripts?.["test:tools-intelligence"] === "node scripts/test-tools-intelligence.mjs",
     test_tools_research: pkg.scripts?.["test:tools-research"] === "node scripts/test-tools-research.mjs",
@@ -714,6 +728,13 @@ const report = {
   patch_batch_status: /vnem_tools_apply_patch_batch/.test(server) && /safeApplyPatchBatch/.test(server) && /partialFailure/.test(projectActionsTest) && /explicit_delete_required/.test(projectActionsTest),
   restore_batch_status: /vnem_tools_restore_batch/.test(server) && /safeRestoreBatch/.test(server) && /restoreSecret/.test(projectActionsTest),
   project_scan_status: /vnem_tools_project_scan/.test(server) && /safeProjectScan/.test(server) && /likely_frameworks/.test(server) && /blocked_or_skipped_paths/.test(projectActionsTest),
+  app_engineering_inspection_status: /vnem_tools_app_inspect/.test(server) && /inspectAppProject/.test(server + appEngineeringModule) && /frontend_without_detected_backend_boundary/.test(appEngineeringModule + appEngineeringTest) && /inspection_and_plan_only/.test(appEngineeringModule),
+  app_engineering_transaction_status: /vnem_tools_app_vertical_slice_plan/.test(server) && /vnem_tools_app_vertical_slice_apply/.test(server) && /expected_before_sha256/.test(appEngineeringModule) && /automatic_all_or_rollback_semantics/.test(appEngineeringModule + appEngineeringTest) && /approval_required/.test(appEngineeringTest),
+  app_engineering_acceptance_status: /vnem_tools_app_acceptance_run/.test(server) && /runChromiumUserPath/.test(server + appEngineeringModule) && /Runtime\.consoleAPICalled/.test(appEngineeringModule) && /Network\.loadingFailed/.test(appEngineeringModule) && /desktop\.png/.test(appEngineeringModule) && /mobile\.png/.test(appEngineeringModule) && /user_path_passed/.test(appEngineeringTest),
+  app_engineering_rollback_status: /vnem_tools_app_transaction_rollback/.test(server) && /rollbackVerticalSliceTransaction/.test(server + appEngineeringModule) && /restored_after_failure/.test(server + appEngineeringTest) && /app_rollback_precondition_changed/.test(appEngineeringModule),
+  app_engineering_adapter_fixture_status: existsSync(appEngineeringFixturesPath) && /vite-react-node/.test(appEngineeringModule + appEngineeringTest) && /static-node/.test(appEngineeringModule + appEngineeringTest) && /blocked_unsupported_adapter/.test(appEngineeringTest),
+  app_engineering_real_mcp_proof_status: /StdioClientTransport/.test(appEngineeringTest) && /status, "passed"/.test(appEngineeringTest) && /browser_was_run/.test(appEngineeringTest) && /network_failures/.test(appEngineeringTest) && /horizontal_overflow/.test(appEngineeringTest),
+  dev_server_listener_cleanup_status: /listener_pid/.test(server) && /findWindowsListeningPid/.test(server) && /waitForWindowsListenerStop/.test(server) && /dev_server_stop_failed/.test(server),
   project_task_status: /vnem_tools_run_project_task/.test(server) && /safeRunProjectTask/.test(server) && /unsafe_script_blocked/.test(projectActionsTest),
   dev_server_status: /vnem_tools_start_dev_server/.test(server) && /vnem_tools_stop_dev_server/.test(server) && /dev_server_not_found/.test(projectActionsTest),
   session_evidence_status: /vnem_tools_start_session/.test(server) && /vnem_tools_finish_session/.test(server) && /blocked_actions/.test(gitSessionTest),
@@ -752,7 +773,7 @@ const report = {
   browser_known_limitations: [
     "approved localhost/127.0.0.1 browser evidence execution only when VNEM_TOOLS_ALLOW_LOCALHOST=1",
     "reports blocked/partial/browser_unavailable when policy, permission, or browser runtime blocks proof",
-    "console status is explicitly unavailable unless supported by the bounded runtime; no login automation, cookie extraction, persistent sessions, CAPTCHA bypass, credential capture, or broad scraping"
+    "legacy static browser evidence reports console status unavailable; vnem_tools_app_acceptance_run captures real Chromium console/network events for dedicated-profile localhost fixtures only; no login automation, cookie extraction, persistent sessions, CAPTCHA bypass, credential capture, or broad scraping"
   ]
 };
 
@@ -997,6 +1018,7 @@ for (const [key, value] of Object.entries({ cloudflare_control_status: report.cl
 assert.equal(report.patch_batch_status, true, "patch batch support/test coverage is missing");
 assert.equal(report.restore_batch_status, true, "restore batch support/test coverage is missing");
 assert.equal(report.project_scan_status, true, "project scan support/test coverage is missing");
+for (const [key, value] of Object.entries({ app_engineering_inspection_status: report.app_engineering_inspection_status, app_engineering_transaction_status: report.app_engineering_transaction_status, app_engineering_acceptance_status: report.app_engineering_acceptance_status, app_engineering_rollback_status: report.app_engineering_rollback_status, app_engineering_adapter_fixture_status: report.app_engineering_adapter_fixture_status, app_engineering_real_mcp_proof_status: report.app_engineering_real_mcp_proof_status, dev_server_listener_cleanup_status: report.dev_server_listener_cleanup_status })) assert.equal(value, true, `${key} readiness missing`);
 assert.equal(report.project_task_status, true, "project task support/test coverage is missing");
 assert.equal(report.dev_server_status, true, "dev server support/test coverage is missing");
 assert.equal(report.session_evidence_status, true, "session evidence support/test coverage is missing");
@@ -1143,6 +1165,7 @@ console.log(`permission_manifest_integration: ${yes(report.permission_manifest_i
 console.log(`patch_batch_status: ${yes(report.patch_batch_status)}`);
 console.log(`restore_batch_status: ${yes(report.restore_batch_status)}`);
 console.log(`project_scan_status: ${yes(report.project_scan_status)}`);
+for (const key of ["app_engineering_inspection_status", "app_engineering_transaction_status", "app_engineering_acceptance_status", "app_engineering_rollback_status", "app_engineering_adapter_fixture_status", "app_engineering_real_mcp_proof_status", "dev_server_listener_cleanup_status"]) console.log(`${key}: ${yes(report[key])}`);
 console.log(`project_task_status: ${yes(report.project_task_status)}`);
 console.log(`dev_server_status: ${yes(report.dev_server_status)}`);
 console.log(`session_evidence_status: ${yes(report.session_evidence_status)}`);

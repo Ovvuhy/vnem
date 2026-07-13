@@ -18,8 +18,8 @@ const DOMAIN_ADAPTERS = [
   ], ["visual correctness", "accessibility", "responsive behavior"], ["vnem_tools_ui_surface_review", "vnem_tools_browser_evidence_plan", "vnem_tools_browser_evidence_run"]),
   adapter("app_engineering", "Application engineering", 7, [
     feature(/\b(full[- ]?stack|frontend|backend|web app|application|api endpoint|react|vue|svelte|next\.?js|express)\b/, 5, "application stack or feature"),
-    feature(/\b(build|implement|add|create)\b.*\b(feature|endpoint|component|service|app)\b/, 4, "implementation deliverable")
-  ], ["architecture", "correctness", "maintainability", "user experience"], ["vnem_tools_repo_deep_map", "vnem_tools_code_symbol_map", "vnem_tools_test_selection_plan"]),
+    feature(/\b(build|implement|add|create)\b.*\b(endpoint|component|page|frontend|backend|api|service|app)\b/, 4, "application implementation deliverable")
+  ], ["architecture", "correctness", "maintainability", "user experience"], ["vnem_tools_app_inspect", "vnem_tools_app_vertical_slice_plan", "vnem_tools_repo_deep_map", "vnem_tools_app_vertical_slice_apply", "vnem_tools_app_acceptance_run", "vnem_tools_app_transaction_rollback"]),
   adapter("repo_code", "Repository and code work", 6, [
     feature(/\b(repo|repository|source code|codebase|function|class|symbol|handler|patch|refactor|implementation)\b/, 4, "repository or code signal"),
     feature(/\b(edit|change|modify|test|registry|artifact|generated file)\b/, 2, "source-change or validation signal"),
@@ -109,6 +109,11 @@ const TOOL_PURPOSES = {
   vnem_tools_ui_surface_review: "inspect UI routes and states before browser proof",
   vnem_tools_browser_evidence_plan: "plan bounded browser and viewport evidence",
   vnem_tools_browser_evidence_run: "collect approved local browser evidence",
+  vnem_tools_app_inspect: "inspect app frameworks, boundaries, routes, APIs, data flow, states, and completion gaps",
+  vnem_tools_app_vertical_slice_plan: "preview a coherent frontend, API, and domain transaction",
+  vnem_tools_app_vertical_slice_apply: "apply an approved marker-backed app transaction",
+  vnem_tools_app_acceptance_run: "run focused checks and a real desktop/mobile browser user path",
+  vnem_tools_app_transaction_rollback: "restore a failed app transaction with hash preconditions",
   vnem_tools_evidence_pack: "assemble safe claims and not-proven boundaries",
   vnem_tools_task_progress_truth_check: "compare completion claims with evidence",
   vnem_tools_no_placebo_progress_audit: "detect registration-only or mocked-only progress",
@@ -398,9 +403,16 @@ export function coreRecommendedToolsCalls(classification, args = {}) {
     if (!adapterDef) continue;
     routes.push(domainTools(adapterDef, args));
   }
-  // Give every material domain execution influence before filling deeper steps.
-  for (const route of routes) for (const tool of route.slice(0, 2)) candidates.push(tool);
   const domainIds = new Set(domains.map((domain) => domain.id));
+  // Keep implementation essentials ahead of evidence-only steps when the route is capped.
+  if (domainIds.has("app_engineering")) candidates.push("vnem_tools_app_inspect", "vnem_tools_app_vertical_slice_plan", "vnem_tools_repo_deep_map");
+  if (domainIds.has("repo_code")) candidates.push("vnem_tools_repo_deep_map", "vnem_tools_patch_target_finder");
+  if (domainIds.has("repo_code") || domainIds.has("app_engineering")) candidates.push("vnem_tools_test_selection_plan");
+  // Give every material domain execution influence before filling deeper steps.
+  for (let index = 0; index < routes.length; index += 1) {
+    const breadth = domains[index]?.id === "app_engineering" ? 3 : 2;
+    for (const tool of routes[index].slice(0, breadth)) candidates.push(tool);
+  }
   if (domainIds.has("repo_code") || domainIds.has("app_engineering")) candidates.push("vnem_tools_test_selection_plan");
   if (domainIds.has("github_publish")) candidates.push("vnem_tools_github_actions_status");
   if (domainIds.has("package_dependency")) candidates.push("vnem_tools_dependency_scan");

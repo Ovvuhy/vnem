@@ -1,0 +1,5 @@
+{
+  "schema_version": 1,
+  "adapter": "vite-react-node",
+  "fixture": true
+}

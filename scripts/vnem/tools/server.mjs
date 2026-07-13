@@ -28,6 +28,14 @@ import { registerPermissionRuntimeTools } from "../permissions/tools.mjs";
 import { PrecisionExecutionError } from "../precision/execution.mjs";
 import { PrecisionRuntime } from "../precision/runtime.mjs";
 import { registerToolsPrecisionSubsystem } from "../precision/tools.mjs";
+import {
+  applyVerticalSlicePlan,
+  buildVerticalSlicePlan,
+  inspectAppProject,
+  rollbackVerticalSliceTransaction,
+  runChromiumUserPath,
+  updateTransactionAcceptance
+} from "./app-engineering.mjs";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(scriptDir, "..", "..", "..");
@@ -113,6 +121,11 @@ const REQUIRED_TOOL_NAMES = [
   "vnem_tools_apply_patch_batch",
   "vnem_tools_restore_batch",
   "vnem_tools_project_scan",
+  "vnem_tools_app_inspect",
+  "vnem_tools_app_vertical_slice_plan",
+  "vnem_tools_app_vertical_slice_apply",
+  "vnem_tools_app_acceptance_run",
+  "vnem_tools_app_transaction_rollback",
   "vnem_tools_run_project_task",
   "vnem_tools_start_dev_server",
   "vnem_tools_stop_dev_server",
@@ -228,6 +241,7 @@ const MAX_READ_MANY_TOTAL_BYTES = 128 * 1024;
 const MAX_FETCH_TEXT_BYTES = 64 * 1024;
 const devServers = new Map();
 const sessions = new Map();
+const appEngineeringPlans = new Map();
 
 const allowedRoots = await computeAllowedRoots();
 const evidenceRoot = await computeEvidenceRoot();
@@ -1010,6 +1024,89 @@ function registerTools(mcpServer) {
     async (args) => withToolErrors(async () => {
       const scan = await safeProjectScan(args);
       return toolResult(formatProjectScan(scan), { project_scan: scan });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_app_inspect",
+    {
+      title: "Inspect App Architecture And Data Flow",
+      description: "Inspect an allowed web project for framework support, frontend/backend boundaries, routes, components, APIs, data flow, state, completion gaps, validation, accessibility, responsive behavior, and focused test/build scripts.",
+      inputSchema: { root: z.string().default("."), max_files: z.number().int().min(1).max(2000).default(500), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const inspection = await safeAppInspect(args);
+      return toolResult(formatAppInspect(inspection), { app_inspection: inspection });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_app_vertical_slice_plan",
+    {
+      title: "Plan Coherent App Vertical Slice",
+      description: "Generate a deterministic file-by-file preview for a complete frontend/API/domain vertical slice. Automatic apply is limited to reviewed marker-backed Vite React Node or static Node adapters; other projects remain inspection/plan only.",
+      inputSchema: { root: z.string().default("."), feature_name: z.string().default("Task board"), adapter: z.enum(["vite-react-node", "static-node", ""]).default(""), max_files: z.number().int().min(1).max(2000).default(500), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const plan = await safeAppVerticalSlicePlan(args);
+      return toolResult(formatAppPlan(plan), { app_vertical_slice_plan: plan });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_app_vertical_slice_apply",
+    {
+      title: "Apply App Vertical Slice Transaction",
+      description: "Dry-run or apply a previously previewed app plan with hash preconditions, staged writes, per-file rename commits, automatic rollback on failure, and a retained transaction manifest. Real apply requires explicit approval.",
+      inputSchema: { plan_id: z.string().min(1), dry_run: z.boolean().default(true), approved: z.boolean().default(false), approval_note: z.string().default(""), session_id: z.string().optional() },
+      annotations: ACTION_TOOL
+    },
+    async (args) => withToolErrors(async () => {
+      const transaction = await safeAppVerticalSliceApply(args);
+      return toolResult(formatAppApply(transaction), { app_vertical_slice_transaction: transaction });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_app_acceptance_run",
+    {
+      title: "Run App Vertical Slice Acceptance",
+      description: "Dry-run or execute focused test/build scripts, a localhost dev server, a real Chromium user path, desktop/mobile screenshots, console/network capture, and a completion report. Can restore the transaction automatically when acceptance fails.",
+      inputSchema: {
+        root: z.string().default("."),
+        manifest_path: z.string().optional(),
+        scripts: z.array(z.enum(["test", "build", "validate", "lint", "typecheck"])).default(["test", "build"]),
+        dev_script: z.enum(["dev", "start", "preview"]).default("dev"),
+        port: z.number().int().min(3000).max(9999).default(4319),
+        dry_run: z.boolean().default(true),
+        approved: z.boolean().default(false),
+        approval_note: z.string().default(""),
+        restore_on_failure: z.boolean().default(true),
+        wait_ms: z.number().int().min(100).max(5000).default(1200),
+        timeout_ms: z.number().int().min(1000).max(60000).default(30000),
+        session_id: z.string().optional()
+      },
+      annotations: ACTION_TOOL
+    },
+    async (args) => withToolErrors(async () => {
+      const acceptance = await safeAppAcceptanceRun(args);
+      return toolResult(formatAppAcceptance(acceptance), { app_acceptance: acceptance });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_app_transaction_rollback",
+    {
+      title: "Rollback App Vertical Slice Transaction",
+      description: "Dry-run or restore every file in an app transaction after checking current-content hashes. Real rollback requires explicit approval and cannot overwrite later edits.",
+      inputSchema: { root: z.string().default("."), manifest_path: z.string().min(1), dry_run: z.boolean().default(true), approved: z.boolean().default(false), approval_note: z.string().default(""), session_id: z.string().optional() },
+      annotations: ACTION_TOOL
+    },
+    async (args) => withToolErrors(async () => {
+      const rollback = await safeAppTransactionRollback(args);
+      return toolResult(formatAppRollback(rollback), { app_transaction_rollback: rollback });
     })
   );
 
@@ -2537,6 +2634,7 @@ function statusObject() {
     browser_risk_policy: { tools: ["vnem_tools_redirect_chain_check", "vnem_tools_url_reputation_check", "vnem_tools_captcha_detector", "vnem_tools_download_safety_check"], no_captcha_bypass: true, user_assisted_captcha_handoff: true, suspicious_redirect_download_phishing_detection: true, no_auto_download_or_installer_execution: true },
     patch_batch_policy: { tool: "vnem_tools_apply_patch_batch", dry_run_default: true, approval_required: true, operations: ["replace", "create", "delete", "append"], no_partial_apply_by_default: true, backups_per_changed_file: true },
     project_scan_policy: { tool: "vnem_tools_project_scan", allowed_roots_only: true, skips_secrets: true, reads_package_json_only_for_scripts_and_frameworks: true },
+    app_engineering_policy: { tools: ["vnem_tools_app_inspect", "vnem_tools_app_vertical_slice_plan", "vnem_tools_app_vertical_slice_apply", "vnem_tools_app_acceptance_run", "vnem_tools_app_transaction_rollback"], adapters: { "vite-react-node": "verified_generation_and_execution", "static-node": "verified_generation_and_execution", "next-style": "inspection_and_plan_only", generic: "inspection_only" }, marker_required_for_automatic_mutation: true, dry_run_default: true, approval_required_for_apply_acceptance_rollback: true, hash_preconditions: true, automatic_failure_rollback: true, cross_file_filesystem_atomicity_claimed: false, browser_scope: "dedicated-profile localhost Chromium only; no login/cookies/CAPTCHA", proof: ["focused tests", "build", "localhost server", "desktop user path", "mobile render", "console", "network", "screenshots"] },
     project_task_policy: { tool: "vnem_tools_run_project_task", dry_run_default: true, approval_required: true, package_json_scripts_only: true, package_install_publish_deploy_blocked: true },
     dev_server_policy: { tools: ["vnem_tools_start_dev_server", "vnem_tools_stop_dev_server", "vnem_tools_list_dev_servers"], dry_run_default: true, approval_required: true, local_host_only: true, port_range: "3000-9999", registry: "in-memory per MCP process" },
     session_evidence_policy: { tools: ["vnem_tools_start_session", "vnem_tools_finish_session"], writes_single_json_proof_pack: true, secrets_redacted: true },
@@ -2764,7 +2862,7 @@ async function searchAllowedFiles(args) {
   return { root: root.relativePath || ".", query: args.query, results, skipped_policy: skippedPolicy() };
 }
 
-const TOOL_CAPABILITY_GROUPS = ["permissions", "filesystem", "project_intelligence", "repo_power", "adoption_reliability", "patching", "rollback", "commands", "project_tasks", "dev_server", "browser_proof", "browser_intelligence", "ui_web_quality", "api_request", "search", "research_sources", "source_quality", "browsing_risk", "research_matrix", "source_ingestion", "debugging_code_quality", "session_evidence", "local_git", "github_autonomy", "status_readiness", "cloudflare_control", "tools_quality", "tool_intelligence"];
+const TOOL_CAPABILITY_GROUPS = ["permissions", "filesystem", "project_intelligence", "app_engineering", "repo_power", "adoption_reliability", "patching", "rollback", "commands", "project_tasks", "dev_server", "browser_proof", "browser_intelligence", "ui_web_quality", "api_request", "search", "research_sources", "source_quality", "browsing_risk", "research_matrix", "source_ingestion", "debugging_code_quality", "session_evidence", "local_git", "github_autonomy", "status_readiness", "cloudflare_control", "tools_quality", "tool_intelligence"];
 
 function buildToolCatalog() {
   const commonUnsafe = ["secret reading/dumping", "outside-root access", "arbitrary shell", "package installs", "git push", "deployment", "Giga MCP"];
@@ -2833,6 +2931,11 @@ function buildToolCatalog() {
     mk("vnem_tools_code_search", "project_intelligence", { description: "VNEM-improved code search with context, caps, skips, and evidence.", typical_use_cases: ["find implementation sites"] }),
     mk("vnem_tools_find_references", "project_intelligence", { description: "Find likely references/definitions for a symbol.", typical_use_cases: ["trace components/functions/config names"] }),
     mk("vnem_tools_dependency_scan", "project_intelligence", { description: "Analyze package manifests/scripts/lockfiles without installing.", typical_use_cases: ["understand dependencies and script risk"] }),
+    mk("vnem_tools_app_inspect", "app_engineering", { description: "Inspect frameworks, frontend/backend boundaries, routes, components, APIs, data flow, states, validation, accessibility, responsiveness, and completion gaps.", typical_use_cases: ["understand an app before a vertical-slice change", "detect UI-only or backend-only work"] }),
+    mk("vnem_tools_app_vertical_slice_plan", "app_engineering", { description: "Preview a coherent marker-backed Vite React Node or static Node vertical slice with explicit support limits and hash preconditions.", typical_use_cases: ["plan frontend plus API plus domain work", "preview all transaction files"] }),
+    mk("vnem_tools_app_vertical_slice_apply", "app_engineering", { read_only: false, mutation: true, requires_approval: true, dry_run_default: true, description: "Apply one stored vertical-slice plan through staged writes, rename commits, failure rollback, and a retained manifest.", typical_use_cases: ["approved coherent app generation"], related_tools: ["vnem_tools_app_vertical_slice_plan", "vnem_tools_app_transaction_rollback"] }),
+    mk("vnem_tools_app_acceptance_run", "app_engineering", { read_only: false, mutation: true, network: true, requires_approval: true, dry_run_default: true, description: "Run focused scripts, localhost server, real Chromium user path, console/network capture, and desktop/mobile screenshots with optional failure restore.", typical_use_cases: ["prove a complete app slice through its user path"], related_tools: ["vnem_tools_app_vertical_slice_apply", "vnem_tools_app_transaction_rollback"], unsafe_actions_blocked: [...commonUnsafe, "external browser automation", "login/cookie/session/CAPTCHA automation"] }),
+    mk("vnem_tools_app_transaction_rollback", "app_engineering", { read_only: false, mutation: true, requires_approval: true, dry_run_default: true, description: "Restore an app transaction only when current hashes still match the applied plan.", typical_use_cases: ["rollback failed app acceptance", "explicit transaction restore"] }),
     mk("vnem_tools_apply_patch", "patching", { read_only: false, mutation: true, requires_approval: true, dry_run_default: true, description: "Apply one approved surgical patch with backup/evidence.", typical_use_cases: ["single-file fix"] }),
     mk("vnem_tools_apply_patch_batch", "patching", { read_only: false, mutation: true, requires_approval: true, dry_run_default: true, description: "Apply approved multi-file replace/create/append/delete batch with restore plan.", typical_use_cases: ["coherent local project change"] }),
     mk("vnem_tools_restore_backup", "rollback", { read_only: false, mutation: true, requires_approval: true, dry_run_default: true, description: "Restore one backup file.", typical_use_cases: ["rollback one changed file"] }),
@@ -7205,6 +7308,211 @@ async function safeProjectScan(args) {
   return result;
 }
 
+async function safeAppInspect(args) {
+  const root = await resolveAllowedRoot(args.root || ".");
+  try {
+    const inspection = await inspectAppProject(root.absolutePath, { max_files: args.max_files });
+    const result = decorateToolResult("vnem_tools_app_inspect", inspection, { capability_group: "app_engineering" });
+    recordSession(args.session_id, "app_inspections", result);
+    return result;
+  } catch (error) {
+    throw appEngineeringToolsError(error);
+  }
+}
+
+async function safeAppVerticalSlicePlan(args) {
+  const root = await resolveAllowedRoot(args.root || ".");
+  try {
+    const plan = await buildVerticalSlicePlan(root.absolutePath, {
+      feature_name: args.feature_name,
+      adapter: args.adapter,
+      max_files: args.max_files
+    });
+    if (plan.plan_id) appEngineeringPlans.set(plan.plan_id, { root: root.absolutePath, plan });
+    const result = decorateToolResult("vnem_tools_app_vertical_slice_plan", {
+      ...plan,
+      mutation_state: "planned_or_dry_run_no_mutation",
+      approval_required: true
+    }, { capability_group: "app_engineering", requires_approval: true });
+    recordSession(args.session_id, "app_plans", { ...result, operations: result.operations?.map(({ content, ...operation }) => operation) });
+    return result;
+  } catch (error) {
+    throw appEngineeringToolsError(error);
+  }
+}
+
+async function safeAppVerticalSliceApply(args) {
+  const entry = appEngineeringPlans.get(args.plan_id);
+  if (!entry) throw new ToolsError("App plan id was not created by this Tools MCP process.", "app_plan_not_found", { plan_id: args.plan_id });
+  const dryRun = args.dry_run !== false;
+  const preview = {
+    status: dryRun ? "dry_run_planned" : "ready_to_apply",
+    dry_run: dryRun,
+    applied: false,
+    plan_id: args.plan_id,
+    project_root: entry.root,
+    files: entry.plan.files_previewed,
+    transaction: entry.plan.transaction,
+    approval_required: true,
+    action_policy_preview: actionPolicyPreview({ action_type: "apply_patch", proposed_action: `Apply app plan ${args.plan_id}` })
+  };
+  if (dryRun) return decorateToolResult("vnem_tools_app_vertical_slice_apply", preview, { capability_group: "app_engineering", mutation: true, requires_approval: true });
+  enforceActionPolicy("apply_patch", args);
+  try {
+    const transaction = await applyVerticalSlicePlan(entry.root, entry.plan);
+    const log = await writeEvidenceLog("app_vertical_slice_apply", { ...transaction, approval_note: args.approval_note });
+    const result = decorateToolResult("vnem_tools_app_vertical_slice_apply", {
+      ...transaction,
+      dry_run: false,
+      applied: true,
+      evidence_log_id: log.evidence_log_id,
+      safe_to_claim: true,
+      unsafe_to_claim: ["Acceptance passed before vnem_tools_app_acceptance_run produces evidence."]
+    }, { capability_group: "app_engineering", mutation: true, requires_approval: true });
+    recordSession(args.session_id, "app_transactions", result);
+    return result;
+  } catch (error) {
+    throw appEngineeringToolsError(error);
+  }
+}
+
+async function safeAppTransactionRollback(args) {
+  const root = await resolveAllowedRoot(args.root || ".");
+  const manifest = await resolveAllowedFile(args.manifest_path, { mustExist: true });
+  if (!isInsidePath(root.absolutePath, manifest.absolutePath)) throw new ToolsError("Transaction manifest is outside the selected project root.", "app_transaction_root_mismatch");
+  const dryRun = args.dry_run !== false;
+  if (dryRun) {
+    return decorateToolResult("vnem_tools_app_transaction_rollback", {
+      status: "dry_run_planned",
+      dry_run: true,
+      rolled_back: false,
+      manifest_path: manifest.absolutePath,
+      approval_required: true,
+      precondition_hashes_required: true,
+      action_policy_preview: actionPolicyPreview({ action_type: "restore_backup", proposed_action: `Rollback app transaction ${manifest.absolutePath}` })
+    }, { capability_group: "app_engineering", mutation: true, requires_approval: true });
+  }
+  enforceActionPolicy("restore_backup", args);
+  try {
+    const rollback = await rollbackVerticalSliceTransaction(root.absolutePath, manifest.absolutePath);
+    const log = await writeEvidenceLog("app_transaction_rollback", rollback);
+    const result = decorateToolResult("vnem_tools_app_transaction_rollback", { ...rollback, dry_run: false, rolled_back: true, manifest_path: manifest.absolutePath, evidence_log_id: log.evidence_log_id }, { capability_group: "app_engineering", mutation: true, requires_approval: true });
+    recordSession(args.session_id, "app_rollbacks", result);
+    return result;
+  } catch (error) {
+    throw appEngineeringToolsError(error);
+  }
+}
+
+async function safeAppAcceptanceRun(args) {
+  const root = await resolveAllowedRoot(args.root || ".");
+  const dryRun = args.dry_run !== false;
+  const scripts = arrayify(args.scripts).length ? arrayify(args.scripts) : ["test", "build"];
+  const planned = {
+    status: "dry_run_planned",
+    dry_run: true,
+    project_root: root.absolutePath,
+    scripts,
+    dev_script: args.dev_script || "dev",
+    url: `http://127.0.0.1:${args.port || 4319}/`,
+    checks: ["focused package scripts", "localhost server readiness", "Chromium desktop user path", "Chromium mobile render", "console errors", "network failures and HTTP errors", "screenshot evidence"],
+    restore_on_failure: args.restore_on_failure !== false,
+    approval_required: true,
+    action_policy_previews: [
+      actionPolicyPreview({ action_type: "run_test", proposed_action: scripts.map((script) => `npm run ${script}`).join(", ") }),
+      actionPolicyPreview({ action_type: "start_dev_server", proposed_action: `npm run ${args.dev_script || "dev"}` }),
+      actionPolicyPreview({ action_type: "browser_capture", proposed_action: "bounded localhost Chromium user-path proof" })
+    ]
+  };
+  if (dryRun) return decorateToolResult("vnem_tools_app_acceptance_run", planned, { capability_group: "app_engineering", mutation: true, network: true, requires_approval: true });
+  enforceApproval(args);
+  let acceptanceManifest = null;
+  if (args.manifest_path) {
+    acceptanceManifest = await resolveAllowedFile(args.manifest_path, { mustExist: true });
+    if (!isInsidePath(root.absolutePath, acceptanceManifest.absolutePath)) throw new ToolsError("Transaction manifest is outside the selected project root.", "app_transaction_root_mismatch");
+  }
+  const taskResults = [];
+  let serverResult = null;
+  let browserResult = null;
+  let rollbackResult = null;
+  let acceptanceError = null;
+  const acceptanceId = logId("app-acceptance");
+  const outputDir = path.join(evidenceRoot, acceptanceId);
+  await mkdir(outputDir, { recursive: true });
+  try {
+    for (const script of scripts) {
+      const task = await safeRunProjectTask({ ...args, root: root.absolutePath, task: script, dry_run: false, max_output_bytes: 24000 });
+      taskResults.push(task);
+      if (task.exit_code !== 0) break;
+    }
+    if (taskResults.every((task) => task.exit_code === 0)) {
+      serverResult = await safeStartDevServer({ ...args, root: root.absolutePath, script: args.dev_script || "dev", host: "127.0.0.1", dry_run: false, max_output_bytes: 12000 });
+      await waitForLocalUrl(serverResult.url, Math.min(args.timeout_ms || 30000, 30000));
+      enforceActionPolicy("browser_capture", args);
+      browserResult = await runChromiumUserPath(serverResult.url, outputDir, { launch_timeout_ms: 10000 });
+    }
+  } catch (error) {
+    acceptanceError = { code: error.code || "app_acceptance_error", message: error.message || String(error), details: error.details || {} };
+  } finally {
+    if (serverResult?.server_id) {
+      await safeStopDevServer({ ...args, server_id: serverResult.server_id, approved: true, approval_note: args.approval_note }).catch((error) => {
+        acceptanceError ||= { code: error.code || "app_server_stop_failed", message: error.message || String(error) };
+      });
+    }
+  }
+  const scriptsPassed = taskResults.length === scripts.length && taskResults.every((task) => task.exit_code === 0);
+  const browserPassed = browserResult?.status === "passed" && browserResult.safe_to_claim === true;
+  const passed = scriptsPassed && browserPassed && !acceptanceError;
+  if (!passed && args.restore_on_failure !== false && acceptanceManifest) {
+    try {
+      enforceActionPolicy("restore_backup", args);
+      rollbackResult = await rollbackVerticalSliceTransaction(root.absolutePath, acceptanceManifest.absolutePath);
+    } catch (error) {
+      rollbackResult = { status: "rollback_failed", code: error.code || "app_rollback_failed", message: error.message || String(error) };
+    }
+  }
+  const result = {
+    status: passed ? "passed" : "failed",
+    dry_run: false,
+    acceptance_id: acceptanceId,
+    project_root: root.absolutePath,
+    scripts: taskResults.map((task) => ({ script: task.script, exit_code: task.exit_code, ok: task.ok, duration_ms: task.duration_ms, stdout: task.stdout, stderr: task.stderr, evidence_log_id: task.evidence_log_id })),
+    server: serverResult ? { url: serverResult.url, started: serverResult.started, server_id: serverResult.server_id, stdout: serverResult.stdout, stderr: serverResult.stderr } : null,
+    browser: browserResult,
+    error: acceptanceError,
+    rollback: rollbackResult,
+    restored_after_failure: rollbackResult?.status === "rolled_back",
+    evidence_path: path.join(outputDir, "acceptance.json"),
+    safe_to_claim: passed,
+    proven: passed ? ["focused scripts passed", "localhost server responded", "desktop user path passed", "mobile page loaded without overflow", "no captured console errors", "no captured network failures or HTTP errors", "desktop/mobile screenshots written"] : [scriptsPassed ? "focused scripts passed" : "focused scripts did not all pass"],
+    what_is_not_proven: ["production deployment behavior", "authenticated flows", "all browsers and devices", "arbitrary frameworks outside the selected adapter"]
+  };
+  await writeFile(result.evidence_path, JSON.stringify(safeRedactJsonValue(result), null, 2), "utf8");
+  const log = await writeEvidenceLog("app_acceptance", result, acceptanceId);
+  result.evidence_log_id = log.evidence_log_id;
+  if (acceptanceManifest) await updateTransactionAcceptance(acceptanceManifest.absolutePath, result).catch(() => {});
+  recordSession(args.session_id, "app_acceptance_runs", result);
+  return decorateToolResult("vnem_tools_app_acceptance_run", result, { capability_group: "app_engineering", mutation: true, network: true, requires_approval: true });
+}
+
+async function waitForLocalUrl(url, timeoutMs) {
+  const started = Date.now();
+  let lastError = null;
+  while (Date.now() - started < timeoutMs) {
+    try {
+      const response = await fetch(url, { redirect: "manual" });
+      if (response.status >= 200 && response.status < 500) return response.status;
+    } catch (error) { lastError = error; }
+    await new Promise((resolve) => setTimeout(resolve, 150));
+  }
+  throw new ToolsError("Local app server did not become ready before timeout.", "app_server_readiness_timeout", { url, last_error: lastError?.message || null });
+}
+
+function appEngineeringToolsError(error) {
+  if (error instanceof ToolsError) return error;
+  return new ToolsError(error.message || String(error), error.code || "app_engineering_error", error.details || {});
+}
+
 function detectFrameworks(pkg, files) {
   const text = JSON.stringify({ scripts: pkg?.scripts || {}, deps: { ...(pkg?.dependencies || {}), ...(pkg?.devDependencies || {}) }, files: files.map((f) => f.path).slice(0, 200) }).toLowerCase();
   const found = [];
@@ -7309,6 +7617,7 @@ async function safeStartDevServer(args) {
   record.running = true;
   devServers.set(serverId, { child, record });
   await new Promise((resolve) => setTimeout(resolve, Math.min(args.wait_ms || 1000, 5000)));
+  record.listener_pid = process.platform === "win32" ? await findWindowsListeningPid(port) : child.pid;
   const log = await writeEvidenceLog("dev_server_start", record, serverId);
   const withLog = { ...record, evidence_log_id: log.evidence_log_id };
   recordSession(args.session_id, "dev_servers_started", withLog);
@@ -7321,8 +7630,9 @@ async function safeStopDevServer(args) {
   enforceApproval(args);
   let stopCommand = null;
   let fallbackKillSent = false;
+  const stopPid = entry.record.listener_pid || entry.record.pid;
   if (process.platform === "win32") {
-    stopCommand = await runProcess(windowsTaskkillCommand(), ["/PID", String(entry.record.pid), "/T", "/F"], { cwd: allowedRoots[0], timeoutMs: 5000, maxOutputBytes: 4000 });
+    stopCommand = await runProcess(windowsTaskkillCommand(), ["/PID", String(stopPid), "/T", "/F"], { cwd: allowedRoots[0], timeoutMs: 5000, maxOutputBytes: 4000 });
     if (!stopCommand.ok) {
       try {
         fallbackKillSent = entry.child.kill("SIGKILL");
@@ -7339,7 +7649,13 @@ async function safeStopDevServer(args) {
     await waitForChildExit(entry.child, 1000);
   }
   devServers.delete(args.server_id);
-  const result = { server_id: args.server_id, stopped: true, pid: entry.record.pid, url: entry.record.url, process_exit_observed: exited || entry.child.exitCode !== null || entry.child.signalCode !== null, fallback_kill_sent: fallbackKillSent, stop_stdout: stopCommand?.stdout || "", stop_stderr: stopCommand?.stderr || "" };
+  let listenerStopped = process.platform !== "win32" || !entry.record.listener_pid || await waitForWindowsListenerStop(entry.record.listener_pid, entry.record.port, 1500);
+  if (!listenerStopped && entry.record.listener_pid) {
+    try { process.kill(entry.record.listener_pid, "SIGKILL"); fallbackKillSent = true; } catch {}
+    listenerStopped = await waitForWindowsListenerStop(entry.record.listener_pid, entry.record.port, 5000);
+  }
+  if (!listenerStopped) throw new ToolsError("Tools-started localhost listener remained active after stop.", "dev_server_stop_failed", { server_id: args.server_id, listener_pid: entry.record.listener_pid, port: entry.record.port, stop_stdout: stopCommand?.stdout || "", stop_stderr: stopCommand?.stderr || "" });
+  const result = { server_id: args.server_id, stopped: true, pid: entry.record.pid, listener_pid: entry.record.listener_pid || null, stop_pid: stopPid, url: entry.record.url, process_exit_observed: exited || entry.child.exitCode !== null || entry.child.signalCode !== null || listenerStopped, fallback_kill_sent: fallbackKillSent, stop_stdout: stopCommand?.stdout || "", stop_stderr: stopCommand?.stderr || "" };
   const log = await writeEvidenceLog("dev_server_stop", result);
   const withLog = { ...result, evidence_log_id: log.evidence_log_id };
   recordSession(args.session_id, "dev_servers_stopped", withLog);
@@ -7349,6 +7665,41 @@ async function safeStopDevServer(args) {
 function windowsTaskkillCommand() {
   const systemRoot = process.env.SystemRoot || process.env.SYSTEMROOT;
   return systemRoot ? path.join(systemRoot, "System32", "taskkill.exe") : "taskkill";
+}
+
+async function findWindowsListeningPid(port) {
+  for (let attempt = 0; attempt < 20; attempt += 1) {
+    const result = await runProcess(windowsNetstatCommand(), ["-ano", "-p", "tcp"], { cwd: allowedRoots[0], timeoutMs: 5000, maxOutputBytes: 64000 });
+    const match = result.stdout.split(/\r?\n/).map((line) => line.trim().split(/\s+/)).find((parts) => parts.length >= 5 && /LISTENING/i.test(parts[3]) && parts[1]?.endsWith(`:${port}`));
+    if (match) return Number(match[4]);
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  }
+  return null;
+}
+
+async function isWindowsPidListening(pid, port) {
+  const result = await runProcess(windowsNetstatCommand(), ["-ano", "-p", "tcp"], { cwd: allowedRoots[0], timeoutMs: 5000, maxOutputBytes: 64000 });
+  return result.stdout.split(/\r?\n/).map((line) => line.trim().split(/\s+/)).some((parts) => parts.length >= 5 && /LISTENING/i.test(parts[3]) && parts[1]?.endsWith(`:${port}`) && Number(parts[4]) === Number(pid));
+}
+
+async function waitForWindowsListenerStop(pid, port, timeoutMs) {
+  const started = Date.now();
+  while (Date.now() - started < timeoutMs) {
+    if (!isPidRunning(pid)) return true;
+    if (!(await isWindowsPidListening(pid, port))) return true;
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  }
+  return !isPidRunning(pid) || !(await isWindowsPidListening(pid, port));
+}
+
+function isPidRunning(pid) {
+  try { process.kill(Number(pid), 0); return true; }
+  catch (error) { return error?.code !== "ESRCH"; }
+}
+
+function windowsNetstatCommand() {
+  const systemRoot = process.env.SystemRoot || process.env.SYSTEMROOT;
+  return systemRoot ? path.join(systemRoot, "System32", "netstat.exe") : "netstat";
 }
 
 async function waitForChildExit(child, timeoutMs) {
@@ -8806,6 +9157,26 @@ function formatRestoreBatch(result) {
 
 function formatProjectScan(scan) {
   return [`vnem_tools_project_scan: ${scan.project_root}`, `Package manager: ${scan.detected_package_manager}`, `Frameworks: ${scan.likely_frameworks.join(", ") || "unknown"}`, `Safe commands: ${scan.safe_commands_suggested.join(", ") || "none"}`].join("\n");
+}
+
+function formatAppInspect(inspection) {
+  return [`vnem_tools_app_inspect: ${inspection.adapter}`, `Support: ${inspection.support?.support_level || "unknown"}`, `Frameworks: ${inspection.frameworks?.join(", ") || "unknown"}`, `Frontend/backend/shared: ${inspection.boundaries?.frontend?.length || 0}/${inspection.boundaries?.backend?.length || 0}/${inspection.boundaries?.shared?.length || 0}`, `Completion gaps: ${inspection.incomplete_vertical_slice_signals?.join(", ") || "none detected"}`].join("\n");
+}
+
+function formatAppPlan(plan) {
+  return [`vnem_tools_app_vertical_slice_plan: ${plan.status}`, `Adapter: ${plan.adapter}`, `Plan id: ${plan.plan_id || "none"}`, `Files previewed: ${plan.files_previewed?.length || 0}`, `Safe to apply: ${plan.safe_to_apply === true}`, plan.blocked_reason ? `Blocked: ${plan.blocked_reason}` : "No files changed by planning."].join("\n");
+}
+
+function formatAppApply(transaction) {
+  return [`vnem_tools_app_vertical_slice_apply: ${transaction.applied ? "applied" : transaction.status}`, `Plan id: ${transaction.plan_id}`, `Transaction id: ${transaction.transaction_id || "not created"}`, `Files: ${transaction.files?.length || 0}`, `Manifest: ${transaction.manifest_path || "not written"}`].join("\n");
+}
+
+function formatAppAcceptance(result) {
+  return [`vnem_tools_app_acceptance_run: ${result.status}`, `Scripts: ${result.scripts?.length || 0}`, `Browser: ${result.browser?.status || "not run"}`, `Desktop/mobile screenshots: ${result.browser?.screenshots?.length || 0}`, `Restored after failure: ${result.restored_after_failure === true}`, `Safe to claim: ${result.safe_to_claim === true}`, `Evidence: ${result.evidence_path || "not written"}`].join("\n");
+}
+
+function formatAppRollback(result) {
+  return [`vnem_tools_app_transaction_rollback: ${result.status}`, `Transaction id: ${result.transaction_id || "unknown"}`, `Files restored: ${result.restored_files?.length || 0}`, `Evidence: ${result.evidence_log_id || "not written"}`].join("\n");
 }
 
 function formatProjectTask(task) {
