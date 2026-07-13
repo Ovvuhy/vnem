@@ -1,0 +1,156 @@
+{
+  "schema_version": 1,
+  "phase": 11,
+  "benchmark_type": "actual_stdio_mcp_windows_local_execution",
+  "generated_at": "2026-07-13T18:54:10.052Z",
+  "total_duration_ms": 9915.09,
+  "platform": "win32",
+  "mcp_transport": "stdio",
+  "tools_exercised": [
+    "vnem_tools_powershell_command_plan",
+    "vnem_tools_windows_system_snapshot",
+    "vnem_tools_windows_path_inspect",
+    "vnem_tools_process_inspect",
+    "vnem_tools_port_inspect",
+    "vnem_tools_windows_service_status",
+    "vnem_tools_windows_scheduled_task_status",
+    "vnem_tools_windows_event_log_read",
+    "vnem_tools_windows_app_config_detect",
+    "vnem_tools_windows_change_plan"
+  ],
+  "tool_calls": [
+    {
+      "tool": "vnem_tools_powershell_command_plan",
+      "duration_ms": 10.29,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_windows_system_snapshot",
+      "duration_ms": 3744.99,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_windows_path_inspect",
+      "duration_ms": 7.93,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_process_inspect",
+      "duration_ms": 878.45,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_port_inspect",
+      "duration_ms": 858.03,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_windows_service_status",
+      "duration_ms": 797.45,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_windows_scheduled_task_status",
+      "duration_ms": 1353.32,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_windows_event_log_read",
+      "duration_ms": 1087.65,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_windows_app_config_detect",
+      "duration_ms": 208.48,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_windows_change_plan",
+      "duration_ms": 4.24,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_windows_change_plan",
+      "duration_ms": 2.03,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_windows_change_plan",
+      "duration_ms": 1.88,
+      "status": "ok"
+    }
+  ],
+  "results": {
+    "powershell_quoting": {
+      "planned": true,
+      "embedded_quote_doubled": true,
+      "shell_operator_literal": true
+    },
+    "system_snapshot": {
+      "status": "reported",
+      "path_entries": 28,
+      "path_missing": 2,
+      "developer_commands_found": [
+        "node",
+        "npm",
+        "git",
+        "gh"
+      ],
+      "long_paths": {
+        "visible": true,
+        "enabled": true
+      },
+      "defender": {
+        "available": false,
+        "reason": "provider unavailable or access denied"
+      }
+    },
+    "process": {
+      "status": "reported",
+      "owned_vnem_pid_found": true,
+      "externally_requested_pid_visible": true,
+      "command_lines_returned": false
+    },
+    "port": {
+      "status": "reported",
+      "requested_port_listening": true,
+      "listener_pid_correlated": true
+    },
+    "services": {
+      "status": "reported",
+      "found": [
+        "EventLog",
+        "Schedule"
+      ],
+      "missing_exact_target_reported": true
+    },
+    "scheduled_task": {
+      "status": "reported",
+      "missing_exact_target_reported": true
+    },
+    "event_log": {
+      "status": "reported",
+      "bounded_event_count": 3,
+      "export_performed": false
+    },
+    "clients": {
+      "detected": 3,
+      "catalog_count": 11,
+      "config_content_read": false
+    },
+    "mutation_gate": {
+      "execution_supported": false,
+      "scoped_approval_required": true,
+      "rollback_required": true,
+      "safe_readonly_blocks_local_pc_action": true,
+      "security_disable_hard_blocked": true
+    }
+  },
+  "limitations": [
+    "This is same-machine bounded Windows evidence, not universal machine compatibility proof.",
+    "File-lock owner identity is not proven.",
+    "Service, scheduled-task, registry, firewall, antivirus, PATH, and machine-setting mutation is not implemented.",
+    "Event Viewer messages are bounded/redacted and may be unavailable due access policy.",
+    "No environment values, process command lines, config contents, credentials, or security bypasses are collected."
+  ]
+}

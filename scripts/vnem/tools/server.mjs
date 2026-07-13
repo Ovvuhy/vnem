@@ -40,6 +40,7 @@ import {
 import { ProjectAutomationError, ProjectAutomationRuntime } from "./project-automation.mjs";
 import { TestingCiError, TestingCiRuntime } from "../testing/runtime.mjs";
 import { BrowserInteractionError, BrowserInteractionRuntime } from "./browser-interaction.mjs";
+import { WindowsLocalError, WindowsLocalRuntime } from "./windows-local.mjs";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(scriptDir, "..", "..", "..");
@@ -135,6 +136,16 @@ const REQUIRED_TOOL_NAMES = [
   "vnem_tools_project_task_graph_rollback",
   "vnem_tools_project_runtime_diagnose",
   "vnem_tools_project_temp_cleanup",
+  "vnem_tools_powershell_command_plan",
+  "vnem_tools_windows_system_snapshot",
+  "vnem_tools_windows_path_inspect",
+  "vnem_tools_process_inspect",
+  "vnem_tools_port_inspect",
+  "vnem_tools_windows_service_status",
+  "vnem_tools_windows_scheduled_task_status",
+  "vnem_tools_windows_event_log_read",
+  "vnem_tools_windows_app_config_detect",
+  "vnem_tools_windows_change_plan",
   "vnem_tools_test_system_inspect",
   "vnem_tools_affected_test_graph",
   "vnem_tools_test_run",
@@ -272,6 +283,7 @@ const permissionRuntime = await PermissionRuntime.create({
 const projectAutomationRuntime = new ProjectAutomationRuntime({ allowedRoots, evidenceRoot });
 const testingCiRuntime = new TestingCiRuntime({ allowedRoots, evidenceRoot });
 const browserInteractionRuntime = new BrowserInteractionRuntime({ allowedRoots, evidenceRoot });
+const windowsLocalRuntime = new WindowsLocalRuntime({ allowedRoots });
 const activePermissionProfile = permissionRuntime.activeProfile();
 const usablePacks = await loadUsablePacks();
 const requestedPrecisionWorkspaceCandidate = path.resolve(
@@ -1324,6 +1336,161 @@ function registerTools(mcpServer) {
   );
 
   mcpServer.registerTool(
+    "vnem_tools_powershell_command_plan",
+    {
+      title: "Plan Safely Quoted PowerShell Command",
+      description: "Construct a non-executing PowerShell native-command invocation using the call operator, single-quoted literal tokens, doubled embedded quotes, bounded arguments, and secret/control-character blocking. Native argv execution remains preferred.",
+      inputSchema: { executable: z.string().default("powershell.exe"), arguments: z.array(z.string()).max(50).default([]) },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const result = windowsLocalRuntime.planPowerShellCommand(args);
+      return toolResult(formatWindowsLocal("vnem_tools_powershell_command_plan", result), { powershell_command_plan: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_windows_system_snapshot",
+    {
+      title: "Inspect Windows Development Environment",
+      description: "Read a bounded Windows/local-PC snapshot: OS and PowerShell status, PATH health, Node/npm/git/gh and shell discovery, temp accessibility, long-path visibility, and Windows Defender status where accessible. Does not return environment values or change the machine.",
+      inputSchema: {},
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const permission = enforceActionPolicy("local_pc_read", { ...args, dry_run: false, proposed_action: "bounded Windows development environment snapshot" });
+      const result = { ...(await windowsLocalRuntime.systemSnapshot()), permission };
+      return toolResult(formatWindowsLocal("vnem_tools_windows_system_snapshot", result), { windows_system_snapshot: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_windows_path_inspect",
+    {
+      title: "Inspect Windows Paths Permissions Links and Locks",
+      description: "Normalize and inspect up to 25 allowed-root paths for existence, current-token read/write/traverse access, symlink or junction escape, writable-open lock signal, temp location, and long-path risk without reading file contents or changing paths.",
+      inputSchema: { root: z.string().default("."), paths: z.array(z.string()).max(25).default(["."]) },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const permission = enforceActionPolicy("local_pc_read", { ...args, dry_run: false, proposed_action: "bounded allowed-root path metadata inspection" });
+      const result = { ...(await windowsLocalRuntime.inspectPaths(args)), permission };
+      return toolResult(formatWindowsLocal("vnem_tools_windows_path_inspect", result), { windows_path_inspection: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_process_inspect",
+    {
+      title: "Inspect Exact Windows Processes",
+      description: "Read bounded metadata for exact PIDs or executable names using Win32_Process. Returns PID, parent PID, executable path, and creation time; never returns command lines, environments, owner tokens, or performs termination.",
+      inputSchema: { pids: z.array(z.number().int().positive()).max(25).default([]), names: z.array(z.string()).max(25).default([]), include_vnem_process: z.boolean().default(false) },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const permission = enforceActionPolicy("local_pc_read", { ...args, dry_run: false, proposed_action: "exact Windows process metadata inspection" });
+      const result = { ...(await windowsLocalRuntime.inspectProcesses(args)), permission };
+      return toolResult(formatWindowsLocal("vnem_tools_process_inspect", result), { process_inspection: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_port_inspect",
+    {
+      title: "Inspect Exact Windows TCP Ports",
+      description: "Inspect up to 50 exact TCP ports using bounded netstat evidence and correlate listener PIDs without stopping processes or changing firewall/security settings.",
+      inputSchema: { ports: z.array(z.number().int().min(1).max(65535)).min(1).max(50) },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const permission = enforceActionPolicy("local_pc_read", { ...args, dry_run: false, proposed_action: "exact Windows TCP port inspection" });
+      const result = { ...(await windowsLocalRuntime.inspectPorts(args)), permission };
+      return toolResult(formatWindowsLocal("vnem_tools_port_inspect", result), { port_inspection: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_windows_service_status",
+    {
+      title: "Inspect Exact Windows Service Status",
+      description: "Read state, start mode, PID, and exit code for up to 20 exact Windows service names. No wildcard enumeration and no start, stop, or configuration mutation.",
+      inputSchema: { names: z.array(z.string()).max(20).default(["EventLog", "Schedule", "WinDefend"]) },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const permission = enforceActionPolicy("local_pc_read", { ...args, dry_run: false, proposed_action: "exact Windows service status inspection" });
+      const result = { ...(await windowsLocalRuntime.serviceStatus(args)), permission };
+      return toolResult(formatWindowsLocal("vnem_tools_windows_service_status", result), { windows_service_status: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_windows_scheduled_task_status",
+    {
+      title: "Inspect Exact Windows Scheduled Tasks",
+      description: "Read state and bounded run metadata for up to 20 exact scheduled-task paths. Task actions/arguments are not returned and create/change/delete operations are not implemented.",
+      inputSchema: { tasks: z.array(z.string()).min(1).max(20) },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const permission = enforceActionPolicy("local_pc_read", { ...args, dry_run: false, proposed_action: "exact Windows scheduled-task status inspection" });
+      const result = { ...(await windowsLocalRuntime.scheduledTaskStatus(args)), permission };
+      return toolResult(formatWindowsLocal("vnem_tools_windows_scheduled_task_status", result), { windows_scheduled_task_status: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_windows_event_log_read",
+    {
+      title: "Read Bounded Windows Event Log Evidence",
+      description: "Read up to 50 redacted recent events from Application, System, or Setup over at most 24 hours. Reports access denial honestly and performs no broad export, log clearing, or provider bypass.",
+      inputSchema: { log_name: z.enum(["Application", "System", "Setup"]).default("Application"), lookback_minutes: z.number().int().min(1).max(1440).default(60), max_events: z.number().int().min(1).max(50).default(20), levels: z.array(z.number().int().min(1).max(4)).max(4).default([]) },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const permission = enforceActionPolicy("local_pc_read", { ...args, dry_run: false, proposed_action: "bounded Windows Event Viewer read" });
+      const result = { ...(await windowsLocalRuntime.eventLogRead(args)), permission };
+      return toolResult(formatWindowsLocal("vnem_tools_windows_event_log_read", result), { windows_event_log: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_windows_app_config_detect",
+    {
+      title: "Detect Installed Clients and Config Locations",
+      description: "Reuse VNEM's client catalog to detect known command/install/config/profile locations and return reload guidance without reading or modifying config contents or guessing unverified global paths.",
+      inputSchema: { root: z.string().default(".") },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const permission = enforceActionPolicy("local_pc_read", { ...args, dry_run: false, proposed_action: "known app and config location detection" });
+      const result = { ...(await windowsLocalRuntime.detectAppConfigs(args)), permission };
+      return toolResult(formatWindowsLocal("vnem_tools_windows_app_config_detect", result), { windows_app_config_detection: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_windows_change_plan",
+    {
+      title: "Plan Scoped Windows System Change",
+      description: "Build a non-executing permission/rollback gate for an exact service, registry, scheduled-task, firewall, antivirus-exclusion, system-PATH, or machine-configuration request. Security disabling is hard-blocked and this tool never mutates the machine.",
+      inputSchema: {
+        operation: z.enum(["service_change", "registry_change", "scheduled_task_change", "firewall_change", "antivirus_exclusion", "system_path_change", "machine_configuration"]),
+        target: z.string().default(""),
+        desired_state: z.string().default(""),
+        rollback_steps: z.array(z.string()).max(20).default([])
+      },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const result = windowsLocalRuntime.planSystemChange(args);
+      const actionPolicy = actionPolicyPreview({ action_type: "local_pc_action", proposed_action: `${args.operation} ${args.target}`.trim(), target_path: args.target });
+      const output = { ...result, action_policy_preview: actionPolicy };
+      return toolResult(formatWindowsLocal("vnem_tools_windows_change_plan", output), { windows_change_plan: output });
+    })
+  );
+
+  mcpServer.registerTool(
     "vnem_tools_test_system_inspect",
     {
       title: "Inspect Project Test and CI System",
@@ -2309,7 +2476,7 @@ async function loadUsablePacks() {
 }
 
 function unsupportedActions() {
-  return ["github_destructive_admin_without_config", "package_install", "package_publish", "deployment", "arbitrary_shell", "unrestricted_api_calls", "secret_manager_backed_live_api", "search_engine_scraping", "automatic_captcha_bypass", "broad_crawling", "external_browser_browsing_by_default", "login_automation", "cookie_extraction", "session_extraction", "captcha_bypass", "giga_mcp"];
+  return ["github_destructive_admin_without_config", "package_install", "package_publish", "deployment", "windows_system_mutation", "arbitrary_shell", "unrestricted_api_calls", "secret_manager_backed_live_api", "search_engine_scraping", "automatic_captcha_bypass", "broad_crawling", "external_browser_browsing_by_default", "login_automation", "cookie_extraction", "session_extraction", "captcha_bypass", "giga_mcp"];
 }
 
 
@@ -2367,6 +2534,12 @@ function toolReliabilityFor(name, descriptor = {}) {
     unsafe = ["Screenshot proof exists when browser was unavailable or blocked", "External browsing/login/session/CAPTCHA proof succeeded", "Accessibility or visual quality certification"];
     next = "Run bounded localhost browser evidence with VNEM_TOOLS_ALLOW_LOCALHOST=1 and inspect screenshot/DOM/a11y metadata.";
     known = ["No login/cookie/session/CAPTCHA automation", "External browser automation blocked by default", "Unavailable browser runtime must be reported honestly"];
+  } else if (group === "windows_local") {
+    level = name.endsWith("_change_plan") || name.endsWith("_command_plan") ? "dry_run_tested" : "local_tested";
+    safe = ["Bounded exact-target Windows reads, safe PowerShell quoting, provider fallbacks, redaction, and non-executing mutation gates are tested through real local stdio MCP."];
+    unsafe = ["Any service/registry/task/firewall/antivirus/PATH/machine setting changed", "Security controls were disabled", "Command lines, config contents, credentials, or environment values were collected", "Universal Windows compatibility"];
+    next = "Run only the exact read-only probe needed; for mutation, require a separately implemented executor plus scoped local_pc_action approval and rollback evidence.";
+    known = ["Windows provider access can be unavailable", "CIM falls back to exact Get-Process/Get-Service reads", "File-lock owner identity remains unproven", "System mutation is not implemented"];
   } else if (["api_request", "search", "research_sources", "source_ingestion", "browsing_risk", "research_matrix"].includes(group)) {
     level = descriptor.network ? "dry_run_tested" : "local_tested";
     safe = ["Planning, bounded local/source evidence, or configured-provider behavior is tested without fake current/live claims."];
@@ -2503,6 +2676,7 @@ function toolsVisibilityDoctor(args = {}) {
     code_intelligence: ["vnem_tools_code_symbol_map", "vnem_tools_patch_target_finder", "vnem_tools_source_impact_trace"].every((tool) => names.has(tool)),
     github_ci_proof: ["vnem_tools_github_status", "vnem_tools_github_actions_status", "vnem_tools_pr_quality_gate"].every((tool) => names.has(tool)),
     browser_ui_proof: ["vnem_tools_browser_evidence_plan", "vnem_tools_browser_interaction_run", "vnem_tools_browser_evidence_compare", "vnem_tools_ui_evidence_audit"].every((tool) => names.has(tool)),
+    windows_local_proof: ["vnem_tools_windows_system_snapshot", "vnem_tools_powershell_command_plan", "vnem_tools_windows_path_inspect", "vnem_tools_process_inspect", "vnem_tools_port_inspect", "vnem_tools_windows_event_log_read", "vnem_tools_windows_change_plan"].every((tool) => names.has(tool)),
     adoption_diagnostics: entrypoints.every((tool) => names.has(tool))
   };
   const weak = toolsWeakAdoptionDescriptions(catalog);
@@ -2840,6 +3014,7 @@ function toolsTaskCategories(text, taskType, localOnly) {
   if (!localOnly && (taskType.includes("publish") || /\b(github|gh|pr|pull request|push|remote sha|actions|ci|merge|publish)\b/.test(text))) add("github_pr_ci_proof");
   if (taskType.includes("cloudflare") || /\b(cloudflare|pages|workers|dns|zone|wrangler|deploy)\b/.test(text)) add("cloudflare_deploy_control");
   if (taskType.includes("browser") || /\b(browser|localhost|screenshot|ui|visual|viewport|responsive|dom|a11y)\b/.test(text)) add("browser_ui_verification");
+  if (taskType.includes("windows") || /\b(windows|powershell|event viewer|defender|scheduled task|service status|path issue|file lock|local pc|tcp port)\b/.test(text)) add("windows_local_diagnosis");
   if (taskType.includes("recovery") || /\b(recover|recovery|lost context|session|local stack|resume)\b/.test(text)) add("local_session_recovery");
   if (taskType.includes("no_placebo") || /\b(no placebo|placebo|fake proof|real implementation|not placebo|docs only|registration only)\b/.test(text)) add("no_placebo_progress_audit");
   if (taskType.includes("evidence") || /\b(evidence|proof pack|proof packet|handoff|final report|what is proven)\b/.test(text)) add("evidence_proof_pack");
@@ -2865,6 +3040,7 @@ function toolsRouteDefinitions() {
     github_pr_ci_proof: { why: "Remote proof needs GitHub status, repo state, Actions status, PR gate, and evidence.", tools: ["vnem_tools_github_status", "vnem_tools_github_repo_inspect", "vnem_tools_github_actions_status", "vnem_tools_pr_quality_gate", "vnem_tools_evidence_pack"] },
     cloudflare_deploy_control: { why: "Cloudflare work needs auth/status, deploy planning, verification, and guarded mutation tools only when approved.", tools: ["vnem_tools_cloudflare_status", "vnem_tools_cloudflare_auth_plan", "vnem_tools_cloudflare_pages_deploy_plan", "vnem_tools_cloudflare_workers_deploy_plan", "vnem_tools_cloudflare_deploy_verify"] },
     browser_ui_verification: { why: "UI/browser claims need planned local interaction proof, runtime evidence, before/after comparison, and an audit of evidence limits.", tools: ["vnem_tools_browser_evidence_plan", "vnem_tools_browser_interaction_run", "vnem_tools_browser_evidence_compare", "vnem_tools_ui_surface_review", "vnem_tools_ui_evidence_audit", "vnem_tools_browser_evidence_run"] },
+    windows_local_diagnosis: { why: "Windows/local-PC work needs safe quoting, bounded exact-target system evidence, provider/access honesty, and a permission plus rollback gate before mutation.", tools: ["vnem_tools_windows_system_snapshot", "vnem_tools_powershell_command_plan", "vnem_tools_windows_path_inspect", "vnem_tools_process_inspect", "vnem_tools_port_inspect", "vnem_tools_windows_service_status", "vnem_tools_windows_scheduled_task_status", "vnem_tools_windows_event_log_read", "vnem_tools_windows_app_config_detect", "vnem_tools_windows_change_plan"] },
     local_session_recovery: { why: "Recovery needs branch/head/worktree/session state before further work.", tools: ["vnem_tools_local_session_recovery", "vnem_tools_repo_workflow_orchestrator"] },
     no_placebo_progress_audit: { why: "No-placebo review needs proof that behavior changed beyond docs/registration/generated churn.", tools: ["vnem_tools_no_placebo_progress_audit", "vnem_tools_task_progress_truth_check", "vnem_tools_evidence_pack"] },
     evidence_proof_pack: { why: "Evidence tasks need a compact proof packet and safe/must-not-claim boundaries.", tools: ["vnem_tools_evidence_pack", "vnem_tools_task_progress_truth_check"] },
@@ -3234,7 +3410,7 @@ async function searchAllowedFiles(args) {
   return { root: root.relativePath || ".", query: args.query, results, skipped_policy: skippedPolicy() };
 }
 
-const TOOL_CAPABILITY_GROUPS = ["permissions", "filesystem", "project_intelligence", "app_engineering", "repo_power", "adoption_reliability", "patching", "rollback", "commands", "project_tasks", "dev_server", "browser_proof", "browser_intelligence", "ui_web_quality", "api_request", "search", "research_sources", "source_quality", "browsing_risk", "research_matrix", "source_ingestion", "debugging_code_quality", "session_evidence", "local_git", "github_autonomy", "status_readiness", "cloudflare_control", "tools_quality", "tool_intelligence"];
+const TOOL_CAPABILITY_GROUPS = ["permissions", "filesystem", "project_intelligence", "app_engineering", "repo_power", "adoption_reliability", "patching", "rollback", "commands", "project_tasks", "dev_server", "browser_proof", "browser_intelligence", "ui_web_quality", "windows_local", "api_request", "search", "research_sources", "source_quality", "browsing_risk", "research_matrix", "source_ingestion", "debugging_code_quality", "session_evidence", "local_git", "github_autonomy", "status_readiness", "cloudflare_control", "tools_quality", "tool_intelligence"];
 
 function buildToolCatalog() {
   const commonUnsafe = ["secret reading/dumping", "outside-root access", "arbitrary shell", "package installs", "git push", "deployment", "Giga MCP"];
@@ -3350,6 +3526,16 @@ function buildToolCatalog() {
     mk("vnem_tools_browser_evidence_run", "ui_web_quality", { read_only: false, network: true, requires_approval: true, dry_run_default: true, description: "Run bounded approved localhost browser proof collection and store structured screenshot/DOM/a11y evidence packs.", allowed_roots_required: true, evidence_logged: true, typical_use_cases: ["approved localhost UI proof run", "before/after screenshot evidence pack"], related_tools: ["vnem_tools_browser_evidence_plan", "vnem_tools_browser_capture", "vnem_tools_browser_page_inspect", "vnem_tools_browser_accessibility_audit", "vnem_tools_ui_evidence_audit"], unsafe_actions_blocked: [...commonUnsafe, "external browsing by default", "hidden browser automation", "login/session/cookie/CAPTCHA automation", "broad crawling"] }),
     mk("vnem_tools_browser_interaction_run", "browser_interaction", { read_only: false, network: true, requires_approval: true, dry_run_default: true, description: "Run bounded disclosed Chromium scenarios with structured interaction, runtime console/network evidence, screenshots, DOM/accessibility snapshots, state/viewport coverage, pixel comparison, and owned-process cleanup.", allowed_roots_required: true, evidence_logged: true, typical_use_cases: ["localhost user-flow proof", "loading/empty/error/success state proof", "responsive before/after evidence"], related_tools: ["vnem_tools_browser_evidence_plan", "vnem_tools_browser_evidence_compare", "vnem_tools_ui_evidence_audit"], unsafe_actions_blocked: [...commonUnsafe, "persistent/shared profiles", "cookie access", "login/private/session automation", "CAPTCHA bypass", "search-engine scraping", "unapproved external origins", "hidden or stealth automation"] }),
     mk("vnem_tools_browser_evidence_compare", "browser_interaction", { description: "Compare matching screenshots plus bounded DOM and accessibility snapshots from two browser interaction evidence packs.", allowed_roots_required: true, evidence_logged: false, typical_use_cases: ["before/after evidence comparison", "deterministic UI regression inspection"], related_tools: ["vnem_tools_browser_interaction_run"], unsafe_actions_blocked: [...commonUnsafe, "aesthetic-correctness claims from pixel difference alone", "reading evidence outside allowed roots"] }),
+    mk("vnem_tools_powershell_command_plan", "windows_local", { description: "Plan a safely literal-quoted PowerShell native command without executing it.", allowed_roots_required: false, evidence_logged: false, typical_use_cases: ["PowerShell quoting", "path-with-spaces command planning"], unsafe_actions_blocked: [...commonUnsafe, "command execution", "secret-shaped arguments", "unquoted shell operators"] }),
+    mk("vnem_tools_windows_system_snapshot", "windows_local", { description: "Inspect bounded Windows, PowerShell, PATH, tool, temp, long-path, and Defender visibility without returning environment values.", allowed_roots_required: false, evidence_logged: false, typical_use_cases: ["Windows environment diagnosis", "Node/npm/gh/git discovery", "PATH issue triage"], unsafe_actions_blocked: [...commonUnsafe, "environment value collection", "security-setting mutation"] }),
+    mk("vnem_tools_windows_path_inspect", "windows_local", { description: "Inspect allowed-root path normalization, current-token access, links/junctions, lock signals, temp status, and long-path risk.", evidence_logged: false, typical_use_cases: ["path failure", "permission diagnosis", "file-lock signal", "long-path and junction inspection"], unsafe_actions_blocked: [...commonUnsafe, "file content reads", "outside-root links", "lock-owner claims"] }),
+    mk("vnem_tools_process_inspect", "windows_local", { description: "Inspect exact Windows PIDs or names without command lines, environments, owner tokens, or termination.", allowed_roots_required: false, evidence_logged: false, typical_use_cases: ["process diagnosis", "parent/PID evidence"], unsafe_actions_blocked: [...commonUnsafe, "broad process crawling", "command-line collection", "process termination"] }),
+    mk("vnem_tools_port_inspect", "windows_local", { description: "Inspect exact Windows TCP ports and correlate listener PIDs without firewall or process mutation.", allowed_roots_required: false, evidence_logged: false, typical_use_cases: ["port conflict", "listener ownership evidence"], unsafe_actions_blocked: [...commonUnsafe, "firewall mutation", "listener termination"] }),
+    mk("vnem_tools_windows_service_status", "windows_local", { description: "Read exact Windows service state/start mode/PID evidence without wildcard enumeration or mutation.", allowed_roots_required: false, evidence_logged: false, typical_use_cases: ["service status", "startup diagnosis"], unsafe_actions_blocked: [...commonUnsafe, "service start/stop/configuration"] }),
+    mk("vnem_tools_windows_scheduled_task_status", "windows_local", { description: "Read exact scheduled-task state and bounded run metadata without exposing actions or changing tasks.", allowed_roots_required: false, evidence_logged: false, typical_use_cases: ["scheduled-task status", "last/next run diagnosis"], unsafe_actions_blocked: [...commonUnsafe, "task action/argument collection", "task create/change/delete"] }),
+    mk("vnem_tools_windows_event_log_read", "windows_local", { description: "Read up to 50 redacted recent Application/System/Setup events over at most 24 hours.", allowed_roots_required: false, evidence_logged: false, typical_use_cases: ["Event Viewer diagnosis", "app startup failure evidence"], unsafe_actions_blocked: [...commonUnsafe, "broad log export", "log clearing", "access-policy bypass"] }),
+    mk("vnem_tools_windows_app_config_detect", "windows_local", { description: "Detect known client commands/install/config/profile locations and reload guidance using the shared client catalog.", evidence_logged: false, typical_use_cases: ["installed-client detection", "config location recovery", "reload guidance"], unsafe_actions_blocked: [...commonUnsafe, "config-content reads", "config mutation", "guessing unverified global paths"] }),
+    mk("vnem_tools_windows_change_plan", "windows_local", { description: "Build a non-executing exact-scope permission and rollback gate for Windows system changes; security disabling is hard-blocked.", allowed_roots_required: false, evidence_logged: false, typical_use_cases: ["system mutation preflight", "rollback planning"], unsafe_actions_blocked: [...commonUnsafe, "system mutation", "security-control disabling", "approval inference"] }),
     mk("vnem_tools_ui_evidence_audit", "ui_web_quality", { description: "Audit provided UI evidence and reject unsupported visual/browser claims.", allowed_roots_required: false, evidence_logged: true, typical_use_cases: ["final UI claim audit", "responsive/a11y/state proof review"], unsafe_actions_blocked: [...commonUnsafe, "inventing browser results", "accepting code-only visual proof"] }),
     mk("vnem_tools_start_session", "session_evidence", { read_only: false, mutation: true, description: "Start session proof pack.", typical_use_cases: ["group local workflow evidence"] }),
     mk("vnem_tools_finish_session", "session_evidence", { read_only: false, mutation: true, description: "Write session proof pack.", typical_use_cases: ["final evidence summary"] }),
@@ -9653,6 +9839,16 @@ function formatTempCleanup(result) {
   return [`vnem_tools_project_temp_cleanup: ${result.operation_result}`, `Operation: ${result.operation}`, `Executed: ${result.executed === true}`, result.cleanup_id ? `Cleanup id: ${result.cleanup_id}` : null, `Moved/restored: ${result.moved?.length || result.restored?.length || 0}`, `Unresolved: ${result.unresolved?.length || 0}`, `Rollback available: ${result.rollback_available === true}`].filter(Boolean).join("\n");
 }
 
+function formatWindowsLocal(tool, result) {
+  const count = result.processes?.length ?? result.ports?.length ?? result.paths?.length ?? result.services?.length ?? result.tasks?.length ?? result.events?.length ?? result.clients?.length;
+  return [
+    `${tool}: ${result.operation_result}`,
+    count === undefined ? null : `Items: ${count}`,
+    `Read-only/executed: ${result.read_only !== false}/${result.executed === true}`,
+    result.safe_next_step ? `Next: ${result.safe_next_step}` : null
+  ].filter(Boolean).join("\n");
+}
+
 function formatTestSystemInspect(result) {
   return [`vnem_tools_test_system_inspect: ${result.operation_result}`, `Frameworks: ${result.test_frameworks.join(", ") || "none detected"}`, `Tests/configs/workflows: ${result.test_files.length}/${result.config_files.length}/${result.ci_workflows.length}`, `Coverage: ${result.coverage.tools.join(", ") || "no producer detected"}`, `Resource-mapped scripts: ${result.resource_isolation.length}`].join("\n");
 }
@@ -9714,6 +9910,7 @@ async function withToolErrors(fn) {
     if (error instanceof ProjectAutomationError) return errorResult(error.message, error.code, error.details);
     if (error instanceof TestingCiError) return errorResult(error.message, error.code, error.details);
     if (error instanceof BrowserInteractionError) return errorResult(error.message, error.code, error.details);
+    if (error instanceof WindowsLocalError) return errorResult(error.message, error.code, error.details);
     return errorResult(error.message || String(error), "tools_unexpected_error");
   }
 }

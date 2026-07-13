@@ -18,6 +18,9 @@ const appEngineeringFixturesPath = rel("fixtures/app-engineering/README.md");
 const browserInteractionTestPath = rel("scripts/test-tools-giga-browser-interaction.mjs");
 const browserInteractionModulePath = rel("scripts/vnem/tools/browser-interaction.mjs");
 const browserInteractionFixturePath = rel("fixtures/browser-interaction/index.html");
+const windowsLocalTestPath = rel("scripts/test-tools-giga-windows-local.mjs");
+const windowsLocalModulePath = rel("scripts/vnem/tools/windows-local.mjs");
+const windowsLocalFixturePath = rel("fixtures/windows-local/path with spaces/sample.txt");
 const projectAutomationTestPath = rel("scripts/test-tools-giga-project-automation.mjs");
 const projectAutomationModulePath = rel("scripts/vnem/tools/project-automation.mjs");
 const projectAutomationFixturePath = rel("fixtures/project-automation/package.json");
@@ -110,6 +113,8 @@ const appEngineeringTest = existsSync(appEngineeringTestPath) ? readFileSync(app
 const appEngineeringModule = existsSync(appEngineeringModulePath) ? readFileSync(appEngineeringModulePath, "utf8") : "";
 const browserInteractionTest = existsSync(browserInteractionTestPath) ? readFileSync(browserInteractionTestPath, "utf8") : "";
 const browserInteractionModule = existsSync(browserInteractionModulePath) ? readFileSync(browserInteractionModulePath, "utf8") : "";
+const windowsLocalTest = existsSync(windowsLocalTestPath) ? readFileSync(windowsLocalTestPath, "utf8") : "";
+const windowsLocalModule = existsSync(windowsLocalModulePath) ? readFileSync(windowsLocalModulePath, "utf8") : "";
 const projectAutomationTest = existsSync(projectAutomationTestPath) ? readFileSync(projectAutomationTestPath, "utf8") : "";
 const projectAutomationModule = existsSync(projectAutomationModulePath) ? readFileSync(projectAutomationModulePath, "utf8") : "";
 const testingCiTest = existsSync(testingCiTestPath) ? readFileSync(testingCiTestPath, "utf8") : "";
@@ -268,6 +273,16 @@ const requiredTools = [
   "vnem_tools_browser_evidence_run",
   "vnem_tools_browser_interaction_run",
   "vnem_tools_browser_evidence_compare",
+  "vnem_tools_powershell_command_plan",
+  "vnem_tools_windows_system_snapshot",
+  "vnem_tools_windows_path_inspect",
+  "vnem_tools_process_inspect",
+  "vnem_tools_port_inspect",
+  "vnem_tools_windows_service_status",
+  "vnem_tools_windows_scheduled_task_status",
+  "vnem_tools_windows_event_log_read",
+  "vnem_tools_windows_app_config_detect",
+  "vnem_tools_windows_change_plan",
   "vnem_tools_ui_evidence_audit",
   "vnem_tools_apply_patch_batch",
   "vnem_tools_restore_batch",
@@ -371,6 +386,9 @@ const report = {
   browser_interaction_test_exists: existsSync(browserInteractionTestPath),
   browser_interaction_module_exists: existsSync(browserInteractionModulePath),
   browser_interaction_fixture_exists: existsSync(browserInteractionFixturePath),
+  windows_local_test_exists: existsSync(windowsLocalTestPath),
+  windows_local_module_exists: existsSync(windowsLocalModulePath),
+  windows_local_fixture_exists: existsSync(windowsLocalFixturePath),
   project_automation_test_exists: existsSync(projectAutomationTestPath),
   project_automation_module_exists: existsSync(projectAutomationModulePath),
   project_automation_fixture_exists: existsSync(projectAutomationFixturePath),
@@ -446,6 +464,7 @@ const report = {
     test_tools_project_actions: pkg.scripts?.["test:tools-project-actions"] === "node scripts/test-tools-project-actions.mjs",
     test_tools_giga_app_engineering: pkg.scripts?.["test:tools-giga-app-engineering"] === "node scripts/test-tools-giga-app-engineering.mjs",
     test_tools_giga_browser_interaction: pkg.scripts?.["test:tools-giga-browser-interaction"] === "node scripts/test-tools-giga-browser-interaction.mjs",
+    test_tools_giga_windows_local: pkg.scripts?.["test:tools-giga-windows-local"] === "node scripts/test-tools-giga-windows-local.mjs",
     test_tools_giga_project_automation: pkg.scripts?.["test:tools-giga-project-automation"] === "node scripts/test-tools-giga-project-automation.mjs",
     test_tools_giga_testing_ci: pkg.scripts?.["test:tools-giga-testing-ci"] === "node scripts/test-tools-giga-testing-ci.mjs",
     test_tools_git_session: pkg.scripts?.["test:tools-git-session"] === "node scripts/test-tools-git-session.mjs",
@@ -825,6 +844,15 @@ const report = {
   browser_interaction_safety_status: /Fetch\.requestPaused/.test(browserInteractionModule) && /private_flow_detected/.test(browserInteractionModule + browserInteractionTest) && /captcha_detected/.test(browserInteractionModule + browserInteractionTest) && /cookie_extraction:\s*false/.test(browserInteractionModule) && /login_automation:\s*false/.test(browserInteractionModule) && /stealth_mode:\s*false/.test(browserInteractionModule),
   browser_interaction_cleanup_status: /Browser\.close/.test(browserInteractionModule + browserInteractionTest) && /taskkill-owned-tree/.test(browserInteractionModule) && /kill-owned-process-group/.test(browserInteractionModule) && /profile_removed/.test(browserInteractionTest) && /process_exited/.test(browserInteractionTest),
   browser_interaction_real_mcp_proof_status: /StdioClientTransport/.test(browserInteractionTest) && /GIGA browser-interaction MCP tests passed/.test(browserInteractionTest) && /browser_was_run, true/.test(browserInteractionTest) && /screenshots\.length, 10/.test(browserInteractionTest),
+  windows_local_registration_status: ["vnem_tools_powershell_command_plan", "vnem_tools_windows_system_snapshot", "vnem_tools_windows_path_inspect", "vnem_tools_process_inspect", "vnem_tools_port_inspect", "vnem_tools_windows_service_status", "vnem_tools_windows_scheduled_task_status", "vnem_tools_windows_event_log_read", "vnem_tools_windows_app_config_detect", "vnem_tools_windows_change_plan"].every((name) => server.includes(name)) && /WindowsLocalRuntime/.test(server + windowsLocalModule),
+  windows_local_powershell_status: /quotePowerShellLiteral/.test(windowsLocalModule) && /embedded_single_quotes_are_doubled/.test(windowsLocalModule) && /shell_operators_remain_literal_arguments/.test(windowsLocalModule + windowsLocalTest) && /O''Brien/.test(windowsLocalTest),
+  windows_local_environment_status: /inspectPathEnvironment/.test(windowsLocalModule) && /probeVersion/.test(windowsLocalModule) && /LongPathsEnabled/.test(windowsLocalModule) && /Get-MpComputerStatus/.test(windowsLocalModule) && /value_returned, false/.test(windowsLocalTest),
+  windows_local_path_status: /inspectOnePath/.test(windowsLocalModule) && /windows_sensitive_path_blocked/.test(windowsLocalModule + windowsLocalTest) && /path_link_escape_blocked/.test(windowsLocalModule) && /possible_lock_or_permission/.test(windowsLocalModule) && /no_exclusive_write_lock_observed/.test(windowsLocalTest),
+  windows_local_process_port_status: /Win32_Process/.test(windowsLocalModule) && /Get-Process fallback/.test(windowsLocalModule) && /parseWindowsNetstat/.test(windowsLocalModule) && /command_lines_returned, false/.test(windowsLocalTest) && /listeners\.some/.test(windowsLocalTest),
+  windows_local_service_task_event_status: /Win32_Service/.test(windowsLocalModule) && /Get-Service fallback/.test(windowsLocalModule) && /Get-ScheduledTask/.test(windowsLocalModule) && /Get-WinEvent/.test(windowsLocalModule) && /export_performed, false/.test(windowsLocalTest),
+  windows_local_client_status: /clientCatalog/.test(windowsLocalModule) && /clients\.length, 11/.test(windowsLocalTest) && /config_content_read, false/.test(windowsLocalTest) && /config_content_modified, false/.test(windowsLocalTest),
+  windows_local_mutation_gate_status: /local_pc_action/.test(server + windowsLocalModule) && /execution_supported: false/.test(windowsLocalModule + windowsLocalTest) && /rollback_plan_required: true/.test(windowsLocalModule + windowsLocalTest) && /hard_blocked/.test(windowsLocalModule + windowsLocalTest) && /does not disable Windows security/.test(windowsLocalModule + windowsLocalTest),
+  windows_local_real_mcp_proof_status: /StdioClientTransport/.test(windowsLocalTest) && /GIGA Windows\/local-PC MCP tests passed/.test(windowsLocalTest) && /listenerPort/.test(windowsLocalTest) && /actual_stdio_mcp_windows_local_execution/.test(windowsLocalTest),
   dev_server_listener_cleanup_status: /listener_pid/.test(server) && /findWindowsListeningPid/.test(server) && /waitForWindowsListenerStop/.test(server) && /dev_server_stop_failed/.test(server),
   project_task_status: /vnem_tools_run_project_task/.test(server) && /safeRunProjectTask/.test(server) && /unsafe_script_blocked/.test(projectActionsTest),
   dev_server_status: /vnem_tools_start_dev_server/.test(server) && /vnem_tools_stop_dev_server/.test(server) && /dev_server_not_found/.test(projectActionsTest),
@@ -852,6 +880,7 @@ const report = {
   },
   known_missing_future_tools: [
     "GitHub destructive admin operations (repo delete/force push/settings apply beyond explicit config)",
+    "Windows system mutation executors (services, registry, scheduled tasks, firewall, antivirus exclusions, system PATH, and machine-wide configuration)",
     "package installs",
     "arbitrary shell",
     "unrestricted API calls",
@@ -876,6 +905,9 @@ assert.equal(report.project_actions_test_exists, true, "project actions test fil
 assert.equal(report.browser_interaction_test_exists, true, "browser interaction MCP test file is missing");
 assert.equal(report.browser_interaction_module_exists, true, "browser interaction runtime module is missing");
 assert.equal(report.browser_interaction_fixture_exists, true, "browser interaction fixture is missing");
+assert.equal(report.windows_local_test_exists, true, "Windows/local-PC MCP test file is missing");
+assert.equal(report.windows_local_module_exists, true, "Windows/local-PC runtime module is missing");
+assert.equal(report.windows_local_fixture_exists, true, "Windows/local-PC fixture is missing");
 assert.equal(report.project_automation_test_exists, true, "project automation MCP test file is missing");
 assert.equal(report.project_automation_module_exists, true, "project automation module is missing");
 assert.equal(report.project_automation_fixture_exists, true, "project automation fixture is missing");
@@ -903,6 +935,7 @@ assert.equal(report.package_scripts.test_tools_project_actions, true, "test:tool
 assert.equal(report.package_scripts.test_tools_giga_project_automation, true, "test:tools-giga-project-automation package script is missing");
 assert.equal(report.package_scripts.test_tools_giga_testing_ci, true, "test:tools-giga-testing-ci package script is missing");
 assert.equal(report.package_scripts.test_tools_giga_browser_interaction, true, "test:tools-giga-browser-interaction package script is missing");
+assert.equal(report.package_scripts.test_tools_giga_windows_local, true, "test:tools-giga-windows-local package script is missing");
 for (const [key, value] of Object.entries({ test_smoke_tier: report.package_scripts.test_smoke_tier, test_affected_tier: report.package_scripts.test_affected_tier, test_core_tier: report.package_scripts.test_core_tier, test_tools_tier: report.package_scripts.test_tools_tier, test_precision_compat_tier: report.package_scripts.test_precision_compat_tier, test_integration_tier: report.package_scripts.test_integration_tier, test_benchmarks_tier: report.package_scripts.test_benchmarks_tier, test_full_tier: report.package_scripts.test_full_tier, test_ci_tier: report.package_scripts.test_ci_tier, npm_test_routes_full: report.package_scripts.npm_test_routes_full })) assert.equal(value, true, `${key} package script is missing`);
 assert.equal(report.package_scripts.test_tools_git_session, true, "test:tools-git-session package script is missing");
 assert.equal(report.package_scripts.test_tools_intelligence, true, "test:tools-intelligence package script is missing");
@@ -1129,6 +1162,7 @@ for (const [key, value] of Object.entries({ project_automation_environment_statu
 for (const [key, value] of Object.entries({ testing_ci_discovery_status: report.testing_ci_discovery_status, testing_ci_affected_graph_status: report.testing_ci_affected_graph_status, testing_ci_tiered_runner_status: report.testing_ci_tiered_runner_status, testing_ci_parallel_safety_status: report.testing_ci_parallel_safety_status, testing_ci_reliability_status: report.testing_ci_reliability_status, testing_ci_diagnosis_status: report.testing_ci_diagnosis_status, testing_ci_coverage_benchmark_status: report.testing_ci_coverage_benchmark_status, testing_ci_actions_runtime_status: report.testing_ci_actions_runtime_status, testing_ci_real_mcp_proof_status: report.testing_ci_real_mcp_proof_status })) assert.equal(value, true, `${key} readiness missing`);
 for (const [key, value] of Object.entries({ app_engineering_inspection_status: report.app_engineering_inspection_status, app_engineering_transaction_status: report.app_engineering_transaction_status, app_engineering_acceptance_status: report.app_engineering_acceptance_status, app_engineering_rollback_status: report.app_engineering_rollback_status, app_engineering_adapter_fixture_status: report.app_engineering_adapter_fixture_status, app_engineering_real_mcp_proof_status: report.app_engineering_real_mcp_proof_status, dev_server_listener_cleanup_status: report.dev_server_listener_cleanup_status })) assert.equal(value, true, `${key} readiness missing`);
 for (const [key, value] of Object.entries({ browser_interaction_registration_status: report.browser_interaction_registration_status, browser_interaction_actions_status: report.browser_interaction_actions_status, browser_interaction_runtime_evidence_status: report.browser_interaction_runtime_evidence_status, browser_interaction_state_viewport_status: report.browser_interaction_state_viewport_status, browser_interaction_compare_status: report.browser_interaction_compare_status, browser_interaction_safety_status: report.browser_interaction_safety_status, browser_interaction_cleanup_status: report.browser_interaction_cleanup_status, browser_interaction_real_mcp_proof_status: report.browser_interaction_real_mcp_proof_status })) assert.equal(value, true, `${key} readiness missing`);
+for (const [key, value] of Object.entries({ windows_local_registration_status: report.windows_local_registration_status, windows_local_powershell_status: report.windows_local_powershell_status, windows_local_environment_status: report.windows_local_environment_status, windows_local_path_status: report.windows_local_path_status, windows_local_process_port_status: report.windows_local_process_port_status, windows_local_service_task_event_status: report.windows_local_service_task_event_status, windows_local_client_status: report.windows_local_client_status, windows_local_mutation_gate_status: report.windows_local_mutation_gate_status, windows_local_real_mcp_proof_status: report.windows_local_real_mcp_proof_status })) assert.equal(value, true, `${key} readiness missing`);
 assert.equal(report.project_task_status, true, "project task support/test coverage is missing");
 assert.equal(report.dev_server_status, true, "dev server support/test coverage is missing");
 assert.equal(report.session_evidence_status, true, "session evidence support/test coverage is missing");
@@ -1279,6 +1313,7 @@ for (const key of ["project_automation_environment_status", "project_automation_
 for (const key of ["testing_ci_discovery_status", "testing_ci_affected_graph_status", "testing_ci_tiered_runner_status", "testing_ci_parallel_safety_status", "testing_ci_reliability_status", "testing_ci_diagnosis_status", "testing_ci_coverage_benchmark_status", "testing_ci_actions_runtime_status", "testing_ci_real_mcp_proof_status"]) console.log(`${key}: ${yes(report[key])}`);
 for (const key of ["app_engineering_inspection_status", "app_engineering_transaction_status", "app_engineering_acceptance_status", "app_engineering_rollback_status", "app_engineering_adapter_fixture_status", "app_engineering_real_mcp_proof_status", "dev_server_listener_cleanup_status"]) console.log(`${key}: ${yes(report[key])}`);
 for (const key of ["browser_interaction_registration_status", "browser_interaction_actions_status", "browser_interaction_runtime_evidence_status", "browser_interaction_state_viewport_status", "browser_interaction_compare_status", "browser_interaction_safety_status", "browser_interaction_cleanup_status", "browser_interaction_real_mcp_proof_status"]) console.log(`${key}: ${yes(report[key])}`);
+for (const key of ["windows_local_registration_status", "windows_local_powershell_status", "windows_local_environment_status", "windows_local_path_status", "windows_local_process_port_status", "windows_local_service_task_event_status", "windows_local_client_status", "windows_local_mutation_gate_status", "windows_local_real_mcp_proof_status"]) console.log(`${key}: ${yes(report[key])}`);
 console.log(`project_task_status: ${yes(report.project_task_status)}`);
 console.log(`dev_server_status: ${yes(report.dev_server_status)}`);
 console.log(`session_evidence_status: ${yes(report.session_evidence_status)}`);

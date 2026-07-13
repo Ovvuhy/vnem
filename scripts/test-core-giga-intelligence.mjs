@@ -104,6 +104,21 @@ try {
   assert.ok(browserInteraction.evidence_requirements.some((requirement) => /owned-browser cleanup/.test(requirement)));
   assert.ok(browserInteraction.recommended_tools_call_sequence.every((step) => step.state.available && step.state.allowed));
 
+  const windowsLocal = await call(core.client, "vnem_entrypoint", {
+    user_goal: "Diagnose a Windows PowerShell path failure, inspect the exact Node process and TCP port, check Event Viewer and service status, and plan any system change with scoped permission and rollback.",
+    task_context: "Do not return command lines, config contents, environment values, secrets, or disable Defender or firewall.",
+    task_mode: "windows",
+    available_mcp_names: ["vnem", "vnem-tools"],
+    available_tool_names: [...toolNames],
+    allowed_tool_names: [...toolNames],
+    environment: { os: "Windows 11", shell: "PowerShell 7", node_version: "22", client: "Codex", mcp_transport: "stdio" }
+  }, "entrypoint");
+  assert.ok(windowsLocal.task_classification.domains.some((domain) => domain.id === "windows_local"));
+  for (const tool of ["vnem_tools_windows_system_snapshot", "vnem_tools_powershell_command_plan", "vnem_tools_process_inspect", "vnem_tools_port_inspect"]) assert.ok(windowsLocal.recommended_tools_calls.includes(tool), `missing Phase 11 Windows route ${tool}`);
+  assert.ok(windowsLocal.evidence_requirements.some((requirement) => /exact Windows targets/.test(requirement)));
+  assert.ok(windowsLocal.evidence_requirements.some((requirement) => /scoped permission plus rollback/.test(requirement)));
+  assert.ok(windowsLocal.recommended_tools_call_sequence.every((step) => step.state.available && step.state.allowed));
+
   const details = await call(core.client, "vnem_decision_details", {
     decision_id: mixed.decision_id,
     sections: ["classification", "compatibility", "capability_packs", "unavailable_capabilities"]

@@ -54,7 +54,7 @@ const DOMAIN_ADAPTERS = [
   adapter("windows_local", "Windows and local-PC work", 0, [
     feature(/\b(windows|powershell|event viewer|windows registry|registry key|regedit|scheduled task|defender)\b/, 5, "Windows platform signal"),
     feature(/\b(process|port|local pc|path failure|appdata)\b/, 4, "local system inspection")
-  ], ["platform compatibility", "system safety", "diagnostic evidence"], ["vnem_tools_project_runtime_diagnose", "vnem_tools_project_automation_inspect", "vnem_tools_capability_gap_report"]),
+  ], ["platform compatibility", "system safety", "diagnostic evidence", "permission and rollback boundaries"], ["vnem_tools_windows_system_snapshot", "vnem_tools_powershell_command_plan", "vnem_tools_windows_path_inspect", "vnem_tools_process_inspect", "vnem_tools_port_inspect", "vnem_tools_windows_event_log_read", "vnem_tools_windows_service_status", "vnem_tools_windows_scheduled_task_status", "vnem_tools_windows_app_config_detect", "vnem_tools_windows_change_plan"]),
   adapter("game_modding", "Game and modding work", -1, [
     feature(/\b(game|modding|mod loader|load order|save file|anti-cheat|roblox|luau)\b/, 5, "game or modding domain")
   ], ["version compatibility", "backup safety", "runtime proof"], ["vnem_tools_capability_gap_report", "vnem_tools_project_scan"]),
@@ -103,7 +103,6 @@ const MODE_DOMAINS = {
 };
 
 const DOMAIN_GAPS = {
-  windows_local: ["dedicated service, registry, and Event Viewer tools are not registered yet; bounded project process/port/log diagnosis is available"],
   game_modding: ["dedicated game-project, config, Roblox, and Luau tools are not registered yet"],
   skills: ["a vetted skill execution runtime is not registered in Tools yet"],
   database_data: ["database schema and query tools are not registered in Tools yet"],
@@ -128,6 +127,13 @@ const TOOL_PURPOSES = {
   vnem_tools_ui_surface_review: "inspect UI routes and states before browser proof",
   vnem_tools_browser_evidence_plan: "plan bounded browser and viewport evidence",
   vnem_tools_browser_evidence_run: "collect approved local browser evidence",
+  vnem_tools_windows_system_snapshot: "inspect Windows, PowerShell, PATH, developer tools, temp directories, long paths, and Defender visibility",
+  vnem_tools_powershell_command_plan: "construct a safely quoted non-executing PowerShell native-command invocation",
+  vnem_tools_windows_path_inspect: "inspect allowed-root path normalization, access, link, lock, temp, and long-path evidence",
+  vnem_tools_process_inspect: "inspect bounded exact Windows process metadata without command lines or termination",
+  vnem_tools_port_inspect: "inspect exact Windows TCP ports and correlate listener PIDs",
+  vnem_tools_windows_event_log_read: "read bounded redacted Application, System, or Setup event evidence",
+  vnem_tools_windows_change_plan: "require exact scope, permission, rollback, and security-control hard blocks before system mutation",
   vnem_tools_app_inspect: "inspect app frameworks, boundaries, routes, APIs, data flow, states, and completion gaps",
   vnem_tools_app_vertical_slice_plan: "preview a coherent frontend, API, and domain transaction",
   vnem_tools_app_vertical_slice_apply: "apply an approved marker-backed app transaction",
@@ -433,7 +439,8 @@ export function coreRecommendedToolsCalls(classification, args = {}) {
   const domainIds = new Set(domains.map((domain) => domain.id));
   // Keep implementation essentials ahead of evidence-only steps when the route is capped.
   if (domainIds.has("app_engineering")) candidates.push("vnem_tools_app_inspect", "vnem_tools_app_vertical_slice_plan", "vnem_tools_repo_deep_map");
-  if (domainIds.has("project_automation")) candidates.push("vnem_tools_project_automation_inspect", "vnem_tools_project_command_run");
+  if (domainIds.has("project_automation")) candidates.push("vnem_tools_project_automation_inspect", "vnem_tools_project_command_run", "vnem_tools_project_task_graph_plan");
+  if (domainIds.has("windows_local")) candidates.push("vnem_tools_windows_system_snapshot", "vnem_tools_powershell_command_plan", "vnem_tools_process_inspect", "vnem_tools_port_inspect");
   if (domainIds.has("repo_code")) candidates.push("vnem_tools_repo_deep_map", "vnem_tools_patch_target_finder");
   if (domainIds.has("repo_code") || domainIds.has("app_engineering")) candidates.push("vnem_tools_test_selection_plan");
   // Give every material domain execution influence before filling deeper steps.
@@ -470,6 +477,7 @@ export function coreProofRequirements(classification) {
   const requirements = ["commands and Tools calls actually executed, or an explicit blocked state", "checks actually run with status", "what remains not proven"];
   if (ids.has("github_publish")) requirements.push("remote branch SHA, PR head SHA, and Actions URL/status");
   if (ids.has("browser_ui")) requirements.push("structured interaction results, before/after screenshots and pixel comparison, DOM and accessibility snapshots, console errors, failed network requests, responsive viewport/state coverage, and owned-browser cleanup evidence");
+  if (ids.has("windows_local")) requirements.push("exact Windows targets, PATH/tool/provider/access evidence, process/port/path/service/task/event results as relevant, no command-line/config/secret collection, and scoped permission plus rollback before any system mutation");
   if (ids.has("package_dependency")) requirements.push("lockfile/dependency diff, install-script risk, focused tests, and rollback");
   if (ids.has("project_automation")) requirements.push("exact reviewed command or graph id, exit/timeout state, process cleanup, bounded output evidence, and declared rollback status");
   if (ids.has("testing_ci")) requirements.push("affected-test graph reasons, tier result, exit/timing/failure groups, coverage source or explicit absence, and baseline/post benchmark evidence where claimed");
@@ -652,6 +660,7 @@ function checksForDomain(domain) {
     debugging: ["reproduce or classify failure", "targeted regression rerun"],
     github_publish: ["remote SHA equality", "PR head equality", "Actions conclusion"],
     browser_ui: ["desktop and mobile state", "structured interaction", "accessibility tree", "console and failed-network evidence", "before/after comparison", "owned-process cleanup"],
+    windows_local: ["exact process/port/path/service/task targets", "provider and access status", "secret/privacy boundary", "scoped local_pc_action permission and rollback for any mutation", "security controls remain enabled"],
     package_dependency: ["dependency/install-script audit", "focused tests", "rollback"],
     api_integration: ["schema/auth review", "redaction", "bounded response proof"],
     evidence_validation: ["handler and behavior test", "MCP-path proof", "claim audit"]
@@ -662,6 +671,7 @@ function checksForDomain(domain) {
 function outputEffectsForDomain(domain) {
   if (domain === "github_publish") return ["remote SHA", "PR URL", "CI URL/status", "not proven"];
   if (domain === "browser_ui") return ["interaction and state evidence", "before/after screenshots and pixel delta", "DOM/a11y snapshots", "console/network status", "browser cleanup", "not proven"];
+  if (domain === "windows_local") return ["bounded system/path/process/port/service/task/event evidence", "provider or access limits", "safe restart/reload guidance", "permission and rollback gate", "not proven"];
   if (domain === "debugging") return ["root-cause evidence", "smallest fix", "rerun result", "residual risk"];
   return ["result", "evidence", "not proven", "next action"];
 }
