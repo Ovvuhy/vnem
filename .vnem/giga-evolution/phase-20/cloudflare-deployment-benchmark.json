@@ -1,0 +1,68 @@
+{
+  "schema_version": "1.0.0",
+  "phase": 20,
+  "feature": "cloudflare_and_deployment",
+  "captured_at": "2026-07-14T19:31:28.494Z",
+  "real_stdio_mcp": true,
+  "real_local_build_and_command_execution": true,
+  "local_cloudflare_api_fixture": true,
+  "real_cloudflare_account_mutation": false,
+  "tools_exercised": [
+    "vnem_tools_cloudflare_status",
+    "vnem_tools_cloudflare_auth_plan",
+    "vnem_tools_cloudflare_accounts_list",
+    "vnem_tools_cloudflare_projects_list",
+    "vnem_tools_cloudflare_pages_deploy_plan",
+    "vnem_tools_cloudflare_pages_deploy",
+    "vnem_tools_cloudflare_workers_deploy_plan",
+    "vnem_tools_cloudflare_workers_deploy",
+    "vnem_tools_cloudflare_dns_plan",
+    "vnem_tools_cloudflare_dns_apply",
+    "vnem_tools_cloudflare_env_plan",
+    "vnem_tools_cloudflare_env_apply",
+    "vnem_tools_cloudflare_deploy_verify",
+    "vnem_tools_cloudflare_rollback_plan",
+    "vnem_tools_cloudflare_rollback",
+    "vnem_tools_cloudflare_cache_purge_plan",
+    "vnem_tools_cloudflare_cache_purge",
+    "vnem_tools_cloudflare_error_diagnose"
+  ],
+  "timings_ms": {
+    "status_live_ms": 2792.63,
+    "accounts_ms": 7.44,
+    "projects_ms": 11.47,
+    "pages_deploy_ms": 2686.51,
+    "workers_deploy_ms": 2540.75,
+    "pages_rollback_plan_ms": 5.13,
+    "pages_rollback_ms": 16.35
+  },
+  "proof": {
+    "modular_runtime_active": true,
+    "local_wrangler_no_install_execution": true,
+    "live_auth_status_fixture": true,
+    "account_and_project_discovery": true,
+    "framework_build_and_output_detection": true,
+    "pages_deploy_command_and_http_marker_verification": true,
+    "workers_deploy_url_and_version_evidence": true,
+    "pages_api_rollback_to_discovered_previous_deployment": true,
+    "workers_exact_version_rollback": true,
+    "environment_reference_stdin_without_value_evidence": true,
+    "dns_read_after_write": true,
+    "cache_purge_scope": true,
+    "failed_deploy_cannot_record_mutation_success": true,
+    "simulated_path_reports_mutated_false": true,
+    "error_classification": true,
+    "behavior_coverage_mapper_for_eighteen_tools": true
+  },
+  "request_counts": {
+    "cloudflare_api": 14,
+    "pages_rollback_posts": 1,
+    "dns_mutation_posts": 1,
+    "cache_purge_posts": 1
+  },
+  "limitations": [
+    "The provider API and Wrangler executable are deterministic local fixtures; no real Cloudflare account was mutated.",
+    "HTTP verification proves bounded response and marker checks, not visual browser correctness.",
+    "JSONC Wrangler configuration is detected but intentionally left to Wrangler rather than heuristically parsed."
+  ]
+}

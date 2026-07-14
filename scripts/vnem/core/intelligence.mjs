@@ -66,7 +66,7 @@ const DOMAIN_ADAPTERS = [
   ], ["data integrity", "query safety", "schema compatibility", "secret redaction", "transaction and rollback safety"], ["vnem_tools_database_connection_plan", "vnem_tools_data_source_inspect", "vnem_tools_data_source_validate", "vnem_tools_database_schema_inspect", "vnem_tools_database_query_plan", "vnem_tools_database_query", "vnem_tools_data_source_diff", "vnem_tools_data_transform_plan", "vnem_tools_data_transform_apply", "vnem_tools_database_migration_preview", "vnem_tools_database_migration_apply", "vnem_tools_data_transaction_rollback"]),
   adapter("cloudflare", "Cloudflare deployment control", -4, [
     feature(/\b(cloudflare|wrangler|pages deploy|workers deploy|dns zone|cache purge)\b/, 6, "Cloudflare surface")
-  ], ["deployment safety", "remote proof", "rollback"], ["vnem_tools_cloudflare_status", "vnem_tools_cloudflare_deploy_verify", "vnem_tools_cloudflare_rollback_plan"]),
+  ], ["deployment safety", "remote proof", "rollback", "secret redaction"], ["vnem_tools_cloudflare_status", "vnem_tools_cloudflare_accounts_list", "vnem_tools_cloudflare_projects_list", "vnem_tools_cloudflare_pages_deploy_plan", "vnem_tools_cloudflare_pages_deploy", "vnem_tools_cloudflare_workers_deploy_plan", "vnem_tools_cloudflare_workers_deploy", "vnem_tools_cloudflare_deploy_verify", "vnem_tools_cloudflare_rollback_plan", "vnem_tools_cloudflare_rollback", "vnem_tools_cloudflare_error_diagnose"]),
   adapter("client_setup", "VNEM client setup", -5, [
     feature(/\b(codex|claude code|claude desktop|cursor|windsurf|cline|gemini cli|mcp client|vnem client|client config)\b.*\b(install|setup|configure|config|rollback|roll back|verify)\b/, 6, "MCP client configuration")
   ], ["config preservation", "client compatibility", "rollback"], ["vnem_tools_install_doctor", "vnem_tools_install_profile_emit"])
@@ -223,9 +223,17 @@ const TOOL_PURPOSES = {
   vnem_tools_api_request: "execute an approved allowlisted API request with redaction",
   vnem_tools_capability_gap_report: "report missing execution capability honestly",
   vnem_tools_project_scan: "inspect a bounded local project as a fallback",
-  vnem_tools_cloudflare_status: "read current Cloudflare state",
-  vnem_tools_cloudflare_deploy_verify: "verify deployment state without inventing proof",
-  vnem_tools_cloudflare_rollback_plan: "prepare an explicit rollback path",
+  vnem_tools_cloudflare_status: "detect Wrangler, credential references, account readiness, and optional live token status without exposing secrets",
+  vnem_tools_cloudflare_accounts_list: "discover accessible Cloudflare accounts through a bounded read-only API call",
+  vnem_tools_cloudflare_projects_list: "discover Pages projects and Worker scripts through bounded read-only API calls",
+  vnem_tools_cloudflare_pages_deploy_plan: "inspect framework, build script, Wrangler config, output directory, and deploy command before Pages mutation",
+  vnem_tools_cloudflare_pages_deploy: "execute an approved Wrangler Pages deploy and retain command plus bounded HTTP evidence",
+  vnem_tools_cloudflare_workers_deploy_plan: "inspect Worker configuration, entrypoint, environment, and exact Wrangler command before mutation",
+  vnem_tools_cloudflare_workers_deploy: "execute an approved Wrangler Worker deploy with version and evidence-pack output",
+  vnem_tools_cloudflare_deploy_verify: "verify bounded HTTP state and optional exact Pages deployment metadata without inventing proof",
+  vnem_tools_cloudflare_rollback_plan: "identify an exact prior Pages deployment or Worker version before destructive rollback",
+  vnem_tools_cloudflare_rollback: "execute an explicitly approved exact-target Pages or Worker rollback with evidence",
+  vnem_tools_cloudflare_error_diagnose: "classify redacted Wrangler or Cloudflare API failures and return the narrowest safe recovery",
   vnem_tools_install_doctor: "verify generated client profiles and setup readiness",
   vnem_tools_install_profile_emit: "emit a reviewed import profile"
 };
@@ -513,6 +521,16 @@ export function coreRecommendedToolsCalls(classification, args = {}) {
       candidates.push("vnem_tools_database_connection_plan", "vnem_tools_database_schema_inspect", "vnem_tools_database_migration_preview", "vnem_tools_database_migration_apply", "vnem_tools_data_transaction_rollback", "vnem_tools_database_query");
     } else {
       candidates.push("vnem_tools_database_connection_plan", "vnem_tools_data_source_inspect", "vnem_tools_data_source_validate", "vnem_tools_database_schema_inspect", "vnem_tools_database_query_plan", "vnem_tools_database_query");
+    }
+  }
+  if (domainIds.has("cloudflare") && String(args.task_mode || "").toLowerCase() === "cloudflare") {
+    const cloudflareText = `${args.user_goal || ""} ${args.task_context || ""}`;
+    if (/fail|error|diagnos|triage|timeout|unauthori[sz]ed/i.test(cloudflareText)) {
+      candidates.push("vnem_tools_cloudflare_status", "vnem_tools_cloudflare_error_diagnose", "vnem_tools_cloudflare_projects_list", "vnem_tools_cloudflare_deploy_verify", "vnem_tools_cloudflare_rollback_plan", "vnem_tools_cloudflare_rollback");
+    } else if (/worker/i.test(cloudflareText)) {
+      candidates.push("vnem_tools_cloudflare_status", "vnem_tools_cloudflare_projects_list", "vnem_tools_cloudflare_workers_deploy_plan", "vnem_tools_cloudflare_workers_deploy", "vnem_tools_cloudflare_deploy_verify", "vnem_tools_cloudflare_rollback_plan");
+    } else {
+      candidates.push("vnem_tools_cloudflare_status", "vnem_tools_cloudflare_projects_list", "vnem_tools_cloudflare_pages_deploy_plan", "vnem_tools_cloudflare_pages_deploy", "vnem_tools_cloudflare_deploy_verify", "vnem_tools_cloudflare_rollback_plan");
     }
   }
   if (refactorIntent) candidates.push(...domainTools(DOMAIN_ADAPTERS.find((item) => item.id === "repo_code"), args));
@@ -821,6 +839,19 @@ function adapterSelectionFor(classification, tools) {
       remote_execution_supported: false
     });
   }
+  if (ids.has("cloudflare")) {
+    const mutation = tools.some((tool) => /(?:deploy|rollback)$/.test(tool));
+    adapters.push({
+      type: "cloudflare",
+      tools_adapter: tools.includes("vnem_tools_cloudflare_status") ? "vnem_tools_cloudflare_status" : null,
+      discovery_adapter: tools.includes("vnem_tools_cloudflare_projects_list") ? "vnem_tools_cloudflare_projects_list" : null,
+      mutation_adapter: mutation ? tools.find((tool) => /(?:deploy|rollback)$/.test(tool)) : null,
+      verification_adapter: tools.includes("vnem_tools_cloudflare_deploy_verify") ? "vnem_tools_cloudflare_deploy_verify" : null,
+      readiness: mutation ? "wrangler_and_bounded_api_execution_ready_subject_to_credential_reference_exact_approval_and_remote_verification" : "bounded_cloudflare_read_ready",
+      compatibility_and_risk: ["Wrangler version", "credential references", "account and project scope", "build output", "protected resources", "exact approval", "bounded verification", "rollback target", "secret redaction"],
+      remote_execution_supported: true
+    });
+  }
   return adapters;
 }
 
@@ -834,6 +865,7 @@ function checksForDomain(domain) {
     api_integration: ["schema/auth review", "redaction", "bounded response proof"],
     skills: ["pinned source and license review", "skill doctor", "runtime-specific permission check", "real MCP behavior evidence", "no Markdown or untrusted package execution"],
     database_data: ["exact source hash and parser/engine", "schema or query plan", "read-only and result limits", "secret redaction", "affected-row preview plus backup/rollback for writes"],
+    cloudflare: ["Wrangler and auth-reference readiness", "account/project and output scope", "exact mutation or destructive approval", "command or API provider result", "bounded deployment verification", "evidence pack and exact rollback target"],
     evidence_validation: ["handler and behavior test", "MCP-path proof", "claim audit"]
   };
   return map[domain] || ["affected verification", "proof boundary review"];
@@ -844,6 +876,7 @@ function outputEffectsForDomain(domain) {
   if (domain === "browser_ui") return ["interaction and state evidence", "before/after screenshots and pixel delta", "DOM/a11y snapshots", "console/network status", "browser cleanup", "not proven"];
   if (domain === "windows_local") return ["bounded system/path/process/port/service/task/event evidence", "provider or access limits", "safe restart/reload guidance", "permission and rollback gate", "not proven"];
   if (domain === "database_data") return ["source and schema hashes", "bounded redacted rows or no values", "query-only/result limits", "write preview/transaction/backup/rollback evidence", "remote execution limits", "not proven"];
+  if (domain === "cloudflare") return ["auth and discovery status", "reviewed command plan", "provider result", "bounded remote verification", "evidence-pack path", "rollback target", "not proven"];
   if (domain === "debugging") return ["root-cause evidence", "smallest fix", "rerun result", "residual risk"];
   return ["result", "evidence", "not proven", "next action"];
 }
@@ -881,6 +914,7 @@ function permissionImplicationsFor(classification, sequence, args) {
     mutation_approval_required: mutation,
     skill_execution_scope: tools.includes("vnem_tools_skill_adapter_execute") ? "vetted_skill_execute for VNEM-owned pure/read handlers; command-backed adapters additionally require skill_execute and run_test" : null,
     database_scope: tools.some((tool) => /data_|database_/.test(tool)) ? (mutation ? "database_write with approved profile, fresh preview, transaction, backup, verification, and rollback" : "database_read with bounded result and secret-redaction policy") : null,
+    cloudflare_scope: tools.some((tool) => /cloudflare_/.test(tool)) ? (mutation ? "creator-power or approved-writes as required, exact approval phrase, credential references, protected-resource acknowledgment, bounded verification, and evidence pack" : "read-only Cloudflare discovery with bounded API output and secret redaction") : null,
     hard_blocks_remain: ["secret export", "force push", "repository deletion", "unbounded destructive filesystem actions"],
     allowed_tool_names_supplied: stringArray(args.allowed_tool_names).length > 0
   };
@@ -902,6 +936,10 @@ function completionCriteriaFor(classification) {
   if (ids.has("browser_ui")) criteria.push({ id: "browser_proof", criterion: "Required UI states have browser evidence or an honest unavailable boundary." });
   if (ids.has("package_dependency") || ids.has("client_setup") || ids.has("game_modding")) criteria.push({ id: "rollback", criterion: "The mutation has a verified rollback or an explicit rollback-unavailable warning." });
   if (ids.has("database_data")) criteria.push({ id: "database_safety", criterion: "Queries are result-bounded and read-only by default; writes match a fresh affected-row/schema preview and retain transaction, backup, verification, and rollback evidence." });
+  if (ids.has("cloudflare")) {
+    criteria.push({ id: "cloudflare_remote_proof", criterion: "Provider command or API success and bounded deployment verification are recorded separately; simulation is never reported as a real mutation." });
+    criteria.push({ id: "cloudflare_rollback", criterion: "Any mutation has an exact Pages deployment or Worker version rollback target, or rollback is explicitly not proven." });
+  }
   return criteria;
 }
 

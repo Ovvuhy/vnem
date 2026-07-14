@@ -944,11 +944,24 @@
         "scripts/test-tools-cloudflare-redaction.mjs",
         "scripts/test-tools-high-power-action-review.mjs"
       ],
-      "vnem_tools_cloudflare_deploy_verify": [],
-      "vnem_tools_cloudflare_rollback_plan": [],
-      "vnem_tools_cloudflare_rollback": [],
-      "vnem_tools_cloudflare_cache_purge_plan": [],
-      "vnem_tools_cloudflare_cache_purge": [],
+      "vnem_tools_cloudflare_deploy_verify": [
+        "scripts/test-tools-giga-cloudflare-deployment.mjs"
+      ],
+      "vnem_tools_cloudflare_rollback_plan": [
+        "scripts/test-tools-giga-cloudflare-deployment.mjs"
+      ],
+      "vnem_tools_cloudflare_rollback": [
+        "scripts/test-tools-giga-cloudflare-deployment.mjs"
+      ],
+      "vnem_tools_cloudflare_cache_purge_plan": [
+        "scripts/test-tools-giga-cloudflare-deployment.mjs"
+      ],
+      "vnem_tools_cloudflare_cache_purge": [
+        "scripts/test-tools-giga-cloudflare-deployment.mjs"
+      ],
+      "vnem_tools_cloudflare_error_diagnose": [
+        "scripts/test-tools-giga-cloudflare-deployment.mjs"
+      ],
       "vnem_tools_evidence_pack_audit": [
         "scripts/test-tools-cloudflare-evidence-pack.mjs",
         "scripts/test-tools-quality-general.mjs"

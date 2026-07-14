@@ -21,6 +21,7 @@ export const VNEM_FULL_SUITE = Object.freeze([
   "test:tools-giga-skill-runtime",
   "test:tools-giga-current-documentation",
   "test:tools-giga-data-systems",
+  "test:tools-giga-cloudflare-deployment",
   "test:tools-git-session",
   "test:tools-intelligence",
   "test:tools-research",

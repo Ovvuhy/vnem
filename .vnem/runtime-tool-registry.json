@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "source": "live MCP runtime registry status calls",
-  "total_tools": 315,
+  "total_tools": 316,
   "servers": {
     "core": {
       "schema_version": "1.0.0",
@@ -2560,7 +2560,7 @@
       "server_name": "vnem-tools",
       "version": "1.0.1",
       "valid": true,
-      "tool_count": 240,
+      "tool_count": 241,
       "alias_count": 0,
       "categories": {
         "action": 2,
@@ -2575,7 +2575,7 @@
         "captcha": 1,
         "change": 1,
         "ci": 1,
-        "cloudflare": 17,
+        "cloudflare": 18,
         "code": 3,
         "coverage": 1,
         "data": 3,
@@ -2649,14 +2649,14 @@
       },
       "side_effect_classes": {
         "destructive_mutation": 42,
-        "network_mutation": 19,
+        "network_mutation": 20,
         "read_only": 179
       },
       "validation": {
         "valid": true,
         "server_name": "vnem-tools",
         "version": "1.0.1",
-        "tool_count": 240,
+        "tool_count": 241,
         "alias_count": 0,
         "errors": [],
         "warnings": [
@@ -2682,26 +2682,6 @@
           },
           {
             "tool": "vnem_tools_github_repo_settings_apply",
-            "code": "behavior_test_reference_missing"
-          },
-          {
-            "tool": "vnem_tools_cloudflare_deploy_verify",
-            "code": "behavior_test_reference_missing"
-          },
-          {
-            "tool": "vnem_tools_cloudflare_rollback_plan",
-            "code": "behavior_test_reference_missing"
-          },
-          {
-            "tool": "vnem_tools_cloudflare_rollback",
-            "code": "behavior_test_reference_missing"
-          },
-          {
-            "tool": "vnem_tools_cloudflare_cache_purge_plan",
-            "code": "behavior_test_reference_missing"
-          },
-          {
-            "tool": "vnem_tools_cloudflare_cache_purge",
             "code": "behavior_test_reference_missing"
           }
         ],
@@ -10025,14 +10005,14 @@
           "name": "vnem_tools_cloudflare_status",
           "version": "1.0.1",
           "title": "Cloudflare Status",
-          "description": "Detect Wrangler/API token/account/profile Cloudflare readiness without printing secrets.",
+          "description": "Detect Wrangler, credential references, account/profile readiness, and optional live token status without printing secrets.",
           "category": "cloudflare",
           "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
           "annotations": {
-            "readOnlyHint": true,
+            "readOnlyHint": false,
             "destructiveHint": false,
-            "idempotentHint": true,
-            "openWorldHint": false
+            "idempotentHint": false,
+            "openWorldHint": true
           },
           "side_effect_class": "read_only",
           "permission_requirements": [
@@ -10171,7 +10151,7 @@
           "name": "vnem_tools_cloudflare_pages_deploy_plan",
           "version": "1.0.1",
           "title": "Cloudflare Pages Deploy Plan",
-          "description": "Plan Cloudflare Pages deploy without executing.",
+          "description": "Inspect framework, build script, Wrangler config, and output artifact before a Pages deploy.",
           "category": "cloudflare",
           "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
           "annotations": {
@@ -10207,7 +10187,7 @@
           "name": "vnem_tools_cloudflare_pages_deploy",
           "version": "1.0.1",
           "title": "Cloudflare Pages Deploy",
-          "description": "Execute approved Cloudflare Pages deploy via Wrangler/API and write evidence pack.",
+          "description": "Execute an approved local-Wrangler Pages deploy and require command plus bounded URL evidence.",
           "category": "cloudflare",
           "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
           "annotations": {
@@ -10470,7 +10450,7 @@
           "name": "vnem_tools_cloudflare_deploy_verify",
           "version": "1.0.1",
           "title": "Cloudflare Deploy Verify",
-          "description": "Verify deployment URL reachability and optional marker/title evidence.",
+          "description": "Verify bounded HTTP status, markers, redirects, and optional exact Pages deployment metadata.",
           "category": "cloudflare",
           "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
           "annotations": {
@@ -10497,7 +10477,9 @@
             "migration_guidance": null
           },
           "implementation_module": "scripts/vnem/tools/server.mjs",
-          "behavior_test_references": [],
+          "behavior_test_references": [
+            "scripts/test-tools-giga-cloudflare-deployment.mjs"
+          ],
           "benchmark_scenarios": [],
           "input_schema_present": true
         },
@@ -10505,41 +10487,7 @@
           "name": "vnem_tools_cloudflare_rollback_plan",
           "version": "1.0.1",
           "title": "Cloudflare Rollback Plan",
-          "description": "Plan Cloudflare Pages/Workers rollback and identify previous deployment/version when possible.",
-          "category": "cloudflare",
-          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
-          "annotations": {
-            "readOnlyHint": true,
-            "destructiveHint": false,
-            "idempotentHint": true,
-            "openWorldHint": false
-          },
-          "side_effect_class": "read_only",
-          "permission_requirements": [
-            "approved_network_read"
-          ],
-          "network_behavior": "bounded_or_approved_network",
-          "credential_behavior": "credential references only; values never returned",
-          "evidence_behavior": "optional",
-          "rollback_behavior": {
-            "mode": "not_required",
-            "guidance": "No mutation occurs."
-          },
-          "compatibility_aliases": [],
-          "deprecation_state": {
-            "deprecated": false,
-            "migration_guidance": null
-          },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
-          "behavior_test_references": [],
-          "benchmark_scenarios": [],
-          "input_schema_present": true
-        },
-        {
-          "name": "vnem_tools_cloudflare_rollback",
-          "version": "1.0.1",
-          "title": "Cloudflare Rollback",
-          "description": "Execute approved high-impact Cloudflare rollback with evidence pack.",
+          "description": "Identify an exact prior Pages deployment or Worker version before rollback.",
           "category": "cloudflare",
           "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
           "annotations": {
@@ -10566,7 +10514,46 @@
             "migration_guidance": null
           },
           "implementation_module": "scripts/vnem/tools/server.mjs",
-          "behavior_test_references": [],
+          "behavior_test_references": [
+            "scripts/test-tools-giga-cloudflare-deployment.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_cloudflare_rollback",
+          "version": "1.0.1",
+          "title": "Cloudflare Rollback",
+          "description": "Execute approved Pages API or exact Worker-version rollback with evidence.",
+          "category": "cloudflare",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": false,
+            "idempotentHint": false,
+            "openWorldHint": true
+          },
+          "side_effect_class": "network_mutation",
+          "permission_requirements": [
+            "approved_network_mutation",
+            "scoped_credential_reference"
+          ],
+          "network_behavior": "bounded_or_approved_network",
+          "credential_behavior": "credential references only; values never returned",
+          "evidence_behavior": "required_redacted_record",
+          "rollback_behavior": {
+            "mode": "self",
+            "guidance": "The tool is itself a rollback operation and must verify the restored state."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-cloudflare-deployment.mjs"
+          ],
           "benchmark_scenarios": [],
           "input_schema_present": true
         },
@@ -10600,7 +10587,9 @@
             "migration_guidance": null
           },
           "implementation_module": "scripts/vnem/tools/server.mjs",
-          "behavior_test_references": [],
+          "behavior_test_references": [
+            "scripts/test-tools-giga-cloudflare-deployment.mjs"
+          ],
           "benchmark_scenarios": [],
           "input_schema_present": true
         },
@@ -10635,7 +10624,45 @@
             "migration_guidance": null
           },
           "implementation_module": "scripts/vnem/tools/server.mjs",
-          "behavior_test_references": [],
+          "behavior_test_references": [
+            "scripts/test-tools-giga-cloudflare-deployment.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_cloudflare_error_diagnose",
+          "version": "1.0.1",
+          "title": "Cloudflare Error Diagnose",
+          "description": "Classify a redacted Wrangler or Cloudflare API failure and return the narrowest safe recovery.",
+          "category": "cloudflare",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "approved_network_read"
+          ],
+          "network_behavior": "bounded_or_approved_network",
+          "credential_behavior": "credential references only; values never returned",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-cloudflare-deployment.mjs"
+          ],
           "benchmark_scenarios": [],
           "input_schema_present": true
         },
@@ -11834,12 +11861,7 @@
       "vnem_tools_github_issue_comment",
       "vnem_tools_github_release_plan",
       "vnem_tools_github_repo_settings_plan",
-      "vnem_tools_github_repo_settings_apply",
-      "vnem_tools_cloudflare_deploy_verify",
-      "vnem_tools_cloudflare_rollback_plan",
-      "vnem_tools_cloudflare_rollback",
-      "vnem_tools_cloudflare_cache_purge_plan",
-      "vnem_tools_cloudflare_cache_purge"
+      "vnem_tools_github_repo_settings_apply"
     ]
   }
 }

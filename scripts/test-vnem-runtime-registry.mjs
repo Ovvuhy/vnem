@@ -20,12 +20,7 @@ assert.deepEqual(readiness.servers.tools.validation_warnings.map((item) => item.
   "vnem_tools_github_issue_comment",
   "vnem_tools_github_release_plan",
   "vnem_tools_github_repo_settings_plan",
-  "vnem_tools_github_repo_settings_apply",
-  "vnem_tools_cloudflare_deploy_verify",
-  "vnem_tools_cloudflare_rollback_plan",
-  "vnem_tools_cloudflare_rollback",
-  "vnem_tools_cloudflare_cache_purge_plan",
-  "vnem_tools_cloudflare_cache_purge"
+  "vnem_tools_github_repo_settings_apply"
 ], "live registry must preserve the exact known Tools behavior-reference gap");
 
 const fake = { handlers: new Map(), registerTool(name, definition, handler) { this.handlers.set(name, handler); } };

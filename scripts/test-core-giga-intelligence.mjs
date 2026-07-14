@@ -285,6 +285,37 @@ try {
   assert.match(databaseMigration.permission_implications.database_scope, /database_write/);
   assert.match(databaseMigration.adapter_selection[0].readiness, /fresh_preview_database_write_backup_and_rollback/);
 
+  const cloudflare = await call(core.client, "vnem_entrypoint", {
+    user_goal: "Inspect Cloudflare readiness and projects, plan and execute an approved Pages deployment, verify bounded remote state, and retain exact rollback guidance.",
+    task_context: "Cloudflare Pages via local Wrangler with credential references, exact mutation approval, protected-resource gates, and no simulated success claims.",
+    task_mode: "cloudflare",
+    available_mcp_names: ["vnem", "vnem-tools"],
+    available_tool_names: [...toolNames],
+    allowed_tool_names: [...toolNames],
+    environment: { os: "Windows 11", shell: "PowerShell", provider_version: "Cloudflare Wrangler 4" }
+  }, "entrypoint");
+  assert.equal(cloudflare.task_classification.primary_domain, "cloudflare");
+  for (const tool of ["vnem_tools_cloudflare_status", "vnem_tools_cloudflare_projects_list", "vnem_tools_cloudflare_pages_deploy_plan", "vnem_tools_cloudflare_pages_deploy", "vnem_tools_cloudflare_deploy_verify", "vnem_tools_cloudflare_rollback_plan"]) {
+    assert.ok(cloudflare.recommended_tools_calls.includes(tool), `missing Phase 20 Cloudflare route ${tool}`);
+  }
+  assert.equal(cloudflare.recommended_tools_calls.length, 6);
+  assert.match(cloudflare.permission_implications.cloudflare_scope, /exact approval phrase/);
+  assert.equal(cloudflare.adapter_selection[0].remote_execution_supported, true);
+  assert.match(cloudflare.adapter_selection[0].readiness, /wrangler_and_bounded_api_execution_ready/);
+  assert.ok(cloudflare.completion_criteria.some((item) => item.id === "cloudflare_remote_proof"));
+  assert.ok(cloudflare.completion_criteria.some((item) => item.id === "cloudflare_rollback"));
+
+  const cloudflareFailure = await call(core.client, "vnem_entrypoint", {
+    user_goal: "Diagnose a failed Cloudflare Workers deploy without retrying mutation blindly.",
+    task_context: "Wrangler provider error requires redacted diagnosis, bounded verification, and rollback guidance.",
+    task_mode: "cloudflare",
+    available_mcp_names: ["vnem", "vnem-tools"],
+    available_tool_names: [...toolNames],
+    allowed_tool_names: [...toolNames]
+  }, "entrypoint");
+  assert.ok(cloudflareFailure.recommended_tools_calls.includes("vnem_tools_cloudflare_error_diagnose"));
+  assert.ok(cloudflareFailure.recommended_tools_calls.includes("vnem_tools_cloudflare_rollback"));
+
   const compatibility = await call(core.client, "vnem_compatibility_assess", {
     task: "Run a Codex MCP server over stdio on Windows PowerShell with Node.",
     environment: { os: "Windows 11", shell: "PowerShell 7", node_version: "24", client: "Codex", mcp_transport: "stdio" },

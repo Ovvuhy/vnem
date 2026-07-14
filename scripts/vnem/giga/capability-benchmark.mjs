@@ -134,7 +134,7 @@ function isInside(candidate, rootPath) {
 }
 
 function coreMode(mode) {
-  const map = { debugging: "debugging", publish: "publish", recovery: "recovery", browser_ui: "ui_browser", documentation: "documentation", skill: "skill", database: "database" };
+  const map = { debugging: "debugging", publish: "publish", recovery: "recovery", browser_ui: "ui_browser", documentation: "documentation", skill: "skill", database: "database", cloudflare: "cloudflare" };
   return map[mode] || "auto";
 }
 
