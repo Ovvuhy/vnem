@@ -788,6 +788,7 @@ async function runExactProcess(argv, { cwd, timeoutMs, maxOutputBytes, runDir })
     let stderrLines = 0;
     let timedOut = false;
     let terminationEvidence = null;
+    let terminationPromise = null;
     let settled = false;
     const collect = (kind, chunk) => {
       const redacted = redactText(chunk.toString());
@@ -840,15 +841,24 @@ async function runExactProcess(argv, { cwd, timeoutMs, maxOutputBytes, runDir })
         orphan_status: timedOut ? "process tree termination requested; verify externally only if a child escaped its inherited process tree" : "no timeout"
       });
     };
-    const timer = setTimeout(async () => {
+    const timer = setTimeout(() => {
       timedOut = true;
-      terminationEvidence = await terminateTree(child);
-      setTimeout(() => finish(null, "SIGKILL"), 1_500).unref();
+      terminationPromise = terminateTree(child)
+        .catch((error) => ({ attempted: true, strategy: "termination_runtime_error", ok: false, error: redactText(error?.message || String(error)) }))
+        .then((evidence) => {
+          terminationEvidence = evidence;
+          setTimeout(() => finish(null, "SIGKILL"), 1_500).unref();
+          return evidence;
+        });
     }, timeoutMs);
+    const finishAfterTermination = (code, signal, error = null) => {
+      if (terminationPromise) terminationPromise.then(() => finish(code, signal, error));
+      else finish(code, signal, error);
+    };
     child.stdout.on("data", (chunk) => collect("stdout", chunk));
     child.stderr.on("data", (chunk) => collect("stderr", chunk));
-    child.on("error", (error) => finish(null, null, error));
-    child.on("close", (code, signal) => finish(code, signal));
+    child.on("error", (error) => finishAfterTermination(null, null, error));
+    child.on("close", (code, signal) => finishAfterTermination(code, signal));
   });
 }
 
@@ -865,29 +875,44 @@ async function terminateTree(child) {
       killer.on("error", (error) => resolve({ ok: false, exit_code: null, error: error.message, stdout, stderr }));
       killer.on("close", (code) => resolve({ ok: code === 0, exit_code: code, error: null, stdout, stderr }));
     });
+    await sleep(150);
     const directTermination = [];
-    if (!result.ok) {
-      for (const pid of [...descendants.pids].reverse()) {
+    const ownedPids = [...new Set([...descendants.pids, child.pid])];
+    const survivingAfterTaskkill = ownedPids.filter(pidIsRunning);
+    if (!result.ok || survivingAfterTaskkill.length) {
+      for (const pid of [...survivingAfterTaskkill].reverse()) {
         try { process.kill(pid, "SIGKILL"); directTermination.push({ pid, killed: true }); }
         catch (error) { directTermination.push({ pid, killed: false, code: error.code || "kill_failed" }); }
       }
-      try { child.kill("SIGKILL"); directTermination.push({ pid: child.pid, killed: true }); }
-      catch (error) { directTermination.push({ pid: child.pid, killed: false, code: error.code || "kill_failed" }); }
+      await sleep(250);
     }
+    const survivingAfterCleanup = ownedPids.filter(pidIsRunning);
+    const cleanupVerified = descendants.available ? survivingAfterCleanup.length === 0 : result.ok && !pidIsRunning(child.pid);
     return {
       attempted: true,
-      strategy: result.ok ? "taskkill_process_tree" : "taskkill_then_owned_descendants",
+      strategy: directTermination.length ? "taskkill_then_surviving_owned_pids" : "taskkill_process_tree",
       ...result,
+      ok: cleanupVerified,
       stdout: redactText(result.stdout),
       stderr: redactText(result.stderr),
       descendant_discovery: descendants,
-      direct_termination: directTermination
+      direct_termination: directTermination,
+      cleanup_verification: { available: descendants.available, surviving_after_taskkill: survivingAfterTaskkill, surviving_after_cleanup: survivingAfterCleanup }
     };
   }
   try { process.kill(-child.pid, "SIGTERM"); } catch { try { child.kill("SIGTERM"); } catch {} }
   await sleep(500);
   try { process.kill(-child.pid, "SIGKILL"); } catch { try { child.kill("SIGKILL"); } catch {} }
   return { attempted: true, strategy: "posix_process_group_sigterm_sigkill", ok: true };
+}
+
+function pidIsRunning(pid) {
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch (error) {
+    return error?.code === "EPERM";
+  }
 }
 
 async function windowsDescendantPids(rootPid) {

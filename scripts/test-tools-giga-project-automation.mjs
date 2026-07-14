@@ -124,7 +124,10 @@ try {
   const timeoutRun = await call(client, "vnem_tools_project_command_run", { root: projectRoot, mode: "project_script", script: "orphan-timeout", review_id: timeoutPlan.structuredContent.project_command.review.review_id, dry_run: false, approved: true, approval_note: "approve bounded timeout and process-tree proof", timeout_ms: 1000 });
   assert.equal(timeoutRun.structuredContent.project_command.execution.timed_out, true);
   await sleep(3000);
-  assert.equal(await exists(path.join(projectRoot, "state", "orphan-survived.txt")), false, `timeout descendant survived process-tree cleanup: ${JSON.stringify(timeoutRun.structuredContent.project_command.execution.process_tree_termination_evidence)}`);
+  const terminationEvidence = timeoutRun.structuredContent.project_command.execution.process_tree_termination_evidence;
+  assert.equal(await exists(path.join(projectRoot, "state", "orphan-survived.txt")), false, `timeout descendant survived process-tree cleanup: ${JSON.stringify(terminationEvidence)}`);
+  assert.equal(terminationEvidence.ok, true, `process-tree cleanup was not verified: ${JSON.stringify(terminationEvidence)}`);
+  if (process.platform === "win32") assert.deepEqual(terminationEvidence.cleanup_verification.surviving_after_cleanup, []);
 
   const graphPlan = await call(client, "vnem_tools_project_task_graph_plan", {
     root: projectRoot,
