@@ -43,6 +43,7 @@ import { BrowserInteractionError, BrowserInteractionRuntime } from "./browser-in
 import { WindowsLocalError, WindowsLocalRuntime } from "./windows-local.mjs";
 import { GithubDevelopmentError, GithubDevelopmentRuntime } from "./github-development.mjs";
 import { GameDomainError, GameDomainRuntime } from "./game-domain.mjs";
+import { DependencySecurityError, DependencySecurityRuntime } from "./dependency-security.mjs";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(scriptDir, "..", "..", "..");
@@ -158,6 +159,13 @@ const REQUIRED_TOOL_NAMES = [
   "vnem_tools_mod_backup_restore",
   "vnem_tools_roblox_project_inspect",
   "vnem_tools_luau_symbol_map",
+  "vnem_tools_dependency_inventory",
+  "vnem_tools_dependency_risk_audit",
+  "vnem_tools_dependency_advisory_audit",
+  "vnem_tools_dependency_change_analyze",
+  "vnem_tools_dependency_upgrade_plan",
+  "vnem_tools_dependency_install_apply",
+  "vnem_tools_dependency_transaction_rollback",
   "vnem_tools_test_system_inspect",
   "vnem_tools_affected_test_graph",
   "vnem_tools_test_run",
@@ -310,6 +318,7 @@ const githubDevelopmentRuntime = new GithubDevelopmentRuntime({
   protectedBranches: () => githubSettings().protected_branches
 });
 const gameDomainRuntime = new GameDomainRuntime({ allowedRoots, evidenceRoot });
+const dependencySecurityRuntime = new DependencySecurityRuntime({ allowedRoots, evidenceRoot });
 const activePermissionProfile = permissionRuntime.activeProfile();
 const usablePacks = await loadUsablePacks();
 const requestedPrecisionWorkspaceCandidate = path.resolve(
@@ -1676,6 +1685,158 @@ function registerTools(mcpServer) {
   );
 
   mcpServer.registerTool(
+    "vnem_tools_dependency_inventory",
+    {
+      title: "Build Dependency Graph and SBOM Inventory",
+      description: "Parse bounded npm package-lock v1/v2/v3, pnpm/Yarn, Python, Cargo, and Go manifests or lockfiles into normalized direct/transitive packages, root and transitive graph edges, lifecycle flags, lock integrity, credential-safe sources, and an SBOM-style inventory without installing anything.",
+      inputSchema: { root: z.string().default("."), max_packages: z.number().int().min(1).max(10000).default(5000), max_edges: z.number().int().min(1).max(30000).default(15000), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const permission = enforceActionPolicy("dependency_scan", { ...args, dry_run: false, proposed_action: "bounded dependency manifest, lockfile, graph, and SBOM inventory" });
+      const result = { ...(await dependencySecurityRuntime.inventory(args)), permission };
+      recordSession(args.session_id, "dependency_security_inspections", result);
+      return toolResult(formatDependencySecurity("vnem_tools_dependency_inventory", result), { dependency_inventory: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_dependency_risk_audit",
+    {
+      title: "Audit Dependency Lifecycle Supply Chain and License Risk",
+      description: "Inspect lifecycle hooks, suspicious commands, package sources/integrity, typosquatting indicators, supplied maintenance metadata, and license families while preserving uncertainty and returning no registry credentials.",
+      inputSchema: {
+        root: z.string().default("."),
+        project_license: z.string().default(""),
+        trusted_package_names: z.array(z.string()).max(500).default([]),
+        package_metadata: z.array(z.object({ name: z.string(), last_published_at: z.string().optional(), maintainer_count: z.number().int().min(0).optional(), deprecated: z.string().optional(), repository: z.string().optional() })).max(1000).default([]),
+        session_id: z.string().optional()
+      },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const permission = enforceActionPolicy("dependency_scan", { ...args, dry_run: false, proposed_action: "bounded dependency lifecycle, provenance, maintenance, typosquat, and license audit" });
+      const result = { ...(await dependencySecurityRuntime.riskAudit(args)), permission };
+      recordSession(args.session_id, "dependency_security_inspections", result);
+      return toolResult(formatDependencySecurity("vnem_tools_dependency_risk_audit", result), { dependency_risk_audit: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_dependency_advisory_audit",
+    {
+      title: "Inspect Approved Dependency Advisory Evidence",
+      description: "Parse a bounded report with allowlisted npm/OSV/GitHub Advisory/NVD source attribution, clearly marking caller-supplied provenance, or with explicit network approval run npm audit against the public npm registry in an isolated credential-free manifest copy. Lifecycle scripts never run.",
+      inputSchema: {
+        root: z.string().default("."),
+        source: z.enum(["approved_report", "npm_registry"]).default("approved_report"),
+        report_path: z.string().default(""),
+        source_url: z.string().default(""),
+        captured_at: z.string().default(""),
+        timeout_ms: z.number().int().min(5000).max(300000).default(120000),
+        dry_run: z.boolean().default(true),
+        approved: z.boolean().default(false),
+        approval_note: z.string().default(""),
+        session_id: z.string().optional()
+      },
+      annotations: NETWORK_READ
+    },
+    async (args) => withToolErrors(async () => {
+      let permission = enforceActionPolicy("dependency_scan", { ...args, dry_run: false, proposed_action: "inspect approved dependency advisory report" });
+      if (args.source === "npm_registry") {
+        permission = args.dry_run !== false
+          ? actionPolicyPreview({ action_type: "external_fetch", proposed_action: "run isolated credential-free npm advisory audit" })
+          : enforceActionPolicy("external_fetch", { ...args, proposed_action: "run isolated credential-free npm advisory audit" });
+      }
+      const result = { ...(await dependencySecurityRuntime.advisoryAudit(args)), permission };
+      recordSession(args.session_id, "dependency_advisory_audits", result);
+      return toolResult(formatDependencySecurity("vnem_tools_dependency_advisory_audit", result), { dependency_advisory_audit: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_dependency_change_analyze",
+    {
+      title: "Compare Direct and Transitive Dependency Changes",
+      description: "Compare two allowed project snapshots by normalized dependency graph, identify added/removed/direct/transitive/version changes, flag major-version indicators, trace impacted direct packages, and select existing focused verification scripts.",
+      inputSchema: { baseline_root: z.string().min(1), candidate_root: z.string().min(1), max_packages: z.number().int().min(1).max(10000).default(5000), max_edges: z.number().int().min(1).max(30000).default(15000), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const permission = enforceActionPolicy("dependency_scan", { ...args, dry_run: false, proposed_action: "compare bounded direct and transitive dependency snapshots" });
+      const result = { ...(await dependencySecurityRuntime.compare(args)), permission };
+      recordSession(args.session_id, "dependency_security_inspections", result);
+      return toolResult(formatDependencySecurity("vnem_tools_dependency_change_analyze", result), { dependency_change_analysis: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_dependency_upgrade_plan",
+    {
+      title: "Create Hash Bound Dependency Upgrade Plan",
+      description: "Create a hash-bound exact-version npm add/update plan only when an existing parsed package-lock.json or npm-shrinkwrap.json provides a deterministic rollback baseline; includes direct dependency type, breaking-major indicators, script-disabled commands, affected tests, and credential boundaries. Does not install.",
+      inputSchema: {
+        root: z.string().default("."),
+        packages: z.array(z.object({ name: z.string().min(1), target_version: z.string().default(""), dependency_type: z.enum(["dependency", "devDependency", "optionalDependency"]).default("dependency"), source_type: z.enum(["registry", "local"]).default("registry"), source_path: z.string().default("") })).min(1).max(50),
+        verify_scripts: z.array(z.enum(["test", "validate", "build", "lint", "typecheck", "check"])).max(6).default(["test", "build"]),
+        session_id: z.string().optional()
+      },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const permission = enforceActionPolicy("dependency_scan", { ...args, dry_run: false, proposed_action: "create exact hash-bound dependency upgrade plan" });
+      const result = { ...(await dependencySecurityRuntime.createUpgradePlan(args)), permission };
+      recordSession(args.session_id, "dependency_upgrade_plans", result);
+      return toolResult(formatDependencySecurity("vnem_tools_dependency_upgrade_plan", result), { dependency_upgrade_plan: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_dependency_install_apply",
+    {
+      title: "Apply Approved Dependency Install with Verification and Rollback",
+      description: "Dry-run or apply a fresh hash-bound npm plan under approved-installs or a scoped package_install grant. Uses unique ephemeral npm configs and an allowlisted environment, disables lifecycle scripts, recursively reviews nested npm verification scripts, terminates timed-out process trees, verifies the lockfile/build, and automatically restores files plus npm state on failure.",
+      inputSchema: {
+        plan_id: z.string().min(1),
+        dry_run: z.boolean().default(true),
+        approved: z.boolean().default(false),
+        approval_note: z.string().default(""),
+        allow_dependency_binary_execution: z.boolean().default(false),
+        binary_approval_note: z.string().default(""),
+        timeout_ms: z.number().int().min(5000).max(300000).default(180000),
+        session_id: z.string().optional()
+      },
+      annotations: ACTION_TOOL
+    },
+    async (args) => withToolErrors(async () => {
+      const permission = args.dry_run !== false
+        ? actionPolicyPreview({ action_type: "package_install", proposed_action: `apply reviewed dependency plan ${args.plan_id}` })
+        : enforceActionPolicy("package_install", { ...args, proposed_action: `apply reviewed dependency plan ${args.plan_id}` });
+      const result = { ...(await dependencySecurityRuntime.applyInstall(args)), permission };
+      if (result.executed) recordSession(args.session_id, "dependency_install_transactions", result);
+      return toolResult(formatDependencySecurity("vnem_tools_dependency_install_apply", result), { dependency_install: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_dependency_transaction_rollback",
+    {
+      title: "Rollback Verified Dependency Transaction",
+      description: "Dry-run or restore exact pre-install package manifest and lockfile bytes after current-hash verification, then restore npm state with lifecycle scripts disabled. Refuses stale or cross-project transactions.",
+      inputSchema: { root: z.string().default("."), transaction_id: z.string().min(1), dry_run: z.boolean().default(true), approved: z.boolean().default(false), approval_note: z.string().default(""), timeout_ms: z.number().int().min(5000).max(300000).default(180000), session_id: z.string().optional() },
+      annotations: ACTION_TOOL
+    },
+    async (args) => withToolErrors(async () => {
+      const permission = args.dry_run !== false
+        ? actionPolicyPreview({ action_type: "package_install", proposed_action: `rollback dependency transaction ${args.transaction_id}` })
+        : enforceActionPolicy("package_install", { ...args, proposed_action: `rollback dependency transaction ${args.transaction_id}` });
+      const result = { ...(await dependencySecurityRuntime.rollback(args)), permission };
+      if (result.executed) recordSession(args.session_id, "dependency_install_transactions", result);
+      return toolResult(formatDependencySecurity("vnem_tools_dependency_transaction_rollback", result), { dependency_transaction_rollback: result });
+    })
+  );
+
+  mcpServer.registerTool(
     "vnem_tools_test_system_inspect",
     {
       title: "Inspect Project Test and CI System",
@@ -2528,7 +2689,7 @@ function actionPolicyPreview(args = {}) {
   const trust = trustBoundaryClassify(`${actionType} ${args.proposed_action || ""} ${args.target_path || ""} ${args.source_description || ""}`);
   const hardBlocked = HARD_BLOCKED_ACTION_TYPES.has(actionType) || trust.level === "6_blocked_dangerous_action";
   const trustBoundaryLevel = hardBlocked ? "6_blocked_dangerous_action" : trust.level;
-  const plannedBlocked = actionType === "package_install";
+  const plannedBlocked = false;
   const runtimeDecision = permissionRuntime.evaluate({
     action: actionType,
     target_path: args.target_path || args.path || args.root,
@@ -2555,7 +2716,7 @@ function actionPolicyPreview(args = {}) {
     reason,
     required_user_approval_text: requiresApproval ? buildPermissionPrompt({ action_type: actionType, target_paths: [args.target_path].filter(Boolean), reason }).text : "",
     risk_notes: [...profile.risk_notes, trust.why].filter(Boolean),
-    rollback_expected: ["apply_patch", "restore_backup", "local_commit"].includes(actionType) && allowed,
+    rollback_expected: ["apply_patch", "restore_backup", "local_commit", "package_install"].includes(actionType) && allowed,
     evidence_expected: allowed || requiresApproval,
     decision_source: runtimeDecision.decision_source,
     scoped_grant: runtimeDecision.grant,
@@ -2600,7 +2761,7 @@ function permissionStatusObject() {
     github_autonomy_summary: buildGithubAutonomySummary(),
     cloudflare_summary: buildCloudflareStatusPolicy(),
     scoped_grants: { session: sharedStatus.session_grants, persistent: sharedStatus.persistent_grants, request_tool: "vnem_tools_permission_request", grant_tool: "vnem_tools_permission_grant", revoke_tool: "vnem_tools_permission_revoke" },
-    mutation_allowed_summary: { profile: activePermissionProfile.profile_name, safe_readonly_can_mutate: false, non_destructive_mutation_allowed_with_approval: permissionRuntime.evaluate({ action: "apply_patch" }).allowed, github_maintainer_feature_branch_work_allowed_by_github_profile: githubProfilePolicy(githubSettings().profile).allowed_actions.includes("push_feature_branch"), high_impact_operations_remain_approval_gated: true, package_installs_arbitrary_shell_still_blocked: true },
+    mutation_allowed_summary: { profile: activePermissionProfile.profile_name, safe_readonly_can_mutate: false, non_destructive_mutation_allowed_with_approval: permissionRuntime.evaluate({ action: "apply_patch" }).allowed, github_maintainer_feature_branch_work_allowed_by_github_profile: githubProfilePolicy(githubSettings().profile).allowed_actions.includes("push_feature_branch"), high_impact_operations_remain_approval_gated: true, package_installs_require_approved_installs_or_scoped_grant: true, package_publish_and_arbitrary_shell_still_blocked: true },
     destructive_allowed_summary: { allowed: false, hard_blocked_actions: sharedStatus.hard_blocked_actions, exact_destructive_approval_required: true, destructive_phrase: CLOUDFLARE_DESTRUCTIVE_APPROVAL_PHRASE, protected_resource_acknowledgment_required: true },
     approval_phrase_summary: { generic_tools: "approved=true plus a specific approval_note", cloudflare_mutation: CLOUDFLARE_MUTATION_APPROVAL_PHRASE, cloudflare_destructive: CLOUDFLARE_DESTRUCTIVE_APPROVAL_PHRASE },
     known_blocked_actions: unsupportedActions(),
@@ -2661,7 +2822,7 @@ async function loadUsablePacks() {
 }
 
 function unsupportedActions() {
-  return ["github_destructive_admin_without_config", "package_install", "package_publish", "deployment", "windows_system_mutation", "game_launch", "downloaded_mod_or_unknown_tool_execution", "generic_binary_game_format_patch", "arbitrary_shell", "unrestricted_api_calls", "secret_manager_backed_live_api", "search_engine_scraping", "automatic_captcha_bypass", "broad_crawling", "external_browser_browsing_by_default", "login_automation", "cookie_extraction", "session_extraction", "captcha_bypass", "giga_mcp"];
+  return ["github_destructive_admin_without_config", "package_publish", "global_package_install", "unreviewed_package_lifecycle_execution", "deployment", "windows_system_mutation", "game_launch", "downloaded_mod_or_unknown_tool_execution", "generic_binary_game_format_patch", "arbitrary_shell", "unrestricted_api_calls", "secret_manager_backed_live_api", "search_engine_scraping", "automatic_captcha_bypass", "broad_crawling", "external_browser_browsing_by_default", "login_automation", "cookie_extraction", "session_extraction", "captcha_bypass", "giga_mcp"];
 }
 
 
@@ -2733,6 +2894,12 @@ function toolReliabilityFor(name, descriptor = {}) {
     unsafe = ["A game or Roblox Studio was launched", "Static checks prove runtime compatibility", "Unknown tools or downloaded mods executed", "Guarded binary formats were generically parsed, patched, or repacked"];
     next = "Confirm exact game/version/platform/loader/toolchain, create an isolated backup before mutation, then run the project and game-specific validator.";
     known = ["XML and Lua/Luau checks have explicit parser/static limits", "Semantic version ranges need a loader-specific resolver", "Backup packages preserve bytes but not external mod-manager state"];
+  } else if (group === "dependency_security") {
+    level = name.includes("install_apply") || name.includes("transaction_rollback") ? "local_tested" : name.includes("advisory_audit") ? "live_read_tested" : "local_tested";
+    safe = ["Bounded manifest/lock graph inspection, SBOM inventory, lifecycle/source/license indicators, approved advisory evidence, exact upgrade plans, and approval-gated script-disabled npm transactions are tested through real local stdio MCP."];
+    unsafe = ["A static risk indicator proves malware or legal incompatibility", "A stale or single-source advisory report proves no vulnerabilities", "Package lifecycle scripts, global installs, publishing, or unreviewed downloaded binaries executed", "Non-npm mutation has rollback support"];
+    next = "Inspect graph/risk/advisory evidence, create an exact hash-bound plan, use approved-installs with explicit approval, and verify the transaction plus rollback evidence.";
+    known = ["Automatic mutation is npm-only", "Lifecycle scripts and registry credentials are disabled", "Current advisories require an approved fresh source", "Binary-running verification scripts need separate explicit approval"];
   } else if (["api_request", "search", "research_sources", "source_ingestion", "browsing_risk", "research_matrix"].includes(group)) {
     level = descriptor.network ? "dry_run_tested" : "local_tested";
     safe = ["Planning, bounded local/source evidence, or configured-provider behavior is tested without fake current/live claims."];
@@ -2749,7 +2916,7 @@ function toolReliabilityFor(name, descriptor = {}) {
 }
 function addReliabilityFields(tool) {
   const reliability = toolReliabilityFor(tool.name, tool);
-  return { ...tool, high_power: tool.high_power ?? Boolean(tool.mutation || tool.network || tool.requires_approval || ["cloudflare_control", "github_autonomy", "patching", "rollback", "project_tasks", "dev_server", "browser_proof", "ui_web_quality", "api_request", "local_git", "commands"].includes(tool.capability_group)), mutation_capable: Boolean(tool.mutation), reliability_level: reliability.level, tested_with: reliability.tested_with, safe_to_claim: reliability.safe_to_claim, unsafe_to_claim: reliability.unsafe_to_claim, next_validation_step: reliability.next_validation_step, known_limits: reliability.known_limits, tool_reliability: reliability };
+  return { ...tool, high_power: tool.high_power ?? Boolean(tool.mutation || tool.network || tool.requires_approval || ["cloudflare_control", "github_autonomy", "patching", "rollback", "project_tasks", "dev_server", "browser_proof", "ui_web_quality", "dependency_security", "api_request", "local_git", "commands"].includes(tool.capability_group)), mutation_capable: Boolean(tool.mutation), reliability_level: reliability.level, tested_with: reliability.tested_with, safe_to_claim: reliability.safe_to_claim, unsafe_to_claim: reliability.unsafe_to_claim, next_validation_step: reliability.next_validation_step, known_limits: reliability.known_limits, tool_reliability: reliability };
 }
 function buildReliabilityCatalog(args = {}) { const tools = runtimeToolCatalog().filter((tool) => !args.capability_group || tool.capability_group === args.capability_group); return { generated_at: new Date().toISOString(), permission_profile: activePermissionProfile.profile_name, tools }; }
 function formatReliabilityCatalog(catalog) { return [`vnem_tools_reliability_catalog: ${catalog.tools.length} tool(s)`, `profile=${catalog.permission_profile}`, `levels=${[...new Set(catalog.tools.map((tool) => tool.reliability_level))].join(",")}`].join("\n"); }
@@ -2846,7 +3013,7 @@ function safestExecutionPathFor(text, destructive, secretRisk) {
 function capabilityGapReport() {
   const gaps = [
     ["GitHub destructive admin operations", "GitHub autonomy now covers profile-gated repo inspection, feature branches, commits, feature pushes, PRs, issues, labels, CI status/rerun, triage, and draft releases; repo delete, force push, protected direct push, and settings mutation remain config-blocked by default.", "Use maintainer profile for normal repo work; change exact VNEM_TOOLS_GITHUB_* knobs only when intentionally needed.", "More granular owner/admin tools with audited repo settings/delete flows and live disposable validation.", "Could delete repos, force-push away history, mutate protected branches, or leak tokens if added badly.", "medium"],
-    ["package installs", "Package install/add/update/publish scripts are blocked by design.", "Inspect dependency metadata and run existing safe scripts; ask user to install manually if needed.", "Lockfile-aware install tool with approval, sandboxing, audit, and rollback.", "Supply-chain compromise, postinstall execution, lockfile churn.", "high"],
+    ["non-npm dependency mutation", "Bounded inspection supports several ecosystems, but automatic install/rollback mutation is npm-only.", "Use inventory/risk/advisory/change tools for any supported ecosystem and the exact npm transaction tools only for npm projects.", "Equivalent lock-aware transaction and rollback adapters for pnpm, Yarn, Python, Cargo, and Go.", "Lifecycle execution, credential leakage, or unrecoverable lockfile churn if added without ecosystem-specific contracts.", "medium"],
     ["arbitrary shell", "Tools MCP only runs allowlisted commands/tasks, not arbitrary shell.", "Use vnem_tools_run_project_task or allowed verification commands.", "A bounded shell executor with policy parser, no secret env exposure, approval, and evidence.", "Destructive commands or credential exfiltration.", "high"],
     ["unrestricted crawling", "Broad crawling is blocked; extraction requires explicit bounded targets.", "Use source_map/source_extract/browser page tools on explicit URLs/files.", "Crawl budget, robots/rate policy, auth/session prohibition, and evidence caps.", "Legal/abuse risk, CAPTCHA traps, fake completeness claims.", "medium"],
     ["automatic CAPTCHA bypass", "CAPTCHA bypass and anti-bot evasion are blocked.", "Use user-assisted handoff and alternate official sources/APIs.", "Nothing automatic should be added; only safe human handoff patterns.", "Abuse, policy violations, account risk.", "blocked"],
@@ -2871,6 +3038,7 @@ function toolsVisibilityDoctor(args = {}) {
     browser_ui_proof: ["vnem_tools_browser_evidence_plan", "vnem_tools_browser_interaction_run", "vnem_tools_browser_evidence_compare", "vnem_tools_ui_evidence_audit"].every((tool) => names.has(tool)),
     windows_local_proof: ["vnem_tools_windows_system_snapshot", "vnem_tools_powershell_command_plan", "vnem_tools_windows_path_inspect", "vnem_tools_process_inspect", "vnem_tools_port_inspect", "vnem_tools_windows_event_log_read", "vnem_tools_windows_change_plan"].every((tool) => names.has(tool)),
     game_domain_proof: ["vnem_tools_game_adapter_catalog", "vnem_tools_game_project_inspect", "vnem_tools_game_config_audit", "vnem_tools_mod_compatibility_analyze", "vnem_tools_mod_profile_compare", "vnem_tools_game_project_validate", "vnem_tools_mod_backup_create", "vnem_tools_mod_backup_restore", "vnem_tools_roblox_project_inspect", "vnem_tools_luau_symbol_map"].every((tool) => names.has(tool)),
+    dependency_security_proof: ["vnem_tools_dependency_inventory", "vnem_tools_dependency_risk_audit", "vnem_tools_dependency_advisory_audit", "vnem_tools_dependency_change_analyze", "vnem_tools_dependency_upgrade_plan", "vnem_tools_dependency_install_apply", "vnem_tools_dependency_transaction_rollback"].every((tool) => names.has(tool)),
     adoption_diagnostics: entrypoints.every((tool) => names.has(tool))
   };
   const weak = toolsWeakAdoptionDescriptions(catalog);
@@ -3210,6 +3378,7 @@ function toolsTaskCategories(text, taskType, localOnly) {
   if (taskType.includes("browser") || /\b(browser|localhost|screenshot|ui|visual|viewport|responsive|dom|a11y)\b/.test(text)) add("browser_ui_verification");
   if (taskType.includes("windows") || /\b(windows|powershell|event viewer|defender|scheduled task|service status|path issue|file lock|local pc|tcp port)\b/.test(text)) add("windows_local_diagnosis");
   if (taskType.includes("game") || /\b(game|modding|mod loader|load order|mod profile|roblox|rojo|luau|game config|game asset)\b/.test(text)) add("game_modding_toolchain");
+  if (taskType.includes("dependency") || /\b(package|dependency|dependencies|lockfile|sbom|supply chain|typosquat|license compatibility|advisory|vulnerability|npm audit|package upgrade|npm install|postinstall|preinstall)\b/.test(text)) add("dependency_security");
   if (taskType.includes("recovery") || /\b(recover|recovery|lost context|session|local stack|resume)\b/.test(text)) add("local_session_recovery");
   if (taskType.includes("no_placebo") || /\b(no placebo|placebo|fake proof|real implementation|not placebo|docs only|registration only)\b/.test(text)) add("no_placebo_progress_audit");
   if (taskType.includes("evidence") || /\b(evidence|proof pack|proof packet|handoff|final report|what is proven)\b/.test(text)) add("evidence_proof_pack");
@@ -3237,6 +3406,7 @@ function toolsRouteDefinitions() {
     browser_ui_verification: { why: "UI/browser claims need planned local interaction proof, runtime evidence, before/after comparison, and an audit of evidence limits.", tools: ["vnem_tools_browser_evidence_plan", "vnem_tools_browser_interaction_run", "vnem_tools_browser_evidence_compare", "vnem_tools_ui_surface_review", "vnem_tools_ui_evidence_audit", "vnem_tools_browser_evidence_run"] },
     windows_local_diagnosis: { why: "Windows/local-PC work needs safe quoting, bounded exact-target system evidence, provider/access honesty, and a permission plus rollback gate before mutation.", tools: ["vnem_tools_windows_system_snapshot", "vnem_tools_powershell_command_plan", "vnem_tools_windows_path_inspect", "vnem_tools_process_inspect", "vnem_tools_port_inspect", "vnem_tools_windows_service_status", "vnem_tools_windows_scheduled_task_status", "vnem_tools_windows_event_log_read", "vnem_tools_windows_app_config_detect", "vnem_tools_windows_change_plan"] },
     game_modding_toolchain: { why: "Game/mod/Roblox work needs an explicit adapter contract, bounded configs/manifests/load order, compatibility and hash evidence, isolated backup/restore, and game-specific validation without unknown tool execution.", tools: ["vnem_tools_game_adapter_catalog", "vnem_tools_game_project_inspect", "vnem_tools_game_config_audit", "vnem_tools_mod_compatibility_analyze", "vnem_tools_roblox_project_inspect", "vnem_tools_luau_symbol_map", "vnem_tools_game_project_validate", "vnem_tools_mod_backup_create"] },
+    dependency_security: { why: "Dependency work needs normalized manifest/lock graph and SBOM evidence, lifecycle/source/license risk, fresh approved advisories, exact upgrade comparison, focused verification, and a hash-bound approval-gated rollback transaction for real npm installs.", tools: ["vnem_tools_dependency_inventory", "vnem_tools_dependency_risk_audit", "vnem_tools_dependency_advisory_audit", "vnem_tools_dependency_change_analyze", "vnem_tools_dependency_upgrade_plan", "vnem_tools_dependency_install_apply", "vnem_tools_dependency_transaction_rollback"] },
     local_session_recovery: { why: "Recovery needs branch/head/worktree/session state before further work.", tools: ["vnem_tools_local_session_recovery", "vnem_tools_repo_workflow_orchestrator"] },
     no_placebo_progress_audit: { why: "No-placebo review needs proof that behavior changed beyond docs/registration/generated churn.", tools: ["vnem_tools_no_placebo_progress_audit", "vnem_tools_task_progress_truth_check", "vnem_tools_evidence_pack"] },
     evidence_proof_pack: { why: "Evidence tasks need a compact proof packet and safe/must-not-claim boundaries.", tools: ["vnem_tools_evidence_pack", "vnem_tools_task_progress_truth_check"] },
@@ -3273,6 +3443,12 @@ function toolsToolReason(toolName, categories) {
   if (toolName.includes("evidence_pack")) return "build final proof packet";
   if (toolName.includes("source_control_character_guard")) return "scan hidden/control characters";
   if (toolName.includes("browser_evidence")) return "plan or run browser proof";
+  if (toolName.includes("dependency_inventory")) return "build the direct/transitive lock graph and SBOM inventory";
+  if (toolName.includes("dependency_risk")) return "inspect lifecycle, source, maintenance, typosquat, and license indicators";
+  if (toolName.includes("dependency_advisory")) return "inspect fresh approved advisory evidence without lifecycle execution or credential exposure";
+  if (toolName.includes("dependency_change")) return "compare direct/transitive upgrades and affected tests";
+  if (toolName.includes("dependency_upgrade_plan")) return "bind exact package changes to current manifest and lock hashes";
+  if (toolName.includes("dependency_install") || toolName.includes("dependency_transaction")) return "apply or roll back an exact approval-gated npm transaction";
   return `recommended for ${categories.slice(0, 2).join(", ")}`;
 }
 
@@ -3284,6 +3460,7 @@ function toolsRequiredInputsForTool(toolName, categories) {
   if (toolName.includes("github") || toolName.includes("pr_quality_gate")) inputs.push("owner/repo, branch, PR, or SHA context");
   if (toolName.includes("browser")) inputs.push("app_url, file_path, or route");
   if (toolName.includes("game") || toolName.includes("mod_") || toolName.includes("roblox") || toolName.includes("luau")) inputs.push("exact game/tool version, platform, loader, and project root when known");
+  if (toolName.includes("dependency")) inputs.push("package manager, owning manifest/lockfile, exact package/version, and approval scope when mutation is requested");
   if (categories.includes("evidence_proof_pack")) inputs.push("commands_run, tests_passed, tests_failed");
   return uniqueToolNames(inputs);
 }
@@ -3295,6 +3472,7 @@ function toolsMissingInputs(categories, context, localOnly) {
   if (categories.includes("github_pr_ci_proof") && !localOnly) missing.push("branch/commit_sha/pr_number when known");
   if (categories.includes("browser_ui_verification") && !context.app_url && !context.file_path) missing.push("app_url, file_path, or route");
   if (categories.includes("game_modding_toolchain") && !context.game_version) missing.push("game/tool version and loader/toolchain version when runtime compatibility matters");
+  if (categories.includes("dependency_security") && !context.package_manager) missing.push("package manager and owning lockfile when mutation or exact resolution matters");
   return uniqueToolNames(missing);
 }
 
@@ -3305,6 +3483,7 @@ function toolsChecksForCategories(categories, changedFiles = []) {
   if (categories.includes("github_pr_ci_proof")) checks.push("verify remote branch SHA", "check GitHub Actions run status");
   if (categories.includes("browser_ui_verification")) checks.push("collect local browser evidence or report browser unavailable");
   if (categories.includes("game_modding_toolchain")) checks.push("run vnem_tools_game_project_validate", "run the exact game/loader project check or report it unproven");
+  if (categories.includes("dependency_security")) checks.push("run vnem_tools_dependency_inventory", "verify lockfile plus focused test/build scripts", "prove rollback or report mutation unperformed");
   if (changedFiles.some((file) => /package\.json|scripts\//.test(String(file)))) checks.push("npm.cmd run validate");
   return uniqueToolNames(checks).slice(0, 8);
 }
@@ -3382,6 +3561,7 @@ function statusObject() {
     patch_batch_policy: { tool: "vnem_tools_apply_patch_batch", dry_run_default: true, approval_required: true, operations: ["replace", "create", "delete", "append"], no_partial_apply_by_default: true, backups_per_changed_file: true },
     project_scan_policy: { tool: "vnem_tools_project_scan", allowed_roots_only: true, skips_secrets: true, reads_package_json_only_for_scripts_and_frameworks: true },
     app_engineering_policy: { tools: ["vnem_tools_app_inspect", "vnem_tools_app_vertical_slice_plan", "vnem_tools_app_vertical_slice_apply", "vnem_tools_app_acceptance_run", "vnem_tools_app_transaction_rollback"], adapters: { "vite-react-node": "verified_generation_and_execution", "static-node": "verified_generation_and_execution", "next-style": "inspection_and_plan_only", generic: "inspection_only" }, marker_required_for_automatic_mutation: true, dry_run_default: true, approval_required_for_apply_acceptance_rollback: true, hash_preconditions: true, automatic_failure_rollback: true, cross_file_filesystem_atomicity_claimed: false, browser_scope: "dedicated-profile localhost Chromium only; no login/cookies/CAPTCHA", proof: ["focused tests", "build", "localhost server", "desktop user path", "mobile render", "console", "network", "screenshots"] },
+    dependency_security_policy: { tools: ["vnem_tools_dependency_inventory", "vnem_tools_dependency_risk_audit", "vnem_tools_dependency_advisory_audit", "vnem_tools_dependency_change_analyze", "vnem_tools_dependency_upgrade_plan", "vnem_tools_dependency_install_apply", "vnem_tools_dependency_transaction_rollback"], inspection_ecosystems: ["npm", "pnpm", "yarn", "python", "cargo", "go"], npm_lockfile_versions: [1, 2, 3], mutation_adapter: "npm only", dry_run_default: true, approved_installs_or_scoped_grant_required: true, existing_npm_lock_required_for_mutation: true, exact_registry_versions_only: true, lifecycle_scripts_disabled: true, recursive_verification_script_review: true, ephemeral_user_and_global_npm_configs: true, allowlisted_non_secret_environment_only: true, project_npmrc_blocks_live_commands: true, publishing_and_global_installs_blocked: true, timeout_process_tree_termination: true, automatic_failure_rollback: true, explicit_rollback_hash_preconditions: true, downloaded_binary_execution_requires_separate_review_and_approval: true },
     project_task_policy: { tool: "vnem_tools_run_project_task", dry_run_default: true, approval_required: true, package_json_scripts_only: true, package_install_publish_deploy_blocked: true },
     dev_server_policy: { tools: ["vnem_tools_start_dev_server", "vnem_tools_stop_dev_server", "vnem_tools_list_dev_servers"], dry_run_default: true, approval_required: true, local_host_only: true, port_range: "3000-9999", registry: "in-memory per MCP process" },
     session_evidence_policy: { tools: ["vnem_tools_start_session", "vnem_tools_finish_session"], writes_single_json_proof_pack: true, secrets_redacted: true },
@@ -3394,7 +3574,7 @@ function statusObject() {
       localhost_allowed_when_env_enabled: process.env.VNEM_TOOLS_ALLOW_LOCALHOST === "1",
       unknown_untrusted_urls_blocked: true,
       github_uses_scoped_command_backed_tools: true,
-      no_package_installs: true
+      package_install_scope: "only exact reviewed npm transactions through vnem_tools_dependency_install_apply; all other network tools remain non-installing"
     },
     browser_policy: {
       tool: "vnem_tools_browser_capture",
@@ -3425,7 +3605,7 @@ function statusObject() {
     evidence_log_location: evidenceRoot,
     core_handoff_supported: true,
     remaining_unsupported_actions: unsupportedActions(),
-    unsupported_in_foundation_batch: ["github_destructive_admin_without_config", "package_install", "package_publish", "deployment", "arbitrary_shell", "unrestricted_api_calls", "secret_manager_backed_live_api", "login_automation", "cookie_extraction", "captcha_bypass", "giga_mcp"]
+    unsupported_in_foundation_batch: ["github_destructive_admin_without_config", "package_publish", "global_package_install", "unreviewed_package_lifecycle_execution", "non_npm_dependency_mutation", "deployment", "arbitrary_shell", "unrestricted_api_calls", "secret_manager_backed_live_api", "login_automation", "cookie_extraction", "captcha_bypass", "giga_mcp"]
   };
 }
 
@@ -3439,9 +3619,9 @@ function formatStatus() {
     `Workspace allowed: ${status.workspace_allowed}`,
     status.allowed_root_warnings.length ? `Allowed-root warnings: ${status.allowed_root_warnings.join("; ")}` : "Allowed-root warnings: none",
     "Dry-run is default; real mutation/execution/live API/browser screenshot/project task/dev server/git commit requests require approved=true and an approval_note.",
-    "Local project actions include a manifest/catalog, workspace map, read-many, code search, references, dependency scan, project scan, patch batch, restore batch, safe package tasks, local dev servers, session proof packs, research/source helpers, and approved local git commits.",
+    "Local project actions include a manifest/catalog, workspace map, read-many, code search, references, dependency graph/risk/advisory inspection, exact approval-gated npm transactions, project scan, patch/restore batches, safe package tasks, local dev servers, session proof packs, research/source helpers, and approved local git commits.",
     `Browser proof: local files/localhost only, screenshots under ${status.browser_policy.screenshot_evidence_location}, runtime ${status.browser_policy.browser_runtime_status}.`,
-    "GitHub autonomy supports scoped command-backed gh/git workflows when dry_run=false, auth exists, and config allows; package install, arbitrary shell/API, login automation, cookie extraction, CAPTCHA bypass, broad scraping, and destructive GitHub admin remain blocked by default."
+    "GitHub autonomy supports scoped command-backed gh/git workflows when dry_run=false, auth exists, and config allows; exact npm installs are limited to the reviewed approval-gated dependency transaction tool, while publishing, global installs, lifecycle execution, arbitrary shell/API, login automation, cookie extraction, CAPTCHA bypass, broad scraping, and destructive GitHub admin remain blocked."
   ].join("\n");
 }
 
@@ -3609,7 +3789,7 @@ async function searchAllowedFiles(args) {
   return { root: root.relativePath || ".", query: args.query, results, skipped_policy: skippedPolicy() };
 }
 
-const TOOL_CAPABILITY_GROUPS = ["permissions", "filesystem", "project_intelligence", "app_engineering", "repo_power", "adoption_reliability", "patching", "rollback", "commands", "project_tasks", "dev_server", "browser_proof", "browser_intelligence", "ui_web_quality", "windows_local", "game_domain", "api_request", "search", "research_sources", "source_quality", "browsing_risk", "research_matrix", "source_ingestion", "debugging_code_quality", "session_evidence", "local_git", "github_autonomy", "status_readiness", "cloudflare_control", "tools_quality", "tool_intelligence"];
+const TOOL_CAPABILITY_GROUPS = ["permissions", "filesystem", "project_intelligence", "app_engineering", "repo_power", "adoption_reliability", "patching", "rollback", "commands", "project_tasks", "dev_server", "browser_proof", "browser_intelligence", "ui_web_quality", "windows_local", "game_domain", "dependency_security", "api_request", "search", "research_sources", "source_quality", "browsing_risk", "research_matrix", "source_ingestion", "debugging_code_quality", "session_evidence", "local_git", "github_autonomy", "status_readiness", "cloudflare_control", "tools_quality", "tool_intelligence"];
 
 function buildToolCatalog() {
   const commonUnsafe = ["secret reading/dumping", "outside-root access", "arbitrary shell", "package installs", "git push", "deployment", "Giga MCP"];
@@ -3745,6 +3925,13 @@ function buildToolCatalog() {
     mk("vnem_tools_mod_backup_restore", "game_domain", { read_only: false, mutation: true, requires_approval: true, dry_run_default: true, description: "Restore a VNEM game-domain package only after package and exact current-target hash checks, with a pre-restore safety package.", typical_use_cases: ["rollback game/mod files", "verified package restore"], unsafe_actions_blocked: [...commonUnsafe, "unreviewed overwrite", "cross-project restore", "game launch"] }),
     mk("vnem_tools_roblox_project_inspect", "game_domain", { description: "Map Rojo project/service paths, Luau contexts, toolchains/tests, remote trust boundaries, and missing/escaping mappings.", typical_use_cases: ["Roblox project structure", "Rojo mapping and remote review"], unsafe_actions_blocked: [...commonUnsafe, "Studio automation", "account/session access", "place publishing", "plugin execution"] }),
     mk("vnem_tools_luau_symbol_map", "game_domain", { description: "Map bounded Lua/Luau symbols, requires, Roblox services, remote boundaries, and static risks with file/line evidence.", typical_use_cases: ["Luau source search", "remote and module mapping"], unsafe_actions_blocked: [...commonUnsafe, "source execution", "full semantic/type-analysis claims"] }),
+    mk("vnem_tools_dependency_inventory", "dependency_security", { description: "Parse bounded manifests and npm package-lock v1/v2/v3, pnpm/Yarn, Python, Cargo, and Go lockfiles into normalized direct/transitive graphs, lifecycle flags, lock integrity, credential-safe sources, and an SBOM-style inventory.", typical_use_cases: ["dependency graph and lock review", "SBOM-style component inventory"], unsafe_actions_blocked: [...commonUnsafe, "install execution", "registry credential reads", "vulnerability-free claims"] }),
+    mk("vnem_tools_dependency_risk_audit", "dependency_security", { description: "Audit lifecycle hooks, suspicious commands, source/integrity signals, typosquat indicators, supplied maintenance metadata, and license families with explicit uncertainty.", typical_use_cases: ["supply-chain preflight", "install-hook and license review"], unsafe_actions_blocked: [...commonUnsafe, "malware certification", "legal advice", "abandonment claims without metadata"] }),
+    mk("vnem_tools_dependency_advisory_audit", "dependency_security", { network: true, description: "Parse approved advisory reports or run an explicitly approved isolated credential-free npm audit with lifecycle scripts disabled.", typical_use_cases: ["current npm advisory evidence", "offline approved advisory ingestion"], unsafe_actions_blocked: [...commonUnsafe, "private registry credential use", "stale report presented as current", "install or audit fix"] }),
+    mk("vnem_tools_dependency_change_analyze", "dependency_security", { description: "Compare two dependency snapshots for direct/transitive/add/remove/version changes, major-version indicators, impacted direct packages, and focused scripts.", typical_use_cases: ["upgrade diff review", "affected dependency and test selection"], unsafe_actions_blocked: [...commonUnsafe, "semantic compatibility certification", "automatic upgrade"] }),
+    mk("vnem_tools_dependency_upgrade_plan", "dependency_security", { description: "Create a hash-bound exact-version npm install/update plan from an existing parsed npm lock baseline with affected tests, script-disabled commands, credential boundaries, and rollback requirements.", typical_use_cases: ["review npm upgrade", "prepare approved install transaction"], unsafe_actions_blocked: [...commonUnsafe, "lockfile-less mutation", "floating tags/ranges", "global install", "publishing"] }),
+    mk("vnem_tools_dependency_install_apply", "dependency_security", { read_only: false, mutation: true, requires_approval: true, dry_run_default: true, description: "Apply a fresh reviewed npm plan with lifecycle scripts disabled, ephemeral credential-free npm configs, an allowlisted environment, recursive verification-script review, process-tree timeout cleanup, lock/build verification, and automatic failure rollback.", typical_use_cases: ["approved exact npm install", "verified dependency upgrade"], unsafe_actions_blocked: [...commonUnsafe.filter((item) => item !== "package installs"), "package publishing", "global install", "lifecycle scripts", "nested unsafe npm scripts", "unreviewed downloaded binary execution", "project .npmrc credential use"] }),
+    mk("vnem_tools_dependency_transaction_rollback", "dependency_security", { read_only: false, mutation: true, requires_approval: true, dry_run_default: true, description: "Restore exact pre-install manifest/lock bytes after current-hash checks and restore npm state with lifecycle scripts disabled.", typical_use_cases: ["rollback dependency transaction", "verify install reversibility"], unsafe_actions_blocked: [...commonUnsafe.filter((item) => item !== "package installs"), "stale overwrite", "cross-project transaction", "lifecycle scripts"] }),
     mk("vnem_tools_ui_evidence_audit", "ui_web_quality", { description: "Audit provided UI evidence and reject unsupported visual/browser claims.", allowed_roots_required: false, evidence_logged: true, typical_use_cases: ["final UI claim audit", "responsive/a11y/state proof review"], unsafe_actions_blocked: [...commonUnsafe, "inventing browser results", "accepting code-only visual proof"] }),
     mk("vnem_tools_start_session", "session_evidence", { read_only: false, mutation: true, description: "Start session proof pack.", typical_use_cases: ["group local workflow evidence"] }),
     mk("vnem_tools_finish_session", "session_evidence", { read_only: false, mutation: true, description: "Write session proof pack.", typical_use_cases: ["final evidence summary"] }),
@@ -10164,6 +10351,18 @@ function formatGameDomain(tool, result) {
   ].filter(Boolean).join("\n");
 }
 
+function formatDependencySecurity(tool, result) {
+  const count = result.packages?.length ?? result.vulnerabilities?.length ?? result.changes?.length ?? result.direct_changes?.length ?? result.targets?.length;
+  return [
+    `${tool}: ${result.operation_result}`,
+    count === undefined ? null : `Items: ${count}`,
+    `Executed: ${result.executed === true}`,
+    result.plan_id ? `Plan: ${result.plan_id}` : null,
+    result.transaction_id ? `Transaction: ${result.transaction_id}` : null,
+    result.rollback_available === undefined ? null : `Rollback available: ${result.rollback_available}`
+  ].filter(Boolean).join("\n");
+}
+
 function formatTestSystemInspect(result) {
   return [`vnem_tools_test_system_inspect: ${result.operation_result}`, `Frameworks: ${result.test_frameworks.join(", ") || "none detected"}`, `Tests/configs/workflows: ${result.test_files.length}/${result.config_files.length}/${result.ci_workflows.length}`, `Coverage: ${result.coverage.tools.join(", ") || "no producer detected"}`, `Resource-mapped scripts: ${result.resource_isolation.length}`].join("\n");
 }
@@ -10228,6 +10427,7 @@ async function withToolErrors(fn) {
     if (error instanceof WindowsLocalError) return errorResult(error.message, error.code, error.details);
     if (error instanceof GithubDevelopmentError) return errorResult(error.message, error.code, error.details);
     if (error instanceof GameDomainError) return errorResult(error.message, error.code, error.details);
+    if (error instanceof DependencySecurityError) return errorResult(error.message, error.code, error.details);
     return errorResult(error.message || String(error), "tools_unexpected_error");
   }
 }

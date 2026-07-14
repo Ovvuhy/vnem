@@ -22,14 +22,24 @@ try {
   const coverage = coverageCall.structured?.tool_test_coverage_map || coverageCall.structured;
   const runtimeTools = new Map((toolsRegistryCall.structured?.registry_status?.tools || []).map((tool) => [tool.name, tool]));
   const toolReferences = {};
+  const dependencySecurityReferences = Object.fromEntries([
+    "vnem_tools_dependency_inventory",
+    "vnem_tools_dependency_risk_audit",
+    "vnem_tools_dependency_advisory_audit",
+    "vnem_tools_dependency_change_analyze",
+    "vnem_tools_dependency_upgrade_plan",
+    "vnem_tools_dependency_install_apply",
+    "vnem_tools_dependency_transaction_rollback"
+  ].map((name) => [name, ["scripts/test-tools-giga-dependency-security.mjs"]]));
   for (const tool of toolsManifest.tools) {
     const evidence = coverage?.per_tool?.[tool.name];
     const runtimeReferences = runtimeTools.get(tool.name)?.behavior_test_references || [];
     toolReferences[tool.name] = runtimeReferences.length
       ? runtimeReferences
-      : evidence?.coverage_level === "behavior_test"
-        ? evidence.behavior_test_files || []
-        : [];
+      : dependencySecurityReferences[tool.name]
+        || (evidence?.coverage_level === "behavior_test"
+          ? evidence.behavior_test_files || []
+          : []);
   }
   toolReferences.vnem_tools_registry_status = ["scripts/test-vnem-runtime-registry.mjs"];
   const coreFocusedReferences = {

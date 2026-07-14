@@ -33,6 +33,7 @@
     "test:tools-giga-windows-local": "node scripts/test-tools-giga-windows-local.mjs",
     "test:tools-giga-github-development": "node scripts/test-tools-giga-github-development.mjs",
     "test:tools-giga-game-domain": "node scripts/test-tools-giga-game-domain.mjs",
+    "test:tools-giga-dependency-security": "node scripts/test-tools-giga-dependency-security.mjs",
     "test:tools-giga-project-automation": "node scripts/test-tools-giga-project-automation.mjs",
     "test:tools-git-session": "node scripts/test-tools-git-session.mjs",
     "test:tools-intelligence": "node scripts/test-tools-intelligence.mjs",
@@ -300,6 +301,8 @@
     "giga:phase11-benchmark": "node scripts/test-tools-giga-windows-local.mjs --benchmark-output=.vnem/giga-evolution/phase-11/windows-local-benchmark.json",
     "giga:phase12-benchmark": "node scripts/test-tools-giga-github-development.mjs --benchmark-output=.vnem/giga-evolution/phase-12/github-development-benchmark.json",
     "giga:phase13-benchmark": "node scripts/test-tools-giga-game-domain.mjs --benchmark-output=.vnem/giga-evolution/phase-13/game-domain-benchmark.json",
+    "giga:phase14-benchmark": "node scripts/test-tools-giga-dependency-security.mjs --benchmark-output=.vnem/giga-evolution/phase-14/dependency-security-benchmark.json",
+    "giga:phase14-live-advisory": "node scripts/test-tools-giga-dependency-security.mjs --live-advisory-output=.vnem/giga-evolution/phase-14/live-advisory.json",
     "test:clients:setup": "node scripts/test-vnem-client-setup.mjs"
   },
   "dependencies": {

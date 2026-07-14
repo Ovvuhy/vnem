@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "source": "live MCP runtime registry status calls",
-  "total_tools": 269,
+  "total_tools": 276,
   "servers": {
     "core": {
       "schema_version": "1.0.0",
@@ -2560,7 +2560,7 @@
       "server_name": "vnem-tools",
       "version": "1.0.1",
       "valid": true,
-      "tool_count": 194,
+      "tool_count": 201,
       "alias_count": 0,
       "categories": {
         "action": 2,
@@ -2578,7 +2578,7 @@
         "cloudflare": 17,
         "code": 3,
         "coverage": 1,
-        "dependency": 1,
+        "dependency": 7,
         "documentation": 1,
         "download": 1,
         "entrypoint": 1,
@@ -2593,7 +2593,7 @@
         "git": 3,
         "github": 25,
         "high": 1,
-        "install": 2,
+        "install": 3,
         "list": 2,
         "local": 1,
         "luau": 1,
@@ -2643,15 +2643,15 @@
         "workspace": 1
       },
       "side_effect_classes": {
-        "destructive_mutation": 33,
+        "destructive_mutation": 35,
         "network_mutation": 17,
-        "read_only": 144
+        "read_only": 149
       },
       "validation": {
         "valid": true,
         "server_name": "vnem-tools",
         "version": "1.0.1",
-        "tool_count": 194,
+        "tool_count": 201,
         "alias_count": 0,
         "errors": [],
         "warnings": [
@@ -5613,6 +5613,258 @@
           "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-giga-game-domain.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_dependency_inventory",
+          "version": "1.0.1",
+          "title": "Build Dependency Graph and SBOM Inventory",
+          "description": "Parse bounded npm package-lock v1/v2/v3, pnpm/Yarn, Python, Cargo, and Go manifests or lockfiles into normalized direct/transitive packages, root and transitive graph edges, lifecycle flags, lock integrity, credential-safe sources, and an SBOM-style inventory without installing anything.",
+          "category": "dependency",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-dependency-security.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_dependency_risk_audit",
+          "version": "1.0.1",
+          "title": "Audit Dependency Lifecycle Supply Chain and License Risk",
+          "description": "Inspect lifecycle hooks, suspicious commands, package sources/integrity, typosquatting indicators, supplied maintenance metadata, and license families while preserving uncertainty and returning no registry credentials.",
+          "category": "dependency",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-dependency-security.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_dependency_advisory_audit",
+          "version": "1.0.1",
+          "title": "Inspect Approved Dependency Advisory Evidence",
+          "description": "Parse a bounded report with allowlisted npm/OSV/GitHub Advisory/NVD source attribution, clearly marking caller-supplied provenance, or with explicit network approval run npm audit against the public npm registry in an isolated credential-free manifest copy. Lifecycle scripts never run.",
+          "category": "dependency",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": true
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "approved_network_read"
+          ],
+          "network_behavior": "bounded_or_approved_network",
+          "credential_behavior": "credential references only; values never returned",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-dependency-security.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_dependency_change_analyze",
+          "version": "1.0.1",
+          "title": "Compare Direct and Transitive Dependency Changes",
+          "description": "Compare two allowed project snapshots by normalized dependency graph, identify added/removed/direct/transitive/version changes, flag major-version indicators, trace impacted direct packages, and select existing focused verification scripts.",
+          "category": "dependency",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-dependency-security.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_dependency_upgrade_plan",
+          "version": "1.0.1",
+          "title": "Create Hash Bound Dependency Upgrade Plan",
+          "description": "Create a hash-bound exact-version npm add/update plan only when an existing parsed package-lock.json or npm-shrinkwrap.json provides a deterministic rollback baseline; includes direct dependency type, breaking-major indicators, script-disabled commands, affected tests, and credential boundaries. Does not install.",
+          "category": "dependency",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-dependency-security.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_dependency_install_apply",
+          "version": "1.0.1",
+          "title": "Apply Approved Dependency Install with Verification and Rollback",
+          "description": "Dry-run or apply a fresh hash-bound npm plan under approved-installs or a scoped package_install grant. Uses unique ephemeral npm configs and an allowlisted environment, disables lifecycle scripts, recursively reviews nested npm verification scripts, terminates timed-out process trees, verifies the lockfile/build, and automatically restores files plus npm state on failure.",
+          "category": "install",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": true,
+            "idempotentHint": false,
+            "openWorldHint": false
+          },
+          "side_effect_class": "destructive_mutation",
+          "permission_requirements": [
+            "approved_local_mutation"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "required_redacted_record",
+          "rollback_behavior": {
+            "mode": "required_or_explicitly_not_available",
+            "guidance": "Return backup, compensating action, or explicit rollback-unavailable state in evidence."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-dependency-security.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_dependency_transaction_rollback",
+          "version": "1.0.1",
+          "title": "Rollback Verified Dependency Transaction",
+          "description": "Dry-run or restore exact pre-install package manifest and lockfile bytes after current-hash verification, then restore npm state with lifecycle scripts disabled. Refuses stale or cross-project transactions.",
+          "category": "dependency",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": true,
+            "idempotentHint": false,
+            "openWorldHint": false
+          },
+          "side_effect_class": "destructive_mutation",
+          "permission_requirements": [
+            "approved_local_mutation"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "required_redacted_record",
+          "rollback_behavior": {
+            "mode": "self",
+            "guidance": "The tool is itself a rollback operation and must verify the restored state."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-dependency-security.mjs"
           ],
           "benchmark_scenarios": [],
           "input_schema_present": true

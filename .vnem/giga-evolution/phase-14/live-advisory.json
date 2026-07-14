@@ -1,0 +1,311 @@
+{
+  "schema_version": 1,
+  "phase": 14,
+  "proof_type": "actual_stdio_mcp_live_npm_advisory_audit",
+  "generated_at": "2026-07-14T11:59:26.174Z",
+  "result": {
+    "operation_result": "advisories_found",
+    "executed": true,
+    "source": {
+      "type": "npm_registry",
+      "url": "https://registry.npmjs.org/-/npm/v1/security/audits",
+      "approved": true,
+      "report_path": null,
+      "provenance": "live_fetch_by_vnem"
+    },
+    "captured_at": "2026-07-14T11:59:11.241Z",
+    "freshness": {
+      "age_hours": 0,
+      "current_within_24h": true,
+      "independently_verified": true,
+      "future_timestamp_rejected": false,
+      "captured_at_required_for_current_claim": true
+    },
+    "vulnerabilities": [
+      {
+        "package": "@solana-mobile/mobile-wallet-adapter-protocol-web3js",
+        "severity": "moderate",
+        "direct": false,
+        "range": "*",
+        "nodes": [
+          "node_modules/@solana-mobile/mobile-wallet-adapter-protocol-web3js"
+        ],
+        "via": [
+          {
+            "dependency": "@solana/web3.js"
+          }
+        ]
+      },
+      {
+        "package": "@solana-mobile/wallet-adapter-mobile",
+        "severity": "moderate",
+        "direct": false,
+        "range": "*",
+        "nodes": [
+          "node_modules/@solana-mobile/wallet-adapter-mobile"
+        ],
+        "via": [
+          {
+            "dependency": "@solana-mobile/mobile-wallet-adapter-protocol-web3js"
+          },
+          {
+            "dependency": "@solana/wallet-adapter-base"
+          },
+          {
+            "dependency": "@solana/web3.js"
+          }
+        ]
+      },
+      {
+        "package": "@solana/wallet-adapter-base",
+        "severity": "moderate",
+        "direct": true,
+        "range": "*",
+        "nodes": [
+          "node_modules/@solana/wallet-adapter-base"
+        ],
+        "via": [
+          {
+            "dependency": "@solana/web3.js"
+          }
+        ]
+      },
+      {
+        "package": "@solana/wallet-adapter-base-ui",
+        "severity": "moderate",
+        "direct": false,
+        "range": "*",
+        "nodes": [
+          "node_modules/@solana/wallet-adapter-base-ui"
+        ],
+        "via": [
+          {
+            "dependency": "@solana/wallet-adapter-react"
+          },
+          {
+            "dependency": "@solana/web3.js"
+          }
+        ]
+      },
+      {
+        "package": "@solana/wallet-adapter-react",
+        "severity": "moderate",
+        "direct": true,
+        "range": "*",
+        "nodes": [
+          "node_modules/@solana/wallet-adapter-react"
+        ],
+        "via": [
+          {
+            "dependency": "@solana-mobile/wallet-adapter-mobile"
+          },
+          {
+            "dependency": "@solana/wallet-adapter-base"
+          },
+          {
+            "dependency": "@solana/wallet-standard-wallet-adapter-react"
+          },
+          {
+            "dependency": "@solana/web3.js"
+          }
+        ]
+      },
+      {
+        "package": "@solana/wallet-adapter-react-ui",
+        "severity": "moderate",
+        "direct": true,
+        "range": "*",
+        "nodes": [
+          "node_modules/@solana/wallet-adapter-react-ui"
+        ],
+        "via": [
+          {
+            "dependency": "@solana/wallet-adapter-base"
+          },
+          {
+            "dependency": "@solana/wallet-adapter-base-ui"
+          },
+          {
+            "dependency": "@solana/wallet-adapter-react"
+          },
+          {
+            "dependency": "@solana/web3.js"
+          }
+        ]
+      },
+      {
+        "package": "@solana/wallet-standard-wallet-adapter-base",
+        "severity": "moderate",
+        "direct": false,
+        "range": "*",
+        "nodes": [
+          "node_modules/@solana/wallet-standard-wallet-adapter-base"
+        ],
+        "via": [
+          {
+            "dependency": "@solana/wallet-adapter-base"
+          },
+          {
+            "dependency": "@solana/web3.js"
+          }
+        ]
+      },
+      {
+        "package": "@solana/wallet-standard-wallet-adapter-react",
+        "severity": "moderate",
+        "direct": false,
+        "range": "*",
+        "nodes": [
+          "node_modules/@solana/wallet-standard-wallet-adapter-react"
+        ],
+        "via": [
+          {
+            "dependency": "@solana/wallet-adapter-base"
+          },
+          {
+            "dependency": "@solana/wallet-standard-wallet-adapter-base"
+          }
+        ]
+      },
+      {
+        "package": "@solana/web3.js",
+        "severity": "moderate",
+        "direct": true,
+        "range": "<=0.0.0-pr-29130 || 0.0.4 - 1.98.4",
+        "nodes": [
+          "node_modules/@solana/web3.js"
+        ],
+        "via": [
+          {
+            "dependency": "jayson"
+          }
+        ]
+      },
+      {
+        "package": "jayson",
+        "severity": "moderate",
+        "direct": false,
+        "range": ">=2.0.6",
+        "nodes": [
+          "node_modules/jayson"
+        ],
+        "via": [
+          {
+            "dependency": "uuid"
+          }
+        ]
+      },
+      {
+        "package": "uuid",
+        "severity": "moderate",
+        "direct": false,
+        "range": "<11.1.1",
+        "nodes": [
+          "node_modules/uuid"
+        ],
+        "via": [
+          {
+            "source": "1119441",
+            "name": "uuid",
+            "title": "uuid: Missing buffer bounds check in v3/v5/v6 when buf is provided",
+            "url": "https://github.com/advisories/GHSA-w5hq-g745-h8pq",
+            "severity": "moderate",
+            "range": "<11.1.1"
+          }
+        ]
+      }
+    ],
+    "severity_counts": {
+      "total": 11,
+      "critical": 0,
+      "high": 0,
+      "moderate": 11,
+      "medium": 0,
+      "low": 0,
+      "info": 0,
+      "unknown": 0
+    },
+    "npm_metadata": {
+      "vulnerabilities": {
+        "info": 0,
+        "low": 0,
+        "moderate": 11,
+        "high": 0,
+        "critical": 0,
+        "total": 11
+      },
+      "dependencies": {
+        "prod": 254,
+        "dev": 43,
+        "optional": 35,
+        "peer": 206,
+        "peerOptional": 0,
+        "total": 505
+      }
+    },
+    "command": {
+      "exit_code": 1,
+      "signal": null,
+      "timed_out": false,
+      "stdout": "{\n  \"auditReportVersion\": 2,\n  \"vulnerabilities\": {\n    \"@solana-mobile/mobile-wallet-adapter-protocol-web3js\": {\n      \"name\": \"@solana-mobile/mobile-wallet-adapter-protocol-web3js\",\n      \"severity\": \"moderate\",\n      \"isDirect\": false,\n      \"via\": [\n        \"@solana/web3.js\"\n      ],\n      \"effects\": [],\n      \"range\": \"*\",\n      \"nodes\": [\n        \"node_modules/@solana-mobile/mobile-wallet-adapter-protocol-web3js\"\n      ],\n      \"fixAvailable\": true\n    },\n    \"@solana-mobile/wallet-adapter-mobile\": {\n      \"name\": \"@solana-mobile/wallet-adapter-mobile\",\n      \"severity\": \"moderate\",\n      \"isDirect\": false,\n      \"via\": [\n        \"@solana-mobile/mobile-wallet-adapter-protocol-web3js\",\n        \"@solana/wallet-adapter-base\",\n        \"@solana/web3.js\"\n      ],\n      \"effects\": [\n        \"@solana/wallet-adapter-react\"\n      ],\n      \"range\": \"*\",\n      \"nodes\": [\n        \"node_modules/@solana-mobile/wallet-adapter-mobile\"\n      ],\n      \"fixAvailable\": false\n    },\n    \"@solana/wallet-adapter-base\": {\n      \"name\": \"@solana/wallet-adapter-base\",\n      \"severity\": \"moderate\",\n      \"isDirect\": true,\n      \"via\": [\n        \"@solana/web3.js\"\n      ],\n      \"effects\": [],\n      \"range\": \"*\",\n      \"nodes\": [\n        \"node_modules/@solana/wallet-adapter-base\"\n      ],\n      \"fixAvailable\": false\n    },\n    \"@solana/wallet-adapter-base-ui\": {\n      \"name\": \"@solana/wallet-adapter-base-ui\",\n      \"severity\": \"moderate\",\n      \"isDirect\": false,\n      \"via\": [\n        \"@solana/wallet-adapter-react\",\n        \"@solana/web3.js\"\n      ],\n      \"effects\": [\n        \"@solana/wallet-adapter-react-ui\"\n      ],\n      \"range\": \"*\",\n      \"nodes\": [\n        \"node_modules/@solana/wallet-adapter-base-ui\"\n      ],\n      \"fixAvailable\": false\n    },\n    \"@solana/wallet-adapter-react\": {\n      \"name\": \"@solana/wallet-adapter-react\",\n      \"severity\": \"moderate\",\n      \"isDirect\": true,\n      \"via\": [\n        \"@solana-mobile/wallet-adapter-mobile\",\n        \"@solana/wallet-adapter-base\",\n        \"@solana/wallet-standard-wallet-adapter-react\",\n        \"@solana/web3.js\"\n      ],\n      \"effects\": [],\n      \"range\": \"*\",\n      \"nodes\": [\n        \"node_modules/@solana/wallet-adapter-react\"\n      ],\n      \"fixAvailable\": false\n    },\n    \"@solana/wallet-adapter-react-ui\": {\n      \"name\": \"@solana/wallet-adapter-react-ui\",\n      \"severity\": \"moderate\",\n      \"isDirect\": true,\n      \"via\": [\n        \"@solana/wallet-adapter-base\",\n        \"@solana/wallet-adapter-base-ui\",\n        \"@solana/wallet-adapter-react\",\n        \"@solana/web3.js\"\n      ],\n      \"effects\": [],\n      \"range\": \"*\",\n      \"nodes\": [\n        \"node_modules/@solana/wallet-adapter-react-ui\"\n      ],\n      \"fixAvailable\": false\n    },\n    \"@solana/wallet-standard-wallet-adapter-base\": {\n      \"name\": \"@solana/wallet-standard-wallet-adapter-base\",\n      \"severity\": \"moderate\",\n      \"isDirect\": false,\n      \"via\": [\n        \"@solana/wallet-adapter-base\",\n        \"@solana/web3.js\"\n      ],\n      \"effects\": [\n        \"@solana/wallet-standard-wallet-adapter-react\"\n      ],\n      \"range\": \"*\",\n      \"nodes\": [\n        \"node_modules/@solana/wallet-standard-wallet-adapter-base\"\n      ],\n      \"fixAvailable\": true\n    },\n    \"@solana/wallet-standard-wallet-adapter-react\": {\n      \"name\": \"@solana/wallet-standard-wallet-adapter-react\",\n      \"severity\": \"moderate\",\n      \"isDirect\": false,\n      \"via\": [\n        \"@solana/wallet-adapter-base\",\n        \"@solana/wallet-standard-wallet-adapter-base\"\n      ],\n      \"effects\": [],\n      \"range\": \"*\",\n      \"nodes\": [\n        \"node_modules/@solana/wallet-standard-wallet-adapter-react\"\n      ],\n      \"fixAvailable\": true\n    },\n    \"@solana/web3.js\": {\n      \"name\": \"@solana/web3.js\",\n      \"severity\": \"moderate\",\n      \"isDirect\": true,\n      \"via\": [\n        \"jayson\"\n      ],\n      \"effects\": [\n        \"@solana-mobile/mobile-wallet-adapter-protocol-web3js\",\n        \"@solana-mobile/wallet-adapter-mobile\",\n        \"@solana/wallet-adapter-base\",\n        \"@solana/wallet-adapter-base-ui\",\n        \"@solana/wallet-adapter-react\",\n        \"@solana/wallet-adapter-react-ui\",\n        \"@solana/wallet-standard-wallet-adapter-base\"\n      ],\n      \"range\": \"<=0.0.0-pr-29130 || 0.0.4 - 1.98.4\",\n      \"nodes\": [\n        \"node_modules/@solana/web3.js\"\n      ],\n      \"fixAvailable\": false\n    },\n    \"jayson\": {\n      \"name\": \"jayson\",\n      \"severity\": \"moderate\",\n      \"isDirect\": false,\n      \"via\": [\n        \"uuid\"\n      ],\n      \"effects\": [\n        \"@solana/web3.js\"\n      ],\n      \"range\": \">=2.0.6\",\n      \"nodes\": [\n        \"node_modules/jayson\"\n      ],\n      \"fixAvailable\": false\n    },\n    \"uuid\": {\n      \"name\": \"uuid\",\n      \"severity\": \"moderate\",\n      \"isDirect\": false,\n      \"via\": [\n        {\n          \"source\": 1119441,\n          \"name\": \"uuid\",\n          \"dependency\": \"uuid\",\n          \"title\": \"uuid: Missing buffer bounds check in v3/v5/v6 when buf is provided\",\n          \"url\": \"https://github.com/advisories/GHSA-w5hq-g745-h8pq\",\n          \"severity\": \"moderate\",\n          \"cwe\": [\n            \"CWE-787\",\n            \"CWE-1285\"\n          ],\n          \"cvss\": {\n            \"score\": 7.5,\n            \"vectorString\": \"CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N\"\n          },\n          \"range\": \"<11.1.1\"\n        }\n      ],\n      \"effects\": [\n        \"jayson\"\n      ],\n      \"range\": \"<11.1.1\",\n      \"nodes\": [\n        \"node_modules/uuid\"\n      ],\n      \"fixAvailable\": false\n    }\n  },\n  \"metadata\": {\n    \"vulnerabilities\": {\n      \"info\": 0,\n      \"low\": 0,\n      \"moderate\": 11,\n      \"high\": 0,\n      \"critical\": 0,\n      \"total\": 11\n    },\n    \"dependencies\": {\n      \"prod\": 254,\n      \"dev\": 43,\n      \"optional\": 35,\n      \"peer\": 206,\n      \"peerOptional\": 0,\n      \"total\": 505\n    }\n  }\n}\n",
+      "stderr": "",
+      "network_requested": true,
+      "process_tree_termination": null,
+      "environment_safety": {
+        "policy": "allowlisted_names_only",
+        "inherited_proxy_environment": false,
+        "inherited_secret_environment": false,
+        "npm_configs": "unique_ephemeral_os_temp_files"
+      }
+    },
+    "credential_safety": {
+      "registry_credentials_read": false,
+      "registry_credentials_returned": false,
+      "secret_environment_forwarded": false,
+      "user_npmrc_disabled": true,
+      "global_npmrc_disabled": true,
+      "project_npmrc_blocks_live_commands": true,
+      "npm_config_location": "unique_ephemeral_os_temp_files",
+      "environment_forwarding": "allowlisted_names_only_without_proxy_or_secret_values",
+      "output_redacted": true
+    },
+    "lifecycle_scripts_executed": false,
+    "must_not_claim": [
+      "An empty or stale report proves the dependency set is vulnerability-free.",
+      "One advisory source covers every ecosystem or private package."
+    ],
+    "permission": {
+      "action_type": "external_fetch",
+      "trust_boundary_level": "3_sensitive_local_information",
+      "permission_profile": "approved-installs",
+      "allowed": true,
+      "requires_approval": true,
+      "blocked": false,
+      "reason": "Allowed by profile with explicit per-call approval.",
+      "required_user_approval_text": "What permission is requested:\nApprove VNEM Tools MCP to perform: external_fetch\n\nExact action: external_fetch\nRisk level: medium\nWhy it is needed: Allowed by profile with explicit per-call approval.\nScope: Only the exact command/API/action shown above.\nDry-run option: available and should be run first\nRollback/restore plan: Keep dry-run output and do not apply without a backup/restore path.\nWhat could go wrong: files may be changed incorrectly, commands may fail, API calls may expose metadata, or evidence may be incomplete.\nLogs/evidence collected: evidence JSON under C:\\VNEM\\vnem-src\\.tmp\\dependency-security-fixture-57924\\.vnem\\evidence with secrets redacted.\nWhat happens if approved: Tools MCP may run only the exact approved action within allowlists and limits.\nWhat happens if denied: Tools MCP will stop after planning/dry-run and make no real change.",
+      "risk_notes": [
+        "Sensitive local information or secret-like path/value."
+      ],
+      "rollback_expected": false,
+      "evidence_expected": true,
+      "decision_source": "profile",
+      "scoped_grant": null,
+      "safer_alternative": "Run dry-run first, then execute only the exact approved scoped action.",
+      "must_not_claim": [
+        "Tools MCP performed this action before evidence exists.",
+        "external_fetch was approved without explicit user approval text."
+      ]
+    }
+  },
+  "safety": {
+    "lifecycle_scripts_executed": false,
+    "registry_credentials_read": false,
+    "secret_environment_forwarded": false,
+    "project_files_mutated": false
+  },
+  "limitations": [
+    "Fixture install uses an allowed local package and does not prove public-registry install availability.",
+    "Live npm advisory proof covers this public npm snapshot only; it does not prove vulnerability absence across all ecosystems or private packages.",
+    "Automatic dependency mutation is npm-only."
+  ]
+}

@@ -2,7 +2,7 @@
 
 Generated from live MCP runtime registries. Do not edit this table manually.
 
-- Total tools: 269
+- Total tools: 276
 - Registry valid: true
 - Missing behavior-test references: 18
 
@@ -155,6 +155,13 @@ Generated from live MCP runtime registries. Do not edit this table manually.
 | tools | `vnem_tools_mod_backup_restore` | mod | destructive_mutation | approved_local_mutation | required_redacted_record | self | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_roblox_project_inspect` | project | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_luau_symbol_map` | luau | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_dependency_inventory` | dependency | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_dependency_risk_audit` | dependency | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_dependency_advisory_audit` | dependency | read_only | approved_network_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_dependency_change_analyze` | dependency | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_dependency_upgrade_plan` | dependency | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_dependency_install_apply` | install | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_dependency_transaction_rollback` | dependency | destructive_mutation | approved_local_mutation | required_redacted_record | self | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_test_system_inspect` | test | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_affected_test_graph` | affected | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_test_run` | test | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/tools/server.mjs |

@@ -477,6 +477,27 @@
       "vnem_tools_luau_symbol_map": [
         "scripts/test-tools-giga-game-domain.mjs"
       ],
+      "vnem_tools_dependency_inventory": [
+        "scripts/test-tools-giga-dependency-security.mjs"
+      ],
+      "vnem_tools_dependency_risk_audit": [
+        "scripts/test-tools-giga-dependency-security.mjs"
+      ],
+      "vnem_tools_dependency_advisory_audit": [
+        "scripts/test-tools-giga-dependency-security.mjs"
+      ],
+      "vnem_tools_dependency_change_analyze": [
+        "scripts/test-tools-giga-dependency-security.mjs"
+      ],
+      "vnem_tools_dependency_upgrade_plan": [
+        "scripts/test-tools-giga-dependency-security.mjs"
+      ],
+      "vnem_tools_dependency_install_apply": [
+        "scripts/test-tools-giga-dependency-security.mjs"
+      ],
+      "vnem_tools_dependency_transaction_rollback": [
+        "scripts/test-tools-giga-dependency-security.mjs"
+      ],
       "vnem_tools_test_system_inspect": [
         "scripts/test-tools-giga-testing-ci.mjs"
       ],

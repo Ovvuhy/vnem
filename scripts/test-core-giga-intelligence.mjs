@@ -184,7 +184,21 @@ try {
   }, "entrypoint");
   const packageDomains = packageCi.task_classification.domains.map((item) => item.id);
   for (const domain of ["package_dependency", "debugging", "github_publish"]) assert.ok(packageDomains.includes(domain), `missing ${domain} mixed-domain route`);
-  for (const tool of ["vnem_tools_dependency_scan", "vnem_tools_failure_triage", "vnem_tools_github_actions_status"]) assert.ok(packageCi.recommended_tools_calls.includes(tool), `missing ${tool}`);
+  for (const tool of ["vnem_tools_dependency_inventory", "vnem_tools_failure_triage", "vnem_tools_github_actions_status"]) assert.ok(packageCi.recommended_tools_calls.includes(tool), `missing ${tool}`);
+
+  const dependencySecurity = await call(core.client, "vnem_entrypoint", {
+    user_goal: "Parse package manifests and lockfiles, build the direct and transitive graph and SBOM, inspect lifecycle and typosquat risk, check current approved advisories, compare the major upgrade, install the exact approved npm version, verify tests and build, and prove rollback.",
+    task_context: "npm package-lock.json; approved-installs profile will gate mutation; never publish, run lifecycle hooks, read registry credentials, or execute an unreviewed downloaded binary.",
+    task_mode: "package",
+    available_mcp_names: ["vnem", "vnem-tools"],
+    available_tool_names: [...toolNames],
+    allowed_tool_names: [...toolNames],
+    environment: { os: "Windows 11", node_version: "24", package_manager: "npm" }
+  }, "entrypoint");
+  assert.ok(dependencySecurity.task_classification.domains.some((domain) => domain.id === "package_dependency"));
+  for (const tool of ["vnem_tools_dependency_inventory", "vnem_tools_dependency_risk_audit", "vnem_tools_dependency_advisory_audit", "vnem_tools_dependency_change_analyze", "vnem_tools_dependency_upgrade_plan", "vnem_tools_dependency_install_apply"]) assert.ok(dependencySecurity.recommended_tools_calls.includes(tool), `missing Phase 14 dependency route ${tool}`);
+  assert.equal(dependencySecurity.recommended_tools_calls.length, 6);
+  assert.ok(dependencySecurity.evidence_requirements.some((requirement) => /SBOM inventory/.test(requirement)));
 
   const api = await call(core.client, "vnem_entrypoint", {
     user_goal: "Execute a live allowlisted GET API request and verify the redacted response.",

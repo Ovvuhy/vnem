@@ -25,6 +25,8 @@ const githubDevelopmentTestPath = rel("scripts/test-tools-giga-github-developmen
 const githubDevelopmentModulePath = rel("scripts/vnem/tools/github-development.mjs");
 const gameDomainTestPath = rel("scripts/test-tools-giga-game-domain.mjs");
 const gameDomainModulePath = rel("scripts/vnem/tools/game-domain.mjs");
+const dependencySecurityTestPath = rel("scripts/test-tools-giga-dependency-security.mjs");
+const dependencySecurityModulePath = rel("scripts/vnem/tools/dependency-security.mjs");
 const projectAutomationTestPath = rel("scripts/test-tools-giga-project-automation.mjs");
 const projectAutomationModulePath = rel("scripts/vnem/tools/project-automation.mjs");
 const projectAutomationFixturePath = rel("fixtures/project-automation/package.json");
@@ -123,6 +125,8 @@ const githubDevelopmentTest = existsSync(githubDevelopmentTestPath) ? readFileSy
 const githubDevelopmentModule = existsSync(githubDevelopmentModulePath) ? readFileSync(githubDevelopmentModulePath, "utf8") : "";
 const gameDomainTest = existsSync(gameDomainTestPath) ? readFileSync(gameDomainTestPath, "utf8") : "";
 const gameDomainModule = existsSync(gameDomainModulePath) ? readFileSync(gameDomainModulePath, "utf8") : "";
+const dependencySecurityTest = existsSync(dependencySecurityTestPath) ? readFileSync(dependencySecurityTestPath, "utf8") : "";
+const dependencySecurityModule = existsSync(dependencySecurityModulePath) ? readFileSync(dependencySecurityModulePath, "utf8") : "";
 const projectAutomationTest = existsSync(projectAutomationTestPath) ? readFileSync(projectAutomationTestPath, "utf8") : "";
 const projectAutomationModule = existsSync(projectAutomationModulePath) ? readFileSync(projectAutomationModulePath, "utf8") : "";
 const testingCiTest = existsSync(testingCiTestPath) ? readFileSync(testingCiTestPath, "utf8") : "";
@@ -243,6 +247,13 @@ const requiredTools = [
   "vnem_tools_code_search",
   "vnem_tools_find_references",
   "vnem_tools_dependency_scan",
+  "vnem_tools_dependency_inventory",
+  "vnem_tools_dependency_risk_audit",
+  "vnem_tools_dependency_advisory_audit",
+  "vnem_tools_dependency_change_analyze",
+  "vnem_tools_dependency_upgrade_plan",
+  "vnem_tools_dependency_install_apply",
+  "vnem_tools_dependency_transaction_rollback",
   "vnem_tools_list_files",
   "vnem_tools_search_files",
   "vnem_tools_apply_patch",
@@ -417,6 +428,8 @@ const report = {
   github_development_module_exists: existsSync(githubDevelopmentModulePath),
   game_domain_test_exists: existsSync(gameDomainTestPath),
   game_domain_module_exists: existsSync(gameDomainModulePath),
+  dependency_security_test_exists: existsSync(dependencySecurityTestPath),
+  dependency_security_module_exists: existsSync(dependencySecurityModulePath),
   project_automation_test_exists: existsSync(projectAutomationTestPath),
   project_automation_module_exists: existsSync(projectAutomationModulePath),
   project_automation_fixture_exists: existsSync(projectAutomationFixturePath),
@@ -495,6 +508,7 @@ const report = {
     test_tools_giga_windows_local: pkg.scripts?.["test:tools-giga-windows-local"] === "node scripts/test-tools-giga-windows-local.mjs",
     test_tools_giga_github_development: pkg.scripts?.["test:tools-giga-github-development"] === "node scripts/test-tools-giga-github-development.mjs",
     test_tools_giga_game_domain: pkg.scripts?.["test:tools-giga-game-domain"] === "node scripts/test-tools-giga-game-domain.mjs",
+    test_tools_giga_dependency_security: pkg.scripts?.["test:tools-giga-dependency-security"] === "node scripts/test-tools-giga-dependency-security.mjs",
     test_tools_giga_project_automation: pkg.scripts?.["test:tools-giga-project-automation"] === "node scripts/test-tools-giga-project-automation.mjs",
     test_tools_giga_testing_ci: pkg.scripts?.["test:tools-giga-testing-ci"] === "node scripts/test-tools-giga-testing-ci.mjs",
     test_tools_git_session: pkg.scripts?.["test:tools-git-session"] === "node scripts/test-tools-git-session.mjs",
@@ -693,6 +707,16 @@ const report = {
   game_domain_roblox_luau_status: /vnem_tools_roblox_project_inspect/.test(server + gameDomainTest) && /vnem_tools_luau_symbol_map/.test(server + gameDomainTest) && /remote_trust_boundaries/.test(gameDomainModule + gameDomainTest) && /service_mappings/.test(gameDomainModule + gameDomainTest),
   game_domain_validation_status: /vnem_tools_game_project_validate/.test(server + gameDomainTest) && /isolated_rojo_build/.test(gameDomainModule + gameDomainTest) && /command_execution/.test(gameDomainModule + gameDomainTest) && /guarded_binary/.test(gameDomainModule + gameDomainTest),
   game_domain_real_mcp_proof_status: /StdioClientTransport/.test(gameDomainTest) && /game\/modding\/Roblox MCP tests passed/.test(gameDomainTest) && /actual_stdio_mcp_game_modding_roblox_execution/.test(gameDomainTest),
+  dependency_security_module_status: /DependencySecurityRuntime/.test(server + dependencySecurityModule) && /dependency_security_policy/.test(server) && /mutation_adapter: "npm only"/.test(server),
+  dependency_security_inventory_status: /vnem_tools_dependency_inventory/.test(server + dependencySecurityTest) && /dependency_graph/.test(dependencySecurityTest) && /SBOM-style inventory/.test(dependencySecurityModule + server),
+  dependency_security_risk_status: /vnem_tools_dependency_risk_audit/.test(server + dependencySecurityTest) && /remote_pipe_execution/.test(dependencySecurityModule + dependencySecurityTest) && /typosquatting_indicators/.test(dependencySecurityModule + dependencySecurityTest) && /license_findings/.test(dependencySecurityTest),
+  dependency_security_advisory_status: /vnem_tools_dependency_advisory_audit/.test(server + dependencySecurityTest) && /advisory_source_not_approved/.test(dependencySecurityTest) && /current_within_24h/.test(dependencySecurityModule + dependencySecurityTest) && /registry_credentials_read/.test(dependencySecurityTest),
+  dependency_security_change_plan_status: /vnem_tools_dependency_change_analyze/.test(server + dependencySecurityTest) && /breaking_major_indicator/.test(dependencySecurityModule + dependencySecurityTest) && /selected_tests/.test(dependencySecurityTest) && /vnem_tools_dependency_upgrade_plan/.test(server + dependencySecurityTest),
+  dependency_security_install_status: /vnem_tools_dependency_install_apply/.test(server + dependencySecurityTest) && /approved-installs/.test(server + dependencySecurityTest) && /lifecycle_scripts_executed/.test(dependencySecurityModule + dependencySecurityTest) && /dependency_install_completed/.test(dependencySecurityTest) && /failed_rolled_back/.test(dependencySecurityTest),
+  dependency_security_rollback_status: /vnem_tools_dependency_transaction_rollback/.test(server + dependencySecurityTest) && /expected_current_sha256/.test(dependencySecurityModule + server) && /hashes_match/.test(dependencySecurityTest) && /automatic_failure_rollback/.test(dependencySecurityTest),
+  dependency_security_credential_boundary_status: /project_npmrc_blocked/.test(dependencySecurityModule) && /unique_ephemeral_os_temp_files/.test(dependencySecurityModule + dependencySecurityTest) && /allowlisted_names_only/.test(dependencySecurityModule) && /secret_environment_forwarded: false/.test(dependencySecurityModule),
+  dependency_security_hardening_status: /parseNpmLockV1/.test(dependencySecurityModule) && /dependency_transaction_lock_required/.test(dependencySecurityModule + dependencySecurityTest) && /local_dependency_link_escape/.test(dependencySecurityModule + dependencySecurityTest) && /nested_script_cycle/.test(dependencySecurityModule) && /trusted_npm_cli_not_found/.test(dependencySecurityModule) && !/process\.env\.npm_execpath/.test(dependencySecurityModule) && /npm_execpath: hostileNpmExecpath/.test(dependencySecurityTest) && /hostile-npm-executed\.txt/.test(dependencySecurityTest) && /taskkill_process_tree/.test(dependencySecurityModule) && /timed-out npm descendant escaped process-tree cleanup/.test(dependencySecurityTest),
+  dependency_security_real_mcp_proof_status: /StdioClientTransport/.test(dependencySecurityTest) && /GIGA Phase 14 dependency\/security tests passed/.test(dependencySecurityTest) && /actual_stdio_mcp_dependency_security_execution/.test(dependencySecurityTest),
   github_dry_run_status: /dry_run !== false/.test(server) && /must not/.test(toolsGithubMutationDryRunTest),
   github_config_knob_status: /config_knob_to_change/.test(server) && /VNEM_TOOLS_GITHUB_ALLOW_DIRECT_PUSH/.test(toolsGithubMutationDryRunTest + server) && /VNEM_TOOLS_GITHUB_ALLOW_ACTIONS_RERUN/.test(toolsGithubMutationDryRunTest + server),
   github_secret_file_block_status: /githubSecretFileBlocked/.test(server) && /Secret-like file blocked/.test(server) && /scanGithubCommitContent/.test(server) && /Secret-like content blocked/.test(server + githubDevelopmentTest) && /\.env/.test(toolsGithubMutationDryRunTest + server),
@@ -849,7 +873,7 @@ const report = {
   trust_boundary_classifier_status: /vnem_tools_trust_boundary_classify/.test(server) && /trustBoundaryClassify/.test(server) && /6_blocked_dangerous_action/.test(toolsTrustBoundaryTest + server),
   safe_readonly_blocks_writes: /safe-readonly/.test(server) && /permission_profile_blocked/.test(toolsPermissionProfilesTest),
   approved_writes_requires_approval: /approved-writes/.test(server) && /approval_required/.test(toolsPermissionProfilesTest),
-  package_install_still_not_silent: /approved-installs/.test(permissionProfilesSource) && /package_install/.test(toolsPermissionProfilesTest) && /plannedBlocked/.test(server),
+  package_install_still_not_silent: /approved-installs/.test(permissionProfilesSource) && /package_install/.test(toolsPermissionProfilesTest) && /requires_approval/.test(toolsPermissionProfilesTest) && /vnem_tools_dependency_install_apply/.test(server),
   github_mutation_still_not_silent: /approved-github/.test(permissionProfilesSource) && /github_pr/.test(toolsPermissionProfilesTest) && /requires_approval/.test(toolsPermissionProfilesTest),
   secret_read_blocked_by_default: /secret_read/.test(server) && /secret_path_blocked/.test(toolsSecretBlockingTest) && /raw_secret_blocked/.test(toolsSecretBlockingTest),
   dangerous_disabled_policy: /dangerous-disabled/.test(permissionProfilesSource) && /captcha_bypass/.test(toolsTrustBoundaryTest) && /destructive_shell/.test(toolsTrustBoundaryTest),
@@ -908,7 +932,7 @@ const report = {
   session_evidence_status: /vnem_tools_start_session/.test(server) && /vnem_tools_finish_session/.test(server) && /blocked_actions/.test(gitSessionTest),
   local_git_status: /vnem_tools_git_status/.test(server) && /vnem_tools_git_diff_summary/.test(server) && /vnem_tools_git_commit/.test(server) && /git push/.test(gitSessionTest),
   github_destructive_admin_still_blocked_status: /VNEM_TOOLS_GITHUB_ALLOW_FORCE_PUSH/.test(server) && /VNEM_TOOLS_GITHUB_ALLOW_REPO_DELETE/.test(server) && /Repo deletion blocked by default/.test(server),
-  package_install_still_blocked: /UNSAFE_PACKAGE_SCRIPT_PATTERN/.test(server) && /package_install/.test(server),
+  package_install_still_blocked: /UNSAFE_PACKAGE_SCRIPT_PATTERN/.test(server) && /package_publish/.test(server) && /global install/.test(server) && /lifecycle scripts/.test(server),
   giga_still_not_built: /giga_mcp/.test(server),
   evidence_proof_bridge_status: /proof_trail_compatible_summary/.test(server) && /recommended_core_proof_trail_inputs/.test(server) && /recommended_final_report_lines/.test(server),
   safe_action_loop_status: /vnem_boost_task/.test(e2eTest) && /vnem_tools_prepare_action_plan/.test(e2eTest) && /dry_run: true/.test(e2eTest) && /approved: false/.test(e2eTest) && /vnem_tools_run_command/.test(e2eTest) && /vnem_tools_collect_evidence/.test(e2eTest),
@@ -930,7 +954,7 @@ const report = {
   known_missing_future_tools: [
     "GitHub destructive admin operations (repo delete/force push/settings apply beyond explicit config)",
     "Windows system mutation executors (services, registry, scheduled tasks, firewall, antivirus exclusions, system PATH, and machine-wide configuration)",
-    "package installs",
+    "non-npm dependency mutation and unreviewed package installs",
     "arbitrary shell",
     "unrestricted API calls",
     "secret-manager-backed live API calls",
@@ -961,6 +985,8 @@ assert.equal(report.github_development_test_exists, true, "GitHub development MC
 assert.equal(report.github_development_module_exists, true, "GitHub development runtime module is missing");
 assert.equal(report.game_domain_test_exists, true, "game-domain MCP test file is missing");
 assert.equal(report.game_domain_module_exists, true, "game-domain runtime module is missing");
+assert.equal(report.dependency_security_test_exists, true, "dependency-security MCP test file is missing");
+assert.equal(report.dependency_security_module_exists, true, "dependency-security runtime module is missing");
 assert.equal(report.project_automation_test_exists, true, "project automation MCP test file is missing");
 assert.equal(report.project_automation_module_exists, true, "project automation module is missing");
 assert.equal(report.project_automation_fixture_exists, true, "project automation fixture is missing");
@@ -991,6 +1017,7 @@ assert.equal(report.package_scripts.test_tools_giga_browser_interaction, true, "
 assert.equal(report.package_scripts.test_tools_giga_windows_local, true, "test:tools-giga-windows-local package script is missing");
 assert.equal(report.package_scripts.test_tools_giga_github_development, true, "test:tools-giga-github-development package script is missing");
 assert.equal(report.package_scripts.test_tools_giga_game_domain, true, "test:tools-giga-game-domain package script is missing");
+assert.equal(report.package_scripts.test_tools_giga_dependency_security, true, "test:tools-giga-dependency-security package script is missing");
 for (const [key, value] of Object.entries({ test_smoke_tier: report.package_scripts.test_smoke_tier, test_affected_tier: report.package_scripts.test_affected_tier, test_core_tier: report.package_scripts.test_core_tier, test_tools_tier: report.package_scripts.test_tools_tier, test_precision_compat_tier: report.package_scripts.test_precision_compat_tier, test_integration_tier: report.package_scripts.test_integration_tier, test_benchmarks_tier: report.package_scripts.test_benchmarks_tier, test_full_tier: report.package_scripts.test_full_tier, test_ci_tier: report.package_scripts.test_ci_tier, npm_test_routes_full: report.package_scripts.npm_test_routes_full })) assert.equal(value, true, `${key} package script is missing`);
 assert.equal(report.package_scripts.test_tools_git_session, true, "test:tools-git-session package script is missing");
 assert.equal(report.package_scripts.test_tools_intelligence, true, "test:tools-intelligence package script is missing");
@@ -1220,6 +1247,7 @@ for (const [key, value] of Object.entries({ browser_interaction_registration_sta
 for (const [key, value] of Object.entries({ windows_local_registration_status: report.windows_local_registration_status, windows_local_powershell_status: report.windows_local_powershell_status, windows_local_environment_status: report.windows_local_environment_status, windows_local_path_status: report.windows_local_path_status, windows_local_process_port_status: report.windows_local_process_port_status, windows_local_service_task_event_status: report.windows_local_service_task_event_status, windows_local_client_status: report.windows_local_client_status, windows_local_mutation_gate_status: report.windows_local_mutation_gate_status, windows_local_real_mcp_proof_status: report.windows_local_real_mcp_proof_status })) assert.equal(value, true, `${key} readiness missing`);
 for (const [key, value] of Object.entries({ github_development_module_status: report.github_development_module_status, github_diff_review_status: report.github_diff_review_status, github_review_threads_status: report.github_review_threads_status, github_remote_proof_status: report.github_remote_proof_status, github_actions_run_inspect_status: report.github_actions_run_inspect_status, github_release_verify_status: report.github_release_verify_status, github_public_surface_audit_status: report.github_public_surface_audit_status, github_selective_commit_isolation_status: report.github_selective_commit_isolation_status, github_development_real_mcp_proof_status: report.github_development_real_mcp_proof_status })) assert.equal(value, true, `${key} readiness missing`);
 for (const [key, value] of Object.entries({ game_domain_module_status: report.game_domain_module_status, game_domain_adapter_contract_status: report.game_domain_adapter_contract_status, game_domain_inventory_status: report.game_domain_inventory_status, game_domain_config_status: report.game_domain_config_status, game_domain_compatibility_status: report.game_domain_compatibility_status, game_domain_profile_status: report.game_domain_profile_status, game_domain_backup_restore_status: report.game_domain_backup_restore_status, game_domain_roblox_luau_status: report.game_domain_roblox_luau_status, game_domain_validation_status: report.game_domain_validation_status, game_domain_real_mcp_proof_status: report.game_domain_real_mcp_proof_status })) assert.equal(value, true, `${key} readiness missing`);
+for (const [key, value] of Object.entries({ dependency_security_module_status: report.dependency_security_module_status, dependency_security_inventory_status: report.dependency_security_inventory_status, dependency_security_risk_status: report.dependency_security_risk_status, dependency_security_advisory_status: report.dependency_security_advisory_status, dependency_security_change_plan_status: report.dependency_security_change_plan_status, dependency_security_install_status: report.dependency_security_install_status, dependency_security_rollback_status: report.dependency_security_rollback_status, dependency_security_credential_boundary_status: report.dependency_security_credential_boundary_status, dependency_security_hardening_status: report.dependency_security_hardening_status, dependency_security_real_mcp_proof_status: report.dependency_security_real_mcp_proof_status })) assert.equal(value, true, `${key} readiness missing`);
 assert.equal(report.project_task_status, true, "project task support/test coverage is missing");
 assert.equal(report.dev_server_status, true, "dev server support/test coverage is missing");
 assert.equal(report.session_evidence_status, true, "session evidence support/test coverage is missing");
@@ -1371,12 +1399,13 @@ for (const key of ["testing_ci_discovery_status", "testing_ci_affected_graph_sta
 for (const key of ["app_engineering_inspection_status", "app_engineering_transaction_status", "app_engineering_acceptance_status", "app_engineering_rollback_status", "app_engineering_adapter_fixture_status", "app_engineering_real_mcp_proof_status", "dev_server_listener_cleanup_status"]) console.log(`${key}: ${yes(report[key])}`);
 for (const key of ["browser_interaction_registration_status", "browser_interaction_actions_status", "browser_interaction_runtime_evidence_status", "browser_interaction_state_viewport_status", "browser_interaction_compare_status", "browser_interaction_safety_status", "browser_interaction_cleanup_status", "browser_interaction_real_mcp_proof_status"]) console.log(`${key}: ${yes(report[key])}`);
 for (const key of ["windows_local_registration_status", "windows_local_powershell_status", "windows_local_environment_status", "windows_local_path_status", "windows_local_process_port_status", "windows_local_service_task_event_status", "windows_local_client_status", "windows_local_mutation_gate_status", "windows_local_real_mcp_proof_status"]) console.log(`${key}: ${yes(report[key])}`);
+for (const key of ["dependency_security_module_status", "dependency_security_inventory_status", "dependency_security_risk_status", "dependency_security_advisory_status", "dependency_security_change_plan_status", "dependency_security_install_status", "dependency_security_rollback_status", "dependency_security_credential_boundary_status", "dependency_security_hardening_status", "dependency_security_real_mcp_proof_status"]) console.log(`${key}: ${yes(report[key])}`);
 console.log(`project_task_status: ${yes(report.project_task_status)}`);
 console.log(`dev_server_status: ${yes(report.dev_server_status)}`);
 console.log(`session_evidence_status: ${yes(report.session_evidence_status)}`);
 console.log(`local_git_status: ${yes(report.local_git_status)}`);
 console.log(`github_destructive_admin_still_blocked: ${yes(report.github_repo_delete_block_default_status && report.github_force_push_block_default_status)}`);
-console.log(`package_install_still_blocked: ${yes(report.package_install_still_blocked)}`);
+console.log(`unsafe_package_install_paths_still_blocked: ${yes(report.package_install_still_blocked)}`);
 console.log(`giga_still_not_built: ${yes(report.giga_still_not_built)}`);
 console.log(`evidence_proof_bridge_status: ${yes(report.evidence_proof_bridge_status)}`);
 console.log(`safe_action_loop_status: ${yes(report.safe_action_loop_status)}`);

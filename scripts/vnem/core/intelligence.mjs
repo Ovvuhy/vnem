@@ -45,8 +45,8 @@ const DOMAIN_ADAPTERS = [
     feature(/\b(web|internet|freshness|changelog|release notes?)\b/, 3, "external freshness signal")
   ], ["source quality", "freshness", "citation accuracy"], ["vnem_tools_source_map", "vnem_tools_source_extract", "vnem_tools_claim_source_matrix"]),
   adapter("package_dependency", "Packages and dependency safety", 2, [
-    feature(/\b(package|dependency|dependencies|npm|pnpm|yarn|lockfile|upgrade|install script|supply chain)\b/, 5, "package or dependency work")
-  ], ["compatibility", "supply-chain safety", "rollback"], ["vnem_tools_dependency_scan", "vnem_tools_trust_boundary_classify", "vnem_tools_test_selection_plan"]),
+    feature(/\b(package|dependency|dependencies|npm|pnpm|yarn|lockfile|upgrade|install script|supply chain|sbom|advisori|vulnerability|license|typosquat)\b/, 5, "package or dependency work")
+  ], ["compatibility", "supply-chain safety", "advisory freshness", "test selection", "rollback"], ["vnem_tools_dependency_inventory", "vnem_tools_dependency_risk_audit", "vnem_tools_dependency_advisory_audit", "vnem_tools_dependency_change_analyze", "vnem_tools_dependency_upgrade_plan", "vnem_tools_dependency_install_apply", "vnem_tools_dependency_transaction_rollback"]),
   adapter("api_integration", "API integration and credential safety", 1, [
     feature(/\b(api|openapi|endpoint|http request|rest|graphql|webhook|oauth|bearer|api key)\b/, 5, "API or authentication surface"),
     feature(/\b(live request|allowlisted|get request|call the api|execute.*request)\b/, 4, "live API execution")
@@ -171,6 +171,13 @@ const TOOL_PURPOSES = {
   vnem_tools_source_extract: "extract bounded source evidence",
   vnem_tools_claim_source_matrix: "map claims to supporting sources",
   vnem_tools_dependency_scan: "inspect dependencies without installing packages",
+  vnem_tools_dependency_inventory: "build a direct/transitive lock graph and SBOM-style inventory without installing",
+  vnem_tools_dependency_risk_audit: "audit lifecycle, provenance, typosquat, maintenance, and license indicators with uncertainty",
+  vnem_tools_dependency_advisory_audit: "inspect fresh approved advisory evidence without lifecycle execution or registry credential exposure",
+  vnem_tools_dependency_change_analyze: "compare direct and transitive upgrades, major-version indicators, and affected tests",
+  vnem_tools_dependency_upgrade_plan: "bind exact package changes to current manifest and lock hashes",
+  vnem_tools_dependency_install_apply: "apply an approved script-disabled npm transaction with verification and automatic rollback",
+  vnem_tools_dependency_transaction_rollback: "restore exact pre-install dependency files and npm state after hash verification",
   vnem_tools_trust_boundary_classify: "classify external code, API, or skill trust boundaries",
   vnem_tools_api_request: "execute an approved allowlisted API request with redaction",
   vnem_tools_capability_gap_report: "report missing execution capability honestly",
@@ -461,6 +468,14 @@ export function coreRecommendedToolsCalls(classification, args = {}) {
     if (/roblox|rojo|luau/i.test(gameText)) candidates.push("vnem_tools_roblox_project_inspect", "vnem_tools_luau_symbol_map", "vnem_tools_game_project_validate");
     else candidates.push("vnem_tools_game_project_inspect", "vnem_tools_game_config_audit", "vnem_tools_mod_compatibility_analyze", "vnem_tools_game_project_validate");
   }
+  if (domainIds.has("package_dependency") && String(args.task_mode || "").toLowerCase() === "package") {
+    const dependencyText = `${args.user_goal || ""} ${args.task_context || ""}`;
+    candidates.push("vnem_tools_dependency_inventory", "vnem_tools_dependency_risk_audit");
+    if (/advisori|vulnerab|cve|audit|security/i.test(dependencyText)) candidates.push("vnem_tools_dependency_advisory_audit");
+    if (/compare|diff|transitive|breaking|major|upgrade path/i.test(dependencyText)) candidates.push("vnem_tools_dependency_change_analyze");
+    if (/install|add|update|upgrade/i.test(dependencyText)) candidates.push("vnem_tools_dependency_upgrade_plan", "vnem_tools_dependency_install_apply");
+    if (/rollback|restore|revert/i.test(dependencyText)) candidates.push("vnem_tools_dependency_transaction_rollback");
+  }
   if (domainIds.has("windows_local")) candidates.push("vnem_tools_windows_system_snapshot", "vnem_tools_powershell_command_plan", "vnem_tools_process_inspect", "vnem_tools_port_inspect");
   if (domainIds.has("github_publish")) {
     const githubText = `${args.user_goal || ""} ${args.task_context || ""}`;
@@ -472,6 +487,16 @@ export function coreRecommendedToolsCalls(classification, args = {}) {
       candidates.push("vnem_tools_github_remote_proof", "vnem_tools_github_actions_run_inspect");
     }
   }
+  if (domainIds.has("package_dependency") && String(args.task_mode || "").toLowerCase() !== "package") {
+    const dependencyText = `${args.user_goal || ""} ${args.task_context || ""}`;
+    if (/package|dependency|npm|pnpm|yarn|lockfile|sbom|supply.chain|advisori|vulnerab|typosquat|license|postinstall|preinstall/i.test(dependencyText)) {
+      candidates.push("vnem_tools_dependency_inventory", "vnem_tools_dependency_risk_audit");
+      if (/advisori|vulnerab|cve|audit|security/i.test(dependencyText)) candidates.push("vnem_tools_dependency_advisory_audit");
+      if (/compare|diff|transitive|breaking|major|upgrade path/i.test(dependencyText)) candidates.push("vnem_tools_dependency_change_analyze");
+      if (/install|add|update|upgrade/i.test(dependencyText)) candidates.push("vnem_tools_dependency_upgrade_plan", "vnem_tools_dependency_install_apply");
+      if (/rollback|restore|revert/i.test(dependencyText)) candidates.push("vnem_tools_dependency_transaction_rollback");
+    }
+  }
   if (domainIds.has("repo_code")) candidates.push("vnem_tools_repo_deep_map", "vnem_tools_patch_target_finder");
   if (domainIds.has("repo_code") || domainIds.has("app_engineering")) candidates.push("vnem_tools_test_selection_plan");
   // Give every material domain execution influence before filling deeper steps.
@@ -481,7 +506,7 @@ export function coreRecommendedToolsCalls(classification, args = {}) {
   }
   if (domainIds.has("repo_code") || domainIds.has("app_engineering")) candidates.push("vnem_tools_test_selection_plan");
   if (domainIds.has("github_publish")) candidates.push("vnem_tools_github_actions_status");
-  if (domainIds.has("package_dependency")) candidates.push("vnem_tools_dependency_scan");
+  if (domainIds.has("package_dependency")) candidates.push("vnem_tools_dependency_change_analyze", "vnem_tools_dependency_upgrade_plan");
   if (domainIds.has("browser_ui")) candidates.push("vnem_tools_browser_evidence_plan", "vnem_tools_browser_interaction_run");
   for (const route of routes) for (const tool of route.slice(2)) candidates.push(tool);
   if (!candidates.length && classification?.matched_flags?.repo_or_code) candidates.push(...DOMAIN_ADAPTERS.find((item) => item.id === "repo_code").tools);
@@ -509,7 +534,7 @@ export function coreProofRequirements(classification) {
   if (ids.has("github_publish")) requirements.push("bounded diff and unresolved-review evidence as relevant; exact local HEAD, remote branch SHA, and PR head SHA equality; exact-head GitHub Actions URL/job/step status; protected-branch state; release tag proof when claimed; and normal corrective-commit or rollback guidance without force-push");
   if (ids.has("browser_ui")) requirements.push("structured interaction results, before/after screenshots and pixel comparison, DOM and accessibility snapshots, console errors, failed network requests, responsive viewport/state coverage, and owned-browser cleanup evidence");
   if (ids.has("windows_local")) requirements.push("exact Windows targets, PATH/tool/provider/access evidence, process/port/path/service/task/event results as relevant, no command-line/config/secret collection, and scoped permission plus rollback before any system mutation");
-  if (ids.has("package_dependency")) requirements.push("lockfile/dependency diff, install-script risk, focused tests, and rollback");
+  if (ids.has("package_dependency")) requirements.push("parsed manifest/lock graph and SBOM inventory; lifecycle/source/typosquat/maintenance/license indicators; fresh approved advisory source or explicit absence; direct/transitive and breaking-major upgrade evidence; exact hash-bound plan; approved script-disabled install evidence; lockfile plus focused test/build verification; credential redaction; and automatic or explicit rollback proof");
   if (ids.has("project_automation")) requirements.push("exact reviewed command or graph id, exit/timeout state, process cleanup, bounded output evidence, and declared rollback status");
   if (ids.has("testing_ci")) requirements.push("affected-test graph reasons, tier result, exit/timing/failure groups, coverage source or explicit absence, and baseline/post benchmark evidence where claimed");
   if (ids.has("api_integration")) requirements.push("allowlist/auth reference, redacted response metadata, and provider/version scope");
@@ -541,7 +566,7 @@ export function buildCoreUsageContract(args = {}) {
 export function coreCommonTaskRoutes() {
   return [
     { task: "mixed app and UI", core_first: "vnem_entrypoint", tools_next: ["vnem_tools_repo_deep_map", "vnem_tools_ui_surface_review", "vnem_tools_browser_evidence_plan"] },
-    { task: "package upgrade and CI repair", core_first: "vnem_entrypoint", tools_next: ["vnem_tools_dependency_scan", "vnem_tools_failure_triage", "vnem_tools_test_selection_plan"] },
+    { task: "package upgrade and CI repair", core_first: "vnem_entrypoint", tools_next: ["vnem_tools_dependency_inventory", "vnem_tools_dependency_risk_audit", "vnem_tools_dependency_advisory_audit", "vnem_tools_dependency_change_analyze", "vnem_tools_dependency_upgrade_plan", "vnem_tools_dependency_install_apply"] },
     { task: "GitHub publishing and proof", core_first: "vnem_entrypoint", tools_next: ["vnem_tools_github_status", "vnem_tools_github_diff_review", "vnem_tools_github_remote_proof", "vnem_tools_github_actions_run_inspect", "vnem_tools_pr_quality_gate"] },
     { task: "Game, modding, or Roblox project work", core_first: "vnem_entrypoint", tools_next: ["vnem_tools_game_adapter_catalog", "vnem_tools_game_project_inspect", "vnem_tools_game_config_audit", "vnem_tools_mod_compatibility_analyze", "vnem_tools_roblox_project_inspect", "vnem_tools_luau_symbol_map", "vnem_tools_game_project_validate", "vnem_tools_mod_backup_create"] },
     { task: "evidence continuation", core_first: "vnem_continue_from_tools_evidence", tools_next: ["vnem_tools_evidence_pack", "vnem_tools_task_progress_truth_check"] }
