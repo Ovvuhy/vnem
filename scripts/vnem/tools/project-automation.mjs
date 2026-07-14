@@ -865,7 +865,7 @@ async function runExactProcess(argv, { cwd, timeoutMs, maxOutputBytes, runDir })
 async function terminateTree(child) {
   if (!child?.pid) return { attempted: false, reason: "missing_pid" };
   if (process.platform === "win32") {
-    const descendants = await windowsDescendantPids(child.pid);
+    const descendantSnapshot = windowsDescendantPids(child.pid);
     const result = await new Promise((resolve) => {
       const killer = spawn(resolveWindowsSystemCommand("taskkill.exe"), ["/PID", String(child.pid), "/T", "/F"], { windowsHide: true, stdio: ["ignore", "pipe", "pipe"], shell: false });
       let stdout = "";
@@ -875,6 +875,7 @@ async function terminateTree(child) {
       killer.on("error", (error) => resolve({ ok: false, exit_code: null, error: error.message, stdout, stderr }));
       killer.on("close", (code) => resolve({ ok: code === 0, exit_code: code, error: null, stdout, stderr }));
     });
+    const descendants = await descendantSnapshot;
     await sleep(150);
     const directTermination = [];
     const ownedPids = [...new Set([...descendants.pids, child.pid])];
@@ -895,6 +896,7 @@ async function terminateTree(child) {
       ok: cleanupVerified,
       stdout: redactText(result.stdout),
       stderr: redactText(result.stderr),
+      termination_order: "taskkill_started_without_waiting_for_descendant_snapshot",
       descendant_discovery: descendants,
       direct_termination: directTermination,
       cleanup_verification: { available: descendants.available, surviving_after_taskkill: survivingAfterTaskkill, surviving_after_cleanup: survivingAfterCleanup }
