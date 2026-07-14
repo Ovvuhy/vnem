@@ -43,7 +43,7 @@ const DOMAIN_ADAPTERS = [
   adapter("research_docs", "Current research and documentation", 3, [
     feature(/\b(research|latest|current|official docs?|documentation|citation|source retrieval|provenance)\b/, 5, "current-source requirement"),
     feature(/\b(web|internet|freshness|changelog|release notes?)\b/, 3, "external freshness signal")
-  ], ["source quality", "freshness", "citation accuracy"], ["vnem_tools_source_map", "vnem_tools_source_extract", "vnem_tools_claim_source_matrix"]),
+  ], ["source quality", "freshness", "citation accuracy"], ["vnem_tools_documentation_source_catalog", "vnem_tools_official_documentation_fetch", "vnem_tools_documentation_context", "vnem_tools_documentation_cache_status"]),
   adapter("package_dependency", "Packages and dependency safety", 2, [
     feature(/\b(package|dependency|dependencies|npm|pnpm|yarn|lockfile|upgrade|install script|supply chain|sbom|advisori|vulnerability|license|typosquat)\b/, 5, "package or dependency work")
   ], ["compatibility", "supply-chain safety", "advisory freshness", "test selection", "rollback"], ["vnem_tools_dependency_inventory", "vnem_tools_dependency_risk_audit", "vnem_tools_dependency_advisory_audit", "vnem_tools_dependency_change_analyze", "vnem_tools_dependency_upgrade_plan", "vnem_tools_dependency_install_apply", "vnem_tools_dependency_transaction_rollback"]),
@@ -81,6 +81,7 @@ const MODE_DOMAINS = {
   publish: "github_publish",
   recovery: "recovery",
   research: "research_docs",
+  documentation: "research_docs",
   ui_browser: "browser_ui",
   browser_ui: "browser_ui",
   validation: "evidence_validation",
@@ -184,6 +185,10 @@ const TOOL_PURPOSES = {
   vnem_tools_no_placebo_progress_audit: "detect registration-only or mocked-only progress",
   vnem_tools_local_session_recovery: "recover branch, HEAD, worktree, and local-only state",
   vnem_tools_repo_workflow_orchestrator: "select the smallest safe continuation workflow",
+  vnem_tools_documentation_source_catalog: "identify exact official domains and provider adapters before retrieval",
+  vnem_tools_official_documentation_fetch: "retrieve bounded relevant documentation with freshness, authority, date, version, and cache evidence",
+  vnem_tools_documentation_context: "build concise task-scoped context and expose cross-source contradictions",
+  vnem_tools_documentation_cache_status: "inspect documentation cache hashes, validators, timestamps, and stale state without page bodies",
   vnem_tools_source_map: "map current documentation sources and provenance",
   vnem_tools_source_extract: "extract bounded source evidence",
   vnem_tools_claim_source_matrix: "map claims to supporting sources",
@@ -488,9 +493,13 @@ export function coreRecommendedToolsCalls(classification, args = {}) {
   const refactorIntent = domainIds.has("repo_code") && /\b(refactor|rename\b[^\n]{0,80}\b(?:symbol|function|class|variable)|move\b[^\n]{0,80}\b(?:module|file)|extract\b[^\n]{0,80}\b(?:function|module)|dead code|exact references|preserve public|without changing public)\b/i.test(repoText);
   // Keep implementation essentials ahead of evidence-only steps when the route is capped.
   if (domainIds.has("skills") && String(args.task_mode || "").toLowerCase() === "skill") candidates.push(...domainTools(DOMAIN_ADAPTERS.find((item) => item.id === "skills"), args));
+  if (domainIds.has("research_docs") && String(args.task_mode || "").toLowerCase() === "documentation") candidates.push(...domainTools(DOMAIN_ADAPTERS.find((item) => item.id === "research_docs"), args));
   if (refactorIntent) candidates.push(...domainTools(DOMAIN_ADAPTERS.find((item) => item.id === "repo_code"), args));
   if (domainIds.has("app_engineering")) candidates.push("vnem_tools_app_inspect", "vnem_tools_app_vertical_slice_plan", "vnem_tools_repo_deep_map");
   if (domainIds.has("project_automation")) candidates.push("vnem_tools_project_automation_inspect", "vnem_tools_project_command_run", "vnem_tools_project_task_graph_plan");
+  if (domainIds.has("research_docs") && /\b(current docs?|official docs?|official documentation|framework documentation|library documentation|documentation retrieval|api reference)\b/i.test(repoText)) {
+    candidates.push("vnem_tools_documentation_source_catalog", "vnem_tools_official_documentation_fetch", "vnem_tools_documentation_context", "vnem_tools_documentation_cache_status");
+  }
   if (domainIds.has("game_modding")) {
     const gameText = `${args.user_goal || ""} ${args.task_context || ""}`;
     candidates.push("vnem_tools_game_adapter_catalog");
@@ -827,10 +836,10 @@ function safeAssumptions(classification, args, missing) {
 
 function permissionImplicationsFor(classification, sequence, args) {
   const tools = sequence.map((item) => item.tool);
-  const network = tools.some((tool) => /github|cloudflare|api_request|api_adapter_(?:execute|compensate)|skill_source_verify|browser|web_search|source_extract/.test(tool));
+  const network = tools.some((tool) => /github|cloudflare|api_request|api_adapter_(?:execute|compensate)|skill_source_verify|official_documentation_fetch|browser|web_search|source_extract/.test(tool));
   const mutation = tools.some((tool) => /apply|run_|push|create|deploy|rollback|api_request|api_adapter_(?:compensate|review_activate)/.test(tool));
   return {
-    default_profile: mutation ? "safe-local-dev or stronger scoped grant" : "safe-readonly",
+    default_profile: mutation || network ? "safe-local-dev or stronger scoped grant" : "safe-readonly",
     network_approval_may_be_required: network,
     mutation_approval_required: mutation,
     skill_execution_scope: tools.includes("vnem_tools_skill_adapter_execute") ? "vetted_skill_execute for VNEM-owned pure/read handlers; command-backed adapters additionally require skill_execute and run_test" : null,

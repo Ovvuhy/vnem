@@ -952,11 +952,17 @@
       "vnem_tools_terminal_session": [
         "scripts/test-tools-precision-subsystem.mjs"
       ],
+      "vnem_tools_documentation_source_catalog": [
+        "scripts/test-tools-giga-current-documentation.mjs"
+      ],
       "vnem_tools_official_documentation_fetch": [
-        "scripts/test-tools-precision-subsystem.mjs"
+        "scripts/test-tools-giga-current-documentation.mjs"
       ],
       "vnem_tools_documentation_context": [
-        "scripts/test-tools-precision-subsystem.mjs"
+        "scripts/test-tools-giga-current-documentation.mjs"
+      ],
+      "vnem_tools_documentation_cache_status": [
+        "scripts/test-tools-giga-current-documentation.mjs"
       ],
       "vnem_tools_ephemeral_script": [
         "scripts/test-tools-precision-subsystem.mjs"

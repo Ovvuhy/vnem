@@ -4,6 +4,13 @@ import { existsSync } from "node:fs";
 import { mkdir, readFile, realpath, rename, stat, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 
+export {
+  DOCUMENTATION_SOURCE_REGISTRY,
+  DocumentationContextStore,
+  buildDocumentationInjection,
+  fetchDocumentation
+} from "./documentation-intelligence.mjs";
+
 export class PrecisionExecutionError extends Error {
   constructor(message, code = "precision_execution_error", details = {}) {
     super(message);
@@ -13,81 +20,7 @@ export class PrecisionExecutionError extends Error {
   }
 }
 
-export const DOCUMENTATION_SOURCE_REGISTRY = {
-  react: {
-    name: "React",
-    url: "https://react.dev/reference/react",
-    topics: {
-      hooks: "https://react.dev/reference/react/hooks",
-      components: "https://react.dev/reference/react/components",
-      performance: "https://react.dev/learn/render-and-commit"
-    }
-  },
-  next: {
-    name: "Next.js",
-    url: "https://nextjs.org/docs",
-    aliases: ["nextjs", "next.js"]
-  },
-  vite: {
-    name: "Vite",
-    url: "https://vite.dev/guide/"
-  },
-  tailwind: {
-    name: "Tailwind CSS",
-    url: "https://tailwindcss.com/docs/installation/using-vite",
-    aliases: ["tailwindcss"]
-  },
-  shadcn: {
-    name: "shadcn/ui",
-    url: "https://ui.shadcn.com/docs",
-    aliases: ["shadcn-ui", "shadcn ui"]
-  },
-  playwright: {
-    name: "Playwright",
-    url: "https://playwright.dev/docs/intro"
-  },
-  phaser: {
-    name: "Phaser",
-    url: "https://docs.phaser.io/phaser/getting-started/what-is-phaser"
-  },
-  pixi: {
-    name: "PixiJS",
-    url: "https://pixijs.com/8.x/guides",
-    aliases: ["pixijs", "pixi.js"]
-  },
-  three: {
-    name: "Three.js",
-    url: "https://threejs.org/docs/index.html#manual/en/introduction/Creating-a-scene",
-    aliases: ["threejs", "three.js"]
-  },
-  babylon: {
-    name: "Babylon.js",
-    url: "https://doc.babylonjs.com/",
-    aliases: ["babylonjs", "babylon.js"]
-  },
-  excalibur: {
-    name: "Excalibur",
-    url: "https://excaliburjs.com/docs/"
-  },
-  matter: {
-    name: "Matter.js",
-    url: "https://brm.io/matter-js/docs/",
-    aliases: ["matterjs", "matter.js"]
-  },
-  rapier: {
-    name: "Rapier",
-    url: "https://rapier.rs/docs/user_guides/javascript/getting_started_js"
-  },
-  luau: {
-    name: "Luau",
-    url: "https://luau.org/getting-started",
-    aliases: ["roblox luau"]
-  }
-};
-
 const DEFAULT_MAX_FILE_BYTES = 2 * 1024 * 1024;
-const DEFAULT_MAX_DOC_BYTES = 256 * 1024;
-const DEFAULT_CONTEXT_CHARS = 12000;
 const DEFAULT_TIMEOUT_MS = 30000;
 const DEFAULT_MAX_TIMEOUT_MS = 120000;
 const DEFAULT_MAX_OUTPUT_BYTES = 96 * 1024;
@@ -585,134 +518,6 @@ export function applyUnifiedDiff(original, diffText) {
   };
 }
 
-export async function fetchDocumentation(options) {
-  const {
-    library,
-    topic = "",
-    url,
-    version = "",
-    maxBytes = DEFAULT_MAX_DOC_BYTES,
-    contextChars = DEFAULT_CONTEXT_CHARS,
-    fetchImpl = globalThis.fetch,
-    timeoutMs = 15000
-  } = options || {};
-
-  if (typeof fetchImpl !== "function") {
-    throw new PrecisionExecutionError("No fetch implementation is available in this runtime.", "fetch_unavailable");
-  }
-
-  const source = resolveDocumentationSource(library, topic, url);
-  assertSafeDocumentationUrl(source.url);
-
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), timeoutMs);
-  let response;
-  try {
-    response = await fetchImpl(source.url, {
-      signal: controller.signal,
-      headers: {
-        "accept": "text/markdown,text/plain,text/html;q=0.9,*/*;q=0.5",
-        "user-agent": "vnem-precision-doc-fetch/1.0"
-      }
-    });
-  } catch (error) {
-    throw new PrecisionExecutionError(`Documentation fetch failed: ${error.message}`, "documentation_fetch_failed", {
-      url: source.url
-    });
-  } finally {
-    clearTimeout(timer);
-  }
-
-  if (!response?.ok) {
-    throw new PrecisionExecutionError(`Documentation fetch returned HTTP ${response?.status || "unknown"}.`, "documentation_fetch_http_error", {
-      url: source.url,
-      status: response?.status || null
-    });
-  }
-
-  const contentType = headerValue(response.headers, "content-type");
-  const rawText = await response.text();
-  const rawBytes = Buffer.byteLength(rawText, "utf8");
-  if (rawBytes > maxBytes) {
-    throw new PrecisionExecutionError("Documentation response exceeds the configured byte limit.", "documentation_too_large", {
-      url: source.url,
-      bytes: rawBytes,
-      max_bytes: maxBytes
-    });
-  }
-
-  const text = normalizeDocumentationText(rawText, contentType);
-  const excerpt = text.slice(0, contextChars).trim();
-  const document = {
-    library: source.library,
-    requested_library: library || null,
-    topic: topic || null,
-    version: version || null,
-    url: source.url,
-    fetched_at: new Date().toISOString(),
-    content_type: contentType || "unknown",
-    bytes: rawBytes,
-    sha256: sha256(text),
-    excerpt,
-    source_trust: url ? "user_supplied_https" : "vnem_registry_known_docs"
-  };
-
-  return {
-    ok: true,
-    documentation: document,
-    context_injection: buildDocumentationInjection([document]),
-    policy:
-      "Inject this documentation into the worker context before framework-specific code is written. If the client cannot inject context automatically, paste or attach the context_injection block to the worker task."
-  };
-}
-
-export class DocumentationContextStore {
-  constructor(options = {}) {
-    this.maxEntries = options.maxEntries || 50;
-    this.records = new Map();
-  }
-
-  recordFetch({ workerId = "default", taskId = "default", documentation }) {
-    if (!documentation) {
-      throw new PrecisionExecutionError("documentation is required.", "missing_documentation");
-    }
-    const key = this.key(workerId, taskId, documentation.library, documentation.topic || documentation.url);
-    const record = {
-      worker_id: workerId,
-      task_id: taskId,
-      recorded_at: new Date().toISOString(),
-      documentation
-    };
-    this.records.set(key, record);
-    while (this.records.size > this.maxEntries) {
-      this.records.delete(this.records.keys().next().value);
-    }
-    return record;
-  }
-
-  list({ workerId, taskId, library } = {}) {
-    return [...this.records.values()].filter((record) => {
-      if (workerId && record.worker_id !== workerId) return false;
-      if (taskId && record.task_id !== taskId) return false;
-      if (library && normalizeKey(record.documentation.library) !== normalizeKey(library)) return false;
-      return true;
-    });
-  }
-
-  hasDocumentation({ workerId, taskId, library } = {}) {
-    return this.list({ workerId, taskId, library }).length > 0;
-  }
-
-  buildContextInjection({ workerId, taskId, library } = {}) {
-    const records = this.list({ workerId, taskId, library });
-    return buildDocumentationInjection(records.map((record) => record.documentation));
-  }
-
-  key(workerId, taskId, library, topic) {
-    return [workerId, taskId, normalizeKey(library), normalizeKey(topic || "")].join("::");
-  }
-}
-
 export class StatefulTerminalSession {
   constructor(options = {}) {
     this.workspaceRoot = path.resolve(options.workspaceRoot || process.cwd());
@@ -868,29 +673,6 @@ export function parseCommandLine(command) {
   return tokens;
 }
 
-export function buildDocumentationInjection(documents) {
-  const docs = (documents || []).filter(Boolean);
-  if (!docs.length) {
-    return "";
-  }
-  return [
-    "# VNEM Dynamic Documentation Injection",
-    "",
-    "Use this fetched documentation as active worker context before writing framework-specific code. Prefer the cited source over memory when syntax conflicts.",
-    "",
-    ...docs.flatMap((doc, index) => [
-      `## ${index + 1}. ${doc.library}${doc.topic ? ` - ${doc.topic}` : ""}`,
-      "",
-      `URL: ${doc.url}`,
-      `Fetched: ${doc.fetched_at}`,
-      `SHA-256: ${doc.sha256}`,
-      "",
-      doc.excerpt,
-      ""
-    ])
-  ].join("\n").trim();
-}
-
 function applyTempSuffix(filePath) {
   const dir = path.dirname(filePath);
   const name = path.basename(filePath);
@@ -1029,121 +811,6 @@ function detectLineEnding(text) {
 
 function arraysEqual(left, right) {
   return left.length === right.length && left.every((value, index) => value === right[index]);
-}
-
-function resolveDocumentationSource(library, topic, url) {
-  if (url) {
-    let host = "custom documentation";
-    try {
-      host = new URL(url).hostname;
-    } catch {
-      // The later URL safety check returns the precise validation error.
-    }
-    return {
-      library: library || host,
-      url
-    };
-  }
-  const key = normalizeKey(library);
-  if (!key) {
-    throw new PrecisionExecutionError("library or url is required.", "missing_documentation_source");
-  }
-
-  const match = Object.entries(DOCUMENTATION_SOURCE_REGISTRY).find(([entryKey, entry]) => {
-    const names = [entryKey, entry.name, ...(entry.aliases || [])].map(normalizeKey);
-    return names.includes(key);
-  });
-  if (!match) {
-    throw new PrecisionExecutionError("Unknown documentation source. Provide a specific HTTPS documentation URL.", "unknown_documentation_source", {
-      library
-    });
-  }
-
-  const [, entry] = match;
-  const topicKey = normalizeKey(topic);
-  const topicUrl = topicKey && entry.topics
-    ? Object.entries(entry.topics).find(([name]) => normalizeKey(name) === topicKey)?.[1]
-    : null;
-  return {
-    library: entry.name,
-    url: topicUrl || entry.url
-  };
-}
-
-function assertSafeDocumentationUrl(value) {
-  let url;
-  try {
-    url = new URL(value);
-  } catch {
-    throw new PrecisionExecutionError("Documentation URL is invalid.", "invalid_documentation_url", {
-      url: value
-    });
-  }
-  if (url.protocol !== "https:") {
-    throw new PrecisionExecutionError("Documentation URL must use HTTPS.", "documentation_url_not_https", {
-      url: value
-    });
-  }
-  if (url.username || url.password) {
-    throw new PrecisionExecutionError("Documentation URL must not contain credentials.", "documentation_url_credentials_blocked");
-  }
-  const host = url.hostname.toLowerCase();
-  if (
-    host === "localhost" ||
-    host.endsWith(".local") ||
-    host === "0.0.0.0" ||
-    host === "::1" ||
-    host.startsWith("127.") ||
-    host.startsWith("10.") ||
-    host.startsWith("192.168.") ||
-    /^172\.(1[6-9]|2\d|3[0-1])\./.test(host)
-  ) {
-    throw new PrecisionExecutionError("Documentation URL points at a local/private host and is blocked.", "private_host_blocked", {
-      host
-    });
-  }
-}
-
-function normalizeDocumentationText(rawText, contentType) {
-  if (/html/i.test(contentType) || /<html|<!doctype html/i.test(rawText)) {
-    return decodeHtmlEntities(rawText)
-      .replace(/<script[\s\S]*?<\/script>/gi, " ")
-      .replace(/<style[\s\S]*?<\/style>/gi, " ")
-      .replace(/<svg[\s\S]*?<\/svg>/gi, " ")
-      .replace(/<!--[\s\S]*?-->/g, " ")
-      .replace(/<br\s*\/?>/gi, "\n")
-      .replace(/<\/(p|div|section|article|main|aside|header|footer|nav|li|h[1-6]|pre|code|tr)>/gi, "\n")
-      .replace(/<[^>]+>/g, " ")
-      .replace(/[ \t]+/g, " ")
-      .replace(/\n[ \t]+/g, "\n")
-      .replace(/\n{3,}/g, "\n\n")
-      .trim();
-  }
-
-  return rawText
-    .replace(/\r\n/g, "\n")
-    .replace(/[ \t]+$/gm, "")
-    .replace(/\n{4,}/g, "\n\n\n")
-    .trim();
-}
-
-function decodeHtmlEntities(text) {
-  return text
-    .replace(/&amp;/g, "&")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&quot;/g, "\"")
-    .replace(/&#39;/g, "'")
-    .replace(/&#(\d+);/g, (_match, code) => String.fromCodePoint(Number.parseInt(code, 10)))
-    .replace(/&#x([0-9a-f]+);/gi, (_match, code) => String.fromCodePoint(Number.parseInt(code, 16)));
-}
-
-function headerValue(headers, name) {
-  if (!headers) return "";
-  if (typeof headers.get === "function") {
-    return headers.get(name) || "";
-  }
-  return headers[name] || headers[name.toLowerCase()] || "";
 }
 
 async function resolveWorkspaceDirectory(workspaceRoot, requestedPath) {

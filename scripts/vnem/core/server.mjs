@@ -315,7 +315,7 @@ function registerTools(mcpServer) {
         compatibility_facts: z.array(CORE_COMPATIBILITY_FACT_SCHEMA).default([]),
         tools_evidence_summary: z.any().default({}).describe("Optional compact Tools evidence packet for completion-aware continuation."),
         task_mode: z
-          .enum(["auto", "answer_only", "repo_inspection", "implementation", "testing", "ci", "coverage", "benchmarks", "project_automation", "terminal", "debugging", "validation", "publish", "recovery", "research", "ui_browser", "patch_targeting", "mcp_tool_audit", "evidence_pack", "no_placebo", "cloudflare", "windows", "package", "api", "skill", "database", "game_modding", "client_setup"])
+          .enum(["auto", "answer_only", "repo_inspection", "implementation", "testing", "ci", "coverage", "benchmarks", "project_automation", "terminal", "debugging", "validation", "publish", "recovery", "research", "documentation", "ui_browser", "patch_targeting", "mcp_tool_audit", "evidence_pack", "no_placebo", "cloudflare", "windows", "package", "api", "skill", "database", "game_modding", "client_setup"])
           .default("auto")
       },
       annotations: READ_ONLY
@@ -2978,6 +2978,7 @@ function selectToolsForTask(args = {}) {
   const context = String(args.known_context || "");
   const hint = String(args.task_type_hint || "");
   const type = inferCoreToolTaskType(`${hint} ${task} ${context}`);
+  const documentationTask = /\b(current docs|official docs?|official documentation|framework documentation|library documentation|api reference|documentation retrieval)\b/i.test(`${hint} ${task} ${context}`);
   const selected = new Set(["vnem_tools_manifest", "vnem_tools_permission_status", "vnem_tools_action_policy_preview", "vnem_tools_trust_boundary_classify", "vnem_tools_start_session", "vnem_tools_finish_session"]);
   const add = (...tools) => tools.filter(Boolean).forEach((tool) => selected.add(tool));
   if (["coding", "ui_web", "debugging", "file_investigation", "local_project_modification", "security_sensitive"].includes(type)) {
@@ -2988,6 +2989,7 @@ function selectToolsForTask(args = {}) {
   if (type === "debugging") add("vnem_tools_debug_evidence", "vnem_tools_architecture_review", "vnem_tools_code_search", "vnem_tools_read_many_files", "vnem_tools_run_project_task", "vnem_tools_apply_patch_batch");
   if (["research", "direct_url_source", "current_research", "website_understanding"].includes(type)) add("vnem_tools_source_quality_check", "vnem_tools_research_brief", "vnem_tools_browser_research_pack", "vnem_tools_claim_source_matrix", "vnem_tools_research_gap_detector", "vnem_tools_source_map", "vnem_tools_source_extract", "vnem_tools_source_graph");
   if (["research", "current_research"].includes(type)) add("vnem_tools_search_provider_manifest", "vnem_tools_search_query_builder", "vnem_tools_web_search", "vnem_tools_search_result_ranker");
+  if (documentationTask) add("vnem_tools_documentation_source_catalog", "vnem_tools_official_documentation_fetch", "vnem_tools_documentation_context", "vnem_tools_documentation_cache_status");
   if (["direct_url_source", "website_understanding"].includes(type)) add("vnem_tools_fetch_url_text", "vnem_tools_browser_page_inspect", "vnem_tools_url_reputation_check", "vnem_tools_captcha_detector");
   if (type === "website_understanding") add("vnem_tools_browser_readability_extract", "vnem_tools_browser_link_map", "vnem_tools_browser_dom_search");
   if (type === "direct_url_source") add("vnem_tools_browser_readability_extract", "vnem_tools_browser_link_map");
@@ -2997,7 +2999,7 @@ function selectToolsForTask(args = {}) {
   if (/download|installer|redirect|captcha|phishing|malware|scam|credential|suspicious/i.test(task + " " + context)) add("vnem_tools_redirect_chain_check", "vnem_tools_url_reputation_check", "vnem_tools_captcha_detector", "vnem_tools_download_safety_check");
   const selectedTools = [...selected];
   const dryRunSteps = selectedTools.filter((tool) => /apply_patch|vertical_slice_apply|app_acceptance|app_transaction_rollback|run_project_task|start_dev_server|browser_interaction|browser_capture|browser_page|browser_readability|browser_link|browser_dom|browser_accessibility|browser_compare|web_search|redirect_chain|download_safety|fetch_url_text|git_commit|api_request|restore/.test(tool)).map((tool) => `${tool}: dry-run first before approval or real action when network/mutation/source fetching is involved`);
-  const approvalSteps = selectedTools.filter((tool) => /apply_patch|vertical_slice_apply|app_acceptance|app_transaction_rollback|run_project_task|start_dev_server|stop_dev_server|browser_interaction|browser_capture|browser_page|browser_readability|browser_link|browser_dom|browser_accessibility|browser_compare|web_search|redirect_chain|download_safety|fetch_url_text|git_commit|api_request|restore/.test(tool)).map((tool) => `${tool}: requires explicit approval for real external/network/mutation action`);
+  const approvalSteps = selectedTools.filter((tool) => /apply_patch|vertical_slice_apply|app_acceptance|app_transaction_rollback|run_project_task|start_dev_server|stop_dev_server|browser_interaction|browser_capture|browser_page|browser_readability|browser_link|browser_dom|browser_accessibility|browser_compare|web_search|redirect_chain|download_safety|fetch_url_text|official_documentation_fetch|git_commit|api_request|restore/.test(tool)).map((tool) => `${tool}: requires explicit approval for real external/network/mutation action`);
   const currentSearchRequired = currentResearchRequired(type, `${task} ${context}`);
   return {
     task,
@@ -3072,6 +3074,10 @@ function buildCoreToolsPlan(args = {}) {
   push("vnem_tools_source_map", "map repo/docs/source structure before extraction; no broad crawl");
   push("vnem_tools_source_extract", "extract bounded selected targets with redaction and skipped/blocked accounting");
   push("vnem_tools_source_graph", "compare sources for officialness, freshness, claim support, and contradictions");
+  push("vnem_tools_documentation_source_catalog", "identify exact official documentation domains and provider adapters before retrieval");
+  push("vnem_tools_official_documentation_fetch", "retrieve bounded relevant documentation with source authority, cache, date, version, and stale evidence", true, false);
+  push("vnem_tools_documentation_context", "build compact task-scoped documentation context and report contradictions");
+  push("vnem_tools_documentation_cache_status", "inspect cached documentation hashes, validators, timestamps, and stale status without page bodies");
   push("vnem_tools_architecture_review", "inspect real entry points/registries/tests/configs and flag fake parallel systems/dead code");
   push("vnem_tools_ui_surface_review", "inspect real UI routes/components/render paths/state coverage without browser automation");
   push("vnem_tools_browser_evidence_plan", "plan bounded localhost/file browser proof checklist before any capture");

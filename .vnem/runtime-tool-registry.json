@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "source": "live MCP runtime registry status calls",
-  "total_tools": 301,
+  "total_tools": 303,
   "servers": {
     "core": {
       "schema_version": "1.0.0",
@@ -2560,7 +2560,7 @@
       "server_name": "vnem-tools",
       "version": "1.0.1",
       "valid": true,
-      "tool_count": 226,
+      "tool_count": 228,
       "alias_count": 0,
       "categories": {
         "action": 2,
@@ -2580,7 +2580,7 @@
         "coverage": 1,
         "dead": 1,
         "dependency": 7,
-        "documentation": 1,
+        "documentation": 2,
         "download": 1,
         "entrypoint": 1,
         "ephemeral": 1,
@@ -2625,7 +2625,7 @@
         "search": 4,
         "secret": 1,
         "skill": 5,
-        "source": 8,
+        "source": 9,
         "start": 2,
         "status": 1,
         "stop": 1,
@@ -2648,13 +2648,13 @@
       "side_effect_classes": {
         "destructive_mutation": 39,
         "network_mutation": 19,
-        "read_only": 168
+        "read_only": 170
       },
       "validation": {
         "valid": true,
         "server_name": "vnem-tools",
         "version": "1.0.1",
-        "tool_count": 226,
+        "tool_count": 228,
         "alias_count": 0,
         "errors": [],
         "warnings": [
@@ -10817,10 +10817,48 @@
           "input_schema_present": true
         },
         {
+          "name": "vnem_tools_documentation_source_catalog",
+          "version": "1.0.1",
+          "title": "Documentation Source Catalog",
+          "description": "List VNEM's current official documentation providers, exact approved domains, provider adapters, topic routes, and authority/currentness policy without a network call.",
+          "category": "source",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/precision/tools.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-current-documentation.mjs"
+          ],
+          "benchmark_scenarios": [
+            "precision shared runtime MCP behavior"
+          ],
+          "input_schema_present": true
+        },
+        {
           "name": "vnem_tools_official_documentation_fetch",
           "version": "1.0.1",
-          "title": "Official Documentation Fetch",
-          "description": "Fetch bounded HTTPS documentation from VNEM's known official source registry or a user-supplied URL and record compact task-scoped read-before-write context.",
+          "title": "Current Documentation Fetch",
+          "description": "Retrieve bounded relevant documentation with exact official-domain classification, conditional cache revalidation, source date/version evidence, and explicit stale/non-authoritative limits.",
           "category": "official",
           "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
           "annotations": {
@@ -10847,7 +10885,7 @@
           },
           "implementation_module": "scripts/vnem/precision/tools.mjs",
           "behavior_test_references": [
-            "scripts/test-tools-precision-subsystem.mjs"
+            "scripts/test-tools-giga-current-documentation.mjs"
           ],
           "benchmark_scenarios": [
             "precision shared runtime MCP behavior"
@@ -10885,7 +10923,45 @@
           },
           "implementation_module": "scripts/vnem/precision/tools.mjs",
           "behavior_test_references": [
-            "scripts/test-tools-precision-subsystem.mjs"
+            "scripts/test-tools-giga-current-documentation.mjs"
+          ],
+          "benchmark_scenarios": [
+            "precision shared runtime MCP behavior"
+          ],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_documentation_cache_status",
+          "version": "1.0.1",
+          "title": "Documentation Cache Status",
+          "description": "Inspect persisted documentation cache timestamps, hashes, validators, and stale status without returning cached page bodies.",
+          "category": "documentation",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/precision/tools.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-current-documentation.mjs"
           ],
           "benchmark_scenarios": [
             "precision shared runtime MCP behavior"

@@ -1,11 +1,16 @@
 import path from "node:path";
 import {
-  DocumentationContextStore,
   PatchTransactionStore,
   PrecisionExecutionError,
   StatefulTerminalSession,
-  fetchDocumentation
+  sha256
 } from "./execution.mjs";
+import {
+  DocumentationCache,
+  DocumentationContextStore,
+  documentationSourceCatalog,
+  fetchDocumentation
+} from "./documentation-intelligence.mjs";
 import {
   CodebaseSemanticIndex,
   VerificationLoopStore,
@@ -17,7 +22,11 @@ export class PrecisionRuntime {
   constructor(options = {}) {
     this.workspaceRoot = path.resolve(options.workspaceRoot || process.cwd());
     this.runtimeRoot = options.runtimeRoot || path.join(this.workspaceRoot, ".vnem-runtime", "precision");
-    this.fetchImpl = options.fetchImpl;
+    this.fetchImpl = options.fetchImpl || documentationFetchImpl();
+    this.documentationCache = new DocumentationCache({
+      ...options.documentationCache,
+      cachePath: options.documentationCache?.cachePath || path.join(this.runtimeRoot, "documentation-cache.json")
+    });
     this.documentationStore = new DocumentationContextStore(options.documentationStore);
     this.terminalSessions = new Map();
     this.verificationLoops = new VerificationLoopStore({
@@ -97,10 +106,18 @@ export class PrecisionRuntime {
     const result = await fetchDocumentation({
       library: args.library,
       topic: args.topic,
+      query: args.query,
       url: args.url,
       version: args.version,
       maxBytes: args.max_bytes,
-      fetchImpl: this.fetchImpl || documentationFetchImpl()
+      contextChars: args.context_chars,
+      maxSections: args.max_sections,
+      maxAgeSeconds: args.max_age_seconds,
+      cacheMode: args.cache_mode,
+      allowCommunity: args.allow_community,
+      timeoutMs: args.timeout_ms,
+      cache: this.documentationCache,
+      fetchImpl: this.fetchImpl
     });
     const record = this.documentationStore.recordFetch({
       workerId: args.worker_id,
@@ -114,21 +131,49 @@ export class PrecisionRuntime {
     const records = this.documentationStore.list({
       workerId: args.worker_id,
       taskId: args.task_id,
-      library: args.library
+      library: args.library,
+      includeCommunity: args.include_community !== false
+    });
+    const contradictions = this.documentationStore.contradictions({
+      workerId: args.worker_id,
+      taskId: args.task_id,
+      library: args.library,
+      includeCommunity: args.include_community !== false
+    });
+    const contextInjection = this.documentationStore.buildContextInjection({
+      workerId: args.worker_id,
+      taskId: args.task_id,
+      library: args.library,
+      includeCommunity: args.include_community !== false,
+      maxContextChars: args.max_context_chars
     });
     return {
       ok: true,
+      operation_result: "documentation_context_built",
       worker_id: args.worker_id || null,
       task_id: args.task_id || null,
       library: args.library || null,
       record_count: records.length,
       records,
-      context_injection: this.documentationStore.buildContextInjection({
-        workerId: args.worker_id,
-        taskId: args.task_id,
-        library: args.library
-      })
+      contradiction_count: contradictions.length,
+      contradictions,
+      context_injection: contextInjection,
+      context_chars: contextInjection.length,
+      context_sha256: sha256(contextInjection),
+      full_pages_injected: false
     };
+  }
+
+  async documentationCacheStatus(args = {}) {
+    return await this.documentationCache.status({
+      library: args.library,
+      url: args.url,
+      max_age_seconds: args.max_age_seconds
+    });
+  }
+
+  documentationSourceCatalog(args = {}) {
+    return documentationSourceCatalog({ library: args.library });
   }
 
   async executeTerminal(args = {}) {
@@ -209,12 +254,40 @@ function normalizePatch(patch = {}) {
 }
 
 function documentationFetchImpl() {
+  const responseFixtures = parseResponseFixtures(process.env.VNEM_PRECISION_TEST_DOC_RESPONSES);
   const fixture = process.env.VNEM_PRECISION_TEST_DOC_TEXT;
-  if (!fixture) return undefined;
-  return async () => ({
-    ok: true,
-    status: 200,
-    headers: { get: () => process.env.VNEM_PRECISION_TEST_DOC_CONTENT_TYPE || "text/markdown" },
-    text: async () => fixture
-  });
+  if (!responseFixtures && !fixture) return undefined;
+  const callCounts = new Map();
+  return async (url) => {
+    let responseFixture;
+    if (responseFixtures) {
+      const candidate = responseFixtures[url] ?? responseFixtures["*"];
+      const sequence = Array.isArray(candidate) ? candidate : [candidate];
+      const callIndex = callCounts.get(url) || 0;
+      responseFixture = sequence[Math.min(callIndex, sequence.length - 1)];
+      callCounts.set(url, callIndex + 1);
+    }
+    const body = String(responseFixture?.body ?? fixture ?? "");
+    const status = Number(responseFixture?.status ?? 200);
+    const responseHeaders = Object.fromEntries(Object.entries(responseFixture?.headers || {
+      "content-type": process.env.VNEM_PRECISION_TEST_DOC_CONTENT_TYPE || "text/markdown"
+    }).map(([name, value]) => [name.toLowerCase(), String(value)]));
+    return {
+      ok: status >= 200 && status < 300,
+      status,
+      headers: { get: (name) => responseHeaders[String(name).toLowerCase()] || null },
+      text: async () => body,
+      arrayBuffer: async () => Buffer.from(body, "utf8")
+    };
+  };
+}
+
+function parseResponseFixtures(value) {
+  if (!value) return null;
+  try {
+    const parsed = JSON.parse(value);
+    return parsed && typeof parsed === "object" ? parsed : null;
+  } catch {
+    return null;
+  }
 }

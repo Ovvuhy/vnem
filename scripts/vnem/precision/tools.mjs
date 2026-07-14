@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { PrecisionExecutionError } from "./execution.mjs";
+import { DocumentationIntelligenceError } from "./documentation-intelligence.mjs";
 
 const READ_ONLY_LOCAL = { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false };
 const READ_ONLY_NETWORK = { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true };
@@ -46,9 +47,16 @@ const verificationSchema = {
 const documentationSchema = {
   library: z.string().min(1),
   topic: z.string().optional(),
+  query: z.string().max(500).optional(),
   url: z.string().url().optional(),
   version: z.string().optional(),
   max_bytes: z.number().int().min(1024).max(512000).default(262144),
+  context_chars: z.number().int().min(1000).max(12000).default(8000),
+  max_sections: z.number().int().min(1).max(8).default(4),
+  max_age_seconds: z.number().int().min(0).max(2592000).optional(),
+  cache_mode: z.enum(["prefer_fresh", "refresh", "cache_only"]).default("prefer_fresh"),
+  allow_community: z.boolean().default(false),
+  timeout_ms: z.number().int().min(1000).max(60000).default(15000),
   worker_id: z.string().default("default"),
   task_id: z.string().default("default"),
   approved: z.boolean().default(false),
@@ -67,6 +75,7 @@ const ephemeralSchema = {
 
 export function registerToolsPrecisionSubsystem(server, runtime, options = {}) {
   const testReference = options.testReference || "scripts/test-tools-precision-subsystem.mjs";
+  const documentationTestReference = options.documentationTestReference || "scripts/test-tools-giga-current-documentation.mjs";
   register(server, options.registry, "vnem_tools_structural_code_search", {
     title: "Structural Code Search",
     description: "Lazily build and incrementally update a local private language-aware code index, then return ranked semantic and structural matches with file, line, symbol, and snippet evidence.",
@@ -165,16 +174,26 @@ export function registerToolsPrecisionSubsystem(server, runtime, options = {}) {
     return resultEnvelope(formatExecution("vnem_tools_terminal_session", result), { terminal_session: result });
   }, testReference);
 
+  register(server, options.registry, "vnem_tools_documentation_source_catalog", {
+    title: "Documentation Source Catalog",
+    description: "List VNEM's current official documentation providers, exact approved domains, provider adapters, topic routes, and authority/currentness policy without a network call.",
+    inputSchema: { library: z.string().optional() },
+    annotations: READ_ONLY_LOCAL
+  }, async (args) => {
+    const result = runtime.documentationSourceCatalog(args);
+    return resultEnvelope(`vnem_tools_documentation_source_catalog: ${result.source_count} official source(s)`, { documentation_source_catalog: result });
+  }, documentationTestReference);
+
   register(server, options.registry, "vnem_tools_official_documentation_fetch", {
-    title: "Official Documentation Fetch",
-    description: "Fetch bounded HTTPS documentation from VNEM's known official source registry or a user-supplied URL and record compact task-scoped read-before-write context.",
+    title: "Current Documentation Fetch",
+    description: "Retrieve bounded relevant documentation with exact official-domain classification, conditional cache revalidation, source date/version evidence, and explicit stale/non-authoritative limits.",
     inputSchema: documentationSchema,
     annotations: READ_ONLY_NETWORK
   }, async (args) => {
-    await options.networkGuard?.(args, { action: "external_fetch", executes: true });
+    if (args.cache_mode !== "cache_only") await options.networkGuard?.(args, { action: "external_fetch", executes: true });
     const result = await runtime.fetchDocumentation(args);
     return resultEnvelope(formatDocumentation("vnem_tools_official_documentation_fetch", result), result);
-  }, testReference);
+  }, documentationTestReference);
 
   register(server, options.registry, "vnem_tools_documentation_context", {
     title: "Task Documentation Context",
@@ -182,13 +201,29 @@ export function registerToolsPrecisionSubsystem(server, runtime, options = {}) {
     inputSchema: {
       worker_id: z.string().optional(),
       task_id: z.string().optional(),
-      library: z.string().optional()
+      library: z.string().optional(),
+      include_community: z.boolean().default(true),
+      max_context_chars: z.number().int().min(1000).max(24000).default(12000)
     },
     annotations: READ_ONLY_LOCAL
   }, async (args) => {
     const result = runtime.documentationContext(args);
-    return resultEnvelope(`vnem_tools_documentation_context: ${result.record_count} record(s)`, { documentation_context: result });
-  }, testReference);
+    return resultEnvelope(`vnem_tools_documentation_context: ${result.record_count} record(s), ${result.contradiction_count} contradiction(s)`, { documentation_context: result });
+  }, documentationTestReference);
+
+  register(server, options.registry, "vnem_tools_documentation_cache_status", {
+    title: "Documentation Cache Status",
+    description: "Inspect persisted documentation cache timestamps, hashes, validators, and stale status without returning cached page bodies.",
+    inputSchema: {
+      library: z.string().optional(),
+      url: z.string().url().optional(),
+      max_age_seconds: z.number().int().min(0).max(2592000).optional()
+    },
+    annotations: READ_ONLY_LOCAL
+  }, async (args) => {
+    const result = await runtime.documentationCacheStatus(args);
+    return resultEnvelope(`vnem_tools_documentation_cache_status: ${result.entry_count} entr${result.entry_count === 1 ? "y" : "ies"}, ${result.stale_count} stale`, { documentation_cache_status: result });
+  }, documentationTestReference);
 
   register(server, options.registry, "vnem_tools_ephemeral_script", {
     title: "Ephemeral Local Script",
@@ -237,6 +272,7 @@ export function registerPrecisionCompatibilityTools(server, runtime, options = {
     inputSchema: documentationSchema,
     annotations: READ_ONLY_NETWORK
   }, async (args) => {
+    if (args.cache_mode !== "cache_only") await options.networkGuard?.(args, { action: "external_fetch", executes: true });
     const result = await runtime.fetchDocumentation(args);
     return resultEnvelope(formatDocumentation("mcp_fetch_documentation", result), result);
   }, testReference);
@@ -318,7 +354,7 @@ function resultEnvelope(text, structuredContent) {
 }
 
 function precisionErrorResult(error) {
-  const known = error instanceof PrecisionExecutionError;
+  const known = error instanceof PrecisionExecutionError || error instanceof DocumentationIntelligenceError;
   const code = known ? error.code : "unexpected_precision_error";
   const message = known ? error.message : "Precision operation failed unexpectedly. Internal details were redacted.";
   return {
@@ -355,5 +391,6 @@ function formatVerification(name, result) {
 }
 
 function formatDocumentation(name, result) {
-  return `${name}: fetched ${result.documentation.library}\nURL: ${result.documentation.url}\nBytes: ${result.documentation.bytes}\nStored for: ${result.worker_id}/${result.task_id}`;
+  const documentation = result.documentation;
+  return `${name}: retrieved ${documentation.library}\nURL: ${documentation.url}\nOfficial: ${documentation.source_classification.official}\nCache: ${documentation.freshness.cache_status}; stale=${documentation.freshness.stale}\nSections: ${documentation.sections.length}; bytes=${documentation.bytes}\nReady: ${documentation.implementation_readiness.ready}\nStored for: ${result.worker_id}/${result.task_id}`;
 }

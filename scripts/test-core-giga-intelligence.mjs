@@ -240,6 +240,19 @@ try {
   assert.equal((skills.unavailable_capabilities || []).some((item) => /skill execution runtime/i.test(item)), false);
   assert.match(skills.permission_implications.skill_execution_scope, /vetted_skill_execute/);
 
+  const documentation = await call(core.client, "vnem_entrypoint", {
+    user_goal: "Retrieve current official React documentation with bounded relevant sections, cache freshness, and contradiction evidence.",
+    task_mode: "documentation",
+    available_mcp_names: ["vnem", "vnem-tools"],
+    available_tool_names: [...toolNames],
+    allowed_tool_names: [...toolNames]
+  }, "entrypoint");
+  assert.equal(documentation.task_classification.primary_domain, "research_docs");
+  for (const tool of ["vnem_tools_documentation_source_catalog", "vnem_tools_official_documentation_fetch", "vnem_tools_documentation_context", "vnem_tools_documentation_cache_status"]) {
+    assert.ok(documentation.recommended_tools_calls.includes(tool), `missing Phase 18 current documentation route ${tool}`);
+  }
+  assert.equal(documentation.permission_implications.network_approval_may_be_required, true);
+
   const compatibility = await call(core.client, "vnem_compatibility_assess", {
     task: "Run a Codex MCP server over stdio on Windows PowerShell with Node.",
     environment: { os: "Windows 11", shell: "PowerShell 7", node_version: "24", client: "Codex", mcp_transport: "stdio" },

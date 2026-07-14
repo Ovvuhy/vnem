@@ -2,7 +2,7 @@
 
 Generated from live MCP runtime registries. Do not edit this table manually.
 
-- Total tools: 301
+- Total tools: 303
 - Registry valid: true
 - Missing behavior-test references: 16
 
@@ -297,8 +297,10 @@ Generated from live MCP runtime registries. Do not edit this table manually.
 | tools | `vnem_tools_patch_transaction_rollback` | patch | destructive_mutation | approved_local_mutation | required_redacted_record | self | scripts/vnem/precision/tools.mjs |
 | tools | `vnem_tools_verification_loop` | verification | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/precision/tools.mjs |
 | tools | `vnem_tools_terminal_session` | terminal | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/precision/tools.mjs |
+| tools | `vnem_tools_documentation_source_catalog` | source | read_only | allowed_root_read | optional | not_required | scripts/vnem/precision/tools.mjs |
 | tools | `vnem_tools_official_documentation_fetch` | official | read_only | approved_network_read | optional | not_required | scripts/vnem/precision/tools.mjs |
 | tools | `vnem_tools_documentation_context` | documentation | read_only | allowed_root_read | optional | not_required | scripts/vnem/precision/tools.mjs |
+| tools | `vnem_tools_documentation_cache_status` | documentation | read_only | allowed_root_read | optional | not_required | scripts/vnem/precision/tools.mjs |
 | tools | `vnem_tools_ephemeral_script` | ephemeral | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/precision/tools.mjs |
 | tools | `vnem_tools_code_index_status` | code | read_only | allowed_root_read | optional | not_required | scripts/vnem/precision/tools.mjs |
 | tools | `vnem_tools_registry_status` | registry | read_only | allowed_root_read | optional | not_required | scripts/vnem/runtime/registry-tool.mjs |

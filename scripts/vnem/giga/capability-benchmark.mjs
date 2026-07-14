@@ -134,12 +134,12 @@ function isInside(candidate, rootPath) {
 }
 
 function coreMode(mode) {
-  const map = { debugging: "debugging", publish: "publish", recovery: "recovery", browser_ui: "ui_browser", skill: "skill" };
+  const map = { debugging: "debugging", publish: "publish", recovery: "recovery", browser_ui: "ui_browser", documentation: "documentation", skill: "skill" };
   return map[mode] || "auto";
 }
 
 function toolsMode(mode) {
-  const supported = new Set(["auto", "implementation", "debugging", "repo_inspection", "patch_targeting", "mcp_tool_audit", "skill", "publish", "cloudflare", "browser_ui", "recovery", "no_placebo", "evidence_pack"]);
+  const supported = new Set(["auto", "implementation", "debugging", "repo_inspection", "patch_targeting", "mcp_tool_audit", "documentation", "skill", "publish", "cloudflare", "browser_ui", "recovery", "no_placebo", "evidence_pack"]);
   return supported.has(mode) ? mode : "auto";
 }
 

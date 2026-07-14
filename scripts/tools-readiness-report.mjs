@@ -33,6 +33,8 @@ const apiConnectorTestPath = rel("scripts/test-tools-giga-api-connectors.mjs");
 const apiConnectorModulePath = rel("scripts/vnem/tools/api-connectors.mjs");
 const skillRuntimeTestPath = rel("scripts/test-tools-giga-skill-runtime.mjs");
 const skillRuntimeModulePath = rel("scripts/vnem/tools/skill-runtime.mjs");
+const currentDocumentationTestPath = rel("scripts/test-tools-giga-current-documentation.mjs");
+const documentationIntelligencePath = rel("scripts/vnem/precision/documentation-intelligence.mjs");
 const projectAutomationTestPath = rel("scripts/test-tools-giga-project-automation.mjs");
 const projectAutomationModulePath = rel("scripts/vnem/tools/project-automation.mjs");
 const projectAutomationFixturePath = rel("fixtures/project-automation/package.json");
@@ -141,6 +143,8 @@ const apiConnectorTest = existsSync(apiConnectorTestPath) ? readFileSync(apiConn
 const apiConnectorModule = existsSync(apiConnectorModulePath) ? readFileSync(apiConnectorModulePath, "utf8") : "";
 const skillRuntimeTest = existsSync(skillRuntimeTestPath) ? readFileSync(skillRuntimeTestPath, "utf8") : "";
 const skillRuntimeModule = existsSync(skillRuntimeModulePath) ? readFileSync(skillRuntimeModulePath, "utf8") : "";
+const currentDocumentationTest = existsSync(currentDocumentationTestPath) ? readFileSync(currentDocumentationTestPath, "utf8") : "";
+const documentationIntelligence = existsSync(documentationIntelligencePath) ? readFileSync(documentationIntelligencePath, "utf8") : "";
 const projectAutomationTest = existsSync(projectAutomationTestPath) ? readFileSync(projectAutomationTestPath, "utf8") : "";
 const projectAutomationModule = existsSync(projectAutomationModulePath) ? readFileSync(projectAutomationModulePath, "utf8") : "";
 const testingCiTest = existsSync(testingCiTestPath) ? readFileSync(testingCiTestPath, "utf8") : "";
@@ -437,8 +441,10 @@ const requiredTools = [
   "vnem_tools_patch_transaction_rollback",
   "vnem_tools_verification_loop",
   "vnem_tools_terminal_session",
+  "vnem_tools_documentation_source_catalog",
   "vnem_tools_official_documentation_fetch",
   "vnem_tools_documentation_context",
+  "vnem_tools_documentation_cache_status",
   "vnem_tools_ephemeral_script",
   "vnem_tools_code_index_status",
   "vnem_tools_permission_request",
@@ -526,6 +532,8 @@ const report = {
   tools_code_intelligence_1_regression_test_exists: existsSync(toolsCodeIntelligence1RegressionTestPath),
   tools_precision_subsystem_test_exists: existsSync(toolsPrecisionSubsystemTestPath),
   precision_subsystem_module_exists: existsSync(precisionSubsystemPath),
+  current_documentation_test_exists: existsSync(currentDocumentationTestPath),
+  documentation_intelligence_module_exists: existsSync(documentationIntelligencePath),
   permission_runtime_test_exists: existsSync(permissionRuntimeTestPath),
   tools_scoped_permissions_test_exists: existsSync(toolsScopedPermissionsTestPath),
   safety_cli_test_exists: existsSync(safetyCliTestPath),
@@ -561,6 +569,9 @@ const report = {
     test_tools_giga_skill_runtime: pkg.scripts?.["test:tools-giga-skill-runtime"] === "node scripts/test-tools-giga-skill-runtime.mjs",
     giga_phase17_benchmark: pkg.scripts?.["giga:phase17-benchmark"] === "node scripts/test-tools-giga-skill-runtime.mjs --benchmark-output=.vnem/giga-evolution/phase-17/skill-runtime-benchmark.json",
     giga_phase17_live_source_proof: pkg.scripts?.["giga:phase17-live-source-proof"] === "node scripts/test-tools-giga-skill-runtime.mjs --live --benchmark-output=.vnem/giga-evolution/phase-17/live-source-proof.json",
+    test_tools_giga_current_documentation: pkg.scripts?.["test:tools-giga-current-documentation"] === "node scripts/test-tools-giga-current-documentation.mjs",
+    giga_phase18_benchmark: pkg.scripts?.["giga:phase18-benchmark"] === "node scripts/test-tools-giga-current-documentation.mjs --benchmark-output=.vnem/giga-evolution/phase-18/current-documentation-benchmark.json",
+    giga_phase18_live_docs_proof: pkg.scripts?.["giga:phase18-live-docs-proof"] === "node scripts/test-tools-giga-current-documentation.mjs --live --benchmark-output=.vnem/giga-evolution/phase-18/live-documentation-proof.json",
     test_tools_giga_project_automation: pkg.scripts?.["test:tools-giga-project-automation"] === "node scripts/test-tools-giga-project-automation.mjs",
     test_tools_giga_testing_ci: pkg.scripts?.["test:tools-giga-testing-ci"] === "node scripts/test-tools-giga-testing-ci.mjs",
     test_tools_git_session: pkg.scripts?.["test:tools-git-session"] === "node scripts/test-tools-git-session.mjs",
@@ -803,6 +814,13 @@ const report = {
   skill_runtime_core_routing_status: ["vnem_tools_skill_adapter_catalog", "vnem_tools_skill_doctor", "vnem_tools_skill_adapter_plan", "vnem_tools_skill_adapter_execute"].every((tool) => coreIntelligence.includes(tool) && skillRuntimeTest.includes(tool)) && /Phase 17 skill route/.test(readFileSync(rel("scripts/test-core-giga-intelligence.mjs"), "utf8")) && !/metadata_only_until_vetted_execution_runtime_exists/.test(coreIntelligence),
   skill_runtime_real_mcp_proof_status: /StdioClientTransport/.test(skillRuntimeTest) && /real_stdio_mcp: true/.test(skillRuntimeTest) && /VNEM GIGA Phase 17 vetted skill runtime tests passed/.test(skillRuntimeTest),
   skill_runtime_coverage_mapper_status: /vnem_tools_tool_test_coverage_map/.test(skillRuntimeTest) && /coverage_level, "behavior_test"/.test(skillRuntimeTest) && /behavior_coverage_mapper_for_six_tools: true/.test(skillRuntimeTest),
+  current_documentation_module_status: /class DocumentationCache/.test(documentationIntelligence) && /class DocumentationContextStore/.test(documentationIntelligence) && /function fetchDocumentation/.test(documentationIntelligence) && /detectDocumentationContradictions/.test(documentationIntelligence),
+  current_documentation_source_authority_status: ["React", "Next.js", "Vite", "Node.js", "TypeScript", "MDN Web Docs", "Cloudflare", "GitHub Docs", "Luau"].every((provider) => documentationIntelligence.includes(provider) && currentDocumentationTest.includes(provider)) && /exact_registry_domain_match/.test(documentationIntelligence) && /http_success_alone_sufficient: false/.test(documentationIntelligence),
+  current_documentation_cache_status: /if-none-match/.test(documentationIntelligence) && /if-modified-since/.test(documentationIntelligence) && /revalidated_not_modified/.test(documentationIntelligence + currentDocumentationTest) && /cache_only_stale/.test(documentationIntelligence + currentDocumentationTest) && /content_sha256/.test(documentationIntelligence + currentDocumentationTest),
+  current_documentation_bounds_status: /MAX_REDIRECTS/.test(documentationIntelligence) && /documentation_redirect_origin_blocked/.test(documentationIntelligence + currentDocumentationTest) && /documentation_too_large/.test(documentationIntelligence + currentDocumentationTest) && /full_page_returned: false/.test(documentationIntelligence) && /UNRELATED_FULL_PAGE_SENTINEL/.test(currentDocumentationTest),
+  current_documentation_contradiction_status: /detectDocumentationContradictions/.test(documentationIntelligence) && /preferred_source_url/.test(documentationIntelligence + currentDocumentationTest) && /Contradictions requiring review/.test(documentationIntelligence + currentDocumentationTest),
+  current_documentation_core_routing_status: ["vnem_tools_documentation_source_catalog", "vnem_tools_official_documentation_fetch", "vnem_tools_documentation_context", "vnem_tools_documentation_cache_status"].every((tool) => coreIntelligence.includes(tool) && currentDocumentationTest.includes(tool)) && /Phase 18 current documentation route/.test(readFileSync(rel("scripts/test-core-giga-intelligence.mjs"), "utf8")),
+  current_documentation_real_mcp_proof_status: /StdioClientTransport/.test(currentDocumentationTest) && /real_stdio_mcp: true/.test(currentDocumentationTest) && /VNEM GIGA Phase 18 current documentation tests passed/.test(currentDocumentationTest),
   github_dry_run_status: /dry_run !== false/.test(server) && /must not/.test(toolsGithubMutationDryRunTest),
   github_config_knob_status: /config_knob_to_change/.test(server) && /VNEM_TOOLS_GITHUB_ALLOW_DIRECT_PUSH/.test(toolsGithubMutationDryRunTest + server) && /VNEM_TOOLS_GITHUB_ALLOW_ACTIONS_RERUN/.test(toolsGithubMutationDryRunTest + server),
   github_secret_file_block_status: /githubSecretFileBlocked/.test(server) && /Secret-like file blocked/.test(server) && /scanGithubCommitContent/.test(server) && /Secret-like content blocked/.test(server + githubDevelopmentTest) && /\.env/.test(toolsGithubMutationDryRunTest + server),
@@ -1079,6 +1097,8 @@ assert.equal(report.api_connector_test_exists, true, "API connector MCP test fil
 assert.equal(report.api_connector_module_exists, true, "API connector runtime module is missing");
 assert.equal(report.skill_runtime_test_exists, true, "skill runtime MCP test file is missing");
 assert.equal(report.skill_runtime_module_exists, true, "skill runtime module is missing");
+assert.equal(report.current_documentation_test_exists, true, "current documentation MCP test file is missing");
+assert.equal(report.documentation_intelligence_module_exists, true, "documentation intelligence module is missing");
 assert.equal(report.project_automation_test_exists, true, "project automation MCP test file is missing");
 assert.equal(report.project_automation_module_exists, true, "project automation module is missing");
 assert.equal(report.project_automation_fixture_exists, true, "project automation fixture is missing");
@@ -1117,6 +1137,9 @@ assert.equal(report.package_scripts.giga_phase16_live_proof, true, "giga:phase16
 assert.equal(report.package_scripts.test_tools_giga_skill_runtime, true, "test:tools-giga-skill-runtime package script is missing");
 assert.equal(report.package_scripts.giga_phase17_benchmark, true, "giga:phase17-benchmark package script is missing");
 assert.equal(report.package_scripts.giga_phase17_live_source_proof, true, "giga:phase17-live-source-proof package script is missing");
+assert.equal(report.package_scripts.test_tools_giga_current_documentation, true, "test:tools-giga-current-documentation package script is missing");
+assert.equal(report.package_scripts.giga_phase18_benchmark, true, "giga:phase18-benchmark package script is missing");
+assert.equal(report.package_scripts.giga_phase18_live_docs_proof, true, "giga:phase18-live-docs-proof package script is missing");
 for (const [key, value] of Object.entries({ test_smoke_tier: report.package_scripts.test_smoke_tier, test_affected_tier: report.package_scripts.test_affected_tier, test_core_tier: report.package_scripts.test_core_tier, test_tools_tier: report.package_scripts.test_tools_tier, test_precision_compat_tier: report.package_scripts.test_precision_compat_tier, test_integration_tier: report.package_scripts.test_integration_tier, test_benchmarks_tier: report.package_scripts.test_benchmarks_tier, test_full_tier: report.package_scripts.test_full_tier, test_ci_tier: report.package_scripts.test_ci_tier, npm_test_routes_full: report.package_scripts.npm_test_routes_full })) assert.equal(value, true, `${key} package script is missing`);
 assert.equal(report.package_scripts.test_tools_git_session, true, "test:tools-git-session package script is missing");
 assert.equal(report.package_scripts.test_tools_intelligence, true, "test:tools-intelligence package script is missing");
@@ -1350,6 +1373,7 @@ for (const [key, value] of Object.entries({ dependency_security_module_status: r
 for (const [key, value] of Object.entries({ structural_code_module_status: report.structural_code_module_status, structural_code_architecture_status: report.structural_code_architecture_status, structural_code_index_status: report.structural_code_index_status, structural_code_graph_status: report.structural_code_graph_status, structural_code_reference_status: report.structural_code_reference_status, structural_code_planning_status: report.structural_code_planning_status, structural_code_validation_status: report.structural_code_validation_status, structural_code_safety_gates_status: report.structural_code_safety_gates_status, structural_code_transaction_status: report.structural_code_transaction_status, structural_code_hardening_status: report.structural_code_hardening_status, structural_code_core_routing_status: report.structural_code_core_routing_status, structural_code_real_mcp_proof_status: report.structural_code_real_mcp_proof_status })) assert.equal(value, true, `${key} readiness missing`);
 for (const [key, value] of Object.entries({ api_connector_module_status: report.api_connector_module_status, api_connector_contract_status: report.api_connector_contract_status, api_connector_initial_adapters_status: report.api_connector_initial_adapters_status, api_connector_permission_broker_status: report.api_connector_permission_broker_status, api_connector_execution_bounds_status: report.api_connector_execution_bounds_status, api_connector_mock_live_status: report.api_connector_mock_live_status, api_connector_mutation_compensation_status: report.api_connector_mutation_compensation_status, api_connector_generation_review_status: report.api_connector_generation_review_status, api_connector_core_routing_status: report.api_connector_core_routing_status, api_connector_real_mcp_proof_status: report.api_connector_real_mcp_proof_status })) assert.equal(value, true, key + " readiness missing");
 for (const [key, value] of Object.entries({ skill_runtime_module_status: report.skill_runtime_module_status, skill_runtime_contract_status: report.skill_runtime_contract_status, skill_runtime_initial_adapters_status: report.skill_runtime_initial_adapters_status, skill_runtime_categories_status: report.skill_runtime_categories_status, skill_runtime_safe_default_status: report.skill_runtime_safe_default_status, skill_runtime_package_safety_status: report.skill_runtime_package_safety_status, skill_runtime_doctor_status: report.skill_runtime_doctor_status, skill_runtime_source_pinning_status: report.skill_runtime_source_pinning_status, skill_runtime_command_gate_status: report.skill_runtime_command_gate_status, skill_runtime_core_routing_status: report.skill_runtime_core_routing_status, skill_runtime_real_mcp_proof_status: report.skill_runtime_real_mcp_proof_status, skill_runtime_coverage_mapper_status: report.skill_runtime_coverage_mapper_status })) assert.equal(value, true, key + " readiness missing");
+for (const [key, value] of Object.entries({ current_documentation_module_status: report.current_documentation_module_status, current_documentation_source_authority_status: report.current_documentation_source_authority_status, current_documentation_cache_status: report.current_documentation_cache_status, current_documentation_bounds_status: report.current_documentation_bounds_status, current_documentation_contradiction_status: report.current_documentation_contradiction_status, current_documentation_core_routing_status: report.current_documentation_core_routing_status, current_documentation_real_mcp_proof_status: report.current_documentation_real_mcp_proof_status })) assert.equal(value, true, key + " readiness missing");
 assert.equal(report.project_task_status, true, "project task support/test coverage is missing");
 assert.equal(report.dev_server_status, true, "dev server support/test coverage is missing");
 assert.equal(report.session_evidence_status, true, "session evidence support/test coverage is missing");
@@ -1505,6 +1529,7 @@ for (const key of ["dependency_security_module_status", "dependency_security_inv
 for (const key of ["structural_code_module_status", "structural_code_architecture_status", "structural_code_index_status", "structural_code_graph_status", "structural_code_reference_status", "structural_code_planning_status", "structural_code_validation_status", "structural_code_safety_gates_status", "structural_code_transaction_status", "structural_code_hardening_status", "structural_code_core_routing_status", "structural_code_real_mcp_proof_status"]) console.log(`${key}: ${yes(report[key])}`);
 for (const key of ["api_connector_module_status", "api_connector_contract_status", "api_connector_initial_adapters_status", "api_connector_permission_broker_status", "api_connector_execution_bounds_status", "api_connector_mock_live_status", "api_connector_mutation_compensation_status", "api_connector_generation_review_status", "api_connector_core_routing_status", "api_connector_real_mcp_proof_status"]) console.log(`${key}: ${yes(report[key])}`);
 for (const key of ["skill_runtime_module_status", "skill_runtime_contract_status", "skill_runtime_initial_adapters_status", "skill_runtime_categories_status", "skill_runtime_safe_default_status", "skill_runtime_package_safety_status", "skill_runtime_doctor_status", "skill_runtime_source_pinning_status", "skill_runtime_command_gate_status", "skill_runtime_core_routing_status", "skill_runtime_real_mcp_proof_status", "skill_runtime_coverage_mapper_status"]) console.log(`${key}: ${yes(report[key])}`);
+for (const key of ["current_documentation_module_status", "current_documentation_source_authority_status", "current_documentation_cache_status", "current_documentation_bounds_status", "current_documentation_contradiction_status", "current_documentation_core_routing_status", "current_documentation_real_mcp_proof_status"]) console.log(`${key}: ${yes(report[key])}`);
 console.log(`project_task_status: ${yes(report.project_task_status)}`);
 console.log(`dev_server_status: ${yes(report.dev_server_status)}`);
 console.log(`session_evidence_status: ${yes(report.session_evidence_status)}`);

@@ -268,8 +268,10 @@ const REQUIRED_TOOL_NAMES = [
   "vnem_tools_patch_transaction_rollback",
   "vnem_tools_verification_loop",
   "vnem_tools_terminal_session",
+  "vnem_tools_documentation_source_catalog",
   "vnem_tools_official_documentation_fetch",
   "vnem_tools_documentation_context",
+  "vnem_tools_documentation_cache_status",
   "vnem_tools_ephemeral_script",
   "vnem_tools_code_index_status",
   "vnem_tools_permission_request",
@@ -426,7 +428,7 @@ function registerTools(mcpServer) {
         user_goal: z.string().min(1),
         repo_path: z.string().optional(),
         root: z.string().default("."),
-        task_mode: z.enum(["auto", "local_only", "implementation", "debugging", "repo_inspection", "patch_targeting", "mcp_tool_audit", "code_intelligence", "skill", "publish", "cloudflare", "browser_ui", "windows", "game_modding", "recovery", "no_placebo", "evidence_pack", "generated_artifact"]).default("auto"),
+        task_mode: z.enum(["auto", "local_only", "implementation", "debugging", "repo_inspection", "patch_targeting", "mcp_tool_audit", "code_intelligence", "documentation", "skill", "publish", "cloudflare", "browser_ui", "windows", "game_modding", "recovery", "no_placebo", "evidence_pack", "generated_artifact"]).default("auto"),
         changed_files: z.array(z.string()).default([]),
         failing_output: z.string().default("")
       },
@@ -3885,7 +3887,7 @@ function toolsTaskCategories(text, taskType, localOnly) {
   if (taskType.includes("patch") || /\b(patch|target|edit|change file|fix source|implementation site)\b/.test(text)) add("patch_targeting");
   if (/\b(semantic search|structural search|search code|find symbol|locate implementation)\b/.test(text)) add("structural_code_search");
   if (/\b(exact patch|search replace|unified diff|atomic patch|multi.file patch|patch transaction|rollback patch)\b/.test(text)) add("precision_patching");
-  if (/\b(current docs|official docs|official documentation|framework documentation|library documentation)\b/.test(text)) add("official_documentation");
+  if (taskType.includes("documentation") || /\b(current docs|official docs|official documentation|framework documentation|library documentation|documentation retrieval)\b/.test(text)) add("official_documentation");
   if (/\b(red green|verification loop|run verification|bounded terminal|terminal session|syntax check)\b/.test(text)) add("precision_verification");
   if (/\b(permission profile|safety profile|scoped grant|grant access|power level|hard block)\b/.test(text)) add("permission_control");
   if (taskType.includes("mcp") || /\b(mcp|tool audit|surface audit|registration|handler|catalog|manifest|readiness)\b/.test(text)) add("mcp_tool_audit");
@@ -3914,7 +3916,7 @@ function toolsRouteDefinitions() {
     patch_targeting: { why: "Patch targeting needs structural and symbol evidence plus impact tracing.", tools: ["vnem_tools_structural_code_search", "vnem_tools_patch_target_finder", "vnem_tools_code_symbol_map", "vnem_tools_source_impact_trace"] },
     structural_code_search: { why: "Conceptual code discovery benefits from the lazy language-aware local structural index.", tools: ["vnem_tools_code_index_status", "vnem_tools_structural_code_search"] },
     precision_patching: { why: "Surgical changes need exact preconditions, dry-run verification, atomic evidence, and rollback.", tools: ["vnem_tools_exact_patch", "vnem_tools_unified_diff_apply", "vnem_tools_patch_transaction", "vnem_tools_patch_transaction_rollback"] },
-    official_documentation: { why: "Framework work needs bounded current official documentation and task-scoped context before writes.", tools: ["vnem_tools_official_documentation_fetch", "vnem_tools_documentation_context"] },
+    official_documentation: { why: "Framework work needs a known source boundary, bounded current retrieval, task-scoped context, and cache freshness evidence before writes.", tools: ["vnem_tools_documentation_source_catalog", "vnem_tools_official_documentation_fetch", "vnem_tools_documentation_context", "vnem_tools_documentation_cache_status"] },
     precision_verification: { why: "Implementation proof needs bounded stateful commands and persistent red, green, or check loops.", tools: ["vnem_tools_verification_loop", "vnem_tools_terminal_session", "vnem_tools_ephemeral_script"] },
     permission_control: { why: "Permission changes need a narrow request, exact acknowledgment, scope evaluation, doctor proof, and revocation path.", tools: ["vnem_tools_permission_evaluate", "vnem_tools_permission_request", "vnem_tools_permission_grant", "vnem_tools_permission_doctor", "vnem_tools_permission_revoke"] },
     skill_adapters: { why: "Skill work needs a vetted catalog, package trust inspection, doctor readiness, exact runtime and permission planning, VNEM-owned execution, and optional pinned-source identity proof without executing Markdown.", tools: ["vnem_tools_skill_adapter_catalog", "vnem_tools_skill_package_inspect", "vnem_tools_skill_doctor", "vnem_tools_skill_adapter_plan", "vnem_tools_skill_adapter_execute", "vnem_tools_skill_source_verify"] },
@@ -3957,7 +3959,7 @@ function toolsToolReason(toolName, categories) {
   if (toolName.includes("structural_code_search")) return "find conceptually relevant code and language-level symbols";
   if (toolName.includes("exact_patch") || toolName.includes("unified_diff") || toolName.includes("patch_transaction")) return "verify and apply surgical changes with preconditions and rollback evidence";
   if (toolName.includes("verification_loop") || toolName.includes("terminal_session")) return "run bounded checks with explicit timeout and persisted evidence";
-  if (toolName.includes("official_documentation") || toolName.includes("documentation_context")) return "retrieve and reuse task-scoped official documentation context";
+  if (toolName.includes("documentation_")) return "catalog, retrieve, reuse, or inspect bounded current documentation evidence";
   if (toolName.includes("permission_")) return "evaluate or grant one bounded capability without weakening hard blocks";
   if (toolName.includes("skill_adapter_catalog")) return "select a vetted skill adapter from complete runtime and provenance contracts";
   if (toolName.includes("skill_package_inspect")) return "inspect local skill files as inert untrusted data";
@@ -4089,6 +4091,7 @@ function statusObject() {
     filesystem_intelligence_policy: { tools: ["vnem_tools_workspace_map", "vnem_tools_read_many_files", "vnem_tools_code_search", "vnem_tools_find_references", "vnem_tools_dependency_scan"], allowed_roots_only: true, secret_paths_blocked: true, generated_build_cache_skipped: true, evidence_logged: true },
     repo_power_policy: { tools: ["vnem_tools_repo_deep_map", "vnem_tools_next_action_ranker", "vnem_tools_no_placebo_progress_audit", "vnem_tools_change_impact_plan", "vnem_tools_test_selection_plan", "vnem_tools_failure_triage", "vnem_tools_evidence_pack", "vnem_tools_local_session_recovery", "vnem_tools_repo_workflow_orchestrator", "vnem_tools_code_symbol_map", "vnem_tools_mcp_surface_audit", "vnem_tools_patch_target_finder", "vnem_tools_tool_test_coverage_map", "vnem_tools_source_impact_trace", "vnem_tools_source_control_character_guard"], allowed_roots_only: true, secret_paths_blocked: true, compact_structured_output: true, no_live_github_required: true, no_placebo_detection: true, test_selection_avoids_overvalidation: true, local_session_recovery_supported: true, workflow_orchestrator_supported: true, code_intelligence_supported: true, source_control_character_guard_supported: true },
     research_sources_policy: { tools: ["vnem_tools_fetch_url_text", "vnem_tools_source_quality_check", "vnem_tools_research_brief", "vnem_tools_browser_research_pack", "vnem_tools_claim_source_matrix", "vnem_tools_research_gap_detector", "vnem_tools_source_map", "vnem_tools_source_extract", "vnem_tools_source_graph"], no_search_engine_scraping: true, external_fetch_dry_run_default: true, approval_required_for_real_external_fetch: true, no_login_cookie_session_use: true },
+    current_documentation_policy: { tools: ["vnem_tools_documentation_source_catalog", "vnem_tools_official_documentation_fetch", "vnem_tools_documentation_context", "vnem_tools_documentation_cache_status"], official_domains_from_registry_only: true, unknown_domains_require_explicit_community_opt_in: true, conditional_cache_revalidation: true, stale_cache_reported: true, bounded_relevant_sections_only: true, contradictions_reported: true, http_success_alone_proves_authority_or_currentness: false },
     source_ingestion_policy: { tools: ["vnem_tools_source_map", "vnem_tools_source_extract", "vnem_tools_source_graph"], allowed_roots_only_for_local_sources: true, explicit_targets_only_for_extraction: true, secret_paths_blocked: true, broad_crawl_blocked: true, evidence_logged: true, source_graph_uses_provided_or_bounded_sources_only: true },
     debugging_code_quality_policy: { tools: ["vnem_tools_architecture_review", "vnem_tools_debug_evidence"], allowed_roots_only: true, secret_paths_blocked: true, no_arbitrary_commands: true, log_first_debugging: true, detects_parallel_fake_systems: true, flags_possible_dead_code: true, evidence_logged: true },
     search_provider_policy: { tools: ["vnem_tools_search_provider_manifest", "vnem_tools_search_query_builder", "vnem_tools_web_search", "vnem_tools_search_result_ranker"], local_fixture_available_for_tests: true, provider_keys_detected_by_presence_only: true, provider_unavailable_returns_structured_status: true, no_search_engine_result_page_scraping: true, no_fake_search_results: true },
@@ -4327,7 +4330,7 @@ async function searchAllowedFiles(args) {
   return { root: root.relativePath || ".", query: args.query, results, skipped_policy: skippedPolicy() };
 }
 
-const TOOL_CAPABILITY_GROUPS = ["permissions", "filesystem", "project_intelligence", "app_engineering", "repo_power", "adoption_reliability", "structural_code", "structural_refactoring", "patching", "rollback", "commands", "project_tasks", "dev_server", "browser_proof", "browser_intelligence", "ui_web_quality", "windows_local", "game_domain", "dependency_security", "api_connectors", "skill_adapters", "api_request", "search", "research_sources", "source_quality", "browsing_risk", "research_matrix", "source_ingestion", "debugging_code_quality", "session_evidence", "local_git", "github_autonomy", "status_readiness", "cloudflare_control", "tools_quality", "tool_intelligence"];
+const TOOL_CAPABILITY_GROUPS = ["permissions", "filesystem", "project_intelligence", "app_engineering", "repo_power", "adoption_reliability", "structural_code", "structural_refactoring", "patching", "rollback", "commands", "project_tasks", "dev_server", "browser_proof", "browser_intelligence", "ui_web_quality", "windows_local", "game_domain", "dependency_security", "api_connectors", "skill_adapters", "current_documentation", "api_request", "search", "research_sources", "source_quality", "browsing_risk", "research_matrix", "source_ingestion", "debugging_code_quality", "session_evidence", "local_git", "github_autonomy", "status_readiness", "cloudflare_control", "tools_quality", "tool_intelligence"];
 
 function buildToolCatalog() {
   const commonUnsafe = ["secret reading/dumping", "outside-root access", "arbitrary shell", "package installs", "git push", "deployment", "Giga MCP"];
@@ -4495,6 +4498,10 @@ function buildToolCatalog() {
     mk("vnem_tools_skill_adapter_plan", "skill_adapters", { description: "Validate exact adapter input and return filesystem, network, command, dependency, permission, risk, and evidence scope without execution.", typical_use_cases: ["skill execution preflight", "permission review"] }),
     mk("vnem_tools_skill_adapter_execute", "skill_adapters", { read_only: false, dry_run_default: false, description: "Execute a VNEM-owned vetted pure/read adapter, or plan/execute one hash-bound reviewed package test under separate skill and process gates.", typical_use_cases: ["frontend brief", "React or Windows static audit", "TDD plan", "browser evidence audit", "mod profile audit", "reviewed test verification"], unsafe_actions_blocked: [...commonUnsafe, "arbitrary Markdown or script execution", "unreviewed package execution", "implicit command approval"] }),
     mk("vnem_tools_skill_source_verify", "skill_adapters", { network: true, dry_run_default: true, description: "Fetch only pinned raw GitHub source files under exact external-fetch scope and compare Git blob identities without returning or executing content.", typical_use_cases: ["refresh source pin proof", "detect upstream source mismatch"], unsafe_actions_blocked: [...commonUnsafe, "arbitrary URL fetch", "source content execution", "permanent safety claim"] }),
+    mk("vnem_tools_documentation_source_catalog", "current_documentation", { description: "List reviewed official documentation providers, exact domains, adapters, topic routes, and authority/currentness policy without network access.", typical_use_cases: ["choose an official docs source", "inspect provider and domain policy"], unsafe_actions_blocked: [...commonUnsafe, "caller-labeled officialness", "network access"] }),
+    mk("vnem_tools_official_documentation_fetch", "current_documentation", { network: true, requires_approval: true, description: "Retrieve bounded relevant documentation with exact domain authority, conditional cache, source date/version evidence, stale status, redaction, and no full-page output.", typical_use_cases: ["current framework API lookup", "version-aware implementation context"], unsafe_actions_blocked: [...commonUnsafe, "unknown-domain authority", "cross-origin redirects", "full-page context dumps", "HTTP-success currentness claims"] }),
+    mk("vnem_tools_documentation_context", "current_documentation", { description: "Build bounded task-scoped documentation context, prefer stronger sources, and expose heuristic contradiction evidence without another request.", typical_use_cases: ["read before write", "official/community claim comparison"], unsafe_actions_blocked: [...commonUnsafe, "full-page injection", "semantic completeness claims"] }),
+    mk("vnem_tools_documentation_cache_status", "current_documentation", { description: "Inspect persisted cache timestamps, hashes, validators, and stale state without returning cached page bodies.", typical_use_cases: ["cache freshness audit", "revalidation planning"], unsafe_actions_blocked: [...commonUnsafe, "cached body output", "freshness claims outside the selected age bound"] }),
     mk("vnem_tools_ui_evidence_audit", "ui_web_quality", { description: "Audit provided UI evidence and reject unsupported visual/browser claims.", allowed_roots_required: false, evidence_logged: true, typical_use_cases: ["final UI claim audit", "responsive/a11y/state proof review"], unsafe_actions_blocked: [...commonUnsafe, "inventing browser results", "accepting code-only visual proof"] }),
     mk("vnem_tools_start_session", "session_evidence", { read_only: false, mutation: true, description: "Start session proof pack.", typical_use_cases: ["group local workflow evidence"] }),
     mk("vnem_tools_finish_session", "session_evidence", { read_only: false, mutation: true, description: "Write session proof pack.", typical_use_cases: ["final evidence summary"] }),
@@ -5692,7 +5699,10 @@ async function patchTargetFinder(args = {}) {
 async function toolTestCoverageMap(args = {}) {
   const root = await resolveAllowedRoot(args.root || ".");
   const serverRead = await readRepoTextFile(root.absolutePath, toolsServerImplementationFile(root.absolutePath, "scripts/vnem-tools-mcp-server.mjs"), 900000);
-  const allTools = parseRegisteredToolsFromServer(serverRead.text).map((tool) => tool.name);
+  const allTools = uniqueToolNames([
+    ...parseRegisteredToolsFromServer(serverRead.text).map((tool) => tool.name),
+    ...toolsRegistry.manifest().map((tool) => tool.name)
+  ]);
   const selected = normalizeToolName(args.tool_name || "");
   const toolNames = (selected ? allTools.filter((name) => name === selected) : allTools).slice(0, args.max_tools || 160);
   const packageRead = await readRepoTextFile(root.absolutePath, "package.json", 320000);
