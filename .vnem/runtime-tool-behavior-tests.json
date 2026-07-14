@@ -613,6 +613,24 @@
       "vnem_tools_api_adapter_review_activate": [
         "scripts/test-tools-giga-api-connectors.mjs"
       ],
+      "vnem_tools_skill_adapter_catalog": [
+        "scripts/test-tools-giga-skill-runtime.mjs"
+      ],
+      "vnem_tools_skill_package_inspect": [
+        "scripts/test-tools-giga-skill-runtime.mjs"
+      ],
+      "vnem_tools_skill_doctor": [
+        "scripts/test-tools-giga-skill-runtime.mjs"
+      ],
+      "vnem_tools_skill_adapter_plan": [
+        "scripts/test-tools-giga-skill-runtime.mjs"
+      ],
+      "vnem_tools_skill_adapter_execute": [
+        "scripts/test-tools-giga-skill-runtime.mjs"
+      ],
+      "vnem_tools_skill_source_verify": [
+        "scripts/test-tools-giga-skill-runtime.mjs"
+      ],
       "vnem_tools_api_request": [
         "scripts/test-tools-high-power-action-review.mjs",
         "scripts/test-tools-mcp-server.mjs"

@@ -31,6 +31,8 @@ const structuralCodeTestPath = rel("scripts/test-tools-giga-structural-code.mjs"
 const structuralCodeModulePath = rel("scripts/vnem/tools/structural-code.mjs");
 const apiConnectorTestPath = rel("scripts/test-tools-giga-api-connectors.mjs");
 const apiConnectorModulePath = rel("scripts/vnem/tools/api-connectors.mjs");
+const skillRuntimeTestPath = rel("scripts/test-tools-giga-skill-runtime.mjs");
+const skillRuntimeModulePath = rel("scripts/vnem/tools/skill-runtime.mjs");
 const projectAutomationTestPath = rel("scripts/test-tools-giga-project-automation.mjs");
 const projectAutomationModulePath = rel("scripts/vnem/tools/project-automation.mjs");
 const projectAutomationFixturePath = rel("fixtures/project-automation/package.json");
@@ -137,6 +139,8 @@ const structuralCodeTest = existsSync(structuralCodeTestPath) ? readFileSync(str
 const structuralCodeModule = existsSync(structuralCodeModulePath) ? readFileSync(structuralCodeModulePath, "utf8") : "";
 const apiConnectorTest = existsSync(apiConnectorTestPath) ? readFileSync(apiConnectorTestPath, "utf8") : "";
 const apiConnectorModule = existsSync(apiConnectorModulePath) ? readFileSync(apiConnectorModulePath, "utf8") : "";
+const skillRuntimeTest = existsSync(skillRuntimeTestPath) ? readFileSync(skillRuntimeTestPath, "utf8") : "";
+const skillRuntimeModule = existsSync(skillRuntimeModulePath) ? readFileSync(skillRuntimeModulePath, "utf8") : "";
 const projectAutomationTest = existsSync(projectAutomationTestPath) ? readFileSync(projectAutomationTestPath, "utf8") : "";
 const projectAutomationModule = existsSync(projectAutomationModulePath) ? readFileSync(projectAutomationModulePath, "utf8") : "";
 const testingCiTest = existsSync(testingCiTestPath) ? readFileSync(testingCiTestPath, "utf8") : "";
@@ -288,6 +292,12 @@ const requiredTools = [
   "vnem_tools_api_adapter_generate",
   "vnem_tools_api_adapter_contract_test",
   "vnem_tools_api_adapter_review_activate",
+  "vnem_tools_skill_adapter_catalog",
+  "vnem_tools_skill_package_inspect",
+  "vnem_tools_skill_doctor",
+  "vnem_tools_skill_adapter_plan",
+  "vnem_tools_skill_adapter_execute",
+  "vnem_tools_skill_source_verify",
   "vnem_tools_fetch_url_text",
   "vnem_tools_source_quality_check",
   "vnem_tools_research_brief",
@@ -463,6 +473,8 @@ const report = {
   structural_code_module_exists: existsSync(structuralCodeModulePath),
   api_connector_test_exists: existsSync(apiConnectorTestPath),
   api_connector_module_exists: existsSync(apiConnectorModulePath),
+  skill_runtime_test_exists: existsSync(skillRuntimeTestPath),
+  skill_runtime_module_exists: existsSync(skillRuntimeModulePath),
   project_automation_test_exists: existsSync(projectAutomationTestPath),
   project_automation_module_exists: existsSync(projectAutomationModulePath),
   project_automation_fixture_exists: existsSync(projectAutomationFixturePath),
@@ -546,6 +558,9 @@ const report = {
     test_tools_giga_api_connectors: pkg.scripts?.["test:tools-giga-api-connectors"] === "node scripts/test-tools-giga-api-connectors.mjs",
     giga_phase16_benchmark: pkg.scripts?.["giga:phase16-benchmark"] === "node scripts/test-tools-giga-api-connectors.mjs --benchmark-output=.vnem/giga-evolution/phase-16/api-connectors-benchmark.json",
     giga_phase16_live_proof: pkg.scripts?.["giga:phase16-live-proof"] === "node scripts/test-tools-giga-api-connectors.mjs --live --benchmark-output=.vnem/giga-evolution/phase-16/live-api-proof.json",
+    test_tools_giga_skill_runtime: pkg.scripts?.["test:tools-giga-skill-runtime"] === "node scripts/test-tools-giga-skill-runtime.mjs",
+    giga_phase17_benchmark: pkg.scripts?.["giga:phase17-benchmark"] === "node scripts/test-tools-giga-skill-runtime.mjs --benchmark-output=.vnem/giga-evolution/phase-17/skill-runtime-benchmark.json",
+    giga_phase17_live_source_proof: pkg.scripts?.["giga:phase17-live-source-proof"] === "node scripts/test-tools-giga-skill-runtime.mjs --live --benchmark-output=.vnem/giga-evolution/phase-17/live-source-proof.json",
     test_tools_giga_project_automation: pkg.scripts?.["test:tools-giga-project-automation"] === "node scripts/test-tools-giga-project-automation.mjs",
     test_tools_giga_testing_ci: pkg.scripts?.["test:tools-giga-testing-ci"] === "node scripts/test-tools-giga-testing-ci.mjs",
     test_tools_git_session: pkg.scripts?.["test:tools-git-session"] === "node scripts/test-tools-git-session.mjs",
@@ -776,6 +791,18 @@ const report = {
   api_connector_generation_review_status: /openapi_generation_ms/.test(apiConnectorTest) && /api_adapter_proposal_generated/.test(apiConnectorModule) && /contract_test_not_passed/.test(apiConnectorModule) && /api_adapter_review_required/.test(apiConnectorModule) && /unknown_not_acknowledged/.test(apiConnectorModule) && /unsupported_schema_keyword/.test(apiConnectorModule + apiConnectorTest) && /reviewed_active/.test(apiConnectorModule + apiConnectorTest),
   api_connector_core_routing_status: /vnem_tools_api_adapter_catalog/.test(coreIntelligence + apiConnectorTest) && /vnem_tools_api_adapter_execute/.test(coreIntelligence + apiConnectorTest) && /vnem_tools_api_adapter_generate/.test(coreIntelligence) && /vnem_tools_api_adapter_review_activate/.test(coreIntelligence) && /Phase 16 API route/.test(readFileSync(rel("scripts/test-core-giga-intelligence.mjs"), "utf8")),
   api_connector_real_mcp_proof_status: /StdioClientTransport/.test(apiConnectorTest) && /real_stdio_mcp: true/.test(apiConnectorTest) && /VNEM GIGA Phase 16 API connector tests passed/.test(apiConnectorTest),
+  skill_runtime_module_status: /SkillAdapterRuntime/.test(server + skillRuntimeModule) && /skill_adapter_policy/.test(server) && /SkillAdapterError/.test(server + skillRuntimeModule),
+  skill_runtime_contract_status: ["id", "name", "source", "version_or_commit", "license", "supported_clients", "supported_task_types", "instructions", "runtime_type", "filesystem_scope", "network_scope", "command_scope", "dependency_requirements", "risk_findings", "tests", "evidence", "trust_status", "last_verified"].every((field) => skillRuntimeModule.includes(`"${field}"`) || skillRuntimeModule.includes(`${field}:`)) && /missing \$\{field\}/.test(skillRuntimeTest),
+  skill_runtime_initial_adapters_status: ["vnem_workflow_guidance", "frontend_design_brief", "react_performance_audit", "tdd_seam_plan", "browser_evidence_audit", "research_claim_triage", "windows_script_safety_audit", "mod_profile_safety_audit", "package_test_verify"].every((id) => skillRuntimeModule.includes(`id: "${id}"`) && skillRuntimeTest.includes(`"${id}"`)) && /size, 9/.test(skillRuntimeTest),
+  skill_runtime_categories_status: ["declarative_guidance", "local_pure_transformation", "repo_analyzer", "test_verification_adapter", "browser_adapter", "api_backed_adapter", "command_backed_adapter", "unsupported_untrusted_skill"].every((category) => skillRuntimeModule.includes(category) && skillRuntimeTest.includes(category)),
+  skill_runtime_safe_default_status: /vetted_skill_execute/.test(permissionProfilesSource + server + skillRuntimeModule + skillRuntimeTest) && /safe-readonly/.test(permissionProfilesSource + skillRuntimeTest) && /skill_execute/.test(skillRuntimeModule + skillRuntimeTest) && /package_install/.test(server + skillRuntimeModule) && /external_api_mutation/.test(server + skillRuntimeModule),
+  skill_runtime_package_safety_status: /inspectPackage/.test(skillRuntimeModule) && /inspectPackageManifests/.test(skillRuntimeModule) && /yaml\.FAILSAFE_SCHEMA/.test(skillRuntimeModule) && /unsupported_untrusted_skill/.test(skillRuntimeModule + skillRuntimeTest) && /hostileMarker/.test(skillRuntimeTest) && /instructions_executed, false/.test(skillRuntimeTest) && /executable_file_present/.test(skillRuntimeTest) && /package_lifecycle_script/.test(skillRuntimeModule + skillRuntimeTest) && /package_scripts/.test(skillRuntimeModule + skillRuntimeTest) && /dependency_count/.test(skillRuntimeModule + skillRuntimeTest),
+  skill_runtime_doctor_status: /doctorAdapter/.test(skillRuntimeModule) && /source_verification_stale/.test(skillRuntimeModule) && /checked_contracts/.test(skillRuntimeModule) && /ready_count, 9/.test(skillRuntimeTest) && /local_hash_match, true/.test(skillRuntimeTest),
+  skill_runtime_source_pinning_status: /validatePinnedSourceUrl/.test(skillRuntimeModule) && /gitBlobSha/.test(skillRuntimeModule + skillRuntimeTest) && /raw\.githubusercontent\.com/.test(skillRuntimeModule + skillRuntimeTest) && /VNEM_TOOLS_SKILL_TEST_MODE/.test(skillRuntimeModule + skillRuntimeTest) && /mock_source_verification_ms/.test(skillRuntimeTest) && /live_source_/.test(skillRuntimeTest) && /raw_source_content_returned, false/.test(skillRuntimeTest),
+  skill_runtime_command_gate_status: /reviewCommand/.test(skillRuntimeModule) && /runCommand/.test(skillRuntimeModule) && /commandDefault/.test(skillRuntimeTest) && /commandDenied/.test(skillRuntimeTest) && /command_execution_ms/.test(skillRuntimeTest) && /skill_execute/.test(skillRuntimeModule + skillRuntimeTest) && /run_test/.test(skillRuntimeModule + skillRuntimeTest),
+  skill_runtime_core_routing_status: ["vnem_tools_skill_adapter_catalog", "vnem_tools_skill_doctor", "vnem_tools_skill_adapter_plan", "vnem_tools_skill_adapter_execute"].every((tool) => coreIntelligence.includes(tool) && skillRuntimeTest.includes(tool)) && /Phase 17 skill route/.test(readFileSync(rel("scripts/test-core-giga-intelligence.mjs"), "utf8")) && !/metadata_only_until_vetted_execution_runtime_exists/.test(coreIntelligence),
+  skill_runtime_real_mcp_proof_status: /StdioClientTransport/.test(skillRuntimeTest) && /real_stdio_mcp: true/.test(skillRuntimeTest) && /VNEM GIGA Phase 17 vetted skill runtime tests passed/.test(skillRuntimeTest),
+  skill_runtime_coverage_mapper_status: /vnem_tools_tool_test_coverage_map/.test(skillRuntimeTest) && /coverage_level, "behavior_test"/.test(skillRuntimeTest) && /behavior_coverage_mapper_for_six_tools: true/.test(skillRuntimeTest),
   github_dry_run_status: /dry_run !== false/.test(server) && /must not/.test(toolsGithubMutationDryRunTest),
   github_config_knob_status: /config_knob_to_change/.test(server) && /VNEM_TOOLS_GITHUB_ALLOW_DIRECT_PUSH/.test(toolsGithubMutationDryRunTest + server) && /VNEM_TOOLS_GITHUB_ALLOW_ACTIONS_RERUN/.test(toolsGithubMutationDryRunTest + server),
   github_secret_file_block_status: /githubSecretFileBlocked/.test(server) && /Secret-like file blocked/.test(server) && /scanGithubCommitContent/.test(server) && /Secret-like content blocked/.test(server + githubDevelopmentTest) && /\.env/.test(toolsGithubMutationDryRunTest + server),
@@ -947,7 +974,7 @@ const report = {
   project_automation_secret_boundary_status: /raw_secret_argument_blocked/.test(projectAutomationModule + projectAutomationTest) && /sanitizedCommandEnvironment/.test(projectAutomationModule) && /VNEM_PHASE8_SECRET_CANARY/.test(projectAutomationTest) && /env-safety:absent/.test(projectAutomationTest),
   project_automation_lifecycle_hook_status: /project_script_lifecycle_hook_blocked/.test(projectAutomationModule + projectAutomationTest) && /hooked-test/.test(projectAutomationTest) && /lifecycle_hooks/.test(projectAutomationModule),
   project_automation_exact_execution_status: /vnem_tools_project_command_run/.test(server) && /runExactProcess/.test(projectAutomationModule) && /command_review_mismatch/.test(projectAutomationTest) && /exit_code, 7/.test(projectAutomationTest) && /head_tail_summary_with_redacted_log/.test(projectAutomationModule + projectAutomationTest),
-  project_automation_process_cleanup_status: /terminateTree/.test(projectAutomationModule) && /taskkill_process_tree/.test(projectAutomationModule) && /posix_process_group_sigterm_sigkill/.test(projectAutomationModule) && /orphan-survived/.test(projectAutomationTest) && /timed_out, true/.test(projectAutomationTest),
+  project_automation_process_cleanup_status: /terminateTree/.test(projectAutomationModule) && /taskkill_process_tree/.test(projectAutomationModule) && /posix_process_group_sigterm_sigkill/.test(projectAutomationModule) && /cleanup_verification/.test(projectAutomationModule + projectAutomationTest) && /surviving_after_cleanup/.test(projectAutomationModule + projectAutomationTest) && /orphan-survived/.test(projectAutomationTest) && /timed_out, true/.test(projectAutomationTest),
   project_automation_task_graph_status: /vnem_tools_project_task_graph_plan/.test(server) && /vnem_tools_project_task_graph_run/.test(server) && /vnem_tools_project_task_graph_status/.test(server) && /topologicalOrder/.test(projectAutomationModule) && /status, "paused"/.test(projectAutomationTest) && /counts\.satisfied/.test(projectAutomationTest),
   project_automation_rollback_status: /vnem_tools_project_task_graph_rollback/.test(server) && /rollbackTaskGraph/.test(projectAutomationModule) && /reverse-order graph rollback/.test(projectAutomationTest) && /status, "rolled_back"/.test(projectAutomationTest),
   project_automation_diagnosis_status: /vnem_tools_project_runtime_diagnose/.test(server) && /collectLogsFirst/.test(projectAutomationModule) && /inspectPorts/.test(projectAutomationModule) && /diagnostic_order\[0\], "logs"/.test(projectAutomationTest) && /listening, true/.test(projectAutomationTest),
@@ -1050,6 +1077,8 @@ assert.equal(report.structural_code_test_exists, true, "structural-code MCP test
 assert.equal(report.structural_code_module_exists, true, "structural-code runtime module is missing");
 assert.equal(report.api_connector_test_exists, true, "API connector MCP test file is missing");
 assert.equal(report.api_connector_module_exists, true, "API connector runtime module is missing");
+assert.equal(report.skill_runtime_test_exists, true, "skill runtime MCP test file is missing");
+assert.equal(report.skill_runtime_module_exists, true, "skill runtime module is missing");
 assert.equal(report.project_automation_test_exists, true, "project automation MCP test file is missing");
 assert.equal(report.project_automation_module_exists, true, "project automation module is missing");
 assert.equal(report.project_automation_fixture_exists, true, "project automation fixture is missing");
@@ -1085,6 +1114,9 @@ assert.equal(report.package_scripts.test_tools_giga_structural_code, true, "test
 assert.equal(report.package_scripts.test_tools_giga_api_connectors, true, "test:tools-giga-api-connectors package script is missing");
 assert.equal(report.package_scripts.giga_phase16_benchmark, true, "giga:phase16-benchmark package script is missing");
 assert.equal(report.package_scripts.giga_phase16_live_proof, true, "giga:phase16-live-proof package script is missing");
+assert.equal(report.package_scripts.test_tools_giga_skill_runtime, true, "test:tools-giga-skill-runtime package script is missing");
+assert.equal(report.package_scripts.giga_phase17_benchmark, true, "giga:phase17-benchmark package script is missing");
+assert.equal(report.package_scripts.giga_phase17_live_source_proof, true, "giga:phase17-live-source-proof package script is missing");
 for (const [key, value] of Object.entries({ test_smoke_tier: report.package_scripts.test_smoke_tier, test_affected_tier: report.package_scripts.test_affected_tier, test_core_tier: report.package_scripts.test_core_tier, test_tools_tier: report.package_scripts.test_tools_tier, test_precision_compat_tier: report.package_scripts.test_precision_compat_tier, test_integration_tier: report.package_scripts.test_integration_tier, test_benchmarks_tier: report.package_scripts.test_benchmarks_tier, test_full_tier: report.package_scripts.test_full_tier, test_ci_tier: report.package_scripts.test_ci_tier, npm_test_routes_full: report.package_scripts.npm_test_routes_full })) assert.equal(value, true, `${key} package script is missing`);
 assert.equal(report.package_scripts.test_tools_git_session, true, "test:tools-git-session package script is missing");
 assert.equal(report.package_scripts.test_tools_intelligence, true, "test:tools-intelligence package script is missing");
@@ -1317,6 +1349,7 @@ for (const [key, value] of Object.entries({ game_domain_module_status: report.ga
 for (const [key, value] of Object.entries({ dependency_security_module_status: report.dependency_security_module_status, dependency_security_inventory_status: report.dependency_security_inventory_status, dependency_security_risk_status: report.dependency_security_risk_status, dependency_security_advisory_status: report.dependency_security_advisory_status, dependency_security_change_plan_status: report.dependency_security_change_plan_status, dependency_security_install_status: report.dependency_security_install_status, dependency_security_rollback_status: report.dependency_security_rollback_status, dependency_security_credential_boundary_status: report.dependency_security_credential_boundary_status, dependency_security_hardening_status: report.dependency_security_hardening_status, dependency_security_real_mcp_proof_status: report.dependency_security_real_mcp_proof_status })) assert.equal(value, true, `${key} readiness missing`);
 for (const [key, value] of Object.entries({ structural_code_module_status: report.structural_code_module_status, structural_code_architecture_status: report.structural_code_architecture_status, structural_code_index_status: report.structural_code_index_status, structural_code_graph_status: report.structural_code_graph_status, structural_code_reference_status: report.structural_code_reference_status, structural_code_planning_status: report.structural_code_planning_status, structural_code_validation_status: report.structural_code_validation_status, structural_code_safety_gates_status: report.structural_code_safety_gates_status, structural_code_transaction_status: report.structural_code_transaction_status, structural_code_hardening_status: report.structural_code_hardening_status, structural_code_core_routing_status: report.structural_code_core_routing_status, structural_code_real_mcp_proof_status: report.structural_code_real_mcp_proof_status })) assert.equal(value, true, `${key} readiness missing`);
 for (const [key, value] of Object.entries({ api_connector_module_status: report.api_connector_module_status, api_connector_contract_status: report.api_connector_contract_status, api_connector_initial_adapters_status: report.api_connector_initial_adapters_status, api_connector_permission_broker_status: report.api_connector_permission_broker_status, api_connector_execution_bounds_status: report.api_connector_execution_bounds_status, api_connector_mock_live_status: report.api_connector_mock_live_status, api_connector_mutation_compensation_status: report.api_connector_mutation_compensation_status, api_connector_generation_review_status: report.api_connector_generation_review_status, api_connector_core_routing_status: report.api_connector_core_routing_status, api_connector_real_mcp_proof_status: report.api_connector_real_mcp_proof_status })) assert.equal(value, true, key + " readiness missing");
+for (const [key, value] of Object.entries({ skill_runtime_module_status: report.skill_runtime_module_status, skill_runtime_contract_status: report.skill_runtime_contract_status, skill_runtime_initial_adapters_status: report.skill_runtime_initial_adapters_status, skill_runtime_categories_status: report.skill_runtime_categories_status, skill_runtime_safe_default_status: report.skill_runtime_safe_default_status, skill_runtime_package_safety_status: report.skill_runtime_package_safety_status, skill_runtime_doctor_status: report.skill_runtime_doctor_status, skill_runtime_source_pinning_status: report.skill_runtime_source_pinning_status, skill_runtime_command_gate_status: report.skill_runtime_command_gate_status, skill_runtime_core_routing_status: report.skill_runtime_core_routing_status, skill_runtime_real_mcp_proof_status: report.skill_runtime_real_mcp_proof_status, skill_runtime_coverage_mapper_status: report.skill_runtime_coverage_mapper_status })) assert.equal(value, true, key + " readiness missing");
 assert.equal(report.project_task_status, true, "project task support/test coverage is missing");
 assert.equal(report.dev_server_status, true, "dev server support/test coverage is missing");
 assert.equal(report.session_evidence_status, true, "session evidence support/test coverage is missing");
@@ -1471,6 +1504,7 @@ for (const key of ["windows_local_registration_status", "windows_local_powershel
 for (const key of ["dependency_security_module_status", "dependency_security_inventory_status", "dependency_security_risk_status", "dependency_security_advisory_status", "dependency_security_change_plan_status", "dependency_security_install_status", "dependency_security_rollback_status", "dependency_security_credential_boundary_status", "dependency_security_hardening_status", "dependency_security_real_mcp_proof_status"]) console.log(`${key}: ${yes(report[key])}`);
 for (const key of ["structural_code_module_status", "structural_code_architecture_status", "structural_code_index_status", "structural_code_graph_status", "structural_code_reference_status", "structural_code_planning_status", "structural_code_validation_status", "structural_code_safety_gates_status", "structural_code_transaction_status", "structural_code_hardening_status", "structural_code_core_routing_status", "structural_code_real_mcp_proof_status"]) console.log(`${key}: ${yes(report[key])}`);
 for (const key of ["api_connector_module_status", "api_connector_contract_status", "api_connector_initial_adapters_status", "api_connector_permission_broker_status", "api_connector_execution_bounds_status", "api_connector_mock_live_status", "api_connector_mutation_compensation_status", "api_connector_generation_review_status", "api_connector_core_routing_status", "api_connector_real_mcp_proof_status"]) console.log(`${key}: ${yes(report[key])}`);
+for (const key of ["skill_runtime_module_status", "skill_runtime_contract_status", "skill_runtime_initial_adapters_status", "skill_runtime_categories_status", "skill_runtime_safe_default_status", "skill_runtime_package_safety_status", "skill_runtime_doctor_status", "skill_runtime_source_pinning_status", "skill_runtime_command_gate_status", "skill_runtime_core_routing_status", "skill_runtime_real_mcp_proof_status", "skill_runtime_coverage_mapper_status"]) console.log(`${key}: ${yes(report[key])}`);
 console.log(`project_task_status: ${yes(report.project_task_status)}`);
 console.log(`dev_server_status: ${yes(report.dev_server_status)}`);
 console.log(`session_evidence_status: ${yes(report.session_evidence_status)}`);

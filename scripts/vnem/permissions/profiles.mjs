@@ -8,7 +8,7 @@ export const PERMISSION_CAPABILITIES = Object.freeze({
   github: ["github_read", "github_issue", "github_pr", "github_actions", "github_release", "github_settings", "repo_delete"],
   cloudflare: ["cloudflare_read", "cloudflare_mutation", "cloudflare_destructive"],
   database: ["database_read", "database_write"],
-  skills: ["skill_inspect", "skill_execute"],
+  skills: ["skill_inspect", "vetted_skill_execute", "skill_execute"],
   local_pc: ["local_pc_read", "local_pc_action", "root_level_delete", "disable_security_product", "hidden_persistence"],
   games: ["game_inspect", "game_config_write", "game_launch"],
   safety: ["permission_status", "trust_boundary_classify", "action_policy_preview", "evidence_pack_audit", "mutation_approval_contract", "secret_redaction_check"]
@@ -68,7 +68,7 @@ const DANGEROUS = [...HARD_BLOCKED_ACTIONS];
 const READ_ACTIONS = [
   "read_file", "search_code", "inspect_workspace", "dependency_scan", "permission_status",
   "trust_boundary_classify", "action_policy_preview", "cloudflare_read", "github_read", "git_status",
-  "database_read", "skill_inspect", "local_pc_read", "game_inspect", "evidence_pack_audit",
+  "database_read", "skill_inspect", "vetted_skill_execute", "local_pc_read", "game_inspect", "evidence_pack_audit",
   "mutation_approval_contract", "secret_redaction_check", "vetted_api_read"
 ];
 const LOCAL_DEV_ACTIONS = [...READ_ACTIONS, "run_test", "run_build", "start_dev_server", "execute_script", "browser_capture", "download_check", "external_fetch"];
@@ -77,14 +77,14 @@ const WRITE_ACTIONS = [...LOCAL_DEV_ACTIONS, "apply_patch", "restore_backup", "t
 export function buildPermissionProfiles(options = {}) {
   const custom = new Set((options.customAllowedActions || []).map(normalizeActionType));
   const profiles = [
-    profile("safe-readonly", "Default public profile: inspect metadata/files/code and use vetted bounded no-auth API reads; no writes, commands, credential access, broad network fetches, browser captures, dev servers, commits, installs, GitHub mutation, or account actions.", {
+    profile("safe-readonly", "Default public profile: inspect metadata/files/code and use vetted bounded no-auth API reads plus vetted local skill adapters; no writes, commands, credential access, broad network fetches, browser captures, dev servers, commits, installs, GitHub mutation, or account actions.", {
       power_level: 1,
       risk_level: "low",
       allowed_actions: READ_ACTIONS,
       blocked_actions: [...allKnownActions().filter((action) => !READ_ACTIONS.includes(action)), ...DANGEROUS],
       public_default_safe: true,
       network_policy: "Only vetted adapter-bound no-auth GET/HEAD calls are allowed by default; broad fetch, credential-bearing calls, mutation, and browser capture remain blocked or scoped.",
-      command_policy: "No real project tasks/commands in safe-readonly; inspect package scripts only."
+      command_policy: "No real project tasks/commands in safe-readonly; vetted skill adapters are VNEM-owned pure/read handlers and package scripts remain inspect-only."
     }),
     profile("safe-local-dev", "Local development profile: read-only plus approved allowlisted diagnostics/tests/builds/dev-server/localhost proof; no file writes or local commits.", {
       power_level: 2,

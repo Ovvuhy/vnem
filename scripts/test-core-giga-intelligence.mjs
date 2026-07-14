@@ -225,6 +225,21 @@ try {
   for (const tool of ["vnem_tools_api_adapter_catalog", "vnem_tools_api_adapter_plan"]) assert.ok(apiSelection.recommended_tools_calls.includes(tool), `missing Phase 16 API selection route ${tool}`);
   assert.ok(apiSelection.recommended_tools_calls.length <= 6);
 
+  const skills = await call(core.client, "vnem_entrypoint", {
+    user_goal: "Inspect and execute a vetted agent skill safely.",
+    task_mode: "skill",
+    available_mcp_names: ["vnem", "vnem-tools"],
+    available_tool_names: [...toolNames],
+    allowed_tool_names: [...toolNames]
+  }, "entrypoint");
+  assert.equal(skills.task_classification.primary_domain, "skills");
+  for (const tool of ["vnem_tools_skill_adapter_catalog", "vnem_tools_skill_doctor", "vnem_tools_skill_adapter_plan", "vnem_tools_skill_adapter_execute", "vnem_tools_skill_package_inspect", "vnem_tools_skill_source_verify"]) assert.ok(skills.recommended_tools_calls.includes(tool), `missing Phase 17 skill route ${tool}`);
+  assert.equal(skills.recommended_tools_calls.length, 6);
+  assert.equal(skills.adapter_selection[0].readiness, "vetted_adapter_execution_ready_with_runtime_specific_permission_scope");
+  assert.equal(skills.adapter_selection[0].tools_adapter, "vnem_tools_skill_adapter_execute");
+  assert.equal((skills.unavailable_capabilities || []).some((item) => /skill execution runtime/i.test(item)), false);
+  assert.match(skills.permission_implications.skill_execution_scope, /vetted_skill_execute/);
+
   const compatibility = await call(core.client, "vnem_compatibility_assess", {
     task: "Run a Codex MCP server over stdio on Windows PowerShell with Node.",
     environment: { os: "Windows 11", shell: "PowerShell 7", node_version: "24", client: "Codex", mcp_transport: "stdio" },

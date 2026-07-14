@@ -46,6 +46,7 @@ import { GameDomainError, GameDomainRuntime } from "./game-domain.mjs";
 import { DependencySecurityError, DependencySecurityRuntime } from "./dependency-security.mjs";
 import { StructuralCodeError, StructuralCodeRuntime } from "./structural-code.mjs";
 import { ApiConnectorError, ApiConnectorRuntime } from "./api-connectors.mjs";
+import { SkillAdapterError, SkillAdapterRuntime } from "./skill-runtime.mjs";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(scriptDir, "..", "..", "..");
@@ -103,6 +104,12 @@ const REQUIRED_TOOL_NAMES = [
   "vnem_tools_api_adapter_generate",
   "vnem_tools_api_adapter_contract_test",
   "vnem_tools_api_adapter_review_activate",
+  "vnem_tools_skill_adapter_catalog",
+  "vnem_tools_skill_package_inspect",
+  "vnem_tools_skill_doctor",
+  "vnem_tools_skill_adapter_plan",
+  "vnem_tools_skill_adapter_execute",
+  "vnem_tools_skill_source_verify",
   "vnem_tools_api_request",
   "vnem_tools_fetch_url_text",
   "vnem_tools_source_quality_check",
@@ -346,6 +353,7 @@ const gameDomainRuntime = new GameDomainRuntime({ allowedRoots, evidenceRoot });
 const dependencySecurityRuntime = new DependencySecurityRuntime({ allowedRoots, evidenceRoot });
 const structuralCodeRuntime = new StructuralCodeRuntime({ allowedRoots, evidenceRoot, commandRuntime: projectAutomationRuntime });
 const apiConnectorRuntime = new ApiConnectorRuntime({ allowedRoots, evidenceRoot });
+const skillAdapterRuntime = new SkillAdapterRuntime({ allowedRoots, evidenceRoot, commandRuntime: projectAutomationRuntime });
 const activePermissionProfile = permissionRuntime.activeProfile();
 const usablePacks = await loadUsablePacks();
 const requestedPrecisionWorkspaceCandidate = path.resolve(
@@ -371,8 +379,8 @@ const server = new McpServer(
       "VNEM Tools MCP is a safeguard-first action server for approved project work after VNEM Core has planned the task.",
       "Tools MCP is not Core MCP and is not Giga MCP. It can read, search, dry-run patches, apply approved patches, run approved allowlisted commands, prepare/perform approved limited API requests, capture approved local browser screenshots, and collect evidence.",
       "For code work, prefer vnem_tools_structural_code_search before broad traversal, vnem_tools_exact_patch or vnem_tools_patch_transaction for surgical writes, and vnem_tools_verification_loop for bounded red/green/check proof. Fetch official documentation into task-scoped context when framework behavior may have changed.",
-      "Dry-run is the default for mutation, credential-bearing, command, broad-network, and browser actions. Vetted no-auth GET/HEAD adapters may run as bounded safe reads; credentials are reference-only and external mutation remains scoped and approval-gated.",
-      "The active Tools permission profile gates real actions. Default safe-readonly permits only reviewed no-auth adapter reads in addition to local inspection; credential use, mutation, dev-server, Git, and broader network actions require an appropriate profile or exact scoped grant. GitHub autonomy uses command-backed gh/git paths for allowed profile-gated repo work; destructive GitHub admin, arbitrary shell, broad browser automation, account login automation, cookie extraction, CAPTCHA bypass, and broad web scraping remain blocked by default."
+      "Dry-run is the default for mutation, credential-bearing, command, broad-network, and browser actions. Vetted no-auth GET/HEAD adapters and VNEM-owned pure/read skill adapters may run as bounded safe reads; credentials are reference-only and external mutation remains scoped and approval-gated.",
+      "The active Tools permission profile gates real actions. Default safe-readonly permits reviewed no-auth adapter reads and vetted local skill handlers in addition to local inspection; skill Markdown is always data and never executed. Credential use, commands, mutation, dependency installation, dev-server, Git, and broader network actions require an appropriate profile or exact scoped grant. GitHub autonomy uses command-backed gh/git paths for allowed profile-gated repo work; destructive GitHub admin, arbitrary shell, broad browser automation, account login automation, cookie extraction, CAPTCHA bypass, and broad web scraping remain blocked by default."
     ].join(" ")
   }
 );
@@ -413,12 +421,12 @@ function registerTools(mcpServer) {
     "vnem_tools_entrypoint",
     {
       title: "VNEM Tools Entrypoint",
-      description: "VNEM Tools MCP first-call entrypoint to recommend and route exact next action calls for repo, code, debug, test, proof, GitHub, CI, patch, MCP, browser, recovery, and tooling tasks.",
+      description: "VNEM Tools MCP first-call entrypoint to recommend and route exact next action calls for repo, code, debug, test, proof, GitHub, CI, patch, MCP, vetted skills, browser, recovery, and tooling tasks.",
       inputSchema: {
         user_goal: z.string().min(1),
         repo_path: z.string().optional(),
         root: z.string().default("."),
-        task_mode: z.enum(["auto", "local_only", "implementation", "debugging", "repo_inspection", "patch_targeting", "mcp_tool_audit", "code_intelligence", "publish", "cloudflare", "browser_ui", "windows", "game_modding", "recovery", "no_placebo", "evidence_pack", "generated_artifact"]).default("auto"),
+        task_mode: z.enum(["auto", "local_only", "implementation", "debugging", "repo_inspection", "patch_targeting", "mcp_tool_audit", "code_intelligence", "skill", "publish", "cloudflare", "browser_ui", "windows", "game_modding", "recovery", "no_placebo", "evidence_pack", "generated_artifact"]).default("auto"),
         changed_files: z.array(z.string()).default([]),
         failing_output: z.string().default("")
       },
@@ -2467,6 +2475,115 @@ function registerTools(mcpServer) {
   );
 
   mcpServer.registerTool(
+    "vnem_tools_skill_adapter_catalog",
+    {
+      title: "List Vetted Skill Adapters",
+      description: "List reviewed skill adapter contracts, pinned provenance, runtime categories, permission boundaries, tests, risks, compatibility, and evidence rules. Upstream Markdown remains data and is never executed.",
+      inputSchema: { runtime_type: z.string().default(""), task_type: z.string().default(""), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const result = skillAdapterRuntime.catalog(args);
+      recordSession(args.session_id, "skill_adapter_inspections", result);
+      return toolResult(formatSkillAdapter("vnem_tools_skill_adapter_catalog", result), { skill_adapter_catalog: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_skill_package_inspect",
+    {
+      title: "Inspect Skill Package Safely",
+      description: "Parse a bounded local skill package as inert data, inspect provenance-relevant metadata, scripts, dependencies, requested permissions, and risk indicators, and keep unreviewed packages non-executable.",
+      inputSchema: { root: z.string().default("."), skill_path: z.string().default("skills/vnem"), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const permission = enforceActionPolicy("skill_inspect", { ...args, dry_run: false, target_path: args.root, proposed_action: `inspect inert skill package ${args.skill_path}` });
+      const result = { ...(await skillAdapterRuntime.inspectPackage(args)), permission };
+      recordSession(args.session_id, "skill_adapter_inspections", result);
+      return toolResult(formatSkillAdapter("vnem_tools_skill_package_inspect", result), { skill_package_inspection: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_skill_doctor",
+    {
+      title: "Run Vetted Skill Doctor",
+      description: "Check adapter source/version/license/manifest/runtime/permissions/dependencies/tests/risks/freshness/compatibility/evidence and verify the exact local VNEM skill hash without executing skill instructions.",
+      inputSchema: { adapter_id: z.string().optional(), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const permission = enforceActionPolicy("skill_inspect", { ...args, dry_run: false, target_path: allowedRoots[0], proposed_action: "run vetted skill adapter doctor" });
+      const result = { ...(await skillAdapterRuntime.doctor(args)), permission };
+      recordSession(args.session_id, "skill_adapter_inspections", result);
+      return toolResult(formatSkillAdapter("vnem_tools_skill_doctor", result), { skill_doctor: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_skill_adapter_plan",
+    {
+      title: "Plan Vetted Skill Adapter",
+      description: "Validate one adapter input and return its exact filesystem, network, command, dependency, permission, risk, and evidence contract without executing the adapter.",
+      inputSchema: { adapter_id: z.string().min(1), root: z.string().default("."), input: z.record(z.any()).default({}), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const planned = await skillAdapterRuntime.plan(args);
+      const permissions = Object.fromEntries(planned.permission_actions.map((action) => [action, actionPolicyPreview({ action_type: action, target_path: planned.root, proposed_action: `execute vetted skill adapter ${planned.adapter_id}` })]));
+      const result = { ...planned, permissions };
+      recordSession(args.session_id, "skill_adapter_inspections", result);
+      return toolResult(formatSkillAdapter("vnem_tools_skill_adapter_plan", result), { skill_adapter_plan: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_skill_adapter_execute",
+    {
+      title: "Execute Vetted Skill Adapter",
+      description: "Run one VNEM-owned vetted adapter under exact permission scope. Pure/read adapters are safe-readonly; command-backed adapters default to plan-only and require separate skill/process approval plus a current hash-bound review id.",
+      inputSchema: { adapter_id: z.string().min(1), root: z.string().default("."), input: z.record(z.any()).default({}), dry_run: z.boolean().optional(), approved: z.boolean().default(false), approval_note: z.string().default(""), session_id: z.string().optional() },
+      annotations: ACTION_TOOL
+    },
+    async (args) => withToolErrors(async () => {
+      const planned = await skillAdapterRuntime.plan(args);
+      const planOnly = args.dry_run === true || (planned.runtime_type === "command_backed_adapter" && args.dry_run !== false);
+      if (planOnly) {
+        const permissions = Object.fromEntries(planned.permission_actions.map((action) => [action, actionPolicyPreview({ action_type: action, target_path: planned.root, proposed_action: `execute vetted skill adapter ${planned.adapter_id}` })]));
+        const result = { ...planned, dry_run: true, permissions, safe_next_step: planned.runtime_type === "command_backed_adapter" ? "Grant exact skill_execute and run_test scope, then submit dry_run=false with command_review.review_id." : "Submit dry_run=false to execute this vetted bounded adapter." };
+        return toolResult(formatSkillAdapter("vnem_tools_skill_adapter_execute", result), { skill_adapter_execution: result });
+      }
+      const permissionDecisions = Object.fromEntries(planned.permission_actions.map((action) => [action, enforceActionPolicy(action, { ...args, dry_run: false, target_path: planned.root, proposed_action: `execute vetted skill adapter ${planned.adapter_id}` })]));
+      const result = await skillAdapterRuntime.execute({ ...args, dry_run: false, permission_decisions: permissionDecisions });
+      recordSession(args.session_id, "skill_adapter_executions", result);
+      return toolResult(formatSkillAdapter("vnem_tools_skill_adapter_execute", result), { skill_adapter_execution: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_skill_source_verify",
+    {
+      title: "Verify Pinned Skill Source",
+      description: "Dry-run or fetch only the adapter's pinned raw GitHub files, enforce exact external-fetch permission, compare Git blob identities under strict bounds, and never return or execute source content.",
+      inputSchema: { adapter_id: z.string().min(1), dry_run: z.boolean().default(true), approved: z.boolean().default(false), approval_note: z.string().default(""), session_id: z.string().optional() },
+      annotations: NETWORK_ACTION
+    },
+    async (args) => withToolErrors(async () => {
+      const planned = skillAdapterRuntime.sourceVerificationPlan(args);
+      const policyArgs = { ...args, provider: "github-skill-source", domain: "raw.githubusercontent.com", url: planned.files[0]?.url, proposed_action: `verify pinned source bytes for skill adapter ${planned.adapter_id}` };
+      if (args.dry_run !== false) {
+        const result = { ...planned, dry_run: true, permission: actionPolicyPreview({ ...policyArgs, action_type: "external_fetch" }) };
+        return toolResult(formatSkillAdapter("vnem_tools_skill_source_verify", result), { skill_source_verification: result });
+      }
+      const permission = enforceActionPolicy("external_fetch", { ...policyArgs, dry_run: false });
+      const result = await skillAdapterRuntime.verifySource({ ...args, permission_decisions: { external_fetch: permission } });
+      recordSession(args.session_id, "skill_adapter_source_verifications", result);
+      return toolResult(formatSkillAdapter("vnem_tools_skill_source_verify", result), { skill_source_verification: result });
+    })
+  );
+
+  mcpServer.registerTool(
     "vnem_tools_api_request",
     {
       title: "Prepare or Run Safe API Request",
@@ -3596,6 +3713,7 @@ async function toolsEntrypoint(args = {}) {
       "code_intelligence",
       "precision_execution",
       "permission_control",
+      "skill_adapters",
       "tool_intelligence",
       "github_autonomy",
       "cloudflare_control",
@@ -3762,6 +3880,7 @@ function toolsTaskCategories(text, taskType, localOnly) {
   const categories = [];
   const add = (category) => { if (!categories.includes(category)) categories.push(category); };
   if (taskType.includes("debug") || /\b(debug|failing|failure|failed|error|stack trace|ci failure|regression)\b/.test(text)) add("debugging_failing_tests");
+  if (taskType.includes("skill") || /\b(vetted skill|agent skill|skill adapter|skill runtime|skill doctor|skill package)\b/.test(text)) add("skill_adapters");
   if (taskType.includes("repo") || /\b(repo|repository|inspect|map|state|branch|worktree)\b/.test(text)) add("repo_inspection");
   if (taskType.includes("patch") || /\b(patch|target|edit|change file|fix source|implementation site)\b/.test(text)) add("patch_targeting");
   if (/\b(semantic search|structural search|search code|find symbol|locate implementation)\b/.test(text)) add("structural_code_search");
@@ -3798,6 +3917,7 @@ function toolsRouteDefinitions() {
     official_documentation: { why: "Framework work needs bounded current official documentation and task-scoped context before writes.", tools: ["vnem_tools_official_documentation_fetch", "vnem_tools_documentation_context"] },
     precision_verification: { why: "Implementation proof needs bounded stateful commands and persistent red, green, or check loops.", tools: ["vnem_tools_verification_loop", "vnem_tools_terminal_session", "vnem_tools_ephemeral_script"] },
     permission_control: { why: "Permission changes need a narrow request, exact acknowledgment, scope evaluation, doctor proof, and revocation path.", tools: ["vnem_tools_permission_evaluate", "vnem_tools_permission_request", "vnem_tools_permission_grant", "vnem_tools_permission_doctor", "vnem_tools_permission_revoke"] },
+    skill_adapters: { why: "Skill work needs a vetted catalog, package trust inspection, doctor readiness, exact runtime and permission planning, VNEM-owned execution, and optional pinned-source identity proof without executing Markdown.", tools: ["vnem_tools_skill_adapter_catalog", "vnem_tools_skill_package_inspect", "vnem_tools_skill_doctor", "vnem_tools_skill_adapter_plan", "vnem_tools_skill_adapter_execute", "vnem_tools_skill_source_verify"] },
     mcp_tool_audit: { why: "MCP tool audit needs surface, coverage, catalog/readiness, and control-character checks.", tools: ["vnem_tools_mcp_surface_audit", "vnem_tools_tool_test_coverage_map", "vnem_tools_source_control_character_guard"] },
     code_intelligence: { why: "Code intelligence needs an incremental structural graph, exact bindings, symbols, MCP surface, patch targets, coverage, and source impact.", tools: ["vnem_tools_structural_index_build", "vnem_tools_structural_graph_query", "vnem_tools_exact_symbol_references", "vnem_tools_code_symbol_map", "vnem_tools_mcp_surface_audit", "vnem_tools_patch_target_finder", "vnem_tools_tool_test_coverage_map", "vnem_tools_source_impact_trace"] },
     structural_refactoring: { why: "Refactoring needs AST/binding evidence, hash-bound previews, collision and impact analysis, focused verification, post-reference proof, and exact rollback.", tools: ["vnem_tools_structural_index_build", "vnem_tools_exact_symbol_references", "vnem_tools_refactor_impact_analyze", "vnem_tools_refactor_rename_preview", "vnem_tools_refactor_move_preview", "vnem_tools_refactor_extract_plan", "vnem_tools_structural_patch_validate", "vnem_tools_refactor_apply_verify", "vnem_tools_refactor_transaction_rollback"] },
@@ -3839,6 +3959,12 @@ function toolsToolReason(toolName, categories) {
   if (toolName.includes("verification_loop") || toolName.includes("terminal_session")) return "run bounded checks with explicit timeout and persisted evidence";
   if (toolName.includes("official_documentation") || toolName.includes("documentation_context")) return "retrieve and reuse task-scoped official documentation context";
   if (toolName.includes("permission_")) return "evaluate or grant one bounded capability without weakening hard blocks";
+  if (toolName.includes("skill_adapter_catalog")) return "select a vetted skill adapter from complete runtime and provenance contracts";
+  if (toolName.includes("skill_package_inspect")) return "inspect local skill files as inert untrusted data";
+  if (toolName.includes("skill_doctor")) return "verify source, license, runtime, permission, test, freshness, and evidence readiness";
+  if (toolName.includes("skill_adapter_plan")) return "validate bounded adapter input and exact runtime permission scope";
+  if (toolName.includes("skill_adapter_execute")) return "run one VNEM-owned vetted handler under runtime-specific permission gates";
+  if (toolName.includes("skill_source_verify")) return "compare pinned source identities without returning or executing source content";
   if (toolName.includes("source_impact_trace")) return "trace impact to tests and readiness";
   if (toolName.includes("test_selection_plan")) return "choose focused checks";
   if (toolName.includes("github_actions_status")) return "verify Actions status";
@@ -3864,6 +3990,7 @@ function toolsRequiredInputsForTool(toolName, categories) {
   if (toolName.includes("browser")) inputs.push("app_url, file_path, or route");
   if (toolName.includes("game") || toolName.includes("mod_") || toolName.includes("roblox") || toolName.includes("luau")) inputs.push("exact game/tool version, platform, loader, and project root when known");
   if (toolName.includes("dependency")) inputs.push("package manager, owning manifest/lockfile, exact package/version, and approval scope when mutation is requested");
+  if (toolName.includes("skill_")) inputs.push("adapter_id or local skill_path plus bounded adapter input");
   if (toolName.includes("refactor") || toolName.includes("structural_")) inputs.push("project root plus exact file/symbol/change scope");
   if (categories.includes("evidence_proof_pack")) inputs.push("commands_run, tests_passed, tests_failed");
   return uniqueToolNames(inputs);
@@ -3877,6 +4004,7 @@ function toolsMissingInputs(categories, context, localOnly) {
   if (categories.includes("browser_ui_verification") && !context.app_url && !context.file_path) missing.push("app_url, file_path, or route");
   if (categories.includes("game_modding_toolchain") && !context.game_version) missing.push("game/tool version and loader/toolchain version when runtime compatibility matters");
   if (categories.includes("dependency_security") && !context.package_manager) missing.push("package manager and owning lockfile when mutation or exact resolution matters");
+  if (categories.includes("skill_adapters") && !context.adapter_id && !context.skill_path) missing.push("adapter_id or local skill_path");
   if (categories.includes("structural_refactoring") && !context.changed_files && !context.symbol) missing.push("exact symbol or changed_files for refactor scope");
   return uniqueToolNames(missing);
 }
@@ -3889,6 +4017,7 @@ function toolsChecksForCategories(categories, changedFiles = []) {
   if (categories.includes("browser_ui_verification")) checks.push("collect local browser evidence or report browser unavailable");
   if (categories.includes("game_modding_toolchain")) checks.push("run vnem_tools_game_project_validate", "run the exact game/loader project check or report it unproven");
   if (categories.includes("dependency_security")) checks.push("run vnem_tools_dependency_inventory", "verify lockfile plus focused test/build scripts", "prove rollback or report mutation unperformed");
+  if (categories.includes("skill_adapters")) checks.push("npm.cmd run test:tools-giga-skill-runtime", "npm.cmd run tools:readiness", "verify no upstream Markdown or untrusted scripts executed");
   if (categories.includes("structural_refactoring")) checks.push("run vnem_tools_structural_patch_validate", "run focused refactor regression", "prove post-reference state and rollback hashes");
   if (changedFiles.some((file) => /package\.json|scripts\//.test(String(file)))) checks.push("npm.cmd run validate");
   return uniqueToolNames(checks).slice(0, 8);
@@ -3970,6 +4099,7 @@ function statusObject() {
     dependency_security_policy: { tools: ["vnem_tools_dependency_inventory", "vnem_tools_dependency_risk_audit", "vnem_tools_dependency_advisory_audit", "vnem_tools_dependency_change_analyze", "vnem_tools_dependency_upgrade_plan", "vnem_tools_dependency_install_apply", "vnem_tools_dependency_transaction_rollback"], inspection_ecosystems: ["npm", "pnpm", "yarn", "python", "cargo", "go"], npm_lockfile_versions: [1, 2, 3], mutation_adapter: "npm only", dry_run_default: true, approved_installs_or_scoped_grant_required: true, existing_npm_lock_required_for_mutation: true, exact_registry_versions_only: true, lifecycle_scripts_disabled: true, recursive_verification_script_review: true, ephemeral_user_and_global_npm_configs: true, allowlisted_non_secret_environment_only: true, project_npmrc_blocks_live_commands: true, publishing_and_global_installs_blocked: true, timeout_process_tree_termination: true, automatic_failure_rollback: true, explicit_rollback_hash_preconditions: true, downloaded_binary_execution_requires_separate_review_and_approval: true },
     structural_code_policy: { tools: ["vnem_tools_structural_index_build", "vnem_tools_structural_graph_query", "vnem_tools_exact_symbol_references", "vnem_tools_refactor_rename_preview", "vnem_tools_refactor_move_preview", "vnem_tools_refactor_extract_plan", "vnem_tools_dead_code_candidates", "vnem_tools_refactor_impact_analyze", "vnem_tools_structural_patch_validate", "vnem_tools_refactor_apply_verify", "vnem_tools_refactor_transaction_rollback"], ast_languages: ["javascript", "typescript", "jsx", "tsx"], ast_engine: "@babel/parser plus @babel/traverse 7.29.7", heuristic_languages: ["python", "go", "rust", "java", "csharp", "kotlin", "c", "cpp", "lua", "luau", "ruby", "php"], persisted_incremental_index: true, generated_and_secret_paths_skipped: true, graph_bounds_reported: true, automatic_apply_scope: "high-confidence lexical-binding rename only", move_and_extract_apply_supported: false, public_export_acknowledgement_required: true, stale_hash_preconditions: true, regular_file_and_link_checks: true, reviewed_project_verification_required: true, verification_worktree_delta_blocked: true, post_reference_proof: true, automatic_failure_rollback: true, explicit_rollback_hash_preconditions: true, cross_file_filesystem_atomicity_claimed: false },
     api_connector_policy: { tools: ["vnem_tools_api_adapter_catalog", "vnem_tools_api_credential_reference_check", "vnem_tools_api_adapter_plan", "vnem_tools_api_adapter_execute", "vnem_tools_api_adapter_compensate", "vnem_tools_api_adapter_generate", "vnem_tools_api_adapter_contract_test", "vnem_tools_api_adapter_review_activate"], initial_adapters: 7, substantive_categories: ["no-auth public data", "backend/authenticated service", "developer tooling", "app/product content data", "structured public data", "user-relevant game data", "external mutation"], safe_default: "vetted no-auth GET/HEAD only", credential_reference_types: ["environment", "client_secret_reference", "os_credential_store", "provider_profile"], raw_credentials_accepted_or_emitted: false, credential_reads_require_profile_or_exact_scoped_grant: true, external_mutation_requires_profile_or_exact_scoped_grant: true, repeated_approval_inside_exact_grant: false, bounded_rate_retry_timeout_output: true, recursive_redaction_and_evidence: true, mock_integrations: true, approved_live_no_auth_tests: ["open_meteo_forecast", "world_bank_indicator"], generated_adapters_require_contract_test_and_review: true, generated_activation_scope: "no-auth GET/HEAD only", compensation_is_not_rollback: true },
+    skill_adapter_policy: { tools: ["vnem_tools_skill_adapter_catalog", "vnem_tools_skill_package_inspect", "vnem_tools_skill_doctor", "vnem_tools_skill_adapter_plan", "vnem_tools_skill_adapter_execute", "vnem_tools_skill_source_verify"], initial_adapters: 9, runtime_categories: ["declarative_guidance", "local_pure_transformation", "repo_analyzer", "test_verification_adapter", "browser_adapter", "api_backed_adapter", "command_backed_adapter", "unsupported_untrusted_skill"], safe_default: "vetted VNEM-owned pure/read handlers under vetted_skill_execute", arbitrary_markdown_execution: false, untrusted_package_execution: false, automatic_dependency_installation: false, stronger_scopes: { command: ["skill_execute", "run_test"], network: ["external_fetch"], dependency_install: ["package_install"], credentials: ["credential_api_read"], mutation: ["external_api_mutation"], outside_root_write: ["apply_patch"] }, pinned_source_identity_verification: true, raw_credentials_accepted_or_emitted: false, persisted_redacted_evidence: true },
     project_task_policy: { tool: "vnem_tools_run_project_task", dry_run_default: true, approval_required: true, package_json_scripts_only: true, package_install_publish_deploy_blocked: true },
     dev_server_policy: { tools: ["vnem_tools_start_dev_server", "vnem_tools_stop_dev_server", "vnem_tools_list_dev_servers"], dry_run_default: true, approval_required: true, local_host_only: true, port_range: "3000-9999", registry: "in-memory per MCP process" },
     session_evidence_policy: { tools: ["vnem_tools_start_session", "vnem_tools_finish_session"], writes_single_json_proof_pack: true, secrets_redacted: true },
@@ -4197,7 +4327,7 @@ async function searchAllowedFiles(args) {
   return { root: root.relativePath || ".", query: args.query, results, skipped_policy: skippedPolicy() };
 }
 
-const TOOL_CAPABILITY_GROUPS = ["permissions", "filesystem", "project_intelligence", "app_engineering", "repo_power", "adoption_reliability", "structural_code", "structural_refactoring", "patching", "rollback", "commands", "project_tasks", "dev_server", "browser_proof", "browser_intelligence", "ui_web_quality", "windows_local", "game_domain", "dependency_security", "api_connectors", "api_request", "search", "research_sources", "source_quality", "browsing_risk", "research_matrix", "source_ingestion", "debugging_code_quality", "session_evidence", "local_git", "github_autonomy", "status_readiness", "cloudflare_control", "tools_quality", "tool_intelligence"];
+const TOOL_CAPABILITY_GROUPS = ["permissions", "filesystem", "project_intelligence", "app_engineering", "repo_power", "adoption_reliability", "structural_code", "structural_refactoring", "patching", "rollback", "commands", "project_tasks", "dev_server", "browser_proof", "browser_intelligence", "ui_web_quality", "windows_local", "game_domain", "dependency_security", "api_connectors", "skill_adapters", "api_request", "search", "research_sources", "source_quality", "browsing_risk", "research_matrix", "source_ingestion", "debugging_code_quality", "session_evidence", "local_git", "github_autonomy", "status_readiness", "cloudflare_control", "tools_quality", "tool_intelligence"];
 
 function buildToolCatalog() {
   const commonUnsafe = ["secret reading/dumping", "outside-root access", "arbitrary shell", "package installs", "git push", "deployment", "Giga MCP"];
@@ -4359,6 +4489,12 @@ function buildToolCatalog() {
     mk("vnem_tools_api_adapter_generate", "api_connectors", { description: "Ingest bounded OpenAPI JSON or structured official docs and generate an inactive declarative proposal, unknowns, mock fixture, and contract tests.", typical_use_cases: ["propose reusable API adapter", "OpenAPI operation review"], unsafe_actions_blocked: [...commonUnsafe, "automatic activation", "YAML ad hoc parsing", "generated auth or mutation execution"] }),
     mk("vnem_tools_api_adapter_contract_test", "api_connectors", { description: "Run local request/response/path contract checks against adapter mock fixtures without network or activation.", typical_use_cases: ["adapter fixture verification", "generated proposal gate"] }),
     mk("vnem_tools_api_adapter_review_activate", "api_connectors", { read_only: false, mutation: true, requires_approval: true, dry_run_default: true, description: "Atomically activate only a contract-tested, explicitly reviewed, unknown-acknowledged generated no-auth GET/HEAD adapter.", typical_use_cases: ["reviewed adapter registry update"], unsafe_actions_blocked: [...commonUnsafe, "untested generated activation", "generated credentials or mutation", "unacknowledged unknowns"] }),
+    mk("vnem_tools_skill_adapter_catalog", "skill_adapters", { description: "List nine vetted VNEM-owned skill adapters with pinned provenance, complete contracts, runtime categories, permissions, risks, tests, compatibility, and evidence rules.", typical_use_cases: ["choose a safe skill adapter", "inspect skill runtime boundaries"], unsafe_actions_blocked: [...commonUnsafe, "Markdown execution", "marketplace popularity as trust", "automatic skill installation"] }),
+    mk("vnem_tools_skill_package_inspect", "skill_adapters", { description: "Inspect bounded local SKILL.md packages, scripts, requested permissions, and risk indicators as inert data while leaving untrusted packages non-executable.", typical_use_cases: ["skill security review", "local package provenance check"], unsafe_actions_blocked: [...commonUnsafe, "skill script execution", "prompt instruction execution", "trust from parse success"] }),
+    mk("vnem_tools_skill_doctor", "skill_adapters", { description: "Check source/version/license/manifest/runtime/permissions/dependencies/tests/risks/freshness/compatibility/evidence and exact local source identity.", typical_use_cases: ["skill readiness diagnosis", "stale or incomplete adapter check"] }),
+    mk("vnem_tools_skill_adapter_plan", "skill_adapters", { description: "Validate exact adapter input and return filesystem, network, command, dependency, permission, risk, and evidence scope without execution.", typical_use_cases: ["skill execution preflight", "permission review"] }),
+    mk("vnem_tools_skill_adapter_execute", "skill_adapters", { read_only: false, dry_run_default: false, description: "Execute a VNEM-owned vetted pure/read adapter, or plan/execute one hash-bound reviewed package test under separate skill and process gates.", typical_use_cases: ["frontend brief", "React or Windows static audit", "TDD plan", "browser evidence audit", "mod profile audit", "reviewed test verification"], unsafe_actions_blocked: [...commonUnsafe, "arbitrary Markdown or script execution", "unreviewed package execution", "implicit command approval"] }),
+    mk("vnem_tools_skill_source_verify", "skill_adapters", { network: true, dry_run_default: true, description: "Fetch only pinned raw GitHub source files under exact external-fetch scope and compare Git blob identities without returning or executing content.", typical_use_cases: ["refresh source pin proof", "detect upstream source mismatch"], unsafe_actions_blocked: [...commonUnsafe, "arbitrary URL fetch", "source content execution", "permanent safety claim"] }),
     mk("vnem_tools_ui_evidence_audit", "ui_web_quality", { description: "Audit provided UI evidence and reject unsupported visual/browser claims.", allowed_roots_required: false, evidence_logged: true, typical_use_cases: ["final UI claim audit", "responsive/a11y/state proof review"], unsafe_actions_blocked: [...commonUnsafe, "inventing browser results", "accepting code-only visual proof"] }),
     mk("vnem_tools_start_session", "session_evidence", { read_only: false, mutation: true, description: "Start session proof pack.", typical_use_cases: ["group local workflow evidence"] }),
     mk("vnem_tools_finish_session", "session_evidence", { read_only: false, mutation: true, description: "Write session proof pack.", typical_use_cases: ["final evidence summary"] }),
@@ -10898,6 +11034,20 @@ function formatApiConnector(name, result) {
   ].filter(Boolean).join("\n");
 }
 
+function formatSkillAdapter(name, result) {
+  return [
+    `${name}: ${result.operation_result || "completed"}`,
+    result.adapter_id ? `Adapter: ${result.adapter_id}` : null,
+    Number.isInteger(result.adapter_count) ? `Adapters: ${result.adapter_count}` : null,
+    Number.isInteger(result.ready_count) ? `Ready: ${result.ready_count}/${result.adapter_count}` : null,
+    result.runtime_type ? `Runtime: ${result.runtime_type}` : null,
+    result.trust_status ? `Trust: ${result.trust_status}` : null,
+    result.executed === true ? "Executed: yes" : result.executed === false ? "Executed: no" : null,
+    result.exact_match === true ? "Pinned source match: yes" : result.exact_match === false ? "Pinned source match: no" : null,
+    result.instructions_executed_as_code === false || result.content_executed === false ? "Upstream instructions executed as code: no" : null
+  ].filter(Boolean).join("\n");
+}
+
 async function withToolErrors(fn) {
   try {
     return await fn();
@@ -10912,6 +11062,7 @@ async function withToolErrors(fn) {
     if (error instanceof DependencySecurityError) return errorResult(error.message, error.code, error.details);
     if (error instanceof StructuralCodeError) return errorResult(error.message, error.code, error.details);
     if (error instanceof ApiConnectorError) return errorResult(error.message, error.code, error.details);
+    if (error instanceof SkillAdapterError) return errorResult(error.message, error.code, error.details);
     return errorResult(error.message || String(error), "tools_unexpected_error");
   }
 }

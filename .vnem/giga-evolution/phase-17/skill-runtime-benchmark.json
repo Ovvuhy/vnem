@@ -1,0 +1,117 @@
+{
+  "phase": 17,
+  "generated_at": "2026-07-14T15:59:58.398Z",
+  "scope": "real_stdio_mcp_vetted_skill_runtime",
+  "tools_exercised": [
+    "vnem_tools_skill_adapter_catalog",
+    "vnem_tools_skill_package_inspect",
+    "vnem_tools_skill_doctor",
+    "vnem_tools_skill_adapter_plan",
+    "vnem_tools_skill_adapter_execute",
+    "vnem_tools_skill_source_verify"
+  ],
+  "initial_adapters": [
+    {
+      "id": "vnem_workflow_guidance",
+      "runtime_type": "declarative_guidance",
+      "source_kind": "vnem_local_reviewed_skill",
+      "version_or_commit": "sha256:037091f36ea5d72c5f0816f307260099c335063cfd659102180f27207de54f4b",
+      "license": "MIT",
+      "trust_status": "vetted_builtin_adapter"
+    },
+    {
+      "id": "frontend_design_brief",
+      "runtime_type": "local_pure_transformation",
+      "source_kind": "official_agent_skill_repository",
+      "version_or_commit": "9d2f1ae187231d8199c64b5b762e1bdf2244733d",
+      "license": "Apache-2.0",
+      "trust_status": "vetted_builtin_adapter"
+    },
+    {
+      "id": "react_performance_audit",
+      "runtime_type": "repo_analyzer",
+      "source_kind": "official_agent_skill_repository",
+      "version_or_commit": "f8a72b9603728bb92a217a879b7e62e43ad76c81",
+      "license": "MIT",
+      "trust_status": "vetted_builtin_adapter"
+    },
+    {
+      "id": "tdd_seam_plan",
+      "runtime_type": "test_verification_adapter",
+      "source_kind": "inspectable_community_agent_skill_repository",
+      "version_or_commit": "66898f60e8c744e269f8ce06c2b2b99ce7660d5f",
+      "license": "MIT",
+      "trust_status": "vetted_builtin_adapter"
+    },
+    {
+      "id": "browser_evidence_audit",
+      "runtime_type": "browser_adapter",
+      "source_kind": "vnem_local_reviewed_skill",
+      "version_or_commit": "sha256:037091f36ea5d72c5f0816f307260099c335063cfd659102180f27207de54f4b",
+      "license": "MIT",
+      "trust_status": "vetted_builtin_adapter"
+    },
+    {
+      "id": "research_claim_triage",
+      "runtime_type": "local_pure_transformation",
+      "source_kind": "vnem_local_reviewed_skill",
+      "version_or_commit": "sha256:037091f36ea5d72c5f0816f307260099c335063cfd659102180f27207de54f4b",
+      "license": "MIT",
+      "trust_status": "vetted_builtin_adapter"
+    },
+    {
+      "id": "windows_script_safety_audit",
+      "runtime_type": "repo_analyzer",
+      "source_kind": "vnem_local_reviewed_skill",
+      "version_or_commit": "sha256:037091f36ea5d72c5f0816f307260099c335063cfd659102180f27207de54f4b",
+      "license": "MIT",
+      "trust_status": "vetted_builtin_adapter"
+    },
+    {
+      "id": "mod_profile_safety_audit",
+      "runtime_type": "repo_analyzer",
+      "source_kind": "vnem_local_reviewed_skill",
+      "version_or_commit": "sha256:037091f36ea5d72c5f0816f307260099c335063cfd659102180f27207de54f4b",
+      "license": "MIT",
+      "trust_status": "vetted_builtin_adapter"
+    },
+    {
+      "id": "package_test_verify",
+      "runtime_type": "command_backed_adapter",
+      "source_kind": "inspectable_community_agent_skill_repository",
+      "version_or_commit": "66898f60e8c744e269f8ce06c2b2b99ce7660d5f",
+      "license": "MIT",
+      "trust_status": "vetted_builtin_adapter"
+    }
+  ],
+  "timings_ms": {
+    "catalog_ms": 9.47,
+    "doctor_ms": 20.63,
+    "hostile_package_inspect_ms": 24.97,
+    "react_audit_ms": 17.69,
+    "command_plan_ms": 22.68,
+    "command_execution_ms": 2128.57,
+    "mock_source_verification_ms": 84.5
+  },
+  "live_source_proof": null,
+  "proof": {
+    "real_stdio_mcp": true,
+    "nine_substantive_handlers": true,
+    "multiple_runtime_categories": true,
+    "safe_read_execution_under_vetted_skill_permission": true,
+    "command_backed_default_dry_run_and_exact_scoped_execution": true,
+    "untrusted_markdown_and_scripts_not_executed": true,
+    "package_scripts_dependencies_and_lifecycle_risk_inspected_as_data": true,
+    "skill_doctor_ready": true,
+    "mocked_pinned_source_identity_match": true,
+    "live_pinned_source_identity_match": false,
+    "behavior_coverage_mapper_for_six_tools": true,
+    "redacted_persisted_evidence": true
+  },
+  "limitations": [
+    "Static adapters preserve their documented heuristic and runtime-proof limits.",
+    "The browser adapter validates disclosed evidence files and metadata; it does not inspect image semantics or launch a browser.",
+    "The reviewed command path executes project code and is not a general sandbox.",
+    "Live upstream source verification was not requested in this invocation."
+  ]
+}

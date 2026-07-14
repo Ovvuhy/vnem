@@ -60,7 +60,7 @@ const DOMAIN_ADAPTERS = [
   ], ["version compatibility", "backup safety", "format/toolchain boundaries", "runtime proof"], ["vnem_tools_game_adapter_catalog", "vnem_tools_game_project_inspect", "vnem_tools_game_config_audit", "vnem_tools_mod_compatibility_analyze", "vnem_tools_game_project_validate", "vnem_tools_mod_backup_create", "vnem_tools_mod_backup_restore", "vnem_tools_roblox_project_inspect", "vnem_tools_luau_symbol_map"]),
   adapter("skills", "Vetted skill selection or execution", -2, [
     feature(/\b(skill|plugin|agent skill|skill catalog|execute.*skill|install.*skill)\b/, 5, "skill or plugin workflow")
-  ], ["provenance", "execution readiness", "prompt-injection safety"], ["vnem_tools_trust_boundary_classify", "vnem_tools_capability_gap_report"]),
+  ], ["provenance", "execution readiness", "prompt-injection safety"], ["vnem_tools_skill_adapter_catalog", "vnem_tools_skill_package_inspect", "vnem_tools_skill_doctor", "vnem_tools_skill_adapter_plan", "vnem_tools_skill_adapter_execute", "vnem_tools_skill_source_verify"]),
   adapter("database_data", "Database and structured data", -3, [
     feature(/\b(database|sqlite|postgres|mysql|schema|sql query|structured data|csv|spreadsheet)\b/, 5, "database or structured-data task")
   ], ["data integrity", "query safety", "schema compatibility"], ["vnem_tools_capability_gap_report", "vnem_tools_project_scan"]),
@@ -104,7 +104,6 @@ const MODE_DOMAINS = {
 };
 
 const DOMAIN_GAPS = {
-  skills: ["a vetted skill execution runtime is not registered in Tools yet"],
   database_data: ["database schema and query tools are not registered in Tools yet"],
   client_setup: ["client setup currently executes through the VNEM CLI, not Tools MCP"]
 };
@@ -161,6 +160,12 @@ const TOOL_PURPOSES = {
   vnem_tools_mod_backup_restore: "restore an exact backup only with package and current-target hash preconditions plus a safety package",
   vnem_tools_roblox_project_inspect: "map Rojo services and paths, Luau contexts, toolchains, tests, and remote trust boundaries",
   vnem_tools_luau_symbol_map: "map Lua/Luau symbols, requires, services, remotes, and credible static risks with file/line evidence",
+  vnem_tools_skill_adapter_catalog: "choose among complete vetted adapter contracts and runtime categories without executing upstream Markdown",
+  vnem_tools_skill_package_inspect: "inspect a bounded local skill package as inert data and keep untrusted packages non-executable",
+  vnem_tools_skill_doctor: "check source identity, license, manifest, runtime, permissions, dependencies, tests, risks, freshness, compatibility, and evidence",
+  vnem_tools_skill_adapter_plan: "validate exact adapter input and expose filesystem, network, command, dependency, permission, risk, and evidence scope",
+  vnem_tools_skill_adapter_execute: "run one VNEM-owned vetted handler or a separately approved hash-bound package test",
+  vnem_tools_skill_source_verify: "compare pinned primary-source Git blob identities without returning or executing fetched content",
   vnem_tools_app_inspect: "inspect app frameworks, boundaries, routes, APIs, data flow, states, and completion gaps",
   vnem_tools_app_vertical_slice_plan: "preview a coherent frontend, API, and domain transaction",
   vnem_tools_app_vertical_slice_apply: "apply an approved marker-backed app transaction",
@@ -482,6 +487,7 @@ export function coreRecommendedToolsCalls(classification, args = {}) {
   const repoText = `${args.user_goal || ""} ${args.task_context || ""}`;
   const refactorIntent = domainIds.has("repo_code") && /\b(refactor|rename\b[^\n]{0,80}\b(?:symbol|function|class|variable)|move\b[^\n]{0,80}\b(?:module|file)|extract\b[^\n]{0,80}\b(?:function|module)|dead code|exact references|preserve public|without changing public)\b/i.test(repoText);
   // Keep implementation essentials ahead of evidence-only steps when the route is capped.
+  if (domainIds.has("skills") && String(args.task_mode || "").toLowerCase() === "skill") candidates.push(...domainTools(DOMAIN_ADAPTERS.find((item) => item.id === "skills"), args));
   if (refactorIntent) candidates.push(...domainTools(DOMAIN_ADAPTERS.find((item) => item.id === "repo_code"), args));
   if (domainIds.has("app_engineering")) candidates.push("vnem_tools_app_inspect", "vnem_tools_app_vertical_slice_plan", "vnem_tools_repo_deep_map");
   if (domainIds.has("project_automation")) candidates.push("vnem_tools_project_automation_inspect", "vnem_tools_project_command_run", "vnem_tools_project_task_graph_plan");
@@ -758,12 +764,16 @@ function adapterSelectionFor(classification, tools) {
     });
   }
   if (ids.has("skills")) {
+    const executable = tools.includes("vnem_tools_skill_adapter_execute");
     adapters.push({
       type: "skill",
       core_discovery_calls: ["vnem_search_skills", "vnem_recommend_skills"],
-      tools_adapter: null,
-      readiness: "metadata_only_until_vetted_execution_runtime_exists",
-      compatibility_and_risk: ["client support", "provenance", "prompt injection", "install scripts", "permission scope"],
+      tools_adapter: executable ? "vnem_tools_skill_adapter_execute" : null,
+      catalog_tool: tools.includes("vnem_tools_skill_adapter_catalog") ? "vnem_tools_skill_adapter_catalog" : null,
+      doctor_tool: tools.includes("vnem_tools_skill_doctor") ? "vnem_tools_skill_doctor" : null,
+      planner_tool: tools.includes("vnem_tools_skill_adapter_plan") ? "vnem_tools_skill_adapter_plan" : null,
+      readiness: executable ? "vetted_adapter_execution_ready_with_runtime_specific_permission_scope" : "metadata_and_planning_only",
+      compatibility_and_risk: ["client support", "pinned provenance", "license", "prompt injection", "scripts and dependencies", "permission scope", "verification freshness", "evidence limits"],
       unsupported_records_recommended: false
     });
   }
@@ -778,6 +788,7 @@ function checksForDomain(domain) {
     windows_local: ["exact process/port/path/service/task targets", "provider and access status", "secret/privacy boundary", "scoped local_pc_action permission and rollback for any mutation", "security controls remain enabled"],
     package_dependency: ["dependency/install-script audit", "focused tests", "rollback"],
     api_integration: ["schema/auth review", "redaction", "bounded response proof"],
+    skills: ["pinned source and license review", "skill doctor", "runtime-specific permission check", "real MCP behavior evidence", "no Markdown or untrusted package execution"],
     evidence_validation: ["handler and behavior test", "MCP-path proof", "claim audit"]
   };
   return map[domain] || ["affected verification", "proof boundary review"];
@@ -816,12 +827,13 @@ function safeAssumptions(classification, args, missing) {
 
 function permissionImplicationsFor(classification, sequence, args) {
   const tools = sequence.map((item) => item.tool);
-  const network = tools.some((tool) => /github|cloudflare|api_request|api_adapter_(?:execute|compensate)|browser|web_search|source_extract/.test(tool));
+  const network = tools.some((tool) => /github|cloudflare|api_request|api_adapter_(?:execute|compensate)|skill_source_verify|browser|web_search|source_extract/.test(tool));
   const mutation = tools.some((tool) => /apply|run_|push|create|deploy|rollback|api_request|api_adapter_(?:compensate|review_activate)/.test(tool));
   return {
     default_profile: mutation ? "safe-local-dev or stronger scoped grant" : "safe-readonly",
     network_approval_may_be_required: network,
     mutation_approval_required: mutation,
+    skill_execution_scope: tools.includes("vnem_tools_skill_adapter_execute") ? "vetted_skill_execute for VNEM-owned pure/read handlers; command-backed adapters additionally require skill_execute and run_test" : null,
     hard_blocks_remain: ["secret export", "force push", "repository deletion", "unbounded destructive filesystem actions"],
     allowed_tool_names_supplied: stringArray(args.allowed_tool_names).length > 0
   };

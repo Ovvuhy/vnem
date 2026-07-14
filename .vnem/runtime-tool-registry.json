@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "source": "live MCP runtime registry status calls",
-  "total_tools": 295,
+  "total_tools": 301,
   "servers": {
     "core": {
       "schema_version": "1.0.0",
@@ -2560,7 +2560,7 @@
       "server_name": "vnem-tools",
       "version": "1.0.1",
       "valid": true,
-      "tool_count": 220,
+      "tool_count": 226,
       "alias_count": 0,
       "categories": {
         "action": 2,
@@ -2624,7 +2624,8 @@
         "run": 1,
         "search": 4,
         "secret": 1,
-        "source": 7,
+        "skill": 5,
+        "source": 8,
         "start": 2,
         "status": 1,
         "stop": 1,
@@ -2645,15 +2646,15 @@
         "workspace": 1
       },
       "side_effect_classes": {
-        "destructive_mutation": 38,
+        "destructive_mutation": 39,
         "network_mutation": 19,
-        "read_only": 163
+        "read_only": 168
       },
       "validation": {
         "valid": true,
         "server_name": "vnem-tools",
         "version": "1.0.1",
-        "tool_count": 220,
+        "tool_count": 226,
         "alias_count": 0,
         "errors": [],
         "warnings": [
@@ -2782,7 +2783,7 @@
           "name": "vnem_tools_entrypoint",
           "version": "1.0.1",
           "title": "VNEM Tools Entrypoint",
-          "description": "VNEM Tools MCP first-call entrypoint to recommend and route exact next action calls for repo, code, debug, test, proof, GitHub, CI, patch, MCP, browser, recovery, and tooling tasks.",
+          "description": "VNEM Tools MCP first-call entrypoint to recommend and route exact next action calls for repo, code, debug, test, proof, GitHub, CI, patch, MCP, vetted skills, browser, recovery, and tooling tasks.",
           "category": "entrypoint",
           "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
           "annotations": {
@@ -7098,6 +7099,222 @@
           "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-giga-api-connectors.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_skill_adapter_catalog",
+          "version": "1.0.1",
+          "title": "List Vetted Skill Adapters",
+          "description": "List reviewed skill adapter contracts, pinned provenance, runtime categories, permission boundaries, tests, risks, compatibility, and evidence rules. Upstream Markdown remains data and is never executed.",
+          "category": "skill",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-skill-runtime.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_skill_package_inspect",
+          "version": "1.0.1",
+          "title": "Inspect Skill Package Safely",
+          "description": "Parse a bounded local skill package as inert data, inspect provenance-relevant metadata, scripts, dependencies, requested permissions, and risk indicators, and keep unreviewed packages non-executable.",
+          "category": "skill",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-skill-runtime.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_skill_doctor",
+          "version": "1.0.1",
+          "title": "Run Vetted Skill Doctor",
+          "description": "Check adapter source/version/license/manifest/runtime/permissions/dependencies/tests/risks/freshness/compatibility/evidence and verify the exact local VNEM skill hash without executing skill instructions.",
+          "category": "skill",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-skill-runtime.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_skill_adapter_plan",
+          "version": "1.0.1",
+          "title": "Plan Vetted Skill Adapter",
+          "description": "Validate one adapter input and return its exact filesystem, network, command, dependency, permission, risk, and evidence contract without executing the adapter.",
+          "category": "skill",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-skill-runtime.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_skill_adapter_execute",
+          "version": "1.0.1",
+          "title": "Execute Vetted Skill Adapter",
+          "description": "Run one VNEM-owned vetted adapter under exact permission scope. Pure/read adapters are safe-readonly; command-backed adapters default to plan-only and require separate skill/process approval plus a current hash-bound review id.",
+          "category": "skill",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": true,
+            "idempotentHint": false,
+            "openWorldHint": false
+          },
+          "side_effect_class": "destructive_mutation",
+          "permission_requirements": [
+            "approved_local_mutation"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "required_redacted_record",
+          "rollback_behavior": {
+            "mode": "required_or_explicitly_not_available",
+            "guidance": "Return backup, compensating action, or explicit rollback-unavailable state in evidence."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-skill-runtime.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_skill_source_verify",
+          "version": "1.0.1",
+          "title": "Verify Pinned Skill Source",
+          "description": "Dry-run or fetch only the adapter's pinned raw GitHub files, enforce exact external-fetch permission, compare Git blob identities under strict bounds, and never return or execute source content.",
+          "category": "source",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": false,
+            "idempotentHint": false,
+            "openWorldHint": true
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "approved_network_read"
+          ],
+          "network_behavior": "bounded_or_approved_network",
+          "credential_behavior": "credential references only; values never returned",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-skill-runtime.mjs"
           ],
           "benchmark_scenarios": [],
           "input_schema_present": true

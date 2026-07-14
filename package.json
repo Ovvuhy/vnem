@@ -36,6 +36,7 @@
     "test:tools-giga-dependency-security": "node scripts/test-tools-giga-dependency-security.mjs",
     "test:tools-giga-structural-code": "node scripts/test-tools-giga-structural-code.mjs",
     "test:tools-giga-api-connectors": "node scripts/test-tools-giga-api-connectors.mjs",
+    "test:tools-giga-skill-runtime": "node scripts/test-tools-giga-skill-runtime.mjs",
     "test:tools-giga-project-automation": "node scripts/test-tools-giga-project-automation.mjs",
     "test:tools-git-session": "node scripts/test-tools-git-session.mjs",
     "test:tools-intelligence": "node scripts/test-tools-intelligence.mjs",
@@ -309,6 +310,8 @@
     "giga:phase15-benchmark": "node scripts/test-tools-giga-structural-code.mjs --benchmark-output=.vnem/giga-evolution/phase-15/structural-code-benchmark.json --real-repo-output=.vnem/giga-evolution/phase-15/real-repo-structural-index-benchmark.json",
     "giga:phase16-benchmark": "node scripts/test-tools-giga-api-connectors.mjs --benchmark-output=.vnem/giga-evolution/phase-16/api-connectors-benchmark.json",
     "giga:phase16-live-proof": "node scripts/test-tools-giga-api-connectors.mjs --live --benchmark-output=.vnem/giga-evolution/phase-16/live-api-proof.json",
+    "giga:phase17-benchmark": "node scripts/test-tools-giga-skill-runtime.mjs --benchmark-output=.vnem/giga-evolution/phase-17/skill-runtime-benchmark.json",
+    "giga:phase17-live-source-proof": "node scripts/test-tools-giga-skill-runtime.mjs --live --benchmark-output=.vnem/giga-evolution/phase-17/live-source-proof.json",
     "test:clients:setup": "node scripts/test-vnem-client-setup.mjs"
   },
   "dependencies": {
