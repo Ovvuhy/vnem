@@ -45,6 +45,7 @@ import { GithubDevelopmentError, GithubDevelopmentRuntime } from "./github-devel
 import { GameDomainError, GameDomainRuntime } from "./game-domain.mjs";
 import { DependencySecurityError, DependencySecurityRuntime } from "./dependency-security.mjs";
 import { StructuralCodeError, StructuralCodeRuntime } from "./structural-code.mjs";
+import { ApiConnectorError, ApiConnectorRuntime } from "./api-connectors.mjs";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(scriptDir, "..", "..", "..");
@@ -94,6 +95,14 @@ const REQUIRED_TOOL_NAMES = [
   "vnem_tools_dependency_scan",
   "vnem_tools_apply_patch",
   "vnem_tools_run_command",
+  "vnem_tools_api_adapter_catalog",
+  "vnem_tools_api_credential_reference_check",
+  "vnem_tools_api_adapter_plan",
+  "vnem_tools_api_adapter_execute",
+  "vnem_tools_api_adapter_compensate",
+  "vnem_tools_api_adapter_generate",
+  "vnem_tools_api_adapter_contract_test",
+  "vnem_tools_api_adapter_review_activate",
   "vnem_tools_api_request",
   "vnem_tools_fetch_url_text",
   "vnem_tools_source_quality_check",
@@ -266,6 +275,10 @@ const READ_ONLY_LOCAL = { readOnlyHint: true, destructiveHint: false, idempotent
 const NETWORK_READ = { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true };
 const ACTION_TOOL = { readOnlyHint: false, destructiveHint: true, idempotentHint: false, openWorldHint: false };
 const NETWORK_ACTION = { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true };
+const API_CREDENTIAL_REFERENCE_SCHEMA = z.object({
+  type: z.enum(["environment", "client_secret_reference", "os_credential_store", "provider_profile"]),
+  name: z.string().min(1).max(160)
+}).strict();
 const GITHUB_SETTINGS_HEADER = "# ============================================================\n# GITHUB SETTINGS\n# ============================================================";
 const DEFAULT_GITHUB_ENV_SETTINGS = {
   VNEM_TOOLS_AUTONOMY_MODE: "fast",
@@ -332,6 +345,7 @@ const githubDevelopmentRuntime = new GithubDevelopmentRuntime({
 const gameDomainRuntime = new GameDomainRuntime({ allowedRoots, evidenceRoot });
 const dependencySecurityRuntime = new DependencySecurityRuntime({ allowedRoots, evidenceRoot });
 const structuralCodeRuntime = new StructuralCodeRuntime({ allowedRoots, evidenceRoot, commandRuntime: projectAutomationRuntime });
+const apiConnectorRuntime = new ApiConnectorRuntime({ allowedRoots, evidenceRoot });
 const activePermissionProfile = permissionRuntime.activeProfile();
 const usablePacks = await loadUsablePacks();
 const requestedPrecisionWorkspaceCandidate = path.resolve(
@@ -357,8 +371,8 @@ const server = new McpServer(
       "VNEM Tools MCP is a safeguard-first action server for approved project work after VNEM Core has planned the task.",
       "Tools MCP is not Core MCP and is not Giga MCP. It can read, search, dry-run patches, apply approved patches, run approved allowlisted commands, prepare/perform approved limited API requests, capture approved local browser screenshots, and collect evidence.",
       "For code work, prefer vnem_tools_structural_code_search before broad traversal, vnem_tools_exact_patch or vnem_tools_patch_transaction for surgical writes, and vnem_tools_verification_loop for bounded red/green/check proof. Fetch official documentation into task-scoped context when framework behavior may have changed.",
-      "Dry-run is the default for mutation/execution/network/browser actions. Real changes require dry_run=false, approved=true, and a non-empty approval_note.",
-      "The active Tools permission profile gates real actions. Default is safe-readonly; mutation/network/dev-server/git actions require an explicit stronger profile plus approval, evidence, and rollback where applicable. GitHub autonomy uses command-backed gh/git paths for allowed profile-gated repo work; destructive GitHub admin, package installs, arbitrary shell, broad browser automation, account login automation, cookie extraction, CAPTCHA bypass, and broad web scraping remain blocked by default."
+      "Dry-run is the default for mutation, credential-bearing, command, broad-network, and browser actions. Vetted no-auth GET/HEAD adapters may run as bounded safe reads; credentials are reference-only and external mutation remains scoped and approval-gated.",
+      "The active Tools permission profile gates real actions. Default safe-readonly permits only reviewed no-auth adapter reads in addition to local inspection; credential use, mutation, dev-server, Git, and broader network actions require an appropriate profile or exact scoped grant. GitHub autonomy uses command-backed gh/git paths for allowed profile-gated repo work; destructive GitHub admin, arbitrary shell, broad browser automation, account login automation, cookie extraction, CAPTCHA bypass, and broad web scraping remain blocked by default."
     ].join(" ")
   }
 );
@@ -2269,6 +2283,190 @@ function registerTools(mcpServer) {
   );
 
   mcpServer.registerTool(
+    "vnem_tools_api_adapter_catalog",
+    {
+      title: "List Vetted API Execution Adapters",
+      description: "List substantive reviewed API adapter contracts, including official sources, exact hosts/methods/schemas, auth-reference rules, local rate/retry/cache bounds, fixtures, live-test status, redaction, mutation class, compensation, freshness, and compatibility.",
+      inputSchema: { provider: z.string().default(""), category: z.string().default(""), include_generated: z.boolean().default(true), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const result = await apiConnectorRuntime.catalog(args);
+      recordSession(args.session_id, "api_connector_inspections", result);
+      return toolResult(formatApiConnector("vnem_tools_api_adapter_catalog", result), { api_adapter_catalog: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_api_credential_reference_check",
+    {
+      title: "Check API Credential Reference",
+      description: "Validate an environment, client-secret, OS-store, or provider-profile credential reference by name and availability only. Never accepts or emits raw values and does not contact the provider.",
+      inputSchema: { adapter_id: z.string().min(1), credential_reference: API_CREDENTIAL_REFERENCE_SCHEMA, session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const planned = await apiConnectorRuntime.credentialPlan(args);
+      const permission = enforceActionPolicy("credential_api_read", {
+        ...args,
+        provider: planned.provider,
+        domain: planned.domain,
+        dry_run: false,
+        proposed_action: `resolve credential-reference presence for adapter ${planned.adapter_id}`
+      });
+      const result = await apiConnectorRuntime.credentialStatus({ ...args, permission_decision: permission });
+      recordSession(args.session_id, "api_connector_inspections", result);
+      return toolResult(formatApiConnector("vnem_tools_api_credential_reference_check", { ...result, permission }), { api_credential_reference: { ...result, permission } });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_api_adapter_plan",
+    {
+      title: "Plan Vetted API Adapter Request",
+      description: "Build an exact non-executing request plan from one active adapter. Validates input schema, host/method/auth class, rate/retry/cache/timeout bounds, credential-reference shape, and compensation behavior without resolving credentials or contacting a provider.",
+      inputSchema: { adapter_id: z.string().min(1), parameters: z.record(z.any()).default({}), credential_reference: API_CREDENTIAL_REFERENCE_SCHEMA.optional(), timeout_ms: z.number().int().min(1000).max(30000).optional(), max_response_bytes: z.number().int().min(256).max(262144).default(65536), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const planned = await apiConnectorRuntime.plan(args);
+      const permission = actionPolicyPreview({ action_type: planned.permission_action, proposed_action: `${planned.method} through adapter ${planned.adapter_id}`, provider: planned.provider, domain: planned.domain, url: planned.url });
+      const result = { ...planned, permission };
+      recordSession(args.session_id, "api_connector_inspections", result);
+      return toolResult(formatApiConnector("vnem_tools_api_adapter_plan", result), { api_adapter_plan: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_api_adapter_execute",
+    {
+      title: "Execute Vetted API Adapter",
+      description: "Dry-run by default or execute one active adapter with exact shared permission scope, credential-reference brokering, approved host/method, bounded rate/retry/timeout/output, safe caching, schema validation, recursive redaction, and persisted evidence.",
+      inputSchema: {
+        adapter_id: z.string().min(1),
+        parameters: z.record(z.any()).default({}),
+        credential_reference: API_CREDENTIAL_REFERENCE_SCHEMA.optional(),
+        dry_run: z.boolean().default(true),
+        approved: z.boolean().default(false),
+        approval_note: z.string().default(""),
+        timeout_ms: z.number().int().min(1000).max(30000).optional(),
+        max_response_bytes: z.number().int().min(256).max(262144).default(65536),
+        allow_cache: z.boolean().default(true),
+        session_id: z.string().optional()
+      },
+      annotations: NETWORK_ACTION
+    },
+    async (args) => withToolErrors(async () => {
+      const planned = await apiConnectorRuntime.plan(args);
+      const policyArgs = { ...args, provider: planned.provider, domain: planned.domain, url: planned.url, proposed_action: `${planned.method} through adapter ${planned.adapter_id}` };
+      if (args.dry_run !== false) {
+        const result = { ...planned, dry_run: true, permission: actionPolicyPreview({ ...policyArgs, action_type: planned.permission_action }) };
+        return toolResult(formatApiConnector("vnem_tools_api_adapter_execute", result), { api_adapter_execution: result });
+      }
+      const permission = enforceActionPolicy(planned.permission_action, { ...policyArgs, dry_run: false });
+      const result = await apiConnectorRuntime.execute({ ...args, permission_decision: permission });
+      recordSession(args.session_id, "api_connector_executions", result);
+      return toolResult(formatApiConnector("vnem_tools_api_adapter_execute", result), { api_adapter_execution: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_api_adapter_compensate",
+    {
+      title: "Compensate API Adapter Mutation",
+      description: "Dry-run or execute the reviewed best-effort compensating action for one exact in-session API mutation transaction. Requires external-mutation permission and preserves residual audit/notification limits instead of claiming rollback.",
+      inputSchema: { transaction_id: z.string().min(1), dry_run: z.boolean().default(true), approved: z.boolean().default(false), approval_note: z.string().default(""), timeout_ms: z.number().int().min(1000).max(30000).optional(), max_response_bytes: z.number().int().min(256).max(262144).default(65536), session_id: z.string().optional() },
+      annotations: NETWORK_ACTION
+    },
+    async (args) => withToolErrors(async () => {
+      const planned = await apiConnectorRuntime.compensationPlan(args);
+      const policyArgs = { ...args, provider: planned.provider, domain: planned.domain, proposed_action: `compensate API transaction ${args.transaction_id}` };
+      if (args.dry_run !== false) {
+        const result = { ...planned, dry_run: true, permission: actionPolicyPreview({ ...policyArgs, action_type: "external_api_mutation" }) };
+        return toolResult(formatApiConnector("vnem_tools_api_adapter_compensate", result), { api_adapter_compensation: result });
+      }
+      const permission = enforceActionPolicy("external_api_mutation", { ...policyArgs, dry_run: false });
+      const result = await apiConnectorRuntime.compensate({ ...args, permission_decision: permission });
+      recordSession(args.session_id, "api_connector_executions", result);
+      return toolResult(formatApiConnector("vnem_tools_api_adapter_compensate", result), { api_adapter_compensation: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_api_adapter_generate",
+    {
+      title: "Generate Reviewed API Adapter Proposal",
+      description: "Ingest bounded OpenAPI JSON or structured official documentation, select one exact operation, propose a declarative adapter, identify unknowns/blockers, create mock fixtures and contract-test requirements, and keep it inactive pending tests and explicit review.",
+      inputSchema: {
+        root: z.string().default("."),
+        spec_path: z.string().optional(),
+        openapi_document: z.record(z.any()).optional(),
+        structured_document: z.record(z.any()).optional(),
+        operation_id: z.string().optional(),
+        adapter_id: z.string().min(1),
+        provider: z.string().min(1),
+        official_documentation: z.string().url(),
+        freshness_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+        session_id: z.string().optional()
+      },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const permission = enforceActionPolicy("read_file", { ...args, dry_run: false, target_path: args.spec_path || args.root, proposed_action: "inspect bounded OpenAPI or structured official adapter source" });
+      const result = { ...(await apiConnectorRuntime.generateProposal(args)), permission };
+      recordSession(args.session_id, "api_connector_proposals", result);
+      return toolResult(formatApiConnector("vnem_tools_api_adapter_generate", result), { api_adapter_proposal: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_api_adapter_contract_test",
+    {
+      title: "Test API Adapter Contract",
+      description: "Run local declarative request/response fixture and path-mapping contract checks for one active adapter, all active adapters, or a generated proposal. Does not contact providers or activate generated output.",
+      inputSchema: { adapter_id: z.string().optional(), proposal_id: z.string().optional(), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      if (args.adapter_id && args.proposal_id) throw new ToolsError("Provide adapter_id or proposal_id, not both.", "api_contract_target_ambiguous");
+      const result = await apiConnectorRuntime.contractTest(args);
+      recordSession(args.session_id, "api_connector_inspections", result);
+      return toolResult(formatApiConnector("vnem_tools_api_adapter_contract_test", result), { api_adapter_contract_test: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_api_adapter_review_activate",
+    {
+      title: "Review and Activate Generated API Adapter",
+      description: "Dry-run by default or atomically add a generated no-auth GET/HEAD adapter to the local registry only after its contract test passes, every unknown is acknowledged, exact review text matches, and local-write permission is granted.",
+      inputSchema: {
+        root: z.string().default("."),
+        proposal_id: z.string().min(1),
+        reviewed: z.boolean().default(false),
+        activation_acknowledgement: z.string().default(""),
+        acknowledged_unknowns: z.array(z.string()).max(50).default([]),
+        dry_run: z.boolean().default(true),
+        approved: z.boolean().default(false),
+        approval_note: z.string().default(""),
+        session_id: z.string().optional()
+      },
+      annotations: ACTION_TOOL
+    },
+    async (args) => withToolErrors(async () => {
+      const planned = await apiConnectorRuntime.activationPlan(args);
+      if (args.dry_run !== false) {
+        const result = { ...planned, dry_run: true, permission: actionPolicyPreview({ action_type: "apply_patch", target_path: planned.registry_path, proposed_action: `activate reviewed adapter ${planned.adapter_id}` }) };
+        return toolResult(formatApiConnector("vnem_tools_api_adapter_review_activate", result), { api_adapter_activation: result });
+      }
+      const permission = enforceActionPolicy("apply_patch", { ...args, dry_run: false, target_path: planned.registry_path, proposed_action: `activate reviewed adapter ${planned.adapter_id}` });
+      const result = await apiConnectorRuntime.reviewActivate({ ...args, permission_decision: permission });
+      recordSession(args.session_id, "api_connector_proposals", result);
+      return toolResult(formatApiConnector("vnem_tools_api_adapter_review_activate", result), { api_adapter_activation: result });
+    })
+  );
+
+  mcpServer.registerTool(
     "vnem_tools_api_request",
     {
       title: "Prepare or Run Safe API Request",
@@ -3097,7 +3295,7 @@ function toolReliabilityFor(name, descriptor = {}) {
     unsafe = ["Heuristic-language results are compiler-grade", "Dynamic/reflection/generated/external consumers were exhaustively resolved", "Move or extract automatic apply is supported", "A dead-code candidate is safe to delete", "Cross-file filesystem atomicity exists"];
     next = "Build the index, inspect exact references and impact, preview the refactor, then use approved apply only when confidence is high and verify the transaction plus rollback evidence.";
     known = ["Automatic apply is limited to Babel-resolved rename", "Public exports require acknowledgement", "Graph and reference bounds block exact apply when reached", "Tests and type/compiler checks remain project-specific"];
-  } else if (["api_request", "search", "research_sources", "source_ingestion", "browsing_risk", "research_matrix"].includes(group)) {
+  } else if (["api_connectors", "api_request", "search", "research_sources", "source_ingestion", "browsing_risk", "research_matrix"].includes(group)) {
     level = descriptor.network ? "dry_run_tested" : "local_tested";
     safe = ["Planning, bounded local/source evidence, or configured-provider behavior is tested without fake current/live claims."];
     unsafe = ["Unrestricted crawling or API access", "Search/current facts were fetched when provider was unconfigured", "Secret-backed live API success without proof"];
@@ -3113,7 +3311,7 @@ function toolReliabilityFor(name, descriptor = {}) {
 }
 function addReliabilityFields(tool) {
   const reliability = toolReliabilityFor(tool.name, tool);
-  return { ...tool, high_power: tool.high_power ?? Boolean(tool.mutation || tool.network || tool.requires_approval || ["cloudflare_control", "github_autonomy", "structural_refactoring", "patching", "rollback", "project_tasks", "dev_server", "browser_proof", "ui_web_quality", "dependency_security", "api_request", "local_git", "commands"].includes(tool.capability_group)), mutation_capable: Boolean(tool.mutation), reliability_level: reliability.level, tested_with: reliability.tested_with, safe_to_claim: reliability.safe_to_claim, unsafe_to_claim: reliability.unsafe_to_claim, next_validation_step: reliability.next_validation_step, known_limits: reliability.known_limits, tool_reliability: reliability };
+  return { ...tool, high_power: tool.high_power ?? Boolean(tool.mutation || tool.network || tool.requires_approval || ["cloudflare_control", "github_autonomy", "structural_refactoring", "patching", "rollback", "project_tasks", "dev_server", "browser_proof", "ui_web_quality", "dependency_security", "api_connectors", "api_request", "local_git", "commands"].includes(tool.capability_group)), mutation_capable: Boolean(tool.mutation), reliability_level: reliability.level, tested_with: reliability.tested_with, safe_to_claim: reliability.safe_to_claim, unsafe_to_claim: reliability.unsafe_to_claim, next_validation_step: reliability.next_validation_step, known_limits: reliability.known_limits, tool_reliability: reliability };
 }
 function buildReliabilityCatalog(args = {}) { const tools = runtimeToolCatalog().filter((tool) => !args.capability_group || tool.capability_group === args.capability_group); return { generated_at: new Date().toISOString(), permission_profile: activePermissionProfile.profile_name, tools }; }
 function formatReliabilityCatalog(catalog) { return [`vnem_tools_reliability_catalog: ${catalog.tools.length} tool(s)`, `profile=${catalog.permission_profile}`, `levels=${[...new Set(catalog.tools.map((tool) => tool.reliability_level))].join(",")}`].join("\n"); }
@@ -3771,6 +3969,7 @@ function statusObject() {
     app_engineering_policy: { tools: ["vnem_tools_app_inspect", "vnem_tools_app_vertical_slice_plan", "vnem_tools_app_vertical_slice_apply", "vnem_tools_app_acceptance_run", "vnem_tools_app_transaction_rollback"], adapters: { "vite-react-node": "verified_generation_and_execution", "static-node": "verified_generation_and_execution", "next-style": "inspection_and_plan_only", generic: "inspection_only" }, marker_required_for_automatic_mutation: true, dry_run_default: true, approval_required_for_apply_acceptance_rollback: true, hash_preconditions: true, automatic_failure_rollback: true, cross_file_filesystem_atomicity_claimed: false, browser_scope: "dedicated-profile localhost Chromium only; no login/cookies/CAPTCHA", proof: ["focused tests", "build", "localhost server", "desktop user path", "mobile render", "console", "network", "screenshots"] },
     dependency_security_policy: { tools: ["vnem_tools_dependency_inventory", "vnem_tools_dependency_risk_audit", "vnem_tools_dependency_advisory_audit", "vnem_tools_dependency_change_analyze", "vnem_tools_dependency_upgrade_plan", "vnem_tools_dependency_install_apply", "vnem_tools_dependency_transaction_rollback"], inspection_ecosystems: ["npm", "pnpm", "yarn", "python", "cargo", "go"], npm_lockfile_versions: [1, 2, 3], mutation_adapter: "npm only", dry_run_default: true, approved_installs_or_scoped_grant_required: true, existing_npm_lock_required_for_mutation: true, exact_registry_versions_only: true, lifecycle_scripts_disabled: true, recursive_verification_script_review: true, ephemeral_user_and_global_npm_configs: true, allowlisted_non_secret_environment_only: true, project_npmrc_blocks_live_commands: true, publishing_and_global_installs_blocked: true, timeout_process_tree_termination: true, automatic_failure_rollback: true, explicit_rollback_hash_preconditions: true, downloaded_binary_execution_requires_separate_review_and_approval: true },
     structural_code_policy: { tools: ["vnem_tools_structural_index_build", "vnem_tools_structural_graph_query", "vnem_tools_exact_symbol_references", "vnem_tools_refactor_rename_preview", "vnem_tools_refactor_move_preview", "vnem_tools_refactor_extract_plan", "vnem_tools_dead_code_candidates", "vnem_tools_refactor_impact_analyze", "vnem_tools_structural_patch_validate", "vnem_tools_refactor_apply_verify", "vnem_tools_refactor_transaction_rollback"], ast_languages: ["javascript", "typescript", "jsx", "tsx"], ast_engine: "@babel/parser plus @babel/traverse 7.29.7", heuristic_languages: ["python", "go", "rust", "java", "csharp", "kotlin", "c", "cpp", "lua", "luau", "ruby", "php"], persisted_incremental_index: true, generated_and_secret_paths_skipped: true, graph_bounds_reported: true, automatic_apply_scope: "high-confidence lexical-binding rename only", move_and_extract_apply_supported: false, public_export_acknowledgement_required: true, stale_hash_preconditions: true, regular_file_and_link_checks: true, reviewed_project_verification_required: true, verification_worktree_delta_blocked: true, post_reference_proof: true, automatic_failure_rollback: true, explicit_rollback_hash_preconditions: true, cross_file_filesystem_atomicity_claimed: false },
+    api_connector_policy: { tools: ["vnem_tools_api_adapter_catalog", "vnem_tools_api_credential_reference_check", "vnem_tools_api_adapter_plan", "vnem_tools_api_adapter_execute", "vnem_tools_api_adapter_compensate", "vnem_tools_api_adapter_generate", "vnem_tools_api_adapter_contract_test", "vnem_tools_api_adapter_review_activate"], initial_adapters: 7, substantive_categories: ["no-auth public data", "backend/authenticated service", "developer tooling", "app/product content data", "structured public data", "user-relevant game data", "external mutation"], safe_default: "vetted no-auth GET/HEAD only", credential_reference_types: ["environment", "client_secret_reference", "os_credential_store", "provider_profile"], raw_credentials_accepted_or_emitted: false, credential_reads_require_profile_or_exact_scoped_grant: true, external_mutation_requires_profile_or_exact_scoped_grant: true, repeated_approval_inside_exact_grant: false, bounded_rate_retry_timeout_output: true, recursive_redaction_and_evidence: true, mock_integrations: true, approved_live_no_auth_tests: ["open_meteo_forecast", "world_bank_indicator"], generated_adapters_require_contract_test_and_review: true, generated_activation_scope: "no-auth GET/HEAD only", compensation_is_not_rollback: true },
     project_task_policy: { tool: "vnem_tools_run_project_task", dry_run_default: true, approval_required: true, package_json_scripts_only: true, package_install_publish_deploy_blocked: true },
     dev_server_policy: { tools: ["vnem_tools_start_dev_server", "vnem_tools_stop_dev_server", "vnem_tools_list_dev_servers"], dry_run_default: true, approval_required: true, local_host_only: true, port_range: "3000-9999", registry: "in-memory per MCP process" },
     session_evidence_policy: { tools: ["vnem_tools_start_session", "vnem_tools_finish_session"], writes_single_json_proof_pack: true, secrets_redacted: true },
@@ -3779,7 +3978,7 @@ function statusObject() {
     network_policy: {
       dry_run_default: true,
       methods: ["GET", "HEAD"],
-      live_requests_require_approval: true,
+      live_requests_require_approval: "credential-bearing, broad, or mutating requests; reviewed no-auth adapters are safe-readonly",
       localhost_allowed_when_env_enabled: process.env.VNEM_TOOLS_ALLOW_LOCALHOST === "1",
       unknown_untrusted_urls_blocked: true,
       github_uses_scoped_command_backed_tools: true,
@@ -3998,7 +4197,7 @@ async function searchAllowedFiles(args) {
   return { root: root.relativePath || ".", query: args.query, results, skipped_policy: skippedPolicy() };
 }
 
-const TOOL_CAPABILITY_GROUPS = ["permissions", "filesystem", "project_intelligence", "app_engineering", "repo_power", "adoption_reliability", "structural_code", "structural_refactoring", "patching", "rollback", "commands", "project_tasks", "dev_server", "browser_proof", "browser_intelligence", "ui_web_quality", "windows_local", "game_domain", "dependency_security", "api_request", "search", "research_sources", "source_quality", "browsing_risk", "research_matrix", "source_ingestion", "debugging_code_quality", "session_evidence", "local_git", "github_autonomy", "status_readiness", "cloudflare_control", "tools_quality", "tool_intelligence"];
+const TOOL_CAPABILITY_GROUPS = ["permissions", "filesystem", "project_intelligence", "app_engineering", "repo_power", "adoption_reliability", "structural_code", "structural_refactoring", "patching", "rollback", "commands", "project_tasks", "dev_server", "browser_proof", "browser_intelligence", "ui_web_quality", "windows_local", "game_domain", "dependency_security", "api_connectors", "api_request", "search", "research_sources", "source_quality", "browsing_risk", "research_matrix", "source_ingestion", "debugging_code_quality", "session_evidence", "local_git", "github_autonomy", "status_readiness", "cloudflare_control", "tools_quality", "tool_intelligence"];
 
 function buildToolCatalog() {
   const commonUnsafe = ["secret reading/dumping", "outside-root access", "arbitrary shell", "package installs", "git push", "deployment", "Giga MCP"];
@@ -4152,6 +4351,14 @@ function buildToolCatalog() {
     mk("vnem_tools_structural_patch_validate", "structural_refactoring", { description: "Reparse patch state and detect syntax, unresolved relative import, and duplicate export failures without executing project code.", typical_use_cases: ["post-patch structural check", "pre-test validation"] }),
     mk("vnem_tools_refactor_apply_verify", "structural_refactoring", { read_only: false, mutation: true, requires_approval: true, dry_run_default: true, description: "Apply one high-confidence rename with stale hashes, staged writes, reviewed tests, post-reference proof, evidence, and automatic rollback.", typical_use_cases: ["approved verified rename"], related_tools: ["vnem_tools_refactor_rename_preview", "vnem_tools_refactor_transaction_rollback"], unsafe_actions_blocked: [...commonUnsafe, "medium-confidence apply", "stale preview", "move/extract apply", "unverified partial write"] }),
     mk("vnem_tools_refactor_transaction_rollback", "structural_refactoring", { read_only: false, mutation: true, requires_approval: true, dry_run_default: true, description: "Restore exact pre-refactor bytes for a project-bound transaction after current-hash and backup-path checks, with optional reviewed tests.", typical_use_cases: ["rollback verified rename"], unsafe_actions_blocked: [...commonUnsafe, "stale overwrite", "cross-project rollback", "unsafe backup path"] }),
+    mk("vnem_tools_api_adapter_catalog", "api_connectors", { description: "List full reviewed adapter contracts and official-source freshness without contacting providers.", typical_use_cases: ["choose a safe API adapter", "inspect auth/rate/cache/mutation boundaries"], unsafe_actions_blocked: [...commonUnsafe, "provider execution", "raw credential output", "compatibility permanence claims"] }),
+    mk("vnem_tools_api_credential_reference_check", "api_connectors", { description: "Validate typed credential-reference shape, allowlist, and availability by presence only; values remain internal and hidden.", typical_use_cases: ["credential preflight", "provider profile selection"], unsafe_actions_blocked: [...commonUnsafe, "raw credential input or output", "provider auth-validity claims"] }),
+    mk("vnem_tools_api_adapter_plan", "api_connectors", { description: "Build an exact schema-checked request and permission plan without resolving credentials or contacting a provider.", typical_use_cases: ["API request preflight", "permission and compensation review"] }),
+    mk("vnem_tools_api_adapter_execute", "api_connectors", { network: true, dry_run_default: true, description: "Execute one reviewed adapter with shared permission scope, credential brokering, host/method bounds, local rate/retry/cache limits, output caps, schema checks, redaction, and evidence.", typical_use_cases: ["bounded public API read", "scoped credential-bearing API read", "approved adapter mutation"], unsafe_actions_blocked: [...commonUnsafe, "unregistered hosts or methods", "raw credential input/output", "unbounded response", "implicit mutation approval"] }),
+    mk("vnem_tools_api_adapter_compensate", "api_connectors", { read_only: false, mutation: true, network: true, requires_approval: true, dry_run_default: true, description: "Run one exact reviewed best-effort compensating action for an in-session adapter mutation while preserving residual effects.", typical_use_cases: ["close fixture-created issue", "external mutation recovery"], unsafe_actions_blocked: [...commonUnsafe, "rollback guarantee", "cross-transaction compensation", "unapproved external mutation"] }),
+    mk("vnem_tools_api_adapter_generate", "api_connectors", { description: "Ingest bounded OpenAPI JSON or structured official docs and generate an inactive declarative proposal, unknowns, mock fixture, and contract tests.", typical_use_cases: ["propose reusable API adapter", "OpenAPI operation review"], unsafe_actions_blocked: [...commonUnsafe, "automatic activation", "YAML ad hoc parsing", "generated auth or mutation execution"] }),
+    mk("vnem_tools_api_adapter_contract_test", "api_connectors", { description: "Run local request/response/path contract checks against adapter mock fixtures without network or activation.", typical_use_cases: ["adapter fixture verification", "generated proposal gate"] }),
+    mk("vnem_tools_api_adapter_review_activate", "api_connectors", { read_only: false, mutation: true, requires_approval: true, dry_run_default: true, description: "Atomically activate only a contract-tested, explicitly reviewed, unknown-acknowledged generated no-auth GET/HEAD adapter.", typical_use_cases: ["reviewed adapter registry update"], unsafe_actions_blocked: [...commonUnsafe, "untested generated activation", "generated credentials or mutation", "unacknowledged unknowns"] }),
     mk("vnem_tools_ui_evidence_audit", "ui_web_quality", { description: "Audit provided UI evidence and reject unsupported visual/browser claims.", allowed_roots_required: false, evidence_logged: true, typical_use_cases: ["final UI claim audit", "responsive/a11y/state proof review"], unsafe_actions_blocked: [...commonUnsafe, "inventing browser results", "accepting code-only visual proof"] }),
     mk("vnem_tools_start_session", "session_evidence", { read_only: false, mutation: true, description: "Start session proof pack.", typical_use_cases: ["group local workflow evidence"] }),
     mk("vnem_tools_finish_session", "session_evidence", { read_only: false, mutation: true, description: "Write session proof pack.", typical_use_cases: ["final evidence summary"] }),
@@ -10676,6 +10883,21 @@ function formatStructuralCode(name, result) {
   ].filter(Boolean).join("\n");
 }
 
+function formatApiConnector(name, result) {
+  return [
+    `${name}: ${result.operation_result || "completed"}`,
+    result.adapter_id ? `Adapter: ${result.adapter_id}` : null,
+    Number.isInteger(result.adapter_count) ? `Adapters: ${result.adapter_count}` : null,
+    result.provider ? `Provider: ${result.provider}` : null,
+    result.method && result.url ? `${result.method} ${result.url}` : null,
+    Number.isInteger(result.status) ? `HTTP: ${result.status}` : null,
+    result.executed === true ? "Executed: yes" : result.executed === false ? "Executed: no" : null,
+    result.transaction_id ? `Transaction: ${result.transaction_id}` : null,
+    result.proposal_id ? `Proposal: ${result.proposal_id}` : null,
+    result.credential_value_exposed === false || result.raw_credential_values_exposed === false ? "Credential values exposed: no" : null
+  ].filter(Boolean).join("\n");
+}
+
 async function withToolErrors(fn) {
   try {
     return await fn();
@@ -10689,6 +10911,7 @@ async function withToolErrors(fn) {
     if (error instanceof GameDomainError) return errorResult(error.message, error.code, error.details);
     if (error instanceof DependencySecurityError) return errorResult(error.message, error.code, error.details);
     if (error instanceof StructuralCodeError) return errorResult(error.message, error.code, error.details);
+    if (error instanceof ApiConnectorError) return errorResult(error.message, error.code, error.details);
     return errorResult(error.message || String(error), "tools_unexpected_error");
   }
 }

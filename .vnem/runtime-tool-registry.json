@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "source": "live MCP runtime registry status calls",
-  "total_tools": 287,
+  "total_tools": 295,
   "servers": {
     "core": {
       "schema_version": "1.0.0",
@@ -2560,13 +2560,13 @@
       "server_name": "vnem-tools",
       "version": "1.0.1",
       "valid": true,
-      "tool_count": 212,
+      "tool_count": 220,
       "alias_count": 0,
       "categories": {
         "action": 2,
         "adoption": 1,
         "affected": 1,
-        "api": 1,
+        "api": 9,
         "app": 5,
         "apply": 2,
         "architecture": 1,
@@ -2645,15 +2645,15 @@
         "workspace": 1
       },
       "side_effect_classes": {
-        "destructive_mutation": 37,
-        "network_mutation": 17,
-        "read_only": 158
+        "destructive_mutation": 38,
+        "network_mutation": 19,
+        "read_only": 163
       },
       "validation": {
         "valid": true,
         "server_name": "vnem-tools",
         "version": "1.0.1",
-        "tool_count": 212,
+        "tool_count": 220,
         "alias_count": 0,
         "errors": [],
         "warnings": [
@@ -6808,6 +6808,296 @@
             "scripts/test-core-tools-e2e.mjs",
             "scripts/test-tools-git-session.mjs",
             "scripts/test-tools-mcp-server.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_api_adapter_catalog",
+          "version": "1.0.1",
+          "title": "List Vetted API Execution Adapters",
+          "description": "List substantive reviewed API adapter contracts, including official sources, exact hosts/methods/schemas, auth-reference rules, local rate/retry/cache bounds, fixtures, live-test status, redaction, mutation class, compensation, freshness, and compatibility.",
+          "category": "api",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-api-connectors.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_api_credential_reference_check",
+          "version": "1.0.1",
+          "title": "Check API Credential Reference",
+          "description": "Validate an environment, client-secret, OS-store, or provider-profile credential reference by name and availability only. Never accepts or emits raw values and does not contact the provider.",
+          "category": "api",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-api-connectors.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_api_adapter_plan",
+          "version": "1.0.1",
+          "title": "Plan Vetted API Adapter Request",
+          "description": "Build an exact non-executing request plan from one active adapter. Validates input schema, host/method/auth class, rate/retry/cache/timeout bounds, credential-reference shape, and compensation behavior without resolving credentials or contacting a provider.",
+          "category": "api",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-api-connectors.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_api_adapter_execute",
+          "version": "1.0.1",
+          "title": "Execute Vetted API Adapter",
+          "description": "Dry-run by default or execute one active adapter with exact shared permission scope, credential-reference brokering, approved host/method, bounded rate/retry/timeout/output, safe caching, schema validation, recursive redaction, and persisted evidence.",
+          "category": "api",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": false,
+            "idempotentHint": false,
+            "openWorldHint": true
+          },
+          "side_effect_class": "network_mutation",
+          "permission_requirements": [
+            "approved_network_mutation",
+            "scoped_credential_reference"
+          ],
+          "network_behavior": "bounded_or_approved_network",
+          "credential_behavior": "credential references only; values never returned",
+          "evidence_behavior": "required_redacted_record",
+          "rollback_behavior": {
+            "mode": "required_or_explicitly_not_available",
+            "guidance": "Return backup, compensating action, or explicit rollback-unavailable state in evidence."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-api-connectors.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_api_adapter_compensate",
+          "version": "1.0.1",
+          "title": "Compensate API Adapter Mutation",
+          "description": "Dry-run or execute the reviewed best-effort compensating action for one exact in-session API mutation transaction. Requires external-mutation permission and preserves residual audit/notification limits instead of claiming rollback.",
+          "category": "api",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": false,
+            "idempotentHint": false,
+            "openWorldHint": true
+          },
+          "side_effect_class": "network_mutation",
+          "permission_requirements": [
+            "approved_network_mutation",
+            "scoped_credential_reference"
+          ],
+          "network_behavior": "bounded_or_approved_network",
+          "credential_behavior": "credential references only; values never returned",
+          "evidence_behavior": "required_redacted_record",
+          "rollback_behavior": {
+            "mode": "required_or_explicitly_not_available",
+            "guidance": "Return backup, compensating action, or explicit rollback-unavailable state in evidence."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-api-connectors.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_api_adapter_generate",
+          "version": "1.0.1",
+          "title": "Generate Reviewed API Adapter Proposal",
+          "description": "Ingest bounded OpenAPI JSON or structured official documentation, select one exact operation, propose a declarative adapter, identify unknowns/blockers, create mock fixtures and contract-test requirements, and keep it inactive pending tests and explicit review.",
+          "category": "api",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-api-connectors.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_api_adapter_contract_test",
+          "version": "1.0.1",
+          "title": "Test API Adapter Contract",
+          "description": "Run local declarative request/response fixture and path-mapping contract checks for one active adapter, all active adapters, or a generated proposal. Does not contact providers or activate generated output.",
+          "category": "api",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-api-connectors.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_api_adapter_review_activate",
+          "version": "1.0.1",
+          "title": "Review and Activate Generated API Adapter",
+          "description": "Dry-run by default or atomically add a generated no-auth GET/HEAD adapter to the local registry only after its contract test passes, every unknown is acknowledged, exact review text matches, and local-write permission is granted.",
+          "category": "api",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": true,
+            "idempotentHint": false,
+            "openWorldHint": false
+          },
+          "side_effect_class": "destructive_mutation",
+          "permission_requirements": [
+            "approved_local_mutation"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "required_redacted_record",
+          "rollback_behavior": {
+            "mode": "required_or_explicitly_not_available",
+            "guidance": "Return backup, compensating action, or explicit rollback-unavailable state in evidence."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-api-connectors.mjs"
           ],
           "benchmark_scenarios": [],
           "input_schema_present": true

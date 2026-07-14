@@ -2,7 +2,7 @@
 
 Generated from live MCP runtime registries. Do not edit this table manually.
 
-- Total tools: 287
+- Total tools: 295
 - Registry valid: true
 - Missing behavior-test references: 16
 
@@ -188,6 +188,14 @@ Generated from live MCP runtime registries. Do not edit this table manually.
 | tools | `vnem_tools_git_diff_summary` | git | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_git_commit` | git | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_run_command` | run | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_api_adapter_catalog` | api | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_api_credential_reference_check` | api | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_api_adapter_plan` | api | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_api_adapter_execute` | api | network_mutation | approved_network_mutation, scoped_credential_reference | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_api_adapter_compensate` | api | network_mutation | approved_network_mutation, scoped_credential_reference | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_api_adapter_generate` | api | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_api_adapter_contract_test` | api | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_api_adapter_review_activate` | api | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_api_request` | api | network_mutation | approved_network_mutation, scoped_credential_reference | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_browser_capture` | browser | read_only | approved_network_read | optional | not_required | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_browser_page_inspect` | browser | read_only | approved_network_read | optional | not_required | scripts/vnem/tools/server.mjs |

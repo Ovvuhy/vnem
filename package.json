@@ -35,6 +35,7 @@
     "test:tools-giga-game-domain": "node scripts/test-tools-giga-game-domain.mjs",
     "test:tools-giga-dependency-security": "node scripts/test-tools-giga-dependency-security.mjs",
     "test:tools-giga-structural-code": "node scripts/test-tools-giga-structural-code.mjs",
+    "test:tools-giga-api-connectors": "node scripts/test-tools-giga-api-connectors.mjs",
     "test:tools-giga-project-automation": "node scripts/test-tools-giga-project-automation.mjs",
     "test:tools-git-session": "node scripts/test-tools-git-session.mjs",
     "test:tools-intelligence": "node scripts/test-tools-intelligence.mjs",
@@ -306,6 +307,8 @@
     "giga:phase14-benchmark": "node scripts/test-tools-giga-dependency-security.mjs --benchmark-output=.vnem/giga-evolution/phase-14/dependency-security-benchmark.json",
     "giga:phase14-live-advisory": "node scripts/test-tools-giga-dependency-security.mjs --live-advisory-output=.vnem/giga-evolution/phase-14/live-advisory.json",
     "giga:phase15-benchmark": "node scripts/test-tools-giga-structural-code.mjs --benchmark-output=.vnem/giga-evolution/phase-15/structural-code-benchmark.json --real-repo-output=.vnem/giga-evolution/phase-15/real-repo-structural-index-benchmark.json",
+    "giga:phase16-benchmark": "node scripts/test-tools-giga-api-connectors.mjs --benchmark-output=.vnem/giga-evolution/phase-16/api-connectors-benchmark.json",
+    "giga:phase16-live-proof": "node scripts/test-tools-giga-api-connectors.mjs --live --benchmark-output=.vnem/giga-evolution/phase-16/live-api-proof.json",
     "test:clients:setup": "node scripts/test-vnem-client-setup.mjs"
   },
   "dependencies": {

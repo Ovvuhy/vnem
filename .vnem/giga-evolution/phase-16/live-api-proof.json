@@ -1,0 +1,148 @@
+{
+  "phase": 16,
+  "generated_at": "2026-07-14T14:37:34.902Z",
+  "scope": "real_stdio_mcp_mock_and_approved_live_reads",
+  "tools_exercised": [
+    "vnem_tools_api_adapter_catalog",
+    "vnem_tools_api_credential_reference_check",
+    "vnem_tools_api_adapter_plan",
+    "vnem_tools_api_adapter_execute",
+    "vnem_tools_api_adapter_compensate",
+    "vnem_tools_api_adapter_generate",
+    "vnem_tools_api_adapter_contract_test",
+    "vnem_tools_api_adapter_review_activate"
+  ],
+  "initial_adapters": [
+    {
+      "id": "apis_guru_metrics",
+      "provider": "apis-guru",
+      "category": "developer tooling and structured API data",
+      "version": "2.2.0",
+      "mutation_classification": "vetted_no_auth_read",
+      "freshness_date": "2026-07-14"
+    },
+    {
+      "id": "cheapshark_deals",
+      "provider": "cheapshark",
+      "category": "user-relevant game pricing data",
+      "version": "1.0",
+      "mutation_classification": "vetted_no_auth_read",
+      "freshness_date": "2026-07-14"
+    },
+    {
+      "id": "github_issue_create",
+      "provider": "github",
+      "category": "backend authenticated external mutation",
+      "version": "2026-03-10",
+      "mutation_classification": "external_mutation",
+      "freshness_date": "2026-07-14"
+    },
+    {
+      "id": "github_repository_get",
+      "provider": "github",
+      "category": "backend/authenticated service and developer tooling",
+      "version": "2026-03-10",
+      "mutation_classification": "credential_optional_read",
+      "freshness_date": "2026-07-14"
+    },
+    {
+      "id": "open_meteo_forecast",
+      "provider": "open-meteo",
+      "category": "no-auth public data",
+      "version": "v1",
+      "mutation_classification": "vetted_no_auth_read",
+      "freshness_date": "2026-07-14"
+    },
+    {
+      "id": "wikipedia_page_info",
+      "provider": "wikimedia",
+      "category": "app/product content data",
+      "version": "Action API current",
+      "mutation_classification": "vetted_no_auth_read",
+      "freshness_date": "2026-07-14"
+    },
+    {
+      "id": "world_bank_indicator",
+      "provider": "world-bank",
+      "category": "structured public data",
+      "version": "v2",
+      "mutation_classification": "vetted_no_auth_read",
+      "freshness_date": "2026-07-14"
+    }
+  ],
+  "timings_ms": {
+    "catalog_ms": 24.72,
+    "builtin_contract_tests_ms": 3.74,
+    "weather_mock_live_ms": 55.54,
+    "credential_read_ms": 7.46,
+    "mock_mutation_ms": 9.05,
+    "mock_compensation_ms": 5.37,
+    "openapi_generation_ms": 13.07,
+    "review_activation_ms": 6.26,
+    "open_meteo_live_ms": 187.98,
+    "world_bank_live_ms": 163.51
+  },
+  "mock_request_count": 12,
+  "live_proof": {
+    "approved_by_cli_flag": true,
+    "server_network_gate_enabled": true,
+    "adapters": [
+      {
+        "adapter_id": "open_meteo_forecast",
+        "provider": "open-meteo",
+        "status": 200,
+        "ok": true,
+        "response_schema_valid": true,
+        "duration_ms": 169,
+        "response_bytes_observed": 341,
+        "response_truncated": false,
+        "evidence": {
+          "evidence_id": "api-execution-2026-07-14T14-37-34-732Z-4eba7363-84ea-4015-ae7c-145aa4d9eae2",
+          "path": ".vnem/live-evidence/api-connectors/api-execution-2026-07-14T14-37-34-732Z-4eba7363-84ea-4015-ae7c-145aa4d9eae2.json",
+          "sha256": "25f3e0842adab7250d529dadb7ba9f4ae84aff3d2fd43af6197240d3a9a74a26",
+          "raw_credential_values_exposed": false
+        },
+        "raw_credentials_exposed": false
+      },
+      {
+        "adapter_id": "world_bank_indicator",
+        "provider": "world-bank",
+        "status": 200,
+        "ok": true,
+        "response_schema_valid": true,
+        "duration_ms": 150,
+        "response_bytes_observed": 292,
+        "response_truncated": false,
+        "evidence": {
+          "evidence_id": "api-execution-2026-07-14T14-37-34-893Z-53ca4b71-35c1-4c4d-8e97-10813a32cfc5",
+          "path": ".vnem/live-evidence/api-connectors/api-execution-2026-07-14T14-37-34-893Z-53ca4b71-35c1-4c4d-8e97-10813a32cfc5.json",
+          "sha256": "85ae3f3eb4204737141cb35b00e59643bc65b434d5a437c9bcf8ff859576c2cf",
+          "raw_credential_values_exposed": false
+        },
+        "raw_credentials_exposed": false
+      }
+    ],
+    "external_mutations": 0,
+    "credentials_used": 0
+  },
+  "proof": {
+    "real_stdio_mcp": true,
+    "seven_substantive_initial_adapters": true,
+    "seven_mocked_integrations": true,
+    "safe_default_no_auth_reads": true,
+    "credential_reference_without_value_exposure": true,
+    "exact_session_grant_avoids_repeated_approval": true,
+    "bounded_retry_and_cache": true,
+    "recursive_response_and_evidence_redaction": true,
+    "external_mutation_mock_only": true,
+    "best_effort_compensation_not_rollback": true,
+    "openapi_generation_contract_test_review_activation": true,
+    "two_approved_live_no_auth_reads": true
+  },
+  "limitations": [
+    "Credential proof validates internal reference resolution and mock transport, not provider-side scope or validity.",
+    "External mutation and compensation are mock-only; notifications and audit history are not reversible.",
+    "Generated activation is intentionally restricted to reviewed no-auth GET/HEAD operations.",
+    "Two current live reads passed on this host; future provider availability and schema drift remain external."
+  ]
+}

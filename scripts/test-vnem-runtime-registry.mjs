@@ -49,6 +49,20 @@ assert.equal(failure.structuredContent.error.rollback_state, "unknown_check_evid
 assert.doesNotMatch(JSON.stringify(failure), /top-secret-value|stack must stay hidden/);
 assert.equal(registry.validate().valid, true);
 
+for (const name of ["vnem_tools_api_adapter_execute", "vnem_tools_api_adapter_compensate"]) {
+  fake.registerTool(name, {
+    title: `Test ${name}`,
+    description: "Exercise conservative network-mutation registry inference.",
+    inputSchema: {},
+    annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true }
+  }, async () => ({ content: [{ type: "text", text: "ok" }] }));
+  const entry = registry.manifest().find((item) => item.name === name);
+  assert.equal(entry.side_effect_class, "network_mutation", `${name} must never be documented as local or read-only`);
+  assert.deepEqual(entry.permission_requirements, ["approved_network_mutation", "scoped_credential_reference"]);
+  assert.equal(entry.evidence_behavior, "required_redacted_record");
+  assert.equal(entry.rollback_behavior.mode, "required_or_explicitly_not_available");
+}
+
 fake.registerTool("vnem_tools_legacy_error", {
   title: "Legacy error",
   description: "Exercise backwards-compatible structured error enrichment.",

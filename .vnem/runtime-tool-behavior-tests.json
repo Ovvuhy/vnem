@@ -589,6 +589,30 @@
         "scripts/test-tools-git-session.mjs",
         "scripts/test-tools-mcp-server.mjs"
       ],
+      "vnem_tools_api_adapter_catalog": [
+        "scripts/test-tools-giga-api-connectors.mjs"
+      ],
+      "vnem_tools_api_credential_reference_check": [
+        "scripts/test-tools-giga-api-connectors.mjs"
+      ],
+      "vnem_tools_api_adapter_plan": [
+        "scripts/test-tools-giga-api-connectors.mjs"
+      ],
+      "vnem_tools_api_adapter_execute": [
+        "scripts/test-tools-giga-api-connectors.mjs"
+      ],
+      "vnem_tools_api_adapter_compensate": [
+        "scripts/test-tools-giga-api-connectors.mjs"
+      ],
+      "vnem_tools_api_adapter_generate": [
+        "scripts/test-tools-giga-api-connectors.mjs"
+      ],
+      "vnem_tools_api_adapter_contract_test": [
+        "scripts/test-tools-giga-api-connectors.mjs"
+      ],
+      "vnem_tools_api_adapter_review_activate": [
+        "scripts/test-tools-giga-api-connectors.mjs"
+      ],
       "vnem_tools_api_request": [
         "scripts/test-tools-high-power-action-review.mjs",
         "scripts/test-tools-mcp-server.mjs"

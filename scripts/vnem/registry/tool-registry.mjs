@@ -1,7 +1,7 @@
 import { assertSafeToolResult, runtimeErrorResult } from "../runtime/errors.mjs";
 
-const MUTATION_WORDS = /(?:^|_)(apply|append|create|commit|deploy|emit|execute|install|purge|request|restore|rollback|run|start|stop|update|write)(?:_|$)/;
-const NETWORK_WORDS = /(?:github|cloudflare|fetch_url|web_search|external|api_request|browser)/;
+const MUTATION_WORDS = /(?:^|_)(apply|append|compensate|create|commit|deploy|emit|execute|install|purge|request|restore|rollback|run|start|stop|update|write)(?:_|$)/;
+const NETWORK_WORDS = /(?:github|cloudflare|fetch_url|web_search|external|api_request|api_adapter_(?:execute|compensate)|browser)/;
 const HARD_BLOCK_WORDS = /(?:force_push|repo_delete|protected_branch|package_publish|credential_export)/;
 
 export class ToolRegistry {

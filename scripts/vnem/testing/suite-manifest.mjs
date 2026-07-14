@@ -17,6 +17,7 @@ export const VNEM_FULL_SUITE = Object.freeze([
   "test:tools-giga-game-domain",
   "test:tools-giga-dependency-security",
   "test:tools-giga-structural-code",
+  "test:tools-giga-api-connectors",
   "test:tools-git-session",
   "test:tools-intelligence",
   "test:tools-research",

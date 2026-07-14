@@ -50,7 +50,7 @@ const DOMAIN_ADAPTERS = [
   adapter("api_integration", "API integration and credential safety", 1, [
     feature(/\b(api|openapi|endpoint|http request|rest|graphql|webhook|oauth|bearer|api key)\b/, 5, "API or authentication surface"),
     feature(/\b(live request|allowlisted|get request|call the api|execute.*request)\b/, 4, "live API execution")
-  ], ["contract correctness", "credential safety", "provider compatibility"], ["vnem_tools_trust_boundary_classify", "vnem_tools_api_request", "vnem_tools_evidence_pack"]),
+  ], ["contract correctness", "credential safety", "provider compatibility"], ["vnem_tools_api_adapter_catalog", "vnem_tools_api_adapter_plan", "vnem_tools_api_adapter_execute", "vnem_tools_evidence_pack"]),
   adapter("windows_local", "Windows and local-PC work", 0, [
     feature(/\b(windows|powershell|event viewer|windows registry|registry key|regedit|scheduled task|defender)\b/, 5, "Windows platform signal"),
     feature(/\b(process|port|local pc|path failure|appdata)\b/, 4, "local system inspection")
@@ -191,6 +191,14 @@ const TOOL_PURPOSES = {
   vnem_tools_dependency_install_apply: "apply an approved script-disabled npm transaction with verification and automatic rollback",
   vnem_tools_dependency_transaction_rollback: "restore exact pre-install dependency files and npm state after hash verification",
   vnem_tools_trust_boundary_classify: "classify external code, API, or skill trust boundaries",
+  vnem_tools_api_adapter_catalog: "select a current reviewed API contract and its exact safety boundaries",
+  vnem_tools_api_credential_reference_check: "verify a typed credential reference by presence without exposing its value",
+  vnem_tools_api_adapter_plan: "validate the exact adapter request, permission scope, rate limits, and compensation before execution",
+  vnem_tools_api_adapter_execute: "run one vetted bounded adapter with schema checks, redaction, and evidence",
+  vnem_tools_api_adapter_compensate: "run one reviewed best-effort external compensation without claiming rollback",
+  vnem_tools_api_adapter_generate: "propose an inactive adapter from OpenAPI or structured official documentation",
+  vnem_tools_api_adapter_contract_test: "test adapter request, response, fixture, and path contracts without network",
+  vnem_tools_api_adapter_review_activate: "activate only a tested and explicitly reviewed no-auth GET/HEAD adapter",
   vnem_tools_api_request: "execute an approved allowlisted API request with redaction",
   vnem_tools_capability_gap_report: "report missing execution capability honestly",
   vnem_tools_project_scan: "inspect a bounded local project as a fallback",
@@ -677,8 +685,15 @@ function domainTools(domain, args) {
     if (/backup|restore|rollback/i.test(text)) return ["vnem_tools_game_adapter_catalog", "vnem_tools_game_project_inspect", "vnem_tools_mod_backup_create", "vnem_tools_mod_backup_restore", "vnem_tools_game_project_validate"];
     return ["vnem_tools_game_adapter_catalog", "vnem_tools_game_project_inspect", "vnem_tools_game_config_audit", "vnem_tools_mod_compatibility_analyze", "vnem_tools_game_project_validate", "vnem_tools_mod_backup_create"];
   }
-  if (domain.id === "api_integration" && !/\b(live request|allowlisted|get request|call the api|execute.*request)\b/i.test(String(args.user_goal || ""))) {
-    return ["vnem_tools_trust_boundary_classify", "vnem_tools_source_map", "vnem_tools_evidence_pack"];
+  if (domain.id === "api_integration") {
+    const text = `${args.user_goal || ""} ${args.task_context || ""}`;
+    if (/\b(openapi|generate|create|add)\b[^\n]{0,80}\badapter\b|\badapter\b[^\n]{0,80}\b(openapi|generate|create|add)\b/i.test(text)) {
+      return ["vnem_tools_api_adapter_catalog", "vnem_tools_api_adapter_generate", "vnem_tools_api_adapter_contract_test", "vnem_tools_api_adapter_review_activate", "vnem_tools_evidence_pack"];
+    }
+    if (/\b(live request|allowlisted|get request|call the api|execute.*request|post request|mutation)\b/i.test(text)) {
+      return ["vnem_tools_api_adapter_catalog", "vnem_tools_api_credential_reference_check", "vnem_tools_api_adapter_plan", "vnem_tools_api_adapter_execute", "vnem_tools_api_adapter_compensate", "vnem_tools_evidence_pack"];
+    }
+    return ["vnem_tools_api_adapter_catalog", "vnem_tools_api_adapter_plan", "vnem_tools_source_map", "vnem_tools_evidence_pack"];
   }
   if (domain.id === "browser_ui" && !/\b(browser|screenshot|localhost|visual proof|viewport)\b/i.test(String(args.user_goal || ""))) {
     return ["vnem_tools_ui_surface_review", "vnem_tools_test_selection_plan"];
@@ -730,13 +745,15 @@ function adapterSelectionFor(classification, tools) {
   const ids = new Set((classification.domains || []).map((domain) => domain.id));
   const adapters = [];
   if (ids.has("api_integration")) {
-    const executable = tools.includes("vnem_tools_api_request");
+    const executable = tools.includes("vnem_tools_api_adapter_execute");
     adapters.push({
       type: "api",
       core_discovery_calls: ["vnem_search_apis", "vnem_recommend_apis"],
-      tools_adapter: executable ? "vnem_tools_api_request" : null,
-      readiness: executable ? "execution_ready_if_configured_allowed_and_authorized" : "metadata_and_planning_only",
-      compatibility_and_risk: ["provider version", "auth method", "allowlist", "rate limit", "redaction"],
+      tools_adapter: executable ? "vnem_tools_api_adapter_execute" : null,
+      catalog_tool: tools.includes("vnem_tools_api_adapter_catalog") ? "vnem_tools_api_adapter_catalog" : null,
+      credential_broker_tool: tools.includes("vnem_tools_api_credential_reference_check") ? "vnem_tools_api_credential_reference_check" : null,
+      readiness: executable ? "vetted_adapter_execution_ready_subject_to_exact_auth_and_permission_class" : "metadata_and_planning_only",
+      compatibility_and_risk: ["provider version", "official docs freshness", "auth reference", "approved host/method", "rate/retry/cache", "schema", "redaction", "mutation compensation"],
       unsupported_records_recommended: false
     });
   }
@@ -782,7 +799,7 @@ function materialMissingContext(classification, args, compatibility) {
   const apiContext = String(args.task_context || "");
   const apiAuthorizationConfirmed = /\b(authorization confirmed|user approved|approved endpoint|authorized\s*[:=]\s*(?:yes|true))\b/i.test(apiContext);
   const apiCredentialReferencePresent = /\b(credential|auth) reference\s*[:=]\s*\S+/i.test(apiContext);
-  if (ids.has("api_integration") && /\b(live|execute|request|call)\b/i.test(String(args.user_goal || "")) && (!apiAuthorizationConfirmed || !apiCredentialReferencePresent)) add("api_authorization", "Is this endpoint authorized and which credential reference should be used?", ["safety", "cost"], "ask user for authorization and reference, never a secret value", true);
+  if (ids.has("api_integration") && /\b(live|execute|request|call|mutation|post|patch|delete)\b/i.test(String(args.user_goal || "")) && /\b(auth|oauth|bearer|token|api key|private|credential|mutation|post|patch|delete)\b/i.test(`${args.user_goal || ""} ${args.task_context || ""}`) && (!apiAuthorizationConfirmed || !apiCredentialReferencePresent)) add("api_authorization", "Is this endpoint authorized and which credential reference should be used?", ["safety", "cost"], "ask user for authorization and reference, never a secret value", true);
   if (ids.has("game_modding") && !compatibility.constraints.some((item) => ["game_version", "mod_loader"].includes(item.dimension) && item.observed)) add("game_runtime", "What exact game version and mod-loader scope applies?", ["compatibility", "correctness"], "inspect local metadata first, then ask if unavailable", false);
   if (ids.has("package_dependency") && !/\b(package-lock|pnpm-lock|yarn.lock|npm|pnpm|yarn)\b/i.test(`${args.task_context || ""} ${stringArray(args.repo_signals).join(" ")}`)) add("package_manager", "Which package manager and lockfile own the project?", ["compatibility", "correctness"], "discover from repository files", false);
   if (ids.has("browser_ui") && !compatibility.constraints.some((item) => item.dimension === "browser" && item.observed)) add("browser_runtime", "Is an approved local browser runtime available?", ["evidence"], "detect at verification time", false);
@@ -799,8 +816,8 @@ function safeAssumptions(classification, args, missing) {
 
 function permissionImplicationsFor(classification, sequence, args) {
   const tools = sequence.map((item) => item.tool);
-  const network = tools.some((tool) => /github|cloudflare|api_request|browser|web_search|source_extract/.test(tool));
-  const mutation = tools.some((tool) => /apply|run_|push|create|deploy|rollback|api_request/.test(tool));
+  const network = tools.some((tool) => /github|cloudflare|api_request|api_adapter_(?:execute|compensate)|browser|web_search|source_extract/.test(tool));
+  const mutation = tools.some((tool) => /apply|run_|push|create|deploy|rollback|api_request|api_adapter_(?:compensate|review_activate)/.test(tool));
   return {
     default_profile: mutation ? "safe-local-dev or stronger scoped grant" : "safe-readonly",
     network_approval_may_be_required: network,

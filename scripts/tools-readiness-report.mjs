@@ -29,6 +29,8 @@ const dependencySecurityTestPath = rel("scripts/test-tools-giga-dependency-secur
 const dependencySecurityModulePath = rel("scripts/vnem/tools/dependency-security.mjs");
 const structuralCodeTestPath = rel("scripts/test-tools-giga-structural-code.mjs");
 const structuralCodeModulePath = rel("scripts/vnem/tools/structural-code.mjs");
+const apiConnectorTestPath = rel("scripts/test-tools-giga-api-connectors.mjs");
+const apiConnectorModulePath = rel("scripts/vnem/tools/api-connectors.mjs");
 const projectAutomationTestPath = rel("scripts/test-tools-giga-project-automation.mjs");
 const projectAutomationModulePath = rel("scripts/vnem/tools/project-automation.mjs");
 const projectAutomationFixturePath = rel("fixtures/project-automation/package.json");
@@ -133,6 +135,8 @@ const dependencySecurityTest = existsSync(dependencySecurityTestPath) ? readFile
 const dependencySecurityModule = existsSync(dependencySecurityModulePath) ? readFileSync(dependencySecurityModulePath, "utf8") : "";
 const structuralCodeTest = existsSync(structuralCodeTestPath) ? readFileSync(structuralCodeTestPath, "utf8") : "";
 const structuralCodeModule = existsSync(structuralCodeModulePath) ? readFileSync(structuralCodeModulePath, "utf8") : "";
+const apiConnectorTest = existsSync(apiConnectorTestPath) ? readFileSync(apiConnectorTestPath, "utf8") : "";
+const apiConnectorModule = existsSync(apiConnectorModulePath) ? readFileSync(apiConnectorModulePath, "utf8") : "";
 const projectAutomationTest = existsSync(projectAutomationTestPath) ? readFileSync(projectAutomationTestPath, "utf8") : "";
 const projectAutomationModule = existsSync(projectAutomationModulePath) ? readFileSync(projectAutomationModulePath, "utf8") : "";
 const testingCiTest = existsSync(testingCiTestPath) ? readFileSync(testingCiTestPath, "utf8") : "";
@@ -276,6 +280,14 @@ const requiredTools = [
   "vnem_tools_apply_patch",
   "vnem_tools_run_command",
   "vnem_tools_api_request",
+  "vnem_tools_api_adapter_catalog",
+  "vnem_tools_api_credential_reference_check",
+  "vnem_tools_api_adapter_plan",
+  "vnem_tools_api_adapter_execute",
+  "vnem_tools_api_adapter_compensate",
+  "vnem_tools_api_adapter_generate",
+  "vnem_tools_api_adapter_contract_test",
+  "vnem_tools_api_adapter_review_activate",
   "vnem_tools_fetch_url_text",
   "vnem_tools_source_quality_check",
   "vnem_tools_research_brief",
@@ -449,6 +461,8 @@ const report = {
   dependency_security_module_exists: existsSync(dependencySecurityModulePath),
   structural_code_test_exists: existsSync(structuralCodeTestPath),
   structural_code_module_exists: existsSync(structuralCodeModulePath),
+  api_connector_test_exists: existsSync(apiConnectorTestPath),
+  api_connector_module_exists: existsSync(apiConnectorModulePath),
   project_automation_test_exists: existsSync(projectAutomationTestPath),
   project_automation_module_exists: existsSync(projectAutomationModulePath),
   project_automation_fixture_exists: existsSync(projectAutomationFixturePath),
@@ -529,6 +543,9 @@ const report = {
     test_tools_giga_game_domain: pkg.scripts?.["test:tools-giga-game-domain"] === "node scripts/test-tools-giga-game-domain.mjs",
     test_tools_giga_dependency_security: pkg.scripts?.["test:tools-giga-dependency-security"] === "node scripts/test-tools-giga-dependency-security.mjs",
     test_tools_giga_structural_code: pkg.scripts?.["test:tools-giga-structural-code"] === "node scripts/test-tools-giga-structural-code.mjs",
+    test_tools_giga_api_connectors: pkg.scripts?.["test:tools-giga-api-connectors"] === "node scripts/test-tools-giga-api-connectors.mjs",
+    giga_phase16_benchmark: pkg.scripts?.["giga:phase16-benchmark"] === "node scripts/test-tools-giga-api-connectors.mjs --benchmark-output=.vnem/giga-evolution/phase-16/api-connectors-benchmark.json",
+    giga_phase16_live_proof: pkg.scripts?.["giga:phase16-live-proof"] === "node scripts/test-tools-giga-api-connectors.mjs --live --benchmark-output=.vnem/giga-evolution/phase-16/live-api-proof.json",
     test_tools_giga_project_automation: pkg.scripts?.["test:tools-giga-project-automation"] === "node scripts/test-tools-giga-project-automation.mjs",
     test_tools_giga_testing_ci: pkg.scripts?.["test:tools-giga-testing-ci"] === "node scripts/test-tools-giga-testing-ci.mjs",
     test_tools_git_session: pkg.scripts?.["test:tools-git-session"] === "node scripts/test-tools-git-session.mjs",
@@ -749,6 +766,16 @@ const report = {
   structural_code_hardening_status: /refactor_target_link_or_escape/.test(structuralCodeModule) && /refactor_transaction_root_mismatch/.test(structuralCodeModule) && /refactor_backup_path_invalid/.test(structuralCodeModule) && /refactor_verification_mutated_worktree/.test(structuralCodeModule) && /cross_file_filesystem_atomicity_claimed: false/.test(server),
   structural_code_core_routing_status: /vnem_tools_structural_index_build/.test(coreIntelligence + structuralCodeTest) && /vnem_tools_refactor_apply_verify/.test(coreIntelligence + structuralCodeTest) && /coreRecommendedToolsCalls/.test(structuralCodeTest) && /structural_refactoring/.test(server),
   structural_code_real_mcp_proof_status: /StdioClientTransport/.test(structuralCodeTest) && /VNEM GIGA Phase 15 structural code tests passed/.test(structuralCodeTest) && /real_stdio_mcp/.test(structuralCodeTest),
+  api_connector_module_status: /ApiConnectorRuntime/.test(server + apiConnectorModule) && /api_connector_policy/.test(server) && /ApiConnectorError/.test(server + apiConnectorModule),
+  api_connector_contract_status: ["id", "provider", "version", "official_documentation", "base_urls", "allowed_methods", "authentication", "credential_reference_requirements", "request_schema", "response_schema", "rate_limits", "retry_policy", "timeout_ms", "cache_policy", "mutation_classification", "redaction_fields", "mock_fixtures", "live_test", "rollback_or_compensation", "freshness_date", "compatibility_status"].every((field) => apiConnectorModule.includes('"' + field + '"') || apiConnectorModule.includes(field + ":")),
+  api_connector_initial_adapters_status: ["open_meteo_forecast", "github_repository_get", "world_bank_indicator", "apis_guru_metrics", "wikipedia_page_info", "cheapshark_deals", "github_issue_create"].every((id) => apiConnectorModule.includes('id: "' + id + '"') && apiConnectorTest.includes(id)),
+  api_connector_permission_broker_status: ["environment", "client_secret_reference", "os_credential_store", "provider_profile"].every((type) => apiConnectorModule.includes(type) && apiConnectorTest.includes(type)) && /vetted_api_read/.test(permissionProfilesSource + server) && /credential_api_read/.test(permissionProfilesSource + server) && /external_api_mutation/.test(permissionProfilesSource + server) && /credentialPlan/.test(apiConnectorModule + server) && /credentialStatusDenied/.test(apiConnectorTest) && /api_raw_credential_parameter_blocked/.test(apiConnectorModule + apiConnectorTest),
+  api_connector_execution_bounds_status: /api_local_rate_limit/.test(apiConnectorModule) && /bounded_exponential_and_retry_after/.test(apiConnectorModule) && /process_memory/.test(apiConnectorModule) && /max_response_bytes/.test(apiConnectorModule + apiConnectorTest) && /response_truncated/.test(apiConnectorTest) && /redactDeep/.test(apiConnectorModule) && /writeEvidence/.test(apiConnectorModule) && /fixture retry/.test(apiConnectorTest) && /api_adapter_cache_hit/.test(apiConnectorTest),
+  api_connector_mock_live_status: /StdioClientTransport/.test(apiConnectorTest) && /seven_mocked_integrations: true/.test(apiConnectorTest) && /approved_by_cli_flag: liveEnabled/.test(apiConnectorTest) && /VNEM_TOOLS_API_LIVE_TESTS: "1"/.test(apiConnectorTest) && /open_meteo_live_ms/.test(apiConnectorTest) && /world_bank_live_ms/.test(apiConnectorTest),
+  api_connector_mutation_compensation_status: /external_mutation_mock_only: true/.test(apiConnectorTest) && /best_effort_compensation_not_rollback: true/.test(apiConnectorTest) && /api_compensation_completed/.test(apiConnectorModule + apiConnectorTest) && /This is best-effort compensation, not rollback/.test(apiConnectorModule),
+  api_connector_generation_review_status: /openapi_generation_ms/.test(apiConnectorTest) && /api_adapter_proposal_generated/.test(apiConnectorModule) && /contract_test_not_passed/.test(apiConnectorModule) && /api_adapter_review_required/.test(apiConnectorModule) && /unknown_not_acknowledged/.test(apiConnectorModule) && /unsupported_schema_keyword/.test(apiConnectorModule + apiConnectorTest) && /reviewed_active/.test(apiConnectorModule + apiConnectorTest),
+  api_connector_core_routing_status: /vnem_tools_api_adapter_catalog/.test(coreIntelligence + apiConnectorTest) && /vnem_tools_api_adapter_execute/.test(coreIntelligence + apiConnectorTest) && /vnem_tools_api_adapter_generate/.test(coreIntelligence) && /vnem_tools_api_adapter_review_activate/.test(coreIntelligence) && /Phase 16 API route/.test(readFileSync(rel("scripts/test-core-giga-intelligence.mjs"), "utf8")),
+  api_connector_real_mcp_proof_status: /StdioClientTransport/.test(apiConnectorTest) && /real_stdio_mcp: true/.test(apiConnectorTest) && /VNEM GIGA Phase 16 API connector tests passed/.test(apiConnectorTest),
   github_dry_run_status: /dry_run !== false/.test(server) && /must not/.test(toolsGithubMutationDryRunTest),
   github_config_knob_status: /config_knob_to_change/.test(server) && /VNEM_TOOLS_GITHUB_ALLOW_DIRECT_PUSH/.test(toolsGithubMutationDryRunTest + server) && /VNEM_TOOLS_GITHUB_ALLOW_ACTIONS_RERUN/.test(toolsGithubMutationDryRunTest + server),
   github_secret_file_block_status: /githubSecretFileBlocked/.test(server) && /Secret-like file blocked/.test(server) && /scanGithubCommitContent/.test(server) && /Secret-like content blocked/.test(server + githubDevelopmentTest) && /\.env/.test(toolsGithubMutationDryRunTest + server),
@@ -1021,6 +1048,8 @@ assert.equal(report.dependency_security_test_exists, true, "dependency-security 
 assert.equal(report.dependency_security_module_exists, true, "dependency-security runtime module is missing");
 assert.equal(report.structural_code_test_exists, true, "structural-code MCP test file is missing");
 assert.equal(report.structural_code_module_exists, true, "structural-code runtime module is missing");
+assert.equal(report.api_connector_test_exists, true, "API connector MCP test file is missing");
+assert.equal(report.api_connector_module_exists, true, "API connector runtime module is missing");
 assert.equal(report.project_automation_test_exists, true, "project automation MCP test file is missing");
 assert.equal(report.project_automation_module_exists, true, "project automation module is missing");
 assert.equal(report.project_automation_fixture_exists, true, "project automation fixture is missing");
@@ -1053,6 +1082,9 @@ assert.equal(report.package_scripts.test_tools_giga_github_development, true, "t
 assert.equal(report.package_scripts.test_tools_giga_game_domain, true, "test:tools-giga-game-domain package script is missing");
 assert.equal(report.package_scripts.test_tools_giga_dependency_security, true, "test:tools-giga-dependency-security package script is missing");
 assert.equal(report.package_scripts.test_tools_giga_structural_code, true, "test:tools-giga-structural-code package script is missing");
+assert.equal(report.package_scripts.test_tools_giga_api_connectors, true, "test:tools-giga-api-connectors package script is missing");
+assert.equal(report.package_scripts.giga_phase16_benchmark, true, "giga:phase16-benchmark package script is missing");
+assert.equal(report.package_scripts.giga_phase16_live_proof, true, "giga:phase16-live-proof package script is missing");
 for (const [key, value] of Object.entries({ test_smoke_tier: report.package_scripts.test_smoke_tier, test_affected_tier: report.package_scripts.test_affected_tier, test_core_tier: report.package_scripts.test_core_tier, test_tools_tier: report.package_scripts.test_tools_tier, test_precision_compat_tier: report.package_scripts.test_precision_compat_tier, test_integration_tier: report.package_scripts.test_integration_tier, test_benchmarks_tier: report.package_scripts.test_benchmarks_tier, test_full_tier: report.package_scripts.test_full_tier, test_ci_tier: report.package_scripts.test_ci_tier, npm_test_routes_full: report.package_scripts.npm_test_routes_full })) assert.equal(value, true, `${key} package script is missing`);
 assert.equal(report.package_scripts.test_tools_git_session, true, "test:tools-git-session package script is missing");
 assert.equal(report.package_scripts.test_tools_intelligence, true, "test:tools-intelligence package script is missing");
@@ -1284,6 +1316,7 @@ for (const [key, value] of Object.entries({ github_development_module_status: re
 for (const [key, value] of Object.entries({ game_domain_module_status: report.game_domain_module_status, game_domain_adapter_contract_status: report.game_domain_adapter_contract_status, game_domain_inventory_status: report.game_domain_inventory_status, game_domain_config_status: report.game_domain_config_status, game_domain_compatibility_status: report.game_domain_compatibility_status, game_domain_profile_status: report.game_domain_profile_status, game_domain_backup_restore_status: report.game_domain_backup_restore_status, game_domain_roblox_luau_status: report.game_domain_roblox_luau_status, game_domain_validation_status: report.game_domain_validation_status, game_domain_real_mcp_proof_status: report.game_domain_real_mcp_proof_status })) assert.equal(value, true, `${key} readiness missing`);
 for (const [key, value] of Object.entries({ dependency_security_module_status: report.dependency_security_module_status, dependency_security_inventory_status: report.dependency_security_inventory_status, dependency_security_risk_status: report.dependency_security_risk_status, dependency_security_advisory_status: report.dependency_security_advisory_status, dependency_security_change_plan_status: report.dependency_security_change_plan_status, dependency_security_install_status: report.dependency_security_install_status, dependency_security_rollback_status: report.dependency_security_rollback_status, dependency_security_credential_boundary_status: report.dependency_security_credential_boundary_status, dependency_security_hardening_status: report.dependency_security_hardening_status, dependency_security_real_mcp_proof_status: report.dependency_security_real_mcp_proof_status })) assert.equal(value, true, `${key} readiness missing`);
 for (const [key, value] of Object.entries({ structural_code_module_status: report.structural_code_module_status, structural_code_architecture_status: report.structural_code_architecture_status, structural_code_index_status: report.structural_code_index_status, structural_code_graph_status: report.structural_code_graph_status, structural_code_reference_status: report.structural_code_reference_status, structural_code_planning_status: report.structural_code_planning_status, structural_code_validation_status: report.structural_code_validation_status, structural_code_safety_gates_status: report.structural_code_safety_gates_status, structural_code_transaction_status: report.structural_code_transaction_status, structural_code_hardening_status: report.structural_code_hardening_status, structural_code_core_routing_status: report.structural_code_core_routing_status, structural_code_real_mcp_proof_status: report.structural_code_real_mcp_proof_status })) assert.equal(value, true, `${key} readiness missing`);
+for (const [key, value] of Object.entries({ api_connector_module_status: report.api_connector_module_status, api_connector_contract_status: report.api_connector_contract_status, api_connector_initial_adapters_status: report.api_connector_initial_adapters_status, api_connector_permission_broker_status: report.api_connector_permission_broker_status, api_connector_execution_bounds_status: report.api_connector_execution_bounds_status, api_connector_mock_live_status: report.api_connector_mock_live_status, api_connector_mutation_compensation_status: report.api_connector_mutation_compensation_status, api_connector_generation_review_status: report.api_connector_generation_review_status, api_connector_core_routing_status: report.api_connector_core_routing_status, api_connector_real_mcp_proof_status: report.api_connector_real_mcp_proof_status })) assert.equal(value, true, key + " readiness missing");
 assert.equal(report.project_task_status, true, "project task support/test coverage is missing");
 assert.equal(report.dev_server_status, true, "dev server support/test coverage is missing");
 assert.equal(report.session_evidence_status, true, "session evidence support/test coverage is missing");
@@ -1437,6 +1470,7 @@ for (const key of ["browser_interaction_registration_status", "browser_interacti
 for (const key of ["windows_local_registration_status", "windows_local_powershell_status", "windows_local_environment_status", "windows_local_path_status", "windows_local_process_port_status", "windows_local_service_task_event_status", "windows_local_client_status", "windows_local_mutation_gate_status", "windows_local_real_mcp_proof_status"]) console.log(`${key}: ${yes(report[key])}`);
 for (const key of ["dependency_security_module_status", "dependency_security_inventory_status", "dependency_security_risk_status", "dependency_security_advisory_status", "dependency_security_change_plan_status", "dependency_security_install_status", "dependency_security_rollback_status", "dependency_security_credential_boundary_status", "dependency_security_hardening_status", "dependency_security_real_mcp_proof_status"]) console.log(`${key}: ${yes(report[key])}`);
 for (const key of ["structural_code_module_status", "structural_code_architecture_status", "structural_code_index_status", "structural_code_graph_status", "structural_code_reference_status", "structural_code_planning_status", "structural_code_validation_status", "structural_code_safety_gates_status", "structural_code_transaction_status", "structural_code_hardening_status", "structural_code_core_routing_status", "structural_code_real_mcp_proof_status"]) console.log(`${key}: ${yes(report[key])}`);
+for (const key of ["api_connector_module_status", "api_connector_contract_status", "api_connector_initial_adapters_status", "api_connector_permission_broker_status", "api_connector_execution_bounds_status", "api_connector_mock_live_status", "api_connector_mutation_compensation_status", "api_connector_generation_review_status", "api_connector_core_routing_status", "api_connector_real_mcp_proof_status"]) console.log(`${key}: ${yes(report[key])}`);
 console.log(`project_task_status: ${yes(report.project_task_status)}`);
 console.log(`dev_server_status: ${yes(report.dev_server_status)}`);
 console.log(`session_evidence_status: ${yes(report.session_evidence_status)}`);

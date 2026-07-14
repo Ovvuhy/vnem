@@ -208,12 +208,22 @@ try {
     environment: { os: "win32", api_auth: "credential reference required" }
   }, "entrypoint");
   assert.equal(api.task_classification.primary_domain, "api_integration");
-  assert.ok(api.recommended_tools_calls.includes("vnem_tools_api_request"));
-  assert.equal(api.adapter_selection[0].readiness, "execution_ready_if_configured_allowed_and_authorized");
+  for (const tool of ["vnem_tools_api_adapter_catalog", "vnem_tools_api_credential_reference_check", "vnem_tools_api_adapter_plan", "vnem_tools_api_adapter_execute"]) assert.ok(api.recommended_tools_calls.includes(tool), `missing Phase 16 API route ${tool}`);
+  assert.equal(api.adapter_selection[0].readiness, "vetted_adapter_execution_ready_subject_to_exact_auth_and_permission_class");
+  assert.equal(api.adapter_selection[0].tools_adapter, "vnem_tools_api_adapter_execute");
   assert.equal(api.adapter_selection[0].unsupported_records_recommended, false);
   assert.equal(api.material_missing_context.some((item) => item.id === "api_authorization" && item.ask_user), true);
   assert.equal(api.permission_implications.network_approval_may_be_required, true);
   assert.match(api.compact_next_step, /Ask only/);
+
+  const apiSelection = await call(core.client, "vnem_entrypoint", {
+    user_goal: "Select a suitable API, review trust and auth needs, then build an integration plan.",
+    available_mcp_names: ["vnem", "vnem-tools"],
+    available_tool_names: [...toolNames],
+    allowed_tool_names: [...toolNames]
+  }, "entrypoint");
+  for (const tool of ["vnem_tools_api_adapter_catalog", "vnem_tools_api_adapter_plan"]) assert.ok(apiSelection.recommended_tools_calls.includes(tool), `missing Phase 16 API selection route ${tool}`);
+  assert.ok(apiSelection.recommended_tools_calls.length <= 6);
 
   const compatibility = await call(core.client, "vnem_compatibility_assess", {
     task: "Run a Codex MCP server over stdio on Windows PowerShell with Node.",
