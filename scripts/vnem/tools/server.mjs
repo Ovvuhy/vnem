@@ -44,6 +44,7 @@ import { WindowsLocalError, WindowsLocalRuntime } from "./windows-local.mjs";
 import { GithubDevelopmentError, GithubDevelopmentRuntime } from "./github-development.mjs";
 import { GameDomainError, GameDomainRuntime } from "./game-domain.mjs";
 import { DependencySecurityError, DependencySecurityRuntime } from "./dependency-security.mjs";
+import { StructuralCodeError, StructuralCodeRuntime } from "./structural-code.mjs";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(scriptDir, "..", "..", "..");
@@ -166,6 +167,17 @@ const REQUIRED_TOOL_NAMES = [
   "vnem_tools_dependency_upgrade_plan",
   "vnem_tools_dependency_install_apply",
   "vnem_tools_dependency_transaction_rollback",
+  "vnem_tools_structural_index_build",
+  "vnem_tools_structural_graph_query",
+  "vnem_tools_exact_symbol_references",
+  "vnem_tools_refactor_rename_preview",
+  "vnem_tools_refactor_move_preview",
+  "vnem_tools_refactor_extract_plan",
+  "vnem_tools_dead_code_candidates",
+  "vnem_tools_refactor_impact_analyze",
+  "vnem_tools_structural_patch_validate",
+  "vnem_tools_refactor_apply_verify",
+  "vnem_tools_refactor_transaction_rollback",
   "vnem_tools_test_system_inspect",
   "vnem_tools_affected_test_graph",
   "vnem_tools_test_run",
@@ -319,6 +331,7 @@ const githubDevelopmentRuntime = new GithubDevelopmentRuntime({
 });
 const gameDomainRuntime = new GameDomainRuntime({ allowedRoots, evidenceRoot });
 const dependencySecurityRuntime = new DependencySecurityRuntime({ allowedRoots, evidenceRoot });
+const structuralCodeRuntime = new StructuralCodeRuntime({ allowedRoots, evidenceRoot, commandRuntime: projectAutomationRuntime });
 const activePermissionProfile = permissionRuntime.activeProfile();
 const usablePacks = await loadUsablePacks();
 const requestedPrecisionWorkspaceCandidate = path.resolve(
@@ -1837,6 +1850,184 @@ function registerTools(mcpServer) {
   );
 
   mcpServer.registerTool(
+    "vnem_tools_structural_index_build",
+    {
+      title: "Build Incremental Structural Code Index",
+      description: "Build or incrementally refresh a bounded persisted code graph. JavaScript/TypeScript use Babel ASTs plus lexical bindings; Python, Go, Rust, Java, C#, Kotlin, C/C++, Lua/Luau, Ruby, and PHP use explicitly lower-confidence adapters. Generated/minified code and secret paths are skipped.",
+      inputSchema: { root: z.string().default("."), refresh: z.boolean().default(false), max_files: z.number().int().min(1).max(10000).default(5000), max_file_bytes: z.number().int().min(1024).max(4194304).default(1048576), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const permission = enforceActionPolicy("search_code", { ...args, dry_run: false, proposed_action: "build bounded AST and heuristic structural code index" });
+      const result = { ...(await structuralCodeRuntime.buildIndex(args)), permission };
+      recordSession(args.session_id, "structural_code_inspections", result);
+      return toolResult(formatStructuralCode("vnem_tools_structural_index_build", result), { structural_index: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_structural_graph_query",
+    {
+      title: "Query Structural Code Graph",
+      description: "Query indexed symbols, static imports, calls, literal routes, components, APIs, tests, and package boundaries with parser-confidence limits preserved.",
+      inputSchema: { root: z.string().default("."), symbol: z.string().default(""), kind: z.string().default(""), language: z.string().default(""), path_contains: z.string().default(""), callee: z.string().default(""), route: z.string().default(""), limit: z.number().int().min(1).max(500).default(100), refresh: z.boolean().default(false), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const permission = enforceActionPolicy("search_code", { ...args, dry_run: false, proposed_action: "query bounded structural code graph" });
+      const result = { ...(await structuralCodeRuntime.query(args)), permission };
+      recordSession(args.session_id, "structural_code_inspections", result);
+      return toolResult(formatStructuralCode("vnem_tools_structural_graph_query", result), { structural_graph_query: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_exact_symbol_references",
+    {
+      title: "Resolve Exact Symbol References",
+      description: "Resolve one symbol through Babel lexical bindings and static ESM imports when available, while marking heuristic, dynamic, reflective, generated, and external-consumer limits instead of claiming compiler-grade certainty.",
+      inputSchema: { root: z.string().default("."), symbol: z.string().min(1), file: z.string().optional(), refresh: z.boolean().default(false), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const permission = enforceActionPolicy("search_code", { ...args, dry_run: false, proposed_action: `resolve lexical references for ${args.symbol}` });
+      const result = { ...(await structuralCodeRuntime.exactReferences(args)), permission };
+      recordSession(args.session_id, "structural_code_inspections", result);
+      return toolResult(formatStructuralCode("vnem_tools_exact_symbol_references", result), { exact_symbol_references: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_refactor_rename_preview",
+    {
+      title: "Preview Binding Aware Symbol Rename",
+      description: "Create a hash-bound non-mutating rename preview for exactly one Babel-resolved binding, including static ESM consumers, collisions, textual uncertainty, affected tests, public-export acknowledgement, and apply blockers.",
+      inputSchema: { root: z.string().default("."), symbol: z.string().min(1), new_name: z.string().min(1), file: z.string().optional(), allow_public_api_change: z.boolean().default(false), verify_scripts: z.array(z.enum(["test", "validate", "typecheck", "lint", "check"])).min(1).max(5).default(["test"]), refresh: z.boolean().default(false), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const permission = enforceActionPolicy("search_code", { ...args, dry_run: false, proposed_action: `preview binding-aware rename ${args.symbol} to ${args.new_name}` });
+      const result = { ...(await structuralCodeRuntime.renamePreview(args)), permission };
+      recordSession(args.session_id, "structural_refactor_previews", result);
+      return toolResult(formatStructuralCode("vnem_tools_refactor_rename_preview", result), { refactor_rename_preview: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_refactor_move_preview",
+    {
+      title: "Preview Module Move and Import Rewrites",
+      description: "Preview a module move, incoming and outgoing relative-import rewrites, package-boundary changes, affected tests, and unresolved alias/dynamic-consumer risk. Automatic move apply remains intentionally disabled.",
+      inputSchema: { root: z.string().default("."), source_file: z.string().min(1), target_file: z.string().min(1), refresh: z.boolean().default(false), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const permission = enforceActionPolicy("search_code", { ...args, dry_run: false, proposed_action: `preview module move ${args.source_file} to ${args.target_file}` });
+      const result = { ...(await structuralCodeRuntime.movePreview(args)), permission };
+      recordSession(args.session_id, "structural_refactor_previews", result);
+      return toolResult(formatStructuralCode("vnem_tools_refactor_move_preview", result), { refactor_move_preview: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_refactor_extract_plan",
+    {
+      title: "Plan Function or Module Extraction",
+      description: "Plan a non-mutating extraction from an exact line range with selected symbols, inferred inputs/outputs, call sites, affected tests, confidence, and closure/runtime uncertainties.",
+      inputSchema: { root: z.string().default("."), file: z.string().min(1), start_line: z.number().int().min(1), end_line: z.number().int().min(1), new_module_path: z.string().default(""), refresh: z.boolean().default(false), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const permission = enforceActionPolicy("search_code", { ...args, dry_run: false, proposed_action: `plan structural extraction from ${args.file}` });
+      const result = { ...(await structuralCodeRuntime.extractPlan(args)), permission };
+      recordSession(args.session_id, "structural_refactor_previews", result);
+      return toolResult(formatStructuralCode("vnem_tools_refactor_extract_plan", result), { refactor_extract_plan: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_dead_code_candidates",
+    {
+      title: "Find Evidence Bounded Dead Code Candidates",
+      description: "Find static dead-code candidates with confidence and explicit must-not-delete claims. Dynamic imports, reflection, conventions, templates, generated code, and external consumers remain unproven.",
+      inputSchema: { root: z.string().default("."), limit: z.number().int().min(1).max(1000).default(200), refresh: z.boolean().default(false), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const permission = enforceActionPolicy("search_code", { ...args, dry_run: false, proposed_action: "inspect static dead-code candidates without deletion" });
+      const result = { ...(await structuralCodeRuntime.deadCodeCandidates(args)), permission };
+      recordSession(args.session_id, "structural_code_inspections", result);
+      return toolResult(formatStructuralCode("vnem_tools_dead_code_candidates", result), { dead_code_candidates: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_refactor_impact_analyze",
+    {
+      title: "Analyze Structural Refactor Impact",
+      description: "Trace reverse static-import impact from changed files or a symbol into files, import paths, symbols, routes, components, package boundaries, and affected tests with dynamic/runtime limits.",
+      inputSchema: { root: z.string().default("."), changed_files: z.array(z.string()).max(500).default([]), symbol: z.string().default(""), max_depth: z.number().int().min(1).max(20).default(6), refresh: z.boolean().default(false), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const permission = enforceActionPolicy("search_code", { ...args, dry_run: false, proposed_action: "analyze static structural refactor impact" });
+      const result = { ...(await structuralCodeRuntime.impactAnalyze(args)), permission };
+      recordSession(args.session_id, "structural_code_inspections", result);
+      return toolResult(formatStructuralCode("vnem_tools_refactor_impact_analyze", result), { refactor_impact_analysis: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_structural_patch_validate",
+    {
+      title: "Validate Structural Patch State",
+      description: "Reparse changed code and report syntax errors, unresolved relative imports, duplicate explicit exports, affected tests, and available verification scripts without executing project code.",
+      inputSchema: { root: z.string().default("."), changed_files: z.array(z.string()).max(500).default([]), verify_scripts: z.array(z.enum(["test", "validate", "typecheck", "lint", "check"])).max(5).default(["test"]), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const permission = enforceActionPolicy("search_code", { ...args, dry_run: false, proposed_action: "validate structural patch state without executing tests" });
+      const result = { ...(await structuralCodeRuntime.validatePatch(args)), permission };
+      recordSession(args.session_id, "structural_code_inspections", result);
+      return toolResult(formatStructuralCode("vnem_tools_structural_patch_validate", result), { structural_patch_validation: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_refactor_apply_verify",
+    {
+      title: "Apply Verify and Auto Rollback Refactor",
+      description: "Dry-run or apply one fresh high-confidence rename preview with staged regular-file writes, stale-hash checks, reviewed project tests, verification worktree-delta detection, post-reference proof, transaction evidence, and automatic all-or-rollback behavior.",
+      inputSchema: { preview_id: z.string().min(1), dry_run: z.boolean().default(true), approved: z.boolean().default(false), approval_note: z.string().default(""), allow_uncertain: z.boolean().default(false), timeout_ms: z.number().int().min(5000).max(300000).default(120000), session_id: z.string().optional() },
+      annotations: ACTION_TOOL
+    },
+    async (args) => withToolErrors(async () => {
+      const patchPermission = args.dry_run !== false ? actionPolicyPreview({ action_type: "apply_patch", proposed_action: `apply refactor preview ${args.preview_id}` }) : enforceActionPolicy("apply_patch", { ...args, proposed_action: `apply refactor preview ${args.preview_id}` });
+      const testPermission = args.dry_run !== false ? actionPolicyPreview({ action_type: "run_test", proposed_action: `verify refactor preview ${args.preview_id}` }) : enforceActionPolicy("run_test", { ...args, proposed_action: `verify refactor preview ${args.preview_id}` });
+      const result = { ...(await structuralCodeRuntime.applyRefactor(args)), permission: { patch: patchPermission, verification: testPermission } };
+      if (result.executed) recordSession(args.session_id, "structural_refactor_transactions", result);
+      return toolResult(formatStructuralCode("vnem_tools_refactor_apply_verify", result), { refactor_apply: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_refactor_transaction_rollback",
+    {
+      title: "Rollback Verified Structural Refactor Transaction",
+      description: "Dry-run or restore exact pre-refactor bytes for one completed project-bound transaction after current-hash and backup-path validation, then optionally rerun its reviewed verification scripts.",
+      inputSchema: { root: z.string().default("."), transaction_id: z.string().min(1), dry_run: z.boolean().default(true), approved: z.boolean().default(false), approval_note: z.string().default(""), verify: z.boolean().default(true), timeout_ms: z.number().int().min(5000).max(300000).default(120000), session_id: z.string().optional() },
+      annotations: ACTION_TOOL
+    },
+    async (args) => withToolErrors(async () => {
+      const patchPermission = args.dry_run !== false ? actionPolicyPreview({ action_type: "apply_patch", proposed_action: `rollback refactor transaction ${args.transaction_id}` }) : enforceActionPolicy("apply_patch", { ...args, proposed_action: `rollback refactor transaction ${args.transaction_id}` });
+      const testPermission = !args.verify || args.dry_run !== false ? actionPolicyPreview({ action_type: "run_test", proposed_action: `verify rollback ${args.transaction_id}` }) : enforceActionPolicy("run_test", { ...args, proposed_action: `verify rollback ${args.transaction_id}` });
+      const result = { ...(await structuralCodeRuntime.rollback(args)), permission: { patch: patchPermission, verification: testPermission } };
+      if (result.executed) recordSession(args.session_id, "structural_refactor_transactions", result);
+      return toolResult(formatStructuralCode("vnem_tools_refactor_transaction_rollback", result), { refactor_rollback: result });
+    })
+  );
+
+  mcpServer.registerTool(
     "vnem_tools_test_system_inspect",
     {
       title: "Inspect Project Test and CI System",
@@ -2900,6 +3091,12 @@ function toolReliabilityFor(name, descriptor = {}) {
     unsafe = ["A static risk indicator proves malware or legal incompatibility", "A stale or single-source advisory report proves no vulnerabilities", "Package lifecycle scripts, global installs, publishing, or unreviewed downloaded binaries executed", "Non-npm mutation has rollback support"];
     next = "Inspect graph/risk/advisory evidence, create an exact hash-bound plan, use approved-installs with explicit approval, and verify the transaction plus rollback evidence.";
     known = ["Automatic mutation is npm-only", "Lifecycle scripts and registry credentials are disabled", "Current advisories require an approved fresh source", "Binary-running verification scripts need separate explicit approval"];
+  } else if (["structural_code", "structural_refactoring"].includes(group)) {
+    level = "local_tested";
+    safe = ["Babel AST and lexical-binding analysis, explicit heuristic confidence, incremental persistence, hash-bound rename previews, focused verification, post-reference checks, and transaction rollback are tested through real local stdio MCP."];
+    unsafe = ["Heuristic-language results are compiler-grade", "Dynamic/reflection/generated/external consumers were exhaustively resolved", "Move or extract automatic apply is supported", "A dead-code candidate is safe to delete", "Cross-file filesystem atomicity exists"];
+    next = "Build the index, inspect exact references and impact, preview the refactor, then use approved apply only when confidence is high and verify the transaction plus rollback evidence.";
+    known = ["Automatic apply is limited to Babel-resolved rename", "Public exports require acknowledgement", "Graph and reference bounds block exact apply when reached", "Tests and type/compiler checks remain project-specific"];
   } else if (["api_request", "search", "research_sources", "source_ingestion", "browsing_risk", "research_matrix"].includes(group)) {
     level = descriptor.network ? "dry_run_tested" : "local_tested";
     safe = ["Planning, bounded local/source evidence, or configured-provider behavior is tested without fake current/live claims."];
@@ -2916,7 +3113,7 @@ function toolReliabilityFor(name, descriptor = {}) {
 }
 function addReliabilityFields(tool) {
   const reliability = toolReliabilityFor(tool.name, tool);
-  return { ...tool, high_power: tool.high_power ?? Boolean(tool.mutation || tool.network || tool.requires_approval || ["cloudflare_control", "github_autonomy", "patching", "rollback", "project_tasks", "dev_server", "browser_proof", "ui_web_quality", "dependency_security", "api_request", "local_git", "commands"].includes(tool.capability_group)), mutation_capable: Boolean(tool.mutation), reliability_level: reliability.level, tested_with: reliability.tested_with, safe_to_claim: reliability.safe_to_claim, unsafe_to_claim: reliability.unsafe_to_claim, next_validation_step: reliability.next_validation_step, known_limits: reliability.known_limits, tool_reliability: reliability };
+  return { ...tool, high_power: tool.high_power ?? Boolean(tool.mutation || tool.network || tool.requires_approval || ["cloudflare_control", "github_autonomy", "structural_refactoring", "patching", "rollback", "project_tasks", "dev_server", "browser_proof", "ui_web_quality", "dependency_security", "api_request", "local_git", "commands"].includes(tool.capability_group)), mutation_capable: Boolean(tool.mutation), reliability_level: reliability.level, tested_with: reliability.tested_with, safe_to_claim: reliability.safe_to_claim, unsafe_to_claim: reliability.unsafe_to_claim, next_validation_step: reliability.next_validation_step, known_limits: reliability.known_limits, tool_reliability: reliability };
 }
 function buildReliabilityCatalog(args = {}) { const tools = runtimeToolCatalog().filter((tool) => !args.capability_group || tool.capability_group === args.capability_group); return { generated_at: new Date().toISOString(), permission_profile: activePermissionProfile.profile_name, tools }; }
 function formatReliabilityCatalog(catalog) { return [`vnem_tools_reliability_catalog: ${catalog.tools.length} tool(s)`, `profile=${catalog.permission_profile}`, `levels=${[...new Set(catalog.tools.map((tool) => tool.reliability_level))].join(",")}`].join("\n"); }
@@ -3039,6 +3236,7 @@ function toolsVisibilityDoctor(args = {}) {
     windows_local_proof: ["vnem_tools_windows_system_snapshot", "vnem_tools_powershell_command_plan", "vnem_tools_windows_path_inspect", "vnem_tools_process_inspect", "vnem_tools_port_inspect", "vnem_tools_windows_event_log_read", "vnem_tools_windows_change_plan"].every((tool) => names.has(tool)),
     game_domain_proof: ["vnem_tools_game_adapter_catalog", "vnem_tools_game_project_inspect", "vnem_tools_game_config_audit", "vnem_tools_mod_compatibility_analyze", "vnem_tools_mod_profile_compare", "vnem_tools_game_project_validate", "vnem_tools_mod_backup_create", "vnem_tools_mod_backup_restore", "vnem_tools_roblox_project_inspect", "vnem_tools_luau_symbol_map"].every((tool) => names.has(tool)),
     dependency_security_proof: ["vnem_tools_dependency_inventory", "vnem_tools_dependency_risk_audit", "vnem_tools_dependency_advisory_audit", "vnem_tools_dependency_change_analyze", "vnem_tools_dependency_upgrade_plan", "vnem_tools_dependency_install_apply", "vnem_tools_dependency_transaction_rollback"].every((tool) => names.has(tool)),
+    structural_refactoring_proof: ["vnem_tools_structural_index_build", "vnem_tools_structural_graph_query", "vnem_tools_exact_symbol_references", "vnem_tools_refactor_rename_preview", "vnem_tools_refactor_move_preview", "vnem_tools_refactor_extract_plan", "vnem_tools_dead_code_candidates", "vnem_tools_refactor_impact_analyze", "vnem_tools_structural_patch_validate", "vnem_tools_refactor_apply_verify", "vnem_tools_refactor_transaction_rollback"].every((tool) => names.has(tool)),
     adoption_diagnostics: entrypoints.every((tool) => names.has(tool))
   };
   const weak = toolsWeakAdoptionDescriptions(catalog);
@@ -3253,9 +3451,11 @@ function toolsCapabilityRouter(args = {}) {
   const rawTools = [];
   const unavailableCapabilities = [];
 
-  const orderedCategories = taskType.includes("implementation") && categories.includes("coding_implementation")
-    ? ["coding_implementation", ...categories.filter((category) => category !== "coding_implementation")]
-    : categories;
+  const orderedCategories = categories.includes("structural_refactoring")
+    ? ["structural_refactoring", ...categories.filter((category) => category !== "structural_refactoring")]
+    : (localOnly || taskType.includes("implementation")) && categories.includes("coding_implementation")
+      ? ["coding_implementation", ...categories.filter((category) => category !== "coding_implementation")]
+      : categories;
   for (const category of orderedCategories) {
     for (const tool of routeDefs[category]?.tools || []) rawTools.push(tool);
   }
@@ -3373,6 +3573,7 @@ function toolsTaskCategories(text, taskType, localOnly) {
   if (/\b(permission profile|safety profile|scoped grant|grant access|power level|hard block)\b/.test(text)) add("permission_control");
   if (taskType.includes("mcp") || /\b(mcp|tool audit|surface audit|registration|handler|catalog|manifest|readiness)\b/.test(text)) add("mcp_tool_audit");
   if (taskType.includes("code_intelligence") || /\b(symbol|function|class|handler|coverage|impact trace|source impact|code intelligence)\b/.test(text)) add("code_intelligence");
+  if (taskType.includes("refactor") || /\b(refactor|rename symbol|move module|extract function|extract module|dead code|exact references|structural graph|blast radius)\b/.test(text)) add("structural_refactoring");
   if (!localOnly && (taskType.includes("publish") || /\b(github|gh|pr|pull request|push|remote sha|actions|ci|merge|publish|review threads?|release proof|repo page)\b/.test(text))) add("github_pr_ci_proof");
   if (taskType.includes("cloudflare") || /\b(cloudflare|pages|workers|dns|zone|wrangler|deploy)\b/.test(text)) add("cloudflare_deploy_control");
   if (taskType.includes("browser") || /\b(browser|localhost|screenshot|ui|visual|viewport|responsive|dom|a11y)\b/.test(text)) add("browser_ui_verification");
@@ -3390,7 +3591,7 @@ function toolsTaskCategories(text, taskType, localOnly) {
 
 function toolsRouteDefinitions() {
   return {
-    coding_implementation: { why: "Implementation needs repo orientation, structural search, exact patching, focused verification, and evidence.", tools: ["vnem_tools_repo_deep_map", "vnem_tools_structural_code_search", "vnem_tools_patch_target_finder", "vnem_tools_exact_patch", "vnem_tools_test_selection_plan", "vnem_tools_verification_loop", "vnem_tools_evidence_pack"] },
+    coding_implementation: { why: "Implementation needs repo orientation, structural search, exact patching, focused verification, and evidence.", tools: ["vnem_tools_repo_deep_map", "vnem_tools_structural_graph_query", "vnem_tools_structural_code_search", "vnem_tools_patch_target_finder", "vnem_tools_exact_patch", "vnem_tools_test_selection_plan", "vnem_tools_verification_loop", "vnem_tools_evidence_pack"] },
     debugging_failing_tests: { why: "Failing checks need failure triage, exact target evidence, structural search, focused test selection, bounded reruns, and evidence before any patch is chosen.", tools: ["vnem_tools_failure_triage", "vnem_tools_patch_target_finder", "vnem_tools_structural_code_search", "vnem_tools_test_selection_plan", "vnem_tools_verification_loop", "vnem_tools_evidence_pack"] },
     repo_inspection: { why: "Repo inspection needs a bounded repo map and ranked next actions.", tools: ["vnem_tools_repo_deep_map", "vnem_tools_next_action_ranker", "vnem_tools_code_symbol_map"] },
     patch_targeting: { why: "Patch targeting needs structural and symbol evidence plus impact tracing.", tools: ["vnem_tools_structural_code_search", "vnem_tools_patch_target_finder", "vnem_tools_code_symbol_map", "vnem_tools_source_impact_trace"] },
@@ -3400,7 +3601,8 @@ function toolsRouteDefinitions() {
     precision_verification: { why: "Implementation proof needs bounded stateful commands and persistent red, green, or check loops.", tools: ["vnem_tools_verification_loop", "vnem_tools_terminal_session", "vnem_tools_ephemeral_script"] },
     permission_control: { why: "Permission changes need a narrow request, exact acknowledgment, scope evaluation, doctor proof, and revocation path.", tools: ["vnem_tools_permission_evaluate", "vnem_tools_permission_request", "vnem_tools_permission_grant", "vnem_tools_permission_doctor", "vnem_tools_permission_revoke"] },
     mcp_tool_audit: { why: "MCP tool audit needs surface, coverage, catalog/readiness, and control-character checks.", tools: ["vnem_tools_mcp_surface_audit", "vnem_tools_tool_test_coverage_map", "vnem_tools_source_control_character_guard"] },
-    code_intelligence: { why: "Code intelligence needs symbols, MCP surface, patch targets, coverage, and source impact.", tools: ["vnem_tools_code_symbol_map", "vnem_tools_mcp_surface_audit", "vnem_tools_patch_target_finder", "vnem_tools_tool_test_coverage_map", "vnem_tools_source_impact_trace"] },
+    code_intelligence: { why: "Code intelligence needs an incremental structural graph, exact bindings, symbols, MCP surface, patch targets, coverage, and source impact.", tools: ["vnem_tools_structural_index_build", "vnem_tools_structural_graph_query", "vnem_tools_exact_symbol_references", "vnem_tools_code_symbol_map", "vnem_tools_mcp_surface_audit", "vnem_tools_patch_target_finder", "vnem_tools_tool_test_coverage_map", "vnem_tools_source_impact_trace"] },
+    structural_refactoring: { why: "Refactoring needs AST/binding evidence, hash-bound previews, collision and impact analysis, focused verification, post-reference proof, and exact rollback.", tools: ["vnem_tools_structural_index_build", "vnem_tools_exact_symbol_references", "vnem_tools_refactor_impact_analyze", "vnem_tools_refactor_rename_preview", "vnem_tools_refactor_move_preview", "vnem_tools_refactor_extract_plan", "vnem_tools_structural_patch_validate", "vnem_tools_refactor_apply_verify", "vnem_tools_refactor_transaction_rollback"] },
     github_pr_ci_proof: { why: "Remote work needs bounded diff/review evidence, exact local/remote/PR/Actions SHA proof, job/step visibility, a PR gate, and repair guidance.", tools: ["vnem_tools_github_status", "vnem_tools_github_diff_review", "vnem_tools_github_remote_proof", "vnem_tools_github_actions_status", "vnem_tools_github_actions_run_inspect", "vnem_tools_pr_quality_gate", "vnem_tools_evidence_pack"] },
     cloudflare_deploy_control: { why: "Cloudflare work needs auth/status, deploy planning, verification, and guarded mutation tools only when approved.", tools: ["vnem_tools_cloudflare_status", "vnem_tools_cloudflare_auth_plan", "vnem_tools_cloudflare_pages_deploy_plan", "vnem_tools_cloudflare_workers_deploy_plan", "vnem_tools_cloudflare_deploy_verify"] },
     browser_ui_verification: { why: "UI/browser claims need planned local interaction proof, runtime evidence, before/after comparison, and an audit of evidence limits.", tools: ["vnem_tools_browser_evidence_plan", "vnem_tools_browser_interaction_run", "vnem_tools_browser_evidence_compare", "vnem_tools_ui_surface_review", "vnem_tools_ui_evidence_audit", "vnem_tools_browser_evidence_run"] },
@@ -3430,6 +3632,9 @@ function toolsToolReason(toolName, categories) {
   if (toolName.includes("failure_triage")) return "classify failure and choose smallest rerun";
   if (toolName.includes("repo_deep_map")) return "orient on repo state and scripts";
   if (toolName.includes("code_symbol_map")) return "find symbols, handlers, exports, and code shape";
+  if (toolName.includes("structural_index") || toolName.includes("structural_graph")) return "build or query parser-backed structural relationships";
+  if (toolName.includes("exact_symbol_references")) return "resolve Babel lexical bindings and static ESM consumers";
+  if (toolName.includes("refactor_")) return "preview, analyze, verify, or rollback one confidence-gated structural refactor";
   if (toolName.includes("patch_target_finder")) return "find exact source/test/readiness patch targets";
   if (toolName.includes("structural_code_search")) return "find conceptually relevant code and language-level symbols";
   if (toolName.includes("exact_patch") || toolName.includes("unified_diff") || toolName.includes("patch_transaction")) return "verify and apply surgical changes with preconditions and rollback evidence";
@@ -3461,6 +3666,7 @@ function toolsRequiredInputsForTool(toolName, categories) {
   if (toolName.includes("browser")) inputs.push("app_url, file_path, or route");
   if (toolName.includes("game") || toolName.includes("mod_") || toolName.includes("roblox") || toolName.includes("luau")) inputs.push("exact game/tool version, platform, loader, and project root when known");
   if (toolName.includes("dependency")) inputs.push("package manager, owning manifest/lockfile, exact package/version, and approval scope when mutation is requested");
+  if (toolName.includes("refactor") || toolName.includes("structural_")) inputs.push("project root plus exact file/symbol/change scope");
   if (categories.includes("evidence_proof_pack")) inputs.push("commands_run, tests_passed, tests_failed");
   return uniqueToolNames(inputs);
 }
@@ -3473,6 +3679,7 @@ function toolsMissingInputs(categories, context, localOnly) {
   if (categories.includes("browser_ui_verification") && !context.app_url && !context.file_path) missing.push("app_url, file_path, or route");
   if (categories.includes("game_modding_toolchain") && !context.game_version) missing.push("game/tool version and loader/toolchain version when runtime compatibility matters");
   if (categories.includes("dependency_security") && !context.package_manager) missing.push("package manager and owning lockfile when mutation or exact resolution matters");
+  if (categories.includes("structural_refactoring") && !context.changed_files && !context.symbol) missing.push("exact symbol or changed_files for refactor scope");
   return uniqueToolNames(missing);
 }
 
@@ -3484,6 +3691,7 @@ function toolsChecksForCategories(categories, changedFiles = []) {
   if (categories.includes("browser_ui_verification")) checks.push("collect local browser evidence or report browser unavailable");
   if (categories.includes("game_modding_toolchain")) checks.push("run vnem_tools_game_project_validate", "run the exact game/loader project check or report it unproven");
   if (categories.includes("dependency_security")) checks.push("run vnem_tools_dependency_inventory", "verify lockfile plus focused test/build scripts", "prove rollback or report mutation unperformed");
+  if (categories.includes("structural_refactoring")) checks.push("run vnem_tools_structural_patch_validate", "run focused refactor regression", "prove post-reference state and rollback hashes");
   if (changedFiles.some((file) => /package\.json|scripts\//.test(String(file)))) checks.push("npm.cmd run validate");
   return uniqueToolNames(checks).slice(0, 8);
 }
@@ -3562,6 +3770,7 @@ function statusObject() {
     project_scan_policy: { tool: "vnem_tools_project_scan", allowed_roots_only: true, skips_secrets: true, reads_package_json_only_for_scripts_and_frameworks: true },
     app_engineering_policy: { tools: ["vnem_tools_app_inspect", "vnem_tools_app_vertical_slice_plan", "vnem_tools_app_vertical_slice_apply", "vnem_tools_app_acceptance_run", "vnem_tools_app_transaction_rollback"], adapters: { "vite-react-node": "verified_generation_and_execution", "static-node": "verified_generation_and_execution", "next-style": "inspection_and_plan_only", generic: "inspection_only" }, marker_required_for_automatic_mutation: true, dry_run_default: true, approval_required_for_apply_acceptance_rollback: true, hash_preconditions: true, automatic_failure_rollback: true, cross_file_filesystem_atomicity_claimed: false, browser_scope: "dedicated-profile localhost Chromium only; no login/cookies/CAPTCHA", proof: ["focused tests", "build", "localhost server", "desktop user path", "mobile render", "console", "network", "screenshots"] },
     dependency_security_policy: { tools: ["vnem_tools_dependency_inventory", "vnem_tools_dependency_risk_audit", "vnem_tools_dependency_advisory_audit", "vnem_tools_dependency_change_analyze", "vnem_tools_dependency_upgrade_plan", "vnem_tools_dependency_install_apply", "vnem_tools_dependency_transaction_rollback"], inspection_ecosystems: ["npm", "pnpm", "yarn", "python", "cargo", "go"], npm_lockfile_versions: [1, 2, 3], mutation_adapter: "npm only", dry_run_default: true, approved_installs_or_scoped_grant_required: true, existing_npm_lock_required_for_mutation: true, exact_registry_versions_only: true, lifecycle_scripts_disabled: true, recursive_verification_script_review: true, ephemeral_user_and_global_npm_configs: true, allowlisted_non_secret_environment_only: true, project_npmrc_blocks_live_commands: true, publishing_and_global_installs_blocked: true, timeout_process_tree_termination: true, automatic_failure_rollback: true, explicit_rollback_hash_preconditions: true, downloaded_binary_execution_requires_separate_review_and_approval: true },
+    structural_code_policy: { tools: ["vnem_tools_structural_index_build", "vnem_tools_structural_graph_query", "vnem_tools_exact_symbol_references", "vnem_tools_refactor_rename_preview", "vnem_tools_refactor_move_preview", "vnem_tools_refactor_extract_plan", "vnem_tools_dead_code_candidates", "vnem_tools_refactor_impact_analyze", "vnem_tools_structural_patch_validate", "vnem_tools_refactor_apply_verify", "vnem_tools_refactor_transaction_rollback"], ast_languages: ["javascript", "typescript", "jsx", "tsx"], ast_engine: "@babel/parser plus @babel/traverse 7.29.7", heuristic_languages: ["python", "go", "rust", "java", "csharp", "kotlin", "c", "cpp", "lua", "luau", "ruby", "php"], persisted_incremental_index: true, generated_and_secret_paths_skipped: true, graph_bounds_reported: true, automatic_apply_scope: "high-confidence lexical-binding rename only", move_and_extract_apply_supported: false, public_export_acknowledgement_required: true, stale_hash_preconditions: true, regular_file_and_link_checks: true, reviewed_project_verification_required: true, verification_worktree_delta_blocked: true, post_reference_proof: true, automatic_failure_rollback: true, explicit_rollback_hash_preconditions: true, cross_file_filesystem_atomicity_claimed: false },
     project_task_policy: { tool: "vnem_tools_run_project_task", dry_run_default: true, approval_required: true, package_json_scripts_only: true, package_install_publish_deploy_blocked: true },
     dev_server_policy: { tools: ["vnem_tools_start_dev_server", "vnem_tools_stop_dev_server", "vnem_tools_list_dev_servers"], dry_run_default: true, approval_required: true, local_host_only: true, port_range: "3000-9999", registry: "in-memory per MCP process" },
     session_evidence_policy: { tools: ["vnem_tools_start_session", "vnem_tools_finish_session"], writes_single_json_proof_pack: true, secrets_redacted: true },
@@ -3789,7 +3998,7 @@ async function searchAllowedFiles(args) {
   return { root: root.relativePath || ".", query: args.query, results, skipped_policy: skippedPolicy() };
 }
 
-const TOOL_CAPABILITY_GROUPS = ["permissions", "filesystem", "project_intelligence", "app_engineering", "repo_power", "adoption_reliability", "patching", "rollback", "commands", "project_tasks", "dev_server", "browser_proof", "browser_intelligence", "ui_web_quality", "windows_local", "game_domain", "dependency_security", "api_request", "search", "research_sources", "source_quality", "browsing_risk", "research_matrix", "source_ingestion", "debugging_code_quality", "session_evidence", "local_git", "github_autonomy", "status_readiness", "cloudflare_control", "tools_quality", "tool_intelligence"];
+const TOOL_CAPABILITY_GROUPS = ["permissions", "filesystem", "project_intelligence", "app_engineering", "repo_power", "adoption_reliability", "structural_code", "structural_refactoring", "patching", "rollback", "commands", "project_tasks", "dev_server", "browser_proof", "browser_intelligence", "ui_web_quality", "windows_local", "game_domain", "dependency_security", "api_request", "search", "research_sources", "source_quality", "browsing_risk", "research_matrix", "source_ingestion", "debugging_code_quality", "session_evidence", "local_git", "github_autonomy", "status_readiness", "cloudflare_control", "tools_quality", "tool_intelligence"];
 
 function buildToolCatalog() {
   const commonUnsafe = ["secret reading/dumping", "outside-root access", "arbitrary shell", "package installs", "git push", "deployment", "Giga MCP"];
@@ -3932,6 +4141,17 @@ function buildToolCatalog() {
     mk("vnem_tools_dependency_upgrade_plan", "dependency_security", { description: "Create a hash-bound exact-version npm install/update plan from an existing parsed npm lock baseline with affected tests, script-disabled commands, credential boundaries, and rollback requirements.", typical_use_cases: ["review npm upgrade", "prepare approved install transaction"], unsafe_actions_blocked: [...commonUnsafe, "lockfile-less mutation", "floating tags/ranges", "global install", "publishing"] }),
     mk("vnem_tools_dependency_install_apply", "dependency_security", { read_only: false, mutation: true, requires_approval: true, dry_run_default: true, description: "Apply a fresh reviewed npm plan with lifecycle scripts disabled, ephemeral credential-free npm configs, an allowlisted environment, recursive verification-script review, process-tree timeout cleanup, lock/build verification, and automatic failure rollback.", typical_use_cases: ["approved exact npm install", "verified dependency upgrade"], unsafe_actions_blocked: [...commonUnsafe.filter((item) => item !== "package installs"), "package publishing", "global install", "lifecycle scripts", "nested unsafe npm scripts", "unreviewed downloaded binary execution", "project .npmrc credential use"] }),
     mk("vnem_tools_dependency_transaction_rollback", "dependency_security", { read_only: false, mutation: true, requires_approval: true, dry_run_default: true, description: "Restore exact pre-install manifest/lock bytes after current-hash checks and restore npm state with lifecycle scripts disabled.", typical_use_cases: ["rollback dependency transaction", "verify install reversibility"], unsafe_actions_blocked: [...commonUnsafe.filter((item) => item !== "package installs"), "stale overwrite", "cross-project transaction", "lifecycle scripts"] }),
+    mk("vnem_tools_structural_index_build", "structural_code", { description: "Build a persisted incremental Babel AST/binding graph with explicit lower-confidence adapters and generated/secret skips.", typical_use_cases: ["structural repo map", "incremental code graph refresh"], unsafe_actions_blocked: [...commonUnsafe, "source execution", "compiler-grade claims for heuristic languages"] }),
+    mk("vnem_tools_structural_graph_query", "structural_code", { description: "Query bounded symbols, imports, calls, routes, components, APIs, tests, and package boundaries with confidence metadata.", typical_use_cases: ["find structural relationships", "inspect route/component/package graph"] }),
+    mk("vnem_tools_exact_symbol_references", "structural_code", { description: "Resolve Babel lexical-binding and static-ESM references while preserving dynamic, reflection, generated, type-system, and external-consumer limits.", typical_use_cases: ["exact JS/TS references", "rename risk review"] }),
+    mk("vnem_tools_refactor_rename_preview", "structural_refactoring", { description: "Create a hash-bound binding-aware rename preview with collisions, public API acknowledgement, affected tests, and uncertainty gates.", typical_use_cases: ["safe symbol rename plan", "review exact cross-file edits"], related_tools: ["vnem_tools_refactor_apply_verify"] }),
+    mk("vnem_tools_refactor_move_preview", "structural_refactoring", { description: "Preview module move and relative-import rewrites with package-boundary and unresolved-consumer risk; no automatic apply.", typical_use_cases: ["module move plan", "package-boundary review"] }),
+    mk("vnem_tools_refactor_extract_plan", "structural_refactoring", { description: "Plan line-range extraction with symbols, inputs, outputs, calls, tests, and closure/runtime uncertainty; no automatic apply.", typical_use_cases: ["function extraction plan", "module extraction review"] }),
+    mk("vnem_tools_dead_code_candidates", "structural_code", { description: "Report static dead-code candidates with confidence and explicit must-not-delete boundaries.", typical_use_cases: ["dead-code review", "cleanup candidate discovery"], unsafe_actions_blocked: [...commonUnsafe, "automatic deletion", "runtime reachability claims"] }),
+    mk("vnem_tools_refactor_impact_analyze", "structural_refactoring", { description: "Trace reverse static-import impact into files, symbols, routes, components, packages, and affected tests.", typical_use_cases: ["refactor blast-radius analysis", "focused test selection"] }),
+    mk("vnem_tools_structural_patch_validate", "structural_refactoring", { description: "Reparse patch state and detect syntax, unresolved relative import, and duplicate export failures without executing project code.", typical_use_cases: ["post-patch structural check", "pre-test validation"] }),
+    mk("vnem_tools_refactor_apply_verify", "structural_refactoring", { read_only: false, mutation: true, requires_approval: true, dry_run_default: true, description: "Apply one high-confidence rename with stale hashes, staged writes, reviewed tests, post-reference proof, evidence, and automatic rollback.", typical_use_cases: ["approved verified rename"], related_tools: ["vnem_tools_refactor_rename_preview", "vnem_tools_refactor_transaction_rollback"], unsafe_actions_blocked: [...commonUnsafe, "medium-confidence apply", "stale preview", "move/extract apply", "unverified partial write"] }),
+    mk("vnem_tools_refactor_transaction_rollback", "structural_refactoring", { read_only: false, mutation: true, requires_approval: true, dry_run_default: true, description: "Restore exact pre-refactor bytes for a project-bound transaction after current-hash and backup-path checks, with optional reviewed tests.", typical_use_cases: ["rollback verified rename"], unsafe_actions_blocked: [...commonUnsafe, "stale overwrite", "cross-project rollback", "unsafe backup path"] }),
     mk("vnem_tools_ui_evidence_audit", "ui_web_quality", { description: "Audit provided UI evidence and reject unsupported visual/browser claims.", allowed_roots_required: false, evidence_logged: true, typical_use_cases: ["final UI claim audit", "responsive/a11y/state proof review"], unsafe_actions_blocked: [...commonUnsafe, "inventing browser results", "accepting code-only visual proof"] }),
     mk("vnem_tools_start_session", "session_evidence", { read_only: false, mutation: true, description: "Start session proof pack.", typical_use_cases: ["group local workflow evidence"] }),
     mk("vnem_tools_finish_session", "session_evidence", { read_only: false, mutation: true, description: "Write session proof pack.", typical_use_cases: ["final evidence summary"] }),
@@ -5922,7 +6142,7 @@ async function scanToolCoverage(root, toolNames, options = {}) {
   const testTexts = [];
   for (const file of testFiles) {
     const read = await readRepoTextFile(root, file.path, 320000);
-    if (read.text) testTexts.push({ path: file.path, text: read.text });
+    if (read.text) testTexts.push({ path: file.path, text: read.text, behavior_wrappers: behaviorCallWrappers(read.text) });
   }
   const perTool = {};
   for (const toolName of toolNames) {
@@ -5934,8 +6154,11 @@ async function scanToolCoverage(root, toolNames, options = {}) {
       if (!file.text.includes(toolName)) continue;
       mentionFiles.push(file.path);
       const behaviorRe = new RegExp(`(callTool\\s*\\(\\s*\\{[^}]*name\\s*:\\s*["']${escaped}["']|call\\s*\\(\\s*client\\s*,\\s*["']${escaped}["'])`, "s");
+      const wrapperBehaviorRe = file.behavior_wrappers.length
+        ? new RegExp(`\\b(?:${file.behavior_wrappers.map(escapeRegExp).join("|")})\\s*\\(\\s*["']${escaped}["']`)
+        : null;
       const registrationOnlyRe = new RegExp(`(listTools|tools\\.has|manifest\\.tools|includes\\s*\\(\\s*["']${escaped}["'])`, "s");
-      if (behaviorRe.test(file.text)) behaviorFiles.push(file.path);
+      if (behaviorRe.test(file.text) || wrapperBehaviorRe?.test(file.text)) behaviorFiles.push(file.path);
       else if (registrationOnlyRe.test(file.text)) registrationFiles.push(file.path);
     }
     const packageMatches = packageScripts.filter((script) => script.includes(toolName) || script.toLowerCase().includes(toolName.replace("vnem_tools_", "").replace(/_/g, "-")));
@@ -5953,6 +6176,28 @@ async function scanToolCoverage(root, toolNames, options = {}) {
     };
   }
   return { per_tool: perTool, package_scripts: packageScripts };
+}
+
+function behaviorCallWrappers(source) {
+  const text = String(source || "");
+  const declarations = [...text.matchAll(/(?:^|\n)(?:export\s+)?(?:async\s+)?function\s+([A-Za-z_$][\w$]*)\s*\(\s*name\b[^)]*\)\s*\{/g)];
+  const functions = declarations.map((match, index) => ({
+    name: match[1],
+    body: text.slice(match.index, declarations[index + 1]?.index ?? text.length)
+  }));
+  const wrappers = new Set(functions.filter((item) => /\bclient\.callTool\s*\(\s*\{\s*name\b/.test(item.body)).map((item) => item.name));
+  let changed = true;
+  while (changed && wrappers.size) {
+    changed = false;
+    const delegatedCall = new RegExp(`\\b(?:${[...wrappers].map(escapeRegExp).join("|")})\\s*\\(\\s*name\\b`);
+    for (const item of functions) {
+      if (!wrappers.has(item.name) && delegatedCall.test(item.body)) {
+        wrappers.add(item.name);
+        changed = true;
+      }
+    }
+  }
+  return [...wrappers];
 }
 
 function safeJsonParse(text) {
@@ -10416,6 +10661,21 @@ function formatGitCommit(commit) {
   return [`vnem_tools_git_commit: ${commit.committed ? "committed" : "dry-run planned"}`, `Files: ${commit.files.join(", ")}`, commit.commit_sha ? `Commit: ${commit.commit_sha}` : "No commit created."].join("\n");
 }
 
+function formatStructuralCode(name, result) {
+  return [
+    `${name}: ${result.operation_result || "completed"}`,
+    result.index_id ? `Index: ${result.index_id}` : null,
+    Number.isInteger(result.result_count) ? `Results: ${result.result_count}` : null,
+    Number.isInteger(result.reference_count) ? `References: ${result.reference_count}` : null,
+    Number.isInteger(result.edit_count) ? `Edits: ${result.edit_count}` : null,
+    result.confidence ? `Confidence: ${result.confidence}` : null,
+    result.executed === true ? "Executed: yes" : result.executed === false ? "Executed: no" : null,
+    result.transaction_id ? `Transaction: ${result.transaction_id}` : null,
+    Array.isArray(result.blockers) && result.blockers.length ? `Blockers: ${result.blockers.length}` : null,
+    Array.isArray(result.uncertainties) && result.uncertainties.length ? `Uncertainties: ${result.uncertainties.length}` : null
+  ].filter(Boolean).join("\n");
+}
+
 async function withToolErrors(fn) {
   try {
     return await fn();
@@ -10428,6 +10688,7 @@ async function withToolErrors(fn) {
     if (error instanceof GithubDevelopmentError) return errorResult(error.message, error.code, error.details);
     if (error instanceof GameDomainError) return errorResult(error.message, error.code, error.details);
     if (error instanceof DependencySecurityError) return errorResult(error.message, error.code, error.details);
+    if (error instanceof StructuralCodeError) return errorResult(error.message, error.code, error.details);
     return errorResult(error.message || String(error), "tools_unexpected_error");
   }
 }

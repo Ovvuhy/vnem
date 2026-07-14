@@ -218,8 +218,13 @@
         "scripts/test-tools-power-session-1-recovery.mjs",
         "scripts/test-tools-power-tools-1-regression.mjs"
       ],
-      "vnem_tools_entrypoint": [],
-      "vnem_tools_capability_router": [],
+      "vnem_tools_entrypoint": [
+        "scripts/test-tools-precision-subsystem.mjs"
+      ],
+      "vnem_tools_capability_router": [
+        "scripts/test-tools-giga-structural-code.mjs",
+        "scripts/test-tools-scoped-permissions.mjs"
+      ],
       "vnem_tools_adoption_readiness": [],
       "vnem_tools_visibility_doctor": [],
       "vnem_tools_underuse_detector": [],
@@ -497,6 +502,39 @@
       ],
       "vnem_tools_dependency_transaction_rollback": [
         "scripts/test-tools-giga-dependency-security.mjs"
+      ],
+      "vnem_tools_structural_index_build": [
+        "scripts/test-tools-giga-structural-code.mjs"
+      ],
+      "vnem_tools_structural_graph_query": [
+        "scripts/test-tools-giga-structural-code.mjs"
+      ],
+      "vnem_tools_exact_symbol_references": [
+        "scripts/test-tools-giga-structural-code.mjs"
+      ],
+      "vnem_tools_refactor_rename_preview": [
+        "scripts/test-tools-giga-structural-code.mjs"
+      ],
+      "vnem_tools_refactor_move_preview": [
+        "scripts/test-tools-giga-structural-code.mjs"
+      ],
+      "vnem_tools_refactor_extract_plan": [
+        "scripts/test-tools-giga-structural-code.mjs"
+      ],
+      "vnem_tools_dead_code_candidates": [
+        "scripts/test-tools-giga-structural-code.mjs"
+      ],
+      "vnem_tools_refactor_impact_analyze": [
+        "scripts/test-tools-giga-structural-code.mjs"
+      ],
+      "vnem_tools_structural_patch_validate": [
+        "scripts/test-tools-giga-structural-code.mjs"
+      ],
+      "vnem_tools_refactor_apply_verify": [
+        "scripts/test-tools-giga-structural-code.mjs"
+      ],
+      "vnem_tools_refactor_transaction_rollback": [
+        "scripts/test-tools-giga-structural-code.mjs"
       ],
       "vnem_tools_test_system_inspect": [
         "scripts/test-tools-giga-testing-ci.mjs"

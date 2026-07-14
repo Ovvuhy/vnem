@@ -87,6 +87,7 @@ const MODE_DOMAINS = {
   evidence_pack: "evidence_validation",
   no_placebo: "evidence_validation",
   implementation: "repo_code",
+  refactor: "repo_code",
   terminal: "project_automation",
   project_automation: "project_automation",
   repo_inspection: "repo_code",
@@ -115,6 +116,17 @@ const TOOL_PURPOSES = {
   vnem_tools_ci_failure_diagnose: "classify workflow, job, step, command, logs, branch versus infrastructure cause, smallest fix, and rerun eligibility",
   vnem_tools_coverage_benchmark_report: "ingest real coverage and compare benchmark history without inventing missing evidence",
   vnem_tools_repo_deep_map: "map repository state and ownership before changes",
+  vnem_tools_structural_index_build: "build the incremental AST, lexical-binding, import, test, route, component, API, and package graph",
+  vnem_tools_structural_graph_query: "query parser-backed code relationships with confidence and truncation boundaries",
+  vnem_tools_exact_symbol_references: "resolve Babel lexical bindings and static ESM consumers without compiler-grade overclaiming",
+  vnem_tools_refactor_rename_preview: "create a hash-bound binding-aware rename preview with collision, uncertainty, public API, and affected-test gates",
+  vnem_tools_refactor_move_preview: "preview module and relative-import moves without unsupported automatic mutation",
+  vnem_tools_refactor_extract_plan: "plan extraction inputs, outputs, calls, tests, and closure uncertainty",
+  vnem_tools_dead_code_candidates: "report static cleanup candidates without claiming deletion safety",
+  vnem_tools_refactor_impact_analyze: "trace reverse static-import impact into code, tests, routes, components, and packages",
+  vnem_tools_structural_patch_validate: "reparse changed code and detect unresolved imports or duplicate exports before project checks",
+  vnem_tools_refactor_apply_verify: "apply only a fresh high-confidence rename with reviewed tests, post-reference proof, and automatic rollback",
+  vnem_tools_refactor_transaction_rollback: "restore exact pre-refactor bytes after stale and project-bound transaction checks",
   vnem_tools_code_symbol_map: "locate symbols and implementation boundaries",
   vnem_tools_patch_target_finder: "identify exact source and test targets",
   vnem_tools_source_impact_trace: "trace a change across callers, contracts, and regression tests",
@@ -459,7 +471,10 @@ export function coreRecommendedToolsCalls(classification, args = {}) {
     routes.push(domainTools(adapterDef, args));
   }
   const domainIds = new Set(domains.map((domain) => domain.id));
+  const repoText = `${args.user_goal || ""} ${args.task_context || ""}`;
+  const refactorIntent = domainIds.has("repo_code") && /\b(refactor|rename\b[^\n]{0,80}\b(?:symbol|function|class|variable)|move\b[^\n]{0,80}\b(?:module|file)|extract\b[^\n]{0,80}\b(?:function|module)|dead code|exact references|preserve public|without changing public)\b/i.test(repoText);
   // Keep implementation essentials ahead of evidence-only steps when the route is capped.
+  if (refactorIntent) candidates.push(...domainTools(DOMAIN_ADAPTERS.find((item) => item.id === "repo_code"), args));
   if (domainIds.has("app_engineering")) candidates.push("vnem_tools_app_inspect", "vnem_tools_app_vertical_slice_plan", "vnem_tools_repo_deep_map");
   if (domainIds.has("project_automation")) candidates.push("vnem_tools_project_automation_inspect", "vnem_tools_project_command_run", "vnem_tools_project_task_graph_plan");
   if (domainIds.has("game_modding")) {
@@ -497,7 +512,7 @@ export function coreRecommendedToolsCalls(classification, args = {}) {
       if (/rollback|restore|revert/i.test(dependencyText)) candidates.push("vnem_tools_dependency_transaction_rollback");
     }
   }
-  if (domainIds.has("repo_code")) candidates.push("vnem_tools_repo_deep_map", "vnem_tools_patch_target_finder");
+  if (domainIds.has("repo_code") && !refactorIntent) candidates.push("vnem_tools_repo_deep_map", "vnem_tools_patch_target_finder");
   if (domainIds.has("repo_code") || domainIds.has("app_engineering")) candidates.push("vnem_tools_test_selection_plan");
   // Give every material domain execution influence before filling deeper steps.
   for (let index = 0; index < routes.length; index += 1) {
@@ -640,8 +655,20 @@ function domainTools(domain, args) {
     if (/release|tag|asset/i.test(text)) return ["vnem_tools_github_status", "vnem_tools_github_release_verify", "vnem_tools_github_remote_proof", "vnem_tools_github_actions_status", "vnem_tools_pr_quality_gate"];
     if (/readme|repo page|public page|public surface/i.test(text)) return ["vnem_tools_github_status", "vnem_tools_github_public_surface_audit", "vnem_tools_github_diff_review", "vnem_tools_github_remote_proof", "vnem_tools_pr_quality_gate"];
   }
-  if (domain.id === "repo_code" && /\b(refactor|duplicated|preserve public|without changing public)\b/i.test(String(args.user_goal || ""))) {
-    return ["vnem_tools_code_symbol_map", "vnem_tools_source_impact_trace", "vnem_tools_test_selection_plan"];
+  if (domain.id === "repo_code" && /\brename\b[^\n]{0,80}\b(?:symbol|function|class|variable)\b/i.test(String(args.user_goal || ""))) {
+    return ["vnem_tools_structural_index_build", "vnem_tools_exact_symbol_references", "vnem_tools_refactor_impact_analyze", "vnem_tools_refactor_rename_preview", "vnem_tools_refactor_apply_verify", "vnem_tools_refactor_transaction_rollback"];
+  }
+  if (domain.id === "repo_code" && /\bmove\b[^\n]{0,80}\b(?:module|file)\b/i.test(String(args.user_goal || ""))) {
+    return ["vnem_tools_structural_index_build", "vnem_tools_refactor_impact_analyze", "vnem_tools_refactor_move_preview", "vnem_tools_structural_patch_validate", "vnem_tools_test_selection_plan"];
+  }
+  if (domain.id === "repo_code" && /\bextract\b[^\n]{0,80}\b(?:function|module)\b/i.test(String(args.user_goal || ""))) {
+    return ["vnem_tools_structural_index_build", "vnem_tools_exact_symbol_references", "vnem_tools_refactor_extract_plan", "vnem_tools_refactor_impact_analyze", "vnem_tools_structural_patch_validate", "vnem_tools_test_selection_plan"];
+  }
+  if (domain.id === "repo_code" && /\bdead code\b/i.test(String(args.user_goal || ""))) {
+    return ["vnem_tools_structural_index_build", "vnem_tools_dead_code_candidates", "vnem_tools_refactor_impact_analyze", "vnem_tools_test_selection_plan"];
+  }
+  if (domain.id === "repo_code" && /\b(refactor|duplicated|exact references|preserve public|without changing public)\b/i.test(String(args.user_goal || ""))) {
+    return ["vnem_tools_structural_index_build", "vnem_tools_structural_graph_query", "vnem_tools_exact_symbol_references", "vnem_tools_refactor_impact_analyze", "vnem_tools_structural_patch_validate", "vnem_tools_test_selection_plan"];
   }
   if (domain.id === "game_modding") {
     const text = `${args.user_goal || ""} ${args.task_context || ""}`;

@@ -115,6 +115,13 @@ try {
     "registry:check"
   ]));
   assert.equal(repositoryGraph.selected_scripts.some((script) => ["test", "test:affected", "test:full", "test:ci"].includes(script)), false);
+  const packageGraph = await repositoryRuntime.affectedGraph({ root: rootDir, changed_files: ["package.json"] });
+  assert.equal(packageGraph.selected_scripts.includes("build"), false, "VNEM build aggregate must expand before command-policy review");
+  assert.equal(packageGraph.selected_scripts.includes("giga:benchmark"), false, "affected checks must not overwrite the immutable GIGA baseline");
+  assert.ok(["validate", "generate", "dashboard:build"].every((script) => packageGraph.selected_scripts.includes(script)));
+  const capabilityGraph = await repositoryRuntime.affectedGraph({ root: rootDir, changed_files: ["scripts/vnem/giga/capability-benchmark.mjs"] });
+  assert.equal(capabilityGraph.selected_scripts.includes("giga:benchmark"), false);
+  assert.equal(capabilityGraph.selected_scripts.includes("test:giga-capability-current"), true);
   const clientBoundary = await repositoryRuntime.affectedGraph({ root: rootDir, changed_files: ["scripts/vnem/clients/setup.mjs"] });
   assert.equal(clientBoundary.selected_scripts.includes("test:clients"), false);
   assert.equal(clientBoundary.selected_scripts.includes("test:clients:setup"), true);

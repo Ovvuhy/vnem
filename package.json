@@ -34,6 +34,7 @@
     "test:tools-giga-github-development": "node scripts/test-tools-giga-github-development.mjs",
     "test:tools-giga-game-domain": "node scripts/test-tools-giga-game-domain.mjs",
     "test:tools-giga-dependency-security": "node scripts/test-tools-giga-dependency-security.mjs",
+    "test:tools-giga-structural-code": "node scripts/test-tools-giga-structural-code.mjs",
     "test:tools-giga-project-automation": "node scripts/test-tools-giga-project-automation.mjs",
     "test:tools-git-session": "node scripts/test-tools-git-session.mjs",
     "test:tools-intelligence": "node scripts/test-tools-intelligence.mjs",
@@ -123,6 +124,7 @@
     "benchmark:vnem": "node scripts/benchmark-vnem.mjs",
     "giga:audit": "node scripts/vnem/giga/repository-audit.mjs",
     "giga:benchmark": "node scripts/vnem/giga/capability-benchmark.mjs",
+    "test:giga-capability-current": "node scripts/vnem/giga/capability-benchmark.mjs --label=current --output=.tmp/giga-capability-current.json",
     "giga:performance": "node scripts/vnem/giga/performance-baseline.mjs",
     "giga:record-full-test": "node scripts/vnem/giga/record-full-test.mjs",
     "giga:phase7-benchmark": "node scripts/test-tools-giga-app-engineering.mjs --benchmark-output=.vnem/giga-evolution/phase-7/execution-benchmark.json",
@@ -303,9 +305,12 @@
     "giga:phase13-benchmark": "node scripts/test-tools-giga-game-domain.mjs --benchmark-output=.vnem/giga-evolution/phase-13/game-domain-benchmark.json",
     "giga:phase14-benchmark": "node scripts/test-tools-giga-dependency-security.mjs --benchmark-output=.vnem/giga-evolution/phase-14/dependency-security-benchmark.json",
     "giga:phase14-live-advisory": "node scripts/test-tools-giga-dependency-security.mjs --live-advisory-output=.vnem/giga-evolution/phase-14/live-advisory.json",
+    "giga:phase15-benchmark": "node scripts/test-tools-giga-structural-code.mjs --benchmark-output=.vnem/giga-evolution/phase-15/structural-code-benchmark.json --real-repo-output=.vnem/giga-evolution/phase-15/real-repo-structural-index-benchmark.json",
     "test:clients:setup": "node scripts/test-vnem-client-setup.mjs"
   },
   "dependencies": {
+    "@babel/parser": "7.29.7",
+    "@babel/traverse": "7.29.7",
     "@iarna/toml": "^2.2.5",
     "@modelcontextprotocol/sdk": "^1.29.0",
     "@solana/wallet-adapter-base": "^0.9.27",

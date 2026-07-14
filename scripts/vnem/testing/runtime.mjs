@@ -119,6 +119,10 @@ export class TestingCiRuntime {
         for (const leaf of ["test:runtime-registry", "registry:behavior:check", "registry:check"]) add(leaf, `${reason}; expanded trusted aggregate`, evidence);
         return;
       }
+      if (isVnem && script === "build") {
+        for (const leaf of ["validate", "generate", "dashboard:build"]) add(leaf, `${reason}; expanded trusted aggregate`, evidence);
+        return;
+      }
       const current = selections.get(script) || { script, reasons: [], evidence: [] };
       current.reasons.push(reason);
       current.evidence.push(...evidence);

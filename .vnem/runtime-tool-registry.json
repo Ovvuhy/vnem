@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "source": "live MCP runtime registry status calls",
-  "total_tools": 276,
+  "total_tools": 287,
   "servers": {
     "core": {
       "schema_version": "1.0.0",
@@ -2560,7 +2560,7 @@
       "server_name": "vnem-tools",
       "version": "1.0.1",
       "valid": true,
-      "tool_count": 201,
+      "tool_count": 212,
       "alias_count": 0,
       "categories": {
         "action": 2,
@@ -2578,13 +2578,14 @@
         "cloudflare": 17,
         "code": 3,
         "coverage": 1,
+        "dead": 1,
         "dependency": 7,
         "documentation": 1,
         "download": 1,
         "entrypoint": 1,
         "ephemeral": 1,
         "evidence": 5,
-        "exact": 1,
+        "exact": 2,
         "failure": 1,
         "fetch": 1,
         "find": 1,
@@ -2614,6 +2615,7 @@
         "project": 13,
         "read": 2,
         "redirect": 1,
+        "refactor": 6,
         "registry": 1,
         "reliability": 1,
         "repo": 3,
@@ -2626,7 +2628,7 @@
         "start": 2,
         "status": 1,
         "stop": 1,
-        "structural": 1,
+        "structural": 4,
         "task": 1,
         "terminal": 1,
         "test": 3,
@@ -2643,26 +2645,18 @@
         "workspace": 1
       },
       "side_effect_classes": {
-        "destructive_mutation": 35,
+        "destructive_mutation": 37,
         "network_mutation": 17,
-        "read_only": 149
+        "read_only": 158
       },
       "validation": {
         "valid": true,
         "server_name": "vnem-tools",
         "version": "1.0.1",
-        "tool_count": 201,
+        "tool_count": 212,
         "alias_count": 0,
         "errors": [],
         "warnings": [
-          {
-            "tool": "vnem_tools_entrypoint",
-            "code": "behavior_test_reference_missing"
-          },
-          {
-            "tool": "vnem_tools_capability_router",
-            "code": "behavior_test_reference_missing"
-          },
           {
             "tool": "vnem_tools_adoption_readiness",
             "code": "behavior_test_reference_missing"
@@ -2814,7 +2808,9 @@
             "migration_guidance": null
           },
           "implementation_module": "scripts/vnem/tools/server.mjs",
-          "behavior_test_references": [],
+          "behavior_test_references": [
+            "scripts/test-tools-precision-subsystem.mjs"
+          ],
           "benchmark_scenarios": [],
           "input_schema_present": true
         },
@@ -2848,7 +2844,10 @@
             "migration_guidance": null
           },
           "implementation_module": "scripts/vnem/tools/server.mjs",
-          "behavior_test_references": [],
+          "behavior_test_references": [
+            "scripts/test-tools-giga-structural-code.mjs",
+            "scripts/test-tools-scoped-permissions.mjs"
+          ],
           "benchmark_scenarios": [],
           "input_schema_present": true
         },
@@ -5865,6 +5864,402 @@
           "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-tools-giga-dependency-security.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_structural_index_build",
+          "version": "1.0.1",
+          "title": "Build Incremental Structural Code Index",
+          "description": "Build or incrementally refresh a bounded persisted code graph. JavaScript/TypeScript use Babel ASTs plus lexical bindings; Python, Go, Rust, Java, C#, Kotlin, C/C++, Lua/Luau, Ruby, and PHP use explicitly lower-confidence adapters. Generated/minified code and secret paths are skipped.",
+          "category": "structural",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-structural-code.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_structural_graph_query",
+          "version": "1.0.1",
+          "title": "Query Structural Code Graph",
+          "description": "Query indexed symbols, static imports, calls, literal routes, components, APIs, tests, and package boundaries with parser-confidence limits preserved.",
+          "category": "structural",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-structural-code.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_exact_symbol_references",
+          "version": "1.0.1",
+          "title": "Resolve Exact Symbol References",
+          "description": "Resolve one symbol through Babel lexical bindings and static ESM imports when available, while marking heuristic, dynamic, reflective, generated, and external-consumer limits instead of claiming compiler-grade certainty.",
+          "category": "exact",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-structural-code.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_refactor_rename_preview",
+          "version": "1.0.1",
+          "title": "Preview Binding Aware Symbol Rename",
+          "description": "Create a hash-bound non-mutating rename preview for exactly one Babel-resolved binding, including static ESM consumers, collisions, textual uncertainty, affected tests, public-export acknowledgement, and apply blockers.",
+          "category": "refactor",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-structural-code.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_refactor_move_preview",
+          "version": "1.0.1",
+          "title": "Preview Module Move and Import Rewrites",
+          "description": "Preview a module move, incoming and outgoing relative-import rewrites, package-boundary changes, affected tests, and unresolved alias/dynamic-consumer risk. Automatic move apply remains intentionally disabled.",
+          "category": "refactor",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-structural-code.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_refactor_extract_plan",
+          "version": "1.0.1",
+          "title": "Plan Function or Module Extraction",
+          "description": "Plan a non-mutating extraction from an exact line range with selected symbols, inferred inputs/outputs, call sites, affected tests, confidence, and closure/runtime uncertainties.",
+          "category": "refactor",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-structural-code.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_dead_code_candidates",
+          "version": "1.0.1",
+          "title": "Find Evidence Bounded Dead Code Candidates",
+          "description": "Find static dead-code candidates with confidence and explicit must-not-delete claims. Dynamic imports, reflection, conventions, templates, generated code, and external consumers remain unproven.",
+          "category": "dead",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-structural-code.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_refactor_impact_analyze",
+          "version": "1.0.1",
+          "title": "Analyze Structural Refactor Impact",
+          "description": "Trace reverse static-import impact from changed files or a symbol into files, import paths, symbols, routes, components, package boundaries, and affected tests with dynamic/runtime limits.",
+          "category": "refactor",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-structural-code.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_structural_patch_validate",
+          "version": "1.0.1",
+          "title": "Validate Structural Patch State",
+          "description": "Reparse changed code and report syntax errors, unresolved relative imports, duplicate explicit exports, affected tests, and available verification scripts without executing project code.",
+          "category": "structural",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-structural-code.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_refactor_apply_verify",
+          "version": "1.0.1",
+          "title": "Apply Verify and Auto Rollback Refactor",
+          "description": "Dry-run or apply one fresh high-confidence rename preview with staged regular-file writes, stale-hash checks, reviewed project tests, verification worktree-delta detection, post-reference proof, transaction evidence, and automatic all-or-rollback behavior.",
+          "category": "refactor",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": true,
+            "idempotentHint": false,
+            "openWorldHint": false
+          },
+          "side_effect_class": "destructive_mutation",
+          "permission_requirements": [
+            "approved_local_mutation"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "required_redacted_record",
+          "rollback_behavior": {
+            "mode": "required_or_explicitly_not_available",
+            "guidance": "Return backup, compensating action, or explicit rollback-unavailable state in evidence."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-structural-code.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_refactor_transaction_rollback",
+          "version": "1.0.1",
+          "title": "Rollback Verified Structural Refactor Transaction",
+          "description": "Dry-run or restore exact pre-refactor bytes for one completed project-bound transaction after current-hash and backup-path validation, then optionally rerun its reviewed verification scripts.",
+          "category": "refactor",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": true,
+            "idempotentHint": false,
+            "openWorldHint": false
+          },
+          "side_effect_class": "destructive_mutation",
+          "permission_requirements": [
+            "approved_local_mutation"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "required_redacted_record",
+          "rollback_behavior": {
+            "mode": "self",
+            "guidance": "The tool is itself a rollback operation and must verify the restored state."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-structural-code.mjs"
           ],
           "benchmark_scenarios": [],
           "input_schema_present": true
@@ -10426,8 +10821,6 @@
     "valid": true,
     "errors": [],
     "tools_without_behavior_test_references": [
-      "vnem_tools_entrypoint",
-      "vnem_tools_capability_router",
       "vnem_tools_adoption_readiness",
       "vnem_tools_visibility_doctor",
       "vnem_tools_underuse_detector",

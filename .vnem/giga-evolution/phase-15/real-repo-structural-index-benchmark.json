@@ -1,0 +1,101 @@
+{
+  "phase": 15,
+  "generated_at": "2026-07-14T13:38:18.618Z",
+  "scope": "real_repository_read_only",
+  "repository": ".",
+  "architecture": {
+    "selected": "adapter architecture with @babel/parser ASTs and @babel/traverse lexical bindings for JavaScript/TypeScript plus confidence-scored structural adapters for other languages",
+    "babel_parser_version": "7.29.7",
+    "babel_traverse_version": "7.29.7",
+    "tree_sitter_evaluation": "not selected for this phase because the JS/TS grammar packages require native install hooks and materially larger grammar/runtime artifacts; adapter boundary remains compatible with a future reviewed Tree-sitter backend",
+    "compiler_grade_claim": false
+  },
+  "storage": {
+    "engine": "bounded_compact_json",
+    "path": "structural-code/indexes/e2ec2ec91915d26c56d0.json",
+    "graph_rebuilt_on_load": true,
+    "sqlite_evaluation": "not selected until repository-scale benchmarks show JSON rebuild/query latency or size is inadequate",
+    "persisted_bytes": 33347854
+  },
+  "files": 295,
+  "symbols": 15342,
+  "graph_summary": {
+    "symbols": 15342,
+    "imports": 1335,
+    "exports": 383,
+    "reexports": 0,
+    "calls": 47813,
+    "routes": 0,
+    "components": 104,
+    "apis": 5,
+    "test_source": 60,
+    "package_boundaries": 5,
+    "package_edges": 0,
+    "truncation": {
+      "symbols": false,
+      "imports": false,
+      "exports": false,
+      "calls": false,
+      "routes": false,
+      "components": false,
+      "apis": false,
+      "test_source": false,
+      "package_edges": false
+    }
+  },
+  "language_confidence": {
+    "javascript:babel_ast:ast": 295
+  },
+  "inventory": {
+    "skipped_count": 2,
+    "skipped_generated_count": 1,
+    "truncated": false
+  },
+  "incremental": {
+    "duration_ms": 554.92,
+    "reused_files": 295,
+    "reparsed_files": 0,
+    "removed_files": 0,
+    "total_files": 295,
+    "incremental": true,
+    "truncated": false
+  },
+  "timings_ms": {
+    "cold_index_ms": 4343.63,
+    "incremental_index_ms": 557.27,
+    "symbol_query_ms": 528.52,
+    "impact_query_ms": 645.52
+  },
+  "query_sample": {
+    "symbol": "StructuralCodeRuntime",
+    "result_count": 52,
+    "files": [
+      "scripts/vnem/tools/server.mjs",
+      "scripts/vnem/tools/structural-code.mjs"
+    ]
+  },
+  "impact_sample": {
+    "changed_files": [
+      "scripts/vnem/tools/structural-code.mjs"
+    ],
+    "impacted_file_count": 3,
+    "affected_tests": [],
+    "confidence": "high_for_static_imports"
+  },
+  "proof": {
+    "real_stdio_mcp": true,
+    "current_repository_indexed": true,
+    "persisted_index_reused_without_reparse": true,
+    "structural_symbol_query_returned_source": true,
+    "structural_impact_query_returned_server_importer": true,
+    "process_spawn_test_edge_inferred": false,
+    "repository_files_mutated": false,
+    "graph_truncated": false
+  },
+  "limitations": [
+    "Babel ASTs provide lexical bindings, not full compiler/type binding.",
+    "Non-JS/TS adapters are heuristic and report lower confidence.",
+    "Dynamic imports, reflection, templates, generated code, aliases, and external consumers may be absent from the graph.",
+    "The test-to-source graph does not infer a test edge when a test spawns the MCP server instead of statically importing the implementation."
+  ]
+}

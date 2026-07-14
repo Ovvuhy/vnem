@@ -8,8 +8,10 @@ import { GIGA_SCENARIOS } from "./scenarios.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
 const label = parseArg("label", "baseline");
-const outputDir = path.join(root, ".vnem", "giga-evolution", label);
-const outputPath = path.join(outputDir, "capability-benchmark.json");
+if (!/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(label)) throw new Error("Capability benchmark label contains unsupported characters.");
+const outputArg = parseArg("output", "");
+const outputPath = outputArg ? resolveOutput(outputArg) : path.join(root, ".vnem", "giga-evolution", label, "capability-benchmark.json");
+const outputDir = path.dirname(outputPath);
 const core = await connectMcp({ root, serverFile: "scripts/vnem-mcp-server.mjs", name: `giga-${label}-core` });
 const tools = await connectMcp({ root, serverFile: "scripts/vnem-tools-mcp-server.mjs", name: `giga-${label}-tools` });
 
@@ -32,7 +34,7 @@ try {
     const selected = [...new Set(combined.match(/vnem(?:_tools)?_[a-z0-9_]+/g) || [])];
     const checks = {
       correct_route: /use_vnem=yes/.test(coreCall.text) && /vnem_tools_entrypoint:/.test(toolsCall.text),
-      correct_capability_selection: item.expected_tools.some((name) => selected.includes(name)),
+      correct_capability_selection: item.expected_tools.some((name) => selected.includes(name)) && item.required_tools.every((name) => selected.includes(name)),
       actionable_output: /next=/.test(coreCall.text) && /next=/.test(toolsCall.text),
       execution_success: !coreCall.is_error && !toolsCall.is_error,
       proof_quality: /evidence|proof|checks_to_run|test_selection|safe_claim/i.test(combined),
@@ -49,6 +51,7 @@ try {
       category: item.category,
       goal: item.goal,
       expected_tools: item.expected_tools,
+      required_tools: item.required_tools,
       selected_tools: selected,
       protocol_calls: 2,
       checks,
@@ -113,6 +116,21 @@ function aggregate(results) {
     })),
     by_category: Object.fromEntries(results.map((item) => [item.category, { success: item.success, score: item.score, latency_ms: item.latency_ms }]))
   };
+}
+
+function resolveOutput(value) {
+  const candidate = path.resolve(root, value);
+  const relative = path.relative(root, candidate);
+  const allowedRoots = [path.join(root, ".tmp"), path.join(root, ".vnem", "giga-evolution")];
+  if (!relative || relative.startsWith("..") || path.isAbsolute(relative) || path.extname(candidate).toLowerCase() !== ".json" || !allowedRoots.some((allowed) => isInside(candidate, allowed))) {
+    throw new Error("Capability benchmark output must be JSON under .tmp or .vnem/giga-evolution.");
+  }
+  return candidate;
+}
+
+function isInside(candidate, rootPath) {
+  const relative = path.relative(path.resolve(rootPath), path.resolve(candidate));
+  return relative === "" || (!relative.startsWith("..") && !path.isAbsolute(relative));
 }
 
 function coreMode(mode) {

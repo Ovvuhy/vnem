@@ -16,6 +16,7 @@ export const VNEM_FULL_SUITE = Object.freeze([
   "test:tools-giga-project-automation",
   "test:tools-giga-game-domain",
   "test:tools-giga-dependency-security",
+  "test:tools-giga-structural-code",
   "test:tools-git-session",
   "test:tools-intelligence",
   "test:tools-research",
@@ -147,6 +148,7 @@ export const VNEM_FULL_SUITE = Object.freeze([
   "test:vnem-adoption-reliability-1-regression",
   "test:vnem-adoption-reliability-2-regression",
   "test:vnem-install-adoption-1-regression",
+  "test:giga-capability-current",
   "test:giga-baseline"
 ]);
 
@@ -206,7 +208,7 @@ export function stageForScript(script, tier) {
   if (["generate", "dashboard:build"].includes(script)) return 1;
   if (script === "discover:dry-run") return 3;
   if (script === "digest") return 4;
-  if (["test:giga-baseline", "test:giga-baseline:capability", "test:runtime-registry", "registry:behavior:check", "registry:check"].includes(script)) return 5;
+  if (["test:giga-capability-current", "test:giga-baseline", "test:giga-baseline:capability", "test:runtime-registry", "registry:behavior:check", "registry:check"].includes(script)) return 5;
   return 2;
 }
 

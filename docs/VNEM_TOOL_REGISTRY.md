@@ -2,9 +2,9 @@
 
 Generated from live MCP runtime registries. Do not edit this table manually.
 
-- Total tools: 276
+- Total tools: 287
 - Registry valid: true
-- Missing behavior-test references: 18
+- Missing behavior-test references: 16
 
 | Server | Tool | Category | Side effect | Permissions | Evidence | Rollback | Implementation |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -162,6 +162,17 @@ Generated from live MCP runtime registries. Do not edit this table manually.
 | tools | `vnem_tools_dependency_upgrade_plan` | dependency | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_dependency_install_apply` | install | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_dependency_transaction_rollback` | dependency | destructive_mutation | approved_local_mutation | required_redacted_record | self | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_structural_index_build` | structural | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_structural_graph_query` | structural | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_exact_symbol_references` | exact | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_refactor_rename_preview` | refactor | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_refactor_move_preview` | refactor | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_refactor_extract_plan` | refactor | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_dead_code_candidates` | dead | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_refactor_impact_analyze` | refactor | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_structural_patch_validate` | structural | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_refactor_apply_verify` | refactor | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_refactor_transaction_rollback` | refactor | destructive_mutation | approved_local_mutation | required_redacted_record | self | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_test_system_inspect` | test | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_affected_test_graph` | affected | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_test_run` | test | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/tools/server.mjs |

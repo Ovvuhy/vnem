@@ -1,0 +1,81 @@
+{
+  "phase": 15,
+  "generated_at": "2026-07-14T13:38:12.541Z",
+  "architecture": {
+    "selected": "adapter architecture with @babel/parser ASTs and @babel/traverse lexical bindings for JavaScript/TypeScript plus confidence-scored structural adapters for other languages",
+    "babel_parser_version": "7.29.7",
+    "babel_traverse_version": "7.29.7",
+    "tree_sitter_evaluation": "not selected for this phase because the JS/TS grammar packages require native install hooks and materially larger grammar/runtime artifacts; adapter boundary remains compatible with a future reviewed Tree-sitter backend",
+    "compiler_grade_claim": false
+  },
+  "storage": {
+    "engine": "bounded_compact_json",
+    "path": "structural-code/indexes/673c6f252b6b33470a99.json",
+    "graph_rebuilt_on_load": true,
+    "sqlite_evaluation": "not selected until repository-scale benchmarks show JSON rebuild/query latency or size is inadequate",
+    "persisted_bytes": 27846
+  },
+  "graph_summary": {
+    "symbols": 23,
+    "imports": 7,
+    "exports": 14,
+    "reexports": 0,
+    "calls": 15,
+    "routes": 1,
+    "components": 2,
+    "apis": 0,
+    "test_source": 2,
+    "package_boundaries": 3,
+    "package_edges": 1,
+    "truncation": {
+      "symbols": false,
+      "imports": false,
+      "exports": false,
+      "calls": false,
+      "routes": false,
+      "components": false,
+      "apis": false,
+      "test_source": false,
+      "package_edges": false
+    }
+  },
+  "language_confidence": {
+    "javascript:babel_ast:ast": 12,
+    "go:heuristic:medium": 1,
+    "python:heuristic:medium": 1,
+    "rust:heuristic:medium": 1,
+    "typescript:babel_ast:ast": 1
+  },
+  "timings_ms": {
+    "cold_index_ms": 61.04,
+    "incremental_index_ms": 12.83,
+    "verified_apply_ms": 515.26,
+    "explicit_rollback_ms": 514.08
+  },
+  "tools_exercised": [
+    "vnem_tools_structural_index_build",
+    "vnem_tools_structural_graph_query",
+    "vnem_tools_exact_symbol_references",
+    "vnem_tools_refactor_rename_preview",
+    "vnem_tools_refactor_move_preview",
+    "vnem_tools_refactor_extract_plan",
+    "vnem_tools_dead_code_candidates",
+    "vnem_tools_refactor_impact_analyze",
+    "vnem_tools_structural_patch_validate",
+    "vnem_tools_refactor_apply_verify",
+    "vnem_tools_refactor_transaction_rollback"
+  ],
+  "proof": {
+    "real_stdio_mcp": true,
+    "lexical_binding_shadow_exclusion": true,
+    "jsx_reference_resolution": true,
+    "incremental_single_file_reparse": true,
+    "generated_bundle_skipped": true,
+    "public_api_collision_shorthand_and_heuristic_gates": true,
+    "successful_apply_test_post_reference_and_explicit_rollback": true,
+    "stale_apply_and_stale_rollback_rejected": true,
+    "failed_test_automatic_rollback": true,
+    "move_extract_apply_disabled": true,
+    "core_and_tools_routing": true
+  }
+}

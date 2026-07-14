@@ -27,6 +27,8 @@ const gameDomainTestPath = rel("scripts/test-tools-giga-game-domain.mjs");
 const gameDomainModulePath = rel("scripts/vnem/tools/game-domain.mjs");
 const dependencySecurityTestPath = rel("scripts/test-tools-giga-dependency-security.mjs");
 const dependencySecurityModulePath = rel("scripts/vnem/tools/dependency-security.mjs");
+const structuralCodeTestPath = rel("scripts/test-tools-giga-structural-code.mjs");
+const structuralCodeModulePath = rel("scripts/vnem/tools/structural-code.mjs");
 const projectAutomationTestPath = rel("scripts/test-tools-giga-project-automation.mjs");
 const projectAutomationModulePath = rel("scripts/vnem/tools/project-automation.mjs");
 const projectAutomationFixturePath = rel("fixtures/project-automation/package.json");
@@ -108,9 +110,11 @@ const coreBrowserPlanningTestPath = rel("scripts/test-core-browser-research-plan
 const coreSelectionTestPath = rel("scripts/test-core-tool-selection.mjs");
 const coreEcosystemTestPath = rel("scripts/test-core-tools-tool-ecosystem.mjs");
 const coreServerPath = rel("scripts/vnem/core/server.mjs");
+const coreIntelligencePath = rel("scripts/vnem/core/intelligence.mjs");
 const cliPath = rel("scripts/vnem-cli.mjs");
 const pkg = JSON.parse(readFileSync(rel("package.json"), "utf8"));
 const server = existsSync(serverPath) ? readFileSync(serverPath, "utf8") : "";
+const coreIntelligence = existsSync(coreIntelligencePath) ? readFileSync(coreIntelligencePath, "utf8") : "";
 const test = existsSync(testPath) ? readFileSync(testPath, "utf8") : "";
 const e2eTest = existsSync(e2eTestPath) ? readFileSync(e2eTestPath, "utf8") : "";
 const browserTest = existsSync(browserTestPath) ? readFileSync(browserTestPath, "utf8") : "";
@@ -127,6 +131,8 @@ const gameDomainTest = existsSync(gameDomainTestPath) ? readFileSync(gameDomainT
 const gameDomainModule = existsSync(gameDomainModulePath) ? readFileSync(gameDomainModulePath, "utf8") : "";
 const dependencySecurityTest = existsSync(dependencySecurityTestPath) ? readFileSync(dependencySecurityTestPath, "utf8") : "";
 const dependencySecurityModule = existsSync(dependencySecurityModulePath) ? readFileSync(dependencySecurityModulePath, "utf8") : "";
+const structuralCodeTest = existsSync(structuralCodeTestPath) ? readFileSync(structuralCodeTestPath, "utf8") : "";
+const structuralCodeModule = existsSync(structuralCodeModulePath) ? readFileSync(structuralCodeModulePath, "utf8") : "";
 const projectAutomationTest = existsSync(projectAutomationTestPath) ? readFileSync(projectAutomationTestPath, "utf8") : "";
 const projectAutomationModule = existsSync(projectAutomationModulePath) ? readFileSync(projectAutomationModulePath, "utf8") : "";
 const testingCiTest = existsSync(testingCiTestPath) ? readFileSync(testingCiTestPath, "utf8") : "";
@@ -254,6 +260,17 @@ const requiredTools = [
   "vnem_tools_dependency_upgrade_plan",
   "vnem_tools_dependency_install_apply",
   "vnem_tools_dependency_transaction_rollback",
+  "vnem_tools_structural_index_build",
+  "vnem_tools_structural_graph_query",
+  "vnem_tools_exact_symbol_references",
+  "vnem_tools_refactor_rename_preview",
+  "vnem_tools_refactor_move_preview",
+  "vnem_tools_refactor_extract_plan",
+  "vnem_tools_dead_code_candidates",
+  "vnem_tools_refactor_impact_analyze",
+  "vnem_tools_structural_patch_validate",
+  "vnem_tools_refactor_apply_verify",
+  "vnem_tools_refactor_transaction_rollback",
   "vnem_tools_list_files",
   "vnem_tools_search_files",
   "vnem_tools_apply_patch",
@@ -430,6 +447,8 @@ const report = {
   game_domain_module_exists: existsSync(gameDomainModulePath),
   dependency_security_test_exists: existsSync(dependencySecurityTestPath),
   dependency_security_module_exists: existsSync(dependencySecurityModulePath),
+  structural_code_test_exists: existsSync(structuralCodeTestPath),
+  structural_code_module_exists: existsSync(structuralCodeModulePath),
   project_automation_test_exists: existsSync(projectAutomationTestPath),
   project_automation_module_exists: existsSync(projectAutomationModulePath),
   project_automation_fixture_exists: existsSync(projectAutomationFixturePath),
@@ -509,6 +528,7 @@ const report = {
     test_tools_giga_github_development: pkg.scripts?.["test:tools-giga-github-development"] === "node scripts/test-tools-giga-github-development.mjs",
     test_tools_giga_game_domain: pkg.scripts?.["test:tools-giga-game-domain"] === "node scripts/test-tools-giga-game-domain.mjs",
     test_tools_giga_dependency_security: pkg.scripts?.["test:tools-giga-dependency-security"] === "node scripts/test-tools-giga-dependency-security.mjs",
+    test_tools_giga_structural_code: pkg.scripts?.["test:tools-giga-structural-code"] === "node scripts/test-tools-giga-structural-code.mjs",
     test_tools_giga_project_automation: pkg.scripts?.["test:tools-giga-project-automation"] === "node scripts/test-tools-giga-project-automation.mjs",
     test_tools_giga_testing_ci: pkg.scripts?.["test:tools-giga-testing-ci"] === "node scripts/test-tools-giga-testing-ci.mjs",
     test_tools_git_session: pkg.scripts?.["test:tools-git-session"] === "node scripts/test-tools-git-session.mjs",
@@ -717,6 +737,18 @@ const report = {
   dependency_security_credential_boundary_status: /project_npmrc_blocked/.test(dependencySecurityModule) && /unique_ephemeral_os_temp_files/.test(dependencySecurityModule + dependencySecurityTest) && /allowlisted_names_only/.test(dependencySecurityModule) && /secret_environment_forwarded: false/.test(dependencySecurityModule),
   dependency_security_hardening_status: /parseNpmLockV1/.test(dependencySecurityModule) && /dependency_transaction_lock_required/.test(dependencySecurityModule + dependencySecurityTest) && /local_dependency_link_escape/.test(dependencySecurityModule + dependencySecurityTest) && /nested_script_cycle/.test(dependencySecurityModule) && /trusted_npm_cli_not_found/.test(dependencySecurityModule) && !/process\.env\.npm_execpath/.test(dependencySecurityModule) && /npm_execpath: hostileNpmExecpath/.test(dependencySecurityTest) && /hostile-npm-executed\.txt/.test(dependencySecurityTest) && /taskkill_process_tree/.test(dependencySecurityModule) && /timed-out npm descendant escaped process-tree cleanup/.test(dependencySecurityTest),
   dependency_security_real_mcp_proof_status: /StdioClientTransport/.test(dependencySecurityTest) && /GIGA Phase 14 dependency\/security tests passed/.test(dependencySecurityTest) && /actual_stdio_mcp_dependency_security_execution/.test(dependencySecurityTest),
+  structural_code_module_status: /StructuralCodeRuntime/.test(server + structuralCodeModule) && /structural_code_policy/.test(server) && /StructuralCodeError/.test(server + structuralCodeModule),
+  structural_code_architecture_status: /@babel\/parser/.test(structuralCodeModule) && /@babel\/traverse/.test(structuralCodeModule) && /compiler_grade_claim: false/.test(structuralCodeModule) && /tree_sitter_evaluation/.test(structuralCodeModule) && /bounded_compact_json/.test(structuralCodeModule),
+  structural_code_index_status: /vnem_tools_structural_index_build/.test(server + structuralCodeTest) && /incremental_index_ms/.test(structuralCodeTest) && /reparsed_files, 1/.test(structuralCodeTest) && /generated_or_minified_bundle/.test(structuralCodeModule + structuralCodeTest) && /graph_rebuilt_on_load/.test(structuralCodeModule),
+  structural_code_graph_status: /vnem_tools_structural_graph_query/.test(server + structuralCodeTest) && /routeQuery/.test(structuralCodeTest) && /componentQuery/.test(structuralCodeTest) && /package_edges/.test(structuralCodeModule + structuralCodeTest) && /test_source/.test(structuralCodeModule + structuralCodeTest),
+  structural_code_reference_status: /vnem_tools_exact_symbol_references/.test(server + structuralCodeTest) && /binding_start/.test(structuralCodeModule) && /shadowed parameter reference/.test(structuralCodeTest) && /jsx_reference/.test(structuralCodeModule + structuralCodeTest),
+  structural_code_planning_status: /vnem_tools_refactor_move_preview/.test(server + structuralCodeTest) && /vnem_tools_refactor_extract_plan/.test(server + structuralCodeTest) && /vnem_tools_dead_code_candidates/.test(server + structuralCodeTest) && /vnem_tools_refactor_impact_analyze/.test(server + structuralCodeTest) && /apply_supported, false/.test(structuralCodeTest),
+  structural_code_validation_status: /vnem_tools_structural_patch_validate/.test(server + structuralCodeTest) && /unresolved_relative_imports/.test(structuralCodeModule + structuralCodeTest) && /duplicate_exports/.test(structuralCodeModule) && /tests_executed: false/.test(structuralCodeModule),
+  structural_code_safety_gates_status: /public_export_change_requires_acknowledgement/.test(structuralCodeModule + structuralCodeTest) && /rename_collision/.test(structuralCodeModule + structuralCodeTest) && /object_shorthand_semantics_require_review/.test(structuralCodeModule + structuralCodeTest) && /rename_parser_not_exact/.test(structuralCodeModule + structuralCodeTest) && /structural_graph_truncated/.test(structuralCodeModule) && /refactor_preview_stale/.test(structuralCodeModule + structuralCodeTest),
+  structural_code_transaction_status: /vnem_tools_refactor_apply_verify/.test(server + structuralCodeTest) && /vnem_tools_refactor_transaction_rollback/.test(server + structuralCodeTest) && /post_reference_check/.test(structuralCodeModule + structuralCodeTest) && /failed_rolled_back/.test(structuralCodeModule + structuralCodeTest) && /refactor_rollback_stale/.test(structuralCodeModule + structuralCodeTest) && /hashes_match/.test(structuralCodeTest),
+  structural_code_hardening_status: /refactor_target_link_or_escape/.test(structuralCodeModule) && /refactor_transaction_root_mismatch/.test(structuralCodeModule) && /refactor_backup_path_invalid/.test(structuralCodeModule) && /refactor_verification_mutated_worktree/.test(structuralCodeModule) && /cross_file_filesystem_atomicity_claimed: false/.test(server),
+  structural_code_core_routing_status: /vnem_tools_structural_index_build/.test(coreIntelligence + structuralCodeTest) && /vnem_tools_refactor_apply_verify/.test(coreIntelligence + structuralCodeTest) && /coreRecommendedToolsCalls/.test(structuralCodeTest) && /structural_refactoring/.test(server),
+  structural_code_real_mcp_proof_status: /StdioClientTransport/.test(structuralCodeTest) && /VNEM GIGA Phase 15 structural code tests passed/.test(structuralCodeTest) && /real_stdio_mcp/.test(structuralCodeTest),
   github_dry_run_status: /dry_run !== false/.test(server) && /must not/.test(toolsGithubMutationDryRunTest),
   github_config_knob_status: /config_knob_to_change/.test(server) && /VNEM_TOOLS_GITHUB_ALLOW_DIRECT_PUSH/.test(toolsGithubMutationDryRunTest + server) && /VNEM_TOOLS_GITHUB_ALLOW_ACTIONS_RERUN/.test(toolsGithubMutationDryRunTest + server),
   github_secret_file_block_status: /githubSecretFileBlocked/.test(server) && /Secret-like file blocked/.test(server) && /scanGithubCommitContent/.test(server) && /Secret-like content blocked/.test(server + githubDevelopmentTest) && /\.env/.test(toolsGithubMutationDryRunTest + server),
@@ -987,6 +1019,8 @@ assert.equal(report.game_domain_test_exists, true, "game-domain MCP test file is
 assert.equal(report.game_domain_module_exists, true, "game-domain runtime module is missing");
 assert.equal(report.dependency_security_test_exists, true, "dependency-security MCP test file is missing");
 assert.equal(report.dependency_security_module_exists, true, "dependency-security runtime module is missing");
+assert.equal(report.structural_code_test_exists, true, "structural-code MCP test file is missing");
+assert.equal(report.structural_code_module_exists, true, "structural-code runtime module is missing");
 assert.equal(report.project_automation_test_exists, true, "project automation MCP test file is missing");
 assert.equal(report.project_automation_module_exists, true, "project automation module is missing");
 assert.equal(report.project_automation_fixture_exists, true, "project automation fixture is missing");
@@ -1018,6 +1052,7 @@ assert.equal(report.package_scripts.test_tools_giga_windows_local, true, "test:t
 assert.equal(report.package_scripts.test_tools_giga_github_development, true, "test:tools-giga-github-development package script is missing");
 assert.equal(report.package_scripts.test_tools_giga_game_domain, true, "test:tools-giga-game-domain package script is missing");
 assert.equal(report.package_scripts.test_tools_giga_dependency_security, true, "test:tools-giga-dependency-security package script is missing");
+assert.equal(report.package_scripts.test_tools_giga_structural_code, true, "test:tools-giga-structural-code package script is missing");
 for (const [key, value] of Object.entries({ test_smoke_tier: report.package_scripts.test_smoke_tier, test_affected_tier: report.package_scripts.test_affected_tier, test_core_tier: report.package_scripts.test_core_tier, test_tools_tier: report.package_scripts.test_tools_tier, test_precision_compat_tier: report.package_scripts.test_precision_compat_tier, test_integration_tier: report.package_scripts.test_integration_tier, test_benchmarks_tier: report.package_scripts.test_benchmarks_tier, test_full_tier: report.package_scripts.test_full_tier, test_ci_tier: report.package_scripts.test_ci_tier, npm_test_routes_full: report.package_scripts.npm_test_routes_full })) assert.equal(value, true, `${key} package script is missing`);
 assert.equal(report.package_scripts.test_tools_git_session, true, "test:tools-git-session package script is missing");
 assert.equal(report.package_scripts.test_tools_intelligence, true, "test:tools-intelligence package script is missing");
@@ -1248,6 +1283,7 @@ for (const [key, value] of Object.entries({ windows_local_registration_status: r
 for (const [key, value] of Object.entries({ github_development_module_status: report.github_development_module_status, github_diff_review_status: report.github_diff_review_status, github_review_threads_status: report.github_review_threads_status, github_remote_proof_status: report.github_remote_proof_status, github_actions_run_inspect_status: report.github_actions_run_inspect_status, github_release_verify_status: report.github_release_verify_status, github_public_surface_audit_status: report.github_public_surface_audit_status, github_selective_commit_isolation_status: report.github_selective_commit_isolation_status, github_development_real_mcp_proof_status: report.github_development_real_mcp_proof_status })) assert.equal(value, true, `${key} readiness missing`);
 for (const [key, value] of Object.entries({ game_domain_module_status: report.game_domain_module_status, game_domain_adapter_contract_status: report.game_domain_adapter_contract_status, game_domain_inventory_status: report.game_domain_inventory_status, game_domain_config_status: report.game_domain_config_status, game_domain_compatibility_status: report.game_domain_compatibility_status, game_domain_profile_status: report.game_domain_profile_status, game_domain_backup_restore_status: report.game_domain_backup_restore_status, game_domain_roblox_luau_status: report.game_domain_roblox_luau_status, game_domain_validation_status: report.game_domain_validation_status, game_domain_real_mcp_proof_status: report.game_domain_real_mcp_proof_status })) assert.equal(value, true, `${key} readiness missing`);
 for (const [key, value] of Object.entries({ dependency_security_module_status: report.dependency_security_module_status, dependency_security_inventory_status: report.dependency_security_inventory_status, dependency_security_risk_status: report.dependency_security_risk_status, dependency_security_advisory_status: report.dependency_security_advisory_status, dependency_security_change_plan_status: report.dependency_security_change_plan_status, dependency_security_install_status: report.dependency_security_install_status, dependency_security_rollback_status: report.dependency_security_rollback_status, dependency_security_credential_boundary_status: report.dependency_security_credential_boundary_status, dependency_security_hardening_status: report.dependency_security_hardening_status, dependency_security_real_mcp_proof_status: report.dependency_security_real_mcp_proof_status })) assert.equal(value, true, `${key} readiness missing`);
+for (const [key, value] of Object.entries({ structural_code_module_status: report.structural_code_module_status, structural_code_architecture_status: report.structural_code_architecture_status, structural_code_index_status: report.structural_code_index_status, structural_code_graph_status: report.structural_code_graph_status, structural_code_reference_status: report.structural_code_reference_status, structural_code_planning_status: report.structural_code_planning_status, structural_code_validation_status: report.structural_code_validation_status, structural_code_safety_gates_status: report.structural_code_safety_gates_status, structural_code_transaction_status: report.structural_code_transaction_status, structural_code_hardening_status: report.structural_code_hardening_status, structural_code_core_routing_status: report.structural_code_core_routing_status, structural_code_real_mcp_proof_status: report.structural_code_real_mcp_proof_status })) assert.equal(value, true, `${key} readiness missing`);
 assert.equal(report.project_task_status, true, "project task support/test coverage is missing");
 assert.equal(report.dev_server_status, true, "dev server support/test coverage is missing");
 assert.equal(report.session_evidence_status, true, "session evidence support/test coverage is missing");
@@ -1400,6 +1436,7 @@ for (const key of ["app_engineering_inspection_status", "app_engineering_transac
 for (const key of ["browser_interaction_registration_status", "browser_interaction_actions_status", "browser_interaction_runtime_evidence_status", "browser_interaction_state_viewport_status", "browser_interaction_compare_status", "browser_interaction_safety_status", "browser_interaction_cleanup_status", "browser_interaction_real_mcp_proof_status"]) console.log(`${key}: ${yes(report[key])}`);
 for (const key of ["windows_local_registration_status", "windows_local_powershell_status", "windows_local_environment_status", "windows_local_path_status", "windows_local_process_port_status", "windows_local_service_task_event_status", "windows_local_client_status", "windows_local_mutation_gate_status", "windows_local_real_mcp_proof_status"]) console.log(`${key}: ${yes(report[key])}`);
 for (const key of ["dependency_security_module_status", "dependency_security_inventory_status", "dependency_security_risk_status", "dependency_security_advisory_status", "dependency_security_change_plan_status", "dependency_security_install_status", "dependency_security_rollback_status", "dependency_security_credential_boundary_status", "dependency_security_hardening_status", "dependency_security_real_mcp_proof_status"]) console.log(`${key}: ${yes(report[key])}`);
+for (const key of ["structural_code_module_status", "structural_code_architecture_status", "structural_code_index_status", "structural_code_graph_status", "structural_code_reference_status", "structural_code_planning_status", "structural_code_validation_status", "structural_code_safety_gates_status", "structural_code_transaction_status", "structural_code_hardening_status", "structural_code_core_routing_status", "structural_code_real_mcp_proof_status"]) console.log(`${key}: ${yes(report[key])}`);
 console.log(`project_task_status: ${yes(report.project_task_status)}`);
 console.log(`dev_server_status: ${yes(report.dev_server_status)}`);
 console.log(`session_evidence_status: ${yes(report.session_evidence_status)}`);

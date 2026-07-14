@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -8,6 +9,9 @@ import { GIGA_SCENARIOS, GIGA_SCENARIO_CATEGORIES } from "./vnem/giga/scenarios.
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const baselineDir = path.join(root, ".vnem", "giga-evolution", "baseline");
+const blockedOutput = spawnSync(process.execPath, [path.join(root, "scripts", "vnem", "giga", "capability-benchmark.mjs"), "--label=guard-proof", "--output=package.json"], { cwd: root, encoding: "utf8" });
+assert.notEqual(blockedOutput.status, 0, "capability benchmark must not overwrite arbitrary repository files");
+assert.match(blockedOutput.stderr, /output must be JSON under \.tmp or \.vnem\/giga-evolution/);
 assert.equal(GIGA_SCENARIOS.length, 35, "the deterministic suite must preserve all 35 required scenario categories");
 assert.equal(new Set(GIGA_SCENARIOS.map((item) => item.id)).size, GIGA_SCENARIOS.length, "scenario ids must be unique");
 assert.equal(new Set(GIGA_SCENARIO_CATEGORIES).size, 35, "scenario categories must be unique");
@@ -15,6 +19,7 @@ for (const item of GIGA_SCENARIOS) {
   assert.ok(item.goal.length >= 30, `${item.id} must have a meaningful task goal`);
   assert.ok(item.expected_tools.length >= 1, `${item.id} must define deterministic expected capabilities`);
   assert.ok(item.expected_tools.every((name) => name.startsWith("vnem_tools_")), `${item.id} must use exact Tools naming`);
+  assert.ok(item.required_tools.every((name) => name.startsWith("vnem_tools_")), `${item.id} must use exact required Tools naming`);
 }
 
 const audit = JSON.parse(readFileSync(path.join(baselineDir, "repository-audit.json"), "utf8"));
