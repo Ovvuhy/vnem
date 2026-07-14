@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "source": "live MCP runtime registry status calls",
-  "total_tools": 303,
+  "total_tools": 315,
   "servers": {
     "core": {
       "schema_version": "1.0.0",
@@ -2560,7 +2560,7 @@
       "server_name": "vnem-tools",
       "version": "1.0.1",
       "valid": true,
-      "tool_count": 228,
+      "tool_count": 240,
       "alias_count": 0,
       "categories": {
         "action": 2,
@@ -2578,6 +2578,8 @@
         "cloudflare": 17,
         "code": 3,
         "coverage": 1,
+        "data": 3,
+        "database": 6,
         "dead": 1,
         "dependency": 7,
         "documentation": 2,
@@ -2625,7 +2627,7 @@
         "search": 4,
         "secret": 1,
         "skill": 5,
-        "source": 9,
+        "source": 12,
         "start": 2,
         "status": 1,
         "stop": 1,
@@ -2646,38 +2648,18 @@
         "workspace": 1
       },
       "side_effect_classes": {
-        "destructive_mutation": 39,
+        "destructive_mutation": 42,
         "network_mutation": 19,
-        "read_only": 170
+        "read_only": 179
       },
       "validation": {
         "valid": true,
         "server_name": "vnem-tools",
         "version": "1.0.1",
-        "tool_count": 228,
+        "tool_count": 240,
         "alias_count": 0,
         "errors": [],
         "warnings": [
-          {
-            "tool": "vnem_tools_adoption_readiness",
-            "code": "behavior_test_reference_missing"
-          },
-          {
-            "tool": "vnem_tools_visibility_doctor",
-            "code": "behavior_test_reference_missing"
-          },
-          {
-            "tool": "vnem_tools_underuse_detector",
-            "code": "behavior_test_reference_missing"
-          },
-          {
-            "tool": "vnem_tools_install_profile_emit",
-            "code": "behavior_test_reference_missing"
-          },
-          {
-            "tool": "vnem_tools_install_doctor",
-            "code": "behavior_test_reference_missing"
-          },
           {
             "tool": "vnem_tools_github_pr_update",
             "code": "behavior_test_reference_missing"
@@ -2882,7 +2864,10 @@
             "migration_guidance": null
           },
           "implementation_module": "scripts/vnem/tools/server.mjs",
-          "behavior_test_references": [],
+          "behavior_test_references": [
+            "scripts/test-vnem-adoption-reliability-1-regression.mjs",
+            "scripts/test-vnem-adoption-reliability-2-regression.mjs"
+          ],
           "benchmark_scenarios": [],
           "input_schema_present": true
         },
@@ -2916,7 +2901,9 @@
             "migration_guidance": null
           },
           "implementation_module": "scripts/vnem/tools/server.mjs",
-          "behavior_test_references": [],
+          "behavior_test_references": [
+            "scripts/test-vnem-adoption-reliability-2-regression.mjs"
+          ],
           "benchmark_scenarios": [],
           "input_schema_present": true
         },
@@ -2950,7 +2937,9 @@
             "migration_guidance": null
           },
           "implementation_module": "scripts/vnem/tools/server.mjs",
-          "behavior_test_references": [],
+          "behavior_test_references": [
+            "scripts/test-vnem-adoption-reliability-2-regression.mjs"
+          ],
           "benchmark_scenarios": [],
           "input_schema_present": true
         },
@@ -2984,7 +2973,9 @@
             "migration_guidance": null
           },
           "implementation_module": "scripts/vnem/tools/server.mjs",
-          "behavior_test_references": [],
+          "behavior_test_references": [
+            "scripts/test-vnem-install-adoption-1-regression.mjs"
+          ],
           "benchmark_scenarios": [],
           "input_schema_present": true
         },
@@ -3018,7 +3009,9 @@
             "migration_guidance": null
           },
           "implementation_module": "scripts/vnem/tools/server.mjs",
-          "behavior_test_references": [],
+          "behavior_test_references": [
+            "scripts/test-vnem-install-adoption-1-regression.mjs"
+          ],
           "benchmark_scenarios": [],
           "input_schema_present": true
         },
@@ -7320,6 +7313,438 @@
           "input_schema_present": true
         },
         {
+          "name": "vnem_tools_data_source_inspect",
+          "version": "1.0.1",
+          "title": "Inspect Local Structured Data",
+          "description": "Parse a bounded allowed-root SQLite, JSON, JSONL, CSV, or YAML source with real format-specific parsers, infer tabular schema, return a capped redacted preview, and preserve exact source hash and parser limits.",
+          "category": "source",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-data-systems.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_data_source_validate",
+          "version": "1.0.1",
+          "title": "Validate Local Structured Data",
+          "description": "Validate bounded SQLite schema or JSON/JSONL/CSV/YAML rows against an explicit expected schema, reporting capped path/type/nullability issues without returning source values or secrets.",
+          "category": "source",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-data-systems.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_data_source_diff",
+          "version": "1.0.1",
+          "title": "Diff Local Structured Data",
+          "description": "Compare two bounded JSON, JSONL, CSV, or YAML sources by explicit keys or row hashes, including inferred schema changes and capped key samples without dumping changed values.",
+          "category": "source",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-data-systems.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_data_transform_plan",
+          "version": "1.0.1",
+          "title": "Plan Structured Data Transformation",
+          "description": "Build an in-session source-hash-bound JSON/JSONL/CSV/YAML transformation preview with select/drop/rename/filter/constant/sort/limit operations, redacted samples, exact output hash, and no write.",
+          "category": "data",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-data-systems.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_data_transform_apply",
+          "version": "1.0.1",
+          "title": "Apply Approved Data Transformation",
+          "description": "Dry-run by default or apply one fresh in-session structured-data transform with exact source/output hashes, approved database-write scope, retained original backup, verification, transaction evidence, and rollback.",
+          "category": "data",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": true,
+            "idempotentHint": false,
+            "openWorldHint": false
+          },
+          "side_effect_class": "destructive_mutation",
+          "permission_requirements": [
+            "approved_local_mutation"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "required_redacted_record",
+          "rollback_behavior": {
+            "mode": "required_or_explicitly_not_available",
+            "guidance": "Return backup, compensating action, or explicit rollback-unavailable state in evidence."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-data-systems.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_database_connection_plan",
+          "version": "1.0.1",
+          "title": "Plan Database Connection Scope",
+          "description": "Plan a local SQLite or remote provider connection without connecting. Remote plans require a typed credential reference and exact host/database/access scope, reject raw credentials, and remain unsupported until a reviewed provider adapter exists.",
+          "category": "database",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-data-systems.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_database_schema_inspect",
+          "version": "1.0.1",
+          "title": "Inspect SQLite Schema",
+          "description": "Open one bounded allowed-root SQLite file through sql.js, inspect tables/columns/indexes/foreign keys/views/triggers under database-read scope, and return no row values by default.",
+          "category": "database",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-data-systems.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_database_query_plan",
+          "version": "1.0.1",
+          "title": "Plan Read-Only SQLite Query",
+          "description": "Validate one SELECT/WITH statement, reject mutation/transaction/PRAGMA/attachment/extension paths, bind scalar parameters without exposing values, enable query-only mode, and return SQLite EXPLAIN QUERY PLAN evidence.",
+          "category": "database",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-data-systems.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_database_query",
+          "version": "1.0.1",
+          "title": "Run Bounded Read-Only SQLite Query",
+          "description": "Execute one SELECT/WITH statement against a bounded local SQLite file with lexical mutation blocking, SQLite query-only enforcement, scalar parameter binding, row/column/byte limits, recursive secret redaction, and persisted evidence.",
+          "category": "database",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-data-systems.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_database_migration_preview",
+          "version": "1.0.1",
+          "title": "Preview SQLite Migration Transaction",
+          "description": "Run a bounded reviewed SQLite DDL/DML subset only inside an in-memory transaction, return exact per-statement affected rows and schema diff, detect WAL/journal sidecars, and create a hash-bound apply preview without changing the file.",
+          "category": "database",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-data-systems.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_database_migration_apply",
+          "version": "1.0.1",
+          "title": "Apply Approved SQLite Migration",
+          "description": "Dry-run by default or apply one fresh hash-bound migration preview with database-write approval, no active WAL/journal sidecars, in-memory SQLite transaction, exact affected-row/schema verification, retained backup, and automatic restore on failed verification.",
+          "category": "database",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": true,
+            "idempotentHint": false,
+            "openWorldHint": false
+          },
+          "side_effect_class": "destructive_mutation",
+          "permission_requirements": [
+            "approved_local_mutation"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "required_redacted_record",
+          "rollback_behavior": {
+            "mode": "required_or_explicitly_not_available",
+            "guidance": "Return backup, compensating action, or explicit rollback-unavailable state in evidence."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-data-systems.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_data_transaction_rollback",
+          "version": "1.0.1",
+          "title": "Rollback Data Transaction",
+          "description": "Dry-run or restore the exact retained pre-transform/pre-migration bytes after current-hash verification. Refuses stale, missing, cross-session, or already rolled-back transactions.",
+          "category": "data",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": true,
+            "idempotentHint": false,
+            "openWorldHint": false
+          },
+          "side_effect_class": "destructive_mutation",
+          "permission_requirements": [
+            "approved_local_mutation"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "required_redacted_record",
+          "rollback_behavior": {
+            "mode": "self",
+            "guidance": "The tool is itself a rollback operation and must verify the restored state."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-giga-data-systems.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
           "name": "vnem_tools_api_request",
           "version": "1.0.1",
           "title": "Prepare or Run Safe API Request",
@@ -11404,11 +11829,6 @@
     "valid": true,
     "errors": [],
     "tools_without_behavior_test_references": [
-      "vnem_tools_adoption_readiness",
-      "vnem_tools_visibility_doctor",
-      "vnem_tools_underuse_detector",
-      "vnem_tools_install_profile_emit",
-      "vnem_tools_install_doctor",
       "vnem_tools_github_pr_update",
       "vnem_tools_github_issue_update",
       "vnem_tools_github_issue_comment",

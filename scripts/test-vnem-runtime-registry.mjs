@@ -15,11 +15,6 @@ for (const item of Object.values(readiness.servers)) {
 assert.equal(readiness.servers.core.validation_warnings.length, 0);
 assert.equal(readiness.servers.precision.validation_warnings.length, 0);
 assert.deepEqual(readiness.servers.tools.validation_warnings.map((item) => item.tool), [
-  "vnem_tools_adoption_readiness",
-  "vnem_tools_visibility_doctor",
-  "vnem_tools_underuse_detector",
-  "vnem_tools_install_profile_emit",
-  "vnem_tools_install_doctor",
   "vnem_tools_github_pr_update",
   "vnem_tools_github_issue_update",
   "vnem_tools_github_issue_comment",

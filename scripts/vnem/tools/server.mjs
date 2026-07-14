@@ -47,6 +47,7 @@ import { DependencySecurityError, DependencySecurityRuntime } from "./dependency
 import { StructuralCodeError, StructuralCodeRuntime } from "./structural-code.mjs";
 import { ApiConnectorError, ApiConnectorRuntime } from "./api-connectors.mjs";
 import { SkillAdapterError, SkillAdapterRuntime } from "./skill-runtime.mjs";
+import { DataSystemsError, DataSystemsRuntime } from "./data-systems.mjs";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(scriptDir, "..", "..", "..");
@@ -110,6 +111,18 @@ const REQUIRED_TOOL_NAMES = [
   "vnem_tools_skill_adapter_plan",
   "vnem_tools_skill_adapter_execute",
   "vnem_tools_skill_source_verify",
+  "vnem_tools_data_source_inspect",
+  "vnem_tools_data_source_validate",
+  "vnem_tools_data_source_diff",
+  "vnem_tools_data_transform_plan",
+  "vnem_tools_data_transform_apply",
+  "vnem_tools_database_connection_plan",
+  "vnem_tools_database_schema_inspect",
+  "vnem_tools_database_query_plan",
+  "vnem_tools_database_query",
+  "vnem_tools_database_migration_preview",
+  "vnem_tools_database_migration_apply",
+  "vnem_tools_data_transaction_rollback",
   "vnem_tools_api_request",
   "vnem_tools_fetch_url_text",
   "vnem_tools_source_quality_check",
@@ -288,6 +301,22 @@ const API_CREDENTIAL_REFERENCE_SCHEMA = z.object({
   type: z.enum(["environment", "client_secret_reference", "os_credential_store", "provider_profile"]),
   name: z.string().min(1).max(160)
 }).strict();
+const DATA_FORMAT_SCHEMA = z.enum(["json", "jsonl", "ndjson", "csv", "yaml", "yml", "sqlite", "sqlite3", "db"]);
+const DATABASE_CONNECTION_SCHEMA = z.object({
+  type: z.enum(["local_sqlite", "remote_postgres", "remote_mysql", "remote_mariadb", "remote_sqlserver"]).default("local_sqlite"),
+  path: z.string().optional(),
+  provider: z.string().max(120).optional(),
+  access: z.enum(["read_only", "read_write"]).default("read_only"),
+  credential_reference: API_CREDENTIAL_REFERENCE_SCHEMA.optional(),
+  scope: z.object({
+    host: z.string().max(253),
+    port: z.number().int().min(1).max(65535).optional(),
+    database: z.string().max(128),
+    schemas: z.array(z.string().max(128)).max(50).default([]),
+    access: z.enum(["read_only", "read_write"]).default("read_only"),
+    max_rows: z.number().int().min(1).max(500).default(100)
+  }).strict().optional()
+}).strict();
 const GITHUB_SETTINGS_HEADER = "# ============================================================\n# GITHUB SETTINGS\n# ============================================================";
 const DEFAULT_GITHUB_ENV_SETTINGS = {
   VNEM_TOOLS_AUTONOMY_MODE: "fast",
@@ -356,6 +385,7 @@ const dependencySecurityRuntime = new DependencySecurityRuntime({ allowedRoots, 
 const structuralCodeRuntime = new StructuralCodeRuntime({ allowedRoots, evidenceRoot, commandRuntime: projectAutomationRuntime });
 const apiConnectorRuntime = new ApiConnectorRuntime({ allowedRoots, evidenceRoot });
 const skillAdapterRuntime = new SkillAdapterRuntime({ allowedRoots, evidenceRoot, commandRuntime: projectAutomationRuntime });
+const dataSystemsRuntime = new DataSystemsRuntime({ allowedRoots, evidenceRoot });
 const activePermissionProfile = permissionRuntime.activeProfile();
 const usablePacks = await loadUsablePacks();
 const requestedPrecisionWorkspaceCandidate = path.resolve(
@@ -428,7 +458,7 @@ function registerTools(mcpServer) {
         user_goal: z.string().min(1),
         repo_path: z.string().optional(),
         root: z.string().default("."),
-        task_mode: z.enum(["auto", "local_only", "implementation", "debugging", "repo_inspection", "patch_targeting", "mcp_tool_audit", "code_intelligence", "documentation", "skill", "publish", "cloudflare", "browser_ui", "windows", "game_modding", "recovery", "no_placebo", "evidence_pack", "generated_artifact"]).default("auto"),
+        task_mode: z.enum(["auto", "local_only", "implementation", "debugging", "repo_inspection", "patch_targeting", "mcp_tool_audit", "code_intelligence", "documentation", "skill", "database", "publish", "cloudflare", "browser_ui", "windows", "game_modding", "recovery", "no_placebo", "evidence_pack", "generated_artifact"]).default("auto"),
         changed_files: z.array(z.string()).default([]),
         failing_output: z.string().default("")
       },
@@ -2586,6 +2616,214 @@ function registerTools(mcpServer) {
   );
 
   mcpServer.registerTool(
+    "vnem_tools_data_source_inspect",
+    {
+      title: "Inspect Local Structured Data",
+      description: "Parse a bounded allowed-root SQLite, JSON, JSONL, CSV, or YAML source with real format-specific parsers, infer tabular schema, return a capped redacted preview, and preserve exact source hash and parser limits.",
+      inputSchema: { root: z.string().default("."), path: z.string().min(1), format: DATA_FORMAT_SCHEMA.optional(), max_rows: z.number().int().min(1).max(500).default(50), max_columns: z.number().int().min(1).max(200).default(80), max_bytes: z.number().int().min(1024).max(16777216).default(16777216), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const permission = enforceActionPolicy("database_read", { ...args, dry_run: false, target_path: args.path, proposed_action: `inspect bounded local data ${args.path}` });
+      const result = { ...(await dataSystemsRuntime.sourceInspect(args)), permission };
+      recordSession(args.session_id, "data_system_inspections", result);
+      return toolResult(formatDataSystems("vnem_tools_data_source_inspect", result), { data_source_inspection: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_data_source_validate",
+    {
+      title: "Validate Local Structured Data",
+      description: "Validate bounded SQLite schema or JSON/JSONL/CSV/YAML rows against an explicit expected schema, reporting capped path/type/nullability issues without returning source values or secrets.",
+      inputSchema: { root: z.string().default("."), path: z.string().min(1), format: DATA_FORMAT_SCHEMA.optional(), expected_schema: z.record(z.any()).default({}), max_issues: z.number().int().min(1).max(500).default(100), max_bytes: z.number().int().min(1024).max(16777216).default(16777216), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const permission = enforceActionPolicy("database_read", { ...args, dry_run: false, target_path: args.path, proposed_action: `validate bounded local data ${args.path}` });
+      const result = { ...(await dataSystemsRuntime.sourceValidate(args)), permission };
+      recordSession(args.session_id, "data_system_inspections", result);
+      return toolResult(formatDataSystems("vnem_tools_data_source_validate", result), { data_source_validation: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_data_source_diff",
+    {
+      title: "Diff Local Structured Data",
+      description: "Compare two bounded JSON, JSONL, CSV, or YAML sources by explicit keys or row hashes, including inferred schema changes and capped key samples without dumping changed values.",
+      inputSchema: { root: z.string().default("."), left_path: z.string().min(1), right_path: z.string().min(1), left_format: DATA_FORMAT_SCHEMA.optional(), right_format: DATA_FORMAT_SCHEMA.optional(), key_columns: z.array(z.string()).max(8).default([]), max_changes: z.number().int().min(1).max(500).default(100), max_bytes: z.number().int().min(1024).max(16777216).default(16777216), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const permission = enforceActionPolicy("database_read", { ...args, dry_run: false, target_path: args.root, proposed_action: `diff bounded local data ${args.left_path} and ${args.right_path}` });
+      const result = { ...(await dataSystemsRuntime.sourceDiff(args)), permission };
+      recordSession(args.session_id, "data_system_inspections", result);
+      return toolResult(formatDataSystems("vnem_tools_data_source_diff", result), { data_source_diff: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_data_transform_plan",
+    {
+      title: "Plan Structured Data Transformation",
+      description: "Build an in-session source-hash-bound JSON/JSONL/CSV/YAML transformation preview with select/drop/rename/filter/constant/sort/limit operations, redacted samples, exact output hash, and no write.",
+      inputSchema: { root: z.string().default("."), path: z.string().min(1), format: DATA_FORMAT_SCHEMA.optional(), output_path: z.string().min(1), output_format: z.enum(["json", "jsonl", "csv", "yaml"]), operations: z.record(z.any()).default({}), max_rows: z.number().int().min(1).max(200).default(25), max_bytes: z.number().int().min(1024).max(16777216).default(16777216), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const permission = enforceActionPolicy("database_read", { ...args, dry_run: false, target_path: args.path, proposed_action: `preview bounded data mapping from ${args.path} to ${args.output_path}` });
+      const result = { ...(await dataSystemsRuntime.transformPlan(args)), permission };
+      recordSession(args.session_id, "data_system_plans", result);
+      return toolResult(formatDataSystems("vnem_tools_data_transform_plan", result), { data_transform_plan: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_data_transform_apply",
+    {
+      title: "Apply Approved Data Transformation",
+      description: "Dry-run by default or apply one fresh in-session structured-data transform with exact source/output hashes, approved database-write scope, retained original backup, verification, transaction evidence, and rollback.",
+      inputSchema: { plan_id: z.string().min(1), dry_run: z.boolean().default(true), approved: z.boolean().default(false), approval_note: z.string().default(""), session_id: z.string().optional() },
+      annotations: ACTION_TOOL
+    },
+    async (args) => withToolErrors(async () => {
+      const planned = dataSystemsRuntime.transformApplyPlan(args);
+      if (args.dry_run !== false) {
+        const result = { ...planned, permission: actionPolicyPreview({ action_type: "database_write", target_path: planned.output_path, proposed_action: `apply data transform ${args.plan_id}` }) };
+        return toolResult(formatDataSystems("vnem_tools_data_transform_apply", result), { data_transform_application: result });
+      }
+      const permission = enforceActionPolicy("database_write", { ...args, dry_run: false, target_path: planned.output_path, proposed_action: `apply data transform ${args.plan_id}` });
+      const result = await dataSystemsRuntime.transformApply({ ...args, permission_decision: permission });
+      recordSession(args.session_id, "data_system_transactions", result);
+      return toolResult(formatDataSystems("vnem_tools_data_transform_apply", result), { data_transform_application: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_database_connection_plan",
+    {
+      title: "Plan Database Connection Scope",
+      description: "Plan a local SQLite or remote provider connection without connecting. Remote plans require a typed credential reference and exact host/database/access scope, reject raw credentials, and remain unsupported until a reviewed provider adapter exists.",
+      inputSchema: { root: z.string().default("."), path: z.string().optional(), connection: DATABASE_CONNECTION_SCHEMA, allow_remote_write: z.boolean().default(false), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const planned = await dataSystemsRuntime.connectionPlan(args);
+      const permission = actionPolicyPreview({ action_type: planned.permission_action, target_path: planned.local_path || args.root, provider: planned.provider, domain: planned.scope?.host, proposed_action: `use ${planned.connection_type} database scope` });
+      const result = { ...planned, permission };
+      recordSession(args.session_id, "data_system_plans", result);
+      return toolResult(formatDataSystems("vnem_tools_database_connection_plan", result), { database_connection_plan: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_database_schema_inspect",
+    {
+      title: "Inspect SQLite Schema",
+      description: "Open one bounded allowed-root SQLite file through sql.js, inspect tables/columns/indexes/foreign keys/views/triggers under database-read scope, and return no row values by default.",
+      inputSchema: { root: z.string().default("."), path: z.string().min(1), format: z.enum(["sqlite", "sqlite3", "db"]).optional(), max_tables: z.number().int().min(1).max(200).default(80), max_columns: z.number().int().min(1).max(200).default(120), include_row_counts: z.boolean().default(false), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const permission = enforceActionPolicy("database_read", { ...args, dry_run: false, target_path: args.path, proposed_action: `inspect SQLite schema ${args.path}` });
+      const result = { ...(await dataSystemsRuntime.schemaInspect(args)), permission };
+      recordSession(args.session_id, "data_system_inspections", result);
+      return toolResult(formatDataSystems("vnem_tools_database_schema_inspect", result), { database_schema_inspection: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_database_query_plan",
+    {
+      title: "Plan Read-Only SQLite Query",
+      description: "Validate one SELECT/WITH statement, reject mutation/transaction/PRAGMA/attachment/extension paths, bind scalar parameters without exposing values, enable query-only mode, and return SQLite EXPLAIN QUERY PLAN evidence.",
+      inputSchema: { root: z.string().default("."), path: z.string().min(1), sql: z.string().min(1).max(32768), parameters: z.union([z.array(z.any()), z.record(z.any())]).optional(), max_rows: z.number().int().min(1).max(500).default(100), max_columns: z.number().int().min(1).max(200).default(80), max_bytes: z.number().int().min(1024).max(262144).default(65536), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const permission = enforceActionPolicy("database_read", { ...args, dry_run: false, target_path: args.path, proposed_action: `plan read-only SQLite query for ${args.path}` });
+      const result = { ...(await dataSystemsRuntime.queryPlan(args)), permission };
+      recordSession(args.session_id, "data_system_plans", result);
+      return toolResult(formatDataSystems("vnem_tools_database_query_plan", result), { database_query_plan: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_database_query",
+    {
+      title: "Run Bounded Read-Only SQLite Query",
+      description: "Execute one SELECT/WITH statement against a bounded local SQLite file with lexical mutation blocking, SQLite query-only enforcement, scalar parameter binding, row/column/byte limits, recursive secret redaction, and persisted evidence.",
+      inputSchema: { root: z.string().default("."), path: z.string().min(1), sql: z.string().min(1).max(32768), parameters: z.union([z.array(z.any()), z.record(z.any())]).optional(), max_rows: z.number().int().min(1).max(500).default(100), max_columns: z.number().int().min(1).max(200).default(80), max_bytes: z.number().int().min(1024).max(262144).default(65536), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const permission = enforceActionPolicy("database_read", { ...args, dry_run: false, target_path: args.path, proposed_action: `execute read-only SQLite query for ${args.path}` });
+      const result = { ...(await dataSystemsRuntime.queryExecute(args)), permission };
+      recordSession(args.session_id, "data_system_queries", result);
+      return toolResult(formatDataSystems("vnem_tools_database_query", result), { database_query: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_database_migration_preview",
+    {
+      title: "Preview SQLite Migration Transaction",
+      description: "Run a bounded reviewed SQLite DDL/DML subset only inside an in-memory transaction, return exact per-statement affected rows and schema diff, detect WAL/journal sidecars, and create a hash-bound apply preview without changing the file.",
+      inputSchema: { root: z.string().default("."), path: z.string().min(1), statements: z.array(z.string().min(1).max(32768)).min(1).max(20), session_id: z.string().optional() },
+      annotations: READ_ONLY_LOCAL
+    },
+    async (args) => withToolErrors(async () => {
+      const permission = enforceActionPolicy("database_read", { ...args, dry_run: false, target_path: args.path, proposed_action: `preview SQLite migration for ${args.path}` });
+      const result = { ...(await dataSystemsRuntime.migrationPreview(args)), permission };
+      recordSession(args.session_id, "data_system_plans", result);
+      return toolResult(formatDataSystems("vnem_tools_database_migration_preview", result), { database_migration_preview: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_database_migration_apply",
+    {
+      title: "Apply Approved SQLite Migration",
+      description: "Dry-run by default or apply one fresh hash-bound migration preview with database-write approval, no active WAL/journal sidecars, in-memory SQLite transaction, exact affected-row/schema verification, retained backup, and automatic restore on failed verification.",
+      inputSchema: { preview_id: z.string().min(1), acknowledge_destructive: z.boolean().default(false), dry_run: z.boolean().default(true), approved: z.boolean().default(false), approval_note: z.string().default(""), session_id: z.string().optional() },
+      annotations: ACTION_TOOL
+    },
+    async (args) => withToolErrors(async () => {
+      const planned = dataSystemsRuntime.migrationApplyPlan(args);
+      if (args.dry_run !== false) {
+        const result = { ...planned, permission: actionPolicyPreview({ action_type: "database_write", target_path: planned.database_path, proposed_action: `apply SQLite migration ${args.preview_id}` }) };
+        return toolResult(formatDataSystems("vnem_tools_database_migration_apply", result), { database_migration_application: result });
+      }
+      const permission = enforceActionPolicy("database_write", { ...args, dry_run: false, target_path: planned.database_path, proposed_action: `apply SQLite migration ${args.preview_id}` });
+      const result = await dataSystemsRuntime.migrationApply({ ...args, permission_decision: permission });
+      recordSession(args.session_id, "data_system_transactions", result);
+      return toolResult(formatDataSystems("vnem_tools_database_migration_apply", result), { database_migration_application: result });
+    })
+  );
+
+  mcpServer.registerTool(
+    "vnem_tools_data_transaction_rollback",
+    {
+      title: "Rollback Data Transaction",
+      description: "Dry-run or restore the exact retained pre-transform/pre-migration bytes after current-hash verification. Refuses stale, missing, cross-session, or already rolled-back transactions.",
+      inputSchema: { transaction_id: z.string().min(1), dry_run: z.boolean().default(true), approved: z.boolean().default(false), approval_note: z.string().default(""), session_id: z.string().optional() },
+      annotations: ACTION_TOOL
+    },
+    async (args) => withToolErrors(async () => {
+      const planned = dataSystemsRuntime.rollbackPlan(args);
+      if (args.dry_run !== false) {
+        const result = { ...planned, permission: actionPolicyPreview({ action_type: "database_write", target_path: planned.target_path, proposed_action: `rollback data transaction ${args.transaction_id}` }) };
+        return toolResult(formatDataSystems("vnem_tools_data_transaction_rollback", result), { data_transaction_rollback: result });
+      }
+      const permission = enforceActionPolicy("database_write", { ...args, dry_run: false, target_path: planned.target_path, proposed_action: `rollback data transaction ${args.transaction_id}` });
+      const result = await dataSystemsRuntime.rollbackTransaction({ ...args, permission_decision: permission });
+      recordSession(args.session_id, "data_system_transactions", result);
+      return toolResult(formatDataSystems("vnem_tools_data_transaction_rollback", result), { data_transaction_rollback: result });
+    })
+  );
+
+  mcpServer.registerTool(
     "vnem_tools_api_request",
     {
       title: "Prepare or Run Safe API Request",
@@ -3716,6 +3954,7 @@ async function toolsEntrypoint(args = {}) {
       "precision_execution",
       "permission_control",
       "skill_adapters",
+      "data_systems",
       "tool_intelligence",
       "github_autonomy",
       "cloudflare_control",
@@ -3769,7 +4008,15 @@ function toolsCapabilityRouter(args = {}) {
   const rawTools = [];
   const unavailableCapabilities = [];
 
-  const orderedCategories = categories.includes("structural_refactoring")
+  if (categories.includes("data_systems")) {
+    if (/\b(transform|convert|map columns?|rename columns?|filter rows?)\b/.test(text)) rawTools.push("vnem_tools_data_source_inspect", "vnem_tools_data_source_validate", "vnem_tools_data_transform_plan", "vnem_tools_data_transform_apply", "vnem_tools_data_transaction_rollback", "vnem_tools_data_source_diff");
+    else if (/\b(migration|migrate|alter table|create index|schema change|database write|rollback)\b/.test(text)) rawTools.push("vnem_tools_database_connection_plan", "vnem_tools_database_schema_inspect", "vnem_tools_database_migration_preview", "vnem_tools_database_migration_apply", "vnem_tools_data_transaction_rollback", "vnem_tools_database_query");
+    else rawTools.push("vnem_tools_database_connection_plan", "vnem_tools_data_source_inspect", "vnem_tools_data_source_validate", "vnem_tools_database_schema_inspect", "vnem_tools_database_query_plan", "vnem_tools_database_query");
+  }
+
+  const orderedCategories = taskType.includes("database") && categories.includes("data_systems")
+    ? ["data_systems", ...categories.filter((category) => category !== "data_systems")]
+    : categories.includes("structural_refactoring")
     ? ["structural_refactoring", ...categories.filter((category) => category !== "structural_refactoring")]
     : (localOnly || taskType.includes("implementation")) && categories.includes("coding_implementation")
       ? ["coding_implementation", ...categories.filter((category) => category !== "coding_implementation")]
@@ -3883,6 +4130,7 @@ function toolsTaskCategories(text, taskType, localOnly) {
   const add = (category) => { if (!categories.includes(category)) categories.push(category); };
   if (taskType.includes("debug") || /\b(debug|failing|failure|failed|error|stack trace|ci failure|regression)\b/.test(text)) add("debugging_failing_tests");
   if (taskType.includes("skill") || /\b(vetted skill|agent skill|skill adapter|skill runtime|skill doctor|skill package)\b/.test(text)) add("skill_adapters");
+  if (taskType.includes("database") || /\b(database|sqlite|postgres|mysql|mariadb|sqlserver|sql query|schema inspect|structured data|jsonl?|csv|yaml|tabular|migration)\b/.test(text)) add("data_systems");
   if (taskType.includes("repo") || /\b(repo|repository|inspect|map|state|branch|worktree)\b/.test(text)) add("repo_inspection");
   if (taskType.includes("patch") || /\b(patch|target|edit|change file|fix source|implementation site)\b/.test(text)) add("patch_targeting");
   if (/\b(semantic search|structural search|search code|find symbol|locate implementation)\b/.test(text)) add("structural_code_search");
@@ -3920,6 +4168,7 @@ function toolsRouteDefinitions() {
     precision_verification: { why: "Implementation proof needs bounded stateful commands and persistent red, green, or check loops.", tools: ["vnem_tools_verification_loop", "vnem_tools_terminal_session", "vnem_tools_ephemeral_script"] },
     permission_control: { why: "Permission changes need a narrow request, exact acknowledgment, scope evaluation, doctor proof, and revocation path.", tools: ["vnem_tools_permission_evaluate", "vnem_tools_permission_request", "vnem_tools_permission_grant", "vnem_tools_permission_doctor", "vnem_tools_permission_revoke"] },
     skill_adapters: { why: "Skill work needs a vetted catalog, package trust inspection, doctor readiness, exact runtime and permission planning, VNEM-owned execution, and optional pinned-source identity proof without executing Markdown.", tools: ["vnem_tools_skill_adapter_catalog", "vnem_tools_skill_package_inspect", "vnem_tools_skill_doctor", "vnem_tools_skill_adapter_plan", "vnem_tools_skill_adapter_execute", "vnem_tools_skill_source_verify"] },
+    data_systems: { why: "Database and structured-data work needs exact parser/engine and source hashes, schema and query plans, bounded redacted results, read-only defaults, and preview-bound backup/rollback evidence for writes.", tools: ["vnem_tools_database_connection_plan", "vnem_tools_data_source_inspect", "vnem_tools_data_source_validate", "vnem_tools_database_schema_inspect", "vnem_tools_database_query_plan", "vnem_tools_database_query", "vnem_tools_data_source_diff", "vnem_tools_data_transform_plan", "vnem_tools_data_transform_apply", "vnem_tools_database_migration_preview", "vnem_tools_database_migration_apply", "vnem_tools_data_transaction_rollback"] },
     mcp_tool_audit: { why: "MCP tool audit needs surface, coverage, catalog/readiness, and control-character checks.", tools: ["vnem_tools_mcp_surface_audit", "vnem_tools_tool_test_coverage_map", "vnem_tools_source_control_character_guard"] },
     code_intelligence: { why: "Code intelligence needs an incremental structural graph, exact bindings, symbols, MCP surface, patch targets, coverage, and source impact.", tools: ["vnem_tools_structural_index_build", "vnem_tools_structural_graph_query", "vnem_tools_exact_symbol_references", "vnem_tools_code_symbol_map", "vnem_tools_mcp_surface_audit", "vnem_tools_patch_target_finder", "vnem_tools_tool_test_coverage_map", "vnem_tools_source_impact_trace"] },
     structural_refactoring: { why: "Refactoring needs AST/binding evidence, hash-bound previews, collision and impact analysis, focused verification, post-reference proof, and exact rollback.", tools: ["vnem_tools_structural_index_build", "vnem_tools_exact_symbol_references", "vnem_tools_refactor_impact_analyze", "vnem_tools_refactor_rename_preview", "vnem_tools_refactor_move_preview", "vnem_tools_refactor_extract_plan", "vnem_tools_structural_patch_validate", "vnem_tools_refactor_apply_verify", "vnem_tools_refactor_transaction_rollback"] },
@@ -3967,6 +4216,18 @@ function toolsToolReason(toolName, categories) {
   if (toolName.includes("skill_adapter_plan")) return "validate bounded adapter input and exact runtime permission scope";
   if (toolName.includes("skill_adapter_execute")) return "run one VNEM-owned vetted handler under runtime-specific permission gates";
   if (toolName.includes("skill_source_verify")) return "compare pinned source identities without returning or executing source content";
+  if (toolName.includes("data_source_inspect")) return "inspect bounded structured data with schema inference and redacted samples";
+  if (toolName.includes("data_source_validate")) return "validate structured rows or SQLite schema against an explicit contract";
+  if (toolName.includes("data_source_diff")) return "compare schema and bounded row-key hashes without dumping changed values";
+  if (toolName.includes("data_transform_plan")) return "bind a declarative transform preview to exact source bytes";
+  if (toolName.includes("data_transform_apply")) return "apply a reviewed transform with transaction, backup, verification, and rollback evidence";
+  if (toolName.includes("database_connection_plan")) return "validate local scope or reference-only remote connection scope without exposing credentials";
+  if (toolName.includes("database_schema_inspect")) return "inspect bounded SQLite schema, indexes, foreign keys, views, and triggers";
+  if (toolName.includes("database_query_plan")) return "prove a single read-only query shape with SQLite EXPLAIN QUERY PLAN";
+  if (toolName.includes("database_query")) return "execute one bounded redacted query under SQLite query-only enforcement";
+  if (toolName.includes("database_migration_preview")) return "preview schema and affected-row changes in an in-memory transaction";
+  if (toolName.includes("database_migration_apply")) return "apply an exact fresh migration preview with backup and post-write verification";
+  if (toolName.includes("data_transaction_rollback")) return "restore exact pre-transaction bytes after stale-hash checks";
   if (toolName.includes("source_impact_trace")) return "trace impact to tests and readiness";
   if (toolName.includes("test_selection_plan")) return "choose focused checks";
   if (toolName.includes("github_actions_status")) return "verify Actions status";
@@ -3993,6 +4254,9 @@ function toolsRequiredInputsForTool(toolName, categories) {
   if (toolName.includes("game") || toolName.includes("mod_") || toolName.includes("roblox") || toolName.includes("luau")) inputs.push("exact game/tool version, platform, loader, and project root when known");
   if (toolName.includes("dependency")) inputs.push("package manager, owning manifest/lockfile, exact package/version, and approval scope when mutation is requested");
   if (toolName.includes("skill_")) inputs.push("adapter_id or local skill_path plus bounded adapter input");
+  if (toolName.includes("data_source") || toolName.includes("data_transform")) inputs.push("source path, exact format when ambiguous, and expected schema or declarative operations when relevant");
+  if (toolName.includes("database_")) inputs.push("local SQLite path or typed credential reference plus explicit remote scope; SQL or migration statements when relevant");
+  if (toolName.includes("transaction_rollback")) inputs.push("exact in-session transaction_id");
   if (toolName.includes("refactor") || toolName.includes("structural_")) inputs.push("project root plus exact file/symbol/change scope");
   if (categories.includes("evidence_proof_pack")) inputs.push("commands_run, tests_passed, tests_failed");
   return uniqueToolNames(inputs);
@@ -4007,6 +4271,7 @@ function toolsMissingInputs(categories, context, localOnly) {
   if (categories.includes("game_modding_toolchain") && !context.game_version) missing.push("game/tool version and loader/toolchain version when runtime compatibility matters");
   if (categories.includes("dependency_security") && !context.package_manager) missing.push("package manager and owning lockfile when mutation or exact resolution matters");
   if (categories.includes("skill_adapters") && !context.adapter_id && !context.skill_path) missing.push("adapter_id or local skill_path");
+  if (categories.includes("data_systems") && !context.path && !context.database_path && !context.connection) missing.push("structured-data path, SQLite path, or typed remote connection reference");
   if (categories.includes("structural_refactoring") && !context.changed_files && !context.symbol) missing.push("exact symbol or changed_files for refactor scope");
   return uniqueToolNames(missing);
 }
@@ -4020,6 +4285,7 @@ function toolsChecksForCategories(categories, changedFiles = []) {
   if (categories.includes("game_modding_toolchain")) checks.push("run vnem_tools_game_project_validate", "run the exact game/loader project check or report it unproven");
   if (categories.includes("dependency_security")) checks.push("run vnem_tools_dependency_inventory", "verify lockfile plus focused test/build scripts", "prove rollback or report mutation unperformed");
   if (categories.includes("skill_adapters")) checks.push("npm.cmd run test:tools-giga-skill-runtime", "npm.cmd run tools:readiness", "verify no upstream Markdown or untrusted scripts executed");
+  if (categories.includes("data_systems")) checks.push("npm.cmd run test:tools-giga-data-systems", "verify query/result bounds and redaction", "prove backup/rollback for any applied write");
   if (categories.includes("structural_refactoring")) checks.push("run vnem_tools_structural_patch_validate", "run focused refactor regression", "prove post-reference state and rollback hashes");
   if (changedFiles.some((file) => /package\.json|scripts\//.test(String(file)))) checks.push("npm.cmd run validate");
   return uniqueToolNames(checks).slice(0, 8);
@@ -4092,6 +4358,7 @@ function statusObject() {
     repo_power_policy: { tools: ["vnem_tools_repo_deep_map", "vnem_tools_next_action_ranker", "vnem_tools_no_placebo_progress_audit", "vnem_tools_change_impact_plan", "vnem_tools_test_selection_plan", "vnem_tools_failure_triage", "vnem_tools_evidence_pack", "vnem_tools_local_session_recovery", "vnem_tools_repo_workflow_orchestrator", "vnem_tools_code_symbol_map", "vnem_tools_mcp_surface_audit", "vnem_tools_patch_target_finder", "vnem_tools_tool_test_coverage_map", "vnem_tools_source_impact_trace", "vnem_tools_source_control_character_guard"], allowed_roots_only: true, secret_paths_blocked: true, compact_structured_output: true, no_live_github_required: true, no_placebo_detection: true, test_selection_avoids_overvalidation: true, local_session_recovery_supported: true, workflow_orchestrator_supported: true, code_intelligence_supported: true, source_control_character_guard_supported: true },
     research_sources_policy: { tools: ["vnem_tools_fetch_url_text", "vnem_tools_source_quality_check", "vnem_tools_research_brief", "vnem_tools_browser_research_pack", "vnem_tools_claim_source_matrix", "vnem_tools_research_gap_detector", "vnem_tools_source_map", "vnem_tools_source_extract", "vnem_tools_source_graph"], no_search_engine_scraping: true, external_fetch_dry_run_default: true, approval_required_for_real_external_fetch: true, no_login_cookie_session_use: true },
     current_documentation_policy: { tools: ["vnem_tools_documentation_source_catalog", "vnem_tools_official_documentation_fetch", "vnem_tools_documentation_context", "vnem_tools_documentation_cache_status"], official_domains_from_registry_only: true, unknown_domains_require_explicit_community_opt_in: true, conditional_cache_revalidation: true, stale_cache_reported: true, bounded_relevant_sections_only: true, contradictions_reported: true, http_success_alone_proves_authority_or_currentness: false },
+    data_systems_policy: { tools: ["vnem_tools_data_source_inspect", "vnem_tools_data_source_validate", "vnem_tools_data_source_diff", "vnem_tools_data_transform_plan", "vnem_tools_data_transform_apply", "vnem_tools_database_connection_plan", "vnem_tools_database_schema_inspect", "vnem_tools_database_query_plan", "vnem_tools_database_query", "vnem_tools_database_migration_preview", "vnem_tools_database_migration_apply", "vnem_tools_data_transaction_rollback"], structured_formats: ["SQLite", "JSON", "JSONL", "CSV", "YAML"], sqlite_engine: "sql.js 1.14.1 WebAssembly", read_only_default: true, max_sqlite_bytes: 33554432, max_structured_bytes: 16777216, max_result_rows: 500, max_result_bytes: 262144, secret_redaction: true, raw_remote_credentials_accepted_or_emitted: false, remote_execution_supported: false, approved_database_write_required_for_mutation: true, fresh_preview_required: true, transaction_backup_verification_rollback: true, active_sqlite_sidecars_block_mutation: true, cross_file_filesystem_atomicity_claimed: false },
     source_ingestion_policy: { tools: ["vnem_tools_source_map", "vnem_tools_source_extract", "vnem_tools_source_graph"], allowed_roots_only_for_local_sources: true, explicit_targets_only_for_extraction: true, secret_paths_blocked: true, broad_crawl_blocked: true, evidence_logged: true, source_graph_uses_provided_or_bounded_sources_only: true },
     debugging_code_quality_policy: { tools: ["vnem_tools_architecture_review", "vnem_tools_debug_evidence"], allowed_roots_only: true, secret_paths_blocked: true, no_arbitrary_commands: true, log_first_debugging: true, detects_parallel_fake_systems: true, flags_possible_dead_code: true, evidence_logged: true },
     search_provider_policy: { tools: ["vnem_tools_search_provider_manifest", "vnem_tools_search_query_builder", "vnem_tools_web_search", "vnem_tools_search_result_ranker"], local_fixture_available_for_tests: true, provider_keys_detected_by_presence_only: true, provider_unavailable_returns_structured_status: true, no_search_engine_result_page_scraping: true, no_fake_search_results: true },
@@ -4330,7 +4597,7 @@ async function searchAllowedFiles(args) {
   return { root: root.relativePath || ".", query: args.query, results, skipped_policy: skippedPolicy() };
 }
 
-const TOOL_CAPABILITY_GROUPS = ["permissions", "filesystem", "project_intelligence", "app_engineering", "repo_power", "adoption_reliability", "structural_code", "structural_refactoring", "patching", "rollback", "commands", "project_tasks", "dev_server", "browser_proof", "browser_intelligence", "ui_web_quality", "windows_local", "game_domain", "dependency_security", "api_connectors", "skill_adapters", "current_documentation", "api_request", "search", "research_sources", "source_quality", "browsing_risk", "research_matrix", "source_ingestion", "debugging_code_quality", "session_evidence", "local_git", "github_autonomy", "status_readiness", "cloudflare_control", "tools_quality", "tool_intelligence"];
+const TOOL_CAPABILITY_GROUPS = ["permissions", "filesystem", "project_intelligence", "app_engineering", "repo_power", "adoption_reliability", "structural_code", "structural_refactoring", "patching", "rollback", "commands", "project_tasks", "dev_server", "browser_proof", "browser_intelligence", "ui_web_quality", "windows_local", "game_domain", "dependency_security", "api_connectors", "skill_adapters", "current_documentation", "data_systems", "api_request", "search", "research_sources", "source_quality", "browsing_risk", "research_matrix", "source_ingestion", "debugging_code_quality", "session_evidence", "local_git", "github_autonomy", "status_readiness", "cloudflare_control", "tools_quality", "tool_intelligence"];
 
 function buildToolCatalog() {
   const commonUnsafe = ["secret reading/dumping", "outside-root access", "arbitrary shell", "package installs", "git push", "deployment", "Giga MCP"];
@@ -4502,6 +4769,18 @@ function buildToolCatalog() {
     mk("vnem_tools_official_documentation_fetch", "current_documentation", { network: true, requires_approval: true, description: "Retrieve bounded relevant documentation with exact domain authority, conditional cache, source date/version evidence, stale status, redaction, and no full-page output.", typical_use_cases: ["current framework API lookup", "version-aware implementation context"], unsafe_actions_blocked: [...commonUnsafe, "unknown-domain authority", "cross-origin redirects", "full-page context dumps", "HTTP-success currentness claims"] }),
     mk("vnem_tools_documentation_context", "current_documentation", { description: "Build bounded task-scoped documentation context, prefer stronger sources, and expose heuristic contradiction evidence without another request.", typical_use_cases: ["read before write", "official/community claim comparison"], unsafe_actions_blocked: [...commonUnsafe, "full-page injection", "semantic completeness claims"] }),
     mk("vnem_tools_documentation_cache_status", "current_documentation", { description: "Inspect persisted cache timestamps, hashes, validators, and stale state without returning cached page bodies.", typical_use_cases: ["cache freshness audit", "revalidation planning"], unsafe_actions_blocked: [...commonUnsafe, "cached body output", "freshness claims outside the selected age bound"] }),
+    mk("vnem_tools_data_source_inspect", "data_systems", { description: "Inspect bounded SQLite, JSON, JSONL, CSV, or YAML with exact source hash, parser identity, inferred schema, redacted preview, and explicit limits.", typical_use_cases: ["tabular inspection", "structured-data schema inference"], unsafe_actions_blocked: [...commonUnsafe, "secret value output", "unbounded file loading"] }),
+    mk("vnem_tools_data_source_validate", "data_systems", { description: "Validate bounded structured rows or SQLite schema against an explicit expected contract with issue limits and source-hash evidence.", typical_use_cases: ["schema validation", "data quality preflight"], unsafe_actions_blocked: [...commonUnsafe, "silent coercion", "validation completeness beyond configured bounds"] }),
+    mk("vnem_tools_data_source_diff", "data_systems", { description: "Compare bounded structured sources by inferred schema and row-key hashes while redacting changed values.", typical_use_cases: ["dataset change review", "schema drift evidence"], unsafe_actions_blocked: [...commonUnsafe, "raw changed-value dumps", "unbounded diffing"] }),
+    mk("vnem_tools_data_transform_plan", "data_systems", { description: "Preview a declarative select, rename, filter, constant, sort, or limit transform bound to exact source bytes and output scope.", typical_use_cases: ["CSV to JSON planning", "bounded column mapping"], unsafe_actions_blocked: [...commonUnsafe, "arbitrary code execution", "unreviewed output writes"] }),
+    mk("vnem_tools_data_transform_apply", "data_systems", { read_only: false, mutation: true, requires_approval: true, dry_run_default: true, description: "Apply an exact in-session structured-data transform with approved database-write scope, backup, hash verification, retained evidence, and rollback.", typical_use_cases: ["approved data conversion", "verified local structured-data write"], unsafe_actions_blocked: [...commonUnsafe, "stale plan apply", "unapproved write", "outside-root output"] }),
+    mk("vnem_tools_database_connection_plan", "data_systems", { description: "Validate a bounded local SQLite connection or a typed reference-only remote database scope without opening remote traffic or accepting raw credentials.", typical_use_cases: ["database scope preflight", "remote credential-reference planning"], unsafe_actions_blocked: [...commonUnsafe, "raw credentials", "remote connection execution", "implicit write access"] }),
+    mk("vnem_tools_database_schema_inspect", "data_systems", { description: "Inspect bounded local SQLite tables, columns, indexes, foreign keys, views, triggers, and optional row counts without returning table values.", typical_use_cases: ["SQLite schema map", "migration preflight"], unsafe_actions_blocked: [...commonUnsafe, "remote database access", "row value output"] }),
+    mk("vnem_tools_database_query_plan", "data_systems", { description: "Validate one parameterized read-only SQLite statement and return EXPLAIN QUERY PLAN under bounded query-only enforcement.", typical_use_cases: ["query safety review", "SQLite access-plan evidence"], unsafe_actions_blocked: [...commonUnsafe, "DML or DDL", "multiple statements", "raw parameter values"] }),
+    mk("vnem_tools_database_query", "data_systems", { description: "Execute one parameterized read-only local SQLite query with query-only pragma, row/column/byte limits, recursive redaction, and evidence.", typical_use_cases: ["bounded data lookup", "read-only query verification"], unsafe_actions_blocked: [...commonUnsafe, "DML or DDL", "unbounded result output", "secret value output"] }),
+    mk("vnem_tools_database_migration_preview", "data_systems", { description: "Preview a reviewed subset of SQLite schema or row mutations inside an in-memory transaction with affected-row and schema-diff evidence.", typical_use_cases: ["migration review", "affected-row preview"], unsafe_actions_blocked: [...commonUnsafe, "disk mutation", "UPDATE or DELETE without WHERE", "ATTACH, PRAGMA, VACUUM, or REINDEX"] }),
+    mk("vnem_tools_database_migration_apply", "data_systems", { read_only: false, mutation: true, requires_approval: true, dry_run_default: true, description: "Apply an exact fresh SQLite migration preview under approved database-write scope with backup, transaction, integrity/schema verification, automatic failure restore, and rollback evidence.", typical_use_cases: ["approved local SQLite migration", "verified schema update"], unsafe_actions_blocked: [...commonUnsafe, "active WAL or concurrent-writer mutation", "stale preview", "remote database mutation"] }),
+    mk("vnem_tools_data_transaction_rollback", "data_systems", { read_only: false, mutation: true, requires_approval: true, dry_run_default: true, description: "Restore exact pre-transform or pre-migration bytes from an in-session retained backup after current-target hash checks.", typical_use_cases: ["structured-data rollback", "SQLite migration rollback"], unsafe_actions_blocked: [...commonUnsafe, "stale overwrite", "cross-session or cross-target restore"] }),
     mk("vnem_tools_ui_evidence_audit", "ui_web_quality", { description: "Audit provided UI evidence and reject unsupported visual/browser claims.", allowed_roots_required: false, evidence_logged: true, typical_use_cases: ["final UI claim audit", "responsive/a11y/state proof review"], unsafe_actions_blocked: [...commonUnsafe, "inventing browser results", "accepting code-only visual proof"] }),
     mk("vnem_tools_start_session", "session_evidence", { read_only: false, mutation: true, description: "Start session proof pack.", typical_use_cases: ["group local workflow evidence"] }),
     mk("vnem_tools_finish_session", "session_evidence", { read_only: false, mutation: true, description: "Write session proof pack.", typical_use_cases: ["final evidence summary"] }),
@@ -6507,11 +6786,9 @@ async function scanToolCoverage(root, toolNames, options = {}) {
       if (!file.text.includes(toolName)) continue;
       mentionFiles.push(file.path);
       const behaviorRe = new RegExp(`(callTool\\s*\\(\\s*\\{[^}]*name\\s*:\\s*["']${escaped}["']|call\\s*\\(\\s*client\\s*,\\s*["']${escaped}["'])`, "s");
-      const wrapperBehaviorRe = file.behavior_wrappers.length
-        ? new RegExp(`\\b(?:${file.behavior_wrappers.map(escapeRegExp).join("|")})\\s*\\(\\s*["']${escaped}["']`)
-        : null;
+      const wrapperBehavior = file.behavior_wrappers.some((wrapper) => behaviorWrapperCallPattern(wrapper, `["']${escaped}["']`).test(file.text));
       const registrationOnlyRe = new RegExp(`(listTools|tools\\.has|manifest\\.tools|includes\\s*\\(\\s*["']${escaped}["'])`, "s");
-      if (behaviorRe.test(file.text) || wrapperBehaviorRe?.test(file.text)) behaviorFiles.push(file.path);
+      if (behaviorRe.test(file.text) || wrapperBehavior) behaviorFiles.push(file.path);
       else if (registrationOnlyRe.test(file.text)) registrationFiles.push(file.path);
     }
     const packageMatches = packageScripts.filter((script) => script.includes(toolName) || script.toLowerCase().includes(toolName.replace("vnem_tools_", "").replace(/_/g, "-")));
@@ -6533,24 +6810,34 @@ async function scanToolCoverage(root, toolNames, options = {}) {
 
 function behaviorCallWrappers(source) {
   const text = String(source || "");
-  const declarations = [...text.matchAll(/(?:^|\n)(?:export\s+)?(?:async\s+)?function\s+([A-Za-z_$][\w$]*)\s*\(\s*name\b[^)]*\)\s*\{/g)];
+  const declarations = [...text.matchAll(/(?:^|\n)(?:export\s+)?(?:async\s+)?function\s+([A-Za-z_$][\w$]*)\s*\(([^)]*)\)\s*\{/g)];
   const functions = declarations.map((match, index) => ({
     name: match[1],
+    parameters: match[2].split(",").map((value) => value.trim().replace(/\s*=.*$/, "")),
     body: text.slice(match.index, declarations[index + 1]?.index ?? text.length)
   }));
-  const wrappers = new Set(functions.filter((item) => /\bclient\.callTool\s*\(\s*\{\s*name\b/.test(item.body)).map((item) => item.name));
+  const wrappers = new Map();
+  for (const item of functions) {
+    const nameArgumentIndex = item.parameters.indexOf("name");
+    if (nameArgumentIndex >= 0 && /\b[A-Za-z_$][\w$]*\.callTool\s*\(\s*\{\s*name\b/.test(item.body)) wrappers.set(item.name, { name: item.name, name_argument_index: nameArgumentIndex });
+  }
   let changed = true;
   while (changed && wrappers.size) {
     changed = false;
-    const delegatedCall = new RegExp(`\\b(?:${[...wrappers].map(escapeRegExp).join("|")})\\s*\\(\\s*name\\b`);
     for (const item of functions) {
-      if (!wrappers.has(item.name) && delegatedCall.test(item.body)) {
-        wrappers.add(item.name);
+      const nameArgumentIndex = item.parameters.indexOf("name");
+      if (nameArgumentIndex >= 0 && !wrappers.has(item.name) && [...wrappers.values()].some((wrapper) => behaviorWrapperCallPattern(wrapper, "name\\b").test(item.body))) {
+        wrappers.set(item.name, { name: item.name, name_argument_index: nameArgumentIndex });
         changed = true;
       }
     }
   }
-  return [...wrappers];
+  return [...wrappers.values()];
+}
+
+function behaviorWrapperCallPattern(wrapper, namePattern) {
+  const precedingArguments = "[^,\\n]+,\\s*".repeat(wrapper.name_argument_index);
+  return new RegExp(`\\b${escapeRegExp(wrapper.name)}\\s*\\(\\s*${precedingArguments}${namePattern}`);
 }
 
 function safeJsonParse(text) {
@@ -11058,6 +11345,23 @@ function formatSkillAdapter(name, result) {
   ].filter(Boolean).join("\n");
 }
 
+function formatDataSystems(name, result) {
+  return [
+    `${name}: ${result.operation_result || "completed"}`,
+    result.source?.relative_path ? `Source: ${result.source.relative_path}` : null,
+    result.connection_type ? `Connection: ${result.connection_type}` : null,
+    Number.isInteger(result.row_count) ? `Rows: ${result.row_count}` : null,
+    Number.isInteger(result.rows_returned) ? `Rows returned: ${result.rows_returned}` : null,
+    result.read_only === true ? "Read only: yes" : null,
+    result.plan_id ? `Plan: ${result.plan_id}` : null,
+    result.preview_id ? `Preview: ${result.preview_id}` : null,
+    result.transaction_id ? `Transaction: ${result.transaction_id}` : null,
+    result.executed === true ? "Executed: yes" : result.executed === false ? "Executed: no" : null,
+    result.rollback_available === true ? "Rollback: available" : null,
+    result.secret_parameter_values_exposed === false || result.raw_credentials_accepted === false ? "Secret values exposed: no" : null
+  ].filter(Boolean).join("\n");
+}
+
 async function withToolErrors(fn) {
   try {
     return await fn();
@@ -11073,6 +11377,7 @@ async function withToolErrors(fn) {
     if (error instanceof StructuralCodeError) return errorResult(error.message, error.code, error.details);
     if (error instanceof ApiConnectorError) return errorResult(error.message, error.code, error.details);
     if (error instanceof SkillAdapterError) return errorResult(error.message, error.code, error.details);
+    if (error instanceof DataSystemsError) return errorResult(error.message, error.code, error.details);
     return errorResult(error.message || String(error), "tools_unexpected_error");
   }
 }

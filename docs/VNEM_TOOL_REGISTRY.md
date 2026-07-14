@@ -2,9 +2,9 @@
 
 Generated from live MCP runtime registries. Do not edit this table manually.
 
-- Total tools: 303
+- Total tools: 315
 - Registry valid: true
-- Missing behavior-test references: 16
+- Missing behavior-test references: 11
 
 | Server | Tool | Category | Side effect | Permissions | Evidence | Rollback | Implementation |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -202,6 +202,18 @@ Generated from live MCP runtime registries. Do not edit this table manually.
 | tools | `vnem_tools_skill_adapter_plan` | skill | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_skill_adapter_execute` | skill | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_skill_source_verify` | source | read_only | approved_network_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_data_source_inspect` | source | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_data_source_validate` | source | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_data_source_diff` | source | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_data_transform_plan` | data | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_data_transform_apply` | data | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_database_connection_plan` | database | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_database_schema_inspect` | database | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_database_query_plan` | database | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_database_query` | database | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_database_migration_preview` | database | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_database_migration_apply` | database | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_data_transaction_rollback` | data | destructive_mutation | approved_local_mutation | required_redacted_record | self | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_api_request` | api | network_mutation | approved_network_mutation, scoped_credential_reference | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_browser_capture` | browser | read_only | approved_network_read | optional | not_required | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_browser_page_inspect` | browser | read_only | approved_network_read | optional | not_required | scripts/vnem/tools/server.mjs |

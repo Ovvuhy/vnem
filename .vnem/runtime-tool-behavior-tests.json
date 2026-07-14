@@ -225,11 +225,22 @@
         "scripts/test-tools-giga-structural-code.mjs",
         "scripts/test-tools-scoped-permissions.mjs"
       ],
-      "vnem_tools_adoption_readiness": [],
-      "vnem_tools_visibility_doctor": [],
-      "vnem_tools_underuse_detector": [],
-      "vnem_tools_install_profile_emit": [],
-      "vnem_tools_install_doctor": [],
+      "vnem_tools_adoption_readiness": [
+        "scripts/test-vnem-adoption-reliability-1-regression.mjs",
+        "scripts/test-vnem-adoption-reliability-2-regression.mjs"
+      ],
+      "vnem_tools_visibility_doctor": [
+        "scripts/test-vnem-adoption-reliability-2-regression.mjs"
+      ],
+      "vnem_tools_underuse_detector": [
+        "scripts/test-vnem-adoption-reliability-2-regression.mjs"
+      ],
+      "vnem_tools_install_profile_emit": [
+        "scripts/test-vnem-install-adoption-1-regression.mjs"
+      ],
+      "vnem_tools_install_doctor": [
+        "scripts/test-vnem-install-adoption-1-regression.mjs"
+      ],
       "vnem_tools_permission_profiles": [
         "scripts/test-tools-permission-profiles.mjs"
       ],
@@ -630,6 +641,42 @@
       ],
       "vnem_tools_skill_source_verify": [
         "scripts/test-tools-giga-skill-runtime.mjs"
+      ],
+      "vnem_tools_data_source_inspect": [
+        "scripts/test-tools-giga-data-systems.mjs"
+      ],
+      "vnem_tools_data_source_validate": [
+        "scripts/test-tools-giga-data-systems.mjs"
+      ],
+      "vnem_tools_data_source_diff": [
+        "scripts/test-tools-giga-data-systems.mjs"
+      ],
+      "vnem_tools_data_transform_plan": [
+        "scripts/test-tools-giga-data-systems.mjs"
+      ],
+      "vnem_tools_data_transform_apply": [
+        "scripts/test-tools-giga-data-systems.mjs"
+      ],
+      "vnem_tools_database_connection_plan": [
+        "scripts/test-tools-giga-data-systems.mjs"
+      ],
+      "vnem_tools_database_schema_inspect": [
+        "scripts/test-tools-giga-data-systems.mjs"
+      ],
+      "vnem_tools_database_query_plan": [
+        "scripts/test-tools-giga-data-systems.mjs"
+      ],
+      "vnem_tools_database_query": [
+        "scripts/test-tools-giga-data-systems.mjs"
+      ],
+      "vnem_tools_database_migration_preview": [
+        "scripts/test-tools-giga-data-systems.mjs"
+      ],
+      "vnem_tools_database_migration_apply": [
+        "scripts/test-tools-giga-data-systems.mjs"
+      ],
+      "vnem_tools_data_transaction_rollback": [
+        "scripts/test-tools-giga-data-systems.mjs"
       ],
       "vnem_tools_api_request": [
         "scripts/test-tools-high-power-action-review.mjs",

@@ -253,6 +253,38 @@ try {
   }
   assert.equal(documentation.permission_implications.network_approval_may_be_required, true);
 
+  const database = await call(core.client, "vnem_entrypoint", {
+    user_goal: "Inspect and validate this SQLite database, inspect its schema, plan one bounded read-only query, and return redacted results.",
+    task_context: "Local SQLite and structured JSON data; read-only by default with strict result limits.",
+    task_mode: "database",
+    available_mcp_names: ["vnem", "vnem-tools"],
+    available_tool_names: [...toolNames],
+    allowed_tool_names: [...toolNames],
+    environment: { os: "Windows 11", database_engine: "SQLite", file_format: "SQLite and JSON" }
+  }, "entrypoint");
+  assert.equal(database.task_classification.primary_domain, "database_data");
+  for (const tool of ["vnem_tools_database_connection_plan", "vnem_tools_data_source_inspect", "vnem_tools_data_source_validate", "vnem_tools_database_schema_inspect", "vnem_tools_database_query_plan", "vnem_tools_database_query"]) {
+    assert.ok(database.recommended_tools_calls.includes(tool), `missing Phase 19 database route ${tool}`);
+  }
+  assert.equal(database.recommended_tools_calls.length, 6);
+  assert.match(database.permission_implications.database_scope, /database_read/);
+  assert.equal(database.adapter_selection[0].readiness, "bounded_local_read_ready");
+  assert.ok(database.completion_criteria.some((item) => item.id === "database_safety"));
+
+  const databaseMigration = await call(core.client, "vnem_entrypoint", {
+    user_goal: "Preview and apply a reviewed SQLite schema migration, verify affected rows, and retain exact rollback proof.",
+    task_context: "Local SQLite migration with approved database_write scope, transaction, backup, and post-write verification.",
+    task_mode: "database",
+    available_mcp_names: ["vnem", "vnem-tools"],
+    available_tool_names: [...toolNames],
+    allowed_tool_names: [...toolNames]
+  }, "entrypoint");
+  for (const tool of ["vnem_tools_database_connection_plan", "vnem_tools_database_schema_inspect", "vnem_tools_database_migration_preview", "vnem_tools_database_migration_apply", "vnem_tools_data_transaction_rollback", "vnem_tools_database_query"]) {
+    assert.ok(databaseMigration.recommended_tools_calls.includes(tool), `missing Phase 19 migration route ${tool}`);
+  }
+  assert.match(databaseMigration.permission_implications.database_scope, /database_write/);
+  assert.match(databaseMigration.adapter_selection[0].readiness, /fresh_preview_database_write_backup_and_rollback/);
+
   const compatibility = await call(core.client, "vnem_compatibility_assess", {
     task: "Run a Codex MCP server over stdio on Windows PowerShell with Node.",
     environment: { os: "Windows 11", shell: "PowerShell 7", node_version: "24", client: "Codex", mcp_transport: "stdio" },

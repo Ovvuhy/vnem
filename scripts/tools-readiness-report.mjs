@@ -35,6 +35,8 @@ const skillRuntimeTestPath = rel("scripts/test-tools-giga-skill-runtime.mjs");
 const skillRuntimeModulePath = rel("scripts/vnem/tools/skill-runtime.mjs");
 const currentDocumentationTestPath = rel("scripts/test-tools-giga-current-documentation.mjs");
 const documentationIntelligencePath = rel("scripts/vnem/precision/documentation-intelligence.mjs");
+const dataSystemsTestPath = rel("scripts/test-tools-giga-data-systems.mjs");
+const dataSystemsModulePath = rel("scripts/vnem/tools/data-systems.mjs");
 const projectAutomationTestPath = rel("scripts/test-tools-giga-project-automation.mjs");
 const projectAutomationModulePath = rel("scripts/vnem/tools/project-automation.mjs");
 const projectAutomationFixturePath = rel("fixtures/project-automation/package.json");
@@ -145,6 +147,8 @@ const skillRuntimeTest = existsSync(skillRuntimeTestPath) ? readFileSync(skillRu
 const skillRuntimeModule = existsSync(skillRuntimeModulePath) ? readFileSync(skillRuntimeModulePath, "utf8") : "";
 const currentDocumentationTest = existsSync(currentDocumentationTestPath) ? readFileSync(currentDocumentationTestPath, "utf8") : "";
 const documentationIntelligence = existsSync(documentationIntelligencePath) ? readFileSync(documentationIntelligencePath, "utf8") : "";
+const dataSystemsTest = existsSync(dataSystemsTestPath) ? readFileSync(dataSystemsTestPath, "utf8") : "";
+const dataSystemsModule = existsSync(dataSystemsModulePath) ? readFileSync(dataSystemsModulePath, "utf8") : "";
 const projectAutomationTest = existsSync(projectAutomationTestPath) ? readFileSync(projectAutomationTestPath, "utf8") : "";
 const projectAutomationModule = existsSync(projectAutomationModulePath) ? readFileSync(projectAutomationModulePath, "utf8") : "";
 const testingCiTest = existsSync(testingCiTestPath) ? readFileSync(testingCiTestPath, "utf8") : "";
@@ -821,6 +825,18 @@ const report = {
   current_documentation_contradiction_status: /detectDocumentationContradictions/.test(documentationIntelligence) && /preferred_source_url/.test(documentationIntelligence + currentDocumentationTest) && /Contradictions requiring review/.test(documentationIntelligence + currentDocumentationTest),
   current_documentation_core_routing_status: ["vnem_tools_documentation_source_catalog", "vnem_tools_official_documentation_fetch", "vnem_tools_documentation_context", "vnem_tools_documentation_cache_status"].every((tool) => coreIntelligence.includes(tool) && currentDocumentationTest.includes(tool)) && /Phase 18 current documentation route/.test(readFileSync(rel("scripts/test-core-giga-intelligence.mjs"), "utf8")),
   current_documentation_real_mcp_proof_status: /StdioClientTransport/.test(currentDocumentationTest) && /real_stdio_mcp: true/.test(currentDocumentationTest) && /VNEM GIGA Phase 18 current documentation tests passed/.test(currentDocumentationTest),
+  data_systems_module_status: /class DataSystemsRuntime/.test(dataSystemsModule) && /DataSystemsError/.test(server + dataSystemsModule) && /data_systems_policy/.test(server) && pkg.dependencies?.["sql.js"] === "1.14.1",
+  data_systems_format_status: /formats_proven: \["SQLite", "JSON", "JSONL", "CSV", "YAML"\]/.test(dataSystemsTest) && /yaml\.FAILSAFE_SCHEMA/.test(dataSystemsModule) && /sql\.js SQLite WebAssembly/.test(dataSystemsModule),
+  data_systems_inspection_validation_diff_status: /sourceInspect/.test(dataSystemsModule) && /sourceValidate/.test(dataSystemsModule) && /sourceDiff/.test(dataSystemsModule) && /schema_inference: true/.test(dataSystemsTest) && /diffing: true/.test(dataSystemsTest),
+  data_systems_transform_transaction_status: /transformPlan/.test(dataSystemsModule) && /transformApply/.test(dataSystemsModule) && /writeTransactionalFile/.test(dataSystemsModule) && /transformation_apply_and_rollback: true/.test(dataSystemsTest),
+  data_systems_connection_scope_status: /normalizeCredentialReference/.test(dataSystemsModule) && /normalizeRemoteScope/.test(dataSystemsModule) && /raw_credentials_accepted: false/.test(dataSystemsModule) && /remote_credential_reference_and_scope/.test(dataSystemsTest),
+  data_systems_query_safety_status: /PRAGMA query_only/.test(dataSystemsModule) && /EXPLAIN QUERY PLAN/.test(dataSystemsModule) && /MAX_RESULT_ROWS/.test(dataSystemsModule) && /MAX_RESULT_BYTES/.test(dataSystemsModule) && /sqlite_query_only_enforced: true/.test(dataSystemsTest),
+  data_systems_migration_preview_status: /migrationPreview/.test(dataSystemsModule) && /transaction_executed_in_memory_only/.test(dataSystemsModule) && /database_migration_where_required/.test(dataSystemsModule + dataSystemsTest) && /database_migration_capability_blocked/.test(dataSystemsModule + dataSystemsTest),
+  data_systems_migration_transaction_status: /migrationApply/.test(dataSystemsModule) && /verifySqliteFile/.test(dataSystemsModule) && /database_migration_verification_failed_rolled_back/.test(dataSystemsModule) && /migration_backup_verify_rollback/.test(dataSystemsTest),
+  data_systems_concurrency_boundary_status: /database_active_sidecar_blocked/.test(dataSystemsModule + dataSystemsTest) && /active_sqlite_sidecars_block_mutation: true/.test(server) && /[Cc]oncurrent writers/.test(dataSystemsModule) && /sidecar_concurrency_block: true/.test(dataSystemsTest),
+  data_systems_secret_redaction_status: /redactDeep/.test(dataSystemsModule) && /redactRows/.test(dataSystemsModule) && /raw_secret_values_in_evidence: false/.test(dataSystemsModule) && /secret_redaction/.test(dataSystemsTest),
+  data_systems_core_routing_status: ["vnem_tools_database_connection_plan", "vnem_tools_data_source_inspect", "vnem_tools_data_source_validate", "vnem_tools_database_schema_inspect", "vnem_tools_database_query_plan", "vnem_tools_database_query"].every((tool) => coreIntelligence.includes(tool) && dataSystemsTest.includes(tool)) && /Phase 19 database route/.test(readFileSync(rel("scripts/test-core-giga-intelligence.mjs"), "utf8")),
+  data_systems_real_mcp_proof_status: /StdioClientTransport/.test(dataSystemsTest) && /real_stdio_mcp: true/.test(dataSystemsTest) && /VNEM GIGA Phase 19 data systems tests passed/.test(dataSystemsTest),
   github_dry_run_status: /dry_run !== false/.test(server) && /must not/.test(toolsGithubMutationDryRunTest),
   github_config_knob_status: /config_knob_to_change/.test(server) && /VNEM_TOOLS_GITHUB_ALLOW_DIRECT_PUSH/.test(toolsGithubMutationDryRunTest + server) && /VNEM_TOOLS_GITHUB_ALLOW_ACTIONS_RERUN/.test(toolsGithubMutationDryRunTest + server),
   github_secret_file_block_status: /githubSecretFileBlocked/.test(server) && /Secret-like file blocked/.test(server) && /scanGithubCommitContent/.test(server) && /Secret-like content blocked/.test(server + githubDevelopmentTest) && /\.env/.test(toolsGithubMutationDryRunTest + server),
@@ -1530,6 +1546,7 @@ for (const key of ["structural_code_module_status", "structural_code_architectur
 for (const key of ["api_connector_module_status", "api_connector_contract_status", "api_connector_initial_adapters_status", "api_connector_permission_broker_status", "api_connector_execution_bounds_status", "api_connector_mock_live_status", "api_connector_mutation_compensation_status", "api_connector_generation_review_status", "api_connector_core_routing_status", "api_connector_real_mcp_proof_status"]) console.log(`${key}: ${yes(report[key])}`);
 for (const key of ["skill_runtime_module_status", "skill_runtime_contract_status", "skill_runtime_initial_adapters_status", "skill_runtime_categories_status", "skill_runtime_safe_default_status", "skill_runtime_package_safety_status", "skill_runtime_doctor_status", "skill_runtime_source_pinning_status", "skill_runtime_command_gate_status", "skill_runtime_core_routing_status", "skill_runtime_real_mcp_proof_status", "skill_runtime_coverage_mapper_status"]) console.log(`${key}: ${yes(report[key])}`);
 for (const key of ["current_documentation_module_status", "current_documentation_source_authority_status", "current_documentation_cache_status", "current_documentation_bounds_status", "current_documentation_contradiction_status", "current_documentation_core_routing_status", "current_documentation_real_mcp_proof_status"]) console.log(`${key}: ${yes(report[key])}`);
+for (const key of ["data_systems_module_status", "data_systems_format_status", "data_systems_inspection_validation_diff_status", "data_systems_transform_transaction_status", "data_systems_connection_scope_status", "data_systems_query_safety_status", "data_systems_migration_preview_status", "data_systems_migration_transaction_status", "data_systems_concurrency_boundary_status", "data_systems_secret_redaction_status", "data_systems_core_routing_status", "data_systems_real_mcp_proof_status"]) console.log(`${key}: ${yes(report[key])}`);
 console.log(`project_task_status: ${yes(report.project_task_status)}`);
 console.log(`dev_server_status: ${yes(report.dev_server_status)}`);
 console.log(`session_evidence_status: ${yes(report.session_evidence_status)}`);

@@ -38,6 +38,7 @@
     "test:tools-giga-api-connectors": "node scripts/test-tools-giga-api-connectors.mjs",
     "test:tools-giga-skill-runtime": "node scripts/test-tools-giga-skill-runtime.mjs",
     "test:tools-giga-current-documentation": "node scripts/test-tools-giga-current-documentation.mjs",
+    "test:tools-giga-data-systems": "node scripts/test-tools-giga-data-systems.mjs",
     "test:tools-giga-project-automation": "node scripts/test-tools-giga-project-automation.mjs",
     "test:tools-git-session": "node scripts/test-tools-git-session.mjs",
     "test:tools-intelligence": "node scripts/test-tools-intelligence.mjs",
@@ -315,6 +316,8 @@
     "giga:phase17-live-source-proof": "node scripts/test-tools-giga-skill-runtime.mjs --live --benchmark-output=.vnem/giga-evolution/phase-17/live-source-proof.json",
     "giga:phase18-benchmark": "node scripts/test-tools-giga-current-documentation.mjs --benchmark-output=.vnem/giga-evolution/phase-18/current-documentation-benchmark.json",
     "giga:phase18-live-docs-proof": "node scripts/test-tools-giga-current-documentation.mjs --live --benchmark-output=.vnem/giga-evolution/phase-18/live-documentation-proof.json",
+    "giga:phase19-benchmark": "node scripts/test-tools-giga-data-systems.mjs --benchmark-output=.vnem/giga-evolution/phase-19/data-systems-benchmark.json",
+    "giga:phase19-capability": "node scripts/vnem/giga/capability-benchmark.mjs --output=.vnem/giga-evolution/phase-19/capability-benchmark.json",
     "test:clients:setup": "node scripts/test-vnem-client-setup.mjs"
   },
   "dependencies": {
@@ -334,6 +337,7 @@
     "lucide-react": "^1.16.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
+    "sql.js": "1.14.1",
     "tweetnacl": "^1.0.3",
     "ws": "^8.21.0",
     "zod": "^4.4.3"

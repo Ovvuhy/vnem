@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.0.0",
+  "phase": 19,
+  "feature": "databases_and_structured_data",
+  "captured_at": "2026-07-14T18:32:13.304Z",
+  "real_stdio_mcp": true,
+  "tools_exercised": [
+    "vnem_tools_data_source_inspect",
+    "vnem_tools_data_source_validate",
+    "vnem_tools_data_source_diff",
+    "vnem_tools_data_transform_plan",
+    "vnem_tools_data_transform_apply",
+    "vnem_tools_database_connection_plan",
+    "vnem_tools_database_schema_inspect",
+    "vnem_tools_database_query_plan",
+    "vnem_tools_database_query",
+    "vnem_tools_database_migration_preview",
+    "vnem_tools_database_migration_apply",
+    "vnem_tools_data_transaction_rollback"
+  ],
+  "formats_proven": [
+    "SQLite",
+    "JSON",
+    "JSONL",
+    "CSV",
+    "YAML"
+  ],
+  "timings_ms": {
+    "json_inspect_ms": 19.87,
+    "transform_plan_ms": 13.88,
+    "transform_apply_ms": 15.4,
+    "sqlite_schema_ms": 94.88,
+    "sqlite_query_plan_ms": 29.68,
+    "sqlite_query_ms": 57.22,
+    "sqlite_migration_preview_ms": 36.51,
+    "sqlite_migration_apply_ms": 76.73,
+    "sqlite_rollback_ms": 9.04
+  },
+  "proof": {
+    "tabular_inspection": true,
+    "schema_inference": true,
+    "validation": true,
+    "diffing": true,
+    "transformation_apply_and_rollback": true,
+    "sqlite_schema_and_query_plan": true,
+    "sqlite_query_only_enforced": true,
+    "migration_preview_affected_rows": true,
+    "migration_backup_verify_rollback": true,
+    "secret_redaction": true,
+    "remote_credential_reference_and_scope": true,
+    "safe_readonly_write_denial": true,
+    "sidecar_concurrency_block": true,
+    "behavior_coverage_mapper_for_twelve_tools": true
+  },
+  "mutation_boundaries": {
+    "remote_database_connection": false,
+    "raw_credentials": false,
+    "unpreviewed_write": false,
+    "write_without_permission": false,
+    "write_without_backup": false,
+    "write_without_rollback": false,
+    "active_wal_write": false,
+    "arbitrary_sql_mutation": false
+  },
+  "limitations": [
+    "SQLite is loaded into bounded memory through sql.js and mutation refuses active sidecars or concurrent-writer claims.",
+    "Remote database plans validate references and scope but do not execute network connections.",
+    "CSV parsing is a bounded RFC 4180-style implementation; schema inference and SQL lexical checks retain explicit heuristic limits."
+  ]
+}

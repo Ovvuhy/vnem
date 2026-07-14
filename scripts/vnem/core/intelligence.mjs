@@ -62,8 +62,8 @@ const DOMAIN_ADAPTERS = [
     feature(/\b(skill|plugin|agent skill|skill catalog|execute.*skill|install.*skill)\b/, 5, "skill or plugin workflow")
   ], ["provenance", "execution readiness", "prompt-injection safety"], ["vnem_tools_skill_adapter_catalog", "vnem_tools_skill_package_inspect", "vnem_tools_skill_doctor", "vnem_tools_skill_adapter_plan", "vnem_tools_skill_adapter_execute", "vnem_tools_skill_source_verify"]),
   adapter("database_data", "Database and structured data", -3, [
-    feature(/\b(database|sqlite|postgres|mysql|schema|sql query|structured data|csv|spreadsheet)\b/, 5, "database or structured-data task")
-  ], ["data integrity", "query safety", "schema compatibility"], ["vnem_tools_capability_gap_report", "vnem_tools_project_scan"]),
+    feature(/\b(database|sqlite|postgres|mysql|mariadb|sqlserver|schema|sql query|structured data|jsonl?|csv|ya?ml|tabular|migration)\b/, 5, "database or structured-data task")
+  ], ["data integrity", "query safety", "schema compatibility", "secret redaction", "transaction and rollback safety"], ["vnem_tools_database_connection_plan", "vnem_tools_data_source_inspect", "vnem_tools_data_source_validate", "vnem_tools_database_schema_inspect", "vnem_tools_database_query_plan", "vnem_tools_database_query", "vnem_tools_data_source_diff", "vnem_tools_data_transform_plan", "vnem_tools_data_transform_apply", "vnem_tools_database_migration_preview", "vnem_tools_database_migration_apply", "vnem_tools_data_transaction_rollback"]),
   adapter("cloudflare", "Cloudflare deployment control", -4, [
     feature(/\b(cloudflare|wrangler|pages deploy|workers deploy|dns zone|cache purge)\b/, 6, "Cloudflare surface")
   ], ["deployment safety", "remote proof", "rollback"], ["vnem_tools_cloudflare_status", "vnem_tools_cloudflare_deploy_verify", "vnem_tools_cloudflare_rollback_plan"]),
@@ -105,7 +105,6 @@ const MODE_DOMAINS = {
 };
 
 const DOMAIN_GAPS = {
-  database_data: ["database schema and query tools are not registered in Tools yet"],
   client_setup: ["client setup currently executes through the VNEM CLI, not Tools MCP"]
 };
 
@@ -167,6 +166,18 @@ const TOOL_PURPOSES = {
   vnem_tools_skill_adapter_plan: "validate exact adapter input and expose filesystem, network, command, dependency, permission, risk, and evidence scope",
   vnem_tools_skill_adapter_execute: "run one VNEM-owned vetted handler or a separately approved hash-bound package test",
   vnem_tools_skill_source_verify: "compare pinned primary-source Git blob identities without returning or executing fetched content",
+  vnem_tools_data_source_inspect: "parse bounded SQLite, JSON, JSONL, CSV, or YAML data with schema and redacted preview evidence",
+  vnem_tools_data_source_validate: "validate inferred or expected structured-data schema without returning source values",
+  vnem_tools_data_source_diff: "compare bounded row and schema hashes without dumping changed values",
+  vnem_tools_data_transform_plan: "preview a source-hash-bound declarative structured-data mapping",
+  vnem_tools_data_transform_apply: "apply a reviewed transform with backup, verification, transaction evidence, and rollback",
+  vnem_tools_database_connection_plan: "validate local or reference-only remote database scope without opening remote connections",
+  vnem_tools_database_schema_inspect: "inspect bounded local SQLite schema without row values",
+  vnem_tools_database_query_plan: "prove a single read-only query shape through SQLite EXPLAIN QUERY PLAN",
+  vnem_tools_database_query: "execute one result-bounded redacted SQLite query under query-only enforcement",
+  vnem_tools_database_migration_preview: "preview schema and affected-row changes inside an in-memory transaction",
+  vnem_tools_database_migration_apply: "apply one fresh preview under approved database-write scope with backup and verification",
+  vnem_tools_data_transaction_rollback: "restore exact pre-transform or pre-migration bytes after stale-hash checks",
   vnem_tools_app_inspect: "inspect app frameworks, boundaries, routes, APIs, data flow, states, and completion gaps",
   vnem_tools_app_vertical_slice_plan: "preview a coherent frontend, API, and domain transaction",
   vnem_tools_app_vertical_slice_apply: "apply an approved marker-backed app transaction",
@@ -471,7 +482,7 @@ export function classifyAdoptionTask(userGoal, taskContext = "", taskMode = "aut
     scoring_method: "weighted domain adapters using goal, explicit mode, task context, repo signals, and user constraints",
     matched_flags: flags,
     execution_needed: executionNeeded,
-    proof_needed: flags.proof_or_validation || domains.some((domain) => ["debugging", "testing_ci", "project_automation", "package_dependency", "api_integration", "cloudflare"].includes(domain.id)),
+    proof_needed: flags.proof_or_validation || domains.some((domain) => ["debugging", "testing_ci", "project_automation", "package_dependency", "api_integration", "database_data", "cloudflare"].includes(domain.id)),
     github_or_publish: flags.github_or_publish,
     browser_or_ui: flags.browser_or_ui,
     confidence: !domains.length ? "medium" : domains[0].score >= 9 ? "high" : "normal",
@@ -494,6 +505,16 @@ export function coreRecommendedToolsCalls(classification, args = {}) {
   // Keep implementation essentials ahead of evidence-only steps when the route is capped.
   if (domainIds.has("skills") && String(args.task_mode || "").toLowerCase() === "skill") candidates.push(...domainTools(DOMAIN_ADAPTERS.find((item) => item.id === "skills"), args));
   if (domainIds.has("research_docs") && String(args.task_mode || "").toLowerCase() === "documentation") candidates.push(...domainTools(DOMAIN_ADAPTERS.find((item) => item.id === "research_docs"), args));
+  if (domainIds.has("database_data") && String(args.task_mode || "").toLowerCase() === "database") {
+    const databaseText = `${args.user_goal || ""} ${args.task_context || ""}`;
+    if (/transform|convert|map columns?|rename columns?|filter rows?|write (?:json|jsonl|csv|yaml)/i.test(databaseText)) {
+      candidates.push("vnem_tools_data_source_inspect", "vnem_tools_data_source_validate", "vnem_tools_data_transform_plan", "vnem_tools_data_transform_apply", "vnem_tools_data_transaction_rollback", "vnem_tools_data_source_diff");
+    } else if (/migration|migrate|alter table|create index|schema change|database write|rollback/i.test(databaseText)) {
+      candidates.push("vnem_tools_database_connection_plan", "vnem_tools_database_schema_inspect", "vnem_tools_database_migration_preview", "vnem_tools_database_migration_apply", "vnem_tools_data_transaction_rollback", "vnem_tools_database_query");
+    } else {
+      candidates.push("vnem_tools_database_connection_plan", "vnem_tools_data_source_inspect", "vnem_tools_data_source_validate", "vnem_tools_database_schema_inspect", "vnem_tools_database_query_plan", "vnem_tools_database_query");
+    }
+  }
   if (refactorIntent) candidates.push(...domainTools(DOMAIN_ADAPTERS.find((item) => item.id === "repo_code"), args));
   if (domainIds.has("app_engineering")) candidates.push("vnem_tools_app_inspect", "vnem_tools_app_vertical_slice_plan", "vnem_tools_repo_deep_map");
   if (domainIds.has("project_automation")) candidates.push("vnem_tools_project_automation_inspect", "vnem_tools_project_command_run", "vnem_tools_project_task_graph_plan");
@@ -576,6 +597,7 @@ export function coreProofRequirements(classification) {
   if (ids.has("project_automation")) requirements.push("exact reviewed command or graph id, exit/timeout state, process cleanup, bounded output evidence, and declared rollback status");
   if (ids.has("testing_ci")) requirements.push("affected-test graph reasons, tier result, exit/timing/failure groups, coverage source or explicit absence, and baseline/post benchmark evidence where claimed");
   if (ids.has("api_integration")) requirements.push("allowlist/auth reference, redacted response metadata, and provider/version scope");
+  if (ids.has("database_data")) requirements.push("exact source hash and parser/engine; inferred or expected schema; query-only and result-limit evidence; secret redaction; and for writes a fresh affected-row/schema preview, approved database_write scope, transaction, backup, verification, and exact rollback path");
   if (ids.has("evidence_validation")) requirements.push("handler, behavior-test, MCP-path, and no-placebo evidence where applicable");
   return unique(requirements);
 }
@@ -607,6 +629,7 @@ export function coreCommonTaskRoutes() {
     { task: "package upgrade and CI repair", core_first: "vnem_entrypoint", tools_next: ["vnem_tools_dependency_inventory", "vnem_tools_dependency_risk_audit", "vnem_tools_dependency_advisory_audit", "vnem_tools_dependency_change_analyze", "vnem_tools_dependency_upgrade_plan", "vnem_tools_dependency_install_apply"] },
     { task: "GitHub publishing and proof", core_first: "vnem_entrypoint", tools_next: ["vnem_tools_github_status", "vnem_tools_github_diff_review", "vnem_tools_github_remote_proof", "vnem_tools_github_actions_run_inspect", "vnem_tools_pr_quality_gate"] },
     { task: "Game, modding, or Roblox project work", core_first: "vnem_entrypoint", tools_next: ["vnem_tools_game_adapter_catalog", "vnem_tools_game_project_inspect", "vnem_tools_game_config_audit", "vnem_tools_mod_compatibility_analyze", "vnem_tools_roblox_project_inspect", "vnem_tools_luau_symbol_map", "vnem_tools_game_project_validate", "vnem_tools_mod_backup_create"] },
+    { task: "Database and structured data", core_first: "vnem_entrypoint", tools_next: ["vnem_tools_database_connection_plan", "vnem_tools_data_source_inspect", "vnem_tools_data_source_validate", "vnem_tools_database_schema_inspect", "vnem_tools_database_query_plan", "vnem_tools_database_query"] },
     { task: "evidence continuation", core_first: "vnem_continue_from_tools_evidence", tools_next: ["vnem_tools_evidence_pack", "vnem_tools_task_progress_truth_check"] }
   ];
 }
@@ -786,6 +809,18 @@ function adapterSelectionFor(classification, tools) {
       unsupported_records_recommended: false
     });
   }
+  if (ids.has("database_data")) {
+    const mutation = tools.some((tool) => ["vnem_tools_data_transform_apply", "vnem_tools_database_migration_apply", "vnem_tools_data_transaction_rollback"].includes(tool));
+    adapters.push({
+      type: "database_data",
+      tools_adapter: tools.includes("vnem_tools_database_query") ? "vnem_tools_database_query" : tools.includes("vnem_tools_data_source_inspect") ? "vnem_tools_data_source_inspect" : null,
+      connection_planner: tools.includes("vnem_tools_database_connection_plan") ? "vnem_tools_database_connection_plan" : null,
+      mutation_adapter: mutation ? tools.find((tool) => /(?:transform_apply|migration_apply|transaction_rollback)$/.test(tool)) : null,
+      readiness: mutation ? "local_transaction_ready_subject_to_fresh_preview_database_write_backup_and_rollback" : "bounded_local_read_ready",
+      compatibility_and_risk: ["SQLite or structured file format", "allowed root and size", "query-only policy", "result limits", "secret redaction", "remote credential reference and scope", "transaction backup and rollback"],
+      remote_execution_supported: false
+    });
+  }
   return adapters;
 }
 
@@ -798,6 +833,7 @@ function checksForDomain(domain) {
     package_dependency: ["dependency/install-script audit", "focused tests", "rollback"],
     api_integration: ["schema/auth review", "redaction", "bounded response proof"],
     skills: ["pinned source and license review", "skill doctor", "runtime-specific permission check", "real MCP behavior evidence", "no Markdown or untrusted package execution"],
+    database_data: ["exact source hash and parser/engine", "schema or query plan", "read-only and result limits", "secret redaction", "affected-row preview plus backup/rollback for writes"],
     evidence_validation: ["handler and behavior test", "MCP-path proof", "claim audit"]
   };
   return map[domain] || ["affected verification", "proof boundary review"];
@@ -807,6 +843,7 @@ function outputEffectsForDomain(domain) {
   if (domain === "github_publish") return ["diff/review findings", "remote and PR SHA equality", "PR URL", "exact-head CI jobs/steps URL/status", "release/tag proof when relevant", "repair or rollback guidance", "not proven"];
   if (domain === "browser_ui") return ["interaction and state evidence", "before/after screenshots and pixel delta", "DOM/a11y snapshots", "console/network status", "browser cleanup", "not proven"];
   if (domain === "windows_local") return ["bounded system/path/process/port/service/task/event evidence", "provider or access limits", "safe restart/reload guidance", "permission and rollback gate", "not proven"];
+  if (domain === "database_data") return ["source and schema hashes", "bounded redacted rows or no values", "query-only/result limits", "write preview/transaction/backup/rollback evidence", "remote execution limits", "not proven"];
   if (domain === "debugging") return ["root-cause evidence", "smallest fix", "rerun result", "residual risk"];
   return ["result", "evidence", "not proven", "next action"];
 }
@@ -843,6 +880,7 @@ function permissionImplicationsFor(classification, sequence, args) {
     network_approval_may_be_required: network,
     mutation_approval_required: mutation,
     skill_execution_scope: tools.includes("vnem_tools_skill_adapter_execute") ? "vetted_skill_execute for VNEM-owned pure/read handlers; command-backed adapters additionally require skill_execute and run_test" : null,
+    database_scope: tools.some((tool) => /data_|database_/.test(tool)) ? (mutation ? "database_write with approved profile, fresh preview, transaction, backup, verification, and rollback" : "database_read with bounded result and secret-redaction policy") : null,
     hard_blocks_remain: ["secret export", "force push", "repository deletion", "unbounded destructive filesystem actions"],
     allowed_tool_names_supplied: stringArray(args.allowed_tool_names).length > 0
   };
@@ -863,6 +901,7 @@ function completionCriteriaFor(classification) {
   }
   if (ids.has("browser_ui")) criteria.push({ id: "browser_proof", criterion: "Required UI states have browser evidence or an honest unavailable boundary." });
   if (ids.has("package_dependency") || ids.has("client_setup") || ids.has("game_modding")) criteria.push({ id: "rollback", criterion: "The mutation has a verified rollback or an explicit rollback-unavailable warning." });
+  if (ids.has("database_data")) criteria.push({ id: "database_safety", criterion: "Queries are result-bounded and read-only by default; writes match a fresh affected-row/schema preview and retain transaction, backup, verification, and rollback evidence." });
   return criteria;
 }
 
@@ -900,6 +939,8 @@ function compatibilityRequirements(text) {
   }
   if (/api|oauth|bearer|api key|webhook/.test(text)) add("api_auth", "api_auth", "approved auth method and credential reference", "this API/provider", ["authorization", "secret safety"]);
   if (/api|provider|official docs|documentation|sdk/.test(text)) add("provider_version", "provider_version", "current provider or SDK version", "this integration", ["contract compatibility", "freshness"]);
+  if (/database|sqlite|postgres|mysql|mariadb|sqlserver|sql query|migration/.test(text)) add("database", "database_engine", "exact engine, file/host scope, schema, and read/write intent", "this data source", ["query compatibility", "transaction safety", "result limits"]);
+  if (/jsonl?|csv|ya?ml|structured data|tabular/.test(text)) add("file_format", "file_format", "exact parser format and encoding", "this data source", ["parse safety", "schema inference", "transformation output"]);
   if (/github|pull request|actions|release/.test(text)) add("github_permissions", "github_permissions", "minimum required repository/workflow scopes", "this repository action", ["remote execution"]);
   if (/browser|screenshot|viewport|localhost|ui/.test(text)) add("browser", "browser_available", "approved browser runtime and target", "this UI proof run", ["visual evidence"]);
   return requirements;
