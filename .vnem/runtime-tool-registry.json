@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "source": "live MCP runtime registry status calls",
-  "total_tools": 317,
+  "total_tools": 323,
   "servers": {
     "core": {
       "schema_version": "1.0.0",
@@ -113,7 +113,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/core/server.mjs",
+          "implementation_module": "scripts/vnem/core/bootstrap-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -347,7 +347,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/core/server.mjs",
+          "implementation_module": "scripts/vnem/core/adoption-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -383,7 +383,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/core/server.mjs",
+          "implementation_module": "scripts/vnem/core/adoption-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -419,7 +419,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/core/server.mjs",
+          "implementation_module": "scripts/vnem/core/adoption-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-vnem-adoption-reliability-2-regression.mjs",
             "scripts/test-giga-adoption-client-use.mjs"
@@ -924,7 +924,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/core/server.mjs",
+          "implementation_module": "scripts/vnem/core/planning-domains.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -960,7 +960,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/core/server.mjs",
+          "implementation_module": "scripts/vnem/core/planning-domains.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -996,7 +996,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/core/server.mjs",
+          "implementation_module": "scripts/vnem/core/planning-domains.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1032,7 +1032,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/core/server.mjs",
+          "implementation_module": "scripts/vnem/core/planning-domains.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1068,7 +1068,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/core/server.mjs",
+          "implementation_module": "scripts/vnem/core/planning-domains.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1104,7 +1104,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/core/server.mjs",
+          "implementation_module": "scripts/vnem/core/planning-domains.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1140,7 +1140,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/core/server.mjs",
+          "implementation_module": "scripts/vnem/core/planning-domains.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1176,7 +1176,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/core/server.mjs",
+          "implementation_module": "scripts/vnem/core/planning-domains.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1212,7 +1212,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/core/server.mjs",
+          "implementation_module": "scripts/vnem/core/planning-domains.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1248,7 +1248,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/core/server.mjs",
+          "implementation_module": "scripts/vnem/core/planning-domains.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1284,7 +1284,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/core/server.mjs",
+          "implementation_module": "scripts/vnem/core/planning-domains.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1320,7 +1320,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/core/server.mjs",
+          "implementation_module": "scripts/vnem/core/planning-domains.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1356,7 +1356,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/core/server.mjs",
+          "implementation_module": "scripts/vnem/core/planning-domains.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1392,7 +1392,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/core/server.mjs",
+          "implementation_module": "scripts/vnem/core/planning-domains.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1428,7 +1428,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/core/server.mjs",
+          "implementation_module": "scripts/vnem/core/planning-domains.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1464,7 +1464,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/core/server.mjs",
+          "implementation_module": "scripts/vnem/core/planning-domains.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1500,7 +1500,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/core/server.mjs",
+          "implementation_module": "scripts/vnem/core/planning-domains.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1536,7 +1536,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/core/server.mjs",
+          "implementation_module": "scripts/vnem/core/planning-domains.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1572,7 +1572,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/core/server.mjs",
+          "implementation_module": "scripts/vnem/core/planning-domains.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1608,7 +1608,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/core/server.mjs",
+          "implementation_module": "scripts/vnem/core/planning-domains.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1644,7 +1644,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/core/server.mjs",
+          "implementation_module": "scripts/vnem/core/planning-domains.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1680,7 +1680,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/core/server.mjs",
+          "implementation_module": "scripts/vnem/core/planning-domains.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1716,7 +1716,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/core/server.mjs",
+          "implementation_module": "scripts/vnem/core/planning-domains.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1752,7 +1752,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/core/server.mjs",
+          "implementation_module": "scripts/vnem/core/planning-domains.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1788,7 +1788,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/core/server.mjs",
+          "implementation_module": "scripts/vnem/core/planning-domains.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1824,7 +1824,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/core/server.mjs",
+          "implementation_module": "scripts/vnem/core/planning-domains.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -1860,7 +1860,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/core/server.mjs",
+          "implementation_module": "scripts/vnem/core/planning-domains.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-server.mjs"
           ],
@@ -2597,7 +2597,7 @@
       "server_name": "vnem-tools",
       "version": "1.0.1",
       "valid": true,
-      "tool_count": 241,
+      "tool_count": 247,
       "alias_count": 0,
       "categories": {
         "action": 2,
@@ -2612,6 +2612,7 @@
         "captcha": 1,
         "change": 1,
         "ci": 1,
+        "client": 5,
         "cloudflare": 18,
         "code": 3,
         "coverage": 1,
@@ -2633,7 +2634,7 @@
         "git": 3,
         "github": 25,
         "high": 1,
-        "install": 3,
+        "install": 4,
         "list": 2,
         "local": 1,
         "luau": 1,
@@ -2685,43 +2686,18 @@
         "workspace": 1
       },
       "side_effect_classes": {
-        "destructive_mutation": 42,
+        "destructive_mutation": 44,
         "network_mutation": 20,
-        "read_only": 179
+        "read_only": 183
       },
       "validation": {
         "valid": true,
         "server_name": "vnem-tools",
         "version": "1.0.1",
-        "tool_count": 241,
+        "tool_count": 247,
         "alias_count": 0,
         "errors": [],
-        "warnings": [
-          {
-            "tool": "vnem_tools_github_pr_update",
-            "code": "behavior_test_reference_missing"
-          },
-          {
-            "tool": "vnem_tools_github_issue_update",
-            "code": "behavior_test_reference_missing"
-          },
-          {
-            "tool": "vnem_tools_github_issue_comment",
-            "code": "behavior_test_reference_missing"
-          },
-          {
-            "tool": "vnem_tools_github_release_plan",
-            "code": "behavior_test_reference_missing"
-          },
-          {
-            "tool": "vnem_tools_github_repo_settings_plan",
-            "code": "behavior_test_reference_missing"
-          },
-          {
-            "tool": "vnem_tools_github_repo_settings_apply",
-            "code": "behavior_test_reference_missing"
-          }
-        ],
+        "warnings": [],
         "checked_contracts": [
           "duplicate names",
           "handlers",
@@ -2807,7 +2783,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/adoption-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-precision-subsystem.mjs"
           ],
@@ -2843,7 +2819,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/adoption-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-giga-structural-code.mjs",
             "scripts/test-tools-scoped-permissions.mjs"
@@ -2880,7 +2856,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/adoption-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-vnem-adoption-reliability-1-regression.mjs",
             "scripts/test-vnem-adoption-reliability-2-regression.mjs"
@@ -2917,7 +2893,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/adoption-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-vnem-adoption-reliability-2-regression.mjs"
           ],
@@ -2953,7 +2929,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/adoption-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-vnem-adoption-reliability-2-regression.mjs"
           ],
@@ -3028,6 +3004,222 @@
           "implementation_module": "scripts/vnem/tools/server.mjs",
           "behavior_test_references": [
             "scripts/test-vnem-install-adoption-1-regression.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_client_detect",
+          "version": "1.0.1",
+          "title": "VNEM Client Detect",
+          "description": "Detect supported VNEM clients and their config/install evidence without changing client state.",
+          "category": "client",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/client-setup.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-client-setup-mcp.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_client_setup_plan",
+          "version": "1.0.1",
+          "title": "VNEM Client Setup Plan",
+          "description": "Preview exact merge-preserving client config, instruction, safety-profile, backup, and rollback changes.",
+          "category": "client",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/client-setup.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-client-setup-mcp.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_client_install",
+          "version": "1.0.1",
+          "title": "VNEM Client Install",
+          "description": "Preview by default, or apply one approved backup-backed client setup transaction and verify the result.",
+          "category": "install",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": true,
+            "idempotentHint": false,
+            "openWorldHint": false
+          },
+          "side_effect_class": "destructive_mutation",
+          "permission_requirements": [
+            "approved_local_mutation"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "required_redacted_record",
+          "rollback_behavior": {
+            "mode": "required_or_explicitly_not_available",
+            "guidance": "Return backup, compensating action, or explicit rollback-unavailable state in evidence."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/client-setup.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-client-setup-mcp.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_client_setup_status",
+          "version": "1.0.1",
+          "title": "VNEM Client Setup Status",
+          "description": "Inspect detected clients and the latest local setup transaction without modifying configuration.",
+          "category": "client",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/client-setup.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-client-setup-mcp.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_client_verify",
+          "version": "1.0.1",
+          "title": "VNEM Client Verify",
+          "description": "Verify merged client config, managed instructions, safety profile, and optional Core/Tools MCP startup proof.",
+          "category": "client",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/client-setup.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-client-setup-mcp.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_client_rollback",
+          "version": "1.0.1",
+          "title": "VNEM Client Rollback",
+          "description": "Preview by default, or restore an approved client setup transaction from its exact backups.",
+          "category": "client",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": true,
+            "idempotentHint": false,
+            "openWorldHint": false
+          },
+          "side_effect_class": "destructive_mutation",
+          "permission_requirements": [
+            "approved_local_mutation"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "required_redacted_record",
+          "rollback_behavior": {
+            "mode": "self",
+            "guidance": "The tool is itself a rollback operation and must verify the restored state."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/client-setup.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-client-setup-mcp.mjs"
           ],
           "benchmark_scenarios": [],
           "input_schema_present": true
@@ -3136,7 +3328,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/reliability-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-autonomy-1-regression.mjs",
             "scripts/test-tools-autonomy-2-regression.mjs",
@@ -3174,7 +3366,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/reliability-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-action-recovery-plan.mjs",
             "scripts/test-tools-autonomy-2-regression.mjs"
@@ -3211,7 +3403,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/reliability-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-autonomy-2-regression.mjs",
             "scripts/test-tools-autonomy-efficiency.mjs",
@@ -3250,7 +3442,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/reliability-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-autonomy-1-regression.mjs",
             "scripts/test-tools-autonomy-2-regression.mjs",
@@ -3288,7 +3480,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/repo-intelligence-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-power-tools-1-regression.mjs",
             "scripts/test-tools-power-tools-2-regression.mjs"
@@ -3325,7 +3517,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/repo-intelligence-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-power-tools-1-regression.mjs",
             "scripts/test-tools-power-tools-2-regression.mjs"
@@ -3362,7 +3554,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/repo-intelligence-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-power-tools-1-regression.mjs",
             "scripts/test-tools-power-tools-2-regression.mjs"
@@ -3399,7 +3591,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/repo-intelligence-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-power-tools-1-regression.mjs",
             "scripts/test-tools-power-tools-2-regression.mjs"
@@ -3436,7 +3628,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/repo-intelligence-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-power-tools-1-regression.mjs",
             "scripts/test-tools-power-tools-2-regression.mjs"
@@ -3473,7 +3665,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/repo-intelligence-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-power-tools-1-regression.mjs",
             "scripts/test-tools-power-tools-2-regression.mjs"
@@ -3510,7 +3702,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/repo-intelligence-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-power-tools-1-regression.mjs",
             "scripts/test-tools-power-tools-2-regression.mjs"
@@ -3547,7 +3739,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/repo-intelligence-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-power-session-1-recovery.mjs"
           ],
@@ -3583,7 +3775,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/repo-intelligence-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-orchestrator-1-regression.mjs"
           ],
@@ -3619,7 +3811,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/repo-intelligence-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-code-intelligence-1-regression.mjs"
           ],
@@ -3655,7 +3847,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/repo-intelligence-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-code-intelligence-1-regression.mjs"
           ],
@@ -3691,7 +3883,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/repo-intelligence-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-code-intelligence-1-regression.mjs"
           ],
@@ -3727,7 +3919,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/repo-intelligence-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-code-intelligence-1-regression.mjs"
           ],
@@ -3763,7 +3955,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/repo-intelligence-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-code-intelligence-1-regression.mjs"
           ],
@@ -3799,7 +3991,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/repo-intelligence-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-code-intelligence-1-regression.mjs"
           ],
@@ -7868,7 +8060,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/browser-research-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-browser-intelligence.mjs"
           ],
@@ -7904,7 +8096,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/browser-research-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-browser-intelligence.mjs"
           ],
@@ -7940,7 +8132,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/browser-research-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-browser-intelligence.mjs"
           ],
@@ -7976,7 +8168,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/browser-research-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-browser-intelligence.mjs"
           ],
@@ -8012,7 +8204,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/browser-research-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-browser-intelligence.mjs"
           ],
@@ -8048,7 +8240,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/browser-research-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-browser-intelligence.mjs"
           ],
@@ -8084,7 +8276,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/browser-research-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-browser-research-pack.mjs"
           ],
@@ -8120,7 +8312,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/source-research-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-search-power.mjs"
           ],
@@ -8156,7 +8348,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/source-research-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-user-smoke.mjs",
             "scripts/test-tools-search-power.mjs"
@@ -8193,7 +8385,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/source-research-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-search-power.mjs"
           ],
@@ -8229,7 +8421,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/source-research-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-user-smoke.mjs",
             "scripts/test-tools-search-power.mjs"
@@ -8266,7 +8458,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/source-research-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-risk-captcha.mjs"
           ],
@@ -8302,7 +8494,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/source-research-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-risk-captcha.mjs"
           ],
@@ -8338,7 +8530,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/source-research-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-user-smoke.mjs",
             "scripts/test-tools-risk-captcha.mjs"
@@ -8375,7 +8567,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/source-research-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-user-smoke.mjs",
             "scripts/test-tools-risk-captcha.mjs"
@@ -8412,7 +8604,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/source-research-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-user-smoke.mjs",
             "scripts/test-tools-search-power.mjs"
@@ -8449,7 +8641,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/source-research-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-mcp-user-smoke.mjs",
             "scripts/test-tools-search-power.mjs"
@@ -8486,7 +8678,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/source-research-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-source-ingestion.mjs"
           ],
@@ -8522,7 +8714,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/source-research-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-source-ingestion.mjs"
           ],
@@ -8558,7 +8750,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/source-research-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-source-graph.mjs"
           ],
@@ -8923,7 +9115,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/browser-research-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-research.mjs"
           ],
@@ -8959,7 +9151,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/browser-research-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-research.mjs"
           ],
@@ -9145,7 +9337,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/github-operations-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-github-real-exec-paths.mjs",
             "scripts/test-tools-github-repo-intelligence.mjs"
@@ -9182,7 +9374,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/github-operations-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-giga-github-development.mjs"
           ],
@@ -9218,7 +9410,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/github-operations-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-giga-github-development.mjs"
           ],
@@ -9254,7 +9446,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/github-operations-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-giga-github-development.mjs"
           ],
@@ -9290,7 +9482,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/github-operations-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-giga-github-development.mjs"
           ],
@@ -9326,7 +9518,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/github-operations-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-giga-github-development.mjs"
           ],
@@ -9362,7 +9554,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/github-operations-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-giga-github-development.mjs"
           ],
@@ -9398,7 +9590,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/github-operations-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-github-repo-intelligence.mjs",
             "scripts/test-tools-power-tools-1-regression.mjs"
@@ -9435,7 +9627,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/github-operations-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-github-branch-commit-pr.mjs",
             "scripts/test-tools-github-command-builder.mjs",
@@ -9474,7 +9666,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/github-operations-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-autonomy-1-regression.mjs",
             "scripts/test-tools-autonomy-2-regression.mjs",
@@ -9516,7 +9708,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/github-operations-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-autonomy-2-regression.mjs",
             "scripts/test-tools-github-branch-commit-pr.mjs",
@@ -9558,8 +9750,10 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
-          "behavior_test_references": [],
+          "implementation_module": "scripts/vnem/tools/github-operations-runtime.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-github-final-behavior-coverage.mjs"
+          ],
           "benchmark_scenarios": [],
           "input_schema_present": true
         },
@@ -9593,7 +9787,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/github-operations-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-github-command-builder.mjs",
             "scripts/test-tools-github-issues-actions-ci.mjs",
@@ -9633,8 +9827,10 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
-          "behavior_test_references": [],
+          "implementation_module": "scripts/vnem/tools/github-operations-runtime.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-github-final-behavior-coverage.mjs"
+          ],
           "benchmark_scenarios": [],
           "input_schema_present": true
         },
@@ -9667,8 +9863,10 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
-          "behavior_test_references": [],
+          "implementation_module": "scripts/vnem/tools/github-operations-runtime.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-github-final-behavior-coverage.mjs"
+          ],
           "benchmark_scenarios": [],
           "input_schema_present": true
         },
@@ -9701,7 +9899,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/github-operations-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-github-issues-actions-ci.mjs",
             "scripts/test-tools-github-mutation-dry-run.mjs",
@@ -9739,7 +9937,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/github-operations-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-github-issues-actions-ci.mjs",
             "scripts/test-tools-github-real-exec-paths.mjs"
@@ -9776,7 +9974,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/github-operations-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-github-issues-actions-ci.mjs",
             "scripts/test-tools-github-mutation-dry-run.mjs",
@@ -9814,7 +10012,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/github-operations-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-github-issues-actions-ci.mjs",
             "scripts/test-tools-github-real-exec-paths.mjs"
@@ -9851,7 +10049,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/github-operations-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-autonomy-2-regression.mjs",
             "scripts/test-tools-autonomy-efficiency.mjs"
@@ -9926,8 +10124,10 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
-          "behavior_test_references": [],
+          "implementation_module": "scripts/vnem/tools/github-operations-runtime.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-github-final-behavior-coverage.mjs"
+          ],
           "benchmark_scenarios": [],
           "input_schema_present": true
         },
@@ -9961,7 +10161,7 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
+          "implementation_module": "scripts/vnem/tools/github-operations-runtime.mjs",
           "behavior_test_references": [
             "scripts/test-tools-github-mutation-dry-run.mjs",
             "scripts/test-tools-github-real-exec-paths.mjs"
@@ -9998,8 +10198,10 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
-          "behavior_test_references": [],
+          "implementation_module": "scripts/vnem/tools/github-operations-runtime.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-github-final-behavior-coverage.mjs"
+          ],
           "benchmark_scenarios": [],
           "input_schema_present": true
         },
@@ -10033,8 +10235,10 @@
             "deprecated": false,
             "migration_guidance": null
           },
-          "implementation_module": "scripts/vnem/tools/server.mjs",
-          "behavior_test_references": [],
+          "implementation_module": "scripts/vnem/tools/github-operations-runtime.mjs",
+          "behavior_test_references": [
+            "scripts/test-tools-github-final-behavior-coverage.mjs"
+          ],
           "benchmark_scenarios": [],
           "input_schema_present": true
         },
@@ -11892,13 +12096,6 @@
   "validation": {
     "valid": true,
     "errors": [],
-    "tools_without_behavior_test_references": [
-      "vnem_tools_github_pr_update",
-      "vnem_tools_github_issue_update",
-      "vnem_tools_github_issue_comment",
-      "vnem_tools_github_release_plan",
-      "vnem_tools_github_repo_settings_plan",
-      "vnem_tools_github_repo_settings_apply"
-    ]
+    "tools_without_behavior_test_references": []
   }
 }

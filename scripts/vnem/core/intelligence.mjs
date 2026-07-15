@@ -69,7 +69,7 @@ const DOMAIN_ADAPTERS = [
   ], ["deployment safety", "remote proof", "rollback", "secret redaction"], ["vnem_tools_cloudflare_status", "vnem_tools_cloudflare_accounts_list", "vnem_tools_cloudflare_projects_list", "vnem_tools_cloudflare_pages_deploy_plan", "vnem_tools_cloudflare_pages_deploy", "vnem_tools_cloudflare_workers_deploy_plan", "vnem_tools_cloudflare_workers_deploy", "vnem_tools_cloudflare_deploy_verify", "vnem_tools_cloudflare_rollback_plan", "vnem_tools_cloudflare_rollback", "vnem_tools_cloudflare_error_diagnose"]),
   adapter("client_setup", "VNEM client setup", -5, [
     feature(/\b(codex|claude code|claude desktop|cursor|windsurf|cline|gemini cli|mcp client|vnem client|client config)\b.*\b(install|setup|configure|config|rollback|roll back|verify)\b/, 6, "MCP client configuration")
-  ], ["config preservation", "client compatibility", "rollback"], ["vnem_tools_install_doctor", "vnem_tools_install_profile_emit"])
+  ], ["config preservation", "client compatibility", "rollback"], ["vnem_tools_client_detect", "vnem_tools_client_setup_plan", "vnem_tools_client_install", "vnem_tools_client_setup_status", "vnem_tools_client_verify", "vnem_tools_client_rollback", "vnem_tools_install_doctor", "vnem_tools_install_profile_emit"])
 ];
 
 const MODE_DOMAINS = {
@@ -104,9 +104,7 @@ const MODE_DOMAINS = {
   client_setup: "client_setup"
 };
 
-const DOMAIN_GAPS = {
-  client_setup: ["client setup currently executes through the VNEM CLI, not Tools MCP"]
-};
+const DOMAIN_GAPS = {};
 
 const TOOL_PURPOSES = {
   vnem_tools_test_system_inspect: "detect frameworks, scripts, configs, coverage, workflows, generated implications, and shared resources",
@@ -235,7 +233,13 @@ const TOOL_PURPOSES = {
   vnem_tools_cloudflare_rollback: "execute an explicitly approved exact-target Pages or Worker rollback with evidence",
   vnem_tools_cloudflare_error_diagnose: "classify redacted Wrangler or Cloudflare API failures and return the narrowest safe recovery",
   vnem_tools_install_doctor: "verify generated client profiles and setup readiness",
-  vnem_tools_install_profile_emit: "emit a reviewed import profile"
+  vnem_tools_install_profile_emit: "emit a reviewed import profile",
+  vnem_tools_client_detect: "detect supported clients and exact config targets",
+  vnem_tools_client_setup_plan: "preview merge-preserving client setup with backup and rollback boundaries",
+  vnem_tools_client_install: "apply one approved backup-backed client setup transaction and verify it",
+  vnem_tools_client_setup_status: "inspect the latest setup transaction and detected client state",
+  vnem_tools_client_verify: "verify client config, instructions, safety profile, and optional MCP startup",
+  vnem_tools_client_rollback: "preview or apply exact backup restoration for a setup transaction"
 };
 
 export function buildCoreEntrypoint(args = {}) {
@@ -511,6 +515,9 @@ export function coreRecommendedToolsCalls(classification, args = {}) {
   const repoText = `${args.user_goal || ""} ${args.task_context || ""}`;
   const refactorIntent = domainIds.has("repo_code") && /\b(refactor|rename\b[^\n]{0,80}\b(?:symbol|function|class|variable)|move\b[^\n]{0,80}\b(?:module|file)|extract\b[^\n]{0,80}\b(?:function|module)|dead code|exact references|preserve public|without changing public)\b/i.test(repoText);
   // Keep implementation essentials ahead of evidence-only steps when the route is capped.
+  if (domainIds.has("client_setup") && String(args.task_mode || "").toLowerCase() === "client_setup") {
+    candidates.push(...domainTools(DOMAIN_ADAPTERS.find((item) => item.id === "client_setup"), args));
+  }
   if (domainIds.has("skills") && String(args.task_mode || "").toLowerCase() === "skill") candidates.push(...domainTools(DOMAIN_ADAPTERS.find((item) => item.id === "skills"), args));
   if (domainIds.has("research_docs") && String(args.task_mode || "").toLowerCase() === "documentation") candidates.push(...domainTools(DOMAIN_ADAPTERS.find((item) => item.id === "research_docs"), args));
   if (domainIds.has("database_data") && String(args.task_mode || "").toLowerCase() === "database") {
@@ -712,6 +719,19 @@ function legacyPrimary(domain) {
 }
 
 function domainTools(domain, args) {
+  if (domain.id === "client_setup") {
+    const text = `${args.user_goal || ""} ${args.task_context || ""}`;
+    if (/\b(profile|snippet|import profile|generate config)\b/i.test(text) && !/\b(install|configure|apply|write|merge|set up)\b/i.test(text)) {
+      return ["vnem_tools_install_profile_emit", "vnem_tools_install_doctor"];
+    }
+    if (/\b(install|configure|apply|write|merge|set up)\b/i.test(text)) {
+      return ["vnem_tools_client_detect", "vnem_tools_client_setup_plan", "vnem_tools_client_install", "vnem_tools_client_verify", "vnem_tools_client_setup_status", "vnem_tools_client_rollback"];
+    }
+    if (/\b(rollback|roll back|restore|revert|undo)\b/i.test(text)) {
+      return ["vnem_tools_client_setup_status", "vnem_tools_client_rollback", "vnem_tools_client_verify"];
+    }
+    return ["vnem_tools_client_detect", "vnem_tools_client_setup_status", "vnem_tools_client_verify", "vnem_tools_install_doctor"];
+  }
   if (domain.id === "github_publish") {
     const text = `${args.user_goal || ""} ${args.task_context || ""}`;
     if (/review threads?|review comments?|unresolved review/i.test(text)) return ["vnem_tools_github_status", "vnem_tools_github_diff_review", "vnem_tools_github_review_threads", "vnem_tools_github_remote_proof", "vnem_tools_github_actions_status", "vnem_tools_pr_quality_gate"];

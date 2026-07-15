@@ -22,9 +22,9 @@ const [registry, browserProof, readme, landing, currentSystem, setup, dashboardB
 ]);
 
 const counts = Object.fromEntries(Object.entries(registry.servers).map(([name, server]) => [name, server.tool_count]));
-assert.equal(registry.total_tools, 317);
+assert.equal(registry.total_tools, 323);
 assert.equal(counts.core, 69);
-assert.equal(counts.tools, 241);
+assert.equal(counts.tools, 247);
 assert.equal(counts.precision, 7);
 assert.equal(Object.values(counts).reduce((total, count) => total + count, 0), registry.total_tools);
 assert.ok(Object.values(registry.servers).every((server) => server.validation.valid));

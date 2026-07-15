@@ -21,7 +21,13 @@ const git = (...args) => {
 
 const library = await json("capabilities/super-library.json");
 const usablePacks = await json("capabilities/usable-capability-packs.json");
-const serverSource = await text("scripts/vnem/core/server.mjs");
+const serverCompositionSource = await text("scripts/vnem/core/server.mjs");
+const serverSource = [
+  serverCompositionSource,
+  await text("scripts/vnem/core/planning-domains.mjs"),
+  await text("scripts/vnem/core/adoption-runtime.mjs"),
+  await text("scripts/vnem/core/bootstrap-runtime.mjs")
+].join("\n");
 const coreIntelligenceSource = await text("scripts/vnem/core/intelligence.mjs");
 const coreRuntimeSource = `${serverSource}\n${coreIntelligenceSource}`;
 const mcpTestSource = await text("scripts/test-mcp-server.mjs");

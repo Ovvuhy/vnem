@@ -316,6 +316,44 @@ try {
   assert.ok(cloudflareFailure.recommended_tools_calls.includes("vnem_tools_cloudflare_error_diagnose"));
   assert.ok(cloudflareFailure.recommended_tools_calls.includes("vnem_tools_cloudflare_rollback"));
 
+  const clientInstall = await call(core.client, "vnem_entrypoint", {
+    user_goal: "Install and configure VNEM in this detected Codex client without clobbering existing settings.",
+    task_context: "Preview first, preserve unrelated config, apply one approved transaction, verify it, and retain exact rollback.",
+    task_mode: "client_setup",
+    available_mcp_names: ["vnem", "vnem-tools"],
+    available_tool_names: [...toolNames],
+    allowed_tool_names: [...toolNames]
+  }, "entrypoint");
+  for (const tool of ["vnem_tools_client_detect", "vnem_tools_client_setup_plan", "vnem_tools_client_install", "vnem_tools_client_verify"]) {
+    assert.ok(clientInstall.recommended_tools_calls.includes(tool), `missing client install route ${tool}`);
+  }
+  assert.equal(clientInstall.recommended_tools_calls.length, 6);
+  assert.equal((clientInstall.unavailable_capabilities || []).some((item) => /VNEM CLI, not Tools MCP/i.test(item)), false);
+
+  const clientRollback = await call(core.client, "vnem_entrypoint", {
+    user_goal: "Roll back and restore the VNEM client configuration from its exact setup backup, then verify restoration.",
+    task_mode: "client_setup",
+    available_mcp_names: ["vnem", "vnem-tools"],
+    available_tool_names: [...toolNames],
+    allowed_tool_names: [...toolNames]
+  }, "entrypoint");
+  for (const tool of ["vnem_tools_client_setup_status", "vnem_tools_client_rollback", "vnem_tools_client_verify"]) {
+    assert.ok(clientRollback.recommended_tools_calls.includes(tool), `missing client rollback route ${tool}`);
+  }
+  assert.ok(clientRollback.recommended_tools_calls.length <= 6);
+
+  const clientProfileOnly = await call(core.client, "vnem_entrypoint", {
+    user_goal: "Generate a reviewed import profile snippet for a generic VNEM MCP client.",
+    task_mode: "client_setup",
+    available_mcp_names: ["vnem", "vnem-tools"],
+    available_tool_names: [...toolNames],
+    allowed_tool_names: [...toolNames]
+  }, "entrypoint");
+  for (const tool of ["vnem_tools_install_profile_emit", "vnem_tools_install_doctor"]) {
+    assert.ok(clientProfileOnly.recommended_tools_calls.includes(tool), `missing client profile-only route ${tool}`);
+  }
+  assert.ok(clientProfileOnly.recommended_tools_calls.length <= 6);
+
   const compatibility = await call(core.client, "vnem_compatibility_assess", {
     task: "Run a Codex MCP server over stdio on Windows PowerShell with Node.",
     environment: { os: "Windows 11", shell: "PowerShell 7", node_version: "24", client: "Codex", mcp_transport: "stdio" },

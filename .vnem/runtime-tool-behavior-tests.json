@@ -245,6 +245,24 @@
       "vnem_tools_install_doctor": [
         "scripts/test-vnem-install-adoption-1-regression.mjs"
       ],
+      "vnem_tools_client_detect": [
+        "scripts/test-tools-client-setup-mcp.mjs"
+      ],
+      "vnem_tools_client_setup_plan": [
+        "scripts/test-tools-client-setup-mcp.mjs"
+      ],
+      "vnem_tools_client_install": [
+        "scripts/test-tools-client-setup-mcp.mjs"
+      ],
+      "vnem_tools_client_setup_status": [
+        "scripts/test-tools-client-setup-mcp.mjs"
+      ],
+      "vnem_tools_client_verify": [
+        "scripts/test-tools-client-setup-mcp.mjs"
+      ],
+      "vnem_tools_client_rollback": [
+        "scripts/test-tools-client-setup-mcp.mjs"
+      ],
       "vnem_tools_permission_profiles": [
         "scripts/test-tools-permission-profiles.mjs"
       ],
@@ -860,15 +878,21 @@
         "scripts/test-tools-github-mutation-dry-run.mjs",
         "scripts/test-tools-github-real-exec-paths.mjs"
       ],
-      "vnem_tools_github_pr_update": [],
+      "vnem_tools_github_pr_update": [
+        "scripts/test-tools-github-final-behavior-coverage.mjs"
+      ],
       "vnem_tools_github_issue_create": [
         "scripts/test-tools-github-command-builder.mjs",
         "scripts/test-tools-github-issues-actions-ci.mjs",
         "scripts/test-tools-github-mutation-dry-run.mjs",
         "scripts/test-tools-github-real-exec-paths.mjs"
       ],
-      "vnem_tools_github_issue_update": [],
-      "vnem_tools_github_issue_comment": [],
+      "vnem_tools_github_issue_update": [
+        "scripts/test-tools-github-final-behavior-coverage.mjs"
+      ],
+      "vnem_tools_github_issue_comment": [
+        "scripts/test-tools-github-final-behavior-coverage.mjs"
+      ],
       "vnem_tools_github_labels_manage": [
         "scripts/test-tools-github-issues-actions-ci.mjs",
         "scripts/test-tools-github-mutation-dry-run.mjs",
@@ -896,13 +920,19 @@
         "scripts/test-tools-autonomy-efficiency.mjs",
         "scripts/test-tools-power-tools-1-regression.mjs"
       ],
-      "vnem_tools_github_release_plan": [],
+      "vnem_tools_github_release_plan": [
+        "scripts/test-tools-github-final-behavior-coverage.mjs"
+      ],
       "vnem_tools_github_release_create": [
         "scripts/test-tools-github-mutation-dry-run.mjs",
         "scripts/test-tools-github-real-exec-paths.mjs"
       ],
-      "vnem_tools_github_repo_settings_plan": [],
-      "vnem_tools_github_repo_settings_apply": [],
+      "vnem_tools_github_repo_settings_plan": [
+        "scripts/test-tools-github-final-behavior-coverage.mjs"
+      ],
+      "vnem_tools_github_repo_settings_apply": [
+        "scripts/test-tools-github-final-behavior-coverage.mjs"
+      ],
       "vnem_tools_cloudflare_status": [
         "scripts/test-tools-cloudflare-status-auth.mjs",
         "scripts/test-tools-quality-2-regression.mjs"

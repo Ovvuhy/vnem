@@ -1,0 +1,95 @@
+{
+  "schema_version": "1.0.0",
+  "status": "pass",
+  "architecture": {
+    "primary_mcp_servers": [
+      "vnem",
+      "vnem-tools"
+    ],
+    "core_read_only": true,
+    "tools_permission_aware": true,
+    "precision_role": "seven_tool_compatibility_shim"
+  },
+  "registry": {
+    "total_tools": 323,
+    "core_tools": 69,
+    "tools_tools": 247,
+    "precision_tools": 7,
+    "validation_passed": true
+  },
+  "integration": {
+    "generated_client_profiles": [
+      "codex",
+      "claude",
+      "antigravity",
+      "hermes",
+      "generic"
+    ],
+    "managed_setup_documented": true,
+    "usage_self_check_documented": true,
+    "dashboard_core_tools_precision_truth": true,
+    "browser_local_proof": {
+      "schema_version": "1.0.0",
+      "phase": 24,
+      "status": "pass_with_expected_hard_privacy_block",
+      "runner": "vnem_tools_browser_interaction_run",
+      "evidence_directory": ".vnem/test-runs/phase24-browser-final/browser-interaction/browser-interaction-1784115405980-36581fa1",
+      "desktop": {
+        "screenshot": "phase24-desktop-proof-desktop-after.png",
+        "sha256": "0e47dba58423f56664578df06f915dad01b68950806d1b6e7e2edc3a54871731",
+        "css_viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "document_width_css_px": 1425,
+        "horizontal_overflow": false,
+        "nonblank": true
+      },
+      "mobile": {
+        "screenshot": "phase24-mobile-proof-mobile-after.png",
+        "sha256": "a5cc701466cdf1efe96ceec589768c7d9e9667da0b64cc8f3b513e199ffba8b6",
+        "css_viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "device_pixel_ratio": 2,
+        "physical_screenshot": {
+          "width": 780,
+          "height": 1688
+        },
+        "document_width_css_px": 390,
+        "horizontal_overflow": false,
+        "nonblank": true
+      },
+      "shared_results": {
+        "assertions": "pass",
+        "console_errors": 0,
+        "bad_responses": 0
+      },
+      "expected_hard_privacy_block": {
+        "endpoint": "/api/builder/session",
+        "requests_blocked_per_scenario": 2,
+        "policy_weakened": false
+      },
+      "limitations": [
+        "Chromium-only local proof; authenticated and cross-engine flows were not exercised.",
+        "The ignored screenshot directory is local evidence; this tracked packet preserves its exact relative location and hashes.",
+        "Runtime status is partial because the private builder-session endpoint remained blocked by policy."
+      ]
+    },
+    "website_setup_safety_profiles_and_benchmark_truth": true,
+    "ci_runner_check_count": 170
+  },
+  "anti_overclaim": {
+    "profile_does_not_prove_client_install_reload_or_use": true,
+    "provider_actions_require_configuration_and_approval": true,
+    "benchmark_is_local_not_universal": true,
+    "hidden_telemetry_claimed": false
+  },
+  "remaining_unproven": [
+    "current Codex task entrypoint visibility and autonomous VNEM selection",
+    "installed Claude or Antigravity client execution",
+    "Hermes global import, reload, and agent use",
+    "live provider/account mutations outside bounded fixture proof"
+  ]
+}

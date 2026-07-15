@@ -14,14 +14,7 @@ for (const item of Object.values(readiness.servers)) {
 }
 assert.equal(readiness.servers.core.validation_warnings.length, 0);
 assert.equal(readiness.servers.precision.validation_warnings.length, 0);
-assert.deepEqual(readiness.servers.tools.validation_warnings.map((item) => item.tool), [
-  "vnem_tools_github_pr_update",
-  "vnem_tools_github_issue_update",
-  "vnem_tools_github_issue_comment",
-  "vnem_tools_github_release_plan",
-  "vnem_tools_github_repo_settings_plan",
-  "vnem_tools_github_repo_settings_apply"
-], "live registry must preserve the exact known Tools behavior-reference gap");
+assert.deepEqual(readiness.servers.tools.validation_warnings, [], "every public Tools entry must have an exact behavior-test reference");
 
 const fake = { handlers: new Map(), registerTool(name, definition, handler) { this.handlers.set(name, handler); } };
 const registry = attachToolRegistry(fake, { serverName: "test", version: "1", implementationModule: "test" });

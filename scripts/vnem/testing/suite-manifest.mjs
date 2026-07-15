@@ -149,6 +149,7 @@ export const VNEM_FULL_SUITE = Object.freeze([
   "test:tools-github-command-builder",
   "test:tools-github-live-readiness",
   "test:tools-github-mutation-dry-run",
+  "test:tools-github-final-behavior-coverage",
   "test:tools-autonomy-2-regression",
   "test:tools-power-tools-1-regression",
   "test:tools-power-tools-2-regression",
@@ -158,6 +159,7 @@ export const VNEM_FULL_SUITE = Object.freeze([
   "test:vnem-adoption-reliability-1-regression",
   "test:vnem-adoption-reliability-2-regression",
   "test:vnem-install-adoption-1-regression",
+  "test:tools-client-setup-mcp",
   "test:giga-capability-current",
   "test:giga-baseline"
 ]);
@@ -186,6 +188,7 @@ const PRECISION_COMPAT = Object.freeze([
 const CLIENTS = Object.freeze([
   "test:detect-ai-clients",
   "test:clients:setup",
+  "test:tools-client-setup-mcp",
   "test:preview-connector",
   "test:apply-connector",
   "test:cli",

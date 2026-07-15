@@ -331,7 +331,9 @@
     "giga:phase22-performance": "node scripts/vnem/giga/performance-baseline.mjs --label=phase-22 --runs=9",
     "giga:phase23-adoption": "node scripts/test-giga-adoption-client-use.mjs --proof-output=.vnem/giga-evolution/phase-23/adoption-client-use-proof.json",
     "giga:phase24-integration": "node scripts/test-giga-final-integration.mjs --output=.vnem/giga-evolution/phase-24/final-integration-proof.json",
-    "test:clients:setup": "node scripts/test-vnem-client-setup.mjs"
+    "test:clients:setup": "node scripts/test-vnem-client-setup.mjs",
+    "test:tools-client-setup-mcp": "node scripts/test-tools-client-setup-mcp.mjs",
+    "test:tools-github-final-behavior-coverage": "node scripts/test-tools-github-final-behavior-coverage.mjs"
   },
   "dependencies": {
     "@babel/parser": "7.29.7",
