@@ -1,0 +1,3434 @@
+{
+  "schema_version": "1.0.0",
+  "generated_at": "2026-07-08T21:12:40.970Z",
+  "timestamp_source": "generation/metadata.json",
+  "generation_settings": {
+    "install_base_url": "https://raw.githubusercontent.com/Ovvuhy/vnem/main/public",
+    "archive_order": "portable_path_ascending",
+    "archive_header_policy": "normalized_ustar_gzip"
+  },
+  "source_sets": {
+    "primary": {
+      "explicit_paths": [
+        "generation/metadata.json",
+        "package.json",
+        "registry/entries/ac-inference-sh-mcp/entry.yaml",
+        "registry/entries/ac-inference-sh-mcp/profile.md",
+        "registry/entries/ac-tandem-docs-mcp/entry.yaml",
+        "registry/entries/ac-tandem-docs-mcp/profile.md",
+        "registry/entries/agency-lona-trading/entry.yaml",
+        "registry/entries/agency-lona-trading/profile.md",
+        "registry/entries/agentops/entry.yaml",
+        "registry/entries/agentops/profile.md",
+        "registry/entries/ai-31st-mcp/entry.yaml",
+        "registry/entries/ai-31st-mcp/profile.md",
+        "registry/entries/ai-aarna-atars-mcp/entry.yaml",
+        "registry/entries/ai-aarna-atars-mcp/profile.md",
+        "registry/entries/ai-abmeter-abmeter/entry.yaml",
+        "registry/entries/ai-abmeter-abmeter/profile.md",
+        "registry/entries/ai-adadvisor-mcp-server/entry.yaml",
+        "registry/entries/ai-adadvisor-mcp-server/profile.md",
+        "registry/entries/ai-adeu-adeu/entry.yaml",
+        "registry/entries/ai-adeu-adeu/profile.md",
+        "registry/entries/ai-adramp-google-ads/entry.yaml",
+        "registry/entries/ai-adramp-google-ads/profile.md",
+        "registry/entries/ai-adweave-meta-ads-mcp/entry.yaml",
+        "registry/entries/ai-adweave-meta-ads-mcp/profile.md",
+        "registry/entries/ai-agentdm-agentdm/entry.yaml",
+        "registry/entries/ai-agentdm-agentdm/profile.md",
+        "registry/entries/ai-agentic-news-mcp/entry.yaml",
+        "registry/entries/ai-agentic-news-mcp/profile.md",
+        "registry/entries/ai-agenticshelf-graffeo/entry.yaml",
+        "registry/entries/ai-agenticshelf-graffeo/profile.md",
+        "registry/entries/ai-agenticshelf-mcp/entry.yaml",
+        "registry/entries/ai-agenticshelf-mcp/profile.md",
+        "registry/entries/ai-agenticterminal-directory/entry.yaml",
+        "registry/entries/ai-agenticterminal-directory/profile.md",
+        "registry/entries/ai-agentrapay-agentra/entry.yaml",
+        "registry/entries/ai-agentrapay-agentra/profile.md",
+        "registry/entries/ai-agenttrust-mcp-server/entry.yaml",
+        "registry/entries/ai-agenttrust-mcp-server/profile.md",
+        "registry/entries/ai-aliengiraffe-spotdb/entry.yaml",
+        "registry/entries/ai-aliengiraffe-spotdb/profile.md",
+        "registry/entries/ai-alpic-mcp-alpic-mcp/entry.yaml",
+        "registry/entries/ai-alpic-mcp-alpic-mcp/profile.md",
+        "registry/entries/ai-alpic-test-test-mcp-server/entry.yaml",
+        "registry/entries/ai-alpic-test-test-mcp-server/profile.md",
+        "registry/entries/ai-ankimcp-anki-mcp-server-addon/entry.yaml",
+        "registry/entries/ai-ankimcp-anki-mcp-server-addon/profile.md",
+        "registry/entries/ai-ankimcp-anki-mcp-server/entry.yaml",
+        "registry/entries/ai-ankimcp-anki-mcp-server/profile.md",
+        "registry/entries/ai-anomalyarmor-armor-mcp/entry.yaml",
+        "registry/entries/ai-anomalyarmor-armor-mcp/profile.md",
+        "registry/entries/ai-anzenna-anzenna/entry.yaml",
+        "registry/entries/ai-anzenna-anzenna/profile.md",
+        "registry/entries/ai-appdeploy-deploy-app/entry.yaml",
+        "registry/entries/ai-appdeploy-deploy-app/profile.md",
+        "registry/entries/ai-arclan-registry/entry.yaml",
+        "registry/entries/ai-arclan-registry/profile.md",
+        "registry/entries/ai-artidrop-artidrop/entry.yaml",
+        "registry/entries/ai-artidrop-artidrop/profile.md",
+        "registry/entries/ai-auteng-docs/entry.yaml",
+        "registry/entries/ai-auteng-docs/profile.md",
+        "registry/entries/ai-auteng-mcp/entry.yaml",
+        "registry/entries/ai-auteng-mcp/profile.md",
+        "registry/entries/ai-autoblocks-contextlayer-mcp/entry.yaml",
+        "registry/entries/ai-autoblocks-contextlayer-mcp/profile.md",
+        "registry/entries/ai-autoblocks-ctxl-mcp/entry.yaml",
+        "registry/entries/ai-autoblocks-ctxl-mcp/profile.md",
+        "registry/entries/ai-autoblocks-ctxl/entry.yaml",
+        "registry/entries/ai-autoblocks-ctxl/profile.md",
+        "registry/entries/ai-autonomad-computeback/entry.yaml",
+        "registry/entries/ai-autonomad-computeback/profile.md",
+        "registry/entries/ai-autonomad-travel/entry.yaml",
+        "registry/entries/ai-autonomad-travel/profile.md",
+        "registry/entries/ai-autorfp-mcp/entry.yaml",
+        "registry/entries/ai-autorfp-mcp/profile.md",
+        "registry/entries/ai-auxen-auxen/entry.yaml",
+        "registry/entries/ai-auxen-auxen/profile.md",
+        "registry/entries/ai-bankee-inferventis-mcp/entry.yaml",
+        "registry/entries/ai-bankee-inferventis-mcp/profile.md",
+        "registry/entries/ai-baselight-baselight/entry.yaml",
+        "registry/entries/ai-baselight-baselight/profile.md",
+        "registry/entries/ai-bezal-local-commerce/entry.yaml",
+        "registry/entries/ai-bezal-local-commerce/profile.md",
+        "registry/entries/ai-bluenexus-universal-mcp/entry.yaml",
+        "registry/entries/ai-bluenexus-universal-mcp/profile.md",
+        "registry/entries/ai-boolsai-directory/entry.yaml",
+        "registry/entries/ai-boolsai-directory/profile.md",
+        "registry/entries/ai-boolsai-grep/entry.yaml",
+        "registry/entries/ai-boolsai-grep/profile.md",
+        "registry/entries/ai-boolsai-scan/entry.yaml",
+        "registry/entries/ai-boolsai-scan/profile.md",
+        "registry/entries/ai-boolsai-signals/entry.yaml",
+        "registry/entries/ai-boolsai-signals/profile.md",
+        "registry/entries/ai-borealhost-mcp/entry.yaml",
+        "registry/entries/ai-borealhost-mcp/profile.md",
+        "registry/entries/ai-bringyour-bringyour/entry.yaml",
+        "registry/entries/ai-bringyour-bringyour/profile.md",
+        "registry/entries/ai-buyersense-buyersense/entry.yaml",
+        "registry/entries/ai-buyersense-buyersense/profile.md",
+        "registry/entries/ai-buywhere-buywhere-mcp/entry.yaml",
+        "registry/entries/ai-buywhere-buywhere-mcp/profile.md",
+        "registry/entries/ai-buywhere-catalog-api/entry.yaml",
+        "registry/entries/ai-buywhere-catalog-api/profile.md",
+        "registry/entries/ai-byteray-byteray-mcp/entry.yaml",
+        "registry/entries/ai-byteray-byteray-mcp/profile.md",
+        "registry/entries/ai-calendarmcp-server/entry.yaml",
+        "registry/entries/ai-calendarmcp-server/profile.md",
+        "registry/entries/ai-childadhd-library/entry.yaml",
+        "registry/entries/ai-childadhd-library/profile.md",
+        "registry/entries/ai-childanxiety-library/entry.yaml",
+        "registry/entries/ai-childanxiety-library/profile.md",
+        "registry/entries/ai-childpsychiatry-library/entry.yaml",
+        "registry/entries/ai-childpsychiatry-library/profile.md",
+        "registry/entries/ai-chinamarketing-intelligence/entry.yaml",
+        "registry/entries/ai-chinamarketing-intelligence/profile.md",
+        "registry/entries/ai-cirra-salesforce-mcp/entry.yaml",
+        "registry/entries/ai-cirra-salesforce-mcp/profile.md",
+        "registry/entries/ai-clarid-compliance/entry.yaml",
+        "registry/entries/ai-clarid-compliance/profile.md",
+        "registry/entries/ai-clarid-hmda/entry.yaml",
+        "registry/entries/ai-clarid-hmda/profile.md",
+        "registry/entries/ai-com-mcp-contabo/entry.yaml",
+        "registry/entries/ai-com-mcp-contabo/profile.md",
+        "registry/entries/ai-com-mcp-hapi-mcp/entry.yaml",
+        "registry/entries/ai-com-mcp-hapi-mcp/profile.md",
+        "registry/entries/ai-com-mcp-lenny-rachitsky-podcast/entry.yaml",
+        "registry/entries/ai-com-mcp-lenny-rachitsky-podcast/profile.md",
+        "registry/entries/ai-com-mcp-linkedin/entry.yaml",
+        "registry/entries/ai-com-mcp-linkedin/profile.md",
+        "registry/entries/ai-com-mcp-openai-tools/entry.yaml",
+        "registry/entries/ai-com-mcp-openai-tools/profile.md",
+        "registry/entries/ai-com-mcp-petstore/entry.yaml",
+        "registry/entries/ai-com-mcp-petstore/profile.md",
+        "registry/entries/ai-com-mcp-registry/entry.yaml",
+        "registry/entries/ai-com-mcp-registry/profile.md",
+        "registry/entries/ai-com-mcp-skills-search/entry.yaml",
+        "registry/entries/ai-com-mcp-skills-search/profile.md",
+        "registry/entries/ai-com-mcp-strava/entry.yaml",
+        "registry/entries/ai-com-mcp-strava/profile.md",
+        "registry/entries/ai-compeller-compel/entry.yaml",
+        "registry/entries/ai-compeller-compel/profile.md",
+        "registry/entries/ai-complyhat-compliance/entry.yaml",
+        "registry/entries/ai-complyhat-compliance/profile.md",
+        "registry/entries/ai-complyme-mcp-mcp/entry.yaml",
+        "registry/entries/ai-complyme-mcp-mcp/profile.md",
+        "registry/entries/ai-constellationfinance-constellation-finance-mcp/entry.yaml",
+        "registry/entries/ai-constellationfinance-constellation-finance-mcp/profile.md",
+        "registry/entries/ai-contextstudios-mcp/entry.yaml",
+        "registry/entries/ai-contextstudios-mcp/profile.md",
+        "registry/entries/ai-conveo-conveo/entry.yaml",
+        "registry/entries/ai-conveo-conveo/profile.md",
+        "registry/entries/ai-cookiy-cookiy/entry.yaml",
+        "registry/entries/ai-cookiy-cookiy/profile.md",
+        "registry/entries/ai-cosmonote-notes/entry.yaml",
+        "registry/entries/ai-cosmonote-notes/profile.md",
+        "registry/entries/ai-cueapi-mcp/entry.yaml",
+        "registry/entries/ai-cueapi-mcp/profile.md",
+        "registry/entries/ai-dataforb2b-dataforb2b/entry.yaml",
+        "registry/entries/ai-dataforb2b-dataforb2b/profile.md",
+        "registry/entries/ai-datamerge-mcp/entry.yaml",
+        "registry/entries/ai-datamerge-mcp/profile.md",
+        "registry/entries/ai-deepledger-mcp/entry.yaml",
+        "registry/entries/ai-deepledger-mcp/profile.md",
+        "registry/entries/ai-delega-aws-pricing-calculator/entry.yaml",
+        "registry/entries/ai-delega-aws-pricing-calculator/profile.md",
+        "registry/entries/ai-demanddiscovery-mcp/entry.yaml",
+        "registry/entries/ai-demanddiscovery-mcp/profile.md",
+        "registry/entries/ai-djwizard-tvwizard/entry.yaml",
+        "registry/entries/ai-djwizard-tvwizard/profile.md",
+        "registry/entries/ai-donethat-donethat/entry.yaml",
+        "registry/entries/ai-donethat-donethat/profile.md",
+        "registry/entries/ai-dragoneye-mcp/entry.yaml",
+        "registry/entries/ai-dragoneye-mcp/profile.md",
+        "registry/entries/ai-dreamlit-mcp/entry.yaml",
+        "registry/entries/ai-dreamlit-mcp/profile.md",
+        "registry/entries/ai-drillr-drillr/entry.yaml",
+        "registry/entries/ai-drillr-drillr/profile.md",
+        "registry/entries/ai-dynsoft-sac/entry.yaml",
+        "registry/entries/ai-dynsoft-sac/profile.md",
+        "registry/entries/ai-exa-exa/entry.yaml",
+        "registry/entries/ai-exa-exa/profile.md",
+        "registry/entries/ai-example4-xmp4/entry.yaml",
+        "registry/entries/ai-example4-xmp4/profile.md",
+        "registry/entries/ai-explorium-mcp-explorium/entry.yaml",
+        "registry/entries/ai-explorium-mcp-explorium/profile.md",
+        "registry/entries/ai-fathom-api-mcp/entry.yaml",
+        "registry/entries/ai-fathom-api-mcp/profile.md",
+        "registry/entries/ai-fiber-mcp/entry.yaml",
+        "registry/entries/ai-fiber-mcp/profile.md",
+        "registry/entries/ai-filegraph-document-processing/entry.yaml",
+        "registry/entries/ai-filegraph-document-processing/profile.md",
+        "registry/entries/ai-filtrix-mcp-filtrix-ai/entry.yaml",
+        "registry/entries/ai-filtrix-mcp-filtrix-ai/profile.md",
+        "registry/entries/ai-fincontext-fincontext/entry.yaml",
+        "registry/entries/ai-fincontext-fincontext/profile.md",
+        "registry/entries/ai-fodda-mcp-server/entry.yaml",
+        "registry/entries/ai-fodda-mcp-server/profile.md",
+        "registry/entries/ai-gavelin-mcp/entry.yaml",
+        "registry/entries/ai-gavelin-mcp/profile.md",
+        "registry/entries/ai-geodesiclabs-governance-platform/entry.yaml",
+        "registry/entries/ai-geodesiclabs-governance-platform/profile.md",
+        "registry/entries/ai-gethal-mcp/entry.yaml",
+        "registry/entries/ai-gethal-mcp/profile.md",
+        "registry/entries/ai-getperspective-mcp/entry.yaml",
+        "registry/entries/ai-getperspective-mcp/profile.md",
+        "registry/entries/ai-gomarble-mcp-api/entry.yaml",
+        "registry/entries/ai-gomarble-mcp-api/profile.md",
+        "registry/entries/ai-gossiper-shopify-admin-mcp/entry.yaml",
+        "registry/entries/ai-gossiper-shopify-admin-mcp/profile.md",
+        "registry/entries/ai-haymon-database/entry.yaml",
+        "registry/entries/ai-haymon-database/profile.md",
+        "registry/entries/ai-haymon-dbmcp/entry.yaml",
+        "registry/entries/ai-haymon-dbmcp/profile.md",
+        "registry/entries/ai-helixar-mcp/entry.yaml",
+        "registry/entries/ai-helixar-mcp/profile.md",
+        "registry/entries/ai-hostprofit-mcp/entry.yaml",
+        "registry/entries/ai-hostprofit-mcp/profile.md",
+        "registry/entries/ai-i18nagent-i18n-agent/entry.yaml",
+        "registry/entries/ai-i18nagent-i18n-agent/profile.md",
+        "registry/entries/ai-imboard-dossier/entry.yaml",
+        "registry/entries/ai-imboard-dossier/profile.md",
+        "registry/entries/ai-inflowpay-app-inflow/entry.yaml",
+        "registry/entries/ai-inflowpay-app-inflow/profile.md",
+        "registry/entries/ai-jeda-jeda-ai/entry.yaml",
+        "registry/entries/ai-jeda-jeda-ai/profile.md",
+        "registry/entries/ai-kawacode-mcp/entry.yaml",
+        "registry/entries/ai-kawacode-mcp/profile.md",
+        "registry/entries/ai-klavis-strata/entry.yaml",
+        "registry/entries/ai-klavis-strata/profile.md",
+        "registry/entries/ai-kolens-kolens-mcp/entry.yaml",
+        "registry/entries/ai-kolens-kolens-mcp/profile.md",
+        "registry/entries/ai-kubit-mcp-server/entry.yaml",
+        "registry/entries/ai-kubit-mcp-server/profile.md",
+        "registry/entries/ai-lattiq-x402-trading-signals/entry.yaml",
+        "registry/entries/ai-lattiq-x402-trading-signals/profile.md",
+        "registry/entries/ai-law-lawyer-search/entry.yaml",
+        "registry/entries/ai-law-lawyer-search/profile.md",
+        "registry/entries/ai-limitguard-api-trust-intelligence/entry.yaml",
+        "registry/entries/ai-limitguard-api-trust-intelligence/profile.md",
+        "registry/entries/ai-linkguard-linkguard-mcp/entry.yaml",
+        "registry/entries/ai-linkguard-linkguard-mcp/profile.md",
+        "registry/entries/ai-llmse-mcp/entry.yaml",
+        "registry/entries/ai-llmse-mcp/profile.md",
+        "registry/entries/ai-lucasandersen-mlp-tax/entry.yaml",
+        "registry/entries/ai-lucasandersen-mlp-tax/profile.md",
+        "registry/entries/ai-ludo-game-assets/entry.yaml",
+        "registry/entries/ai-ludo-game-assets/profile.md",
+        "registry/entries/ai-mailjunky-mcp/entry.yaml",
+        "registry/entries/ai-mailjunky-mcp/profile.md",
+        "registry/entries/ai-marketcore-mcp/entry.yaml",
+        "registry/entries/ai-marketcore-mcp/profile.md",
+        "registry/entries/ai-mcpanalytics-analytics/entry.yaml",
+        "registry/entries/ai-mcpanalytics-analytics/profile.md",
+        "registry/entries/ai-mcpcap-mcpcap/entry.yaml",
+        "registry/entries/ai-mcpcap-mcpcap/profile.md",
+        "registry/entries/ai-meacheal-mrc-data/entry.yaml",
+        "registry/entries/ai-meacheal-mrc-data/profile.md",
+        "registry/entries/ai-meetlark-mcp-server/entry.yaml",
+        "registry/entries/ai-meetlark-mcp-server/profile.md",
+        "registry/entries/ai-meetsquad-squad/entry.yaml",
+        "registry/entries/ai-meetsquad-squad/profile.md",
+        "registry/entries/ai-memestack-mcp/entry.yaml",
+        "registry/entries/ai-memestack-mcp/profile.md",
+        "registry/entries/ai-meminal-meminal/entry.yaml",
+        "registry/entries/ai-meminal-meminal/profile.md",
+        "registry/entries/ai-mino-web-agent/entry.yaml",
+        "registry/entries/ai-mino-web-agent/profile.md",
+        "registry/entries/ai-modulos-demo-booking/entry.yaml",
+        "registry/entries/ai-modulos-demo-booking/profile.md",
+        "registry/entries/ai-moxt-mcp-workspace/entry.yaml",
+        "registry/entries/ai-moxt-mcp-workspace/profile.md",
+        "registry/entries/ai-myriade-myriade/entry.yaml",
+        "registry/entries/ai-myriade-myriade/profile.md",
+        "registry/entries/ai-namewhisper-ens-tools/entry.yaml",
+        "registry/entries/ai-namewhisper-ens-tools/profile.md",
+        "registry/entries/ai-nefesh-human-state/entry.yaml",
+        "registry/entries/ai-nefesh-human-state/profile.md",
+        "registry/entries/ai-newzai-api-news-mcp/entry.yaml",
+        "registry/entries/ai-newzai-api-news-mcp/profile.md",
+        "registry/entries/ai-newzai-api-newzai/entry.yaml",
+        "registry/entries/ai-newzai-api-newzai/profile.md",
+        "registry/entries/ai-nexustoken-nexustoken-sdk/entry.yaml",
+        "registry/entries/ai-nexustoken-nexustoken-sdk/profile.md",
+        "registry/entries/ai-ninar-ninar/entry.yaml",
+        "registry/entries/ai-ninar-ninar/profile.md",
+        "registry/entries/ai-nocturnus-logic-server/entry.yaml",
+        "registry/entries/ai-nocturnus-logic-server/profile.md",
+        "registry/entries/ai-nordax-mcp/entry.yaml",
+        "registry/entries/ai-nordax-mcp/profile.md",
+        "registry/entries/ai-nothumansearch-search/entry.yaml",
+        "registry/entries/ai-nothumansearch-search/profile.md",
+        "registry/entries/ai-nudg3-brand-intelligence/entry.yaml",
+        "registry/entries/ai-nudg3-brand-intelligence/profile.md",
+        "registry/entries/ai-nullary-nullary/entry.yaml",
+        "registry/entries/ai-nullary-nullary/profile.md",
+        "registry/entries/ai-obaron-aeo/entry.yaml",
+        "registry/entries/ai-obaron-aeo/profile.md",
+        "registry/entries/ai-obris-mcp/entry.yaml",
+        "registry/entries/ai-obris-mcp/profile.md",
+        "registry/entries/ai-offerhopper-mcp-shopping-optimizer/entry.yaml",
+        "registry/entries/ai-offerhopper-mcp-shopping-optimizer/profile.md",
+        "registry/entries/ai-openarx-openarx/entry.yaml",
+        "registry/entries/ai-openarx-openarx/profile.md",
+        "registry/entries/ai-openmandate-mcp/entry.yaml",
+        "registry/entries/ai-openmandate-mcp/profile.md",
+        "registry/entries/aider/entry.yaml",
+        "registry/entries/aider/profile.md",
+        "registry/entries/anthropic-building-effective-agents/entry.yaml",
+        "registry/entries/anthropic-building-effective-agents/profile.md",
+        "registry/entries/anthropic-claude-code/entry.yaml",
+        "registry/entries/anthropic-claude-code/profile.md",
+        "registry/entries/anthropic-multi-agent-research-system/entry.yaml",
+        "registry/entries/anthropic-multi-agent-research-system/profile.md",
+        "registry/entries/arize-phoenix/entry.yaml",
+        "registry/entries/arize-phoenix/profile.md",
+        "registry/entries/ast-grep/entry.yaml",
+        "registry/entries/ast-grep/profile.md",
+        "registry/entries/babylon-js/entry.yaml",
+        "registry/entries/babylon-js/profile.md",
+        "registry/entries/browserbase-mcp/entry.yaml",
+        "registry/entries/browserbase-mcp/profile.md",
+        "registry/entries/claude-code-memory/entry.yaml",
+        "registry/entries/claude-code-memory/profile.md",
+        "registry/entries/claude-code-subagents/entry.yaml",
+        "registry/entries/claude-code-subagents/profile.md",
+        "registry/entries/cline/entry.yaml",
+        "registry/entries/cline/profile.md",
+        "registry/entries/clude/entry.yaml",
+        "registry/entries/clude/profile.md",
+        "registry/entries/codebase-memory-mcp/entry.yaml",
+        "registry/entries/codebase-memory-mcp/profile.md",
+        "registry/entries/codex-agents-md/entry.yaml",
+        "registry/entries/codex-agents-md/profile.md",
+        "registry/entries/context7-mcp/entry.yaml",
+        "registry/entries/context7-mcp/profile.md",
+        "registry/entries/continue-dev/entry.yaml",
+        "registry/entries/continue-dev/profile.md",
+        "registry/entries/covenant-research/entry.yaml",
+        "registry/entries/covenant-research/profile.md",
+        "registry/entries/crewai/entry.yaml",
+        "registry/entries/crewai/profile.md",
+        "registry/entries/cursor-agent/entry.yaml",
+        "registry/entries/cursor-agent/profile.md",
+        "registry/entries/custom-modes-roo-code/entry.yaml",
+        "registry/entries/custom-modes-roo-code/profile.md",
+        "registry/entries/dspy/entry.yaml",
+        "registry/entries/dspy/profile.md",
+        "registry/entries/excalibur-js/entry.yaml",
+        "registry/entries/excalibur-js/profile.md",
+        "registry/entries/firecrawl-mcp/entry.yaml",
+        "registry/entries/firecrawl-mcp/profile.md",
+        "registry/entries/github-copilot-coding-agent/entry.yaml",
+        "registry/entries/github-copilot-coding-agent/profile.md",
+        "registry/entries/github-mcp-server/entry.yaml",
+        "registry/entries/github-mcp-server/profile.md",
+        "registry/entries/google-agent-development-kit/entry.yaml",
+        "registry/entries/google-agent-development-kit/profile.md",
+        "registry/entries/google-agent2agent-protocol/entry.yaml",
+        "registry/entries/google-agent2agent-protocol/profile.md",
+        "registry/entries/graphiti/entry.yaml",
+        "registry/entries/graphiti/profile.md",
+        "registry/entries/inspect-ai/entry.yaml",
+        "registry/entries/inspect-ai/profile.md",
+        "registry/entries/jscpd/entry.yaml",
+        "registry/entries/jscpd/profile.md",
+        "registry/entries/kaimo/entry.yaml",
+        "registry/entries/kaimo/profile.md",
+        "registry/entries/kaplay/entry.yaml",
+        "registry/entries/kaplay/profile.md",
+        "registry/entries/knip/entry.yaml",
+        "registry/entries/knip/profile.md",
+        "registry/entries/langfuse/entry.yaml",
+        "registry/entries/langfuse/profile.md",
+        "registry/entries/langgraph/entry.yaml",
+        "registry/entries/langgraph/profile.md",
+        "registry/entries/langsmith/entry.yaml",
+        "registry/entries/langsmith/profile.md",
+        "registry/entries/letta/entry.yaml",
+        "registry/entries/letta/profile.md",
+        "registry/entries/llamaindex-agents/entry.yaml",
+        "registry/entries/llamaindex-agents/profile.md",
+        "registry/entries/lunar-mcpx/entry.yaml",
+        "registry/entries/lunar-mcpx/profile.md",
+        "registry/entries/mastra/entry.yaml",
+        "registry/entries/mastra/profile.md",
+        "registry/entries/matter-js/entry.yaml",
+        "registry/entries/matter-js/profile.md",
+        "registry/entries/mcp-crawl4ai-rag/entry.yaml",
+        "registry/entries/mcp-crawl4ai-rag/profile.md",
+        "registry/entries/mcp-server-mysql/entry.yaml",
+        "registry/entries/mcp-server-mysql/profile.md",
+        "registry/entries/mem0/entry.yaml",
+        "registry/entries/mem0/profile.md",
+        "registry/entries/microsoft-autogen/entry.yaml",
+        "registry/entries/microsoft-autogen/profile.md",
+        "registry/entries/microsoft-mcp-gateway/entry.yaml",
+        "registry/entries/microsoft-mcp-gateway/profile.md",
+        "registry/entries/model-context-protocol/entry.yaml",
+        "registry/entries/model-context-protocol/profile.md",
+        "registry/entries/openai-agents-sdk/entry.yaml",
+        "registry/entries/openai-agents-sdk/profile.md",
+        "registry/entries/openai-codex-cli/entry.yaml",
+        "registry/entries/openai-codex-cli/profile.md",
+        "registry/entries/openai-prompt-engineering-guide/entry.yaml",
+        "registry/entries/openai-prompt-engineering-guide/profile.md",
+        "registry/entries/openai-prompt-optimizer/entry.yaml",
+        "registry/entries/openai-prompt-optimizer/profile.md",
+        "registry/entries/openai-swarm/entry.yaml",
+        "registry/entries/openai-swarm/profile.md",
+        "registry/entries/openhands/entry.yaml",
+        "registry/entries/openhands/profile.md",
+        "registry/entries/opentabs/entry.yaml",
+        "registry/entries/opentabs/profile.md",
+        "registry/entries/phaser/entry.yaml",
+        "registry/entries/phaser/profile.md",
+        "registry/entries/pixijs/entry.yaml",
+        "registry/entries/pixijs/profile.md",
+        "registry/entries/playcanvas-engine/entry.yaml",
+        "registry/entries/playcanvas-engine/profile.md",
+        "registry/entries/playwright-mcp/entry.yaml",
+        "registry/entries/playwright-mcp/profile.md",
+        "registry/entries/promptfoo/entry.yaml",
+        "registry/entries/promptfoo/profile.md",
+        "registry/entries/pydantic-ai/entry.yaml",
+        "registry/entries/pydantic-ai/profile.md",
+        "registry/entries/qdrant-mcp-server/entry.yaml",
+        "registry/entries/qdrant-mcp-server/profile.md",
+        "registry/entries/ragas/entry.yaml",
+        "registry/entries/ragas/profile.md",
+        "registry/entries/rapier-js/entry.yaml",
+        "registry/entries/rapier-js/profile.md",
+        "registry/entries/ripgrep/entry.yaml",
+        "registry/entries/ripgrep/profile.md",
+        "registry/entries/roo-code/entry.yaml",
+        "registry/entries/roo-code/profile.md",
+        "registry/entries/rules-template-memory-bank/entry.yaml",
+        "registry/entries/rules-template-memory-bank/profile.md",
+        "registry/entries/semantic-kernel/entry.yaml",
+        "registry/entries/semantic-kernel/profile.md",
+        "registry/entries/sentry-mcp/entry.yaml",
+        "registry/entries/sentry-mcp/profile.md",
+        "registry/entries/stripe-agent-toolkit/entry.yaml",
+        "registry/entries/stripe-agent-toolkit/profile.md",
+        "registry/entries/supabase-mcp/entry.yaml",
+        "registry/entries/supabase-mcp/profile.md",
+        "registry/entries/swarms/entry.yaml",
+        "registry/entries/swarms/profile.md",
+        "registry/entries/swe-agent/entry.yaml",
+        "registry/entries/swe-agent/profile.md",
+        "registry/entries/three-js/entry.yaml",
+        "registry/entries/three-js/profile.md",
+        "registry/entries/ugrep/entry.yaml",
+        "registry/entries/ugrep/profile.md",
+        "registry/entries/vercel-ai-sdk/entry.yaml",
+        "registry/entries/vercel-ai-sdk/profile.md",
+        "registry/entries/vnem-mcp/entry.yaml",
+        "registry/entries/vnem-mcp/profile.md",
+        "registry/entries/zep/entry.yaml",
+        "registry/entries/zep/profile.md",
+        "scripts/generate-artifacts.mjs",
+        "scripts/generate-digest.mjs",
+        "scripts/lib/registry.mjs",
+        "scripts/vnem-install-adoption.mjs",
+        "scripts/vnem/generation/daily-digest.mjs",
+        "scripts/vnem/generation/generated-artifacts.mjs"
+      ],
+      "patterns": [
+        "discovery/candidates/*.json"
+      ],
+      "inputs": [
+        {
+          "path": "discovery/candidates/hermes-2026-05-26T08.json",
+          "content_hash": "sha256:c4d0d5e1617b9212be9b8fd330dffd2f50412f52d6989df56c407ea75208c217"
+        },
+        {
+          "path": "discovery/candidates/hermes-2026-05-26T09.json",
+          "content_hash": "sha256:c6ae5009e599a800b9775cade31b33d1b9f806637df6ce066514466b4704f8bc"
+        },
+        {
+          "path": "discovery/candidates/hermes-2026-05-26T10.json",
+          "content_hash": "sha256:b50394f15e3d7a65ebd96dc9fc4d1388c6780ecbc9b0e8c60b69bb8ca8ab4b39"
+        },
+        {
+          "path": "discovery/candidates/hermes-2026-05-26T11.json",
+          "content_hash": "sha256:448e402f9961780df631709fd6f15376d3d08d478f8e465ced9ace3df90cc2f1"
+        },
+        {
+          "path": "discovery/candidates/hermes-2026-05-26T12.json",
+          "content_hash": "sha256:99e70eb4a514882623022debfcad291c8e6836dc4497d1e52436eea2de4d85db"
+        },
+        {
+          "path": "discovery/candidates/hermes-2026-05-26T13.json",
+          "content_hash": "sha256:1c81c273acdfc82cc1227afb72ee5a20e82cdf446b60ee837811ebb177ab6eff"
+        },
+        {
+          "path": "discovery/candidates/hermes-2026-05-26T14.json",
+          "content_hash": "sha256:9a4e67ab954a35697c17c7a42eb4b7d98b70b1ef1fc873d65389ea9ff3cfd55d"
+        },
+        {
+          "path": "discovery/candidates/hermes-2026-05-26T15.json",
+          "content_hash": "sha256:dff80d9fe31ff4e7cee9714e22cab6fc445c9c0e68e8a898a6ad361123618f5c"
+        },
+        {
+          "path": "discovery/candidates/hermes-2026-05-26T16.json",
+          "content_hash": "sha256:59c31240fefc125865bdd02f123801e23d737d024969381df149b270e230eec8"
+        },
+        {
+          "path": "discovery/candidates/hermes-2026-05-26T17.json",
+          "content_hash": "sha256:cc9f5ab3d0d212f3e7c0a2f8e9e9edd1fbbd366b31f456a8da55c8f9f07635ed"
+        },
+        {
+          "path": "discovery/candidates/hermes-2026-05-26T18.json",
+          "content_hash": "sha256:d5bf30ae04c277e0a0fe10ef7ad66d81da15c87df82e4d435718d004559c0635"
+        },
+        {
+          "path": "discovery/candidates/hermes-2026-05-26T19.json",
+          "content_hash": "sha256:3f5bf2c769df29834a9a2aa2af212dbc90160857ed6b4df844bb2037f309aa4d"
+        },
+        {
+          "path": "discovery/candidates/hermes-2026-05-26T20.json",
+          "content_hash": "sha256:368112d91fde4541ee57a70acdb164310292773354d6f68f3baf944f426ba13a"
+        },
+        {
+          "path": "discovery/candidates/hermes-2026-05-26T21.json",
+          "content_hash": "sha256:e5a422266f0b0ee412e18c3496342f1be94b1474f3314d88c24de6ff144d1c09"
+        },
+        {
+          "path": "discovery/candidates/hermes-2026-05-26T22.json",
+          "content_hash": "sha256:2c94904db956e924d66796f27baef4733ef9444f2074244eb2033c3f0a551e21"
+        },
+        {
+          "path": "discovery/candidates/hermes-2026-05-26T23.json",
+          "content_hash": "sha256:f99dcaf088b24897ccf526b15e0796545e2bbc5e30e2c5ed70f0ad0fdf3a2ae2"
+        },
+        {
+          "path": "discovery/candidates/hermes-2026-05-27T00.json",
+          "content_hash": "sha256:f08fd5f9682e71feabd706342df87804a9ef326b5fc859ff771967b7712c5890"
+        },
+        {
+          "path": "discovery/candidates/hermes-2026-05-27T01.json",
+          "content_hash": "sha256:3a4ae149e1708abf79497d4b97b575b43b06c23187237500a80a3e71d8d08227"
+        },
+        {
+          "path": "discovery/candidates/hermes-2026-05-27T02.json",
+          "content_hash": "sha256:aa6a1e51748b8c77756a6f8f307bc42a938d20d57dfddba1b1833d7bb9897171"
+        },
+        {
+          "path": "discovery/candidates/hermes-2026-05-27T03.json",
+          "content_hash": "sha256:8711b3a7fdc7301350e0d87694190202f9aaf0ed9340bb7d0b122aeaca111427"
+        },
+        {
+          "path": "discovery/candidates/hermes-2026-05-27T04.json",
+          "content_hash": "sha256:beffa25f1eea7aff13212c7309a5b5d85a60a69592de47d93e1d4cb874203266"
+        },
+        {
+          "path": "discovery/candidates/hermes-2026-05-27T05.json",
+          "content_hash": "sha256:7bfebaddef78019bb92716224b1b6093c4383a75c72e9b90376b4a4c49673ae9"
+        },
+        {
+          "path": "discovery/candidates/hermes-2026-05-27T06.json",
+          "content_hash": "sha256:394a8c21077c62be45eb73dd784b950298edda1593c1d3835514405e65caf527"
+        },
+        {
+          "path": "discovery/candidates/hermes-2026-05-27T07.json",
+          "content_hash": "sha256:876c8202f9deb01d4e6c9dad7f732e9b6002efff95868e794e6ccf3e89d5769b"
+        },
+        {
+          "path": "discovery/candidates/hermes-2026-05-27T12.json",
+          "content_hash": "sha256:1c16bf7e18660cd3e78d73e497ff0d96a7ce94d044b27d2babb25bc59a0cfb6c"
+        },
+        {
+          "path": "discovery/candidates/hermes-2026-05-27T13.json",
+          "content_hash": "sha256:efe5eeac22ea01e9b102e7fe8e4ea64e20d0cac7f524b96b4a714cd76a83e81b"
+        },
+        {
+          "path": "discovery/candidates/hermes-2026-05-27T14.json",
+          "content_hash": "sha256:4769b214dcbdbdc4561f9fe3dce026f02a3f56452b362b14aee6fb8e2dc230ac"
+        },
+        {
+          "path": "discovery/candidates/hermes-2026-05-27T15.json",
+          "content_hash": "sha256:014a569864568844988639a9aeacb43a4adc081074d8efe8674d5c90c58a421f"
+        },
+        {
+          "path": "discovery/candidates/hermes-2026-05-27T16.json",
+          "content_hash": "sha256:ad704ed871e9ed31a1fb6755c9784c2495490071992efa8fdf6cbf074c49a51d"
+        },
+        {
+          "path": "discovery/candidates/hermes-2026-05-27T17.json",
+          "content_hash": "sha256:c3de9c17a6ec0f25b22a262b8979cf7f8142bbff32a6cdb8d01d9c3855b683c3"
+        },
+        {
+          "path": "discovery/candidates/hermes-2026-05-27T18.json",
+          "content_hash": "sha256:9cfe0f529d24dff5b26f521a4e21538623060df56ebaf0fa58803971e795d137"
+        },
+        {
+          "path": "discovery/candidates/hermes-2026-05-27T19.json",
+          "content_hash": "sha256:cd608a416f7bf9933cde2810e7de6dd48f9916267533d2b9732a3b6ddb2c1260"
+        },
+        {
+          "path": "discovery/candidates/hermes-2026-05-27T20.json",
+          "content_hash": "sha256:d30f445eeeb204b3694681d4039d41c29caa618d443bc6d81a27922cedd78ef2"
+        },
+        {
+          "path": "discovery/candidates/hermes-2026-05-27T21.json",
+          "content_hash": "sha256:76641dbc9122aa97556072ff0e2a941c182d55ed70cf8d9bf142fa82d913147d"
+        },
+        {
+          "path": "discovery/candidates/hermes-2026-05-27T22.json",
+          "content_hash": "sha256:ccb2bb8a828511045593e91bd52c32b640d7dcf4dafd9e312d72ee3d4c7ad5e2"
+        },
+        {
+          "path": "discovery/candidates/hermes-2026-05-27T23.json",
+          "content_hash": "sha256:a3a5d538cd0603ad2f056df5b228fa7cf64922febb9a34d9e6f44da23ca97a91"
+        },
+        {
+          "path": "discovery/candidates/hermes-2026-05-28T00.json",
+          "content_hash": "sha256:5e46fea3546ce2bbb8ec8cc7f18c444d342b62dc0133dbc6413ba0bf26b27b17"
+        },
+        {
+          "path": "discovery/candidates/hermes-2026-05-28T01.json",
+          "content_hash": "sha256:d012c39ae9ef1a29d9f821ccb3f3bba9074d0ba2d500c51ccc0263c05b21cc03"
+        },
+        {
+          "path": "discovery/candidates/hermes-2026-05-28T02.json",
+          "content_hash": "sha256:1503c2498ec03790a555890a6328a38310e908c858ccb801a566ddf8101b8e93"
+        },
+        {
+          "path": "discovery/candidates/hermes-2026-05-28T03.json",
+          "content_hash": "sha256:5a5599408c76c5e38d6dec205d39b88133490ef0c5b3cd4bd6173b6b5388428b"
+        },
+        {
+          "path": "discovery/candidates/hermes-2026-05-28T04.json",
+          "content_hash": "sha256:4db225d65abda21b2316fd86305de1bb835834379695007b722f20b9d879bfbf"
+        },
+        {
+          "path": "discovery/candidates/hermes-2026-05-28T05.json",
+          "content_hash": "sha256:55611586cdb4c7c083cbf24cea4b0fca4b82a723236805a0c64e6a34d8ccb0a1"
+        },
+        {
+          "path": "discovery/candidates/hermes-2026-05-28T06.json",
+          "content_hash": "sha256:5721618c75c044890d54b57d4f8cac6d1377e558e0054d38ecec2bbfdb3a4418"
+        },
+        {
+          "path": "discovery/candidates/hermes-2026-05-28T07.json",
+          "content_hash": "sha256:fd7ae176c635fe0df1ebf8f89a658e4e31c698e13d13149cef2df76b57c48894"
+        },
+        {
+          "path": "discovery/candidates/hermes-brain-2026-05-27T0710.json",
+          "content_hash": "sha256:8d50ee83f008fc8f9496dcce99f5180ce564efc9de9b1a31b1196f65d327505b"
+        },
+        {
+          "path": "discovery/candidates/hermes-deep-2026-05-27.json",
+          "content_hash": "sha256:6f95b5fa676f6022423a022ffee52d40a1677fd8b8f6b1799794c993e321ab3a"
+        },
+        {
+          "path": "discovery/candidates/hermes-deep-2026-05-28.json",
+          "content_hash": "sha256:ace23ecda68a84612e3796f80f0afd209765f153444284f895698f41e009dad3"
+        },
+        {
+          "path": "discovery/candidates/link-report.json",
+          "content_hash": "sha256:03a554f3bf82a3d140944221299fd2e89b2c4e3cb1988ebd2ee475d469712b20"
+        },
+        {
+          "path": "generation/metadata.json",
+          "content_hash": "sha256:1c1044fdd1a0e1ef484bb92cf3f9646b3683e9e7e53693e357bacfa96a70097c"
+        },
+        {
+          "path": "package.json",
+          "content_hash": "sha256:32995ee69b23eda7c8747903a52985a8b4eb06e2e3249477c888948e707c9fbc"
+        },
+        {
+          "path": "registry/entries/ac-inference-sh-mcp/entry.yaml",
+          "content_hash": "sha256:25d551e897506869343c2ea580bd4d1f3abedbd932a83ad4a5cd276a5da8adb3"
+        },
+        {
+          "path": "registry/entries/ac-inference-sh-mcp/profile.md",
+          "content_hash": "sha256:feda9c9365c82b20b03bf949b89f3cc96ac8a9617cb524cec7288010a5d8f054"
+        },
+        {
+          "path": "registry/entries/ac-tandem-docs-mcp/entry.yaml",
+          "content_hash": "sha256:db5a674e2108042d65904a546c06193b1edb63a6123517010812b24198401f6a"
+        },
+        {
+          "path": "registry/entries/ac-tandem-docs-mcp/profile.md",
+          "content_hash": "sha256:661132912d4658bd040db4584b0502d0211cd384ce287210dd4e18df71395c05"
+        },
+        {
+          "path": "registry/entries/agency-lona-trading/entry.yaml",
+          "content_hash": "sha256:80eb905c4d4b98ce954be703c8f80d8adff21b0f83a79e618d23852df2f75985"
+        },
+        {
+          "path": "registry/entries/agency-lona-trading/profile.md",
+          "content_hash": "sha256:b11e4ec8b8c84eb88cf64a448c9d0787717fb66646705540030908ac12bdfa44"
+        },
+        {
+          "path": "registry/entries/agentops/entry.yaml",
+          "content_hash": "sha256:fc2d87a986158511ca0761ee2db55d98cbc887f70141104799b3ae1915c9bcea"
+        },
+        {
+          "path": "registry/entries/agentops/profile.md",
+          "content_hash": "sha256:c7fedc39ffb3112e72dbc98639c14a9ab4e9c05f5c62783145ce081f90db5a62"
+        },
+        {
+          "path": "registry/entries/ai-31st-mcp/entry.yaml",
+          "content_hash": "sha256:93dab4174fdea6801cd79021b7e840a7187fdc9903bccd5f87a788cc747a15e6"
+        },
+        {
+          "path": "registry/entries/ai-31st-mcp/profile.md",
+          "content_hash": "sha256:5ed7ab1bf7ebc10c9fbc5995eef82b4df5b68bad22757f53fce57e6a7430f427"
+        },
+        {
+          "path": "registry/entries/ai-aarna-atars-mcp/entry.yaml",
+          "content_hash": "sha256:34b00c2278c40444be004a707e57d20fbbf12f4e7809242b7439f4ebd08d1d69"
+        },
+        {
+          "path": "registry/entries/ai-aarna-atars-mcp/profile.md",
+          "content_hash": "sha256:28aeff72d79c5fab16a60b609ed34eeac0c8c0f36f1977f74121b64dd08450f1"
+        },
+        {
+          "path": "registry/entries/ai-abmeter-abmeter/entry.yaml",
+          "content_hash": "sha256:6fc0addf78ec6cbd062c52d9c7c10971faa34ef1e249cb51caff274cb97bc3e5"
+        },
+        {
+          "path": "registry/entries/ai-abmeter-abmeter/profile.md",
+          "content_hash": "sha256:ec6293721c47bb40742e1e7bce96c82245f260570c271751455966697bb583b6"
+        },
+        {
+          "path": "registry/entries/ai-adadvisor-mcp-server/entry.yaml",
+          "content_hash": "sha256:cb1314f198ad5035974f1aec4ae58f3f6ae6064a7037d309fccd69351ca9277a"
+        },
+        {
+          "path": "registry/entries/ai-adadvisor-mcp-server/profile.md",
+          "content_hash": "sha256:77d983633983c0777f3ba5fb9d136967c52d4335b751e3cddc921af616ac9f0b"
+        },
+        {
+          "path": "registry/entries/ai-adeu-adeu/entry.yaml",
+          "content_hash": "sha256:634ae69310c8f72a9a2a62bcdc0b546ce16c6505d120b8db56787391e1195632"
+        },
+        {
+          "path": "registry/entries/ai-adeu-adeu/profile.md",
+          "content_hash": "sha256:a7df3aac5ca5ff9005ce393ba8844441a413212f4ae7b75aece7423850ef224b"
+        },
+        {
+          "path": "registry/entries/ai-adramp-google-ads/entry.yaml",
+          "content_hash": "sha256:2a5d2309f4a342c91497f0aeab527d7ce4bc5693507417ae78b02d7501b87e3a"
+        },
+        {
+          "path": "registry/entries/ai-adramp-google-ads/profile.md",
+          "content_hash": "sha256:2c1865f506e5f9e12d30ca891fcdac0b16c246918d58cdfb166fbe91ac66172b"
+        },
+        {
+          "path": "registry/entries/ai-adweave-meta-ads-mcp/entry.yaml",
+          "content_hash": "sha256:db962917baf190b74046c7d061748664c9c35222004bf85079dda5f495ced3f9"
+        },
+        {
+          "path": "registry/entries/ai-adweave-meta-ads-mcp/profile.md",
+          "content_hash": "sha256:1cc312f3e2edd72a76043b5ea45c8c0aa455093f7af500598a4aedbb80884d07"
+        },
+        {
+          "path": "registry/entries/ai-agentdm-agentdm/entry.yaml",
+          "content_hash": "sha256:c8c32bd1baa9c7072443aef5e150ebae46efd3254c17ca9a269d592b2205c171"
+        },
+        {
+          "path": "registry/entries/ai-agentdm-agentdm/profile.md",
+          "content_hash": "sha256:65030ff965273d085a4eb023387b6bc304f7123b1f205d6b1734e4d764e2b9b4"
+        },
+        {
+          "path": "registry/entries/ai-agentic-news-mcp/entry.yaml",
+          "content_hash": "sha256:ea0f422da9433afe38d7e39f23051a13ecf17f5cbc3cfd1df56eab1aa148e0e9"
+        },
+        {
+          "path": "registry/entries/ai-agentic-news-mcp/profile.md",
+          "content_hash": "sha256:ceada5496da98199fbd77b65a5f840ed507eab6e98038520f0a37dd16235afe7"
+        },
+        {
+          "path": "registry/entries/ai-agenticshelf-graffeo/entry.yaml",
+          "content_hash": "sha256:bc1622b93b3999b00c1eee9338951593ac56b1845eee559a1dee9667b9eebbcd"
+        },
+        {
+          "path": "registry/entries/ai-agenticshelf-graffeo/profile.md",
+          "content_hash": "sha256:e62e1621c63caae26e4cc3463461b74bd84327d8bf81be52053fe6d18add0508"
+        },
+        {
+          "path": "registry/entries/ai-agenticshelf-mcp/entry.yaml",
+          "content_hash": "sha256:3bbc449aa260ab9f4d8eeedaad3200191511a8d275b82ab4cfa8ef803871ddc6"
+        },
+        {
+          "path": "registry/entries/ai-agenticshelf-mcp/profile.md",
+          "content_hash": "sha256:989c0b1506eb9c3395b7eeb568b1a924f61bc119340d3cd0907d085b3c772cfb"
+        },
+        {
+          "path": "registry/entries/ai-agenticterminal-directory/entry.yaml",
+          "content_hash": "sha256:7e3b9d5b459a2ccf8c28193cb34d636b427326fa621f3c29d3d37085f55028e9"
+        },
+        {
+          "path": "registry/entries/ai-agenticterminal-directory/profile.md",
+          "content_hash": "sha256:593cc97a849435e31c5c9f1568e4972445d3c1ccc1a63c36d55a43a76c167938"
+        },
+        {
+          "path": "registry/entries/ai-agentrapay-agentra/entry.yaml",
+          "content_hash": "sha256:2d1df4ce0cfdd06b43fab6fc1d3bbdf079515b2294195e79ebd3dccfc4359120"
+        },
+        {
+          "path": "registry/entries/ai-agentrapay-agentra/profile.md",
+          "content_hash": "sha256:afc78c2e1a61caa7baa2802215a21dfce46d6710477b9e53d41b8f864d17f825"
+        },
+        {
+          "path": "registry/entries/ai-agenttrust-mcp-server/entry.yaml",
+          "content_hash": "sha256:0380ca8f8abdc39165a0c8583db114e2cc9d283e1e91f5a368d9def1a61d0b36"
+        },
+        {
+          "path": "registry/entries/ai-agenttrust-mcp-server/profile.md",
+          "content_hash": "sha256:0774788723cdb05264e041ceda7b772151b8864ee97104d4c3d45111c575ef1a"
+        },
+        {
+          "path": "registry/entries/ai-aliengiraffe-spotdb/entry.yaml",
+          "content_hash": "sha256:50c19eac41df4cf8436fd5e56692bd1a67366baff9fe70efc61bdb581ab00d2d"
+        },
+        {
+          "path": "registry/entries/ai-aliengiraffe-spotdb/profile.md",
+          "content_hash": "sha256:50fde9b68922359af37b9c35b0b8fc52e158a6d7ca31d3c0646c7fea6d45ffbb"
+        },
+        {
+          "path": "registry/entries/ai-alpic-mcp-alpic-mcp/entry.yaml",
+          "content_hash": "sha256:796a27876068529d7c0f1409f9c86830b2afb94a938ade5282efdec7122d3c3b"
+        },
+        {
+          "path": "registry/entries/ai-alpic-mcp-alpic-mcp/profile.md",
+          "content_hash": "sha256:c8e28ae98da20a2a325fb670bce242a8c4e8a33bcd409512b7284ed8d73fd3d9"
+        },
+        {
+          "path": "registry/entries/ai-alpic-test-test-mcp-server/entry.yaml",
+          "content_hash": "sha256:938ec518fc1049e92b65d6619481efef902dabfed1e10b11b6700b64a8fcad0a"
+        },
+        {
+          "path": "registry/entries/ai-alpic-test-test-mcp-server/profile.md",
+          "content_hash": "sha256:1933e2ea007fb7756fce0f2c2f052b1196b8b7addc140c9952a285615519757d"
+        },
+        {
+          "path": "registry/entries/ai-ankimcp-anki-mcp-server-addon/entry.yaml",
+          "content_hash": "sha256:7a1f61e5112a364fdbc71f7182813e1edfbe28884372c7dcaaaa204de27ed7d2"
+        },
+        {
+          "path": "registry/entries/ai-ankimcp-anki-mcp-server-addon/profile.md",
+          "content_hash": "sha256:4a37f4f3bc98fd3fe9bc17b64944c76ca375e5ac5d59a096b702a901982cbd3e"
+        },
+        {
+          "path": "registry/entries/ai-ankimcp-anki-mcp-server/entry.yaml",
+          "content_hash": "sha256:b74326aa0877f4ad155be0c73a6ca258cc8c0b931caabf26eb261fa987d67bb0"
+        },
+        {
+          "path": "registry/entries/ai-ankimcp-anki-mcp-server/profile.md",
+          "content_hash": "sha256:27cceba24b7468af223944e1e9d15ace1103144eb687e0fcf7b87081a470a239"
+        },
+        {
+          "path": "registry/entries/ai-anomalyarmor-armor-mcp/entry.yaml",
+          "content_hash": "sha256:4af468300d82b541ec4878d0ac83c192425078241f9be218be5cd5f8e39fd9fe"
+        },
+        {
+          "path": "registry/entries/ai-anomalyarmor-armor-mcp/profile.md",
+          "content_hash": "sha256:89206f398067ce93202b049e70f016e1a030c5fb986881026c703fe53ba9806b"
+        },
+        {
+          "path": "registry/entries/ai-anzenna-anzenna/entry.yaml",
+          "content_hash": "sha256:b9d7cb608d8ac764763a3179cf85c42f8ba2b01a95a7cdee3e783d398574b673"
+        },
+        {
+          "path": "registry/entries/ai-anzenna-anzenna/profile.md",
+          "content_hash": "sha256:225567ca82369225e29d728a9504cd8d0722917bf19fe97d293cb28c31d95176"
+        },
+        {
+          "path": "registry/entries/ai-appdeploy-deploy-app/entry.yaml",
+          "content_hash": "sha256:87a65841eb3f053d4430c63458e64d5c1ad82ce40cb50b2c4c285e37aae4e368"
+        },
+        {
+          "path": "registry/entries/ai-appdeploy-deploy-app/profile.md",
+          "content_hash": "sha256:8c41c6fa4544cf9a266277891842bf29402efdd5ea300548b6426a88b9eced9e"
+        },
+        {
+          "path": "registry/entries/ai-arclan-registry/entry.yaml",
+          "content_hash": "sha256:ba3fbeb4a8420f5bcef9048a5f291fa8c892ca60cad29623194c8f28fa632c83"
+        },
+        {
+          "path": "registry/entries/ai-arclan-registry/profile.md",
+          "content_hash": "sha256:cde7917f25caa961d93c4388f9302921837e6e2e5539c7df6c4379f2dcedaeaa"
+        },
+        {
+          "path": "registry/entries/ai-artidrop-artidrop/entry.yaml",
+          "content_hash": "sha256:c78c9a9b3678536518fccb63939ea6fb429e27b15c0a29b39f3ccab3a7d8a7f9"
+        },
+        {
+          "path": "registry/entries/ai-artidrop-artidrop/profile.md",
+          "content_hash": "sha256:a495444c8aaba302e0b8daa972eb53584dd84bc81e31ecfc4445ddc80876ccb1"
+        },
+        {
+          "path": "registry/entries/ai-auteng-docs/entry.yaml",
+          "content_hash": "sha256:a912f5a1c8b3219d3f949c15ef5dd39dcd96c067e0b7416ed44d35bd10f8b7a5"
+        },
+        {
+          "path": "registry/entries/ai-auteng-docs/profile.md",
+          "content_hash": "sha256:07f9af73ace69fa64452684b0fa267f0d37b9c84846130b16ce7565743a78c02"
+        },
+        {
+          "path": "registry/entries/ai-auteng-mcp/entry.yaml",
+          "content_hash": "sha256:811c04bd2a96987380856b83ea9fa8b519b0f178bc3d9299cf84c6e6301a6c7e"
+        },
+        {
+          "path": "registry/entries/ai-auteng-mcp/profile.md",
+          "content_hash": "sha256:56f4ecc006b8be1bb8eaab7dba77ce6709ddc3c8014fe9bf94e9746b25066cfb"
+        },
+        {
+          "path": "registry/entries/ai-autoblocks-contextlayer-mcp/entry.yaml",
+          "content_hash": "sha256:7bff2a65bcdb598c1d880e0c498c99732debdf473b661e6d4d43543448a2d1bc"
+        },
+        {
+          "path": "registry/entries/ai-autoblocks-contextlayer-mcp/profile.md",
+          "content_hash": "sha256:edfc20ff02583b878b5614e06b323aaf3abe4ea86c38b26107e8a2cb04d2206d"
+        },
+        {
+          "path": "registry/entries/ai-autoblocks-ctxl-mcp/entry.yaml",
+          "content_hash": "sha256:d5c6da48b54a45a4d103bc4ae84a2070483e2dc11177f6d219e1cb31c22c8fcc"
+        },
+        {
+          "path": "registry/entries/ai-autoblocks-ctxl-mcp/profile.md",
+          "content_hash": "sha256:7b5953305fab4b49cd318fb54ca9a2743814a20166349caf1938d7d4135c35c2"
+        },
+        {
+          "path": "registry/entries/ai-autoblocks-ctxl/entry.yaml",
+          "content_hash": "sha256:4e3efb2aef7a6a51974bfe189ae2354c033ea29bb7c4bc8000949ad75726d93f"
+        },
+        {
+          "path": "registry/entries/ai-autoblocks-ctxl/profile.md",
+          "content_hash": "sha256:048f66e6a765497c1e9527b9b793ea6edb4c4e74c4ba68db14cd2f3c65a34064"
+        },
+        {
+          "path": "registry/entries/ai-autonomad-computeback/entry.yaml",
+          "content_hash": "sha256:102c1bda9a7c1fb132d463efb81055eac8515951b02506c9c605fef6daac2dc0"
+        },
+        {
+          "path": "registry/entries/ai-autonomad-computeback/profile.md",
+          "content_hash": "sha256:9a48b944265421d344a1e97b9db4cd36883f1e0402a00e51868872260dfc28c7"
+        },
+        {
+          "path": "registry/entries/ai-autonomad-travel/entry.yaml",
+          "content_hash": "sha256:545ff10ff7b5619c622ce4bd9255b57be273fed0108e2c3aed6cc0687b2679f3"
+        },
+        {
+          "path": "registry/entries/ai-autonomad-travel/profile.md",
+          "content_hash": "sha256:287d10ade75878dcc37013b9d48d05fdf05df02aa02373f44eeec758cf9cdf3d"
+        },
+        {
+          "path": "registry/entries/ai-autorfp-mcp/entry.yaml",
+          "content_hash": "sha256:8bc698c9ec98415103c7ce651472d12c369391597b7f86794bf21c2aa9fec086"
+        },
+        {
+          "path": "registry/entries/ai-autorfp-mcp/profile.md",
+          "content_hash": "sha256:ec4bcad4e53e503265601048a8c26c9dd9bc4fd7026e672cefe43255cc386376"
+        },
+        {
+          "path": "registry/entries/ai-auxen-auxen/entry.yaml",
+          "content_hash": "sha256:fcfee42f7a6dd4ebfc4ffc27884a4b2749336292bf67296e896ea82207709028"
+        },
+        {
+          "path": "registry/entries/ai-auxen-auxen/profile.md",
+          "content_hash": "sha256:20d555e0cbab1fa3d69c6481e80288b134688d331c4354cc9ae3fc9152757332"
+        },
+        {
+          "path": "registry/entries/ai-bankee-inferventis-mcp/entry.yaml",
+          "content_hash": "sha256:95b63a8629db819734b9996c87a9bab3ec1188842ba4e8fea8a6e3af8356a58c"
+        },
+        {
+          "path": "registry/entries/ai-bankee-inferventis-mcp/profile.md",
+          "content_hash": "sha256:03ad1608e5fde83d37667a8c894ef389aef235bd996d2651d162a2b38b6a63a8"
+        },
+        {
+          "path": "registry/entries/ai-baselight-baselight/entry.yaml",
+          "content_hash": "sha256:ce05977e564a05e38ce550dea632b879e8b80d8465ac630ff44f4f009eaa1d08"
+        },
+        {
+          "path": "registry/entries/ai-baselight-baselight/profile.md",
+          "content_hash": "sha256:bcf2ec7dab1c71076d27b211c625a7749b7732d8f7add46fc2cb468dfcdd1184"
+        },
+        {
+          "path": "registry/entries/ai-bezal-local-commerce/entry.yaml",
+          "content_hash": "sha256:d88cfc4a64faabff58ae8b77dda32066b7c0ccbb37c2382c0954cc3a37b7670c"
+        },
+        {
+          "path": "registry/entries/ai-bezal-local-commerce/profile.md",
+          "content_hash": "sha256:61dd4577087b824333a8036c9cfabc0e566d4f21f39d0bd5ad83ecd185f9e106"
+        },
+        {
+          "path": "registry/entries/ai-bluenexus-universal-mcp/entry.yaml",
+          "content_hash": "sha256:5748b0b5eb34b1581c0bbce7958e3399b8cdad69179c0f013fa817f8134db17a"
+        },
+        {
+          "path": "registry/entries/ai-bluenexus-universal-mcp/profile.md",
+          "content_hash": "sha256:edc6f689e7a0cc7102862b36a07cf1281b4030159becef01db5de10a578f3b24"
+        },
+        {
+          "path": "registry/entries/ai-boolsai-directory/entry.yaml",
+          "content_hash": "sha256:1f8dd8227306934f97afbf1049e8a2461fb824f2f35d219723af7fe90c54e8fb"
+        },
+        {
+          "path": "registry/entries/ai-boolsai-directory/profile.md",
+          "content_hash": "sha256:3fda414b18cc171648e6e9dc8ab5ddc18f9bc6e1e50b3f4aff98fa2ea75bd99b"
+        },
+        {
+          "path": "registry/entries/ai-boolsai-grep/entry.yaml",
+          "content_hash": "sha256:ee7886b43bfded41ab66d87258260f3bbec68b5490e81b9063d2a1eab6ace525"
+        },
+        {
+          "path": "registry/entries/ai-boolsai-grep/profile.md",
+          "content_hash": "sha256:2dfaf4337a9336bee04f865aa4cbbb440a5cb22f9e3ad1bb0cbaff7a12b9d47b"
+        },
+        {
+          "path": "registry/entries/ai-boolsai-scan/entry.yaml",
+          "content_hash": "sha256:d099062f3282452414b846d6bf3f4c0ad9a6f4723339c6a92d5cf1842fc7fc81"
+        },
+        {
+          "path": "registry/entries/ai-boolsai-scan/profile.md",
+          "content_hash": "sha256:9b1de1ce27f223904ef08600b3956be4a8edc5d9fcd597fbdbe63ead40969899"
+        },
+        {
+          "path": "registry/entries/ai-boolsai-signals/entry.yaml",
+          "content_hash": "sha256:f58da8decc12d6c65d51d524d9da60f1439e0202712a419a202a0c55bca6a8d7"
+        },
+        {
+          "path": "registry/entries/ai-boolsai-signals/profile.md",
+          "content_hash": "sha256:350562f5ff5b397b778acf26150ed480b3b4b84d98c0da3adb98a732025cf24f"
+        },
+        {
+          "path": "registry/entries/ai-borealhost-mcp/entry.yaml",
+          "content_hash": "sha256:37e5ebb47d29e53a566eec2431cce25d892a1797b922dc04e47543cfd54ada52"
+        },
+        {
+          "path": "registry/entries/ai-borealhost-mcp/profile.md",
+          "content_hash": "sha256:bddb2f1ecd64fa3414e2458e84f6b070118ee42d2d8a3e83e4854dad11fdf026"
+        },
+        {
+          "path": "registry/entries/ai-bringyour-bringyour/entry.yaml",
+          "content_hash": "sha256:7612c95c1d556d4d1c8cd0ce5565f9be28d67dc055f9df94a2a7222e228ad6c7"
+        },
+        {
+          "path": "registry/entries/ai-bringyour-bringyour/profile.md",
+          "content_hash": "sha256:d055bc12400dba4ffd3df3c967668afcd369a4d542836a52dc17985638c5bff1"
+        },
+        {
+          "path": "registry/entries/ai-buyersense-buyersense/entry.yaml",
+          "content_hash": "sha256:7271fc34a3bf1ea7bad45efbdae83fe51e411b6c787a3eebb140bab43344fb77"
+        },
+        {
+          "path": "registry/entries/ai-buyersense-buyersense/profile.md",
+          "content_hash": "sha256:2ccd1a2ec2bb92c05e1f44694591edf2305a3796dafac57ccc10b9d8e366a0f0"
+        },
+        {
+          "path": "registry/entries/ai-buywhere-buywhere-mcp/entry.yaml",
+          "content_hash": "sha256:df20973b8203850dd3616992582bf2c86dc68bb65d0f701a4957f4e12bf5f091"
+        },
+        {
+          "path": "registry/entries/ai-buywhere-buywhere-mcp/profile.md",
+          "content_hash": "sha256:4ad1bc65b0676504a69504b88135583e6af2deadfaf53e2b9b23816dc98fec2f"
+        },
+        {
+          "path": "registry/entries/ai-buywhere-catalog-api/entry.yaml",
+          "content_hash": "sha256:9fbf9d612c17ddb19db9e7948d4f5f8504b258ea1fa429d6a57475dbc9f57947"
+        },
+        {
+          "path": "registry/entries/ai-buywhere-catalog-api/profile.md",
+          "content_hash": "sha256:5060021c199cf65950487722334e3ed536d86a7e471e84aaeeb13cf82dac4b00"
+        },
+        {
+          "path": "registry/entries/ai-byteray-byteray-mcp/entry.yaml",
+          "content_hash": "sha256:7e46c01d76a4b42e519397fb4239745a9cc9faac745b1362a26e04c7b3317e24"
+        },
+        {
+          "path": "registry/entries/ai-byteray-byteray-mcp/profile.md",
+          "content_hash": "sha256:1af8bc01b43481ecc00549c1828a057ad603621b02cd15090964e8e436d0767b"
+        },
+        {
+          "path": "registry/entries/ai-calendarmcp-server/entry.yaml",
+          "content_hash": "sha256:fe6dfb733bc3fcbcdc38bda6fd83ffb3940c5cf4b43e9d60e5c1f120d28fec3a"
+        },
+        {
+          "path": "registry/entries/ai-calendarmcp-server/profile.md",
+          "content_hash": "sha256:c49fd70d63b0a8de80d30ac882f457a39eb0ef3d19a7affdcd54fb9036593b36"
+        },
+        {
+          "path": "registry/entries/ai-childadhd-library/entry.yaml",
+          "content_hash": "sha256:386c7640774946ee9a7673ca33735790b549db26ca192bb6d047a9304c8f1d6c"
+        },
+        {
+          "path": "registry/entries/ai-childadhd-library/profile.md",
+          "content_hash": "sha256:28bee2e54d2af99a16daf817f3eb8c0a15a16b1dfb40246615fd4fc99cab19a6"
+        },
+        {
+          "path": "registry/entries/ai-childanxiety-library/entry.yaml",
+          "content_hash": "sha256:a782d4a9b4b5d0a7549cb76f9cfe9637c5848c478bc257af9970d9f38e29d98b"
+        },
+        {
+          "path": "registry/entries/ai-childanxiety-library/profile.md",
+          "content_hash": "sha256:b55b54c57800f97eedbc2b4d921b3edd76e3a1190b95f959af7977b50d30657d"
+        },
+        {
+          "path": "registry/entries/ai-childpsychiatry-library/entry.yaml",
+          "content_hash": "sha256:9201c178896edc5f4590aabd52303e08999d27760f6acbd5de5e4626a5e08b3a"
+        },
+        {
+          "path": "registry/entries/ai-childpsychiatry-library/profile.md",
+          "content_hash": "sha256:eee3502259f112e31615967d990a3aea0b497c0a30439f57ee6b4ea15bfcd9d1"
+        },
+        {
+          "path": "registry/entries/ai-chinamarketing-intelligence/entry.yaml",
+          "content_hash": "sha256:293279b06e4d33ff7eca0c46dab19533bbfbe56cfbf628d71013c8831d23f191"
+        },
+        {
+          "path": "registry/entries/ai-chinamarketing-intelligence/profile.md",
+          "content_hash": "sha256:b9bfcf8fbf3e6b0c87c530b34d2cc711b3ecd37467b91c5535a81d661499ce05"
+        },
+        {
+          "path": "registry/entries/ai-cirra-salesforce-mcp/entry.yaml",
+          "content_hash": "sha256:d2eb4943fb2ca18eab748a0396fe00da6af523e12aef7f4882cfb7de22c3073a"
+        },
+        {
+          "path": "registry/entries/ai-cirra-salesforce-mcp/profile.md",
+          "content_hash": "sha256:effa968df1b99e724ba1abb4ad9fe2a389cc32aa9548cab71f3f908c4d119288"
+        },
+        {
+          "path": "registry/entries/ai-clarid-compliance/entry.yaml",
+          "content_hash": "sha256:5b878b033cfbcd6033af3ca6d413cda14da357e5d4589dadffc813e3fd4ced9a"
+        },
+        {
+          "path": "registry/entries/ai-clarid-compliance/profile.md",
+          "content_hash": "sha256:e73f0ada3a09bed962b9b82965d65ed4dc6ab7710d2b6923d0a1f2eb80df6dee"
+        },
+        {
+          "path": "registry/entries/ai-clarid-hmda/entry.yaml",
+          "content_hash": "sha256:29e391232e3e1121b8d17dcc6e84509b8288cbc6c09ce6c881ae7ca6a23e6b8f"
+        },
+        {
+          "path": "registry/entries/ai-clarid-hmda/profile.md",
+          "content_hash": "sha256:cdd1a6b651d2afe3967fa2a1222b38bc2df13a10ad3c6a0205f417fedd5b3c9d"
+        },
+        {
+          "path": "registry/entries/ai-com-mcp-contabo/entry.yaml",
+          "content_hash": "sha256:3c322b56efc4123e648bfd6c47999095c1b5cf7deafff7f0a2bbac2aefa3a848"
+        },
+        {
+          "path": "registry/entries/ai-com-mcp-contabo/profile.md",
+          "content_hash": "sha256:255b9c857f4436f1176eaf667bb1bd8c742579a1161485582609a3c346d5b617"
+        },
+        {
+          "path": "registry/entries/ai-com-mcp-hapi-mcp/entry.yaml",
+          "content_hash": "sha256:ef2beca9cd8f44009850d7ca8f8d545826e0842ca79370f66c11e184e5fcecaa"
+        },
+        {
+          "path": "registry/entries/ai-com-mcp-hapi-mcp/profile.md",
+          "content_hash": "sha256:fab7d3bbe4d9f60d20e6f3be072a2e78109a4e9e4648dcdfae99eb4b02b4a9d7"
+        },
+        {
+          "path": "registry/entries/ai-com-mcp-lenny-rachitsky-podcast/entry.yaml",
+          "content_hash": "sha256:5bef873b516a29d0d1e1790f67e5745f4f2a3665a09bb8ca5d36d24d8b7fd26c"
+        },
+        {
+          "path": "registry/entries/ai-com-mcp-lenny-rachitsky-podcast/profile.md",
+          "content_hash": "sha256:986427d5ebb33355e3c046dca6cd92d8e45bd4d586e1e209674b64ebe3a4f034"
+        },
+        {
+          "path": "registry/entries/ai-com-mcp-linkedin/entry.yaml",
+          "content_hash": "sha256:d07076c15f8e956b06d43be9b9b83ddcde2809db176de5984f3a2f39bd868dc5"
+        },
+        {
+          "path": "registry/entries/ai-com-mcp-linkedin/profile.md",
+          "content_hash": "sha256:50d9fb2de666eadeddd3df7ff580ec03889eee16a9656f1c73a36a315f8a06f8"
+        },
+        {
+          "path": "registry/entries/ai-com-mcp-openai-tools/entry.yaml",
+          "content_hash": "sha256:508155a16b2cd8a5eff076d2acb41e79639023df077243199867226d5e4efa7c"
+        },
+        {
+          "path": "registry/entries/ai-com-mcp-openai-tools/profile.md",
+          "content_hash": "sha256:c0419e3795baa2227ac88f38fa092c1fe3f769bd9f2c880d366b59ac2a266fa3"
+        },
+        {
+          "path": "registry/entries/ai-com-mcp-petstore/entry.yaml",
+          "content_hash": "sha256:37a6abe986b2517058d1e78171e81c2f3d13f5894a93f0cbf678ad8f89867cbf"
+        },
+        {
+          "path": "registry/entries/ai-com-mcp-petstore/profile.md",
+          "content_hash": "sha256:c52e8161b3cdf92cba265f4a9bfbf34ac7f34003d7ee2a92769e2c700bc5297a"
+        },
+        {
+          "path": "registry/entries/ai-com-mcp-registry/entry.yaml",
+          "content_hash": "sha256:9e2c00b0e03b2f35874ef6ff0c9d6a130954ad1e96f64d8f189eb22fa50076c0"
+        },
+        {
+          "path": "registry/entries/ai-com-mcp-registry/profile.md",
+          "content_hash": "sha256:f9634dbd3ceff2a83858b3e6abc46d2a0bb11e9a3befcd1920f9d268cc10c41b"
+        },
+        {
+          "path": "registry/entries/ai-com-mcp-skills-search/entry.yaml",
+          "content_hash": "sha256:eb70f385dc9f9e998d0b1b909d0d9f3413c4e42daeb839efa36f68a08b189f89"
+        },
+        {
+          "path": "registry/entries/ai-com-mcp-skills-search/profile.md",
+          "content_hash": "sha256:bc47a9614855e1c2ac4ca720057d62689d2eb42ca60c73e4a7f04a5014335aa3"
+        },
+        {
+          "path": "registry/entries/ai-com-mcp-strava/entry.yaml",
+          "content_hash": "sha256:2923a32665caaf886ba595ee776ee79d8b38df448e70d0600acd908c1e59550a"
+        },
+        {
+          "path": "registry/entries/ai-com-mcp-strava/profile.md",
+          "content_hash": "sha256:aa835651ada0a8205eca16913fb76e84eb3798833acf5b7a1e851968c53bedfd"
+        },
+        {
+          "path": "registry/entries/ai-compeller-compel/entry.yaml",
+          "content_hash": "sha256:1dbda1baa884fbec9fd7a17b9f2ec9270c895dc9d744fd1f8c401126f595e95b"
+        },
+        {
+          "path": "registry/entries/ai-compeller-compel/profile.md",
+          "content_hash": "sha256:9de83158f929c8de717950d4860eca3e82bd47aa46184c6af939209d7d3d5378"
+        },
+        {
+          "path": "registry/entries/ai-complyhat-compliance/entry.yaml",
+          "content_hash": "sha256:8ddef5f939ed08e66efe9ed622976fe34fe06745523a551b7cc80ea832fb501b"
+        },
+        {
+          "path": "registry/entries/ai-complyhat-compliance/profile.md",
+          "content_hash": "sha256:56b7617c8980a70449128207e8cfff47afa5bfb803c689510348a7e4398f3870"
+        },
+        {
+          "path": "registry/entries/ai-complyme-mcp-mcp/entry.yaml",
+          "content_hash": "sha256:1aafddf2803c0b76f997769732024c81abb22bb40ac2ae04ff26432c0aa47f23"
+        },
+        {
+          "path": "registry/entries/ai-complyme-mcp-mcp/profile.md",
+          "content_hash": "sha256:5ef7fd93e7a095d03a39b14883a368abd0eb604c61b7ab1b4beeeb16b47b98ba"
+        },
+        {
+          "path": "registry/entries/ai-constellationfinance-constellation-finance-mcp/entry.yaml",
+          "content_hash": "sha256:884bff048058561b8fce256dcd891450f1b1ad6dfc27e20afc260f1e368a4520"
+        },
+        {
+          "path": "registry/entries/ai-constellationfinance-constellation-finance-mcp/profile.md",
+          "content_hash": "sha256:97cba7db3e53b8ebd3b2a79afee346619d9b74b7f03381871f4ed52b5052df36"
+        },
+        {
+          "path": "registry/entries/ai-contextstudios-mcp/entry.yaml",
+          "content_hash": "sha256:63f4d513132aedaf746075fc5f055c5412550d66e85166ccbd876b6b37d1e5e5"
+        },
+        {
+          "path": "registry/entries/ai-contextstudios-mcp/profile.md",
+          "content_hash": "sha256:3fe140a2a0be9ee687b49a271cfa19beea5533a3351ad2020d3900654175ed13"
+        },
+        {
+          "path": "registry/entries/ai-conveo-conveo/entry.yaml",
+          "content_hash": "sha256:490eb9da6d8e5ad4b268913f11c3269a616b794978db7e7176c582bfda9a0893"
+        },
+        {
+          "path": "registry/entries/ai-conveo-conveo/profile.md",
+          "content_hash": "sha256:391eda12b51154275574dc588f86e52674761c27f94c56fb897f685ad102c2a8"
+        },
+        {
+          "path": "registry/entries/ai-cookiy-cookiy/entry.yaml",
+          "content_hash": "sha256:7d39cb85e1a95e2543064598179f0cce80598dc149290aeee791bcb546f81160"
+        },
+        {
+          "path": "registry/entries/ai-cookiy-cookiy/profile.md",
+          "content_hash": "sha256:b94c1388705744827aba3e8fe56f8ff1b5c0ff9c8e52bd2563db9f570ff07b2c"
+        },
+        {
+          "path": "registry/entries/ai-cosmonote-notes/entry.yaml",
+          "content_hash": "sha256:b1a320f21519d8b6ae42e33af03fafe56c17a5000e85a3d6d6f70c162ec7cf3d"
+        },
+        {
+          "path": "registry/entries/ai-cosmonote-notes/profile.md",
+          "content_hash": "sha256:c6b61f9a5e49f4d468f38292c1c1d8090ae5ba9051286b7f7f436e8c7ddf66ce"
+        },
+        {
+          "path": "registry/entries/ai-cueapi-mcp/entry.yaml",
+          "content_hash": "sha256:ad468430ce913d7a8f7a3447cab38143a89e2fce2cfd350a5c4b44280310b6d7"
+        },
+        {
+          "path": "registry/entries/ai-cueapi-mcp/profile.md",
+          "content_hash": "sha256:19a726245d86d7c08e1042a2cd85cc57824414d762e72cb2f5e7646346555452"
+        },
+        {
+          "path": "registry/entries/ai-dataforb2b-dataforb2b/entry.yaml",
+          "content_hash": "sha256:b9a0f2c95aefa8ab6f5d0634e7a6c75c27750163d63e7947c78123938c0162c0"
+        },
+        {
+          "path": "registry/entries/ai-dataforb2b-dataforb2b/profile.md",
+          "content_hash": "sha256:ff59d5fc8d9e9862c1196d35e4679b678d4024dec49f16b504a7c5092dc8b5b6"
+        },
+        {
+          "path": "registry/entries/ai-datamerge-mcp/entry.yaml",
+          "content_hash": "sha256:0e6e56ccf1cb2958fc69581b0738a4e8318cacdab43db41df771a0d111cb848d"
+        },
+        {
+          "path": "registry/entries/ai-datamerge-mcp/profile.md",
+          "content_hash": "sha256:4d7ff7c4329b97d12515c6fa51a0c52641e198b74fdd9d367f523d6e170b6df2"
+        },
+        {
+          "path": "registry/entries/ai-deepledger-mcp/entry.yaml",
+          "content_hash": "sha256:7e15af6c6f46ba08e7d2c2aa4c6af115457b7173ee5b9b9133f3115bb011a3ba"
+        },
+        {
+          "path": "registry/entries/ai-deepledger-mcp/profile.md",
+          "content_hash": "sha256:e110cafb4e3024e12e2c405c695e19346557880d459ca6437d7b2fe153b89176"
+        },
+        {
+          "path": "registry/entries/ai-delega-aws-pricing-calculator/entry.yaml",
+          "content_hash": "sha256:c9f0fe6691cac8f56ede8c0ba98655ee8cfe3ee29025d54779bd324ef7f6270b"
+        },
+        {
+          "path": "registry/entries/ai-delega-aws-pricing-calculator/profile.md",
+          "content_hash": "sha256:96e0295ad05afee82c5569a3943bf6ac8e53e1ca1dacb6ac1463b99fa9f6f4a0"
+        },
+        {
+          "path": "registry/entries/ai-demanddiscovery-mcp/entry.yaml",
+          "content_hash": "sha256:c82b84d421c31ce3ec525e42f00ce0b59b1bebdd2acbbe6dbff25262c8e86a74"
+        },
+        {
+          "path": "registry/entries/ai-demanddiscovery-mcp/profile.md",
+          "content_hash": "sha256:9156b48d57a53c2abb488f1122519dfd9a0fdbf4b141c0df333c9200e802d891"
+        },
+        {
+          "path": "registry/entries/ai-djwizard-tvwizard/entry.yaml",
+          "content_hash": "sha256:2256e3ad06c1d3ec35b3cf4dc28e57013c2c0d31462b3ddbcdc1c353acb9523e"
+        },
+        {
+          "path": "registry/entries/ai-djwizard-tvwizard/profile.md",
+          "content_hash": "sha256:335c0057df1727116d3a8cacfcdfd6bfac80c77bac11436b4f7d7b8d913c0918"
+        },
+        {
+          "path": "registry/entries/ai-donethat-donethat/entry.yaml",
+          "content_hash": "sha256:85259a9757f0af820acaa1e99dfe725ab8c4b4028c4e27e4721335dd85f034d3"
+        },
+        {
+          "path": "registry/entries/ai-donethat-donethat/profile.md",
+          "content_hash": "sha256:bd1c92aa9e249d1c08f2c3a236da5e0b1d022ba6820638604287608a5fafe2af"
+        },
+        {
+          "path": "registry/entries/ai-dragoneye-mcp/entry.yaml",
+          "content_hash": "sha256:6d67b00e8ec15aa70ad5d1d3ea054e32a43d44abd355d519f3f99d14db8c1108"
+        },
+        {
+          "path": "registry/entries/ai-dragoneye-mcp/profile.md",
+          "content_hash": "sha256:5e7fa703399c523d76be9e1fae088cdc30e69af71d8b5ea26cc3e4db24360595"
+        },
+        {
+          "path": "registry/entries/ai-dreamlit-mcp/entry.yaml",
+          "content_hash": "sha256:afe2d70b700dda017bff1cba772f882009c8010557ab11e12690d51c700ef357"
+        },
+        {
+          "path": "registry/entries/ai-dreamlit-mcp/profile.md",
+          "content_hash": "sha256:d8ca6984dae0087a8534bd2d2c1b93cc32468ab84412d8ba850341819ab8777b"
+        },
+        {
+          "path": "registry/entries/ai-drillr-drillr/entry.yaml",
+          "content_hash": "sha256:5ebc9d83e1cf12a2c5af417986558f2bc20538fe6dfd6c4dd51b9f1d485fd187"
+        },
+        {
+          "path": "registry/entries/ai-drillr-drillr/profile.md",
+          "content_hash": "sha256:2bb034969fbaa5d85a674847a2a118bd68e9cde072f1ce6d192b4200900a0831"
+        },
+        {
+          "path": "registry/entries/ai-dynsoft-sac/entry.yaml",
+          "content_hash": "sha256:466d89286784737cd6fcd4ce902d1245555b04a628fede879f6a1c49199e46d2"
+        },
+        {
+          "path": "registry/entries/ai-dynsoft-sac/profile.md",
+          "content_hash": "sha256:464c8ef48fa7ed71ee25ae84a3176d0b179d7f964a372674ce99dad40a1cf333"
+        },
+        {
+          "path": "registry/entries/ai-exa-exa/entry.yaml",
+          "content_hash": "sha256:265790a1df488ddd9df1fbd6e529051455340cc322e3c895cec413bac1e6834f"
+        },
+        {
+          "path": "registry/entries/ai-exa-exa/profile.md",
+          "content_hash": "sha256:ef69e687fb66c0e565c6793a589650ef29cf80b72919cdfe5c62688f94daafea"
+        },
+        {
+          "path": "registry/entries/ai-example4-xmp4/entry.yaml",
+          "content_hash": "sha256:3cee58a7d5d53fd6e83194cf0c5ceb853d61d4fa381a46f638f7f46a692cabc9"
+        },
+        {
+          "path": "registry/entries/ai-example4-xmp4/profile.md",
+          "content_hash": "sha256:51749c1fc90e4ff771250227b79cf6b9ad5327cc327700a4160b4fb01dc1f178"
+        },
+        {
+          "path": "registry/entries/ai-explorium-mcp-explorium/entry.yaml",
+          "content_hash": "sha256:cb794ce069b21fe1da2417f4e8e03bd26f887a27fc5355e5da820265f07e9663"
+        },
+        {
+          "path": "registry/entries/ai-explorium-mcp-explorium/profile.md",
+          "content_hash": "sha256:67e6853c31395dc185e58fd22ba8f4c0181308b43c57294910c8a7dbccb77edb"
+        },
+        {
+          "path": "registry/entries/ai-fathom-api-mcp/entry.yaml",
+          "content_hash": "sha256:f63ec2061b6b35aed4ce7cf6218e179fd43cda3082682c28337cd38c1bc61804"
+        },
+        {
+          "path": "registry/entries/ai-fathom-api-mcp/profile.md",
+          "content_hash": "sha256:f2fde95f7abee2f449985fa87c59eb9acbf9f38202d4127cd59ba9888b1d0c04"
+        },
+        {
+          "path": "registry/entries/ai-fiber-mcp/entry.yaml",
+          "content_hash": "sha256:a66515130d4c46785dcdbbe79d74e74f231648218ae7a6d08d9353a6188294f5"
+        },
+        {
+          "path": "registry/entries/ai-fiber-mcp/profile.md",
+          "content_hash": "sha256:4f0215edf7c540380e41cf4b7553ac5607f155d866edfab2235ad5f724f07a1a"
+        },
+        {
+          "path": "registry/entries/ai-filegraph-document-processing/entry.yaml",
+          "content_hash": "sha256:d932b845cc89b4fa785d326b15e166ec3ed200a781ba07dbab9c826d65c35e48"
+        },
+        {
+          "path": "registry/entries/ai-filegraph-document-processing/profile.md",
+          "content_hash": "sha256:454dc00127de26e210c25d59fdc0f7b64317e0e07b660270121379e5eba5886f"
+        },
+        {
+          "path": "registry/entries/ai-filtrix-mcp-filtrix-ai/entry.yaml",
+          "content_hash": "sha256:d9676616c015efdcb1a575f1eb66f329926810e76d148ec654a7be7e15b0cbd0"
+        },
+        {
+          "path": "registry/entries/ai-filtrix-mcp-filtrix-ai/profile.md",
+          "content_hash": "sha256:4f11e8d912dcfd2a4893d59c137d8e5b1914cb1c6a81ddff882a1c7f3faa860a"
+        },
+        {
+          "path": "registry/entries/ai-fincontext-fincontext/entry.yaml",
+          "content_hash": "sha256:5ab6e9659bcf7dcfe4639704c2650cf050f11b8170d4aba1664218859aeeaeab"
+        },
+        {
+          "path": "registry/entries/ai-fincontext-fincontext/profile.md",
+          "content_hash": "sha256:c7be5848aded64fbf6840896dca9d771958bb47c74a47739937255f7bdb3c6fa"
+        },
+        {
+          "path": "registry/entries/ai-fodda-mcp-server/entry.yaml",
+          "content_hash": "sha256:2799b89792c3f575b3b891a586cfb2defddb216b9cbc347a65a9f61d89aa1ae1"
+        },
+        {
+          "path": "registry/entries/ai-fodda-mcp-server/profile.md",
+          "content_hash": "sha256:92f2567ff3b9cc16f65b7ef5e9be2b240858c912d29ae20d0e0835d9e99aea0d"
+        },
+        {
+          "path": "registry/entries/ai-gavelin-mcp/entry.yaml",
+          "content_hash": "sha256:6df6a5c7cc7fac3ec7661dcac96c30b0faccfebaecd4f90cac8caa0efd6e9040"
+        },
+        {
+          "path": "registry/entries/ai-gavelin-mcp/profile.md",
+          "content_hash": "sha256:e6ab8fd395f4c6f579f92669f87f088b635804bb62b84a055d9c13e9cc286378"
+        },
+        {
+          "path": "registry/entries/ai-geodesiclabs-governance-platform/entry.yaml",
+          "content_hash": "sha256:b6bc70f46734dcd78be11bf70b04ce21a86b83e2290dc9a7689c9106b2c45d26"
+        },
+        {
+          "path": "registry/entries/ai-geodesiclabs-governance-platform/profile.md",
+          "content_hash": "sha256:837b14f41c73a2a2779883d4cb00d93a9d83f24a3e346f33f54338ea05151775"
+        },
+        {
+          "path": "registry/entries/ai-gethal-mcp/entry.yaml",
+          "content_hash": "sha256:1cdcefdd74c5430cd93a7aac6ed0200c573590f31708e8b0b0b10447a798f313"
+        },
+        {
+          "path": "registry/entries/ai-gethal-mcp/profile.md",
+          "content_hash": "sha256:e15081a837e9bf1b01fba97ff87928673a59962691a85a90db7a861530a98d05"
+        },
+        {
+          "path": "registry/entries/ai-getperspective-mcp/entry.yaml",
+          "content_hash": "sha256:ff4345366d392e6440aa65d647a3ded724d6c48a39f6b4d41e65714a779771f1"
+        },
+        {
+          "path": "registry/entries/ai-getperspective-mcp/profile.md",
+          "content_hash": "sha256:70630033139d279bd9e5796ddac856f3eeaefcc6e6c12b36744f0ba1888eba3b"
+        },
+        {
+          "path": "registry/entries/ai-gomarble-mcp-api/entry.yaml",
+          "content_hash": "sha256:6a9a0027fea9dfd256621896f01f45738dc82d83a2a85e68dad077115049ebc9"
+        },
+        {
+          "path": "registry/entries/ai-gomarble-mcp-api/profile.md",
+          "content_hash": "sha256:feef29e83eeb9f3480aeead8a36dd98d38d4eadd38139fa03667fcf573877e92"
+        },
+        {
+          "path": "registry/entries/ai-gossiper-shopify-admin-mcp/entry.yaml",
+          "content_hash": "sha256:c5741e2453121274e7395f06fbed570fab030875dba0f061e2d747103de7afe4"
+        },
+        {
+          "path": "registry/entries/ai-gossiper-shopify-admin-mcp/profile.md",
+          "content_hash": "sha256:d8ddaa52621adc73f2465de539073e7eac2989ce95610376ec0a1e9366ca348e"
+        },
+        {
+          "path": "registry/entries/ai-haymon-database/entry.yaml",
+          "content_hash": "sha256:66c78eaf4c20523b595d4a22e3f2318b03c3b294e1bb4f97f395805cc7c841fe"
+        },
+        {
+          "path": "registry/entries/ai-haymon-database/profile.md",
+          "content_hash": "sha256:03869f0923d426b785b74a1ff81c3d2d24120c39de758e95ee9a4d459fe54f51"
+        },
+        {
+          "path": "registry/entries/ai-haymon-dbmcp/entry.yaml",
+          "content_hash": "sha256:f55b0b1ed18e73803d7228b01e214deaa64d3e589707ebebcafa9d80213ed6de"
+        },
+        {
+          "path": "registry/entries/ai-haymon-dbmcp/profile.md",
+          "content_hash": "sha256:c017d117a07f9dc47880df383320d987964658f9e2fddab19eb19dc7469f649c"
+        },
+        {
+          "path": "registry/entries/ai-helixar-mcp/entry.yaml",
+          "content_hash": "sha256:2e907e157b990ac9a236ea01f585f9d82c974454ad77473e16cb5c6cfdbc8ef9"
+        },
+        {
+          "path": "registry/entries/ai-helixar-mcp/profile.md",
+          "content_hash": "sha256:9fffa546b1b0766a086fff6946aac6e1d4019368e5b2a51d1fec7523c26f09ec"
+        },
+        {
+          "path": "registry/entries/ai-hostprofit-mcp/entry.yaml",
+          "content_hash": "sha256:5ca24b0a8017d2e1c116c8597ff4b3ed3b1b0eabe40ae6c8c7d5e6684ca76a9b"
+        },
+        {
+          "path": "registry/entries/ai-hostprofit-mcp/profile.md",
+          "content_hash": "sha256:1995c81ae9fce0e7d5a9d4414091312d1267a2b86ceb125625cbdf875aaa4507"
+        },
+        {
+          "path": "registry/entries/ai-i18nagent-i18n-agent/entry.yaml",
+          "content_hash": "sha256:16d4b7a1b8e3c095c37c3ac69b8df01711029720a165cca8923d145999d0bcc1"
+        },
+        {
+          "path": "registry/entries/ai-i18nagent-i18n-agent/profile.md",
+          "content_hash": "sha256:b5e6ff6b6ba1b0ccf6d6117a279bfafcd5b195af46a6ff341708f9e4a83b0e0c"
+        },
+        {
+          "path": "registry/entries/ai-imboard-dossier/entry.yaml",
+          "content_hash": "sha256:328a9a904e1c79e64e1faa925f589c8faae01afd9fd33d2f238fa51a7ef29464"
+        },
+        {
+          "path": "registry/entries/ai-imboard-dossier/profile.md",
+          "content_hash": "sha256:fd1a1dbddae8a79b5451407fb5f7d31a9db3d9cb704d5dccf0d327e2e2cfca4c"
+        },
+        {
+          "path": "registry/entries/ai-inflowpay-app-inflow/entry.yaml",
+          "content_hash": "sha256:f04b2d7e5605e08c5c264f9a3fa159c5e0a533051ed8a3f5136aed3354895269"
+        },
+        {
+          "path": "registry/entries/ai-inflowpay-app-inflow/profile.md",
+          "content_hash": "sha256:020eb89346cacbf4bf2240744e1cd243ddb61989449ff508cae0a1c6449e4f13"
+        },
+        {
+          "path": "registry/entries/ai-jeda-jeda-ai/entry.yaml",
+          "content_hash": "sha256:d93f56c3f03affd0687387f077d865cc404af5fa66eaf59eb04d2be117bc7c93"
+        },
+        {
+          "path": "registry/entries/ai-jeda-jeda-ai/profile.md",
+          "content_hash": "sha256:4854a442c2c1eb55f2eff84b0dd7ac2c792bb3448a2f6ee1251ffcd3874e3279"
+        },
+        {
+          "path": "registry/entries/ai-kawacode-mcp/entry.yaml",
+          "content_hash": "sha256:a59410fe621c2d15ac9580e1ad715216f88a033052b545603d201291e9b12cf6"
+        },
+        {
+          "path": "registry/entries/ai-kawacode-mcp/profile.md",
+          "content_hash": "sha256:386d1f76c0a35cfab1072eca37bac782fa4ea17bc49bd999e099d3b51f72e93a"
+        },
+        {
+          "path": "registry/entries/ai-klavis-strata/entry.yaml",
+          "content_hash": "sha256:562f254e50a7f4b5f407d78b1499ec3f7bd88b79a23ce1610dae7264707d02a7"
+        },
+        {
+          "path": "registry/entries/ai-klavis-strata/profile.md",
+          "content_hash": "sha256:8dbca74eedc2eb8c001b48b00c0644ed759eb29660ac8fb4ad4e8006296911b4"
+        },
+        {
+          "path": "registry/entries/ai-kolens-kolens-mcp/entry.yaml",
+          "content_hash": "sha256:121ed6d8ffab1a818e13dcedf140fca5c1a9351fd16b6abbf3c5d80980236e1a"
+        },
+        {
+          "path": "registry/entries/ai-kolens-kolens-mcp/profile.md",
+          "content_hash": "sha256:6645b55f495358b6904b60ad3219179ab3df10a9a1bd68a1ad526c67d46a1ad9"
+        },
+        {
+          "path": "registry/entries/ai-kubit-mcp-server/entry.yaml",
+          "content_hash": "sha256:e108a11a328c02f1b26b5b0c372410157ff2da035de8f787512069a04ec5d97d"
+        },
+        {
+          "path": "registry/entries/ai-kubit-mcp-server/profile.md",
+          "content_hash": "sha256:8a05ffcccc37c46670795a20c2331e72f4f133a707a444485f0f24ade0f51a46"
+        },
+        {
+          "path": "registry/entries/ai-lattiq-x402-trading-signals/entry.yaml",
+          "content_hash": "sha256:49a6c6f04e5d69c471eec4a3f509165efd1e067ed9138d6483075f0920fec4eb"
+        },
+        {
+          "path": "registry/entries/ai-lattiq-x402-trading-signals/profile.md",
+          "content_hash": "sha256:82093b2e92f7ff4abd861dbf341b1984a2efe962d26ce3de683a19c096e85a0d"
+        },
+        {
+          "path": "registry/entries/ai-law-lawyer-search/entry.yaml",
+          "content_hash": "sha256:de478f0a5249f852db3150b3901388cec9bc9745b10a46fa0f288f4cd63ca6c9"
+        },
+        {
+          "path": "registry/entries/ai-law-lawyer-search/profile.md",
+          "content_hash": "sha256:6b863b598e8245a98a220fd5613a4b8e1dee7ebac597863bf194f3dd460c2fdf"
+        },
+        {
+          "path": "registry/entries/ai-limitguard-api-trust-intelligence/entry.yaml",
+          "content_hash": "sha256:cc25a8a74b6e2e77508149c94cebf88d6ae88848a3f83f3acdbca27f30019411"
+        },
+        {
+          "path": "registry/entries/ai-limitguard-api-trust-intelligence/profile.md",
+          "content_hash": "sha256:4356fd8fe607f8a3837a67d4494646b6fc9c6becd7f209e684686ef28da1f62e"
+        },
+        {
+          "path": "registry/entries/ai-linkguard-linkguard-mcp/entry.yaml",
+          "content_hash": "sha256:6d8b9766f8e96dd5194771c82ee520ddc1023c5290ff9fc0fd84204d14d7a01d"
+        },
+        {
+          "path": "registry/entries/ai-linkguard-linkguard-mcp/profile.md",
+          "content_hash": "sha256:8d9974d2fbbf108779dc63e67bbf6bbf3dde92f91976c72a4401fa812ca2c7aa"
+        },
+        {
+          "path": "registry/entries/ai-llmse-mcp/entry.yaml",
+          "content_hash": "sha256:f35e280ed15fa56d6891aa9245e52fffbd8dcdeb3cbb809d1dbd89c7462c3cf8"
+        },
+        {
+          "path": "registry/entries/ai-llmse-mcp/profile.md",
+          "content_hash": "sha256:8715e1e24585db2f587b942482a07d8813bc7312584d86a70afbeab9ad1aa47a"
+        },
+        {
+          "path": "registry/entries/ai-lucasandersen-mlp-tax/entry.yaml",
+          "content_hash": "sha256:06ec253ce5a709813f2c4d4e5ab0d1bdeb15523f67e811b753bafa9bfe916d4e"
+        },
+        {
+          "path": "registry/entries/ai-lucasandersen-mlp-tax/profile.md",
+          "content_hash": "sha256:cd4f86fc09e2d0eca8118e0be1f0f944729c2778633dbec482f9ba8d8f00746f"
+        },
+        {
+          "path": "registry/entries/ai-ludo-game-assets/entry.yaml",
+          "content_hash": "sha256:001d3023eca350181e1b976d56b8a61d60b0dc861560e11b2cd40b4ec25a48c5"
+        },
+        {
+          "path": "registry/entries/ai-ludo-game-assets/profile.md",
+          "content_hash": "sha256:d6e97fdb5c977105586999e7622e5b17db2062b966242b9c23067628e784ca98"
+        },
+        {
+          "path": "registry/entries/ai-mailjunky-mcp/entry.yaml",
+          "content_hash": "sha256:f02465625a6238f2ddc34d09102b0087b4e94c8c7f05cf14f37ba9c937e7f267"
+        },
+        {
+          "path": "registry/entries/ai-mailjunky-mcp/profile.md",
+          "content_hash": "sha256:1d2ab4f2a6b71acaf108653b3d2370ebaba1bdde1678aa82818ada6f4beaf606"
+        },
+        {
+          "path": "registry/entries/ai-marketcore-mcp/entry.yaml",
+          "content_hash": "sha256:d3288bb7d3fa91a457bc36345bbdfe49b3a3e050299e25f4f750cc1cb411bdfb"
+        },
+        {
+          "path": "registry/entries/ai-marketcore-mcp/profile.md",
+          "content_hash": "sha256:0c27ee72e1fea9894d1546c85def4b107bbb2f007945b07de263de1d1a3fac91"
+        },
+        {
+          "path": "registry/entries/ai-mcpanalytics-analytics/entry.yaml",
+          "content_hash": "sha256:e514149ca6561163f35d50e8b8f1bbd72e3df0cb24f59acb7257f2875af59a4f"
+        },
+        {
+          "path": "registry/entries/ai-mcpanalytics-analytics/profile.md",
+          "content_hash": "sha256:e2374ddb8db17320e0add72fc9e00c626d2e649867e1130141f65d1ce594ff4e"
+        },
+        {
+          "path": "registry/entries/ai-mcpcap-mcpcap/entry.yaml",
+          "content_hash": "sha256:614725b590e19f9346eed11ea58ac7bb89ec96fcf45adc8d12e28230e7b06b2d"
+        },
+        {
+          "path": "registry/entries/ai-mcpcap-mcpcap/profile.md",
+          "content_hash": "sha256:6c479a66fd72c6d24e8b3e4c5d6b2e1ee1d92be46b030971346c571d88ff327e"
+        },
+        {
+          "path": "registry/entries/ai-meacheal-mrc-data/entry.yaml",
+          "content_hash": "sha256:9f43d889895a650fb9efcb73208dc6cd4019398ec93a5291d50d60744b8b6a77"
+        },
+        {
+          "path": "registry/entries/ai-meacheal-mrc-data/profile.md",
+          "content_hash": "sha256:97ec31d36cfe38f9fd564d6b3872c1c69a8ab9a49c2530f961d6c469b747ef76"
+        },
+        {
+          "path": "registry/entries/ai-meetlark-mcp-server/entry.yaml",
+          "content_hash": "sha256:02084956e1d0310bcb91b4fb0fb0ae577d1d7ffcd2c34737002d43d5313c1b10"
+        },
+        {
+          "path": "registry/entries/ai-meetlark-mcp-server/profile.md",
+          "content_hash": "sha256:d9ac11e68ece37af9fd3e9b4b5af90e2f62b43182a96071d6d756e40ac3e9406"
+        },
+        {
+          "path": "registry/entries/ai-meetsquad-squad/entry.yaml",
+          "content_hash": "sha256:20af03b1172e25a5a30e008bdcecdc01cdfdef6379530574281a9fa8a3cf20fc"
+        },
+        {
+          "path": "registry/entries/ai-meetsquad-squad/profile.md",
+          "content_hash": "sha256:c9408514f00d02f066624f1f579368a6c8a170920b405c1a98578d1a0d199960"
+        },
+        {
+          "path": "registry/entries/ai-memestack-mcp/entry.yaml",
+          "content_hash": "sha256:eeee64ce379f415c99d7cba889162d46080003e314bb48a86c3233e279b5c8b0"
+        },
+        {
+          "path": "registry/entries/ai-memestack-mcp/profile.md",
+          "content_hash": "sha256:2cb488d1e59daa1275ba320300e8311ad46ce33e322fe0ed69b3a9b0ab357bea"
+        },
+        {
+          "path": "registry/entries/ai-meminal-meminal/entry.yaml",
+          "content_hash": "sha256:0d86dacf9e28b7b61361dfcaebac4f92cd567781afd5075decc7987392135fea"
+        },
+        {
+          "path": "registry/entries/ai-meminal-meminal/profile.md",
+          "content_hash": "sha256:d4f64a9d381925a11f0d97513b0c8e192358d9ec73d2c48c8e3874f3e3296719"
+        },
+        {
+          "path": "registry/entries/ai-mino-web-agent/entry.yaml",
+          "content_hash": "sha256:c3498578b5aa3b1ef8342397b6553dc0383ba828e3688901291707cd519c36a2"
+        },
+        {
+          "path": "registry/entries/ai-mino-web-agent/profile.md",
+          "content_hash": "sha256:0b85edb8e68325976838bba113638bd71ca9d9be9e09388fe0f8413975f5ffe1"
+        },
+        {
+          "path": "registry/entries/ai-modulos-demo-booking/entry.yaml",
+          "content_hash": "sha256:21ca36e4c83c08dd9b9da5df7531ae307f7568dfa4b72cecff427cea01327219"
+        },
+        {
+          "path": "registry/entries/ai-modulos-demo-booking/profile.md",
+          "content_hash": "sha256:85231c84511e3c4d022376630f7089c3ebf69fdc3091f2d55c130c9cb9416be2"
+        },
+        {
+          "path": "registry/entries/ai-moxt-mcp-workspace/entry.yaml",
+          "content_hash": "sha256:94c6dd22ae99f97d575ea6fd2d0e33b20d51bec9184fe2b1a10560124d0ebdfd"
+        },
+        {
+          "path": "registry/entries/ai-moxt-mcp-workspace/profile.md",
+          "content_hash": "sha256:c12c26c966d8d9792c0f7926894ff8612db7c507fca8869e1de452c2d9c5c107"
+        },
+        {
+          "path": "registry/entries/ai-myriade-myriade/entry.yaml",
+          "content_hash": "sha256:0d0eb3d4d47ec56a96b6f7404fb40bb0dce5e7a499e9983a5468c9a1677f8ece"
+        },
+        {
+          "path": "registry/entries/ai-myriade-myriade/profile.md",
+          "content_hash": "sha256:7451b8f7d9a64f557b2e75642ec2b042b759b0d60f4b2d812239307caa5befdc"
+        },
+        {
+          "path": "registry/entries/ai-namewhisper-ens-tools/entry.yaml",
+          "content_hash": "sha256:fa9e221f88161e96d402e6261fe65c8e419f24e75dd2b2ef0754890d86b9e1f5"
+        },
+        {
+          "path": "registry/entries/ai-namewhisper-ens-tools/profile.md",
+          "content_hash": "sha256:c1a95618b01db6e064adcbf310badfcbf578ae366f4e673d161595cbe1c0ef2a"
+        },
+        {
+          "path": "registry/entries/ai-nefesh-human-state/entry.yaml",
+          "content_hash": "sha256:a184bb63564c5dfb97d0e14490e7a81852997011fc10c44450898f8a9b8c0e60"
+        },
+        {
+          "path": "registry/entries/ai-nefesh-human-state/profile.md",
+          "content_hash": "sha256:bec82d52b338cc9e4bc08df693ec3213762962c776cd2a3093ce4f0245c38643"
+        },
+        {
+          "path": "registry/entries/ai-newzai-api-news-mcp/entry.yaml",
+          "content_hash": "sha256:71449010add56d3dd744d44a5f4361119d255ae7045122728a461c595914243b"
+        },
+        {
+          "path": "registry/entries/ai-newzai-api-news-mcp/profile.md",
+          "content_hash": "sha256:c6a769a7f4fc9f70571597f6cec0f0eb726d580bb57cfadbbd1d3837fd976724"
+        },
+        {
+          "path": "registry/entries/ai-newzai-api-newzai/entry.yaml",
+          "content_hash": "sha256:85f0bca2ef5689043542956499ec5caf3f5a087593163137489a2abcb94bb446"
+        },
+        {
+          "path": "registry/entries/ai-newzai-api-newzai/profile.md",
+          "content_hash": "sha256:202a4c3d0ec53d7c2c7783218b696027acf2b0fd44d043dfa936ac83ad5e0e62"
+        },
+        {
+          "path": "registry/entries/ai-nexustoken-nexustoken-sdk/entry.yaml",
+          "content_hash": "sha256:492b05185122f91beb6b481fd5465580772b76bceb40a9669861a059cceb381f"
+        },
+        {
+          "path": "registry/entries/ai-nexustoken-nexustoken-sdk/profile.md",
+          "content_hash": "sha256:7dcba046953e38ab65f246ac877144b7922bc0bff9c851b335cb564bc850b8e3"
+        },
+        {
+          "path": "registry/entries/ai-ninar-ninar/entry.yaml",
+          "content_hash": "sha256:448c914b52b7e5d86f814ff1e4ffb67e135a7c5fb14b367760906c6dd5507d67"
+        },
+        {
+          "path": "registry/entries/ai-ninar-ninar/profile.md",
+          "content_hash": "sha256:1c04f1c6720565d2f3c5e321671d978118de7d981e62650bcf03518e8c1ee25e"
+        },
+        {
+          "path": "registry/entries/ai-nocturnus-logic-server/entry.yaml",
+          "content_hash": "sha256:1ab4e4c14cb256466839d07d0b66119995f6fd683338145e7b65388c6f2c02c1"
+        },
+        {
+          "path": "registry/entries/ai-nocturnus-logic-server/profile.md",
+          "content_hash": "sha256:58acc91c247e64fdb39ec9e93f62c1e1d684ddebae5a975f8ae7d845a72b0519"
+        },
+        {
+          "path": "registry/entries/ai-nordax-mcp/entry.yaml",
+          "content_hash": "sha256:6f3bcd649da161c990bc2c711b10c9cff0b8dad0ef5a72cd55083f25bc230980"
+        },
+        {
+          "path": "registry/entries/ai-nordax-mcp/profile.md",
+          "content_hash": "sha256:c9f9df77a078027b3a63eb4dc4d5f1c9cfeb0be026c1b32a3abbe9ef3462f84d"
+        },
+        {
+          "path": "registry/entries/ai-nothumansearch-search/entry.yaml",
+          "content_hash": "sha256:e0da9b18f2c58f91ef7673ea73027c783c8954087c1ed2cbfdd3cf5cedb98410"
+        },
+        {
+          "path": "registry/entries/ai-nothumansearch-search/profile.md",
+          "content_hash": "sha256:52f3815301af25b365d3ffa8097e69521d2714d96a3b2edcf61caebc02108ab9"
+        },
+        {
+          "path": "registry/entries/ai-nudg3-brand-intelligence/entry.yaml",
+          "content_hash": "sha256:cafd956856ed3bea568a5f85f286483f90cee2be04acfe1da6c8f0469505b260"
+        },
+        {
+          "path": "registry/entries/ai-nudg3-brand-intelligence/profile.md",
+          "content_hash": "sha256:352bd991119c4e2dff5b0a07ef1b4d971d6c2e69cef535764b6a0b09db260a78"
+        },
+        {
+          "path": "registry/entries/ai-nullary-nullary/entry.yaml",
+          "content_hash": "sha256:c94a4a02908257eded74d593a5fb090b0ca06212ad4348fcac4b35cdf1935c7c"
+        },
+        {
+          "path": "registry/entries/ai-nullary-nullary/profile.md",
+          "content_hash": "sha256:13c288608dd2b5b35e5ff565ab45c75e897723d1295e63333a38807b3bb5d00a"
+        },
+        {
+          "path": "registry/entries/ai-obaron-aeo/entry.yaml",
+          "content_hash": "sha256:cd57faf9c22309de6f53768e07b671ec5007e797560a139b59e92e75879bddee"
+        },
+        {
+          "path": "registry/entries/ai-obaron-aeo/profile.md",
+          "content_hash": "sha256:fdbf018d027732841494109cca9765c3f5fa4c2f99cfb763331267b77b4c2485"
+        },
+        {
+          "path": "registry/entries/ai-obris-mcp/entry.yaml",
+          "content_hash": "sha256:96cef6fc6b1a408246b5e3d61fc0f5148b307a3704bbdabd5c6dee7b80573618"
+        },
+        {
+          "path": "registry/entries/ai-obris-mcp/profile.md",
+          "content_hash": "sha256:dc0fb61c136e0ebd47606620afe17ef7995adee9c7ef17076195b612b798516a"
+        },
+        {
+          "path": "registry/entries/ai-offerhopper-mcp-shopping-optimizer/entry.yaml",
+          "content_hash": "sha256:8d20547951b85885d6eaf1c45df786e96faa5d5a68f0a6a61940f02643be0cc9"
+        },
+        {
+          "path": "registry/entries/ai-offerhopper-mcp-shopping-optimizer/profile.md",
+          "content_hash": "sha256:3aa2f633ccf83baf50cedf73ed6fcf19c8f806b3566c237d9e700f7bd708a488"
+        },
+        {
+          "path": "registry/entries/ai-openarx-openarx/entry.yaml",
+          "content_hash": "sha256:776477f98446176f3aa2b77fa5c7d60fc9626748ff087689d308aae33bf531a2"
+        },
+        {
+          "path": "registry/entries/ai-openarx-openarx/profile.md",
+          "content_hash": "sha256:f20d6c4240bc7c1ef40b5722a558c811cf662dd4e13db14c89f00c069b298df3"
+        },
+        {
+          "path": "registry/entries/ai-openmandate-mcp/entry.yaml",
+          "content_hash": "sha256:8d00dce499cb83a8f4eccdab0b675aafafa81480bbc0ecd63553e2367a21c019"
+        },
+        {
+          "path": "registry/entries/ai-openmandate-mcp/profile.md",
+          "content_hash": "sha256:2cd87fb895efeda8c3dfd37f15c6609dc4298af5729312fc3a4ea0c769d2f599"
+        },
+        {
+          "path": "registry/entries/aider/entry.yaml",
+          "content_hash": "sha256:55c407ddbb0a9b65aee01ce060a838c3ee08eb4f88bdb56f2b07d76704d02c81"
+        },
+        {
+          "path": "registry/entries/aider/profile.md",
+          "content_hash": "sha256:83a4d3740cfdf2aca1f92f487c90bcfa7b5078b4df920d6c72b619e470306235"
+        },
+        {
+          "path": "registry/entries/anthropic-building-effective-agents/entry.yaml",
+          "content_hash": "sha256:1eb6fa1bc98fc7458399e3612fe11dffe29ac584c9726761c8f1fffb5d09d2ce"
+        },
+        {
+          "path": "registry/entries/anthropic-building-effective-agents/profile.md",
+          "content_hash": "sha256:5579a286d3225b7e2cd4080453af351d5e41cbe6ed4cba3c2937c048d8efe4da"
+        },
+        {
+          "path": "registry/entries/anthropic-claude-code/entry.yaml",
+          "content_hash": "sha256:592fdbf574122ba0467df09e277c8d2be46b9fdc54bb85aa8a28a4e2607314a0"
+        },
+        {
+          "path": "registry/entries/anthropic-claude-code/profile.md",
+          "content_hash": "sha256:359ba793461fc43a9aa4256388e162815e45e2fd16f936184537ecd60c7331d7"
+        },
+        {
+          "path": "registry/entries/anthropic-multi-agent-research-system/entry.yaml",
+          "content_hash": "sha256:e44efc2c10bf102694e325c6b37cac4cb8fa675da9903182bcce34c3f4a4388c"
+        },
+        {
+          "path": "registry/entries/anthropic-multi-agent-research-system/profile.md",
+          "content_hash": "sha256:41df97338c8deef18f4029955aed9443c692b332a3e96f36e00a60b75bf497b2"
+        },
+        {
+          "path": "registry/entries/arize-phoenix/entry.yaml",
+          "content_hash": "sha256:3b2489d39c7d0d447fb654aeca24ffe16dc47134c6f2e2245ceb538d41a19192"
+        },
+        {
+          "path": "registry/entries/arize-phoenix/profile.md",
+          "content_hash": "sha256:76bf9b121e5a5e67d43b9cf2d43965994293ef28f40750b1594c94c7e46bca25"
+        },
+        {
+          "path": "registry/entries/ast-grep/entry.yaml",
+          "content_hash": "sha256:76519cea5b531ed2de66fc434a10c0ada628a4826ae614906b30f00ef2e264d7"
+        },
+        {
+          "path": "registry/entries/ast-grep/profile.md",
+          "content_hash": "sha256:d3b9f8a427da7e23fa491a7fc6bd27b61fb6b0113757dc96ddab2967f3cd1b43"
+        },
+        {
+          "path": "registry/entries/babylon-js/entry.yaml",
+          "content_hash": "sha256:c303d75ee9e4861171ad367b87602a900e481ec11517ffdcf141568f929f97a4"
+        },
+        {
+          "path": "registry/entries/babylon-js/profile.md",
+          "content_hash": "sha256:7c39fccd992108078ffcc9ed2c5c255f85030a105eac85e5291572bc35059219"
+        },
+        {
+          "path": "registry/entries/browserbase-mcp/entry.yaml",
+          "content_hash": "sha256:333359e156a9e0be5ceceea60c0709c660ef7c0a3f5734b65e5c0d1fb9dbf805"
+        },
+        {
+          "path": "registry/entries/browserbase-mcp/profile.md",
+          "content_hash": "sha256:1ccaeed52c08763302abde80a8b00eba23fe334e2fac14356de787dff5439de0"
+        },
+        {
+          "path": "registry/entries/claude-code-memory/entry.yaml",
+          "content_hash": "sha256:8c8d43348075dd4af33952572fcc251ed2025118f694190572c88af5d9e430ad"
+        },
+        {
+          "path": "registry/entries/claude-code-memory/profile.md",
+          "content_hash": "sha256:4df8ec829a03461a278082b7291ed14cb737ede20cbfdabd55e748124f0f7ec9"
+        },
+        {
+          "path": "registry/entries/claude-code-subagents/entry.yaml",
+          "content_hash": "sha256:3ca7255ed29367dd6c1a2e79ea9c08c647348ef8ad9665a7d78ad84a7bd51762"
+        },
+        {
+          "path": "registry/entries/claude-code-subagents/profile.md",
+          "content_hash": "sha256:8dc0a5cc5350280d096ba3671c6ae83150971f19e218e7d7a6ad4ebe0386c5ca"
+        },
+        {
+          "path": "registry/entries/cline/entry.yaml",
+          "content_hash": "sha256:503c339d4fbfe9ba139dc77ee58af689c8c30122043311f2d8f44dee1512b015"
+        },
+        {
+          "path": "registry/entries/cline/profile.md",
+          "content_hash": "sha256:fb40cd2ef3b3feb4af3a75345391867eaf3b5cebbe249f6ad98c1a1a035f707b"
+        },
+        {
+          "path": "registry/entries/clude/entry.yaml",
+          "content_hash": "sha256:e080b7afd7cba3ae07ed5629b324341e90dc07d190d6f71b5901085e52b19eae"
+        },
+        {
+          "path": "registry/entries/clude/profile.md",
+          "content_hash": "sha256:1c7bcdd6d7d1a12db5ddff00d6da205a79d97151b6520892338cae39528f88c7"
+        },
+        {
+          "path": "registry/entries/codebase-memory-mcp/entry.yaml",
+          "content_hash": "sha256:c25d67e5a4900cbf1a0a4519786fdd21167f67ea6fa87a6e553b7b3048d09f8b"
+        },
+        {
+          "path": "registry/entries/codebase-memory-mcp/profile.md",
+          "content_hash": "sha256:21cd023cbf1997b80e0f7d4795a065ba81f7705177474e8f20f9f2784584cc47"
+        },
+        {
+          "path": "registry/entries/codex-agents-md/entry.yaml",
+          "content_hash": "sha256:9cdc28ecfd1d2b54cdb30a14a666824e8b2bdfe09714b1206516c0a52b0dae72"
+        },
+        {
+          "path": "registry/entries/codex-agents-md/profile.md",
+          "content_hash": "sha256:d495fc9bf77736079174f564a33329ff5283702193ca0fb15837f7fc6625ebdf"
+        },
+        {
+          "path": "registry/entries/context7-mcp/entry.yaml",
+          "content_hash": "sha256:a87c13d8965ca36d4525eaeee41f41277f92dda432526176a480f635334648a1"
+        },
+        {
+          "path": "registry/entries/context7-mcp/profile.md",
+          "content_hash": "sha256:37e2cd5be0e30f20bd4367165287f851e51c310c149b23565d597e81832407b8"
+        },
+        {
+          "path": "registry/entries/continue-dev/entry.yaml",
+          "content_hash": "sha256:25a8b83a7697e73a6e7582e30247448048960b02edbd887f9be23975cdc98bab"
+        },
+        {
+          "path": "registry/entries/continue-dev/profile.md",
+          "content_hash": "sha256:1fab294b2adae893232894648b18622400e86674b1d6d2a9ad888f8fe472ece1"
+        },
+        {
+          "path": "registry/entries/covenant-research/entry.yaml",
+          "content_hash": "sha256:89f3475252231a3fa8d5000fd7e52c3659fb2e90fe29575218245fd2468e7425"
+        },
+        {
+          "path": "registry/entries/covenant-research/profile.md",
+          "content_hash": "sha256:340b501a011b9f8eca9608cbd09695115c0df31a531fce21e6d1078280fb9fdc"
+        },
+        {
+          "path": "registry/entries/crewai/entry.yaml",
+          "content_hash": "sha256:0902a6919b8a2abc8100f9d45587d24306d5617190cc4d77fd304297e18462c4"
+        },
+        {
+          "path": "registry/entries/crewai/profile.md",
+          "content_hash": "sha256:69b0fb96d234b778e360e8de829fdca87f2bbb8ffacb25d41c228d7ad10a29a2"
+        },
+        {
+          "path": "registry/entries/cursor-agent/entry.yaml",
+          "content_hash": "sha256:ce7012803630d826cc86bd62e9251d20223025f15a671d628605ca39639d8fae"
+        },
+        {
+          "path": "registry/entries/cursor-agent/profile.md",
+          "content_hash": "sha256:6366c52e1dd8d4a26c3fa9bd21eecfaed3721cfc97f007249ab3128818e00bef"
+        },
+        {
+          "path": "registry/entries/custom-modes-roo-code/entry.yaml",
+          "content_hash": "sha256:0c0b384484a778aaa4898baa79395f70ce678850257f01dd1b90c0ff6c4e3e0e"
+        },
+        {
+          "path": "registry/entries/custom-modes-roo-code/profile.md",
+          "content_hash": "sha256:d7144146bc1299bc26124e41f6644c1599d587b12669c8bbf96476e00d2a33a0"
+        },
+        {
+          "path": "registry/entries/dspy/entry.yaml",
+          "content_hash": "sha256:82b1050209f11902ac272c2f9a33b6494bb1831904b1f64f654ca30ef4472efd"
+        },
+        {
+          "path": "registry/entries/dspy/profile.md",
+          "content_hash": "sha256:0727bb4d7fc485c81b4f6ad4f73c21808a68722f8da42a9badc89a0292e38e5f"
+        },
+        {
+          "path": "registry/entries/excalibur-js/entry.yaml",
+          "content_hash": "sha256:6af25b46e41b6b5116e1867116e3c0f7ad4ec924ee643ce708ad38c62e616bcc"
+        },
+        {
+          "path": "registry/entries/excalibur-js/profile.md",
+          "content_hash": "sha256:f686003957524627e9021959cbab5e7fe0ccf9aa2628321cabe854506c31fd43"
+        },
+        {
+          "path": "registry/entries/firecrawl-mcp/entry.yaml",
+          "content_hash": "sha256:3efdba1982c309ba63218d28fd11deef77ef2dd1d03bd382dcf3d2cd9c773a6b"
+        },
+        {
+          "path": "registry/entries/firecrawl-mcp/profile.md",
+          "content_hash": "sha256:7c1e4599030dee6bf625a465b49fe40cd4e441a5fa833e2642ec0ea46dcc685d"
+        },
+        {
+          "path": "registry/entries/github-copilot-coding-agent/entry.yaml",
+          "content_hash": "sha256:fef6da1eb1661537641e65f53484e26ce8c3953f329d19ec1e4b619a0348dd9f"
+        },
+        {
+          "path": "registry/entries/github-copilot-coding-agent/profile.md",
+          "content_hash": "sha256:07760e40b455853acfac9fc970ab88692cfd039a75928be954597ed4b14727fc"
+        },
+        {
+          "path": "registry/entries/github-mcp-server/entry.yaml",
+          "content_hash": "sha256:d1c35ea55c99113e32632f5dc5bed620ecf1582b1aa7a00e1459bf612d31c938"
+        },
+        {
+          "path": "registry/entries/github-mcp-server/profile.md",
+          "content_hash": "sha256:5ae96c0636332852f913e1c8b45814c0821829165f43bc17353925f0246464f5"
+        },
+        {
+          "path": "registry/entries/google-agent-development-kit/entry.yaml",
+          "content_hash": "sha256:d4de6736360c44fd2924c61dd181a6a83469eb37a66ddb444f591fde0177a4c5"
+        },
+        {
+          "path": "registry/entries/google-agent-development-kit/profile.md",
+          "content_hash": "sha256:bafcc2b4cf9cc92d9c62a36180152a0010c9eb74ff4f54a490d15f5f5cb32335"
+        },
+        {
+          "path": "registry/entries/google-agent2agent-protocol/entry.yaml",
+          "content_hash": "sha256:3743ff8f3d9c660557c19dff37bf2f6c5c4dc6692efed40ab89ea17317f2e71f"
+        },
+        {
+          "path": "registry/entries/google-agent2agent-protocol/profile.md",
+          "content_hash": "sha256:970fd60ea7ea117cc7de891429491535dbd5a2b0ed9213a8c02b4f071c2c40c4"
+        },
+        {
+          "path": "registry/entries/graphiti/entry.yaml",
+          "content_hash": "sha256:da7401732f0469014b2909cab37ca4e4244a666e974ab7f2743e1a034277b2c0"
+        },
+        {
+          "path": "registry/entries/graphiti/profile.md",
+          "content_hash": "sha256:d6ddeba184e0d23a94f22b052c582f7ff8cd8593efbaf162d27fbbb1c2688ea5"
+        },
+        {
+          "path": "registry/entries/inspect-ai/entry.yaml",
+          "content_hash": "sha256:8d5d1740fcfe319bff0b0278c112e506dc6fb17674f5c33341fd3982ae8bc4a4"
+        },
+        {
+          "path": "registry/entries/inspect-ai/profile.md",
+          "content_hash": "sha256:35cf9c5a3011652aaaebc232ea081899731d82ebeccc90ea9e453702bb4f7e57"
+        },
+        {
+          "path": "registry/entries/jscpd/entry.yaml",
+          "content_hash": "sha256:22396eb021be4d6176771540024603d36f90bed405426f8899db56e75e3635cd"
+        },
+        {
+          "path": "registry/entries/jscpd/profile.md",
+          "content_hash": "sha256:be79798a113f636eb1bb2e66cc58f2e5b15d0b6f073c9b78af2e501f52bec55b"
+        },
+        {
+          "path": "registry/entries/kaimo/entry.yaml",
+          "content_hash": "sha256:886f5a91aee76b239c8e27a510403ed49474013e20f92657b60f3a6821c378b5"
+        },
+        {
+          "path": "registry/entries/kaimo/profile.md",
+          "content_hash": "sha256:63d07289e301dc3c3ca0651e57eb4e30e897a5b323429dfca371905b72814261"
+        },
+        {
+          "path": "registry/entries/kaplay/entry.yaml",
+          "content_hash": "sha256:c50a28a65531c626e66d86cd516df639966b764200dc1b200162b63d02738e76"
+        },
+        {
+          "path": "registry/entries/kaplay/profile.md",
+          "content_hash": "sha256:0d531db5189b96d3e91d64acedbf1858784c3eb672403ad07c650abf7dacc13c"
+        },
+        {
+          "path": "registry/entries/knip/entry.yaml",
+          "content_hash": "sha256:0241b2e777e675ee92ab4228f5c0be9373aa13aed58eedabc9b6ecb1eb9b86c3"
+        },
+        {
+          "path": "registry/entries/knip/profile.md",
+          "content_hash": "sha256:375fbb14a88c68b499e32e8c5dd9262a195cf250dafb98d2010c56c54e6664da"
+        },
+        {
+          "path": "registry/entries/langfuse/entry.yaml",
+          "content_hash": "sha256:994fabab17e83a376654a30214b29feabe2a2716630e75229462c170022f2ee3"
+        },
+        {
+          "path": "registry/entries/langfuse/profile.md",
+          "content_hash": "sha256:4b61e689d57dc03354016c850c7f53530293a40127454b18f41823da1231cd05"
+        },
+        {
+          "path": "registry/entries/langgraph/entry.yaml",
+          "content_hash": "sha256:071582f48feba9f17aa8f361341a4acb67b947f14726c04c0562c74d44d15809"
+        },
+        {
+          "path": "registry/entries/langgraph/profile.md",
+          "content_hash": "sha256:b64c49fa0b87ad1cb735d5eab47a106fc3c91ab476f348908e9f8f346cb1f37a"
+        },
+        {
+          "path": "registry/entries/langsmith/entry.yaml",
+          "content_hash": "sha256:5384862b7a17c36553609cb32c00a88a79eff638b74a8f6631869189d209f5f7"
+        },
+        {
+          "path": "registry/entries/langsmith/profile.md",
+          "content_hash": "sha256:9a9c174745e45a446ecabaa90a9fb109ae787193917159ea2eba93984029af98"
+        },
+        {
+          "path": "registry/entries/letta/entry.yaml",
+          "content_hash": "sha256:5812619e86fe01ae636a122f21ce069baab14cfd60e7e93cdb15e70f8f633dbd"
+        },
+        {
+          "path": "registry/entries/letta/profile.md",
+          "content_hash": "sha256:66b5a0a96758a374ba23350928c8e530be977d6f2f6528c4cf1905d9a961eae7"
+        },
+        {
+          "path": "registry/entries/llamaindex-agents/entry.yaml",
+          "content_hash": "sha256:71e72bb610d1650fc21d3dea42e758c38a276a0c7184828ad9050f5f925074d0"
+        },
+        {
+          "path": "registry/entries/llamaindex-agents/profile.md",
+          "content_hash": "sha256:65fc4d23a2d54b0d510af2c0aa2a303332e8d946d774bc01b10331a192cfe35f"
+        },
+        {
+          "path": "registry/entries/lunar-mcpx/entry.yaml",
+          "content_hash": "sha256:4972bf185d4bac79d26cd4f06678186494bb8f9707cdba01989bb57580c26b69"
+        },
+        {
+          "path": "registry/entries/lunar-mcpx/profile.md",
+          "content_hash": "sha256:892043a7c179eeec1fca1be2e72fb2fba8f49cdc678b7c29e6682e83340fbd63"
+        },
+        {
+          "path": "registry/entries/mastra/entry.yaml",
+          "content_hash": "sha256:cfce533973d6a231da4a1df405271233bec1053a4f5840fb1439749817e7c21b"
+        },
+        {
+          "path": "registry/entries/mastra/profile.md",
+          "content_hash": "sha256:30d9437338debf03792c014b0fd63096309ce8a0f55e4fc33a3da9ddabd846cf"
+        },
+        {
+          "path": "registry/entries/matter-js/entry.yaml",
+          "content_hash": "sha256:260951362835e591ae2b437c32dd7969b1a72fb084bf0e37ab4c6d6b4de53f81"
+        },
+        {
+          "path": "registry/entries/matter-js/profile.md",
+          "content_hash": "sha256:43608881accd8ab4cf2942d47a2f6af46f530b49493f4711a3357193937784a1"
+        },
+        {
+          "path": "registry/entries/mcp-crawl4ai-rag/entry.yaml",
+          "content_hash": "sha256:d3d984671b376d98275d44a18ec35b1f49dc0452c4608ad7b8fabe515f906c37"
+        },
+        {
+          "path": "registry/entries/mcp-crawl4ai-rag/profile.md",
+          "content_hash": "sha256:80e725baacfda3391d3df786ff63545324ada32899fb04a84da244d27b55578f"
+        },
+        {
+          "path": "registry/entries/mcp-server-mysql/entry.yaml",
+          "content_hash": "sha256:599d87eb41d5a7569b4117af3110364dc16ea137cf634a4033b5bc0423b335c1"
+        },
+        {
+          "path": "registry/entries/mcp-server-mysql/profile.md",
+          "content_hash": "sha256:3d9463d94d8595cfef036f8d8bcaf857bb03596879fcda7e8928868f924b74b7"
+        },
+        {
+          "path": "registry/entries/mem0/entry.yaml",
+          "content_hash": "sha256:5bff4f286d1e57d48294dc46bacb9c4dc2ec789074fa23fadf874a4ba00b3d46"
+        },
+        {
+          "path": "registry/entries/mem0/profile.md",
+          "content_hash": "sha256:4efc24cb2ed6e4c6cc9261999b18cb0cf52873614c43118c5bdcf4cf6a4953af"
+        },
+        {
+          "path": "registry/entries/microsoft-autogen/entry.yaml",
+          "content_hash": "sha256:9e9bbafb589953fa85badecd4ab753da8346ba7babea9478646c06affa82cb95"
+        },
+        {
+          "path": "registry/entries/microsoft-autogen/profile.md",
+          "content_hash": "sha256:efdff900c929d7d76a57121b5b3e8465ccd1131323125c577ea16d5621108d80"
+        },
+        {
+          "path": "registry/entries/microsoft-mcp-gateway/entry.yaml",
+          "content_hash": "sha256:1e540f92d4ec5e896b58e8d4a0a04f0fa8a6a3b0fccc6be94e5a2085a2d49d5c"
+        },
+        {
+          "path": "registry/entries/microsoft-mcp-gateway/profile.md",
+          "content_hash": "sha256:35b9f46392453d2dd8107bc1a67661a15ab19cf69fd612d7bb4b18f5810cec7a"
+        },
+        {
+          "path": "registry/entries/model-context-protocol/entry.yaml",
+          "content_hash": "sha256:4272c4f0fa6038f755de14e9cf7e0de2d635cac0bf732449c34593806db12e56"
+        },
+        {
+          "path": "registry/entries/model-context-protocol/profile.md",
+          "content_hash": "sha256:4e86e6bce72523cabea70d4406476213f0eb62c2aee0ad99c32894c31a535dc5"
+        },
+        {
+          "path": "registry/entries/openai-agents-sdk/entry.yaml",
+          "content_hash": "sha256:426c0741fbfa0468d2dbe4c9ef47bb7c71733aa8c76e92fba3495f0be76c5457"
+        },
+        {
+          "path": "registry/entries/openai-agents-sdk/profile.md",
+          "content_hash": "sha256:921b2dc4b736a7f758bbe140e87ca29ba413339729d534ba1039debe4babd77a"
+        },
+        {
+          "path": "registry/entries/openai-codex-cli/entry.yaml",
+          "content_hash": "sha256:dfe815f25af8d6ed88953baca0a7990e94b518a9fe063a4d5e75f02d6ea4e041"
+        },
+        {
+          "path": "registry/entries/openai-codex-cli/profile.md",
+          "content_hash": "sha256:6366ec8c5056e4f685e441d4c63de4e22be3bd32176e5859c0d958fded7e3d52"
+        },
+        {
+          "path": "registry/entries/openai-prompt-engineering-guide/entry.yaml",
+          "content_hash": "sha256:0a7fbe4c528484a0048457859d1fa4767bf355c9bec2fa7e55bb0da4c24b28e1"
+        },
+        {
+          "path": "registry/entries/openai-prompt-engineering-guide/profile.md",
+          "content_hash": "sha256:edf36cd4c63950b5b2954622b60ad05fec936db25004903517d767f34a2aa79c"
+        },
+        {
+          "path": "registry/entries/openai-prompt-optimizer/entry.yaml",
+          "content_hash": "sha256:31dbee8771f579a96e6af84440301c8b93a20f309cd5ed8c90de8cd2b654cf4a"
+        },
+        {
+          "path": "registry/entries/openai-prompt-optimizer/profile.md",
+          "content_hash": "sha256:90cd61de8ef7bbe5d7fb15608eed5e57666aff5c73178b41e0b8d7a2a05ca40e"
+        },
+        {
+          "path": "registry/entries/openai-swarm/entry.yaml",
+          "content_hash": "sha256:776089546ccc726fffb4d114966d52fa275af267a336b88e35bd52f5249f0bc9"
+        },
+        {
+          "path": "registry/entries/openai-swarm/profile.md",
+          "content_hash": "sha256:10ce2c6bf2cbbf36feda47a0d665c20c025b306e57354d7f058b511b551a190f"
+        },
+        {
+          "path": "registry/entries/openhands/entry.yaml",
+          "content_hash": "sha256:1d361226f1661cd4d72093551989e7a6fc0d525531d1ec30599e496935d0321f"
+        },
+        {
+          "path": "registry/entries/openhands/profile.md",
+          "content_hash": "sha256:dbac15ae46a72bc6aa9bbd63b8843d86f7c0f280db9d4b29e025f39df9ebb912"
+        },
+        {
+          "path": "registry/entries/opentabs/entry.yaml",
+          "content_hash": "sha256:f058d8f5c1dec26503080bab129d54ae3951c3623c7122088a7e8c90bd0ecca4"
+        },
+        {
+          "path": "registry/entries/opentabs/profile.md",
+          "content_hash": "sha256:ff6c1484eb8de98e32b37efd1f99164860d1878ad603799d9d467302b0be415c"
+        },
+        {
+          "path": "registry/entries/phaser/entry.yaml",
+          "content_hash": "sha256:62cc89bbbca9d85654b612a4e8ccc966bd64398aad18175903e814549f15d5f8"
+        },
+        {
+          "path": "registry/entries/phaser/profile.md",
+          "content_hash": "sha256:25411460a39b4f38952c77bc31ef55b1b52459086da78ee9f6a077b93d3217aa"
+        },
+        {
+          "path": "registry/entries/pixijs/entry.yaml",
+          "content_hash": "sha256:539d204e0d0106ee14625f866e5a25b4c796332e9dd2eaa1c0832180e5e60bd0"
+        },
+        {
+          "path": "registry/entries/pixijs/profile.md",
+          "content_hash": "sha256:93f1e6efded593e6361491f1ee0ef4d57fac6cf947f1cb23a2ef9fd90849e0a5"
+        },
+        {
+          "path": "registry/entries/playcanvas-engine/entry.yaml",
+          "content_hash": "sha256:e2a8466cc9e0a455c338ec95cc3a3af92c417ebb5ad526fb0c95e24a6adf4292"
+        },
+        {
+          "path": "registry/entries/playcanvas-engine/profile.md",
+          "content_hash": "sha256:84134e673f42960d10f89b1b634607ea0e80df204086abc72b6658595bba4b31"
+        },
+        {
+          "path": "registry/entries/playwright-mcp/entry.yaml",
+          "content_hash": "sha256:517b7776d7dd83b2b1748a9e70f68551428f9a88859b09ee35490ee7c2a827e1"
+        },
+        {
+          "path": "registry/entries/playwright-mcp/profile.md",
+          "content_hash": "sha256:9376db0c94bb26b382a1f4015130a8b20b209687f74f44baf56171dd120b1dcb"
+        },
+        {
+          "path": "registry/entries/promptfoo/entry.yaml",
+          "content_hash": "sha256:68bba650149c36abf3e06c9d8fe2241ab80698506d88459f329acf11f152aa99"
+        },
+        {
+          "path": "registry/entries/promptfoo/profile.md",
+          "content_hash": "sha256:63cfc4731e489d5634122a52c0d40043cb5e6ed225606ea18f0ae6e93a847f32"
+        },
+        {
+          "path": "registry/entries/pydantic-ai/entry.yaml",
+          "content_hash": "sha256:b618c6f652a9d0bf93b686e51c0138bace6a8eddbb6939fc7446a155fee8dbbb"
+        },
+        {
+          "path": "registry/entries/pydantic-ai/profile.md",
+          "content_hash": "sha256:c8464b8c1954ebbfceba7a727ec5d9b735e166170ac63975e09f7c047e3ffaff"
+        },
+        {
+          "path": "registry/entries/qdrant-mcp-server/entry.yaml",
+          "content_hash": "sha256:e374ac79f6345673ac5001dafffb319b33a3ce01810775b0910d5ad7e477e773"
+        },
+        {
+          "path": "registry/entries/qdrant-mcp-server/profile.md",
+          "content_hash": "sha256:6faa8cfd4d75bb7cd957345583c0490a429e38ea9f9c7a4aeab850053853e22c"
+        },
+        {
+          "path": "registry/entries/ragas/entry.yaml",
+          "content_hash": "sha256:f39361a00744fed2ed25f52bf1086c7393fa505af194c97f3d215099852dc5e8"
+        },
+        {
+          "path": "registry/entries/ragas/profile.md",
+          "content_hash": "sha256:7843be2fed01edc4c496cac7e1a3949fcc1309e672bb3a530f492975b61e59d1"
+        },
+        {
+          "path": "registry/entries/rapier-js/entry.yaml",
+          "content_hash": "sha256:69f379af0da1ca5066ffd3cf879686bffc162a9cf4c083df08437ad196b543cc"
+        },
+        {
+          "path": "registry/entries/rapier-js/profile.md",
+          "content_hash": "sha256:a59f6373a303cb661771ba3dab170bb61b0529b5766bd6053f12e3d62421fe77"
+        },
+        {
+          "path": "registry/entries/ripgrep/entry.yaml",
+          "content_hash": "sha256:585ae21b57f379847ec7c51b0fb213ff9296c779387fca529ef40c0eedf60c10"
+        },
+        {
+          "path": "registry/entries/ripgrep/profile.md",
+          "content_hash": "sha256:0b71690638e0cb18ca127400d63dc630efd0cec2f5b2a0871a2021b692d71351"
+        },
+        {
+          "path": "registry/entries/roo-code/entry.yaml",
+          "content_hash": "sha256:03e1ab036b65e3c2002403598ff5ff391a203c77327b89cb3c1e9eacf9ec224b"
+        },
+        {
+          "path": "registry/entries/roo-code/profile.md",
+          "content_hash": "sha256:9c10c4745a056c8386e037081168acb31f7d415424c4c5f816ceb2ae33dd4bc7"
+        },
+        {
+          "path": "registry/entries/rules-template-memory-bank/entry.yaml",
+          "content_hash": "sha256:233106ae9da11e188d422905b8e41fea9cc4f221df37ec5f5f4da1a6f6d522a1"
+        },
+        {
+          "path": "registry/entries/rules-template-memory-bank/profile.md",
+          "content_hash": "sha256:ee7a160ac3b1b8ffdde50efe7f7595dba3bb76db81ec5f7da644f89637760d8d"
+        },
+        {
+          "path": "registry/entries/semantic-kernel/entry.yaml",
+          "content_hash": "sha256:138353e561d53e6ba30a6c28b16fd0abcbffb66d818c3b36cf87f2895f843440"
+        },
+        {
+          "path": "registry/entries/semantic-kernel/profile.md",
+          "content_hash": "sha256:5c8a9580c71671ab8dd18454959c724a88465ea663f5b411afa0b848e48090e8"
+        },
+        {
+          "path": "registry/entries/sentry-mcp/entry.yaml",
+          "content_hash": "sha256:f44ff7008dee2b3913ec9b8cf02cdd7d5d90227001bf600b66fa2f1946f8552b"
+        },
+        {
+          "path": "registry/entries/sentry-mcp/profile.md",
+          "content_hash": "sha256:f16be44eac934ab8b0116489a8bf1b535e61f15311124308cf70226731d93daa"
+        },
+        {
+          "path": "registry/entries/stripe-agent-toolkit/entry.yaml",
+          "content_hash": "sha256:9962cd275f1aaeeb1c4b4a55e23fd5615a7908f09ec5c0c4ac34c47e33241faa"
+        },
+        {
+          "path": "registry/entries/stripe-agent-toolkit/profile.md",
+          "content_hash": "sha256:8da6335d9f93bcf3034b1453cf93fe93254594d1f42a579a97244286dc42e4c7"
+        },
+        {
+          "path": "registry/entries/supabase-mcp/entry.yaml",
+          "content_hash": "sha256:5f311d556fc1ae36a2dc66d8ddbfd4ea454962e76bab94c4ae3a85fb902c1c4a"
+        },
+        {
+          "path": "registry/entries/supabase-mcp/profile.md",
+          "content_hash": "sha256:34c711c49b4bf88584fa4bbafebe0eef979a59db0dfe6017394714ea93c79911"
+        },
+        {
+          "path": "registry/entries/swarms/entry.yaml",
+          "content_hash": "sha256:a8b94eb5285fb78a0052f424586f9abe96ffc2c06fd1d0fe4ea8e439c64f3717"
+        },
+        {
+          "path": "registry/entries/swarms/profile.md",
+          "content_hash": "sha256:f8c52db6f98aafcd80d6b7a966fca010479d532b58b2a5f9b6600a087877a7fd"
+        },
+        {
+          "path": "registry/entries/swe-agent/entry.yaml",
+          "content_hash": "sha256:0c8f0bb531c9065b87b323aa53532f067417ff893c4107d1a70d69a7fdbe920e"
+        },
+        {
+          "path": "registry/entries/swe-agent/profile.md",
+          "content_hash": "sha256:c68b9f94e9b9d5c2e6be5f3c8d97a9e544a9da996c469f113626717a13c83411"
+        },
+        {
+          "path": "registry/entries/three-js/entry.yaml",
+          "content_hash": "sha256:3eadef472d6985ea40fabc0f36cd9c4c469c8078f7da8f5a0dd4aa86742306b5"
+        },
+        {
+          "path": "registry/entries/three-js/profile.md",
+          "content_hash": "sha256:e4f35fbf0704d97613f8b75bb52b6b7ccc5c7b2e95421dde2774abc33303de19"
+        },
+        {
+          "path": "registry/entries/ugrep/entry.yaml",
+          "content_hash": "sha256:8d884e4b308aacb539bb6e504757965c91e9278810e9e2dca953928f3587ebdc"
+        },
+        {
+          "path": "registry/entries/ugrep/profile.md",
+          "content_hash": "sha256:5a8fb8e0d33e6e89eb45f02e2a02df525eb9bd7ac6b8643901faaa43c8a4b14b"
+        },
+        {
+          "path": "registry/entries/vercel-ai-sdk/entry.yaml",
+          "content_hash": "sha256:0c6b2362cb8b2673c7711b656cc2c520b2236503a41ee49bdd6cdd17a7271959"
+        },
+        {
+          "path": "registry/entries/vercel-ai-sdk/profile.md",
+          "content_hash": "sha256:e8a257af94d6812acd5a73f85ed5c1567d42ba14551ac8bc3a085abfd3d7542c"
+        },
+        {
+          "path": "registry/entries/vnem-mcp/entry.yaml",
+          "content_hash": "sha256:754ecff058199c3f929f87b85bbb15c6bec325effbd485a9d636f843477afd8f"
+        },
+        {
+          "path": "registry/entries/vnem-mcp/profile.md",
+          "content_hash": "sha256:9ccb19d7179d2e92e4788451bd27833ee1f7c2e9a439ef250ba2d89127a25185"
+        },
+        {
+          "path": "registry/entries/zep/entry.yaml",
+          "content_hash": "sha256:7bf7cae681ca511282e46db0b3471c3bf3bf29fd829ab0451a540e86e6f4c3fc"
+        },
+        {
+          "path": "registry/entries/zep/profile.md",
+          "content_hash": "sha256:6f285f55b7fba7d34bf4ec5378232324c14dad894a5783d2ca9938e0d6a15b5d"
+        },
+        {
+          "path": "scripts/generate-artifacts.mjs",
+          "content_hash": "sha256:00a08e1b7350c36eb6a8ca49139b7eefc65151acec9dc69efbeb3cf3171997fd"
+        },
+        {
+          "path": "scripts/generate-digest.mjs",
+          "content_hash": "sha256:311fccdaf2316eee69abd6858f848ce53913a5b7d11d12390e68365bafe406b5"
+        },
+        {
+          "path": "scripts/lib/registry.mjs",
+          "content_hash": "sha256:d1302827b4e1ba5a2392108cadb61d3b1eecc71ebd8ad447453e70b286e94971"
+        },
+        {
+          "path": "scripts/vnem-install-adoption.mjs",
+          "content_hash": "sha256:a2111a3d70c42d0773d046415703499babbac080de7a9548ed66be6d6ca31b26"
+        },
+        {
+          "path": "scripts/vnem/generation/daily-digest.mjs",
+          "content_hash": "sha256:de4fbfdb74e023e144aabf2a0ec5a702c7afb576c1ec9e399e64473842e79e82"
+        },
+        {
+          "path": "scripts/vnem/generation/generated-artifacts.mjs",
+          "content_hash": "sha256:8f99e0074a4f93bf8a58fec103e47ee3e1c90e350c5e245c90453ae5bae5a3a2"
+        }
+      ],
+      "aggregate_hash": "sha256:00c7620f71135da9efef75aa9b56340a92eba88a0f8f2dd50b48e43d355c8767"
+    }
+  },
+  "artifacts": [
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": ".vnem/AGENTS.md",
+      "kind": "text",
+      "content_hash": "sha256:7128e4f574fc6ab38a5d88363b5dfb9b2d966a9cea6310b9c7a806cec55fb69c",
+      "semantic_hash": "sha256:7128e4f574fc6ab38a5d88363b5dfb9b2d966a9cea6310b9c7a806cec55fb69c",
+      "volatile_fields": [],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": ".vnem/agent-workspace.md",
+      "kind": "text",
+      "content_hash": "sha256:4e2673866b19bb2d707779b20837ce66d69514d1950efafc77ec50a99685c691",
+      "semantic_hash": "sha256:4e2673866b19bb2d707779b20837ce66d69514d1950efafc77ec50a99685c691",
+      "volatile_fields": [],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": ".vnem/best-practices.md",
+      "kind": "text",
+      "content_hash": "sha256:f2c22d587c64a7fedf754f4b29b99ee83ef72e84713d341738199f9cd1fc393c",
+      "semantic_hash": "sha256:db7ef34023c34bc25940398ab492d2b71a276fa355d6b715a89a634fee7d956c",
+      "volatile_fields": [
+        "Generated"
+      ],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": ".vnem/coding-playbooks.json",
+      "kind": "text",
+      "content_hash": "sha256:eaab40daf285c4ab3ecc44c73914435a924bc5e4792f6c90a5e106e7964e606f",
+      "semantic_hash": "sha256:3bf1ae8b6883e4db809be344846b6f968152b58f28a7ee454530dfc407bd1411",
+      "volatile_fields": [
+        "generated_at"
+      ],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": ".vnem/coding-protocol.md",
+      "kind": "text",
+      "content_hash": "sha256:82e0edc97ff92b32fe2ca906c5c94a45fb0a8428793d147eb7dec994a6fcbd1a",
+      "semantic_hash": "sha256:694703af778cef18020459efdeac23e4f791134dc8d1226d5ecdbd2b1357a368",
+      "volatile_fields": [
+        "Generated"
+      ],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": ".vnem/design-architecture.md",
+      "kind": "text",
+      "content_hash": "sha256:c60d041ea70e4f32bb8f87b43188d29589a8f345c0721825c426e38879eb24e0",
+      "semantic_hash": "sha256:b62b13746299de23c02da23e1467e85498b0ff124c7b280cdfde4eaa66415d9a",
+      "volatile_fields": [
+        "Generated"
+      ],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": ".vnem/install-adoption/antigravity/README.md",
+      "kind": "text",
+      "content_hash": "sha256:a693adb6368faf291088da5e498c3f121e53b489a28f5c9a0ba559fce8d6266f",
+      "semantic_hash": "sha256:a693adb6368faf291088da5e498c3f121e53b489a28f5c9a0ba559fce8d6266f",
+      "volatile_fields": [],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": ".vnem/install-adoption/antigravity/mcp.json",
+      "kind": "text",
+      "content_hash": "sha256:3e2ecb15eabebddda06532bf33a59a03c1a6f09eebdb34313f0285154afbe431",
+      "semantic_hash": "sha256:8068fd3f055dfa6a2916789fcda87284109fdec0516480565b4afdfe5233bf1d",
+      "volatile_fields": [],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": ".vnem/install-adoption/claude/README.md",
+      "kind": "text",
+      "content_hash": "sha256:afe8307c347422f22d6c60ee9fa3420088f5531bd0415353ae78012fd9deaf0a",
+      "semantic_hash": "sha256:afe8307c347422f22d6c60ee9fa3420088f5531bd0415353ae78012fd9deaf0a",
+      "volatile_fields": [],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": ".vnem/install-adoption/claude/mcp.json",
+      "kind": "text",
+      "content_hash": "sha256:3e2ecb15eabebddda06532bf33a59a03c1a6f09eebdb34313f0285154afbe431",
+      "semantic_hash": "sha256:8068fd3f055dfa6a2916789fcda87284109fdec0516480565b4afdfe5233bf1d",
+      "volatile_fields": [],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": ".vnem/install-adoption/codex/README.md",
+      "kind": "text",
+      "content_hash": "sha256:98015b9e47b27fbdbd07e3eb532fb3314e781ac841d0b24bfd23547ac5bef784",
+      "semantic_hash": "sha256:98015b9e47b27fbdbd07e3eb532fb3314e781ac841d0b24bfd23547ac5bef784",
+      "volatile_fields": [],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": ".vnem/install-adoption/codex/config-snippet.toml",
+      "kind": "text",
+      "content_hash": "sha256:c8d944c13c765dca9c8eab52f64af3d19126268c937819cb81a732ff3f85321d",
+      "semantic_hash": "sha256:c8d944c13c765dca9c8eab52f64af3d19126268c937819cb81a732ff3f85321d",
+      "volatile_fields": [],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": ".vnem/install-adoption/generic/README.md",
+      "kind": "text",
+      "content_hash": "sha256:67ae1f0c30ac6a7a16e9364f9e66cff33d3f62ad87e4d9d3bd66564bd946a0e0",
+      "semantic_hash": "sha256:67ae1f0c30ac6a7a16e9364f9e66cff33d3f62ad87e4d9d3bd66564bd946a0e0",
+      "volatile_fields": [],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": ".vnem/install-adoption/generic/mcp.json",
+      "kind": "text",
+      "content_hash": "sha256:3e2ecb15eabebddda06532bf33a59a03c1a6f09eebdb34313f0285154afbe431",
+      "semantic_hash": "sha256:8068fd3f055dfa6a2916789fcda87284109fdec0516480565b4afdfe5233bf1d",
+      "volatile_fields": [],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": ".vnem/install-adoption/prompts/vnem-agent-use-instruction.md",
+      "kind": "text",
+      "content_hash": "sha256:70553c1177ec7445949fbf9f6ee4123ab0356325d009bc0cb9460c118f5401ff",
+      "semantic_hash": "sha256:70553c1177ec7445949fbf9f6ee4123ab0356325d009bc0cb9460c118f5401ff",
+      "volatile_fields": [],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": ".vnem/install-adoption/verify/install-doctor-report.json",
+      "kind": "text",
+      "content_hash": "sha256:ad409ec53a8d19d69ac9198f511f64b9139f9115e8693b2b94c2fdb531cd862a",
+      "semantic_hash": "sha256:b881ecb9d463f2654b8dbae57b1c1b77771967b62e2adeb7ec0a82e7c8174c53",
+      "volatile_fields": [],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": ".vnem/install-guide.md",
+      "kind": "text",
+      "content_hash": "sha256:6e0dc9365eab185fbd708e71b6979d893a74a77e4f9be75486ef2f9678caec9f",
+      "semantic_hash": "sha256:94323e287eb1cb05642ff17f21e5b0b2a11e4071ac808aa2fcf1dfd9680a4749",
+      "volatile_fields": [
+        "Generated"
+      ],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": ".vnem/omniscient-self-healing-protocol.md",
+      "kind": "text",
+      "content_hash": "sha256:0811cf35960ced7f908a128d3e9430fbc3205787f731f98d403e45be70449c1c",
+      "semantic_hash": "sha256:9f7211085b0791ab566272a355bd3c44b2aea74f0c71da03b1f9144fcc43642f",
+      "volatile_fields": [
+        "Generated"
+      ],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": ".vnem/operating-protocol.md",
+      "kind": "text",
+      "content_hash": "sha256:5a8f0af452316b7f3fb10194627df9709276e6f2787148d8f901ce0c596cd4b5",
+      "semantic_hash": "sha256:d07a7febdc73cd3d7c09917c3222bb2d1a6aab5f9679bba7e1ce1b46d76baaca",
+      "volatile_fields": [
+        "Generated"
+      ],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": ".vnem/orchestration-protocol.md",
+      "kind": "text",
+      "content_hash": "sha256:55f07bf7b09605ad520720021fff13b0bc3588069686a1e4076ed621a411afc0",
+      "semantic_hash": "sha256:13504189411152f09f2e8db66b7820c38e8fa6f0275e22e4278bb7f45a4e3996",
+      "volatile_fields": [
+        "Generated"
+      ],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": ".vnem/precision-execution-protocol.md",
+      "kind": "text",
+      "content_hash": "sha256:fa255b34a80581af26f695e8a004b05268a98dac4f25d33f1ca2a453b25786e3",
+      "semantic_hash": "sha256:63eb58b325a8aa378976ff781cb58db4d7ba1b685612dfa54bec7f50dfd1ad70",
+      "volatile_fields": [
+        "Generated"
+      ],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": ".vnem/prompt-engineering.md",
+      "kind": "text",
+      "content_hash": "sha256:51d803d51366a6c81ef2cda0ffe509ed1b4254e10c7d8c00067c7d990b45fa0d",
+      "semantic_hash": "sha256:df3c44a35a26a4ea331a03c0fe34e9a43a65914e9b3473ce0e24df2a332ffa4a",
+      "volatile_fields": [
+        "Generated"
+      ],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": ".vnem/prompt-patterns.json",
+      "kind": "text",
+      "content_hash": "sha256:fffcf3e3876231b0820cf9ecd79ff6bca3c8ec8e2c4127ee7a9e9177e786e96e",
+      "semantic_hash": "sha256:22d055f4ebd62dce940918d719c3bf0f94d407bef436048809ce10593c188d63",
+      "volatile_fields": [
+        "generated_at"
+      ],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": ".vnem/quality-contract.md",
+      "kind": "text",
+      "content_hash": "sha256:6f1f3db1f5b79033161cc3fbe72136b6fa4266b332932a7b61b8fdbc104e2d60",
+      "semantic_hash": "sha256:d5f0a149ca55c72a521da21f2b31c6c04d4386cf7118c6abf90fa0c5bec52990",
+      "volatile_fields": [
+        "Generated"
+      ],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": ".vnem/search-index.json",
+      "kind": "text",
+      "content_hash": "sha256:694af4c43507a44feda50150b89404afb3c5b3f2ca4469af54f161df45c46930",
+      "semantic_hash": "sha256:b2ea47dc8e3804db455be39e05cbeee458de876b18c1fa172dc6db11ff796727",
+      "volatile_fields": [
+        "generated_at",
+        "release_date"
+      ],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": ".vnem/source-radar.json",
+      "kind": "text",
+      "content_hash": "sha256:b091ea2fe9fc48e3ca98b5f379163570a6552a4f208900d1f09ce3201b78d4e5",
+      "semantic_hash": "sha256:0ff910c738cb33176139df8fffd7492d54cae717db59f49e84c9fb0d87f9ac0b",
+      "volatile_fields": [
+        "generated_at"
+      ],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": ".vnem/task-rubrics.json",
+      "kind": "text",
+      "content_hash": "sha256:b08da7ac02bc3b97b3c9aa2bd2943c11cab131d1e2b73825ab07b254cb8639c3",
+      "semantic_hash": "sha256:e0245ee0d2125f677c21a5f471f63522275c081cf136a55244f48668d8b9cdb9",
+      "volatile_fields": [
+        "generated_at"
+      ],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": ".vnem/visual-qa-protocol.md",
+      "kind": "text",
+      "content_hash": "sha256:348dd88f478b0dec51adfd10179eff88f7f34193bbff15ecf76333d2aa78cf4a",
+      "semantic_hash": "sha256:afb0c9a699936d5d864b80322b5baebc0503160c6bb60a843dfcc26572b3e0c4",
+      "volatile_fields": [
+        "Generated"
+      ],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": "discovery/daily-digest.md",
+      "kind": "text",
+      "content_hash": "sha256:59ef65d40fd7ec8f529763ee94bcf4f48f894b9f3b187313e0d071540f430d7b",
+      "semantic_hash": "sha256:f5271e0bb3d4d923cf6a302deb72bb55a37b2efc49817ed9f3f2bd0b11dc8897",
+      "volatile_fields": [
+        "Generated"
+      ],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": "landing/install.tgz",
+      "kind": "gzip_tar",
+      "content_hash": "sha256:8aa6df2f089a883a57675ae1c5cf4dfe5a6936891a304ebcf251bdc9f0c8782b",
+      "semantic_hash": "sha256:d930f8b99587394cd8092920f24d5e596cf5fd32d3adb5bafaf09dd0ac0640cb",
+      "volatile_fields": [
+        "gzip.mtime",
+        "gzip.os",
+        "tar.entries[].mtime",
+        "payload.generated_at",
+        "payload.release_date"
+      ],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": "llms-full.txt",
+      "kind": "text",
+      "content_hash": "sha256:b66b778ed413edc98fc1bc5060a580de337cff4e0b4024071c0a7816d060d89c",
+      "semantic_hash": "sha256:5c249fa9fc91cd964596160ad0d5bef958856b0d2ca9a31497d1c1a57f447579",
+      "volatile_fields": [
+        "Generated"
+      ],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": "llms.txt",
+      "kind": "text",
+      "content_hash": "sha256:08666513e6463d2824593a56b4ca5a1dd2efb3b0c22cf30b435b56b3c4c36eae",
+      "semantic_hash": "sha256:08666513e6463d2824593a56b4ca5a1dd2efb3b0c22cf30b435b56b3c4c36eae",
+      "volatile_fields": [],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": "public/api/index.json",
+      "kind": "text",
+      "content_hash": "sha256:6e56aec731fcd3b9445cca6e962c75937c797a8a06534c865787b25884280606",
+      "semantic_hash": "sha256:05bfc0f7b80a1955b7b580e114c03943b6c5e9d6c8a222a78949ef3e784903f3",
+      "volatile_fields": [
+        "generated_at",
+        "release_date"
+      ],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": "public/install.tgz",
+      "kind": "gzip_tar",
+      "content_hash": "sha256:8aa6df2f089a883a57675ae1c5cf4dfe5a6936891a304ebcf251bdc9f0c8782b",
+      "semantic_hash": "sha256:d930f8b99587394cd8092920f24d5e596cf5fd32d3adb5bafaf09dd0ac0640cb",
+      "volatile_fields": [
+        "gzip.mtime",
+        "gzip.os",
+        "tar.entries[].mtime",
+        "payload.generated_at",
+        "payload.release_date"
+      ],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": "public/install/AGENTS.md",
+      "kind": "text",
+      "content_hash": "sha256:7128e4f574fc6ab38a5d88363b5dfb9b2d966a9cea6310b9c7a806cec55fb69c",
+      "semantic_hash": "sha256:7128e4f574fc6ab38a5d88363b5dfb9b2d966a9cea6310b9c7a806cec55fb69c",
+      "volatile_fields": [],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": "public/install/agent-workspace.md",
+      "kind": "text",
+      "content_hash": "sha256:4e2673866b19bb2d707779b20837ce66d69514d1950efafc77ec50a99685c691",
+      "semantic_hash": "sha256:4e2673866b19bb2d707779b20837ce66d69514d1950efafc77ec50a99685c691",
+      "volatile_fields": [],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": "public/install/best-practices.md",
+      "kind": "text",
+      "content_hash": "sha256:f2c22d587c64a7fedf754f4b29b99ee83ef72e84713d341738199f9cd1fc393c",
+      "semantic_hash": "sha256:db7ef34023c34bc25940398ab492d2b71a276fa355d6b715a89a634fee7d956c",
+      "volatile_fields": [
+        "Generated"
+      ],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": "public/install/coding-playbooks.json",
+      "kind": "text",
+      "content_hash": "sha256:eaab40daf285c4ab3ecc44c73914435a924bc5e4792f6c90a5e106e7964e606f",
+      "semantic_hash": "sha256:3bf1ae8b6883e4db809be344846b6f968152b58f28a7ee454530dfc407bd1411",
+      "volatile_fields": [
+        "generated_at"
+      ],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": "public/install/coding-protocol.md",
+      "kind": "text",
+      "content_hash": "sha256:82e0edc97ff92b32fe2ca906c5c94a45fb0a8428793d147eb7dec994a6fcbd1a",
+      "semantic_hash": "sha256:694703af778cef18020459efdeac23e4f791134dc8d1226d5ecdbd2b1357a368",
+      "volatile_fields": [
+        "Generated"
+      ],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": "public/install/design-architecture.md",
+      "kind": "text",
+      "content_hash": "sha256:c60d041ea70e4f32bb8f87b43188d29589a8f345c0721825c426e38879eb24e0",
+      "semantic_hash": "sha256:b62b13746299de23c02da23e1467e85498b0ff124c7b280cdfde4eaa66415d9a",
+      "volatile_fields": [
+        "Generated"
+      ],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": "public/install/install-adoption/antigravity/README.md",
+      "kind": "text",
+      "content_hash": "sha256:a693adb6368faf291088da5e498c3f121e53b489a28f5c9a0ba559fce8d6266f",
+      "semantic_hash": "sha256:a693adb6368faf291088da5e498c3f121e53b489a28f5c9a0ba559fce8d6266f",
+      "volatile_fields": [],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": "public/install/install-adoption/antigravity/mcp.json",
+      "kind": "text",
+      "content_hash": "sha256:3e2ecb15eabebddda06532bf33a59a03c1a6f09eebdb34313f0285154afbe431",
+      "semantic_hash": "sha256:8068fd3f055dfa6a2916789fcda87284109fdec0516480565b4afdfe5233bf1d",
+      "volatile_fields": [],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": "public/install/install-adoption/claude/README.md",
+      "kind": "text",
+      "content_hash": "sha256:afe8307c347422f22d6c60ee9fa3420088f5531bd0415353ae78012fd9deaf0a",
+      "semantic_hash": "sha256:afe8307c347422f22d6c60ee9fa3420088f5531bd0415353ae78012fd9deaf0a",
+      "volatile_fields": [],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": "public/install/install-adoption/claude/mcp.json",
+      "kind": "text",
+      "content_hash": "sha256:3e2ecb15eabebddda06532bf33a59a03c1a6f09eebdb34313f0285154afbe431",
+      "semantic_hash": "sha256:8068fd3f055dfa6a2916789fcda87284109fdec0516480565b4afdfe5233bf1d",
+      "volatile_fields": [],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": "public/install/install-adoption/codex/README.md",
+      "kind": "text",
+      "content_hash": "sha256:98015b9e47b27fbdbd07e3eb532fb3314e781ac841d0b24bfd23547ac5bef784",
+      "semantic_hash": "sha256:98015b9e47b27fbdbd07e3eb532fb3314e781ac841d0b24bfd23547ac5bef784",
+      "volatile_fields": [],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": "public/install/install-adoption/codex/config-snippet.toml",
+      "kind": "text",
+      "content_hash": "sha256:c8d944c13c765dca9c8eab52f64af3d19126268c937819cb81a732ff3f85321d",
+      "semantic_hash": "sha256:c8d944c13c765dca9c8eab52f64af3d19126268c937819cb81a732ff3f85321d",
+      "volatile_fields": [],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": "public/install/install-adoption/generic/README.md",
+      "kind": "text",
+      "content_hash": "sha256:67ae1f0c30ac6a7a16e9364f9e66cff33d3f62ad87e4d9d3bd66564bd946a0e0",
+      "semantic_hash": "sha256:67ae1f0c30ac6a7a16e9364f9e66cff33d3f62ad87e4d9d3bd66564bd946a0e0",
+      "volatile_fields": [],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": "public/install/install-adoption/generic/mcp.json",
+      "kind": "text",
+      "content_hash": "sha256:3e2ecb15eabebddda06532bf33a59a03c1a6f09eebdb34313f0285154afbe431",
+      "semantic_hash": "sha256:8068fd3f055dfa6a2916789fcda87284109fdec0516480565b4afdfe5233bf1d",
+      "volatile_fields": [],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": "public/install/install-adoption/prompts/vnem-agent-use-instruction.md",
+      "kind": "text",
+      "content_hash": "sha256:70553c1177ec7445949fbf9f6ee4123ab0356325d009bc0cb9460c118f5401ff",
+      "semantic_hash": "sha256:70553c1177ec7445949fbf9f6ee4123ab0356325d009bc0cb9460c118f5401ff",
+      "volatile_fields": [],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": "public/install/install-adoption/verify/install-doctor-report.json",
+      "kind": "text",
+      "content_hash": "sha256:ad409ec53a8d19d69ac9198f511f64b9139f9115e8693b2b94c2fdb531cd862a",
+      "semantic_hash": "sha256:b881ecb9d463f2654b8dbae57b1c1b77771967b62e2adeb7ec0a82e7c8174c53",
+      "volatile_fields": [],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": "public/install/install-guide.md",
+      "kind": "text",
+      "content_hash": "sha256:6e0dc9365eab185fbd708e71b6979d893a74a77e4f9be75486ef2f9678caec9f",
+      "semantic_hash": "sha256:94323e287eb1cb05642ff17f21e5b0b2a11e4071ac808aa2fcf1dfd9680a4749",
+      "volatile_fields": [
+        "Generated"
+      ],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": "public/install/omniscient-self-healing-protocol.md",
+      "kind": "text",
+      "content_hash": "sha256:0811cf35960ced7f908a128d3e9430fbc3205787f731f98d403e45be70449c1c",
+      "semantic_hash": "sha256:9f7211085b0791ab566272a355bd3c44b2aea74f0c71da03b1f9144fcc43642f",
+      "volatile_fields": [
+        "Generated"
+      ],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": "public/install/operating-protocol.md",
+      "kind": "text",
+      "content_hash": "sha256:5a8f0af452316b7f3fb10194627df9709276e6f2787148d8f901ce0c596cd4b5",
+      "semantic_hash": "sha256:d07a7febdc73cd3d7c09917c3222bb2d1a6aab5f9679bba7e1ce1b46d76baaca",
+      "volatile_fields": [
+        "Generated"
+      ],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": "public/install/orchestration-protocol.md",
+      "kind": "text",
+      "content_hash": "sha256:55f07bf7b09605ad520720021fff13b0bc3588069686a1e4076ed621a411afc0",
+      "semantic_hash": "sha256:13504189411152f09f2e8db66b7820c38e8fa6f0275e22e4278bb7f45a4e3996",
+      "volatile_fields": [
+        "Generated"
+      ],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": "public/install/precision-execution-protocol.md",
+      "kind": "text",
+      "content_hash": "sha256:fa255b34a80581af26f695e8a004b05268a98dac4f25d33f1ca2a453b25786e3",
+      "semantic_hash": "sha256:63eb58b325a8aa378976ff781cb58db4d7ba1b685612dfa54bec7f50dfd1ad70",
+      "volatile_fields": [
+        "Generated"
+      ],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": "public/install/prompt-engineering.md",
+      "kind": "text",
+      "content_hash": "sha256:51d803d51366a6c81ef2cda0ffe509ed1b4254e10c7d8c00067c7d990b45fa0d",
+      "semantic_hash": "sha256:df3c44a35a26a4ea331a03c0fe34e9a43a65914e9b3473ce0e24df2a332ffa4a",
+      "volatile_fields": [
+        "Generated"
+      ],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": "public/install/prompt-patterns.json",
+      "kind": "text",
+      "content_hash": "sha256:fffcf3e3876231b0820cf9ecd79ff6bca3c8ec8e2c4127ee7a9e9177e786e96e",
+      "semantic_hash": "sha256:22d055f4ebd62dce940918d719c3bf0f94d407bef436048809ce10593c188d63",
+      "volatile_fields": [
+        "generated_at"
+      ],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": "public/install/quality-contract.md",
+      "kind": "text",
+      "content_hash": "sha256:6f1f3db1f5b79033161cc3fbe72136b6fa4266b332932a7b61b8fdbc104e2d60",
+      "semantic_hash": "sha256:d5f0a149ca55c72a521da21f2b31c6c04d4386cf7118c6abf90fa0c5bec52990",
+      "volatile_fields": [
+        "Generated"
+      ],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": "public/install/search-index.json",
+      "kind": "text",
+      "content_hash": "sha256:694af4c43507a44feda50150b89404afb3c5b3f2ca4469af54f161df45c46930",
+      "semantic_hash": "sha256:b2ea47dc8e3804db455be39e05cbeee458de876b18c1fa172dc6db11ff796727",
+      "volatile_fields": [
+        "generated_at",
+        "release_date"
+      ],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": "public/install/source-radar.json",
+      "kind": "text",
+      "content_hash": "sha256:b091ea2fe9fc48e3ca98b5f379163570a6552a4f208900d1f09ce3201b78d4e5",
+      "semantic_hash": "sha256:0ff910c738cb33176139df8fffd7492d54cae717db59f49e84c9fb0d87f9ac0b",
+      "volatile_fields": [
+        "generated_at"
+      ],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": "public/install/task-rubrics.json",
+      "kind": "text",
+      "content_hash": "sha256:b08da7ac02bc3b97b3c9aa2bd2943c11cab131d1e2b73825ab07b254cb8639c3",
+      "semantic_hash": "sha256:e0245ee0d2125f677c21a5f471f63522275c081cf136a55244f48668d8b9cdb9",
+      "volatile_fields": [
+        "generated_at"
+      ],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": "public/install/visual-qa-protocol.md",
+      "kind": "text",
+      "content_hash": "sha256:348dd88f478b0dec51adfd10179eff88f7f34193bbff15ecf76333d2aa78cf4a",
+      "semantic_hash": "sha256:afb0c9a699936d5d864b80322b5baebc0503160c6bb60a843dfcc26572b3e0c4",
+      "volatile_fields": [
+        "Generated"
+      ],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    }
+  ],
+  "duplicate_artifact_contracts": [
+    {
+      "primary": "public/install.tgz",
+      "mirror": "landing/install.tgz",
+      "comparison": "byte_identical"
+    }
+  ]
+}

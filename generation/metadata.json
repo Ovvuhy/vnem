@@ -1,0 +1,5 @@
+{
+  "schema_version": "1.0.0",
+  "semantic_timestamp": "2026-07-08T21:12:40.970Z",
+  "description": "Stable generation clock for semantic artifacts. Override with SOURCE_DATE_EPOCH for an explicit reproducible build clock."
+}

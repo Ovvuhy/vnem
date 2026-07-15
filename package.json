@@ -15,6 +15,7 @@
     "curate": "node scripts/upsert-curated-knowledge.mjs",
     "validate": "node scripts/validate-registry.mjs",
     "generate": "node scripts/generate-artifacts.mjs",
+    "generate:check": "node scripts/check-generated-artifacts.mjs",
     "check:links": "node scripts/check-links.mjs",
     "agent-rules:dry-run": "node scripts/install-vnem-agent-rules.mjs --dry-run",
     "agent-rules:codex": "node scripts/install-vnem-agent-rules.mjs --codex --apply",
@@ -60,6 +61,7 @@
     "test:tools-cloudflare-redaction": "node scripts/test-tools-cloudflare-redaction.mjs",
     "test:tools-cloudflare-evidence-pack": "node scripts/test-tools-cloudflare-evidence-pack.mjs",
     "test:tools-giga-cloudflare-deployment": "node scripts/test-tools-giga-cloudflare-deployment.mjs",
+    "test:giga-deterministic-generation": "node scripts/test-giga-deterministic-generation.mjs",
     "test:tools-quality-general": "node scripts/test-tools-quality-general.mjs",
     "test:tools-reliability-catalog": "node scripts/test-tools-reliability-catalog.mjs",
     "test:tools-action-recovery-plan": "node scripts/test-tools-action-recovery-plan.mjs",
@@ -321,6 +323,7 @@
     "giga:phase19-capability": "node scripts/vnem/giga/capability-benchmark.mjs --output=.vnem/giga-evolution/phase-19/capability-benchmark.json",
     "giga:phase20-benchmark": "node scripts/test-tools-giga-cloudflare-deployment.mjs --benchmark-output=.vnem/giga-evolution/phase-20/cloudflare-deployment-benchmark.json",
     "giga:phase20-capability": "node scripts/vnem/giga/capability-benchmark.mjs --output=.vnem/giga-evolution/phase-20/capability-benchmark.json",
+    "giga:phase21-benchmark": "node scripts/test-giga-deterministic-generation.mjs --benchmark-output=.vnem/giga-evolution/phase-21/deterministic-generation-benchmark.json",
     "test:clients:setup": "node scripts/test-vnem-client-setup.mjs"
   },
   "dependencies": {

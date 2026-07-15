@@ -39,6 +39,12 @@ const dataSystemsTestPath = rel("scripts/test-tools-giga-data-systems.mjs");
 const dataSystemsModulePath = rel("scripts/vnem/tools/data-systems.mjs");
 const cloudflareDeploymentTestPath = rel("scripts/test-tools-giga-cloudflare-deployment.mjs");
 const cloudflareControlModulePath = rel("scripts/vnem/tools/cloudflare-control.mjs");
+const deterministicGenerationTestPath = rel("scripts/test-giga-deterministic-generation.mjs");
+const generatedArtifactsModulePath = rel("scripts/vnem/generation/generated-artifacts.mjs");
+const generatedArtifactsManifestPath = rel(".vnem/generated-artifacts.json");
+const generationMetadataPath = rel("generation/metadata.json");
+const dailyDigestModulePath = rel("scripts/vnem/generation/daily-digest.mjs");
+const generateDigestPath = rel("scripts/generate-digest.mjs");
 const projectAutomationTestPath = rel("scripts/test-tools-giga-project-automation.mjs");
 const projectAutomationModulePath = rel("scripts/vnem/tools/project-automation.mjs");
 const projectAutomationFixturePath = rel("fixtures/project-automation/package.json");
@@ -153,6 +159,12 @@ const dataSystemsTest = existsSync(dataSystemsTestPath) ? readFileSync(dataSyste
 const dataSystemsModule = existsSync(dataSystemsModulePath) ? readFileSync(dataSystemsModulePath, "utf8") : "";
 const cloudflareDeploymentTest = existsSync(cloudflareDeploymentTestPath) ? readFileSync(cloudflareDeploymentTestPath, "utf8") : "";
 const cloudflareControlModule = existsSync(cloudflareControlModulePath) ? readFileSync(cloudflareControlModulePath, "utf8") : "";
+const deterministicGenerationTest = existsSync(deterministicGenerationTestPath) ? readFileSync(deterministicGenerationTestPath, "utf8") : "";
+const generatedArtifactsModule = existsSync(generatedArtifactsModulePath) ? readFileSync(generatedArtifactsModulePath, "utf8") : "";
+const generatedArtifactsManifest = existsSync(generatedArtifactsManifestPath) ? readFileSync(generatedArtifactsManifestPath, "utf8") : "";
+const generationMetadata = existsSync(generationMetadataPath) ? readFileSync(generationMetadataPath, "utf8") : "";
+const dailyDigestModule = existsSync(dailyDigestModulePath) ? readFileSync(dailyDigestModulePath, "utf8") : "";
+const generateDigest = existsSync(generateDigestPath) ? readFileSync(generateDigestPath, "utf8") : "";
 const projectAutomationTest = existsSync(projectAutomationTestPath) ? readFileSync(projectAutomationTestPath, "utf8") : "";
 const projectAutomationModule = existsSync(projectAutomationModulePath) ? readFileSync(projectAutomationModulePath, "utf8") : "";
 const testingCiTest = existsSync(testingCiTestPath) ? readFileSync(testingCiTestPath, "utf8") : "";
@@ -490,6 +502,11 @@ const report = {
   api_connector_module_exists: existsSync(apiConnectorModulePath),
   skill_runtime_test_exists: existsSync(skillRuntimeTestPath),
   skill_runtime_module_exists: existsSync(skillRuntimeModulePath),
+  deterministic_generation_test_exists: existsSync(deterministicGenerationTestPath),
+  generated_artifacts_module_exists: existsSync(generatedArtifactsModulePath),
+  generated_artifacts_manifest_exists: existsSync(generatedArtifactsManifestPath),
+  generation_metadata_exists: existsSync(generationMetadataPath),
+  deterministic_digest_module_exists: existsSync(dailyDigestModulePath),
   project_automation_test_exists: existsSync(projectAutomationTestPath),
   project_automation_module_exists: existsSync(projectAutomationModulePath),
   project_automation_fixture_exists: existsSync(projectAutomationFixturePath),
@@ -619,6 +636,9 @@ const report = {
     test_tools_giga_cloudflare_deployment: pkg.scripts?.["test:tools-giga-cloudflare-deployment"] === "node scripts/test-tools-giga-cloudflare-deployment.mjs",
     giga_phase20_benchmark: pkg.scripts?.["giga:phase20-benchmark"] === "node scripts/test-tools-giga-cloudflare-deployment.mjs --benchmark-output=.vnem/giga-evolution/phase-20/cloudflare-deployment-benchmark.json",
     giga_phase20_capability: pkg.scripts?.["giga:phase20-capability"] === "node scripts/vnem/giga/capability-benchmark.mjs --output=.vnem/giga-evolution/phase-20/capability-benchmark.json",
+    generate_check: pkg.scripts?.["generate:check"] === "node scripts/check-generated-artifacts.mjs",
+    test_giga_deterministic_generation: pkg.scripts?.["test:giga-deterministic-generation"] === "node scripts/test-giga-deterministic-generation.mjs",
+    giga_phase21_benchmark: pkg.scripts?.["giga:phase21-benchmark"] === "node scripts/test-giga-deterministic-generation.mjs --benchmark-output=.vnem/giga-evolution/phase-21/deterministic-generation-benchmark.json",
     test_tools_quality_general: pkg.scripts?.["test:tools-quality-general"] === "node scripts/test-tools-quality-general.mjs",
     test_tools_reliability_catalog: pkg.scripts?.["test:tools-reliability-catalog"] === "node scripts/test-tools-reliability-catalog.mjs",
     test_tools_action_recovery_plan: pkg.scripts?.["test:tools-action-recovery-plan"] === "node scripts/test-tools-action-recovery-plan.mjs",
@@ -857,6 +877,14 @@ const report = {
   cloudflare_deployment_simulation_honesty_status: /mutated: !simulated/.test(cloudflareControlModule) && /provider_success: !simulated/.test(cloudflareControlModule) && /simulated\.mutated, false/.test(cloudflareDeploymentTest) && /simulated\.provider_success, false/.test(cloudflareDeploymentTest),
   cloudflare_deployment_core_routing_status: ["vnem_tools_cloudflare_status", "vnem_tools_cloudflare_projects_list", "vnem_tools_cloudflare_pages_deploy_plan", "vnem_tools_cloudflare_pages_deploy", "vnem_tools_cloudflare_deploy_verify", "vnem_tools_cloudflare_rollback_plan"].every((tool) => coreIntelligence.includes(tool) && cloudflareDeploymentTest.includes(tool)) && /Phase 20 Cloudflare route/.test(readFileSync(rel("scripts/test-core-giga-intelligence.mjs"), "utf8")),
   cloudflare_deployment_real_mcp_proof_status: /StdioClientTransport/.test(cloudflareDeploymentTest) && /real_stdio_mcp: true/.test(cloudflareDeploymentTest) && /behavior_coverage_mapper_for_eighteen_tools: true/.test(cloudflareDeploymentTest) && /VNEM GIGA Phase 20 Cloudflare deployment tests passed/.test(cloudflareDeploymentTest),
+  deterministic_generation_clock_status: /resolveGenerationClock/.test(generatedArtifactsModule + deterministicGenerationTest) && /SOURCE_DATE_EPOCH/.test(generatedArtifactsModule + deterministicGenerationTest + generationMetadata) && /generation\/metadata\.json/.test(generatedArtifactsModule + deterministicGenerationTest),
+  deterministic_archive_status: /createDeterministicTarGzip/.test(generatedArtifactsModule + deterministicGenerationTest) && /portable_path_ascending/.test(generatedArtifactsManifest) && /gzip\.fill\(0, 4, 8\)/.test(generatedArtifactsModule) && /public and landing archives are synchronized/.test(deterministicGenerationTest),
+  generated_artifact_manifest_status: ["source_inputs", "generator", "output", "content_hash", "semantic_hash", "volatile_fields", "tracked", "expected_regeneration_command"].every((field) => generatedArtifactsModule.includes(field) && generatedArtifactsManifest.includes(`\"${field}\"`)),
+  generated_artifact_drift_status: ["stale_generated_output", "modified_generated_output", "source_changed_without_regeneration", "archive_mismatch", "public_landing_archive_mismatch"].every((marker) => generatedArtifactsModule.includes(marker) && deterministicGenerationTest.includes(marker)),
+  generated_artifact_hygiene_status: ["unexpected_local_path", "secret_like_content", "hidden_or_control_character"].every((marker) => generatedArtifactsModule.includes(marker) && deterministicGenerationTest.includes(marker)) && /kind === "gzip_tar"/.test(generatedArtifactsModule) && /valid gzip bytes are scanned as an archive, not source text/.test(deterministicGenerationTest),
+  generated_artifact_ci_status: /"generate:check"[\s\S]*"generate"/.test(testingCiManifest) && /generate:check/.test(workflowText) && !/cp public\/install\.tgz landing\/install\.tgz/.test(workflowText),
+  generated_artifact_real_mcp_status: /StdioClientTransport/.test(deterministicGenerationTest) && /vnem_tools_ci_failure_diagnose/.test(deterministicGenerationTest) && /generated_artifact_mismatch/.test(deterministicGenerationTest),
+  deterministic_digest_status: /buildDailyDigest/.test(dailyDigestModule + generateDigest) && /resolveGenerationClock/.test(generateDigest) && /discovery\/candidates\/\*\.json/.test(generatedArtifactsManifest) && /standalone digest generator is byte-identical and manifest-owned/.test(deterministicGenerationTest),
   github_dry_run_status: /dry_run !== false/.test(server) && /must not/.test(toolsGithubMutationDryRunTest),
   github_config_knob_status: /config_knob_to_change/.test(server) && /VNEM_TOOLS_GITHUB_ALLOW_DIRECT_PUSH/.test(toolsGithubMutationDryRunTest + server) && /VNEM_TOOLS_GITHUB_ALLOW_ACTIONS_RERUN/.test(toolsGithubMutationDryRunTest + server),
   github_secret_file_block_status: /githubSecretFileBlocked/.test(server) && /Secret-like file blocked/.test(server) && /scanGithubCommitContent/.test(server) && /Secret-like content blocked/.test(server + githubDevelopmentTest) && /\.env/.test(toolsGithubMutationDryRunTest + server),
@@ -1133,6 +1161,11 @@ assert.equal(report.api_connector_test_exists, true, "API connector MCP test fil
 assert.equal(report.api_connector_module_exists, true, "API connector runtime module is missing");
 assert.equal(report.skill_runtime_test_exists, true, "skill runtime MCP test file is missing");
 assert.equal(report.skill_runtime_module_exists, true, "skill runtime module is missing");
+assert.equal(report.deterministic_generation_test_exists, true, "deterministic generation regression test is missing");
+assert.equal(report.generated_artifacts_module_exists, true, "generated artifact runtime module is missing");
+assert.equal(report.generated_artifacts_manifest_exists, true, "generated artifact ownership manifest is missing");
+assert.equal(report.generation_metadata_exists, true, "stable generation metadata is missing");
+assert.equal(report.deterministic_digest_module_exists, true, "deterministic digest module is missing");
 assert.equal(report.current_documentation_test_exists, true, "current documentation MCP test file is missing");
 assert.equal(report.documentation_intelligence_module_exists, true, "documentation intelligence module is missing");
 assert.equal(report.project_automation_test_exists, true, "project automation MCP test file is missing");
@@ -1182,7 +1215,7 @@ assert.equal(report.package_scripts.test_tools_intelligence, true, "test:tools-i
 assert.equal(report.package_scripts.test_tools_research, true, "test:tools-research package script is missing");
 assert.equal(report.package_scripts.test_core_tool_selection, true, "test:core-tool-selection package script is missing");
 assert.equal(report.package_scripts.test_core_tools_ecosystem, true, "test:core-tools-ecosystem package script is missing");
-for (const [key, value] of Object.entries({ test_tools_cloudflare_status_auth: report.package_scripts.test_tools_cloudflare_status_auth, test_tools_cloudflare_plans: report.package_scripts.test_tools_cloudflare_plans, test_tools_cloudflare_approval_gates: report.package_scripts.test_tools_cloudflare_approval_gates, test_tools_cloudflare_redaction: report.package_scripts.test_tools_cloudflare_redaction, test_tools_cloudflare_evidence_pack: report.package_scripts.test_tools_cloudflare_evidence_pack, test_tools_giga_cloudflare_deployment: report.package_scripts.test_tools_giga_cloudflare_deployment, giga_phase20_benchmark: report.package_scripts.giga_phase20_benchmark, giga_phase20_capability: report.package_scripts.giga_phase20_capability, test_tools_quality_general: report.package_scripts.test_tools_quality_general })) assert.equal(value, true, `${key} package script is missing`);
+for (const [key, value] of Object.entries({ test_tools_cloudflare_status_auth: report.package_scripts.test_tools_cloudflare_status_auth, test_tools_cloudflare_plans: report.package_scripts.test_tools_cloudflare_plans, test_tools_cloudflare_approval_gates: report.package_scripts.test_tools_cloudflare_approval_gates, test_tools_cloudflare_redaction: report.package_scripts.test_tools_cloudflare_redaction, test_tools_cloudflare_evidence_pack: report.package_scripts.test_tools_cloudflare_evidence_pack, test_tools_giga_cloudflare_deployment: report.package_scripts.test_tools_giga_cloudflare_deployment, giga_phase20_benchmark: report.package_scripts.giga_phase20_benchmark, giga_phase20_capability: report.package_scripts.giga_phase20_capability, generate_check: report.package_scripts.generate_check, test_giga_deterministic_generation: report.package_scripts.test_giga_deterministic_generation, giga_phase21_benchmark: report.package_scripts.giga_phase21_benchmark, test_tools_quality_general: report.package_scripts.test_tools_quality_general })) assert.equal(value, true, `${key} package script is missing`);
 assert.equal(report.intelligence_test_exists, true, "tools intelligence test file is missing");
 assert.equal(report.research_test_exists, true, "tools research test file is missing");
 assert.equal(report.browser_intelligence_test_exists, true, "browser intelligence test file is missing");
@@ -1396,6 +1429,7 @@ assert.equal(report.provider_unconfigured_honesty, true, "provider unconfigured 
 assert.equal(report.no_captcha_bypass_public_policy, true, "no-CAPTCHA-bypass public policy missing");
 for (const [key, value] of Object.entries({ cloudflare_control_status: report.cloudflare_control_status, cloudflare_auth_status_tool_status: report.cloudflare_auth_status_tool_status, cloudflare_auth_plan_status: report.cloudflare_auth_plan_status, cloudflare_discovery_status: report.cloudflare_discovery_status, cloudflare_pages_deploy_status: report.cloudflare_pages_deploy_status, cloudflare_workers_deploy_status: report.cloudflare_workers_deploy_status, cloudflare_dns_status: report.cloudflare_dns_status, cloudflare_env_secrets_status: report.cloudflare_env_secrets_status, cloudflare_verify_status: report.cloudflare_verify_status, cloudflare_rollback_status: report.cloudflare_rollback_status, cloudflare_cache_purge_status: report.cloudflare_cache_purge_status, cloudflare_approval_gate_status: report.cloudflare_approval_gate_status, cloudflare_destructive_approval_status: report.cloudflare_destructive_approval_status, cloudflare_secret_redaction_status: report.cloudflare_secret_redaction_status, cloudflare_evidence_pack_status: report.cloudflare_evidence_pack_status, general_tools_evidence_pack_audit_status: report.general_tools_evidence_pack_audit_status, general_tools_mutation_approval_contract_status: report.general_tools_mutation_approval_contract_status, general_tools_secret_redaction_check_status: report.general_tools_secret_redaction_check_status })) assert.equal(value, true, `${key} readiness missing`);
 for (const key of ["cloudflare_deployment_module_status", "cloudflare_deployment_discovery_status", "cloudflare_deployment_build_output_status", "cloudflare_deployment_command_status", "cloudflare_deployment_verification_status", "cloudflare_deployment_env_reference_status", "cloudflare_deployment_rollback_status", "cloudflare_deployment_failure_evidence_status", "cloudflare_deployment_error_diagnosis_status", "cloudflare_deployment_simulation_honesty_status", "cloudflare_deployment_core_routing_status", "cloudflare_deployment_real_mcp_proof_status"]) assert.equal(report[key], true, `${key} readiness missing`);
+for (const key of ["deterministic_generation_clock_status", "deterministic_archive_status", "generated_artifact_manifest_status", "generated_artifact_drift_status", "generated_artifact_hygiene_status", "generated_artifact_ci_status", "generated_artifact_real_mcp_status", "deterministic_digest_status"]) assert.equal(report[key], true, `${key} readiness missing`);
 assert.equal(report.patch_batch_status, true, "patch batch support/test coverage is missing");
 assert.equal(report.restore_batch_status, true, "restore batch support/test coverage is missing");
 assert.equal(report.project_scan_status, true, "project scan support/test coverage is missing");
@@ -1569,6 +1603,7 @@ for (const key of ["skill_runtime_module_status", "skill_runtime_contract_status
 for (const key of ["current_documentation_module_status", "current_documentation_source_authority_status", "current_documentation_cache_status", "current_documentation_bounds_status", "current_documentation_contradiction_status", "current_documentation_core_routing_status", "current_documentation_real_mcp_proof_status"]) console.log(`${key}: ${yes(report[key])}`);
 for (const key of ["data_systems_module_status", "data_systems_format_status", "data_systems_inspection_validation_diff_status", "data_systems_transform_transaction_status", "data_systems_connection_scope_status", "data_systems_query_safety_status", "data_systems_migration_preview_status", "data_systems_migration_transaction_status", "data_systems_concurrency_boundary_status", "data_systems_secret_redaction_status", "data_systems_core_routing_status", "data_systems_real_mcp_proof_status"]) console.log(`${key}: ${yes(report[key])}`);
 for (const key of ["cloudflare_deployment_module_status", "cloudflare_deployment_discovery_status", "cloudflare_deployment_build_output_status", "cloudflare_deployment_command_status", "cloudflare_deployment_verification_status", "cloudflare_deployment_env_reference_status", "cloudflare_deployment_rollback_status", "cloudflare_deployment_failure_evidence_status", "cloudflare_deployment_error_diagnosis_status", "cloudflare_deployment_simulation_honesty_status", "cloudflare_deployment_core_routing_status", "cloudflare_deployment_real_mcp_proof_status"]) console.log(`${key}: ${yes(report[key])}`);
+for (const key of ["deterministic_generation_clock_status", "deterministic_archive_status", "generated_artifact_manifest_status", "generated_artifact_drift_status", "generated_artifact_hygiene_status", "generated_artifact_ci_status", "generated_artifact_real_mcp_status", "deterministic_digest_status"]) console.log(`${key}: ${yes(report[key])}`);
 console.log(`project_task_status: ${yes(report.project_task_status)}`);
 console.log(`dev_server_status: ${yes(report.dev_server_status)}`);
 console.log(`session_evidence_status: ${yes(report.session_evidence_status)}`);

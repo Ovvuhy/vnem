@@ -40,8 +40,8 @@ jobs:
       - run: npm ci
       - run: npm run validate
       - run: npm run generate
+      - run: npm run generate:check
       - run: npm run dashboard:build
-      - run: cp public/install.tgz landing/install.tgz
       - run: npm run test:install-pack
       - run: npm run test:dashboard
 

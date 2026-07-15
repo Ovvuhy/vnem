@@ -23,6 +23,7 @@ jobs:
       - run: npm run generate
       - run: npm run discover
       - run: npm run generate
+      - run: npm run generate:check
       - run: npm run digest
       - uses: peter-evans/create-pull-request@v6
         with:

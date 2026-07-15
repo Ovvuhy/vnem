@@ -4,7 +4,9 @@ export const VNEM_FULL_SUITE = Object.freeze([
   "validate",
   "test:super-library",
   "test:super-library-importer",
+  "generate:check",
   "generate",
+  "test:giga-deterministic-generation",
   "dashboard:build",
   "test:install-pack",
   "test:orchestration",
@@ -209,7 +211,7 @@ export function scriptsForTier(tier, affected = []) {
 
 export function stageForScript(script, tier) {
   if (!['full', 'ci'].includes(tier)) return 0;
-  if (["test:agents-rules", "test:vnem-mission-language", "validate", "test:super-library", "test:super-library-importer"].includes(script)) return 0;
+  if (["test:agents-rules", "test:vnem-mission-language", "validate", "test:super-library", "test:super-library-importer", "generate:check"].includes(script)) return 0;
   if (["generate", "dashboard:build"].includes(script)) return 1;
   if (script === "discover:dry-run") return 3;
   if (script === "digest") return 4;
@@ -219,7 +221,7 @@ export function stageForScript(script, tier) {
 
 export function manifestResourceHints(script) {
   const resources = [];
-  if (["generate", "dashboard:build", "test:install-pack", "discover:dry-run", "digest", "test:giga-baseline"].includes(script)) resources.push("repo-generated-state");
+  if (["generate", "generate:check", "test:giga-deterministic-generation", "dashboard:build", "test:install-pack", "discover:dry-run", "digest", "test:giga-baseline"].includes(script)) resources.push("repo-generated-state");
   if (/browser|giga-app-engineering/.test(script)) resources.push("browser-runtime");
   if (/project-actions|giga-project-automation|app-server|dashboard-api-local|launch-dev/.test(script)) resources.push("dev-server-runtime");
   if (/github|git-session|autonomy|power-session|orchestrator/.test(script)) resources.push("git-fixture-runtime");
