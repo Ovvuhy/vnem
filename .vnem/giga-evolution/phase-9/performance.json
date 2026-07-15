@@ -1,0 +1,59 @@
+{
+  "schema_version": "1.0.0",
+  "label": "phase-9",
+  "phase": 9,
+  "captured_at": "2026-07-13T16:30:53.588Z",
+  "benchmark_type": "tiered_test_runner_real_execution",
+  "methodology": {
+    "baseline_source": ".vnem/giga-evolution/baseline/performance.json",
+    "full_source": ".vnem/giga-evolution/phase-9/full-suite-report.json",
+    "affected_source": ".vnem/giga-evolution/phase-9/affected-suite-report.json",
+    "same_machine_and_checkout_family": true,
+    "fixed_generation_epoch": "2026-07-08T21:12:40.970Z",
+    "retries_used": 0
+  },
+  "suites": {
+    "full_test": {
+      "duration_ms": 153049,
+      "status": "passed",
+      "planned": 151,
+      "passed": 151,
+      "failed": 0,
+      "skipped": 0,
+      "retries": 0,
+      "flaky_indicators": 0
+    },
+    "affected_test": {
+      "duration_ms": 6594,
+      "status": "passed",
+      "planned": 5,
+      "passed": 5,
+      "failed": 0,
+      "skipped": 0,
+      "retries": 0,
+      "flaky_indicators": 0
+    }
+  },
+  "baseline_comparison": {
+    "baseline_full_duration_ms": 690080,
+    "phase_9_full_duration_ms": 153049,
+    "full_duration_reduction_percent": 77.82,
+    "full_speedup_factor": 4.51,
+    "affected_duration_ms": 6594,
+    "affected_as_percent_of_phase_9_full": 4.31,
+    "full_at_least_30_percent_faster": true,
+    "affected_below_25_percent_of_full": true
+  },
+  "reliability": {
+    "full_failure_groups": [],
+    "full_flaky_indicators": [],
+    "affected_flaky_indicators": [],
+    "full_cleanup_warnings": [],
+    "shared_resource_conflicts_prevented": true
+  },
+  "limitations": [
+    "The baseline and Phase 9 runs are from the same machine and checkout family but not the same commit or day.",
+    "VNEM repository line coverage is not claimed because no top-level coverage report exists.",
+    "Static affected selection cannot prove runtime-only framework resolution without an integration boundary."
+  ]
+}

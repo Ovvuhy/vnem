@@ -11,6 +11,7 @@ const selectedCase = (process.argv.find((arg) => arg.startsWith("--case=")) || "
 const allCases = [
   "core-visibility-doctor",
   "core-underuse-detector",
+  "core-usage-self-check",
   "core-description-discovery",
   "tools-visibility-doctor",
   "tools-underuse-detector",
@@ -88,11 +89,71 @@ try {
     assert.equal(recovered.should_have_used_vnem, false);
   }
 
+  if (casesToRun.includes("core-usage-self-check")) {
+    assert.equal(coreToolNames.has("vnem_usage_self_check"), true, "Core usage self-check must be registered");
+    const shared = {
+      client_name: "regression-client",
+      configured_mcp_names: ["vnem", "vnem-tools"],
+      visible_tool_names: allVisibleToolNames,
+      client_instructions: "VNEM is available. Call Core first and use Tools for real inspection and execution.",
+      user_goal: "Inspect this repository, choose a safe implementation path, and prove the result.",
+      configuration_observed: true,
+      tool_list_observed: true,
+      instructions_observed: true,
+      session_evidence_observed: true
+    };
+    const used = await call(core.client, "vnem_usage_self_check", {
+      ...shared,
+      recent_session_actions: ["called vnem_entrypoint", "called vnem_tools_entrypoint"],
+      recent_session_evidence: ["vnem_tools_workspace_map returned structured evidence"]
+    }, "usage_self_check");
+    assert.equal(used.core_configured, true);
+    assert.equal(used.tools_configured, true);
+    assert.equal(used.entrypoints_visible.core, true);
+    assert.equal(used.entrypoints_visible.tools, true);
+    assert.equal(used.instructions_mention_vnem, true);
+    assert.equal(used.skipped_materially_useful_vnem, false);
+    assert.equal(used.exact_corrective_action.action, "none");
+    assert.equal(used.hidden_telemetry_used, false);
+
+    const skipped = await call(core.client, "vnem_usage_self_check", {
+      ...shared,
+      recent_session_actions: [],
+      recent_session_evidence: []
+    }, "usage_self_check");
+    assert.equal(skipped.skipped_materially_useful_vnem, true);
+    assert.deepEqual(skipped.skipped_surfaces, ["core", "tools"]);
+    assert.equal(skipped.exact_corrective_action.tool, "vnem_entrypoint");
+
+    const hiddenByClient = await call(core.client, "vnem_usage_self_check", {
+      ...shared,
+      visible_tool_names: [],
+      recent_session_actions: [],
+      recent_session_evidence: []
+    }, "usage_self_check");
+    assert.equal(hiddenByClient.entrypoints_visible.core, false);
+    assert.equal(hiddenByClient.exact_corrective_action.action, "reload_core");
+
+    const trivial = await call(core.client, "vnem_usage_self_check", {
+      ...shared,
+      configured_mcp_names: [],
+      visible_tool_names: [],
+      client_instructions: "",
+      user_goal: "Rewrite this greeting to sound friendlier.",
+      recent_session_actions: [],
+      recent_session_evidence: []
+    }, "usage_self_check");
+    assert.equal(trivial.vnem_materially_useful, false);
+    assert.equal(trivial.skipped_materially_useful_vnem, false);
+    assert.equal(trivial.exact_corrective_action.action, "none");
+  }
+
   if (casesToRun.includes("core-description-discovery")) {
     assertDescription(coreTools, "vnem_entrypoint", [/first-call/i, /recommend/i, /route/i, /next action/i, /Core MCP|Core/i, /Tools/i, /repo/i, /code/i, /proof/i]);
     assertDescription(coreTools, "vnem_usage_contract", [/first-call/i, /Core MCP|Core/i, /Tools/i, /exact next tool calls|exact next/i]);
     assertDescription(coreTools, "vnem_mcp_visibility_doctor", [/visibility doctor/i, /Core MCP/i, /Tools MCP/i, /repo\/code\/proof|repo.*code.*proof/i, /next action/i]);
     assertDescription(coreTools, "vnem_underuse_detector", [/underuse/i, /repo/i, /code/i, /GitHub/i, /proof/i, /exact next/i]);
+    assertDescription(coreTools, "vnem_usage_self_check", [/explicit client configuration/i, /current-session evidence/i, /hidden telemetry/i]);
   }
 
   if (casesToRun.includes("tools-visibility-doctor")) {
@@ -233,6 +294,7 @@ try {
   if (casesToRun.includes("regression")) {
     assert.equal(coreToolNames.has("vnem_mcp_visibility_doctor"), true);
     assert.equal(coreToolNames.has("vnem_underuse_detector"), true);
+    assert.equal(coreToolNames.has("vnem_usage_self_check"), true);
     assert.equal(toolsToolNames.has("vnem_tools_visibility_doctor"), true);
     assert.equal(toolsToolNames.has("vnem_tools_underuse_detector"), true);
 

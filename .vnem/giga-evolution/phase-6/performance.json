@@ -1,0 +1,396 @@
+{
+  "schema_version": "1.0.0",
+  "label": "phase-6",
+  "captured_at": "2026-07-12T17:40:11.657Z",
+  "branch": "feat/vnem-giga-evolution-1",
+  "head_sha": "3fe29bffb7619ef2e44656929a469aeab702c81c",
+  "methodology": {
+    "runs": 5,
+    "cold_process_per_startup_sample": true,
+    "same_machine_and_checkout": true,
+    "generation_clock": "2026-07-08T21:12:40.970Z",
+    "full_test_measurement_source": "not run by this sampler"
+  },
+  "servers": {
+    "core": {
+      "file": "scripts/vnem-mcp-server.mjs",
+      "samples": [
+        {
+          "startup_ms": 940.44,
+          "manifest_ms": 52.27,
+          "entrypoint_ms": 24.15,
+          "entrypoint_output_bytes": 350,
+          "idle_working_set_bytes": 110759936,
+          "tool_count": 68,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 956.07,
+          "manifest_ms": 35,
+          "entrypoint_ms": 21.79,
+          "entrypoint_output_bytes": 350,
+          "idle_working_set_bytes": 113082368,
+          "tool_count": 68,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 680.26,
+          "manifest_ms": 38.58,
+          "entrypoint_ms": 16.43,
+          "entrypoint_output_bytes": 350,
+          "idle_working_set_bytes": 113078272,
+          "tool_count": 68,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 947.06,
+          "manifest_ms": 35.67,
+          "entrypoint_ms": 20.94,
+          "entrypoint_output_bytes": 350,
+          "idle_working_set_bytes": 109953024,
+          "tool_count": 68,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 742.03,
+          "manifest_ms": 33.47,
+          "entrypoint_ms": 19.35,
+          "entrypoint_output_bytes": 350,
+          "idle_working_set_bytes": 113127424,
+          "tool_count": 68,
+          "stderr": ""
+        }
+      ],
+      "startup": {
+        "runs": 5,
+        "median_ms": 940.44,
+        "worst_ms": 956.07,
+        "min_ms": 680.26
+      },
+      "manifest": {
+        "runs": 5,
+        "median_ms": 35.67,
+        "worst_ms": 52.27,
+        "min_ms": 33.47
+      },
+      "entrypoint": {
+        "runs": 5,
+        "median_ms": 20.94,
+        "worst_ms": 24.15,
+        "min_ms": 16.43
+      },
+      "entrypoint_output_bytes": {
+        "runs": 5,
+        "median": 350,
+        "worst": 350,
+        "min": 350
+      },
+      "idle_working_set_bytes": {
+        "runs": 5,
+        "median": 113078272,
+        "worst": 113127424,
+        "min": 109953024
+      },
+      "tool_count": 68
+    },
+    "tools": {
+      "file": "scripts/vnem-tools-mcp-server.mjs",
+      "samples": [
+        {
+          "startup_ms": 763.63,
+          "manifest_ms": 51.01,
+          "entrypoint_ms": 20.82,
+          "entrypoint_output_bytes": 257,
+          "idle_working_set_bytes": 100249600,
+          "tool_count": 148,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 847.12,
+          "manifest_ms": 57.62,
+          "entrypoint_ms": 22.63,
+          "entrypoint_output_bytes": 257,
+          "idle_working_set_bytes": 100495360,
+          "tool_count": 148,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 728.02,
+          "manifest_ms": 75.48,
+          "entrypoint_ms": 21.5,
+          "entrypoint_output_bytes": 257,
+          "idle_working_set_bytes": 100421632,
+          "tool_count": 148,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 822.95,
+          "manifest_ms": 41.5,
+          "entrypoint_ms": 19.68,
+          "entrypoint_output_bytes": 257,
+          "idle_working_set_bytes": 100610048,
+          "tool_count": 148,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 771.96,
+          "manifest_ms": 45.49,
+          "entrypoint_ms": 18.02,
+          "entrypoint_output_bytes": 257,
+          "idle_working_set_bytes": 100679680,
+          "tool_count": 148,
+          "stderr": ""
+        }
+      ],
+      "startup": {
+        "runs": 5,
+        "median_ms": 771.96,
+        "worst_ms": 847.12,
+        "min_ms": 728.02
+      },
+      "manifest": {
+        "runs": 5,
+        "median_ms": 51.01,
+        "worst_ms": 75.48,
+        "min_ms": 41.5
+      },
+      "entrypoint": {
+        "runs": 5,
+        "median_ms": 20.82,
+        "worst_ms": 22.63,
+        "min_ms": 18.02
+      },
+      "entrypoint_output_bytes": {
+        "runs": 5,
+        "median": 257,
+        "worst": 257,
+        "min": 257
+      },
+      "idle_working_set_bytes": {
+        "runs": 5,
+        "median": 100495360,
+        "worst": 100679680,
+        "min": 100249600
+      },
+      "tool_count": 148
+    },
+    "precision": {
+      "file": "scripts/vnem-precision-mcp-server.mjs",
+      "samples": [
+        {
+          "startup_ms": 682.31,
+          "manifest_ms": 15.64,
+          "entrypoint_ms": null,
+          "entrypoint_output_bytes": null,
+          "idle_working_set_bytes": 75079680,
+          "tool_count": 7,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 974.2,
+          "manifest_ms": 11.81,
+          "entrypoint_ms": null,
+          "entrypoint_output_bytes": null,
+          "idle_working_set_bytes": 73592832,
+          "tool_count": 7,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 795.63,
+          "manifest_ms": 18.17,
+          "entrypoint_ms": null,
+          "entrypoint_output_bytes": null,
+          "idle_working_set_bytes": 73465856,
+          "tool_count": 7,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 648.57,
+          "manifest_ms": 11.86,
+          "entrypoint_ms": null,
+          "entrypoint_output_bytes": null,
+          "idle_working_set_bytes": 74985472,
+          "tool_count": 7,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 584.15,
+          "manifest_ms": 11.77,
+          "entrypoint_ms": null,
+          "entrypoint_output_bytes": null,
+          "idle_working_set_bytes": 75010048,
+          "tool_count": 7,
+          "stderr": ""
+        }
+      ],
+      "startup": {
+        "runs": 5,
+        "median_ms": 682.31,
+        "worst_ms": 974.2,
+        "min_ms": 584.15
+      },
+      "manifest": {
+        "runs": 5,
+        "median_ms": 11.86,
+        "worst_ms": 18.17,
+        "min_ms": 11.77
+      },
+      "entrypoint": {
+        "runs": 0,
+        "median_ms": null,
+        "worst_ms": null,
+        "min_ms": null
+      },
+      "entrypoint_output_bytes": {
+        "runs": 0,
+        "median": null,
+        "worst": null,
+        "min": null
+      },
+      "idle_working_set_bytes": {
+        "runs": 5,
+        "median": 74985472,
+        "worst": 75079680,
+        "min": 73465856
+      },
+      "tool_count": 7
+    }
+  },
+  "representative_calls": {
+    "code_search": {
+      "latency": {
+        "runs": 5,
+        "median_ms": 130.21,
+        "worst_ms": 196.52,
+        "min_ms": 115.25
+      },
+      "output_bytes": {
+        "runs": 5,
+        "median": 100,
+        "worst": 100,
+        "min": 100
+      },
+      "errors": 0
+    },
+    "workspace_map": {
+      "latency": {
+        "runs": 5,
+        "median_ms": 65.11,
+        "worst_ms": 92.69,
+        "min_ms": 56.64
+      },
+      "output_bytes": {
+        "runs": 5,
+        "median": 249,
+        "worst": 249,
+        "min": 249
+      },
+      "errors": 0
+    },
+    "install_doctor": {
+      "latency": {
+        "runs": 5,
+        "median_ms": 273.29,
+        "worst_ms": 317.45,
+        "min_ms": 256.58
+      },
+      "output_bytes": {
+        "runs": 5,
+        "median": 565,
+        "worst": 565,
+        "min": 565
+      },
+      "errors": 0
+    }
+  },
+  "suites": {
+    "full_test": {
+      "duration_ms": null,
+      "status": "pass",
+      "warning_summary": "Vite reported the existing large-chunk warning; no assertion or test failure. Windows nested npm transition after omniscient passed.",
+      "source": "local npm test, uninterrupted recovered Windows run"
+    },
+    "focused_tools_mcp": {
+      "status": "pass",
+      "exit_code": 0,
+      "duration_ms": 2304.84,
+      "warning_lines": []
+    }
+  },
+  "generation": {
+    "first": {
+      "status": "pass",
+      "exit_code": 0,
+      "duration_ms": 1074.52,
+      "warning_lines": []
+    },
+    "second": {
+      "status": "pass",
+      "exit_code": 0,
+      "duration_ms": 1043.78,
+      "warning_lines": []
+    },
+    "deterministic": true,
+    "checksums": {
+      "public/install.tgz": "cc6632231ed26fc7380cbca4cd1fec4d398790c75715642130484175ad97db66",
+      "landing/install.tgz": "17b9d89f6838393450e48bedf165d32545f6f8043739d64617abf1254e85e1ea",
+      "public/api/index.json": "6e56aec731fcd3b9445cca6e962c75937c797a8a06534c865787b25884280606",
+      ".vnem/search-index.json": "694af4c43507a44feda50150b89404afb3c5b3f2ca4469af54f161df45c46930",
+      "llms.txt": "08666513e6463d2824593a56b4ca5a1dd2efb3b0c22cf30b435b56b3c4c36eae",
+      "llms-full.txt": "b66b778ed413edc98fc1bc5060a580de337cff4e0b4024071c0a7816d060d89c"
+    }
+  },
+  "tool_surface": {
+    "registration_count": 131,
+    "handler_count": 131,
+    "behavior_tested_count": 113,
+    "registration_only_or_weak_count": 18,
+    "count_source": "live MCP coverage map"
+  },
+  "flaky_or_cleanup_observations": {
+    "temp_entry_count": 74,
+    "temp_entries_sample": [
+      "adoption-reliability-1-sample",
+      "adoption-reliability-1-tools",
+      "adoption-reliability-2-proof",
+      "adoption-reliability-2-tools",
+      "app-server-avcw0M",
+      "app-server-aVyTzo",
+      "app-server-bbiJe3",
+      "app-server-cCvWeg",
+      "app-server-chnKW3",
+      "app-server-G5eOSK",
+      "app-server-isK1gq",
+      "app-server-l04qXe",
+      "app-server-od58DZ",
+      "app-server-puT93S",
+      "app-server-pWL9rl",
+      "app-server-rSW6C9",
+      "app-server-tTmjqk",
+      "app-server-WSsK1b",
+      "app-server-xcvoOV",
+      "code-intel-proof",
+      "connector-apply-3UZjgR",
+      "connector-apply-6OiS3p",
+      "connector-apply-EISzf6",
+      "connector-apply-ExUFPC",
+      "connector-apply-F6bjjX",
+      "connector-apply-G8Ir66",
+      "connector-apply-GWAAxp",
+      "connector-apply-jkGQnV",
+      "connector-apply-JzQbbl",
+      "connector-apply-MPgXYE",
+      "connector-apply-PIAj6j",
+      "connector-apply-TcePRt",
+      "connector-apply-vd3Mio",
+      "connector-apply-XEtNBd",
+      "connector-apply-YwLyAq",
+      "core-giga-intelligence-tools",
+      "install-adoption-sample",
+      "install-adoption-tools",
+      "local-env-58qwyf",
+      "local-env-6lcvlA"
+    ],
+    "known_warning": "Vite reported the existing large-chunk warning; no assertion or test failure. Windows nested npm transition after omniscient passed."
+  }
+}

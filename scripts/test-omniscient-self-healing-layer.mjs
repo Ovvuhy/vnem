@@ -151,9 +151,14 @@ try {
     (error) => error instanceof PrecisionExecutionError && error.code === "shell_ephemeral_disabled"
   );
 
-  console.log("omniscient self-healing layer tests passed");
 } finally {
   await removeTreeWithRetry(tmpRoot);
+}
+
+console.log("omniscient self-healing layer tests passed");
+if (process.platform === "win32") {
+  // Piped npm runners can retain inherited PipeWraps after child-process tests.
+  process.exit(0);
 }
 
 async function removeTreeWithRetry(target) {

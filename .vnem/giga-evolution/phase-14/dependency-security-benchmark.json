@@ -1,0 +1,186 @@
+{
+  "schema_version": 1,
+  "phase": 14,
+  "benchmark_type": "actual_stdio_mcp_dependency_security_execution",
+  "generated_at": "2026-07-14T11:59:47.442Z",
+  "total_duration_ms": 15663.26,
+  "mcp_transport": "stdio",
+  "tools_exercised": [
+    "vnem_tools_dependency_inventory",
+    "vnem_tools_dependency_risk_audit",
+    "vnem_tools_dependency_advisory_audit",
+    "vnem_tools_dependency_change_analyze",
+    "vnem_tools_dependency_upgrade_plan",
+    "vnem_tools_dependency_install_apply",
+    "vnem_tools_dependency_transaction_rollback"
+  ],
+  "tool_calls": [
+    {
+      "tool": "vnem_tools_dependency_inventory",
+      "duration_ms": 17.43,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_dependency_inventory",
+      "duration_ms": 6.76,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_dependency_risk_audit",
+      "duration_ms": 24.36,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_dependency_advisory_audit",
+      "duration_ms": 8.56,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_dependency_advisory_audit",
+      "duration_ms": 7.42,
+      "status": "error"
+    },
+    {
+      "tool": "vnem_tools_dependency_advisory_audit",
+      "duration_ms": 5.38,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_dependency_advisory_audit",
+      "duration_ms": 4.7,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_dependency_change_analyze",
+      "duration_ms": 13.6,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_dependency_upgrade_plan",
+      "duration_ms": 6.2,
+      "status": "error"
+    },
+    {
+      "tool": "vnem_tools_dependency_upgrade_plan",
+      "duration_ms": 6.44,
+      "status": "error"
+    },
+    {
+      "tool": "vnem_tools_dependency_upgrade_plan",
+      "duration_ms": 8.1,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_dependency_install_apply",
+      "duration_ms": 5.51,
+      "status": "error"
+    },
+    {
+      "tool": "vnem_tools_dependency_upgrade_plan",
+      "duration_ms": 6.05,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_dependency_install_apply",
+      "duration_ms": 3.35,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_dependency_install_apply",
+      "duration_ms": 1641,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_dependency_transaction_rollback",
+      "duration_ms": 4.34,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_dependency_transaction_rollback",
+      "duration_ms": 802.51,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_dependency_upgrade_plan",
+      "duration_ms": 6.09,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_dependency_install_apply",
+      "duration_ms": 2074.72,
+      "status": "error"
+    },
+    {
+      "tool": "vnem_tools_dependency_transaction_rollback",
+      "duration_ms": 3.95,
+      "status": "error"
+    },
+    {
+      "tool": "vnem_tools_dependency_upgrade_plan",
+      "duration_ms": 7.2,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_dependency_install_apply",
+      "duration_ms": 6741.58,
+      "status": "error"
+    }
+  ],
+  "results": {
+    "inventory": {
+      "packages": 3,
+      "graph_edges": 3,
+      "sbom_components": 3,
+      "package_lock_v1_graph_proven": true
+    },
+    "risk": {
+      "lifecycle_findings": 2,
+      "typosquat_indicators": 1,
+      "maintenance_findings": 3,
+      "license_review_items": 1
+    },
+    "advisory": {
+      "approved_source": true,
+      "current_within_24h": true,
+      "vulnerabilities": 1,
+      "live_network_plan_executed": false,
+      "live_network_audit_executed": false,
+      "live_vulnerabilities": null
+    },
+    "changes": {
+      "direct": 1,
+      "transitive": 2,
+      "breaking_major": 2,
+      "selected_tests": 2
+    },
+    "install": {
+      "completed": true,
+      "lifecycle_scripts_executed": false,
+      "verification_commands": 2,
+      "credentials_read": false,
+      "direct_windows_npm_discovery_without_npm_execpath": true
+    },
+    "rollback": {
+      "explicit_completed": true,
+      "hashes_match": true,
+      "automatic_failure_rollback": true,
+      "timeout_tree_terminated": true
+    }
+  },
+  "mutation_boundaries": {
+    "package_publish": false,
+    "global_install": false,
+    "lifecycle_hook_execution": false,
+    "nested_unsafe_script_execution": false,
+    "lockfileless_transaction": false,
+    "allowed_root_symlink_escape": false,
+    "unreviewed_downloaded_binary_execution": false,
+    "registry_credentials_read": false,
+    "non_npm_mutation": false
+  },
+  "limitations": [
+    "Fixture install uses an allowed local package and does not prove public-registry install availability.",
+    "Current live advisory execution is separately approval-gated; deterministic CI proof parses an approved report and dry-runs the live npm path.",
+    "Automatic dependency mutation is npm-only."
+  ]
+}

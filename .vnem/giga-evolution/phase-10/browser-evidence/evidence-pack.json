@@ -1,0 +1,4037 @@
+{
+  "schema_version": 1,
+  "operation_result": "completed",
+  "status": "passed",
+  "run_id": "browser-interaction-1783966079980-913bc9e0",
+  "root": "fixtures/browser-interaction",
+  "executed": true,
+  "browser_was_run": true,
+  "started_at": "2026-07-13T18:07:59.982Z",
+  "finished_at": "2026-07-13T18:08:06.643Z",
+  "duration_ms": 6661,
+  "browser_runtime": {
+    "available": true,
+    "executable": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+    "pid": 153064,
+    "headless": true,
+    "dedicated_temporary_profile": true,
+    "automation_disclosed": true,
+    "stealth_mode": false,
+    "devtools_protocol": true,
+    "browser_sandbox_disabled": true,
+    "shared_memory_disabled": true,
+    "limitation": "The browser sandbox and shared-memory path are disabled for isolated automation compatibility; this is not a production-browser security claim."
+  },
+  "policy": {
+    "localhost_enabled": true,
+    "external_enabled": false,
+    "approved_origins": [],
+    "same_origin_external_read_only": true,
+    "request_interception": true,
+    "dedicated_profile": true,
+    "headless": true,
+    "automation_disclosed": true,
+    "stealth_mode": false,
+    "cookie_access": false,
+    "login_automation": false,
+    "captcha_bypass": false,
+    "broad_search_scraping": false,
+    "declared_origins": [
+      "http://127.0.0.1:65377"
+    ]
+  },
+  "scenarios": [
+    {
+      "name": "loading-mobile",
+      "url": "http://127.0.0.1:65377/?state=loading",
+      "viewport": {
+        "label": "mobile",
+        "width": 390,
+        "height": 844,
+        "mobile": true,
+        "device_scale_factor": 2
+      },
+      "state": "loading",
+      "status": "passed",
+      "action_results": [
+        {
+          "index": 0,
+          "type": "assert",
+          "selector": "#state",
+          "passed": true,
+          "duration_ms": 111,
+          "evidence": {
+            "passed": true,
+            "visible": true,
+            "text_present": true,
+            "url_present": true,
+            "text_excerpt": "Loading data",
+            "url": "http://127.0.0.1:65377/?state=loading"
+          }
+        }
+      ],
+      "before": {
+        "dom": {
+          "title": "VNEM Browser Interaction Fixture",
+          "url": "http://127.0.0.1:65377/?state=loading",
+          "ready_state": "complete",
+          "text": "Browser interaction lab\nApplication state\n\nLoading data\n\nSafe test editor\nTask title\nPriority\nNormal\nHigh\nSave task\n\nNothing saved yet\n\nAccount details",
+          "html_language": "en",
+          "headings": [
+            {
+              "level": 1,
+              "text": "Browser interaction lab"
+            },
+            {
+              "level": 2,
+              "text": "Application state"
+            },
+            {
+              "level": 2,
+              "text": "Safe test editor"
+            }
+          ],
+          "interactive": [
+            {
+              "tag": "p",
+              "id": "state",
+              "role": "status",
+              "type": null,
+              "name": null,
+              "text": "Loading data",
+              "disabled": false
+            },
+            {
+              "tag": "input",
+              "id": "task-title",
+              "role": null,
+              "type": "text",
+              "name": null,
+              "text": "",
+              "disabled": false
+            },
+            {
+              "tag": "select",
+              "id": "priority",
+              "role": null,
+              "type": null,
+              "name": null,
+              "text": "Normal\nHigh",
+              "disabled": false
+            },
+            {
+              "tag": "button",
+              "id": "save",
+              "role": null,
+              "type": "button",
+              "name": null,
+              "text": "Save task",
+              "disabled": false
+            },
+            {
+              "tag": "a",
+              "id": "restricted-link",
+              "role": null,
+              "type": null,
+              "name": null,
+              "text": "Account details",
+              "disabled": false
+            }
+          ],
+          "active_element": {
+            "tag": "body",
+            "id": null
+          },
+          "viewport_width": 390,
+          "document_width": 390,
+          "horizontal_overflow": false,
+          "snapshot_hash": "7d9cde1e6be732b1e5a6f454d36bb86998f9ed52713aba4fd36ecd9ed0ffeebe"
+        },
+        "accessibility": {
+          "node_count": 38,
+          "interactive_count": 4,
+          "unnamed_interactive_count": 0,
+          "issues": [],
+          "roles": [
+            {
+              "role": "RootWebArea",
+              "name": "VNEM Browser Interaction Fixture",
+              "disabled": false
+            },
+            {
+              "role": "main",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "heading",
+              "name": "Browser interaction lab",
+              "disabled": false
+            },
+            {
+              "role": "region",
+              "name": "Application state",
+              "disabled": false
+            },
+            {
+              "role": "region",
+              "name": "Safe test editor",
+              "disabled": false
+            },
+            {
+              "role": "paragraph",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Browser interaction lab",
+              "disabled": false
+            },
+            {
+              "role": "heading",
+              "name": "Application state",
+              "disabled": false
+            },
+            {
+              "role": "status",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "heading",
+              "name": "Safe test editor",
+              "disabled": false
+            },
+            {
+              "role": "LabelText",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "LabelText",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "button",
+              "name": "Save task",
+              "disabled": false
+            },
+            {
+              "role": "paragraph",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "link",
+              "name": "Account details",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Browser interaction lab",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Application state",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Loading data",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Safe test editor",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Task title",
+              "disabled": false
+            },
+            {
+              "role": "textbox",
+              "name": "Task title",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Priority",
+              "disabled": false
+            },
+            {
+              "role": "combobox",
+              "name": "Priority",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Save task",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Nothing saved yet",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Account details",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Application state",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Loading data",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Safe test editor",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Task title",
+              "disabled": false
+            },
+            {
+              "role": "generic",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Priority",
+              "disabled": false
+            },
+            {
+              "role": "MenuListPopup",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Save task",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Nothing saved yet",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Account details",
+              "disabled": false
+            },
+            {
+              "role": "option",
+              "name": "Normal",
+              "disabled": false
+            },
+            {
+              "role": "option",
+              "name": "High",
+              "disabled": false
+            }
+          ],
+          "snapshot_hash": "ed58bdbeae42400b28c6669597c724d950c8474b76d53004a8f174ce9a559ed4"
+        },
+        "screenshot": {
+          "path": ".vnem/giga-evolution/phase-10/browser-evidence/loading-mobile-mobile-before.png",
+          "sha256": "ba8e6c109ba1def3688d22369d8bf39b4b6ed1bfbedf28479738e1fcb3691110",
+          "bytes": 20322,
+          "width": 780,
+          "height": 1688,
+          "stage": "before",
+          "render_integrity": {
+            "status": "nonblank",
+            "channel_min": 0,
+            "channel_max": 255,
+            "channel_range": 255,
+            "non_background_pixels": 768371,
+            "non_background_percent": 58.3585,
+            "background_reference_rgb": [
+              244,
+              247,
+              251
+            ]
+          }
+        }
+      },
+      "after": {
+        "dom": {
+          "title": "VNEM Browser Interaction Fixture",
+          "url": "http://127.0.0.1:65377/?state=loading",
+          "ready_state": "complete",
+          "text": "Browser interaction lab\nApplication state\n\nLoading data\n\nSafe test editor\nTask title\nPriority\nNormal\nHigh\nSave task\n\nNothing saved yet\n\nAccount details",
+          "html_language": "en",
+          "headings": [
+            {
+              "level": 1,
+              "text": "Browser interaction lab"
+            },
+            {
+              "level": 2,
+              "text": "Application state"
+            },
+            {
+              "level": 2,
+              "text": "Safe test editor"
+            }
+          ],
+          "interactive": [
+            {
+              "tag": "p",
+              "id": "state",
+              "role": "status",
+              "type": null,
+              "name": null,
+              "text": "Loading data",
+              "disabled": false
+            },
+            {
+              "tag": "input",
+              "id": "task-title",
+              "role": null,
+              "type": "text",
+              "name": null,
+              "text": "",
+              "disabled": false
+            },
+            {
+              "tag": "select",
+              "id": "priority",
+              "role": null,
+              "type": null,
+              "name": null,
+              "text": "Normal\nHigh",
+              "disabled": false
+            },
+            {
+              "tag": "button",
+              "id": "save",
+              "role": null,
+              "type": "button",
+              "name": null,
+              "text": "Save task",
+              "disabled": false
+            },
+            {
+              "tag": "a",
+              "id": "restricted-link",
+              "role": null,
+              "type": null,
+              "name": null,
+              "text": "Account details",
+              "disabled": false
+            }
+          ],
+          "active_element": {
+            "tag": "body",
+            "id": null
+          },
+          "viewport_width": 390,
+          "document_width": 390,
+          "horizontal_overflow": false,
+          "snapshot_hash": "7d9cde1e6be732b1e5a6f454d36bb86998f9ed52713aba4fd36ecd9ed0ffeebe"
+        },
+        "accessibility": {
+          "node_count": 38,
+          "interactive_count": 4,
+          "unnamed_interactive_count": 0,
+          "issues": [],
+          "roles": [
+            {
+              "role": "RootWebArea",
+              "name": "VNEM Browser Interaction Fixture",
+              "disabled": false
+            },
+            {
+              "role": "main",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "heading",
+              "name": "Browser interaction lab",
+              "disabled": false
+            },
+            {
+              "role": "region",
+              "name": "Application state",
+              "disabled": false
+            },
+            {
+              "role": "region",
+              "name": "Safe test editor",
+              "disabled": false
+            },
+            {
+              "role": "paragraph",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Browser interaction lab",
+              "disabled": false
+            },
+            {
+              "role": "heading",
+              "name": "Application state",
+              "disabled": false
+            },
+            {
+              "role": "status",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "heading",
+              "name": "Safe test editor",
+              "disabled": false
+            },
+            {
+              "role": "LabelText",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "LabelText",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "button",
+              "name": "Save task",
+              "disabled": false
+            },
+            {
+              "role": "paragraph",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "link",
+              "name": "Account details",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Browser interaction lab",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Application state",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Loading data",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Safe test editor",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Task title",
+              "disabled": false
+            },
+            {
+              "role": "textbox",
+              "name": "Task title",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Priority",
+              "disabled": false
+            },
+            {
+              "role": "combobox",
+              "name": "Priority",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Save task",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Nothing saved yet",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Account details",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Application state",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Loading data",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Safe test editor",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Task title",
+              "disabled": false
+            },
+            {
+              "role": "generic",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Priority",
+              "disabled": false
+            },
+            {
+              "role": "MenuListPopup",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Save task",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Nothing saved yet",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Account details",
+              "disabled": false
+            },
+            {
+              "role": "option",
+              "name": "Normal",
+              "disabled": false
+            },
+            {
+              "role": "option",
+              "name": "High",
+              "disabled": false
+            }
+          ],
+          "snapshot_hash": "ed58bdbeae42400b28c6669597c724d950c8474b76d53004a8f174ce9a559ed4"
+        },
+        "screenshot": {
+          "path": ".vnem/giga-evolution/phase-10/browser-evidence/loading-mobile-mobile-after.png",
+          "sha256": "ba8e6c109ba1def3688d22369d8bf39b4b6ed1bfbedf28479738e1fcb3691110",
+          "bytes": 20322,
+          "width": 780,
+          "height": 1688,
+          "stage": "after",
+          "render_integrity": {
+            "status": "nonblank",
+            "channel_min": 0,
+            "channel_max": 255,
+            "channel_range": 255,
+            "non_background_pixels": 768371,
+            "non_background_percent": 58.3585,
+            "background_reference_rgb": [
+              244,
+              247,
+              251
+            ]
+          }
+        }
+      },
+      "before_after": {
+        "status": "compared",
+        "visual": {
+          "status": "compared",
+          "width": 780,
+          "height": 1688,
+          "pixels": 1316640,
+          "changed_pixels": 0,
+          "changed_percent": 0,
+          "mean_channel_difference": 0,
+          "before_sha256": "ba8e6c109ba1def3688d22369d8bf39b4b6ed1bfbedf28479738e1fcb3691110",
+          "after_sha256": "ba8e6c109ba1def3688d22369d8bf39b4b6ed1bfbedf28479738e1fcb3691110"
+        },
+        "dom": {
+          "status": "compared",
+          "changed": false,
+          "before_hash": "7d9cde1e6be732b1e5a6f454d36bb86998f9ed52713aba4fd36ecd9ed0ffeebe",
+          "after_hash": "7d9cde1e6be732b1e5a6f454d36bb86998f9ed52713aba4fd36ecd9ed0ffeebe"
+        },
+        "accessibility": {
+          "status": "compared",
+          "changed": false,
+          "before_hash": "ed58bdbeae42400b28c6669597c724d950c8474b76d53004a8f174ce9a559ed4",
+          "after_hash": "ed58bdbeae42400b28c6669597c724d950c8474b76d53004a8f174ce9a559ed4"
+        }
+      },
+      "state_result": {
+        "state": "loading",
+        "status": "passed",
+        "proof": "structured assert action passed"
+      },
+      "validation_failures": [],
+      "console": [],
+      "network": [
+        {
+          "scenario": "loading-mobile",
+          "url": "http://127.0.0.1:65377/?state=loading",
+          "status": 200,
+          "type": "Document",
+          "mime_type": "text/html"
+        },
+        {
+          "scenario": "loading-mobile",
+          "url": "http://127.0.0.1:65377/favicon.ico",
+          "status": 204,
+          "type": "Other",
+          "mime_type": "text/plain"
+        }
+      ],
+      "network_failures": [],
+      "blocked_requests": [],
+      "console_errors": [],
+      "bad_responses": [],
+      "duration_ms": 988
+    },
+    {
+      "name": "empty-desktop",
+      "url": "http://127.0.0.1:65377/?state=empty",
+      "viewport": {
+        "label": "desktop",
+        "width": 1440,
+        "height": 900,
+        "mobile": false,
+        "device_scale_factor": 1
+      },
+      "state": "empty",
+      "status": "passed",
+      "action_results": [
+        {
+          "index": 0,
+          "type": "assert",
+          "selector": "#state",
+          "passed": true,
+          "duration_ms": 107,
+          "evidence": {
+            "passed": true,
+            "visible": true,
+            "text_present": true,
+            "url_present": true,
+            "text_excerpt": "No records",
+            "url": "http://127.0.0.1:65377/?state=empty"
+          }
+        }
+      ],
+      "before": {
+        "dom": {
+          "title": "VNEM Browser Interaction Fixture",
+          "url": "http://127.0.0.1:65377/?state=empty",
+          "ready_state": "complete",
+          "text": "Browser interaction lab\nApplication state\n\nNo records\n\nSafe test editor\nTask title\nPriority\nNormal\nHigh\nSave task\n\nNothing saved yet\n\nAccount details",
+          "html_language": "en",
+          "headings": [
+            {
+              "level": 1,
+              "text": "Browser interaction lab"
+            },
+            {
+              "level": 2,
+              "text": "Application state"
+            },
+            {
+              "level": 2,
+              "text": "Safe test editor"
+            }
+          ],
+          "interactive": [
+            {
+              "tag": "p",
+              "id": "state",
+              "role": "status",
+              "type": null,
+              "name": null,
+              "text": "No records",
+              "disabled": false
+            },
+            {
+              "tag": "input",
+              "id": "task-title",
+              "role": null,
+              "type": "text",
+              "name": null,
+              "text": "",
+              "disabled": false
+            },
+            {
+              "tag": "select",
+              "id": "priority",
+              "role": null,
+              "type": null,
+              "name": null,
+              "text": "Normal\nHigh",
+              "disabled": false
+            },
+            {
+              "tag": "button",
+              "id": "save",
+              "role": null,
+              "type": "button",
+              "name": null,
+              "text": "Save task",
+              "disabled": false
+            },
+            {
+              "tag": "a",
+              "id": "restricted-link",
+              "role": null,
+              "type": null,
+              "name": null,
+              "text": "Account details",
+              "disabled": false
+            }
+          ],
+          "active_element": {
+            "tag": "body",
+            "id": null
+          },
+          "viewport_width": 1440,
+          "document_width": 1440,
+          "horizontal_overflow": false,
+          "snapshot_hash": "9549099b32b7425f1d0a88db2db4afc8efa34d346275b650f37ede37d5681016"
+        },
+        "accessibility": {
+          "node_count": 38,
+          "interactive_count": 4,
+          "unnamed_interactive_count": 0,
+          "issues": [],
+          "roles": [
+            {
+              "role": "RootWebArea",
+              "name": "VNEM Browser Interaction Fixture",
+              "disabled": false
+            },
+            {
+              "role": "main",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "heading",
+              "name": "Browser interaction lab",
+              "disabled": false
+            },
+            {
+              "role": "region",
+              "name": "Application state",
+              "disabled": false
+            },
+            {
+              "role": "region",
+              "name": "Safe test editor",
+              "disabled": false
+            },
+            {
+              "role": "paragraph",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Browser interaction lab",
+              "disabled": false
+            },
+            {
+              "role": "heading",
+              "name": "Application state",
+              "disabled": false
+            },
+            {
+              "role": "status",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "heading",
+              "name": "Safe test editor",
+              "disabled": false
+            },
+            {
+              "role": "LabelText",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "LabelText",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "button",
+              "name": "Save task",
+              "disabled": false
+            },
+            {
+              "role": "paragraph",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "link",
+              "name": "Account details",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Browser interaction lab",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Application state",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "No records",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Safe test editor",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Task title",
+              "disabled": false
+            },
+            {
+              "role": "textbox",
+              "name": "Task title",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Priority",
+              "disabled": false
+            },
+            {
+              "role": "combobox",
+              "name": "Priority",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Save task",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Nothing saved yet",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Account details",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Application state",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "No records",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Safe test editor",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Task title",
+              "disabled": false
+            },
+            {
+              "role": "generic",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Priority",
+              "disabled": false
+            },
+            {
+              "role": "MenuListPopup",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Save task",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Nothing saved yet",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Account details",
+              "disabled": false
+            },
+            {
+              "role": "option",
+              "name": "Normal",
+              "disabled": false
+            },
+            {
+              "role": "option",
+              "name": "High",
+              "disabled": false
+            }
+          ],
+          "snapshot_hash": "f081562d0512e8e884a801a2842868ff92d39897271a4d452a981ddbb5979227"
+        },
+        "screenshot": {
+          "path": ".vnem/giga-evolution/phase-10/browser-evidence/empty-desktop-desktop-before.png",
+          "sha256": "7d6ef7548afa1cf57733672f669ffa16e51f761a3c2914b7cd78e750c7cb3a35",
+          "bytes": 11784,
+          "width": 1440,
+          "height": 900,
+          "stage": "before",
+          "render_integrity": {
+            "status": "nonblank",
+            "channel_min": 0,
+            "channel_max": 255,
+            "channel_range": 255,
+            "non_background_pixels": 288132,
+            "non_background_percent": 22.2324,
+            "background_reference_rgb": [
+              244,
+              247,
+              251
+            ]
+          }
+        }
+      },
+      "after": {
+        "dom": {
+          "title": "VNEM Browser Interaction Fixture",
+          "url": "http://127.0.0.1:65377/?state=empty",
+          "ready_state": "complete",
+          "text": "Browser interaction lab\nApplication state\n\nNo records\n\nSafe test editor\nTask title\nPriority\nNormal\nHigh\nSave task\n\nNothing saved yet\n\nAccount details",
+          "html_language": "en",
+          "headings": [
+            {
+              "level": 1,
+              "text": "Browser interaction lab"
+            },
+            {
+              "level": 2,
+              "text": "Application state"
+            },
+            {
+              "level": 2,
+              "text": "Safe test editor"
+            }
+          ],
+          "interactive": [
+            {
+              "tag": "p",
+              "id": "state",
+              "role": "status",
+              "type": null,
+              "name": null,
+              "text": "No records",
+              "disabled": false
+            },
+            {
+              "tag": "input",
+              "id": "task-title",
+              "role": null,
+              "type": "text",
+              "name": null,
+              "text": "",
+              "disabled": false
+            },
+            {
+              "tag": "select",
+              "id": "priority",
+              "role": null,
+              "type": null,
+              "name": null,
+              "text": "Normal\nHigh",
+              "disabled": false
+            },
+            {
+              "tag": "button",
+              "id": "save",
+              "role": null,
+              "type": "button",
+              "name": null,
+              "text": "Save task",
+              "disabled": false
+            },
+            {
+              "tag": "a",
+              "id": "restricted-link",
+              "role": null,
+              "type": null,
+              "name": null,
+              "text": "Account details",
+              "disabled": false
+            }
+          ],
+          "active_element": {
+            "tag": "body",
+            "id": null
+          },
+          "viewport_width": 1440,
+          "document_width": 1440,
+          "horizontal_overflow": false,
+          "snapshot_hash": "9549099b32b7425f1d0a88db2db4afc8efa34d346275b650f37ede37d5681016"
+        },
+        "accessibility": {
+          "node_count": 38,
+          "interactive_count": 4,
+          "unnamed_interactive_count": 0,
+          "issues": [],
+          "roles": [
+            {
+              "role": "RootWebArea",
+              "name": "VNEM Browser Interaction Fixture",
+              "disabled": false
+            },
+            {
+              "role": "main",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "heading",
+              "name": "Browser interaction lab",
+              "disabled": false
+            },
+            {
+              "role": "region",
+              "name": "Application state",
+              "disabled": false
+            },
+            {
+              "role": "region",
+              "name": "Safe test editor",
+              "disabled": false
+            },
+            {
+              "role": "paragraph",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Browser interaction lab",
+              "disabled": false
+            },
+            {
+              "role": "heading",
+              "name": "Application state",
+              "disabled": false
+            },
+            {
+              "role": "status",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "heading",
+              "name": "Safe test editor",
+              "disabled": false
+            },
+            {
+              "role": "LabelText",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "LabelText",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "button",
+              "name": "Save task",
+              "disabled": false
+            },
+            {
+              "role": "paragraph",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "link",
+              "name": "Account details",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Browser interaction lab",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Application state",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "No records",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Safe test editor",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Task title",
+              "disabled": false
+            },
+            {
+              "role": "textbox",
+              "name": "Task title",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Priority",
+              "disabled": false
+            },
+            {
+              "role": "combobox",
+              "name": "Priority",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Save task",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Nothing saved yet",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Account details",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Application state",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "No records",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Safe test editor",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Task title",
+              "disabled": false
+            },
+            {
+              "role": "generic",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Priority",
+              "disabled": false
+            },
+            {
+              "role": "MenuListPopup",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Save task",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Nothing saved yet",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Account details",
+              "disabled": false
+            },
+            {
+              "role": "option",
+              "name": "Normal",
+              "disabled": false
+            },
+            {
+              "role": "option",
+              "name": "High",
+              "disabled": false
+            }
+          ],
+          "snapshot_hash": "f081562d0512e8e884a801a2842868ff92d39897271a4d452a981ddbb5979227"
+        },
+        "screenshot": {
+          "path": ".vnem/giga-evolution/phase-10/browser-evidence/empty-desktop-desktop-after.png",
+          "sha256": "7d6ef7548afa1cf57733672f669ffa16e51f761a3c2914b7cd78e750c7cb3a35",
+          "bytes": 11784,
+          "width": 1440,
+          "height": 900,
+          "stage": "after",
+          "render_integrity": {
+            "status": "nonblank",
+            "channel_min": 0,
+            "channel_max": 255,
+            "channel_range": 255,
+            "non_background_pixels": 288132,
+            "non_background_percent": 22.2324,
+            "background_reference_rgb": [
+              244,
+              247,
+              251
+            ]
+          }
+        }
+      },
+      "before_after": {
+        "status": "compared",
+        "visual": {
+          "status": "compared",
+          "width": 1440,
+          "height": 900,
+          "pixels": 1296000,
+          "changed_pixels": 0,
+          "changed_percent": 0,
+          "mean_channel_difference": 0,
+          "before_sha256": "7d6ef7548afa1cf57733672f669ffa16e51f761a3c2914b7cd78e750c7cb3a35",
+          "after_sha256": "7d6ef7548afa1cf57733672f669ffa16e51f761a3c2914b7cd78e750c7cb3a35"
+        },
+        "dom": {
+          "status": "compared",
+          "changed": false,
+          "before_hash": "9549099b32b7425f1d0a88db2db4afc8efa34d346275b650f37ede37d5681016",
+          "after_hash": "9549099b32b7425f1d0a88db2db4afc8efa34d346275b650f37ede37d5681016"
+        },
+        "accessibility": {
+          "status": "compared",
+          "changed": false,
+          "before_hash": "f081562d0512e8e884a801a2842868ff92d39897271a4d452a981ddbb5979227",
+          "after_hash": "f081562d0512e8e884a801a2842868ff92d39897271a4d452a981ddbb5979227"
+        }
+      },
+      "state_result": {
+        "state": "empty",
+        "status": "passed",
+        "proof": "structured assert action passed"
+      },
+      "validation_failures": [],
+      "console": [],
+      "network": [
+        {
+          "scenario": "empty-desktop",
+          "url": "http://127.0.0.1:65377/?state=empty",
+          "status": 200,
+          "type": "Document",
+          "mime_type": "text/html"
+        },
+        {
+          "scenario": "empty-desktop",
+          "url": "http://127.0.0.1:65377/favicon.ico",
+          "status": 204,
+          "type": "Other",
+          "mime_type": "text/plain"
+        }
+      ],
+      "network_failures": [],
+      "blocked_requests": [],
+      "console_errors": [],
+      "bad_responses": [],
+      "duration_ms": 851
+    },
+    {
+      "name": "error-mobile",
+      "url": "http://127.0.0.1:65377/?state=error",
+      "viewport": {
+        "label": "mobile",
+        "width": 390,
+        "height": 844,
+        "mobile": true,
+        "device_scale_factor": 2
+      },
+      "state": "error",
+      "status": "passed",
+      "action_results": [
+        {
+          "index": 0,
+          "type": "assert",
+          "selector": "#state",
+          "passed": true,
+          "duration_ms": 113,
+          "evidence": {
+            "passed": true,
+            "visible": true,
+            "text_present": true,
+            "url_present": true,
+            "text_excerpt": "Could not load",
+            "url": "http://127.0.0.1:65377/?state=error"
+          }
+        }
+      ],
+      "before": {
+        "dom": {
+          "title": "VNEM Browser Interaction Fixture",
+          "url": "http://127.0.0.1:65377/?state=error",
+          "ready_state": "complete",
+          "text": "Browser interaction lab\nApplication state\n\nCould not load\n\nSafe test editor\nTask title\nPriority\nNormal\nHigh\nSave task\n\nNothing saved yet\n\nAccount details",
+          "html_language": "en",
+          "headings": [
+            {
+              "level": 1,
+              "text": "Browser interaction lab"
+            },
+            {
+              "level": 2,
+              "text": "Application state"
+            },
+            {
+              "level": 2,
+              "text": "Safe test editor"
+            }
+          ],
+          "interactive": [
+            {
+              "tag": "p",
+              "id": "state",
+              "role": "status",
+              "type": null,
+              "name": null,
+              "text": "Could not load",
+              "disabled": false
+            },
+            {
+              "tag": "input",
+              "id": "task-title",
+              "role": null,
+              "type": "text",
+              "name": null,
+              "text": "",
+              "disabled": false
+            },
+            {
+              "tag": "select",
+              "id": "priority",
+              "role": null,
+              "type": null,
+              "name": null,
+              "text": "Normal\nHigh",
+              "disabled": false
+            },
+            {
+              "tag": "button",
+              "id": "save",
+              "role": null,
+              "type": "button",
+              "name": null,
+              "text": "Save task",
+              "disabled": false
+            },
+            {
+              "tag": "a",
+              "id": "restricted-link",
+              "role": null,
+              "type": null,
+              "name": null,
+              "text": "Account details",
+              "disabled": false
+            }
+          ],
+          "active_element": {
+            "tag": "body",
+            "id": null
+          },
+          "viewport_width": 390,
+          "document_width": 390,
+          "horizontal_overflow": false,
+          "snapshot_hash": "141773b59cc2c40e8b5ebae3104ee05e4203b4fcb2c7468d8d68af465ea8f47c"
+        },
+        "accessibility": {
+          "node_count": 38,
+          "interactive_count": 4,
+          "unnamed_interactive_count": 0,
+          "issues": [],
+          "roles": [
+            {
+              "role": "RootWebArea",
+              "name": "VNEM Browser Interaction Fixture",
+              "disabled": false
+            },
+            {
+              "role": "main",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "heading",
+              "name": "Browser interaction lab",
+              "disabled": false
+            },
+            {
+              "role": "region",
+              "name": "Application state",
+              "disabled": false
+            },
+            {
+              "role": "region",
+              "name": "Safe test editor",
+              "disabled": false
+            },
+            {
+              "role": "paragraph",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Browser interaction lab",
+              "disabled": false
+            },
+            {
+              "role": "heading",
+              "name": "Application state",
+              "disabled": false
+            },
+            {
+              "role": "status",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "heading",
+              "name": "Safe test editor",
+              "disabled": false
+            },
+            {
+              "role": "LabelText",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "LabelText",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "button",
+              "name": "Save task",
+              "disabled": false
+            },
+            {
+              "role": "paragraph",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "link",
+              "name": "Account details",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Browser interaction lab",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Application state",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Could not load",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Safe test editor",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Task title",
+              "disabled": false
+            },
+            {
+              "role": "textbox",
+              "name": "Task title",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Priority",
+              "disabled": false
+            },
+            {
+              "role": "combobox",
+              "name": "Priority",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Save task",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Nothing saved yet",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Account details",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Application state",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Could not load",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Safe test editor",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Task title",
+              "disabled": false
+            },
+            {
+              "role": "generic",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Priority",
+              "disabled": false
+            },
+            {
+              "role": "MenuListPopup",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Save task",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Nothing saved yet",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Account details",
+              "disabled": false
+            },
+            {
+              "role": "option",
+              "name": "Normal",
+              "disabled": false
+            },
+            {
+              "role": "option",
+              "name": "High",
+              "disabled": false
+            }
+          ],
+          "snapshot_hash": "9aa62d0cadf5bb594de0719c101b97b6a59b815130d4725d305db05744977874"
+        },
+        "screenshot": {
+          "path": ".vnem/giga-evolution/phase-10/browser-evidence/error-mobile-mobile-before.png",
+          "sha256": "e42ed80114005085439696cc1bc1695028f8cfa7f281325fd2448a5dc4da21ff",
+          "bytes": 20390,
+          "width": 780,
+          "height": 1688,
+          "stage": "before",
+          "render_integrity": {
+            "status": "nonblank",
+            "channel_min": 0,
+            "channel_max": 255,
+            "channel_range": 255,
+            "non_background_pixels": 768371,
+            "non_background_percent": 58.3585,
+            "background_reference_rgb": [
+              244,
+              247,
+              251
+            ]
+          }
+        }
+      },
+      "after": {
+        "dom": {
+          "title": "VNEM Browser Interaction Fixture",
+          "url": "http://127.0.0.1:65377/?state=error",
+          "ready_state": "complete",
+          "text": "Browser interaction lab\nApplication state\n\nCould not load\n\nSafe test editor\nTask title\nPriority\nNormal\nHigh\nSave task\n\nNothing saved yet\n\nAccount details",
+          "html_language": "en",
+          "headings": [
+            {
+              "level": 1,
+              "text": "Browser interaction lab"
+            },
+            {
+              "level": 2,
+              "text": "Application state"
+            },
+            {
+              "level": 2,
+              "text": "Safe test editor"
+            }
+          ],
+          "interactive": [
+            {
+              "tag": "p",
+              "id": "state",
+              "role": "status",
+              "type": null,
+              "name": null,
+              "text": "Could not load",
+              "disabled": false
+            },
+            {
+              "tag": "input",
+              "id": "task-title",
+              "role": null,
+              "type": "text",
+              "name": null,
+              "text": "",
+              "disabled": false
+            },
+            {
+              "tag": "select",
+              "id": "priority",
+              "role": null,
+              "type": null,
+              "name": null,
+              "text": "Normal\nHigh",
+              "disabled": false
+            },
+            {
+              "tag": "button",
+              "id": "save",
+              "role": null,
+              "type": "button",
+              "name": null,
+              "text": "Save task",
+              "disabled": false
+            },
+            {
+              "tag": "a",
+              "id": "restricted-link",
+              "role": null,
+              "type": null,
+              "name": null,
+              "text": "Account details",
+              "disabled": false
+            }
+          ],
+          "active_element": {
+            "tag": "body",
+            "id": null
+          },
+          "viewport_width": 390,
+          "document_width": 390,
+          "horizontal_overflow": false,
+          "snapshot_hash": "141773b59cc2c40e8b5ebae3104ee05e4203b4fcb2c7468d8d68af465ea8f47c"
+        },
+        "accessibility": {
+          "node_count": 38,
+          "interactive_count": 4,
+          "unnamed_interactive_count": 0,
+          "issues": [],
+          "roles": [
+            {
+              "role": "RootWebArea",
+              "name": "VNEM Browser Interaction Fixture",
+              "disabled": false
+            },
+            {
+              "role": "main",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "heading",
+              "name": "Browser interaction lab",
+              "disabled": false
+            },
+            {
+              "role": "region",
+              "name": "Application state",
+              "disabled": false
+            },
+            {
+              "role": "region",
+              "name": "Safe test editor",
+              "disabled": false
+            },
+            {
+              "role": "paragraph",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Browser interaction lab",
+              "disabled": false
+            },
+            {
+              "role": "heading",
+              "name": "Application state",
+              "disabled": false
+            },
+            {
+              "role": "status",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "heading",
+              "name": "Safe test editor",
+              "disabled": false
+            },
+            {
+              "role": "LabelText",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "LabelText",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "button",
+              "name": "Save task",
+              "disabled": false
+            },
+            {
+              "role": "paragraph",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "link",
+              "name": "Account details",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Browser interaction lab",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Application state",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Could not load",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Safe test editor",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Task title",
+              "disabled": false
+            },
+            {
+              "role": "textbox",
+              "name": "Task title",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Priority",
+              "disabled": false
+            },
+            {
+              "role": "combobox",
+              "name": "Priority",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Save task",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Nothing saved yet",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Account details",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Application state",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Could not load",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Safe test editor",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Task title",
+              "disabled": false
+            },
+            {
+              "role": "generic",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Priority",
+              "disabled": false
+            },
+            {
+              "role": "MenuListPopup",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Save task",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Nothing saved yet",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Account details",
+              "disabled": false
+            },
+            {
+              "role": "option",
+              "name": "Normal",
+              "disabled": false
+            },
+            {
+              "role": "option",
+              "name": "High",
+              "disabled": false
+            }
+          ],
+          "snapshot_hash": "9aa62d0cadf5bb594de0719c101b97b6a59b815130d4725d305db05744977874"
+        },
+        "screenshot": {
+          "path": ".vnem/giga-evolution/phase-10/browser-evidence/error-mobile-mobile-after.png",
+          "sha256": "e42ed80114005085439696cc1bc1695028f8cfa7f281325fd2448a5dc4da21ff",
+          "bytes": 20390,
+          "width": 780,
+          "height": 1688,
+          "stage": "after",
+          "render_integrity": {
+            "status": "nonblank",
+            "channel_min": 0,
+            "channel_max": 255,
+            "channel_range": 255,
+            "non_background_pixels": 768371,
+            "non_background_percent": 58.3585,
+            "background_reference_rgb": [
+              244,
+              247,
+              251
+            ]
+          }
+        }
+      },
+      "before_after": {
+        "status": "compared",
+        "visual": {
+          "status": "compared",
+          "width": 780,
+          "height": 1688,
+          "pixels": 1316640,
+          "changed_pixels": 0,
+          "changed_percent": 0,
+          "mean_channel_difference": 0,
+          "before_sha256": "e42ed80114005085439696cc1bc1695028f8cfa7f281325fd2448a5dc4da21ff",
+          "after_sha256": "e42ed80114005085439696cc1bc1695028f8cfa7f281325fd2448a5dc4da21ff"
+        },
+        "dom": {
+          "status": "compared",
+          "changed": false,
+          "before_hash": "141773b59cc2c40e8b5ebae3104ee05e4203b4fcb2c7468d8d68af465ea8f47c",
+          "after_hash": "141773b59cc2c40e8b5ebae3104ee05e4203b4fcb2c7468d8d68af465ea8f47c"
+        },
+        "accessibility": {
+          "status": "compared",
+          "changed": false,
+          "before_hash": "9aa62d0cadf5bb594de0719c101b97b6a59b815130d4725d305db05744977874",
+          "after_hash": "9aa62d0cadf5bb594de0719c101b97b6a59b815130d4725d305db05744977874"
+        }
+      },
+      "state_result": {
+        "state": "error",
+        "status": "passed",
+        "proof": "structured assert action passed"
+      },
+      "validation_failures": [],
+      "console": [],
+      "network": [
+        {
+          "scenario": "error-mobile",
+          "url": "http://127.0.0.1:65377/?state=error",
+          "status": 200,
+          "type": "Document",
+          "mime_type": "text/html"
+        },
+        {
+          "scenario": "error-mobile",
+          "url": "http://127.0.0.1:65377/favicon.ico",
+          "status": 204,
+          "type": "Other",
+          "mime_type": "text/plain"
+        }
+      ],
+      "network_failures": [],
+      "blocked_requests": [],
+      "console_errors": [],
+      "bad_responses": [],
+      "duration_ms": 867
+    },
+    {
+      "name": "success-edit",
+      "url": "http://127.0.0.1:65377/?state=success",
+      "viewport": {
+        "label": "desktop",
+        "width": 1440,
+        "height": 900,
+        "mobile": false,
+        "device_scale_factor": 1
+      },
+      "state": "success",
+      "status": "passed",
+      "action_results": [
+        {
+          "index": 0,
+          "type": "type",
+          "selector": "#task-title",
+          "passed": true,
+          "duration_ms": 113,
+          "evidence": {
+            "passed": true,
+            "tag": "input",
+            "type": "text",
+            "value_length": 21
+          }
+        },
+        {
+          "index": 1,
+          "type": "select",
+          "selector": "#priority",
+          "passed": true,
+          "duration_ms": 106,
+          "evidence": {
+            "passed": true,
+            "selected_index": 1
+          }
+        },
+        {
+          "index": 2,
+          "type": "wait",
+          "selector": null,
+          "passed": true,
+          "duration_ms": 247,
+          "evidence": {
+            "passed": true,
+            "waited_ms": 125
+          }
+        },
+        {
+          "index": 3,
+          "type": "click",
+          "selector": "#save",
+          "passed": true,
+          "duration_ms": 109,
+          "evidence": {
+            "passed": true,
+            "tag": "button",
+            "id": "save"
+          }
+        },
+        {
+          "index": 4,
+          "type": "wait_for",
+          "selector": "#result",
+          "passed": true,
+          "duration_ms": 106,
+          "evidence": {
+            "passed": true,
+            "visible": true,
+            "text_present": true,
+            "url_present": true,
+            "text_excerpt": "Saved Browser verified task with high priority",
+            "url": "http://127.0.0.1:65377/?state=success",
+            "waited_ms": 1
+          }
+        },
+        {
+          "index": 5,
+          "type": "assert",
+          "selector": "#result",
+          "passed": true,
+          "duration_ms": 107,
+          "evidence": {
+            "passed": true,
+            "visible": true,
+            "text_present": true,
+            "url_present": true,
+            "text_excerpt": "Saved Browser verified task with high priority",
+            "url": "http://127.0.0.1:65377/?state=success"
+          }
+        }
+      ],
+      "before": {
+        "dom": {
+          "title": "VNEM Browser Interaction Fixture",
+          "url": "http://127.0.0.1:65377/?state=success",
+          "ready_state": "complete",
+          "text": "Browser interaction lab\nApplication state\n\nReady for input\n\nSafe test editor\nTask title\nPriority\nNormal\nHigh\nSave task\n\nNothing saved yet\n\nAccount details",
+          "html_language": "en",
+          "headings": [
+            {
+              "level": 1,
+              "text": "Browser interaction lab"
+            },
+            {
+              "level": 2,
+              "text": "Application state"
+            },
+            {
+              "level": 2,
+              "text": "Safe test editor"
+            }
+          ],
+          "interactive": [
+            {
+              "tag": "p",
+              "id": "state",
+              "role": "status",
+              "type": null,
+              "name": null,
+              "text": "Ready for input",
+              "disabled": false
+            },
+            {
+              "tag": "input",
+              "id": "task-title",
+              "role": null,
+              "type": "text",
+              "name": null,
+              "text": "",
+              "disabled": false
+            },
+            {
+              "tag": "select",
+              "id": "priority",
+              "role": null,
+              "type": null,
+              "name": null,
+              "text": "Normal\nHigh",
+              "disabled": false
+            },
+            {
+              "tag": "button",
+              "id": "save",
+              "role": null,
+              "type": "button",
+              "name": null,
+              "text": "Save task",
+              "disabled": false
+            },
+            {
+              "tag": "a",
+              "id": "restricted-link",
+              "role": null,
+              "type": null,
+              "name": null,
+              "text": "Account details",
+              "disabled": false
+            }
+          ],
+          "active_element": {
+            "tag": "body",
+            "id": null
+          },
+          "viewport_width": 1440,
+          "document_width": 1440,
+          "horizontal_overflow": false,
+          "snapshot_hash": "83341f1d0408e3a6d5261c380466b5a68927fbe60d6dbf22a67c3505896963f8"
+        },
+        "accessibility": {
+          "node_count": 38,
+          "interactive_count": 4,
+          "unnamed_interactive_count": 0,
+          "issues": [],
+          "roles": [
+            {
+              "role": "RootWebArea",
+              "name": "VNEM Browser Interaction Fixture",
+              "disabled": false
+            },
+            {
+              "role": "main",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "heading",
+              "name": "Browser interaction lab",
+              "disabled": false
+            },
+            {
+              "role": "region",
+              "name": "Application state",
+              "disabled": false
+            },
+            {
+              "role": "region",
+              "name": "Safe test editor",
+              "disabled": false
+            },
+            {
+              "role": "paragraph",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Browser interaction lab",
+              "disabled": false
+            },
+            {
+              "role": "heading",
+              "name": "Application state",
+              "disabled": false
+            },
+            {
+              "role": "status",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "heading",
+              "name": "Safe test editor",
+              "disabled": false
+            },
+            {
+              "role": "LabelText",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "LabelText",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "button",
+              "name": "Save task",
+              "disabled": false
+            },
+            {
+              "role": "paragraph",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "link",
+              "name": "Account details",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Browser interaction lab",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Application state",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Ready for input",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Safe test editor",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Task title",
+              "disabled": false
+            },
+            {
+              "role": "textbox",
+              "name": "Task title",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Priority",
+              "disabled": false
+            },
+            {
+              "role": "combobox",
+              "name": "Priority",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Save task",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Nothing saved yet",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Account details",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Application state",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Ready for input",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Safe test editor",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Task title",
+              "disabled": false
+            },
+            {
+              "role": "generic",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Priority",
+              "disabled": false
+            },
+            {
+              "role": "MenuListPopup",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Save task",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Nothing saved yet",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Account details",
+              "disabled": false
+            },
+            {
+              "role": "option",
+              "name": "Normal",
+              "disabled": false
+            },
+            {
+              "role": "option",
+              "name": "High",
+              "disabled": false
+            }
+          ],
+          "snapshot_hash": "11674163772238a1e79b847bfb486b508ee2ce5cf3d54d0d95a34d8c307d1835"
+        },
+        "screenshot": {
+          "path": ".vnem/giga-evolution/phase-10/browser-evidence/success-edit-desktop-before.png",
+          "sha256": "e3a6dbfce73b6ea8842323cdfbb8398224c4b72502a7e925efecb4fe60500546",
+          "bytes": 11877,
+          "width": 1440,
+          "height": 900,
+          "stage": "before",
+          "render_integrity": {
+            "status": "nonblank",
+            "channel_min": 0,
+            "channel_max": 255,
+            "channel_range": 255,
+            "non_background_pixels": 288132,
+            "non_background_percent": 22.2324,
+            "background_reference_rgb": [
+              244,
+              247,
+              251
+            ]
+          }
+        }
+      },
+      "after": {
+        "dom": {
+          "title": "VNEM Browser Interaction Fixture",
+          "url": "http://127.0.0.1:65377/?state=success",
+          "ready_state": "complete",
+          "text": "Browser interaction lab\nApplication state\n\nReady for input\n\nSafe test editor\nTask title\nPriority\nNormal\nHigh\nSave task\n\nSaved Browser verified task with high priority\n\nAccount details",
+          "html_language": "en",
+          "headings": [
+            {
+              "level": 1,
+              "text": "Browser interaction lab"
+            },
+            {
+              "level": 2,
+              "text": "Application state"
+            },
+            {
+              "level": 2,
+              "text": "Safe test editor"
+            }
+          ],
+          "interactive": [
+            {
+              "tag": "p",
+              "id": "state",
+              "role": "status",
+              "type": null,
+              "name": null,
+              "text": "Ready for input",
+              "disabled": false
+            },
+            {
+              "tag": "input",
+              "id": "task-title",
+              "role": null,
+              "type": "text",
+              "name": null,
+              "text": "",
+              "disabled": false
+            },
+            {
+              "tag": "select",
+              "id": "priority",
+              "role": null,
+              "type": null,
+              "name": null,
+              "text": "Normal\nHigh",
+              "disabled": false
+            },
+            {
+              "tag": "button",
+              "id": "save",
+              "role": null,
+              "type": "button",
+              "name": null,
+              "text": "Save task",
+              "disabled": false
+            },
+            {
+              "tag": "a",
+              "id": "restricted-link",
+              "role": null,
+              "type": null,
+              "name": null,
+              "text": "Account details",
+              "disabled": false
+            }
+          ],
+          "active_element": {
+            "tag": "body",
+            "id": null
+          },
+          "viewport_width": 1440,
+          "document_width": 1440,
+          "horizontal_overflow": false,
+          "snapshot_hash": "377dbadd29428c554956e2b59d611449b83591f1d48b402780dcc85eb18e859f"
+        },
+        "accessibility": {
+          "node_count": 40,
+          "interactive_count": 4,
+          "unnamed_interactive_count": 0,
+          "issues": [],
+          "roles": [
+            {
+              "role": "RootWebArea",
+              "name": "VNEM Browser Interaction Fixture",
+              "disabled": false
+            },
+            {
+              "role": "main",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "heading",
+              "name": "Browser interaction lab",
+              "disabled": false
+            },
+            {
+              "role": "region",
+              "name": "Application state",
+              "disabled": false
+            },
+            {
+              "role": "region",
+              "name": "Safe test editor",
+              "disabled": false
+            },
+            {
+              "role": "paragraph",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Browser interaction lab",
+              "disabled": false
+            },
+            {
+              "role": "heading",
+              "name": "Application state",
+              "disabled": false
+            },
+            {
+              "role": "status",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "heading",
+              "name": "Safe test editor",
+              "disabled": false
+            },
+            {
+              "role": "LabelText",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "LabelText",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "button",
+              "name": "Save task",
+              "disabled": false
+            },
+            {
+              "role": "paragraph",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "link",
+              "name": "Account details",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Browser interaction lab",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Application state",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Ready for input",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Safe test editor",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Task title",
+              "disabled": false
+            },
+            {
+              "role": "textbox",
+              "name": "Task title",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Priority",
+              "disabled": false
+            },
+            {
+              "role": "combobox",
+              "name": "Priority",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Save task",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Saved Browser verified task with high priority",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Account details",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Application state",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Ready for input",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Safe test editor",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Task title",
+              "disabled": false
+            },
+            {
+              "role": "generic",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Priority",
+              "disabled": false
+            },
+            {
+              "role": "MenuListPopup",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Save task",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Saved Browser verified task with high priority",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Account details",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Browser verified task",
+              "disabled": false
+            },
+            {
+              "role": "option",
+              "name": "Normal",
+              "disabled": false
+            },
+            {
+              "role": "option",
+              "name": "High",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Browser verified task",
+              "disabled": false
+            }
+          ],
+          "snapshot_hash": "289c07e1e37a3f3dc651eee572223ff7033437b6dce1c1d5834b2e8336cfb9d8"
+        },
+        "screenshot": {
+          "path": ".vnem/giga-evolution/phase-10/browser-evidence/success-edit-desktop-after.png",
+          "sha256": "0e80fa03c334732120605a266f2bc317f1c5940d89b4a12fde0028aba7665910",
+          "bytes": 12688,
+          "width": 1440,
+          "height": 900,
+          "stage": "after",
+          "render_integrity": {
+            "status": "nonblank",
+            "channel_min": 0,
+            "channel_max": 255,
+            "channel_range": 255,
+            "non_background_pixels": 288132,
+            "non_background_percent": 22.2324,
+            "background_reference_rgb": [
+              244,
+              247,
+              251
+            ]
+          }
+        }
+      },
+      "before_after": {
+        "status": "compared",
+        "visual": {
+          "status": "compared",
+          "width": 1440,
+          "height": 900,
+          "pixels": 1296000,
+          "changed_pixels": 2997,
+          "changed_percent": 0.2312,
+          "mean_channel_difference": 0.3464,
+          "before_sha256": "e3a6dbfce73b6ea8842323cdfbb8398224c4b72502a7e925efecb4fe60500546",
+          "after_sha256": "0e80fa03c334732120605a266f2bc317f1c5940d89b4a12fde0028aba7665910"
+        },
+        "dom": {
+          "status": "compared",
+          "changed": true,
+          "before_hash": "83341f1d0408e3a6d5261c380466b5a68927fbe60d6dbf22a67c3505896963f8",
+          "after_hash": "377dbadd29428c554956e2b59d611449b83591f1d48b402780dcc85eb18e859f"
+        },
+        "accessibility": {
+          "status": "compared",
+          "changed": true,
+          "before_hash": "11674163772238a1e79b847bfb486b508ee2ce5cf3d54d0d95a34d8c307d1835",
+          "after_hash": "289c07e1e37a3f3dc651eee572223ff7033437b6dce1c1d5834b2e8336cfb9d8"
+        }
+      },
+      "state_result": {
+        "state": "success",
+        "status": "passed",
+        "proof": "structured assert action passed"
+      },
+      "validation_failures": [],
+      "console": [],
+      "network": [
+        {
+          "scenario": "success-edit",
+          "url": "http://127.0.0.1:65377/?state=success",
+          "status": 200,
+          "type": "Document",
+          "mime_type": "text/html"
+        },
+        {
+          "scenario": "success-edit",
+          "url": "http://127.0.0.1:65377/favicon.ico",
+          "status": 204,
+          "type": "Other",
+          "mime_type": "text/plain"
+        }
+      ],
+      "network_failures": [],
+      "blocked_requests": [],
+      "console_errors": [],
+      "bad_responses": [],
+      "duration_ms": 1526
+    },
+    {
+      "name": "navigation-desktop",
+      "url": "http://127.0.0.1:65377/?state=success",
+      "viewport": {
+        "label": "desktop",
+        "width": 1440,
+        "height": 900,
+        "mobile": false,
+        "device_scale_factor": 1
+      },
+      "state": "success",
+      "status": "passed",
+      "action_results": [
+        {
+          "index": 0,
+          "type": "navigate",
+          "selector": null,
+          "passed": true,
+          "duration_ms": 408,
+          "evidence": {
+            "passed": true,
+            "url": "http://127.0.0.1:65377/details?state=success"
+          }
+        },
+        {
+          "index": 1,
+          "type": "wait_for",
+          "selector": "#details",
+          "passed": true,
+          "duration_ms": 105,
+          "evidence": {
+            "passed": true,
+            "visible": true,
+            "text_present": true,
+            "url_present": true,
+            "text_excerpt": "Details ready",
+            "url": "http://127.0.0.1:65377/details?state=success",
+            "waited_ms": 2
+          }
+        },
+        {
+          "index": 2,
+          "type": "assert",
+          "selector": "#details",
+          "passed": true,
+          "duration_ms": 108,
+          "evidence": {
+            "passed": true,
+            "visible": true,
+            "text_present": true,
+            "url_present": true,
+            "text_excerpt": "Details ready",
+            "url": "http://127.0.0.1:65377/details?state=success"
+          }
+        }
+      ],
+      "before": {
+        "dom": {
+          "title": "VNEM Browser Interaction Fixture",
+          "url": "http://127.0.0.1:65377/?state=success",
+          "ready_state": "complete",
+          "text": "Browser interaction lab\nApplication state\n\nReady for input\n\nSafe test editor\nTask title\nPriority\nNormal\nHigh\nSave task\n\nNothing saved yet\n\nAccount details",
+          "html_language": "en",
+          "headings": [
+            {
+              "level": 1,
+              "text": "Browser interaction lab"
+            },
+            {
+              "level": 2,
+              "text": "Application state"
+            },
+            {
+              "level": 2,
+              "text": "Safe test editor"
+            }
+          ],
+          "interactive": [
+            {
+              "tag": "p",
+              "id": "state",
+              "role": "status",
+              "type": null,
+              "name": null,
+              "text": "Ready for input",
+              "disabled": false
+            },
+            {
+              "tag": "input",
+              "id": "task-title",
+              "role": null,
+              "type": "text",
+              "name": null,
+              "text": "",
+              "disabled": false
+            },
+            {
+              "tag": "select",
+              "id": "priority",
+              "role": null,
+              "type": null,
+              "name": null,
+              "text": "Normal\nHigh",
+              "disabled": false
+            },
+            {
+              "tag": "button",
+              "id": "save",
+              "role": null,
+              "type": "button",
+              "name": null,
+              "text": "Save task",
+              "disabled": false
+            },
+            {
+              "tag": "a",
+              "id": "restricted-link",
+              "role": null,
+              "type": null,
+              "name": null,
+              "text": "Account details",
+              "disabled": false
+            }
+          ],
+          "active_element": {
+            "tag": "body",
+            "id": null
+          },
+          "viewport_width": 1440,
+          "document_width": 1440,
+          "horizontal_overflow": false,
+          "snapshot_hash": "83341f1d0408e3a6d5261c380466b5a68927fbe60d6dbf22a67c3505896963f8"
+        },
+        "accessibility": {
+          "node_count": 38,
+          "interactive_count": 4,
+          "unnamed_interactive_count": 0,
+          "issues": [],
+          "roles": [
+            {
+              "role": "RootWebArea",
+              "name": "VNEM Browser Interaction Fixture",
+              "disabled": false
+            },
+            {
+              "role": "main",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "heading",
+              "name": "Browser interaction lab",
+              "disabled": false
+            },
+            {
+              "role": "region",
+              "name": "Application state",
+              "disabled": false
+            },
+            {
+              "role": "region",
+              "name": "Safe test editor",
+              "disabled": false
+            },
+            {
+              "role": "paragraph",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Browser interaction lab",
+              "disabled": false
+            },
+            {
+              "role": "heading",
+              "name": "Application state",
+              "disabled": false
+            },
+            {
+              "role": "status",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "heading",
+              "name": "Safe test editor",
+              "disabled": false
+            },
+            {
+              "role": "LabelText",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "LabelText",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "button",
+              "name": "Save task",
+              "disabled": false
+            },
+            {
+              "role": "paragraph",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "link",
+              "name": "Account details",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Browser interaction lab",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Application state",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Ready for input",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Safe test editor",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Task title",
+              "disabled": false
+            },
+            {
+              "role": "textbox",
+              "name": "Task title",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Priority",
+              "disabled": false
+            },
+            {
+              "role": "combobox",
+              "name": "Priority",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Save task",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Nothing saved yet",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Account details",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Application state",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Ready for input",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Safe test editor",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Task title",
+              "disabled": false
+            },
+            {
+              "role": "generic",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Priority",
+              "disabled": false
+            },
+            {
+              "role": "MenuListPopup",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Save task",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Nothing saved yet",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Account details",
+              "disabled": false
+            },
+            {
+              "role": "option",
+              "name": "Normal",
+              "disabled": false
+            },
+            {
+              "role": "option",
+              "name": "High",
+              "disabled": false
+            }
+          ],
+          "snapshot_hash": "11674163772238a1e79b847bfb486b508ee2ce5cf3d54d0d95a34d8c307d1835"
+        },
+        "screenshot": {
+          "path": ".vnem/giga-evolution/phase-10/browser-evidence/navigation-desktop-desktop-before.png",
+          "sha256": "e3a6dbfce73b6ea8842323cdfbb8398224c4b72502a7e925efecb4fe60500546",
+          "bytes": 11877,
+          "width": 1440,
+          "height": 900,
+          "stage": "before",
+          "render_integrity": {
+            "status": "nonblank",
+            "channel_min": 0,
+            "channel_max": 255,
+            "channel_range": 255,
+            "non_background_pixels": 288132,
+            "non_background_percent": 22.2324,
+            "background_reference_rgb": [
+              244,
+              247,
+              251
+            ]
+          }
+        }
+      },
+      "after": {
+        "dom": {
+          "title": "VNEM Browser Interaction Fixture",
+          "url": "http://127.0.0.1:65377/details?state=success",
+          "ready_state": "complete",
+          "text": "Fixture details\n\nDetails ready\n\nApplication state\n\nReady for input\n\nSafe test editor\nTask title\nPriority\nNormal\nHigh\nSave task\n\nNothing saved yet\n\nAccount details",
+          "html_language": "en",
+          "headings": [
+            {
+              "level": 1,
+              "text": "Fixture details"
+            },
+            {
+              "level": 2,
+              "text": "Application state"
+            },
+            {
+              "level": 2,
+              "text": "Safe test editor"
+            }
+          ],
+          "interactive": [
+            {
+              "tag": "p",
+              "id": "state",
+              "role": "status",
+              "type": null,
+              "name": null,
+              "text": "Ready for input",
+              "disabled": false
+            },
+            {
+              "tag": "input",
+              "id": "task-title",
+              "role": null,
+              "type": "text",
+              "name": null,
+              "text": "",
+              "disabled": false
+            },
+            {
+              "tag": "select",
+              "id": "priority",
+              "role": null,
+              "type": null,
+              "name": null,
+              "text": "Normal\nHigh",
+              "disabled": false
+            },
+            {
+              "tag": "button",
+              "id": "save",
+              "role": null,
+              "type": "button",
+              "name": null,
+              "text": "Save task",
+              "disabled": false
+            },
+            {
+              "tag": "a",
+              "id": "restricted-link",
+              "role": null,
+              "type": null,
+              "name": null,
+              "text": "Account details",
+              "disabled": false
+            }
+          ],
+          "active_element": {
+            "tag": "body",
+            "id": null
+          },
+          "viewport_width": 1440,
+          "document_width": 1440,
+          "horizontal_overflow": false,
+          "snapshot_hash": "233993e37c56e14538a50e3aec26865eb3fcfb9ef44fb97598a1b4e517889757"
+        },
+        "accessibility": {
+          "node_count": 41,
+          "interactive_count": 4,
+          "unnamed_interactive_count": 0,
+          "issues": [],
+          "roles": [
+            {
+              "role": "RootWebArea",
+              "name": "VNEM Browser Interaction Fixture",
+              "disabled": false
+            },
+            {
+              "role": "main",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "heading",
+              "name": "Fixture details",
+              "disabled": false
+            },
+            {
+              "role": "paragraph",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "region",
+              "name": "Application state",
+              "disabled": false
+            },
+            {
+              "role": "region",
+              "name": "Safe test editor",
+              "disabled": false
+            },
+            {
+              "role": "paragraph",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Fixture details",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Details ready",
+              "disabled": false
+            },
+            {
+              "role": "heading",
+              "name": "Application state",
+              "disabled": false
+            },
+            {
+              "role": "status",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "heading",
+              "name": "Safe test editor",
+              "disabled": false
+            },
+            {
+              "role": "LabelText",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "LabelText",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "button",
+              "name": "Save task",
+              "disabled": false
+            },
+            {
+              "role": "paragraph",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "link",
+              "name": "Account details",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Fixture details",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Details ready",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Application state",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Ready for input",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Safe test editor",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Task title",
+              "disabled": false
+            },
+            {
+              "role": "textbox",
+              "name": "Task title",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Priority",
+              "disabled": false
+            },
+            {
+              "role": "combobox",
+              "name": "Priority",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Save task",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Nothing saved yet",
+              "disabled": false
+            },
+            {
+              "role": "StaticText",
+              "name": "Account details",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Application state",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Ready for input",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Safe test editor",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Task title",
+              "disabled": false
+            },
+            {
+              "role": "generic",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Priority",
+              "disabled": false
+            },
+            {
+              "role": "MenuListPopup",
+              "name": "",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Save task",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Nothing saved yet",
+              "disabled": false
+            },
+            {
+              "role": "InlineTextBox",
+              "name": "Account details",
+              "disabled": false
+            },
+            {
+              "role": "option",
+              "name": "Normal",
+              "disabled": false
+            },
+            {
+              "role": "option",
+              "name": "High",
+              "disabled": false
+            }
+          ],
+          "snapshot_hash": "9e2c6cecfd96fafdb37514d4e93eb330e41560b56240816e317abe37e36859ef"
+        },
+        "screenshot": {
+          "path": ".vnem/giga-evolution/phase-10/browser-evidence/navigation-desktop-desktop-after.png",
+          "sha256": "724f787d42eced24c370718a0044f5b6b36a2b212671aa42b079817df1209ec1",
+          "bytes": 11866,
+          "width": 1440,
+          "height": 900,
+          "stage": "after",
+          "render_integrity": {
+            "status": "nonblank",
+            "channel_min": 0,
+            "channel_max": 255,
+            "channel_range": 255,
+            "non_background_pixels": 287331,
+            "non_background_percent": 22.1706,
+            "background_reference_rgb": [
+              244,
+              247,
+              251
+            ]
+          }
+        }
+      },
+      "before_after": {
+        "status": "compared",
+        "visual": {
+          "status": "compared",
+          "width": 1440,
+          "height": 900,
+          "pixels": 1296000,
+          "changed_pixels": 149643,
+          "changed_percent": 11.5465,
+          "mean_channel_difference": 3.1488,
+          "before_sha256": "e3a6dbfce73b6ea8842323cdfbb8398224c4b72502a7e925efecb4fe60500546",
+          "after_sha256": "724f787d42eced24c370718a0044f5b6b36a2b212671aa42b079817df1209ec1"
+        },
+        "dom": {
+          "status": "compared",
+          "changed": true,
+          "before_hash": "83341f1d0408e3a6d5261c380466b5a68927fbe60d6dbf22a67c3505896963f8",
+          "after_hash": "233993e37c56e14538a50e3aec26865eb3fcfb9ef44fb97598a1b4e517889757"
+        },
+        "accessibility": {
+          "status": "compared",
+          "changed": true,
+          "before_hash": "11674163772238a1e79b847bfb486b508ee2ce5cf3d54d0d95a34d8c307d1835",
+          "after_hash": "9e2c6cecfd96fafdb37514d4e93eb330e41560b56240816e317abe37e36859ef"
+        }
+      },
+      "state_result": {
+        "state": "success",
+        "status": "passed",
+        "proof": "structured assert action passed"
+      },
+      "validation_failures": [],
+      "console": [],
+      "network": [
+        {
+          "scenario": "navigation-desktop",
+          "url": "http://127.0.0.1:65377/?state=success",
+          "status": 200,
+          "type": "Document",
+          "mime_type": "text/html"
+        },
+        {
+          "scenario": "navigation-desktop",
+          "url": "http://127.0.0.1:65377/favicon.ico",
+          "status": 204,
+          "type": "Other",
+          "mime_type": "text/plain"
+        },
+        {
+          "scenario": "navigation-desktop",
+          "url": "http://127.0.0.1:65377/details?state=success",
+          "status": 200,
+          "type": "Document",
+          "mime_type": "text/html"
+        },
+        {
+          "scenario": "navigation-desktop",
+          "url": "http://127.0.0.1:65377/favicon.ico",
+          "status": 204,
+          "type": "Other",
+          "mime_type": "text/plain"
+        }
+      ],
+      "network_failures": [],
+      "blocked_requests": [],
+      "console_errors": [],
+      "bad_responses": [],
+      "duration_ms": 1332
+    }
+  ],
+  "scenario_count": 5,
+  "counts": {
+    "planned": 5,
+    "executed": 5,
+    "passed": 5,
+    "failed": 0
+  },
+  "screenshots": [
+    {
+      "scenario": "loading-mobile",
+      "path": ".vnem/giga-evolution/phase-10/browser-evidence/loading-mobile-mobile-before.png",
+      "sha256": "ba8e6c109ba1def3688d22369d8bf39b4b6ed1bfbedf28479738e1fcb3691110",
+      "bytes": 20322,
+      "width": 780,
+      "height": 1688,
+      "stage": "before",
+      "render_integrity": {
+        "status": "nonblank",
+        "channel_min": 0,
+        "channel_max": 255,
+        "channel_range": 255,
+        "non_background_pixels": 768371,
+        "non_background_percent": 58.3585,
+        "background_reference_rgb": [
+          244,
+          247,
+          251
+        ]
+      }
+    },
+    {
+      "scenario": "loading-mobile",
+      "path": ".vnem/giga-evolution/phase-10/browser-evidence/loading-mobile-mobile-after.png",
+      "sha256": "ba8e6c109ba1def3688d22369d8bf39b4b6ed1bfbedf28479738e1fcb3691110",
+      "bytes": 20322,
+      "width": 780,
+      "height": 1688,
+      "stage": "after",
+      "render_integrity": {
+        "status": "nonblank",
+        "channel_min": 0,
+        "channel_max": 255,
+        "channel_range": 255,
+        "non_background_pixels": 768371,
+        "non_background_percent": 58.3585,
+        "background_reference_rgb": [
+          244,
+          247,
+          251
+        ]
+      }
+    },
+    {
+      "scenario": "empty-desktop",
+      "path": ".vnem/giga-evolution/phase-10/browser-evidence/empty-desktop-desktop-before.png",
+      "sha256": "7d6ef7548afa1cf57733672f669ffa16e51f761a3c2914b7cd78e750c7cb3a35",
+      "bytes": 11784,
+      "width": 1440,
+      "height": 900,
+      "stage": "before",
+      "render_integrity": {
+        "status": "nonblank",
+        "channel_min": 0,
+        "channel_max": 255,
+        "channel_range": 255,
+        "non_background_pixels": 288132,
+        "non_background_percent": 22.2324,
+        "background_reference_rgb": [
+          244,
+          247,
+          251
+        ]
+      }
+    },
+    {
+      "scenario": "empty-desktop",
+      "path": ".vnem/giga-evolution/phase-10/browser-evidence/empty-desktop-desktop-after.png",
+      "sha256": "7d6ef7548afa1cf57733672f669ffa16e51f761a3c2914b7cd78e750c7cb3a35",
+      "bytes": 11784,
+      "width": 1440,
+      "height": 900,
+      "stage": "after",
+      "render_integrity": {
+        "status": "nonblank",
+        "channel_min": 0,
+        "channel_max": 255,
+        "channel_range": 255,
+        "non_background_pixels": 288132,
+        "non_background_percent": 22.2324,
+        "background_reference_rgb": [
+          244,
+          247,
+          251
+        ]
+      }
+    },
+    {
+      "scenario": "error-mobile",
+      "path": ".vnem/giga-evolution/phase-10/browser-evidence/error-mobile-mobile-before.png",
+      "sha256": "e42ed80114005085439696cc1bc1695028f8cfa7f281325fd2448a5dc4da21ff",
+      "bytes": 20390,
+      "width": 780,
+      "height": 1688,
+      "stage": "before",
+      "render_integrity": {
+        "status": "nonblank",
+        "channel_min": 0,
+        "channel_max": 255,
+        "channel_range": 255,
+        "non_background_pixels": 768371,
+        "non_background_percent": 58.3585,
+        "background_reference_rgb": [
+          244,
+          247,
+          251
+        ]
+      }
+    },
+    {
+      "scenario": "error-mobile",
+      "path": ".vnem/giga-evolution/phase-10/browser-evidence/error-mobile-mobile-after.png",
+      "sha256": "e42ed80114005085439696cc1bc1695028f8cfa7f281325fd2448a5dc4da21ff",
+      "bytes": 20390,
+      "width": 780,
+      "height": 1688,
+      "stage": "after",
+      "render_integrity": {
+        "status": "nonblank",
+        "channel_min": 0,
+        "channel_max": 255,
+        "channel_range": 255,
+        "non_background_pixels": 768371,
+        "non_background_percent": 58.3585,
+        "background_reference_rgb": [
+          244,
+          247,
+          251
+        ]
+      }
+    },
+    {
+      "scenario": "success-edit",
+      "path": ".vnem/giga-evolution/phase-10/browser-evidence/success-edit-desktop-before.png",
+      "sha256": "e3a6dbfce73b6ea8842323cdfbb8398224c4b72502a7e925efecb4fe60500546",
+      "bytes": 11877,
+      "width": 1440,
+      "height": 900,
+      "stage": "before",
+      "render_integrity": {
+        "status": "nonblank",
+        "channel_min": 0,
+        "channel_max": 255,
+        "channel_range": 255,
+        "non_background_pixels": 288132,
+        "non_background_percent": 22.2324,
+        "background_reference_rgb": [
+          244,
+          247,
+          251
+        ]
+      }
+    },
+    {
+      "scenario": "success-edit",
+      "path": ".vnem/giga-evolution/phase-10/browser-evidence/success-edit-desktop-after.png",
+      "sha256": "0e80fa03c334732120605a266f2bc317f1c5940d89b4a12fde0028aba7665910",
+      "bytes": 12688,
+      "width": 1440,
+      "height": 900,
+      "stage": "after",
+      "render_integrity": {
+        "status": "nonblank",
+        "channel_min": 0,
+        "channel_max": 255,
+        "channel_range": 255,
+        "non_background_pixels": 288132,
+        "non_background_percent": 22.2324,
+        "background_reference_rgb": [
+          244,
+          247,
+          251
+        ]
+      }
+    },
+    {
+      "scenario": "navigation-desktop",
+      "path": ".vnem/giga-evolution/phase-10/browser-evidence/navigation-desktop-desktop-before.png",
+      "sha256": "e3a6dbfce73b6ea8842323cdfbb8398224c4b72502a7e925efecb4fe60500546",
+      "bytes": 11877,
+      "width": 1440,
+      "height": 900,
+      "stage": "before",
+      "render_integrity": {
+        "status": "nonblank",
+        "channel_min": 0,
+        "channel_max": 255,
+        "channel_range": 255,
+        "non_background_pixels": 288132,
+        "non_background_percent": 22.2324,
+        "background_reference_rgb": [
+          244,
+          247,
+          251
+        ]
+      }
+    },
+    {
+      "scenario": "navigation-desktop",
+      "path": ".vnem/giga-evolution/phase-10/browser-evidence/navigation-desktop-desktop-after.png",
+      "sha256": "724f787d42eced24c370718a0044f5b6b36a2b212671aa42b079817df1209ec1",
+      "bytes": 11866,
+      "width": 1440,
+      "height": 900,
+      "stage": "after",
+      "render_integrity": {
+        "status": "nonblank",
+        "channel_min": 0,
+        "channel_max": 255,
+        "channel_range": 255,
+        "non_background_pixels": 287331,
+        "non_background_percent": 22.1706,
+        "background_reference_rgb": [
+          244,
+          247,
+          251
+        ]
+      }
+    }
+  ],
+  "console_summary": {
+    "status": "clean",
+    "event_count": 0,
+    "error_count": 0,
+    "errors": []
+  },
+  "network_summary": {
+    "status": "clean",
+    "response_count": 12,
+    "failures": [],
+    "bad_responses": [],
+    "blocked_requests": []
+  },
+  "accessibility_summary": {
+    "status": "checked",
+    "snapshots": 10,
+    "issue_count": 0,
+    "issues": []
+  },
+  "viewport_coverage": [
+    {
+      "viewport": "mobile",
+      "status": "passed",
+      "scenarios": [
+        "loading-mobile",
+        "error-mobile"
+      ]
+    },
+    {
+      "viewport": "desktop",
+      "status": "passed",
+      "scenarios": [
+        "empty-desktop",
+        "success-edit",
+        "navigation-desktop"
+      ]
+    }
+  ],
+  "state_coverage": [
+    {
+      "state": "loading",
+      "status": "passed",
+      "scenarios": [
+        "loading-mobile"
+      ]
+    },
+    {
+      "state": "empty",
+      "status": "passed",
+      "scenarios": [
+        "empty-desktop"
+      ]
+    },
+    {
+      "state": "error",
+      "status": "passed",
+      "scenarios": [
+        "error-mobile"
+      ]
+    },
+    {
+      "state": "success",
+      "status": "passed",
+      "scenarios": [
+        "success-edit",
+        "navigation-desktop"
+      ]
+    }
+  ],
+  "before_after_comparison": {
+    "status": "present",
+    "pairs": [
+      {
+        "scenario": "loading-mobile",
+        "status": "compared",
+        "visual": {
+          "status": "compared",
+          "width": 780,
+          "height": 1688,
+          "pixels": 1316640,
+          "changed_pixels": 0,
+          "changed_percent": 0,
+          "mean_channel_difference": 0,
+          "before_sha256": "ba8e6c109ba1def3688d22369d8bf39b4b6ed1bfbedf28479738e1fcb3691110",
+          "after_sha256": "ba8e6c109ba1def3688d22369d8bf39b4b6ed1bfbedf28479738e1fcb3691110"
+        },
+        "dom": {
+          "status": "compared",
+          "changed": false,
+          "before_hash": "7d9cde1e6be732b1e5a6f454d36bb86998f9ed52713aba4fd36ecd9ed0ffeebe",
+          "after_hash": "7d9cde1e6be732b1e5a6f454d36bb86998f9ed52713aba4fd36ecd9ed0ffeebe"
+        },
+        "accessibility": {
+          "status": "compared",
+          "changed": false,
+          "before_hash": "ed58bdbeae42400b28c6669597c724d950c8474b76d53004a8f174ce9a559ed4",
+          "after_hash": "ed58bdbeae42400b28c6669597c724d950c8474b76d53004a8f174ce9a559ed4"
+        }
+      },
+      {
+        "scenario": "empty-desktop",
+        "status": "compared",
+        "visual": {
+          "status": "compared",
+          "width": 1440,
+          "height": 900,
+          "pixels": 1296000,
+          "changed_pixels": 0,
+          "changed_percent": 0,
+          "mean_channel_difference": 0,
+          "before_sha256": "7d6ef7548afa1cf57733672f669ffa16e51f761a3c2914b7cd78e750c7cb3a35",
+          "after_sha256": "7d6ef7548afa1cf57733672f669ffa16e51f761a3c2914b7cd78e750c7cb3a35"
+        },
+        "dom": {
+          "status": "compared",
+          "changed": false,
+          "before_hash": "9549099b32b7425f1d0a88db2db4afc8efa34d346275b650f37ede37d5681016",
+          "after_hash": "9549099b32b7425f1d0a88db2db4afc8efa34d346275b650f37ede37d5681016"
+        },
+        "accessibility": {
+          "status": "compared",
+          "changed": false,
+          "before_hash": "f081562d0512e8e884a801a2842868ff92d39897271a4d452a981ddbb5979227",
+          "after_hash": "f081562d0512e8e884a801a2842868ff92d39897271a4d452a981ddbb5979227"
+        }
+      },
+      {
+        "scenario": "error-mobile",
+        "status": "compared",
+        "visual": {
+          "status": "compared",
+          "width": 780,
+          "height": 1688,
+          "pixels": 1316640,
+          "changed_pixels": 0,
+          "changed_percent": 0,
+          "mean_channel_difference": 0,
+          "before_sha256": "e42ed80114005085439696cc1bc1695028f8cfa7f281325fd2448a5dc4da21ff",
+          "after_sha256": "e42ed80114005085439696cc1bc1695028f8cfa7f281325fd2448a5dc4da21ff"
+        },
+        "dom": {
+          "status": "compared",
+          "changed": false,
+          "before_hash": "141773b59cc2c40e8b5ebae3104ee05e4203b4fcb2c7468d8d68af465ea8f47c",
+          "after_hash": "141773b59cc2c40e8b5ebae3104ee05e4203b4fcb2c7468d8d68af465ea8f47c"
+        },
+        "accessibility": {
+          "status": "compared",
+          "changed": false,
+          "before_hash": "9aa62d0cadf5bb594de0719c101b97b6a59b815130d4725d305db05744977874",
+          "after_hash": "9aa62d0cadf5bb594de0719c101b97b6a59b815130d4725d305db05744977874"
+        }
+      },
+      {
+        "scenario": "success-edit",
+        "status": "compared",
+        "visual": {
+          "status": "compared",
+          "width": 1440,
+          "height": 900,
+          "pixels": 1296000,
+          "changed_pixels": 2997,
+          "changed_percent": 0.2312,
+          "mean_channel_difference": 0.3464,
+          "before_sha256": "e3a6dbfce73b6ea8842323cdfbb8398224c4b72502a7e925efecb4fe60500546",
+          "after_sha256": "0e80fa03c334732120605a266f2bc317f1c5940d89b4a12fde0028aba7665910"
+        },
+        "dom": {
+          "status": "compared",
+          "changed": true,
+          "before_hash": "83341f1d0408e3a6d5261c380466b5a68927fbe60d6dbf22a67c3505896963f8",
+          "after_hash": "377dbadd29428c554956e2b59d611449b83591f1d48b402780dcc85eb18e859f"
+        },
+        "accessibility": {
+          "status": "compared",
+          "changed": true,
+          "before_hash": "11674163772238a1e79b847bfb486b508ee2ce5cf3d54d0d95a34d8c307d1835",
+          "after_hash": "289c07e1e37a3f3dc651eee572223ff7033437b6dce1c1d5834b2e8336cfb9d8"
+        }
+      },
+      {
+        "scenario": "navigation-desktop",
+        "status": "compared",
+        "visual": {
+          "status": "compared",
+          "width": 1440,
+          "height": 900,
+          "pixels": 1296000,
+          "changed_pixels": 149643,
+          "changed_percent": 11.5465,
+          "mean_channel_difference": 3.1488,
+          "before_sha256": "e3a6dbfce73b6ea8842323cdfbb8398224c4b72502a7e925efecb4fe60500546",
+          "after_sha256": "724f787d42eced24c370718a0044f5b6b36a2b212671aa42b079817df1209ec1"
+        },
+        "dom": {
+          "status": "compared",
+          "changed": true,
+          "before_hash": "83341f1d0408e3a6d5261c380466b5a68927fbe60d6dbf22a67c3505896963f8",
+          "after_hash": "233993e37c56e14538a50e3aec26865eb3fcfb9ef44fb97598a1b4e517889757"
+        },
+        "accessibility": {
+          "status": "compared",
+          "changed": true,
+          "before_hash": "11674163772238a1e79b847bfb486b508ee2ce5cf3d54d0d95a34d8c307d1835",
+          "after_hash": "9e2c6cecfd96fafdb37514d4e93eb330e41560b56240816e317abe37e36859ef"
+        }
+      }
+    ]
+  },
+  "fatal_error": null,
+  "browser_termination": {
+    "requested": true,
+    "pid": 153064,
+    "process_exited": true,
+    "exit_code": 0,
+    "signal": null,
+    "profile_removed": true,
+    "strategies": [
+      "Browser.close"
+    ]
+  },
+  "evidence_directory": ".vnem/giga-evolution/phase-10/browser-evidence",
+  "safe_to_claim": true,
+  "safe_claims": [
+    "The listed scenarios ran in a disclosed dedicated headless Chromium session.",
+    "The recorded actions, screenshots, DOM, accessibility, console, network, viewport, state, and image comparisons exist for the listed URLs only."
+  ],
+  "must_not_claim": [
+    "Authenticated, private-account, cookie, CAPTCHA, broad-search, stealth, cross-browser, or unlisted-route behavior was verified."
+  ],
+  "evidence_path": ".vnem/giga-evolution/phase-10/browser-evidence/evidence-pack.json",
+  "summary_path": ".vnem/giga-evolution/phase-10/browser-evidence/summary.md",
+  "evidence_path_relative": "../.vnem/tool-runs/browser-interaction/browser-interaction-1783966079980-913bc9e0/evidence-pack.json",
+  "summary_path_relative": "../.vnem/tool-runs/browser-interaction/browser-interaction-1783966079980-913bc9e0/summary.md"
+}

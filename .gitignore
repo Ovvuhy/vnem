@@ -20,7 +20,12 @@ Nunito.zip
 !.env.example
 .hermes/
 .vnem-runtime/
+.vnem/safety.json
+.vnem/safety-backups/
+.vnem/client-profiles/
 .vnem/staging/
+.vnem/dependency-security/
 discovery/candidates/link-report.json
 
 .vnem/tool-runs/
+.vnem/test-runs/

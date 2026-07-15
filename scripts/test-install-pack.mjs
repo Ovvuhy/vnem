@@ -254,11 +254,13 @@ assert(
     ".vnem/install-adoption/claude/README.md",
     ".vnem/install-adoption/antigravity/mcp.json",
     ".vnem/install-adoption/antigravity/README.md",
+    ".vnem/install-adoption/hermes/mcp.json",
+    ".vnem/install-adoption/hermes/README.md",
     ".vnem/install-adoption/generic/mcp.json",
     ".vnem/install-adoption/generic/README.md",
     ".vnem/install-adoption/prompts/vnem-agent-use-instruction.md",
     ".vnem/install-adoption/verify/install-doctor-report.json"
-  ]),
+  ].sort()),
   "install archive must extract root AGENTS.md, the read-only pack files, and the repo-local install adoption profiles."
 );
 assert(!/[A-Za-z]:\\Users\\/i.test(installArchiveText), "install archive must not contain a machine-specific Windows user path.");

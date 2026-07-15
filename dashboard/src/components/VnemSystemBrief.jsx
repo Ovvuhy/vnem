@@ -1,9 +1,11 @@
-import { AlertTriangle, ArrowRight, Boxes, CheckCircle2, Clock3, Compass, Cpu, Link2, ShieldAlert, Sparkles } from "lucide-react";
+import { AlertTriangle, ArrowRight, Boxes, CheckCircle2, Clock3, Compass, Cpu, Layers3, Link2, ShieldAlert, Sparkles, Wrench } from "lucide-react";
 import { deriveVnemSystemBrief } from "../lib/vnemSystemBrief.js";
 import { Badge } from "./PipelinePrimitives.jsx";
 
 const surfaceIcons = {
   core: Boxes,
+  tools: Wrench,
+  precision: Layers3,
   app: Compass,
   research: Sparkles,
   protection: ShieldAlert,
@@ -21,7 +23,7 @@ export function VnemSystemBrief({ telemetry, execution, summary, connector }) {
         <div className="system-brief-copy">
           <p className="eyebrow">current system map</p>
           <div className="system-brief-title-row">
-            <h2>VNEM Core, App, and AI pipeline</h2>
+            <h2>VNEM Core, Tools, App, and AI pipeline</h2>
             <Badge tone={brief.health.tone}>{brief.health.label}</Badge>
           </div>
           <p>{brief.headline}</p>

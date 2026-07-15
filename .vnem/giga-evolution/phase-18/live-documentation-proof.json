@@ -1,0 +1,87 @@
+{
+  "phase": 18,
+  "generated_at": "2026-07-14T17:21:38.368Z",
+  "scope": "real_stdio_mcp_current_documentation_with_live_official_sources",
+  "tools_exercised": [
+    "vnem_tools_documentation_source_catalog",
+    "vnem_tools_official_documentation_fetch",
+    "vnem_tools_documentation_context",
+    "vnem_tools_documentation_cache_status"
+  ],
+  "timings_ms": {
+    "catalog_ms": 15.48,
+    "official_network_fetch_ms": 69.65,
+    "official_conditional_304_ms": 38.75,
+    "community_fetch_ms": 17.82,
+    "contradiction_context_ms": 11.05,
+    "live_react_ms": 313,
+    "live_node_js_ms": 876.8,
+    "live_vite_ms": 183.48
+  },
+  "fixture_proof": {
+    "official_source_classified_by_exact_domain": true,
+    "bounded_relevant_section_extraction": true,
+    "timestamp_and_content_hash_cache": true,
+    "etag_and_last_modified_revalidation": true,
+    "stale_cache_detected": true,
+    "source_url_and_date_preserved": true,
+    "official_community_distinction": true,
+    "contradiction_detected_and_official_source_preferred": true,
+    "url_redirect_and_size_policy_enforced": true,
+    "http_success_not_authority_or_currentness_proof": true,
+    "full_page_returned_or_injected": false,
+    "real_stdio_mcp": true
+  },
+  "live_official_proof": [
+    {
+      "library": "React",
+      "url": "https://react.dev/reference/react",
+      "validated_at": "2026-07-14T17:21:37.287Z",
+      "source_date": null,
+      "content_sha256": "f051f9ea8b251c81e15db3c71e9b2c136511211d1d8b0c7fdbb8b9408d8373e6",
+      "extracted_sha256": "f15f1021ebd4cf977f1f6e253062ac4edc672e44d4fe3d0d29d1c38614af9ce8",
+      "cache_status": "network_fetched",
+      "official": true,
+      "sections": [
+        "React {/*react*/}",
+        "React DOM {/*react-dom*/}"
+      ],
+      "full_page_returned": false
+    },
+    {
+      "library": "Node.js",
+      "url": "https://nodejs.org/docs/latest/api/",
+      "validated_at": "2026-07-14T17:21:38.151Z",
+      "source_date": "2026-07-08T00:43:18.000Z",
+      "content_sha256": "20acf3dcdf03df614a9416f13e655b6d8016841dfff70c7568a01a317b6bd802",
+      "extracted_sha256": "4324857e5a2c489d9e071da243e76def5cedebfba419b656da626af07f665e55",
+      "cache_status": "network_fetched",
+      "official": true,
+      "sections": [
+        "Overview",
+        "Node.js v26.5.0 documentation"
+      ],
+      "full_page_returned": false
+    },
+    {
+      "library": "Vite",
+      "url": "https://vite.dev/guide/",
+      "validated_at": "2026-07-14T17:21:38.338Z",
+      "source_date": null,
+      "content_sha256": "4baced4529913a0ed703469e1654cf4b3266824a078a394c44333a6e118090c8",
+      "extracted_sha256": "abeb364f5d58d9b666a442e7a63e25644a8f14e0faf834cfc31e13822539d2cc",
+      "cache_status": "network_fetched",
+      "official": true,
+      "sections": [
+        "Overview",
+        "Introduction"
+      ],
+      "full_page_returned": false
+    }
+  ],
+  "limitations": [
+    "Relevance extraction and contradiction detection are bounded heuristics and do not prove semantic completeness.",
+    "A fresh official path does not prove a content publication date or requested version unless the source exposes that evidence.",
+    "The three official URLs responded in this run; future availability and content remain external."
+  ]
+}

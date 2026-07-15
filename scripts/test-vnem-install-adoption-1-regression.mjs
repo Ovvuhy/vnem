@@ -28,6 +28,7 @@ const cases = [
   "emit-codex-profile",
   "emit-claude-profile",
   "emit-antigravity-profile",
+  "emit-hermes-profile",
   "install-doctor",
   "mcp-core-install-guide",
   "mcp-tools-profile-emit",
@@ -82,12 +83,26 @@ if (casesToRun.includes("emit-antigravity-profile")) {
   assert.match(readme, /does not claim an Antigravity universal config path/i);
 }
 
+if (casesToRun.includes("emit-hermes-profile")) {
+  await emitInstallAdoptionProfile({ client: "hermes", root: rootDir });
+  const profile = readJson(".vnem/install-adoption/hermes/mcp.json");
+  assertBothServers(profile);
+  const readme = readText(".vnem/install-adoption/hermes/README.md");
+  assert.match(readme, /isolated\/importable MCP stdio profile/i);
+  assert.match(readme, /No global Hermes config is changed/i);
+}
+
 if (casesToRun.includes("install-doctor")) {
   const report = await installAdoptionDoctor({ root: rootDir, emit: true, writeReport: true });
   assert.equal(report.status, "pass");
   assert.ok(report.checks.some((check) => check.id === "core_entrypoint_tools_registered" && check.ok));
   assert.ok(report.checks.some((check) => check.id === "tools_entrypoint_tools_registered" && check.ok));
   assert.ok(report.checks.some((check) => check.id === "outside_repo_writes_default_blocked" && check.ok));
+  assert.ok(report.checks.some((check) => check.id === "managed_agent_instruction_present" && check.ok));
+  const instruction = readText(".vnem/install-adoption/prompts/vnem-agent-use-instruction.md");
+  assert.match(instruction, /VNEM is the default improvement layer/);
+  assert.match(instruction, /skip unnecessary VNEM overhead for trivial tasks/i);
+  assert.match(instruction, /preserve freedom to use the best workflow/i);
   assert.ok(report.what_is_not_proven.some((item) => /actually imported/i.test(item)));
   assert.equal(readJson(".vnem/install-adoption/verify/install-doctor-report.json").status, "pass");
 }
@@ -151,7 +166,7 @@ if (casesToRun.includes("no-hidden-control-chars")) {
 
 if (casesToRun.includes("config-parseability")) {
   await installAdoptionDoctor({ root: rootDir, emit: true, writeReport: true });
-  for (const client of ["generic", "claude", "antigravity"]) {
+  for (const client of ["generic", "claude", "antigravity", "hermes"]) {
     assertBothServers(readJson(`.vnem/install-adoption/${client}/mcp.json`));
   }
   const snippet = readText(".vnem/install-adoption/codex/config-snippet.toml");
@@ -161,7 +176,7 @@ if (casesToRun.includes("config-parseability")) {
 
 if (casesToRun.includes("both-mcps-present")) {
   await installAdoptionDoctor({ root: rootDir, emit: true, writeReport: true });
-  for (const client of ["generic", "claude", "antigravity"]) {
+  for (const client of ["generic", "claude", "antigravity", "hermes"]) {
     assertBothServers(readJson(`.vnem/install-adoption/${client}/mcp.json`));
   }
   const codex = readText(".vnem/install-adoption/codex/config-snippet.toml");
@@ -177,7 +192,7 @@ if (casesToRun.includes("portable-public-templates")) {
   assert.doesNotMatch(portableText, /C:\\VNEM/i);
   assert.doesNotMatch(portableText, new RegExp(escapeRegExp(rootDir), "i"));
   assert.doesNotMatch(portableText, new RegExp(escapeRegExp(process.execPath), "i"));
-  for (const client of ["generic", "claude", "antigravity"]) {
+  for (const client of ["generic", "claude", "antigravity", "hermes"]) {
     const profile = JSON.parse(portableFiles[path.join(".vnem", "install-adoption", client, "mcp.json")]);
     assertBothPortableServers(profile);
   }
@@ -251,6 +266,8 @@ function allProfileText() {
     ".vnem/install-adoption/claude/README.md",
     ".vnem/install-adoption/antigravity/mcp.json",
     ".vnem/install-adoption/antigravity/README.md",
+    ".vnem/install-adoption/hermes/mcp.json",
+    ".vnem/install-adoption/hermes/README.md",
     ".vnem/install-adoption/generic/mcp.json",
     ".vnem/install-adoption/generic/README.md",
     ".vnem/install-adoption/prompts/vnem-agent-use-instruction.md",

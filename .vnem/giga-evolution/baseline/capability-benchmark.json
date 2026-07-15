@@ -1,0 +1,1945 @@
+{
+  "schema_version": "1.0.0",
+  "label": "baseline",
+  "captured_at": "2026-07-11T13:54:38.350Z",
+  "branch": "feat/vnem-giga-evolution-1",
+  "head_sha": "b585a0edf52136c9000da33f41593da78963b31a",
+  "methodology": {
+    "protocol": "Model Context Protocol over stdio using @modelcontextprotocol/sdk",
+    "clients": [
+      "vnem",
+      "vnem-tools"
+    ],
+    "calls_per_scenario": 2,
+    "scoring": "Deterministic expected-field and expected-tool checks; no model-quality score",
+    "limitations": [
+      "Entrypoint routing is measured; destructive or external mutations are not executed.",
+      "Permission and rollback checks score advertised route behavior, not a real mutation.",
+      "Real Codex end-to-end trials are tracked separately from this deterministic MCP benchmark."
+    ]
+  },
+  "manifests": {
+    "core_tools": 64,
+    "tools_tools": 131
+  },
+  "aggregate": {
+    "scenario_count": 35,
+    "successful_scenarios": 19,
+    "success_rate": 0.5429,
+    "mean_score": 0.9024,
+    "latency": {
+      "runs": 35,
+      "median_ms": 7.82,
+      "worst_ms": 35.61,
+      "min_ms": 3.63
+    },
+    "output_bytes": {
+      "total": 25596,
+      "median": 716,
+      "worst": 933
+    },
+    "checks": {
+      "correct_route": {
+        "passed": 23,
+        "applicable": 35,
+        "rate": 0.6571
+      },
+      "correct_capability_selection": {
+        "passed": 23,
+        "applicable": 35,
+        "rate": 0.6571
+      },
+      "actionable_output": {
+        "passed": 35,
+        "applicable": 35,
+        "rate": 1
+      },
+      "execution_success": {
+        "passed": 35,
+        "applicable": 35,
+        "rate": 1
+      },
+      "proof_quality": {
+        "passed": 35,
+        "applicable": 35,
+        "rate": 1
+      },
+      "truthfulness": {
+        "passed": 35,
+        "applicable": 35,
+        "rate": 1
+      },
+      "unnecessary_calls": {
+        "passed": 35,
+        "applicable": 35,
+        "rate": 1
+      },
+      "error_handling": {
+        "passed": 35,
+        "applicable": 35,
+        "rate": 1
+      },
+      "permission_behavior": {
+        "passed": 11,
+        "applicable": 11,
+        "rate": 1
+      },
+      "rollback_behavior": {
+        "passed": 0,
+        "applicable": 6,
+        "rate": 0
+      }
+    },
+    "by_category": {
+      "full-stack app creation": {
+        "success": true,
+        "score": 1,
+        "latency_ms": 35.61
+      },
+      "frontend feature work": {
+        "success": true,
+        "score": 1,
+        "latency_ms": 18.59
+      },
+      "backend/API feature work": {
+        "success": false,
+        "score": 0.875,
+        "latency_ms": 10.06
+      },
+      "existing app debugging": {
+        "success": true,
+        "score": 1,
+        "latency_ms": 10.62
+      },
+      "architecture understanding": {
+        "success": true,
+        "score": 1,
+        "latency_ms": 8.9
+      },
+      "patch targeting": {
+        "success": true,
+        "score": 1,
+        "latency_ms": 5.69
+      },
+      "safe refactoring": {
+        "success": true,
+        "score": 1,
+        "latency_ms": 6.32
+      },
+      "terminal/project automation": {
+        "success": true,
+        "score": 1,
+        "latency_ms": 6.77
+      },
+      "test selection": {
+        "success": true,
+        "score": 1,
+        "latency_ms": 11.35
+      },
+      "CI failure diagnosis": {
+        "success": true,
+        "score": 1,
+        "latency_ms": 8.45
+      },
+      "coverage analysis": {
+        "success": true,
+        "score": 1,
+        "latency_ms": 7.1
+      },
+      "benchmark interpretation": {
+        "success": true,
+        "score": 1,
+        "latency_ms": 26.16
+      },
+      "browser/UI inspection": {
+        "success": true,
+        "score": 1,
+        "latency_ms": 27.85
+      },
+      "accessibility verification": {
+        "success": true,
+        "score": 1,
+        "latency_ms": 12
+      },
+      "responsive visual proof": {
+        "success": true,
+        "score": 1,
+        "latency_ms": 5.07
+      },
+      "Windows/PowerShell diagnosis": {
+        "success": false,
+        "score": 0.875,
+        "latency_ms": 7.82
+      },
+      "local process/port troubleshooting": {
+        "success": false,
+        "score": 0.75,
+        "latency_ms": 7.83
+      },
+      "GitHub branch/PR work": {
+        "success": true,
+        "score": 0.9,
+        "latency_ms": 8.86
+      },
+      "GitHub Actions diagnosis": {
+        "success": true,
+        "score": 1,
+        "latency_ms": 4.23
+      },
+      "game/modding project inspection": {
+        "success": false,
+        "score": 0.75,
+        "latency_ms": 4.03
+      },
+      "Roblox/Luau project inspection": {
+        "success": false,
+        "score": 0.75,
+        "latency_ms": 4.65
+      },
+      "dependency/install risk": {
+        "success": false,
+        "score": 0.75,
+        "latency_ms": 6.13
+      },
+      "package upgrade planning": {
+        "success": false,
+        "score": 0.7778,
+        "latency_ms": 4.66
+      },
+      "API selection and integration": {
+        "success": false,
+        "score": 0.75,
+        "latency_ms": 10.91
+      },
+      "approved live API execution": {
+        "success": false,
+        "score": 0.8889,
+        "latency_ms": 3.63
+      },
+      "skill selection": {
+        "success": false,
+        "score": 0.875,
+        "latency_ms": 4.13
+      },
+      "vetted skill execution": {
+        "success": false,
+        "score": 0.8,
+        "latency_ms": 6.09
+      },
+      "client installation": {
+        "success": false,
+        "score": 0.7,
+        "latency_ms": 10.7
+      },
+      "client rollback": {
+        "success": false,
+        "score": 0.7,
+        "latency_ms": 5.02
+      },
+      "context/session recovery": {
+        "success": true,
+        "score": 1,
+        "latency_ms": 8.89
+      },
+      "evidence-pack generation": {
+        "success": false,
+        "score": 0.875,
+        "latency_ms": 8.44
+      },
+      "no-placebo completion auditing": {
+        "success": true,
+        "score": 1,
+        "latency_ms": 8.09
+      },
+      "current documentation retrieval": {
+        "success": false,
+        "score": 0.8889,
+        "latency_ms": 5.88
+      },
+      "structured data or database work": {
+        "success": false,
+        "score": 0.7778,
+        "latency_ms": 6.31
+      },
+      "Cloudflare deployment verification": {
+        "success": true,
+        "score": 0.9,
+        "latency_ms": 6.38
+      }
+    }
+  },
+  "scenarios": [
+    {
+      "id": "full-stack-app",
+      "category": "full-stack app creation",
+      "goal": "Build a full-stack TypeScript app with a web UI, API, tests, and local proof.",
+      "expected_tools": [
+        "vnem_tools_repo_deep_map",
+        "vnem_tools_test_selection_plan"
+      ],
+      "selected_tools": [
+        "vnem_entrypoint",
+        "vnem_recommend",
+        "vnem_select_tools_for_task",
+        "vnem_build_tools_plan",
+        "vnem_tools_failure_triage",
+        "vnem_tools_patch_target_finder",
+        "vnem_tools_test_selection_plan",
+        "vnem_tools_evidence_pack",
+        "vnem_tools_no_placebo_progress_audit",
+        "vnem_tools_source_control_character_guard",
+        "vnem_decision",
+        "vnem_build_ui_quality_plan",
+        "vnem_build_research_strategy",
+        "vnem_usage_contract",
+        "vnem_tools_browser_evidence_plan",
+        "vnem_tools_browser_evidence_run",
+        "vnem_tools_ui_surface_review",
+        "vnem_tools_ui_evidence_audit",
+        "vnem_tools_entrypoint",
+        "vnem_tools_repo_deep_map",
+        "vnem_tools_code_symbol_map",
+        "vnem_tools_source_impact_trace",
+        "vnem_tools_manifest"
+      ],
+      "protocol_calls": 2,
+      "checks": {
+        "correct_route": true,
+        "correct_capability_selection": true,
+        "actionable_output": true,
+        "execution_success": true,
+        "proof_quality": true,
+        "truthfulness": true,
+        "unnecessary_calls": true,
+        "error_handling": true,
+        "permission_behavior": null,
+        "rollback_behavior": null
+      },
+      "score": 1,
+      "success": true,
+      "latency_ms": 35.61,
+      "core_latency_ms": 13.91,
+      "tools_latency_ms": 21.7,
+      "output_bytes": 898,
+      "remaining_uncertainty": []
+    },
+    {
+      "id": "frontend-feature",
+      "category": "frontend feature work",
+      "goal": "Implement a responsive React dashboard feature and verify its rendered states in a browser.",
+      "expected_tools": [
+        "vnem_tools_browser_evidence_plan",
+        "vnem_tools_ui_surface_review"
+      ],
+      "selected_tools": [
+        "vnem_entrypoint",
+        "vnem_recommend",
+        "vnem_select_tools_for_task",
+        "vnem_build_tools_plan",
+        "vnem_tools_repo_deep_map",
+        "vnem_tools_code_symbol_map",
+        "vnem_tools_patch_target_finder",
+        "vnem_tools_source_impact_trace",
+        "vnem_tools_test_selection_plan",
+        "vnem_tools_evidence_pack",
+        "vnem_decision",
+        "vnem_build_ui_quality_plan",
+        "vnem_usage_contract",
+        "vnem_tools_no_placebo_progress_audit",
+        "vnem_tools_source_control_character_guard",
+        "vnem_tools_browser_evidence_plan",
+        "vnem_tools_browser_evidence_run",
+        "vnem_tools_ui_surface_review",
+        "vnem_tools_ui_evidence_audit",
+        "vnem_tools_entrypoint",
+        "vnem_tools_manifest"
+      ],
+      "protocol_calls": 2,
+      "checks": {
+        "correct_route": true,
+        "correct_capability_selection": true,
+        "actionable_output": true,
+        "execution_success": true,
+        "proof_quality": true,
+        "truthfulness": true,
+        "unnecessary_calls": true,
+        "error_handling": true,
+        "permission_behavior": null,
+        "rollback_behavior": null
+      },
+      "score": 1,
+      "success": true,
+      "latency_ms": 18.59,
+      "core_latency_ms": 6.5,
+      "tools_latency_ms": 12.09,
+      "output_bytes": 889,
+      "remaining_uncertainty": []
+    },
+    {
+      "id": "backend-api",
+      "category": "backend/API feature work",
+      "goal": "Add a validated backend API endpoint with focused tests and evidence.",
+      "expected_tools": [
+        "vnem_tools_repo_deep_map",
+        "vnem_tools_test_selection_plan"
+      ],
+      "selected_tools": [
+        "vnem_entrypoint",
+        "vnem_usage_contract",
+        "vnem_tools_no_placebo_progress_audit",
+        "vnem_tools_source_control_character_guard",
+        "vnem_tools_evidence_pack",
+        "vnem_decision",
+        "vnem_tools_entrypoint",
+        "vnem_tools_task_progress_truth_check",
+        "vnem_tools_manifest",
+        "vnem_tools_repo_deep_map"
+      ],
+      "protocol_calls": 2,
+      "checks": {
+        "correct_route": false,
+        "correct_capability_selection": true,
+        "actionable_output": true,
+        "execution_success": true,
+        "proof_quality": true,
+        "truthfulness": true,
+        "unnecessary_calls": true,
+        "error_handling": true,
+        "permission_behavior": null,
+        "rollback_behavior": null
+      },
+      "score": 0.875,
+      "success": false,
+      "latency_ms": 10.06,
+      "core_latency_ms": 5.67,
+      "tools_latency_ms": 4.39,
+      "output_bytes": 574,
+      "remaining_uncertainty": [
+        "correct_route"
+      ]
+    },
+    {
+      "id": "debug-existing-app",
+      "category": "existing app debugging",
+      "goal": "Debug a failing authentication test from its stack trace and patch the smallest root cause.",
+      "expected_tools": [
+        "vnem_tools_failure_triage",
+        "vnem_tools_patch_target_finder"
+      ],
+      "selected_tools": [
+        "vnem_entrypoint",
+        "vnem_recommend",
+        "vnem_select_tools_for_task",
+        "vnem_build_tools_plan",
+        "vnem_tools_repo_deep_map",
+        "vnem_tools_code_symbol_map",
+        "vnem_tools_patch_target_finder",
+        "vnem_tools_source_impact_trace",
+        "vnem_tools_test_selection_plan",
+        "vnem_tools_evidence_pack",
+        "vnem_decision",
+        "vnem_usage_contract",
+        "vnem_tools_failure_triage",
+        "vnem_tools_mcp_surface_audit",
+        "vnem_tools_tool_test_coverage_map",
+        "vnem_tools_entrypoint",
+        "vnem_tools_manifest"
+      ],
+      "protocol_calls": 2,
+      "checks": {
+        "correct_route": true,
+        "correct_capability_selection": true,
+        "actionable_output": true,
+        "execution_success": true,
+        "proof_quality": true,
+        "truthfulness": true,
+        "unnecessary_calls": true,
+        "error_handling": true,
+        "permission_behavior": null,
+        "rollback_behavior": null
+      },
+      "score": 1,
+      "success": true,
+      "latency_ms": 10.62,
+      "core_latency_ms": 5.04,
+      "tools_latency_ms": 5.58,
+      "output_bytes": 845,
+      "remaining_uncertainty": []
+    },
+    {
+      "id": "architecture-understanding",
+      "category": "architecture understanding",
+      "goal": "Map this repository architecture, entrypoints, dependencies, and ownership boundaries.",
+      "expected_tools": [
+        "vnem_tools_repo_deep_map",
+        "vnem_tools_code_symbol_map"
+      ],
+      "selected_tools": [
+        "vnem_entrypoint",
+        "vnem_recommend",
+        "vnem_select_tools_for_task",
+        "vnem_build_tools_plan",
+        "vnem_tools_repo_deep_map",
+        "vnem_tools_code_symbol_map",
+        "vnem_tools_patch_target_finder",
+        "vnem_tools_source_impact_trace",
+        "vnem_tools_test_selection_plan",
+        "vnem_tools_evidence_pack",
+        "vnem_decision",
+        "vnem_usage_contract",
+        "vnem_tools_mcp_surface_audit",
+        "vnem_tools_tool_test_coverage_map",
+        "vnem_tools_entrypoint",
+        "vnem_tools_next_action_ranker",
+        "vnem_tools_manifest"
+      ],
+      "protocol_calls": 2,
+      "checks": {
+        "correct_route": true,
+        "correct_capability_selection": true,
+        "actionable_output": true,
+        "execution_success": true,
+        "proof_quality": true,
+        "truthfulness": true,
+        "unnecessary_calls": true,
+        "error_handling": true,
+        "permission_behavior": null,
+        "rollback_behavior": null
+      },
+      "score": 1,
+      "success": true,
+      "latency_ms": 8.9,
+      "core_latency_ms": 2.65,
+      "tools_latency_ms": 6.25,
+      "output_bytes": 716,
+      "remaining_uncertainty": []
+    },
+    {
+      "id": "patch-targeting",
+      "category": "patch targeting",
+      "goal": "Find the exact source function and tests to change for an MCP routing bug.",
+      "expected_tools": [
+        "vnem_tools_patch_target_finder",
+        "vnem_tools_source_impact_trace"
+      ],
+      "selected_tools": [
+        "vnem_entrypoint",
+        "vnem_recommend",
+        "vnem_select_tools_for_task",
+        "vnem_build_tools_plan",
+        "vnem_tools_repo_deep_map",
+        "vnem_tools_code_symbol_map",
+        "vnem_tools_patch_target_finder",
+        "vnem_tools_source_impact_trace",
+        "vnem_tools_test_selection_plan",
+        "vnem_tools_evidence_pack",
+        "vnem_decision",
+        "vnem_build_research_strategy",
+        "vnem_usage_contract",
+        "vnem_tools_mcp_surface_audit",
+        "vnem_tools_tool_test_coverage_map",
+        "vnem_tools_entrypoint",
+        "vnem_tools_source_control_character_guard",
+        "vnem_tools_manifest"
+      ],
+      "protocol_calls": 2,
+      "checks": {
+        "correct_route": true,
+        "correct_capability_selection": true,
+        "actionable_output": true,
+        "execution_success": true,
+        "proof_quality": true,
+        "truthfulness": true,
+        "unnecessary_calls": true,
+        "error_handling": true,
+        "permission_behavior": null,
+        "rollback_behavior": null
+      },
+      "score": 1,
+      "success": true,
+      "latency_ms": 5.69,
+      "core_latency_ms": 2.89,
+      "tools_latency_ms": 2.8,
+      "output_bytes": 927,
+      "remaining_uncertainty": []
+    },
+    {
+      "id": "safe-refactor",
+      "category": "safe refactoring",
+      "goal": "Refactor duplicated handlers without changing public MCP behavior and select regression tests.",
+      "expected_tools": [
+        "vnem_tools_code_symbol_map",
+        "vnem_tools_source_impact_trace"
+      ],
+      "selected_tools": [
+        "vnem_entrypoint",
+        "vnem_recommend",
+        "vnem_select_tools_for_task",
+        "vnem_build_tools_plan",
+        "vnem_tools_repo_deep_map",
+        "vnem_tools_code_symbol_map",
+        "vnem_tools_patch_target_finder",
+        "vnem_tools_source_impact_trace",
+        "vnem_tools_test_selection_plan",
+        "vnem_tools_evidence_pack",
+        "vnem_decision",
+        "vnem_usage_contract",
+        "vnem_tools_failure_triage",
+        "vnem_tools_mcp_surface_audit",
+        "vnem_tools_tool_test_coverage_map",
+        "vnem_tools_entrypoint",
+        "vnem_tools_source_control_character_guard",
+        "vnem_tools_manifest"
+      ],
+      "protocol_calls": 2,
+      "checks": {
+        "correct_route": true,
+        "correct_capability_selection": true,
+        "actionable_output": true,
+        "execution_success": true,
+        "proof_quality": true,
+        "truthfulness": true,
+        "unnecessary_calls": true,
+        "error_handling": true,
+        "permission_behavior": null,
+        "rollback_behavior": null
+      },
+      "score": 1,
+      "success": true,
+      "latency_ms": 6.32,
+      "core_latency_ms": 2.76,
+      "tools_latency_ms": 3.56,
+      "output_bytes": 884,
+      "remaining_uncertainty": []
+    },
+    {
+      "id": "terminal-automation",
+      "category": "terminal/project automation",
+      "goal": "Run an approved package.json validation task and preserve command evidence.",
+      "expected_tools": [
+        "vnem_tools_run_project_task",
+        "vnem_tools_evidence_pack"
+      ],
+      "selected_tools": [
+        "vnem_entrypoint",
+        "vnem_recommend",
+        "vnem_select_tools_for_task",
+        "vnem_build_tools_plan",
+        "vnem_tools_repo_deep_map",
+        "vnem_tools_code_symbol_map",
+        "vnem_tools_patch_target_finder",
+        "vnem_tools_source_impact_trace",
+        "vnem_tools_test_selection_plan",
+        "vnem_tools_evidence_pack",
+        "vnem_decision",
+        "vnem_usage_contract",
+        "vnem_tools_no_placebo_progress_audit",
+        "vnem_tools_source_control_character_guard",
+        "vnem_tools_mcp_surface_audit",
+        "vnem_tools_tool_test_coverage_map",
+        "vnem_tools_entrypoint",
+        "vnem_tools_task_progress_truth_check",
+        "vnem_tools_manifest"
+      ],
+      "protocol_calls": 2,
+      "checks": {
+        "correct_route": true,
+        "correct_capability_selection": true,
+        "actionable_output": true,
+        "execution_success": true,
+        "proof_quality": true,
+        "truthfulness": true,
+        "unnecessary_calls": true,
+        "error_handling": true,
+        "permission_behavior": true,
+        "rollback_behavior": null
+      },
+      "score": 1,
+      "success": true,
+      "latency_ms": 6.77,
+      "core_latency_ms": 2.71,
+      "tools_latency_ms": 4.06,
+      "output_bytes": 695,
+      "remaining_uncertainty": []
+    },
+    {
+      "id": "test-selection",
+      "category": "test selection",
+      "goal": "Choose the smallest sufficient tests for changes to the Tools MCP registry.",
+      "expected_tools": [
+        "vnem_tools_test_selection_plan",
+        "vnem_tools_source_impact_trace"
+      ],
+      "selected_tools": [
+        "vnem_entrypoint",
+        "vnem_recommend",
+        "vnem_select_tools_for_task",
+        "vnem_build_tools_plan",
+        "vnem_tools_repo_deep_map",
+        "vnem_tools_code_symbol_map",
+        "vnem_tools_patch_target_finder",
+        "vnem_tools_source_impact_trace",
+        "vnem_tools_test_selection_plan",
+        "vnem_tools_evidence_pack",
+        "vnem_decision",
+        "vnem_usage_contract",
+        "vnem_tools_mcp_surface_audit",
+        "vnem_tools_tool_test_coverage_map",
+        "vnem_tools_entrypoint",
+        "vnem_tools_source_control_character_guard",
+        "vnem_tools_manifest"
+      ],
+      "protocol_calls": 2,
+      "checks": {
+        "correct_route": true,
+        "correct_capability_selection": true,
+        "actionable_output": true,
+        "execution_success": true,
+        "proof_quality": true,
+        "truthfulness": true,
+        "unnecessary_calls": true,
+        "error_handling": true,
+        "permission_behavior": null,
+        "rollback_behavior": null
+      },
+      "score": 1,
+      "success": true,
+      "latency_ms": 11.35,
+      "core_latency_ms": 3.8,
+      "tools_latency_ms": 7.55,
+      "output_bytes": 831,
+      "remaining_uncertainty": []
+    },
+    {
+      "id": "ci-failure",
+      "category": "CI failure diagnosis",
+      "goal": "Diagnose a failing GitHub Actions test log and classify whether the branch caused it.",
+      "expected_tools": [
+        "vnem_tools_failure_triage",
+        "vnem_tools_github_ci_failure_triage"
+      ],
+      "selected_tools": [
+        "vnem_entrypoint",
+        "vnem_recommend",
+        "vnem_select_tools_for_task",
+        "vnem_build_tools_plan",
+        "vnem_tools_repo_deep_map",
+        "vnem_tools_code_symbol_map",
+        "vnem_tools_patch_target_finder",
+        "vnem_tools_source_impact_trace",
+        "vnem_tools_test_selection_plan",
+        "vnem_tools_evidence_pack",
+        "vnem_decision",
+        "vnem_usage_contract",
+        "vnem_tools_failure_triage",
+        "vnem_tools_github_status",
+        "vnem_tools_github_repo_inspect",
+        "vnem_tools_github_actions_status",
+        "vnem_tools_pr_quality_gate",
+        "vnem_tools_mcp_surface_audit",
+        "vnem_tools_entrypoint",
+        "vnem_tools_next_action_ranker",
+        "vnem_tools_manifest"
+      ],
+      "protocol_calls": 2,
+      "checks": {
+        "correct_route": true,
+        "correct_capability_selection": true,
+        "actionable_output": true,
+        "execution_success": true,
+        "proof_quality": true,
+        "truthfulness": true,
+        "unnecessary_calls": true,
+        "error_handling": true,
+        "permission_behavior": null,
+        "rollback_behavior": null
+      },
+      "score": 1,
+      "success": true,
+      "latency_ms": 8.45,
+      "core_latency_ms": 3.64,
+      "tools_latency_ms": 4.81,
+      "output_bytes": 868,
+      "remaining_uncertainty": []
+    },
+    {
+      "id": "coverage-analysis",
+      "category": "coverage analysis",
+      "goal": "Audit MCP tool behavior coverage and find registration-only tools.",
+      "expected_tools": [
+        "vnem_tools_tool_test_coverage_map",
+        "vnem_tools_mcp_surface_audit"
+      ],
+      "selected_tools": [
+        "vnem_entrypoint",
+        "vnem_recommend",
+        "vnem_select_tools_for_task",
+        "vnem_build_tools_plan",
+        "vnem_tools_repo_deep_map",
+        "vnem_tools_code_symbol_map",
+        "vnem_tools_patch_target_finder",
+        "vnem_tools_source_impact_trace",
+        "vnem_tools_test_selection_plan",
+        "vnem_tools_evidence_pack",
+        "vnem_decision",
+        "vnem_usage_contract",
+        "vnem_tools_no_placebo_progress_audit",
+        "vnem_tools_source_control_character_guard",
+        "vnem_tools_mcp_surface_audit",
+        "vnem_tools_tool_test_coverage_map",
+        "vnem_tools_entrypoint",
+        "vnem_tools_manifest"
+      ],
+      "protocol_calls": 2,
+      "checks": {
+        "correct_route": true,
+        "correct_capability_selection": true,
+        "actionable_output": true,
+        "execution_success": true,
+        "proof_quality": true,
+        "truthfulness": true,
+        "unnecessary_calls": true,
+        "error_handling": true,
+        "permission_behavior": null,
+        "rollback_behavior": null
+      },
+      "score": 1,
+      "success": true,
+      "latency_ms": 7.1,
+      "core_latency_ms": 1.96,
+      "tools_latency_ms": 5.14,
+      "output_bytes": 923,
+      "remaining_uncertainty": []
+    },
+    {
+      "id": "benchmark-interpretation",
+      "category": "benchmark interpretation",
+      "goal": "Interpret baseline versus current benchmark results without inventing improvement claims.",
+      "expected_tools": [
+        "vnem_tools_evidence_pack",
+        "vnem_tools_task_progress_truth_check"
+      ],
+      "selected_tools": [
+        "vnem_entrypoint",
+        "vnem_recommend",
+        "vnem_select_tools_for_task",
+        "vnem_build_tools_plan",
+        "vnem_decision",
+        "vnem_build_research_strategy",
+        "vnem_usage_contract",
+        "vnem_tools_entrypoint",
+        "vnem_tools_repo_deep_map",
+        "vnem_tools_next_action_ranker",
+        "vnem_tools_code_symbol_map",
+        "vnem_tools_manifest",
+        "vnem_tools_evidence_pack"
+      ],
+      "protocol_calls": 2,
+      "checks": {
+        "correct_route": true,
+        "correct_capability_selection": true,
+        "actionable_output": true,
+        "execution_success": true,
+        "proof_quality": true,
+        "truthfulness": true,
+        "unnecessary_calls": true,
+        "error_handling": true,
+        "permission_behavior": null,
+        "rollback_behavior": null
+      },
+      "score": 1,
+      "success": true,
+      "latency_ms": 26.16,
+      "core_latency_ms": 6.75,
+      "tools_latency_ms": 19.41,
+      "output_bytes": 496,
+      "remaining_uncertainty": []
+    },
+    {
+      "id": "browser-inspection",
+      "category": "browser/UI inspection",
+      "goal": "Inspect a localhost UI with screenshots, DOM evidence, and console limitations.",
+      "expected_tools": [
+        "vnem_tools_browser_evidence_plan",
+        "vnem_tools_browser_evidence_run"
+      ],
+      "selected_tools": [
+        "vnem_entrypoint",
+        "vnem_recommend",
+        "vnem_select_tools_for_task",
+        "vnem_build_tools_plan",
+        "vnem_tools_no_placebo_progress_audit",
+        "vnem_tools_source_control_character_guard",
+        "vnem_tools_evidence_pack",
+        "vnem_tools_browser_evidence_plan",
+        "vnem_tools_browser_evidence_run",
+        "vnem_tools_ui_surface_review",
+        "vnem_decision",
+        "vnem_build_ui_quality_plan",
+        "vnem_usage_contract",
+        "vnem_tools_ui_evidence_audit",
+        "vnem_tools_entrypoint",
+        "vnem_tools_repo_deep_map",
+        "vnem_tools_next_action_ranker",
+        "vnem_tools_code_symbol_map",
+        "vnem_tools_task_progress_truth_check",
+        "vnem_tools_manifest"
+      ],
+      "protocol_calls": 2,
+      "checks": {
+        "correct_route": true,
+        "correct_capability_selection": true,
+        "actionable_output": true,
+        "execution_success": true,
+        "proof_quality": true,
+        "truthfulness": true,
+        "unnecessary_calls": true,
+        "error_handling": true,
+        "permission_behavior": true,
+        "rollback_behavior": null
+      },
+      "score": 1,
+      "success": true,
+      "latency_ms": 27.85,
+      "core_latency_ms": 17.2,
+      "tools_latency_ms": 10.65,
+      "output_bytes": 901,
+      "remaining_uncertainty": []
+    },
+    {
+      "id": "accessibility",
+      "category": "accessibility verification",
+      "goal": "Verify keyboard, semantics, labels, focus, and accessibility evidence for a local UI.",
+      "expected_tools": [
+        "vnem_tools_browser_accessibility_audit",
+        "vnem_tools_ui_evidence_audit"
+      ],
+      "selected_tools": [
+        "vnem_entrypoint",
+        "vnem_recommend",
+        "vnem_select_tools_for_task",
+        "vnem_build_tools_plan",
+        "vnem_tools_no_placebo_progress_audit",
+        "vnem_tools_source_control_character_guard",
+        "vnem_tools_evidence_pack",
+        "vnem_tools_browser_evidence_plan",
+        "vnem_tools_browser_evidence_run",
+        "vnem_tools_ui_surface_review",
+        "vnem_decision",
+        "vnem_build_ui_quality_plan",
+        "vnem_usage_contract",
+        "vnem_tools_ui_evidence_audit",
+        "vnem_tools_entrypoint",
+        "vnem_tools_task_progress_truth_check",
+        "vnem_tools_manifest",
+        "vnem_tools_repo_deep_map"
+      ],
+      "protocol_calls": 2,
+      "checks": {
+        "correct_route": true,
+        "correct_capability_selection": true,
+        "actionable_output": true,
+        "execution_success": true,
+        "proof_quality": true,
+        "truthfulness": true,
+        "unnecessary_calls": true,
+        "error_handling": true,
+        "permission_behavior": null,
+        "rollback_behavior": null
+      },
+      "score": 1,
+      "success": true,
+      "latency_ms": 12,
+      "core_latency_ms": 5.32,
+      "tools_latency_ms": 6.68,
+      "output_bytes": 926,
+      "remaining_uncertainty": []
+    },
+    {
+      "id": "responsive-proof",
+      "category": "responsive visual proof",
+      "goal": "Capture and compare desktop and mobile viewport proof for a responsive page.",
+      "expected_tools": [
+        "vnem_tools_browser_evidence_run",
+        "vnem_tools_browser_compare_snapshots"
+      ],
+      "selected_tools": [
+        "vnem_entrypoint",
+        "vnem_recommend",
+        "vnem_select_tools_for_task",
+        "vnem_build_tools_plan",
+        "vnem_tools_no_placebo_progress_audit",
+        "vnem_tools_source_control_character_guard",
+        "vnem_tools_evidence_pack",
+        "vnem_tools_browser_evidence_plan",
+        "vnem_tools_browser_evidence_run",
+        "vnem_tools_ui_surface_review",
+        "vnem_decision",
+        "vnem_build_ui_quality_plan",
+        "vnem_usage_contract",
+        "vnem_tools_ui_evidence_audit",
+        "vnem_tools_entrypoint",
+        "vnem_tools_manifest",
+        "vnem_tools_repo_deep_map"
+      ],
+      "protocol_calls": 2,
+      "checks": {
+        "correct_route": true,
+        "correct_capability_selection": true,
+        "actionable_output": true,
+        "execution_success": true,
+        "proof_quality": true,
+        "truthfulness": true,
+        "unnecessary_calls": true,
+        "error_handling": true,
+        "permission_behavior": true,
+        "rollback_behavior": null
+      },
+      "score": 1,
+      "success": true,
+      "latency_ms": 5.07,
+      "core_latency_ms": 1.89,
+      "tools_latency_ms": 3.18,
+      "output_bytes": 862,
+      "remaining_uncertainty": []
+    },
+    {
+      "id": "windows-diagnosis",
+      "category": "Windows/PowerShell diagnosis",
+      "goal": "Diagnose a Windows PowerShell path and process failure using read-only system evidence.",
+      "expected_tools": [
+        "vnem_tools_windows_system_snapshot",
+        "vnem_tools_process_inspect"
+      ],
+      "selected_tools": [
+        "vnem_entrypoint",
+        "vnem_recommend",
+        "vnem_select_tools_for_task",
+        "vnem_build_tools_plan",
+        "vnem_tools_failure_triage",
+        "vnem_tools_patch_target_finder",
+        "vnem_tools_test_selection_plan",
+        "vnem_tools_evidence_pack",
+        "vnem_tools_no_placebo_progress_audit",
+        "vnem_tools_source_control_character_guard",
+        "vnem_decision",
+        "vnem_usage_contract",
+        "vnem_tools_entrypoint",
+        "vnem_tools_task_progress_truth_check",
+        "vnem_tools_manifest",
+        "vnem_tools_repo_deep_map"
+      ],
+      "protocol_calls": 2,
+      "checks": {
+        "correct_route": true,
+        "correct_capability_selection": false,
+        "actionable_output": true,
+        "execution_success": true,
+        "proof_quality": true,
+        "truthfulness": true,
+        "unnecessary_calls": true,
+        "error_handling": true,
+        "permission_behavior": null,
+        "rollback_behavior": null
+      },
+      "score": 0.875,
+      "success": false,
+      "latency_ms": 7.82,
+      "core_latency_ms": 2.05,
+      "tools_latency_ms": 5.77,
+      "output_bytes": 846,
+      "remaining_uncertainty": [
+        "correct_capability_selection"
+      ]
+    },
+    {
+      "id": "process-port",
+      "category": "local process/port troubleshooting",
+      "goal": "Find which local process owns port 9099 and recommend a safe next step.",
+      "expected_tools": [
+        "vnem_tools_port_inspect",
+        "vnem_tools_process_inspect"
+      ],
+      "selected_tools": [
+        "vnem_entrypoint",
+        "vnem_usage_contract",
+        "vnem_decision",
+        "vnem_tools_entrypoint",
+        "vnem_tools_repo_deep_map",
+        "vnem_tools_next_action_ranker",
+        "vnem_tools_code_symbol_map",
+        "vnem_tools_manifest",
+        "vnem_tools_evidence_pack"
+      ],
+      "protocol_calls": 2,
+      "checks": {
+        "correct_route": false,
+        "correct_capability_selection": false,
+        "actionable_output": true,
+        "execution_success": true,
+        "proof_quality": true,
+        "truthfulness": true,
+        "unnecessary_calls": true,
+        "error_handling": true,
+        "permission_behavior": null,
+        "rollback_behavior": null
+      },
+      "score": 0.75,
+      "success": false,
+      "latency_ms": 7.83,
+      "core_latency_ms": 1.57,
+      "tools_latency_ms": 6.26,
+      "output_bytes": 495,
+      "remaining_uncertainty": [
+        "correct_route",
+        "correct_capability_selection"
+      ]
+    },
+    {
+      "id": "github-pr",
+      "category": "GitHub branch/PR work",
+      "goal": "Inspect branch state, push an approved feature branch, and verify the PR head SHA.",
+      "expected_tools": [
+        "vnem_tools_github_status",
+        "vnem_tools_pr_quality_gate"
+      ],
+      "selected_tools": [
+        "vnem_entrypoint",
+        "vnem_recommend",
+        "vnem_select_tools_for_task",
+        "vnem_build_tools_plan",
+        "vnem_tools_no_placebo_progress_audit",
+        "vnem_tools_source_control_character_guard",
+        "vnem_tools_evidence_pack",
+        "vnem_tools_github_status",
+        "vnem_tools_github_repo_inspect",
+        "vnem_tools_github_actions_status",
+        "vnem_decision",
+        "vnem_usage_contract",
+        "vnem_tools_pr_quality_gate",
+        "vnem_tools_entrypoint",
+        "vnem_tools_repo_deep_map",
+        "vnem_tools_next_action_ranker",
+        "vnem_tools_code_symbol_map",
+        "vnem_tools_patch_target_finder",
+        "vnem_tools_source_impact_trace",
+        "vnem_tools_manifest"
+      ],
+      "protocol_calls": 2,
+      "checks": {
+        "correct_route": true,
+        "correct_capability_selection": true,
+        "actionable_output": true,
+        "execution_success": true,
+        "proof_quality": true,
+        "truthfulness": true,
+        "unnecessary_calls": true,
+        "error_handling": true,
+        "permission_behavior": true,
+        "rollback_behavior": false
+      },
+      "score": 0.9,
+      "success": true,
+      "latency_ms": 8.86,
+      "core_latency_ms": 3.75,
+      "tools_latency_ms": 5.11,
+      "output_bytes": 885,
+      "remaining_uncertainty": [
+        "rollback_behavior"
+      ]
+    },
+    {
+      "id": "github-actions",
+      "category": "GitHub Actions diagnosis",
+      "goal": "Inspect the latest Actions run, classify a failure, and avoid fake remote proof.",
+      "expected_tools": [
+        "vnem_tools_github_actions_status",
+        "vnem_tools_github_ci_failure_triage"
+      ],
+      "selected_tools": [
+        "vnem_entrypoint",
+        "vnem_recommend",
+        "vnem_select_tools_for_task",
+        "vnem_build_tools_plan",
+        "vnem_tools_failure_triage",
+        "vnem_tools_patch_target_finder",
+        "vnem_tools_test_selection_plan",
+        "vnem_tools_evidence_pack",
+        "vnem_tools_no_placebo_progress_audit",
+        "vnem_tools_source_control_character_guard",
+        "vnem_decision",
+        "vnem_build_research_strategy",
+        "vnem_usage_contract",
+        "vnem_tools_github_status",
+        "vnem_tools_github_repo_inspect",
+        "vnem_tools_github_actions_status",
+        "vnem_tools_pr_quality_gate",
+        "vnem_tools_entrypoint",
+        "vnem_tools_repo_deep_map",
+        "vnem_tools_next_action_ranker",
+        "vnem_tools_code_symbol_map",
+        "vnem_tools_manifest"
+      ],
+      "protocol_calls": 2,
+      "checks": {
+        "correct_route": true,
+        "correct_capability_selection": true,
+        "actionable_output": true,
+        "execution_success": true,
+        "proof_quality": true,
+        "truthfulness": true,
+        "unnecessary_calls": true,
+        "error_handling": true,
+        "permission_behavior": null,
+        "rollback_behavior": null
+      },
+      "score": 1,
+      "success": true,
+      "latency_ms": 4.23,
+      "core_latency_ms": 2.1,
+      "tools_latency_ms": 2.13,
+      "output_bytes": 889,
+      "remaining_uncertainty": []
+    },
+    {
+      "id": "game-modding",
+      "category": "game/modding project inspection",
+      "goal": "Inspect a local game mod project, configs, logs, and compatibility risks without launching installers.",
+      "expected_tools": [
+        "vnem_tools_game_project_inspect",
+        "vnem_tools_game_config_audit"
+      ],
+      "selected_tools": [
+        "vnem_entrypoint",
+        "vnem_usage_contract",
+        "vnem_decision",
+        "vnem_tools_entrypoint",
+        "vnem_tools_repo_deep_map",
+        "vnem_tools_next_action_ranker",
+        "vnem_tools_code_symbol_map",
+        "vnem_tools_manifest",
+        "vnem_tools_evidence_pack"
+      ],
+      "protocol_calls": 2,
+      "checks": {
+        "correct_route": false,
+        "correct_capability_selection": false,
+        "actionable_output": true,
+        "execution_success": true,
+        "proof_quality": true,
+        "truthfulness": true,
+        "unnecessary_calls": true,
+        "error_handling": true,
+        "permission_behavior": null,
+        "rollback_behavior": null
+      },
+      "score": 0.75,
+      "success": false,
+      "latency_ms": 4.03,
+      "core_latency_ms": 2.1,
+      "tools_latency_ms": 1.93,
+      "output_bytes": 495,
+      "remaining_uncertainty": [
+        "correct_route",
+        "correct_capability_selection"
+      ]
+    },
+    {
+      "id": "roblox-luau",
+      "category": "Roblox/Luau project inspection",
+      "goal": "Map a Roblox Luau project, services, remotes, modules, and risky trust boundaries.",
+      "expected_tools": [
+        "vnem_tools_roblox_project_inspect",
+        "vnem_tools_luau_symbol_map"
+      ],
+      "selected_tools": [
+        "vnem_entrypoint",
+        "vnem_usage_contract",
+        "vnem_decision",
+        "vnem_tools_entrypoint",
+        "vnem_tools_repo_deep_map",
+        "vnem_tools_next_action_ranker",
+        "vnem_tools_code_symbol_map",
+        "vnem_tools_manifest",
+        "vnem_tools_evidence_pack"
+      ],
+      "protocol_calls": 2,
+      "checks": {
+        "correct_route": false,
+        "correct_capability_selection": false,
+        "actionable_output": true,
+        "execution_success": true,
+        "proof_quality": true,
+        "truthfulness": true,
+        "unnecessary_calls": true,
+        "error_handling": true,
+        "permission_behavior": null,
+        "rollback_behavior": null
+      },
+      "score": 0.75,
+      "success": false,
+      "latency_ms": 4.65,
+      "core_latency_ms": 1.2,
+      "tools_latency_ms": 3.45,
+      "output_bytes": 495,
+      "remaining_uncertainty": [
+        "correct_route",
+        "correct_capability_selection"
+      ]
+    },
+    {
+      "id": "dependency-risk",
+      "category": "dependency/install risk",
+      "goal": "Audit dependency and install-script risk without installing packages.",
+      "expected_tools": [
+        "vnem_tools_dependency_scan",
+        "vnem_tools_package_risk_audit"
+      ],
+      "selected_tools": [
+        "vnem_entrypoint",
+        "vnem_usage_contract",
+        "vnem_tools_no_placebo_progress_audit",
+        "vnem_tools_source_control_character_guard",
+        "vnem_tools_evidence_pack",
+        "vnem_decision",
+        "vnem_tools_entrypoint",
+        "vnem_tools_repo_deep_map",
+        "vnem_tools_next_action_ranker",
+        "vnem_tools_code_symbol_map",
+        "vnem_tools_manifest"
+      ],
+      "protocol_calls": 2,
+      "checks": {
+        "correct_route": false,
+        "correct_capability_selection": false,
+        "actionable_output": true,
+        "execution_success": true,
+        "proof_quality": true,
+        "truthfulness": true,
+        "unnecessary_calls": true,
+        "error_handling": true,
+        "permission_behavior": null,
+        "rollback_behavior": null
+      },
+      "score": 0.75,
+      "success": false,
+      "latency_ms": 6.13,
+      "core_latency_ms": 1.51,
+      "tools_latency_ms": 4.62,
+      "output_bytes": 595,
+      "remaining_uncertainty": [
+        "correct_route",
+        "correct_capability_selection"
+      ]
+    },
+    {
+      "id": "package-upgrade",
+      "category": "package upgrade planning",
+      "goal": "Plan a safe package upgrade with changelog, compatibility, tests, and rollback.",
+      "expected_tools": [
+        "vnem_tools_package_upgrade_plan",
+        "vnem_tools_dependency_scan"
+      ],
+      "selected_tools": [
+        "vnem_entrypoint",
+        "vnem_recommend",
+        "vnem_select_tools_for_task",
+        "vnem_build_tools_plan",
+        "vnem_tools_repo_deep_map",
+        "vnem_tools_code_symbol_map",
+        "vnem_tools_patch_target_finder",
+        "vnem_tools_source_impact_trace",
+        "vnem_tools_test_selection_plan",
+        "vnem_tools_evidence_pack",
+        "vnem_decision",
+        "vnem_usage_contract",
+        "vnem_tools_mcp_surface_audit",
+        "vnem_tools_tool_test_coverage_map",
+        "vnem_tools_entrypoint",
+        "vnem_tools_next_action_ranker",
+        "vnem_tools_manifest"
+      ],
+      "protocol_calls": 2,
+      "checks": {
+        "correct_route": true,
+        "correct_capability_selection": false,
+        "actionable_output": true,
+        "execution_success": true,
+        "proof_quality": true,
+        "truthfulness": true,
+        "unnecessary_calls": true,
+        "error_handling": true,
+        "permission_behavior": null,
+        "rollback_behavior": false
+      },
+      "score": 0.7778,
+      "success": false,
+      "latency_ms": 4.66,
+      "core_latency_ms": 1.47,
+      "tools_latency_ms": 3.19,
+      "output_bytes": 716,
+      "remaining_uncertainty": [
+        "correct_capability_selection",
+        "rollback_behavior"
+      ]
+    },
+    {
+      "id": "api-selection",
+      "category": "API selection and integration",
+      "goal": "Select a suitable API, review trust and auth needs, then build an integration plan.",
+      "expected_tools": [
+        "vnem_tools_api_catalog_search",
+        "vnem_tools_api_integration_plan"
+      ],
+      "selected_tools": [
+        "vnem_entrypoint",
+        "vnem_usage_contract",
+        "vnem_decision",
+        "vnem_tools_entrypoint",
+        "vnem_tools_repo_deep_map",
+        "vnem_tools_code_symbol_map",
+        "vnem_tools_patch_target_finder",
+        "vnem_tools_source_impact_trace",
+        "vnem_tools_test_selection_plan",
+        "vnem_tools_evidence_pack",
+        "vnem_tools_manifest"
+      ],
+      "protocol_calls": 2,
+      "checks": {
+        "correct_route": false,
+        "correct_capability_selection": false,
+        "actionable_output": true,
+        "execution_success": true,
+        "proof_quality": true,
+        "truthfulness": true,
+        "unnecessary_calls": true,
+        "error_handling": true,
+        "permission_behavior": null,
+        "rollback_behavior": null
+      },
+      "score": 0.75,
+      "success": false,
+      "latency_ms": 10.91,
+      "core_latency_ms": 2.85,
+      "tools_latency_ms": 8.06,
+      "output_bytes": 586,
+      "remaining_uncertainty": [
+        "correct_route",
+        "correct_capability_selection"
+      ]
+    },
+    {
+      "id": "live-api",
+      "category": "approved live API execution",
+      "goal": "Execute an explicitly approved allowlisted GET API request with redaction and evidence.",
+      "expected_tools": [
+        "vnem_tools_api_request",
+        "vnem_tools_evidence_pack"
+      ],
+      "selected_tools": [
+        "vnem_entrypoint",
+        "vnem_usage_contract",
+        "vnem_tools_no_placebo_progress_audit",
+        "vnem_tools_source_control_character_guard",
+        "vnem_tools_evidence_pack",
+        "vnem_decision",
+        "vnem_tools_entrypoint",
+        "vnem_tools_task_progress_truth_check",
+        "vnem_tools_manifest",
+        "vnem_tools_repo_deep_map"
+      ],
+      "protocol_calls": 2,
+      "checks": {
+        "correct_route": false,
+        "correct_capability_selection": true,
+        "actionable_output": true,
+        "execution_success": true,
+        "proof_quality": true,
+        "truthfulness": true,
+        "unnecessary_calls": true,
+        "error_handling": true,
+        "permission_behavior": true,
+        "rollback_behavior": null
+      },
+      "score": 0.8889,
+      "success": false,
+      "latency_ms": 3.63,
+      "core_latency_ms": 1.46,
+      "tools_latency_ms": 2.17,
+      "output_bytes": 574,
+      "remaining_uncertainty": [
+        "correct_route"
+      ]
+    },
+    {
+      "id": "skill-selection",
+      "category": "skill selection",
+      "goal": "Select a vetted skill for a repository task and explain why it fits.",
+      "expected_tools": [
+        "vnem_tools_skill_catalog_search",
+        "vnem_tools_skill_recommend"
+      ],
+      "selected_tools": [
+        "vnem_entrypoint",
+        "vnem_recommend",
+        "vnem_select_tools_for_task",
+        "vnem_build_tools_plan",
+        "vnem_tools_repo_deep_map",
+        "vnem_tools_code_symbol_map",
+        "vnem_tools_patch_target_finder",
+        "vnem_tools_source_impact_trace",
+        "vnem_tools_test_selection_plan",
+        "vnem_tools_evidence_pack",
+        "vnem_decision",
+        "vnem_usage_contract",
+        "vnem_tools_mcp_surface_audit",
+        "vnem_tools_tool_test_coverage_map",
+        "vnem_tools_entrypoint",
+        "vnem_tools_next_action_ranker",
+        "vnem_tools_manifest"
+      ],
+      "protocol_calls": 2,
+      "checks": {
+        "correct_route": true,
+        "correct_capability_selection": false,
+        "actionable_output": true,
+        "execution_success": true,
+        "proof_quality": true,
+        "truthfulness": true,
+        "unnecessary_calls": true,
+        "error_handling": true,
+        "permission_behavior": null,
+        "rollback_behavior": null
+      },
+      "score": 0.875,
+      "success": false,
+      "latency_ms": 4.13,
+      "core_latency_ms": 1.67,
+      "tools_latency_ms": 2.46,
+      "output_bytes": 716,
+      "remaining_uncertainty": [
+        "correct_capability_selection"
+      ]
+    },
+    {
+      "id": "skill-execution",
+      "category": "vetted skill execution",
+      "goal": "Execute a reviewed local skill with bounded inputs, approval, and proof.",
+      "expected_tools": [
+        "vnem_tools_skill_execute",
+        "vnem_tools_evidence_pack"
+      ],
+      "selected_tools": [
+        "vnem_entrypoint",
+        "vnem_usage_contract",
+        "vnem_tools_no_placebo_progress_audit",
+        "vnem_tools_source_control_character_guard",
+        "vnem_tools_evidence_pack",
+        "vnem_decision",
+        "vnem_tools_entrypoint",
+        "vnem_tools_repo_deep_map",
+        "vnem_tools_next_action_ranker",
+        "vnem_tools_code_symbol_map",
+        "vnem_tools_manifest"
+      ],
+      "protocol_calls": 2,
+      "checks": {
+        "correct_route": false,
+        "correct_capability_selection": true,
+        "actionable_output": true,
+        "execution_success": true,
+        "proof_quality": true,
+        "truthfulness": true,
+        "unnecessary_calls": true,
+        "error_handling": true,
+        "permission_behavior": true,
+        "rollback_behavior": false
+      },
+      "score": 0.8,
+      "success": false,
+      "latency_ms": 6.09,
+      "core_latency_ms": 1.4,
+      "tools_latency_ms": 4.69,
+      "output_bytes": 595,
+      "remaining_uncertainty": [
+        "correct_route",
+        "rollback_behavior"
+      ]
+    },
+    {
+      "id": "client-install",
+      "category": "client installation",
+      "goal": "Install VNEM into a detected Codex client with backup, validation, and no config clobbering.",
+      "expected_tools": [
+        "vnem_tools_client_detect",
+        "vnem_tools_client_install"
+      ],
+      "selected_tools": [
+        "vnem_entrypoint",
+        "vnem_usage_contract",
+        "vnem_decision",
+        "vnem_tools_entrypoint",
+        "vnem_tools_repo_deep_map",
+        "vnem_tools_next_action_ranker",
+        "vnem_tools_code_symbol_map",
+        "vnem_tools_manifest",
+        "vnem_tools_evidence_pack"
+      ],
+      "protocol_calls": 2,
+      "checks": {
+        "correct_route": false,
+        "correct_capability_selection": false,
+        "actionable_output": true,
+        "execution_success": true,
+        "proof_quality": true,
+        "truthfulness": true,
+        "unnecessary_calls": true,
+        "error_handling": true,
+        "permission_behavior": true,
+        "rollback_behavior": false
+      },
+      "score": 0.7,
+      "success": false,
+      "latency_ms": 10.7,
+      "core_latency_ms": 4.71,
+      "tools_latency_ms": 5.99,
+      "output_bytes": 495,
+      "remaining_uncertainty": [
+        "correct_route",
+        "correct_capability_selection",
+        "rollback_behavior"
+      ]
+    },
+    {
+      "id": "client-rollback",
+      "category": "client rollback",
+      "goal": "Roll back a VNEM client config change from its exact backup and verify restoration.",
+      "expected_tools": [
+        "vnem_tools_client_rollback",
+        "vnem_tools_client_verify"
+      ],
+      "selected_tools": [
+        "vnem_entrypoint",
+        "vnem_usage_contract",
+        "vnem_tools_no_placebo_progress_audit",
+        "vnem_tools_source_control_character_guard",
+        "vnem_tools_evidence_pack",
+        "vnem_decision",
+        "vnem_tools_entrypoint",
+        "vnem_tools_repo_deep_map",
+        "vnem_tools_next_action_ranker",
+        "vnem_tools_code_symbol_map",
+        "vnem_tools_manifest"
+      ],
+      "protocol_calls": 2,
+      "checks": {
+        "correct_route": false,
+        "correct_capability_selection": false,
+        "actionable_output": true,
+        "execution_success": true,
+        "proof_quality": true,
+        "truthfulness": true,
+        "unnecessary_calls": true,
+        "error_handling": true,
+        "permission_behavior": true,
+        "rollback_behavior": false
+      },
+      "score": 0.7,
+      "success": false,
+      "latency_ms": 5.02,
+      "core_latency_ms": 2.05,
+      "tools_latency_ms": 2.97,
+      "output_bytes": 595,
+      "remaining_uncertainty": [
+        "correct_route",
+        "correct_capability_selection",
+        "rollback_behavior"
+      ]
+    },
+    {
+      "id": "session-recovery",
+      "category": "context/session recovery",
+      "goal": "Recover local branch, HEAD, dirty files, unpushed commits, and the safe next step after context loss.",
+      "expected_tools": [
+        "vnem_tools_local_session_recovery"
+      ],
+      "selected_tools": [
+        "vnem_entrypoint",
+        "vnem_recommend",
+        "vnem_select_tools_for_task",
+        "vnem_build_tools_plan",
+        "vnem_tools_local_session_recovery",
+        "vnem_tools_repo_workflow_orchestrator",
+        "vnem_tools_github_status",
+        "vnem_tools_github_repo_inspect",
+        "vnem_tools_github_actions_status",
+        "vnem_tools_pr_quality_gate",
+        "vnem_decision",
+        "vnem_usage_contract",
+        "vnem_tools_evidence_pack",
+        "vnem_tools_entrypoint",
+        "vnem_tools_repo_deep_map",
+        "vnem_tools_next_action_ranker",
+        "vnem_tools_code_symbol_map",
+        "vnem_tools_manifest"
+      ],
+      "protocol_calls": 2,
+      "checks": {
+        "correct_route": true,
+        "correct_capability_selection": true,
+        "actionable_output": true,
+        "execution_success": true,
+        "proof_quality": true,
+        "truthfulness": true,
+        "unnecessary_calls": true,
+        "error_handling": true,
+        "permission_behavior": null,
+        "rollback_behavior": null
+      },
+      "score": 1,
+      "success": true,
+      "latency_ms": 8.89,
+      "core_latency_ms": 5.05,
+      "tools_latency_ms": 3.84,
+      "output_bytes": 801,
+      "remaining_uncertainty": []
+    },
+    {
+      "id": "evidence-pack",
+      "category": "evidence-pack generation",
+      "goal": "Build a compact evidence packet with safe claims and explicit not-proven boundaries.",
+      "expected_tools": [
+        "vnem_tools_evidence_pack"
+      ],
+      "selected_tools": [
+        "vnem_entrypoint",
+        "vnem_usage_contract",
+        "vnem_tools_no_placebo_progress_audit",
+        "vnem_tools_source_control_character_guard",
+        "vnem_tools_evidence_pack",
+        "vnem_decision",
+        "vnem_tools_entrypoint",
+        "vnem_tools_task_progress_truth_check",
+        "vnem_tools_repo_deep_map",
+        "vnem_tools_code_symbol_map",
+        "vnem_tools_patch_target_finder",
+        "vnem_tools_source_impact_trace",
+        "vnem_tools_test_selection_plan",
+        "vnem_tools_manifest"
+      ],
+      "protocol_calls": 2,
+      "checks": {
+        "correct_route": false,
+        "correct_capability_selection": true,
+        "actionable_output": true,
+        "execution_success": true,
+        "proof_quality": true,
+        "truthfulness": true,
+        "unnecessary_calls": true,
+        "error_handling": true,
+        "permission_behavior": null,
+        "rollback_behavior": null
+      },
+      "score": 0.875,
+      "success": false,
+      "latency_ms": 8.44,
+      "core_latency_ms": 3.11,
+      "tools_latency_ms": 5.33,
+      "output_bytes": 692,
+      "remaining_uncertainty": [
+        "correct_route"
+      ]
+    },
+    {
+      "id": "no-placebo",
+      "category": "no-placebo completion auditing",
+      "goal": "Audit whether a claimed MCP feature has real handlers, behavior tests, and live proof.",
+      "expected_tools": [
+        "vnem_tools_no_placebo_progress_audit",
+        "vnem_tools_task_progress_truth_check"
+      ],
+      "selected_tools": [
+        "vnem_entrypoint",
+        "vnem_recommend",
+        "vnem_select_tools_for_task",
+        "vnem_build_tools_plan",
+        "vnem_tools_repo_deep_map",
+        "vnem_tools_code_symbol_map",
+        "vnem_tools_patch_target_finder",
+        "vnem_tools_source_impact_trace",
+        "vnem_tools_test_selection_plan",
+        "vnem_tools_evidence_pack",
+        "vnem_decision",
+        "vnem_usage_contract",
+        "vnem_tools_no_placebo_progress_audit",
+        "vnem_tools_source_control_character_guard",
+        "vnem_tools_mcp_surface_audit",
+        "vnem_tools_tool_test_coverage_map",
+        "vnem_tools_entrypoint",
+        "vnem_tools_task_progress_truth_check",
+        "vnem_tools_manifest"
+      ],
+      "protocol_calls": 2,
+      "checks": {
+        "correct_route": true,
+        "correct_capability_selection": true,
+        "actionable_output": true,
+        "execution_success": true,
+        "proof_quality": true,
+        "truthfulness": true,
+        "unnecessary_calls": true,
+        "error_handling": true,
+        "permission_behavior": null,
+        "rollback_behavior": null
+      },
+      "score": 1,
+      "success": true,
+      "latency_ms": 8.09,
+      "core_latency_ms": 2.03,
+      "tools_latency_ms": 6.06,
+      "output_bytes": 933,
+      "remaining_uncertainty": []
+    },
+    {
+      "id": "current-docs",
+      "category": "current documentation retrieval",
+      "goal": "Retrieve current official framework documentation with provenance and freshness limits.",
+      "expected_tools": [
+        "vnem_tools_source_map",
+        "vnem_tools_source_extract"
+      ],
+      "selected_tools": [
+        "vnem_entrypoint",
+        "vnem_recommend",
+        "vnem_select_tools_for_task",
+        "vnem_build_tools_plan",
+        "vnem_decision",
+        "vnem_build_research_strategy",
+        "vnem_usage_contract",
+        "vnem_tools_entrypoint",
+        "vnem_tools_repo_deep_map",
+        "vnem_tools_next_action_ranker",
+        "vnem_tools_code_symbol_map",
+        "vnem_tools_manifest",
+        "vnem_tools_evidence_pack"
+      ],
+      "protocol_calls": 2,
+      "checks": {
+        "correct_route": true,
+        "correct_capability_selection": false,
+        "actionable_output": true,
+        "execution_success": true,
+        "proof_quality": true,
+        "truthfulness": true,
+        "unnecessary_calls": true,
+        "error_handling": true,
+        "permission_behavior": true,
+        "rollback_behavior": null
+      },
+      "score": 0.8889,
+      "success": false,
+      "latency_ms": 5.88,
+      "core_latency_ms": 2.61,
+      "tools_latency_ms": 3.27,
+      "output_bytes": 496,
+      "remaining_uncertainty": [
+        "correct_capability_selection"
+      ]
+    },
+    {
+      "id": "structured-data",
+      "category": "structured data or database work",
+      "goal": "Inspect a database schema, plan a read-only query, and validate structured results.",
+      "expected_tools": [
+        "vnem_tools_database_schema_inspect",
+        "vnem_tools_database_query"
+      ],
+      "selected_tools": [
+        "vnem_entrypoint",
+        "vnem_usage_contract",
+        "vnem_tools_no_placebo_progress_audit",
+        "vnem_tools_source_control_character_guard",
+        "vnem_tools_evidence_pack",
+        "vnem_decision",
+        "vnem_tools_entrypoint",
+        "vnem_tools_repo_deep_map",
+        "vnem_tools_next_action_ranker",
+        "vnem_tools_code_symbol_map",
+        "vnem_tools_manifest"
+      ],
+      "protocol_calls": 2,
+      "checks": {
+        "correct_route": false,
+        "correct_capability_selection": false,
+        "actionable_output": true,
+        "execution_success": true,
+        "proof_quality": true,
+        "truthfulness": true,
+        "unnecessary_calls": true,
+        "error_handling": true,
+        "permission_behavior": true,
+        "rollback_behavior": null
+      },
+      "score": 0.7778,
+      "success": false,
+      "latency_ms": 6.31,
+      "core_latency_ms": 3.36,
+      "tools_latency_ms": 2.95,
+      "output_bytes": 595,
+      "remaining_uncertainty": [
+        "correct_route",
+        "correct_capability_selection"
+      ]
+    },
+    {
+      "id": "cloudflare",
+      "category": "Cloudflare deployment verification",
+      "goal": "Verify an approved Cloudflare Pages deployment, remote status, and rollback guidance.",
+      "expected_tools": [
+        "vnem_tools_cloudflare_deploy_verify",
+        "vnem_tools_cloudflare_status"
+      ],
+      "selected_tools": [
+        "vnem_entrypoint",
+        "vnem_recommend",
+        "vnem_select_tools_for_task",
+        "vnem_build_tools_plan",
+        "vnem_tools_no_placebo_progress_audit",
+        "vnem_tools_source_control_character_guard",
+        "vnem_tools_evidence_pack",
+        "vnem_tools_cloudflare_status",
+        "vnem_tools_cloudflare_auth_plan",
+        "vnem_tools_cloudflare_deploy_verify",
+        "vnem_decision",
+        "vnem_usage_contract",
+        "vnem_tools_entrypoint",
+        "vnem_tools_cloudflare_pages_deploy_plan",
+        "vnem_tools_cloudflare_workers_deploy_plan",
+        "vnem_tools_manifest",
+        "vnem_tools_repo_deep_map"
+      ],
+      "protocol_calls": 2,
+      "checks": {
+        "correct_route": true,
+        "correct_capability_selection": true,
+        "actionable_output": true,
+        "execution_success": true,
+        "proof_quality": true,
+        "truthfulness": true,
+        "unnecessary_calls": true,
+        "error_handling": true,
+        "permission_behavior": true,
+        "rollback_behavior": false
+      },
+      "score": 0.9,
+      "success": true,
+      "latency_ms": 6.38,
+      "core_latency_ms": 2.48,
+      "tools_latency_ms": 3.9,
+      "output_bytes": 867,
+      "remaining_uncertainty": [
+        "rollback_behavior"
+      ]
+    }
+  ]
+}

@@ -3,6 +3,7 @@ import { assertCommand, commandLines, readCommands, withGithubMockTools } from "
 
 await withGithubMockTools({}, async ({ client, workspace, commandLog }) => {
   const status = await client.callTool({ name: "vnem_tools_github_status", arguments: { root: workspace } });
+  assert.equal(status.isError, undefined, JSON.stringify(status));
   assert.equal(status.structuredContent.github_status.operation_result, "reported");
   const inspect = await client.callTool({ name: "vnem_tools_github_repo_inspect", arguments: { root: workspace } });
   assert.equal(inspect.structuredContent.github_repo_inspect.operation_result, "reported");

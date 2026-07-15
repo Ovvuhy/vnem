@@ -14,15 +14,16 @@ jobs:
   discover:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: 20
           cache: npm
-      - run: npm install
+      - run: npm ci
       - run: npm run generate
       - run: npm run discover
       - run: npm run generate
+      - run: npm run generate:check
       - run: npm run digest
       - uses: peter-evans/create-pull-request@v6
         with:

@@ -12,8 +12,10 @@ export function deriveVnemSystemBrief({ telemetry = {}, execution = {}, summary 
   const blocked = activeIngestions.filter((item) => item?.status === BLOCKED_STATUS);
   const routeErrors = telemetry.routeErrors ?? summary?.errors ?? [];
   const provider = telemetry.intelligenceProvider ?? {};
-  const linkedClients = (connector?.clients ?? []).filter((client) => client.vnem_connection_present).length;
-  const detectedClients = connector?.clients?.length ?? 0;
+  const clients = connector?.clients ?? [];
+  const profileReadyClients = clients.filter((client) => client.installed || client.config_profile_present);
+  const linkedClients = profileReadyClients.filter((client) => client.vnem_connection_present).length;
+  const detectedClients = profileReadyClients.length;
   const appServerLive = telemetry.status === "connected";
   const active = execution.active ?? activeIngestions.find((item) => item?.status && item.status !== STAGED_STATUS) ?? activeIngestions[0] ?? null;
 
@@ -36,7 +38,21 @@ export function deriveVnemSystemBrief({ telemetry = {}, execution = {}, summary 
         label: "VNEM Core",
         status: "implemented",
         tone: "ok",
-        detail: "Read-only install pack, source radar, rubrics, registry data, prompt patterns, and quality gates."
+        detail: "Read-only routing, compatibility, evidence contracts, usage auditing, install guidance, and quality planning. Core never claims to execute Tools actions."
+      },
+      {
+        key: "tools",
+        label: "VNEM Tools",
+        status: "implemented",
+        tone: "ok",
+        detail: "Permission-profile-gated repo, code, test, browser, GitHub, data, deployment, and proof actions with approval and evidence boundaries."
+      },
+      {
+        key: "precision",
+        label: "Precision compatibility",
+        status: "compatibility shim",
+        tone: "quiet",
+        detail: "Seven legacy opt-in tool names delegate to shared runtime behavior. Core and Tools are the two primary MCPs for new setup."
       },
       {
         key: "app",
@@ -73,9 +89,11 @@ export function deriveVnemSystemBrief({ telemetry = {}, execution = {}, summary 
       {
         key: "connectors",
         label: "VNEM Connectors",
-        status: detectedClients > 0 ? `${linkedClients}/${detectedClients} linked` : "foundation",
+        status: detectedClients > 0 ? `${linkedClients}/${detectedClients} linked` : "profile catalog",
         tone: linkedClients > 0 ? "ok" : detectedClients > 0 ? "review" : "quiet",
-        detail: "Detects local AI clients and supports explicit preview/apply/revert style configuration flows."
+        detail: detectedClients > 0
+          ? "Reports profile-ready local clients without treating a generated profile as proof that the client reloaded or used VNEM."
+          : "Supports preview/apply/rollback setup and import-only profiles without claiming an unobserved client is installed or connected."
       },
       {
         key: "vnem-ai",

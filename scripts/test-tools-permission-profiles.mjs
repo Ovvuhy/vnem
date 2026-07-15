@@ -68,6 +68,9 @@ try {
     const singleBlockedPatch = await client.callTool({ name: "vnem_tools_apply_patch", arguments: { target_root: ".", patch: patchText, dry_run: false, approved: true, approval_note: "try default single write" } });
     assert.equal(singleBlockedPatch.isError, true);
     assert.equal(singleBlockedPatch.structuredContent?.code, "permission_profile_blocked");
+    const precisionBlockedPatch = await client.callTool({ name: "vnem_tools_exact_patch", arguments: { target_path: "src/app.txt", search: "old", replace: "new", dry_run: false, approved: true, approval_note: "try default precision write" } });
+    assert.equal(precisionBlockedPatch.isError, true);
+    assert.equal(precisionBlockedPatch.structuredContent?.code, "precision_permission_profile_blocked");
 
     const commitBlocked = await client.callTool({ name: "vnem_tools_git_commit", arguments: { root: ".", files: ["src/app.txt"], message: "test: blocked", dry_run: false, approved: true, approval_note: "try commit" } });
     assert.equal(commitBlocked.isError, true);
@@ -91,16 +94,19 @@ try {
 
   await withClient({ VNEM_TOOLS_PERMISSION_PROFILE: "approved-installs" }, async (client) => {
     const installPreview = await client.callTool({ name: "vnem_tools_action_policy_preview", arguments: { proposed_action: "npm install left-pad", action_type: "package_install" } });
-    assert.equal(installPreview.structuredContent?.action_policy_preview?.allowed, false);
-    assert.equal(installPreview.structuredContent?.action_policy_preview?.blocked, true);
-    assert.match(installPreview.structuredContent?.action_policy_preview?.reason || "", /preview|not implemented|blocked/i);
+    assert.equal(installPreview.structuredContent?.action_policy_preview?.allowed, true);
+    assert.equal(installPreview.structuredContent?.action_policy_preview?.blocked, false);
+    assert.equal(installPreview.structuredContent?.action_policy_preview?.requires_approval, true);
+    assert.equal(installPreview.structuredContent?.action_policy_preview?.rollback_expected, true);
+    assert.match(installPreview.structuredContent?.action_policy_preview?.reason || "", /allowed|approval/i);
   });
 
   await withClient({ VNEM_TOOLS_PERMISSION_PROFILE: "approved-github" }, async (client) => {
     const ghPreview = await client.callTool({ name: "vnem_tools_action_policy_preview", arguments: { proposed_action: "create GitHub PR", action_type: "github_pr" } });
-    assert.equal(ghPreview.structuredContent?.action_policy_preview?.allowed, false);
-    assert.equal(ghPreview.structuredContent?.action_policy_preview?.blocked, true);
-    assert.match(ghPreview.structuredContent?.action_policy_preview?.reason || "", /preview|not implemented|blocked/i);
+    assert.equal(ghPreview.structuredContent?.action_policy_preview?.allowed, true);
+    assert.equal(ghPreview.structuredContent?.action_policy_preview?.requires_approval, true);
+    assert.equal(ghPreview.structuredContent?.action_policy_preview?.blocked, false);
+    assert.match(ghPreview.structuredContent?.action_policy_preview?.reason || "", /allowed|approval/i);
   });
 
   await withClient({ VNEM_TOOLS_ALLOWED_ROOTS: path.parse(projectDir).root, VNEM_TOOLS_EVIDENCE_ROOT: path.join(projectDir, ".vnem", "broad-root-evidence") }, async (client) => {

@@ -37,6 +37,8 @@ const stagedBrief = deriveVnemSystemBrief({
 assert.equal(stagedBrief.health.label, "review needed");
 assert.equal(stagedBrief.health.tone, "review");
 assert.equal(stagedBrief.surfaces.find((surface) => surface.key === "app").status, "live");
+assert.equal(stagedBrief.surfaces.find((surface) => surface.key === "tools").status, "implemented");
+assert.equal(stagedBrief.surfaces.find((surface) => surface.key === "precision").status, "compatibility shim");
 assert.equal(stagedBrief.surfaces.find((surface) => surface.key === "giving").status, "1 awaiting review");
 assert.equal(stagedBrief.nextActions[0].label, "Review staged dispatch");
 assert.ok(stagedBrief.nextActions.some((action) => action.label === "Preview connector changes"));
@@ -77,6 +79,7 @@ const offlineBrief = deriveVnemSystemBrief({
 
 assert.equal(offlineBrief.health.label, "offline");
 assert.equal(offlineBrief.surfaces.find((surface) => surface.key === "core").status, "implemented");
+assert.equal(offlineBrief.surfaces.find((surface) => surface.key === "connectors").status, "profile catalog");
 assert.equal(offlineBrief.surfaces.find((surface) => surface.key === "vnem-ai").status, "planned");
 assert.equal(offlineBrief.nextActions[0].label, "Start local app server");
 assert.ok(offlineBrief.nextActions.some((action) => action.label === "Optional provider setup"));

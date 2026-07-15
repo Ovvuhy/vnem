@@ -2649,6 +2649,11 @@ a {
     grid-template-columns: 1fr;
   }
 
+  .targeting-readout {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
   .targeting-readout,
   .targeting-step-readout,
   .targeting-error {
@@ -3459,8 +3464,13 @@ a {
 
 .control-room {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 1rem;
   margin: 1rem 0;
+  min-width: 0;
+}
+.control-room > * {
+  min-width: 0;
 }
 .control-room-hero,
 .control-panel,
@@ -3541,17 +3551,23 @@ a {
 .builder-run-summary em { color:#bfdbfe; }
 @media (max-width: 1180px) {
   .control-room-kpis, .review-lanes, .compact-lanes, .builder-health-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .control-room-grid, .branch-workbench-grid { grid-template-columns: 1fr; }
+  .control-room-grid, .branch-workbench-grid { grid-template-columns: minmax(0, 1fr); }
 }
 @media (max-width: 720px) {
   .control-room-hero { flex-direction: column; }
-  .control-room-kpis, .review-lanes, .compact-lanes, .builder-health-grid { grid-template-columns: 1fr; }
+  .control-room-kpis, .review-lanes, .compact-lanes, .builder-health-grid { grid-template-columns: minmax(0, 1fr); }
 }
 
 .ard-operator-console {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 1rem;
   margin-top: 1rem;
+  min-width: 0;
+}
+
+.ard-operator-console > * {
+  min-width: 0;
 }
 
 .ard-mission-header,

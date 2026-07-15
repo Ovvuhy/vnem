@@ -46,7 +46,13 @@ export async function withGithubMockTools(env, fn) {
 }
 
 export async function readCommands(commandLog) {
-  const text = await readFile(commandLog, "utf8");
+  let text;
+  try {
+    text = await readFile(commandLog, "utf8");
+  } catch (error) {
+    if (error?.code === "ENOENT") return [];
+    throw error;
+  }
   return text.trim().split(/\r?\n/).filter(Boolean).map((line) => JSON.parse(line));
 }
 

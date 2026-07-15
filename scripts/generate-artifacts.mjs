@@ -1,20 +1,20 @@
 import path from "node:path";
 import { readFile } from "node:fs/promises";
-import { gzipSync } from "node:zlib";
-import { ROOT, publicEntry, readEntries, uniqueSorted, writeBytes, writeJson, writeText } from "./lib/registry.mjs";
+import { ROOT, publicEntry, readEntries, uniqueSorted, writeBytes, writeJson } from "./lib/registry.mjs";
 import { buildInstallAdoptionFiles } from "./vnem-install-adoption.mjs";
+import { buildDailyDigest, latestCandidateReport } from "./vnem/generation/daily-digest.mjs";
+import {
+  buildGeneratedArtifactManifest,
+  createDeterministicTarGzip,
+  resolveGenerationClock
+} from "./vnem/generation/generated-artifacts.mjs";
 
+const generationMetadata = JSON.parse(await readFile(path.join(ROOT, "generation", "metadata.json"), "utf8"));
+const records = await readEntries();
 const sourceDateEpoch = process.env.SOURCE_DATE_EPOCH;
-const generatedDateTime = sourceDateEpoch
-  ? /^\d+$/.test(sourceDateEpoch)
-    ? new Date(Number(sourceDateEpoch) * 1000)
-    : new Date(sourceDateEpoch)
-  : new Date();
-if (Number.isNaN(generatedDateTime.valueOf())) {
-  throw new Error(`Invalid SOURCE_DATE_EPOCH: ${sourceDateEpoch}`);
-}
-const generatedAt = generatedDateTime.toISOString();
-const generationNowMs = generatedDateTime.getTime();
+const generationClock = resolveGenerationClock({ sourceDateEpoch, semanticTimestamp: generationMetadata.semantic_timestamp });
+const generatedAt = generationClock.iso;
+const generationNowMs = generationClock.date.getTime();
 const generatedDate = generatedAt.slice(0, 10);
 const packageJson = JSON.parse(await readFile(path.join(ROOT, "package.json"), "utf8"));
 const packageVersion = packageJson.version;
@@ -3619,45 +3619,6 @@ function jsonText(value) {
   return `${JSON.stringify(value, null, 2)}\n`;
 }
 
-function writeTarString(buffer, offset, length, value) {
-  Buffer.from(String(value)).copy(buffer, offset, 0, Math.min(Buffer.byteLength(String(value)), length));
-}
-
-function writeTarOctal(buffer, offset, length, value) {
-  const encoded = value.toString(8).padStart(length - 1, "0").slice(-(length - 1));
-  writeTarString(buffer, offset, length, `${encoded}\0`);
-}
-
-function installArchiveEntry(name, content) {
-  const body = Buffer.isBuffer(content) ? content : Buffer.from(content);
-  const header = Buffer.alloc(512, 0);
-
-  writeTarString(header, 0, 100, name);
-  writeTarOctal(header, 100, 8, 0o644);
-  writeTarOctal(header, 108, 8, 0);
-  writeTarOctal(header, 116, 8, 0);
-  writeTarOctal(header, 124, 12, body.length);
-  writeTarOctal(header, 136, 12, Math.floor(new Date(generatedAt).getTime() / 1000));
-  header.fill(0x20, 148, 156);
-  header[156] = 0x30;
-  writeTarString(header, 257, 6, "ustar");
-  writeTarString(header, 263, 2, "00");
-  writeTarString(header, 265, 32, "vnem");
-  writeTarString(header, 297, 32, "vnem");
-
-  let checksum = 0;
-  for (const byte of header) checksum += byte;
-  writeTarString(header, 148, 8, `${checksum.toString(8).padStart(6, "0")}\0 `);
-
-  const padding = Buffer.alloc((512 - (body.length % 512)) % 512, 0);
-  return Buffer.concat([header, body, padding]);
-}
-
-function installArchive(files) {
-  const entries = Object.entries(files).map(([name, content]) => installArchiveEntry(name, content));
-  return gzipSync(Buffer.concat([...entries, Buffer.alloc(1024, 0)]), { level: 9 });
-}
-
 function daysSince(dateValue) {
   const date = new Date(dateValue);
   if (Number.isNaN(date.valueOf())) return null;
@@ -4743,6 +4704,18 @@ function installGuideMarkdown() {
     "node scripts/vnem-cli.mjs mcp-config --server-json",
     "```",
     "",
+    "For reversible client detection, preview, setup, verification, and rollback, use the primary setup flow:",
+    "",
+    "```bash",
+    "node scripts/vnem-cli.mjs clients --json",
+    "node scripts/vnem-cli.mjs config preview --clients codex_app,codex_cli --workspace /path/to/project --json",
+    "node scripts/vnem-cli.mjs setup",
+    "node scripts/vnem-cli.mjs doctor --clients --workspace /path/to/project --json",
+    "node scripts/vnem-cli.mjs rollback --yes --json",
+    "```",
+    "",
+    "Setup preserves unrelated client settings, backs up every changed file, validates syntax, verifies Core and Tools entrypoints, and records exact rollback. Import-only profiles are used where VNEM has not verified a stable client config contract.",
+    "",
     "For client-specific Core+Tools MCP adoption profiles, emit repo-local snippets without writing to Codex, Claude, Antigravity-style, or generic MCP client config paths:",
     "",
     "```bash",
@@ -5581,7 +5554,6 @@ function searchIndexJson(entries) {
   };
 }
 
-const records = await readEntries();
 const entries = records
   .map((item) => enrichEntry(publicEntry(item.entry, item.profile, item.relativeEntryPath, item.relativeProfilePath)))
   .sort((a, b) => b.recommendation_score - a.recommendation_score || a.name.localeCompare(b.name));
@@ -5722,7 +5694,7 @@ const installAdoptionFiles = buildInstallAdoptionFiles(ROOT, { portable: true })
 const installAdoptionArchiveFiles = Object.fromEntries(
   Object.entries(installAdoptionFiles).map(([name, content]) => [archivePath(name), content])
 );
-const archive = installArchive({
+const archive = createDeterministicTarGzip({
   "AGENTS.md": `${rootAgentInstructions}\n`,
   [`${installFolder}/AGENTS.md`]: `${agentInstructions}\n`,
   [`${installFolder}/install-guide.md`]: `${installGuideMarkdownData}\n`,
@@ -5743,53 +5715,92 @@ const archive = installArchive({
   [`${installFolder}/prompt-engineering.md`]: `${promptEngineering}\n`,
   [`${installFolder}/prompt-patterns.json`]: jsonText(promptPatternData),
   ...installAdoptionArchiveFiles
-});
+}, { epochSeconds: generationClock.epoch_seconds });
 
-await writeJson(path.join(ROOT, "public", "api", "index.json"), index);
-await writeJson(path.join(ROOT, "public", "install", "search-index.json"), searchIndex);
-await writeJson(path.join(ROOT, installFolder, "search-index.json"), searchIndex);
-await writeJson(path.join(ROOT, "public", "install", "task-rubrics.json"), taskRubricData);
-await writeJson(path.join(ROOT, installFolder, "task-rubrics.json"), taskRubricData);
-await writeJson(path.join(ROOT, "public", "install", "source-radar.json"), sourceRadarData);
-await writeJson(path.join(ROOT, installFolder, "source-radar.json"), sourceRadarData);
-await writeJson(path.join(ROOT, "public", "install", "prompt-patterns.json"), promptPatternData);
-await writeJson(path.join(ROOT, installFolder, "prompt-patterns.json"), promptPatternData);
+const generatedOutputs = new Map();
+const addText = (relativePath, value) => generatedOutputs.set(archivePath(relativePath), Buffer.from(value));
+const addJson = (relativePath, value) => addText(relativePath, jsonText(value));
+const addBytes = (relativePath, value) => generatedOutputs.set(archivePath(relativePath), Buffer.from(value));
+const candidateReport = await latestCandidateReport(ROOT);
+const dailyDigest = buildDailyDigest({ generatedAt, registry: index, searchIndex, candidateReport });
+
+addJson("public/api/index.json", index);
+addJson("public/install/search-index.json", searchIndex);
+addJson(`${installFolder}/search-index.json`, searchIndex);
+addJson("public/install/task-rubrics.json", taskRubricData);
+addJson(`${installFolder}/task-rubrics.json`, taskRubricData);
+addJson("public/install/source-radar.json", sourceRadarData);
+addJson(`${installFolder}/source-radar.json`, sourceRadarData);
+addJson("public/install/prompt-patterns.json", promptPatternData);
+addJson(`${installFolder}/prompt-patterns.json`, promptPatternData);
+addText("discovery/daily-digest.md", dailyDigest);
 for (const [relativeName, content] of Object.entries(installAdoptionFiles)) {
   const archiveName = archivePath(relativeName);
   const publicName = archiveName.replace(`${installFolder}/`, "");
-  await writeText(path.join(ROOT, relativeName), content);
-  await writeText(path.join(ROOT, "public", "install", publicName), content);
+  addText(archiveName, content);
+  addText(`public/install/${publicName}`, content);
 }
-await writeBytes(path.join(ROOT, "public", installArchiveName), archive);
-await writeText(path.join(ROOT, "public", "install", "AGENTS.md"), `${agentInstructions}\n`);
-await writeText(path.join(ROOT, installFolder, "AGENTS.md"), `${agentInstructions}\n`);
-await writeText(path.join(ROOT, "public", "install", "install-guide.md"), `${installGuideMarkdownData}\n`);
-await writeText(path.join(ROOT, installFolder, "install-guide.md"), `${installGuideMarkdownData}\n`);
-await writeText(path.join(ROOT, "public", "install", "operating-protocol.md"), `${operatingProtocolMarkdownData}\n`);
-await writeText(path.join(ROOT, installFolder, "operating-protocol.md"), `${operatingProtocolMarkdownData}\n`);
-await writeText(path.join(ROOT, "public", "install", "quality-contract.md"), `${qualityContractMarkdownData}\n`);
-await writeText(path.join(ROOT, installFolder, "quality-contract.md"), `${qualityContractMarkdownData}\n`);
-await writeText(path.join(ROOT, "public", "install", "orchestration-protocol.md"), `${orchestrationProtocolMarkdownData}\n`);
-await writeText(path.join(ROOT, installFolder, "orchestration-protocol.md"), `${orchestrationProtocolMarkdownData}\n`);
-await writeText(path.join(ROOT, "public", "install", "precision-execution-protocol.md"), `${precisionExecutionProtocolMarkdownData}\n`);
-await writeText(path.join(ROOT, installFolder, "precision-execution-protocol.md"), `${precisionExecutionProtocolMarkdownData}\n`);
-await writeText(path.join(ROOT, "public", "install", "omniscient-self-healing-protocol.md"), `${omniscientSelfHealingProtocolMarkdownData}\n`);
-await writeText(path.join(ROOT, installFolder, "omniscient-self-healing-protocol.md"), `${omniscientSelfHealingProtocolMarkdownData}\n`);
-await writeText(path.join(ROOT, "public", "install", "coding-protocol.md"), `${codingProtocolMarkdownData}\n`);
-await writeText(path.join(ROOT, installFolder, "coding-protocol.md"), `${codingProtocolMarkdownData}\n`);
-await writeJson(path.join(ROOT, "public", "install", "coding-playbooks.json"), codingPlaybookData);
-await writeJson(path.join(ROOT, installFolder, "coding-playbooks.json"), codingPlaybookData);
-await writeText(path.join(ROOT, "public", "install", "design-architecture.md"), `${designArchitectureMarkdownData}\n`);
-await writeText(path.join(ROOT, installFolder, "design-architecture.md"), `${designArchitectureMarkdownData}\n`);
-await writeText(path.join(ROOT, "public", "install", "visual-qa-protocol.md"), `${visualQaProtocolMarkdownData}\n`);
-await writeText(path.join(ROOT, installFolder, "visual-qa-protocol.md"), `${visualQaProtocolMarkdownData}\n`);
-await writeText(path.join(ROOT, "public", "install", "best-practices.md"), `${bestPractices}\n`);
-await writeText(path.join(ROOT, installFolder, "best-practices.md"), `${bestPractices}\n`);
-await writeText(path.join(ROOT, "public", "install", "agent-workspace.md"), `${agentWorkspace}\n`);
-await writeText(path.join(ROOT, installFolder, "agent-workspace.md"), `${agentWorkspace}\n`);
-await writeText(path.join(ROOT, "public", "install", "prompt-engineering.md"), `${promptEngineering}\n`);
-await writeText(path.join(ROOT, installFolder, "prompt-engineering.md"), `${promptEngineering}\n`);
-await writeText(path.join(ROOT, "llms.txt"), `${llmsTxt}\n`);
-await writeText(path.join(ROOT, "llms-full.txt"), `${llmsFull}\n`);
+addBytes(`public/${installArchiveName}`, archive);
+addBytes(`landing/${installArchiveName}`, archive);
+addText("public/install/AGENTS.md", `${agentInstructions}\n`);
+addText(`${installFolder}/AGENTS.md`, `${agentInstructions}\n`);
+addText("public/install/install-guide.md", `${installGuideMarkdownData}\n`);
+addText(`${installFolder}/install-guide.md`, `${installGuideMarkdownData}\n`);
+addText("public/install/operating-protocol.md", `${operatingProtocolMarkdownData}\n`);
+addText(`${installFolder}/operating-protocol.md`, `${operatingProtocolMarkdownData}\n`);
+addText("public/install/quality-contract.md", `${qualityContractMarkdownData}\n`);
+addText(`${installFolder}/quality-contract.md`, `${qualityContractMarkdownData}\n`);
+addText("public/install/orchestration-protocol.md", `${orchestrationProtocolMarkdownData}\n`);
+addText(`${installFolder}/orchestration-protocol.md`, `${orchestrationProtocolMarkdownData}\n`);
+addText("public/install/precision-execution-protocol.md", `${precisionExecutionProtocolMarkdownData}\n`);
+addText(`${installFolder}/precision-execution-protocol.md`, `${precisionExecutionProtocolMarkdownData}\n`);
+addText("public/install/omniscient-self-healing-protocol.md", `${omniscientSelfHealingProtocolMarkdownData}\n`);
+addText(`${installFolder}/omniscient-self-healing-protocol.md`, `${omniscientSelfHealingProtocolMarkdownData}\n`);
+addText("public/install/coding-protocol.md", `${codingProtocolMarkdownData}\n`);
+addText(`${installFolder}/coding-protocol.md`, `${codingProtocolMarkdownData}\n`);
+addJson("public/install/coding-playbooks.json", codingPlaybookData);
+addJson(`${installFolder}/coding-playbooks.json`, codingPlaybookData);
+addText("public/install/design-architecture.md", `${designArchitectureMarkdownData}\n`);
+addText(`${installFolder}/design-architecture.md`, `${designArchitectureMarkdownData}\n`);
+addText("public/install/visual-qa-protocol.md", `${visualQaProtocolMarkdownData}\n`);
+addText(`${installFolder}/visual-qa-protocol.md`, `${visualQaProtocolMarkdownData}\n`);
+addText("public/install/best-practices.md", `${bestPractices}\n`);
+addText(`${installFolder}/best-practices.md`, `${bestPractices}\n`);
+addText("public/install/agent-workspace.md", `${agentWorkspace}\n`);
+addText(`${installFolder}/agent-workspace.md`, `${agentWorkspace}\n`);
+addText("public/install/prompt-engineering.md", `${promptEngineering}\n`);
+addText(`${installFolder}/prompt-engineering.md`, `${promptEngineering}\n`);
+addText("llms.txt", `${llmsTxt}\n`);
+addText("llms-full.txt", `${llmsFull}\n`);
 
-console.log(`Generated LLM/API/install artifacts for ${entries.length} entries and ${searchIndex.documents.length} search documents.`);
+for (const [relativePath, bytes] of [...generatedOutputs.entries()].sort(([left], [right]) => left.localeCompare(right))) {
+  await writeBytes(path.join(ROOT, relativePath), bytes);
+}
+
+const sourcePaths = [
+  "generation/metadata.json",
+  "package.json",
+  "scripts/generate-artifacts.mjs",
+  "scripts/generate-digest.mjs",
+  "scripts/lib/registry.mjs",
+  "scripts/vnem-install-adoption.mjs",
+  "scripts/vnem/generation/daily-digest.mjs",
+  "scripts/vnem/generation/generated-artifacts.mjs",
+  ...records.flatMap((item) => [item.relativeEntryPath, ...(item.profile ? [item.relativeProfilePath] : [])])
+];
+const artifactManifest = await buildGeneratedArtifactManifest({
+  root: ROOT,
+  outputs: generatedOutputs,
+  sourcePaths,
+  sourcePatterns: ["discovery/candidates/hermes*.json"],
+  semanticTimestamp: generatedAt,
+  timestampSource: generationClock.source,
+  generationSettings: {
+    install_base_url: installBaseUrl,
+    archive_order: "portable_path_ascending",
+    archive_header_policy: "normalized_ustar_gzip"
+  }
+});
+await writeJson(path.join(ROOT, ".vnem", "generated-artifacts.json"), artifactManifest);
+
+console.log(`Generated ${generatedOutputs.size} deterministic artifacts for ${entries.length} entries and ${searchIndex.documents.length} search documents.`);

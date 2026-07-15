@@ -7,11 +7,58 @@ import { fileURLToPath } from "node:url";
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(scriptDir, "..");
 const rel = (target) => path.join(rootDir, target);
-const serverPath = rel("scripts/vnem-tools-mcp-server.mjs");
+const serverPath = rel("scripts/vnem/tools/server.mjs");
 const testPath = rel("scripts/test-tools-mcp-server.mjs");
 const e2eTestPath = rel("scripts/test-core-tools-e2e.mjs");
 const browserTestPath = rel("scripts/test-tools-browser-capture.mjs");
 const projectActionsTestPath = rel("scripts/test-tools-project-actions.mjs");
+const appEngineeringTestPath = rel("scripts/test-tools-giga-app-engineering.mjs");
+const appEngineeringModulePath = rel("scripts/vnem/tools/app-engineering.mjs");
+const appEngineeringFixturesPath = rel("fixtures/app-engineering/README.md");
+const browserInteractionTestPath = rel("scripts/test-tools-giga-browser-interaction.mjs");
+const browserInteractionModulePath = rel("scripts/vnem/tools/browser-interaction.mjs");
+const browserInteractionFixturePath = rel("fixtures/browser-interaction/index.html");
+const windowsLocalTestPath = rel("scripts/test-tools-giga-windows-local.mjs");
+const windowsLocalModulePath = rel("scripts/vnem/tools/windows-local.mjs");
+const windowsLocalFixturePath = rel("fixtures/windows-local/path with spaces/sample.txt");
+const githubDevelopmentTestPath = rel("scripts/test-tools-giga-github-development.mjs");
+const githubDevelopmentModulePath = rel("scripts/vnem/tools/github-development.mjs");
+const gameDomainTestPath = rel("scripts/test-tools-giga-game-domain.mjs");
+const gameDomainModulePath = rel("scripts/vnem/tools/game-domain.mjs");
+const dependencySecurityTestPath = rel("scripts/test-tools-giga-dependency-security.mjs");
+const dependencySecurityModulePath = rel("scripts/vnem/tools/dependency-security.mjs");
+const structuralCodeTestPath = rel("scripts/test-tools-giga-structural-code.mjs");
+const structuralCodeModulePath = rel("scripts/vnem/tools/structural-code.mjs");
+const apiConnectorTestPath = rel("scripts/test-tools-giga-api-connectors.mjs");
+const apiConnectorModulePath = rel("scripts/vnem/tools/api-connectors.mjs");
+const skillRuntimeTestPath = rel("scripts/test-tools-giga-skill-runtime.mjs");
+const skillRuntimeModulePath = rel("scripts/vnem/tools/skill-runtime.mjs");
+const currentDocumentationTestPath = rel("scripts/test-tools-giga-current-documentation.mjs");
+const documentationIntelligencePath = rel("scripts/vnem/precision/documentation-intelligence.mjs");
+const dataSystemsTestPath = rel("scripts/test-tools-giga-data-systems.mjs");
+const dataSystemsModulePath = rel("scripts/vnem/tools/data-systems.mjs");
+const cloudflareDeploymentTestPath = rel("scripts/test-tools-giga-cloudflare-deployment.mjs");
+const cloudflareControlModulePath = rel("scripts/vnem/tools/cloudflare-control.mjs");
+const deterministicGenerationTestPath = rel("scripts/test-giga-deterministic-generation.mjs");
+const performanceOutputTestPath = rel("scripts/test-giga-performance-output.mjs");
+const adoptionClientUseTestPath = rel("scripts/test-giga-adoption-client-use.mjs");
+const performanceBaselinePath = rel("scripts/vnem/giga/performance-baseline.mjs");
+const generatedArtifactsModulePath = rel("scripts/vnem/generation/generated-artifacts.mjs");
+const generatedArtifactsManifestPath = rel(".vnem/generated-artifacts.json");
+const generationMetadataPath = rel("generation/metadata.json");
+const dailyDigestModulePath = rel("scripts/vnem/generation/daily-digest.mjs");
+const generateDigestPath = rel("scripts/generate-digest.mjs");
+const projectAutomationTestPath = rel("scripts/test-tools-giga-project-automation.mjs");
+const projectAutomationModulePath = rel("scripts/vnem/tools/project-automation.mjs");
+const projectAutomationFixturePath = rel("fixtures/project-automation/package.json");
+const testingCiTestPath = rel("scripts/test-tools-giga-testing-ci.mjs");
+const testingCiRuntimePath = rel("scripts/vnem/testing/runtime.mjs");
+const testingCiRunnerPath = rel("scripts/vnem/testing/runner.mjs");
+const testingCiManifestPath = rel("scripts/vnem/testing/suite-manifest.mjs");
+const testingCiFixturePath = rel("fixtures/testing-ci/package.json");
+const ciWorkflowPath = rel(".github/workflows/ci.yml");
+const discoveryWorkflowPath = rel(".github/workflows/discovery.yml");
+const deployWorkflowPath = rel(".github/workflows/deploy-cloudflare-pages.yml");
 const gitSessionTestPath = rel("scripts/test-tools-git-session.mjs");
 const intelligenceTestPath = rel("scripts/test-tools-intelligence.mjs");
 const researchTestPath = rel("scripts/test-tools-research.mjs");
@@ -59,6 +106,18 @@ const toolsPowerTools2RegressionTestPath = rel("scripts/test-tools-power-tools-2
 const toolsPowerSession1RecoveryTestPath = rel("scripts/test-tools-power-session-1-recovery.mjs");
 const toolsOrchestrator1RegressionTestPath = rel("scripts/test-tools-orchestrator-1-regression.mjs");
 const toolsCodeIntelligence1RegressionTestPath = rel("scripts/test-tools-code-intelligence-1-regression.mjs");
+const toolsPrecisionSubsystemTestPath = rel("scripts/test-tools-precision-subsystem.mjs");
+const precisionSubsystemPath = rel("scripts/vnem/precision/tools.mjs");
+const permissionRuntimeTestPath = rel("scripts/test-permission-runtime.mjs");
+const toolsScopedPermissionsTestPath = rel("scripts/test-tools-scoped-permissions.mjs");
+const safetyCliTestPath = rel("scripts/test-vnem-safety-cli.mjs");
+const clientSetupTestPath = rel("scripts/test-vnem-client-setup.mjs");
+const clientSetupMcpTestPath = rel("scripts/test-tools-client-setup-mcp.mjs");
+const clientConfigMergePath = rel("scripts/vnem/clients/config-merge.mjs");
+const permissionRuntimePath = rel("scripts/vnem/permissions/runtime.mjs");
+const permissionToolsPath = rel("scripts/vnem/permissions/tools.mjs");
+const permissionProfilesPath = rel("scripts/vnem/permissions/profiles.mjs");
+const runtimeRegistryPath = rel(".vnem/runtime-tool-registry.json");
 const adoptionReliabilityTestPath = rel("scripts/test-vnem-adoption-reliability-1-regression.mjs");
 const adoptionReliability2TestPath = rel("scripts/test-vnem-adoption-reliability-2-regression.mjs");
 const installAdoptionTestPath = rel("scripts/test-vnem-install-adoption-1-regression.mjs");
@@ -71,14 +130,66 @@ const coreSearchPlanningTestPath = rel("scripts/test-core-search-planning.mjs");
 const coreBrowserPlanningTestPath = rel("scripts/test-core-browser-research-planning.mjs");
 const coreSelectionTestPath = rel("scripts/test-core-tool-selection.mjs");
 const coreEcosystemTestPath = rel("scripts/test-core-tools-tool-ecosystem.mjs");
-const coreServerPath = rel("scripts/vnem-mcp-server.mjs");
+const coreServerPath = rel("scripts/vnem/core/server.mjs");
+const coreIntelligencePath = rel("scripts/vnem/core/intelligence.mjs");
 const cliPath = rel("scripts/vnem-cli.mjs");
 const pkg = JSON.parse(readFileSync(rel("package.json"), "utf8"));
-const server = existsSync(serverPath) ? readFileSync(serverPath, "utf8") : "";
+const toolsRuntimePaths = [
+  serverPath,
+  rel("scripts/vnem/tools/reliability-runtime.mjs"),
+  rel("scripts/vnem/tools/adoption-runtime.mjs"),
+  rel("scripts/vnem/tools/client-setup.mjs"),
+  rel("scripts/vnem/tools/repo-intelligence-runtime.mjs"),
+  rel("scripts/vnem/tools/source-research-runtime.mjs"),
+  rel("scripts/vnem/tools/browser-research-runtime.mjs"),
+  rel("scripts/vnem/tools/github-operations-runtime.mjs")
+];
+const server = toolsRuntimePaths.filter(existsSync).map((file) => readFileSync(file, "utf8")).join("\n");
+const coreIntelligence = existsSync(coreIntelligencePath) ? readFileSync(coreIntelligencePath, "utf8") : "";
 const test = existsSync(testPath) ? readFileSync(testPath, "utf8") : "";
 const e2eTest = existsSync(e2eTestPath) ? readFileSync(e2eTestPath, "utf8") : "";
 const browserTest = existsSync(browserTestPath) ? readFileSync(browserTestPath, "utf8") : "";
 const projectActionsTest = existsSync(projectActionsTestPath) ? readFileSync(projectActionsTestPath, "utf8") : "";
+const appEngineeringTest = existsSync(appEngineeringTestPath) ? readFileSync(appEngineeringTestPath, "utf8") : "";
+const appEngineeringModule = existsSync(appEngineeringModulePath) ? readFileSync(appEngineeringModulePath, "utf8") : "";
+const browserInteractionTest = existsSync(browserInteractionTestPath) ? readFileSync(browserInteractionTestPath, "utf8") : "";
+const browserInteractionModule = existsSync(browserInteractionModulePath) ? readFileSync(browserInteractionModulePath, "utf8") : "";
+const windowsLocalTest = existsSync(windowsLocalTestPath) ? readFileSync(windowsLocalTestPath, "utf8") : "";
+const windowsLocalModule = existsSync(windowsLocalModulePath) ? readFileSync(windowsLocalModulePath, "utf8") : "";
+const githubDevelopmentTest = existsSync(githubDevelopmentTestPath) ? readFileSync(githubDevelopmentTestPath, "utf8") : "";
+const githubDevelopmentModule = existsSync(githubDevelopmentModulePath) ? readFileSync(githubDevelopmentModulePath, "utf8") : "";
+const gameDomainTest = existsSync(gameDomainTestPath) ? readFileSync(gameDomainTestPath, "utf8") : "";
+const gameDomainModule = existsSync(gameDomainModulePath) ? readFileSync(gameDomainModulePath, "utf8") : "";
+const dependencySecurityTest = existsSync(dependencySecurityTestPath) ? readFileSync(dependencySecurityTestPath, "utf8") : "";
+const dependencySecurityModule = existsSync(dependencySecurityModulePath) ? readFileSync(dependencySecurityModulePath, "utf8") : "";
+const structuralCodeTest = existsSync(structuralCodeTestPath) ? readFileSync(structuralCodeTestPath, "utf8") : "";
+const structuralCodeModule = existsSync(structuralCodeModulePath) ? readFileSync(structuralCodeModulePath, "utf8") : "";
+const apiConnectorTest = existsSync(apiConnectorTestPath) ? readFileSync(apiConnectorTestPath, "utf8") : "";
+const apiConnectorModule = existsSync(apiConnectorModulePath) ? readFileSync(apiConnectorModulePath, "utf8") : "";
+const skillRuntimeTest = existsSync(skillRuntimeTestPath) ? readFileSync(skillRuntimeTestPath, "utf8") : "";
+const skillRuntimeModule = existsSync(skillRuntimeModulePath) ? readFileSync(skillRuntimeModulePath, "utf8") : "";
+const currentDocumentationTest = existsSync(currentDocumentationTestPath) ? readFileSync(currentDocumentationTestPath, "utf8") : "";
+const documentationIntelligence = existsSync(documentationIntelligencePath) ? readFileSync(documentationIntelligencePath, "utf8") : "";
+const dataSystemsTest = existsSync(dataSystemsTestPath) ? readFileSync(dataSystemsTestPath, "utf8") : "";
+const dataSystemsModule = existsSync(dataSystemsModulePath) ? readFileSync(dataSystemsModulePath, "utf8") : "";
+const cloudflareDeploymentTest = existsSync(cloudflareDeploymentTestPath) ? readFileSync(cloudflareDeploymentTestPath, "utf8") : "";
+const cloudflareControlModule = existsSync(cloudflareControlModulePath) ? readFileSync(cloudflareControlModulePath, "utf8") : "";
+const deterministicGenerationTest = existsSync(deterministicGenerationTestPath) ? readFileSync(deterministicGenerationTestPath, "utf8") : "";
+const performanceOutputTest = existsSync(performanceOutputTestPath) ? readFileSync(performanceOutputTestPath, "utf8") : "";
+const adoptionClientUseTest = existsSync(adoptionClientUseTestPath) ? readFileSync(adoptionClientUseTestPath, "utf8") : "";
+const performanceBaseline = existsSync(performanceBaselinePath) ? readFileSync(performanceBaselinePath, "utf8") : "";
+const generatedArtifactsModule = existsSync(generatedArtifactsModulePath) ? readFileSync(generatedArtifactsModulePath, "utf8") : "";
+const generatedArtifactsManifest = existsSync(generatedArtifactsManifestPath) ? readFileSync(generatedArtifactsManifestPath, "utf8") : "";
+const generationMetadata = existsSync(generationMetadataPath) ? readFileSync(generationMetadataPath, "utf8") : "";
+const dailyDigestModule = existsSync(dailyDigestModulePath) ? readFileSync(dailyDigestModulePath, "utf8") : "";
+const generateDigest = existsSync(generateDigestPath) ? readFileSync(generateDigestPath, "utf8") : "";
+const projectAutomationTest = existsSync(projectAutomationTestPath) ? readFileSync(projectAutomationTestPath, "utf8") : "";
+const projectAutomationModule = existsSync(projectAutomationModulePath) ? readFileSync(projectAutomationModulePath, "utf8") : "";
+const testingCiTest = existsSync(testingCiTestPath) ? readFileSync(testingCiTestPath, "utf8") : "";
+const testingCiRuntime = existsSync(testingCiRuntimePath) ? readFileSync(testingCiRuntimePath, "utf8") : "";
+const testingCiRunner = existsSync(testingCiRunnerPath) ? readFileSync(testingCiRunnerPath, "utf8") : "";
+const testingCiManifest = existsSync(testingCiManifestPath) ? readFileSync(testingCiManifestPath, "utf8") : "";
+const workflowText = [ciWorkflowPath, discoveryWorkflowPath, deployWorkflowPath].filter(existsSync).map((file) => readFileSync(file, "utf8")).join("\n");
 const gitSessionTest = existsSync(gitSessionTestPath) ? readFileSync(gitSessionTestPath, "utf8") : "";
 const intelligenceTest = existsSync(intelligenceTestPath) ? readFileSync(intelligenceTestPath, "utf8") : "";
 const researchTest = existsSync(researchTestPath) ? readFileSync(researchTestPath, "utf8") : "";
@@ -126,6 +237,19 @@ const toolsPowerTools2RegressionTest = existsSync(toolsPowerTools2RegressionTest
 const toolsPowerSession1RecoveryTest = existsSync(toolsPowerSession1RecoveryTestPath) ? readFileSync(toolsPowerSession1RecoveryTestPath, "utf8") : "";
 const toolsOrchestrator1RegressionTest = existsSync(toolsOrchestrator1RegressionTestPath) ? readFileSync(toolsOrchestrator1RegressionTestPath, "utf8") : "";
 const toolsCodeIntelligence1RegressionTest = existsSync(toolsCodeIntelligence1RegressionTestPath) ? readFileSync(toolsCodeIntelligence1RegressionTestPath, "utf8") : "";
+const toolsPrecisionSubsystemTest = existsSync(toolsPrecisionSubsystemTestPath) ? readFileSync(toolsPrecisionSubsystemTestPath, "utf8") : "";
+const precisionSubsystem = existsSync(precisionSubsystemPath) ? readFileSync(precisionSubsystemPath, "utf8") : "";
+const permissionRuntimeTest = existsSync(permissionRuntimeTestPath) ? readFileSync(permissionRuntimeTestPath, "utf8") : "";
+const toolsScopedPermissionsTest = existsSync(toolsScopedPermissionsTestPath) ? readFileSync(toolsScopedPermissionsTestPath, "utf8") : "";
+const safetyCliTest = existsSync(safetyCliTestPath) ? readFileSync(safetyCliTestPath, "utf8") : "";
+const clientSetupTest = existsSync(clientSetupTestPath) ? readFileSync(clientSetupTestPath, "utf8") : "";
+const clientSetupMcpTest = existsSync(clientSetupMcpTestPath) ? readFileSync(clientSetupMcpTestPath, "utf8") : "";
+const clientConfigMerge = existsSync(clientConfigMergePath) ? readFileSync(clientConfigMergePath, "utf8") : "";
+const permissionRuntimeSource = existsSync(permissionRuntimePath) ? readFileSync(permissionRuntimePath, "utf8") : "";
+const permissionToolsSource = existsSync(permissionToolsPath) ? readFileSync(permissionToolsPath, "utf8") : "";
+const permissionProfilesSource = existsSync(permissionProfilesPath) ? readFileSync(permissionProfilesPath, "utf8") : "";
+const runtimeRegistry = existsSync(runtimeRegistryPath) ? JSON.parse(readFileSync(runtimeRegistryPath, "utf8")) : null;
+const runtimeToolNames = new Set(runtimeRegistry?.servers?.tools?.tools?.map((tool) => tool.name) || []);
 const adoptionReliabilityTest = existsSync(adoptionReliabilityTestPath) ? readFileSync(adoptionReliabilityTestPath, "utf8") : "";
 const adoptionReliability2Test = existsSync(adoptionReliability2TestPath) ? readFileSync(adoptionReliability2TestPath, "utf8") : "";
 const installAdoptionTest = existsSync(installAdoptionTestPath) ? readFileSync(installAdoptionTestPath, "utf8") : "";
@@ -149,6 +273,12 @@ const requiredTools = [
   "vnem_tools_underuse_detector",
   "vnem_tools_install_profile_emit",
   "vnem_tools_install_doctor",
+  "vnem_tools_client_detect",
+  "vnem_tools_client_setup_plan",
+  "vnem_tools_client_install",
+  "vnem_tools_client_setup_status",
+  "vnem_tools_client_verify",
+  "vnem_tools_client_rollback",
   "vnem_tools_permission_profiles",
   "vnem_tools_permission_status",
   "vnem_tools_reliability_catalog",
@@ -181,11 +311,43 @@ const requiredTools = [
   "vnem_tools_code_search",
   "vnem_tools_find_references",
   "vnem_tools_dependency_scan",
+  "vnem_tools_dependency_inventory",
+  "vnem_tools_dependency_risk_audit",
+  "vnem_tools_dependency_advisory_audit",
+  "vnem_tools_dependency_change_analyze",
+  "vnem_tools_dependency_upgrade_plan",
+  "vnem_tools_dependency_install_apply",
+  "vnem_tools_dependency_transaction_rollback",
+  "vnem_tools_structural_index_build",
+  "vnem_tools_structural_graph_query",
+  "vnem_tools_exact_symbol_references",
+  "vnem_tools_refactor_rename_preview",
+  "vnem_tools_refactor_move_preview",
+  "vnem_tools_refactor_extract_plan",
+  "vnem_tools_dead_code_candidates",
+  "vnem_tools_refactor_impact_analyze",
+  "vnem_tools_structural_patch_validate",
+  "vnem_tools_refactor_apply_verify",
+  "vnem_tools_refactor_transaction_rollback",
   "vnem_tools_list_files",
   "vnem_tools_search_files",
   "vnem_tools_apply_patch",
   "vnem_tools_run_command",
   "vnem_tools_api_request",
+  "vnem_tools_api_adapter_catalog",
+  "vnem_tools_api_credential_reference_check",
+  "vnem_tools_api_adapter_plan",
+  "vnem_tools_api_adapter_execute",
+  "vnem_tools_api_adapter_compensate",
+  "vnem_tools_api_adapter_generate",
+  "vnem_tools_api_adapter_contract_test",
+  "vnem_tools_api_adapter_review_activate",
+  "vnem_tools_skill_adapter_catalog",
+  "vnem_tools_skill_package_inspect",
+  "vnem_tools_skill_doctor",
+  "vnem_tools_skill_adapter_plan",
+  "vnem_tools_skill_adapter_execute",
+  "vnem_tools_skill_source_verify",
   "vnem_tools_fetch_url_text",
   "vnem_tools_source_quality_check",
   "vnem_tools_research_brief",
@@ -217,10 +379,50 @@ const requiredTools = [
   "vnem_tools_ui_surface_review",
   "vnem_tools_browser_evidence_plan",
   "vnem_tools_browser_evidence_run",
+  "vnem_tools_browser_interaction_run",
+  "vnem_tools_browser_evidence_compare",
+  "vnem_tools_powershell_command_plan",
+  "vnem_tools_windows_system_snapshot",
+  "vnem_tools_windows_path_inspect",
+  "vnem_tools_process_inspect",
+  "vnem_tools_port_inspect",
+  "vnem_tools_windows_service_status",
+  "vnem_tools_windows_scheduled_task_status",
+  "vnem_tools_windows_event_log_read",
+  "vnem_tools_windows_app_config_detect",
+  "vnem_tools_windows_change_plan",
+  "vnem_tools_game_adapter_catalog",
+  "vnem_tools_game_project_inspect",
+  "vnem_tools_game_config_audit",
+  "vnem_tools_mod_compatibility_analyze",
+  "vnem_tools_mod_profile_compare",
+  "vnem_tools_game_project_validate",
+  "vnem_tools_mod_backup_create",
+  "vnem_tools_mod_backup_restore",
+  "vnem_tools_roblox_project_inspect",
+  "vnem_tools_luau_symbol_map",
   "vnem_tools_ui_evidence_audit",
   "vnem_tools_apply_patch_batch",
   "vnem_tools_restore_batch",
   "vnem_tools_project_scan",
+  "vnem_tools_project_automation_inspect",
+  "vnem_tools_project_command_run",
+  "vnem_tools_project_task_graph_plan",
+  "vnem_tools_project_task_graph_run",
+  "vnem_tools_project_task_graph_status",
+  "vnem_tools_project_task_graph_rollback",
+  "vnem_tools_project_runtime_diagnose",
+  "vnem_tools_project_temp_cleanup",
+  "vnem_tools_test_system_inspect",
+  "vnem_tools_affected_test_graph",
+  "vnem_tools_test_run",
+  "vnem_tools_ci_failure_diagnose",
+  "vnem_tools_coverage_benchmark_report",
+  "vnem_tools_app_inspect",
+  "vnem_tools_app_vertical_slice_plan",
+  "vnem_tools_app_vertical_slice_apply",
+  "vnem_tools_app_acceptance_run",
+  "vnem_tools_app_transaction_rollback",
   "vnem_tools_run_project_task",
   "vnem_tools_start_dev_server",
   "vnem_tools_stop_dev_server",
@@ -234,6 +436,12 @@ const requiredTools = [
   "vnem_tools_github_settings_guide",
   "vnem_tools_github_profile_status",
   "vnem_tools_github_repo_inspect",
+  "vnem_tools_github_diff_review",
+  "vnem_tools_github_review_threads",
+  "vnem_tools_github_remote_proof",
+  "vnem_tools_github_actions_run_inspect",
+  "vnem_tools_github_release_verify",
+  "vnem_tools_github_public_surface_audit",
   "vnem_tools_repo_intelligence_report",
   "vnem_tools_github_branch_create",
   "vnem_tools_github_commit_push",
@@ -269,9 +477,28 @@ const requiredTools = [
   "vnem_tools_cloudflare_rollback",
   "vnem_tools_cloudflare_cache_purge_plan",
   "vnem_tools_cloudflare_cache_purge",
+  "vnem_tools_cloudflare_error_diagnose",
   "vnem_tools_evidence_pack_audit",
   "vnem_tools_mutation_approval_contract",
-  "vnem_tools_secret_redaction_check"
+  "vnem_tools_secret_redaction_check",
+  "vnem_tools_structural_code_search",
+  "vnem_tools_exact_patch",
+  "vnem_tools_unified_diff_apply",
+  "vnem_tools_patch_transaction",
+  "vnem_tools_patch_transaction_rollback",
+  "vnem_tools_verification_loop",
+  "vnem_tools_terminal_session",
+  "vnem_tools_documentation_source_catalog",
+  "vnem_tools_official_documentation_fetch",
+  "vnem_tools_documentation_context",
+  "vnem_tools_documentation_cache_status",
+  "vnem_tools_ephemeral_script",
+  "vnem_tools_code_index_status",
+  "vnem_tools_permission_request",
+  "vnem_tools_permission_grant",
+  "vnem_tools_permission_revoke",
+  "vnem_tools_permission_evaluate",
+  "vnem_tools_permission_doctor"
 ];
 
 const report = {
@@ -280,6 +507,40 @@ const report = {
   core_tools_e2e_test_exists: existsSync(e2eTestPath),
   browser_capture_test_exists: existsSync(browserTestPath),
   project_actions_test_exists: existsSync(projectActionsTestPath),
+  app_engineering_test_exists: existsSync(appEngineeringTestPath),
+  app_engineering_module_exists: existsSync(appEngineeringModulePath),
+  app_engineering_fixtures_exist: existsSync(appEngineeringFixturesPath),
+  browser_interaction_test_exists: existsSync(browserInteractionTestPath),
+  browser_interaction_module_exists: existsSync(browserInteractionModulePath),
+  browser_interaction_fixture_exists: existsSync(browserInteractionFixturePath),
+  windows_local_test_exists: existsSync(windowsLocalTestPath),
+  windows_local_module_exists: existsSync(windowsLocalModulePath),
+  windows_local_fixture_exists: existsSync(windowsLocalFixturePath),
+  github_development_test_exists: existsSync(githubDevelopmentTestPath),
+  github_development_module_exists: existsSync(githubDevelopmentModulePath),
+  game_domain_test_exists: existsSync(gameDomainTestPath),
+  game_domain_module_exists: existsSync(gameDomainModulePath),
+  dependency_security_test_exists: existsSync(dependencySecurityTestPath),
+  dependency_security_module_exists: existsSync(dependencySecurityModulePath),
+  structural_code_test_exists: existsSync(structuralCodeTestPath),
+  structural_code_module_exists: existsSync(structuralCodeModulePath),
+  api_connector_test_exists: existsSync(apiConnectorTestPath),
+  api_connector_module_exists: existsSync(apiConnectorModulePath),
+  skill_runtime_test_exists: existsSync(skillRuntimeTestPath),
+  skill_runtime_module_exists: existsSync(skillRuntimeModulePath),
+  deterministic_generation_test_exists: existsSync(deterministicGenerationTestPath),
+  generated_artifacts_module_exists: existsSync(generatedArtifactsModulePath),
+  generated_artifacts_manifest_exists: existsSync(generatedArtifactsManifestPath),
+  generation_metadata_exists: existsSync(generationMetadataPath),
+  deterministic_digest_module_exists: existsSync(dailyDigestModulePath),
+  project_automation_test_exists: existsSync(projectAutomationTestPath),
+  project_automation_module_exists: existsSync(projectAutomationModulePath),
+  project_automation_fixture_exists: existsSync(projectAutomationFixturePath),
+  testing_ci_test_exists: existsSync(testingCiTestPath),
+  testing_ci_runtime_exists: existsSync(testingCiRuntimePath),
+  testing_ci_runner_exists: existsSync(testingCiRunnerPath),
+  testing_ci_manifest_exists: existsSync(testingCiManifestPath),
+  testing_ci_fixture_exists: existsSync(testingCiFixturePath),
   git_session_test_exists: existsSync(gitSessionTestPath),
   intelligence_test_exists: existsSync(intelligenceTestPath),
   research_test_exists: existsSync(researchTestPath),
@@ -321,6 +582,16 @@ const report = {
   tools_power_session_1_recovery_test_exists: existsSync(toolsPowerSession1RecoveryTestPath),
   tools_orchestrator_1_regression_test_exists: existsSync(toolsOrchestrator1RegressionTestPath),
   tools_code_intelligence_1_regression_test_exists: existsSync(toolsCodeIntelligence1RegressionTestPath),
+  tools_precision_subsystem_test_exists: existsSync(toolsPrecisionSubsystemTestPath),
+  precision_subsystem_module_exists: existsSync(precisionSubsystemPath),
+  current_documentation_test_exists: existsSync(currentDocumentationTestPath),
+  documentation_intelligence_module_exists: existsSync(documentationIntelligencePath),
+  permission_runtime_test_exists: existsSync(permissionRuntimeTestPath),
+  tools_scoped_permissions_test_exists: existsSync(toolsScopedPermissionsTestPath),
+  safety_cli_test_exists: existsSync(safetyCliTestPath),
+  client_setup_test_exists: existsSync(clientSetupTestPath),
+  client_setup_mcp_test_exists: existsSync(clientSetupMcpTestPath),
+  permission_runtime_module_exists: existsSync(permissionRuntimePath),
   adoption_reliability_test_exists: existsSync(adoptionReliabilityTestPath),
   adoption_reliability_2_test_exists: existsSync(adoptionReliability2TestPath),
   core_research_strategy_test_exists: existsSync(coreResearchStrategyTestPath),
@@ -338,6 +609,24 @@ const report = {
     test_tools_mcp: pkg.scripts?.["test:tools-mcp"] === "node scripts/test-tools-mcp-server.mjs",
     test_tools_browser: pkg.scripts?.["test:tools-browser"] === "node scripts/test-tools-browser-capture.mjs",
     test_tools_project_actions: pkg.scripts?.["test:tools-project-actions"] === "node scripts/test-tools-project-actions.mjs",
+    test_tools_giga_app_engineering: pkg.scripts?.["test:tools-giga-app-engineering"] === "node scripts/test-tools-giga-app-engineering.mjs",
+    test_tools_giga_browser_interaction: pkg.scripts?.["test:tools-giga-browser-interaction"] === "node scripts/test-tools-giga-browser-interaction.mjs",
+    test_tools_giga_windows_local: pkg.scripts?.["test:tools-giga-windows-local"] === "node scripts/test-tools-giga-windows-local.mjs",
+    test_tools_giga_github_development: pkg.scripts?.["test:tools-giga-github-development"] === "node scripts/test-tools-giga-github-development.mjs",
+    test_tools_giga_game_domain: pkg.scripts?.["test:tools-giga-game-domain"] === "node scripts/test-tools-giga-game-domain.mjs",
+    test_tools_giga_dependency_security: pkg.scripts?.["test:tools-giga-dependency-security"] === "node scripts/test-tools-giga-dependency-security.mjs",
+    test_tools_giga_structural_code: pkg.scripts?.["test:tools-giga-structural-code"] === "node scripts/test-tools-giga-structural-code.mjs",
+    test_tools_giga_api_connectors: pkg.scripts?.["test:tools-giga-api-connectors"] === "node scripts/test-tools-giga-api-connectors.mjs",
+    giga_phase16_benchmark: pkg.scripts?.["giga:phase16-benchmark"] === "node scripts/test-tools-giga-api-connectors.mjs --benchmark-output=.vnem/giga-evolution/phase-16/api-connectors-benchmark.json",
+    giga_phase16_live_proof: pkg.scripts?.["giga:phase16-live-proof"] === "node scripts/test-tools-giga-api-connectors.mjs --live --benchmark-output=.vnem/giga-evolution/phase-16/live-api-proof.json",
+    test_tools_giga_skill_runtime: pkg.scripts?.["test:tools-giga-skill-runtime"] === "node scripts/test-tools-giga-skill-runtime.mjs",
+    giga_phase17_benchmark: pkg.scripts?.["giga:phase17-benchmark"] === "node scripts/test-tools-giga-skill-runtime.mjs --benchmark-output=.vnem/giga-evolution/phase-17/skill-runtime-benchmark.json",
+    giga_phase17_live_source_proof: pkg.scripts?.["giga:phase17-live-source-proof"] === "node scripts/test-tools-giga-skill-runtime.mjs --live --benchmark-output=.vnem/giga-evolution/phase-17/live-source-proof.json",
+    test_tools_giga_current_documentation: pkg.scripts?.["test:tools-giga-current-documentation"] === "node scripts/test-tools-giga-current-documentation.mjs",
+    giga_phase18_benchmark: pkg.scripts?.["giga:phase18-benchmark"] === "node scripts/test-tools-giga-current-documentation.mjs --benchmark-output=.vnem/giga-evolution/phase-18/current-documentation-benchmark.json",
+    giga_phase18_live_docs_proof: pkg.scripts?.["giga:phase18-live-docs-proof"] === "node scripts/test-tools-giga-current-documentation.mjs --live --benchmark-output=.vnem/giga-evolution/phase-18/live-documentation-proof.json",
+    test_tools_giga_project_automation: pkg.scripts?.["test:tools-giga-project-automation"] === "node scripts/test-tools-giga-project-automation.mjs",
+    test_tools_giga_testing_ci: pkg.scripts?.["test:tools-giga-testing-ci"] === "node scripts/test-tools-giga-testing-ci.mjs",
     test_tools_git_session: pkg.scripts?.["test:tools-git-session"] === "node scripts/test-tools-git-session.mjs",
     test_tools_intelligence: pkg.scripts?.["test:tools-intelligence"] === "node scripts/test-tools-intelligence.mjs",
     test_tools_research: pkg.scripts?.["test:tools-research"] === "node scripts/test-tools-research.mjs",
@@ -371,6 +660,12 @@ const report = {
     test_tools_cloudflare_approval_gates: pkg.scripts?.["test:tools-cloudflare-approval-gates"] === "node scripts/test-tools-cloudflare-approval-gates.mjs",
     test_tools_cloudflare_redaction: pkg.scripts?.["test:tools-cloudflare-redaction"] === "node scripts/test-tools-cloudflare-redaction.mjs",
     test_tools_cloudflare_evidence_pack: pkg.scripts?.["test:tools-cloudflare-evidence-pack"] === "node scripts/test-tools-cloudflare-evidence-pack.mjs",
+    test_tools_giga_cloudflare_deployment: pkg.scripts?.["test:tools-giga-cloudflare-deployment"] === "node scripts/test-tools-giga-cloudflare-deployment.mjs",
+    giga_phase20_benchmark: pkg.scripts?.["giga:phase20-benchmark"] === "node scripts/test-tools-giga-cloudflare-deployment.mjs --benchmark-output=.vnem/giga-evolution/phase-20/cloudflare-deployment-benchmark.json",
+    giga_phase20_capability: pkg.scripts?.["giga:phase20-capability"] === "node scripts/vnem/giga/capability-benchmark.mjs --output=.vnem/giga-evolution/phase-20/capability-benchmark.json",
+    generate_check: pkg.scripts?.["generate:check"] === "node scripts/check-generated-artifacts.mjs",
+    test_giga_deterministic_generation: pkg.scripts?.["test:giga-deterministic-generation"] === "node scripts/test-giga-deterministic-generation.mjs",
+    giga_phase21_benchmark: pkg.scripts?.["giga:phase21-benchmark"] === "node scripts/test-giga-deterministic-generation.mjs --benchmark-output=.vnem/giga-evolution/phase-21/deterministic-generation-benchmark.json",
     test_tools_quality_general: pkg.scripts?.["test:tools-quality-general"] === "node scripts/test-tools-quality-general.mjs",
     test_tools_reliability_catalog: pkg.scripts?.["test:tools-reliability-catalog"] === "node scripts/test-tools-reliability-catalog.mjs",
     test_tools_action_recovery_plan: pkg.scripts?.["test:tools-action-recovery-plan"] === "node scripts/test-tools-action-recovery-plan.mjs",
@@ -418,6 +713,28 @@ const report = {
     test_tools_source_impact_trace: pkg.scripts?.["test:tools-source-impact-trace"] === "node scripts/test-tools-code-intelligence-1-regression.mjs --case=source-impact-trace",
     test_tools_source_control_character_guard: pkg.scripts?.["test:tools-source-control-character-guard"] === "node scripts/test-tools-code-intelligence-1-regression.mjs --case=source-control-character-guard",
     test_tools_code_intelligence_1_regression: pkg.scripts?.["test:tools-code-intelligence-1-regression"] === "node scripts/test-tools-code-intelligence-1-regression.mjs",
+    test_tools_precision_subsystem: pkg.scripts?.["test:tools-precision-subsystem"] === "node scripts/test-tools-precision-subsystem.mjs",
+    test_permission_runtime: pkg.scripts?.["test:permission-runtime"] === "node scripts/test-permission-runtime.mjs",
+    test_tools_scoped_permissions: pkg.scripts?.["test:tools-scoped-permissions"] === "node scripts/test-tools-scoped-permissions.mjs",
+    test_safety_cli: pkg.scripts?.["test:safety-cli"] === "node scripts/test-vnem-safety-cli.mjs",
+    test_clients: pkg.scripts?.["test:clients"] === "node scripts/vnem/testing/runner.mjs --tier=clients",
+    test_clients_setup: pkg.scripts?.["test:clients:setup"] === "node scripts/test-vnem-client-setup.mjs",
+    test_smoke_tier: pkg.scripts?.["test:smoke"] === "node scripts/vnem/testing/runner.mjs --tier=smoke",
+    test_affected_tier: pkg.scripts?.["test:affected"] === "node scripts/vnem/testing/runner.mjs --tier=affected",
+    test_core_tier: pkg.scripts?.["test:core"] === "node scripts/vnem/testing/runner.mjs --tier=core",
+    test_tools_tier: pkg.scripts?.["test:tools"] === "node scripts/vnem/testing/runner.mjs --tier=tools",
+    test_precision_compat_tier: pkg.scripts?.["test:precision-compat"] === "node scripts/vnem/testing/runner.mjs --tier=precision-compat",
+    test_integration_tier: pkg.scripts?.["test:integration"] === "node scripts/vnem/testing/runner.mjs --tier=integration",
+    test_benchmarks_tier: pkg.scripts?.["test:benchmarks"] === "node scripts/vnem/testing/runner.mjs --tier=benchmarks",
+    test_full_tier: pkg.scripts?.["test:full"] === "node scripts/vnem/testing/runner.mjs --tier=full",
+    test_ci_tier: pkg.scripts?.["test:ci"] === "node scripts/vnem/testing/runner.mjs --tier=ci",
+    npm_test_routes_full: pkg.scripts?.test === "node scripts/vnem/testing/runner.mjs --tier=full",
+    setup: pkg.scripts?.setup === "node scripts/vnem-cli.mjs setup",
+    clients: pkg.scripts?.clients === "node scripts/vnem-cli.mjs clients",
+    status: pkg.scripts?.status === "node scripts/vnem-cli.mjs status",
+    config_preview: pkg.scripts?.["config:preview"] === "node scripts/vnem-cli.mjs config preview",
+    rollback: pkg.scripts?.rollback === "node scripts/vnem-cli.mjs rollback",
+    safety: pkg.scripts?.safety === "node scripts/vnem-cli.mjs safety",
     test_core_adoption_entrypoint: pkg.scripts?.["test:core-adoption-entrypoint"] === "node scripts/test-vnem-adoption-reliability-1-regression.mjs --case=core-entrypoint",
     test_core_usage_contract: pkg.scripts?.["test:core-usage-contract"] === "node scripts/test-vnem-adoption-reliability-1-regression.mjs --case=core-usage-contract",
     test_tools_adoption_entrypoint: pkg.scripts?.["test:tools-adoption-entrypoint"] === "node scripts/test-vnem-adoption-reliability-1-regression.mjs --case=tools-entrypoint",
@@ -439,7 +756,29 @@ const report = {
     test_vnem_install_doctor: pkg.scripts?.["test:vnem-install-doctor"] === "node scripts/test-vnem-install-adoption-1-regression.mjs --case=install-doctor",
     test_vnem_install_adoption_1_regression: pkg.scripts?.["test:vnem-install-adoption-1-regression"] === "node scripts/test-vnem-install-adoption-1-regression.mjs"
   },
-  required_tools_present: Object.fromEntries(requiredTools.map((name) => [name, server.includes(`"${name}"`)])),
+  required_tools_present: Object.fromEntries(requiredTools.map((name) => [name, runtimeToolNames.has(name) || server.includes(`"${name}"`)])),
+  precision_subsystem_runtime_registry_status: [
+    "vnem_tools_structural_code_search",
+    "vnem_tools_exact_patch",
+    "vnem_tools_unified_diff_apply",
+    "vnem_tools_patch_transaction",
+    "vnem_tools_patch_transaction_rollback",
+    "vnem_tools_verification_loop",
+    "vnem_tools_terminal_session",
+    "vnem_tools_official_documentation_fetch",
+    "vnem_tools_documentation_context",
+    "vnem_tools_ephemeral_script",
+    "vnem_tools_code_index_status"
+  ].every((name) => runtimeToolNames.has(name)),
+  precision_subsystem_behavior_status: /phase3-atomic-proof/.test(toolsPrecisionSubsystemTest) && /rollback_available/.test(toolsPrecisionSubsystemTest) && /initialized, false/.test(toolsPrecisionSubsystemTest),
+  precision_subsystem_shared_runtime_status: /registerToolsPrecisionSubsystem/.test(server) && /registerPrecisionCompatibilityTools/.test(precisionSubsystem),
+  scoped_permission_runtime_registry_status: ["vnem_tools_permission_request", "vnem_tools_permission_grant", "vnem_tools_permission_revoke", "vnem_tools_permission_evaluate", "vnem_tools_permission_doctor"].every((name) => runtimeToolNames.has(name)),
+  scoped_permission_behavior_status: /active scoped grant should avoid repeated per-call approval/.test(toolsScopedPermissionsTest) && /permission_hard_blocked/.test(toolsScopedPermissionsTest) && /persistence: "session"/.test(toolsScopedPermissionsTest),
+  safety_cli_behavior_status: /rollbackPreview/.test(safetyCliTest) && /session-only profile/.test(safetyCliTest) && /hard_blocked_actions/.test(safetyCliTest),
+  client_setup_behavior_status: /Codex App and CLI must share one config and one managed-instruction transaction/.test(clientSetupTest) && /preserve-me/.test(clientSetupTest) && /Keep the user's release workflow/.test(clientSetupTest) && /rollbackClientSetup/.test(clientSetupTest) && /11 profiles, merge, proof, backup, and rollback/.test(clientSetupTest),
+  client_setup_mcp_status: /vnem_tools_client_detect/.test(server + clientSetupMcpTest) && /vnem_tools_client_setup_plan/.test(server + clientSetupMcpTest) && /vnem_tools_client_install/.test(server + clientSetupMcpTest) && /vnem_tools_client_setup_status/.test(server + clientSetupMcpTest) && /vnem_tools_client_verify/.test(server + clientSetupMcpTest) && /vnem_tools_client_rollback/.test(server + clientSetupMcpTest) && /creator-power/.test(clientSetupMcpTest) && /Apply isolated client setup fixture/.test(clientSetupMcpTest) && /Restore isolated client setup fixture/.test(clientSetupMcpTest),
+  client_setup_cli_status: /runSetupCommand/.test(cli) && /runConfigPreviewCommand/.test(cli) && /runRollbackCommand/.test(cli) && /vnem setup/.test(cli) && /vnem config preview/.test(cli),
+  permission_runtime_shared_status: /registerPermissionRuntimeTools/.test(server) && /requestGrant/.test(permissionRuntimeSource) && /vnem_tools_permission_grant/.test(permissionToolsSource) && /HARD_BLOCKED_ACTIONS/.test(permissionRuntimeTest),
   mcp_config_tools_support: /--tools/.test(cli) && /VNEM_TOOLS_ALLOWED_ROOTS/.test(cli) && /VNEM_TOOLS_EVIDENCE_ROOT/.test(cli) && /vnem-tools-mcp-server/.test(cli),
   github_autonomy_status: /github_autonomy/.test(server) && /registerGithubTools/.test(server) && /vnem_tools_github_status/.test(server),
   github_settings_guide_status: /vnem_tools_github_settings_guide/.test(server) && /# GITHUB SETTINGS/.test(server + toolsGithubSettingsTest) && /VNEM_TOOLS_GITHUB_PROFILE = "maintainer"/.test(server + toolsGithubSettingsTest),
@@ -472,9 +811,116 @@ const report = {
   github_actions_real_exec_status: /\["run", "list"/.test(server) && /\["run", "rerun"/.test(server) && /gh run/.test(toolsGithubRealExecPathsTest),
   github_ci_logs_status: /run", "view"/.test(server) && /--log-failed|--log/.test(server) && /Cannot find module/.test(toolsGithubRealExecPathsTest + toolsGithubMutationDryRunTest + server),
   github_release_draft_status: /\["release", "create"/.test(server) && /--draft/.test(server + toolsGithubRealExecPathsTest),
+  github_development_module_status: /GithubDevelopmentRuntime/.test(server + githubDevelopmentModule) && /runGithubDevelopmentRead/.test(server) && /GITHUB_DEVELOPMENT_MARKERS/.test(githubDevelopmentModule),
+  github_diff_review_status: /vnem_tools_github_diff_review/.test(server + githubDevelopmentTest) && /scanPatch/.test(githubDevelopmentModule) && /hidden_or_bidi_unicode/.test(githubDevelopmentModule + githubDevelopmentTest) && /secret_like_addition/.test(githubDevelopmentModule),
+  github_review_threads_status: /vnem_tools_github_review_threads/.test(server + githubDevelopmentTest) && /reviewThreads/.test(githubDevelopmentModule) && /has_next_page/.test(githubDevelopmentModule) && /mutation_performed, false/.test(githubDevelopmentTest),
+  github_remote_proof_status: /vnem_tools_github_remote_proof/.test(server + githubDevelopmentTest) && /ls-remote/.test(githubDevelopmentModule) && /local_matches_remote/.test(githubDevelopmentModule) && /exact_head_actions_observed/.test(githubDevelopmentModule) && /repair_or_rollback_guidance/.test(githubDevelopmentModule + githubDevelopmentTest),
+  github_actions_run_inspect_status: /vnem_tools_github_actions_run_inspect/.test(server + githubDevelopmentTest) && /--log-failed/.test(githubDevelopmentModule + githubDevelopmentTest) && /failed_steps/.test(githubDevelopmentModule + githubDevelopmentTest) && /important_lines/.test(githubDevelopmentModule),
+  github_release_verify_status: /vnem_tools_github_release_verify/.test(server + githubDevelopmentTest) && /parseTagRefs/.test(githubDevelopmentModule) && /expected_matches_remote_tag/.test(githubDevelopmentModule) && /release_absence_proof/.test(githubDevelopmentTest),
+  github_public_surface_audit_status: /vnem_tools_github_public_surface_audit/.test(server + githubDevelopmentTest) && /publicSurfaceAudit/.test(githubDevelopmentModule) && /core_product_missing/.test(githubDevelopmentModule) && /simplification_suggestions/.test(githubDevelopmentModule),
+  github_selective_commit_isolation_status: /unrelated files are already staged/.test(server + githubDevelopmentTest) && /parseGitPathList/.test(server) && /scanGithubCommitContent/.test(server) && /remote_sha_verified/.test(server) && /pre-staged isolation/.test(githubDevelopmentTest),
+  github_development_real_mcp_proof_status: /StdioClientTransport/.test(githubDevelopmentTest) && /GIGA GitHub-development MCP tests passed/.test(githubDevelopmentTest) && /actual_stdio_mcp_live_github_read_proof/.test(githubDevelopmentTest),
+  game_domain_module_status: /GameDomainRuntime/.test(server + gameDomainModule) && /GAME_DOMAIN_MARKERS/.test(gameDomainModule) && /game_domain/.test(server),
+  game_domain_adapter_contract_status: /game_tool_name/.test(gameDomainModule + gameDomainTest) && /version_scope/.test(gameDomainModule) && /supported_loaders/.test(gameDomainModule) && /backup_strategy/.test(gameDomainModule) && /unsupported_operations/.test(gameDomainModule),
+  game_domain_inventory_status: /vnem_tools_game_project_inspect/.test(server + gameDomainTest) && /duplicateGroups/.test(gameDomainModule) && /GUARDED_BINARY_FORMATS/.test(gameDomainModule) && /generated_output_isolation/.test(gameDomainModule),
+  game_domain_config_status: /vnem_tools_game_config_audit/.test(server + gameDomainTest) && /JSON\.parse/.test(gameDomainModule) && /FAILSAFE_SCHEMA/.test(gameDomainModule) && /@iarna\/toml/.test(gameDomainModule) && /scanXml/.test(gameDomainModule) && /mapLuauFile/.test(gameDomainModule),
+  game_domain_compatibility_status: /vnem_tools_mod_compatibility_analyze/.test(server + gameDomainTest) && /dependencyCycles/.test(gameDomainModule) && /compatibility_matrix/.test(gameDomainModule) && /dependency_load_order_violation/.test(gameDomainModule + gameDomainTest),
+  game_domain_profile_status: /vnem_tools_mod_profile_compare/.test(server + gameDomainTest) && /version_changed/.test(gameDomainModule + gameDomainTest) && /enabled_changed/.test(gameDomainModule + gameDomainTest) && /order_changed/.test(gameDomainModule + gameDomainTest),
+  game_domain_backup_restore_status: /vnem_tools_mod_backup_create/.test(server + gameDomainTest) && /vnem_tools_mod_backup_restore/.test(server + gameDomainTest) && /expected_current_sha256/.test(gameDomainModule + gameDomainTest) && /pre_restore_safety_package/.test(gameDomainModule + gameDomainTest) && /game_restore_hash_precondition_failed/.test(gameDomainTest),
+  game_domain_roblox_luau_status: /vnem_tools_roblox_project_inspect/.test(server + gameDomainTest) && /vnem_tools_luau_symbol_map/.test(server + gameDomainTest) && /remote_trust_boundaries/.test(gameDomainModule + gameDomainTest) && /service_mappings/.test(gameDomainModule + gameDomainTest),
+  game_domain_validation_status: /vnem_tools_game_project_validate/.test(server + gameDomainTest) && /isolated_rojo_build/.test(gameDomainModule + gameDomainTest) && /command_execution/.test(gameDomainModule + gameDomainTest) && /guarded_binary/.test(gameDomainModule + gameDomainTest),
+  game_domain_real_mcp_proof_status: /StdioClientTransport/.test(gameDomainTest) && /game\/modding\/Roblox MCP tests passed/.test(gameDomainTest) && /actual_stdio_mcp_game_modding_roblox_execution/.test(gameDomainTest),
+  dependency_security_module_status: /DependencySecurityRuntime/.test(server + dependencySecurityModule) && /dependency_security_policy/.test(server) && /mutation_adapter: "npm only"/.test(server),
+  dependency_security_inventory_status: /vnem_tools_dependency_inventory/.test(server + dependencySecurityTest) && /dependency_graph/.test(dependencySecurityTest) && /SBOM-style inventory/.test(dependencySecurityModule + server),
+  dependency_security_risk_status: /vnem_tools_dependency_risk_audit/.test(server + dependencySecurityTest) && /remote_pipe_execution/.test(dependencySecurityModule + dependencySecurityTest) && /typosquatting_indicators/.test(dependencySecurityModule + dependencySecurityTest) && /license_findings/.test(dependencySecurityTest),
+  dependency_security_advisory_status: /vnem_tools_dependency_advisory_audit/.test(server + dependencySecurityTest) && /advisory_source_not_approved/.test(dependencySecurityTest) && /current_within_24h/.test(dependencySecurityModule + dependencySecurityTest) && /registry_credentials_read/.test(dependencySecurityTest),
+  dependency_security_change_plan_status: /vnem_tools_dependency_change_analyze/.test(server + dependencySecurityTest) && /breaking_major_indicator/.test(dependencySecurityModule + dependencySecurityTest) && /selected_tests/.test(dependencySecurityTest) && /vnem_tools_dependency_upgrade_plan/.test(server + dependencySecurityTest),
+  dependency_security_install_status: /vnem_tools_dependency_install_apply/.test(server + dependencySecurityTest) && /approved-installs/.test(server + dependencySecurityTest) && /lifecycle_scripts_executed/.test(dependencySecurityModule + dependencySecurityTest) && /dependency_install_completed/.test(dependencySecurityTest) && /failed_rolled_back/.test(dependencySecurityTest),
+  dependency_security_rollback_status: /vnem_tools_dependency_transaction_rollback/.test(server + dependencySecurityTest) && /expected_current_sha256/.test(dependencySecurityModule + server) && /hashes_match/.test(dependencySecurityTest) && /automatic_failure_rollback/.test(dependencySecurityTest),
+  dependency_security_credential_boundary_status: /project_npmrc_blocked/.test(dependencySecurityModule) && /unique_ephemeral_os_temp_files/.test(dependencySecurityModule + dependencySecurityTest) && /allowlisted_names_only/.test(dependencySecurityModule) && /secret_environment_forwarded: false/.test(dependencySecurityModule),
+  dependency_security_hardening_status: /parseNpmLockV1/.test(dependencySecurityModule) && /dependency_transaction_lock_required/.test(dependencySecurityModule + dependencySecurityTest) && /local_dependency_link_escape/.test(dependencySecurityModule + dependencySecurityTest) && /nested_script_cycle/.test(dependencySecurityModule) && /trusted_npm_cli_not_found/.test(dependencySecurityModule) && !/process\.env\.npm_execpath/.test(dependencySecurityModule) && /npm_execpath: hostileNpmExecpath/.test(dependencySecurityTest) && /hostile-npm-executed\.txt/.test(dependencySecurityTest) && /taskkill_process_tree/.test(dependencySecurityModule) && /timed-out npm descendant escaped process-tree cleanup/.test(dependencySecurityTest),
+  dependency_security_real_mcp_proof_status: /StdioClientTransport/.test(dependencySecurityTest) && /GIGA Phase 14 dependency\/security tests passed/.test(dependencySecurityTest) && /actual_stdio_mcp_dependency_security_execution/.test(dependencySecurityTest),
+  structural_code_module_status: /StructuralCodeRuntime/.test(server + structuralCodeModule) && /structural_code_policy/.test(server) && /StructuralCodeError/.test(server + structuralCodeModule),
+  structural_code_architecture_status: /@babel\/parser/.test(structuralCodeModule) && /@babel\/traverse/.test(structuralCodeModule) && /compiler_grade_claim: false/.test(structuralCodeModule) && /tree_sitter_evaluation/.test(structuralCodeModule) && /bounded_compact_json/.test(structuralCodeModule),
+  structural_code_index_status: /vnem_tools_structural_index_build/.test(server + structuralCodeTest) && /incremental_index_ms/.test(structuralCodeTest) && /reparsed_files, 1/.test(structuralCodeTest) && /generated_or_minified_bundle/.test(structuralCodeModule + structuralCodeTest) && /graph_rebuilt_on_load/.test(structuralCodeModule),
+  structural_code_graph_status: /vnem_tools_structural_graph_query/.test(server + structuralCodeTest) && /routeQuery/.test(structuralCodeTest) && /componentQuery/.test(structuralCodeTest) && /package_edges/.test(structuralCodeModule + structuralCodeTest) && /test_source/.test(structuralCodeModule + structuralCodeTest),
+  structural_code_reference_status: /vnem_tools_exact_symbol_references/.test(server + structuralCodeTest) && /binding_start/.test(structuralCodeModule) && /shadowed parameter reference/.test(structuralCodeTest) && /jsx_reference/.test(structuralCodeModule + structuralCodeTest),
+  structural_code_planning_status: /vnem_tools_refactor_move_preview/.test(server + structuralCodeTest) && /vnem_tools_refactor_extract_plan/.test(server + structuralCodeTest) && /vnem_tools_dead_code_candidates/.test(server + structuralCodeTest) && /vnem_tools_refactor_impact_analyze/.test(server + structuralCodeTest) && /apply_supported, false/.test(structuralCodeTest),
+  structural_code_validation_status: /vnem_tools_structural_patch_validate/.test(server + structuralCodeTest) && /unresolved_relative_imports/.test(structuralCodeModule + structuralCodeTest) && /duplicate_exports/.test(structuralCodeModule) && /tests_executed: false/.test(structuralCodeModule),
+  structural_code_safety_gates_status: /public_export_change_requires_acknowledgement/.test(structuralCodeModule + structuralCodeTest) && /rename_collision/.test(structuralCodeModule + structuralCodeTest) && /object_shorthand_semantics_require_review/.test(structuralCodeModule + structuralCodeTest) && /rename_parser_not_exact/.test(structuralCodeModule + structuralCodeTest) && /structural_graph_truncated/.test(structuralCodeModule) && /refactor_preview_stale/.test(structuralCodeModule + structuralCodeTest),
+  structural_code_transaction_status: /vnem_tools_refactor_apply_verify/.test(server + structuralCodeTest) && /vnem_tools_refactor_transaction_rollback/.test(server + structuralCodeTest) && /post_reference_check/.test(structuralCodeModule + structuralCodeTest) && /failed_rolled_back/.test(structuralCodeModule + structuralCodeTest) && /refactor_rollback_stale/.test(structuralCodeModule + structuralCodeTest) && /hashes_match/.test(structuralCodeTest),
+  structural_code_hardening_status: /refactor_target_link_or_escape/.test(structuralCodeModule) && /refactor_transaction_root_mismatch/.test(structuralCodeModule) && /refactor_backup_path_invalid/.test(structuralCodeModule) && /refactor_verification_mutated_worktree/.test(structuralCodeModule) && /cross_file_filesystem_atomicity_claimed: false/.test(server),
+  structural_code_core_routing_status: /vnem_tools_structural_index_build/.test(coreIntelligence + structuralCodeTest) && /vnem_tools_refactor_apply_verify/.test(coreIntelligence + structuralCodeTest) && /coreRecommendedToolsCalls/.test(structuralCodeTest) && /structural_refactoring/.test(server),
+  structural_code_real_mcp_proof_status: /StdioClientTransport/.test(structuralCodeTest) && /VNEM GIGA Phase 15 structural code tests passed/.test(structuralCodeTest) && /real_stdio_mcp/.test(structuralCodeTest),
+  api_connector_module_status: /ApiConnectorRuntime/.test(server + apiConnectorModule) && /api_connector_policy/.test(server) && /ApiConnectorError/.test(server + apiConnectorModule),
+  api_connector_contract_status: ["id", "provider", "version", "official_documentation", "base_urls", "allowed_methods", "authentication", "credential_reference_requirements", "request_schema", "response_schema", "rate_limits", "retry_policy", "timeout_ms", "cache_policy", "mutation_classification", "redaction_fields", "mock_fixtures", "live_test", "rollback_or_compensation", "freshness_date", "compatibility_status"].every((field) => apiConnectorModule.includes('"' + field + '"') || apiConnectorModule.includes(field + ":")),
+  api_connector_initial_adapters_status: ["open_meteo_forecast", "github_repository_get", "world_bank_indicator", "apis_guru_metrics", "wikipedia_page_info", "cheapshark_deals", "github_issue_create"].every((id) => apiConnectorModule.includes('id: "' + id + '"') && apiConnectorTest.includes(id)),
+  api_connector_permission_broker_status: ["environment", "client_secret_reference", "os_credential_store", "provider_profile"].every((type) => apiConnectorModule.includes(type) && apiConnectorTest.includes(type)) && /vetted_api_read/.test(permissionProfilesSource + server) && /credential_api_read/.test(permissionProfilesSource + server) && /external_api_mutation/.test(permissionProfilesSource + server) && /credentialPlan/.test(apiConnectorModule + server) && /credentialStatusDenied/.test(apiConnectorTest) && /api_raw_credential_parameter_blocked/.test(apiConnectorModule + apiConnectorTest),
+  api_connector_execution_bounds_status: /api_local_rate_limit/.test(apiConnectorModule) && /bounded_exponential_and_retry_after/.test(apiConnectorModule) && /process_memory/.test(apiConnectorModule) && /max_response_bytes/.test(apiConnectorModule + apiConnectorTest) && /response_truncated/.test(apiConnectorTest) && /redactDeep/.test(apiConnectorModule) && /writeEvidence/.test(apiConnectorModule) && /fixture retry/.test(apiConnectorTest) && /api_adapter_cache_hit/.test(apiConnectorTest),
+  api_connector_mock_live_status: /StdioClientTransport/.test(apiConnectorTest) && /seven_mocked_integrations: true/.test(apiConnectorTest) && /approved_by_cli_flag: liveEnabled/.test(apiConnectorTest) && /VNEM_TOOLS_API_LIVE_TESTS: "1"/.test(apiConnectorTest) && /open_meteo_live_ms/.test(apiConnectorTest) && /world_bank_live_ms/.test(apiConnectorTest),
+  api_connector_mutation_compensation_status: /external_mutation_mock_only: true/.test(apiConnectorTest) && /best_effort_compensation_not_rollback: true/.test(apiConnectorTest) && /api_compensation_completed/.test(apiConnectorModule + apiConnectorTest) && /This is best-effort compensation, not rollback/.test(apiConnectorModule),
+  api_connector_generation_review_status: /openapi_generation_ms/.test(apiConnectorTest) && /api_adapter_proposal_generated/.test(apiConnectorModule) && /contract_test_not_passed/.test(apiConnectorModule) && /api_adapter_review_required/.test(apiConnectorModule) && /unknown_not_acknowledged/.test(apiConnectorModule) && /unsupported_schema_keyword/.test(apiConnectorModule + apiConnectorTest) && /reviewed_active/.test(apiConnectorModule + apiConnectorTest),
+  api_connector_core_routing_status: /vnem_tools_api_adapter_catalog/.test(coreIntelligence + apiConnectorTest) && /vnem_tools_api_adapter_execute/.test(coreIntelligence + apiConnectorTest) && /vnem_tools_api_adapter_generate/.test(coreIntelligence) && /vnem_tools_api_adapter_review_activate/.test(coreIntelligence) && /Phase 16 API route/.test(readFileSync(rel("scripts/test-core-giga-intelligence.mjs"), "utf8")),
+  api_connector_real_mcp_proof_status: /StdioClientTransport/.test(apiConnectorTest) && /real_stdio_mcp: true/.test(apiConnectorTest) && /VNEM GIGA Phase 16 API connector tests passed/.test(apiConnectorTest),
+  skill_runtime_module_status: /SkillAdapterRuntime/.test(server + skillRuntimeModule) && /skill_adapter_policy/.test(server) && /SkillAdapterError/.test(server + skillRuntimeModule),
+  skill_runtime_contract_status: ["id", "name", "source", "version_or_commit", "license", "supported_clients", "supported_task_types", "instructions", "runtime_type", "filesystem_scope", "network_scope", "command_scope", "dependency_requirements", "risk_findings", "tests", "evidence", "trust_status", "last_verified"].every((field) => skillRuntimeModule.includes(`"${field}"`) || skillRuntimeModule.includes(`${field}:`)) && /missing \$\{field\}/.test(skillRuntimeTest),
+  skill_runtime_initial_adapters_status: ["vnem_workflow_guidance", "frontend_design_brief", "react_performance_audit", "tdd_seam_plan", "browser_evidence_audit", "research_claim_triage", "windows_script_safety_audit", "mod_profile_safety_audit", "package_test_verify"].every((id) => skillRuntimeModule.includes(`id: "${id}"`) && skillRuntimeTest.includes(`"${id}"`)) && /size, 9/.test(skillRuntimeTest),
+  skill_runtime_categories_status: ["declarative_guidance", "local_pure_transformation", "repo_analyzer", "test_verification_adapter", "browser_adapter", "api_backed_adapter", "command_backed_adapter", "unsupported_untrusted_skill"].every((category) => skillRuntimeModule.includes(category) && skillRuntimeTest.includes(category)),
+  skill_runtime_safe_default_status: /vetted_skill_execute/.test(permissionProfilesSource + server + skillRuntimeModule + skillRuntimeTest) && /safe-readonly/.test(permissionProfilesSource + skillRuntimeTest) && /skill_execute/.test(skillRuntimeModule + skillRuntimeTest) && /package_install/.test(server + skillRuntimeModule) && /external_api_mutation/.test(server + skillRuntimeModule),
+  skill_runtime_package_safety_status: /inspectPackage/.test(skillRuntimeModule) && /inspectPackageManifests/.test(skillRuntimeModule) && /yaml\.FAILSAFE_SCHEMA/.test(skillRuntimeModule) && /unsupported_untrusted_skill/.test(skillRuntimeModule + skillRuntimeTest) && /hostileMarker/.test(skillRuntimeTest) && /instructions_executed, false/.test(skillRuntimeTest) && /executable_file_present/.test(skillRuntimeTest) && /package_lifecycle_script/.test(skillRuntimeModule + skillRuntimeTest) && /package_scripts/.test(skillRuntimeModule + skillRuntimeTest) && /dependency_count/.test(skillRuntimeModule + skillRuntimeTest),
+  skill_runtime_doctor_status: /doctorAdapter/.test(skillRuntimeModule) && /source_verification_stale/.test(skillRuntimeModule) && /checked_contracts/.test(skillRuntimeModule) && /ready_count, 9/.test(skillRuntimeTest) && /local_hash_match, true/.test(skillRuntimeTest),
+  skill_runtime_source_pinning_status: /validatePinnedSourceUrl/.test(skillRuntimeModule) && /gitBlobSha/.test(skillRuntimeModule + skillRuntimeTest) && /raw\.githubusercontent\.com/.test(skillRuntimeModule + skillRuntimeTest) && /VNEM_TOOLS_SKILL_TEST_MODE/.test(skillRuntimeModule + skillRuntimeTest) && /mock_source_verification_ms/.test(skillRuntimeTest) && /live_source_/.test(skillRuntimeTest) && /raw_source_content_returned, false/.test(skillRuntimeTest),
+  skill_runtime_command_gate_status: /reviewCommand/.test(skillRuntimeModule) && /runCommand/.test(skillRuntimeModule) && /commandDefault/.test(skillRuntimeTest) && /commandDenied/.test(skillRuntimeTest) && /command_execution_ms/.test(skillRuntimeTest) && /skill_execute/.test(skillRuntimeModule + skillRuntimeTest) && /run_test/.test(skillRuntimeModule + skillRuntimeTest),
+  skill_runtime_core_routing_status: ["vnem_tools_skill_adapter_catalog", "vnem_tools_skill_doctor", "vnem_tools_skill_adapter_plan", "vnem_tools_skill_adapter_execute"].every((tool) => coreIntelligence.includes(tool) && skillRuntimeTest.includes(tool)) && /Phase 17 skill route/.test(readFileSync(rel("scripts/test-core-giga-intelligence.mjs"), "utf8")) && !/metadata_only_until_vetted_execution_runtime_exists/.test(coreIntelligence),
+  skill_runtime_real_mcp_proof_status: /StdioClientTransport/.test(skillRuntimeTest) && /real_stdio_mcp: true/.test(skillRuntimeTest) && /VNEM GIGA Phase 17 vetted skill runtime tests passed/.test(skillRuntimeTest),
+  skill_runtime_coverage_mapper_status: /vnem_tools_tool_test_coverage_map/.test(skillRuntimeTest) && /coverage_level, "behavior_test"/.test(skillRuntimeTest) && /behavior_coverage_mapper_for_six_tools: true/.test(skillRuntimeTest),
+  current_documentation_module_status: /class DocumentationCache/.test(documentationIntelligence) && /class DocumentationContextStore/.test(documentationIntelligence) && /function fetchDocumentation/.test(documentationIntelligence) && /detectDocumentationContradictions/.test(documentationIntelligence),
+  current_documentation_source_authority_status: ["React", "Next.js", "Vite", "Node.js", "TypeScript", "MDN Web Docs", "Cloudflare", "GitHub Docs", "Luau"].every((provider) => documentationIntelligence.includes(provider) && currentDocumentationTest.includes(provider)) && /exact_registry_domain_match/.test(documentationIntelligence) && /http_success_alone_sufficient: false/.test(documentationIntelligence),
+  current_documentation_cache_status: /if-none-match/.test(documentationIntelligence) && /if-modified-since/.test(documentationIntelligence) && /revalidated_not_modified/.test(documentationIntelligence + currentDocumentationTest) && /cache_only_stale/.test(documentationIntelligence + currentDocumentationTest) && /content_sha256/.test(documentationIntelligence + currentDocumentationTest),
+  current_documentation_bounds_status: /MAX_REDIRECTS/.test(documentationIntelligence) && /documentation_redirect_origin_blocked/.test(documentationIntelligence + currentDocumentationTest) && /documentation_too_large/.test(documentationIntelligence + currentDocumentationTest) && /full_page_returned: false/.test(documentationIntelligence) && /UNRELATED_FULL_PAGE_SENTINEL/.test(currentDocumentationTest),
+  current_documentation_contradiction_status: /detectDocumentationContradictions/.test(documentationIntelligence) && /preferred_source_url/.test(documentationIntelligence + currentDocumentationTest) && /Contradictions requiring review/.test(documentationIntelligence + currentDocumentationTest),
+  current_documentation_core_routing_status: ["vnem_tools_documentation_source_catalog", "vnem_tools_official_documentation_fetch", "vnem_tools_documentation_context", "vnem_tools_documentation_cache_status"].every((tool) => coreIntelligence.includes(tool) && currentDocumentationTest.includes(tool)) && /Phase 18 current documentation route/.test(readFileSync(rel("scripts/test-core-giga-intelligence.mjs"), "utf8")),
+  current_documentation_real_mcp_proof_status: /StdioClientTransport/.test(currentDocumentationTest) && /real_stdio_mcp: true/.test(currentDocumentationTest) && /VNEM GIGA Phase 18 current documentation tests passed/.test(currentDocumentationTest),
+  data_systems_module_status: /class DataSystemsRuntime/.test(dataSystemsModule) && /DataSystemsError/.test(server + dataSystemsModule) && /data_systems_policy/.test(server) && pkg.dependencies?.["sql.js"] === "1.14.1",
+  data_systems_format_status: /formats_proven: \["SQLite", "JSON", "JSONL", "CSV", "YAML"\]/.test(dataSystemsTest) && /yaml\.FAILSAFE_SCHEMA/.test(dataSystemsModule) && /sql\.js SQLite WebAssembly/.test(dataSystemsModule),
+  data_systems_inspection_validation_diff_status: /sourceInspect/.test(dataSystemsModule) && /sourceValidate/.test(dataSystemsModule) && /sourceDiff/.test(dataSystemsModule) && /schema_inference: true/.test(dataSystemsTest) && /diffing: true/.test(dataSystemsTest),
+  data_systems_transform_transaction_status: /transformPlan/.test(dataSystemsModule) && /transformApply/.test(dataSystemsModule) && /writeTransactionalFile/.test(dataSystemsModule) && /transformation_apply_and_rollback: true/.test(dataSystemsTest),
+  data_systems_connection_scope_status: /normalizeCredentialReference/.test(dataSystemsModule) && /normalizeRemoteScope/.test(dataSystemsModule) && /raw_credentials_accepted: false/.test(dataSystemsModule) && /remote_credential_reference_and_scope/.test(dataSystemsTest),
+  data_systems_query_safety_status: /PRAGMA query_only/.test(dataSystemsModule) && /EXPLAIN QUERY PLAN/.test(dataSystemsModule) && /MAX_RESULT_ROWS/.test(dataSystemsModule) && /MAX_RESULT_BYTES/.test(dataSystemsModule) && /sqlite_query_only_enforced: true/.test(dataSystemsTest),
+  data_systems_migration_preview_status: /migrationPreview/.test(dataSystemsModule) && /transaction_executed_in_memory_only/.test(dataSystemsModule) && /database_migration_where_required/.test(dataSystemsModule + dataSystemsTest) && /database_migration_capability_blocked/.test(dataSystemsModule + dataSystemsTest),
+  data_systems_migration_transaction_status: /migrationApply/.test(dataSystemsModule) && /verifySqliteFile/.test(dataSystemsModule) && /database_migration_verification_failed_rolled_back/.test(dataSystemsModule) && /migration_backup_verify_rollback/.test(dataSystemsTest),
+  data_systems_concurrency_boundary_status: /database_active_sidecar_blocked/.test(dataSystemsModule + dataSystemsTest) && /active_sqlite_sidecars_block_mutation: true/.test(server) && /[Cc]oncurrent writers/.test(dataSystemsModule) && /sidecar_concurrency_block: true/.test(dataSystemsTest),
+  data_systems_secret_redaction_status: /redactDeep/.test(dataSystemsModule) && /redactRows/.test(dataSystemsModule) && /raw_secret_values_in_evidence: false/.test(dataSystemsModule) && /secret_redaction/.test(dataSystemsTest),
+  data_systems_core_routing_status: ["vnem_tools_database_connection_plan", "vnem_tools_data_source_inspect", "vnem_tools_data_source_validate", "vnem_tools_database_schema_inspect", "vnem_tools_database_query_plan", "vnem_tools_database_query"].every((tool) => coreIntelligence.includes(tool) && dataSystemsTest.includes(tool)) && /Phase 19 database route/.test(readFileSync(rel("scripts/test-core-giga-intelligence.mjs"), "utf8")),
+  data_systems_real_mcp_proof_status: /StdioClientTransport/.test(dataSystemsTest) && /real_stdio_mcp: true/.test(dataSystemsTest) && /VNEM GIGA Phase 19 data systems tests passed/.test(dataSystemsTest),
+  cloudflare_deployment_module_status: /class CloudflareControlRuntime/.test(cloudflareControlModule) && /CloudflareControlError/.test(server + cloudflareControlModule) && /cloudflare-control\.mjs/.test(server),
+  cloudflare_deployment_discovery_status: /apiList/.test(cloudflareControlModule) && /MAX_API_PAGES/.test(cloudflareControlModule) && /accounts_list/.test(cloudflareDeploymentTest) && /projects_list/.test(cloudflareDeploymentTest),
+  cloudflare_deployment_build_output_status: /detectFramework/.test(cloudflareControlModule) && /detectBuildCommand/.test(cloudflareControlModule) && /detectOutputDirectory/.test(cloudflareControlModule) && /wrangler_config/.test(cloudflareDeploymentTest) && /index_file_present/.test(cloudflareDeploymentTest),
+  cloudflare_deployment_command_status: /--no-install/.test(cloudflareControlModule) && /executeCommand/.test(cloudflareControlModule) && /provider_success/.test(cloudflareControlModule + cloudflareDeploymentTest) && /fakeWrangler/.test(cloudflareDeploymentTest),
+  cloudflare_deployment_verification_status: /readBoundedResponse/.test(cloudflareControlModule) && /expected_body_marker/.test(cloudflareControlModule + cloudflareDeploymentTest) && /metadata_checked/.test(cloudflareDeploymentTest) && /marker_matched/.test(cloudflareDeploymentTest),
+  cloudflare_deployment_env_reference_status: /value_reference/.test(cloudflareControlModule + cloudflareDeploymentTest) && /cloudflare_env_reference_required/.test(cloudflareControlModule + cloudflareDeploymentTest) && /raw_secret_values_in_evidence|doesNotMatch/.test(cloudflareDeploymentTest),
+  cloudflare_deployment_rollback_status: /\/deployments\/.*\/rollback/.test(cloudflareControlModule + cloudflareDeploymentTest) && /wranglerCommand\(\["rollback"/.test(cloudflareControlModule) && /pages_api_rollback_to_discovered_previous_deployment: true/.test(cloudflareDeploymentTest) && /workers_exact_version_rollback: true/.test(cloudflareDeploymentTest),
+  cloudflare_deployment_failure_evidence_status: /mutation_success_recorded: false/.test(cloudflareControlModule) && /execution_status\.json/.test(cloudflareControlModule + cloudflareDeploymentTest) && /real_mutation_proven, false/.test(cloudflareDeploymentTest),
+  cloudflare_deployment_error_diagnosis_status: /vnem_tools_cloudflare_error_diagnose/.test(server + cloudflareDeploymentTest) && /errorDiagnose/.test(cloudflareControlModule) && /authentication_or_token/.test(cloudflareDeploymentTest),
+  cloudflare_deployment_simulation_honesty_status: /mutated: !simulated/.test(cloudflareControlModule) && /provider_success: !simulated/.test(cloudflareControlModule) && /simulated\.mutated, false/.test(cloudflareDeploymentTest) && /simulated\.provider_success, false/.test(cloudflareDeploymentTest),
+  cloudflare_deployment_core_routing_status: ["vnem_tools_cloudflare_status", "vnem_tools_cloudflare_projects_list", "vnem_tools_cloudflare_pages_deploy_plan", "vnem_tools_cloudflare_pages_deploy", "vnem_tools_cloudflare_deploy_verify", "vnem_tools_cloudflare_rollback_plan"].every((tool) => coreIntelligence.includes(tool) && cloudflareDeploymentTest.includes(tool)) && /Phase 20 Cloudflare route/.test(readFileSync(rel("scripts/test-core-giga-intelligence.mjs"), "utf8")),
+  cloudflare_deployment_real_mcp_proof_status: /StdioClientTransport/.test(cloudflareDeploymentTest) && /real_stdio_mcp: true/.test(cloudflareDeploymentTest) && /behavior_coverage_mapper_for_eighteen_tools: true/.test(cloudflareDeploymentTest) && /VNEM GIGA Phase 20 Cloudflare deployment tests passed/.test(cloudflareDeploymentTest),
+  deterministic_generation_clock_status: /resolveGenerationClock/.test(generatedArtifactsModule + deterministicGenerationTest) && /SOURCE_DATE_EPOCH/.test(generatedArtifactsModule + deterministicGenerationTest + generationMetadata) && /generation\/metadata\.json/.test(generatedArtifactsModule + deterministicGenerationTest),
+  deterministic_archive_status: /createDeterministicTarGzip/.test(generatedArtifactsModule + deterministicGenerationTest) && /portable_path_ascending/.test(generatedArtifactsManifest) && /gzip\.fill\(0, 4, 8\)/.test(generatedArtifactsModule) && /public and landing archives are synchronized/.test(deterministicGenerationTest),
+  generated_artifact_manifest_status: ["source_inputs", "generator", "output", "content_hash", "semantic_hash", "volatile_fields", "tracked", "expected_regeneration_command"].every((field) => generatedArtifactsModule.includes(field) && generatedArtifactsManifest.includes(`\"${field}\"`)),
+  generated_artifact_drift_status: ["stale_generated_output", "modified_generated_output", "source_changed_without_regeneration", "archive_mismatch", "public_landing_archive_mismatch"].every((marker) => generatedArtifactsModule.includes(marker) && deterministicGenerationTest.includes(marker)),
+  generated_artifact_hygiene_status: ["unexpected_local_path", "secret_like_content", "hidden_or_control_character"].every((marker) => generatedArtifactsModule.includes(marker) && deterministicGenerationTest.includes(marker)) && /kind === "gzip_tar"/.test(generatedArtifactsModule) && /valid gzip bytes are scanned as an archive, not source text/.test(deterministicGenerationTest),
+  generated_artifact_ci_status: /"generate:check"[\s\S]*"generate"/.test(testingCiManifest) && /generate:check/.test(workflowText) && !/cp public\/install\.tgz landing\/install\.tgz/.test(workflowText),
+  generated_artifact_real_mcp_status: /StdioClientTransport/.test(deterministicGenerationTest) && /vnem_tools_ci_failure_diagnose/.test(deterministicGenerationTest) && /generated_artifact_mismatch/.test(deterministicGenerationTest),
+  deterministic_digest_status: /buildDailyDigest/.test(dailyDigestModule + generateDigest) && /resolveGenerationClock/.test(generateDigest) && /discovery\/candidates\/hermes\*\.json/.test(generatedArtifactsManifest) && /standalone digest generator is byte-identical and manifest-owned/.test(deterministicGenerationTest),
+  performance_output_test_exists: existsSync(performanceOutputTestPath),
+  performance_target_harness_status: /evaluateTargets/.test(performanceBaseline) && /core_entrypoint/.test(performanceBaseline) && /tools_manifest/.test(performanceBaseline) && /affected_suite/.test(performanceBaseline) && /p95_ms/.test(performanceBaseline),
+  lazy_heavy_runtime_status: /import\("@babel\/parser"\)/.test(structuralCodeModule) && /import\("@babel\/traverse"\)/.test(structuralCodeModule) && !/^import .*@babel\/parser/m.test(structuralCodeModule) && /import\("sql\.js"\)/.test(dataSystemsModule) && !/^import .*sql\.js/m.test(dataSystemsModule) && /not_loaded[\s\S]*loaded/.test(performanceOutputTest),
+  performance_output_real_mcp_status: /StdioClientTransport/.test(performanceOutputTest) && /sampleCalls/.test(performanceOutputTest) && /30\)/.test(performanceOutputTest) && /8 \* 1024/.test(performanceOutputTest) && /12 \* 1024/.test(performanceOutputTest) && /lazy Babel\/SQLite proven/.test(performanceOutputTest),
+  performance_output_suite_status: pkg.scripts?.["test:giga-performance-output"] === "node scripts/test-giga-performance-output.mjs" && /test:giga-performance-output/.test(testingCiManifest),
   github_dry_run_status: /dry_run !== false/.test(server) && /must not/.test(toolsGithubMutationDryRunTest),
   github_config_knob_status: /config_knob_to_change/.test(server) && /VNEM_TOOLS_GITHUB_ALLOW_DIRECT_PUSH/.test(toolsGithubMutationDryRunTest + server) && /VNEM_TOOLS_GITHUB_ALLOW_ACTIONS_RERUN/.test(toolsGithubMutationDryRunTest + server),
-  github_secret_file_block_status: /githubSecretFileBlocked/.test(server) && /Secret-like file blocked/.test(server) && /\.env/.test(toolsGithubMutationDryRunTest + server),
+  github_secret_file_block_status: /githubSecretFileBlocked/.test(server) && /Secret-like file blocked/.test(server) && /scanGithubCommitContent/.test(server) && /Secret-like content blocked/.test(server + githubDevelopmentTest) && /\.env/.test(toolsGithubMutationDryRunTest + server),
   github_real_execution_not_only_simulated_status: /command-backed gh\/git/.test(server) && /real gh\\\/git command paths|real gh\/git command paths|mocked runner/.test(toolsAutonomy2RegressionTest + server) && !/GitHub mutation, package install, arbitrary shell\/API, login automation, cookie extraction, CAPTCHA bypass, and broad scraping are not implemented/.test(server),
   autonomy_efficiency_status: /operation_result/.test(server) && /next_best_action/.test(server) && /config_knob_to_change/.test(server) && /claim_status/.test(server),
   repo_deep_map_status: /vnem_tools_repo_deep_map/.test(server) && /repoDeepMap/.test(server) && /package_scripts/.test(server) && /ignored_or_noise_dirs/.test(server) && /repo-deep-map/.test(toolsPowerTools1RegressionTest),
@@ -521,6 +967,10 @@ const report = {
   tools_install_doctor_status: /vnem_tools_install_doctor/.test(server) && /installAdoptionDoctor/.test(server) && /mcp-tools-install-doctor/.test(installAdoptionTest),
   tools_install_profile_validation_status: /no-secret-leak/.test(installAdoptionTest) && /no-hidden-control-chars/.test(installAdoptionTest) && /config-parseability/.test(installAdoptionTest) && /both-mcps-present/.test(installAdoptionTest),
   tools_install_adoption_1_status: /test:vnem-install-adoption-1-regression/.test(JSON.stringify(pkg.scripts)) && /vnem_tools_install_profile_emit/.test(server) && /vnem_tools_install_doctor/.test(server),
+  adoption_managed_instruction_status: /mergeManagedClientInstructions/.test(clientConfigMerge) && /preserved_unrelated_instructions/.test(clientConfigMerge) && /Skip unnecessary VNEM overhead for trivial tasks/.test(clientConfigMerge),
+  adoption_usage_self_check_status: /vnem_usage_self_check/.test(coreServer) && /core-usage-self-check/.test(adoptionReliability2Test) && /hidden_telemetry_used/.test(coreServer + adoptionClientUseTest),
+  adoption_real_profile_trial_status: /codex-generated-profile/.test(adoptionClientUseTest) && /active-codex-config/.test(adoptionClientUseTest) && /vnem_tools_workspace_map/.test(adoptionClientUseTest) && /codex_agent_invocation_proven:\s*false/.test(adoptionClientUseTest),
+  adoption_installed_client_honesty_status: /hermes_vnem_configured/.test(adoptionClientUseTest) && /Claude and Antigravity are not installed/.test(adoptionClientUseTest) && /isolated-profile protocol execution only/.test(adoptionClientUseTest),
   tools_manifest_status: /vnem_tools_manifest/.test(server) && /buildToolsManifest/.test(server) && /capability_group/.test(server) && /unsafe_actions_not_supported/.test(server) && /tool_catalog_policy/.test(server) && /vnem_tools_manifest/.test(intelligenceTest),
   workspace_map_status: /vnem_tools_workspace_map/.test(server) && /safeWorkspaceMap/.test(server) && /important_dirs/.test(server) && /likely_entrypoints/.test(intelligenceTest) && /secret_path_blocked|skipped_paths/.test(intelligenceTest),
   read_many_files_status: /vnem_tools_read_many_files/.test(server) && /safeReadManyFiles/.test(server) && /max_total_bytes/.test(server) && /blocked_files/.test(intelligenceTest),
@@ -590,21 +1040,21 @@ const report = {
   browser_evidence_no_login_cookie_status: /login_private_flow_blocked/.test(server) && /cookie|session|browser-profile|CAPTCHA/.test(server + toolsBrowserEvidenceRunTest),
   browser_evidence_pack_status: /writeEvidenceLog\("browser_evidence_run"/.test(server) && /evidence_log_id/.test(server + toolsBrowserEvidenceRunTest) && /test:browser-evidence-completion-audit|test-browser-evidence-completion-audit/.test(JSON.stringify(pkg.scripts) + browserEvidenceCompletionAuditTest),
   ui_evidence_audit_status: /vnem_tools_ui_evidence_audit/.test(server) && /safeUiEvidenceAudit/.test(server) && /browser_evidence_run/.test(server + toolsUiEvidenceAuditTest) && /code-only evidence|screenshot missing|safe_to_claim/.test(toolsUiEvidenceAuditTest + server),
-  cloudflare_control_status: /cloudflare_control/.test(server) && /buildCloudflareStatusPolicy/.test(server) && /vnem_tools_cloudflare_status/.test(server + toolsCloudflareStatusAuthTest),
-  cloudflare_auth_status_tool_status: /vnem_tools_cloudflare_status/.test(server) && /wrangler_available/.test(server) && /api_token_redacted/.test(toolsCloudflareStatusAuthTest + server),
-  cloudflare_auth_plan_status: /vnem_tools_cloudflare_auth_plan/.test(server) && /forbidden_auth_methods/.test(server) && /cookies/.test(toolsCloudflareStatusAuthTest),
-  cloudflare_discovery_status: /vnem_tools_cloudflare_accounts_list/.test(server) && /vnem_tools_cloudflare_projects_list/.test(server) && /read_only/.test(toolsCloudflareStatusAuthTest),
+  cloudflare_control_status: /cloudflare_control/.test(server) && /buildCloudflareStatusPolicy/.test(server) && /CloudflareControlRuntime/.test(server + cloudflareControlModule) && /vnem_tools_cloudflare_status/.test(server + toolsCloudflareStatusAuthTest),
+  cloudflare_auth_status_tool_status: /vnem_tools_cloudflare_status/.test(server) && /wrangler_available/.test(cloudflareControlModule) && /api_token_redacted/.test(toolsCloudflareStatusAuthTest + server + cloudflareControlModule),
+  cloudflare_auth_plan_status: /vnem_tools_cloudflare_auth_plan/.test(server) && /forbidden_auth_methods/.test(cloudflareControlModule) && /cookies/.test(toolsCloudflareStatusAuthTest),
+  cloudflare_discovery_status: /vnem_tools_cloudflare_accounts_list/.test(server) && /vnem_tools_cloudflare_projects_list/.test(server) && /read_only/.test(toolsCloudflareStatusAuthTest + cloudflareControlModule),
   cloudflare_pages_deploy_status: /vnem_tools_cloudflare_pages_deploy_plan/.test(server) && /vnem_tools_cloudflare_pages_deploy/.test(server) && /pages_deploy/.test(toolsCloudflarePlansTest + toolsCloudflareApprovalGatesTest),
   cloudflare_workers_deploy_status: /vnem_tools_cloudflare_workers_deploy_plan/.test(server) && /vnem_tools_cloudflare_workers_deploy/.test(server) && /workers_deploy/.test(toolsCloudflarePlansTest + toolsCloudflareApprovalGatesTest),
-  cloudflare_dns_status: /vnem_tools_cloudflare_dns_plan/.test(server) && /vnem_tools_cloudflare_dns_apply/.test(server) && /SPF|MX|www|apex/.test(toolsCloudflarePlansTest + server),
-  cloudflare_env_secrets_status: /vnem_tools_cloudflare_env_plan/.test(server) && /vnem_tools_cloudflare_env_apply/.test(server) && /values_redacted/.test(toolsCloudflarePlansTest + toolsCloudflareRedactionTest),
-  cloudflare_verify_status: /vnem_tools_cloudflare_deploy_verify/.test(server) && /deployment_url/.test(server),
+  cloudflare_dns_status: /vnem_tools_cloudflare_dns_plan/.test(server) && /vnem_tools_cloudflare_dns_apply/.test(server) && /SPF|MX|www|apex/.test(toolsCloudflarePlansTest + server + cloudflareControlModule),
+  cloudflare_env_secrets_status: /vnem_tools_cloudflare_env_plan/.test(server) && /vnem_tools_cloudflare_env_apply/.test(server) && /values_redacted|value_source/.test(toolsCloudflarePlansTest + toolsCloudflareRedactionTest + cloudflareControlModule),
+  cloudflare_verify_status: /vnem_tools_cloudflare_deploy_verify/.test(server) && /deployment_url/.test(server + cloudflareControlModule),
   cloudflare_rollback_status: /vnem_tools_cloudflare_rollback_plan/.test(server) && /vnem_tools_cloudflare_rollback/.test(server) && /rollback requires approval|Rollback/.test(toolsCloudflareApprovalGatesTest + server),
   cloudflare_cache_purge_status: /vnem_tools_cloudflare_cache_purge_plan/.test(server) && /vnem_tools_cloudflare_cache_purge/.test(server) && /cache purge requires approval|cache_purge/.test(toolsCloudflareApprovalGatesTest + server),
-  cloudflare_approval_gate_status: /I APPROVE CLOUDFLARE MUTATION/.test(server + toolsCloudflareApprovalGatesTest) && /cloudflare_mutation_approval_required/.test(toolsCloudflareApprovalGatesTest + server),
-  cloudflare_destructive_approval_status: /I APPROVE CLOUDFLARE DESTRUCTIVE ACTION/.test(server + toolsCloudflareApprovalGatesTest) && /cloudflare_destructive_approval_required/.test(toolsCloudflareApprovalGatesTest + server),
-  cloudflare_secret_redaction_status: /CLOUDFLARE_API_TOKEN|CF_API_TOKEN|cfut_/.test(server + toolsCloudflareRedactionTest) && /secret_redaction_check/.test(toolsCloudflareRedactionTest + server),
-  cloudflare_evidence_pack_status: /writeCloudflareEvidencePack/.test(server) && /request_summary.json/.test(server + toolsCloudflareEvidencePackTest),
+  cloudflare_approval_gate_status: /I APPROVE CLOUDFLARE MUTATION/.test(server + cloudflareControlModule + toolsCloudflareApprovalGatesTest) && /cloudflare_mutation_approval_required/.test(toolsCloudflareApprovalGatesTest + server + cloudflareControlModule),
+  cloudflare_destructive_approval_status: /I APPROVE CLOUDFLARE DESTRUCTIVE ACTION/.test(server + cloudflareControlModule + toolsCloudflareApprovalGatesTest) && /cloudflare_destructive_approval_required/.test(toolsCloudflareApprovalGatesTest + server + cloudflareControlModule),
+  cloudflare_secret_redaction_status: /CLOUDFLARE_API_TOKEN|CF_API_TOKEN|cfut_/.test(server + cloudflareControlModule + toolsCloudflareRedactionTest) && /secret_redaction_check/.test(toolsCloudflareRedactionTest + server),
+  cloudflare_evidence_pack_status: /writeEvidencePack/.test(cloudflareControlModule) && /request_summary.json/.test(server + cloudflareControlModule + toolsCloudflareEvidencePackTest),
   general_tools_evidence_pack_audit_status: /vnem_tools_evidence_pack_audit/.test(server) && /missing_files/.test(toolsQualityGeneralTest + server),
   general_tools_mutation_approval_contract_status: /vnem_tools_mutation_approval_contract/.test(server) && /required_phrase/.test(toolsQualityGeneralTest + server),
   general_tools_secret_redaction_check_status: /vnem_tools_secret_redaction_check/.test(server) && /redacted_output_safe/.test(toolsQualityGeneralTest + server),
@@ -622,28 +1072,72 @@ const report = {
   provider_unconfigured_honesty: /provider_unconfigured/.test(server) && /no fake results returned/.test(server) && /provider_unavailable|provider_unconfigured/.test(server + toolsSearchPowerTest),
   no_captcha_bypass_public_policy: /No automatic CAPTCHA bypass was attempted or provided/.test(server + toolsRiskCaptchaTest) && /automatic CAPTCHA bypass/.test(server),
 
-  permission_profiles_status: /PERMISSION_PROFILE_NAMES/.test(server) && /safe-readonly/.test(server) && /creator-power/.test(server) && /dangerous-disabled/.test(toolsPermissionProfilesTest + server),
+  permission_profiles_status: /PERMISSION_PROFILE_NAMES/.test(server) && /safe-readonly/.test(permissionProfilesSource) && /creator-power/.test(permissionProfilesSource) && /dangerous-disabled/.test(toolsPermissionProfilesTest + permissionProfilesSource),
   permission_status_tool: /vnem_tools_permission_status/.test(server) && /permissionStatusObject/.test(server) && /workspace_allowed/.test(toolsPermissionProfilesTest + server) && /high_power_summary/.test(server) && /approval_phrase_summary/.test(server),
   action_policy_preview_status: /vnem_tools_action_policy_preview/.test(server) && /actionPolicyPreview/.test(server) && /required_user_approval_text/.test(server),
   trust_boundary_classifier_status: /vnem_tools_trust_boundary_classify/.test(server) && /trustBoundaryClassify/.test(server) && /6_blocked_dangerous_action/.test(toolsTrustBoundaryTest + server),
   safe_readonly_blocks_writes: /safe-readonly/.test(server) && /permission_profile_blocked/.test(toolsPermissionProfilesTest),
   approved_writes_requires_approval: /approved-writes/.test(server) && /approval_required/.test(toolsPermissionProfilesTest),
-  package_install_still_not_silent: /approved-installs/.test(server) && /package_install/.test(toolsPermissionProfilesTest) && /preview\/planned\/blocked/.test(server),
-  github_mutation_still_not_silent: /approved-github/.test(server) && /github_pr/.test(toolsPermissionProfilesTest) && /never silently mutates GitHub|preview\/planned\/blocked/.test(server),
+  package_install_still_not_silent: /approved-installs/.test(permissionProfilesSource) && /package_install/.test(toolsPermissionProfilesTest) && /requires_approval/.test(toolsPermissionProfilesTest) && /vnem_tools_dependency_install_apply/.test(server),
+  github_mutation_still_not_silent: /approved-github/.test(permissionProfilesSource) && /github_pr/.test(toolsPermissionProfilesTest) && /requires_approval/.test(toolsPermissionProfilesTest),
   secret_read_blocked_by_default: /secret_read/.test(server) && /secret_path_blocked/.test(toolsSecretBlockingTest) && /raw_secret_blocked/.test(toolsSecretBlockingTest),
-  dangerous_disabled_policy: /dangerous-disabled/.test(server) && /captcha_bypass/.test(toolsTrustBoundaryTest) && /destructive_shell/.test(toolsTrustBoundaryTest),
+  dangerous_disabled_policy: /dangerous-disabled/.test(permissionProfilesSource) && /captcha_bypass/.test(toolsTrustBoundaryTest) && /destructive_shell/.test(toolsTrustBoundaryTest),
   allowed_root_status_reporting: /allowed_roots/.test(server) && /how_to_add_more_roots/.test(server) && /workspace_fix_suggestion/.test(toolsPermissionProfilesTest + server),
   broad_root_warning_status: /broad_root_warnings/.test(server) && /too broad/.test(toolsPermissionProfilesTest + server),
   permission_manifest_integration: /permission_manifest_integration/.test(server) && /permission_profile/.test(server) && /vnem_tools_permission_status/.test(server),
   patch_batch_status: /vnem_tools_apply_patch_batch/.test(server) && /safeApplyPatchBatch/.test(server) && /partialFailure/.test(projectActionsTest) && /explicit_delete_required/.test(projectActionsTest),
   restore_batch_status: /vnem_tools_restore_batch/.test(server) && /safeRestoreBatch/.test(server) && /restoreSecret/.test(projectActionsTest),
   project_scan_status: /vnem_tools_project_scan/.test(server) && /safeProjectScan/.test(server) && /likely_frameworks/.test(server) && /blocked_or_skipped_paths/.test(projectActionsTest),
+  project_automation_environment_status: /vnem_tools_project_automation_inspect/.test(server) && /inspectEnvironment/.test(projectAutomationModule) && /selected_package_manager/.test(projectAutomationTest) && /task_runners/.test(projectAutomationTest),
+  project_automation_layered_policy_status: /known_safe/.test(projectAutomationModule + projectAutomationTest) && /project_declared/.test(projectAutomationModule + projectAutomationTest) && /reviewed_custom/.test(projectAutomationModule + projectAutomationTest) && /blocked_dangerous/.test(projectAutomationModule + projectAutomationTest) && /permission_profile_blocked/.test(projectAutomationTest) && /shell_operator_blocked/.test(projectAutomationTest),
+  project_automation_secret_boundary_status: /raw_secret_argument_blocked/.test(projectAutomationModule + projectAutomationTest) && /sanitizedCommandEnvironment/.test(projectAutomationModule) && /VNEM_PHASE8_SECRET_CANARY/.test(projectAutomationTest) && /env-safety:absent/.test(projectAutomationTest),
+  project_automation_lifecycle_hook_status: /project_script_lifecycle_hook_blocked/.test(projectAutomationModule + projectAutomationTest) && /hooked-test/.test(projectAutomationTest) && /lifecycle_hooks/.test(projectAutomationModule),
+  project_automation_exact_execution_status: /vnem_tools_project_command_run/.test(server) && /runExactProcess/.test(projectAutomationModule) && /command_review_mismatch/.test(projectAutomationTest) && /exit_code, 7/.test(projectAutomationTest) && /head_tail_summary_with_redacted_log/.test(projectAutomationModule + projectAutomationTest),
+  project_automation_process_cleanup_status: /terminateTree/.test(projectAutomationModule) && /taskkill_process_tree/.test(projectAutomationModule) && /posix_process_group_sigterm_sigkill/.test(projectAutomationModule) && /cleanup_verification/.test(projectAutomationModule + projectAutomationTest) && /surviving_after_cleanup/.test(projectAutomationModule + projectAutomationTest) && /orphan-survived/.test(projectAutomationTest) && /timed_out, true/.test(projectAutomationTest),
+  project_automation_task_graph_status: /vnem_tools_project_task_graph_plan/.test(server) && /vnem_tools_project_task_graph_run/.test(server) && /vnem_tools_project_task_graph_status/.test(server) && /topologicalOrder/.test(projectAutomationModule) && /status, "paused"/.test(projectAutomationTest) && /counts\.satisfied/.test(projectAutomationTest),
+  project_automation_rollback_status: /vnem_tools_project_task_graph_rollback/.test(server) && /rollbackTaskGraph/.test(projectAutomationModule) && /reverse-order graph rollback/.test(projectAutomationTest) && /status, "rolled_back"/.test(projectAutomationTest),
+  project_automation_diagnosis_status: /vnem_tools_project_runtime_diagnose/.test(server) && /collectLogsFirst/.test(projectAutomationModule) && /inspectPorts/.test(projectAutomationModule) && /diagnostic_order\[0\], "logs"/.test(projectAutomationTest) && /listening, true/.test(projectAutomationTest),
+  project_automation_temp_cleanup_status: /vnem_tools_project_temp_cleanup/.test(server) && /renameWithRetry/.test(projectAutomationModule) && /irreversible_delete_performed: false/.test(projectAutomationModule) && /operation_result, "quarantined"/.test(projectAutomationTest) && /operation_result, "restored"/.test(projectAutomationTest),
+  project_automation_real_mcp_proof_status: /StdioClientTransport/.test(projectAutomationTest) && /project-automation MCP tests passed/.test(projectAutomationTest) && /vnem_tools_project_task_graph_run/.test(projectAutomationTest) && /vnem_tools_project_runtime_diagnose/.test(projectAutomationTest),
+  testing_ci_discovery_status: /vnem_tools_test_system_inspect/.test(server) && /detectTestFrameworks/.test(testingCiRuntime) && /inspectWorkflows/.test(testingCiRuntime) && /generated_file_implications/.test(testingCiRuntime) && /runtime_deprecations/.test(testingCiTest),
+  testing_ci_affected_graph_status: /vnem_tools_affected_test_graph/.test(server) && /buildSourceGraph/.test(testingCiRuntime) && /transitiveImporters/.test(testingCiRuntime) && /tool ownership reference/.test(testingCiRuntime) && /generated output or benchmark ownership/.test(testingCiRuntime) && /filename_substring_only_selection, false/.test(testingCiTest),
+  testing_ci_tiered_runner_status: /vnem_tools_test_run/.test(server) && /VNEM_FULL_SUITE/.test(testingCiManifest + testingCiRuntime) && /runResourceAware/.test(testingCiRuntime) && /slowest_tests/.test(testingCiRuntime + testingCiTest) && /failure_groups/.test(testingCiRuntime) && /Machine report/.test(testingCiRunner),
+  testing_ci_parallel_safety_status: /shared_resources_serialized/.test(testingCiRuntime) && /stage_barriers/.test(testingCiRuntime) && /resource_conflicts_prevented/.test(testingCiRuntime + testingCiTest) && /repo-generated-state/.test(testingCiManifest),
+  testing_ci_reliability_status: /unique_run_directory/.test(testingCiRuntime) && /bounded_per_task_logs/.test(testingCiRuntime) && /process_tree_timeout_cleanup/.test(testingCiRuntime) && /binary_archives_excluded_from_source_text_scans/.test(testingCiRuntime + testingCiTest) && /retries.attempted, 0/.test(testingCiTest),
+  testing_ci_diagnosis_status: /vnem_tools_ci_failure_diagnose/.test(server) && /classifyCiFailure/.test(testingCiRuntime) && /scheduling_failure/.test(testingCiRuntime + testingCiTest) && /process_cleanup_failure/.test(testingCiRuntime + testingCiTest) && /smallest_safe_fix/.test(testingCiRuntime + testingCiTest),
+  testing_ci_coverage_benchmark_status: /vnem_tools_coverage_benchmark_report/.test(server) && /parseLcov/.test(testingCiRuntime) && /uncovered_critical_paths/.test(testingCiRuntime + testingCiTest) && /baseline_post_change_percent/.test(testingCiTest),
+  testing_ci_actions_runtime_status: !/actions\/(?:checkout|setup-node)@v[1-5]\b/.test(workflowText) && (workflowText.match(/actions\/checkout@v6/g) || []).length === 3 && (workflowText.match(/actions\/setup-node@v6/g) || []).length === 3 && /npm run test:ci/.test(workflowText) && /npm ci/.test(workflowText),
+  testing_ci_real_mcp_proof_status: /StdioClientTransport/.test(testingCiTest) && /testing\/CI MCP tests passed/.test(testingCiTest) && /vnem_tools_test_run/.test(testingCiTest) && /vnem_tools_ci_failure_diagnose/.test(testingCiTest),
+  app_engineering_inspection_status: /vnem_tools_app_inspect/.test(server) && /inspectAppProject/.test(server + appEngineeringModule) && /frontend_without_detected_backend_boundary/.test(appEngineeringModule + appEngineeringTest) && /inspection_and_plan_only/.test(appEngineeringModule),
+  app_engineering_transaction_status: /vnem_tools_app_vertical_slice_plan/.test(server) && /vnem_tools_app_vertical_slice_apply/.test(server) && /expected_before_sha256/.test(appEngineeringModule) && /automatic_all_or_rollback_semantics/.test(appEngineeringModule + appEngineeringTest) && /approval_required/.test(appEngineeringTest),
+  app_engineering_acceptance_status: /vnem_tools_app_acceptance_run/.test(server) && /runChromiumUserPath/.test(server + appEngineeringModule) && /Runtime\.consoleAPICalled/.test(appEngineeringModule) && /Network\.loadingFailed/.test(appEngineeringModule) && /desktop\.png/.test(appEngineeringModule) && /mobile\.png/.test(appEngineeringModule) && /user_path_passed/.test(appEngineeringTest),
+  app_engineering_rollback_status: /vnem_tools_app_transaction_rollback/.test(server) && /rollbackVerticalSliceTransaction/.test(server + appEngineeringModule) && /restored_after_failure/.test(server + appEngineeringTest) && /app_rollback_precondition_changed/.test(appEngineeringModule),
+  app_engineering_adapter_fixture_status: existsSync(appEngineeringFixturesPath) && /vite-react-node/.test(appEngineeringModule + appEngineeringTest) && /static-node/.test(appEngineeringModule + appEngineeringTest) && /blocked_unsupported_adapter/.test(appEngineeringTest),
+  app_engineering_real_mcp_proof_status: /StdioClientTransport/.test(appEngineeringTest) && /status, "passed"/.test(appEngineeringTest) && /browser_was_run/.test(appEngineeringTest) && /network_failures/.test(appEngineeringTest) && /horizontal_overflow/.test(appEngineeringTest),
+  browser_interaction_registration_status: /vnem_tools_browser_interaction_run/.test(server) && /vnem_tools_browser_evidence_compare/.test(server) && /BrowserInteractionRuntime/.test(server + browserInteractionModule) && /browser_interaction/.test(browserInteractionTest),
+  browser_interaction_actions_status: /navigate.*click.*type.*select.*wait.*wait_for.*assert/.test(browserInteractionModule) && /structured_actions/.test(browserInteractionModule + browserInteractionTest) && /actionTypes/.test(browserInteractionTest),
+  browser_interaction_runtime_evidence_status: /Runtime\.consoleAPICalled/.test(browserInteractionModule) && /Network\.loadingFailed/.test(browserInteractionModule) && /Page\.captureScreenshot/.test(browserInteractionModule) && /Accessibility\.getFullAXTree/.test(browserInteractionModule) && /captureDom/.test(browserInteractionModule) && /analyzeRenderedPixels/.test(browserInteractionModule) && /render_integrity\.status, "nonblank"/.test(browserInteractionTest),
+  browser_interaction_state_viewport_status: /state_coverage/.test(browserInteractionModule + browserInteractionTest) && /viewport_coverage/.test(browserInteractionModule + browserInteractionTest) && ["loading", "empty", "error", "success"].every((state) => browserInteractionTest.includes(`"${state}"`)),
+  browser_interaction_compare_status: /comparePngFiles/.test(browserInteractionModule) && /decodePng/.test(browserInteractionModule) && /vnem_tools_browser_evidence_compare/.test(server + browserInteractionTest) && /changed_pixels/.test(browserInteractionTest) && /accessibility_changes/.test(browserInteractionTest),
+  browser_interaction_safety_status: /Fetch\.requestPaused/.test(browserInteractionModule) && /private_flow_detected/.test(browserInteractionModule + browserInteractionTest) && /captcha_detected/.test(browserInteractionModule + browserInteractionTest) && /cookie_extraction:\s*false/.test(browserInteractionModule) && /login_automation:\s*false/.test(browserInteractionModule) && /stealth_mode:\s*false/.test(browserInteractionModule),
+  browser_interaction_cleanup_status: /Browser\.close/.test(browserInteractionModule + browserInteractionTest) && /taskkill-owned-tree/.test(browserInteractionModule) && /kill-owned-process-group/.test(browserInteractionModule) && /profile_removed/.test(browserInteractionTest) && /process_exited/.test(browserInteractionTest),
+  browser_interaction_real_mcp_proof_status: /StdioClientTransport/.test(browserInteractionTest) && /GIGA browser-interaction MCP tests passed/.test(browserInteractionTest) && /browser_was_run, true/.test(browserInteractionTest) && /screenshots\.length, 10/.test(browserInteractionTest),
+  windows_local_registration_status: ["vnem_tools_powershell_command_plan", "vnem_tools_windows_system_snapshot", "vnem_tools_windows_path_inspect", "vnem_tools_process_inspect", "vnem_tools_port_inspect", "vnem_tools_windows_service_status", "vnem_tools_windows_scheduled_task_status", "vnem_tools_windows_event_log_read", "vnem_tools_windows_app_config_detect", "vnem_tools_windows_change_plan"].every((name) => server.includes(name)) && /WindowsLocalRuntime/.test(server + windowsLocalModule),
+  windows_local_powershell_status: /quotePowerShellLiteral/.test(windowsLocalModule) && /embedded_single_quotes_are_doubled/.test(windowsLocalModule) && /shell_operators_remain_literal_arguments/.test(windowsLocalModule + windowsLocalTest) && /O''Brien/.test(windowsLocalTest),
+  windows_local_environment_status: /inspectPathEnvironment/.test(windowsLocalModule) && /probeVersion/.test(windowsLocalModule) && /LongPathsEnabled/.test(windowsLocalModule) && /Get-MpComputerStatus/.test(windowsLocalModule) && /value_returned, false/.test(windowsLocalTest),
+  windows_local_path_status: /inspectOnePath/.test(windowsLocalModule) && /windows_sensitive_path_blocked/.test(windowsLocalModule + windowsLocalTest) && /path_link_escape_blocked/.test(windowsLocalModule) && /possible_lock_or_permission/.test(windowsLocalModule) && /no_exclusive_write_lock_observed/.test(windowsLocalTest),
+  windows_local_process_port_status: /Win32_Process/.test(windowsLocalModule) && /Get-Process fallback/.test(windowsLocalModule) && /parseWindowsNetstat/.test(windowsLocalModule) && /command_lines_returned, false/.test(windowsLocalTest) && /listeners\.some/.test(windowsLocalTest),
+  windows_local_service_task_event_status: /Win32_Service/.test(windowsLocalModule) && /Get-Service fallback/.test(windowsLocalModule) && /Get-ScheduledTask/.test(windowsLocalModule) && /Get-WinEvent/.test(windowsLocalModule) && /export_performed, false/.test(windowsLocalTest),
+  windows_local_client_status: /clientCatalog/.test(windowsLocalModule) && /clients\.length, 11/.test(windowsLocalTest) && /config_content_read, false/.test(windowsLocalTest) && /config_content_modified, false/.test(windowsLocalTest),
+  windows_local_mutation_gate_status: /local_pc_action/.test(server + windowsLocalModule) && /execution_supported: false/.test(windowsLocalModule + windowsLocalTest) && /rollback_plan_required: true/.test(windowsLocalModule + windowsLocalTest) && /hard_blocked/.test(windowsLocalModule + windowsLocalTest) && /does not disable Windows security/.test(windowsLocalModule + windowsLocalTest),
+  windows_local_real_mcp_proof_status: /StdioClientTransport/.test(windowsLocalTest) && /GIGA Windows\/local-PC MCP tests passed/.test(windowsLocalTest) && /listenerPort/.test(windowsLocalTest) && /actual_stdio_mcp_windows_local_execution/.test(windowsLocalTest),
+  dev_server_listener_cleanup_status: /listener_pid/.test(server) && /findWindowsListeningPid/.test(server) && /waitForWindowsListenerStop/.test(server) && /dev_server_stop_failed/.test(server),
   project_task_status: /vnem_tools_run_project_task/.test(server) && /safeRunProjectTask/.test(server) && /unsafe_script_blocked/.test(projectActionsTest),
   dev_server_status: /vnem_tools_start_dev_server/.test(server) && /vnem_tools_stop_dev_server/.test(server) && /dev_server_not_found/.test(projectActionsTest),
   session_evidence_status: /vnem_tools_start_session/.test(server) && /vnem_tools_finish_session/.test(server) && /blocked_actions/.test(gitSessionTest),
   local_git_status: /vnem_tools_git_status/.test(server) && /vnem_tools_git_diff_summary/.test(server) && /vnem_tools_git_commit/.test(server) && /git push/.test(gitSessionTest),
   github_destructive_admin_still_blocked_status: /VNEM_TOOLS_GITHUB_ALLOW_FORCE_PUSH/.test(server) && /VNEM_TOOLS_GITHUB_ALLOW_REPO_DELETE/.test(server) && /Repo deletion blocked by default/.test(server),
-  package_install_still_blocked: /UNSAFE_PACKAGE_SCRIPT_PATTERN/.test(server) && /package_install/.test(server),
+  package_install_still_blocked: /UNSAFE_PACKAGE_SCRIPT_PATTERN/.test(server) && /package_publish/.test(server) && /global install/.test(server) && /lifecycle scripts/.test(server),
   giga_still_not_built: /giga_mcp/.test(server),
   evidence_proof_bridge_status: /proof_trail_compatible_summary/.test(server) && /recommended_core_proof_trail_inputs/.test(server) && /recommended_final_report_lines/.test(server),
   safe_action_loop_status: /vnem_boost_task/.test(e2eTest) && /vnem_tools_prepare_action_plan/.test(e2eTest) && /dry_run: true/.test(e2eTest) && /approved: false/.test(e2eTest) && /vnem_tools_run_command/.test(e2eTest) && /vnem_tools_collect_evidence/.test(e2eTest),
@@ -664,7 +1158,8 @@ const report = {
   },
   known_missing_future_tools: [
     "GitHub destructive admin operations (repo delete/force push/settings apply beyond explicit config)",
-    "package installs",
+    "Windows system mutation executors (services, registry, scheduled tasks, firewall, antivirus exclusions, system PATH, and machine-wide configuration)",
+    "non-npm dependency mutation and unreviewed package installs",
     "arbitrary shell",
     "unrestricted API calls",
     "secret-manager-backed live API calls",
@@ -674,9 +1169,9 @@ const report = {
     "Giga MCP orchestration"
   ],
   browser_known_limitations: [
-    "approved localhost/127.0.0.1 browser evidence execution only when VNEM_TOOLS_ALLOW_LOCALHOST=1",
+    "approved localhost/127.0.0.1 browser interaction only when VNEM_TOOLS_ALLOW_LOCALHOST=1; external read-only navigation additionally requires an environment gate and exact approved origins",
     "reports blocked/partial/browser_unavailable when policy, permission, or browser runtime blocks proof",
-    "console status is explicitly unavailable unless supported by the bounded runtime; no login automation, cookie extraction, persistent sessions, CAPTCHA bypass, credential capture, or broad scraping"
+    "vnem_tools_browser_interaction_run captures real disclosed Chromium actions, screenshots, DOM/accessibility snapshots, console/network events, state/viewport coverage, comparisons, and cleanup evidence; no login automation, cookie extraction, persistent sessions, CAPTCHA bypass, credential capture, search scraping, stealth, or cross-browser proof"
   ]
 };
 
@@ -685,18 +1180,81 @@ assert.equal(report.test_file_exists, true, "Tools MCP test file is missing");
 assert.equal(report.core_tools_e2e_test_exists, true, "Core→Tools e2e test file is missing");
 assert.equal(report.browser_capture_test_exists, true, "browser capture test file is missing");
 assert.equal(report.project_actions_test_exists, true, "project actions test file is missing");
+assert.equal(report.browser_interaction_test_exists, true, "browser interaction MCP test file is missing");
+assert.equal(report.browser_interaction_module_exists, true, "browser interaction runtime module is missing");
+assert.equal(report.browser_interaction_fixture_exists, true, "browser interaction fixture is missing");
+assert.equal(report.windows_local_test_exists, true, "Windows/local-PC MCP test file is missing");
+assert.equal(report.windows_local_module_exists, true, "Windows/local-PC runtime module is missing");
+assert.equal(report.windows_local_fixture_exists, true, "Windows/local-PC fixture is missing");
+assert.equal(report.github_development_test_exists, true, "GitHub development MCP test file is missing");
+assert.equal(report.github_development_module_exists, true, "GitHub development runtime module is missing");
+assert.equal(report.game_domain_test_exists, true, "game-domain MCP test file is missing");
+assert.equal(report.game_domain_module_exists, true, "game-domain runtime module is missing");
+assert.equal(report.dependency_security_test_exists, true, "dependency-security MCP test file is missing");
+assert.equal(report.dependency_security_module_exists, true, "dependency-security runtime module is missing");
+assert.equal(report.structural_code_test_exists, true, "structural-code MCP test file is missing");
+assert.equal(report.structural_code_module_exists, true, "structural-code runtime module is missing");
+assert.equal(report.api_connector_test_exists, true, "API connector MCP test file is missing");
+assert.equal(report.api_connector_module_exists, true, "API connector runtime module is missing");
+assert.equal(report.skill_runtime_test_exists, true, "skill runtime MCP test file is missing");
+assert.equal(report.skill_runtime_module_exists, true, "skill runtime module is missing");
+assert.equal(report.deterministic_generation_test_exists, true, "deterministic generation regression test is missing");
+assert.equal(report.generated_artifacts_module_exists, true, "generated artifact runtime module is missing");
+assert.equal(report.generated_artifacts_manifest_exists, true, "generated artifact ownership manifest is missing");
+assert.equal(report.generation_metadata_exists, true, "stable generation metadata is missing");
+assert.equal(report.deterministic_digest_module_exists, true, "deterministic digest module is missing");
+assert.equal(report.current_documentation_test_exists, true, "current documentation MCP test file is missing");
+assert.equal(report.documentation_intelligence_module_exists, true, "documentation intelligence module is missing");
+assert.equal(report.project_automation_test_exists, true, "project automation MCP test file is missing");
+assert.equal(report.project_automation_module_exists, true, "project automation module is missing");
+assert.equal(report.project_automation_fixture_exists, true, "project automation fixture is missing");
+assert.equal(report.testing_ci_test_exists, true, "testing/CI MCP test file is missing");
+assert.equal(report.testing_ci_runtime_exists, true, "testing/CI runtime module is missing");
+assert.equal(report.testing_ci_runner_exists, true, "tiered test runner is missing");
+assert.equal(report.testing_ci_manifest_exists, true, "test suite manifest is missing");
+assert.equal(report.testing_ci_fixture_exists, true, "testing/CI fixture is missing");
 assert.equal(report.git_session_test_exists, true, "git/session test file is missing");
 assert.equal(report.core_tools_e2e_script_exists, true, "test:core-tools-e2e package script is missing");
 assert.equal(report.package_scripts.tools_mcp, true, "tools:mcp package script is missing");
 assert.equal(report.package_scripts.test_tools_mcp, true, "test:tools-mcp package script is missing");
+assert.equal(report.client_setup_test_exists, true, "client setup behavior test is missing");
+assert.equal(report.client_setup_mcp_test_exists, true, "client setup MCP behavior test is missing");
+assert.equal(report.package_scripts.test_clients, true, "test:clients package script is missing");
+assert.equal(report.package_scripts.test_clients_setup, true, "test:clients:setup leaf script is missing");
+assert.equal(report.package_scripts.setup, true, "setup package script is missing");
+assert.equal(report.package_scripts.clients, true, "clients package script is missing");
+assert.equal(report.package_scripts.status, true, "status package script is missing");
+assert.equal(report.package_scripts.config_preview, true, "config:preview package script is missing");
+assert.equal(report.package_scripts.rollback, true, "rollback package script is missing");
+assert.equal(report.client_setup_behavior_status, true, "client setup behavior proof is incomplete");
+assert.equal(report.client_setup_mcp_status, true, "client setup MCP behavior proof is incomplete");
+assert.equal(report.client_setup_cli_status, true, "client setup CLI surface is incomplete");
 assert.equal(report.package_scripts.test_tools_browser, true, "test:tools-browser package script is missing");
 assert.equal(report.package_scripts.test_tools_project_actions, true, "test:tools-project-actions package script is missing");
+assert.equal(report.package_scripts.test_tools_giga_project_automation, true, "test:tools-giga-project-automation package script is missing");
+assert.equal(report.package_scripts.test_tools_giga_testing_ci, true, "test:tools-giga-testing-ci package script is missing");
+assert.equal(report.package_scripts.test_tools_giga_browser_interaction, true, "test:tools-giga-browser-interaction package script is missing");
+assert.equal(report.package_scripts.test_tools_giga_windows_local, true, "test:tools-giga-windows-local package script is missing");
+assert.equal(report.package_scripts.test_tools_giga_github_development, true, "test:tools-giga-github-development package script is missing");
+assert.equal(report.package_scripts.test_tools_giga_game_domain, true, "test:tools-giga-game-domain package script is missing");
+assert.equal(report.package_scripts.test_tools_giga_dependency_security, true, "test:tools-giga-dependency-security package script is missing");
+assert.equal(report.package_scripts.test_tools_giga_structural_code, true, "test:tools-giga-structural-code package script is missing");
+assert.equal(report.package_scripts.test_tools_giga_api_connectors, true, "test:tools-giga-api-connectors package script is missing");
+assert.equal(report.package_scripts.giga_phase16_benchmark, true, "giga:phase16-benchmark package script is missing");
+assert.equal(report.package_scripts.giga_phase16_live_proof, true, "giga:phase16-live-proof package script is missing");
+assert.equal(report.package_scripts.test_tools_giga_skill_runtime, true, "test:tools-giga-skill-runtime package script is missing");
+assert.equal(report.package_scripts.giga_phase17_benchmark, true, "giga:phase17-benchmark package script is missing");
+assert.equal(report.package_scripts.giga_phase17_live_source_proof, true, "giga:phase17-live-source-proof package script is missing");
+assert.equal(report.package_scripts.test_tools_giga_current_documentation, true, "test:tools-giga-current-documentation package script is missing");
+assert.equal(report.package_scripts.giga_phase18_benchmark, true, "giga:phase18-benchmark package script is missing");
+assert.equal(report.package_scripts.giga_phase18_live_docs_proof, true, "giga:phase18-live-docs-proof package script is missing");
+for (const [key, value] of Object.entries({ test_smoke_tier: report.package_scripts.test_smoke_tier, test_affected_tier: report.package_scripts.test_affected_tier, test_core_tier: report.package_scripts.test_core_tier, test_tools_tier: report.package_scripts.test_tools_tier, test_precision_compat_tier: report.package_scripts.test_precision_compat_tier, test_integration_tier: report.package_scripts.test_integration_tier, test_benchmarks_tier: report.package_scripts.test_benchmarks_tier, test_full_tier: report.package_scripts.test_full_tier, test_ci_tier: report.package_scripts.test_ci_tier, npm_test_routes_full: report.package_scripts.npm_test_routes_full })) assert.equal(value, true, `${key} package script is missing`);
 assert.equal(report.package_scripts.test_tools_git_session, true, "test:tools-git-session package script is missing");
 assert.equal(report.package_scripts.test_tools_intelligence, true, "test:tools-intelligence package script is missing");
 assert.equal(report.package_scripts.test_tools_research, true, "test:tools-research package script is missing");
 assert.equal(report.package_scripts.test_core_tool_selection, true, "test:core-tool-selection package script is missing");
 assert.equal(report.package_scripts.test_core_tools_ecosystem, true, "test:core-tools-ecosystem package script is missing");
-for (const [key, value] of Object.entries({ test_tools_cloudflare_status_auth: report.package_scripts.test_tools_cloudflare_status_auth, test_tools_cloudflare_plans: report.package_scripts.test_tools_cloudflare_plans, test_tools_cloudflare_approval_gates: report.package_scripts.test_tools_cloudflare_approval_gates, test_tools_cloudflare_redaction: report.package_scripts.test_tools_cloudflare_redaction, test_tools_cloudflare_evidence_pack: report.package_scripts.test_tools_cloudflare_evidence_pack, test_tools_quality_general: report.package_scripts.test_tools_quality_general })) assert.equal(value, true, `${key} package script is missing`);
+for (const [key, value] of Object.entries({ test_tools_cloudflare_status_auth: report.package_scripts.test_tools_cloudflare_status_auth, test_tools_cloudflare_plans: report.package_scripts.test_tools_cloudflare_plans, test_tools_cloudflare_approval_gates: report.package_scripts.test_tools_cloudflare_approval_gates, test_tools_cloudflare_redaction: report.package_scripts.test_tools_cloudflare_redaction, test_tools_cloudflare_evidence_pack: report.package_scripts.test_tools_cloudflare_evidence_pack, test_tools_giga_cloudflare_deployment: report.package_scripts.test_tools_giga_cloudflare_deployment, giga_phase20_benchmark: report.package_scripts.giga_phase20_benchmark, giga_phase20_capability: report.package_scripts.giga_phase20_capability, generate_check: report.package_scripts.generate_check, test_giga_deterministic_generation: report.package_scripts.test_giga_deterministic_generation, giga_phase21_benchmark: report.package_scripts.giga_phase21_benchmark, test_tools_quality_general: report.package_scripts.test_tools_quality_general })) assert.equal(value, true, `${key} package script is missing`);
 assert.equal(report.intelligence_test_exists, true, "tools intelligence test file is missing");
 assert.equal(report.research_test_exists, true, "tools research test file is missing");
 assert.equal(report.browser_intelligence_test_exists, true, "browser intelligence test file is missing");
@@ -749,6 +1307,12 @@ assert.equal(report.tools_power_tools_2_regression_test_exists, true, "POWER-TOO
 assert.equal(report.tools_power_session_1_recovery_test_exists, true, "POWER-SESSION-1 recovery test file is missing");
 assert.equal(report.tools_orchestrator_1_regression_test_exists, true, "ORCHESTRATOR-1 regression test file is missing");
 assert.equal(report.tools_code_intelligence_1_regression_test_exists, true, "CODE-INTELLIGENCE-1 regression test file is missing");
+assert.equal(report.tools_precision_subsystem_test_exists, true, "Tools precision subsystem MCP test file is missing");
+assert.equal(report.precision_subsystem_module_exists, true, "Tools precision subsystem module is missing");
+assert.equal(report.permission_runtime_test_exists, true, "Shared permission runtime test file is missing");
+assert.equal(report.tools_scoped_permissions_test_exists, true, "Scoped permission MCP test file is missing");
+assert.equal(report.safety_cli_test_exists, true, "Safety CLI test file is missing");
+assert.equal(report.permission_runtime_module_exists, true, "Shared permission runtime module is missing");
 assert.equal(report.adoption_reliability_test_exists, true, "ADOPTION-RELIABILITY-1 regression test file is missing");
 assert.equal(report.adoption_reliability_2_test_exists, true, "ADOPTION-RELIABILITY-2 regression test file is missing");
 for (const [key, value] of Object.entries({
@@ -781,6 +1345,11 @@ for (const [key, value] of Object.entries({
   test_tools_source_impact_trace: report.package_scripts.test_tools_source_impact_trace,
   test_tools_source_control_character_guard: report.package_scripts.test_tools_source_control_character_guard,
   test_tools_code_intelligence_1_regression: report.package_scripts.test_tools_code_intelligence_1_regression,
+  test_tools_precision_subsystem: report.package_scripts.test_tools_precision_subsystem,
+  test_permission_runtime: report.package_scripts.test_permission_runtime,
+  test_tools_scoped_permissions: report.package_scripts.test_tools_scoped_permissions,
+  test_safety_cli: report.package_scripts.test_safety_cli,
+  safety: report.package_scripts.safety,
   test_core_adoption_entrypoint: report.package_scripts.test_core_adoption_entrypoint,
   test_core_usage_contract: report.package_scripts.test_core_usage_contract,
   test_tools_adoption_entrypoint: report.package_scripts.test_tools_adoption_entrypoint,
@@ -846,7 +1415,22 @@ for (const [key, value] of Object.entries({
   tools_install_profile_emit_status: report.tools_install_profile_emit_status,
   tools_install_doctor_status: report.tools_install_doctor_status,
   tools_install_profile_validation_status: report.tools_install_profile_validation_status,
-  tools_install_adoption_1_status: report.tools_install_adoption_1_status
+  tools_install_adoption_1_status: report.tools_install_adoption_1_status,
+  adoption_managed_instruction_status: report.adoption_managed_instruction_status,
+  adoption_usage_self_check_status: report.adoption_usage_self_check_status,
+  adoption_real_profile_trial_status: report.adoption_real_profile_trial_status,
+  adoption_installed_client_honesty_status: report.adoption_installed_client_honesty_status
+})) assert.equal(value, true, `${key} readiness missing`);
+for (const [key, value] of Object.entries({
+  precision_subsystem_runtime_registry_status: report.precision_subsystem_runtime_registry_status,
+  precision_subsystem_behavior_status: report.precision_subsystem_behavior_status,
+  precision_subsystem_shared_runtime_status: report.precision_subsystem_shared_runtime_status
+})) assert.equal(value, true, `${key} readiness missing`);
+for (const [key, value] of Object.entries({
+  scoped_permission_runtime_registry_status: report.scoped_permission_runtime_registry_status,
+  scoped_permission_behavior_status: report.scoped_permission_behavior_status,
+  safety_cli_behavior_status: report.safety_cli_behavior_status,
+  permission_runtime_shared_status: report.permission_runtime_shared_status
 })) assert.equal(value, true, `${key} readiness missing`);
 for (const [name, present] of Object.entries(report.required_tools_present)) assert.equal(present, true, `missing required tool ${name}`);
 assert.equal(report.dry_run_default, true, "dry-run defaults are missing");
@@ -887,9 +1471,24 @@ assert.equal(report.browser_search_safety_policy, true, "browser/search safety p
 assert.equal(report.provider_unconfigured_honesty, true, "provider unconfigured honesty missing");
 assert.equal(report.no_captcha_bypass_public_policy, true, "no-CAPTCHA-bypass public policy missing");
 for (const [key, value] of Object.entries({ cloudflare_control_status: report.cloudflare_control_status, cloudflare_auth_status_tool_status: report.cloudflare_auth_status_tool_status, cloudflare_auth_plan_status: report.cloudflare_auth_plan_status, cloudflare_discovery_status: report.cloudflare_discovery_status, cloudflare_pages_deploy_status: report.cloudflare_pages_deploy_status, cloudflare_workers_deploy_status: report.cloudflare_workers_deploy_status, cloudflare_dns_status: report.cloudflare_dns_status, cloudflare_env_secrets_status: report.cloudflare_env_secrets_status, cloudflare_verify_status: report.cloudflare_verify_status, cloudflare_rollback_status: report.cloudflare_rollback_status, cloudflare_cache_purge_status: report.cloudflare_cache_purge_status, cloudflare_approval_gate_status: report.cloudflare_approval_gate_status, cloudflare_destructive_approval_status: report.cloudflare_destructive_approval_status, cloudflare_secret_redaction_status: report.cloudflare_secret_redaction_status, cloudflare_evidence_pack_status: report.cloudflare_evidence_pack_status, general_tools_evidence_pack_audit_status: report.general_tools_evidence_pack_audit_status, general_tools_mutation_approval_contract_status: report.general_tools_mutation_approval_contract_status, general_tools_secret_redaction_check_status: report.general_tools_secret_redaction_check_status })) assert.equal(value, true, `${key} readiness missing`);
+for (const key of ["cloudflare_deployment_module_status", "cloudflare_deployment_discovery_status", "cloudflare_deployment_build_output_status", "cloudflare_deployment_command_status", "cloudflare_deployment_verification_status", "cloudflare_deployment_env_reference_status", "cloudflare_deployment_rollback_status", "cloudflare_deployment_failure_evidence_status", "cloudflare_deployment_error_diagnosis_status", "cloudflare_deployment_simulation_honesty_status", "cloudflare_deployment_core_routing_status", "cloudflare_deployment_real_mcp_proof_status"]) assert.equal(report[key], true, `${key} readiness missing`);
+for (const key of ["deterministic_generation_clock_status", "deterministic_archive_status", "generated_artifact_manifest_status", "generated_artifact_drift_status", "generated_artifact_hygiene_status", "generated_artifact_ci_status", "generated_artifact_real_mcp_status", "deterministic_digest_status"]) assert.equal(report[key], true, `${key} readiness missing`);
+for (const key of ["performance_output_test_exists", "performance_target_harness_status", "lazy_heavy_runtime_status", "performance_output_real_mcp_status", "performance_output_suite_status"]) assert.equal(report[key], true, `${key} readiness missing`);
 assert.equal(report.patch_batch_status, true, "patch batch support/test coverage is missing");
 assert.equal(report.restore_batch_status, true, "restore batch support/test coverage is missing");
 assert.equal(report.project_scan_status, true, "project scan support/test coverage is missing");
+for (const [key, value] of Object.entries({ project_automation_environment_status: report.project_automation_environment_status, project_automation_layered_policy_status: report.project_automation_layered_policy_status, project_automation_secret_boundary_status: report.project_automation_secret_boundary_status, project_automation_lifecycle_hook_status: report.project_automation_lifecycle_hook_status, project_automation_exact_execution_status: report.project_automation_exact_execution_status, project_automation_process_cleanup_status: report.project_automation_process_cleanup_status, project_automation_task_graph_status: report.project_automation_task_graph_status, project_automation_rollback_status: report.project_automation_rollback_status, project_automation_diagnosis_status: report.project_automation_diagnosis_status, project_automation_temp_cleanup_status: report.project_automation_temp_cleanup_status, project_automation_real_mcp_proof_status: report.project_automation_real_mcp_proof_status })) assert.equal(value, true, `${key} readiness missing`);
+for (const [key, value] of Object.entries({ testing_ci_discovery_status: report.testing_ci_discovery_status, testing_ci_affected_graph_status: report.testing_ci_affected_graph_status, testing_ci_tiered_runner_status: report.testing_ci_tiered_runner_status, testing_ci_parallel_safety_status: report.testing_ci_parallel_safety_status, testing_ci_reliability_status: report.testing_ci_reliability_status, testing_ci_diagnosis_status: report.testing_ci_diagnosis_status, testing_ci_coverage_benchmark_status: report.testing_ci_coverage_benchmark_status, testing_ci_actions_runtime_status: report.testing_ci_actions_runtime_status, testing_ci_real_mcp_proof_status: report.testing_ci_real_mcp_proof_status })) assert.equal(value, true, `${key} readiness missing`);
+for (const [key, value] of Object.entries({ app_engineering_inspection_status: report.app_engineering_inspection_status, app_engineering_transaction_status: report.app_engineering_transaction_status, app_engineering_acceptance_status: report.app_engineering_acceptance_status, app_engineering_rollback_status: report.app_engineering_rollback_status, app_engineering_adapter_fixture_status: report.app_engineering_adapter_fixture_status, app_engineering_real_mcp_proof_status: report.app_engineering_real_mcp_proof_status, dev_server_listener_cleanup_status: report.dev_server_listener_cleanup_status })) assert.equal(value, true, `${key} readiness missing`);
+for (const [key, value] of Object.entries({ browser_interaction_registration_status: report.browser_interaction_registration_status, browser_interaction_actions_status: report.browser_interaction_actions_status, browser_interaction_runtime_evidence_status: report.browser_interaction_runtime_evidence_status, browser_interaction_state_viewport_status: report.browser_interaction_state_viewport_status, browser_interaction_compare_status: report.browser_interaction_compare_status, browser_interaction_safety_status: report.browser_interaction_safety_status, browser_interaction_cleanup_status: report.browser_interaction_cleanup_status, browser_interaction_real_mcp_proof_status: report.browser_interaction_real_mcp_proof_status })) assert.equal(value, true, `${key} readiness missing`);
+for (const [key, value] of Object.entries({ windows_local_registration_status: report.windows_local_registration_status, windows_local_powershell_status: report.windows_local_powershell_status, windows_local_environment_status: report.windows_local_environment_status, windows_local_path_status: report.windows_local_path_status, windows_local_process_port_status: report.windows_local_process_port_status, windows_local_service_task_event_status: report.windows_local_service_task_event_status, windows_local_client_status: report.windows_local_client_status, windows_local_mutation_gate_status: report.windows_local_mutation_gate_status, windows_local_real_mcp_proof_status: report.windows_local_real_mcp_proof_status })) assert.equal(value, true, `${key} readiness missing`);
+for (const [key, value] of Object.entries({ github_development_module_status: report.github_development_module_status, github_diff_review_status: report.github_diff_review_status, github_review_threads_status: report.github_review_threads_status, github_remote_proof_status: report.github_remote_proof_status, github_actions_run_inspect_status: report.github_actions_run_inspect_status, github_release_verify_status: report.github_release_verify_status, github_public_surface_audit_status: report.github_public_surface_audit_status, github_selective_commit_isolation_status: report.github_selective_commit_isolation_status, github_development_real_mcp_proof_status: report.github_development_real_mcp_proof_status })) assert.equal(value, true, `${key} readiness missing`);
+for (const [key, value] of Object.entries({ game_domain_module_status: report.game_domain_module_status, game_domain_adapter_contract_status: report.game_domain_adapter_contract_status, game_domain_inventory_status: report.game_domain_inventory_status, game_domain_config_status: report.game_domain_config_status, game_domain_compatibility_status: report.game_domain_compatibility_status, game_domain_profile_status: report.game_domain_profile_status, game_domain_backup_restore_status: report.game_domain_backup_restore_status, game_domain_roblox_luau_status: report.game_domain_roblox_luau_status, game_domain_validation_status: report.game_domain_validation_status, game_domain_real_mcp_proof_status: report.game_domain_real_mcp_proof_status })) assert.equal(value, true, `${key} readiness missing`);
+for (const [key, value] of Object.entries({ dependency_security_module_status: report.dependency_security_module_status, dependency_security_inventory_status: report.dependency_security_inventory_status, dependency_security_risk_status: report.dependency_security_risk_status, dependency_security_advisory_status: report.dependency_security_advisory_status, dependency_security_change_plan_status: report.dependency_security_change_plan_status, dependency_security_install_status: report.dependency_security_install_status, dependency_security_rollback_status: report.dependency_security_rollback_status, dependency_security_credential_boundary_status: report.dependency_security_credential_boundary_status, dependency_security_hardening_status: report.dependency_security_hardening_status, dependency_security_real_mcp_proof_status: report.dependency_security_real_mcp_proof_status })) assert.equal(value, true, `${key} readiness missing`);
+for (const [key, value] of Object.entries({ structural_code_module_status: report.structural_code_module_status, structural_code_architecture_status: report.structural_code_architecture_status, structural_code_index_status: report.structural_code_index_status, structural_code_graph_status: report.structural_code_graph_status, structural_code_reference_status: report.structural_code_reference_status, structural_code_planning_status: report.structural_code_planning_status, structural_code_validation_status: report.structural_code_validation_status, structural_code_safety_gates_status: report.structural_code_safety_gates_status, structural_code_transaction_status: report.structural_code_transaction_status, structural_code_hardening_status: report.structural_code_hardening_status, structural_code_core_routing_status: report.structural_code_core_routing_status, structural_code_real_mcp_proof_status: report.structural_code_real_mcp_proof_status })) assert.equal(value, true, `${key} readiness missing`);
+for (const [key, value] of Object.entries({ api_connector_module_status: report.api_connector_module_status, api_connector_contract_status: report.api_connector_contract_status, api_connector_initial_adapters_status: report.api_connector_initial_adapters_status, api_connector_permission_broker_status: report.api_connector_permission_broker_status, api_connector_execution_bounds_status: report.api_connector_execution_bounds_status, api_connector_mock_live_status: report.api_connector_mock_live_status, api_connector_mutation_compensation_status: report.api_connector_mutation_compensation_status, api_connector_generation_review_status: report.api_connector_generation_review_status, api_connector_core_routing_status: report.api_connector_core_routing_status, api_connector_real_mcp_proof_status: report.api_connector_real_mcp_proof_status })) assert.equal(value, true, key + " readiness missing");
+for (const [key, value] of Object.entries({ skill_runtime_module_status: report.skill_runtime_module_status, skill_runtime_contract_status: report.skill_runtime_contract_status, skill_runtime_initial_adapters_status: report.skill_runtime_initial_adapters_status, skill_runtime_categories_status: report.skill_runtime_categories_status, skill_runtime_safe_default_status: report.skill_runtime_safe_default_status, skill_runtime_package_safety_status: report.skill_runtime_package_safety_status, skill_runtime_doctor_status: report.skill_runtime_doctor_status, skill_runtime_source_pinning_status: report.skill_runtime_source_pinning_status, skill_runtime_command_gate_status: report.skill_runtime_command_gate_status, skill_runtime_core_routing_status: report.skill_runtime_core_routing_status, skill_runtime_real_mcp_proof_status: report.skill_runtime_real_mcp_proof_status, skill_runtime_coverage_mapper_status: report.skill_runtime_coverage_mapper_status })) assert.equal(value, true, key + " readiness missing");
+for (const [key, value] of Object.entries({ current_documentation_module_status: report.current_documentation_module_status, current_documentation_source_authority_status: report.current_documentation_source_authority_status, current_documentation_cache_status: report.current_documentation_cache_status, current_documentation_bounds_status: report.current_documentation_bounds_status, current_documentation_contradiction_status: report.current_documentation_contradiction_status, current_documentation_core_routing_status: report.current_documentation_core_routing_status, current_documentation_real_mcp_proof_status: report.current_documentation_real_mcp_proof_status })) assert.equal(value, true, key + " readiness missing");
 assert.equal(report.project_task_status, true, "project task support/test coverage is missing");
 assert.equal(report.dev_server_status, true, "dev server support/test coverage is missing");
 assert.equal(report.session_evidence_status, true, "session evidence support/test coverage is missing");
@@ -928,6 +1527,14 @@ console.log(`core_ecosystem_test_exists: ${yes(report.core_ecosystem_test_exists
 console.log(`core_tools_e2e_script_exists: ${yes(report.core_tools_e2e_script_exists)}`);
 console.log(`adoption_reliability_test_exists: ${yes(report.adoption_reliability_test_exists)}`);
 console.log(`adoption_reliability_2_test_exists: ${yes(report.adoption_reliability_2_test_exists)}`);
+console.log(`tools_precision_subsystem_test_exists: ${yes(report.tools_precision_subsystem_test_exists)}`);
+console.log(`precision_subsystem_runtime_registry_status: ${yes(report.precision_subsystem_runtime_registry_status)}`);
+console.log(`precision_subsystem_behavior_status: ${yes(report.precision_subsystem_behavior_status)}`);
+console.log(`precision_subsystem_shared_runtime_status: ${yes(report.precision_subsystem_shared_runtime_status)}`);
+console.log(`scoped_permission_runtime_registry_status: ${yes(report.scoped_permission_runtime_registry_status)}`);
+console.log(`scoped_permission_behavior_status: ${yes(report.scoped_permission_behavior_status)}`);
+console.log(`safety_cli_behavior_status: ${yes(report.safety_cli_behavior_status)}`);
+console.log(`permission_runtime_shared_status: ${yes(report.permission_runtime_shared_status)}`);
 console.log(`required_tools_present: ${Object.values(report.required_tools_present).filter(Boolean).length}/${requiredTools.length}`);
 console.log(`mcp_config_tools_support: ${yes(report.mcp_config_tools_support)}`);
 console.log(`tools_manifest_status: ${yes(report.tools_manifest_status)}`);
@@ -966,6 +1573,9 @@ console.log(`search_result_ranker_status: ${yes(report.search_result_ranker_stat
 console.log(`redirect_chain_check_status: ${yes(report.redirect_chain_check_status)}`);
 console.log(`url_reputation_check_status: ${yes(report.url_reputation_check_status)}`);
 console.log(`captcha_detector_status: ${yes(report.captcha_detector_status)}`);
+console.log(`client_setup_behavior_status: ${yes(report.client_setup_behavior_status)}`);
+console.log(`client_setup_mcp_status: ${yes(report.client_setup_mcp_status)}`);
+console.log(`client_setup_cli_status: ${yes(report.client_setup_cli_status)}`);
 console.log(`download_safety_check_status: ${yes(report.download_safety_check_status)}`);
 console.log(`claim_source_matrix_status: ${yes(report.claim_source_matrix_status)}`);
 console.log(`research_gap_detector_status: ${yes(report.research_gap_detector_status)}`);
@@ -1000,9 +1610,9 @@ console.log(`ui_route_component_detection_status: ${yes(report.ui_route_componen
 console.log(`ui_state_coverage_status: ${yes(report.ui_state_coverage_status)}`);
 console.log(`ui_no_hidden_browser_status: ${yes(report.ui_no_hidden_browser_status)}`);
 console.log(`ui_visual_claim_audit_status: ${yes(report.ui_visual_claim_audit_status)}`);
-for (const key of ["github_autonomy_status", "github_settings_guide_status", "github_profile_status", "github_status_tool_status", "github_repo_inspect_status", "github_repo_intelligence_status", "github_branch_status", "github_commit_push_status", "github_pr_status", "github_issue_status", "github_labels_status", "github_actions_status", "github_ci_triage_status", "github_pr_quality_gate_status", "github_task_progress_truth_check_status", "github_config_header_status", "github_profile_maintainer_default_status", "github_force_push_block_default_status", "github_repo_delete_block_default_status", "github_secret_commit_block_status", "github_real_exec_status", "github_gh_auth_detection_status", "github_git_command_status", "github_branch_real_exec_status", "github_commit_push_real_exec_status", "github_pr_real_exec_status", "github_issue_real_exec_status", "github_label_real_exec_status", "github_actions_real_exec_status", "github_ci_logs_status", "github_release_draft_status", "github_dry_run_status", "github_config_knob_status", "github_secret_file_block_status", "github_real_execution_not_only_simulated_status", "autonomy_efficiency_status"]) console.log(`${key}: ${yes(report[key])}`);
+for (const key of ["github_autonomy_status", "github_settings_guide_status", "github_profile_status", "github_status_tool_status", "github_repo_inspect_status", "github_repo_intelligence_status", "github_branch_status", "github_commit_push_status", "github_pr_status", "github_issue_status", "github_labels_status", "github_actions_status", "github_ci_triage_status", "github_pr_quality_gate_status", "github_task_progress_truth_check_status", "github_config_header_status", "github_profile_maintainer_default_status", "github_force_push_block_default_status", "github_repo_delete_block_default_status", "github_secret_commit_block_status", "github_real_exec_status", "github_gh_auth_detection_status", "github_git_command_status", "github_branch_real_exec_status", "github_commit_push_real_exec_status", "github_pr_real_exec_status", "github_issue_real_exec_status", "github_label_real_exec_status", "github_actions_real_exec_status", "github_ci_logs_status", "github_release_draft_status", "github_development_module_status", "github_diff_review_status", "github_review_threads_status", "github_remote_proof_status", "github_actions_run_inspect_status", "github_release_verify_status", "github_public_surface_audit_status", "github_selective_commit_isolation_status", "github_development_real_mcp_proof_status", "github_dry_run_status", "github_config_knob_status", "github_secret_file_block_status", "github_real_execution_not_only_simulated_status", "autonomy_efficiency_status"]) console.log(`${key}: ${yes(report[key])}`);
 for (const key of ["repo_deep_map_status", "next_action_ranker_status", "no_placebo_progress_audit_status", "change_impact_plan_status", "test_selection_plan_status", "failure_triage_status", "evidence_pack_status", "power_tools_1_status", "power_tools_2_dogfood_status", "ranking_quality_tuning_status", "no_placebo_strictness_status", "test_selection_efficiency_status", "evidence_pack_proof_packet_status", "failure_triage_specificity_status", "power_tools_2_status", "local_session_recovery_status", "power_session_1_status", "workflow_orchestrator_tool_status", "workflow_orchestrator_behavior_status", "workflow_orchestrator_no_placebo_status", "workflow_orchestrator_proof_packet_status", "orchestrator_1_status", "code_symbol_map_status", "mcp_surface_audit_status", "patch_target_finder_status", "tool_test_coverage_map_status", "source_impact_trace_status", "source_control_character_guard_status", "code_intelligence_1_status"]) console.log(`${key}: ${yes(report[key])}`);
-for (const key of ["tools_entrypoint_status", "tools_capability_router_status", "tools_adoption_readiness_status", "tools_exact_call_sequence_status", "tools_registered_call_validation_status", "tools_adoption_reliability_status", "tools_visibility_doctor_status", "tools_underuse_detector_status", "tools_adoption_description_status", "tools_registered_name_validation_2_status", "tools_adoption_reliability_2_status", "tools_install_profile_emit_status", "tools_install_doctor_status", "tools_install_profile_validation_status", "tools_install_adoption_1_status"]) console.log(`${key}: ${yes(report[key])}`);
+for (const key of ["tools_entrypoint_status", "tools_capability_router_status", "tools_adoption_readiness_status", "tools_exact_call_sequence_status", "tools_registered_call_validation_status", "tools_adoption_reliability_status", "tools_visibility_doctor_status", "tools_underuse_detector_status", "tools_adoption_description_status", "tools_registered_name_validation_2_status", "tools_adoption_reliability_2_status", "tools_install_profile_emit_status", "tools_install_doctor_status", "tools_install_profile_validation_status", "tools_install_adoption_1_status", "adoption_managed_instruction_status", "adoption_usage_self_check_status", "adoption_real_profile_trial_status", "adoption_installed_client_honesty_status"]) console.log(`${key}: ${yes(report[key])}`);
 for (const key of ["cloudflare_control_status", "cloudflare_auth_status_tool_status", "cloudflare_auth_plan_status", "cloudflare_discovery_status", "cloudflare_pages_deploy_status", "cloudflare_workers_deploy_status", "cloudflare_dns_status", "cloudflare_env_secrets_status", "cloudflare_verify_status", "cloudflare_rollback_status", "cloudflare_cache_purge_status", "cloudflare_approval_gate_status", "cloudflare_destructive_approval_status", "cloudflare_secret_redaction_status", "cloudflare_evidence_pack_status", "general_tools_evidence_pack_audit_status", "general_tools_mutation_approval_contract_status", "general_tools_secret_redaction_check_status"]) console.log(`${key}: ${yes(report[key])}`);
 console.log(`parallel_fake_system_detection_status: ${yes(report.parallel_fake_system_detection_status)}`);
 console.log(`dead_code_warning_status: ${yes(report.dead_code_warning_status)}`);
@@ -1026,12 +1636,26 @@ console.log(`permission_manifest_integration: ${yes(report.permission_manifest_i
 console.log(`patch_batch_status: ${yes(report.patch_batch_status)}`);
 console.log(`restore_batch_status: ${yes(report.restore_batch_status)}`);
 console.log(`project_scan_status: ${yes(report.project_scan_status)}`);
+for (const key of ["project_automation_environment_status", "project_automation_layered_policy_status", "project_automation_secret_boundary_status", "project_automation_lifecycle_hook_status", "project_automation_exact_execution_status", "project_automation_process_cleanup_status", "project_automation_task_graph_status", "project_automation_rollback_status", "project_automation_diagnosis_status", "project_automation_temp_cleanup_status", "project_automation_real_mcp_proof_status"]) console.log(`${key}: ${yes(report[key])}`);
+for (const key of ["testing_ci_discovery_status", "testing_ci_affected_graph_status", "testing_ci_tiered_runner_status", "testing_ci_parallel_safety_status", "testing_ci_reliability_status", "testing_ci_diagnosis_status", "testing_ci_coverage_benchmark_status", "testing_ci_actions_runtime_status", "testing_ci_real_mcp_proof_status"]) console.log(`${key}: ${yes(report[key])}`);
+for (const key of ["app_engineering_inspection_status", "app_engineering_transaction_status", "app_engineering_acceptance_status", "app_engineering_rollback_status", "app_engineering_adapter_fixture_status", "app_engineering_real_mcp_proof_status", "dev_server_listener_cleanup_status"]) console.log(`${key}: ${yes(report[key])}`);
+for (const key of ["browser_interaction_registration_status", "browser_interaction_actions_status", "browser_interaction_runtime_evidence_status", "browser_interaction_state_viewport_status", "browser_interaction_compare_status", "browser_interaction_safety_status", "browser_interaction_cleanup_status", "browser_interaction_real_mcp_proof_status"]) console.log(`${key}: ${yes(report[key])}`);
+for (const key of ["windows_local_registration_status", "windows_local_powershell_status", "windows_local_environment_status", "windows_local_path_status", "windows_local_process_port_status", "windows_local_service_task_event_status", "windows_local_client_status", "windows_local_mutation_gate_status", "windows_local_real_mcp_proof_status"]) console.log(`${key}: ${yes(report[key])}`);
+for (const key of ["dependency_security_module_status", "dependency_security_inventory_status", "dependency_security_risk_status", "dependency_security_advisory_status", "dependency_security_change_plan_status", "dependency_security_install_status", "dependency_security_rollback_status", "dependency_security_credential_boundary_status", "dependency_security_hardening_status", "dependency_security_real_mcp_proof_status"]) console.log(`${key}: ${yes(report[key])}`);
+for (const key of ["structural_code_module_status", "structural_code_architecture_status", "structural_code_index_status", "structural_code_graph_status", "structural_code_reference_status", "structural_code_planning_status", "structural_code_validation_status", "structural_code_safety_gates_status", "structural_code_transaction_status", "structural_code_hardening_status", "structural_code_core_routing_status", "structural_code_real_mcp_proof_status"]) console.log(`${key}: ${yes(report[key])}`);
+for (const key of ["api_connector_module_status", "api_connector_contract_status", "api_connector_initial_adapters_status", "api_connector_permission_broker_status", "api_connector_execution_bounds_status", "api_connector_mock_live_status", "api_connector_mutation_compensation_status", "api_connector_generation_review_status", "api_connector_core_routing_status", "api_connector_real_mcp_proof_status"]) console.log(`${key}: ${yes(report[key])}`);
+for (const key of ["skill_runtime_module_status", "skill_runtime_contract_status", "skill_runtime_initial_adapters_status", "skill_runtime_categories_status", "skill_runtime_safe_default_status", "skill_runtime_package_safety_status", "skill_runtime_doctor_status", "skill_runtime_source_pinning_status", "skill_runtime_command_gate_status", "skill_runtime_core_routing_status", "skill_runtime_real_mcp_proof_status", "skill_runtime_coverage_mapper_status"]) console.log(`${key}: ${yes(report[key])}`);
+for (const key of ["current_documentation_module_status", "current_documentation_source_authority_status", "current_documentation_cache_status", "current_documentation_bounds_status", "current_documentation_contradiction_status", "current_documentation_core_routing_status", "current_documentation_real_mcp_proof_status"]) console.log(`${key}: ${yes(report[key])}`);
+for (const key of ["data_systems_module_status", "data_systems_format_status", "data_systems_inspection_validation_diff_status", "data_systems_transform_transaction_status", "data_systems_connection_scope_status", "data_systems_query_safety_status", "data_systems_migration_preview_status", "data_systems_migration_transaction_status", "data_systems_concurrency_boundary_status", "data_systems_secret_redaction_status", "data_systems_core_routing_status", "data_systems_real_mcp_proof_status"]) console.log(`${key}: ${yes(report[key])}`);
+for (const key of ["cloudflare_deployment_module_status", "cloudflare_deployment_discovery_status", "cloudflare_deployment_build_output_status", "cloudflare_deployment_command_status", "cloudflare_deployment_verification_status", "cloudflare_deployment_env_reference_status", "cloudflare_deployment_rollback_status", "cloudflare_deployment_failure_evidence_status", "cloudflare_deployment_error_diagnosis_status", "cloudflare_deployment_simulation_honesty_status", "cloudflare_deployment_core_routing_status", "cloudflare_deployment_real_mcp_proof_status"]) console.log(`${key}: ${yes(report[key])}`);
+for (const key of ["deterministic_generation_clock_status", "deterministic_archive_status", "generated_artifact_manifest_status", "generated_artifact_drift_status", "generated_artifact_hygiene_status", "generated_artifact_ci_status", "generated_artifact_real_mcp_status", "deterministic_digest_status"]) console.log(`${key}: ${yes(report[key])}`);
+for (const key of ["performance_output_test_exists", "performance_target_harness_status", "lazy_heavy_runtime_status", "performance_output_real_mcp_status", "performance_output_suite_status"]) console.log(`${key}: ${yes(report[key])}`);
 console.log(`project_task_status: ${yes(report.project_task_status)}`);
 console.log(`dev_server_status: ${yes(report.dev_server_status)}`);
 console.log(`session_evidence_status: ${yes(report.session_evidence_status)}`);
 console.log(`local_git_status: ${yes(report.local_git_status)}`);
 console.log(`github_destructive_admin_still_blocked: ${yes(report.github_repo_delete_block_default_status && report.github_force_push_block_default_status)}`);
-console.log(`package_install_still_blocked: ${yes(report.package_install_still_blocked)}`);
+console.log(`unsafe_package_install_paths_still_blocked: ${yes(report.package_install_still_blocked)}`);
 console.log(`giga_still_not_built: ${yes(report.giga_still_not_built)}`);
 console.log(`evidence_proof_bridge_status: ${yes(report.evidence_proof_bridge_status)}`);
 console.log(`safe_action_loop_status: ${yes(report.safe_action_loop_status)}`);

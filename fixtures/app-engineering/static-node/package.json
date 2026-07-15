@@ -1,0 +1,10 @@
+{
+  "name": "vnem-fixture-static-node",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/domain.test.mjs",
+    "build": "node scripts/build.mjs",
+    "dev": "node src/server.mjs"
+  }
+}

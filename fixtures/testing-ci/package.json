@@ -1,0 +1,12 @@
+{
+  "name": "vnem-testing-ci-fixture",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test:unit": "node tests/math.test.mjs",
+    "test:integration": "node tests/service.integration.test.mjs",
+    "lint": "node --check src/math.mjs",
+    "typecheck": "node --check src/service.mjs",
+    "build": "node scripts/build.mjs"
+  }
+}

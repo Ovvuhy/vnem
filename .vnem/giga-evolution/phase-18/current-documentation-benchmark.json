@@ -1,0 +1,38 @@
+{
+  "phase": 18,
+  "generated_at": "2026-07-14T17:21:18.643Z",
+  "scope": "real_stdio_mcp_current_documentation_with_deterministic_sources",
+  "tools_exercised": [
+    "vnem_tools_documentation_source_catalog",
+    "vnem_tools_official_documentation_fetch",
+    "vnem_tools_documentation_context",
+    "vnem_tools_documentation_cache_status"
+  ],
+  "timings_ms": {
+    "catalog_ms": 10.06,
+    "official_network_fetch_ms": 58.15,
+    "official_conditional_304_ms": 19.3,
+    "community_fetch_ms": 23.52,
+    "contradiction_context_ms": 15.25
+  },
+  "fixture_proof": {
+    "official_source_classified_by_exact_domain": true,
+    "bounded_relevant_section_extraction": true,
+    "timestamp_and_content_hash_cache": true,
+    "etag_and_last_modified_revalidation": true,
+    "stale_cache_detected": true,
+    "source_url_and_date_preserved": true,
+    "official_community_distinction": true,
+    "contradiction_detected_and_official_source_preferred": true,
+    "url_redirect_and_size_policy_enforced": true,
+    "http_success_not_authority_or_currentness_proof": true,
+    "full_page_returned_or_injected": false,
+    "real_stdio_mcp": true
+  },
+  "live_official_proof": null,
+  "limitations": [
+    "Relevance extraction and contradiction detection are bounded heuristics and do not prove semantic completeness.",
+    "A fresh official path does not prove a content publication date or requested version unless the source exposes that evidence.",
+    "Live official retrieval was not requested in this invocation."
+  ]
+}

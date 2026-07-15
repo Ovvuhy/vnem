@@ -1,0 +1,619 @@
+{
+  "schema_version": "1.0.0",
+  "label": "phase-22",
+  "captured_at": "2026-07-15T10:22:01.492Z",
+  "branch": "feat/vnem-giga-evolution-1",
+  "head_sha": "527c2b974b0887bc7ceaeb4478206e2f3f4bc29d",
+  "methodology": {
+    "runs": 9,
+    "cold_process_per_startup_sample": true,
+    "same_machine_and_checkout": true,
+    "baseline_source": ".vnem/giga-evolution/baseline/performance.json",
+    "generation_clock": "2026-07-08T21:12:40.970Z",
+    "full_test_measurement_source": "not run by this sampler"
+  },
+  "servers": {
+    "core": {
+      "file": "scripts/vnem-mcp-server.mjs",
+      "samples": [
+        {
+          "startup_ms": 574.47,
+          "manifest_ms": 30.51,
+          "entrypoint_ms": 21.63,
+          "entrypoint_output_bytes": 350,
+          "idle_working_set_bytes": 101859328,
+          "tool_count": 68,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 571.12,
+          "manifest_ms": 21.31,
+          "entrypoint_ms": 19.65,
+          "entrypoint_output_bytes": 350,
+          "idle_working_set_bytes": 104435712,
+          "tool_count": 68,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 552.66,
+          "manifest_ms": 21.96,
+          "entrypoint_ms": 20.1,
+          "entrypoint_output_bytes": 350,
+          "idle_working_set_bytes": 109301760,
+          "tool_count": 68,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 527.29,
+          "manifest_ms": 22.85,
+          "entrypoint_ms": 14.99,
+          "entrypoint_output_bytes": 350,
+          "idle_working_set_bytes": 103878656,
+          "tool_count": 68,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 553.34,
+          "manifest_ms": 24.58,
+          "entrypoint_ms": 18.38,
+          "entrypoint_output_bytes": 350,
+          "idle_working_set_bytes": 104243200,
+          "tool_count": 68,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 470.22,
+          "manifest_ms": 19.25,
+          "entrypoint_ms": 13.22,
+          "entrypoint_output_bytes": 350,
+          "idle_working_set_bytes": 104579072,
+          "tool_count": 68,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 543.9,
+          "manifest_ms": 23.24,
+          "entrypoint_ms": 16.89,
+          "entrypoint_output_bytes": 350,
+          "idle_working_set_bytes": 100814848,
+          "tool_count": 68,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 514.97,
+          "manifest_ms": 20.23,
+          "entrypoint_ms": 19.15,
+          "entrypoint_output_bytes": 350,
+          "idle_working_set_bytes": 108261376,
+          "tool_count": 68,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 525.56,
+          "manifest_ms": 23.53,
+          "entrypoint_ms": 22.33,
+          "entrypoint_output_bytes": 350,
+          "idle_working_set_bytes": 103985152,
+          "tool_count": 68,
+          "stderr": ""
+        }
+      ],
+      "startup": {
+        "runs": 9,
+        "median_ms": 543.9,
+        "p95_ms": 573.13,
+        "worst_ms": 574.47,
+        "min_ms": 470.22
+      },
+      "manifest": {
+        "runs": 9,
+        "median_ms": 22.85,
+        "p95_ms": 28.14,
+        "worst_ms": 30.51,
+        "min_ms": 19.25
+      },
+      "entrypoint": {
+        "runs": 9,
+        "median_ms": 19.15,
+        "p95_ms": 22.05,
+        "worst_ms": 22.33,
+        "min_ms": 13.22
+      },
+      "entrypoint_output_bytes": {
+        "runs": 9,
+        "median": 350,
+        "p95": 350,
+        "worst": 350,
+        "min": 350
+      },
+      "idle_working_set_bytes": {
+        "runs": 9,
+        "median": 104243200,
+        "p95": 108885606,
+        "worst": 109301760,
+        "min": 100814848
+      },
+      "tool_count": 68
+    },
+    "tools": {
+      "file": "scripts/vnem-tools-mcp-server.mjs",
+      "samples": [
+        {
+          "startup_ms": 687.52,
+          "manifest_ms": 52.31,
+          "entrypoint_ms": 17.57,
+          "entrypoint_output_bytes": 257,
+          "idle_working_set_bytes": 119590912,
+          "tool_count": 241,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 736.97,
+          "manifest_ms": 66.33,
+          "entrypoint_ms": 26.36,
+          "entrypoint_output_bytes": 257,
+          "idle_working_set_bytes": 119529472,
+          "tool_count": 241,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 744.9,
+          "manifest_ms": 76.54,
+          "entrypoint_ms": 21.82,
+          "entrypoint_output_bytes": 257,
+          "idle_working_set_bytes": 119508992,
+          "tool_count": 241,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 723.21,
+          "manifest_ms": 61.15,
+          "entrypoint_ms": 20.85,
+          "entrypoint_output_bytes": 257,
+          "idle_working_set_bytes": 118935552,
+          "tool_count": 241,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 723.76,
+          "manifest_ms": 48.3,
+          "entrypoint_ms": 18.76,
+          "entrypoint_output_bytes": 257,
+          "idle_working_set_bytes": 119504896,
+          "tool_count": 241,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 673.93,
+          "manifest_ms": 52.57,
+          "entrypoint_ms": 14.7,
+          "entrypoint_output_bytes": 257,
+          "idle_working_set_bytes": 119185408,
+          "tool_count": 241,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 673.46,
+          "manifest_ms": 53.59,
+          "entrypoint_ms": 19.86,
+          "entrypoint_output_bytes": 257,
+          "idle_working_set_bytes": 119160832,
+          "tool_count": 241,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 726.85,
+          "manifest_ms": 55.79,
+          "entrypoint_ms": 20.12,
+          "entrypoint_output_bytes": 257,
+          "idle_working_set_bytes": 119410688,
+          "tool_count": 241,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 687.99,
+          "manifest_ms": 45.2,
+          "entrypoint_ms": 18.08,
+          "entrypoint_output_bytes": 257,
+          "idle_working_set_bytes": 118947840,
+          "tool_count": 241,
+          "stderr": ""
+        }
+      ],
+      "startup": {
+        "runs": 9,
+        "median_ms": 723.21,
+        "p95_ms": 741.73,
+        "worst_ms": 744.9,
+        "min_ms": 673.46
+      },
+      "manifest": {
+        "runs": 9,
+        "median_ms": 53.59,
+        "p95_ms": 72.46,
+        "worst_ms": 76.54,
+        "min_ms": 45.2
+      },
+      "entrypoint": {
+        "runs": 9,
+        "median_ms": 19.86,
+        "p95_ms": 24.54,
+        "worst_ms": 26.36,
+        "min_ms": 14.7
+      },
+      "entrypoint_output_bytes": {
+        "runs": 9,
+        "median": 257,
+        "p95": 257,
+        "worst": 257,
+        "min": 257
+      },
+      "idle_working_set_bytes": {
+        "runs": 9,
+        "median": 119410688,
+        "p95": 119566336,
+        "worst": 119590912,
+        "min": 118935552
+      },
+      "tool_count": 241
+    },
+    "precision": {
+      "file": "scripts/vnem-precision-mcp-server.mjs",
+      "samples": [
+        {
+          "startup_ms": 472.06,
+          "manifest_ms": 8.89,
+          "entrypoint_ms": null,
+          "entrypoint_output_bytes": null,
+          "idle_working_set_bytes": 65708032,
+          "tool_count": 7,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 430.74,
+          "manifest_ms": 9.76,
+          "entrypoint_ms": null,
+          "entrypoint_output_bytes": null,
+          "idle_working_set_bytes": 65871872,
+          "tool_count": 7,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 406.42,
+          "manifest_ms": 10.69,
+          "entrypoint_ms": null,
+          "entrypoint_output_bytes": null,
+          "idle_working_set_bytes": 66187264,
+          "tool_count": 7,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 451,
+          "manifest_ms": 7.6,
+          "entrypoint_ms": null,
+          "entrypoint_output_bytes": null,
+          "idle_working_set_bytes": 66039808,
+          "tool_count": 7,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 444.65,
+          "manifest_ms": 10.69,
+          "entrypoint_ms": null,
+          "entrypoint_output_bytes": null,
+          "idle_working_set_bytes": 65957888,
+          "tool_count": 7,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 392.91,
+          "manifest_ms": 8.97,
+          "entrypoint_ms": null,
+          "entrypoint_output_bytes": null,
+          "idle_working_set_bytes": 65945600,
+          "tool_count": 7,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 411,
+          "manifest_ms": 7.63,
+          "entrypoint_ms": null,
+          "entrypoint_output_bytes": null,
+          "idle_working_set_bytes": 65953792,
+          "tool_count": 7,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 442.57,
+          "manifest_ms": 9.5,
+          "entrypoint_ms": null,
+          "entrypoint_output_bytes": null,
+          "idle_working_set_bytes": 65814528,
+          "tool_count": 7,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 455.77,
+          "manifest_ms": 7.73,
+          "entrypoint_ms": null,
+          "entrypoint_output_bytes": null,
+          "idle_working_set_bytes": 66088960,
+          "tool_count": 7,
+          "stderr": ""
+        }
+      ],
+      "startup": {
+        "runs": 9,
+        "median_ms": 442.57,
+        "p95_ms": 465.54,
+        "worst_ms": 472.06,
+        "min_ms": 392.91
+      },
+      "manifest": {
+        "runs": 9,
+        "median_ms": 8.97,
+        "p95_ms": 10.69,
+        "worst_ms": 10.69,
+        "min_ms": 7.6
+      },
+      "entrypoint": {
+        "runs": 0,
+        "median_ms": null,
+        "p95_ms": null,
+        "worst_ms": null,
+        "min_ms": null
+      },
+      "entrypoint_output_bytes": {
+        "runs": 0,
+        "median": null,
+        "p95": null,
+        "worst": null,
+        "min": null
+      },
+      "idle_working_set_bytes": {
+        "runs": 9,
+        "median": 65953792,
+        "p95": 66147942,
+        "worst": 66187264,
+        "min": 65708032
+      },
+      "tool_count": 7
+    }
+  },
+  "representative_calls": {
+    "code_search": {
+      "latency": {
+        "runs": 9,
+        "median_ms": 127.13,
+        "p95_ms": 185.74,
+        "worst_ms": 199.85,
+        "min_ms": 107.8
+      },
+      "output_bytes": {
+        "runs": 9,
+        "median": 100,
+        "p95": 100,
+        "worst": 100,
+        "min": 100
+      },
+      "errors": 0
+    },
+    "workspace_map": {
+      "latency": {
+        "runs": 9,
+        "median_ms": 61.76,
+        "p95_ms": 93.35,
+        "worst_ms": 100.98,
+        "min_ms": 49.68
+      },
+      "output_bytes": {
+        "runs": 9,
+        "median": 581,
+        "p95": 581,
+        "worst": 581,
+        "min": 581
+      },
+      "errors": 0
+    },
+    "install_doctor": {
+      "latency": {
+        "runs": 9,
+        "median_ms": 235.92,
+        "p95_ms": 249.81,
+        "worst_ms": 254.69,
+        "min_ms": 207.4
+      },
+      "output_bytes": {
+        "runs": 9,
+        "median": 565,
+        "p95": 565,
+        "worst": 565,
+        "min": 565
+      },
+      "errors": 0
+    }
+  },
+  "suites": {
+    "full_test": {
+      "duration_ms": 202742,
+      "status": "pass",
+      "warning_summary": "none"
+    },
+    "affected_test": {
+      "duration_ms": 8448,
+      "status": "pass"
+    },
+    "focused_tools_mcp": {
+      "status": "pass",
+      "exit_code": 0,
+      "duration_ms": 1743.76,
+      "warning_lines": []
+    }
+  },
+  "generation": {
+    "first": {
+      "status": "pass",
+      "exit_code": 0,
+      "duration_ms": 1388.04,
+      "warning_lines": []
+    },
+    "second": {
+      "status": "pass",
+      "exit_code": 0,
+      "duration_ms": 1302.43,
+      "warning_lines": []
+    },
+    "deterministic": true,
+    "checksums": {
+      "public/install.tgz": "8aa6df2f089a883a57675ae1c5cf4dfe5a6936891a304ebcf251bdc9f0c8782b",
+      "landing/install.tgz": "8aa6df2f089a883a57675ae1c5cf4dfe5a6936891a304ebcf251bdc9f0c8782b",
+      "public/api/index.json": "6e56aec731fcd3b9445cca6e962c75937c797a8a06534c865787b25884280606",
+      ".vnem/search-index.json": "694af4c43507a44feda50150b89404afb3c5b3f2ca4469af54f161df45c46930",
+      "llms.txt": "08666513e6463d2824593a56b4ca5a1dd2efb3b0c22cf30b435b56b3c4c36eae",
+      "llms-full.txt": "b66b778ed413edc98fc1bc5060a580de337cff4e0b4024071c0a7816d060d89c"
+    }
+  },
+  "tool_surface": {
+    "registration_count": 222,
+    "handler_count": 222,
+    "behavior_tested_count": 153,
+    "registration_only_or_weak_count": 7,
+    "count_source": "live MCP coverage map"
+  },
+  "flaky_or_cleanup_observations": {
+    "temp_entry_count": 266,
+    "temp_entries_sample": [
+      "adoption-reliability-1-sample",
+      "adoption-reliability-1-tools",
+      "adoption-reliability-2-proof",
+      "adoption-reliability-2-tools",
+      "app-server-0cJWyx",
+      "app-server-27G4rC",
+      "app-server-3qoCMR",
+      "app-server-4UfHIs",
+      "app-server-aadvcZ",
+      "app-server-aF2NDj",
+      "app-server-AsOcNo",
+      "app-server-avcw0M",
+      "app-server-aVyTzo",
+      "app-server-bbiJe3",
+      "app-server-cCvWeg",
+      "app-server-chnKW3",
+      "app-server-DQ4pKZ",
+      "app-server-eaBmMG",
+      "app-server-FiYj4n",
+      "app-server-G5eOSK",
+      "app-server-hjcWFZ",
+      "app-server-I1dyhx",
+      "app-server-isK1gq",
+      "app-server-izeBtX",
+      "app-server-l04qXe",
+      "app-server-LO29iY",
+      "app-server-LTjpAX",
+      "app-server-lVbbfd",
+      "app-server-MeQY3e",
+      "app-server-nHCO8h",
+      "app-server-od58DZ",
+      "app-server-odKa2d",
+      "app-server-P4ZveE",
+      "app-server-PmUu4h",
+      "app-server-puT93S",
+      "app-server-pWL9rl",
+      "app-server-rAHtw0",
+      "app-server-RlyN8t",
+      "app-server-rSW6C9",
+      "app-server-sJrfO4"
+    ],
+    "known_warning": "none"
+  },
+  "performance_targets": {
+    "status": "pass",
+    "checks": {
+      "core_startup": {
+        "status": "pass",
+        "actual": 543.9,
+        "target": "median_ms <= 1250 or >=30% faster than an above-target baseline"
+      },
+      "tools_startup": {
+        "status": "pass",
+        "actual": 723.21,
+        "target": "median_ms <= 2000 or >=30% faster than an above-target baseline"
+      },
+      "core_entrypoint": {
+        "status": "pass",
+        "actual": 22.05,
+        "target": "p95_ms <= 250"
+      },
+      "tools_manifest": {
+        "status": "pass",
+        "actual": 72.46,
+        "target": "p95_ms <= 150"
+      },
+      "core_route_output": {
+        "status": "pass",
+        "actual": 350,
+        "target": "worst text bytes <= 8192"
+      },
+      "tools_planning_output": {
+        "status": "pass",
+        "actual": 257,
+        "target": "worst text bytes <= 12288"
+      },
+      "core_idle_memory": {
+        "status": "pass",
+        "actual": 104243200,
+        "target": "idle median <=15% above baseline",
+        "baseline_bytes": 165515264,
+        "change_percent": -37.02
+      },
+      "tools_idle_memory": {
+        "status": "pass",
+        "actual": 119410688,
+        "target": "idle median <=15% above baseline",
+        "baseline_bytes": 153088000,
+        "change_percent": -22
+      },
+      "precision_idle_memory": {
+        "status": "pass",
+        "actual": 65953792,
+        "target": "idle median <=15% above baseline",
+        "baseline_bytes": 141852672,
+        "change_percent": -53.51
+      },
+      "precision_compatibility": {
+        "status": "pass",
+        "actual": {
+          "startup_median_ms": 442.57,
+          "tool_count": 7
+        },
+        "target": "compact compatibility shim with at most one registry tool added and <=1250ms startup"
+      },
+      "full_suite": {
+        "status": "pass",
+        "actual": 202742,
+        "target": ">=30% faster than baseline",
+        "reduction_percent": 70.62
+      },
+      "affected_suite": {
+        "status": "pass",
+        "actual": 8448,
+        "target": "<=25% of current full suite",
+        "percent_of_full": 4.17
+      }
+    },
+    "heavy_runtime_policy": {
+      "structural_babel": "lazy on first JavaScript/TypeScript structural parse",
+      "sqlite_engine": "lazy on first SQLite operation",
+      "browser_runtime": "discovered/launched only on an approved browser call",
+      "no_duplicate_precision_server": true
+    }
+  },
+  "optimization_comparison": {
+    "source": ".vnem/giga-evolution/phase-22-before/performance.json",
+    "tools_startup_median_reduction_percent": 34.42,
+    "tools_idle_memory_reduction_percent": 3.48,
+    "core_startup_median_change_percent": -7.36,
+    "precision_startup_median_change_percent": 0.86,
+    "behavior_preserved": true
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "phase": 9,
+  "generated_at": "2026-07-13T17:06:57.975Z",
+  "benchmark_type": "actual_mcp_testing_ci_execution",
+  "mcp_transport": "stdio",
+  "total_duration_ms": 3218.66,
+  "tool_calls": [
+    {
+      "tool": "vnem_tools_test_system_inspect",
+      "duration_ms": 45.37,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_affected_test_graph",
+      "duration_ms": 13.72,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_test_run",
+      "duration_ms": 13.79,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_test_run",
+      "duration_ms": 1387.98,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_ci_failure_diagnose",
+      "duration_ms": 9.09,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_ci_failure_diagnose",
+      "duration_ms": 3.26,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_coverage_benchmark_report",
+      "duration_ms": 7.06,
+      "status": "ok"
+    }
+  ],
+  "proof": {
+    "tools_registered": 5,
+    "frameworks_detected": [
+      "Node assertion scripts"
+    ],
+    "workflow_runtime_deprecations": 2,
+    "changed_file": "src/math.mjs",
+    "selected_scripts": [
+      "lint",
+      "test:unit",
+      "test:integration"
+    ],
+    "transitive_integration_selected": true,
+    "filename_substring_only": false,
+    "affected_run_status": "passed",
+    "affected_run_duration_ms": 1368,
+    "affected_run_counts": {
+      "planned": 3,
+      "completed": 3,
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0
+    },
+    "retries_attempted": 0,
+    "branch_failure_classification": "process_cleanup_failure",
+    "scheduling_not_code_failure": true,
+    "line_coverage_percent": 80,
+    "uncovered_critical_paths": [
+      "src/service.mjs"
+    ],
+    "baseline_post_change_percent": -40
+  },
+  "limitations": [
+    "Static import/reference analysis does not execute dynamic framework resolvers.",
+    "Fixture coverage proves report ingestion and critical-path analysis, not VNEM repository line coverage.",
+    "Log-based CI diagnosis is not live remote status proof unless a remote run is separately inspected."
+  ]
+}

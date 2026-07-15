@@ -1,0 +1,407 @@
+{
+  "schema_version": 1,
+  "operation_result": "executed",
+  "run_id": "test-run-1784110605017-e2c6287e",
+  "tier": "affected",
+  "status": "passed",
+  "started_at": "2026-07-15T10:16:45.018Z",
+  "finished_at": "2026-07-15T10:16:53.466Z",
+  "duration_ms": 8448,
+  "max_parallel": 4,
+  "counts": {
+    "planned": 6,
+    "completed": 6,
+    "passed": 6,
+    "failed": 0,
+    "skipped": 0
+  },
+  "results": [
+    {
+      "script": "test:tools-mcp",
+      "status": "passed",
+      "attempt": 1,
+      "duration_ms": 3164,
+      "exit_code": 0,
+      "signal": null,
+      "timed_out": false,
+      "failure_classification": null,
+      "infrastructure_failure": false,
+      "resources": [],
+      "source_files": [
+        "scripts/test-tools-mcp-server.mjs"
+      ],
+      "output_summary": {
+        "stdout_bytes": 104,
+        "stderr_bytes": 0,
+        "stdout_lines": 6,
+        "stderr_lines": 0,
+        "output_truncated": false,
+        "response_strategy": "bounded_full_output",
+        "evidence_log_cap_bytes": 1048576
+      },
+      "evidence_dir": "C:\\VNEM\\vnem-src\\.vnem\\test-runs\\project-automation\\commands\\command-1784110605033-74fab38a",
+      "process_tree_termination_evidence": null,
+      "attempts": [
+        {
+          "script": "test:tools-mcp",
+          "status": "passed",
+          "attempt": 1,
+          "duration_ms": 3164,
+          "exit_code": 0,
+          "signal": null,
+          "timed_out": false,
+          "failure_classification": null,
+          "infrastructure_failure": false,
+          "resources": [],
+          "source_files": [
+            "scripts/test-tools-mcp-server.mjs"
+          ],
+          "output_summary": {
+            "stdout_bytes": 104,
+            "stderr_bytes": 0,
+            "stdout_lines": 6,
+            "stderr_lines": 0,
+            "output_truncated": false,
+            "response_strategy": "bounded_full_output",
+            "evidence_log_cap_bytes": 1048576
+          },
+          "evidence_dir": "C:\\VNEM\\vnem-src\\.vnem\\test-runs\\project-automation\\commands\\command-1784110605033-74fab38a",
+          "process_tree_termination_evidence": null
+        }
+      ]
+    },
+    {
+      "script": "test:core-tools-ecosystem",
+      "status": "passed",
+      "attempt": 1,
+      "duration_ms": 4248,
+      "exit_code": 0,
+      "signal": null,
+      "timed_out": false,
+      "failure_classification": null,
+      "infrastructure_failure": false,
+      "resources": [],
+      "source_files": [
+        "scripts/test-core-tools-tool-ecosystem.mjs"
+      ],
+      "output_summary": {
+        "stdout_bytes": 134,
+        "stderr_bytes": 0,
+        "stdout_lines": 6,
+        "stderr_lines": 0,
+        "output_truncated": false,
+        "response_strategy": "bounded_full_output",
+        "evidence_log_cap_bytes": 1048576
+      },
+      "evidence_dir": "C:\\VNEM\\vnem-src\\.vnem\\test-runs\\project-automation\\commands\\command-1784110605033-e72ada4d",
+      "process_tree_termination_evidence": null,
+      "attempts": [
+        {
+          "script": "test:core-tools-ecosystem",
+          "status": "passed",
+          "attempt": 1,
+          "duration_ms": 4248,
+          "exit_code": 0,
+          "signal": null,
+          "timed_out": false,
+          "failure_classification": null,
+          "infrastructure_failure": false,
+          "resources": [],
+          "source_files": [
+            "scripts/test-core-tools-tool-ecosystem.mjs"
+          ],
+          "output_summary": {
+            "stdout_bytes": 134,
+            "stderr_bytes": 0,
+            "stdout_lines": 6,
+            "stderr_lines": 0,
+            "output_truncated": false,
+            "response_strategy": "bounded_full_output",
+            "evidence_log_cap_bytes": 1048576
+          },
+          "evidence_dir": "C:\\VNEM\\vnem-src\\.vnem\\test-runs\\project-automation\\commands\\command-1784110605033-e72ada4d",
+          "process_tree_termination_evidence": null
+        }
+      ]
+    },
+    {
+      "script": "test:giga-performance-output",
+      "status": "passed",
+      "attempt": 1,
+      "duration_ms": 5455,
+      "exit_code": 0,
+      "signal": null,
+      "timed_out": false,
+      "failure_classification": null,
+      "infrastructure_failure": false,
+      "resources": [],
+      "source_files": [
+        "scripts/test-giga-performance-output.mjs"
+      ],
+      "output_summary": {
+        "stdout_bytes": 232,
+        "stderr_bytes": 0,
+        "stdout_lines": 6,
+        "stderr_lines": 0,
+        "output_truncated": false,
+        "response_strategy": "bounded_full_output",
+        "evidence_log_cap_bytes": 1048576
+      },
+      "evidence_dir": "C:\\VNEM\\vnem-src\\.vnem\\test-runs\\project-automation\\commands\\command-1784110605033-8a857f31",
+      "process_tree_termination_evidence": null,
+      "attempts": [
+        {
+          "script": "test:giga-performance-output",
+          "status": "passed",
+          "attempt": 1,
+          "duration_ms": 5455,
+          "exit_code": 0,
+          "signal": null,
+          "timed_out": false,
+          "failure_classification": null,
+          "infrastructure_failure": false,
+          "resources": [],
+          "source_files": [
+            "scripts/test-giga-performance-output.mjs"
+          ],
+          "output_summary": {
+            "stdout_bytes": 232,
+            "stderr_bytes": 0,
+            "stdout_lines": 6,
+            "stderr_lines": 0,
+            "output_truncated": false,
+            "response_strategy": "bounded_full_output",
+            "evidence_log_cap_bytes": 1048576
+          },
+          "evidence_dir": "C:\\VNEM\\vnem-src\\.vnem\\test-runs\\project-automation\\commands\\command-1784110605033-8a857f31",
+          "process_tree_termination_evidence": null
+        }
+      ]
+    },
+    {
+      "script": "test:core-tools-e2e",
+      "status": "passed",
+      "attempt": 1,
+      "duration_ms": 3431,
+      "exit_code": 0,
+      "signal": null,
+      "timed_out": false,
+      "failure_classification": null,
+      "infrastructure_failure": false,
+      "resources": [
+        "browser-runtime"
+      ],
+      "source_files": [
+        "scripts/test-core-tools-e2e.mjs"
+      ],
+      "output_summary": {
+        "stdout_bytes": 124,
+        "stderr_bytes": 0,
+        "stdout_lines": 6,
+        "stderr_lines": 0,
+        "output_truncated": false,
+        "response_strategy": "bounded_full_output",
+        "evidence_log_cap_bytes": 1048576
+      },
+      "evidence_dir": "C:\\VNEM\\vnem-src\\.vnem\\test-runs\\project-automation\\commands\\command-1784110608189-8dd158b7",
+      "process_tree_termination_evidence": null,
+      "attempts": [
+        {
+          "script": "test:core-tools-e2e",
+          "status": "passed",
+          "attempt": 1,
+          "duration_ms": 3431,
+          "exit_code": 0,
+          "signal": null,
+          "timed_out": false,
+          "failure_classification": null,
+          "infrastructure_failure": false,
+          "resources": [
+            "browser-runtime"
+          ],
+          "source_files": [
+            "scripts/test-core-tools-e2e.mjs"
+          ],
+          "output_summary": {
+            "stdout_bytes": 124,
+            "stderr_bytes": 0,
+            "stdout_lines": 6,
+            "stderr_lines": 0,
+            "output_truncated": false,
+            "response_strategy": "bounded_full_output",
+            "evidence_log_cap_bytes": 1048576
+          },
+          "evidence_dir": "C:\\VNEM\\vnem-src\\.vnem\\test-runs\\project-automation\\commands\\command-1784110608189-8dd158b7",
+          "process_tree_termination_evidence": null
+        }
+      ]
+    },
+    {
+      "script": "test:vnem-adoption-reliability-2-regression",
+      "status": "passed",
+      "attempt": 1,
+      "duration_ms": 3182,
+      "exit_code": 0,
+      "signal": null,
+      "timed_out": false,
+      "failure_classification": null,
+      "infrastructure_failure": false,
+      "resources": [],
+      "source_files": [
+        "scripts/test-vnem-adoption-reliability-2-regression.mjs"
+      ],
+      "output_summary": {
+        "stdout_bytes": 180,
+        "stderr_bytes": 0,
+        "stdout_lines": 6,
+        "stderr_lines": 0,
+        "output_truncated": false,
+        "response_strategy": "bounded_full_output",
+        "evidence_log_cap_bytes": 1048576
+      },
+      "evidence_dir": "C:\\VNEM\\vnem-src\\.vnem\\test-runs\\project-automation\\commands\\command-1784110609273-8dcb477d",
+      "process_tree_termination_evidence": null,
+      "attempts": [
+        {
+          "script": "test:vnem-adoption-reliability-2-regression",
+          "status": "passed",
+          "attempt": 1,
+          "duration_ms": 3182,
+          "exit_code": 0,
+          "signal": null,
+          "timed_out": false,
+          "failure_classification": null,
+          "infrastructure_failure": false,
+          "resources": [],
+          "source_files": [
+            "scripts/test-vnem-adoption-reliability-2-regression.mjs"
+          ],
+          "output_summary": {
+            "stdout_bytes": 180,
+            "stderr_bytes": 0,
+            "stdout_lines": 6,
+            "stderr_lines": 0,
+            "output_truncated": false,
+            "response_strategy": "bounded_full_output",
+            "evidence_log_cap_bytes": 1048576
+          },
+          "evidence_dir": "C:\\VNEM\\vnem-src\\.vnem\\test-runs\\project-automation\\commands\\command-1784110609273-8dcb477d",
+          "process_tree_termination_evidence": null
+        }
+      ]
+    },
+    {
+      "script": "test:tools-giga-structural-code",
+      "status": "passed",
+      "attempt": 1,
+      "duration_ms": 8445,
+      "exit_code": 0,
+      "signal": null,
+      "timed_out": false,
+      "failure_classification": null,
+      "infrastructure_failure": false,
+      "resources": [],
+      "source_files": [
+        "scripts/test-tools-giga-structural-code.mjs"
+      ],
+      "output_summary": {
+        "stdout_bytes": 146,
+        "stderr_bytes": 0,
+        "stdout_lines": 6,
+        "stderr_lines": 0,
+        "output_truncated": false,
+        "response_strategy": "bounded_full_output",
+        "evidence_log_cap_bytes": 1048576
+      },
+      "evidence_dir": "C:\\VNEM\\vnem-src\\.vnem\\test-runs\\project-automation\\commands\\command-1784110605033-a05e7522",
+      "process_tree_termination_evidence": null,
+      "attempts": [
+        {
+          "script": "test:tools-giga-structural-code",
+          "status": "passed",
+          "attempt": 1,
+          "duration_ms": 8445,
+          "exit_code": 0,
+          "signal": null,
+          "timed_out": false,
+          "failure_classification": null,
+          "infrastructure_failure": false,
+          "resources": [],
+          "source_files": [
+            "scripts/test-tools-giga-structural-code.mjs"
+          ],
+          "output_summary": {
+            "stdout_bytes": 146,
+            "stderr_bytes": 0,
+            "stdout_lines": 6,
+            "stderr_lines": 0,
+            "output_truncated": false,
+            "response_strategy": "bounded_full_output",
+            "evidence_log_cap_bytes": 1048576
+          },
+          "evidence_dir": "C:\\VNEM\\vnem-src\\.vnem\\test-runs\\project-automation\\commands\\command-1784110605033-a05e7522",
+          "process_tree_termination_evidence": null
+        }
+      ]
+    }
+  ],
+  "failure_groups": [],
+  "slowest_tests": [
+    {
+      "script": "test:tools-giga-structural-code",
+      "duration_ms": 8445,
+      "status": "passed"
+    },
+    {
+      "script": "test:giga-performance-output",
+      "duration_ms": 5455,
+      "status": "passed"
+    },
+    {
+      "script": "test:core-tools-ecosystem",
+      "duration_ms": 4248,
+      "status": "passed"
+    },
+    {
+      "script": "test:core-tools-e2e",
+      "duration_ms": 3431,
+      "status": "passed"
+    },
+    {
+      "script": "test:vnem-adoption-reliability-2-regression",
+      "duration_ms": 3182,
+      "status": "passed"
+    },
+    {
+      "script": "test:tools-mcp",
+      "duration_ms": 3164,
+      "status": "passed"
+    }
+  ],
+  "flaky_indicators": [],
+  "retries": {
+    "attempted": 0,
+    "policy": {
+      "default_attempts": 1,
+      "infrastructure_attempts": 2,
+      "enabled_scripts": [],
+      "infrastructure_signatures": [
+        "EAI_AGAIN",
+        "ECONNRESET",
+        "ETIMEDOUT",
+        "HTTP 429",
+        "rate limit"
+      ]
+    },
+    "note": "Retries are disabled unless a script is explicitly allowlisted and output matches a known infrastructure signature."
+  },
+  "reliability": {
+    "cleanup_warnings": [],
+    "timeout_process_evidence": [],
+    "resource_conflicts_prevented": true,
+    "run_directory": "C:/VNEM/vnem-src/.vnem/test-runs/testing-ci/test-run-1784110605017-e2c6287e"
+  },
+  "compatibility": null,
+  "report_path": ".vnem/giga-evolution/phase-22/affected-suite-report.json",
+  "summary_path": ".vnem/giga-evolution/phase-22/affected-suite-summary.md"
+}

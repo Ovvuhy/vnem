@@ -4,16 +4,23 @@ import { existsSync, readFileSync } from "node:fs";
 import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { managedClientInstructionsPresent, renderManagedClientInstructions } from "./vnem/clients/config-merge.mjs";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const defaultRoot = path.resolve(scriptDir, "..");
-const clients = ["codex", "claude", "antigravity", "generic"];
+const clients = ["codex", "claude", "antigravity", "hermes", "generic"];
 const outputBase = path.join(".vnem", "install-adoption");
 const portableCheckout = "${VNEM_CHECKOUT}";
 const serverNames = ["vnem", "vnem-tools"];
 const disallowedControlPattern = /[\x00-\x08\x0B\x0C\x0E-\x1F\x7F\u200E\u200F\u202A-\u202E\u2066-\u2069]/;
 const secretValuePattern = /(sk-[A-Za-z0-9_-]{12,}|gh[pousr]_[A-Za-z0-9_]{12,}|xox[baprs]-[A-Za-z0-9-]{12,}|AKIA[0-9A-Z]{16}|-----BEGIN [A-Z ]*PRIVATE KEY-----)/i;
 const packageScripts = [
+  "setup",
+  "clients",
+  "status",
+  "config:preview",
+  "rollback",
+  "test:clients",
   "vnem:install:doctor",
   "vnem:install:emit",
   "test:vnem-install-adoption-1-regression",
@@ -21,10 +28,14 @@ const packageScripts = [
   "test:vnem-install-emit-codex",
   "test:vnem-install-emit-claude",
   "test:vnem-install-emit-antigravity",
-  "test:vnem-install-doctor"
+  "test:vnem-install-emit-hermes",
+  "test:giga-adoption-client-use",
+  "test:vnem-install-doctor",
+  "runtime:readiness",
+  "registry:check"
 ];
-const coreEntryTools = ["vnem_entrypoint", "vnem_usage_contract", "vnem_mcp_visibility_doctor", "vnem_install_adoption_guide"];
-const toolsEntryTools = ["vnem_tools_entrypoint", "vnem_tools_capability_router", "vnem_tools_adoption_readiness", "vnem_tools_install_profile_emit", "vnem_tools_install_doctor"];
+const fallbackCoreEntryTools = ["vnem_entrypoint", "vnem_usage_contract", "vnem_mcp_visibility_doctor", "vnem_usage_self_check", "vnem_install_adoption_guide"];
+const fallbackToolsEntryTools = ["vnem_tools_entrypoint", "vnem_tools_capability_router", "vnem_tools_adoption_readiness", "vnem_tools_install_profile_emit", "vnem_tools_install_doctor"];
 
 export function supportedInstallAdoptionClients() {
   return [...clients];
@@ -115,6 +126,9 @@ export async function emitAllInstallAdoptionProfiles({ root = defaultRoot } = {}
 
 export async function installAdoptionDoctor({ root = defaultRoot, emit = true, writeReport = true } = {}) {
   const absoluteRoot = path.resolve(root || defaultRoot);
+  const runtimeRegistry = readRuntimeRegistry(absoluteRoot);
+  const coreEntryTools = entryTools(runtimeRegistry, "core", fallbackCoreEntryTools);
+  const toolsEntryTools = entryTools(runtimeRegistry, "tools", fallbackToolsEntryTools);
   if (emit) await emitAllInstallAdoptionProfiles({ root: absoluteRoot });
   if (emit) {
     await writeProfileFiles(absoluteRoot, [{
@@ -131,6 +145,8 @@ export async function installAdoptionDoctor({ root = defaultRoot, emit = true, w
   const packageJson = existsSync(pkgPath) ? JSON.parse(await readFile(pkgPath, "utf8")) : {};
   const coreSource = existsSync(coreServerPath) ? await readFile(coreServerPath, "utf8") : "";
   const toolsSource = existsSync(toolsServerPath) ? await readFile(toolsServerPath, "utf8") : "";
+  const coreRegistryNames = runtimeRegistry?.servers?.core?.tools?.map((tool) => tool.name) || [];
+  const toolsRegistryNames = runtimeRegistry?.servers?.tools?.tools?.map((tool) => tool.name) || [];
 
   add("repo_exists", existsSync(absoluteRoot), absoluteRoot);
   add("node_available", Boolean(process.version), `${process.execPath} ${process.version}`);
@@ -141,8 +157,10 @@ export async function installAdoptionDoctor({ root = defaultRoot, emit = true, w
   add("core_node_check", nodeCheck(coreServerPath), "node --check scripts/vnem-mcp-server.mjs");
   add("tools_node_check", nodeCheck(toolsServerPath), "node --check scripts/vnem-tools-mcp-server.mjs");
   add("install_adoption_node_check", nodeCheck(cliPath), "node --check scripts/vnem-install-adoption.mjs");
-  add("core_entrypoint_tools_registered", coreEntryTools.every((tool) => sourceRegistersTool(coreSource, tool)), coreEntryTools.join(", "));
-  add("tools_entrypoint_tools_registered", toolsEntryTools.every((tool) => sourceRegistersTool(toolsSource, tool)), toolsEntryTools.join(", "));
+  add("runtime_registry_available", Boolean(runtimeRegistry), runtimeRegistry ? ".vnem/runtime-tool-registry.json" : "source-scan compatibility fallback");
+  add("runtime_registry_valid", runtimeRegistry ? runtimeRegistry.validation?.valid === true : true, runtimeRegistry ? `tools=${runtimeRegistry.total_tools}` : "not available; source fallback used");
+  add("core_entrypoint_tools_registered", coreEntryTools.every((tool) => coreRegistryNames.length ? coreRegistryNames.includes(tool) : sourceRegistersTool(coreSource, tool)), `${coreEntryTools.join(", ")} (${coreRegistryNames.length ? "runtime registry" : "source fallback"})`);
+  add("tools_entrypoint_tools_registered", toolsEntryTools.every((tool) => toolsRegistryNames.length ? toolsRegistryNames.includes(tool) : sourceRegistersTool(toolsSource, tool)), `${toolsEntryTools.join(", ")} (${toolsRegistryNames.length ? "runtime registry" : "source fallback"})`);
   add("package_scripts_exist", packageScripts.every((script) => packageJson.scripts?.[script]), packageScripts.join(", "));
 
   const expectedFiles = expectedInstallAdoptionFiles();
@@ -155,6 +173,8 @@ export async function installAdoptionDoctor({ root = defaultRoot, emit = true, w
   add("codex_toml_plausible", tomlSnippetPlausible(path.join(absoluteRoot, outputBase, "codex", "config-snippet.toml")), "Codex TOML snippet has two MCP server blocks");
   add("both_mcps_present", profilesIncludeBothMcps(absoluteRoot), "vnem and vnem-tools appear in every profile");
   add("mcp_launch_commands_plausible", launchCommandsPlausible(absoluteRoot), "node command, script args, cwd and stdio transport are present");
+  const instructionPath = path.join(absoluteRoot, outputBase, "prompts", "vnem-agent-use-instruction.md");
+  add("managed_agent_instruction_present", existsSync(instructionPath) && managedClientInstructionsPresent(await readFile(instructionPath, "utf8")), "merge-safe VNEM instruction block");
 
   const profileTexts = await readInstallAdoptionTexts(absoluteRoot);
   const hiddenControlHits = profileTexts.filter((file) => disallowedControlPattern.test(file.content)).map((file) => file.path);
@@ -187,6 +207,19 @@ export async function installAdoptionDoctor({ root = defaultRoot, emit = true, w
     }]);
   }
   return report;
+}
+
+function readRuntimeRegistry(root) {
+  try {
+    return JSON.parse(readFileSync(path.join(root, ".vnem", "runtime-tool-registry.json"), "utf8"));
+  } catch {
+    return null;
+  }
+}
+
+function entryTools(registry, server, fallback) {
+  const names = registry?.servers?.[server]?.tools?.map((tool) => tool.name) || [];
+  return names.length ? fallback.filter((name) => names.includes(name)) : fallback;
 }
 
 export function buildInstallAdoptionGuide({ client = "generic", root = defaultRoot } = {}) {
@@ -340,6 +373,7 @@ function clientReadme(client, root, nodeCommand, { portable = false } = {}) {
   const title = {
     claude: "Claude VNEM MCP Profile",
     antigravity: "Antigravity-Style VNEM MCP Profile",
+    hermes: "Hermes VNEM MCP Profile",
     generic: "Generic MCP Stdio VNEM Profile"
   }[client];
   const notes = {
@@ -350,6 +384,10 @@ function clientReadme(client, root, nodeCommand, { portable = false } = {}) {
     antigravity: [
       "Use `mcp.json` as a generic/importable MCP stdio JSON profile.",
       "This kit does not claim an Antigravity universal config path. Import or copy the JSON through your IDE or agent MCP settings UI."
+    ],
+    hermes: [
+      "Use `mcp.json` as an isolated/importable MCP stdio profile for Hermes versions that support MCP server import.",
+      "No global Hermes config is changed. Verify the installed CLI's current `hermes mcp --help` contract before importing."
     ],
     generic: [
       "Use `mcp.json` with any MCP stdio client that accepts a `mcpServers` object.",
@@ -388,14 +426,9 @@ function buildAgentUseInstruction() {
   return [
     "# VNEM Agent Use Instruction",
     "",
-    "When VNEM Core and VNEM Tools MCP are available, use them naturally for repo, code, debugging, testing, GitHub, CI, proof, recovery, MCP, and generated-artifact work.",
+    "Merge only the marked block into the client's project instructions. Keep every unrelated user instruction intact.",
     "",
-    "- Call `vnem_entrypoint` first for repo/code/proof tasks.",
-    "- Use Core MCP for routing, planning, quality gates, proof contracts, and deciding which Tools calls are needed.",
-    "- Use Tools MCP for bounded actions: repo inspection, code search, patch targeting, dry-run/action planning, tests, GitHub/CI proof, local session recovery, evidence packs, and install doctor checks.",
-    "- Do not claim a file change, command result, PR, remote SHA, CI status, browser proof, or install success without direct evidence.",
-    "- If VNEM Core or Tools MCP is missing in the current client, say it is unavailable and continue with normal safe local evidence instead of inventing tool calls.",
-    "- Keep final handoffs compact and include what is proven, what is not proven, and the exact next safe task.",
+    renderManagedClientInstructions(),
     ""
   ].join("\n");
 }
@@ -420,6 +453,8 @@ function expectedInstallAdoptionFiles() {
     path.join(outputBase, "claude", "README.md"),
     path.join(outputBase, "antigravity", "mcp.json"),
     path.join(outputBase, "antigravity", "README.md"),
+    path.join(outputBase, "hermes", "mcp.json"),
+    path.join(outputBase, "hermes", "README.md"),
     path.join(outputBase, "generic", "mcp.json"),
     path.join(outputBase, "generic", "README.md"),
     path.join(outputBase, "prompts", "vnem-agent-use-instruction.md"),
@@ -461,7 +496,7 @@ async function walkTextFiles(dir, results) {
 }
 
 function profilesIncludeBothMcps(root) {
-  for (const client of ["claude", "antigravity", "generic"]) {
+  for (const client of ["claude", "antigravity", "hermes", "generic"]) {
     const file = path.join(root, outputBase, client, "mcp.json");
     if (!parsesJson(file)) return false;
     const data = JSON.parse(execRead(file));
@@ -472,7 +507,7 @@ function profilesIncludeBothMcps(root) {
 }
 
 function launchCommandsPlausible(root) {
-  for (const client of ["claude", "antigravity", "generic"]) {
+  for (const client of ["claude", "antigravity", "hermes", "generic"]) {
     const file = path.join(root, outputBase, client, "mcp.json");
     if (!parsesJson(file)) return false;
     const data = JSON.parse(execRead(file));

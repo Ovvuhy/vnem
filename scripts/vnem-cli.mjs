@@ -1,9 +1,19 @@
 #!/usr/bin/env node
+import { spawnSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import { copyFile, cp, mkdir, readFile, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { runSafetyCommand } from "./vnem/permissions/cli.mjs";
+import {
+  runClientDoctorCommand,
+  runClientsCommand,
+  runConfigPreviewCommand,
+  runRollbackCommand,
+  runSetupCommand,
+  runStatusCommand
+} from "./vnem/clients/cli.mjs";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(scriptDir, "..");
@@ -34,6 +44,8 @@ const packFiles = [
   "install-adoption/claude/README.md",
   "install-adoption/antigravity/mcp.json",
   "install-adoption/antigravity/README.md",
+  "install-adoption/hermes/mcp.json",
+  "install-adoption/hermes/README.md",
   "install-adoption/generic/mcp.json",
   "install-adoption/generic/README.md",
   "install-adoption/prompts/vnem-agent-use-instruction.md",
@@ -58,10 +70,31 @@ const command = process.argv[2] || "help";
 const args = process.argv.slice(3);
 
 try {
-  if (command === "install") {
+  if (command === "setup") {
+    await runSetupCommand(args);
+  } else if (command === "clients") {
+    await runClientsCommand(args);
+  } else if (command === "rollback") {
+    await runRollbackCommand(args);
+  } else if (command === "status") {
+    await runStatusCommand(args);
+  } else if (command === "config" && args[0] === "preview") {
+    await runConfigPreviewCommand(args.slice(1));
+  } else if (command === "benchmark") {
+    benchmarkCommand(args);
+  } else if (command === "install") {
     await installCommand(args);
+  } else if (command === "safety") {
+    await runSafetyCommand(args);
   } else if (command === "doctor") {
-    await doctorCommand(args);
+    if (args.includes("--clients") || args.includes("--setup")) {
+      await runClientDoctorCommand(args.filter((arg) => !["--clients", "--setup"].includes(arg)));
+    } else {
+      await doctorCommand(args);
+      if (!args.length && existsSync(path.join(os.homedir(), ".vnem", "setup", "manifests"))) {
+        await runClientDoctorCommand([]);
+      }
+    }
   } else if (command === "install-skill") {
     await installSkillCommand(args);
   } else if (command === "mcp-config") {
@@ -189,6 +222,15 @@ async function mcpConfigCommand(rawArgs) {
   console.log(JSON.stringify(output, null, 2));
 }
 
+function benchmarkCommand(rawArgs) {
+  const result = spawnSync(process.execPath, [path.join(scriptDir, "benchmark-vnem.mjs"), ...rawArgs], {
+    cwd: rootDir,
+    stdio: "inherit",
+    windowsHide: true
+  });
+  if (result.status !== 0) throw new Error(`benchmark failed with exit code ${result.status ?? "unknown"}`);
+}
+
 function coreMcpServerConfig() {
   return {
     command: "node",
@@ -314,8 +356,15 @@ function printHelp() {
   console.log(`vnem
 
 Usage:
+  vnem setup [--clients LIST] [--components core,tools[,precision]] [--profile NAME] [--workspace PATH] [--yes] [--json]
+  vnem clients [--json]
+  vnem status [--workspace PATH] [--json]
+  vnem config preview [--clients LIST] [--components LIST] [--profile NAME] [--workspace PATH] [--json]
+  vnem rollback [--transaction ID] [--state-dir PATH] [--yes] [--json]
+  vnem benchmark
   vnem install [project-dir] [--no-agents] [--claude]
-  vnem doctor [project-dir]
+  vnem doctor [project-dir] [--clients]
+  vnem safety [--status|--list-profiles|--doctor|--rollback] [--profile NAME] [--root PROJECT] [--json] [--yes] [--session]
   vnem install-skill [skill-dir]
   vnem mcp-config [--server-json] [--core] [--tools --workspace /path/to/project] [--precision --workspace /path/to/project]
   vnem mcp
@@ -323,9 +372,20 @@ Usage:
   vnem precision-mcp
 
 Examples:
+  vnem setup
+  vnem config preview --clients codex_app,codex_cli --workspace ~/code/my-app --json
+  vnem setup --clients codex_app,codex_cli --workspace ~/code/my-app --profile safe-local-dev --yes --json
+  vnem clients --json
+  vnem doctor --clients --workspace ~/code/my-app
+  vnem rollback --yes
+  vnem status --json
+  vnem benchmark
   vnem install ~/code/my-app
   vnem install ~/code/my-app --claude
   vnem doctor ~/code/my-app
+  vnem safety --status --json
+  vnem safety --profile safe-local-dev --root ~/code/my-app
+  vnem safety --profile safe-local-dev --root ~/code/my-app --yes
   vnem mcp-config
   vnem mcp-config --server-json
   vnem mcp-config --precision --workspace ~/code/my-app

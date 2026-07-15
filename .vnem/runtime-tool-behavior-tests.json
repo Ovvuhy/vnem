@@ -1,0 +1,1095 @@
+{
+  "schema_version": "1.0.0",
+  "source": "live MCP manifests plus vnem_tools_tool_test_coverage_map",
+  "servers": {
+    "vnem": {
+      "vnem_bootstrap": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_entrypoint": [
+        "scripts/test-vnem-adoption-reliability-1-regression.mjs",
+        "scripts/test-core-giga-intelligence.mjs"
+      ],
+      "vnem_decision_details": [
+        "scripts/test-core-giga-intelligence.mjs"
+      ],
+      "vnem_continue_from_tools_evidence": [
+        "scripts/test-core-giga-intelligence.mjs"
+      ],
+      "vnem_compatibility_assess": [
+        "scripts/test-core-giga-intelligence.mjs"
+      ],
+      "vnem_usage_contract": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_mcp_visibility_doctor": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_underuse_detector": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_usage_self_check": [
+        "scripts/test-vnem-adoption-reliability-2-regression.mjs",
+        "scripts/test-giga-adoption-client-use.mjs"
+      ],
+      "vnem_install_adoption_guide": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_library_status": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_search_skills": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_recommend_skills": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_search_apis": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_recommend_apis": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_review_skill_or_api": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_api_safety_profile": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_skill_safety_profile": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_get_required_capabilities": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_activate_capability_pack": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_apply_skill_guidance": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_boost_task": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_route_task": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_output_quality_plan": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_anti_stagnation_check": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_plan_effort_budget": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_fast_answer_contract": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_design_ambition_plan": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_visual_taste_audit": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_redesign_comparison_scorecard": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_total_impact_design_plan": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_design_direction_selector": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_compact_output_contract": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_build_debugging_plan": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_evidence_to_fix_check": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_build_architecture_map": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_code_change_contract": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_build_ui_quality_plan": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_visual_proof_contract": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_select_tools_for_task": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_build_tools_plan": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_build_browser_research_plan": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_assess_research_need": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_build_search_plan": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_build_browsing_plan": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_build_research_strategy": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_build_source_ingestion_plan": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_research_evidence_audit": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_explain_tools_chain": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_prepare_tools_handoff": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_build_api_integration_plan": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_get_agent_profile": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_compose_capability_contract": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_completion_audit": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_protection_review": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_proof_trail": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_status": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_overview": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_route_intent": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_get_source": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_search": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_recommend": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_quality_gate": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_orchestrate": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_get_entry": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_compare": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_best_practices": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_sources": [
+        "scripts/test-mcp-server.mjs"
+      ],
+      "vnem_registry_status": [
+        "scripts/test-vnem-runtime-registry.mjs"
+      ]
+    },
+    "vnem-tools": {
+      "vnem_tools_status": [
+        "scripts/test-tools-browser-capture.mjs",
+        "scripts/test-tools-code-intelligence-1-regression.mjs",
+        "scripts/test-tools-mcp-server.mjs",
+        "scripts/test-tools-orchestrator-1-regression.mjs",
+        "scripts/test-tools-power-session-1-recovery.mjs",
+        "scripts/test-tools-power-tools-1-regression.mjs"
+      ],
+      "vnem_tools_entrypoint": [
+        "scripts/test-tools-precision-subsystem.mjs"
+      ],
+      "vnem_tools_capability_router": [
+        "scripts/test-tools-giga-structural-code.mjs",
+        "scripts/test-tools-scoped-permissions.mjs"
+      ],
+      "vnem_tools_adoption_readiness": [
+        "scripts/test-vnem-adoption-reliability-1-regression.mjs",
+        "scripts/test-vnem-adoption-reliability-2-regression.mjs"
+      ],
+      "vnem_tools_visibility_doctor": [
+        "scripts/test-vnem-adoption-reliability-2-regression.mjs"
+      ],
+      "vnem_tools_underuse_detector": [
+        "scripts/test-vnem-adoption-reliability-2-regression.mjs"
+      ],
+      "vnem_tools_install_profile_emit": [
+        "scripts/test-vnem-install-adoption-1-regression.mjs"
+      ],
+      "vnem_tools_install_doctor": [
+        "scripts/test-vnem-install-adoption-1-regression.mjs"
+      ],
+      "vnem_tools_client_detect": [
+        "scripts/test-tools-client-setup-mcp.mjs"
+      ],
+      "vnem_tools_client_setup_plan": [
+        "scripts/test-tools-client-setup-mcp.mjs"
+      ],
+      "vnem_tools_client_install": [
+        "scripts/test-tools-client-setup-mcp.mjs"
+      ],
+      "vnem_tools_client_setup_status": [
+        "scripts/test-tools-client-setup-mcp.mjs"
+      ],
+      "vnem_tools_client_verify": [
+        "scripts/test-tools-client-setup-mcp.mjs"
+      ],
+      "vnem_tools_client_rollback": [
+        "scripts/test-tools-client-setup-mcp.mjs"
+      ],
+      "vnem_tools_permission_profiles": [
+        "scripts/test-tools-permission-profiles.mjs"
+      ],
+      "vnem_tools_permission_status": [
+        "scripts/test-tools-autonomy-1-regression.mjs",
+        "scripts/test-tools-autonomy-2-regression.mjs",
+        "scripts/test-tools-permission-profiles.mjs",
+        "scripts/test-tools-quality-2-regression.mjs"
+      ],
+      "vnem_tools_reliability_catalog": [
+        "scripts/test-tools-autonomy-1-regression.mjs",
+        "scripts/test-tools-autonomy-2-regression.mjs",
+        "scripts/test-tools-reliability-catalog.mjs"
+      ],
+      "vnem_tools_action_recovery_plan": [
+        "scripts/test-tools-action-recovery-plan.mjs",
+        "scripts/test-tools-autonomy-2-regression.mjs"
+      ],
+      "vnem_tools_high_power_action_review": [
+        "scripts/test-tools-autonomy-2-regression.mjs",
+        "scripts/test-tools-autonomy-efficiency.mjs",
+        "scripts/test-tools-high-power-action-review.mjs",
+        "scripts/test-tools-quality-2-regression.mjs"
+      ],
+      "vnem_tools_capability_gap_report": [
+        "scripts/test-tools-autonomy-1-regression.mjs",
+        "scripts/test-tools-autonomy-2-regression.mjs",
+        "scripts/test-tools-capability-gap-report.mjs"
+      ],
+      "vnem_tools_repo_deep_map": [
+        "scripts/test-tools-power-tools-1-regression.mjs",
+        "scripts/test-tools-power-tools-2-regression.mjs"
+      ],
+      "vnem_tools_next_action_ranker": [
+        "scripts/test-tools-power-tools-1-regression.mjs",
+        "scripts/test-tools-power-tools-2-regression.mjs"
+      ],
+      "vnem_tools_no_placebo_progress_audit": [
+        "scripts/test-tools-power-tools-1-regression.mjs",
+        "scripts/test-tools-power-tools-2-regression.mjs"
+      ],
+      "vnem_tools_change_impact_plan": [
+        "scripts/test-tools-power-tools-1-regression.mjs",
+        "scripts/test-tools-power-tools-2-regression.mjs"
+      ],
+      "vnem_tools_test_selection_plan": [
+        "scripts/test-tools-power-tools-1-regression.mjs",
+        "scripts/test-tools-power-tools-2-regression.mjs"
+      ],
+      "vnem_tools_failure_triage": [
+        "scripts/test-tools-power-tools-1-regression.mjs",
+        "scripts/test-tools-power-tools-2-regression.mjs"
+      ],
+      "vnem_tools_evidence_pack": [
+        "scripts/test-tools-power-tools-1-regression.mjs",
+        "scripts/test-tools-power-tools-2-regression.mjs"
+      ],
+      "vnem_tools_local_session_recovery": [
+        "scripts/test-tools-power-session-1-recovery.mjs"
+      ],
+      "vnem_tools_repo_workflow_orchestrator": [
+        "scripts/test-tools-orchestrator-1-regression.mjs"
+      ],
+      "vnem_tools_code_symbol_map": [
+        "scripts/test-tools-code-intelligence-1-regression.mjs"
+      ],
+      "vnem_tools_mcp_surface_audit": [
+        "scripts/test-tools-code-intelligence-1-regression.mjs"
+      ],
+      "vnem_tools_patch_target_finder": [
+        "scripts/test-tools-code-intelligence-1-regression.mjs"
+      ],
+      "vnem_tools_tool_test_coverage_map": [
+        "scripts/test-tools-code-intelligence-1-regression.mjs"
+      ],
+      "vnem_tools_source_impact_trace": [
+        "scripts/test-tools-code-intelligence-1-regression.mjs"
+      ],
+      "vnem_tools_source_control_character_guard": [
+        "scripts/test-tools-code-intelligence-1-regression.mjs"
+      ],
+      "vnem_tools_action_policy_preview": [
+        "scripts/test-tools-permission-profiles.mjs",
+        "scripts/test-tools-trust-boundary.mjs"
+      ],
+      "vnem_tools_trust_boundary_classify": [
+        "scripts/test-tools-trust-boundary.mjs"
+      ],
+      "vnem_tools_manifest": [
+        "scripts/test-mcp-user-smoke.mjs",
+        "scripts/test-tools-cloudflare-plans.mjs",
+        "scripts/test-tools-code-intelligence-1-regression.mjs",
+        "scripts/test-tools-github-issues-actions-ci.mjs",
+        "scripts/test-tools-github-status-profile.mjs",
+        "scripts/test-tools-intelligence.mjs",
+        "scripts/test-tools-orchestrator-1-regression.mjs",
+        "scripts/test-tools-power-session-1-recovery.mjs",
+        "scripts/test-tools-power-tools-1-regression.mjs"
+      ],
+      "vnem_tools_prepare_action_plan": [
+        "scripts/test-core-tools-e2e.mjs",
+        "scripts/test-tools-mcp-server.mjs"
+      ],
+      "vnem_tools_permission_prompt": [
+        "scripts/test-core-tools-e2e.mjs",
+        "scripts/test-tools-mcp-server.mjs"
+      ],
+      "vnem_tools_read_file": [
+        "scripts/test-tools-action-recovery-plan.mjs",
+        "scripts/test-tools-mcp-server.mjs"
+      ],
+      "vnem_tools_list_files": [
+        "scripts/test-tools-mcp-server.mjs"
+      ],
+      "vnem_tools_search_files": [
+        "scripts/test-tools-mcp-server.mjs"
+      ],
+      "vnem_tools_workspace_map": [
+        "scripts/test-core-tools-tool-ecosystem.mjs",
+        "scripts/test-tools-intelligence.mjs"
+      ],
+      "vnem_tools_read_many_files": [
+        "scripts/test-core-tools-tool-ecosystem.mjs",
+        "scripts/test-tools-intelligence.mjs"
+      ],
+      "vnem_tools_code_search": [
+        "scripts/test-core-tools-tool-ecosystem.mjs",
+        "scripts/test-tools-intelligence.mjs"
+      ],
+      "vnem_tools_find_references": [
+        "scripts/test-tools-intelligence.mjs"
+      ],
+      "vnem_tools_dependency_scan": [
+        "scripts/test-core-tools-tool-ecosystem.mjs",
+        "scripts/test-tools-intelligence.mjs"
+      ],
+      "vnem_tools_apply_patch": [
+        "scripts/test-core-tools-e2e.mjs",
+        "scripts/test-tools-mcp-server.mjs",
+        "scripts/test-tools-permission-profiles.mjs"
+      ],
+      "vnem_tools_apply_patch_batch": [
+        "scripts/test-core-tools-tool-ecosystem.mjs",
+        "scripts/test-tools-git-session.mjs",
+        "scripts/test-tools-permission-profiles.mjs",
+        "scripts/test-tools-project-actions.mjs"
+      ],
+      "vnem_tools_restore_batch": [
+        "scripts/test-tools-project-actions.mjs"
+      ],
+      "vnem_tools_project_scan": [
+        "scripts/test-tools-project-actions.mjs"
+      ],
+      "vnem_tools_app_inspect": [
+        "scripts/test-tools-giga-app-engineering.mjs"
+      ],
+      "vnem_tools_app_vertical_slice_plan": [
+        "scripts/test-tools-giga-app-engineering.mjs"
+      ],
+      "vnem_tools_app_vertical_slice_apply": [
+        "scripts/test-tools-giga-app-engineering.mjs"
+      ],
+      "vnem_tools_app_acceptance_run": [
+        "scripts/test-tools-giga-app-engineering.mjs"
+      ],
+      "vnem_tools_app_transaction_rollback": [
+        "scripts/test-tools-giga-app-engineering.mjs"
+      ],
+      "vnem_tools_project_automation_inspect": [
+        "scripts/test-tools-giga-project-automation.mjs"
+      ],
+      "vnem_tools_project_command_run": [
+        "scripts/test-tools-giga-project-automation.mjs"
+      ],
+      "vnem_tools_project_task_graph_plan": [
+        "scripts/test-tools-giga-project-automation.mjs"
+      ],
+      "vnem_tools_project_task_graph_run": [
+        "scripts/test-tools-giga-project-automation.mjs"
+      ],
+      "vnem_tools_project_task_graph_status": [
+        "scripts/test-tools-giga-project-automation.mjs"
+      ],
+      "vnem_tools_project_task_graph_rollback": [
+        "scripts/test-tools-giga-project-automation.mjs"
+      ],
+      "vnem_tools_project_runtime_diagnose": [
+        "scripts/test-tools-giga-project-automation.mjs"
+      ],
+      "vnem_tools_project_temp_cleanup": [
+        "scripts/test-tools-giga-project-automation.mjs"
+      ],
+      "vnem_tools_powershell_command_plan": [
+        "scripts/test-tools-giga-windows-local.mjs"
+      ],
+      "vnem_tools_windows_system_snapshot": [
+        "scripts/test-tools-giga-windows-local.mjs"
+      ],
+      "vnem_tools_windows_path_inspect": [
+        "scripts/test-tools-giga-windows-local.mjs"
+      ],
+      "vnem_tools_process_inspect": [
+        "scripts/test-tools-giga-windows-local.mjs"
+      ],
+      "vnem_tools_port_inspect": [
+        "scripts/test-tools-giga-windows-local.mjs"
+      ],
+      "vnem_tools_windows_service_status": [
+        "scripts/test-tools-giga-windows-local.mjs"
+      ],
+      "vnem_tools_windows_scheduled_task_status": [
+        "scripts/test-tools-giga-windows-local.mjs"
+      ],
+      "vnem_tools_windows_event_log_read": [
+        "scripts/test-tools-giga-windows-local.mjs"
+      ],
+      "vnem_tools_windows_app_config_detect": [
+        "scripts/test-tools-giga-windows-local.mjs"
+      ],
+      "vnem_tools_windows_change_plan": [
+        "scripts/test-tools-giga-windows-local.mjs"
+      ],
+      "vnem_tools_game_adapter_catalog": [
+        "scripts/test-tools-giga-game-domain.mjs"
+      ],
+      "vnem_tools_game_project_inspect": [
+        "scripts/test-tools-giga-game-domain.mjs"
+      ],
+      "vnem_tools_game_config_audit": [
+        "scripts/test-tools-giga-game-domain.mjs"
+      ],
+      "vnem_tools_mod_compatibility_analyze": [
+        "scripts/test-tools-giga-game-domain.mjs"
+      ],
+      "vnem_tools_mod_profile_compare": [
+        "scripts/test-tools-giga-game-domain.mjs"
+      ],
+      "vnem_tools_game_project_validate": [
+        "scripts/test-tools-giga-game-domain.mjs"
+      ],
+      "vnem_tools_mod_backup_create": [
+        "scripts/test-tools-giga-game-domain.mjs"
+      ],
+      "vnem_tools_mod_backup_restore": [
+        "scripts/test-tools-giga-game-domain.mjs"
+      ],
+      "vnem_tools_roblox_project_inspect": [
+        "scripts/test-tools-giga-game-domain.mjs"
+      ],
+      "vnem_tools_luau_symbol_map": [
+        "scripts/test-tools-giga-game-domain.mjs"
+      ],
+      "vnem_tools_dependency_inventory": [
+        "scripts/test-tools-giga-dependency-security.mjs"
+      ],
+      "vnem_tools_dependency_risk_audit": [
+        "scripts/test-tools-giga-dependency-security.mjs"
+      ],
+      "vnem_tools_dependency_advisory_audit": [
+        "scripts/test-tools-giga-dependency-security.mjs"
+      ],
+      "vnem_tools_dependency_change_analyze": [
+        "scripts/test-tools-giga-dependency-security.mjs"
+      ],
+      "vnem_tools_dependency_upgrade_plan": [
+        "scripts/test-tools-giga-dependency-security.mjs"
+      ],
+      "vnem_tools_dependency_install_apply": [
+        "scripts/test-tools-giga-dependency-security.mjs"
+      ],
+      "vnem_tools_dependency_transaction_rollback": [
+        "scripts/test-tools-giga-dependency-security.mjs"
+      ],
+      "vnem_tools_structural_index_build": [
+        "scripts/test-tools-giga-structural-code.mjs"
+      ],
+      "vnem_tools_structural_graph_query": [
+        "scripts/test-tools-giga-structural-code.mjs"
+      ],
+      "vnem_tools_exact_symbol_references": [
+        "scripts/test-tools-giga-structural-code.mjs"
+      ],
+      "vnem_tools_refactor_rename_preview": [
+        "scripts/test-tools-giga-structural-code.mjs"
+      ],
+      "vnem_tools_refactor_move_preview": [
+        "scripts/test-tools-giga-structural-code.mjs"
+      ],
+      "vnem_tools_refactor_extract_plan": [
+        "scripts/test-tools-giga-structural-code.mjs"
+      ],
+      "vnem_tools_dead_code_candidates": [
+        "scripts/test-tools-giga-structural-code.mjs"
+      ],
+      "vnem_tools_refactor_impact_analyze": [
+        "scripts/test-tools-giga-structural-code.mjs"
+      ],
+      "vnem_tools_structural_patch_validate": [
+        "scripts/test-tools-giga-structural-code.mjs"
+      ],
+      "vnem_tools_refactor_apply_verify": [
+        "scripts/test-tools-giga-structural-code.mjs"
+      ],
+      "vnem_tools_refactor_transaction_rollback": [
+        "scripts/test-tools-giga-structural-code.mjs"
+      ],
+      "vnem_tools_test_system_inspect": [
+        "scripts/test-tools-giga-testing-ci.mjs"
+      ],
+      "vnem_tools_affected_test_graph": [
+        "scripts/test-tools-giga-testing-ci.mjs"
+      ],
+      "vnem_tools_test_run": [
+        "scripts/test-tools-giga-testing-ci.mjs"
+      ],
+      "vnem_tools_ci_failure_diagnose": [
+        "scripts/test-tools-giga-testing-ci.mjs"
+      ],
+      "vnem_tools_coverage_benchmark_report": [
+        "scripts/test-tools-giga-testing-ci.mjs"
+      ],
+      "vnem_tools_run_project_task": [
+        "scripts/test-core-tools-tool-ecosystem.mjs",
+        "scripts/test-tools-git-session.mjs",
+        "scripts/test-tools-project-actions.mjs"
+      ],
+      "vnem_tools_start_dev_server": [
+        "scripts/test-tools-project-actions.mjs"
+      ],
+      "vnem_tools_stop_dev_server": [
+        "scripts/test-tools-project-actions.mjs"
+      ],
+      "vnem_tools_list_dev_servers": [
+        "scripts/test-tools-project-actions.mjs"
+      ],
+      "vnem_tools_start_session": [
+        "scripts/test-core-tools-tool-ecosystem.mjs",
+        "scripts/test-tools-git-session.mjs"
+      ],
+      "vnem_tools_finish_session": [
+        "scripts/test-core-tools-tool-ecosystem.mjs",
+        "scripts/test-tools-git-session.mjs"
+      ],
+      "vnem_tools_git_status": [
+        "scripts/test-tools-git-session.mjs"
+      ],
+      "vnem_tools_git_diff_summary": [
+        "scripts/test-tools-git-session.mjs"
+      ],
+      "vnem_tools_git_commit": [
+        "scripts/test-tools-git-session.mjs",
+        "scripts/test-tools-high-power-action-review.mjs",
+        "scripts/test-tools-permission-profiles.mjs"
+      ],
+      "vnem_tools_run_command": [
+        "scripts/test-core-tools-e2e.mjs",
+        "scripts/test-tools-git-session.mjs",
+        "scripts/test-tools-mcp-server.mjs"
+      ],
+      "vnem_tools_api_adapter_catalog": [
+        "scripts/test-tools-giga-api-connectors.mjs"
+      ],
+      "vnem_tools_api_credential_reference_check": [
+        "scripts/test-tools-giga-api-connectors.mjs"
+      ],
+      "vnem_tools_api_adapter_plan": [
+        "scripts/test-tools-giga-api-connectors.mjs"
+      ],
+      "vnem_tools_api_adapter_execute": [
+        "scripts/test-tools-giga-api-connectors.mjs"
+      ],
+      "vnem_tools_api_adapter_compensate": [
+        "scripts/test-tools-giga-api-connectors.mjs"
+      ],
+      "vnem_tools_api_adapter_generate": [
+        "scripts/test-tools-giga-api-connectors.mjs"
+      ],
+      "vnem_tools_api_adapter_contract_test": [
+        "scripts/test-tools-giga-api-connectors.mjs"
+      ],
+      "vnem_tools_api_adapter_review_activate": [
+        "scripts/test-tools-giga-api-connectors.mjs"
+      ],
+      "vnem_tools_skill_adapter_catalog": [
+        "scripts/test-tools-giga-skill-runtime.mjs"
+      ],
+      "vnem_tools_skill_package_inspect": [
+        "scripts/test-tools-giga-skill-runtime.mjs"
+      ],
+      "vnem_tools_skill_doctor": [
+        "scripts/test-tools-giga-skill-runtime.mjs"
+      ],
+      "vnem_tools_skill_adapter_plan": [
+        "scripts/test-tools-giga-skill-runtime.mjs"
+      ],
+      "vnem_tools_skill_adapter_execute": [
+        "scripts/test-tools-giga-skill-runtime.mjs"
+      ],
+      "vnem_tools_skill_source_verify": [
+        "scripts/test-tools-giga-skill-runtime.mjs"
+      ],
+      "vnem_tools_data_source_inspect": [
+        "scripts/test-tools-giga-data-systems.mjs"
+      ],
+      "vnem_tools_data_source_validate": [
+        "scripts/test-tools-giga-data-systems.mjs"
+      ],
+      "vnem_tools_data_source_diff": [
+        "scripts/test-tools-giga-data-systems.mjs"
+      ],
+      "vnem_tools_data_transform_plan": [
+        "scripts/test-tools-giga-data-systems.mjs"
+      ],
+      "vnem_tools_data_transform_apply": [
+        "scripts/test-tools-giga-data-systems.mjs"
+      ],
+      "vnem_tools_database_connection_plan": [
+        "scripts/test-tools-giga-data-systems.mjs"
+      ],
+      "vnem_tools_database_schema_inspect": [
+        "scripts/test-tools-giga-data-systems.mjs"
+      ],
+      "vnem_tools_database_query_plan": [
+        "scripts/test-tools-giga-data-systems.mjs"
+      ],
+      "vnem_tools_database_query": [
+        "scripts/test-tools-giga-data-systems.mjs"
+      ],
+      "vnem_tools_database_migration_preview": [
+        "scripts/test-tools-giga-data-systems.mjs"
+      ],
+      "vnem_tools_database_migration_apply": [
+        "scripts/test-tools-giga-data-systems.mjs"
+      ],
+      "vnem_tools_data_transaction_rollback": [
+        "scripts/test-tools-giga-data-systems.mjs"
+      ],
+      "vnem_tools_api_request": [
+        "scripts/test-tools-high-power-action-review.mjs",
+        "scripts/test-tools-mcp-server.mjs"
+      ],
+      "vnem_tools_browser_capture": [
+        "scripts/test-core-tools-e2e.mjs",
+        "scripts/test-core-tools-tool-ecosystem.mjs",
+        "scripts/test-tools-browser-capture.mjs",
+        "scripts/test-tools-git-session.mjs",
+        "scripts/test-tools-project-actions.mjs"
+      ],
+      "vnem_tools_browser_page_inspect": [
+        "scripts/test-tools-browser-intelligence.mjs"
+      ],
+      "vnem_tools_browser_readability_extract": [
+        "scripts/test-tools-browser-intelligence.mjs"
+      ],
+      "vnem_tools_browser_link_map": [
+        "scripts/test-tools-browser-intelligence.mjs"
+      ],
+      "vnem_tools_browser_dom_search": [
+        "scripts/test-tools-browser-intelligence.mjs"
+      ],
+      "vnem_tools_browser_accessibility_audit": [
+        "scripts/test-tools-browser-intelligence.mjs"
+      ],
+      "vnem_tools_browser_compare_snapshots": [
+        "scripts/test-tools-browser-intelligence.mjs"
+      ],
+      "vnem_tools_browser_research_pack": [
+        "scripts/test-tools-browser-research-pack.mjs"
+      ],
+      "vnem_tools_search_provider_manifest": [
+        "scripts/test-tools-search-power.mjs"
+      ],
+      "vnem_tools_search_query_builder": [
+        "scripts/test-mcp-user-smoke.mjs",
+        "scripts/test-tools-search-power.mjs"
+      ],
+      "vnem_tools_web_search": [
+        "scripts/test-tools-search-power.mjs"
+      ],
+      "vnem_tools_search_result_ranker": [
+        "scripts/test-mcp-user-smoke.mjs",
+        "scripts/test-tools-search-power.mjs"
+      ],
+      "vnem_tools_redirect_chain_check": [
+        "scripts/test-tools-risk-captcha.mjs"
+      ],
+      "vnem_tools_url_reputation_check": [
+        "scripts/test-tools-risk-captcha.mjs"
+      ],
+      "vnem_tools_captcha_detector": [
+        "scripts/test-mcp-user-smoke.mjs",
+        "scripts/test-tools-risk-captcha.mjs"
+      ],
+      "vnem_tools_download_safety_check": [
+        "scripts/test-mcp-user-smoke.mjs",
+        "scripts/test-tools-risk-captcha.mjs"
+      ],
+      "vnem_tools_claim_source_matrix": [
+        "scripts/test-mcp-user-smoke.mjs",
+        "scripts/test-tools-search-power.mjs"
+      ],
+      "vnem_tools_research_gap_detector": [
+        "scripts/test-mcp-user-smoke.mjs",
+        "scripts/test-tools-search-power.mjs"
+      ],
+      "vnem_tools_source_map": [
+        "scripts/test-tools-source-ingestion.mjs"
+      ],
+      "vnem_tools_source_extract": [
+        "scripts/test-tools-source-ingestion.mjs"
+      ],
+      "vnem_tools_source_graph": [
+        "scripts/test-tools-source-graph.mjs"
+      ],
+      "vnem_tools_architecture_review": [
+        "scripts/test-tools-architecture-review.mjs"
+      ],
+      "vnem_tools_debug_evidence": [
+        "scripts/test-tools-debug-evidence.mjs"
+      ],
+      "vnem_tools_ui_surface_review": [
+        "scripts/test-tools-ui-surface-review.mjs"
+      ],
+      "vnem_tools_browser_evidence_plan": [
+        "scripts/test-tools-browser-evidence-plan.mjs"
+      ],
+      "vnem_tools_browser_evidence_run": [
+        "scripts/test-tools-action-recovery-plan.mjs",
+        "scripts/test-tools-browser-evidence-run.mjs"
+      ],
+      "vnem_tools_browser_interaction_run": [
+        "scripts/test-tools-giga-browser-interaction.mjs"
+      ],
+      "vnem_tools_browser_evidence_compare": [
+        "scripts/test-tools-giga-browser-interaction.mjs"
+      ],
+      "vnem_tools_ui_evidence_audit": [
+        "scripts/test-mcp-user-smoke.mjs",
+        "scripts/test-tools-browser-evidence-run.mjs",
+        "scripts/test-tools-ui-evidence-audit.mjs"
+      ],
+      "vnem_tools_fetch_url_text": [
+        "scripts/test-tools-research.mjs"
+      ],
+      "vnem_tools_source_quality_check": [
+        "scripts/test-tools-research.mjs"
+      ],
+      "vnem_tools_research_brief": [
+        "scripts/test-tools-research.mjs"
+      ],
+      "vnem_tools_collect_evidence": [
+        "scripts/test-core-tools-e2e.mjs",
+        "scripts/test-tools-browser-capture.mjs",
+        "scripts/test-tools-mcp-server.mjs"
+      ],
+      "vnem_tools_github_status": [
+        "scripts/test-tools-autonomy-1-regression.mjs",
+        "scripts/test-tools-github-live-readiness.mjs",
+        "scripts/test-tools-github-real-exec-paths.mjs",
+        "scripts/test-tools-github-status-profile.mjs"
+      ],
+      "vnem_tools_github_settings_guide": [
+        "scripts/test-tools-github-settings.mjs"
+      ],
+      "vnem_tools_github_profile_status": [
+        "scripts/test-tools-github-settings.mjs",
+        "scripts/test-tools-github-status-profile.mjs"
+      ],
+      "vnem_tools_github_repo_inspect": [
+        "scripts/test-tools-github-real-exec-paths.mjs",
+        "scripts/test-tools-github-repo-intelligence.mjs"
+      ],
+      "vnem_tools_github_diff_review": [
+        "scripts/test-tools-giga-github-development.mjs"
+      ],
+      "vnem_tools_github_review_threads": [
+        "scripts/test-tools-giga-github-development.mjs"
+      ],
+      "vnem_tools_github_remote_proof": [
+        "scripts/test-tools-giga-github-development.mjs"
+      ],
+      "vnem_tools_github_actions_run_inspect": [
+        "scripts/test-tools-giga-github-development.mjs"
+      ],
+      "vnem_tools_github_release_verify": [
+        "scripts/test-tools-giga-github-development.mjs"
+      ],
+      "vnem_tools_github_public_surface_audit": [
+        "scripts/test-tools-giga-github-development.mjs"
+      ],
+      "vnem_tools_repo_intelligence_report": [
+        "scripts/test-tools-github-repo-intelligence.mjs",
+        "scripts/test-tools-power-tools-1-regression.mjs"
+      ],
+      "vnem_tools_github_branch_create": [
+        "scripts/test-tools-github-branch-commit-pr.mjs",
+        "scripts/test-tools-github-command-builder.mjs",
+        "scripts/test-tools-github-mutation-dry-run.mjs"
+      ],
+      "vnem_tools_github_commit_push": [
+        "scripts/test-tools-autonomy-1-regression.mjs",
+        "scripts/test-tools-autonomy-2-regression.mjs",
+        "scripts/test-tools-autonomy-efficiency.mjs",
+        "scripts/test-tools-github-branch-commit-pr.mjs",
+        "scripts/test-tools-github-command-builder.mjs",
+        "scripts/test-tools-github-mutation-dry-run.mjs"
+      ],
+      "vnem_tools_github_pr_create": [
+        "scripts/test-tools-autonomy-2-regression.mjs",
+        "scripts/test-tools-github-branch-commit-pr.mjs",
+        "scripts/test-tools-github-command-builder.mjs",
+        "scripts/test-tools-github-live-readiness.mjs",
+        "scripts/test-tools-github-mutation-dry-run.mjs",
+        "scripts/test-tools-github-real-exec-paths.mjs"
+      ],
+      "vnem_tools_github_pr_update": [
+        "scripts/test-tools-github-final-behavior-coverage.mjs"
+      ],
+      "vnem_tools_github_issue_create": [
+        "scripts/test-tools-github-command-builder.mjs",
+        "scripts/test-tools-github-issues-actions-ci.mjs",
+        "scripts/test-tools-github-mutation-dry-run.mjs",
+        "scripts/test-tools-github-real-exec-paths.mjs"
+      ],
+      "vnem_tools_github_issue_update": [
+        "scripts/test-tools-github-final-behavior-coverage.mjs"
+      ],
+      "vnem_tools_github_issue_comment": [
+        "scripts/test-tools-github-final-behavior-coverage.mjs"
+      ],
+      "vnem_tools_github_labels_manage": [
+        "scripts/test-tools-github-issues-actions-ci.mjs",
+        "scripts/test-tools-github-mutation-dry-run.mjs",
+        "scripts/test-tools-github-real-exec-paths.mjs"
+      ],
+      "vnem_tools_github_actions_status": [
+        "scripts/test-tools-github-issues-actions-ci.mjs",
+        "scripts/test-tools-github-real-exec-paths.mjs"
+      ],
+      "vnem_tools_github_actions_rerun": [
+        "scripts/test-tools-github-issues-actions-ci.mjs",
+        "scripts/test-tools-github-mutation-dry-run.mjs",
+        "scripts/test-tools-github-real-exec-paths.mjs"
+      ],
+      "vnem_tools_github_ci_failure_triage": [
+        "scripts/test-tools-github-issues-actions-ci.mjs",
+        "scripts/test-tools-github-real-exec-paths.mjs"
+      ],
+      "vnem_tools_pr_quality_gate": [
+        "scripts/test-tools-autonomy-2-regression.mjs",
+        "scripts/test-tools-autonomy-efficiency.mjs"
+      ],
+      "vnem_tools_task_progress_truth_check": [
+        "scripts/test-tools-autonomy-2-regression.mjs",
+        "scripts/test-tools-autonomy-efficiency.mjs",
+        "scripts/test-tools-power-tools-1-regression.mjs"
+      ],
+      "vnem_tools_github_release_plan": [
+        "scripts/test-tools-github-final-behavior-coverage.mjs"
+      ],
+      "vnem_tools_github_release_create": [
+        "scripts/test-tools-github-mutation-dry-run.mjs",
+        "scripts/test-tools-github-real-exec-paths.mjs"
+      ],
+      "vnem_tools_github_repo_settings_plan": [
+        "scripts/test-tools-github-final-behavior-coverage.mjs"
+      ],
+      "vnem_tools_github_repo_settings_apply": [
+        "scripts/test-tools-github-final-behavior-coverage.mjs"
+      ],
+      "vnem_tools_cloudflare_status": [
+        "scripts/test-tools-cloudflare-status-auth.mjs",
+        "scripts/test-tools-quality-2-regression.mjs"
+      ],
+      "vnem_tools_cloudflare_auth_plan": [
+        "scripts/test-tools-cloudflare-status-auth.mjs"
+      ],
+      "vnem_tools_cloudflare_accounts_list": [
+        "scripts/test-tools-cloudflare-status-auth.mjs"
+      ],
+      "vnem_tools_cloudflare_projects_list": [
+        "scripts/test-tools-action-recovery-plan.mjs",
+        "scripts/test-tools-cloudflare-status-auth.mjs"
+      ],
+      "vnem_tools_cloudflare_pages_deploy_plan": [
+        "scripts/test-tools-cloudflare-plans.mjs"
+      ],
+      "vnem_tools_cloudflare_pages_deploy": [
+        "scripts/test-tools-action-recovery-plan.mjs",
+        "scripts/test-tools-cloudflare-approval-gates.mjs",
+        "scripts/test-tools-cloudflare-evidence-pack.mjs",
+        "scripts/test-tools-high-power-action-review.mjs",
+        "scripts/test-tools-quality-2-regression.mjs"
+      ],
+      "vnem_tools_cloudflare_workers_deploy_plan": [
+        "scripts/test-tools-cloudflare-plans.mjs"
+      ],
+      "vnem_tools_cloudflare_workers_deploy": [
+        "scripts/test-tools-cloudflare-approval-gates.mjs"
+      ],
+      "vnem_tools_cloudflare_dns_plan": [
+        "scripts/test-tools-cloudflare-plans.mjs"
+      ],
+      "vnem_tools_cloudflare_dns_apply": [
+        "scripts/test-tools-cloudflare-approval-gates.mjs",
+        "scripts/test-tools-high-power-action-review.mjs"
+      ],
+      "vnem_tools_cloudflare_env_plan": [
+        "scripts/test-tools-cloudflare-plans.mjs"
+      ],
+      "vnem_tools_cloudflare_env_apply": [
+        "scripts/test-tools-cloudflare-approval-gates.mjs",
+        "scripts/test-tools-cloudflare-redaction.mjs",
+        "scripts/test-tools-high-power-action-review.mjs"
+      ],
+      "vnem_tools_cloudflare_deploy_verify": [
+        "scripts/test-tools-giga-cloudflare-deployment.mjs"
+      ],
+      "vnem_tools_cloudflare_rollback_plan": [
+        "scripts/test-tools-giga-cloudflare-deployment.mjs"
+      ],
+      "vnem_tools_cloudflare_rollback": [
+        "scripts/test-tools-giga-cloudflare-deployment.mjs"
+      ],
+      "vnem_tools_cloudflare_cache_purge_plan": [
+        "scripts/test-tools-giga-cloudflare-deployment.mjs"
+      ],
+      "vnem_tools_cloudflare_cache_purge": [
+        "scripts/test-tools-giga-cloudflare-deployment.mjs"
+      ],
+      "vnem_tools_cloudflare_error_diagnose": [
+        "scripts/test-tools-giga-cloudflare-deployment.mjs"
+      ],
+      "vnem_tools_evidence_pack_audit": [
+        "scripts/test-tools-cloudflare-evidence-pack.mjs",
+        "scripts/test-tools-quality-general.mjs"
+      ],
+      "vnem_tools_mutation_approval_contract": [
+        "scripts/test-tools-quality-general.mjs"
+      ],
+      "vnem_tools_secret_redaction_check": [
+        "scripts/test-tools-cloudflare-redaction.mjs",
+        "scripts/test-tools-quality-general.mjs"
+      ],
+      "vnem_tools_restore_backup": [
+        "scripts/test-tools-mcp-server.mjs"
+      ],
+      "vnem_tools_permission_request": [
+        "scripts/test-tools-scoped-permissions.mjs"
+      ],
+      "vnem_tools_permission_grant": [
+        "scripts/test-tools-scoped-permissions.mjs"
+      ],
+      "vnem_tools_permission_revoke": [
+        "scripts/test-tools-scoped-permissions.mjs"
+      ],
+      "vnem_tools_permission_evaluate": [
+        "scripts/test-tools-scoped-permissions.mjs"
+      ],
+      "vnem_tools_permission_doctor": [
+        "scripts/test-tools-scoped-permissions.mjs"
+      ],
+      "vnem_tools_structural_code_search": [
+        "scripts/test-tools-precision-subsystem.mjs"
+      ],
+      "vnem_tools_exact_patch": [
+        "scripts/test-tools-precision-subsystem.mjs"
+      ],
+      "vnem_tools_unified_diff_apply": [
+        "scripts/test-tools-precision-subsystem.mjs"
+      ],
+      "vnem_tools_patch_transaction": [
+        "scripts/test-tools-precision-subsystem.mjs"
+      ],
+      "vnem_tools_patch_transaction_rollback": [
+        "scripts/test-tools-precision-subsystem.mjs"
+      ],
+      "vnem_tools_verification_loop": [
+        "scripts/test-tools-precision-subsystem.mjs"
+      ],
+      "vnem_tools_terminal_session": [
+        "scripts/test-tools-precision-subsystem.mjs"
+      ],
+      "vnem_tools_documentation_source_catalog": [
+        "scripts/test-tools-giga-current-documentation.mjs"
+      ],
+      "vnem_tools_official_documentation_fetch": [
+        "scripts/test-tools-giga-current-documentation.mjs"
+      ],
+      "vnem_tools_documentation_context": [
+        "scripts/test-tools-giga-current-documentation.mjs"
+      ],
+      "vnem_tools_documentation_cache_status": [
+        "scripts/test-tools-giga-current-documentation.mjs"
+      ],
+      "vnem_tools_ephemeral_script": [
+        "scripts/test-tools-precision-subsystem.mjs"
+      ],
+      "vnem_tools_code_index_status": [
+        "scripts/test-tools-precision-subsystem.mjs"
+      ],
+      "vnem_tools_registry_status": [
+        "scripts/test-vnem-runtime-registry.mjs"
+      ]
+    },
+    "vnem-precision": {
+      "mcp_semantic_code_search": [
+        "scripts/test-precision-mcp-server.mjs"
+      ],
+      "mcp_apply_diff_patch": [
+        "scripts/test-precision-mcp-server.mjs"
+      ],
+      "mcp_fetch_documentation": [
+        "scripts/test-precision-mcp-server.mjs"
+      ],
+      "mcp_execute_terminal_command": [
+        "scripts/test-precision-mcp-server.mjs"
+      ],
+      "mcp_run_verification_tests": [
+        "scripts/test-precision-mcp-server.mjs"
+      ],
+      "mcp_execute_ephemeral_script": [
+        "scripts/test-precision-mcp-server.mjs"
+      ],
+      "mcp_registry_status": [
+        "scripts/test-vnem-runtime-registry.mjs"
+      ]
+    }
+  }
+}

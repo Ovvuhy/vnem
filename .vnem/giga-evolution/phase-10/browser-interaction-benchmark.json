@@ -1,0 +1,525 @@
+{
+  "schema_version": 1,
+  "phase": 10,
+  "benchmark_type": "actual_mcp_chromium_interaction_execution",
+  "deterministic_routing_benchmark": false,
+  "generated_at": "2026-07-13T18:08:11.600Z",
+  "total_duration_ms": 12635.95,
+  "mcp_transport": "stdio",
+  "scenarios": {
+    "planned": 5,
+    "executed": 5,
+    "passed": 5,
+    "failed": 0
+  },
+  "structured_actions_executed": [
+    "assert",
+    "type",
+    "select",
+    "wait",
+    "click",
+    "wait_for",
+    "navigate"
+  ],
+  "screenshots": [
+    {
+      "scenario": "loading-mobile",
+      "stage": "before",
+      "bytes": 20322,
+      "sha256": "ba8e6c109ba1def3688d22369d8bf39b4b6ed1bfbedf28479738e1fcb3691110",
+      "render_integrity": {
+        "status": "nonblank",
+        "channel_min": 0,
+        "channel_max": 255,
+        "channel_range": 255,
+        "non_background_pixels": 768371,
+        "non_background_percent": 58.3585,
+        "background_reference_rgb": [
+          244,
+          247,
+          251
+        ]
+      },
+      "path": "browser-evidence/loading-mobile-mobile-before.png"
+    },
+    {
+      "scenario": "loading-mobile",
+      "stage": "after",
+      "bytes": 20322,
+      "sha256": "ba8e6c109ba1def3688d22369d8bf39b4b6ed1bfbedf28479738e1fcb3691110",
+      "render_integrity": {
+        "status": "nonblank",
+        "channel_min": 0,
+        "channel_max": 255,
+        "channel_range": 255,
+        "non_background_pixels": 768371,
+        "non_background_percent": 58.3585,
+        "background_reference_rgb": [
+          244,
+          247,
+          251
+        ]
+      },
+      "path": "browser-evidence/loading-mobile-mobile-after.png"
+    },
+    {
+      "scenario": "empty-desktop",
+      "stage": "before",
+      "bytes": 11784,
+      "sha256": "7d6ef7548afa1cf57733672f669ffa16e51f761a3c2914b7cd78e750c7cb3a35",
+      "render_integrity": {
+        "status": "nonblank",
+        "channel_min": 0,
+        "channel_max": 255,
+        "channel_range": 255,
+        "non_background_pixels": 288132,
+        "non_background_percent": 22.2324,
+        "background_reference_rgb": [
+          244,
+          247,
+          251
+        ]
+      },
+      "path": "browser-evidence/empty-desktop-desktop-before.png"
+    },
+    {
+      "scenario": "empty-desktop",
+      "stage": "after",
+      "bytes": 11784,
+      "sha256": "7d6ef7548afa1cf57733672f669ffa16e51f761a3c2914b7cd78e750c7cb3a35",
+      "render_integrity": {
+        "status": "nonblank",
+        "channel_min": 0,
+        "channel_max": 255,
+        "channel_range": 255,
+        "non_background_pixels": 288132,
+        "non_background_percent": 22.2324,
+        "background_reference_rgb": [
+          244,
+          247,
+          251
+        ]
+      },
+      "path": "browser-evidence/empty-desktop-desktop-after.png"
+    },
+    {
+      "scenario": "error-mobile",
+      "stage": "before",
+      "bytes": 20390,
+      "sha256": "e42ed80114005085439696cc1bc1695028f8cfa7f281325fd2448a5dc4da21ff",
+      "render_integrity": {
+        "status": "nonblank",
+        "channel_min": 0,
+        "channel_max": 255,
+        "channel_range": 255,
+        "non_background_pixels": 768371,
+        "non_background_percent": 58.3585,
+        "background_reference_rgb": [
+          244,
+          247,
+          251
+        ]
+      },
+      "path": "browser-evidence/error-mobile-mobile-before.png"
+    },
+    {
+      "scenario": "error-mobile",
+      "stage": "after",
+      "bytes": 20390,
+      "sha256": "e42ed80114005085439696cc1bc1695028f8cfa7f281325fd2448a5dc4da21ff",
+      "render_integrity": {
+        "status": "nonblank",
+        "channel_min": 0,
+        "channel_max": 255,
+        "channel_range": 255,
+        "non_background_pixels": 768371,
+        "non_background_percent": 58.3585,
+        "background_reference_rgb": [
+          244,
+          247,
+          251
+        ]
+      },
+      "path": "browser-evidence/error-mobile-mobile-after.png"
+    },
+    {
+      "scenario": "success-edit",
+      "stage": "before",
+      "bytes": 11877,
+      "sha256": "e3a6dbfce73b6ea8842323cdfbb8398224c4b72502a7e925efecb4fe60500546",
+      "render_integrity": {
+        "status": "nonblank",
+        "channel_min": 0,
+        "channel_max": 255,
+        "channel_range": 255,
+        "non_background_pixels": 288132,
+        "non_background_percent": 22.2324,
+        "background_reference_rgb": [
+          244,
+          247,
+          251
+        ]
+      },
+      "path": "browser-evidence/success-edit-desktop-before.png"
+    },
+    {
+      "scenario": "success-edit",
+      "stage": "after",
+      "bytes": 12688,
+      "sha256": "0e80fa03c334732120605a266f2bc317f1c5940d89b4a12fde0028aba7665910",
+      "render_integrity": {
+        "status": "nonblank",
+        "channel_min": 0,
+        "channel_max": 255,
+        "channel_range": 255,
+        "non_background_pixels": 288132,
+        "non_background_percent": 22.2324,
+        "background_reference_rgb": [
+          244,
+          247,
+          251
+        ]
+      },
+      "path": "browser-evidence/success-edit-desktop-after.png"
+    },
+    {
+      "scenario": "navigation-desktop",
+      "stage": "before",
+      "bytes": 11877,
+      "sha256": "e3a6dbfce73b6ea8842323cdfbb8398224c4b72502a7e925efecb4fe60500546",
+      "render_integrity": {
+        "status": "nonblank",
+        "channel_min": 0,
+        "channel_max": 255,
+        "channel_range": 255,
+        "non_background_pixels": 288132,
+        "non_background_percent": 22.2324,
+        "background_reference_rgb": [
+          244,
+          247,
+          251
+        ]
+      },
+      "path": "browser-evidence/navigation-desktop-desktop-before.png"
+    },
+    {
+      "scenario": "navigation-desktop",
+      "stage": "after",
+      "bytes": 11866,
+      "sha256": "724f787d42eced24c370718a0044f5b6b36a2b212671aa42b079817df1209ec1",
+      "render_integrity": {
+        "status": "nonblank",
+        "channel_min": 0,
+        "channel_max": 255,
+        "channel_range": 255,
+        "non_background_pixels": 287331,
+        "non_background_percent": 22.1706,
+        "background_reference_rgb": [
+          244,
+          247,
+          251
+        ]
+      },
+      "path": "browser-evidence/navigation-desktop-desktop-after.png"
+    }
+  ],
+  "console_summary": {
+    "status": "clean",
+    "event_count": 0,
+    "error_count": 0,
+    "errors": []
+  },
+  "network_summary": {
+    "status": "clean",
+    "response_count": 12,
+    "failures": [],
+    "bad_responses": [],
+    "blocked_requests": []
+  },
+  "accessibility_summary": {
+    "status": "checked",
+    "snapshots": 10,
+    "issue_count": 0,
+    "issues": []
+  },
+  "viewport_coverage": [
+    {
+      "viewport": "mobile",
+      "status": "passed",
+      "scenarios": [
+        "loading-mobile",
+        "error-mobile"
+      ]
+    },
+    {
+      "viewport": "desktop",
+      "status": "passed",
+      "scenarios": [
+        "empty-desktop",
+        "success-edit",
+        "navigation-desktop"
+      ]
+    }
+  ],
+  "state_coverage": [
+    {
+      "state": "loading",
+      "status": "passed",
+      "scenarios": [
+        "loading-mobile"
+      ]
+    },
+    {
+      "state": "empty",
+      "status": "passed",
+      "scenarios": [
+        "empty-desktop"
+      ]
+    },
+    {
+      "state": "error",
+      "status": "passed",
+      "scenarios": [
+        "error-mobile"
+      ]
+    },
+    {
+      "state": "success",
+      "status": "passed",
+      "scenarios": [
+        "success-edit",
+        "navigation-desktop"
+      ]
+    }
+  ],
+  "before_after_comparison": {
+    "status": "present",
+    "pairs": [
+      {
+        "scenario": "loading-mobile",
+        "status": "compared",
+        "visual": {
+          "status": "compared",
+          "width": 780,
+          "height": 1688,
+          "pixels": 1316640,
+          "changed_pixels": 0,
+          "changed_percent": 0,
+          "mean_channel_difference": 0,
+          "before_sha256": "ba8e6c109ba1def3688d22369d8bf39b4b6ed1bfbedf28479738e1fcb3691110",
+          "after_sha256": "ba8e6c109ba1def3688d22369d8bf39b4b6ed1bfbedf28479738e1fcb3691110"
+        },
+        "dom": {
+          "status": "compared",
+          "changed": false,
+          "before_hash": "7d9cde1e6be732b1e5a6f454d36bb86998f9ed52713aba4fd36ecd9ed0ffeebe",
+          "after_hash": "7d9cde1e6be732b1e5a6f454d36bb86998f9ed52713aba4fd36ecd9ed0ffeebe"
+        },
+        "accessibility": {
+          "status": "compared",
+          "changed": false,
+          "before_hash": "ed58bdbeae42400b28c6669597c724d950c8474b76d53004a8f174ce9a559ed4",
+          "after_hash": "ed58bdbeae42400b28c6669597c724d950c8474b76d53004a8f174ce9a559ed4"
+        }
+      },
+      {
+        "scenario": "empty-desktop",
+        "status": "compared",
+        "visual": {
+          "status": "compared",
+          "width": 1440,
+          "height": 900,
+          "pixels": 1296000,
+          "changed_pixels": 0,
+          "changed_percent": 0,
+          "mean_channel_difference": 0,
+          "before_sha256": "7d6ef7548afa1cf57733672f669ffa16e51f761a3c2914b7cd78e750c7cb3a35",
+          "after_sha256": "7d6ef7548afa1cf57733672f669ffa16e51f761a3c2914b7cd78e750c7cb3a35"
+        },
+        "dom": {
+          "status": "compared",
+          "changed": false,
+          "before_hash": "9549099b32b7425f1d0a88db2db4afc8efa34d346275b650f37ede37d5681016",
+          "after_hash": "9549099b32b7425f1d0a88db2db4afc8efa34d346275b650f37ede37d5681016"
+        },
+        "accessibility": {
+          "status": "compared",
+          "changed": false,
+          "before_hash": "f081562d0512e8e884a801a2842868ff92d39897271a4d452a981ddbb5979227",
+          "after_hash": "f081562d0512e8e884a801a2842868ff92d39897271a4d452a981ddbb5979227"
+        }
+      },
+      {
+        "scenario": "error-mobile",
+        "status": "compared",
+        "visual": {
+          "status": "compared",
+          "width": 780,
+          "height": 1688,
+          "pixels": 1316640,
+          "changed_pixels": 0,
+          "changed_percent": 0,
+          "mean_channel_difference": 0,
+          "before_sha256": "e42ed80114005085439696cc1bc1695028f8cfa7f281325fd2448a5dc4da21ff",
+          "after_sha256": "e42ed80114005085439696cc1bc1695028f8cfa7f281325fd2448a5dc4da21ff"
+        },
+        "dom": {
+          "status": "compared",
+          "changed": false,
+          "before_hash": "141773b59cc2c40e8b5ebae3104ee05e4203b4fcb2c7468d8d68af465ea8f47c",
+          "after_hash": "141773b59cc2c40e8b5ebae3104ee05e4203b4fcb2c7468d8d68af465ea8f47c"
+        },
+        "accessibility": {
+          "status": "compared",
+          "changed": false,
+          "before_hash": "9aa62d0cadf5bb594de0719c101b97b6a59b815130d4725d305db05744977874",
+          "after_hash": "9aa62d0cadf5bb594de0719c101b97b6a59b815130d4725d305db05744977874"
+        }
+      },
+      {
+        "scenario": "success-edit",
+        "status": "compared",
+        "visual": {
+          "status": "compared",
+          "width": 1440,
+          "height": 900,
+          "pixels": 1296000,
+          "changed_pixels": 2997,
+          "changed_percent": 0.2312,
+          "mean_channel_difference": 0.3464,
+          "before_sha256": "e3a6dbfce73b6ea8842323cdfbb8398224c4b72502a7e925efecb4fe60500546",
+          "after_sha256": "0e80fa03c334732120605a266f2bc317f1c5940d89b4a12fde0028aba7665910"
+        },
+        "dom": {
+          "status": "compared",
+          "changed": true,
+          "before_hash": "83341f1d0408e3a6d5261c380466b5a68927fbe60d6dbf22a67c3505896963f8",
+          "after_hash": "377dbadd29428c554956e2b59d611449b83591f1d48b402780dcc85eb18e859f"
+        },
+        "accessibility": {
+          "status": "compared",
+          "changed": true,
+          "before_hash": "11674163772238a1e79b847bfb486b508ee2ce5cf3d54d0d95a34d8c307d1835",
+          "after_hash": "289c07e1e37a3f3dc651eee572223ff7033437b6dce1c1d5834b2e8336cfb9d8"
+        }
+      },
+      {
+        "scenario": "navigation-desktop",
+        "status": "compared",
+        "visual": {
+          "status": "compared",
+          "width": 1440,
+          "height": 900,
+          "pixels": 1296000,
+          "changed_pixels": 149643,
+          "changed_percent": 11.5465,
+          "mean_channel_difference": 3.1488,
+          "before_sha256": "e3a6dbfce73b6ea8842323cdfbb8398224c4b72502a7e925efecb4fe60500546",
+          "after_sha256": "724f787d42eced24c370718a0044f5b6b36a2b212671aa42b079817df1209ec1"
+        },
+        "dom": {
+          "status": "compared",
+          "changed": true,
+          "before_hash": "83341f1d0408e3a6d5261c380466b5a68927fbe60d6dbf22a67c3505896963f8",
+          "after_hash": "233993e37c56e14538a50e3aec26865eb3fcfb9ef44fb97598a1b4e517889757"
+        },
+        "accessibility": {
+          "status": "compared",
+          "changed": true,
+          "before_hash": "11674163772238a1e79b847bfb486b508ee2ce5cf3d54d0d95a34d8c307d1835",
+          "after_hash": "9e2c6cecfd96fafdb37514d4e93eb330e41560b56240816e317abe37e36859ef"
+        }
+      }
+    ]
+  },
+  "evidence_compare": {
+    "matching_items": 10,
+    "visual_changes": 0,
+    "dom_changes": 0,
+    "accessibility_changes": 0
+  },
+  "ui_evidence_audit": {
+    "verdict": "accept_supported",
+    "evidence_strength": "strong_browser_evidence_run",
+    "safe_to_claim": true
+  },
+  "refusal_proof": {
+    "captcha_code": "captcha_detected",
+    "halted_after_detection": true,
+    "private_flow_codes": [
+      "private_flow_detected",
+      "private_flow_detected"
+    ],
+    "private_actions_executed": 0
+  },
+  "browser_termination": {
+    "requested": true,
+    "pid": 153064,
+    "process_exited": true,
+    "exit_code": 0,
+    "signal": null,
+    "profile_removed": true,
+    "strategies": [
+      "Browser.close"
+    ]
+  },
+  "tool_calls": [
+    {
+      "tool": "vnem_tools_browser_interaction_run",
+      "duration_ms": 15.49,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_browser_interaction_run",
+      "duration_ms": 4.28,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_browser_interaction_run",
+      "duration_ms": 2.92,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_browser_interaction_run",
+      "duration_ms": 3.53,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_browser_interaction_run",
+      "duration_ms": 2.62,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_browser_interaction_run",
+      "duration_ms": 6689.21,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_browser_evidence_compare",
+      "duration_ms": 1369.84,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_ui_evidence_audit",
+      "duration_ms": 7.95,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_browser_interaction_run",
+      "duration_ms": 1522.35,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_browser_interaction_run",
+      "duration_ms": 1960.28,
+      "status": "ok"
+    }
+  ],
+  "limitations": [
+    "Local deterministic fixture execution is not production or authenticated-flow proof.",
+    "Chromium DevTools Protocol was exercised; Firefox and WebKit were not.",
+    "Pixel difference detects change but does not decide aesthetic correctness.",
+    "Accessibility tree inspection is bounded evidence, not certification.",
+    "The browser sandbox is disabled for this isolated automation runtime and is not a production-browser security claim."
+  ]
+}

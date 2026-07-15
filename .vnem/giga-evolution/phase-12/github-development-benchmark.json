@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "phase": 12,
+  "benchmark_type": "actual_stdio_mcp_live_github_read_proof",
+  "captured_at": "2026-07-13T19:37:50.405Z",
+  "total_duration_ms": 12658.87,
+  "repo": "Ovvuhy/vnem",
+  "branch": "feat/vnem-giga-evolution-1",
+  "local_head_sha": "c7979c8de4101ccffb1ac4e11d9e74c3e486355f",
+  "remote_branch_sha": "c7979c8de4101ccffb1ac4e11d9e74c3e486355f",
+  "pr_head_sha": "c7979c8de4101ccffb1ac4e11d9e74c3e486355f",
+  "exact_sha_verified": true,
+  "actions_run": {
+    "id": 29276445768,
+    "url": "https://github.com/Ovvuhy/vnem/actions/runs/29276445768",
+    "status": "completed",
+    "conclusion": "success",
+    "jobs": 1,
+    "steps": 9
+  },
+  "diff": {
+    "source": "live_github_pr_exact_sha_local_patch_fallback",
+    "patch_transport": "github_patch_too_large_exact_sha_local_git_fallback",
+    "changed_files": 145,
+    "listed_files": 100,
+    "file_list_truncated": true,
+    "findings": 24,
+    "high_severity_findings": 0,
+    "patch_truncated": true,
+    "claim_status": "manual_review_required"
+  },
+  "review_threads": {
+    "total_returned": 0,
+    "unresolved": 0,
+    "resolved": 0,
+    "outdated": 0,
+    "comments": 0
+  },
+  "branch_protection": {
+    "configured_as_protected": true,
+    "live": {
+      "status": "not_protected",
+      "protected": false
+    }
+  },
+  "release_absence_proof": {
+    "operation_result": "not_found_or_unavailable",
+    "verified": false,
+    "must_not_claim": [
+      "A GitHub release exists for this tag.",
+      "The remote tag SHA was verified."
+    ]
+  },
+  "public_surface": {
+    "consistency_status": "consistent_in_bounded_audit",
+    "findings": 0,
+    "suggestions": 3
+  },
+  "tool_calls": [
+    {
+      "tool": "vnem_tools_github_remote_proof",
+      "duration_ms": 3601.89,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_github_diff_review",
+      "duration_ms": 2948.28,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_github_review_threads",
+      "duration_ms": 777.72,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_github_actions_run_inspect",
+      "duration_ms": 3012.46,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_github_release_verify",
+      "duration_ms": 1509.18,
+      "status": "ok"
+    },
+    {
+      "tool": "vnem_tools_github_public_surface_audit",
+      "duration_ms": 166.95,
+      "status": "ok"
+    }
+  ],
+  "mutation_performed": false,
+  "limitations": [
+    "Live proof is bounded to one repository, PR, Actions run, review-thread page, and absent release tag.",
+    "Diff scans do not prove semantic correctness and report truncation honestly.",
+    "No branch, PR, review, Actions, release, settings, or repository mutation was performed."
+  ]
+}
