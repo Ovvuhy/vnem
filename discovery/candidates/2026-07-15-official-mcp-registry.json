@@ -1,0 +1,366 @@
+{
+  "generated_at": "2026-07-15T10:16:13.425Z",
+  "source": "https://registry.modelcontextprotocol.io/v0.1/servers",
+  "candidates": [
+    {
+      "name": "ac.inference.sh/mcp",
+      "title": "inference.sh",
+      "description": "Run 150+ AI apps — image, video, audio, LLMs, 3D and more. Browse, execute, stream results.",
+      "version": "1.0.1",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ac.inference.sh%2Fmcp/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ac.tandem/docs-mcp",
+      "title": "ac.tandem/docs-mcp",
+      "description": "Remote MCP server for Tandem docs, install guides, SDKs, workflows, and agent setup help.",
+      "version": "0.3.2",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ac.tandem%2Fdocs-mcp/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ag.hood/name-service",
+      "title": "hood. — .hood name service",
+      "description": "Resolve .hood names on Robinhood Chain — forward/reverse, text records, availability & pricing.",
+      "version": "0.1.0",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ag.hood%2Fname-service/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "candidate"
+    },
+    {
+      "name": "agency.lona/trading",
+      "title": "agency.lona/trading",
+      "description": "AI-powered trading strategy development: backtesting, market data, and portfolio analysis",
+      "version": "2.0.0",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/agency.lona%2Ftrading/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.1325/mcp",
+      "title": "1325.AI",
+      "description": "Verified directory of 44,000+ Black-owned U.S. businesses. Search, maps, loyalty rewards.",
+      "version": "0.1.0",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.1325%2Fmcp/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "candidate"
+    },
+    {
+      "name": "ai.aarna/atars-mcp",
+      "title": "aTars MCP",
+      "description": "Crypto market signals, technical indicators, and sentiment analysis for AI agents.",
+      "version": "0.1.0",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.aarna%2Fatars-mcp/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.abmeter/abmeter",
+      "title": "ABMeter",
+      "description": "Feature flagging and A/B testing platform with AI-first experimentation workflows.",
+      "version": "0.1.0",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.abmeter%2Fabmeter/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.adadvisor/mcp-server",
+      "title": "AdAdvisor MCP Server",
+      "description": "Query Meta Ads performance data — accounts, campaigns, ad sets, ads, metrics & settings.",
+      "version": "1.0.1",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.adadvisor%2Fmcp-server/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.adeu/adeu",
+      "title": "ai.adeu/adeu",
+      "description": "Automated DOCX Redlining Engine",
+      "version": "1.7.1",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.adeu%2Fadeu/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.adramp/google-ads",
+      "title": "ai.adramp/google-ads",
+      "description": "Google Ads MCP server — manage campaigns, keywords, and metrics.",
+      "version": "1.0.3",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.adramp%2Fgoogle-ads/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.adweave/meta-ads-mcp",
+      "title": "AdWeave — Meta Ads MCP Server",
+      "description": "Meta Ads MCP server with 47 tools for campaigns, creatives, audiences, and insights.",
+      "version": "1.0.0",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.adweave%2Fmeta-ads-mcp/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.agentberg/agentberg",
+      "title": "ai.agentberg/agentberg",
+      "description": "Agent-to-agent trading intelligence exchange. Publish findings, vote on quality, earn reputation.",
+      "version": "0.2.0",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.agentberg%2Fagentberg/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "candidate"
+    },
+    {
+      "name": "ai.agentdm/agentdm",
+      "title": "AgentDM: Agent to Agent Communication Platform",
+      "description": "Agent communication platform for agent to agent messaging via MCP. Messages, channels, skills.",
+      "version": "2.0.0",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.agentdm%2Fagentdm/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.agentic-news/mcp",
+      "title": "Agentic News",
+      "description": "AI-powered news intelligence — 21 tools for personalized monitoring, briefings, and semantic search",
+      "version": "1.0.0",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.agentic-news%2Fmcp/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.agenticshelf/graffeo",
+      "title": "Graffeo Coffee Roasting",
+      "description": "Live MCP catalog for Graffeo Coffee Roasting - Simply the World's Finest Coffee since 1935.",
+      "version": "1.0.2",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.agenticshelf%2Fgraffeo/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.agenticshelf/mcp",
+      "title": "Agentic Shelf",
+      "description": "Hosted MCP for e-commerce: live product catalog, stock, and pricing for AI agents.",
+      "version": "1.0.0",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.agenticshelf%2Fmcp/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.agenticshelf/puroair",
+      "title": "PuroAir",
+      "description": "Breathe with Confidence. Live MCP catalog for PuroAir HEPA air purifiers - stock, pricing, details.",
+      "version": "1.0.1",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.agenticshelf%2Fpuroair/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "candidate"
+    },
+    {
+      "name": "ai.agenticterminal/directory",
+      "title": "Agentic Terminal Directory",
+      "description": "Verified merchants accepting agentic payments on Lightning/L402/BOLT12/USDT — search, verify, pay.",
+      "version": "1.0.0",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.agenticterminal%2Fdirectory/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.agentrapay/agentra",
+      "title": "ai.agentrapay/agentra",
+      "description": "Identity oracle and trust layer for autonomous AI agents. Bidirectional KYA and trust scoring.",
+      "version": "1.0.0",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.agentrapay%2Fagentra/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.agenttrust/mcp-server",
+      "title": "AgentTrust — Identity & Trust for A2A Agents",
+      "description": "Identity, trust, and A2A orchestration for autonomous AI agents. Official A2A partner.",
+      "version": "1.1.1",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.agenttrust%2Fmcp-server/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "already-indexed"
+    },
+    {
+      "name": "ai.agentutility/mcp-agentops",
+      "title": "AgentUtility Agentops",
+      "description": "MCP server for the @agentutility agentops cluster — pay-per-call x402 tools, no API keys, USDC on…",
+      "version": "0.1.1",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.agentutility%2Fmcp-agentops/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "candidate"
+    },
+    {
+      "name": "ai.agentutility/mcp-bestiary",
+      "title": "AgentUtility Bestiary",
+      "description": "MCP server for the @agentutility bestiary cluster — pay-per-call x402 tools, no API keys, USDC on…",
+      "version": "0.1.3",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.agentutility%2Fmcp-bestiary/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "candidate"
+    },
+    {
+      "name": "ai.agentutility/mcp-browser-workflow",
+      "title": "AgentUtility Browser Workflow",
+      "description": "MCP server for the @agentutility browser-workflow cluster — pay-per-call x402 tools, no API keys…",
+      "version": "0.1.1",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.agentutility%2Fmcp-browser-workflow/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "candidate"
+    },
+    {
+      "name": "ai.agentutility/mcp-compose",
+      "title": "AgentUtility Compose",
+      "description": "MCP server for the @agentutility compose cluster — pay-per-call x402 tools, no API keys, USDC on…",
+      "version": "0.13.0",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.agentutility%2Fmcp-compose/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "candidate"
+    },
+    {
+      "name": "ai.agentutility/mcp-edge-finance",
+      "title": "AgentUtility Edge Finance",
+      "description": "MCP server for the @agentutility edge-finance cluster — pay-per-call x402 tools, no API keys, USDC…",
+      "version": "0.18.8",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.agentutility%2Fmcp-edge-finance/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "candidate"
+    },
+    {
+      "name": "ai.agentutility/mcp-edge-market",
+      "title": "AgentUtility Edge Market",
+      "description": "MCP server for the @agentutility edge-market cluster — pay-per-call x402 tools, no API keys, USDC…",
+      "version": "0.15.6",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.agentutility%2Fmcp-edge-market/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "candidate"
+    },
+    {
+      "name": "ai.agentutility/mcp-locale",
+      "title": "AgentUtility Locale",
+      "description": "MCP server for the @agentutility locale cluster — pay-per-call x402 tools, no API keys, USDC on…",
+      "version": "0.8.7",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.agentutility%2Fmcp-locale/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "candidate"
+    },
+    {
+      "name": "ai.agentutility/mcp-matchpoint",
+      "title": "AgentUtility Matchpoint",
+      "description": "MCP server for the @agentutility matchpoint cluster — pay-per-call x402 tools, no API keys, USDC…",
+      "version": "0.1.4",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.agentutility%2Fmcp-matchpoint/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "candidate"
+    },
+    {
+      "name": "ai.agentutility/mcp-mediakit",
+      "title": "AgentUtility Mediakit",
+      "description": "MCP server for the @agentutility mediakit cluster — pay-per-call x402 tools, no API keys, USDC on…",
+      "version": "0.11.9",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.agentutility%2Fmcp-mediakit/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "candidate"
+    },
+    {
+      "name": "ai.agentutility/mcp-model-router",
+      "title": "AgentUtility Model Router",
+      "description": "MCP server for the @agentutility model-router cluster — pay-per-call x402 tools, no API keys, USDC…",
+      "version": "0.1.1",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.agentutility%2Fmcp-model-router/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "candidate"
+    },
+    {
+      "name": "ai.agentutility/mcp-prooflayer",
+      "title": "AgentUtility Prooflayer",
+      "description": "MCP server for the @agentutility prooflayer cluster — pay-per-call x402 tools, no API keys, USDC…",
+      "version": "0.2.4",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.agentutility%2Fmcp-prooflayer/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "candidate"
+    },
+    {
+      "name": "ai.agentutility/mcp-retail",
+      "title": "AgentUtility Retail",
+      "description": "MCP server for the @agentutility retail cluster — pay-per-call x402 tools, no API keys, USDC on…",
+      "version": "0.2.1",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.agentutility%2Fmcp-retail/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "candidate"
+    },
+    {
+      "name": "ai.agentutility/mcp-rollforge",
+      "title": "AgentUtility Rollforge",
+      "description": "MCP server for the @agentutility rollforge cluster — pay-per-call x402 tools, no API keys, USDC on…",
+      "version": "0.1.5",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.agentutility%2Fmcp-rollforge/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "candidate"
+    },
+    {
+      "name": "ai.agentutility/mcp-statline",
+      "title": "AgentUtility Statline",
+      "description": "MCP server for the @agentutility statline cluster — pay-per-call x402 tools, no API keys, USDC on…",
+      "version": "0.1.3",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.agentutility%2Fmcp-statline/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "candidate"
+    },
+    {
+      "name": "ai.agentutility/mcp-synthforge",
+      "title": "AgentUtility Synthforge",
+      "description": "MCP server for the @agentutility synthforge cluster — pay-per-call x402 tools, no API keys, USDC…",
+      "version": "0.8.2",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.agentutility%2Fmcp-synthforge/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "candidate"
+    },
+    {
+      "name": "ai.agentutility/mcp-web-probe",
+      "title": "AgentUtility Web Probe",
+      "description": "MCP server for the @agentutility web-probe cluster — pay-per-call x402 tools, no API keys, USDC on…",
+      "version": "0.32.1",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.agentutility%2Fmcp-web-probe/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "candidate"
+    },
+    {
+      "name": "ai.agentutility/mcp-wordmint",
+      "title": "AgentUtility Wordmint",
+      "description": "MCP server for the @agentutility wordmint cluster — pay-per-call x402 tools, no API keys, USDC on…",
+      "version": "0.16.1",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.agentutility%2Fmcp-wordmint/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "candidate"
+    },
+    {
+      "name": "ai.ai-portal/ai-portal",
+      "title": "AI-Portal Enterprise GenAI Briefing",
+      "description": "Live AI data for agents: model releases, regulations (EU AI Act), GenAI glossary, daily news.",
+      "version": "1.0.1",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.ai-portal%2Fai-portal/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "candidate"
+    },
+    {
+      "name": "ai.aient/mcp",
+      "title": "ai.aient/mcp",
+      "description": "MCP-native AI SRE: ask what's broken in production, get a reviewed GitHub fix PR.",
+      "version": "0.1.0",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.aient%2Fmcp/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "candidate"
+    },
+    {
+      "name": "ai.airshelf/catalog",
+      "title": "AirShelf Catalog",
+      "description": "Cross-vendor B2B catalog for AI agents: search, compare, find equivalents, request a quote.",
+      "version": "1.0.0",
+      "source_url": "https://registry.modelcontextprotocol.io/v0.1/servers/ai.airshelf%2Fcatalog/versions/latest",
+      "suggested_trust_tier": "promising",
+      "reason": "candidate"
+    }
+  ]
+}

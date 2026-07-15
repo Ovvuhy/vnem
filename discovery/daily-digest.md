@@ -1,12 +1,29 @@
 # vnem Daily Signals
 
-Generated: 2026-07-08T20:28:15.514Z
+Generated: 2026-07-15T10:16:14.058Z
 
 This digest is designed for maintainers. It summarizes source-backed candidates and stable best-practice signals; it does not auto-promote entries into the registry.
 
 ## Discovery Candidates
 
-- No new candidate report found, or every candidate is already indexed.
+- hermes-agent: Hermes Agent v0.14.0 (2026.5.16) | unreviewed | candidate | https://github.com/NousResearch/hermes-agent/releases/tag/v2026.5.16
+- claude-code: v2.1.153 | unreviewed | candidate | https://github.com/anthropics/claude-code/releases/tag/v2.1.153
+- minsky | watchlist | candidate | https://github.com/fyodoriv/minsky
+- void-memory | unreviewed | candidate | https://github.com/Efeta7451/void-memory
+- Easy-agentic-memory-system-easy-memory- | unreviewed | candidate | https://github.com/Mursaleen-khan1/Easy-agentic-memory-system-easy-memory-
+- mcp-security-checklist | unreviewed | candidate | https://github.com/patrickbatem5194/mcp-security-checklist
+- sentinel | unreviewed | candidate | https://github.com/Spoonbillguru666/sentinel
+- vault-sync | unreviewed | candidate | https://github.com/Ub207/vault-sync
+- mguard | unreviewed | candidate | https://github.com/uncensored-waterford179/mguard
+- openclaw-skill | unreviewed | candidate | https://github.com/unexplained-familyephedraceae871/openclaw-skill
+- iosm-cli | unreviewed | candidate | https://github.com/viettua3978/iosm-cli
+- Memory-Like-A-Tree | unreviewed | candidate | https://github.com/zxt-01/Memory-Like-A-Tree
+- Kagantic-vault-structure | unreviewed | candidate | https://github.com/Asim00740/Kagantic-vault-structure
+- parecode | unreviewed | candidate | https://github.com/BasilSkyWalk/parecode
+- nx-mcp | unreviewed | candidate | https://www.npmjs.com/package/nx-mcp
+- mcp-framework | unreviewed | candidate | https://www.npmjs.com/package/mcp-framework
+- Show HN: VAEN – Package and import portable AI coding-agent Harnesses | watchlist | candidate | https://news.ycombinator.com/item?id=48300485
+- The Codex Showcase | watchlist | candidate | https://news.ycombinator.com/item?id=48289024
 
 ## Best-practice Signals
 
@@ -22,6 +39,12 @@ This digest is designed for maintainers. It summarizes source-backed candidates 
 ## Watchlist / Risk Flags
 
 - [Codex AGENTS.md](/entries/codex-agents-md/) | workflow | verified | no-canonical-repo-url
+- [Anthropic Building Effective Agents](/entries/anthropic-building-effective-agents/) | workflow | verified | license-not-asserted, no-canonical-repo-url
+- [Anthropic Multi-Agent Research System](/entries/anthropic-multi-agent-research-system/) | orchestration | verified | license-not-asserted, no-canonical-repo-url
+- [Model Context Protocol](/entries/model-context-protocol/) | workflow | verified | requires-server-review, tool-permissions-are-server-defined
+- [OpenAI Prompt Engineering Guide](/entries/openai-prompt-engineering-guide/) | workflow | verified | license-not-asserted, no-canonical-repo-url
+- [OpenAI Prompt Optimizer](/entries/openai-prompt-optimizer/) | eval | verified | license-not-asserted, no-canonical-repo-url
+- [vnem MCP](/entries/vnem-mcp/) | mcp-server | verified | reads-local-files, sensitive-permissions
 - [ABMeter](/entries/ai-abmeter-abmeter/) | mcp-server | promising | license-not-asserted
 - [ac.tandem/docs-mcp](/entries/ac-tandem-docs-mcp/) | mcp-server | promising | license-not-asserted
 - [agency.lona/trading](/entries/agency-lona-trading/) | mcp-server | promising | license-not-asserted
@@ -35,12 +58,6 @@ This digest is designed for maintainers. It summarizes source-backed candidates 
 - [ai.autoblocks/contextlayer-mcp](/entries/ai-autoblocks-contextlayer-mcp/) | mcp-server | promising | license-not-asserted
 - [ai.autonomad/computeback](/entries/ai-autonomad-computeback/) | mcp-server | promising | license-not-asserted
 - [ai.autonomad/travel](/entries/ai-autonomad-travel/) | mcp-server | promising | license-not-asserted
-- [ai.cueapi/mcp](/entries/ai-cueapi-mcp/) | mcp-server | promising | license-not-asserted
-- [ai.exa/exa](/entries/ai-exa-exa/) | mcp-server | promising | license-not-asserted
-- [ai.explorium/mcp-explorium](/entries/ai-explorium-mcp-explorium/) | mcp-server | promising | license-not-asserted
-- [ai.imboard/dossier](/entries/ai-imboard-dossier/) | mcp-server | promising | license-not-asserted
-- [ai.inflowpay.app/inflow](/entries/ai-inflowpay-app-inflow/) | mcp-server | promising | license-not-asserted
-- [ai.klavis/strata](/entries/ai-klavis-strata/) | mcp-server | promising | license-not-asserted
 
 ## Maintainer Actions
 

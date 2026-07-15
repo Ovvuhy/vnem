@@ -1,6 +1,6 @@
 # vnem Visual QA Protocol
 
-Generated: 2026-07-08T21:12:40.970Z
+Generated: 2026-07-15T10:16:13.575Z
 
 A compact rendered-quality loop for UI, game, dashboard, canvas, motion, sound, and brand-facing work. Use it to make aesthetic inspection and screenshot evidence part of done.
 
