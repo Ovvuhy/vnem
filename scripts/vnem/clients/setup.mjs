@@ -8,6 +8,7 @@ import { clientCatalog } from "./catalog.mjs";
 import { buildVnemServerConfigs, managedClientInstructionsPresent, mergeCodexToml, mergeJsonMcpConfig, mergeManagedClientInstructions, sha256, validateToml } from "./config-merge.mjs";
 import { PermissionRuntime } from "../permissions/runtime.mjs";
 import { callTimed, connectMcp } from "../giga/mcp-client.mjs";
+import { defaultApprovals, defaultGlobalConfig, inspectProjectRoot } from "../projects/router.mjs";
 
 const DEFAULT_COMPONENTS = ["core", "tools"];
 const VALID_COMPONENTS = new Set(["core", "tools", "precision"]);
@@ -48,14 +49,31 @@ export async function planClientSetup(options = {}) {
   const root = path.resolve(options.root || defaultRoot());
   const workspace = path.resolve(options.workspace || process.cwd());
   const home = path.resolve(options.home || os.homedir());
+  const scope = normalizeSetupScope(options.scope);
   const components = normalizeComponents(options.components);
   const safetyProfile = options.safetyProfile || "safe-local-dev";
-  const catalog = clientCatalog({ ...options, root, workspace, home });
+  if (scope === "global" && components.includes("precision")) {
+    throw new Error("Global Codex mode supports Core and Tools. Precision remains an explicitly workspace-scoped compatibility server.");
+  }
+  const codexConfigPath = path.resolve(options.configOverrides?.codex_app || options.configOverrides?.codex_cli || path.join(home, ".codex", "config.toml"));
+  const globalStateRoot = path.resolve(options.globalStateRoot || path.join(path.dirname(codexConfigPath), "vnem"));
+  const catalog = clientCatalog({ ...options, root, workspace, home, scope, codexHome: path.dirname(codexConfigPath) });
   const byId = new Map(catalog.map((client) => [client.id, client]));
   const detection = await detectSupportedClients({ ...options, workspace, home });
   const detectedIds = detection.clients.filter((client) => client.installed).map((client) => client.id);
   const selectedIds = normalizeClientIds(options.clients?.length ? options.clients : detectedIds.length ? detectedIds : ["generic_stdio"], byId);
-  const servers = buildVnemServerConfigs({ root, workspace, components });
+  if (scope === "global" && selectedIds.some((clientId) => !["codex_app", "codex_cli"].includes(clientId))) {
+    throw new Error("Global setup is currently supported only for codex_app and codex_cli; use project scope for other clients.");
+  }
+  const servers = buildVnemServerConfigs({
+    root,
+    workspace,
+    components,
+    scope,
+    stateRoot: globalStateRoot,
+    codexConfigPath,
+    safetyProfile
+  });
   const grouped = new Map();
   const instructionGroups = new Map();
 
@@ -136,14 +154,26 @@ export async function planClientSetup(options = {}) {
   if (!permissionRuntime.profiles().some((profile) => profile.profile_name === safetyProfile)) {
     throw new Error(`Unknown safety profile: ${safetyProfile}`);
   }
-  const safetyPreview = permissionRuntime.previewConfig({ ...permissionRuntime.config, profile: safetyProfile });
-  const stateDir = path.resolve(options.stateDir || path.join(home, ".vnem", "setup"));
+  if (scope === "global") files.push(...await buildGlobalStateFiles({ globalStateRoot, workspace, safetyProfile }));
+  const safetyPreview = scope === "global"
+    ? {
+        profile: safetyProfile,
+        configured_by: "global_vnem_state",
+        config_path: path.join(globalStateRoot, "global.json"),
+        hard_blocked_actions: permissionRuntime.previewConfig({ ...permissionRuntime.config, profile: safetyProfile }).hard_blocked_actions
+      }
+    : permissionRuntime.previewConfig({ ...permissionRuntime.config, profile: safetyProfile });
+  const stateDir = path.resolve(options.stateDir || (scope === "global" ? path.join(globalStateRoot, "setup") : path.join(home, ".vnem", "setup")));
   return {
     operation: "setup_preview",
     generated_at: new Date().toISOString(),
     root,
     workspace,
     home,
+    scope,
+    dynamic_project_routing_active: scope === "global",
+    global_state_root: scope === "global" ? globalStateRoot : null,
+    codex_config_path: scope === "global" ? codexConfigPath : null,
     state_dir: stateDir,
     clients: selectedIds,
     components,
@@ -153,7 +183,9 @@ export async function planClientSetup(options = {}) {
     change_count: files.filter((file) => file.changed).length,
     one_confirmation_required: true,
     secrets_in_output: false,
-    next_action: "Review this preview, then rerun with --yes to apply every listed change as one reversible setup transaction."
+    next_action: scope === "global"
+      ? "Review this global Codex migration preview, then rerun with --yes to activate dynamic project routing in one reversible transaction."
+      : "Review this preview, then rerun with --yes to apply every listed change as one reversible setup transaction."
   };
 }
 
@@ -165,14 +197,17 @@ export async function applyClientSetup(options = {}) {
   const manifestDir = path.join(plan.state_dir, "manifests");
   const manifestPath = path.join(manifestDir, `${transactionId}.json`);
   const changedFiles = plan.files.filter((file) => file.changed);
-  const safetyPath = path.join(plan.workspace, ".vnem", "safety.json");
-  const safetyBefore = existsSync(safetyPath) ? await readFile(safetyPath, "utf8") : "";
+  const safetyPath = plan.scope === "global" ? null : path.join(plan.workspace, ".vnem", "safety.json");
+  const safetyBefore = safetyPath && existsSync(safetyPath) ? await readFile(safetyPath, "utf8") : "";
   const manifest = {
     schema_version: "1.0.0",
     transaction_id: transactionId,
     created_at: new Date().toISOString(),
     root: plan.root,
     workspace: plan.workspace,
+    scope: plan.scope,
+    dynamic_project_routing_active: plan.dynamic_project_routing_active,
+    global_state_root: plan.global_state_root,
     clients: plan.clients,
     components: plan.components,
     safety_profile: plan.safety_profile,
@@ -183,7 +218,9 @@ export async function applyClientSetup(options = {}) {
   await mkdir(backupDir, { recursive: true });
   await mkdir(manifestDir, { recursive: true });
   try {
-    for (const [index, file] of [...changedFiles, { path: safetyPath, existed: existsSync(safetyPath), before_sha256: sha256(safetyBefore), _safety: true }].entries()) {
+    const transactionFiles = [...changedFiles];
+    if (safetyPath) transactionFiles.push({ path: safetyPath, existed: existsSync(safetyPath), before_sha256: sha256(safetyBefore), _safety: true });
+    for (const [index, file] of transactionFiles.entries()) {
       const currentText = file.existed ? await readFile(file.path, "utf8") : "";
       if (!file._safety && sha256(currentText) !== file.before_sha256) {
         throw new Error(`Config changed after preview: ${file.path}. Preview again; no setup changes were applied.`);
@@ -206,11 +243,13 @@ export async function applyClientSetup(options = {}) {
       validateWrittenConfig(file.path, file.format, file._nextText);
     }
 
-    const permissionRuntime = await PermissionRuntime.create({ workspaceRoot: plan.workspace, allowedRoots: [plan.workspace] });
-    await permissionRuntime.setProfile(plan.safety_profile, { persist: true });
-    const safetyAfter = await readFile(safetyPath, "utf8");
-    const safetyRecord = manifest.files.find((file) => file.role === "safety-profile");
-    safetyRecord.after_sha256 = sha256(safetyAfter);
+    if (safetyPath) {
+      const permissionRuntime = await PermissionRuntime.create({ workspaceRoot: plan.workspace, allowedRoots: [plan.workspace] });
+      await permissionRuntime.setProfile(plan.safety_profile, { persist: true });
+      const safetyAfter = await readFile(safetyPath, "utf8");
+      const safetyRecord = manifest.files.find((file) => file.role === "safety-profile");
+      safetyRecord.after_sha256 = sha256(safetyAfter);
+    }
 
     const proof = await verifySetup({ ...plan, runMcp: options.verifyMcp !== false });
     manifest.status = proof.ok ? "applied-and-verified" : "applied-verification-incomplete";
@@ -230,6 +269,8 @@ export async function applyClientSetup(options = {}) {
       proof,
       rollback: `vnem rollback --state-dir ${quoteArg(plan.state_dir)} --yes`,
       reload_guidance: unique(plan.files.flatMap((file) => file.reload_guidance)),
+      dynamic_project_routing_active: plan.dynamic_project_routing_active,
+      global_state_root: plan.global_state_root,
       secrets_in_output: false
     };
   } catch (error) {
@@ -244,7 +285,11 @@ export async function applyClientSetup(options = {}) {
 }
 
 export async function rollbackClientSetup(options = {}) {
-  const stateDir = path.resolve(options.stateDir || path.join(options.home || os.homedir(), ".vnem", "setup"));
+  const home = path.resolve(options.home || os.homedir());
+  const defaultStateDir = options.scope === "global"
+    ? path.join(path.dirname(path.resolve(options.configOverrides?.codex_app || options.configOverrides?.codex_cli || path.join(home, ".codex", "config.toml"))), "vnem", "setup")
+    : path.join(home, ".vnem", "setup");
+  const stateDir = path.resolve(options.stateDir || defaultStateDir);
   const manifestDir = path.join(stateDir, "manifests");
   const manifestPath = options.transactionId
     ? path.join(manifestDir, `${options.transactionId}.json`)
@@ -275,7 +320,11 @@ export async function rollbackClientSetup(options = {}) {
 }
 
 export async function setupStatus(options = {}) {
-  const stateDir = path.resolve(options.stateDir || path.join(options.home || os.homedir(), ".vnem", "setup"));
+  const home = path.resolve(options.home || os.homedir());
+  const defaultStateDir = options.scope === "global"
+    ? path.join(path.dirname(path.resolve(options.configOverrides?.codex_app || options.configOverrides?.codex_cli || path.join(home, ".codex", "config.toml"))), "vnem", "setup")
+    : path.join(home, ".vnem", "setup");
+  const stateDir = path.resolve(options.stateDir || defaultStateDir);
   const manifestPath = await latestManifestPath(path.join(stateDir, "manifests"));
   const latest = manifestPath ? JSON.parse(await readFile(manifestPath, "utf8")) : null;
   const detection = await detectSupportedClients(options);
@@ -288,6 +337,9 @@ export async function setupStatus(options = {}) {
       created_at: latest.created_at,
       root: latest.root,
       workspace: latest.workspace,
+      scope: latest.scope || "project",
+      dynamic_project_routing_active: latest.dynamic_project_routing_active === true,
+      global_state_root: latest.global_state_root || null,
       clients: latest.clients,
       components: latest.components,
       safety_profile: latest.safety_profile
@@ -333,9 +385,11 @@ export async function verifySetup(plan) {
       unrelated_instructions_preserved: file.preserved_unrelated_instructions === true
     });
   }
-  const permissionRuntime = await PermissionRuntime.create({ workspaceRoot: plan.workspace, allowedRoots: [plan.workspace] });
-  const safety = permissionRuntime.status();
-  const safetyOk = safety.profile.profile_name === plan.safety_profile;
+  const safety = plan.scope === "global"
+    ? await readGlobalSafety(plan.global_state_root)
+    : await PermissionRuntime.create({ workspaceRoot: plan.workspace, allowedRoots: [plan.workspace] }).then((runtime) => runtime.status());
+  const activeProfile = plan.scope === "global" ? safety.global_profile : safety.profile.profile_name;
+  const safetyOk = activeProfile === plan.safety_profile;
   const mcp = plan.runMcp ? await verifyMcpServers(plan) : { attempted: false, core: null, tools: null, reason: "MCP smoke disabled for this run." };
   const configOk = configChecks.every((check) => check.exists && check.syntax_valid && plan.components.every((component) => component === "precision" ? check.servers_present.includes("vnem-precision") : component === "core" ? check.servers_present.includes("vnem") : check.servers_present.includes("vnem-tools")));
   const instructionsOk = instructionChecks.every((check) => check.exists && check.managed_block_present && check.unrelated_instructions_preserved);
@@ -345,7 +399,13 @@ export async function verifySetup(plan) {
     generated_at: new Date().toISOString(),
     config_checks: configChecks,
     instruction_checks: instructionChecks,
-    safety: { ok: safetyOk, selected_profile: plan.safety_profile, active_profile: safety.profile.profile_name, hard_blocks_present: safety.hard_blocked_actions.length > 0 },
+    safety: {
+      ok: safetyOk,
+      selected_profile: plan.safety_profile,
+      active_profile: activeProfile,
+      configured_by: plan.scope === "global" ? "global_vnem_state" : safety.configured_by,
+      hard_blocks_present: plan.scope === "global" ? safety.hard_blocks_removable === false : safety.hard_blocked_actions.length > 0
+    },
     mcp,
     what_is_not_proven: plan.runMcp
       ? ["The client UI has not been reloaded or visually inspected by this local stdio smoke test.", "Import-profile clients still require manual import through their current client UI."]
@@ -377,17 +437,37 @@ async function smokeServer(plan, kind) {
       root: plan.root,
       serverFile,
       name: `vnem-setup-${kind}`,
-      env: {
+      env: plan.scope === "global" && kind === "tools" ? {
+        VNEM_TOOLS_GLOBAL_MODE: "codex",
+        VNEM_TOOLS_STATE_ROOT: plan.global_state_root,
+        VNEM_TOOLS_CODEX_CONFIG: plan.codex_config_path,
+        VNEM_TOOLS_PERMISSION_PROFILE: plan.safety_profile
+      } : {
         VNEM_TOOLS_ALLOWED_ROOTS: plan.workspace,
         VNEM_TOOLS_EVIDENCE_ROOT: path.join(plan.workspace, ".vnem", "tool-runs")
       }
     });
     const listed = await connection.client.listTools();
     const visible = listed.tools.some((tool) => tool.name === entrypoint);
+    let projectSelection = null;
+    if (visible && kind === "tools" && plan.scope === "global") {
+      const selectVisible = listed.tools.some((tool) => tool.name === "vnem_tools_project_select");
+      projectSelection = selectVisible ? await callTimed(connection.client, "vnem_tools_project_select", { root: plan.workspace }) : null;
+    }
     const call = visible ? await callTimed(connection.client, entrypoint, kind === "core"
       ? { user_goal: "Verify VNEM setup and route a safe local repository inspection.", available_mcp_names: ["vnem", "vnem-tools"] }
       : { user_goal: "Verify VNEM setup with a safe local repository inspection.", root: plan.workspace, task_mode: "repo_inspection" }) : null;
-    return { ok: visible && call?.is_error === false, server: kind, entrypoint, listed_tool_count: listed.tools.length, entrypoint_visible: visible, entrypoint_call_ok: call?.is_error === false, latency_ms: call?.latency_ms || null };
+    const selectionOk = plan.scope !== "global" || kind !== "tools" || projectSelection?.is_error === false;
+    return {
+      ok: visible && selectionOk && call?.is_error === false,
+      server: kind,
+      entrypoint,
+      listed_tool_count: listed.tools.length,
+      entrypoint_visible: visible,
+      project_selection_ok: projectSelection ? projectSelection.is_error === false : null,
+      entrypoint_call_ok: call?.is_error === false,
+      latency_ms: call?.latency_ms || null
+    };
   } catch (error) {
     return { ok: false, server: kind, entrypoint, error_code: error?.code || error?.name || "mcp_smoke_failed", details_redacted: true };
   } finally {
@@ -443,6 +523,95 @@ function validateWrittenConfig(filePath, format, text) {
     return;
   }
   JSON.parse(text);
+}
+
+async function buildGlobalStateFiles({ globalStateRoot, workspace, safetyProfile }) {
+  const globalPath = path.join(globalStateRoot, "global.json");
+  const approvalsPath = path.join(globalStateRoot, "projects.json");
+  const existingGlobalText = existsSync(globalPath) ? await readFile(globalPath, "utf8") : "";
+  const existingApprovalsText = existsSync(approvalsPath) ? await readFile(approvalsPath, "utf8") : "";
+  const existingGlobal = parseSetupJson(existingGlobalText, globalPath, {});
+  const existingApprovals = parseSetupJson(existingApprovalsText, approvalsPath, defaultApprovals());
+  const project = await inspectProjectRoot(workspace, { source: "vnem_persistent_approval" });
+  assertProjectSpecificRoot(project.root, workspace);
+  const globalConfig = {
+    ...existingGlobal,
+    ...defaultGlobalConfig(safetyProfile),
+    migrated_from_static_workspace_root: true
+  };
+  const approvalRecord = {
+    project_id: project.project_id,
+    root: project.root,
+    identity: project.identity,
+    source: "vnem_persistent_approval",
+    persistence: "persistent",
+    approved_at: null,
+    expires_at: null
+  };
+  const approvalsByIdentity = new Map((existingApprovals.projects || []).filter((item) => item?.identity || item?.root).map((item) => [item.identity || path.resolve(item.root).toLowerCase(), item]));
+  approvalsByIdentity.set(project.identity, { ...(approvalsByIdentity.get(project.identity) || {}), ...approvalRecord });
+  const approvals = {
+    schema_version: defaultApprovals().schema_version,
+    projects: [...approvalsByIdentity.values()].sort((left, right) => String(left.root).localeCompare(String(right.root), undefined, { sensitivity: "base" }))
+  };
+  return [
+    setupJsonFile(globalPath, "global-router-config", existingGlobalText, globalConfig),
+    setupJsonFile(approvalsPath, "global-project-approvals", existingApprovalsText, approvals)
+  ];
+}
+
+function setupJsonFile(filePath, role, beforeText, value) {
+  const nextText = `${JSON.stringify(value, null, 2)}\n`;
+  return {
+    path: filePath,
+    role,
+    format: "json-state",
+    clients: ["codex_app", "codex_cli"],
+    support: ["direct-merge"],
+    proof_levels: ["local-fixture-and-stdio-verified"],
+    reload_guidance: [],
+    existed: Boolean(beforeText),
+    changed: beforeText !== nextText,
+    before_sha256: sha256(beforeText),
+    after_sha256: sha256(nextText),
+    before_bytes: Buffer.byteLength(beforeText),
+    after_bytes: Buffer.byteLength(nextText),
+    preserved_unrelated_settings: true,
+    _nextText: nextText
+  };
+}
+
+function parseSetupJson(text, filePath, fallback) {
+  if (!String(text || "").trim()) return fallback;
+  try {
+    const parsed = JSON.parse(text);
+    if (!parsed || Array.isArray(parsed) || typeof parsed !== "object") throw new Error("not an object");
+    return parsed;
+  } catch {
+    throw new Error(`Existing VNEM global state is invalid JSON; no changes were made: ${filePath}`);
+  }
+}
+
+async function readGlobalSafety(globalStateRoot) {
+  if (!globalStateRoot) throw new Error("Global VNEM state root is missing from the setup plan.");
+  const filePath = path.join(globalStateRoot, "global.json");
+  const parsed = parseSetupJson(await readFile(filePath, "utf8"), filePath, {});
+  return parsed;
+}
+
+function assertProjectSpecificRoot(root, original) {
+  const resolved = path.resolve(root);
+  const home = path.resolve(os.homedir());
+  const relativeSegments = resolved.slice(path.parse(resolved).root.length).split(path.sep).filter(Boolean);
+  if (resolved === path.parse(resolved).root || resolved.toLowerCase() === home.toLowerCase() || relativeSegments.length < 2) {
+    throw new Error(`Global setup cannot authorize a drive, filesystem, home, or dangerously broad root: ${original}`);
+  }
+}
+
+function normalizeSetupScope(value) {
+  const scope = String(value || "project").trim().toLowerCase();
+  if (!["project", "global"].includes(scope)) throw new Error(`Unknown setup scope: ${value}`);
+  return scope;
 }
 
 function normalizeComponents(components) {

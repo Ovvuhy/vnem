@@ -356,7 +356,7 @@ function printHelp() {
   console.log(`vnem
 
 Usage:
-  vnem setup [--clients LIST] [--components core,tools[,precision]] [--profile NAME] [--workspace PATH] [--yes] [--json]
+  vnem setup [--clients LIST] [--components core,tools[,precision]] [--scope project|global] [--profile NAME] [--workspace PATH] [--yes] [--json]
   vnem clients [--json]
   vnem status [--workspace PATH] [--json]
   vnem config preview [--clients LIST] [--components LIST] [--profile NAME] [--workspace PATH] [--json]
@@ -374,7 +374,7 @@ Usage:
 Examples:
   vnem setup
   vnem config preview --clients codex_app,codex_cli --workspace ~/code/my-app --json
-  vnem setup --clients codex_app,codex_cli --workspace ~/code/my-app --profile safe-local-dev --yes --json
+  vnem setup --clients codex_app,codex_cli --scope global --profile creator-power --yes --json
   vnem clients --json
   vnem doctor --clients --workspace ~/code/my-app
   vnem rollback --yes

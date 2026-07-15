@@ -22,9 +22,9 @@ const [registry, browserProof, readme, landing, currentSystem, setup, dashboardB
 ]);
 
 const counts = Object.fromEntries(Object.entries(registry.servers).map(([name, server]) => [name, server.tool_count]));
-assert.equal(registry.total_tools, 323);
+assert.equal(registry.total_tools, 332);
 assert.equal(counts.core, 69);
-assert.equal(counts.tools, 247);
+assert.equal(counts.tools, 256);
 assert.equal(counts.precision, 7);
 assert.equal(Object.values(counts).reduce((total, count) => total + count, 0), registry.total_tools);
 assert.ok(Object.values(registry.servers).every((server) => server.validation.valid));
@@ -49,6 +49,8 @@ assert.match(currentSystem, /\| Precision MCP \| Compatibility \|/);
 assert.match(setup, /managed-instruction syntax/);
 assert.match(setup, /vnem_usage_self_check/);
 assert.match(setup, /uses no hidden telemetry/);
+assert.match(setup, /Global Codex Mode/);
+assert.match(setup, /namespaced evidence and state \(option B\)/);
 
 assert.match(dashboardBrief, /key: "tools"/);
 assert.match(dashboardBrief, /key: "precision"/);

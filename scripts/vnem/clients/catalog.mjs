@@ -7,6 +7,8 @@ export function clientCatalog(options = {}) {
   const platform = normalizePlatform(options.platform || process.platform);
   const home = path.resolve(options.home || os.homedir());
   const workspace = path.resolve(options.workspace || process.cwd());
+  const codexHome = path.resolve(options.codexHome || path.join(home, ".codex"));
+  const globalCodex = options.scope === "global";
   const appData = options.appData || (platform === "win32" ? path.join(home, "AppData", "Roaming") : null);
   const localAppData = options.localAppData || (platform === "win32" ? path.join(home, "AppData", "Local") : null);
 
@@ -16,8 +18,8 @@ export function clientCatalog(options = {}) {
       displayName: "Codex App",
       priority: 1,
       configFormat: "codex-toml",
-      configPath: path.join(home, ".codex", "config.toml"),
-      instructionPath: path.join(workspace, "AGENTS.md"),
+      configPath: path.join(codexHome, "config.toml"),
+      instructionPath: globalCodex ? path.join(codexHome, "AGENTS.md") : path.join(workspace, "AGENTS.md"),
       commands: ["codex"],
       installPaths: compact([
         localAppData && path.join(localAppData, "Programs", "Codex", "Codex.exe"),
@@ -33,8 +35,8 @@ export function clientCatalog(options = {}) {
       displayName: "Codex CLI",
       priority: 2,
       configFormat: "codex-toml",
-      configPath: path.join(home, ".codex", "config.toml"),
-      instructionPath: path.join(workspace, "AGENTS.md"),
+      configPath: path.join(codexHome, "config.toml"),
+      instructionPath: globalCodex ? path.join(codexHome, "AGENTS.md") : path.join(workspace, "AGENTS.md"),
       commands: ["codex"],
       support: "direct-merge",
       proofLevel: "official-documented-and-local-verified",

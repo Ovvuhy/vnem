@@ -5,7 +5,8 @@ export function createToolsAdoptionRuntime({
   runtimeToolCatalog,
   githubSettings,
   githubProfileStatus,
-  arrayify
+  arrayify,
+  projectRoutingStatus
 }) {
   function toolsVisibilityDoctor(args = {}) {
     const catalog = runtimeToolCatalog();
@@ -160,9 +161,16 @@ export function createToolsAdoptionRuntime({
   }
 
   async function toolsEntrypoint(args = {}) {
-    const root = await resolveAllowedRoot(args.repo_path || args.root || ".");
+    let root = null;
+    let routingStatus = null;
+    try {
+      root = await resolveAllowedRoot(args.repo_path || args.root || ".");
+    } catch (error) {
+      if (error?.code !== "project_not_selected" || typeof projectRoutingStatus !== "function") throw error;
+      routingStatus = await projectRoutingStatus();
+    }
     const availableContext = {
-      repo_path: root.relativePath || root.absolutePath,
+      repo_path: root ? root.relativePath || root.absolutePath : "",
       task_mode: args.task_mode || "auto",
       changed_files: arrayify(args.changed_files),
       failing_output: args.failing_output || ""
@@ -175,8 +183,21 @@ export function createToolsAdoptionRuntime({
     const publishMode = router.matched_task_categories.includes("github_pr_ci_proof") && !router.local_only;
     const debugMode = router.matched_task_categories.includes("debugging_failing_tests");
     const browserMode = router.matched_task_categories.includes("browser_ui_verification");
+    const selectionRequired = !root;
+    const projectSelectionCalls = selectionRequired ? [
+      { step: 1, tool: "vnem_tools_codex_trusted_projects", arguments: {}, purpose: "List canonical Codex-trusted roots without exposing unrelated configuration." },
+      { step: 2, tool: "vnem_tools_project_select", arguments: { root: "<exact trusted or explicitly approved project root>" }, purpose: "Select one exact authorized project before project-sensitive work." }
+    ] : [];
     return {
-      root: root.relativePath || root.absolutePath,
+      root: root ? root.relativePath || root.absolutePath : null,
+      project_selection_required: selectionRequired,
+      project_routing: selectionRequired ? {
+        mode: routingStatus?.mode || "codex-global",
+        trusted_project_count: routingStatus?.codex_trusted_projects?.length || 0,
+        persistent_approval_count: routingStatus?.explicit_persistent_approvals?.length || 0,
+        session_approval_count: routingStatus?.explicit_session_approvals?.length || 0,
+        selection_does_not_broaden_authorization: true
+      } : null,
       available_power_layers: [
         "repo_power",
         "code_intelligence",
@@ -191,9 +212,11 @@ export function createToolsAdoptionRuntime({
         "session_recovery",
         "evidence_pack"
       ],
-      best_tools_for_task: router.ranked_tools.slice(0, 8),
-      exact_tool_call_sequence: router.exact_call_sequence.slice(0, 10),
-      required_inputs: router.missing_inputs.length ? router.missing_inputs : ["user_goal", "root or repo_path"],
+      best_tools_for_task: selectionRequired
+        ? ["vnem_tools_codex_trusted_projects", "vnem_tools_project_select", ...router.ranked_tools].slice(0, 8)
+        : router.ranked_tools.slice(0, 8),
+      exact_tool_call_sequence: [...projectSelectionCalls, ...router.exact_call_sequence.map((step, index) => ({ ...step, step: index + projectSelectionCalls.length + 1 }))].slice(0, 10),
+      required_inputs: selectionRequired ? ["exact trusted or explicitly approved project root"] : router.missing_inputs.length ? router.missing_inputs : ["user_goal", "root or repo_path"],
       optional_inputs: ["changed_files", "failing_output", "branch", "commit_sha", "pr_number", "app_url"],
       local_only_plan: [
         "inspect repo/code only inside allowed roots",
@@ -217,7 +240,9 @@ export function createToolsAdoptionRuntime({
       unavailable_capabilities: router.unavailable_capabilities,
       fallback_if_tool_missing: router.fallback_plan,
       confidence: router.confidence,
-      compact_next_step: router.exact_call_sequence[0]
+      compact_next_step: selectionRequired
+        ? "Call vnem_tools_codex_trusted_projects, then vnem_tools_project_select with one exact authorized root."
+        : router.exact_call_sequence[0]
         ? `Call ${router.exact_call_sequence[0].tool} with root=${root.relativePath || "."}.`
         : "Call vnem_tools_manifest, then retry routing with more context.",
       output_compact: true

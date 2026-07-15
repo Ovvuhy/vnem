@@ -26,6 +26,7 @@ import {
 } from "../permissions/profiles.mjs";
 import { PermissionRuntime } from "../permissions/runtime.mjs";
 import { registerPermissionRuntimeTools } from "../permissions/tools.mjs";
+import { GlobalProjectRouter, ProjectRouterError } from "../projects/router.mjs";
 import { PrecisionExecutionError } from "../precision/execution.mjs";
 import { PrecisionRuntime } from "../precision/runtime.mjs";
 import { registerToolsPrecisionSubsystem } from "../precision/tools.mjs";
@@ -55,6 +56,7 @@ import {
   CloudflareControlRuntime
 } from "./cloudflare-control.mjs";
 import { CLIENT_SETUP_TOOL_NAMES, registerClientSetupTools } from "./client-setup.mjs";
+import { PROJECT_ROUTER_TOOL_NAMES, registerProjectRouterTools } from "./project-router-tools.mjs";
 
 import { createRepoIntelligenceRuntime } from "./repo-intelligence-runtime.mjs";
 import { createSourceResearchRuntime } from "./source-research-runtime.mjs";
@@ -76,6 +78,7 @@ const REQUIRED_TOOL_NAMES = [
   "vnem_tools_install_profile_emit",
   "vnem_tools_install_doctor",
   ...CLIENT_SETUP_TOOL_NAMES,
+  ...PROJECT_ROUTER_TOOL_NAMES,
   "vnem_tools_permission_profiles",
   "vnem_tools_permission_status",
   "vnem_tools_reliability_catalog",
@@ -385,31 +388,48 @@ class ToolsError extends Error {
   }
 }
 
-const allowedRoots = await computeAllowedRoots();
-const evidenceRoot = await computeEvidenceRoot();
-const permissionRuntime = await PermissionRuntime.create({
+const globalProjectMode = process.env.VNEM_TOOLS_GLOBAL_MODE === "codex";
+const workspaceRouter = globalProjectMode ? await GlobalProjectRouter.create({
+  stateRoot: process.env.VNEM_TOOLS_STATE_ROOT,
+  codexConfigPath: process.env.VNEM_TOOLS_CODEX_CONFIG,
+  globalProfile: process.env.VNEM_TOOLS_PERMISSION_PROFILE
+}) : null;
+const allowedRoots = globalProjectMode ? [] : await computeAllowedRoots();
+const evidenceRoot = globalProjectMode ? null : await computeEvidenceRoot();
+const projectRuntimeBundles = new Map();
+const staticPermissionRuntime = globalProjectMode ? null : await PermissionRuntime.create({
   workspaceRoot: allowedRoots[0],
   allowedRoots,
   profileName: process.env.VNEM_TOOLS_PERMISSION_PROFILE || null
 });
-const projectAutomationRuntime = new ProjectAutomationRuntime({ allowedRoots, evidenceRoot });
-const testingCiRuntime = new TestingCiRuntime({ allowedRoots, evidenceRoot });
-const browserInteractionRuntime = new BrowserInteractionRuntime({ allowedRoots, evidenceRoot });
-const windowsLocalRuntime = new WindowsLocalRuntime({ allowedRoots });
+const globalPermissionRuntime = globalProjectMode ? await PermissionRuntime.create({
+  workspaceRoot: workspaceRouter.stateRoot,
+  allowedRoots: [workspaceRouter.stateRoot],
+  configPath: path.join(workspaceRouter.stateRoot, "permissions", "global-shadow.json"),
+  backupRoot: path.join(workspaceRouter.stateRoot, "permissions", "global-backups"),
+  profileName: workspaceRouter.globalProfileName()
+}) : null;
+const permissionRuntime = globalProjectMode
+  ? createProjectPermissionFacade(workspaceRouter, globalPermissionRuntime, projectRuntimeBundles)
+  : staticPermissionRuntime;
+const projectAutomationRuntime = globalProjectMode ? projectRuntimeProxy("projectAutomation") : new ProjectAutomationRuntime({ allowedRoots, evidenceRoot });
+const testingCiRuntime = globalProjectMode ? projectRuntimeProxy("testingCi") : new TestingCiRuntime({ allowedRoots, evidenceRoot });
+const browserInteractionRuntime = globalProjectMode ? projectRuntimeProxy("browserInteraction") : new BrowserInteractionRuntime({ allowedRoots, evidenceRoot });
+const windowsLocalRuntime = globalProjectMode ? projectRuntimeProxy("windowsLocal", new Set(["planPowerShellCommand", "planSystemChange"])) : new WindowsLocalRuntime({ allowedRoots });
 const githubDevelopmentRuntime = new GithubDevelopmentRuntime({
   runProcess,
   resolveRoot: resolveGithubRoot,
   redact: redactSecrets,
   protectedBranches: () => githubSettings().protected_branches
 });
-const gameDomainRuntime = new GameDomainRuntime({ allowedRoots, evidenceRoot });
-const dependencySecurityRuntime = new DependencySecurityRuntime({ allowedRoots, evidenceRoot });
-const structuralCodeRuntime = new StructuralCodeRuntime({ allowedRoots, evidenceRoot, commandRuntime: projectAutomationRuntime });
-const apiConnectorRuntime = new ApiConnectorRuntime({ allowedRoots, evidenceRoot });
-const skillAdapterRuntime = new SkillAdapterRuntime({ allowedRoots, evidenceRoot, commandRuntime: projectAutomationRuntime });
-const dataSystemsRuntime = new DataSystemsRuntime({ allowedRoots, evidenceRoot });
+const gameDomainRuntime = globalProjectMode ? projectRuntimeProxy("gameDomain") : new GameDomainRuntime({ allowedRoots, evidenceRoot });
+const dependencySecurityRuntime = globalProjectMode ? projectRuntimeProxy("dependencySecurity") : new DependencySecurityRuntime({ allowedRoots, evidenceRoot });
+const structuralCodeRuntime = globalProjectMode ? projectRuntimeProxy("structuralCode") : new StructuralCodeRuntime({ allowedRoots, evidenceRoot, commandRuntime: projectAutomationRuntime });
+const apiConnectorRuntime = globalProjectMode ? projectRuntimeProxy("apiConnector", new Set(["catalog"])) : new ApiConnectorRuntime({ allowedRoots, evidenceRoot });
+const skillAdapterRuntime = globalProjectMode ? projectRuntimeProxy("skillAdapter", new Set(["catalog", "sourceVerificationPlan"])) : new SkillAdapterRuntime({ allowedRoots, evidenceRoot, commandRuntime: projectAutomationRuntime });
+const dataSystemsRuntime = globalProjectMode ? projectRuntimeProxy("dataSystems", new Set(["transformApplyPlan", "migrationApplyPlan", "rollbackPlan"])) : new DataSystemsRuntime({ allowedRoots, evidenceRoot });
 const activePermissionProfile = permissionRuntime.activeProfile();
-const cloudflareControlRuntime = new CloudflareControlRuntime({
+const cloudflareControlRuntime = globalProjectMode ? projectRuntimeProxy("cloudflareControl", new Set(["policy", "authPlan", "envPlan", "mutationApprovalContract", "secretRedactionCheck", "errorDiagnose"])) : new CloudflareControlRuntime({
   allowedRoots,
   evidenceRoot,
   repoRoot,
@@ -418,21 +438,28 @@ const cloudflareControlRuntime = new CloudflareControlRuntime({
   permissionProfile: () => activePermissionProfile.profile_name
 });
 const usablePacks = await loadUsablePacks();
-const requestedPrecisionWorkspaceCandidate = path.resolve(
-  process.env.VNEM_TOOLS_PRECISION_ROOT || process.env.VNEM_TOOLS_ROOT || process.env.VNEM_WORKSPACE_ROOT || process.cwd()
-);
-const requestedPrecisionWorkspaceRoot = existsSync(requestedPrecisionWorkspaceCandidate)
-  ? await realpath(requestedPrecisionWorkspaceCandidate)
-  : requestedPrecisionWorkspaceCandidate;
-if (process.env.VNEM_TOOLS_PRECISION_ROOT && !isInsideAny(requestedPrecisionWorkspaceRoot, allowedRoots)) {
-  throw new Error("VNEM Tools precision workspace must be inside VNEM_TOOLS_ALLOWED_ROOTS.");
+let precisionRuntime;
+if (globalProjectMode) {
+  precisionRuntime = projectRuntimeProxy("precision", new Set(["documentationSourceCatalog", "documentationContext", "indexStatus"]));
+  workspaceRouter.setSelectionHook(async (project) => {
+    activateProjectRoot(project);
+    await ensureProjectRuntimeBundle(project);
+  });
+} else {
+  const requestedPrecisionWorkspaceCandidate = path.resolve(
+    process.env.VNEM_TOOLS_PRECISION_ROOT || process.env.VNEM_TOOLS_ROOT || process.env.VNEM_WORKSPACE_ROOT || process.cwd()
+  );
+  const requestedPrecisionWorkspaceRoot = existsSync(requestedPrecisionWorkspaceCandidate)
+    ? await realpath(requestedPrecisionWorkspaceCandidate)
+    : requestedPrecisionWorkspaceCandidate;
+  if (process.env.VNEM_TOOLS_PRECISION_ROOT && !isInsideAny(requestedPrecisionWorkspaceRoot, allowedRoots)) {
+    throw new Error("VNEM Tools precision workspace must be inside VNEM_TOOLS_ALLOWED_ROOTS.");
+  }
+  const precisionWorkspaceRoot = isInsideAny(requestedPrecisionWorkspaceRoot, allowedRoots)
+    ? requestedPrecisionWorkspaceRoot
+    : allowedRoots[0];
+  precisionRuntime = new PrecisionRuntime({ workspaceRoot: precisionWorkspaceRoot });
 }
-const precisionWorkspaceRoot = isInsideAny(requestedPrecisionWorkspaceRoot, allowedRoots)
-  ? requestedPrecisionWorkspaceRoot
-  : allowedRoots[0];
-const precisionRuntime = new PrecisionRuntime({
-  workspaceRoot: precisionWorkspaceRoot
-});
 
 const server = new McpServer(
   { name: "vnem-tools", version: SERVER_VERSION },
@@ -494,7 +521,8 @@ const {
   runtimeToolCatalog,
   githubSettings: (...args) => githubSettings(...args),
   githubProfileStatus: (...args) => githubProfileStatus(...args),
-  arrayify
+  arrayify,
+  projectRoutingStatus: globalProjectMode ? () => workspaceRouter.status() : null
 });
 
 const {
@@ -706,6 +734,10 @@ const {
 });
 
 registerTools(server);
+registerProjectRouterTools(server, globalProjectMode ? workspaceRouter : createStaticProjectRouterAdapter(), {
+  registry: toolsRegistry,
+  onRevoke: () => {}
+});
 for (const [implementationModule, toolNames] of [
   ["scripts/vnem/tools/reliability-runtime.mjs", [
     "vnem_tools_reliability_catalog", "vnem_tools_action_recovery_plan", "vnem_tools_high_power_action_review", "vnem_tools_capability_gap_report"
@@ -3646,7 +3678,7 @@ function buildPermissionProfiles() {
 
 function permissionProfilesObject() {
   const profiles = buildPermissionProfiles();
-  return { default_profile: "safe-readonly", selected_profile: activePermissionProfile.profile_name, profiles, dangerous_disabled_policy: profiles.find((p) => p.profile_name === "dangerous-disabled") };
+  return { default_profile: "safe-readonly", selected_profile: permissionRuntime.activeProfile().profile_name, profiles, dangerous_disabled_policy: profiles.find((p) => p.profile_name === "dangerous-disabled") };
 }
 
 function getActivePermissionProfile() {
@@ -3750,7 +3782,7 @@ function trustBoundaryClassify(description) {
 
 function actionPolicyPreview(args = {}) {
   const actionType = normalizeActionType(args.action_type, `${args.proposed_action || ""} ${args.target_path || ""} ${args.source_description || ""}`);
-  const profile = activePermissionProfile;
+  const profile = permissionRuntime.activeProfile();
   const trust = trustBoundaryClassify(`${actionType} ${args.proposed_action || ""} ${args.target_path || ""} ${args.source_description || ""}`);
   const hardBlocked = HARD_BLOCKED_ACTION_TYPES.has(actionType) || trust.level === "6_blocked_dangerous_action";
   const trustBoundaryLevel = hardBlocked ? "6_blocked_dangerous_action" : trust.level;
@@ -3807,26 +3839,38 @@ function enforceActionPolicy(actionType, args = {}) {
 function permissionStatusObject() {
   const manifest = safeSearchProviderManifest();
   const sharedStatus = permissionRuntime.status();
-  const workspace = path.resolve(process.env.VNEM_WORKSPACE_ROOT || process.cwd() || repoRoot);
-  const workspaceAllowed = isInsideAny(workspace, allowedRoots);
+  const selectedProject = globalProjectMode ? workspaceRouter.selectedProject() : null;
+  const workspace = globalProjectMode ? selectedProject?.root || null : path.resolve(process.env.VNEM_WORKSPACE_ROOT || process.cwd() || repoRoot);
+  const workspaceAllowed = globalProjectMode ? Boolean(selectedProject) : isInsideAny(workspace, allowedRoots);
+  const currentEvidenceRoot = globalProjectMode
+    ? selectedProject ? workspaceRouter.evidenceRoot(selectedProject) : path.join(workspaceRouter.stateRoot, "projects", "<project-id>", "tool-runs")
+    : evidenceRoot;
+  const currentProfile = permissionRuntime.activeProfile();
   return {
-    active_profile: activePermissionProfile,
+    active_profile: currentProfile,
     configured_by: sharedStatus.configured_by,
     allowed_roots: allowedRoots,
     current_working_directory: process.cwd(),
     workspace_root: workspace,
     workspace_allowed: workspaceAllowed,
-    workspace_fix_suggestion: workspaceAllowed ? "Current workspace is inside an allowed root." : `Add the workspace to VNEM_TOOLS_ALLOWED_ROOTS or start Tools MCP from an allowed root. Current allowed roots: ${allowedRoots.join(path.delimiter)}`,
-    evidence_root: evidenceRoot,
-    evidence_root_inside_allowed_roots: isInsideAny(evidenceRoot, allowedRoots),
-    how_to_add_more_roots: `Set VNEM_TOOLS_ALLOWED_ROOTS to one or more project roots separated by ${JSON.stringify(path.delimiter)}; keep roots narrow, not drive/home roots.`,
+    workspace_fix_suggestion: workspaceAllowed
+      ? "Current project is selected and authorized."
+      : globalProjectMode
+        ? "Select an exact trusted or explicitly approved project with vnem_tools_project_select."
+        : `Add the workspace to VNEM_TOOLS_ALLOWED_ROOTS or start Tools MCP from an allowed root. Current allowed roots: ${allowedRoots.join(path.delimiter)}`,
+    evidence_root: currentEvidenceRoot,
+    evidence_root_inside_allowed_roots: globalProjectMode ? false : isInsideAny(evidenceRoot, allowedRoots),
+    evidence_strategy: globalProjectMode ? "global namespaced state outside project working trees" : "project-local evidence",
+    how_to_add_more_roots: globalProjectMode
+      ? "Trust the exact project in Codex or use the bounded VNEM project approval flow; no MCP reinstall is required."
+      : `Set VNEM_TOOLS_ALLOWED_ROOTS to one or more project roots separated by ${JSON.stringify(path.delimiter)}; keep roots narrow, not drive/home roots.`,
     broad_root_warnings: allowedRoots.flatMap(rootBroadnessWarnings),
     localhost_policy: { enabled: process.env.VNEM_TOOLS_ALLOW_LOCALHOST === "1", host_policy: "localhost/127.0.0.1 only for approved local proof" },
     high_power_summary: { principle: "High power, honest confidence, strict boundaries.", reliability_catalog_tool: "vnem_tools_reliability_catalog", action_recovery_tool: "vnem_tools_action_recovery_plan", high_power_review_tool: "vnem_tools_high_power_action_review" },
     github_autonomy_summary: buildGithubAutonomySummary(),
     cloudflare_summary: buildCloudflareStatusPolicy(),
     scoped_grants: { session: sharedStatus.session_grants, persistent: sharedStatus.persistent_grants, request_tool: "vnem_tools_permission_request", grant_tool: "vnem_tools_permission_grant", revoke_tool: "vnem_tools_permission_revoke" },
-    mutation_allowed_summary: { profile: activePermissionProfile.profile_name, safe_readonly_can_mutate: false, non_destructive_mutation_allowed_with_approval: permissionRuntime.evaluate({ action: "apply_patch" }).allowed, github_maintainer_feature_branch_work_allowed_by_github_profile: githubProfilePolicy(githubSettings().profile).allowed_actions.includes("push_feature_branch"), high_impact_operations_remain_approval_gated: true, package_installs_require_approved_installs_or_scoped_grant: true, package_publish_and_arbitrary_shell_still_blocked: true },
+    mutation_allowed_summary: { profile: currentProfile.profile_name, safe_readonly_can_mutate: false, non_destructive_mutation_allowed_with_approval: permissionRuntime.evaluate({ action: "apply_patch" }).allowed, github_maintainer_feature_branch_work_allowed_by_github_profile: githubProfilePolicy(githubSettings().profile).allowed_actions.includes("push_feature_branch"), high_impact_operations_remain_approval_gated: true, package_installs_require_approved_installs_or_scoped_grant: true, package_publish_and_arbitrary_shell_still_blocked: true },
     destructive_allowed_summary: { allowed: false, hard_blocked_actions: sharedStatus.hard_blocked_actions, exact_destructive_approval_required: true, destructive_phrase: CLOUDFLARE_DESTRUCTIVE_APPROVAL_PHRASE, protected_resource_acknowledgment_required: true },
     approval_phrase_summary: { generic_tools: "approved=true plus a specific approval_note", cloudflare_mutation: CLOUDFLARE_MUTATION_APPROVAL_PHRASE, cloudflare_destructive: CLOUDFLARE_DESTRUCTIVE_APPROVAL_PHRASE },
     known_blocked_actions: unsupportedActions(),
@@ -3852,6 +3896,170 @@ function formatPermissionProfiles(profiles) { return [`vnem_tools_permission_pro
 function formatPermissionStatus(status) { return [`vnem_tools_permission_status: ${status.active_profile.profile_name}`, `allowed_roots=${status.allowed_roots.join(", ")}`, `workspace_allowed=${status.workspace_allowed}`, `mutations=${status.mutation_allowed_summary.non_destructive_mutation_allowed_with_approval ? "approval_gated" : "blocked_or_plan_only"}`, `cloudflare=${status.cloudflare_summary.capability_status}`, `evidence_root=${status.evidence_root}`, status.broad_root_warnings.length ? `warnings=${status.broad_root_warnings.join("; ")}` : "warnings=none"].join("\n"); }
 function formatActionPolicyPreview(preview) { return [`vnem_tools_action_policy_preview: ${preview.action_type}`, `profile=${preview.permission_profile}`, `trust=${preview.trust_boundary_level}`, `allowed=${preview.allowed}`, `requires_approval=${preview.requires_approval}`, `blocked=${preview.blocked}`, `reason=${preview.reason}`].join("\n"); }
 function formatTrustBoundary(trust) { return [`vnem_tools_trust_boundary_classify: ${trust.level}`, `requires_approval=${trust.requires_approval}`, `blocked_by_default=${trust.blocked_by_default}`, `safe_next_action=${trust.safe_next_action}`].join("\n"); }
+
+function activateProjectRoot(project) {
+  if (!globalProjectMode) return;
+  allowedRoots.splice(0, allowedRoots.length, path.resolve(project.root));
+}
+
+async function ensureProjectRuntimeBundle(project) {
+  if (!globalProjectMode) throw new ProjectRouterError("Dynamic project bundles are available only in global Codex mode.", "global_project_mode_inactive");
+  const existing = projectRuntimeBundles.get(project.project_id);
+  if (existing) return existing;
+  const state = await workspaceRouter.ensureProjectState(project);
+  const effectiveProfile = await workspaceRouter.effectiveProfile(project);
+  const roots = [path.resolve(project.root)];
+  const automation = new ProjectAutomationRuntime({ allowedRoots: roots, evidenceRoot: state.evidence_root });
+  const permission = await PermissionRuntime.create({
+    workspaceRoot: project.root,
+    allowedRoots: roots,
+    configPath: state.permission_config,
+    backupRoot: state.permission_backups,
+    profileName: effectiveProfile.effective_profile
+  });
+  const bundle = {
+    project,
+    state,
+    permission,
+    projectAutomation: automation,
+    testingCi: new TestingCiRuntime({ allowedRoots: roots, evidenceRoot: state.evidence_root }),
+    browserInteraction: new BrowserInteractionRuntime({ allowedRoots: roots, evidenceRoot: state.evidence_root }),
+    windowsLocal: new WindowsLocalRuntime({ allowedRoots: roots }),
+    gameDomain: new GameDomainRuntime({ allowedRoots: roots, evidenceRoot: state.evidence_root }),
+    dependencySecurity: new DependencySecurityRuntime({ allowedRoots: roots, evidenceRoot: state.evidence_root }),
+    structuralCode: new StructuralCodeRuntime({ allowedRoots: roots, evidenceRoot: state.evidence_root, commandRuntime: automation }),
+    apiConnector: new ApiConnectorRuntime({ allowedRoots: roots, evidenceRoot: state.evidence_root, stateRoot: state.state_root }),
+    skillAdapter: new SkillAdapterRuntime({ allowedRoots: roots, evidenceRoot: state.evidence_root, commandRuntime: automation, allowExternalEvidenceRoot: true }),
+    dataSystems: new DataSystemsRuntime({ allowedRoots: roots, evidenceRoot: state.evidence_root, allowExternalEvidenceRoot: true }),
+    cloudflareControl: new CloudflareControlRuntime({
+      allowedRoots: roots,
+      evidenceRoot: state.evidence_root,
+      repoRoot,
+      runProcess,
+      runProcessWithInput,
+      permissionProfile: () => permission.activeProfile().profile_name
+    }),
+    precision: new PrecisionRuntime({
+      workspaceRoot: project.root,
+      runtimeRoot: path.join(state.state_root, "precision")
+    })
+  };
+  projectRuntimeBundles.set(project.project_id, bundle);
+  return bundle;
+}
+
+function projectRuntimeProxy(key, syncMethods = new Set()) {
+  return new Proxy({}, {
+    get(_target, property) {
+      if (property === "then") return undefined;
+      return (...args) => {
+        if (syncMethods.has(property)) {
+          const bundle = selectedRuntimeBundle();
+          const normalized = normalizeRuntimeArgs(args, bundle.project);
+          return bundle[key][property](...normalized);
+        }
+        return (async () => {
+          const first = args[0] && typeof args[0] === "object" ? args[0] : {};
+          const project = await workspaceRouter.resolveForToolCall(first);
+          activateProjectRoot(project);
+          const bundle = await ensureProjectRuntimeBundle(project);
+          const normalized = normalizeRuntimeArgs(args, project);
+          return await bundle[key][property](...normalized);
+        })();
+      };
+    }
+  });
+}
+
+function selectedRuntimeBundle() {
+  const selected = workspaceRouter?.selectedProject();
+  if (!selected) throw new ProjectRouterError("No project is selected in global VNEM mode.", "project_not_selected", { safe_next_action: "Call vnem_tools_project_select first." });
+  const bundle = projectRuntimeBundles.get(selected.project_id);
+  if (!bundle) throw new ProjectRouterError("Selected project runtime is not initialized.", "project_runtime_not_initialized");
+  activateProjectRoot(selected);
+  return bundle;
+}
+
+function normalizeRuntimeArgs(args, project) {
+  if (!args.length || !args[0] || typeof args[0] !== "object" || Array.isArray(args[0])) return args;
+  const first = { ...args[0] };
+  first.root = !first.root || first.root === "." ? project.root : first.root;
+  if (Object.hasOwn(first, "workspace_root") && (!first.workspace_root || first.workspace_root === ".")) first.workspace_root = project.root;
+  if (Object.hasOwn(first, "project_dir") && (!first.project_dir || first.project_dir === ".")) first.project_dir = project.root;
+  if (Object.hasOwn(first, "repo_path") && (!first.repo_path || first.repo_path === ".")) first.repo_path = project.root;
+  return [first, ...args.slice(1)];
+}
+
+function createProjectPermissionFacade(router, globalRuntime, bundles) {
+  const selectedPermission = (required = false) => {
+    const selected = router.selectedProject();
+    const runtime = selected ? bundles.get(selected.project_id)?.permission : null;
+    if (required && !runtime) throw new ProjectRouterError("Select an authorized project before requesting or changing scoped permissions.", "project_not_selected");
+    return runtime || globalRuntime;
+  };
+  return {
+    profiles: () => globalRuntime.profiles(),
+    activeProfile: () => selectedPermission(false).activeProfile(),
+    status: () => ({
+      ...selectedPermission(false).status(),
+      global_mode: true,
+      selected_project: router.selectedProject(),
+      global_profile: router.globalProfileName()
+    }),
+    evaluate: (args) => selectedPermission(false).evaluate(args),
+    requestGrant: (args) => selectedPermission(true).requestGrant(args),
+    approveGrant: (args) => selectedPermission(true).approveGrant(args),
+    revokeGrant: (id) => selectedPermission(true).revokeGrant(id),
+    doctor: () => selectedPermission(false).doctor()
+  };
+}
+
+function createStaticProjectRouterAdapter() {
+  const root = allowedRoots[0];
+  const identity = process.platform === "win32" ? root.toLowerCase() : root;
+  const project = { project_id: createHash("sha256").update(identity).digest("hex").slice(0, 24), root, identity, source: "static_allowed_root" };
+  const inactive = () => { throw new ProjectRouterError("Dynamic global project routing is not active for this Tools registration.", "global_project_mode_inactive", { safe_next_action: "Run global Codex setup or continue using the configured static allowed root." }); };
+  return {
+    globalProfileName: () => permissionRuntime.activeProfile().profile_name,
+    selectedProject: () => project,
+    discoverCodexTrustedProjects: async () => ({ projects: [], health: { ok: true, code: "static_mode_not_applicable", issues: [] }, registrations: { core: false, tools: true } }),
+    authorizationCheck: async (input) => {
+      const resolved = await realpath(path.resolve(input)).catch(() => null);
+      const authorized = Boolean(resolved && isInsideAny(resolved, allowedRoots));
+      return { authorized, code: authorized ? "project_authorized_static" : "project_not_authorized", requested_path: resolved || path.resolve(input), authorization_source: authorized ? "static_allowed_root" : null, project: authorized ? project : null, reason: authorized ? null : "Path is outside the statically configured allowed root." };
+    },
+    requestApproval: inactive,
+    activateApproval: inactive,
+    revoke: inactive,
+    select: async (input) => {
+      const checked = await createStaticProjectRouterAdapter().authorizationCheck(input);
+      if (!checked.authorized) throw new ProjectRouterError(checked.reason, checked.code, checked);
+      return { selected: true, project, authorization_source: "static_allowed_root", evidence_root: evidenceRoot, switched_from_project_id: null, selection_broadens_authorization: false };
+    },
+    status: async () => ({
+      schema_version: "1.0.0",
+      mode: "project-static",
+      core_globally_registered: false,
+      tools_globally_registered: true,
+      dynamic_project_routing_active: false,
+      global_profile: permissionRuntime.activeProfile().profile_name,
+      project_specific_profile_narrowing: null,
+      effective_profile: permissionRuntime.activeProfile().profile_name,
+      selected_project: project,
+      codex_trusted_projects: [],
+      explicit_session_approvals: [],
+      explicit_persistent_approvals: [],
+      denied_project_attempts: [],
+      evidence_namespace: evidenceRoot,
+      state_root: null,
+      global_hard_blocks: "retained",
+      codex_configuration_health: { ok: true, code: "static_mode_not_applicable", issues: [] },
+      migration_state: "static-root-registration",
+      secrets_in_output: false
+    }),
+    doctor: async () => ({ ok: true, mode: "project-static", issues: [], selected_project: project, trusted_project_count: 0, explicit_approval_count: 0, evidence_namespace: evidenceRoot, global_profile: permissionRuntime.activeProfile().profile_name, hard_blocks_intact: true, codex_configuration_health: { ok: true, code: "static_mode_not_applicable" }, migration_state: "static-root-registration" })
+  };
+}
 
 async function computeAllowedRoots() {
   const raw = process.env.VNEM_TOOLS_ALLOWED_ROOTS;
@@ -3954,7 +4162,7 @@ function statusObject() {
       external_url_default_block: true,
       approval_required: true,
       dry_run_default: true,
-      screenshot_evidence_location: path.join(evidenceRoot, "screenshots"),
+      screenshot_evidence_location: path.join(currentEvidenceRoot(), "screenshots"),
       browser_runtime_status: "checked_on_capture",
       no_persistent_browser_profile: true,
       unsupported_browser_actions: ["login automation", "cookie extraction", "session persistence", "external browsing by default", "CAPTCHA bypass", "web scraping", "credential capture"]
@@ -3973,7 +4181,7 @@ function statusObject() {
       allowed_roots_only: true,
       secret_paths_blocked: true
     },
-    evidence_log_location: evidenceRoot,
+    evidence_log_location: currentEvidenceRoot(),
     core_handoff_supported: true,
     remaining_unsupported_actions: unsupportedActions(),
     unsupported_in_foundation_batch: ["github_destructive_admin_without_config", "package_publish", "global_package_install", "unreviewed_package_lifecycle_execution", "non_npm_dependency_mutation", "deployment", "arbitrary_shell", "unrestricted_api_calls", "secret_manager_backed_live_api", "login_automation", "cookie_extraction", "captcha_bypass", "giga_mcp"]
@@ -4079,16 +4287,23 @@ function buildPermissionPrompt(args) {
     `Dry-run option: ${args.dry_run_available !== false ? "available and should be run first" : "not available for this requested action"}`,
     `Rollback/restore plan: ${rollback.join("; ")}`,
     "What could go wrong: files may be changed incorrectly, commands may fail, API calls may expose metadata, or evidence may be incomplete.",
-    `Logs/evidence collected: evidence JSON under ${evidenceRoot} with secrets redacted.`,
+    `Logs/evidence collected: evidence JSON under ${currentEvidenceRoot()} with secrets redacted.`,
     "What happens if approved: Tools MCP may run only the exact approved action within allowlists and limits.",
     "What happens if denied: Tools MCP will stop after planning/dry-run and make no real change."
   ].join("\n");
-  return { action_type: action, exact_action: exactAction, risk_level: args.risk_level || "medium", scope: arrayify(args.target_paths), rollback_or_restore_plan: rollback, evidence_log_location: evidenceRoot, text };
+  return { action_type: action, exact_action: exactAction, risk_level: args.risk_level || "medium", scope: arrayify(args.target_paths), rollback_or_restore_plan: rollback, evidence_log_location: currentEvidenceRoot(), text };
 }
 
 async function resolveAllowedRoot(input = ".") {
   const raw = String(input || ".").trim();
-  const candidate = path.isAbsolute(raw) ? path.resolve(raw) : path.resolve(allowedRoots[0], raw);
+  if (globalProjectMode) {
+    const project = await workspaceRouter.resolveForToolCall({ root: raw });
+    activateProjectRoot(project);
+    await ensureProjectRuntimeBundle(project);
+  }
+  const base = allowedRoots[0];
+  if (!base) throw new ProjectRouterError("No project is selected in global VNEM mode.", "project_not_selected");
+  const candidate = path.isAbsolute(raw) ? path.resolve(raw) : path.resolve(base, raw);
   const resolved = await realpath(candidate);
   if (!isInsideAny(resolved, allowedRoots)) {
     throw new ToolsError("Path is outside allowed roots.", "path_outside_allowed_roots", { path: raw, allowed_roots: allowedRoots });
@@ -4099,7 +4314,13 @@ async function resolveAllowedRoot(input = ".") {
 async function resolveAllowedFile(input, options = {}) {
   const raw = String(input || "").trim();
   if (!raw) throw new ToolsError("Path is required.", "path_required");
+  if (globalProjectMode) {
+    const project = await workspaceRouter.resolveForToolCall({});
+    activateProjectRoot(project);
+    await ensureProjectRuntimeBundle(project);
+  }
   const base = allowedRoots[0];
+  if (!base) throw new ProjectRouterError("No project is selected in global VNEM mode.", "project_not_selected");
   const candidate = path.isAbsolute(raw) ? path.resolve(raw) : path.resolve(base, raw);
   if (!isInsideAny(candidate, allowedRoots)) {
     throw new ToolsError("Path is outside allowed roots.", "path_outside_allowed_roots", { path: raw, allowed_roots: allowedRoots });
@@ -4115,6 +4336,19 @@ async function resolveAllowedFile(input, options = {}) {
     throw new ToolsError("Resolved path escapes allowed roots.", "path_outside_allowed_roots", { path: raw, resolved_path: resolved });
   }
   return { absolutePath: resolved, relativePath: relativeToAllowed(resolved), root: findContainingRoot(resolved) };
+}
+
+function currentEvidenceRoot() {
+  if (!globalProjectMode) return evidenceRoot;
+  const selected = workspaceRouter.selectedProject();
+  return selected ? workspaceRouter.evidenceRoot(selected) : path.join(workspaceRouter.stateRoot, "projects", "<project-id>", "tool-runs");
+}
+
+function writableEvidenceRoot() {
+  if (!globalProjectMode) return evidenceRoot;
+  const selected = workspaceRouter.selectedProject();
+  if (!selected) throw new ProjectRouterError("Select an authorized project before creating evidence or state.", "project_not_selected");
+  return workspaceRouter.evidenceRoot(selected);
 }
 
 async function walkFiles(current, base, results, options = {}) {
@@ -5359,7 +5593,7 @@ async function safeApplyPatch(args) {
   let backupPath = null;
   if (!dryRun) {
     if (args.backup !== false) {
-      const backupDir = path.join(evidenceRoot, "backups", logId("backup"));
+      const backupDir = path.join(writableEvidenceRoot(), "backups", logId("backup"));
       const rel = target.relativePath;
       backupPath = path.join(backupDir, rel);
       await mkdir(path.dirname(backupPath), { recursive: true });
@@ -5665,7 +5899,7 @@ async function safeApplyPatchBatch(args) {
   const changedFiles = [...new Set(plans.map((plan) => plan.target.relativePath))];
   const createdFiles = [...new Set(plans.filter((plan) => plan.op === "create").map((plan) => plan.target.relativePath))];
   const deletedFiles = [...new Set(plans.filter((plan) => plan.op === "delete").map((plan) => plan.target.relativePath))];
-  const backupRoot = path.join(evidenceRoot, "backups", logId("patch-batch"));
+  const backupRoot = path.join(writableEvidenceRoot(), "backups", logId("patch-batch"));
   if (!dryRun) {
     for (const plan of plans) {
       if (plan.op !== "create" && !backups.some((item) => item.target_path === plan.target.relativePath)) {
@@ -5799,7 +6033,7 @@ async function safeAppVerticalSlicePlan(args) {
       adapter: args.adapter,
       max_files: args.max_files
     });
-    if (plan.plan_id) appEngineeringPlans.set(plan.plan_id, { root: root.absolutePath, plan });
+    if (plan.plan_id) appEngineeringPlans.set(plan.plan_id, { root: root.absolutePath, project_id: currentProjectId(), plan });
     const result = decorateToolResult("vnem_tools_app_vertical_slice_plan", {
       ...plan,
       mutation_state: "planned_or_dry_run_no_mutation",
@@ -5815,6 +6049,7 @@ async function safeAppVerticalSlicePlan(args) {
 async function safeAppVerticalSliceApply(args) {
   const entry = appEngineeringPlans.get(args.plan_id);
   if (!entry) throw new ToolsError("App plan id was not created by this Tools MCP process.", "app_plan_not_found", { plan_id: args.plan_id });
+  if (entry.project_id !== currentProjectId()) throw new ToolsError("App plan belongs to a different project namespace.", "app_plan_project_mismatch", { plan_id: args.plan_id });
   const dryRun = args.dry_run !== false;
   const preview = {
     status: dryRun ? "dry_run_planned" : "ready_to_apply",
@@ -5908,7 +6143,7 @@ async function safeAppAcceptanceRun(args) {
   let rollbackResult = null;
   let acceptanceError = null;
   const acceptanceId = logId("app-acceptance");
-  const outputDir = path.join(evidenceRoot, acceptanceId);
+  const outputDir = path.join(writableEvidenceRoot(), acceptanceId);
   await mkdir(outputDir, { recursive: true });
   try {
     for (const script of scripts) {
@@ -6085,7 +6320,7 @@ async function safeStartDevServer(args) {
     detached: process.platform !== "win32"
   });
   const serverId = logId("dev-server");
-  const record = { ...planned, dry_run: false, started: true, server_id: serverId, pid: child.pid, stdout: "", stderr: "", started_at: new Date().toISOString() };
+  const record = { ...planned, dry_run: false, started: true, server_id: serverId, project_id: currentProjectId(), pid: child.pid, stdout: "", stderr: "", started_at: new Date().toISOString() };
   const collect = (field, chunk) => { record[field] = truncate(redactSecrets(record[field] + chunk.toString()), args.max_output_bytes || 8000); };
   child.stdout.on("data", (chunk) => collect("stdout", chunk));
   child.stderr.on("data", (chunk) => collect("stderr", chunk));
@@ -6103,6 +6338,7 @@ async function safeStartDevServer(args) {
 async function safeStopDevServer(args) {
   const entry = devServers.get(args.server_id);
   if (!entry) throw new ToolsError("Dev server id was not started by this Tools MCP process.", "dev_server_not_found", { server_id: args.server_id });
+  if (entry.record.project_id !== currentProjectId()) throw new ToolsError("Dev server belongs to a different project namespace.", "dev_server_project_mismatch", { server_id: args.server_id });
   enforceApproval(args);
   let stopCommand = null;
   let fallbackKillSent = false;
@@ -6237,11 +6473,13 @@ async function waitForChildExit(child, timeoutMs) {
 }
 
 function listDevServers() {
-  return { servers: [...devServers.values()].map(({ record }) => ({ server_id: record.server_id, pid: record.pid, script: record.script, url: record.url, running: record.running !== false, started_at: record.started_at })) };
+  const projectId = currentProjectId();
+  return { servers: [...devServers.values()].filter(({ record }) => record.project_id === projectId).map(({ record }) => ({ server_id: record.server_id, project_id: record.project_id, pid: record.pid, script: record.script, url: record.url, running: record.running !== false, started_at: record.started_at })) };
 }
 
 async function startEvidenceSession(args) {
-  const session = { session_id: logId("session"), task: args.task, started_at: new Date().toISOString(), actions_planned: arrayify(args.actions_planned), project_scans: [], patches_applied: [], commands_run: [], dev_servers_started: [], dev_servers_stopped: [], browser_captures: [], api_requests: [], restores: [], blocked_actions: [], git_commits: [] };
+  await resolveAllowedRoot(args.root || ".");
+  const session = { session_id: logId("session"), project_id: currentProjectId(), task: args.task, started_at: new Date().toISOString(), actions_planned: arrayify(args.actions_planned), project_scans: [], patches_applied: [], commands_run: [], dev_servers_started: [], dev_servers_stopped: [], browser_captures: [], api_requests: [], restores: [], blocked_actions: [], git_commits: [] };
   sessions.set(session.session_id, session);
   const log = await writeEvidenceLog("session_start", session, session.session_id);
   return { ...session, evidence_log_id: log.evidence_log_id };
@@ -6250,6 +6488,7 @@ async function startEvidenceSession(args) {
 async function finishEvidenceSession(args) {
   const session = sessions.get(args.session_id);
   if (!session) throw new ToolsError("Session id not found.", "session_not_found", { session_id: args.session_id });
+  if (session.project_id !== currentProjectId()) throw new ToolsError("Session belongs to a different project namespace.", "session_project_mismatch", { session_id: args.session_id });
   const browserBlocked = session.browser_captures.some((item) => item.status && item.status !== "captured");
   const pack = {
     ...session,
@@ -6274,6 +6513,7 @@ async function finishEvidenceSession(args) {
 function recordSession(sessionId, bucket, payload) {
   if (!sessionId || !sessions.has(sessionId)) return;
   const session = sessions.get(sessionId);
+  if (session.project_id !== currentProjectId()) return;
   if (!Array.isArray(session[bucket])) session[bucket] = [];
   session[bucket].push(JSON.parse(redactSecrets(JSON.stringify(payload))));
 }
@@ -6281,6 +6521,17 @@ function recordSession(sessionId, bucket, payload) {
 function recordToolError(sessionId, tool, error) {
   if (!sessionId || !sessions.has(sessionId)) return;
   recordSession(sessionId, "blocked_actions", { tool, code: error instanceof ToolsError ? error.code : "tools_unexpected_error", error: error.message || String(error) });
+}
+
+function currentProjectId() {
+  if (globalProjectMode) {
+    const selected = workspaceRouter.selectedProject();
+    if (!selected) throw new ProjectRouterError("No project is selected in global VNEM mode.", "project_not_selected");
+    return selected.project_id;
+  }
+  const root = allowedRoots[0];
+  const identity = process.platform === "win32" ? root.toLowerCase() : root;
+  return createHash("sha256").update(identity).digest("hex").slice(0, 24);
 }
 
 
@@ -6464,11 +6715,11 @@ async function safeBrowserCapture(args) {
     recordSession(args.session_id, "browser_captures", withLog);
     return withLog;
   }
-  const screenshotsDir = path.join(evidenceRoot, "screenshots");
+  const screenshotsDir = path.join(writableEvidenceRoot(), "screenshots");
   await mkdir(screenshotsDir, { recursive: true });
   const captureId = logId("browser-capture");
   const screenshotPath = path.join(screenshotsDir, `${captureId}.png`);
-  const profileDir = path.join(evidenceRoot, "browser-profiles", captureId);
+  const profileDir = path.join(writableEvidenceRoot(), "browser-profiles", captureId);
   await mkdir(profileDir, { recursive: true });
   const browserArgs = [
     "--headless=new",
@@ -6730,6 +6981,20 @@ function registerCloudflareTools(mcpServer) {
 }
 
 function buildCloudflareStatusPolicy() {
+  if (globalProjectMode && !workspaceRouter.selectedProject()) {
+    const profile = permissionRuntime.activeProfile().profile_name;
+    return {
+      capability_group: "cloudflare_control",
+      permission_profile: profile,
+      capability_status: profile === "dangerous-disabled" ? "disabled_by_profile" : profile === "safe-readonly" ? "read_only" : profile === "safe-local-dev" ? "dry_run_only" : "approval_gated_mutation_enabled",
+      allowed_operations: [],
+      mutation_approval_phrase: CLOUDFLARE_MUTATION_APPROVAL_PHRASE,
+      destructive_approval_phrase: CLOUDFLARE_DESTRUCTIVE_APPROVAL_PHRASE,
+      secrets_redacted: true,
+      no_cookie_session_auth: true,
+      project_selection_required: true
+    };
+  }
   return cloudflareControlRuntime.policy();
 }
 
@@ -6830,7 +7095,7 @@ function formatCloudflare(label, result) { return [`vnem_tools_${label}: ${resul
 
 async function writeEvidenceLog(kind, payload, existingId) {
   const evidenceLogId = existingId || logId(kind);
-  const file = path.join(evidenceRoot, `${evidenceLogId}.json`);
+  const file = path.join(writableEvidenceRoot(), `${evidenceLogId}.json`);
   await mkdir(path.dirname(file), { recursive: true });
   const redactedPayload = safeRedactJsonValue({ kind, evidence_log_id: evidenceLogId, generated_at: new Date().toISOString(), payload });
   await writeFile(file, JSON.stringify(redactedPayload, null, 2), "utf8");
@@ -7206,6 +7471,7 @@ async function withToolErrors(fn) {
     return await fn();
   } catch (error) {
     if (error instanceof ToolsError) return errorResult(error.message, error.code, error.details);
+    if (error instanceof ProjectRouterError) return errorResult(error.message, error.code, error.details);
     if (error instanceof ProjectAutomationError) return errorResult(error.message, error.code, error.details);
     if (error instanceof TestingCiError) return errorResult(error.message, error.code, error.details);
     if (error instanceof BrowserInteractionError) return errorResult(error.message, error.code, error.details);
