@@ -60,6 +60,8 @@ const mcpUserSmokeTestSource = await text("scripts/test-mcp-user-smoke.mjs");
 const adoptionReliabilityTestSource = await text("scripts/test-vnem-adoption-reliability-1-regression.mjs");
 const adoptionReliability2TestSource = await text("scripts/test-vnem-adoption-reliability-2-regression.mjs");
 const installAdoptionTestSource = await text("scripts/test-vnem-install-adoption-1-regression.mjs");
+const adoptionClientUseTestSource = await text("scripts/test-giga-adoption-client-use.mjs");
+const clientConfigMergeSource = await text("scripts/vnem/clients/config-merge.mjs");
 const readme = await text("README.md");
 const installGuide = await text(".vnem/install-guide.md");
 const packageJson = await json("package.json");
@@ -231,8 +233,11 @@ const coreAdoptionReliabilityStatus = {
   core_adoption_reliability_status: /when_tools_mcp_is_needed/.test(coreRuntimeSource) && /what_core_cannot_do/.test(coreRuntimeSource) && /no_placebo_risks/.test(coreRuntimeSource) && /disconnected_agent_limit/.test(coreRuntimeSource + adoptionReliabilityTestSource),
   core_visibility_doctor_status: toolInventory.includes("vnem_mcp_visibility_doctor") && /buildCoreVisibilityDoctor/.test(serverSource) && /core-visibility-doctor/.test(adoptionReliability2TestSource),
   core_underuse_detector_status: toolInventory.includes("vnem_underuse_detector") && /buildCoreUnderuseDetector/.test(serverSource) && /core-underuse-detector/.test(adoptionReliability2TestSource),
+  core_usage_self_check_status: toolInventory.includes("vnem_usage_self_check") && /buildUsageSelfCheck/.test(serverSource) && /core-usage-self-check/.test(adoptionReliability2TestSource) && /hidden_telemetry_used:\s*false/.test(serverSource),
+  managed_client_instruction_status: /mergeManagedClientInstructions/.test(clientConfigMergeSource) && /VNEM is the default improvement layer/.test(clientConfigMergeSource) && /preserved_unrelated_instructions/.test(clientConfigMergeSource),
+  real_client_profile_trial_status: /codex-generated-profile/.test(adoptionClientUseTestSource) && /active-codex-config/.test(adoptionClientUseTestSource) && /vnem_tools_workspace_map/.test(adoptionClientUseTestSource) && /codex_agent_invocation_proven:\s*false/.test(adoptionClientUseTestSource),
   core_adoption_description_status: /core-description-discovery/.test(adoptionReliability2TestSource) && /first-call/.test(serverSource) && /visibility doctor/.test(serverSource),
-  core_adoption_reliability_2_status: /vnem_mcp_visibility_doctor/.test(serverSource) && /vnem_underuse_detector/.test(serverSource) && /vnem Tools ADOPTION-RELIABILITY-2/.test(adoptionReliability2TestSource)
+  core_adoption_reliability_2_status: /vnem_mcp_visibility_doctor/.test(serverSource) && /vnem_underuse_detector/.test(serverSource) && /vnem_usage_self_check/.test(serverSource) && /vnem Tools ADOPTION-RELIABILITY-2/.test(adoptionReliability2TestSource)
 };
 
 const coreGigaIntelligenceStatus = {
@@ -243,7 +248,7 @@ const coreGigaIntelligenceStatus = {
   smallest_sufficient_tools_status: /slice\(0, 6\)/.test(coreIntelligenceSource) && /smallest sufficient Tools set/.test(coreGigaIntelligenceTestSource),
   tool_state_truth_status: /available:.*configured:.*allowed:.*executed:.*succeeded:.*proof_collected:/s.test(coreIntelligenceSource) && /state\.available/.test(coreGigaIntelligenceTestSource),
   compatibility_scope_status: toolInventory.includes("vnem_compatibility_assess") && /task-specific; facts do not become universal rules/.test(coreIntelligenceSource + coreGigaIntelligenceTestSource),
-  api_skill_adapter_status: /adapter_selection/.test(coreIntelligenceSource) && /metadata_only_until_vetted_execution_runtime_exists/.test(coreIntelligenceSource) && /execution_ready_if_configured_allowed_and_authorized/.test(coreGigaIntelligenceTestSource),
+  api_skill_adapter_status: /adapter_selection/.test(coreIntelligenceSource) && /vetted_adapter_execution_ready_subject_to_exact_auth_and_permission_class/.test(coreGigaIntelligenceTestSource) && /vetted_adapter_execution_ready_with_runtime_specific_permission_scope/.test(coreGigaIntelligenceTestSource),
   adaptive_workflow_status: /fixed_pipeline:\s*false/.test(coreIntelligenceSource) && /effort_mode/.test(coreIntelligenceSource) && /adaptive_multi_domain/.test(coreGigaIntelligenceTestSource),
   compact_detail_status: toolInventory.includes("vnem_decision_details") && /details_ref/.test(coreIntelligenceSource) && /default entrypoint decision should remain compact/.test(coreGigaIntelligenceTestSource),
   evidence_continuation_status: toolInventory.includes("vnem_continue_from_tools_evidence") && /completion_state/.test(coreIntelligenceSource) && /claim_overreach/.test(coreGigaIntelligenceTestSource) && /user_input_required/.test(coreGigaIntelligenceTestSource)
@@ -251,7 +256,7 @@ const coreGigaIntelligenceStatus = {
 
 const coreInstallAdoptionStatus = {
   core_install_adoption_guide_status: toolInventory.includes("vnem_install_adoption_guide") && /buildInstallAdoptionGuide/.test(serverSource) && /mcp-core-install-guide/.test(installAdoptionTestSource),
-  core_install_profile_guidance_status: /Codex|Claude|Antigravity-style|generic MCP stdio/.test(serverSource) && /emit-codex-profile/.test(installAdoptionTestSource) && /emit-claude-profile/.test(installAdoptionTestSource),
+  core_install_profile_guidance_status: ["Codex", "Claude", "Antigravity-style", "Hermes", "generic MCP stdio"].every((marker) => serverSource.includes(marker)) && /emit-codex-profile/.test(installAdoptionTestSource) && /emit-claude-profile/.test(installAdoptionTestSource) && /emit-hermes-profile/.test(installAdoptionTestSource),
   core_install_adoption_1_status: /vnem_install_adoption_guide/.test(serverSource) && /test:vnem-install-adoption-1-regression/.test(JSON.stringify(packageJson.scripts)) && /both-mcps-present/.test(installAdoptionTestSource)
 };
 
@@ -387,7 +392,8 @@ const report = {
     "Core now adds realistic redesign comparison scorecards, total-impact design planning, total-impact direction selection, compact output contracts, and SPEED-DESIGN-2 audit flags while remaining plan-only.",
     "Core now exposes a compact adoption entrypoint and usage contract that recommend exact Tools MCP handoff calls without claiming Core can execute them.",
     "Core now exposes visibility and underuse diagnostics that detect missing VNEM/Tools usage and return exact registered recovery calls.",
-    "Core now exposes install adoption guidance for Codex, Claude, Antigravity-style, and generic MCP stdio clients while staying read-only.",
+    "Core now audits explicit client configuration, visible entrypoints, managed instructions, and current-session evidence without hidden telemetry or forced use on trivial tasks.",
+    "Core now exposes install adoption guidance for Codex, Claude, Antigravity-style, Hermes, and generic MCP stdio clients while staying read-only.",
     "Core now uses modular weighted mixed-domain decisions, task-scoped compatibility, compact detail ids, exact tool-state distinctions, and evidence-aware continuation."
   ],
   not_ready: [

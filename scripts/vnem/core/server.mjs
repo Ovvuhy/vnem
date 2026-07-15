@@ -125,6 +125,7 @@ const DEFAULT_MCP_TOOLS = [
   "vnem_usage_contract",
   "vnem_mcp_visibility_doctor",
   "vnem_underuse_detector",
+  "vnem_usage_self_check",
   "vnem_install_adoption_guide",
   "vnem_library_status",
   "vnem_search_skills",
@@ -440,13 +441,40 @@ function registerTools(mcpServer) {
   );
 
   mcpServer.registerTool(
+    "vnem_usage_self_check",
+    {
+      title: "VNEM Usage Self-Check",
+      description:
+        "Audit VNEM adoption from explicit client configuration, visible tool names, managed instructions, and current-session evidence only; detect useful skipped use and return one exact correction without hidden telemetry.",
+      inputSchema: {
+        client_name: z.string().default("unknown"),
+        configured_mcp_names: z.array(z.string()).max(100).default([]),
+        visible_tool_names: z.array(z.string()).max(1000).default([]),
+        client_instructions: z.string().max(20000).default(""),
+        user_goal: z.string().max(10000).default(""),
+        recent_session_actions: z.array(z.string()).max(200).default([]),
+        recent_session_evidence: z.array(z.string()).max(200).default([]),
+        configuration_observed: z.boolean().default(false),
+        tool_list_observed: z.boolean().default(false),
+        instructions_observed: z.boolean().default(false),
+        session_evidence_observed: z.boolean().default(false)
+      },
+      annotations: READ_ONLY
+    },
+    async (args) => {
+      const audit = buildUsageSelfCheck(args);
+      return toolResult(formatUsageSelfCheck(audit), { usage_self_check: audit });
+    }
+  );
+
+  mcpServer.registerTool(
     "vnem_install_adoption_guide",
     {
       title: "VNEM Install Adoption Guide",
       description:
-        "VNEM Core MCP install adoption guide for connecting both Core and Tools MCP to Codex, Claude, Antigravity-style IDE agents, and generic MCP stdio clients without guessing config paths or writing outside the repo.",
+        "VNEM Core MCP install adoption guide for connecting both Core and Tools MCP to Codex, Claude, Antigravity-style IDE agents, Hermes, and generic MCP stdio clients without guessing config paths or writing outside the repo.",
       inputSchema: {
-        client: z.enum(["codex", "claude", "antigravity", "generic"]).default("generic"),
+        client: z.enum(["codex", "claude", "antigravity", "hermes", "generic"]).default("generic"),
         root: z.string().default(rootDir).describe("VNEM checkout root used for generated MCP command paths.")
       },
       annotations: READ_ONLY
@@ -4069,7 +4097,7 @@ function formatCoreToolsPlan(plan) {
   return [`vnem_build_tools_plan: ${plan.task_type}`, `Steps: ${plan.tool_sequence.map((step) => step.tool).join(" -> ")}`, "Core executes tools: false"].join("\n");
 }
 
-const CORE_ADOPTION_ENTRYPOINTS = ["vnem_entrypoint", "vnem_usage_contract", "vnem_mcp_visibility_doctor", "vnem_underuse_detector", "vnem_install_adoption_guide"];
+const CORE_ADOPTION_ENTRYPOINTS = ["vnem_entrypoint", "vnem_usage_contract", "vnem_mcp_visibility_doctor", "vnem_underuse_detector", "vnem_usage_self_check", "vnem_install_adoption_guide"];
 const TOOLS_ADOPTION_ENTRYPOINTS = ["vnem_tools_entrypoint", "vnem_tools_capability_router", "vnem_tools_adoption_readiness", "vnem_tools_visibility_doctor", "vnem_tools_underuse_detector"];
 
 function buildCoreVisibilityDoctor(args = {}) {
@@ -4184,6 +4212,84 @@ function buildCoreUnderuseDetector(args = {}) {
   };
 }
 
+function buildUsageSelfCheck(args = {}) {
+  const configuredNames = arrayStrings(args.configured_mcp_names).map((name) => name.toLowerCase());
+  const visibleNames = new Set(arrayStrings(args.visible_tool_names));
+  const instructions = String(args.client_instructions || "");
+  const userGoal = String(args.user_goal || "").trim();
+  const actions = arrayStrings(args.recent_session_actions);
+  const evidence = arrayStrings(args.recent_session_evidence);
+  const observedText = normalize([...actions, ...evidence].join(" "));
+  const classification = classifyIntelligentCoreTask(userGoal || "Simple task", "", "auto");
+  const materiallyUseful = Boolean(userGoal) && classification.primary !== "simple_answer";
+  const toolsMateriallyUseful = materiallyUseful && (classification.execution_needed || classification.proof_needed);
+  const coreConfigured = args.configuration_observed
+    ? configuredNames.some((name) => /^(?:vnem|vnem[-_ ]?core)$/.test(name))
+    : null;
+  const toolsConfigured = args.configuration_observed
+    ? configuredNames.some((name) => /vnem[-_ ]?tools/.test(name))
+    : null;
+  const coreVisible = args.tool_list_observed ? visibleNames.has("vnem_entrypoint") : null;
+  const toolsVisible = args.tool_list_observed ? visibleNames.has("vnem_tools_entrypoint") : null;
+  const instructionsMentionVnem = args.instructions_observed
+    ? /\bVNEM\b/i.test(instructions) && /\bCore\b/i.test(instructions) && /\bTools\b/i.test(instructions)
+    : null;
+  const usedCore = args.session_evidence_observed
+    ? /\bvnem_(?:entrypoint|usage_contract|mcp_visibility_doctor|underuse_detector|usage_self_check|install_adoption_guide)\b/.test(observedText)
+    : null;
+  const usedTools = args.session_evidence_observed ? /\bvnem_tools_/.test(observedText) : null;
+  const skippedCore = materiallyUseful && args.session_evidence_observed && !usedCore;
+  const skippedTools = toolsMateriallyUseful && args.session_evidence_observed && !usedTools;
+  const correction = usageCorrection({
+    userGoal,
+    coreConfigured,
+    toolsConfigured,
+    coreVisible,
+    toolsVisible,
+    instructionsMentionVnem,
+    materiallyUseful,
+    toolsMateriallyUseful,
+    usedCore,
+    usedTools,
+    sessionEvidenceObserved: args.session_evidence_observed
+  });
+  const notProven = [];
+  if (!args.configuration_observed) notProven.push("Active client MCP configuration was not supplied.");
+  if (!args.tool_list_observed) notProven.push("The client's current tool list was not supplied.");
+  if (!args.instructions_observed) notProven.push("The client's active instruction text was not supplied.");
+  if (!args.session_evidence_observed) notProven.push("Current-session actions and evidence were not supplied, so skipped useful use cannot be assessed.");
+  return {
+    client_name: args.client_name || "unknown",
+    core_configured: coreConfigured,
+    tools_configured: toolsConfigured,
+    entrypoints_visible: { core: coreVisible, tools: toolsVisible },
+    instructions_mention_vnem: instructionsMentionVnem,
+    recent_session_usage: { core_used: usedCore, tools_used: usedTools, action_count: actions.length, evidence_count: evidence.length },
+    task_classification: classification.primary,
+    vnem_materially_useful: materiallyUseful,
+    tools_materially_useful: toolsMateriallyUseful,
+    skipped_materially_useful_vnem: skippedCore || skippedTools,
+    skipped_surfaces: [skippedCore ? "core" : null, skippedTools ? "tools" : null].filter(Boolean),
+    exact_corrective_action: correction,
+    evidence_scope: "explicit local configuration and current-session data supplied by the caller only",
+    hidden_telemetry_used: false,
+    what_is_not_proven: notProven
+  };
+}
+
+function usageCorrection(status) {
+  if (!status.materiallyUseful) return { action: "none", instruction: "No VNEM call is needed for this trivial task." };
+  if (status.coreConfigured === false) return { action: "configure_core", instruction: "Merge/import the generated VNEM profile so the `vnem` server is configured." };
+  if (status.coreVisible === false) return { action: "reload_core", instruction: "Reload the client, confirm `vnem_entrypoint` is visible, then call it for the current task." };
+  if (status.toolsMateriallyUseful && status.toolsConfigured === false) return { action: "configure_tools", instruction: "Merge/import the generated VNEM profile so the `vnem-tools` server is configured." };
+  if (status.toolsMateriallyUseful && status.toolsVisible === false) return { action: "reload_tools", instruction: "Reload the client, confirm `vnem_tools_entrypoint` is visible, then call it for the current task." };
+  if (status.instructionsMentionVnem === false) return { action: "merge_managed_instructions", instruction: "Merge the marked VNEM block from `.vnem/install-adoption/prompts/vnem-agent-use-instruction.md` without replacing unrelated instructions." };
+  if (!status.sessionEvidenceObserved) return { action: "supply_session_evidence", instruction: "Provide explicit current-session actions/evidence before judging whether VNEM was skipped." };
+  if (!status.usedCore) return { action: "call_core", tool: "vnem_entrypoint", arguments: { user_goal: status.userGoal, available_mcp_names: ["vnem", "vnem-tools"] } };
+  if (status.toolsMateriallyUseful && !status.usedTools) return { action: "call_tools", tool: "vnem_tools_entrypoint", arguments: { user_goal: status.userGoal, root: ".", task_mode: "repo_inspection" } };
+  return { action: "none", instruction: "Current explicit evidence shows appropriate VNEM use." };
+}
+
 function formatCoreUsageContract(contract) {
   return [
     "vnem_usage_contract",
@@ -4210,6 +4316,15 @@ function formatCoreUnderuseDetector(detector) {
     `severity=${detector.severity}; task=${detector.task_classification}`,
     `missing=${detector.missing_vnem_calls.slice(0, 6).join(", ") || "none"}`,
     `next=${detector.recommended_recovery_call || "none"}`
+  ].join("\n");
+}
+
+function formatUsageSelfCheck(audit) {
+  return [
+    `vnem_usage_self_check: skipped_use=${audit.skipped_materially_useful_vnem}`,
+    `configured=core:${audit.core_configured},tools:${audit.tools_configured}; visible=core:${audit.entrypoints_visible.core},tools:${audit.entrypoints_visible.tools}`,
+    `used=core:${audit.recent_session_usage.core_used},tools:${audit.recent_session_usage.tools}; instructions=${audit.instructions_mention_vnem}`,
+    `correction=${audit.exact_corrective_action.action}; hidden_telemetry=false`
   ].join("\n");
 }
 

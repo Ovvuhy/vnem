@@ -1,0 +1,210 @@
+{
+  "schema_version": "1.0.0",
+  "phase": 23,
+  "status": "pass",
+  "protocol_and_audit_status": "pass",
+  "client_agent_adoption_status": "not_proven_current_codex_entrypoints_hidden",
+  "managed_instruction": {
+    "status": "pass",
+    "merge_markers_present": true,
+    "preserves_user_workflow_freedom": true,
+    "trivial_task_opt_out_tested": true
+  },
+  "generated_profile_trials": {
+    "generic": {
+      "status": "pass",
+      "server_names": [
+        "vnem",
+        "vnem-tools"
+      ],
+      "core_tool_count": 69,
+      "tools_tool_count": 241,
+      "core_entrypoint_visible": true,
+      "tools_entrypoint_visible": true,
+      "core_call_structured": true,
+      "tools_call_structured": true,
+      "safe_repo_inspection_structured": true,
+      "usage_audit_passed": true,
+      "rigid_workflow_avoided": true
+    },
+    "claude": {
+      "status": "pass",
+      "server_names": [
+        "vnem",
+        "vnem-tools"
+      ],
+      "core_tool_count": 69,
+      "tools_tool_count": 241,
+      "core_entrypoint_visible": true,
+      "tools_entrypoint_visible": true,
+      "core_call_structured": true,
+      "tools_call_structured": true,
+      "safe_repo_inspection_structured": "not_run_for_duplicate_profile",
+      "usage_audit_passed": true,
+      "rigid_workflow_avoided": true
+    },
+    "antigravity": {
+      "status": "pass",
+      "server_names": [
+        "vnem",
+        "vnem-tools"
+      ],
+      "core_tool_count": 69,
+      "tools_tool_count": 241,
+      "core_entrypoint_visible": true,
+      "tools_entrypoint_visible": true,
+      "core_call_structured": true,
+      "tools_call_structured": true,
+      "safe_repo_inspection_structured": "not_run_for_duplicate_profile",
+      "usage_audit_passed": true,
+      "rigid_workflow_avoided": true
+    },
+    "hermes": {
+      "status": "pass",
+      "server_names": [
+        "vnem",
+        "vnem-tools"
+      ],
+      "core_tool_count": 69,
+      "tools_tool_count": 241,
+      "core_entrypoint_visible": true,
+      "tools_entrypoint_visible": true,
+      "core_call_structured": true,
+      "tools_call_structured": true,
+      "safe_repo_inspection_structured": "not_run_for_duplicate_profile",
+      "usage_audit_passed": true,
+      "rigid_workflow_avoided": true
+    }
+  },
+  "codex_generated_profile_trial": {
+    "status": "pass",
+    "server_names": [
+      "vnem",
+      "vnem-tools"
+    ],
+    "core_tool_count": 69,
+    "tools_tool_count": 241,
+    "core_entrypoint_visible": true,
+    "tools_entrypoint_visible": true,
+    "core_call_structured": true,
+    "tools_call_structured": true,
+    "safe_repo_inspection_structured": "not_run_for_duplicate_profile",
+    "usage_audit_passed": true,
+    "rigid_workflow_avoided": true
+  },
+  "active_codex_trial": {
+    "attempted": true,
+    "status": "pass",
+    "configured_server_names": [
+      "node_repl",
+      "vnem",
+      "vnem-tools"
+    ],
+    "enabled": {
+      "core": true,
+      "tools": true
+    },
+    "configuration_launch_and_protocol_proven": true,
+    "codex_agent_invocation_proven": false,
+    "current_session_usage_audit": {
+      "client_name": "Codex App current task",
+      "core_configured": true,
+      "tools_configured": true,
+      "entrypoints_visible": {
+        "core": false,
+        "tools": false
+      },
+      "instructions_mention_vnem": null,
+      "recent_session_usage": {
+        "core_used": false,
+        "tools_used": false,
+        "action_count": 0,
+        "evidence_count": 0
+      },
+      "task_classification": "evidence_validation",
+      "vnem_materially_useful": true,
+      "tools_materially_useful": true,
+      "skipped_materially_useful_vnem": true,
+      "skipped_surfaces": [
+        "core",
+        "tools"
+      ],
+      "exact_corrective_action": {
+        "action": "reload_core",
+        "instruction": "Reload the client, confirm `vnem_entrypoint` is visible, then call it for the current task."
+      },
+      "evidence_scope": "explicit local configuration and current-session data supplied by the caller only",
+      "hidden_telemetry_used": false,
+      "what_is_not_proven": [
+        "The client's active instruction text was not supplied."
+      ]
+    },
+    "trial": {
+      "status": "pass",
+      "server_names": [
+        "vnem",
+        "vnem-tools"
+      ],
+      "core_tool_count": 69,
+      "tools_tool_count": 241,
+      "core_entrypoint_visible": true,
+      "tools_entrypoint_visible": true,
+      "core_call_structured": true,
+      "tools_call_structured": true,
+      "safe_repo_inspection_structured": "not_run_for_duplicate_profile",
+      "usage_audit_passed": true,
+      "rigid_workflow_avoided": true
+    },
+    "what_is_not_proven": [
+      "The Codex agent itself selected these MCP calls; the exact configured server commands were exercised by the protocol harness."
+    ]
+  },
+  "local_client_observations": {
+    "current_codex_session_vnem_entrypoints_visible": false,
+    "codex_app_version": "26.707.9981.0",
+    "codex_cli_status": "access_denied_from_shell",
+    "hermes_installed": true,
+    "hermes_vnem_configured": false,
+    "hermes_version": "0.18.0",
+    "hermes_read_only_mcp_list_observed": true,
+    "hermes_global_config_modified": false,
+    "claude_installed": false,
+    "antigravity_installed": false,
+    "evidence_scope": "explicit commands and current-session tool visibility supplied for this run; no hidden telemetry"
+  },
+  "baseline_comparison": {
+    "source": ".vnem/giga-evolution/baseline/capability-benchmark.json",
+    "client_install": {
+      "success": false,
+      "score": 0.7,
+      "remaining_uncertainty": [
+        "correct_route",
+        "correct_capability_selection",
+        "rollback_behavior"
+      ]
+    },
+    "client_rollback": {
+      "success": false,
+      "score": 0.7,
+      "remaining_uncertainty": [
+        "correct_route",
+        "correct_capability_selection",
+        "rollback_behavior"
+      ]
+    },
+    "current_generated_profile_trials_pass": true,
+    "exact_like_for_like_client_agent_baseline_available": false
+  },
+  "what_is_proven": [
+    "Generated Codex, Claude, Antigravity, Hermes, and generic profiles start both real stdio servers.",
+    "Every generated-profile trial discovers and calls Core and Tools entrypoints with structured output.",
+    "The generic trial completes a bounded real repository map and produces structured evidence.",
+    "The usage self-check detects used, skipped, hidden-entrypoint, and trivial-task cases without hidden telemetry."
+  ],
+  "what_is_not_proven": [
+    "A Codex agent process autonomously chose and invoked VNEM; direct MCP profile execution proves the configured protocol path, not agent policy compliance.",
+    "Claude and Antigravity are not installed on this machine; their proof is isolated-profile protocol execution only.",
+    "Hermes has not imported the VNEM profile into its global configuration; its existing config remains untouched.",
+    "No exact like-for-like real-client trial was recorded in the Phase 1 baseline."
+  ]
+}

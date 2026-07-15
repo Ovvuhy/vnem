@@ -6,7 +6,7 @@ import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { clientCatalog, supportedClientIds } from "./vnem/clients/catalog.mjs";
-import { buildVnemServerConfigs, mergeCodexToml, validateToml } from "./vnem/clients/config-merge.mjs";
+import { buildVnemServerConfigs, mergeCodexToml, mergeManagedClientInstructions, validateToml } from "./vnem/clients/config-merge.mjs";
 import { applyClientSetup, detectSupportedClients, planClientSetup, publicSetupPlan, rollbackClientSetup } from "./vnem/clients/setup.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -19,6 +19,7 @@ const workspace = path.join(temp, "workspace");
 const stateDir = path.join(temp, "state");
 const codexConfig = path.join(home, ".codex", "config.toml");
 const cursorConfig = path.join(home, ".cursor", "mcp.json");
+const agentsPath = path.join(workspace, "AGENTS.md");
 const originalCodex = `model = "fixture-model"
 
 [features]
@@ -44,6 +45,7 @@ args = ["old-tools.mjs"]
 VNEM_TOOLS_GITHUB_ALLOWED_REPOS = "fixture/repo"
 `;
 const originalCursor = `${JSON.stringify({ theme: "fixture", mcpServers: { existing: { command: "existing-tool" } } }, null, 2)}\n`;
+const originalAgents = "# Fixture instructions\n\nKeep the user's release workflow.\n";
 
 try {
   await mkdir(path.dirname(codexConfig), { recursive: true });
@@ -51,6 +53,7 @@ try {
   await mkdir(workspace, { recursive: true });
   await writeFile(codexConfig, originalCodex, "utf8");
   await writeFile(cursorConfig, originalCursor, "utf8");
+  await writeFile(agentsPath, originalAgents, "utf8");
 
   const ids = supportedClientIds();
   assert.deepEqual(ids, ["codex_app", "codex_cli", "claude_code", "claude_desktop", "antigravity", "generic_stdio", "hermes", "cursor", "windsurf", "cline", "gemini_cli"]);
@@ -83,13 +86,23 @@ try {
     }
   };
   const plan = await planClientSetup(options);
-  assert.equal(plan.files.length, 3, "Codex App and CLI must share one deduplicated config transaction");
-  assert.equal(plan.change_count, 3);
+  assert.equal(plan.files.length, 4, "Codex App and CLI must share one config and one managed-instruction transaction");
+  assert.equal(plan.change_count, 4);
   assert.equal(JSON.stringify(publicSetupPlan(plan)).includes("_nextText"), false, "public previews must not include config contents");
   assert.equal(plan.files.find((file) => file.path === codexConfig).clients.length, 2);
+  assert.equal(plan.files.find((file) => file.path === agentsPath).clients.length, 2);
+  assert.equal(plan.files.find((file) => file.path === agentsPath).role, "client-instructions");
   assert.equal(validateToml(plan.files.find((file) => file.path === codexConfig)._nextText).validator, "@iarna/toml");
   assert.throws(
     () => mergeCodexToml("# vnem-managed:start\n[mcp_servers.vnem]\ncommand = \"node\"\n", buildVnemServerConfigs({ root, workspace })),
+    /malformed VNEM managed markers/
+  );
+  assert.throws(
+    () => mergeManagedClientInstructions("user text\n<!-- vnem-managed-instructions:start -->\nbroken\n"),
+    /malformed VNEM managed markers/
+  );
+  assert.throws(
+    () => mergeManagedClientInstructions("<!-- vnem-managed-instructions:end -->\nuser text\n<!-- vnem-managed-instructions:start -->\n"),
     /malformed VNEM managed markers/
   );
 
@@ -97,6 +110,7 @@ try {
   assert.equal(applied.applied, true);
   assert.equal(applied.ok, true);
   assert.equal(applied.proof.safety.active_profile, "safe-local-dev");
+  assert.equal(applied.proof.instruction_checks[0].managed_block_present, true);
   assert.equal(existsSync(applied.manifest_path), true);
   assert.equal(existsSync(applied.proof_report_path), true);
 
@@ -110,6 +124,12 @@ try {
   assert.match(nextCodex, /EXISTING_CORE_SETTING = "preserve-me"/);
   assert.match(nextCodex, /VNEM_TOOLS_GITHUB_ALLOWED_REPOS = "fixture\/repo"/);
   assert.doesNotMatch(nextCodex, /old-core|old-tools/);
+  const nextAgents = await readFile(agentsPath, "utf8");
+  assert.match(nextAgents, /Keep the user's release workflow/);
+  assert.match(nextAgents, /VNEM is the default improvement layer for eligible nontrivial tasks/);
+  assert.match(nextAgents, /Call Core first/);
+  assert.match(nextAgents, /Use Tools for real inspection and execution/);
+  assert.equal(nextAgents.match(/vnem-managed-instructions:start/g)?.length, 1);
 
   const nextCursor = JSON.parse(await readFile(cursorConfig, "utf8"));
   assert.equal(nextCursor.theme, "fixture");
@@ -127,6 +147,7 @@ try {
   assert.equal(rolledBack.ok, true);
   assert.equal(await readFile(codexConfig, "utf8"), originalCodex);
   assert.equal(await readFile(cursorConfig, "utf8"), originalCursor);
+  assert.equal(await readFile(agentsPath, "utf8"), originalAgents);
   assert.equal(existsSync(genericPath), false);
   assert.equal(existsSync(path.join(workspace, ".vnem", "safety.json")), false);
   await assert.rejects(() => rollbackClientSetup({ stateDir, yes: true }), /No VNEM setup transaction exists/);

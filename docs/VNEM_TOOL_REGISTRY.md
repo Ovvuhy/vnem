@@ -2,7 +2,7 @@
 
 Generated from live MCP runtime registries. Do not edit this table manually.
 
-- Total tools: 316
+- Total tools: 317
 - Registry valid: true
 - Missing behavior-test references: 6
 
@@ -16,6 +16,7 @@ Generated from live MCP runtime registries. Do not edit this table manually.
 | core | `vnem_usage_contract` | usage | read_only | allowed_root_read | optional | not_required | scripts/vnem/core/server.mjs |
 | core | `vnem_mcp_visibility_doctor` | mcp | read_only | allowed_root_read | optional | not_required | scripts/vnem/core/server.mjs |
 | core | `vnem_underuse_detector` | underuse | read_only | allowed_root_read | optional | not_required | scripts/vnem/core/server.mjs |
+| core | `vnem_usage_self_check` | usage | read_only | allowed_root_read | optional | not_required | scripts/vnem/core/server.mjs |
 | core | `vnem_install_adoption_guide` | install | read_only | allowed_root_read | optional | not_required | scripts/vnem/core/server.mjs |
 | core | `vnem_library_status` | library | read_only | allowed_root_read | optional | not_required | scripts/vnem/core/server.mjs |
 | core | `vnem_search_skills` | skill | read_only | allowed_root_read | optional | not_required | scripts/vnem/core/server.mjs |

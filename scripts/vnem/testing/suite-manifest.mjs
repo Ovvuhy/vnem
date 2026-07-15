@@ -8,6 +8,7 @@ export const VNEM_FULL_SUITE = Object.freeze([
   "generate",
   "test:giga-deterministic-generation",
   "test:giga-performance-output",
+  "test:giga-adoption-client-use",
   "dashboard:build",
   "test:install-pack",
   "test:orchestration",
@@ -187,7 +188,8 @@ const CLIENTS = Object.freeze([
   "test:preview-connector",
   "test:apply-connector",
   "test:cli",
-  "test:vnem-install-adoption-1-regression"
+  "test:vnem-install-adoption-1-regression",
+  "test:giga-adoption-client-use"
 ]);
 
 const INTEGRATION_PATTERN = /(?:giga-app-engineering|giga-project-automation|project-actions|browser|app-server|builder|launch-dev|dashboard|ard-|giving-branch|core-tools-e2e|mcp-user-smoke|cloudflare)/;

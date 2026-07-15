@@ -44,6 +44,7 @@ try {
   toolReferences.vnem_tools_registry_status = ["scripts/test-vnem-runtime-registry.mjs"];
   const coreFocusedReferences = {
     vnem_entrypoint: ["scripts/test-vnem-adoption-reliability-1-regression.mjs", "scripts/test-core-giga-intelligence.mjs"],
+    vnem_usage_self_check: ["scripts/test-vnem-adoption-reliability-2-regression.mjs", "scripts/test-giga-adoption-client-use.mjs"],
     vnem_decision_details: ["scripts/test-core-giga-intelligence.mjs"],
     vnem_continue_from_tools_evidence: ["scripts/test-core-giga-intelligence.mjs"],
     vnem_compatibility_assess: ["scripts/test-core-giga-intelligence.mjs"]

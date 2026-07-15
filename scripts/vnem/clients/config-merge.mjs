@@ -4,6 +4,8 @@ import TOML from "@iarna/toml";
 const MANAGED_NAMES = ["vnem", "vnem-tools", "vnem-precision"];
 const MANAGED_MARKER_START = "# vnem-managed:start";
 const MANAGED_MARKER_END = "# vnem-managed:end";
+const MANAGED_INSTRUCTION_START = "<!-- vnem-managed-instructions:start -->";
+const MANAGED_INSTRUCTION_END = "<!-- vnem-managed-instructions:end -->";
 
 export function buildVnemServerConfigs({ root, workspace, components = ["core", "tools"] }) {
   const selected = new Set(components);
@@ -98,6 +100,61 @@ export function mergeCodexToml(existingText, servers) {
     removedManagedSections: validation.managedSections,
     validation
   };
+}
+
+export function renderManagedClientInstructions() {
+  return [
+    MANAGED_INSTRUCTION_START,
+    "## VNEM Use",
+    "",
+    "- VNEM is the default improvement layer for eligible nontrivial tasks.",
+    "- Call Core first when task understanding, research, routing, quality, or proof would materially benefit.",
+    "- Use Tools for real inspection and execution, and never invent tool results.",
+    "- Skip unnecessary VNEM overhead for trivial tasks and preserve freedom to use the best workflow.",
+    "- Report what was proven, what was not proven, and the next safe action.",
+    MANAGED_INSTRUCTION_END
+  ].join("\n");
+}
+
+export function mergeManagedClientInstructions(existingText) {
+  const source = normalizeNewlines(existingText || "");
+  const starts = countOccurrences(source, MANAGED_INSTRUCTION_START);
+  const ends = countOccurrences(source, MANAGED_INSTRUCTION_END);
+  if (starts !== ends || starts > 1 || (starts === 1 && source.indexOf(MANAGED_INSTRUCTION_START) > source.indexOf(MANAGED_INSTRUCTION_END))) {
+    throw new Error("Existing client instructions have malformed VNEM managed markers; no changes were made.");
+  }
+  const lines = source.split("\n");
+  const preserved = [];
+  let managed = false;
+  for (const line of lines) {
+    if (line.trim() === MANAGED_INSTRUCTION_START) {
+      managed = true;
+      continue;
+    }
+    if (managed) {
+      if (line.trim() === MANAGED_INSTRUCTION_END) managed = false;
+      continue;
+    }
+    preserved.push(line);
+  }
+  const base = preserved.join("\n").replace(/\n{3,}/g, "\n\n").trimEnd();
+  const text = `${base}${base ? "\n\n" : ""}${renderManagedClientInstructions()}\n`;
+  return {
+    text,
+    changed: source !== text,
+    preserved_unrelated_instructions: true,
+    managed_block_present: true
+  };
+}
+
+export function managedClientInstructionsPresent(text) {
+  const source = normalizeNewlines(text || "");
+  return countOccurrences(source, MANAGED_INSTRUCTION_START) === 1
+    && countOccurrences(source, MANAGED_INSTRUCTION_END) === 1
+    && source.indexOf(MANAGED_INSTRUCTION_START) < source.indexOf(MANAGED_INSTRUCTION_END)
+    && /VNEM is the default improvement layer/i.test(source)
+    && /Call Core first/i.test(source)
+    && /Use Tools for real inspection and execution/i.test(source);
 }
 
 export function stripManagedCodexSections(text) {

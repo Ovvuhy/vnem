@@ -673,7 +673,7 @@
         },
         {
           "path": "package.json",
-          "content_hash": "sha256:48b7bef68e45d8213c8ea2d1d6f8321335efac71290ae371ff5fa79563ec7761"
+          "content_hash": "sha256:f77cdc77ae1d500dddbc0c8e51e0d5306f7a418dd27a44e138bae45a6cebe423"
         },
         {
           "path": "registry/entries/ac-inference-sh-mcp/entry.yaml",
@@ -2513,7 +2513,7 @@
         },
         {
           "path": "scripts/vnem-install-adoption.mjs",
-          "content_hash": "sha256:a2111a3d70c42d0773d046415703499babbac080de7a9548ed66be6d6ca31b26"
+          "content_hash": "sha256:e91039cdbbcaa4c5174be0d04229dda66cc200605da4edcb04448deb02993e31"
         },
         {
           "path": "scripts/vnem/generation/daily-digest.mjs",
@@ -2524,7 +2524,7 @@
           "content_hash": "sha256:8f99e0074a4f93bf8a58fec103e47ee3e1c90e350c5e245c90453ae5bae5a3a2"
         }
       ],
-      "aggregate_hash": "sha256:7f79f9f7a44337cb8f4f18f0b1397d1fc9eb03048eb7fa92f5274c7e4ba55555"
+      "aggregate_hash": "sha256:2edf9092c13f83ae4b396c64d1b9071de501ca682a9ac65bfff2a1d141c489ab"
     }
   },
   "artifacts": [
@@ -2723,10 +2723,36 @@
         "primary"
       ],
       "generator": "scripts/generate-artifacts.mjs",
+      "output": ".vnem/install-adoption/hermes/README.md",
+      "kind": "text",
+      "content_hash": "sha256:405ae852cac782259aed436efb90494cc6cd6a60437e72366f321139648096e6",
+      "semantic_hash": "sha256:405ae852cac782259aed436efb90494cc6cd6a60437e72366f321139648096e6",
+      "volatile_fields": [],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": ".vnem/install-adoption/hermes/mcp.json",
+      "kind": "text",
+      "content_hash": "sha256:3e2ecb15eabebddda06532bf33a59a03c1a6f09eebdb34313f0285154afbe431",
+      "semantic_hash": "sha256:8068fd3f055dfa6a2916789fcda87284109fdec0516480565b4afdfe5233bf1d",
+      "volatile_fields": [],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
       "output": ".vnem/install-adoption/prompts/vnem-agent-use-instruction.md",
       "kind": "text",
-      "content_hash": "sha256:70553c1177ec7445949fbf9f6ee4123ab0356325d009bc0cb9460c118f5401ff",
-      "semantic_hash": "sha256:70553c1177ec7445949fbf9f6ee4123ab0356325d009bc0cb9460c118f5401ff",
+      "content_hash": "sha256:5cc783d2ef0c7725e99fae9108fa49000b9621158a5c095bdbb348f52c8dbf7f",
+      "semantic_hash": "sha256:5cc783d2ef0c7725e99fae9108fa49000b9621158a5c095bdbb348f52c8dbf7f",
       "volatile_fields": [],
       "tracked": true,
       "expected_regeneration_command": "npm run generate"
@@ -2738,8 +2764,8 @@
       "generator": "scripts/generate-artifacts.mjs",
       "output": ".vnem/install-adoption/verify/install-doctor-report.json",
       "kind": "text",
-      "content_hash": "sha256:ad409ec53a8d19d69ac9198f511f64b9139f9115e8693b2b94c2fdb531cd862a",
-      "semantic_hash": "sha256:b881ecb9d463f2654b8dbae57b1c1b77771967b62e2adeb7ec0a82e7c8174c53",
+      "content_hash": "sha256:f44c88df37899d17ab1024b3b76fa0647d07a57ce29e635577aa092dcb0ef254",
+      "semantic_hash": "sha256:6b7bb5bcc791383b5d4becc571e805447400042de125f957b260576569c196c5",
       "volatile_fields": [],
       "tracked": true,
       "expected_regeneration_command": "npm run generate"
@@ -2947,8 +2973,8 @@
       "generator": "scripts/generate-artifacts.mjs",
       "output": "landing/install.tgz",
       "kind": "gzip_tar",
-      "content_hash": "sha256:8aa6df2f089a883a57675ae1c5cf4dfe5a6936891a304ebcf251bdc9f0c8782b",
-      "semantic_hash": "sha256:d930f8b99587394cd8092920f24d5e596cf5fd32d3adb5bafaf09dd0ac0640cb",
+      "content_hash": "sha256:ac34dc6e2f02068ce298859e56c13980614cc15b409b7b78764e81b9a4e79d98",
+      "semantic_hash": "sha256:5b90bd08f90a13e4e70ee9744245ee0490d88c192a7a1bb2586fff343a7474a1",
       "volatile_fields": [
         "gzip.mtime",
         "gzip.os",
@@ -3010,8 +3036,8 @@
       "generator": "scripts/generate-artifacts.mjs",
       "output": "public/install.tgz",
       "kind": "gzip_tar",
-      "content_hash": "sha256:8aa6df2f089a883a57675ae1c5cf4dfe5a6936891a304ebcf251bdc9f0c8782b",
-      "semantic_hash": "sha256:d930f8b99587394cd8092920f24d5e596cf5fd32d3adb5bafaf09dd0ac0640cb",
+      "content_hash": "sha256:ac34dc6e2f02068ce298859e56c13980614cc15b409b7b78764e81b9a4e79d98",
+      "semantic_hash": "sha256:5b90bd08f90a13e4e70ee9744245ee0490d88c192a7a1bb2586fff343a7474a1",
       "volatile_fields": [
         "gzip.mtime",
         "gzip.os",
@@ -3217,10 +3243,36 @@
         "primary"
       ],
       "generator": "scripts/generate-artifacts.mjs",
+      "output": "public/install/install-adoption/hermes/README.md",
+      "kind": "text",
+      "content_hash": "sha256:405ae852cac782259aed436efb90494cc6cd6a60437e72366f321139648096e6",
+      "semantic_hash": "sha256:405ae852cac782259aed436efb90494cc6cd6a60437e72366f321139648096e6",
+      "volatile_fields": [],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
+      "output": "public/install/install-adoption/hermes/mcp.json",
+      "kind": "text",
+      "content_hash": "sha256:3e2ecb15eabebddda06532bf33a59a03c1a6f09eebdb34313f0285154afbe431",
+      "semantic_hash": "sha256:8068fd3f055dfa6a2916789fcda87284109fdec0516480565b4afdfe5233bf1d",
+      "volatile_fields": [],
+      "tracked": true,
+      "expected_regeneration_command": "npm run generate"
+    },
+    {
+      "source_inputs": [
+        "primary"
+      ],
+      "generator": "scripts/generate-artifacts.mjs",
       "output": "public/install/install-adoption/prompts/vnem-agent-use-instruction.md",
       "kind": "text",
-      "content_hash": "sha256:70553c1177ec7445949fbf9f6ee4123ab0356325d009bc0cb9460c118f5401ff",
-      "semantic_hash": "sha256:70553c1177ec7445949fbf9f6ee4123ab0356325d009bc0cb9460c118f5401ff",
+      "content_hash": "sha256:5cc783d2ef0c7725e99fae9108fa49000b9621158a5c095bdbb348f52c8dbf7f",
+      "semantic_hash": "sha256:5cc783d2ef0c7725e99fae9108fa49000b9621158a5c095bdbb348f52c8dbf7f",
       "volatile_fields": [],
       "tracked": true,
       "expected_regeneration_command": "npm run generate"
@@ -3232,8 +3284,8 @@
       "generator": "scripts/generate-artifacts.mjs",
       "output": "public/install/install-adoption/verify/install-doctor-report.json",
       "kind": "text",
-      "content_hash": "sha256:ad409ec53a8d19d69ac9198f511f64b9139f9115e8693b2b94c2fdb531cd862a",
-      "semantic_hash": "sha256:b881ecb9d463f2654b8dbae57b1c1b77771967b62e2adeb7ec0a82e7c8174c53",
+      "content_hash": "sha256:f44c88df37899d17ab1024b3b76fa0647d07a57ce29e635577aa092dcb0ef254",
+      "semantic_hash": "sha256:6b7bb5bcc791383b5d4becc571e805447400042de125f957b260576569c196c5",
       "volatile_fields": [],
       "tracked": true,
       "expected_regeneration_command": "npm run generate"

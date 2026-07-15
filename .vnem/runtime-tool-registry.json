@@ -1,14 +1,14 @@
 {
   "schema_version": "1.0.0",
   "source": "live MCP runtime registry status calls",
-  "total_tools": 316,
+  "total_tools": 317,
   "servers": {
     "core": {
       "schema_version": "1.0.0",
       "server_name": "vnem",
       "version": "1.0.1",
       "valid": true,
-      "tool_count": 68,
+      "tool_count": 69,
       "alias_count": 0,
       "categories": {
         "activate": 1,
@@ -55,17 +55,17 @@
         "status": 1,
         "total": 1,
         "underuse": 1,
-        "usage": 1,
+        "usage": 2,
         "visual": 2
       },
       "side_effect_classes": {
-        "read_only": 68
+        "read_only": 69
       },
       "validation": {
         "valid": true,
         "server_name": "vnem",
         "version": "1.0.1",
-        "tool_count": 68,
+        "tool_count": 69,
         "alias_count": 0,
         "errors": [],
         "warnings": [],
@@ -391,10 +391,47 @@
           "input_schema_present": true
         },
         {
+          "name": "vnem_usage_self_check",
+          "version": "1.0.1",
+          "title": "VNEM Usage Self-Check",
+          "description": "Audit VNEM adoption from explicit client configuration, visible tool names, managed instructions, and current-session evidence only; detect useful skipped use and return one exact correction without hidden telemetry.",
+          "category": "usage",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/core/server.mjs",
+          "behavior_test_references": [
+            "scripts/test-vnem-adoption-reliability-2-regression.mjs",
+            "scripts/test-giga-adoption-client-use.mjs"
+          ],
+          "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
           "name": "vnem_install_adoption_guide",
           "version": "1.0.1",
           "title": "VNEM Install Adoption Guide",
-          "description": "VNEM Core MCP install adoption guide for connecting both Core and Tools MCP to Codex, Claude, Antigravity-style IDE agents, and generic MCP stdio clients without guessing config paths or writing outside the repo.",
+          "description": "VNEM Core MCP install adoption guide for connecting both Core and Tools MCP to Codex, Claude, Antigravity-style IDE agents, Hermes, and generic MCP stdio clients without guessing config paths or writing outside the repo.",
           "category": "install",
           "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
           "annotations": {
@@ -2927,7 +2964,7 @@
           "name": "vnem_tools_install_profile_emit",
           "version": "1.0.1",
           "title": "VNEM Tools Install Profile Emit",
-          "description": "VNEM Tools MCP first-call install adoption route: emit repo-local Core+Tools MCP profiles for Codex, Claude, Antigravity-style, or generic clients, with repo/code/proof next action guidance and no external config writes.",
+          "description": "VNEM Tools MCP first-call install adoption route: emit repo-local Core+Tools MCP profiles for Codex, Claude, Antigravity-style, Hermes, or generic clients, with repo/code/proof next action guidance and no external config writes.",
           "category": "install",
           "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
           "annotations": {

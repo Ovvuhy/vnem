@@ -28,6 +28,10 @@
       "vnem_underuse_detector": [
         "scripts/test-mcp-server.mjs"
       ],
+      "vnem_usage_self_check": [
+        "scripts/test-vnem-adoption-reliability-2-regression.mjs",
+        "scripts/test-giga-adoption-client-use.mjs"
+      ],
       "vnem_install_adoption_guide": [
         "scripts/test-mcp-server.mjs"
       ],

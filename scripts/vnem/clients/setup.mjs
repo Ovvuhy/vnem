@@ -5,7 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { clientCatalog } from "./catalog.mjs";
-import { buildVnemServerConfigs, mergeCodexToml, mergeJsonMcpConfig, sha256, validateToml } from "./config-merge.mjs";
+import { buildVnemServerConfigs, managedClientInstructionsPresent, mergeCodexToml, mergeJsonMcpConfig, mergeManagedClientInstructions, sha256, validateToml } from "./config-merge.mjs";
 import { PermissionRuntime } from "../permissions/runtime.mjs";
 import { callTimed, connectMcp } from "../giga/mcp-client.mjs";
 
@@ -57,6 +57,7 @@ export async function planClientSetup(options = {}) {
   const selectedIds = normalizeClientIds(options.clients?.length ? options.clients : detectedIds.length ? detectedIds : ["generic_stdio"], byId);
   const servers = buildVnemServerConfigs({ root, workspace, components });
   const grouped = new Map();
+  const instructionGroups = new Map();
 
   for (const clientId of selectedIds) {
     const client = byId.get(clientId);
@@ -70,6 +71,16 @@ export async function planClientSetup(options = {}) {
     current.proofLevels.push(client.proofLevel);
     current.reload.push(client.reload);
     grouped.set(key, current);
+    if (client.instructionPath) {
+      const instructionTarget = path.resolve(client.instructionPath);
+      const instructionKey = instructionTarget.toLowerCase();
+      const instructionGroup = instructionGroups.get(instructionKey) || { target: instructionTarget, clients: [], support: [], proofLevels: [], reload: [] };
+      instructionGroup.clients.push(client.id);
+      instructionGroup.support.push(client.support);
+      instructionGroup.proofLevels.push(client.proofLevel);
+      instructionGroup.reload.push(client.reload);
+      instructionGroups.set(instructionKey, instructionGroup);
+    }
   }
 
   const files = [];
@@ -81,6 +92,7 @@ export async function planClientSetup(options = {}) {
       : mergeJsonMcpConfig(existingText, servers);
     files.push({
       path: group.target,
+      role: "client-config",
       format: group.format,
       clients: group.clients,
       support: unique(group.support),
@@ -93,6 +105,29 @@ export async function planClientSetup(options = {}) {
       before_bytes: Buffer.byteLength(existingText),
       after_bytes: Buffer.byteLength(merged.text),
       preserved_unrelated_settings: true,
+      _nextText: merged.text
+    });
+  }
+  for (const group of instructionGroups.values()) {
+    const existed = existsSync(group.target);
+    const existingText = existed ? await readFile(group.target, "utf8") : "";
+    const merged = mergeManagedClientInstructions(existingText);
+    files.push({
+      path: group.target,
+      role: "client-instructions",
+      format: "managed-markdown",
+      clients: group.clients,
+      support: unique(group.support),
+      proof_levels: unique(group.proofLevels),
+      reload_guidance: unique(group.reload),
+      existed,
+      changed: merged.changed,
+      before_sha256: sha256(existingText),
+      after_sha256: sha256(merged.text),
+      before_bytes: Buffer.byteLength(existingText),
+      after_bytes: Buffer.byteLength(merged.text),
+      preserved_unrelated_settings: true,
+      preserved_unrelated_instructions: true,
       _nextText: merged.text
     });
   }
@@ -161,7 +196,7 @@ export async function applyClientSetup(options = {}) {
         backup_path: file.existed ? backupPath : null,
         before_sha256: sha256(currentText),
         after_sha256: file._safety ? null : file.after_sha256,
-        role: file._safety ? "safety-profile" : "client-config"
+        role: file._safety ? "safety-profile" : file.role
       });
     }
     await writeManifest(manifestPath, manifest);
@@ -264,7 +299,7 @@ export async function setupStatus(options = {}) {
 
 export async function verifySetup(plan) {
   const configChecks = [];
-  for (const file of plan.files) {
+  for (const file of plan.files.filter((candidate) => candidate.role === "client-config")) {
     const exists = existsSync(file.path);
     let valid = false;
     let serversPresent = [];
@@ -286,16 +321,30 @@ export async function verifySetup(plan) {
     }
     configChecks.push({ path: file.path, clients: file.clients, exists, syntax_valid: valid, servers_present: serversPresent });
   }
+  const instructionChecks = [];
+  for (const file of plan.files.filter((candidate) => candidate.role === "client-instructions")) {
+    const exists = existsSync(file.path);
+    const text = exists ? await readFile(file.path, "utf8") : "";
+    instructionChecks.push({
+      path: file.path,
+      clients: file.clients,
+      exists,
+      managed_block_present: managedClientInstructionsPresent(text),
+      unrelated_instructions_preserved: file.preserved_unrelated_instructions === true
+    });
+  }
   const permissionRuntime = await PermissionRuntime.create({ workspaceRoot: plan.workspace, allowedRoots: [plan.workspace] });
   const safety = permissionRuntime.status();
   const safetyOk = safety.profile.profile_name === plan.safety_profile;
   const mcp = plan.runMcp ? await verifyMcpServers(plan) : { attempted: false, core: null, tools: null, reason: "MCP smoke disabled for this run." };
   const configOk = configChecks.every((check) => check.exists && check.syntax_valid && plan.components.every((component) => component === "precision" ? check.servers_present.includes("vnem-precision") : component === "core" ? check.servers_present.includes("vnem") : check.servers_present.includes("vnem-tools")));
+  const instructionsOk = instructionChecks.every((check) => check.exists && check.managed_block_present && check.unrelated_instructions_preserved);
   const mcpOk = !plan.runMcp || (plan.components.includes("core") ? mcp.core?.ok : true) && (plan.components.includes("tools") ? mcp.tools?.ok : true);
   return {
-    ok: configOk && safetyOk && mcpOk,
+    ok: configOk && instructionsOk && safetyOk && mcpOk,
     generated_at: new Date().toISOString(),
     config_checks: configChecks,
+    instruction_checks: instructionChecks,
     safety: { ok: safetyOk, selected_profile: plan.safety_profile, active_profile: safety.profile.profile_name, hard_blocks_present: safety.hard_blocked_actions.length > 0 },
     mcp,
     what_is_not_proven: plan.runMcp
@@ -384,6 +433,10 @@ async function latestManifestPath(manifestDir) {
 }
 
 function validateWrittenConfig(filePath, format, text) {
+  if (format === "managed-markdown") {
+    if (!managedClientInstructionsPresent(text)) throw new Error(`Managed VNEM instruction validation failed after writing ${filePath}.`);
+    return;
+  }
   if (format === "codex-toml") {
     const result = validateToml(text);
     if (!result.ok) throw new Error(`TOML validation failed after writing ${filePath}.`);

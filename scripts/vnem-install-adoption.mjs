@@ -4,10 +4,11 @@ import { existsSync, readFileSync } from "node:fs";
 import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { managedClientInstructionsPresent, renderManagedClientInstructions } from "./vnem/clients/config-merge.mjs";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const defaultRoot = path.resolve(scriptDir, "..");
-const clients = ["codex", "claude", "antigravity", "generic"];
+const clients = ["codex", "claude", "antigravity", "hermes", "generic"];
 const outputBase = path.join(".vnem", "install-adoption");
 const portableCheckout = "${VNEM_CHECKOUT}";
 const serverNames = ["vnem", "vnem-tools"];
@@ -27,11 +28,13 @@ const packageScripts = [
   "test:vnem-install-emit-codex",
   "test:vnem-install-emit-claude",
   "test:vnem-install-emit-antigravity",
+  "test:vnem-install-emit-hermes",
+  "test:giga-adoption-client-use",
   "test:vnem-install-doctor",
   "runtime:readiness",
   "registry:check"
 ];
-const fallbackCoreEntryTools = ["vnem_entrypoint", "vnem_usage_contract", "vnem_mcp_visibility_doctor", "vnem_install_adoption_guide"];
+const fallbackCoreEntryTools = ["vnem_entrypoint", "vnem_usage_contract", "vnem_mcp_visibility_doctor", "vnem_usage_self_check", "vnem_install_adoption_guide"];
 const fallbackToolsEntryTools = ["vnem_tools_entrypoint", "vnem_tools_capability_router", "vnem_tools_adoption_readiness", "vnem_tools_install_profile_emit", "vnem_tools_install_doctor"];
 
 export function supportedInstallAdoptionClients() {
@@ -170,6 +173,8 @@ export async function installAdoptionDoctor({ root = defaultRoot, emit = true, w
   add("codex_toml_plausible", tomlSnippetPlausible(path.join(absoluteRoot, outputBase, "codex", "config-snippet.toml")), "Codex TOML snippet has two MCP server blocks");
   add("both_mcps_present", profilesIncludeBothMcps(absoluteRoot), "vnem and vnem-tools appear in every profile");
   add("mcp_launch_commands_plausible", launchCommandsPlausible(absoluteRoot), "node command, script args, cwd and stdio transport are present");
+  const instructionPath = path.join(absoluteRoot, outputBase, "prompts", "vnem-agent-use-instruction.md");
+  add("managed_agent_instruction_present", existsSync(instructionPath) && managedClientInstructionsPresent(await readFile(instructionPath, "utf8")), "merge-safe VNEM instruction block");
 
   const profileTexts = await readInstallAdoptionTexts(absoluteRoot);
   const hiddenControlHits = profileTexts.filter((file) => disallowedControlPattern.test(file.content)).map((file) => file.path);
@@ -368,6 +373,7 @@ function clientReadme(client, root, nodeCommand, { portable = false } = {}) {
   const title = {
     claude: "Claude VNEM MCP Profile",
     antigravity: "Antigravity-Style VNEM MCP Profile",
+    hermes: "Hermes VNEM MCP Profile",
     generic: "Generic MCP Stdio VNEM Profile"
   }[client];
   const notes = {
@@ -378,6 +384,10 @@ function clientReadme(client, root, nodeCommand, { portable = false } = {}) {
     antigravity: [
       "Use `mcp.json` as a generic/importable MCP stdio JSON profile.",
       "This kit does not claim an Antigravity universal config path. Import or copy the JSON through your IDE or agent MCP settings UI."
+    ],
+    hermes: [
+      "Use `mcp.json` as an isolated/importable MCP stdio profile for Hermes versions that support MCP server import.",
+      "No global Hermes config is changed. Verify the installed CLI's current `hermes mcp --help` contract before importing."
     ],
     generic: [
       "Use `mcp.json` with any MCP stdio client that accepts a `mcpServers` object.",
@@ -416,14 +426,9 @@ function buildAgentUseInstruction() {
   return [
     "# VNEM Agent Use Instruction",
     "",
-    "When VNEM Core and VNEM Tools MCP are available, use them naturally for repo, code, debugging, testing, GitHub, CI, proof, recovery, MCP, and generated-artifact work.",
+    "Merge only the marked block into the client's project instructions. Keep every unrelated user instruction intact.",
     "",
-    "- Call `vnem_entrypoint` first for repo/code/proof tasks.",
-    "- Use Core MCP for routing, planning, quality gates, proof contracts, and deciding which Tools calls are needed.",
-    "- Use Tools MCP for bounded actions: repo inspection, code search, patch targeting, dry-run/action planning, tests, GitHub/CI proof, local session recovery, evidence packs, and install doctor checks.",
-    "- Do not claim a file change, command result, PR, remote SHA, CI status, browser proof, or install success without direct evidence.",
-    "- If VNEM Core or Tools MCP is missing in the current client, say it is unavailable and continue with normal safe local evidence instead of inventing tool calls.",
-    "- Keep final handoffs compact and include what is proven, what is not proven, and the exact next safe task.",
+    renderManagedClientInstructions(),
     ""
   ].join("\n");
 }
@@ -448,6 +453,8 @@ function expectedInstallAdoptionFiles() {
     path.join(outputBase, "claude", "README.md"),
     path.join(outputBase, "antigravity", "mcp.json"),
     path.join(outputBase, "antigravity", "README.md"),
+    path.join(outputBase, "hermes", "mcp.json"),
+    path.join(outputBase, "hermes", "README.md"),
     path.join(outputBase, "generic", "mcp.json"),
     path.join(outputBase, "generic", "README.md"),
     path.join(outputBase, "prompts", "vnem-agent-use-instruction.md"),
@@ -489,7 +496,7 @@ async function walkTextFiles(dir, results) {
 }
 
 function profilesIncludeBothMcps(root) {
-  for (const client of ["claude", "antigravity", "generic"]) {
+  for (const client of ["claude", "antigravity", "hermes", "generic"]) {
     const file = path.join(root, outputBase, client, "mcp.json");
     if (!parsesJson(file)) return false;
     const data = JSON.parse(execRead(file));
@@ -500,7 +507,7 @@ function profilesIncludeBothMcps(root) {
 }
 
 function launchCommandsPlausible(root) {
-  for (const client of ["claude", "antigravity", "generic"]) {
+  for (const client of ["claude", "antigravity", "hermes", "generic"]) {
     const file = path.join(root, outputBase, client, "mcp.json");
     if (!parsesJson(file)) return false;
     const data = JSON.parse(execRead(file));

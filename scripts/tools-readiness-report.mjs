@@ -41,6 +41,7 @@ const cloudflareDeploymentTestPath = rel("scripts/test-tools-giga-cloudflare-dep
 const cloudflareControlModulePath = rel("scripts/vnem/tools/cloudflare-control.mjs");
 const deterministicGenerationTestPath = rel("scripts/test-giga-deterministic-generation.mjs");
 const performanceOutputTestPath = rel("scripts/test-giga-performance-output.mjs");
+const adoptionClientUseTestPath = rel("scripts/test-giga-adoption-client-use.mjs");
 const performanceBaselinePath = rel("scripts/vnem/giga/performance-baseline.mjs");
 const generatedArtifactsModulePath = rel("scripts/vnem/generation/generated-artifacts.mjs");
 const generatedArtifactsManifestPath = rel(".vnem/generated-artifacts.json");
@@ -111,6 +112,7 @@ const permissionRuntimeTestPath = rel("scripts/test-permission-runtime.mjs");
 const toolsScopedPermissionsTestPath = rel("scripts/test-tools-scoped-permissions.mjs");
 const safetyCliTestPath = rel("scripts/test-vnem-safety-cli.mjs");
 const clientSetupTestPath = rel("scripts/test-vnem-client-setup.mjs");
+const clientConfigMergePath = rel("scripts/vnem/clients/config-merge.mjs");
 const permissionRuntimePath = rel("scripts/vnem/permissions/runtime.mjs");
 const permissionToolsPath = rel("scripts/vnem/permissions/tools.mjs");
 const permissionProfilesPath = rel("scripts/vnem/permissions/profiles.mjs");
@@ -163,6 +165,7 @@ const cloudflareDeploymentTest = existsSync(cloudflareDeploymentTestPath) ? read
 const cloudflareControlModule = existsSync(cloudflareControlModulePath) ? readFileSync(cloudflareControlModulePath, "utf8") : "";
 const deterministicGenerationTest = existsSync(deterministicGenerationTestPath) ? readFileSync(deterministicGenerationTestPath, "utf8") : "";
 const performanceOutputTest = existsSync(performanceOutputTestPath) ? readFileSync(performanceOutputTestPath, "utf8") : "";
+const adoptionClientUseTest = existsSync(adoptionClientUseTestPath) ? readFileSync(adoptionClientUseTestPath, "utf8") : "";
 const performanceBaseline = existsSync(performanceBaselinePath) ? readFileSync(performanceBaselinePath, "utf8") : "";
 const generatedArtifactsModule = existsSync(generatedArtifactsModulePath) ? readFileSync(generatedArtifactsModulePath, "utf8") : "";
 const generatedArtifactsManifest = existsSync(generatedArtifactsManifestPath) ? readFileSync(generatedArtifactsManifestPath, "utf8") : "";
@@ -229,6 +232,7 @@ const permissionRuntimeTest = existsSync(permissionRuntimeTestPath) ? readFileSy
 const toolsScopedPermissionsTest = existsSync(toolsScopedPermissionsTestPath) ? readFileSync(toolsScopedPermissionsTestPath, "utf8") : "";
 const safetyCliTest = existsSync(safetyCliTestPath) ? readFileSync(safetyCliTestPath, "utf8") : "";
 const clientSetupTest = existsSync(clientSetupTestPath) ? readFileSync(clientSetupTestPath, "utf8") : "";
+const clientConfigMerge = existsSync(clientConfigMergePath) ? readFileSync(clientConfigMergePath, "utf8") : "";
 const permissionRuntimeSource = existsSync(permissionRuntimePath) ? readFileSync(permissionRuntimePath, "utf8") : "";
 const permissionToolsSource = existsSync(permissionToolsPath) ? readFileSync(permissionToolsPath, "utf8") : "";
 const permissionProfilesSource = existsSync(permissionProfilesPath) ? readFileSync(permissionProfilesPath, "utf8") : "";
@@ -752,7 +756,7 @@ const report = {
   scoped_permission_runtime_registry_status: ["vnem_tools_permission_request", "vnem_tools_permission_grant", "vnem_tools_permission_revoke", "vnem_tools_permission_evaluate", "vnem_tools_permission_doctor"].every((name) => runtimeToolNames.has(name)),
   scoped_permission_behavior_status: /active scoped grant should avoid repeated per-call approval/.test(toolsScopedPermissionsTest) && /permission_hard_blocked/.test(toolsScopedPermissionsTest) && /persistence: "session"/.test(toolsScopedPermissionsTest),
   safety_cli_behavior_status: /rollbackPreview/.test(safetyCliTest) && /session-only profile/.test(safetyCliTest) && /hard_blocked_actions/.test(safetyCliTest),
-  client_setup_behavior_status: /Codex App and CLI must share one deduplicated config transaction/.test(clientSetupTest) && /preserve-me/.test(clientSetupTest) && /rollbackClientSetup/.test(clientSetupTest) && /11 profiles, merge, proof, backup, and rollback/.test(clientSetupTest),
+  client_setup_behavior_status: /Codex App and CLI must share one config and one managed-instruction transaction/.test(clientSetupTest) && /preserve-me/.test(clientSetupTest) && /Keep the user's release workflow/.test(clientSetupTest) && /rollbackClientSetup/.test(clientSetupTest) && /11 profiles, merge, proof, backup, and rollback/.test(clientSetupTest),
   client_setup_cli_status: /runSetupCommand/.test(cli) && /runConfigPreviewCommand/.test(cli) && /runRollbackCommand/.test(cli) && /vnem setup/.test(cli) && /vnem config preview/.test(cli),
   permission_runtime_shared_status: /registerPermissionRuntimeTools/.test(server) && /requestGrant/.test(permissionRuntimeSource) && /vnem_tools_permission_grant/.test(permissionToolsSource) && /HARD_BLOCKED_ACTIONS/.test(permissionRuntimeTest),
   mcp_config_tools_support: /--tools/.test(cli) && /VNEM_TOOLS_ALLOWED_ROOTS/.test(cli) && /VNEM_TOOLS_EVIDENCE_ROOT/.test(cli) && /vnem-tools-mcp-server/.test(cli),
@@ -943,6 +947,10 @@ const report = {
   tools_install_doctor_status: /vnem_tools_install_doctor/.test(server) && /installAdoptionDoctor/.test(server) && /mcp-tools-install-doctor/.test(installAdoptionTest),
   tools_install_profile_validation_status: /no-secret-leak/.test(installAdoptionTest) && /no-hidden-control-chars/.test(installAdoptionTest) && /config-parseability/.test(installAdoptionTest) && /both-mcps-present/.test(installAdoptionTest),
   tools_install_adoption_1_status: /test:vnem-install-adoption-1-regression/.test(JSON.stringify(pkg.scripts)) && /vnem_tools_install_profile_emit/.test(server) && /vnem_tools_install_doctor/.test(server),
+  adoption_managed_instruction_status: /mergeManagedClientInstructions/.test(clientConfigMerge) && /preserved_unrelated_instructions/.test(clientConfigMerge) && /Skip unnecessary VNEM overhead for trivial tasks/.test(clientConfigMerge),
+  adoption_usage_self_check_status: /vnem_usage_self_check/.test(coreServer) && /core-usage-self-check/.test(adoptionReliability2Test) && /hidden_telemetry_used/.test(coreServer + adoptionClientUseTest),
+  adoption_real_profile_trial_status: /codex-generated-profile/.test(adoptionClientUseTest) && /active-codex-config/.test(adoptionClientUseTest) && /vnem_tools_workspace_map/.test(adoptionClientUseTest) && /codex_agent_invocation_proven:\s*false/.test(adoptionClientUseTest),
+  adoption_installed_client_honesty_status: /hermes_vnem_configured/.test(adoptionClientUseTest) && /Claude and Antigravity are not installed/.test(adoptionClientUseTest) && /isolated-profile protocol execution only/.test(adoptionClientUseTest),
   tools_manifest_status: /vnem_tools_manifest/.test(server) && /buildToolsManifest/.test(server) && /capability_group/.test(server) && /unsafe_actions_not_supported/.test(server) && /tool_catalog_policy/.test(server) && /vnem_tools_manifest/.test(intelligenceTest),
   workspace_map_status: /vnem_tools_workspace_map/.test(server) && /safeWorkspaceMap/.test(server) && /important_dirs/.test(server) && /likely_entrypoints/.test(intelligenceTest) && /secret_path_blocked|skipped_paths/.test(intelligenceTest),
   read_many_files_status: /vnem_tools_read_many_files/.test(server) && /safeReadManyFiles/.test(server) && /max_total_bytes/.test(server) && /blocked_files/.test(intelligenceTest),
@@ -1385,7 +1393,11 @@ for (const [key, value] of Object.entries({
   tools_install_profile_emit_status: report.tools_install_profile_emit_status,
   tools_install_doctor_status: report.tools_install_doctor_status,
   tools_install_profile_validation_status: report.tools_install_profile_validation_status,
-  tools_install_adoption_1_status: report.tools_install_adoption_1_status
+  tools_install_adoption_1_status: report.tools_install_adoption_1_status,
+  adoption_managed_instruction_status: report.adoption_managed_instruction_status,
+  adoption_usage_self_check_status: report.adoption_usage_self_check_status,
+  adoption_real_profile_trial_status: report.adoption_real_profile_trial_status,
+  adoption_installed_client_honesty_status: report.adoption_installed_client_honesty_status
 })) assert.equal(value, true, `${key} readiness missing`);
 for (const [key, value] of Object.entries({
   precision_subsystem_runtime_registry_status: report.precision_subsystem_runtime_registry_status,
@@ -1577,7 +1589,7 @@ console.log(`ui_no_hidden_browser_status: ${yes(report.ui_no_hidden_browser_stat
 console.log(`ui_visual_claim_audit_status: ${yes(report.ui_visual_claim_audit_status)}`);
 for (const key of ["github_autonomy_status", "github_settings_guide_status", "github_profile_status", "github_status_tool_status", "github_repo_inspect_status", "github_repo_intelligence_status", "github_branch_status", "github_commit_push_status", "github_pr_status", "github_issue_status", "github_labels_status", "github_actions_status", "github_ci_triage_status", "github_pr_quality_gate_status", "github_task_progress_truth_check_status", "github_config_header_status", "github_profile_maintainer_default_status", "github_force_push_block_default_status", "github_repo_delete_block_default_status", "github_secret_commit_block_status", "github_real_exec_status", "github_gh_auth_detection_status", "github_git_command_status", "github_branch_real_exec_status", "github_commit_push_real_exec_status", "github_pr_real_exec_status", "github_issue_real_exec_status", "github_label_real_exec_status", "github_actions_real_exec_status", "github_ci_logs_status", "github_release_draft_status", "github_development_module_status", "github_diff_review_status", "github_review_threads_status", "github_remote_proof_status", "github_actions_run_inspect_status", "github_release_verify_status", "github_public_surface_audit_status", "github_selective_commit_isolation_status", "github_development_real_mcp_proof_status", "github_dry_run_status", "github_config_knob_status", "github_secret_file_block_status", "github_real_execution_not_only_simulated_status", "autonomy_efficiency_status"]) console.log(`${key}: ${yes(report[key])}`);
 for (const key of ["repo_deep_map_status", "next_action_ranker_status", "no_placebo_progress_audit_status", "change_impact_plan_status", "test_selection_plan_status", "failure_triage_status", "evidence_pack_status", "power_tools_1_status", "power_tools_2_dogfood_status", "ranking_quality_tuning_status", "no_placebo_strictness_status", "test_selection_efficiency_status", "evidence_pack_proof_packet_status", "failure_triage_specificity_status", "power_tools_2_status", "local_session_recovery_status", "power_session_1_status", "workflow_orchestrator_tool_status", "workflow_orchestrator_behavior_status", "workflow_orchestrator_no_placebo_status", "workflow_orchestrator_proof_packet_status", "orchestrator_1_status", "code_symbol_map_status", "mcp_surface_audit_status", "patch_target_finder_status", "tool_test_coverage_map_status", "source_impact_trace_status", "source_control_character_guard_status", "code_intelligence_1_status"]) console.log(`${key}: ${yes(report[key])}`);
-for (const key of ["tools_entrypoint_status", "tools_capability_router_status", "tools_adoption_readiness_status", "tools_exact_call_sequence_status", "tools_registered_call_validation_status", "tools_adoption_reliability_status", "tools_visibility_doctor_status", "tools_underuse_detector_status", "tools_adoption_description_status", "tools_registered_name_validation_2_status", "tools_adoption_reliability_2_status", "tools_install_profile_emit_status", "tools_install_doctor_status", "tools_install_profile_validation_status", "tools_install_adoption_1_status"]) console.log(`${key}: ${yes(report[key])}`);
+for (const key of ["tools_entrypoint_status", "tools_capability_router_status", "tools_adoption_readiness_status", "tools_exact_call_sequence_status", "tools_registered_call_validation_status", "tools_adoption_reliability_status", "tools_visibility_doctor_status", "tools_underuse_detector_status", "tools_adoption_description_status", "tools_registered_name_validation_2_status", "tools_adoption_reliability_2_status", "tools_install_profile_emit_status", "tools_install_doctor_status", "tools_install_profile_validation_status", "tools_install_adoption_1_status", "adoption_managed_instruction_status", "adoption_usage_self_check_status", "adoption_real_profile_trial_status", "adoption_installed_client_honesty_status"]) console.log(`${key}: ${yes(report[key])}`);
 for (const key of ["cloudflare_control_status", "cloudflare_auth_status_tool_status", "cloudflare_auth_plan_status", "cloudflare_discovery_status", "cloudflare_pages_deploy_status", "cloudflare_workers_deploy_status", "cloudflare_dns_status", "cloudflare_env_secrets_status", "cloudflare_verify_status", "cloudflare_rollback_status", "cloudflare_cache_purge_status", "cloudflare_approval_gate_status", "cloudflare_destructive_approval_status", "cloudflare_secret_redaction_status", "cloudflare_evidence_pack_status", "general_tools_evidence_pack_audit_status", "general_tools_mutation_approval_contract_status", "general_tools_secret_redaction_check_status"]) console.log(`${key}: ${yes(report[key])}`);
 console.log(`parallel_fake_system_detection_status: ${yes(report.parallel_fake_system_detection_status)}`);
 console.log(`dead_code_warning_status: ${yes(report.dead_code_warning_status)}`);
