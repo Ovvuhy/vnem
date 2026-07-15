@@ -6,7 +6,24 @@ This digest is designed for maintainers. It summarizes source-backed candidates 
 
 ## Discovery Candidates
 
-- No new candidate report found, or every candidate is already indexed.
+- hermes-agent: Hermes Agent v0.14.0 (2026.5.16) | unreviewed | candidate | https://github.com/NousResearch/hermes-agent/releases/tag/v2026.5.16
+- claude-code: v2.1.153 | unreviewed | candidate | https://github.com/anthropics/claude-code/releases/tag/v2.1.153
+- minsky | watchlist | candidate | https://github.com/fyodoriv/minsky
+- void-memory | unreviewed | candidate | https://github.com/Efeta7451/void-memory
+- Easy-agentic-memory-system-easy-memory- | unreviewed | candidate | https://github.com/Mursaleen-khan1/Easy-agentic-memory-system-easy-memory-
+- mcp-security-checklist | unreviewed | candidate | https://github.com/patrickbatem5194/mcp-security-checklist
+- sentinel | unreviewed | candidate | https://github.com/Spoonbillguru666/sentinel
+- vault-sync | unreviewed | candidate | https://github.com/Ub207/vault-sync
+- mguard | unreviewed | candidate | https://github.com/uncensored-waterford179/mguard
+- openclaw-skill | unreviewed | candidate | https://github.com/unexplained-familyephedraceae871/openclaw-skill
+- iosm-cli | unreviewed | candidate | https://github.com/viettua3978/iosm-cli
+- Memory-Like-A-Tree | unreviewed | candidate | https://github.com/zxt-01/Memory-Like-A-Tree
+- Kagantic-vault-structure | unreviewed | candidate | https://github.com/Asim00740/Kagantic-vault-structure
+- parecode | unreviewed | candidate | https://github.com/BasilSkyWalk/parecode
+- nx-mcp | unreviewed | candidate | https://www.npmjs.com/package/nx-mcp
+- mcp-framework | unreviewed | candidate | https://www.npmjs.com/package/mcp-framework
+- Show HN: VAEN – Package and import portable AI coding-agent Harnesses | watchlist | candidate | https://news.ycombinator.com/item?id=48300485
+- The Codex Showcase | watchlist | candidate | https://news.ycombinator.com/item?id=48289024
 
 ## Best-practice Signals
 

@@ -3,15 +3,15 @@
   "phase": 21,
   "benchmark_type": "deterministic_generation_and_artifact_hygiene",
   "generation_runs_ms": [
-    2728.515,
-    2213.973
+    1531.26,
+    1479.711
   ],
   "artifact_count": 62,
-  "source_input_count": 512,
+  "source_input_count": 511,
   "text_artifacts_scanned": 60,
   "binary_artifacts_scanned": 2,
   "real_stdio_mcp": true,
   "mcp_ci_classification": "generated_artifact_mismatch",
-  "checks": 23,
+  "checks": 25,
   "status": "pass"
 }

@@ -95,6 +95,8 @@ check(first.hashes["public/install.tgz"] === second.hashes["public/install.tgz"]
 check(first.hashes["public/install.tgz"] === first.hashes["landing/install.tgz"], "public and landing archives are synchronized");
 check(first.manifest.artifacts.every((artifact) => artifact.source_inputs && artifact.generator && artifact.output && artifact.content_hash && artifact.semantic_hash && Array.isArray(artifact.volatile_fields) && artifact.tracked === true && artifact.expected_regeneration_command), "manifest records required ownership fields");
 check(first.manifest.source_sets.primary.inputs.length > 400, "manifest binds the full registry source set");
+check(first.manifest.source_sets.primary.patterns.includes("discovery/candidates/hermes*.json"), "manifest scopes discovery inputs to committed Hermes reports");
+check(!first.manifest.source_sets.primary.inputs.some((input) => input.path === "discovery/candidates/link-report.json"), "ignored discovery runtime reports cannot affect deterministic generation");
 check(resolveGenerationClock({ sourceDateEpoch: "1700000000", semanticTimestamp: "invalid" }).iso === "2023-11-14T22:13:20.000Z", "SOURCE_DATE_EPOCH is supported");
 runScript("scripts/generate-digest.mjs");
 const firstDigestHash = sha256(await readFile(path.join(root, "discovery", "daily-digest.md")));

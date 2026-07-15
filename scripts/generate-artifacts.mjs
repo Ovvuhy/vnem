@@ -5792,7 +5792,7 @@ const artifactManifest = await buildGeneratedArtifactManifest({
   root: ROOT,
   outputs: generatedOutputs,
   sourcePaths,
-  sourcePatterns: ["discovery/candidates/*.json"],
+  sourcePatterns: ["discovery/candidates/hermes*.json"],
   semanticTimestamp: generatedAt,
   timestampSource: generationClock.source,
   generationSettings: {

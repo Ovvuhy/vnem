@@ -5,7 +5,7 @@ import path from "node:path";
 export async function latestCandidateReport(root) {
   const candidatesDir = path.join(root, "discovery", "candidates");
   if (!existsSync(candidatesDir)) return null;
-  const files = (await readdir(candidatesDir)).filter((file) => file.endsWith(".json")).sort();
+  const files = (await readdir(candidatesDir)).filter((file) => /^hermes.*\.json$/i.test(file)).sort();
   if (!files.length) return null;
   return JSON.parse(await readFile(path.join(candidatesDir, files.at(-1)), "utf8"));
 }

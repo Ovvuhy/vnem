@@ -476,7 +476,7 @@
         "scripts/vnem/generation/generated-artifacts.mjs"
       ],
       "patterns": [
-        "discovery/candidates/*.json"
+        "discovery/candidates/hermes*.json"
       ],
       "inputs": [
         {
@@ -666,10 +666,6 @@
         {
           "path": "discovery/candidates/hermes-deep-2026-05-28.json",
           "content_hash": "sha256:ace23ecda68a84612e3796f80f0afd209765f153444284f895698f41e009dad3"
-        },
-        {
-          "path": "discovery/candidates/link-report.json",
-          "content_hash": "sha256:03a554f3bf82a3d140944221299fd2e89b2c4e3cb1988ebd2ee475d469712b20"
         },
         {
           "path": "generation/metadata.json",
@@ -2505,7 +2501,7 @@
         },
         {
           "path": "scripts/generate-artifacts.mjs",
-          "content_hash": "sha256:00a08e1b7350c36eb6a8ca49139b7eefc65151acec9dc69efbeb3cf3171997fd"
+          "content_hash": "sha256:9f1e05a178cf0a0f521518019baea5b3828ce8e6cc64efe00ee98add4d411b99"
         },
         {
           "path": "scripts/generate-digest.mjs",
@@ -2521,14 +2517,14 @@
         },
         {
           "path": "scripts/vnem/generation/daily-digest.mjs",
-          "content_hash": "sha256:de4fbfdb74e023e144aabf2a0ec5a702c7afb576c1ec9e399e64473842e79e82"
+          "content_hash": "sha256:6de856e2d24e0e701b02a6de49c3d5bfe7bad15be6ce210259956a3a6cea9077"
         },
         {
           "path": "scripts/vnem/generation/generated-artifacts.mjs",
           "content_hash": "sha256:8f99e0074a4f93bf8a58fec103e47ee3e1c90e350c5e245c90453ae5bae5a3a2"
         }
       ],
-      "aggregate_hash": "sha256:00c7620f71135da9efef75aa9b56340a92eba88a0f8f2dd50b48e43d355c8767"
+      "aggregate_hash": "sha256:23c580572f9a4c4b8b538356635edf1bb6c6c1438b6bfd5e1a3bbb7d4496769d"
     }
   },
   "artifacts": [
@@ -2936,8 +2932,8 @@
       "generator": "scripts/generate-artifacts.mjs",
       "output": "discovery/daily-digest.md",
       "kind": "text",
-      "content_hash": "sha256:59ef65d40fd7ec8f529763ee94bcf4f48f894b9f3b187313e0d071540f430d7b",
-      "semantic_hash": "sha256:f5271e0bb3d4d923cf6a302deb72bb55a37b2efc49817ed9f3f2bd0b11dc8897",
+      "content_hash": "sha256:571a6ddbac8fd1463c3cac690db52d3e375a607b5ce0034f5954ee50c953d653",
+      "semantic_hash": "sha256:7122999bbc3045feceb7344b11c82ce0044c7216568ae63211e1975ed5d87305",
       "volatile_fields": [
         "Generated"
       ],
