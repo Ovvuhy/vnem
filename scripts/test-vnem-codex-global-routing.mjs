@@ -51,7 +51,7 @@ try {
     projectTable(projectA),
     'trust_level = "trusted"',
     '',
-    projectTable(swapWindowsCaseAndSeparators(projectA)),
+    projectTable(equivalentProjectPath(projectA)),
     'trust_level = "trusted"',
     '',
     projectTable(projectB),
@@ -116,7 +116,7 @@ try {
   const discovered = await router.discoverCodexTrustedProjects();
   assert.equal(discovered.health.ok, true);
   assert.equal(discovered.projects.length, 2, "equivalent Windows roots must be deduplicated while distinct projects remain separate");
-  assert.equal((await router.authorizationCheck(swapWindowsCaseAndSeparators(projectA))).authorized, true);
+  assert.equal((await router.authorizationCheck(equivalentProjectPath(projectA))).authorized, true);
   const initialDenial = await router.authorizationCheck(projectC);
   assert.equal(initialDenial.authorized, false);
   assert.match(initialDenial.reason, /not inside a trusted Codex project or an active explicit VNEM project approval/i);
@@ -314,6 +314,10 @@ function projectTable(root) {
 function swapWindowsCaseAndSeparators(root) {
   if (process.platform !== "win32") return root;
   return root.replace(/^([a-z]):/i, (_match, drive) => `${drive === drive.toLowerCase() ? drive.toUpperCase() : drive.toLowerCase()}:`).replace(/\\/g, "/");
+}
+
+function equivalentProjectPath(root) {
+  return process.platform === "win32" ? swapWindowsCaseAndSeparators(root) : `${root}${path.sep}.`;
 }
 
 function samePath(left, right) {
