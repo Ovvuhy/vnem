@@ -44,6 +44,8 @@ const packFiles = [
   "install-adoption/claude/README.md",
   "install-adoption/antigravity/mcp.json",
   "install-adoption/antigravity/README.md",
+  "install-adoption/hermes/mcp.json",
+  "install-adoption/hermes/README.md",
   "install-adoption/generic/mcp.json",
   "install-adoption/generic/README.md",
   "install-adoption/prompts/vnem-agent-use-instruction.md",

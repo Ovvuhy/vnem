@@ -254,6 +254,8 @@ assert(
     ".vnem/install-adoption/claude/README.md",
     ".vnem/install-adoption/antigravity/mcp.json",
     ".vnem/install-adoption/antigravity/README.md",
+    ".vnem/install-adoption/hermes/mcp.json",
+    ".vnem/install-adoption/hermes/README.md",
     ".vnem/install-adoption/generic/mcp.json",
     ".vnem/install-adoption/generic/README.md",
     ".vnem/install-adoption/prompts/vnem-agent-use-instruction.md",
