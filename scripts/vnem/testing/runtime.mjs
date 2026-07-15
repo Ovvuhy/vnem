@@ -664,8 +664,10 @@ function applyIntegrationBoundaries(changed, add) {
     [/^scripts\/vnem\/permissions\//, ["test:tools-permission-profiles", "test:permission-runtime", "test:tools-scoped-permissions", "test:tools-trust-boundary"]],
     [/^scripts\/vnem\/clients\//, ["test:clients", "test:cli", "test:vnem-install-adoption-1-regression", "test:giga-adoption-client-use"]],
     [/^scripts\/vnem\/registry\//, ["test:runtime-registry", "registry:behavior:check", "registry:check"]],
-    [/^scripts\/vnem\/testing\//, ["test:tools-giga-testing-ci", "test:tools-mcp", "test:giga-runtime-contracts"]],
-    [/^dashboard\//, ["test:dashboard", "test:dashboard-system", "test:dashboard-control-room"]]
+    [/^scripts\/vnem\/testing\//, ["test:tools-giga-testing-ci", "test:tools-mcp", "test:giga-runtime-contracts", "test:giga-final-integration"]],
+    [/^scripts\/test-giga-final-integration\.mjs$/, ["test:giga-final-integration"]],
+    [/^(?:README\.md|docs\/(?:current-system|VNEM_SETUP)\.md|landing\/index\.html)$/, ["test:giga-final-integration"]],
+    [/^dashboard\//, ["test:dashboard", "test:dashboard-system", "test:dashboard-control-room", "test:giga-final-integration"]]
   ];
   for (const [pattern, scripts] of rules) if (pattern.test(changed)) for (const script of scripts) add(script, "known integration boundary", [changed, pattern.source]);
 }

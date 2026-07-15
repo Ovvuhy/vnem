@@ -24,12 +24,14 @@ overclaim demo, fixture, local dashboard, or protection behavior.
 
 | Surface | Status | What it does now | Boundary |
 | --- | --- | --- | --- |
-| VNEM Core | Implemented | Provides the protected read-only install pack, source radar, registry data, rubrics, prompts, best-practice notes, quality gates, and generated LLM/API artifacts. | The install pack is guidance/data. It does not install packages, execute tools, collect secrets, or edit app code. |
+| VNEM Core | Implemented | Provides read-only task routing, compatibility decisions, evidence contracts, quality/protection planning, usage self-checks, install guidance, and the generated knowledge pack. | Core does not execute Tools actions, mutate files, call accounts, or claim proof it did not receive. |
+| VNEM Tools | Implemented with bounded providers | Provides permission-profile-gated repo, code, test, browser, GitHub, data, deployment, rollback, and evidence workflows. | Provider/account actions still require configuration and explicit approval. Unsupported or unobserved execution is reported, not inferred. |
+| Precision MCP | Compatibility | Preserves seven legacy opt-in tool names over shared runtime behavior. | Core + Tools are the two primary MCPs. Precision is not a third independent heavy implementation. |
 | VNEM App / Dashboard | In progress | Shows owner-gated dashboard status, local AI client connector status, targeting controls, pipeline telemetry, improvement mission control, findings, route health, provider state, and staged dispatch review. | It must label live, sample, fallback, preview, and planned states clearly. |
 | Research AI | In progress | Accepts dashboard targets, queries configured source routes, ranks candidates, and emits source-backed telemetry when the local app server is running. | A source signal is not approval. It must pass Protection AI before Giving AI can stage anything. |
 | Protection AI | In progress | Reviews candidate provenance, route metadata, package surfaces, permissions, flags, threat score, and block/isolate decisions. | It should be conservative. Blocked or quarantined items are not applied. |
 | Giving AI | In progress | Stages reviewable markdown dispatches in `.vnem/staging/`, can promote approved markdown into `.vnem/approved/`, previews safe branch plans through the app server, and has a confirmed prepare endpoint for `vnem-giving/<slug>` review branches. | Approval moves markdown only today. Research-derived implementation output must go to a `vnem-giving/<slug>` branch before manual review; it must not directly touch `main`. |
-| VNEM Connectors | Foundation | Detects local AI clients, previews config changes, and supports explicit apply/revert style connector flows. | Never fake connected state. Preview before apply. Show errors honestly. |
+| VNEM Connectors | Implemented setup foundation | Detects 11 client surfaces, transactionally merges verified configs and managed instructions, or emits import-only profiles with backup, verification, and rollback. | A profile does not prove installation, reload, visibility, or autonomous client use. Never fake connected state. |
 | VNEM AI | Planned | Future customizable AI surface with provider settings, modes, tools, rules, personality, local/cloud model support, and app-builder/prompt/security workflows. | Do not present this as implemented until the repo contains working UI/API behavior and validation. |
 
 ## Pipeline contract
@@ -379,7 +381,7 @@ Delivered in ARD Browser Pipeline v1: the dashboard route `POST /api/ard/pipelin
 
 ## Safety notes
 
-- VNEM Core remains protected and read-only.
+- VNEM Core remains protected and read-only; Tools owns bounded execution under the active profile and hard protections.
 - The app/dashboard may perform explicit local review actions, but those actions must be narrow and auditable.
 - Protection AI verdicts are `allow`, `needs-review`, `quarantine`, and `blocked`; `allow` means allowed by current checks, not proven safe.
 - `quarantine` and `blocked` are isolated from Giving AI application paths.

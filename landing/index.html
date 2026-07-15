@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="vnem is an AI-improvement forge for coding agents: protected Core guidance, app dashboard, source-backed Research AI, conservative Protection AI, and reviewable Giving AI dispatches." />
+    <meta name="description" content="vnem is an AI-improvement system with read-only Core intelligence, permission-aware Tools execution, compatibility profiles, and evidence-backed workflows." />
     <meta name="theme-color" content="#0d0d0d" />
     <meta property="og:title" content="vnem" />
-    <meta property="og:description" content="Protected VNEM Core guidance plus a growing dashboard pipeline for Research AI, Protection AI, Giving AI, connector previews, and honest current-vs-planned system status." />
+    <meta property="og:description" content="VNEM Core plans and audits; VNEM Tools inspects and executes within explicit permission, approval, rollback, and evidence boundaries." />
     <meta property="og:image" content="assets/banner.jpg" />
     <title>vnem</title>
     <link rel="icon" href="assets/logo.png" />
@@ -46,7 +46,7 @@
           <img class="hero-logo" src="assets/logo.png" alt="" />
           <p class="product-mark">vnem</p>
           <h1>AI-improvement forge for agents.</h1>
-          <p class="lead">VNEM Core stays protected and read-only while the VNEM App grows a live Research AI → Protection AI → Giving AI review pipeline for safer coding-agent upgrades.</p>
+          <p class="lead">VNEM Core stays read-only and decides what evidence is needed. VNEM Tools performs bounded inspection and approved execution, while the App keeps Research, Protection, and Giving reviewable.</p>
 
           <div class="command-shell" id="install-command" aria-label="vnem install command">
             <div class="command-row">
@@ -124,13 +124,13 @@
         </div>
       </section>
 
-      <section class="plain-section quality-section" aria-label="VNEM precision execution">
+      <section class="plain-section quality-section" aria-label="VNEM Precision compatibility">
         <div class="section-inner">
-          <p class="section-kicker">precision</p>
+          <p class="section-kicker">compatibility</p>
           <div class="install-grid">
             <div>
-              <h2>Exact patches. Current docs. Real feedback.</h2>
-              <p>The default MCP stays read-only. When a project explicitly enables the precision server, VNEM gives agents controlled mutation, local context, and proof loops instead of a full-file rewrite button.</p>
+              <h2>Old Precision clients keep working.</h2>
+              <p>Core and Tools are the two primary MCPs. The seven-tool Precision server remains an opt-in compatibility shim over shared runtime behavior for existing exact-patch, current-doc, terminal, search, verification, and helper workflows.</p>
             </div>
             <div class="quality-list">
               <article>
@@ -159,7 +159,7 @@
           <div class="install-grid">
             <div>
               <h2>Find the code. Prove the logic. Clean up the helper.</h2>
-              <p>Stage 4 adds a local semantic code index and test-driven healing loop to the opt-in precision server, so agents stop guessing file paths and stop claiming logic works without evidence.</p>
+              <p>Local semantic search and bounded verification now live in the shared runtime used by Tools and the Precision compatibility shim, so existing paths remain available without a second heavy implementation.</p>
             </div>
             <div class="quality-list">
               <article>
@@ -267,17 +267,19 @@ npm.cmd run test:current</code></pre>
 
           <div class="install-grid secondary-install">
             <div>
-              <h2>Need MCP too?</h2>
-              <p>From the same checkout, generate an absolute-path config instead of hand-writing paths.</p>
+              <h2>Connect Core + Tools.</h2>
+              <p>Use managed setup so config, safety, instructions, verification, backup, and rollback stay one reviewable transaction.</p>
             </div>
-            <pre class="code-block"><code>node scripts/vnem-cli.mjs mcp-config
-node scripts/vnem-cli.mjs mcp-config --server-json</code></pre>
+            <pre class="code-block"><code>node scripts/vnem-cli.mjs setup
+node scripts/vnem-cli.mjs safety --status --json
+npm.cmd run core:readiness
+npm.cmd run tools:readiness</code></pre>
           </div>
 
           <div class="install-grid secondary-install">
             <div>
-              <h2>Need precision execution?</h2>
-              <p>Enable this only for the project workspace where exact patching, current-doc ingestion, safe terminal checks, semantic search, proof loops, and temporary helpers are allowed.</p>
+              <h2>Need a legacy Precision profile?</h2>
+              <p>Keep this only for an existing client that depends on the seven compatibility names. New setup should use Core + Tools and an explicit Tools safety profile.</p>
             </div>
             <pre class="code-block"><code>node scripts/vnem-cli.mjs mcp-config --precision --workspace /path/to/project
 npm run precision:mcp</code></pre>
@@ -306,12 +308,12 @@ npm run precision:mcp</code></pre>
               <p>Performance, visuals, playability, accessibility, maintainability, and safety are checked together instead of traded away silently.</p>
             </article>
             <article>
-              <h2>Real MCP server</h2>
-              <p>Use vnem as a local stdio MCP for search, recommendations, orchestration plans, entry lookup, comparison, and best-practice routing.</p>
+              <h2>Two primary MCPs</h2>
+              <p>Core provides read-only decisions, routing, compatibility, and proof contracts. Tools provides bounded inspection and approved execution with evidence.</p>
             </article>
             <article>
-              <h2>Precision MCP server</h2>
-              <p>Opt in to exact patching, current documentation ingestion, semantic code search, bounded verification, and temporary helper scripts when a project needs controlled mutation.</p>
+              <h2>Compatibility without duplication</h2>
+              <p>The seven-tool Precision shim preserves older clients while delegating to shared runtime behavior. It is not a third primary architecture.</p>
             </article>
           </div>
         </div>
@@ -321,20 +323,22 @@ npm run precision:mcp</code></pre>
         <div class="section-inner install-grid">
           <div>
             <p class="section-kicker">mcp</p>
-            <h2>Use vnem as a read-only tool server.</h2>
-            <p>For MCP clients, point the default server at a local vnem checkout. It reads generated artifacts and never installs packages, edits code, calls upstream services, or collects secrets. Precision execution is a separate opt-in server with an explicit workspace root.</p>
+            <h2>Core decides. Tools proves.</h2>
+            <p>Managed setup connects both local stdio servers. Core remains read-only. Tools starts at <code>safe-readonly</code> and exposes stronger capabilities only through explicit profiles, scoped approvals, rollback, and evidence.</p>
           </div>
-          <pre class="code-block"><code>{
-  "mcpServers": {
-    "vnem": {
-      "command": "node",
-      "args": ["/path/to/vnem/scripts/vnem-mcp-server.mjs"],
-      "env": {
-        "VNEM_ROOT": "/path/to/vnem"
-      }
-    }
-  }
-}</code></pre>
+          <pre class="code-block"><code>node scripts/vnem-cli.mjs setup
+node scripts/vnem-cli.mjs clients --json
+node scripts/vnem-cli.mjs safety --status --json</code></pre>
+        </div>
+        <div class="section-inner install-grid secondary-install">
+          <div>
+            <h2>Profiles report what is proven.</h2>
+            <p>Codex, Claude, Cursor, and Gemini use verified direct or project setup contracts. Generic stdio has real protocol proof. Antigravity, Hermes, Windsurf, and Cline remain import-only where a global config contract is not verified. A generated profile does not prove that a client is installed, reloaded, or using VNEM.</p>
+          </div>
+          <div>
+            <h2>Measured on the VNEM test machine.</h2>
+            <p>The Phase 22 full suite passed 166/166 in 202.742 seconds; an affected six-check run took 8.448 seconds. Core, Tools, and Precision met the recorded startup, warm-call, compact-output, and idle-memory targets. These are reproducible local samples, not universal hardware guarantees.</p>
+          </div>
         </div>
       </section>
 

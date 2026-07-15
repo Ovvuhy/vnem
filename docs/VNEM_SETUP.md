@@ -24,6 +24,7 @@ Noninteractive setup does not write without `--yes`. Use `--no-verify-mcp` only 
 
 - Existing JSON is parsed and merged through `mcpServers`; unrelated top-level keys, unrelated servers, and unknown server/env settings are preserved.
 - Codex TOML is parsed after generation. Only VNEM's managed server tables are updated; unrelated tables and unknown VNEM server/env keys are preserved.
+- Eligible project instruction files receive one marked VNEM block. Unrelated instructions are preserved, malformed or duplicate markers block setup, and config/instructions/safety share one transaction and rollback.
 - Codex App and Codex CLI share one deduplicated `~/.codex/config.toml` change.
 - Every changed or newly created file is recorded before mutation. Existing files receive private byte-for-byte backups.
 - Writes use a temporary file and atomic rename.
@@ -54,7 +55,9 @@ Client paths are resolved from the current platform and home directory. Portable
 
 ## Verification
 
-Setup validates config syntax, confirms the selected safety profile, starts the selected VNEM servers, lists their tools, and calls `vnem_entrypoint` and `vnem_tools_entrypoint`. This proves the local server/config payload, not that a running client UI has reloaded it.
+Setup validates config and managed-instruction syntax, confirms the selected safety profile, starts the selected VNEM servers, lists their tools, and calls `vnem_entrypoint` and `vnem_tools_entrypoint`. This proves the local server/config payload, not that a running client UI has reloaded it.
+
+The read-only Core tool `vnem_usage_self_check` can audit caller-supplied configuration names, visible entrypoints, managed instructions, and current-session evidence. It uses no hidden telemetry and returns no VNEM ceremony for trivial tasks. A missing client reload remains unproven until the client actually exposes and calls the entrypoints.
 
 After a successful setup transaction, plain `vnem doctor` also verifies the clients, components, and safety profile recorded by that transaction. `vnem doctor --clients` runs only the client/setup doctor.
 

@@ -9,6 +9,7 @@ export const VNEM_FULL_SUITE = Object.freeze([
   "test:giga-deterministic-generation",
   "test:giga-performance-output",
   "test:giga-adoption-client-use",
+  "test:giga-final-integration",
   "dashboard:build",
   "test:install-pack",
   "test:orchestration",
@@ -224,7 +225,7 @@ export function stageForScript(script, tier) {
 
 export function manifestResourceHints(script) {
   const resources = [];
-  if (["generate", "generate:check", "test:giga-deterministic-generation", "dashboard:build", "test:install-pack", "discover:dry-run", "digest", "test:giga-baseline"].includes(script)) resources.push("repo-generated-state");
+  if (["generate", "generate:check", "test:giga-deterministic-generation", "test:giga-final-integration", "test:giga-adoption-client-use", "test:vnem-install-adoption-1-regression", "dashboard:build", "test:install-pack", "discover:dry-run", "digest", "test:giga-baseline"].includes(script)) resources.push("repo-generated-state");
   if (/browser|giga-app-engineering/.test(script)) resources.push("browser-runtime");
   if (/project-actions|giga-project-automation|app-server|dashboard-api-local|launch-dev/.test(script)) resources.push("dev-server-runtime");
   if (/github|git-session|autonomy|power-session|orchestrator/.test(script)) resources.push("git-fixture-runtime");

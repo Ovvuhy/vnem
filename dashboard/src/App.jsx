@@ -651,6 +651,7 @@ function DashboardShell({ summary, status, error, telemetry, walletAddress, onRe
         advancedChildren={
           <>
             <DashboardErrorBoundary label="Advanced dashboard panels">
+              <VnemSystemBrief telemetry={telemetry} execution={pipelineExecution} summary={summary} connector={connector} />
               <IntelligenceProviderDiagnostic provider={telemetry.intelligenceProvider} />
               <SelfImprovementControlRoom
                 controlRoom={controlRoom}

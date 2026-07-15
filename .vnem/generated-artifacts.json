@@ -673,7 +673,7 @@
         },
         {
           "path": "package.json",
-          "content_hash": "sha256:f77cdc77ae1d500dddbc0c8e51e0d5306f7a418dd27a44e138bae45a6cebe423"
+          "content_hash": "sha256:9051802162d4b5964f49267b7958a0f3e1646ff11f0451b1a804604f2f1123bc"
         },
         {
           "path": "registry/entries/ac-inference-sh-mcp/entry.yaml",
@@ -2524,7 +2524,7 @@
           "content_hash": "sha256:8f99e0074a4f93bf8a58fec103e47ee3e1c90e350c5e245c90453ae5bae5a3a2"
         }
       ],
-      "aggregate_hash": "sha256:2edf9092c13f83ae4b396c64d1b9071de501ca682a9ac65bfff2a1d141c489ab"
+      "aggregate_hash": "sha256:c7276d049bfddab7afbf76823be3cf2783d8d108f8495638115813cacf755baa"
     }
   },
   "artifacts": [

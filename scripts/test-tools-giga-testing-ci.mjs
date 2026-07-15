@@ -8,6 +8,7 @@ import { fileURLToPath } from "node:url";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { TestingCiRuntime } from "./vnem/testing/runtime.mjs";
+import { manifestResourceHints } from "./vnem/testing/suite-manifest.mjs";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(scriptDir, "..");
@@ -109,6 +110,7 @@ try {
   const repositoryGraph = await repositoryRuntime.affectedGraph({ root: rootDir, changed_files: ["scripts/vnem/testing/runtime.mjs"] });
   assert.deepEqual(new Set(repositoryGraph.selected_scripts), new Set([
     "test:tools-giga-testing-ci",
+    "test:giga-final-integration",
     "test:tools-mcp",
     "test:runtime-registry",
     "registry:behavior:check",
@@ -119,6 +121,9 @@ try {
   assert.equal(packageGraph.selected_scripts.includes("build"), false, "VNEM build aggregate must expand before command-policy review");
   assert.equal(packageGraph.selected_scripts.includes("giga:benchmark"), false, "affected checks must not overwrite the immutable GIGA baseline");
   assert.ok(["validate", "generate", "dashboard:build"].every((script) => packageGraph.selected_scripts.includes(script)));
+  for (const script of ["generate", "test:giga-final-integration", "test:giga-adoption-client-use", "test:vnem-install-adoption-1-regression"]) {
+    assert.ok(manifestResourceHints(script).includes("repo-generated-state"), `${script} must serialize generated-state access`);
+  }
   const capabilityGraph = await repositoryRuntime.affectedGraph({ root: rootDir, changed_files: ["scripts/vnem/giga/capability-benchmark.mjs"] });
   assert.equal(capabilityGraph.selected_scripts.includes("giga:benchmark"), false);
   assert.equal(capabilityGraph.selected_scripts.includes("test:giga-capability-current"), true);

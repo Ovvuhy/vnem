@@ -54,6 +54,21 @@ unrelated `~/.codex/AGENTS.md` content outside the marked VNEM block. Hermes
 Desktop/CLI/TUI should be opened with the VNEM repo as cwd, for example
 `hermes desktop --cwd C:\VNEM\vnem-src`.
 
+## Current Architecture
+
+VNEM has two primary MCP servers. **Core** is the read-only decision layer for routing, compatibility, evidence contracts, quality, and usage auditing. **Tools** is the permission-aware execution layer for bounded repo inspection, code/test/browser/GitHub/data/deployment work, rollback, and proof. The seven-tool **Precision** server is a compatibility shim over shared runtime behavior for existing clients; it is not a third primary implementation.
+
+Use the managed setup and safety paths instead of hand-writing a partial server config:
+
+```powershell
+node scripts/vnem-cli.mjs setup
+node scripts/vnem-cli.mjs safety --status --json
+npm.cmd run core:readiness
+npm.cmd run tools:readiness
+```
+
+Setup can merge verified client contracts or emit import-only profiles. A generated profile proves its payload and MCP protocol behavior, not that a client is installed, reloaded, or autonomously using VNEM. See [`docs/VNEM_SETUP.md`](docs/VNEM_SETUP.md) for the exact support matrix.
+
 ## Quick Start
 
 Use the read-only pack when you only want repo-local AI guidance inside the current project:
@@ -318,9 +333,9 @@ Public Tools MCP can build strong search queries, run provider-backed search whe
 
 Public Tools MCP does not automatically bypass CAPTCHA, scrape search engine result pages by default, perform login/session/cookie automation, run arbitrary downloads/installers, crawl broadly, read secret/session/browser-profile paths, run arbitrary commands from debug evidence collection, or claim live/current search, full repo/site understanding, root cause, dead-code-free status, or completed fixes without matching evidence.
 
-## Precision Execution Layer
+## Precision Compatibility Layer
 
-VNEM now has a separate opt-in precision MCP server for teams that explicitly want mutation-capable execution under tighter rules. The default `vnem` MCP server stays read-only. The precision server is for workspace-scoped edits and verification only.
+Core and Tools are the two primary MCPs. The opt-in Precision server preserves seven legacy tool names for clients that already depend on them and delegates to shared runtime behavior. New setup should use Core + Tools and an explicit Tools safety profile.
 
 | Problem | Precision tool | Behavior |
 | --- | --- | --- |
@@ -330,7 +345,7 @@ VNEM now has a separate opt-in precision MCP server for teams that explicitly wa
 
 ## Omniscient Context And Self-Healing
 
-The same opt-in precision server now includes a local context and proof layer for larger projects. This does not turn the default MCP server into a writer or shell proxy; it adds tools only when a project explicitly enables `vnem-precision`.
+The same compatibility shim exposes local context and proof tools for existing clients. Core stays read-only, and Tools owns the primary permission, approval, rollback, and evidence model.
 
 | Problem | Stage 4 tool | Behavior |
 | --- | --- | --- |
@@ -347,7 +362,7 @@ node scripts/vnem-cli.mjs mcp-config --precision --workspace /path/to/my-project
 npm run precision:mcp
 ```
 
-Use the read-only server first for recommendations, orchestration, and quality gates. Use the precision server only after the task contract calls for exact patching, current documentation context, semantic code search, red/green verification, ephemeral scripts, or bounded build/test feedback.
+Use Core for decisions and Tools for new execution workflows. Keep Precision only where an existing client or workflow requires its compatibility names.
 
 ## What Vnem Improves
 
@@ -355,7 +370,7 @@ vnem is meant to improve the judgment of coding agents, not replace maintainer r
 
 - **Holistic quality gates:** agents run a Triple-Check Workflow: Analyze the real goal, Architect performance and visuals/playability together, then Review that no important domain was sacrificed.
 - **Multi-agent routing:** agents choose Single Agent, Orchestrator-Worker, or Split-and-Merge workflows before complex coding, app/game, or research tasks collapse into one overloaded context.
-- **Precision execution:** agents can use an opt-in scalpel layer for exact patches, current documentation ingestion, and safe terminal feedback instead of broad rewrites or stale API guesses.
+- **Precision compatibility:** existing clients retain the seven exact-patch, documentation, terminal, search, verification, and helper names without duplicating the primary Tools runtime.
 - **Omniscient context and proof loops:** agents can use opt-in local semantic code search, test-driven healing loops, and temporary scripts to reduce blind file traversal and silent logic failures.
 - **Better recommendations:** agents compare current MCP servers, coding agents, frameworks, evals, memory systems, and workflows before proposing a stack change.
 - **Safer adoption:** each entry tracks source links, licenses, permissions, risk flags, trust tier, and install notes.
