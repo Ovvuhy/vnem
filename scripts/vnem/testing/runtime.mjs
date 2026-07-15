@@ -654,6 +654,9 @@ function transitiveImporters(changed, reverseImports) {
 
 function applyIntegrationBoundaries(changed, add) {
   const rules = [
+    [/^scripts\/vnem\/tools\/structural-code\.mjs$/, ["test:tools-giga-structural-code", "test:giga-performance-output"]],
+    [/^scripts\/vnem\/tools\/data-systems\.mjs$/, ["test:tools-giga-data-systems", "test:giga-performance-output"]],
+    [/^scripts\/vnem\/giga\/(?:mcp-client|performance-baseline)\.mjs$/, ["test:giga-performance-output", "test:giga-baseline:capability"]],
     [/^scripts\/vnem\/tools\//, ["test:tools-mcp", "test:core-tools-ecosystem", "test:core-tools-e2e", "test:vnem-adoption-reliability-2-regression"]],
     [/^scripts\/vnem\/core\//, ["test:core-tool-selection", "test:core-giga-intelligence", "test:core-tools-ecosystem", "test:vnem-adoption-reliability-1-regression"]],
     [/^scripts\/vnem\/permissions\//, ["test:tools-permission-profiles", "test:permission-runtime", "test:tools-scoped-permissions", "test:tools-trust-boundary"]],

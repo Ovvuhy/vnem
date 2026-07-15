@@ -44,10 +44,10 @@ import { WindowsLocalError, WindowsLocalRuntime } from "./windows-local.mjs";
 import { GithubDevelopmentError, GithubDevelopmentRuntime } from "./github-development.mjs";
 import { GameDomainError, GameDomainRuntime } from "./game-domain.mjs";
 import { DependencySecurityError, DependencySecurityRuntime } from "./dependency-security.mjs";
-import { StructuralCodeError, StructuralCodeRuntime } from "./structural-code.mjs";
+import { StructuralCodeError, StructuralCodeRuntime, structuralRuntimeLoadStatus } from "./structural-code.mjs";
 import { ApiConnectorError, ApiConnectorRuntime } from "./api-connectors.mjs";
 import { SkillAdapterError, SkillAdapterRuntime } from "./skill-runtime.mjs";
-import { DataSystemsError, DataSystemsRuntime } from "./data-systems.mjs";
+import { DataSystemsError, DataSystemsRuntime, dataSystemsRuntimeLoadStatus } from "./data-systems.mjs";
 import {
   CLOUDFLARE_DESTRUCTIVE_APPROVAL_PHRASE,
   CLOUDFLARE_MUTATION_APPROVAL_PHRASE,
@@ -4367,6 +4367,10 @@ function statusObject() {
     approval_required_for_mutation: true,
     permission_profile: activePermissionProfile.profile_name,
     permission_profile_description: activePermissionProfile.description,
+    lazy_runtime_status: {
+      structural_code: structuralRuntimeLoadStatus(),
+      data_systems: dataSystemsRuntimeLoadStatus()
+    },
     permission_profiles_available: PERMISSION_PROFILE_NAMES,
     permission_status_tool: "vnem_tools_permission_status",
     action_policy_preview_tool: "vnem_tools_action_policy_preview",

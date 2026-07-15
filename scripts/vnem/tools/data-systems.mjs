@@ -2,7 +2,6 @@ import { createHash, randomUUID } from "node:crypto";
 import { existsSync } from "node:fs";
 import { copyFile, lstat, mkdir, readFile, realpath, rename, rm, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
-import initSqlJs from "sql.js";
 import yaml from "js-yaml";
 
 const STRUCTURED_FORMATS = new Set(["json", "jsonl", "csv", "yaml"]);
@@ -28,6 +27,15 @@ const SQL_MUTATION_KEYWORDS = new Set(["ALTER", "ATTACH", "BEGIN", "COMMIT", "CR
 const MIGRATION_BLOCKED_KEYWORDS = new Set(["ATTACH", "DETACH", "PRAGMA", "REINDEX", "VACUUM"]);
 
 let sqlJsPromise;
+let sqlJsRuntimeState = "not_loaded";
+
+export function dataSystemsRuntimeLoadStatus() {
+  return {
+    sqlite_engine: sqlJsRuntimeState,
+    lazy: true,
+    loads_on: "first SQLite inspection or transaction"
+  };
+}
 
 export class DataSystemsError extends Error {
   constructor(message, code = "data_systems_error", details = {}) {
@@ -780,8 +788,21 @@ export class DataSystemsRuntime {
 }
 
 async function loadSqlJs() {
-  sqlJsPromise ||= initSqlJs();
-  return sqlJsPromise;
+  if (!sqlJsPromise) {
+    sqlJsRuntimeState = "loading";
+    sqlJsPromise = import("sql.js")
+      .then(({ default: initSqlJs }) => initSqlJs())
+      .then((runtime) => {
+        sqlJsRuntimeState = "loaded";
+        return runtime;
+      })
+      .catch((error) => {
+        sqlJsPromise = undefined;
+        sqlJsRuntimeState = "not_loaded";
+        throw error;
+      });
+  }
+  return await sqlJsPromise;
 }
 
 function parseStructuredText(text, format) {

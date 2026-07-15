@@ -2,10 +2,7 @@ import { createHash, randomUUID } from "node:crypto";
 import { existsSync } from "node:fs";
 import { lstat, mkdir, readFile, readdir, realpath, rename, rm, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { parse } from "@babel/parser";
-import traverseModule from "@babel/traverse";
 
-const traverse = traverseModule.default;
 const INDEX_SCHEMA_VERSION = 2;
 const MAX_FILE_BYTES = 1024 * 1024;
 const MAX_FILES = 10000;
@@ -29,6 +26,17 @@ const LANGUAGE_BY_EXTENSION = new Map([
   [".py", "python"], [".rb", "ruby"], [".rs", "rust"], [".svelte", "svelte"], [".ts", "typescript"],
   [".tsx", "typescript"], [".vue", "vue"]
 ]);
+
+let babelRuntimePromise;
+let babelRuntimeState = "not_loaded";
+
+export function structuralRuntimeLoadStatus() {
+  return {
+    babel_parser: babelRuntimeState,
+    lazy: true,
+    loads_on: "first JavaScript or TypeScript structural parse"
+  };
+}
 
 export class StructuralCodeError extends Error {
   constructor(message, code = "structural_code_error", details = {}) {
@@ -399,7 +407,7 @@ export class StructuralCodeRuntime {
       if (observedHash !== preview.input_hashes[file]) throw new StructuralCodeError("A refactor input changed while the transaction backup was being prepared.", "refactor_preview_stale_during_backup", { file, expected: preview.input_hashes[file], current: observedHash });
       originals[file] = text;
       nextText[file] = applyTextEdits(text, preview.edits.filter((item) => item.file === file));
-      const parsed = parseCodeFile(file, nextText[file]);
+      const parsed = await parseCodeFile(file, nextText[file]);
       if (parsed.parser_type !== "babel_ast" || parsed.parse_errors.length) throw new StructuralCodeError("A staged refactor file failed AST validation.", "refactor_staged_parse_failed", { file, errors: parsed.parse_errors });
       const backup = path.join(beforeRoot, file);
       await mkdir(path.dirname(backup), { recursive: true });
@@ -518,7 +526,7 @@ export class StructuralCodeRuntime {
         inventory.skipped.push({ path: entry.path, reason: "generated_or_minified_bundle", confidence: "high" });
         continue;
       }
-      analyses.push({ ...entry, sha256: sha256(buffer), ...parseCodeFile(entry.path, text) });
+      analyses.push({ ...entry, sha256: sha256(buffer), ...(await parseCodeFile(entry.path, text)) });
       reparsed += 1;
     }
     analyses.sort((a, b) => a.path.localeCompare(b.path));
@@ -605,10 +613,10 @@ async function collectCodeFiles(root, options) {
   return { files: files.sort((a, b) => a.path.localeCompare(b.path)), package_manifests: packageManifests.sort(), skipped: skipped.slice(0, 500), truncated };
 }
 
-function parseCodeFile(file, text) {
+async function parseCodeFile(file, text) {
   const extension = path.extname(file).toLowerCase();
   const language = LANGUAGE_BY_EXTENSION.get(extension) || "unknown";
-  return AST_EXTENSIONS.has(extension) ? parseBabelFile(file, text, language, extension) : parseHeuristicFile(file, text, language);
+  return AST_EXTENSIONS.has(extension) ? await parseBabelFile(file, text, language, extension) : parseHeuristicFile(file, text, language);
 }
 
 function isLikelyGeneratedCode(file, text) {
@@ -618,14 +626,17 @@ function isLikelyGeneratedCode(file, text) {
   return firstLines.length <= 10 && firstLines.some((line) => line.length > 50000);
 }
 
-function parseBabelFile(file, text, language, extension) {
+async function parseBabelFile(file, text, language, extension) {
   let ast;
+  let traverse;
   try {
+    const runtime = await loadBabelRuntime();
+    traverse = runtime.traverse;
     const plugins = [];
     if ([".ts", ".tsx"].includes(extension)) plugins.push("typescript");
     if ([".jsx", ".tsx"].includes(extension)) plugins.push("jsx");
     plugins.push("decorators-legacy", "importAttributes");
-    ast = parse(text, { sourceType: "unambiguous", errorRecovery: true, ranges: true, plugins, allowAwaitOutsideFunction: true, allowReturnOutsideFunction: true, attachComment: false });
+    ast = runtime.parse(text, { sourceType: "unambiguous", errorRecovery: true, ranges: true, plugins, allowAwaitOutsideFunction: true, allowReturnOutsideFunction: true, attachComment: false });
   } catch (error) {
     return emptyAnalysis(language, "babel_ast_failed", "low", [{ message: truncate(error.message, 300), line: error.loc?.line || null, column: error.loc?.column || null }]);
   }
@@ -711,6 +722,25 @@ function parseBabelFile(file, text, language, extension) {
   for (const symbol of symbols) if (jsxOwners.has(symbol.id) || (/^[A-Z]/.test(symbol.name) && ["class", "function", "arrow_function"].includes(symbol.kind))) components.push({ file, symbol: symbol.name, line: symbol.start_line, confidence: jsxOwners.has(symbol.id) ? "high" : "medium" });
   const dedupedReferences = dedupeObjects(references);
   return { language, parser_type: "babel_ast", confidence: parseErrors.length ? "ast_with_recovery" : "ast", parse_errors: parseErrors, symbols, bindings, imports, exports, calls, references: dedupedReferences.slice(0, 20000), references_truncated: dedupedReferences.length > 20000, routes, apis, components };
+}
+
+async function loadBabelRuntime() {
+  if (!babelRuntimePromise) {
+    babelRuntimeState = "loading";
+    babelRuntimePromise = Promise.all([import("@babel/parser"), import("@babel/traverse")])
+      .then(([parserModule, traverseModule]) => {
+        const traverse = traverseModule.default?.default || traverseModule.default;
+        if (typeof parserModule.parse !== "function" || typeof traverse !== "function") throw new Error("Babel structural parser exports are unavailable.");
+        babelRuntimeState = "loaded";
+        return { parse: parserModule.parse, traverse };
+      })
+      .catch((error) => {
+        babelRuntimePromise = undefined;
+        babelRuntimeState = "not_loaded";
+        throw error;
+      });
+  }
+  return await babelRuntimePromise;
 }
 
 function parseHeuristicFile(file, text, language) {

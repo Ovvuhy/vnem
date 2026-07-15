@@ -1,0 +1,449 @@
+{
+  "schema_version": "1.0.0",
+  "label": "phase-22-before",
+  "captured_at": "2026-07-15T10:06:46.672Z",
+  "branch": "feat/vnem-giga-evolution-1",
+  "head_sha": "527c2b974b0887bc7ceaeb4478206e2f3f4bc29d",
+  "methodology": {
+    "runs": 7,
+    "cold_process_per_startup_sample": true,
+    "same_machine_and_checkout": true,
+    "generation_clock": "2026-07-08T21:12:40.970Z",
+    "full_test_measurement_source": "not run by this sampler"
+  },
+  "servers": {
+    "core": {
+      "file": "scripts/vnem-mcp-server.mjs",
+      "samples": [
+        {
+          "startup_ms": 618.93,
+          "manifest_ms": 30.59,
+          "entrypoint_ms": 21.91,
+          "entrypoint_output_bytes": 350,
+          "idle_working_set_bytes": 95166464,
+          "tool_count": 68,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 538.75,
+          "manifest_ms": 21.88,
+          "entrypoint_ms": 18.73,
+          "entrypoint_output_bytes": 350,
+          "idle_working_set_bytes": 103616512,
+          "tool_count": 68,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 550.83,
+          "manifest_ms": 24.62,
+          "entrypoint_ms": 20.38,
+          "entrypoint_output_bytes": 350,
+          "idle_working_set_bytes": 106848256,
+          "tool_count": 68,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 587.14,
+          "manifest_ms": 23.89,
+          "entrypoint_ms": 17,
+          "entrypoint_output_bytes": 350,
+          "idle_working_set_bytes": 102846464,
+          "tool_count": 68,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 635.72,
+          "manifest_ms": 24.5,
+          "entrypoint_ms": 24.12,
+          "entrypoint_output_bytes": 350,
+          "idle_working_set_bytes": 102690816,
+          "tool_count": 68,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 690.27,
+          "manifest_ms": 25.99,
+          "entrypoint_ms": 18.13,
+          "entrypoint_output_bytes": 350,
+          "idle_working_set_bytes": 108175360,
+          "tool_count": 68,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 575.67,
+          "manifest_ms": 22.96,
+          "entrypoint_ms": 18.1,
+          "entrypoint_output_bytes": 350,
+          "idle_working_set_bytes": 102825984,
+          "tool_count": 68,
+          "stderr": ""
+        }
+      ],
+      "startup": {
+        "runs": 7,
+        "median_ms": 587.14,
+        "worst_ms": 690.27,
+        "min_ms": 538.75
+      },
+      "manifest": {
+        "runs": 7,
+        "median_ms": 24.5,
+        "worst_ms": 30.59,
+        "min_ms": 21.88
+      },
+      "entrypoint": {
+        "runs": 7,
+        "median_ms": 18.73,
+        "worst_ms": 24.12,
+        "min_ms": 17
+      },
+      "entrypoint_output_bytes": {
+        "runs": 7,
+        "median": 350,
+        "worst": 350,
+        "min": 350
+      },
+      "idle_working_set_bytes": {
+        "runs": 7,
+        "median": 102846464,
+        "worst": 108175360,
+        "min": 95166464
+      },
+      "tool_count": 68
+    },
+    "tools": {
+      "file": "scripts/vnem-tools-mcp-server.mjs",
+      "samples": [
+        {
+          "startup_ms": 1207.54,
+          "manifest_ms": 60.32,
+          "entrypoint_ms": 15.7,
+          "entrypoint_output_bytes": 257,
+          "idle_working_set_bytes": 123625472,
+          "tool_count": 241,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 1102.86,
+          "manifest_ms": 66.98,
+          "entrypoint_ms": 22.63,
+          "entrypoint_output_bytes": 257,
+          "idle_working_set_bytes": 124112896,
+          "tool_count": 241,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 1028.1,
+          "manifest_ms": 64.41,
+          "entrypoint_ms": 19.14,
+          "entrypoint_output_bytes": 257,
+          "idle_working_set_bytes": 123719680,
+          "tool_count": 241,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 1143.52,
+          "manifest_ms": 56.66,
+          "entrypoint_ms": 19.99,
+          "entrypoint_output_bytes": 257,
+          "idle_working_set_bytes": 123604992,
+          "tool_count": 241,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 1104.99,
+          "manifest_ms": 57.74,
+          "entrypoint_ms": 17.65,
+          "entrypoint_output_bytes": 257,
+          "idle_working_set_bytes": 124002304,
+          "tool_count": 241,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 1056.87,
+          "manifest_ms": 53.8,
+          "entrypoint_ms": 17.57,
+          "entrypoint_output_bytes": 257,
+          "idle_working_set_bytes": 123248640,
+          "tool_count": 241,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 1014.5,
+          "manifest_ms": 52.3,
+          "entrypoint_ms": 19.26,
+          "entrypoint_output_bytes": 257,
+          "idle_working_set_bytes": 124063744,
+          "tool_count": 241,
+          "stderr": ""
+        }
+      ],
+      "startup": {
+        "runs": 7,
+        "median_ms": 1102.86,
+        "worst_ms": 1207.54,
+        "min_ms": 1014.5
+      },
+      "manifest": {
+        "runs": 7,
+        "median_ms": 57.74,
+        "worst_ms": 66.98,
+        "min_ms": 52.3
+      },
+      "entrypoint": {
+        "runs": 7,
+        "median_ms": 19.14,
+        "worst_ms": 22.63,
+        "min_ms": 15.7
+      },
+      "entrypoint_output_bytes": {
+        "runs": 7,
+        "median": 257,
+        "worst": 257,
+        "min": 257
+      },
+      "idle_working_set_bytes": {
+        "runs": 7,
+        "median": 123719680,
+        "worst": 124112896,
+        "min": 123248640
+      },
+      "tool_count": 241
+    },
+    "precision": {
+      "file": "scripts/vnem-precision-mcp-server.mjs",
+      "samples": [
+        {
+          "startup_ms": 438.79,
+          "manifest_ms": 9.73,
+          "entrypoint_ms": null,
+          "entrypoint_output_bytes": null,
+          "idle_working_set_bytes": 64901120,
+          "tool_count": 7,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 426.14,
+          "manifest_ms": 8.2,
+          "entrypoint_ms": null,
+          "entrypoint_output_bytes": null,
+          "idle_working_set_bytes": 64724992,
+          "tool_count": 7,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 436.87,
+          "manifest_ms": 10.75,
+          "entrypoint_ms": null,
+          "entrypoint_output_bytes": null,
+          "idle_working_set_bytes": 64700416,
+          "tool_count": 7,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 498.62,
+          "manifest_ms": 11.14,
+          "entrypoint_ms": null,
+          "entrypoint_output_bytes": null,
+          "idle_working_set_bytes": 64811008,
+          "tool_count": 7,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 483.3,
+          "manifest_ms": 10.58,
+          "entrypoint_ms": null,
+          "entrypoint_output_bytes": null,
+          "idle_working_set_bytes": 64823296,
+          "tool_count": 7,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 453.38,
+          "manifest_ms": 9.65,
+          "entrypoint_ms": null,
+          "entrypoint_output_bytes": null,
+          "idle_working_set_bytes": 65150976,
+          "tool_count": 7,
+          "stderr": ""
+        },
+        {
+          "startup_ms": 427.35,
+          "manifest_ms": 8.73,
+          "entrypoint_ms": null,
+          "entrypoint_output_bytes": null,
+          "idle_working_set_bytes": 64708608,
+          "tool_count": 7,
+          "stderr": ""
+        }
+      ],
+      "startup": {
+        "runs": 7,
+        "median_ms": 438.79,
+        "worst_ms": 498.62,
+        "min_ms": 426.14
+      },
+      "manifest": {
+        "runs": 7,
+        "median_ms": 9.73,
+        "worst_ms": 11.14,
+        "min_ms": 8.2
+      },
+      "entrypoint": {
+        "runs": 0,
+        "median_ms": null,
+        "worst_ms": null,
+        "min_ms": null
+      },
+      "entrypoint_output_bytes": {
+        "runs": 0,
+        "median": null,
+        "worst": null,
+        "min": null
+      },
+      "idle_working_set_bytes": {
+        "runs": 7,
+        "median": 64811008,
+        "worst": 65150976,
+        "min": 64700416
+      },
+      "tool_count": 7
+    }
+  },
+  "representative_calls": {
+    "code_search": {
+      "latency": {
+        "runs": 7,
+        "median_ms": 161.09,
+        "worst_ms": 182.43,
+        "min_ms": 127.21
+      },
+      "output_bytes": {
+        "runs": 7,
+        "median": 100,
+        "worst": 100,
+        "min": 100
+      },
+      "errors": 0
+    },
+    "workspace_map": {
+      "latency": {
+        "runs": 7,
+        "median_ms": 63.53,
+        "worst_ms": 73.66,
+        "min_ms": 56
+      },
+      "output_bytes": {
+        "runs": 7,
+        "median": 581,
+        "worst": 581,
+        "min": 581
+      },
+      "errors": 0
+    },
+    "install_doctor": {
+      "latency": {
+        "runs": 7,
+        "median_ms": 225.39,
+        "worst_ms": 252.49,
+        "min_ms": 207.48
+      },
+      "output_bytes": {
+        "runs": 7,
+        "median": 565,
+        "worst": 565,
+        "min": 565
+      },
+      "errors": 0
+    }
+  },
+  "suites": {
+    "full_test": {
+      "duration_ms": null,
+      "status": "not_measured",
+      "warning_summary": "not captured"
+    },
+    "focused_tools_mcp": {
+      "status": "pass",
+      "exit_code": 0,
+      "duration_ms": 2268.52,
+      "warning_lines": []
+    }
+  },
+  "generation": {
+    "first": {
+      "status": "pass",
+      "exit_code": 0,
+      "duration_ms": 1584.64,
+      "warning_lines": []
+    },
+    "second": {
+      "status": "pass",
+      "exit_code": 0,
+      "duration_ms": 1733.72,
+      "warning_lines": []
+    },
+    "deterministic": true,
+    "checksums": {
+      "public/install.tgz": "8aa6df2f089a883a57675ae1c5cf4dfe5a6936891a304ebcf251bdc9f0c8782b",
+      "landing/install.tgz": "8aa6df2f089a883a57675ae1c5cf4dfe5a6936891a304ebcf251bdc9f0c8782b",
+      "public/api/index.json": "6e56aec731fcd3b9445cca6e962c75937c797a8a06534c865787b25884280606",
+      ".vnem/search-index.json": "694af4c43507a44feda50150b89404afb3c5b3f2ca4469af54f161df45c46930",
+      "llms.txt": "08666513e6463d2824593a56b4ca5a1dd2efb3b0c22cf30b435b56b3c4c36eae",
+      "llms-full.txt": "b66b778ed413edc98fc1bc5060a580de337cff4e0b4024071c0a7816d060d89c"
+    }
+  },
+  "tool_surface": {
+    "registration_count": 222,
+    "handler_count": 222,
+    "behavior_tested_count": 153,
+    "registration_only_or_weak_count": 7,
+    "count_source": "live MCP coverage map"
+  },
+  "flaky_or_cleanup_observations": {
+    "temp_entry_count": 262,
+    "temp_entries_sample": [
+      "adoption-reliability-1-sample",
+      "adoption-reliability-1-tools",
+      "adoption-reliability-2-proof",
+      "adoption-reliability-2-tools",
+      "app-server-0cJWyx",
+      "app-server-27G4rC",
+      "app-server-3qoCMR",
+      "app-server-4UfHIs",
+      "app-server-aadvcZ",
+      "app-server-aF2NDj",
+      "app-server-AsOcNo",
+      "app-server-avcw0M",
+      "app-server-aVyTzo",
+      "app-server-bbiJe3",
+      "app-server-cCvWeg",
+      "app-server-chnKW3",
+      "app-server-DQ4pKZ",
+      "app-server-eaBmMG",
+      "app-server-FiYj4n",
+      "app-server-G5eOSK",
+      "app-server-hjcWFZ",
+      "app-server-I1dyhx",
+      "app-server-isK1gq",
+      "app-server-izeBtX",
+      "app-server-l04qXe",
+      "app-server-LO29iY",
+      "app-server-LTjpAX",
+      "app-server-lVbbfd",
+      "app-server-MeQY3e",
+      "app-server-nHCO8h",
+      "app-server-od58DZ",
+      "app-server-odKa2d",
+      "app-server-P4ZveE",
+      "app-server-PmUu4h",
+      "app-server-puT93S",
+      "app-server-pWL9rl",
+      "app-server-rAHtw0",
+      "app-server-RlyN8t",
+      "app-server-rSW6C9",
+      "app-server-sJrfO4"
+    ],
+    "known_warning": "Prior Phase 0 run observed EBUSY cleanup for .tmp/tools-project-actions-TX47JM; baseline full test must confirm current state."
+  }
+}

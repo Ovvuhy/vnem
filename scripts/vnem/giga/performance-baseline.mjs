@@ -11,6 +11,9 @@ const label = parseArg("label", "baseline");
 const runs = Math.max(3, Number(parseArg("runs", "5")) || 5);
 const outputDir = path.join(root, ".vnem", "giga-evolution", label);
 const generatedAt = JSON.parse(await readFile(path.join(root, "public", "api", "index.json"), "utf8")).generated_at;
+const baselinePath = path.join(root, ".vnem", "giga-evolution", "baseline", "performance.json");
+const baseline = JSON.parse(await readFile(baselinePath, "utf8"));
+const phase22Before = await readJsonOrNull(path.join(root, ".vnem", "giga-evolution", "phase-22-before", "performance.json"));
 const generationEnv = { ...process.env, SOURCE_DATE_EPOCH: process.env.SOURCE_DATE_EPOCH || generatedAt };
 const servers = [
   { id: "core", file: "scripts/vnem-mcp-server.mjs", entrypoint: ["vnem_entrypoint", { user_goal: "Map this repository and choose a safe implementation path.", available_mcp_names: ["vnem", "vnem-tools"], task_mode: "repo_inspection" }] },
@@ -86,6 +89,7 @@ const report = {
     runs,
     cold_process_per_startup_sample: true,
     same_machine_and_checkout: true,
+    baseline_source: ".vnem/giga-evolution/baseline/performance.json",
     generation_clock: generationEnv.SOURCE_DATE_EPOCH,
     full_test_measurement_source: process.env.VNEM_GIGA_FULL_TEST_SOURCE || "not run by this sampler"
   },
@@ -100,6 +104,10 @@ const report = {
       duration_ms: numberOrNull(process.env.VNEM_GIGA_FULL_TEST_MS),
       status: process.env.VNEM_GIGA_FULL_TEST_STATUS || "not_measured",
       warning_summary: process.env.VNEM_GIGA_FULL_TEST_WARNINGS || "not captured"
+    },
+    affected_test: {
+      duration_ms: numberOrNull(process.env.VNEM_GIGA_AFFECTED_TEST_MS),
+      status: process.env.VNEM_GIGA_AFFECTED_TEST_STATUS || "not_measured"
     },
     focused_tools_mcp: focusedTest
   },
@@ -122,6 +130,9 @@ const report = {
     known_warning: process.env.VNEM_GIGA_FULL_TEST_WARNINGS || "Prior Phase 0 run observed EBUSY cleanup for .tmp/tools-project-actions-TX47JM; baseline full test must confirm current state."
   }
 };
+
+report.performance_targets = evaluateTargets(report, baseline);
+if (phase22Before && label === "phase-22") report.optimization_comparison = compareOptimization(phase22Before, report);
 
 await mkdir(outputDir, { recursive: true });
 await writeFile(path.join(outputDir, "performance.json"), `${JSON.stringify(report, null, 2)}\n`);
@@ -161,10 +172,91 @@ function readProcessMemory(pid) {
 
 function numericSummary(values) {
   const sorted = values.filter(Number.isFinite).sort((a, b) => a - b);
-  if (!sorted.length) return { runs: 0, median: null, worst: null, min: null };
+  if (!sorted.length) return { runs: 0, median: null, p95: null, worst: null, min: null };
   const middle = Math.floor(sorted.length / 2);
   const median = sorted.length % 2 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2;
-  return { runs: sorted.length, median: Math.round(median), worst: Math.round(sorted.at(-1)), min: Math.round(sorted[0]) };
+  return { runs: sorted.length, median: Math.round(median), p95: Math.round(percentile(sorted, 0.95)), worst: Math.round(sorted.at(-1)), min: Math.round(sorted[0]) };
+}
+
+function evaluateTargets(current, original) {
+  const core = current.servers.core;
+  const tools = current.servers.tools;
+  const precision = current.servers.precision;
+  const baselineCore = original.servers.core;
+  const baselineTools = original.servers.tools;
+  const baselinePrecision = original.servers.precision;
+  const fullDuration = current.suites.full_test.duration_ms;
+  const affectedDuration = current.suites.affected_test.duration_ms;
+  const fullReduction = percentageReduction(original.suites.full_test.duration_ms, fullDuration);
+  const affectedPercent = percentageOf(affectedDuration, fullDuration);
+  const checks = {
+    core_startup: targetCheck(core.startup.median_ms <= 1250 || (baselineCore.startup.median_ms > 1250 && percentageReduction(baselineCore.startup.median_ms, core.startup.median_ms) >= 30), core.startup.median_ms, "median_ms <= 1250 or >=30% faster than an above-target baseline"),
+    tools_startup: targetCheck(tools.startup.median_ms <= 2000 || (baselineTools.startup.median_ms > 2000 && percentageReduction(baselineTools.startup.median_ms, tools.startup.median_ms) >= 30), tools.startup.median_ms, "median_ms <= 2000 or >=30% faster than an above-target baseline"),
+    core_entrypoint: targetCheck(core.entrypoint.p95_ms <= 250, core.entrypoint.p95_ms, "p95_ms <= 250"),
+    tools_manifest: targetCheck(tools.manifest.p95_ms <= 150, tools.manifest.p95_ms, "p95_ms <= 150"),
+    core_route_output: targetCheck(core.entrypoint_output_bytes.worst <= 8 * 1024, core.entrypoint_output_bytes.worst, "worst text bytes <= 8192"),
+    tools_planning_output: targetCheck(tools.entrypoint_output_bytes.worst <= 12 * 1024, tools.entrypoint_output_bytes.worst, "worst text bytes <= 12288"),
+    core_idle_memory: memoryTarget(baselineCore.idle_working_set_bytes.median, core.idle_working_set_bytes.median),
+    tools_idle_memory: memoryTarget(baselineTools.idle_working_set_bytes.median, tools.idle_working_set_bytes.median),
+    precision_idle_memory: memoryTarget(baselinePrecision.idle_working_set_bytes.median, precision.idle_working_set_bytes.median),
+    precision_compatibility: targetCheck(precision.tool_count <= baselinePrecision.tool_count + 1 && precision.startup.median_ms <= 1250, { startup_median_ms: precision.startup.median_ms, tool_count: precision.tool_count }, "compact compatibility shim with at most one registry tool added and <=1250ms startup"),
+    full_suite: fullDuration === null ? { status: "not_measured", actual: null, target: ">=30% faster than baseline", reduction_percent: null } : { ...targetCheck(fullReduction >= 30, fullDuration, ">=30% faster than baseline"), reduction_percent: fullReduction },
+    affected_suite: affectedDuration === null || fullDuration === null ? { status: "not_measured", actual: null, target: "<=25% of current full suite", percent_of_full: null } : { ...targetCheck(affectedPercent <= 25, affectedDuration, "<=25% of current full suite"), percent_of_full: affectedPercent }
+  };
+  const measured = Object.values(checks).filter((check) => check.status !== "not_measured");
+  return {
+    status: measured.every((check) => check.status === "pass") && measured.length === Object.keys(checks).length ? "pass" : measured.every((check) => check.status === "pass") ? "partial" : "fail",
+    checks,
+    heavy_runtime_policy: {
+      structural_babel: "lazy on first JavaScript/TypeScript structural parse",
+      sqlite_engine: "lazy on first SQLite operation",
+      browser_runtime: "discovered/launched only on an approved browser call",
+      no_duplicate_precision_server: true
+    }
+  };
+}
+
+function compareOptimization(before, after) {
+  return {
+    source: ".vnem/giga-evolution/phase-22-before/performance.json",
+    tools_startup_median_reduction_percent: percentageReduction(before.servers.tools.startup.median_ms, after.servers.tools.startup.median_ms),
+    tools_idle_memory_reduction_percent: percentageReduction(before.servers.tools.idle_working_set_bytes.median, after.servers.tools.idle_working_set_bytes.median),
+    core_startup_median_change_percent: percentageChange(before.servers.core.startup.median_ms, after.servers.core.startup.median_ms),
+    precision_startup_median_change_percent: percentageChange(before.servers.precision.startup.median_ms, after.servers.precision.startup.median_ms),
+    behavior_preserved: after.suites.focused_tools_mcp.status === "pass" && after.generation.deterministic
+  };
+}
+
+function memoryTarget(baselineBytes, currentBytes) {
+  const changePercent = percentageChange(baselineBytes, currentBytes);
+  return { ...targetCheck(changePercent <= 15, currentBytes, "idle median <=15% above baseline"), baseline_bytes: baselineBytes, change_percent: changePercent };
+}
+
+function targetCheck(passed, actual, target) {
+  return { status: passed ? "pass" : "fail", actual, target };
+}
+
+function percentageReduction(before, after) {
+  return Number.isFinite(before) && before > 0 && Number.isFinite(after) ? Number((((before - after) / before) * 100).toFixed(2)) : null;
+}
+
+function percentageChange(before, after) {
+  return Number.isFinite(before) && before > 0 && Number.isFinite(after) ? Number((((after - before) / before) * 100).toFixed(2)) : null;
+}
+
+function percentageOf(value, total) {
+  return Number.isFinite(value) && Number.isFinite(total) && total > 0 ? Number(((value / total) * 100).toFixed(2)) : null;
+}
+
+function percentile(sorted, quantile) {
+  const position = (sorted.length - 1) * quantile;
+  const lower = Math.floor(position);
+  const upper = Math.ceil(position);
+  return sorted[lower] + (sorted[upper] - sorted[lower]) * (position - lower);
+}
+
+async function readJsonOrNull(file) {
+  try { return JSON.parse(await readFile(file, "utf8")); } catch { return null; }
 }
 
 function numberOrNull(value) { const number = Number(value); return Number.isFinite(number) && value !== "" ? number : null; }

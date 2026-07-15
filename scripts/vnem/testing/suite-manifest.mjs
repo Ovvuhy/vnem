@@ -7,6 +7,7 @@ export const VNEM_FULL_SUITE = Object.freeze([
   "generate:check",
   "generate",
   "test:giga-deterministic-generation",
+  "test:giga-performance-output",
   "dashboard:build",
   "test:install-pack",
   "test:orchestration",
