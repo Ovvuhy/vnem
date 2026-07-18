@@ -160,6 +160,7 @@ export const VNEM_FULL_SUITE = Object.freeze([
   "test:vnem-adoption-reliability-2-regression",
   "test:vnem-install-adoption-1-regression",
   "test:tools-client-setup-mcp",
+  "test:codex-global-routing",
   "test:giga-capability-current",
   "test:giga-baseline"
 ]);
@@ -189,6 +190,7 @@ const CLIENTS = Object.freeze([
   "test:detect-ai-clients",
   "test:clients:setup",
   "test:tools-client-setup-mcp",
+  "test:codex-global-routing",
   "test:preview-connector",
   "test:apply-connector",
   "test:cli",

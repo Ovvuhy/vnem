@@ -13,6 +13,8 @@ const READ_ONLY_LOCAL = { readOnlyHint: true, destructiveHint: false, idempotent
 const LOCAL_ACTION = { readOnlyHint: false, destructiveHint: true, idempotentHint: false, openWorldHint: false };
 const CLIENT_IDS = [
   "codex",
+  "codex_app",
+  "codex_cli",
   "claude_code",
   "claude_desktop",
   "cursor",
@@ -157,6 +159,7 @@ function setupSchema(repoRoot) {
     clients: z.array(z.enum(CLIENT_IDS)).default([]),
     components: z.array(z.enum(COMPONENTS)).default(["core", "tools"]),
     safety_profile: z.string().default("safe-local-dev"),
+    scope: z.enum(["project", "global"]).default("project"),
     state_dir: z.string().optional(),
     config_overrides: z.record(z.string()).default({})
   };
@@ -165,6 +168,7 @@ function setupSchema(repoRoot) {
 function statusSchema(repoRoot) {
   return {
     ...detectionSchema(repoRoot),
+    scope: z.enum(["project", "global"]).default("project"),
     state_dir: z.string().optional()
   };
 }
@@ -188,6 +192,7 @@ function clientOptions(args, repoRoot) {
     clients: args.clients,
     components: args.components,
     safetyProfile: args.safety_profile,
+    scope: args.scope,
     stateDir: args.state_dir,
     configOverrides: args.config_overrides
   };

@@ -221,7 +221,7 @@ export class SkillAdapterRuntime {
   constructor(options = {}) {
     this.allowedRoots = (options.allowedRoots || [process.cwd()]).map((item) => path.resolve(item));
     this.evidenceRoot = path.resolve(options.evidenceRoot || path.join(this.allowedRoots[0], ".vnem", "tool-runs"));
-    if (!insideAny(this.evidenceRoot, this.allowedRoots)) throw new SkillAdapterError("Skill evidence root must remain inside an allowed root.", "skill_evidence_root_blocked");
+    if (!options.allowExternalEvidenceRoot && !insideAny(this.evidenceRoot, this.allowedRoots)) throw new SkillAdapterError("Skill evidence root must remain inside an allowed root unless a shared global router supplied an isolated state namespace.", "skill_evidence_root_blocked");
     this.commandRuntime = options.commandRuntime || null;
     this.fetchImpl = options.fetchImpl || globalThis.fetch;
     this.environment = options.environment || process.env;

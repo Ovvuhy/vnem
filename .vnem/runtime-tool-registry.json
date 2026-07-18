@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "source": "live MCP runtime registry status calls",
-  "total_tools": 323,
+  "total_tools": 332,
   "servers": {
     "core": {
       "schema_version": "1.0.0",
@@ -2597,7 +2597,7 @@
       "server_name": "vnem-tools",
       "version": "1.0.1",
       "valid": true,
-      "tool_count": 247,
+      "tool_count": 256,
       "alias_count": 0,
       "categories": {
         "action": 2,
@@ -2633,6 +2633,7 @@
         "game": 2,
         "git": 3,
         "github": 25,
+        "global": 1,
         "high": 1,
         "install": 4,
         "list": 2,
@@ -2652,7 +2653,7 @@
         "pr": 1,
         "prepare": 1,
         "process": 1,
-        "project": 13,
+        "project": 21,
         "read": 2,
         "redirect": 1,
         "refactor": 6,
@@ -2688,13 +2689,13 @@
       "side_effect_classes": {
         "destructive_mutation": 44,
         "network_mutation": 20,
-        "read_only": 183
+        "read_only": 192
       },
       "validation": {
         "valid": true,
         "server_name": "vnem-tools",
         "version": "1.0.1",
-        "tool_count": 247,
+        "tool_count": 256,
         "alias_count": 0,
         "errors": [],
         "warnings": [],
@@ -11051,6 +11052,348 @@
             "scripts/test-tools-mcp-server.mjs"
           ],
           "benchmark_scenarios": [],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_global_integration_status",
+          "version": "1.0.1",
+          "title": "Global VNEM Integration Status",
+          "description": "Report actual Core/Tools global registration, dynamic project routing, global and narrowed profiles, selected project, trust/approval counts, evidence namespace, hard blocks, configuration health, and migration state.",
+          "category": "global",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/project-router-tools.mjs",
+          "behavior_test_references": [
+            "scripts/test-vnem-codex-global-routing.mjs"
+          ],
+          "benchmark_scenarios": [
+            "Codex global trusted project selection and bounded approval isolation"
+          ],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_codex_trusted_projects",
+          "version": "1.0.1",
+          "title": "Discover Codex Trusted Projects",
+          "description": "Parse only Codex project trust entries and return canonical trusted roots plus configuration health without exposing unrelated Codex settings or secrets.",
+          "category": "project",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/project-router-tools.mjs",
+          "behavior_test_references": [
+            "scripts/test-vnem-codex-global-routing.mjs"
+          ],
+          "benchmark_scenarios": [
+            "Codex global trusted project selection and bounded approval isolation"
+          ],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_project_authorization_check",
+          "version": "1.0.1",
+          "title": "Check Project Authorization",
+          "description": "Canonicalize one exact path and check whether it is inside a trusted Codex project or active explicit VNEM approval without selecting it.",
+          "category": "project",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/project-router-tools.mjs",
+          "behavior_test_references": [
+            "scripts/test-vnem-codex-global-routing.mjs"
+          ],
+          "benchmark_scenarios": [
+            "Codex global trusted project selection and bounded approval isolation"
+          ],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_project_approval_request",
+          "version": "1.0.1",
+          "title": "Request Exact Project Approval",
+          "description": "Inspect and canonicalize one project root, reject broad roots, and produce an exact bounded session or persistent approval acknowledgment without granting access yet.",
+          "category": "project",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/project-router-tools.mjs",
+          "behavior_test_references": [
+            "scripts/test-vnem-codex-global-routing.mjs"
+          ],
+          "benchmark_scenarios": [
+            "Codex global trusted project selection and bounded approval isolation"
+          ],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_project_approval_activate",
+          "version": "1.0.1",
+          "title": "Activate Exact Project Approval",
+          "description": "Activate a prepared exact project approval after matching its acknowledgment; session approvals remain in memory and persistent approvals are stored in global namespaced VNEM state.",
+          "category": "project",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": false,
+            "idempotentHint": false,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/project-router-tools.mjs",
+          "behavior_test_references": [
+            "scripts/test-vnem-codex-global-routing.mjs"
+          ],
+          "benchmark_scenarios": [
+            "Codex global trusted project selection and bounded approval isolation"
+          ],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_project_revoke",
+          "version": "1.0.1",
+          "title": "Revoke Project Approval",
+          "description": "Revoke session and persistent VNEM approval for one exact project id or canonical root and clear its selection; Codex trust, if present, is reported separately and is not modified.",
+          "category": "project",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": false,
+            "idempotentHint": false,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/project-router-tools.mjs",
+          "behavior_test_references": [
+            "scripts/test-vnem-codex-global-routing.mjs"
+          ],
+          "benchmark_scenarios": [
+            "Codex global trusted project selection and bounded approval isolation"
+          ],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_project_select",
+          "version": "1.0.1",
+          "title": "Select Active VNEM Project",
+          "description": "Explicitly select one already authorized project for relative-path tool calls; selection is audited and never broadens authorization.",
+          "category": "project",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": false,
+            "idempotentHint": false,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/project-router-tools.mjs",
+          "behavior_test_references": [
+            "scripts/test-vnem-codex-global-routing.mjs"
+          ],
+          "benchmark_scenarios": [
+            "Codex global trusted project selection and bounded approval isolation"
+          ],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_project_status",
+          "version": "1.0.1",
+          "title": "Current VNEM Project Status",
+          "description": "Report the selected project, authorization sources, global and narrowed profile, project evidence namespace, and recent denials without exposing secrets.",
+          "category": "project",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/project-router-tools.mjs",
+          "behavior_test_references": [
+            "scripts/test-vnem-codex-global-routing.mjs"
+          ],
+          "benchmark_scenarios": [
+            "Codex global trusted project selection and bounded approval isolation"
+          ],
+          "input_schema_present": true
+        },
+        {
+          "name": "vnem_tools_project_router_doctor",
+          "version": "1.0.1",
+          "title": "VNEM Project Router Doctor",
+          "description": "Validate global registration, Codex trust parsing, global router state, project approvals, selection, evidence namespacing, profile precedence, migration state, and hard-block integrity.",
+          "category": "project",
+          "output_contract": "MCP content array with optional structuredContent; runtime errors use VNEM structured error schema",
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": false
+          },
+          "side_effect_class": "read_only",
+          "permission_requirements": [
+            "allowed_root_read"
+          ],
+          "network_behavior": "none",
+          "credential_behavior": "none",
+          "evidence_behavior": "optional",
+          "rollback_behavior": {
+            "mode": "not_required",
+            "guidance": "No mutation occurs."
+          },
+          "compatibility_aliases": [],
+          "deprecation_state": {
+            "deprecated": false,
+            "migration_guidance": null
+          },
+          "implementation_module": "scripts/vnem/tools/project-router-tools.mjs",
+          "behavior_test_references": [
+            "scripts/test-vnem-codex-global-routing.mjs"
+          ],
+          "benchmark_scenarios": [
+            "Codex global trusted project selection and bounded approval isolation"
+          ],
           "input_schema_present": true
         },
         {

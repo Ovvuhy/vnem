@@ -302,6 +302,9 @@ export class ApiConnectorRuntime {
   constructor(options = {}) {
     this.allowedRoots = (options.allowedRoots || [process.cwd()]).map((item) => path.resolve(item));
     this.evidenceRoot = path.resolve(options.evidenceRoot || path.join(this.allowedRoots[0], ".vnem", "tool-runs"));
+    this.stateRoot = path.resolve(options.stateRoot || path.join(this.allowedRoots[0], ".vnem", "api-connectors"));
+    this.registryBoundaryRoot = options.stateRoot ? this.stateRoot : this.allowedRoots[0];
+    this.registryDisplayPath = path.join(".vnem", "api-connectors", "adapter-registry.json");
     this.environment = options.environment || process.env;
     this.fetchImpl = options.fetchImpl || globalThis.fetch;
     this.now = options.now || (() => Date.now());
@@ -311,7 +314,9 @@ export class ApiConnectorRuntime {
     this.proposals = new Map();
     this.transactions = new Map();
     this.initialized = false;
-    this.registryPath = path.join(this.allowedRoots[0], ".vnem", "api-connectors", "adapter-registry.json");
+    this.registryPath = options.stateRoot
+      ? path.join(this.stateRoot, "generated-adapters", "adapter-registry.json")
+      : path.join(this.stateRoot, "adapter-registry.json");
   }
 
   async catalog(args = {}) {
@@ -629,7 +634,7 @@ export class ApiConnectorRuntime {
       operation_result: "api_adapter_activation_planned",
       proposal_id: proposal.proposal_id,
       adapter_id: proposal.adapter.id,
-      registry_path: relativeInside(this.allowedRoots[0], this.registryPath),
+      registry_path: this.registryDisplayPath,
       contract_test_passed: proposal.contract_test.passed,
       review_required: true,
       required_acknowledgement: proposal.activation_acknowledgement,
@@ -658,7 +663,7 @@ export class ApiConnectorRuntime {
       operation_result: "api_adapter_activated",
       proposal_id: proposal.proposal_id,
       adapter_id: activated.id,
-      registry_path: relativeInside(this.allowedRoots[0], this.registryPath),
+      registry_path: this.registryDisplayPath,
       executed: true,
       review_recorded: true,
       contract_test_passed: true,
@@ -873,16 +878,16 @@ export class ApiConnectorRuntime {
     try {
       const info = await lstat(this.registryPath);
       const resolved = await realpath(this.registryPath);
-      if (!info.isFile() || info.isSymbolicLink() || info.size > MAX_SPEC_BYTES || !insidePath(this.allowedRoots[0], resolved)) throw new Error("invalid registry file");
+      if (!info.isFile() || info.isSymbolicLink() || info.size > MAX_SPEC_BYTES || !insidePath(this.registryBoundaryRoot, resolved)) throw new Error("invalid registry file");
       const parsed = JSON.parse(await readFile(this.registryPath, "utf8"));
       return { schema_version: String(parsed.schema_version || ""), adapters: Array.isArray(parsed.adapters) ? parsed.adapters : [] };
     } catch {
-      throw new ApiConnectorError("Generated adapter registry is invalid or unreadable.", "api_adapter_registry_invalid", { registry_path: relativeInside(this.allowedRoots[0], this.registryPath) });
+      throw new ApiConnectorError("Generated adapter registry is invalid or unreadable.", "api_adapter_registry_invalid", { registry_path: this.registryDisplayPath });
     }
   }
 
   async writeGeneratedRegistry(registry) {
-    await ensureRegularDirectory(path.dirname(this.registryPath), this.allowedRoots[0]);
+    await ensureRegularDirectory(path.dirname(this.registryPath), this.registryBoundaryRoot);
     const temporary = `${this.registryPath}.${process.pid}.${randomUUID()}.tmp`;
     await writeFile(temporary, `${JSON.stringify(redactDeep(registry), null, 2)}\n`, { encoding: "utf8", mode: 0o600 });
     await rename(temporary, this.registryPath);

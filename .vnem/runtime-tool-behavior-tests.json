@@ -1010,6 +1010,33 @@
       "vnem_tools_restore_backup": [
         "scripts/test-tools-mcp-server.mjs"
       ],
+      "vnem_tools_global_integration_status": [
+        "scripts/test-vnem-codex-global-routing.mjs"
+      ],
+      "vnem_tools_codex_trusted_projects": [
+        "scripts/test-vnem-codex-global-routing.mjs"
+      ],
+      "vnem_tools_project_authorization_check": [
+        "scripts/test-vnem-codex-global-routing.mjs"
+      ],
+      "vnem_tools_project_approval_request": [
+        "scripts/test-vnem-codex-global-routing.mjs"
+      ],
+      "vnem_tools_project_approval_activate": [
+        "scripts/test-vnem-codex-global-routing.mjs"
+      ],
+      "vnem_tools_project_revoke": [
+        "scripts/test-vnem-codex-global-routing.mjs"
+      ],
+      "vnem_tools_project_select": [
+        "scripts/test-vnem-codex-global-routing.mjs"
+      ],
+      "vnem_tools_project_status": [
+        "scripts/test-vnem-codex-global-routing.mjs"
+      ],
+      "vnem_tools_project_router_doctor": [
+        "scripts/test-vnem-codex-global-routing.mjs"
+      ],
       "vnem_tools_permission_request": [
         "scripts/test-tools-scoped-permissions.mjs"
       ],

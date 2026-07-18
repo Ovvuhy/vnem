@@ -50,7 +50,7 @@ export class DataSystemsRuntime {
   constructor(options = {}) {
     this.allowedRoots = (options.allowedRoots || [process.cwd()]).map((item) => path.resolve(item));
     this.evidenceRoot = path.resolve(options.evidenceRoot || path.join(this.allowedRoots[0], ".vnem", "tool-runs"));
-    if (!insideAny(this.evidenceRoot, this.allowedRoots)) throw dataError("Data evidence root must remain inside an allowed root.", "data_evidence_root_blocked");
+    if (!options.allowExternalEvidenceRoot && !insideAny(this.evidenceRoot, this.allowedRoots)) throw dataError("Data evidence root must remain inside an allowed root unless a shared global router supplied an isolated state namespace.", "data_evidence_root_blocked");
     this.maxStructuredBytes = boundedInteger(options.maxStructuredBytes, 1024, MAX_STRUCTURED_BYTES, MAX_STRUCTURED_BYTES);
     this.maxSqliteBytes = boundedInteger(options.maxSqliteBytes, 1024, MAX_SQLITE_BYTES, MAX_SQLITE_BYTES);
     this.transformPlans = new Map();

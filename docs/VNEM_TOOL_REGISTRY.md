@@ -2,7 +2,7 @@
 
 Generated from live MCP runtime registries. Do not edit this table manually.
 
-- Total tools: 323
+- Total tools: 332
 - Registry valid: true
 - Missing behavior-test references: 0
 
@@ -305,6 +305,15 @@ Generated from live MCP runtime registries. Do not edit this table manually.
 | tools | `vnem_tools_mutation_approval_contract` | mutation | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_secret_redaction_check` | secret | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/server.mjs |
 | tools | `vnem_tools_restore_backup` | restore | destructive_mutation | approved_local_mutation | required_redacted_record | self | scripts/vnem/tools/server.mjs |
+| tools | `vnem_tools_global_integration_status` | global | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/project-router-tools.mjs |
+| tools | `vnem_tools_codex_trusted_projects` | project | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/project-router-tools.mjs |
+| tools | `vnem_tools_project_authorization_check` | project | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/project-router-tools.mjs |
+| tools | `vnem_tools_project_approval_request` | project | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/project-router-tools.mjs |
+| tools | `vnem_tools_project_approval_activate` | project | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/project-router-tools.mjs |
+| tools | `vnem_tools_project_revoke` | project | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/project-router-tools.mjs |
+| tools | `vnem_tools_project_select` | project | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/project-router-tools.mjs |
+| tools | `vnem_tools_project_status` | project | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/project-router-tools.mjs |
+| tools | `vnem_tools_project_router_doctor` | project | read_only | allowed_root_read | optional | not_required | scripts/vnem/tools/project-router-tools.mjs |
 | tools | `vnem_tools_permission_request` | permission | read_only | allowed_root_read | optional | not_required | scripts/vnem/permissions/tools.mjs |
 | tools | `vnem_tools_permission_grant` | permission | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/permissions/tools.mjs |
 | tools | `vnem_tools_permission_revoke` | permission | destructive_mutation | approved_local_mutation | required_redacted_record | required_or_explicitly_not_available | scripts/vnem/permissions/tools.mjs |

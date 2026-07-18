@@ -6,14 +6,24 @@ const MANAGED_MARKER_START = "# vnem-managed:start";
 const MANAGED_MARKER_END = "# vnem-managed:end";
 const MANAGED_INSTRUCTION_START = "<!-- vnem-managed-instructions:start -->";
 const MANAGED_INSTRUCTION_END = "<!-- vnem-managed-instructions:end -->";
+const MANAGED_TOOLS_ENV_KEYS = new Set([
+  "VNEM_TOOLS_ALLOWED_ROOTS",
+  "VNEM_TOOLS_EVIDENCE_ROOT",
+  "VNEM_TOOLS_GLOBAL_MODE",
+  "VNEM_TOOLS_STATE_ROOT",
+  "VNEM_TOOLS_CODEX_CONFIG",
+  "VNEM_TOOLS_PERMISSION_PROFILE"
+]);
 
-export function buildVnemServerConfigs({ root, workspace, components = ["core", "tools"] }) {
+export function buildVnemServerConfigs({ root, workspace, components = ["core", "tools"], scope = "project", stateRoot, codexConfigPath, safetyProfile = "safe-local-dev" }) {
   const selected = new Set(components);
+  const globalCodex = scope === "global";
   const servers = {};
   if (selected.has("core")) {
     servers.vnem = {
       command: process.execPath,
       args: [`${root}/scripts/vnem-mcp-server.mjs`],
+      cwd: root,
       env: { VNEM_ROOT: root }
     };
   }
@@ -21,9 +31,17 @@ export function buildVnemServerConfigs({ root, workspace, components = ["core", 
     servers["vnem-tools"] = {
       command: process.execPath,
       args: [`${root}/scripts/vnem-tools-mcp-server.mjs`],
+      cwd: root,
       env: {
-        VNEM_TOOLS_ALLOWED_ROOTS: workspace,
-        VNEM_TOOLS_EVIDENCE_ROOT: `${workspace}/.vnem/tool-runs`,
+        ...(globalCodex ? {
+          VNEM_TOOLS_GLOBAL_MODE: "codex",
+          VNEM_TOOLS_STATE_ROOT: stateRoot,
+          VNEM_TOOLS_CODEX_CONFIG: codexConfigPath,
+          VNEM_TOOLS_PERMISSION_PROFILE: safetyProfile
+        } : {
+          VNEM_TOOLS_ALLOWED_ROOTS: workspace,
+          VNEM_TOOLS_EVIDENCE_ROOT: `${workspace}/.vnem/tool-runs`
+        }),
         VNEM_TOOLS_AUTONOMY_MODE: "fast",
         VNEM_TOOLS_GITHUB_PROFILE: "maintainer",
         VNEM_TOOLS_GITHUB_PROTECTED_BRANCHES: "main;master;production",
@@ -39,6 +57,7 @@ export function buildVnemServerConfigs({ root, workspace, components = ["core", 
     servers["vnem-precision"] = {
       command: process.execPath,
       args: [`${root}/scripts/vnem-precision-mcp-server.mjs`],
+      cwd: workspace,
       env: { VNEM_PRECISION_ROOT: workspace }
     };
   }
@@ -207,7 +226,9 @@ export function renderCodexTomlServers(servers, preservedAssignments = new Map()
     if (Object.keys(env).length) {
       lines.push("", `[mcp_servers.${quotedName}.env]`);
       for (const [key, value] of Object.entries(env)) lines.push(`${key} = ${tomlString(value)}`);
-      appendPreservedAssignments(lines, preservedAssignments.get(`mcp_servers.${name}.env`), new Set(Object.keys(env)));
+      const ownedEnvKeys = new Set(Object.keys(env));
+      if (name === "vnem-tools") for (const key of MANAGED_TOOLS_ENV_KEYS) ownedEnvKeys.add(key);
+      appendPreservedAssignments(lines, preservedAssignments.get(`mcp_servers.${name}.env`), ownedEnvKeys);
     }
   }
   lines.push("", MANAGED_MARKER_END, "");

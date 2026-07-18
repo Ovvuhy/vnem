@@ -1,5 +1,6 @@
 import { emitKeypressEvents } from "node:readline";
 import { createInterface } from "node:readline/promises";
+import { readFile } from "node:fs/promises";
 import { stdin as input, stdout as output } from "node:process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -42,6 +43,7 @@ export async function runClientDoctorCommand(rawArgs = [], io = {}) {
       options.safetyProfile = current.latest_transaction.safety_profile;
       options.root = current.latest_transaction.root;
       options.workspace = current.latest_transaction.workspace;
+      options.scope = current.latest_transaction.scope || "project";
     }
   }
   const plan = await planClientSetup(options);
@@ -62,16 +64,19 @@ export async function runRollbackCommand(rawArgs = [], io = {}) {
 export async function runStatusCommand(rawArgs = [], io = {}) {
   const options = parseClientArgs(rawArgs);
   const setup = await setupStatus(options);
+  const globalMode = setup.latest_transaction?.scope === "global" || options.scope === "global";
   const safetyWorkspace = setup.latest_transaction?.workspace || options.workspace;
-  const safety = await PermissionRuntime.create({ workspaceRoot: safetyWorkspace, allowedRoots: [safetyWorkspace] }).then((runtime) => runtime.status());
+  const safety = globalMode
+    ? JSON.parse(await readFile(path.join(setup.latest_transaction?.global_state_root || path.join(options.home || process.env.USERPROFILE || process.cwd(), ".codex", "vnem"), "global.json"), "utf8"))
+    : await PermissionRuntime.create({ workspaceRoot: safetyWorkspace, allowedRoots: [safetyWorkspace] }).then((runtime) => runtime.status());
   const result = {
     operation: "status",
     setup: setup.latest_transaction,
     clients: setup.clients,
     safety: {
-      active_profile: safety.profile.profile_name,
-      configured_by: safety.configured_by,
-      hard_blocks_present: safety.hard_blocked_actions.length > 0
+      active_profile: globalMode ? safety.global_profile : safety.profile.profile_name,
+      configured_by: globalMode ? "global_vnem_state" : safety.configured_by,
+      hard_blocks_present: globalMode ? safety.hard_blocks_removable === false : safety.hard_blocked_actions.length > 0
     },
     secrets_in_output: false
   };
@@ -156,6 +161,7 @@ function parseClientArgs(args) {
     clients: splitList(valueAfter(args, "--clients") || valueAfter(args, "--client")),
     components: splitList(valueAfter(args, "--components")),
     safetyProfile: valueAfter(args, "--profile") || "safe-local-dev",
+    scope: valueAfter(args, "--scope") || "project",
     root: path.resolve(valueAfter(args, "--vnem-root") || path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../..")),
     workspace: path.resolve(valueAfter(args, "--workspace") || process.cwd()),
     home: valueAfter(args, "--home") ? path.resolve(valueAfter(args, "--home")) : undefined,
